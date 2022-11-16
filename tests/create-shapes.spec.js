@@ -39,7 +39,7 @@ mainTest("Create an ellipse", async ({ page }) => {
   await expect(page).toHaveScreenshot("ellipse.png");
 });
 
-mainTest("Create an text", async ({ page }) => {
+mainTest("Create a text", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateTextButton();
   await mainPage.clickViewport();

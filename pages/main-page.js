@@ -20,6 +20,7 @@ exports.MainPage = class MainPage {
     );
     this.viewport = page.locator(viewportLocator);
     this.savedChangesIcon = page.locator('div[class="saved"]');
+    this.pencilBoxButton = page.locator('div[class="main-icon"]');
   }
 
   async clickCreateBoardButton() {
@@ -85,5 +86,9 @@ exports.MainPage = class MainPage {
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.move(x2, y2);
     await this.page.mouse.up();
+  }
+
+  async clickPencilBoxButton() {
+    await this.pencilBoxButton.click();
   }
 };
