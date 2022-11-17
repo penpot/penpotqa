@@ -7,7 +7,7 @@ dashboardTest(
   "Create and open a file (in Drafts) via 'New file' placeholder",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createFile();
+    await dashboardPage.createFileViaPlaceholder();
     const mainPage = new MainPage(page);
     await mainPage.clickPencilBoxButton();
     await dashboardPage.checkNumberOfFiles("1 file");
@@ -16,18 +16,18 @@ dashboardTest(
 
 dashboardTest("Rename file (in Drafts) via rightclick", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
-  await dashboardPage.createFile();
+  await dashboardPage.createFileViaPlaceholder();
   const mainPage = new MainPage(page);
   await mainPage.clickPencilBoxButton();
-  await dashboardPage.renameFile("test");
+  await dashboardPage.renameFileViaRightclick("test");
 });
 
 dashboardTest("Duplicate file (in Drafts) via rightclick", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
-  await dashboardPage.createFile();
+  await dashboardPage.createFileViaPlaceholder();
   const mainPage = new MainPage(page);
   await mainPage.clickPencilBoxButton();
-  await dashboardPage.duplicateFile();
+  await dashboardPage.duplicateFileViaRightclick();
   await dashboardPage.isSuccessMessageDisplayed(
     "Your file has been duplicated successfully"
   );
@@ -39,10 +39,10 @@ dashboardTest(
   "Add file as Shared Library (in Drafts) via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createFile();
+    await dashboardPage.createFileViaPlaceholder();
     const mainPage = new MainPage(page);
     await mainPage.clickPencilBoxButton();
-    await dashboardPage.addFileAsSharedLibrary();
+    await dashboardPage.addFileAsSharedLibraryViaRightclick();
     await dashboardPage.isSharedLibraryIconDisplayed();
   }
 );
@@ -51,12 +51,12 @@ dashboardTest(
   "Remove file as Shared Library (in Drafts) via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createFile();
+    await dashboardPage.createFileViaPlaceholder();
     const mainPage = new MainPage(page);
     await mainPage.clickPencilBoxButton();
-    await dashboardPage.addFileAsSharedLibrary();
+    await dashboardPage.addFileAsSharedLibraryViaRightclick();
     await dashboardPage.isSharedLibraryIconDisplayed();
-    await dashboardPage.deleteFileAsSharedLibrary();
+    await dashboardPage.deleteFileAsSharedLibraryViaRightclick();
     await dashboardPage.isSharedLibraryIconNotDisplayed();
   }
 );
@@ -65,10 +65,10 @@ dashboardTest(
   "Download Penpot file (in Drafts) via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createFile();
+    await dashboardPage.createFileViaPlaceholder();
     const mainPage = new MainPage(page);
     await mainPage.clickPencilBoxButton();
-    await dashboardPage.downloadPenpotFile();
+    await dashboardPage.downloadPenpotFileViaRightclick();
   }
 );
 
@@ -76,18 +76,317 @@ dashboardTest(
   "Download standard file (in Drafts) via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createFile();
+    await dashboardPage.createFileViaPlaceholder();
     const mainPage = new MainPage(page);
     await mainPage.clickPencilBoxButton();
-    await dashboardPage.downloadStandardFile();
+    await dashboardPage.downloadStandardFileViaRightclick();
   }
 );
 
 dashboardTest("Delete file (in Drafts) via rightclick", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
-  await dashboardPage.createFile();
+  await dashboardPage.createFileViaPlaceholder();
   const mainPage = new MainPage(page);
   await mainPage.clickPencilBoxButton();
-  await dashboardPage.deleteFile();
+  await dashboardPage.deleteFileViaRightclick();
   await dashboardPage.checkNumberOfFiles("0 files");
+});
+
+dashboardTest("Create new project ", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+});
+
+dashboardTest(
+  "Create and open a file (in Project) via '+' button on title panel",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaTitlePanel();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.checkNumberOfFiles("1 file");
+  }
+);
+
+dashboardTest(
+  "Create and open a file (in Project) via 'New file' placeholder",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.checkNumberOfFiles("1 file");
+  }
+);
+
+dashboardTest("Rename file (in Project)", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.renameFileViaOptionsIcon("test_panel");
+  await dashboardPage.renameFileViaRightclick("test_rightclick");
+});
+
+dashboardTest("Duplicate file (in Project)", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.duplicateFileViaRightclick();
+  await dashboardPage.isSuccessMessageDisplayed(
+    "Your file has been duplicated successfully"
+  );
+  await page.reload();
+  await dashboardPage.checkNumberOfFiles("2 files");
+  await dashboardPage.duplicateFileViaOptionsIcon();
+  await dashboardPage.isSuccessMessageDisplayed(
+    "Your file has been duplicated successfully"
+  );
+  await page.reload();
+  await dashboardPage.checkNumberOfFiles("3 files");
+});
+
+dashboardTest(
+  "Add file as Shared Library (in Project) via rightclick",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.addFileAsSharedLibraryViaRightclick();
+    await dashboardPage.isSharedLibraryIconDisplayed();
+  }
+);
+
+dashboardTest(
+  "Add file as Shared Library (in Project) via Options icon",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
+    await dashboardPage.isSharedLibraryIconDisplayed();
+  }
+);
+
+dashboardTest(
+  "Remove file as Shared Library (in Project) via rightclick",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.addFileAsSharedLibraryViaRightclick();
+    await dashboardPage.isSharedLibraryIconDisplayed();
+    await dashboardPage.deleteFileAsSharedLibraryViaRightclick();
+    await dashboardPage.isSharedLibraryIconNotDisplayed();
+  }
+);
+
+dashboardTest(
+  "Remove file as Shared Library (in Project) via Options icon",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
+    await dashboardPage.isSharedLibraryIconDisplayed();
+    await page.reload();
+    await dashboardPage.deleteFileAsSharedLibraryViaOptionsIcon();
+    await dashboardPage.isSharedLibraryIconNotDisplayed();
+  }
+);
+
+dashboardTest(
+  "Download Penpot file (in Project) via rigthclick",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.downloadPenpotFileViaRightclick();
+  }
+);
+
+dashboardTest(
+  "Download Penpot file (in Project) via Options icon",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.downloadPenpotFileViaOptionsIcon();
+  }
+);
+
+dashboardTest(
+  "Download standard file (in Project) via rigthclick",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.downloadStandardFileViaRightclick();
+  }
+);
+
+dashboardTest(
+  "Download standard file (in Project) via Options icon",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.downloadStandardFileViaOptionsIcon();
+  }
+);
+
+dashboardTest("Delete file (in Project) via rightclick", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.deleteFileViaRightclick();
+  await dashboardPage.checkNumberOfFiles("0 files");
+});
+
+dashboardTest("Delete file (in Project) via Options icon", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.deleteFileViaOptionsIcon();
+  await dashboardPage.checkNumberOfFiles("0 files");
+});
+
+dashboardTest("Rename project", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.renameProjectViaOptionsIcon(
+    "New Renamed Project Via Options Icon"
+  );
+  await dashboardPage.renameProjectViaRightclick(
+    "Renamed new Project Via Right Click"
+  );
+});
+
+dashboardTest("Duplicate Project", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.duplicateProjectViaRightclick();
+  await dashboardPage.isHeaderDisplayed("TestProject (copy)");
+  await dashboardPage.clickSidebarItem("Projects");
+  await dashboardPage.duplicateProjectViaOptionsIcon();
+  await dashboardPage.isHeaderDisplayed("TestProject (copy) (copy)");
+});
+
+dashboardTest("Unpin project", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.clickPinUnpinProjectButton();
+  await dashboardPage.checkPinnedProjectsSidebarItem(
+    "Pinned projects will appear here"
+  );
+});
+
+dashboardTest("Pin project", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.clickPinUnpinProjectButton();
+  await dashboardPage.checkPinnedProjectsSidebarItem(
+    "Pinned projects will appear here"
+  );
+  await dashboardPage.clickPinUnpinProjectButton();
+  await dashboardPage.checkPinnedProjectsSidebarItem("TestProject");
+});
+
+dashboardTest("Delete project via rightclick", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.deleteProjectViaRightclick();
+  await dashboardPage.isProjectTitleDisplayed("Drafts");
+});
+
+dashboardTest("Delete project via Options icon", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.deleteProjectViaOptionsIcon();
+  await dashboardPage.isProjectTitleDisplayed("Drafts");
 });

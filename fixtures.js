@@ -11,8 +11,9 @@ const mainTest = base.test.extend({
     await loginPage.clickLoginButton();
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.isHeaderDisplayed("Projects");
+    await dashboardPage.deleteProjectsIfExist();
     await dashboardPage.deleteFilesIfExist();
-    await dashboardPage.createFile();
+    await dashboardPage.createFileViaPlaceholder();
     await use(page);
   },
 });
@@ -26,6 +27,7 @@ const dashboardTest = base.test.extend({
     await loginPage.clickLoginButton();
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.isHeaderDisplayed("Projects");
+    await dashboardPage.deleteProjectsIfExist();
     await dashboardPage.deleteFilesIfExist();
     await use(page);
   },
