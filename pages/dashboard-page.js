@@ -72,10 +72,52 @@ exports.DashboardPage = class DashboardPage {
     this.projectOptionsMenuButton = page.locator(
       'a[data-test="project-options"] svg[class="icon-actions"]'
     );
-    this.projectsSidebarItem = page.locator('li[class="recent-projects "]');
+    this.projectsSidebarItem = page.locator('li:has-text("Projects")');
+    this.draftsSidebarItem = page.locator('li:has-text("Drafts")');
+    this.fontsSidebarItem = page.locator('li:has-text("Fonts")');
     this.pinnedProjectsSidebarItem = page.locator(
       'div[data-test="pinned-projects"]'
     );
+    this.searchInput = page.locator("#search-input");
+    this.uploadFontSelector = page.locator("#font-upload");
+    this.uploadFontButton = page.locator('button:has-text("Upload")');
+    this.fontNameTableCell = page.locator(
+      'div[class="font-item table-row"] div[class="table-field family"]'
+    );
+    this.fontStyleTableCell = page.locator(
+      'div[class="font-item table-row"] div[class="table-field variants"]'
+    );
+    this.fontOptionsMenuButton = page.locator(
+      'div[class="table-field options"] svg[class="icon-actions"]'
+    );
+    this.editFontMenuItem = page.locator('a[data-test="font-edit"]');
+    this.deleteFontMenuItem = page.locator('a[data-test="font-delete"]');
+    this.deleteFontButton = page.locator('input[value="Delete"]');
+    this.fontsTablePlaceholder = page.locator(
+      'div[class="fonts-placeholder"] div[class="label"]'
+    );
+    this.fontNameInput = page.locator(
+      'div[class="font-item table-row"] input[type="text"]'
+    );
+    this.saveFontButton = page.locator('button:has-text("Save")');
+
+    this.searchFontInput = page.locator("input[placeholder='Search font']");
+
+    this.teamSelector = page.locator("div[class='current-team']");
+
+    this.createNewTeamMenuItem = page.locator(
+      "li[data-test='create-new-team']"
+    );
+
+    this.teamNameInput = page.locator("#name");
+
+    this.createNewTeamButton = page.locator("input[value='Create new team']");
+    this.teamMenuItem = page.locator("li[class='team-name']");
+    this.teamOptionsMenuButton = page.locator(
+      'div[class="switch-options"] svg[class="icon-actions"]'
+    );
+    this.deleteTeamMenuItem = page.locator('li[data-test="delete-team"]');
+    this.deleteTeamButton = page.locator('input[value="Delete team"]');
   }
 
   async isHeaderDisplayed(title) {
@@ -165,7 +207,7 @@ exports.DashboardPage = class DashboardPage {
     await this.renameFileMenuItem.click();
     await this.fileNameInput.type(newFileName);
     await this.page.keyboard.press("Enter");
-    await expect(this.fileNameTitle).toHaveText(newFileName);
+    await this.isFileNameDisplayed(newFileName);
   }
 
   async renameFileViaOptionsIcon(newFileName) {
@@ -175,7 +217,11 @@ exports.DashboardPage = class DashboardPage {
     await this.renameFileMenuItem.click();
     await this.fileNameInput.type(newFileName);
     await this.page.keyboard.press("Enter");
-    await expect(this.fileNameTitle).toHaveText(newFileName);
+    await this.isFileNameDisplayed(newFileName);
+  }
+
+  async isFileNameDisplayed(fileName) {
+    await expect(this.fileNameTitle).toHaveText(fileName);
   }
 
   async duplicateFileViaRightclick() {
@@ -311,6 +357,12 @@ exports.DashboardPage = class DashboardPage {
       case "Projects":
         await this.projectsSidebarItem.click();
         break;
+      case "Drafts":
+        await this.draftsSidebarItem.click();
+        break;
+      case "Fonts":
+        await this.fontsSidebarItem.click();
+        break;
     }
   }
   async clickPinUnpinProjectButton() {
@@ -322,5 +374,115 @@ exports.DashboardPage = class DashboardPage {
 
   async checkPinnedProjectsSidebarItem(text) {
     await expect(this.pinnedProjectsSidebarItem).toHaveText(text);
+  }
+
+  async search(text) {
+    await this.searchInput.type(text);
+  }
+
+  async uploadFont(filePath) {
+    await this.uploadFontSelector.setInputFiles(filePath);
+    await this.uploadFontButton.click();
+    await expect(this.uploadFontButton).not.toBeVisible();
+  }
+
+  async isFontUploaded(fontName, fontStyle) {
+    await expect(this.fontNameTableCell).toHaveText(fontName);
+    await expect(this.fontStyleTableCell).toHaveText(fontStyle);
+  }
+
+  async deleteFont() {
+    await this.fontOptionsMenuButton.click();
+    await this.deleteFontMenuItem.click();
+    await this.deleteFontButton.click();
+  }
+
+  async deleteFonts() {
+    for (const el of await this.fontOptionsMenuButton.elementHandles()) {
+      await el.click();
+      await this.deleteFontMenuItem.click();
+      await this.deleteFontButton.click();
+    }
+  }
+
+  async deleteFontsIfExist() {
+    const fontRecords = await this.page.$$('div[class="font-item table-row"]');
+    if (fontRecords) await this.deleteFonts();
+  }
+
+  async isFontsTablePlaceholderDisplayed(text) {
+    await expect(this.fontsTablePlaceholder).toHaveText(text);
+  }
+
+  async editFont(newFontName) {
+    await this.fontOptionsMenuButton.click();
+    await this.editFontMenuItem.click();
+    await this.clearInput(this.fontNameInput);
+    await this.fontNameInput.type(newFontName);
+    await this.saveFontButton.click();
+    await expect(this.fontNameTableCell).toHaveText(newFontName);
+  }
+
+  async clearInput(input) {
+    await input.click();
+    let text = await input.inputValue();
+    for (let i = 0; i <= text.length; i++) {
+      await this.page.keyboard.press("Backspace");
+    }
+  }
+
+  async searchFont(fontName) {
+    await this.searchFontInput.type(fontName);
+    await expect(this.fontNameTableCell).toHaveText(fontName);
+    await expect(this.fontNameTableCell).toHaveCount(1);
+  }
+
+  async createTeam(teamName) {
+    await this.teamSelector.click();
+    await this.createNewTeamMenuItem.click();
+    await this.teamNameInput.fill(teamName);
+    await this.createNewTeamButton.click();
+  }
+
+  async isTeamSelected(teamName) {
+    await expect(this.teamSelector).toHaveText(teamName);
+  }
+
+  async deleteTeam(teamName) {
+    await this.teamSelector.click();
+    for (const el of await this.teamMenuItem.elementHandles()) {
+      const text = (await el.innerText()).valueOf();
+      if (text.includes(teamName)) {
+        await el.click();
+        await this.teamOptionsMenuButton.click();
+        await this.deleteTeamMenuItem.click();
+        await this.deleteTeamButton.click();
+        await expect(this.teamSelector).toHaveText("Your Penpot");
+      }
+    }
+  }
+
+  async deleteTeamsIfExist() {
+    await this.teamSelector.click();
+    for (const el of await this.teamMenuItem.elementHandles()) {
+      const text = (await el.innerText()).valueOf();
+      if (!text.includes("Your Penpot")) {
+        await el.click();
+        await this.teamOptionsMenuButton.click();
+        await this.deleteTeamMenuItem.click();
+        await this.deleteTeamButton.click();
+        await expect(this.teamSelector).toHaveText("Your Penpot");
+        await this.teamSelector.click();
+      }
+    }
+    await this.teamSelector.click();
+  }
+
+  async isTeamDeleted(teamName) {
+    await this.teamSelector.click();
+    for (const el of await this.teamMenuItem.elementHandles()) {
+      const text = (await el.innerText()).valueOf();
+      expect(text).not.toEqual(teamName);
+    }
   }
 };

@@ -1,5 +1,4 @@
 const { expect } = require("@playwright/test");
-const viewportLocator = 'div[class="viewport"]';
 exports.MainPage = class MainPage {
   /**
    * @param {import('@playwright/test').Page} page
@@ -18,7 +17,7 @@ exports.MainPage = class MainPage {
     this.textbox = page.locator(
       'div[role="textbox"] div[contenteditable="true"]'
     );
-    this.viewport = page.locator(viewportLocator);
+    this.viewport = page.locator('div[class="viewport"]');
     this.savedChangesIcon = page.locator('div[class="saved"]');
     this.pencilBoxButton = page.locator('div[class="main-icon"]');
   }
@@ -43,8 +42,8 @@ exports.MainPage = class MainPage {
     await this.textbox.fill(text);
   }
 
-  async uploadImage(imageUrl) {
-    await this.uploadImageSelector.setInputFiles(imageUrl);
+  async uploadImage(filePath) {
+    await this.uploadImageSelector.setInputFiles(filePath);
   }
 
   async clickCreateCurveButton() {

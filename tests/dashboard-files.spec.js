@@ -389,3 +389,30 @@ dashboardTest("Delete project via Options icon", async ({ page }) => {
   await dashboardPage.deleteProjectViaOptionsIcon();
   await dashboardPage.isProjectTitleDisplayed("Drafts");
 });
+
+dashboardTest("Search file (from Drafts)", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.renameFileViaRightclick("qwe");
+  await dashboardPage.clickSidebarItem("Drafts");
+  await dashboardPage.search("qwe");
+  await dashboardPage.isHeaderDisplayed("Search results");
+  await dashboardPage.isFileNameDisplayed("qwe");
+});
+
+dashboardTest("Search file (from Projects)", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.renameFileViaRightclick("qaz");
+  await dashboardPage.clickSidebarItem("Projects");
+  await dashboardPage.search("qaz");
+  await dashboardPage.isHeaderDisplayed("Search results");
+  await dashboardPage.isFileNameDisplayed("qaz");
+});
