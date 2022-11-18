@@ -1,4 +1,3 @@
-// @ts-check
 const { test } = require("@playwright/test");
 const { LoginPage } = require("../pages/login-page");
 const { DashboardPage } = require("../pages/dashboard-page");

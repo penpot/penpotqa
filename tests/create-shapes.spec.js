@@ -1,4 +1,3 @@
-// @ts-check
 const { mainTest } = require("../fixtures");
 const { MainPage } = require("../pages/main-page");
 const { expect } = require("@playwright/test");
