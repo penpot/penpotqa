@@ -1,4 +1,3 @@
-// @ts-check
 const { dashboardTest } = require("../fixtures");
 const { MainPage } = require("../pages/main-page");
 const { DashboardPage } = require("../pages/dashboard-page");
