@@ -50,6 +50,7 @@ exports.DashboardPage = class DashboardPage {
       'div[class="project-th-icon menu"] svg[class="icon-actions"]'
     );
     this.successMessage = page.locator('div[class="banner success fixed"]');
+    this.infoMessage = page.locator('div[class="banner info fixed"]');
     this.addProjectButton = page.locator('a[data-test="new-project-button"]');
     this.projectNameInput = page.locator(
       'div[class="project-name-wrapper"] div[class="edit-wrapper"]'
@@ -118,6 +119,81 @@ exports.DashboardPage = class DashboardPage {
     );
     this.deleteTeamMenuItem = page.locator('li[data-test="delete-team"]');
     this.deleteTeamButton = page.locator('input[value="Delete team"]');
+    this.invitationsMenuItem = page.locator('li[data-test="team-invitations"]');
+    this.inviteMembersToTeamButton = page.locator(
+      'a[data-test="invite-member"]'
+    );
+    this.inviteMembersPopUpHeader = page.locator(
+      'div[class^="modal dashboard-invite-modal form-container "] div[class="title"]'
+    );
+    this.inviteMembersTeamHeroButton = page.locator(
+      'button[class="btn-primary invite"]'
+    );
+    this.inviteMembersToTeamRoleSelectorButton = page.locator(
+      'div[class="custom-select"]'
+    );
+    this.inviteMembersToTeamRoleSelector = page.locator(
+      'div[class="custom-select"] select'
+    );
+    this.inviteMembersToTeamEmailInput = page.locator(
+      'input[placeholder="Emails, comma separated"]'
+    );
+    this.sendInvitationButton = page.locator('input[value="Send invitation"]');
+
+    this.invitationRecord = page.locator('div[class="table-row"]');
+
+    this.invitationRecordEmailCell = page.locator(
+      'div[class="table-field mail"]'
+    );
+
+    this.invitationRecordRoleCell = page.locator(
+      'div[class="table-field roles"]'
+    );
+
+    this.invitationRecordRoleSelector = page.locator(
+      'div[class="rol-selector has-priv"]'
+    );
+
+    this.invitationRecordStatusCell = page.locator(
+      'div[class="table-field status"] div'
+    );
+
+    this.invitationRecordOptionsMenuButton = page.locator(
+      'div[class="table-field actions"] svg[class="icon-actions"]'
+    );
+
+    this.invitationRecordResendInvititationMenuItem = page.locator(
+      'ul:has-text("Resend invitation")'
+    );
+
+    this.invitationRecordDeleteInvititationMenuItem = page.locator(
+      'ul:has-text("Delete invitation")'
+    );
+    this.teamSettingsMenuItem = page.locator('li[data-test="team-settings"]');
+
+    this.renameTeamMenuItem = page.locator('li[data-test="rename-team"]');
+
+    this.uploadTeamImageButton = page.locator('input[type="file"]');
+
+    this.renameTeamInput = page.locator("#name");
+
+    this.updateTeamButton = page.locator('input[value="Update team"]');
+
+    this.librariesAndTemplatesCarouselButton = page.locator(
+      'span:has-text("Libraries & Templates")'
+    );
+
+    this.librariesAndTemplatesSection = page.locator(
+      'div[class="dashboard-templates-section "]'
+    );
+
+    this.librariesAndTemplatesSectionLeftArrowButton = page.locator(
+      'div[class="button left"]'
+    );
+
+    this.librariesAndTemplatesSectionRightArrowButton = page.locator(
+      'div[class="button right"]'
+    );
   }
 
   async isHeaderDisplayed(title) {
@@ -238,6 +314,14 @@ exports.DashboardPage = class DashboardPage {
 
   async isSuccessMessageDisplayed(message) {
     await expect(this.successMessage).toHaveText(message);
+  }
+
+  async isInfoMessageDisplayed(message) {
+    await expect(this.infoMessage).toHaveText(message);
+  }
+
+  async isInfoMessageNotDisplayed() {
+    await expect(this.infoMessage).not.toBeVisible();
   }
 
   async addFileAsSharedLibraryViaRightclick() {
@@ -457,7 +541,8 @@ exports.DashboardPage = class DashboardPage {
         await this.teamOptionsMenuButton.click();
         await this.deleteTeamMenuItem.click();
         await this.deleteTeamButton.click();
-        await expect(this.teamSelector).toHaveText("Your Penpot");
+        await this.waitForPageLoaded();
+        await expect(this.teamSelector).not.toHaveText(teamName);
       }
     }
   }
@@ -471,6 +556,7 @@ exports.DashboardPage = class DashboardPage {
         await this.teamOptionsMenuButton.click();
         await this.deleteTeamMenuItem.click();
         await this.deleteTeamButton.click();
+        await this.waitForPageLoaded();
         await expect(this.teamSelector).toHaveText("Your Penpot");
         await this.teamSelector.click();
       }
@@ -484,5 +570,112 @@ exports.DashboardPage = class DashboardPage {
       const text = (await el.innerText()).valueOf();
       expect(text).not.toEqual(teamName);
     }
+  }
+
+  async openInvitationsPageViaOptionsMenu() {
+    await this.teamOptionsMenuButton.click();
+    await this.invitationsMenuItem.click();
+  }
+
+  async clickInviteMembersToTeamButton() {
+    await this.inviteMembersToTeamButton.click();
+  }
+
+  async isInviteMembersPopUpHeaderDisplayed(title) {
+    await expect(this.inviteMembersPopUpHeader).toHaveText(title);
+  }
+
+  async clickInviteMembersTeamHeroButton() {
+    await this.inviteMembersTeamHeroButton.click();
+  }
+
+  async enterEmailToInviteMembersPopUp(email) {
+    await this.inviteMembersToTeamEmailInput.type(email);
+  }
+
+  async clickSendInvitationButton() {
+    await this.sendInvitationButton.click();
+  }
+
+  async isInvitationRecordDisplayed(email, role, status) {
+    await expect(this.invitationRecordEmailCell).toHaveText(email);
+    await expect(this.invitationRecordRoleCell).toHaveText(role);
+    await expect(this.invitationRecordStatusCell).toHaveText(status);
+  }
+
+  async selectInvitationRoleInPopUp(role) {
+    await this.inviteMembersToTeamRoleSelectorButton.click();
+    switch (role) {
+      case "Admin":
+        await this.inviteMembersToTeamRoleSelector.selectOption("admin");
+        break;
+      case "Editor":
+        await this.inviteMembersToTeamRoleSelector.selectOption("editor");
+        break;
+    }
+  }
+
+  async selectInvitationRoleInInvitationRecord(role) {
+    await this.invitationRecordRoleSelector.click();
+    await this.page.locator(`li:has-text('${role}')`).click();
+  }
+
+  async resendInvitation() {
+    await this.invitationRecordOptionsMenuButton.click();
+    await this.invitationRecordResendInvititationMenuItem.click();
+  }
+
+  async deleteInvitation() {
+    await this.invitationRecordOptionsMenuButton.click();
+    await this.invitationRecordDeleteInvititationMenuItem.click();
+  }
+
+  async isInvitationRecordRemoved() {
+    await expect(this.invitationRecord).not.toBeVisible();
+  }
+
+  async openTeamSettingsPageViaOptionsMenu() {
+    await this.teamOptionsMenuButton.click();
+    await this.teamSettingsMenuItem.click();
+  }
+
+  async uploadTeamImage(filePath) {
+    await this.uploadTeamImageButton.setInputFiles(filePath);
+  }
+
+  async renameTeam(teamName) {
+    await this.teamOptionsMenuButton.click();
+    await this.renameTeamMenuItem.click();
+    await this.clearInput(this.renameTeamInput);
+    await this.renameTeamInput.fill(teamName);
+    await this.updateTeamButton.click();
+  }
+
+  async clickLibrariesAndTemplatesCarouselButton() {
+    await this.librariesAndTemplatesCarouselButton.click();
+  }
+
+  async isLibrariesAndTemplatesSectionDisplayed() {
+    await expect(this.librariesAndTemplatesSection).toBeVisible();
+  }
+
+  async isLibrariesAndTemplatesSectionNotDisplayed() {
+    await expect(this.librariesAndTemplatesSection).not.toBeVisible();
+  }
+
+  async minimizeLibrariesAndTemplatesCarouselIfExpanded() {
+    if (await this.librariesAndTemplatesSection.isVisible()) {
+      await this.clickLibrariesAndTemplatesCarouselButton();
+    }
+  }
+
+  async flipRightLibrariesAndTemplatesCarousel() {
+    await this.librariesAndTemplatesSectionRightArrowButton.click();
+    await this.waitForPageLoaded();
+  }
+
+  async flipLeftLibrariesAndTemplatesCarousel() {
+    await this.librariesAndTemplatesSectionLeftArrowButton.click();
+    await this.waitForPageLoaded();
   }
 };
