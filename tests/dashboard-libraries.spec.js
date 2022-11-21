@@ -1,0 +1,35 @@
+const { dashboardTest } = require("../fixtures");
+const { DashboardPage } = require("../pages/dashboard-page");
+const { test, expect } = require("@playwright/test");
+
+test.beforeEach(async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.minimizeLibrariesAndTemplatesCarouselIfExpanded();
+});
+
+dashboardTest("Expand Libraries & Templates carousel", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+  await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
+});
+
+dashboardTest("Flip Libraries & Templates carousel", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+  await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
+  await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
+  await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
+  await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
+  await expect(page).toHaveScreenshot("libraries-carousel-flipped-right.png");
+  await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
+  await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
+  await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
+  await expect(page).toHaveScreenshot("libraries-carousel-flipped-left.png");
+});
+
+dashboardTest("Minimize Libraries & Templates carousel", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+  await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+  await dashboardPage.isLibrariesAndTemplatesSectionNotDisplayed();
+});
