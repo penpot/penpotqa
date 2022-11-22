@@ -5,6 +5,7 @@ exports.LoginPage = class LoginPage {
    */
   constructor(page) {
     this.page = page;
+    this.header = page.locator("h1");
     this.emailInput = page.locator("#email");
     this.pwdInput = page.locator("#password");
     this.loginButton = page.locator('input[name="submit"]');
@@ -64,5 +65,10 @@ exports.LoginPage = class LoginPage {
 
   async isLoginErrorMessageDisplayed(message) {
     await expect(this.loginErrorBanner).toHaveText(message);
+  }
+
+  async isHeaderDisplayed(title) {
+    await expect(this.header).toBeVisible();
+    await expect(this.header).toHaveText(title);
   }
 };
