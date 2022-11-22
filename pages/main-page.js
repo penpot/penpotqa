@@ -20,6 +20,7 @@ exports.MainPage = class MainPage {
     this.viewport = page.locator('div[class="viewport"]');
     this.savedChangesIcon = page.locator('div[class="saved"]');
     this.pencilBoxButton = page.locator('div[class="main-icon"]');
+    this.usersSection = page.locator('div[class="users-section"]');
   }
 
   async clickCreateBoardButton() {
@@ -89,5 +90,9 @@ exports.MainPage = class MainPage {
 
   async clickPencilBoxButton() {
     await this.pencilBoxButton.click();
+  }
+
+  async isMainPageLoaded() {
+    await expect(this.pencilBoxButton).toBeVisible();
   }
 };
