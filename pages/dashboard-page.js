@@ -10,7 +10,8 @@ exports.DashboardPage = class DashboardPage {
     this.numberOfFilesText = page.locator(
       'div[class="project-name-wrapper"] span[class="info"]'
     );
-    this.fileTile = page.locator('div[class="item-info"]');
+    this.fileTile = page.locator('div[class="grid-item-th"]');
+    this.fileInfoPanel = page.locator('div[class="item-info"]');
     this.fileNameTitle = page.locator('div[class="item-info"] h3');
     this.deleteFileMenuItem = page.locator('a[data-test="file-delete"]');
     this.deleteFileButton = page.locator(
@@ -211,13 +212,13 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async deleteFileViaRightclick() {
-    await this.fileTile.click({ button: "right" });
+    await this.fileInfoPanel.click({ button: "right" });
     await this.deleteFileMenuItem.click();
     await this.deleteFileButton.click();
   }
 
   async deleteFileViaOptionsIcon() {
-    await this.fileTile.first().hover();
+    await this.fileInfoPanel.first().hover();
     await this.fileOptionsMenuButton.first().hover();
     await this.fileOptionsMenuButton.first().click();
     await this.deleteFileMenuItem.click();
@@ -225,7 +226,7 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async deleteFiles() {
-    for (const el of await this.fileTile.elementHandles()) {
+    for (const el of await this.fileInfoPanel.elementHandles()) {
       await el.click({ button: "right" });
       await this.deleteFileMenuItem.click();
       await this.deleteFileButton.click();
@@ -279,7 +280,7 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async renameFileViaRightclick(newFileName) {
-    await this.fileTile.click({ button: "right" });
+    await this.fileInfoPanel.click({ button: "right" });
     await this.renameFileMenuItem.click();
     await this.fileNameInput.type(newFileName);
     await this.page.keyboard.press("Enter");
@@ -287,7 +288,7 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async renameFileViaOptionsIcon(newFileName) {
-    await this.fileTile.first().hover();
+    await this.fileInfoPanel.first().hover();
     await this.fileOptionsMenuButton.first().hover();
     await this.fileOptionsMenuButton.first().click();
     await this.renameFileMenuItem.click();
@@ -301,12 +302,12 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async duplicateFileViaRightclick() {
-    await this.fileTile.click({ button: "right" });
+    await this.fileInfoPanel.click({ button: "right" });
     await this.duplicateFileMenuItem.click();
   }
 
   async duplicateFileViaOptionsIcon() {
-    await this.fileTile.first().hover();
+    await this.fileInfoPanel.first().hover();
     await this.fileOptionsMenuButton.first().hover();
     await this.fileOptionsMenuButton.first().click();
     await this.duplicateFileMenuItem.click();
@@ -325,13 +326,13 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async addFileAsSharedLibraryViaRightclick() {
-    await this.fileTile.click({ button: "right" });
+    await this.fileInfoPanel.click({ button: "right" });
     await this.addFileAsSharedLibraryMenuItem.click();
     await this.addFileAsSharedLibraryButton.click();
   }
 
   async addFileAsSharedLibraryViaOptionsIcon() {
-    await this.fileTile.first().hover();
+    await this.fileInfoPanel.first().hover();
     await this.fileOptionsMenuButton.first().hover();
     await this.fileOptionsMenuButton.first().click();
     await this.addFileAsSharedLibraryMenuItem.click();
@@ -339,13 +340,13 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async deleteFileAsSharedLibraryViaRightclick() {
-    await this.fileTile.click({ button: "right" });
+    await this.fileInfoPanel.click({ button: "right" });
     await this.delFileAsSharedLibraryMenuItem.click();
     await this.delFileAsSharedLibraryButton.click();
   }
 
   async deleteFileAsSharedLibraryViaOptionsIcon() {
-    await this.fileTile.first().hover();
+    await this.fileInfoPanel.first().hover();
     await this.fileOptionsMenuButton.first().hover();
     await this.fileOptionsMenuButton.first().click();
     await this.delFileAsSharedLibraryMenuItem.click();
@@ -360,7 +361,7 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async downloadPenpotFileViaRightclick() {
-    await this.fileTile.click({ button: "right" });
+    await this.fileInfoPanel.click({ button: "right" });
     await this.downloadFilePenpotMenuItem.click();
     await this.page.waitForEvent("download");
     await expect(this.downloadFileTickIcon).toBeVisible();
@@ -368,7 +369,7 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async downloadPenpotFileViaOptionsIcon() {
-    await this.fileTile.first().hover();
+    await this.fileInfoPanel.first().hover();
     await this.fileOptionsMenuButton.first().hover();
     await this.fileOptionsMenuButton.first().click();
     await this.downloadFilePenpotMenuItem.click();
@@ -378,7 +379,7 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async downloadStandardFileViaRightclick() {
-    await this.fileTile.click({ button: "right" });
+    await this.fileInfoPanel.click({ button: "right" });
     await this.downloadFileStandardMenuItem.click();
     await this.page.waitForEvent("download");
     await expect(this.downloadFileTickIcon).toBeVisible();
@@ -386,7 +387,7 @@ exports.DashboardPage = class DashboardPage {
   }
 
   async downloadStandardFileViaOptionsIcon() {
-    await this.fileTile.first().hover();
+    await this.fileInfoPanel.first().hover();
     await this.fileOptionsMenuButton.first().hover();
     await this.fileOptionsMenuButton.first().click();
     await this.downloadFileStandardMenuItem.click();
@@ -677,5 +678,9 @@ exports.DashboardPage = class DashboardPage {
   async flipLeftLibrariesAndTemplatesCarousel() {
     await this.librariesAndTemplatesSectionLeftArrowButton.click();
     await this.waitForPageLoaded();
+  }
+
+  async openFIle() {
+    await this.fileTile.dblclick();
   }
 };
