@@ -196,7 +196,9 @@ dashboardTest(
     await dashboardPage.uploadTeamImage("images/images.png");
     await dashboardPage.isInfoMessageDisplayed("Loading image…");
     await dashboardPage.isInfoMessageNotDisplayed();
-    await expect(page).toHaveScreenshot("team-profile-image.png");
+    await expect(dashboardPage.teamInfoSection).toHaveScreenshot(
+      "team-profile-image.png"
+    );
   }
 );
 
