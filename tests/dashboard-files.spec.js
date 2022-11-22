@@ -3,7 +3,7 @@ const { MainPage } = require("../pages/main-page");
 const { DashboardPage } = require("../pages/dashboard-page");
 
 dashboardTest(
-  "Create and open a file (in Drafts) via 'New file' placeholder",
+  "Create new file (in Drafts) via 'New file' placeholder",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createFileViaPlaceholder();
@@ -12,6 +12,17 @@ dashboardTest(
     await dashboardPage.checkNumberOfFiles("1 file");
   }
 );
+
+dashboardTest("Open file (in Drafts)", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.checkNumberOfFiles("1 file");
+  await page.reload();
+  await dashboardPage.openFIle();
+  await mainPage.isMainPageLoaded();
+});
 
 dashboardTest("Rename file (in Drafts) via rightclick", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
