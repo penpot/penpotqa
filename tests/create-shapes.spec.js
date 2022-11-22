@@ -11,7 +11,9 @@ mainTest("Create a board", async ({ page }) => {
   await mainPage.checkHtmlOfCreatedObject(
     '<rect rx="0" ry="0" x="630" y="410" transform="" width="100" height="100" class="frame-background" style="fill: rgb(255, 255, 255); fill-opacity: 1;"></rect>'
   );
-  await expect(page).toHaveScreenshot("board.png");
+  await expect(page).toHaveScreenshot("board.png", {
+    mask: [mainPage.usersSection],
+  });
 });
 
 mainTest("Create a rectangle", async ({ page }) => {
@@ -23,9 +25,10 @@ mainTest("Create a rectangle", async ({ page }) => {
   await mainPage.checkHtmlOfCreatedObject(
     '<rect rx="0" ry="0" x="630" y="410" transform="" width="100" height="100" style="fill: rgb(177, 178, 181); fill-opacity: 1;"></rect>'
   );
-  await expect(page).toHaveScreenshot("rectangle.png");
+  await expect(page).toHaveScreenshot("rectangle.png", {
+    mask: [mainPage.usersSection],
+  });
 });
-
 mainTest("Create an ellipse", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateEllipseButton();
@@ -35,7 +38,9 @@ mainTest("Create an ellipse", async ({ page }) => {
   await mainPage.checkHtmlOfCreatedObject(
     '<ellipse rx="50" ry="50" cx="680" cy="460" transform="" style="fill: rgb(177, 178, 181); fill-opacity: 1;"></ellipse>'
   );
-  await expect(page).toHaveScreenshot("ellipse.png");
+  await expect(page).toHaveScreenshot("ellipse.png", {
+    mask: [mainPage.usersSection],
+  });
 });
 
 mainTest("Create a text", async ({ page }) => {
@@ -48,7 +53,9 @@ mainTest("Create a text", async ({ page }) => {
   await mainPage.checkHtmlOfCreatedObject(
     '<text y="459" textLength="72.4375" lengthAdjust="spacingAndGlyphs" x="680" dominant-baseline="text-before-edge" style="text-transform: none; font-family: sourcesanspro; letter-spacing: normal; font-style: normal; font-weight: 400; white-space: pre; font-size: 14px; text-decoration: none solid rgb(0, 0, 0); direction: ltr; fill: rgb(0, 0, 0); fill-opacity: 1;">Hello World!</text>'
   );
-  await expect(page).toHaveScreenshot("text.png");
+  await expect(page).toHaveScreenshot("text.png", {
+    mask: [mainPage.usersSection],
+  });
 });
 
 mainTest("Import an image", async ({ page }) => {
@@ -60,7 +67,9 @@ mainTest("Import an image", async ({ page }) => {
   await mainPage.checkPartialHtmlOfCreatedObject(
     '<rect rx="0" ry="0" x="528.5" y="395.5" transform="" width="303" height="130" fill='
   );
-  await expect(page).toHaveScreenshot("image.png");
+  await expect(page).toHaveScreenshot("image.png", {
+    mask: [mainPage.usersSection],
+  });
 });
 
 mainTest("Create a curve", async ({ page }) => {
@@ -72,7 +81,9 @@ mainTest("Create a curve", async ({ page }) => {
   await mainPage.checkHtmlOfCreatedObject(
     '<path rx="0" ry="0" d="M596,252L296,152"></path>'
   );
-  await expect(page).toHaveScreenshot("curve.png");
+  await expect(page).toHaveScreenshot("curve.png", {
+    mask: [mainPage.usersSection],
+  });
 });
 
 mainTest("Create a path", async ({ page }) => {
@@ -88,5 +99,7 @@ mainTest("Create a path", async ({ page }) => {
   await mainPage.checkHtmlOfCreatedObject(
     '<path rx="0" ry="0" d="M196,152L896,652L696,352L196,152ZM680,460"></path>'
   );
-  await expect(page).toHaveScreenshot("path.png");
+  await expect(page).toHaveScreenshot("path.png", {
+    mask: [mainPage.usersSection],
+  });
 });
