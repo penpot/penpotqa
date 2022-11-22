@@ -20,11 +20,15 @@ dashboardTest("Flip Libraries & Templates carousel", async ({ page }) => {
   await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
   await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
   await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
-  await expect(page).toHaveScreenshot("libraries-carousel-flipped-right.png");
+  await expect(dashboardPage.librariesAndTemplatesSection).toHaveScreenshot(
+    "libraries-carousel-flipped-right.png"
+  );
   await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
   await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
   await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
-  await expect(page).toHaveScreenshot("libraries-carousel-flipped-left.png");
+  await expect(dashboardPage.librariesAndTemplatesSection).toHaveScreenshot(
+    "libraries-carousel-flipped-left.png"
+  );
 });
 
 dashboardTest("Minimize Libraries & Templates carousel", async ({ page }) => {

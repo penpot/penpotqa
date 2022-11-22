@@ -195,6 +195,8 @@ exports.DashboardPage = class DashboardPage {
     this.librariesAndTemplatesSectionRightArrowButton = page.locator(
       'div[class="button right"]'
     );
+
+    this.teamInfoSection = page.locator('div[class="block info-block"]');
   }
 
   async isHeaderDisplayed(title) {
