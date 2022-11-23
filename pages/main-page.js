@@ -6,6 +6,7 @@ exports.MainPage = class MainPage {
 
   constructor(page) {
     this.page = page;
+    this.moveButton = page.locator('button[alt="Move (V)"]');
     this.createBoardButton = page.locator('button[data-test="artboard-btn"]');
     this.createRectangleButton = page.locator('button[data-test="rect-btn"]');
     this.createEllipseButton = page.locator('button[data-test="ellipse-btn"]');
@@ -13,7 +14,14 @@ exports.MainPage = class MainPage {
     this.uploadImageSelector = page.locator("#image-upload");
     this.createCurveButton = page.locator('button[data-test="curve-btn"]');
     this.createPathButton = page.locator('button[data-test="path-btn"]');
-    this.createdObject = page.locator('div *[id^="fills"]');
+    this.createdLayer = page.locator('div *[id^="fills"] >> nth=0');
+    this.createdLayerTitle = page.locator('g[class="frame-title"]');
+    this.createdLayerOnLayersPanelNameInput = page.locator(
+      'input[class="element-name"]'
+    );
+    this.createdLayerOnLayersPanelNameText = page.locator(
+      'span[class="element-name"]'
+    );
     this.textbox = page.locator(
       'div[role="textbox"] div[contenteditable="true"]'
     );
@@ -21,6 +29,43 @@ exports.MainPage = class MainPage {
     this.savedChangesIcon = page.locator('div[class="saved"]');
     this.pencilBoxButton = page.locator('div[class="main-icon"]');
     this.usersSection = page.locator('div[class="users-section"]');
+    this.canvasBackgroundColorIcon = page.locator(
+      'div[class="color-bullet-wrapper"]'
+    );
+    this.addShadowButton = page.locator(
+      'div[class="element-set shadow-options"] div[class="add-page"] svg'
+    );
+    this.shadowActionsButton = page.locator(
+      'div[class="element-set shadow-options"] svg[class="icon-actions"]'
+    );
+    this.shadowXInput = page.locator(
+      'div[class="element-set shadow-options"] div[title="X"] input'
+    );
+    this.shadowYInput = page.locator(
+      'div[class="element-set shadow-options"] div[title="Y"] input'
+    );
+    this.shadowBlurInput = page.locator('div[title="Blur"] input');
+    this.shadowSpreadInput = page.locator('div[title="Spread"] input');
+    this.shadowColorIcon = page.locator(
+      'div[class="element-set shadow-options"] div[class="color-bullet-wrapper"]'
+    );
+    this.shadowOpacityInput = page.locator(
+      'div[class="element-set shadow-options"] div[class="input-element percentail"] input'
+    );
+    this.shadowTypeSelector = page.locator(
+      'div[class="element-set shadow-options"] select >> nth=1'
+    );
+    this.addBlurButton = page.locator(
+      'div[class="element-set"] div:has-text("Blur") svg'
+    );
+
+    this.blurValueInput = page.locator(
+      'div[class="element-set"] input >> nth=12'
+    );
+  }
+
+  async clickMoveButton() {
+    await this.moveButton.click();
   }
 
   async clickCreateBoardButton() {
@@ -68,16 +113,34 @@ exports.MainPage = class MainPage {
     await expect(this.savedChangesIcon).toBeVisible();
   }
 
-  async isCreatedObjectVisible() {
-    await expect(this.createdObject.nth(0)).toBeVisible();
+  async isCreatedLayerVisible() {
+    await expect(this.createdLayer).toBeVisible();
   }
 
-  async checkHtmlOfCreatedObject(expectedHTML) {
-    expect(await this.createdObject.nth(0).innerHTML()).toEqual(expectedHTML);
+  async checkHtmlOfCreatedLayer(expectedHTML) {
+    expect(await this.createdLayer.innerHTML()).toEqual(expectedHTML);
   }
 
-  async checkPartialHtmlOfCreatedObject(expectedHTML) {
-    expect(await this.createdObject.nth(0).innerHTML()).toContain(expectedHTML);
+  async checkPartialHtmlOfCreatedLayer(expectedHTML) {
+    expect(await this.createdLayer.innerHTML()).toContain(expectedHTML);
+  }
+
+  async doubleClickCreatedLayerTitleOnCanvas() {
+    await this.createdLayerTitle.dblclick();
+  }
+
+  async doubleClickCreatedLayerOnLayersPanel() {
+    await this.createdLayerOnLayersPanelNameText.dblclick();
+  }
+
+  async renameCreatedLayer(newName) {
+    await this.createdLayerOnLayersPanelNameInput.fill(newName);
+    await this.clickMoveButton();
+  }
+
+  async isLayerNameDisplayed(name) {
+    await expect(this.createdLayerTitle).toHaveText(name);
+    await expect(this.createdLayerOnLayersPanelNameText).toHaveText(name);
   }
 
   async drawCurve(x1, y1, x2, y2) {
@@ -94,5 +157,74 @@ exports.MainPage = class MainPage {
 
   async isMainPageLoaded() {
     await expect(this.pencilBoxButton).toBeVisible();
+  }
+
+  async clickCanvasBackgroundColorIcon() {
+    await this.canvasBackgroundColorIcon.click();
+  }
+
+  async clickAddShadowButton() {
+    await this.addShadowButton.click();
+  }
+
+  async clickShadowActionsButton() {
+    await this.shadowActionsButton.click();
+  }
+
+  async changeXForShadow(value) {
+    await this.clearInput(this.shadowXInput);
+    await this.shadowXInput.fill(value);
+  }
+
+  async changeYForShadow(value) {
+    await this.clearInput(this.shadowYInput);
+    await this.shadowYInput.fill(value);
+  }
+
+  async changeBlurForShadow(value) {
+    await this.clearInput(this.shadowBlurInput);
+    await this.shadowBlurInput.fill(value);
+  }
+
+  async changeSpreadForShadow(value) {
+    await this.clearInput(this.shadowSpreadInput);
+    await this.shadowSpreadInput.fill(value);
+  }
+
+  async changeOpacityForShadow(value) {
+    await this.clearInput(this.shadowOpacityInput);
+    await this.shadowOpacityInput.fill(value);
+  }
+
+  async clickShadowColorIcon() {
+    await this.shadowColorIcon.click();
+  }
+
+  async clearInput(input) {
+    await input.click();
+    let text = await input.inputValue();
+    for (let i = 0; i <= text.length; i++) {
+      await this.page.keyboard.press("Backspace");
+    }
+  }
+
+  async selectTypeForShadow(type) {
+    switch (type) {
+      case "Drop shadow":
+        await this.shadowTypeSelector.selectOption(":drop-shadow");
+        break;
+      case "Inner shadow":
+        await this.shadowTypeSelector.selectOption(":inner-shadow");
+        break;
+    }
+  }
+
+  async clickAddBlurButton() {
+    await this.addBlurButton.click();
+  }
+
+  async changeValueForBlur(value) {
+    await this.clearInput(this.blurValueInput);
+    await this.blurValueInput.fill(value);
   }
 };
