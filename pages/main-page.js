@@ -62,6 +62,34 @@ exports.MainPage = class MainPage {
     this.blurValueInput = page.locator(
       'div[class="element-set"] input >> nth=12'
     );
+
+    this.deleteLayerMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Delete")'
+    );
+
+    this.layerRotationInput = page.locator(
+      'div[class="input-element degrees"] input'
+    );
+
+    this.singleCornerRadiusButton = page.locator('div[alt="Single corners"]');
+
+    this.allCornersRadiusButton = page.locator('div[alt="All corners"]');
+
+    this.firstCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input >> nth=0'
+    );
+
+    this.secondCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input >> nth=1'
+    );
+
+    this.thirdCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input >> nth=2'
+    );
+
+    this.fourthCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input  >> nth=3'
+    );
   }
 
   async clickMoveButton() {
@@ -226,5 +254,44 @@ exports.MainPage = class MainPage {
   async changeValueForBlur(value) {
     await this.clearInput(this.blurValueInput);
     await this.blurValueInput.fill(value);
+  }
+
+  async deleteLayerViaRightclick() {
+    await this.createdLayer.click({ button: "right", force: true });
+    await this.deleteLayerMenuItem.click();
+  }
+
+  async changeRotationForLayer(value) {
+    await this.clearInput(this.layerRotationInput);
+    await this.layerRotationInput.fill(value);
+    await this.clickMoveButton();
+  }
+
+  async clickSingleCornerRadiusButton() {
+    await this.singleCornerRadiusButton.click();
+  }
+
+  async clickAllCornersRadiusButton() {
+    await this.allCornersRadiusButton.click();
+  }
+
+  async changeFirstCornerRadiusForLayer(value) {
+    await this.firstCornerRadiusInput.fill(value);
+    await this.clickMoveButton();
+  }
+
+  async changeSecondCornerRadiusForLayer(value) {
+    await this.secondCornerRadiusInput.fill(value);
+    await this.clickMoveButton();
+  }
+
+  async changeThirdCornerRadiusForLayer(value) {
+    await this.thirdCornerRadiusInput.fill(value);
+    await this.clickMoveButton();
+  }
+
+  async changeFourthCornerRadiusForLayer(value) {
+    await this.fourthCornerRadiusInput.fill(value);
+    await this.clickMoveButton();
   }
 };
