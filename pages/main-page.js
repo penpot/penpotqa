@@ -60,7 +60,7 @@ exports.MainPage = class MainPage {
     );
 
     this.blurValueInput = page.locator(
-      'div[class="element-set"] input >> nth=12'
+      'div[class="input-element pixels"] input'
     );
 
     this.deleteLayerMenuItem = page.locator(
@@ -259,6 +259,11 @@ exports.MainPage = class MainPage {
   async deleteLayerViaRightclick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.deleteLayerMenuItem.click();
+  }
+
+  async deleteLayerViaShortcut() {
+    await this.createdLayer.click({ force: true });
+    await this.page.keyboard.press("Delete");
   }
 
   async changeRotationForLayer(value) {

@@ -103,6 +103,19 @@ mainTest("Delete board via rightclick", async ({ page }) => {
   });
 });
 
+mainTest("Delete board via shortcut Del", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateBoardButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isCreatedLayerVisible();
+  await mainPage.deleteLayerViaShortcut();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("empty-canvas.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
 mainTest("Add rotation to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
