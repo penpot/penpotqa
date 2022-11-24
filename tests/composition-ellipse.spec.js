@@ -1,0 +1,151 @@
+const { mainTest } = require("../fixtures");
+const { MainPage } = require("../pages/main-page");
+const { ColorPalettePopUp } = require("../pages/color-palette-popup");
+const { expect } = require("@playwright/test");
+
+mainTest("CO-112 Create an ellipse (toolbar)", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isCreatedLayerVisible();
+  await mainPage.checkHtmlOfCreatedLayer(
+    '<ellipse rx="50" ry="50" cx="680" cy="460" transform="" style="fill: rgb(177, 178, 181); fill-opacity: 1;"></ellipse>'
+  );
+  await expect(page).toHaveScreenshot("ellipse.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-114 Rename ellipse with valid name", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.doubleClickCreatedLayerOnLayersPanel();
+  await mainPage.renameCreatedLayer("renamed ellipse");
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isLayerNameDisplayed("renamed ellipse");
+});
+
+mainTest("CO-118 Add and edit Shadow to ellipse", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const colorPalettePopUp = new ColorPalettePopUp(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewport();
+  await mainPage.clickAddShadowButton();
+  await mainPage.clickShadowActionsButton();
+  await mainPage.changeXForShadow("10");
+  await mainPage.changeYForShadow("15");
+  await mainPage.changeBlurForShadow("10");
+  await mainPage.changeSpreadForShadow("20");
+  await mainPage.changeOpacityForShadow("50");
+  await mainPage.clickShadowColorIcon();
+  await colorPalettePopUp.setHex("#304d6a");
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("ellipse-drop-shadow.png", {
+    mask: [mainPage.usersSection],
+  });
+  await mainPage.selectTypeForShadow("Inner shadow");
+  await mainPage.changeXForShadow("5");
+  await mainPage.changeYForShadow("7");
+  await mainPage.changeBlurForShadow("9");
+  await mainPage.changeSpreadForShadow("12");
+  await mainPage.changeOpacityForShadow("25");
+  await mainPage.clickShadowColorIcon();
+  await colorPalettePopUp.setHex("#96e637");
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("ellipse-inner-shadow.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-120 Add and edit Blur to ellipse", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewport();
+  await mainPage.clickAddBlurButton();
+  await mainPage.changeValueForBlur("55");
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("ellipse-blur.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-136-1 Delete ellipse via rightclick", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isCreatedLayerVisible();
+  await mainPage.deleteLayerViaRightclick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("empty-canvas.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-136-2 Delete ellipse via shortcut Del", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isCreatedLayerVisible();
+  await mainPage.deleteLayerViaShortcut();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("empty-canvas.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-138 Add rotation to ellipse", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewport();
+  await mainPage.changeRotationForLayer("90");
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("ellipse-rotated-90.png", {
+    mask: [mainPage.usersSection],
+  });
+  await mainPage.changeRotationForLayer("120");
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("ellipse-rotated-120.png", {
+    mask: [mainPage.usersSection],
+  });
+  await mainPage.changeRotationForLayer("45");
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("ellipse-rotated-45.png", {
+    mask: [mainPage.usersSection],
+  });
+  await mainPage.changeRotationForLayer("360");
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("ellipse-rotated-359.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-154 Transform ellipse to path", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.transformToPathViaRightclick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("ellipse-to-path.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-161 Selection to board", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.selectionToBoardViaRightclick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("ellipse-to-board.png", {
+    mask: [mainPage.usersSection],
+  });
+});
