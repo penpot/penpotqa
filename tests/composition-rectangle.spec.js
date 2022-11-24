@@ -3,51 +3,35 @@ const { MainPage } = require("../pages/main-page");
 const { ColorPalettePopUp } = require("../pages/color-palette-popup");
 const { expect } = require("@playwright/test");
 
-mainTest("Change color background", async ({ page }) => {
+mainTest("Create a rectangle (Toolbar)", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickCanvasBackgroundColorIcon();
-  await colorPalettePopUp.setHex("#304d6a");
-  await mainPage.clickViewport();
-  await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("color-background.png", {
-    mask: [mainPage.usersSection],
-  });
-});
-
-mainTest("Create a board (Toolbar)", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickCreateBoardButton();
+  await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.checkHtmlOfCreatedLayer(
-    '<rect rx="0" ry="0" x="630" y="410" transform="" width="100" height="100" class="frame-background" style="fill: rgb(255, 255, 255); fill-opacity: 1;"></rect>'
+    '<rect rx="0" ry="0" x="630" y="410" transform="" width="100" height="100" style="fill: rgb(177, 178, 181); fill-opacity: 1;"></rect>'
   );
-  await expect(page).toHaveScreenshot("board.png", {
+  await expect(page).toHaveScreenshot("rectangle.png", {
     mask: [mainPage.usersSection],
   });
 });
 
-mainTest("Rename board with valid name", async ({ page }) => {
+mainTest("Rename rectangle with valid name", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreateBoardButton();
+  await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-  await mainPage.renameCreatedLayer("New test board");
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isBoardNameDisplayed("New test board");
   await mainPage.doubleClickCreatedLayerOnLayersPanel();
-  await mainPage.renameCreatedLayer("renamed board");
+  await mainPage.renameCreatedLayer("renamed rectangle");
   await mainPage.waitForChangeIsSaved();
-  await mainPage.isBoardNameDisplayed("renamed board");
+  await mainPage.isLayerNameDisplayed("renamed rectangle");
 });
 
-mainTest("Add and edit Shadow to board", async ({ page }) => {
+mainTest("Add and edit Shadow to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickCreateBoardButton();
+  await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
   await mainPage.clickAddShadowButton();
   await mainPage.clickShadowActionsButton();
@@ -60,7 +44,7 @@ mainTest("Add and edit Shadow to board", async ({ page }) => {
   await colorPalettePopUp.setHex("#304d6a");
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("board-drop-shadow.png", {
+  await expect(page).toHaveScreenshot("rectangle-drop-shadow.png", {
     mask: [mainPage.usersSection],
   });
   await mainPage.selectTypeForShadow("Inner shadow");
@@ -73,26 +57,26 @@ mainTest("Add and edit Shadow to board", async ({ page }) => {
   await colorPalettePopUp.setHex("#96e637");
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("board-inner-shadow.png", {
+  await expect(page).toHaveScreenshot("rectangle-inner-shadow.png", {
     mask: [mainPage.usersSection],
   });
 });
 
-mainTest("Add and edit Blur to board", async ({ page }) => {
+mainTest("Add and edit Blur to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreateBoardButton();
+  await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
   await mainPage.clickAddBlurButton();
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("board-blur.png", {
+  await expect(page).toHaveScreenshot("rectangle-blur.png", {
     mask: [mainPage.usersSection],
   });
 });
 
-mainTest("Delete board via rightclick", async ({ page }) => {
+mainTest("Delete rectangle via rightclick", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreateBoardButton();
+  await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
@@ -103,9 +87,9 @@ mainTest("Delete board via rightclick", async ({ page }) => {
   });
 });
 
-mainTest("Delete board via shortcut Del", async ({ page }) => {
+mainTest("Delete rectangle via shortcut Del", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreateBoardButton();
+  await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
@@ -116,35 +100,35 @@ mainTest("Delete board via shortcut Del", async ({ page }) => {
   });
 });
 
-mainTest("Add rotation to board", async ({ page }) => {
+mainTest("Add rotation to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreateBoardButton();
+  await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("board-rotated-90.png", {
+  await expect(page).toHaveScreenshot("rectangle-rotated-90.png", {
     mask: [mainPage.usersSection],
   });
   await mainPage.changeRotationForLayer("120");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("board-rotated-120.png", {
+  await expect(page).toHaveScreenshot("rectangle-rotated-120.png", {
     mask: [mainPage.usersSection],
   });
   await mainPage.changeRotationForLayer("45");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("board-rotated-45.png", {
+  await expect(page).toHaveScreenshot("rectangle-rotated-45.png", {
     mask: [mainPage.usersSection],
   });
   await mainPage.changeRotationForLayer("360");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("board-rotated-359.png", {
+  await expect(page).toHaveScreenshot("rectangle-rotated-359.png", {
     mask: [mainPage.usersSection],
   });
 });
 
 mainTest("Change border radius multiple values", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreateBoardButton();
+  await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickSingleCornerRadiusButton();
@@ -153,7 +137,7 @@ mainTest("Change border radius multiple values", async ({ page }) => {
   await mainPage.changeThirdCornerRadiusForLayer("90");
   await mainPage.changeFourthCornerRadiusForLayer("120");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("board-changed-corners.png", {
+  await expect(page).toHaveScreenshot("rectangle-changed-corners.png", {
     mask: [mainPage.usersSection],
   });
   await mainPage.changeFirstCornerRadiusForLayer("0");
@@ -161,7 +145,31 @@ mainTest("Change border radius multiple values", async ({ page }) => {
   await mainPage.changeThirdCornerRadiusForLayer("0");
   await mainPage.changeFourthCornerRadiusForLayer("0");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("board-default-corners.png", {
+  await expect(page).toHaveScreenshot("rectangle-default-corners.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("Transform rectangle to path", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateRectangleButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.transformToPathViaRightclick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("rectangle-to-path.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("Selection to board", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateRectangleButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.selectionToBoardViaRightclick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("rectangle-to-board.png", {
     mask: [mainPage.usersSection],
   });
 });

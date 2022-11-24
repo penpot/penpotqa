@@ -2,19 +2,6 @@ const { mainTest } = require("../fixtures");
 const { MainPage } = require("../pages/main-page");
 const { expect } = require("@playwright/test");
 
-mainTest("Create a rectangle", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isCreatedLayerVisible();
-  await mainPage.checkHtmlOfCreatedLayer(
-    '<rect rx="0" ry="0" x="630" y="410" transform="" width="100" height="100" style="fill: rgb(177, 178, 181); fill-opacity: 1;"></rect>'
-  );
-  await expect(page).toHaveScreenshot("rectangle.png", {
-    mask: [mainPage.usersSection],
-  });
-});
 mainTest("Create an ellipse", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateEllipseButton();
