@@ -7,14 +7,14 @@ test.afterEach(async ({ page }) => {
   await dashboardPage.deleteTeamsIfExist();
 });
 
-dashboardTest("Create a team", async ({ page }) => {
+dashboardTest("DA-76 Create a team", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.createTeam("New Test Team");
   await dashboardPage.isTeamSelected("New Test Team");
 });
 
 dashboardTest(
-  "Team Invitations - open the form via Invitations tab",
+  "DA-78 Team Invitations - open the form via Invitations tab",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
@@ -30,7 +30,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Team Invitations - open the form via Team Hero",
+  "DA-79 Team Invitations - open the form via Team Hero",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
@@ -44,7 +44,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Team Invitations - invite via owner (single invitation, editor)",
+  "DA-80 Team Invitations - invite via owner (single invitation, editor)",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
@@ -70,7 +70,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Team Invitations - invite via owner (single invitation, admin)",
+  "DA-81 Team Invitations - invite via owner (single invitation, admin)",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
@@ -97,7 +97,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Team Invitations - resend invitation via owner",
+  "DA-90 Team Invitations - resend invitation via owner",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
@@ -127,7 +127,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Team Invitations - delete invitation via owner",
+  "DA-92 Team Invitations - delete invitation via owner",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
@@ -155,7 +155,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Team Invitations - change role in invitation via owner",
+  "DA-95 Team Invitations - change role in invitation via owner",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
@@ -187,7 +187,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Team Settings - upload team profile picture",
+  "DA-114 Team Settings - upload team profile picture",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("New Test Team");
@@ -202,7 +202,7 @@ dashboardTest(
   }
 );
 
-dashboardTest("Rename a team (via owner)", async ({ page }) => {
+dashboardTest("DA-119 Rename a team (via owner)", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.createTeam("QA Team");
   await dashboardPage.isTeamSelected("QA Team");
@@ -210,7 +210,7 @@ dashboardTest("Rename a team (via owner)", async ({ page }) => {
   await dashboardPage.isTeamSelected("Renamed Team");
 });
 
-dashboardTest("Delete a team (via owner)", async ({ page }) => {
+dashboardTest("DA-122 Delete a team (via owner)", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.createTeam("QA Team");
   await dashboardPage.isTeamSelected("QA Team");
