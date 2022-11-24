@@ -8,14 +8,14 @@ test.beforeEach(async ({ page }) => {
   await dashboardPage.deleteFontsIfExist();
 });
 
-dashboardTest("Upload single font", async ({ page }) => {
+dashboardTest("DA-66 Upload single font", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickSidebarItem("Fonts");
   await dashboardPage.uploadFont("fonts/Pacifico.ttf");
   await dashboardPage.isFontUploaded("Pacifico", "Regular");
 });
 
-dashboardTest("Search font", async ({ page }) => {
+dashboardTest("DA-69 Search font", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickSidebarItem("Fonts");
   await dashboardPage.uploadFont("fonts/ArialTh.ttf");
@@ -23,7 +23,7 @@ dashboardTest("Search font", async ({ page }) => {
   await dashboardPage.searchFont("Arial Th");
 });
 
-dashboardTest("Edit font", async ({ page }) => {
+dashboardTest("DA-71 Edit font", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickSidebarItem("Fonts");
   await dashboardPage.uploadFont("fonts/Allura-Regular.otf");
@@ -31,7 +31,7 @@ dashboardTest("Edit font", async ({ page }) => {
   await dashboardPage.editFont("New Test Font");
 });
 
-dashboardTest("Delete font", async ({ page }) => {
+dashboardTest("DA-72 Delete font", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickSidebarItem("Fonts");
   await dashboardPage.uploadFont("fonts/Pacifico.ttf");

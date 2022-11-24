@@ -2,7 +2,7 @@ const { test } = require("@playwright/test");
 const { LoginPage } = require("../pages/login-page");
 const { DashboardPage } = require("../pages/dashboard-page");
 
-test("Login with an email address", async ({ page }) => {
+test("ON-8 Login with an email address", async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);
@@ -12,7 +12,7 @@ test("Login with an email address", async ({ page }) => {
   await dashboardPage.isHeaderDisplayed("Projects");
 });
 
-test("Login with invalid email address", async ({ page }) => {
+test("ON-13 Login with invalid email address", async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.enterEmail("test@com");
@@ -22,7 +22,7 @@ test("Login with invalid email address", async ({ page }) => {
   await loginPage.isLoginButtonDisabled();
 });
 
-test("Login with no password", async ({ page }) => {
+test("ON-14 Login with no password", async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);
@@ -33,7 +33,7 @@ test("Login with no password", async ({ page }) => {
   await loginPage.isLoginButtonDisabled();
 });
 
-test("Login with incorrect password", async ({ page }) => {
+test("ON-15 Login with incorrect password", async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);

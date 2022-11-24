@@ -3,7 +3,7 @@ const { MainPage } = require("../pages/main-page");
 const { ColorPalettePopUp } = require("../pages/color-palette-popup");
 const { expect } = require("@playwright/test");
 
-mainTest("Create a rectangle (Toolbar)", async ({ page }) => {
+mainTest("CO-59 Create a rectangle (Toolbar)", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
@@ -17,7 +17,7 @@ mainTest("Create a rectangle (Toolbar)", async ({ page }) => {
   });
 });
 
-mainTest("Rename rectangle with valid name", async ({ page }) => {
+mainTest("CO-80 Rename rectangle with valid name", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
@@ -28,7 +28,7 @@ mainTest("Rename rectangle with valid name", async ({ page }) => {
   await mainPage.isLayerNameDisplayed("renamed rectangle");
 });
 
-mainTest("Add and edit Shadow to rectangle", async ({ page }) => {
+mainTest("CO-70 Add and edit Shadow to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateRectangleButton();
@@ -62,7 +62,7 @@ mainTest("Add and edit Shadow to rectangle", async ({ page }) => {
   });
 });
 
-mainTest("Add and edit Blur to rectangle", async ({ page }) => {
+mainTest("CO-73 Add and edit Blur to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
@@ -74,7 +74,7 @@ mainTest("Add and edit Blur to rectangle", async ({ page }) => {
   });
 });
 
-mainTest("Delete rectangle via rightclick", async ({ page }) => {
+mainTest("CO-76-1 Delete rectangle via rightclick", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
@@ -87,7 +87,7 @@ mainTest("Delete rectangle via rightclick", async ({ page }) => {
   });
 });
 
-mainTest("Delete rectangle via shortcut Del", async ({ page }) => {
+mainTest("CO-76-2 Delete rectangle via shortcut Del", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
@@ -100,7 +100,7 @@ mainTest("Delete rectangle via shortcut Del", async ({ page }) => {
   });
 });
 
-mainTest("Add rotation to rectangle", async ({ page }) => {
+mainTest("CO-62 Add rotation to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
@@ -126,7 +126,7 @@ mainTest("Add rotation to rectangle", async ({ page }) => {
   });
 });
 
-mainTest("Change border radius multiple values", async ({ page }) => {
+mainTest("CO-63 Change border radius multiple values", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
@@ -150,7 +150,7 @@ mainTest("Change border radius multiple values", async ({ page }) => {
   });
 });
 
-mainTest("Transform rectangle to path", async ({ page }) => {
+mainTest("CO-104 Transform rectangle to path", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();
@@ -162,7 +162,7 @@ mainTest("Transform rectangle to path", async ({ page }) => {
   });
 });
 
-mainTest("Selection to board", async ({ page }) => {
+mainTest("CO-111 Selection to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewport();

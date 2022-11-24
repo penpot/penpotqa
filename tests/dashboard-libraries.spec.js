@@ -7,33 +7,42 @@ test.beforeEach(async ({ page }) => {
   await dashboardPage.minimizeLibrariesAndTemplatesCarouselIfExpanded();
 });
 
-dashboardTest("Expand Libraries & Templates carousel", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
-  await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
-});
+dashboardTest(
+  "DA-128 Expand Libraries & Templates carousel",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+    await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
+  }
+);
 
-dashboardTest("Flip Libraries & Templates carousel", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
-  await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
-  await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
-  await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
-  await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
-  await expect(dashboardPage.librariesAndTemplatesSection).toHaveScreenshot(
-    "libraries-carousel-flipped-right.png"
-  );
-  await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
-  await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
-  await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
-  await expect(dashboardPage.librariesAndTemplatesSection).toHaveScreenshot(
-    "libraries-carousel-flipped-left.png"
-  );
-});
+dashboardTest(
+  "DA-130 Flip Libraries & Templates carousel",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+    await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
+    await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
+    await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
+    await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
+    await expect(dashboardPage.librariesAndTemplatesSection).toHaveScreenshot(
+      "libraries-carousel-flipped-right.png"
+    );
+    await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
+    await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
+    await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
+    await expect(dashboardPage.librariesAndTemplatesSection).toHaveScreenshot(
+      "libraries-carousel-flipped-left.png"
+    );
+  }
+);
 
-dashboardTest("Minimize Libraries & Templates carousel", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
-  await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
-  await dashboardPage.isLibrariesAndTemplatesSectionNotDisplayed();
-});
+dashboardTest(
+  "DA-129 Minimize Libraries & Templates carousel",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+    await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+    await dashboardPage.isLibrariesAndTemplatesSectionNotDisplayed();
+  }
+);

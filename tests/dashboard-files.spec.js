@@ -3,7 +3,7 @@ const { MainPage } = require("../pages/main-page");
 const { DashboardPage } = require("../pages/dashboard-page");
 
 dashboardTest(
-  "Create new file (in Drafts) via 'New file' placeholder",
+  "DA-2 Create new file (in Drafts) via 'New file' placeholder",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createFileViaPlaceholder();
@@ -13,7 +13,7 @@ dashboardTest(
   }
 );
 
-dashboardTest("Open file (in Drafts)", async ({ page }) => {
+dashboardTest("DA-3 Open file (in Drafts)", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.createFileViaPlaceholder();
   const mainPage = new MainPage(page);
@@ -24,29 +24,35 @@ dashboardTest("Open file (in Drafts)", async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-dashboardTest("Rename file (in Drafts) via rightclick", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.createFileViaPlaceholder();
-  const mainPage = new MainPage(page);
-  await mainPage.clickPencilBoxButton();
-  await dashboardPage.renameFileViaRightclick("test");
-});
-
-dashboardTest("Duplicate file (in Drafts) via rightclick", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.createFileViaPlaceholder();
-  const mainPage = new MainPage(page);
-  await mainPage.clickPencilBoxButton();
-  await dashboardPage.duplicateFileViaRightclick();
-  await dashboardPage.isSuccessMessageDisplayed(
-    "Your file has been duplicated successfully"
-  );
-  await page.reload();
-  await dashboardPage.checkNumberOfFiles("2 files");
-});
+dashboardTest(
+  "DA-5 Rename file (in Drafts) via rightclick",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.renameFileViaRightclick("test");
+  }
+);
 
 dashboardTest(
-  "Add file as Shared Library (in Drafts) via rightclick",
+  "DA-7 Duplicate file (in Drafts) via rightclick",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.duplicateFileViaRightclick();
+    await dashboardPage.isSuccessMessageDisplayed(
+      "Your file has been duplicated successfully"
+    );
+    await page.reload();
+    await dashboardPage.checkNumberOfFiles("2 files");
+  }
+);
+
+dashboardTest(
+  "DA-9 Add file as Shared Library (in Drafts) via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createFileViaPlaceholder();
@@ -58,7 +64,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Remove file as Shared Library (in Drafts) via rightclick",
+  "DA-12 Remove file as Shared Library (in Drafts) via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createFileViaPlaceholder();
@@ -72,7 +78,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Download Penpot file (in Drafts) via rightclick",
+  "DA-13 Download Penpot file (in Drafts) via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createFileViaPlaceholder();
@@ -83,7 +89,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Download standard file (in Drafts) via rightclick",
+  "DA-15 Download standard file (in Drafts) via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createFileViaPlaceholder();
@@ -93,16 +99,19 @@ dashboardTest(
   }
 );
 
-dashboardTest("Delete file (in Drafts) via rightclick", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.createFileViaPlaceholder();
-  const mainPage = new MainPage(page);
-  await mainPage.clickPencilBoxButton();
-  await dashboardPage.deleteFileViaRightclick();
-  await dashboardPage.checkNumberOfFiles("0 files");
-});
+dashboardTest(
+  "DA-22 Delete file (in Drafts) via rightclick",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.deleteFileViaRightclick();
+    await dashboardPage.checkNumberOfFiles("0 files");
+  }
+);
 
-dashboardTest("Create new project ", async ({ page }) => {
+dashboardTest("DA-24 Create new project ", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -110,7 +119,7 @@ dashboardTest("Create new project ", async ({ page }) => {
 });
 
 dashboardTest(
-  "Create and open a file (in Project) via '+' button on title panel",
+  "DA-25 Create a file (in Project) via '+' button on title panel",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -124,7 +133,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Create and open a file (in Project) via 'New file' placeholder",
+  "DA-26 Create a file (in Project) via 'New file' placeholder",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -137,7 +146,7 @@ dashboardTest(
   }
 );
 
-dashboardTest("Rename file (in Project)", async ({ page }) => {
+dashboardTest("DA-28 Rename file (in Project)", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -149,7 +158,7 @@ dashboardTest("Rename file (in Project)", async ({ page }) => {
   await dashboardPage.renameFileViaRightclick("test_rightclick");
 });
 
-dashboardTest("Duplicate file (in Project)", async ({ page }) => {
+dashboardTest("DA-29 Duplicate file (in Project)", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -172,7 +181,7 @@ dashboardTest("Duplicate file (in Project)", async ({ page }) => {
 });
 
 dashboardTest(
-  "Add file as Shared Library (in Project) via rightclick",
+  "DA-33-1 Add file as Shared Library (in Project) via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -187,7 +196,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Add file as Shared Library (in Project) via Options icon",
+  "DA-33-2 Add file as Shared Library (in Project) via Options icon",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -202,7 +211,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Remove file as Shared Library (in Project) via rightclick",
+  "DA-34-1 Remove file as Shared Library (in Project) via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -219,7 +228,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Remove file as Shared Library (in Project) via Options icon",
+  "DA-34-2 Remove file as Shared Library (in Project) via Options icon",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -237,7 +246,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Download Penpot file (in Project) via rigthclick",
+  "DA-35-1 Download Penpot file (in Project) via rigthclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -251,7 +260,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Download Penpot file (in Project) via Options icon",
+  "DA-35-2 Download Penpot file (in Project) via Options icon",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -265,7 +274,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Download standard file (in Project) via rigthclick",
+  "DA-36-1 Download standard file (in Project) via rigthclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -279,7 +288,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "Download standard file (in Project) via Options icon",
+  "DA-36-2 Download standard file (in Project) via Options icon",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -292,31 +301,37 @@ dashboardTest(
   }
 );
 
-dashboardTest("Delete file (in Project) via rightclick", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.clickAddProjectButton();
-  await dashboardPage.setProjectName("TestProject");
-  await dashboardPage.isProjectTitleDisplayed("TestProject");
-  await dashboardPage.createFileViaPlaceholder();
-  const mainPage = new MainPage(page);
-  await mainPage.clickPencilBoxButton();
-  await dashboardPage.deleteFileViaRightclick();
-  await dashboardPage.checkNumberOfFiles("0 files");
-});
+dashboardTest(
+  "DA-37-1 Delete file (in Project) via rightclick",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.deleteFileViaRightclick();
+    await dashboardPage.checkNumberOfFiles("0 files");
+  }
+);
 
-dashboardTest("Delete file (in Project) via Options icon", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.clickAddProjectButton();
-  await dashboardPage.setProjectName("TestProject");
-  await dashboardPage.isProjectTitleDisplayed("TestProject");
-  await dashboardPage.createFileViaPlaceholder();
-  const mainPage = new MainPage(page);
-  await mainPage.clickPencilBoxButton();
-  await dashboardPage.deleteFileViaOptionsIcon();
-  await dashboardPage.checkNumberOfFiles("0 files");
-});
+dashboardTest(
+  "DA-37-2 Delete file (in Project) via Options icon",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName("TestProject");
+    await dashboardPage.isProjectTitleDisplayed("TestProject");
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.deleteFileViaOptionsIcon();
+    await dashboardPage.checkNumberOfFiles("0 files");
+  }
+);
 
-dashboardTest("Rename project", async ({ page }) => {
+dashboardTest("DA-52 Rename project", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -332,7 +347,7 @@ dashboardTest("Rename project", async ({ page }) => {
   );
 });
 
-dashboardTest("Duplicate Project", async ({ page }) => {
+dashboardTest("DA-53 Duplicate Project", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -347,7 +362,7 @@ dashboardTest("Duplicate Project", async ({ page }) => {
   await dashboardPage.isHeaderDisplayed("TestProject (copy) (copy)");
 });
 
-dashboardTest("Unpin project", async ({ page }) => {
+dashboardTest("DA-54 Unpin project", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -361,7 +376,7 @@ dashboardTest("Unpin project", async ({ page }) => {
   );
 });
 
-dashboardTest("Pin project", async ({ page }) => {
+dashboardTest("DA-55 Pin project", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -378,7 +393,7 @@ dashboardTest("Pin project", async ({ page }) => {
   await dashboardPage.checkPinnedProjectsSidebarItem("TestProject");
 });
 
-dashboardTest("Delete project via rightclick", async ({ page }) => {
+dashboardTest("DA-60-1 Delete project via rightclick", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -390,7 +405,7 @@ dashboardTest("Delete project via rightclick", async ({ page }) => {
   await dashboardPage.isProjectTitleDisplayed("Drafts");
 });
 
-dashboardTest("Delete project via Options icon", async ({ page }) => {
+dashboardTest("DA-60-2 Delete project via Options icon", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -402,7 +417,7 @@ dashboardTest("Delete project via Options icon", async ({ page }) => {
   await dashboardPage.isProjectTitleDisplayed("Drafts");
 });
 
-dashboardTest("Search file (from Drafts)", async ({ page }) => {
+dashboardTest("DA-62 Search file (from Drafts)", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.createFileViaPlaceholder();
   const mainPage = new MainPage(page);
@@ -414,7 +429,7 @@ dashboardTest("Search file (from Drafts)", async ({ page }) => {
   await dashboardPage.isFileNameDisplayed("qwe");
 });
 
-dashboardTest("Search file (from Projects)", async ({ page }) => {
+dashboardTest("DA-63 Search file (from Projects)", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");

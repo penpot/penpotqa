@@ -3,7 +3,7 @@ const { MainPage } = require("../pages/main-page");
 const { ColorPalettePopUp } = require("../pages/color-palette-popup");
 const { expect } = require("@playwright/test");
 
-mainTest("Change color background", async ({ page }) => {
+mainTest("CO-1 Change color background", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCanvasBackgroundColorIcon();
@@ -15,7 +15,7 @@ mainTest("Change color background", async ({ page }) => {
   });
 });
 
-mainTest("Create a board (Toolbar)", async ({ page }) => {
+mainTest("CO-2 Create a board (Toolbar)", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewport();
@@ -29,7 +29,7 @@ mainTest("Create a board (Toolbar)", async ({ page }) => {
   });
 });
 
-mainTest("Rename board with valid name", async ({ page }) => {
+mainTest("CO-4 Rename board with valid name", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewport();
@@ -44,7 +44,7 @@ mainTest("Rename board with valid name", async ({ page }) => {
   await mainPage.isBoardNameDisplayed("renamed board");
 });
 
-mainTest("Add and edit Shadow to board", async ({ page }) => {
+mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateBoardButton();
@@ -78,7 +78,7 @@ mainTest("Add and edit Shadow to board", async ({ page }) => {
   });
 });
 
-mainTest("Add and edit Blur to board", async ({ page }) => {
+mainTest("CO-13 Add and edit Blur to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewport();
@@ -90,7 +90,7 @@ mainTest("Add and edit Blur to board", async ({ page }) => {
   });
 });
 
-mainTest("Delete board via rightclick", async ({ page }) => {
+mainTest("CO-25-1 Delete board via rightclick", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewport();
@@ -103,7 +103,7 @@ mainTest("Delete board via rightclick", async ({ page }) => {
   });
 });
 
-mainTest("Delete board via shortcut Del", async ({ page }) => {
+mainTest("CO-25-2 Delete board via shortcut Del", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewport();
@@ -116,7 +116,7 @@ mainTest("Delete board via shortcut Del", async ({ page }) => {
   });
 });
 
-mainTest("Add rotation to board", async ({ page }) => {
+mainTest("CO-28 Add rotation to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewport();
@@ -142,7 +142,7 @@ mainTest("Add rotation to board", async ({ page }) => {
   });
 });
 
-mainTest("Change border radius multiple values", async ({ page }) => {
+mainTest("CO-29 Change border radius multiple values", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewport();
