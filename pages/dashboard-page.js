@@ -67,7 +67,7 @@ exports.DashboardPage = class DashboardPage {
     this.duplicateProjectMenuItem = page.locator(
       'a[data-test="project-duplicate"]'
     );
-    this.pinUnpinProjectButton = page.locator('span[alt="Pin/Unpin"]');
+    this.pinUnpinProjectButton = page.locator('span[alt="Pin/Unpin"] svg');
     this.projectNameInput = page.locator(
       'div[class="project-name-wrapper"] div[class="edit-wrapper"]'
     );
@@ -452,9 +452,21 @@ exports.DashboardPage = class DashboardPage {
         break;
     }
   }
-  async clickPinUnpinProjectButton() {
+
+  async clickUnpinProjectButton() {
+    await this.waitForPageLoaded();
     await this.projectNameTitle.first().hover();
     await this.waitForPageLoaded();
+    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin-fill");
+    await this.pinUnpinProjectButton.click();
+    await this.waitForPageLoaded();
+  }
+
+  async clickPinProjectButton() {
+    await this.waitForPageLoaded();
+    await this.projectNameTitle.first().hover();
+    await this.waitForPageLoaded();
+    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin");
     await this.pinUnpinProjectButton.click();
     await this.waitForPageLoaded();
   }

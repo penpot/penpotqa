@@ -355,7 +355,7 @@ dashboardTest("Unpin project", async ({ page }) => {
   await dashboardPage.createFileViaPlaceholder();
   const mainPage = new MainPage(page);
   await mainPage.clickPencilBoxButton();
-  await dashboardPage.clickPinUnpinProjectButton();
+  await dashboardPage.clickUnpinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem(
     "Pinned projects will appear here"
   );
@@ -369,11 +369,12 @@ dashboardTest("Pin project", async ({ page }) => {
   await dashboardPage.createFileViaPlaceholder();
   const mainPage = new MainPage(page);
   await mainPage.clickPencilBoxButton();
-  await dashboardPage.clickPinUnpinProjectButton();
+  await dashboardPage.clickUnpinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem(
     "Pinned projects will appear here"
   );
-  await dashboardPage.clickPinUnpinProjectButton();
+  await page.reload();
+  await dashboardPage.clickPinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem("TestProject");
 });
 
