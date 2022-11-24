@@ -2,21 +2,6 @@ const { mainTest } = require("../fixtures");
 const { MainPage } = require("../pages/main-page");
 const { expect } = require("@playwright/test");
 
-mainTest("Create a text", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickCreateTextButton();
-  await mainPage.clickViewport();
-  await mainPage.typeText("Hello World!");
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isCreatedLayerVisible();
-  await mainPage.checkHtmlOfCreatedLayer(
-    '<text y="459" textLength="72.4375" lengthAdjust="spacingAndGlyphs" x="680" dominant-baseline="text-before-edge" style="text-transform: none; font-family: sourcesanspro; letter-spacing: normal; font-style: normal; font-weight: 400; white-space: pre; font-size: 14px; text-decoration: none solid rgb(0, 0, 0); direction: ltr; fill: rgb(0, 0, 0); fill-opacity: 1;">Hello World!</text>'
-  );
-  await expect(page).toHaveScreenshot("text.png", {
-    mask: [mainPage.usersSection],
-  });
-});
-
 mainTest("Import an image", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.uploadImage("images/images.png");
