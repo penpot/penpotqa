@@ -15,7 +15,7 @@ exports.MainPage = class MainPage {
     this.createCurveButton = page.locator('button[data-test="curve-btn"]');
     this.createPathButton = page.locator('button[data-test="path-btn"]');
     this.createdLayer = page.locator('div *[id^="fills"] >> nth=0');
-    this.createdLayerTitle = page.locator('g[class="frame-title"]');
+    this.createdBoardTitle = page.locator('g[class="frame-title"]');
     this.createdLayerOnLayersPanelNameInput = page.locator(
       'input[class="element-name"]'
     );
@@ -67,13 +67,19 @@ exports.MainPage = class MainPage {
       'ul[class="workspace-context-menu"] li:has-text("Delete")'
     );
 
+    this.transformToPathMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Transform to path")'
+    );
+
+    this.selectionToBoardMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Selection to board")'
+    );
+
     this.layerRotationInput = page.locator(
       'div[class="input-element degrees"] input'
     );
 
     this.singleCornerRadiusButton = page.locator('div[alt="Single corners"]');
-
-    this.allCornersRadiusButton = page.locator('div[alt="All corners"]');
 
     this.firstCornerRadiusInput = page.locator(
       'div[class="input-element mini"] input >> nth=0'
@@ -153,8 +159,8 @@ exports.MainPage = class MainPage {
     expect(await this.createdLayer.innerHTML()).toContain(expectedHTML);
   }
 
-  async doubleClickCreatedLayerTitleOnCanvas() {
-    await this.createdLayerTitle.dblclick();
+  async doubleClickCreatedBoardTitleOnCanvas() {
+    await this.createdBoardTitle.dblclick();
   }
 
   async doubleClickCreatedLayerOnLayersPanel() {
@@ -167,7 +173,11 @@ exports.MainPage = class MainPage {
   }
 
   async isLayerNameDisplayed(name) {
-    await expect(this.createdLayerTitle).toHaveText(name);
+    await expect(this.createdLayerOnLayersPanelNameText).toHaveText(name);
+  }
+
+  async isBoardNameDisplayed(name) {
+    await expect(this.createdBoardTitle).toHaveText(name);
     await expect(this.createdLayerOnLayersPanelNameText).toHaveText(name);
   }
 
@@ -261,6 +271,16 @@ exports.MainPage = class MainPage {
     await this.deleteLayerMenuItem.click();
   }
 
+  async transformToPathViaRightclick() {
+    await this.createdLayer.click({ button: "right", force: true });
+    await this.transformToPathMenuItem.click();
+  }
+
+  async selectionToBoardViaRightclick() {
+    await this.createdLayer.click({ button: "right", force: true });
+    await this.selectionToBoardMenuItem.click();
+  }
+
   async deleteLayerViaShortcut() {
     await this.createdLayer.click({ force: true });
     await this.page.keyboard.press("Delete");
@@ -274,10 +294,6 @@ exports.MainPage = class MainPage {
 
   async clickSingleCornerRadiusButton() {
     await this.singleCornerRadiusButton.click();
-  }
-
-  async clickAllCornersRadiusButton() {
-    await this.allCornersRadiusButton.click();
   }
 
   async changeFirstCornerRadiusForLayer(value) {
