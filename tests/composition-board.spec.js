@@ -147,7 +147,7 @@ mainTest("CO-29 Change border radius multiple values", async ({ page }) => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickSingleCornerRadiusButton();
+  await mainPage.clickIndividualCornersRadiusButton();
   await mainPage.changeFirstCornerRadiusForLayer("30");
   await mainPage.changeSecondCornerRadiusForLayer("60");
   await mainPage.changeThirdCornerRadiusForLayer("90");
