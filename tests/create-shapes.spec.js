@@ -2,20 +2,6 @@ const { mainTest } = require("../fixtures");
 const { MainPage } = require("../pages/main-page");
 const { expect } = require("@playwright/test");
 
-mainTest("Import an image", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.uploadImage("images/images.png");
-  await mainPage.clickViewport();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isCreatedLayerVisible();
-  await mainPage.checkPartialHtmlOfCreatedLayer(
-    '<rect rx="0" ry="0" x="528.5" y="395.5" transform="" width="303" height="130" fill='
-  );
-  await expect(page).toHaveScreenshot("image.png", {
-    mask: [mainPage.usersSection],
-  });
-});
-
 mainTest("Create a curve", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateCurveButton();

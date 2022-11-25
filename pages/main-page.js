@@ -75,11 +75,21 @@ exports.MainPage = class MainPage {
       'ul[class="workspace-context-menu"] li:has-text("Selection to board")'
     );
 
+    this.flipVerticalMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Flip vertical")'
+    );
+
+    this.flipHorizontalMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Flip horizontal")'
+    );
+
     this.layerRotationInput = page.locator(
       'div[class="input-element degrees"] input'
     );
 
-    this.singleCornerRadiusButton = page.locator('div[alt="Single corners"]');
+    this.individualCornersRadiusButton = page.locator(
+      'div[alt="Individual corners"]'
+    );
 
     this.firstCornerRadiusInput = page.locator(
       'div[class="input-element mini"] input >> nth=0'
@@ -289,6 +299,26 @@ exports.MainPage = class MainPage {
     await this.selectionToBoardMenuItem.click();
   }
 
+  async flipVerticalViaRightclick() {
+    await this.createdLayer.click({ button: "right", force: true });
+    await this.flipVerticalMenuItem.click();
+  }
+
+  async flipHorizontalViaRightclick() {
+    await this.createdLayer.click({ button: "right", force: true });
+    await this.flipHorizontalMenuItem.click();
+  }
+
+  async flipVerticalViaShortcut() {
+    await this.createdLayer.click({ force: true });
+    await this.page.keyboard.press("Shift+V");
+  }
+
+  async flipHorizontalViaShortcut() {
+    await this.createdLayer.click({ force: true });
+    await this.page.keyboard.press("Shift+H");
+  }
+
   async deleteLayerViaShortcut() {
     await this.createdLayer.click({ force: true });
     await this.page.keyboard.press("Delete");
@@ -300,8 +330,8 @@ exports.MainPage = class MainPage {
     await this.clickMoveButton();
   }
 
-  async clickSingleCornerRadiusButton() {
-    await this.singleCornerRadiusButton.click();
+  async clickIndividualCornersRadiusButton() {
+    await this.individualCornersRadiusButton.click();
   }
 
   async changeFirstCornerRadiusForLayer(value) {
