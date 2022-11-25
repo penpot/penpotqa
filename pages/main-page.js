@@ -96,6 +96,14 @@ exports.MainPage = class MainPage {
     this.fourthCornerRadiusInput = page.locator(
       'div[class="input-element mini"] input  >> nth=3'
     );
+
+    this.fillColorIcon = page.locator(
+      'div[title="Fill"] div[class="color-bullet-wrapper"]'
+    );
+
+    this.fillOpacityInput = page.locator(
+      'div[title="Fill"] div[class="input-element percentail"] input'
+    );
   }
 
   async clickMoveButton() {
@@ -314,5 +322,14 @@ exports.MainPage = class MainPage {
   async changeFourthCornerRadiusForLayer(value) {
     await this.fourthCornerRadiusInput.fill(value);
     await this.clickMoveButton();
+  }
+
+  async clickFillColorIcon() {
+    await this.fillColorIcon.click();
+  }
+
+  async changeOpacityForFill(value) {
+    await this.clearInput(this.fillOpacityInput);
+    await this.fillOpacityInput.fill(value);
   }
 };
