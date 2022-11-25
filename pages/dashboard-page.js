@@ -686,11 +686,13 @@ exports.DashboardPage = class DashboardPage {
 
   async flipRightLibrariesAndTemplatesCarousel() {
     await this.librariesAndTemplatesSectionRightArrowButton.click();
+    await this.header.hover();
     await this.waitForPageLoaded();
   }
 
   async flipLeftLibrariesAndTemplatesCarousel() {
     await this.librariesAndTemplatesSectionLeftArrowButton.click();
+    await this.header.hover();
     await this.waitForPageLoaded();
   }
 

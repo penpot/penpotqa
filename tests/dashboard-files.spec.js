@@ -367,9 +367,7 @@ dashboardTest("DA-54 Unpin project", async ({ page }) => {
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
   await dashboardPage.isProjectTitleDisplayed("TestProject");
-  await dashboardPage.createFileViaPlaceholder();
-  const mainPage = new MainPage(page);
-  await mainPage.clickPencilBoxButton();
+  await dashboardPage.checkPinnedProjectsSidebarItem("TestProject");
   await dashboardPage.clickUnpinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem(
     "Pinned projects will appear here"
@@ -381,14 +379,10 @@ dashboardTest("DA-55 Pin project", async ({ page }) => {
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
   await dashboardPage.isProjectTitleDisplayed("TestProject");
-  await dashboardPage.createFileViaPlaceholder();
-  const mainPage = new MainPage(page);
-  await mainPage.clickPencilBoxButton();
   await dashboardPage.clickUnpinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem(
     "Pinned projects will appear here"
   );
-  await page.reload();
   await dashboardPage.clickPinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem("TestProject");
 });
