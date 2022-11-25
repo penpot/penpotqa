@@ -200,6 +200,7 @@ exports.MainPage = class MainPage {
   }
 
   async drawCurve(x1, y1, x2, y2) {
+    await this.viewport.hover();
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.down();
     await this.page.mouse.move(x1, y1);
