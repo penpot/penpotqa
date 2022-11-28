@@ -60,7 +60,7 @@ exports.MainPage = class MainPage {
     );
 
     this.blurValueInput = page.locator(
-      'div[class="input-element pixels"] input'
+      'div[class="row-flex input-row"] div[class="input-element pixels"] input'
     );
 
     this.deleteLayerMenuItem = page.locator(
@@ -81,6 +81,10 @@ exports.MainPage = class MainPage {
 
     this.flipHorizontalMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Flip horizontal")'
+    );
+
+    this.editPathMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Edit")'
     );
 
     this.layerRotationInput = page.locator(
@@ -113,6 +117,66 @@ exports.MainPage = class MainPage {
 
     this.fillOpacityInput = page.locator(
       'div[title="Fill"] div[class="input-element percentail"] input'
+    );
+
+    this.firstNode = page.locator(
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=0'
+    );
+
+    this.secondNode = page.locator(
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=2'
+    );
+
+    this.thirdNode = page.locator(
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=3'
+    );
+
+    this.fourthNode = page.locator(
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=4'
+    );
+
+    this.fifthNode = page.locator(
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=5'
+    );
+
+    this.sixthNode = page.locator(
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=6'
+    );
+
+    this.nodePanelAddNodeButton = page.locator(
+      'div[alt="Add node (Shift++)"] >> nth=0'
+    );
+
+    this.nodePanelDeleteNodeButton = page.locator(
+      'div[alt="Delete node (Del)"] >> nth=0'
+    );
+
+    this.nodePanelMergeNodesButton = page.locator(
+      'div[alt="Merge nodes (Ctrl+J)"] >> nth=0'
+    );
+
+    this.nodePanelDrawNodesButton = page.locator(
+      'div[alt="Draw nodes (P)"] >> nth=0'
+    );
+
+    this.nodePanelMoveNodesButton = page.locator(
+      'div[alt="Move nodes (M)"] >> nth=0'
+    );
+
+    this.nodePanelJoinNodesButton = page.locator(
+      'div[alt="Join nodes (J)"] >> nth=0'
+    );
+
+    this.nodePanelSeparateNodesButton = page.locator(
+      'div[alt="Separate nodes (K)"] >> nth=0'
+    );
+
+    this.nodePanelToCornerButton = page.locator(
+      'div[alt="To corner (X)"] >> nth=0'
+    );
+
+    this.nodePanelToCurveButton = page.locator(
+      'div[alt="To curve (C)"] >> nth=0'
     );
   }
 
@@ -322,7 +386,7 @@ exports.MainPage = class MainPage {
 
   async deleteLayerViaShortcut() {
     await this.createdLayer.click({ force: true });
-    await this.page.keyboard.press("Delete");
+    await this.pressDeleteKeyboardButton();
   }
 
   async changeRotationForLayer(value) {
@@ -362,5 +426,106 @@ exports.MainPage = class MainPage {
   async changeOpacityForFill(value) {
     await this.clearInput(this.fillOpacityInput);
     await this.fillOpacityInput.fill(value);
+  }
+
+  async openNodesPanelViaRightclick() {
+    await this.createdLayer.click({ button: "right", force: true });
+    await this.editPathMenuItem.click();
+  }
+
+  async clickFirstNode() {
+    await this.firstNode.click({ force: true });
+  }
+
+  async clickSecondNode() {
+    await this.secondNode.click({ force: true });
+  }
+
+  async clickThirdNode() {
+    await this.thirdNode.click({ force: true });
+  }
+
+  async clickFourthNode() {
+    await this.fourthNode.click({ force: true });
+  }
+
+  async clickFifthNode() {
+    await this.fifthNode.click({ force: true });
+  }
+
+  async clickSixthNode() {
+    await this.sixthNode.click({ force: true });
+  }
+
+  async holdShiftKeyboardButton() {
+    await this.page.keyboard.down("Shift");
+  }
+
+  async releaseShiftKeyboardButton() {
+    await this.page.keyboard.up("Shift");
+  }
+
+  async clickAddNodeButtonOnNodePanel() {
+    await this.nodePanelAddNodeButton.click();
+  }
+
+  async pressShiftPlusKeyboardShortcut() {
+    await this.page.keyboard.press("Shift+NumpadAdd");
+  }
+
+  async clickDeleteNodeButtonOnNodePanel() {
+    await this.nodePanelDeleteNodeButton.click();
+  }
+
+  async pressDeleteKeyboardButton() {
+    await this.page.keyboard.press("Delete");
+  }
+
+  async clickMergeNodesButtonOnNodePanel() {
+    await this.nodePanelMergeNodesButton.click();
+  }
+
+  async pressCtrlJKeyboardShortcut() {
+    await this.page.keyboard.press("Control+J");
+  }
+
+  async clickDrawNodesButtonOnNodePanel() {
+    await this.nodePanelDrawNodesButton.click();
+  }
+
+  async clickMoveNodesButtonOnNodePanel() {
+    await this.nodePanelMoveNodesButton.click();
+  }
+
+  async clickJoinNodesButtonOnNodePanel() {
+    await this.nodePanelJoinNodesButton.click();
+  }
+
+  async pressJKeyboardShortcut() {
+    await this.page.keyboard.press("J");
+  }
+
+  async clickSeparateNodesButtonOnNodePanel() {
+    await this.nodePanelSeparateNodesButton.click();
+  }
+
+  async pressKKeyboardShortcut() {
+    await this.page.keyboard.press("K");
+  }
+
+  async clickToCornerButtonOnNodePanel() {
+    await this.nodePanelToCornerButton.click();
+  }
+
+  async pressXKeyboardShortcut() {
+    await this.page.keyboard.press("X");
+  }
+
+  async clickToCurveButtonOnNodePanel() {
+    await this.nodePanelToCurveButton.click();
+  }
+
+  async pressCKeyboardShortcut() {
+    await this.page.keyboard.press("C");
   }
 };
