@@ -88,3 +88,133 @@ mainTest("CO-280 Add and edit Shadow to path", async ({ page }) => {
     mask: [mainPage.usersSection],
   });
 });
+
+mainTest("CO-283 Add and edit Blur to path", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreatePathButton();
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.clickViewportByCoordinates(1200, 700);
+  await mainPage.clickViewportByCoordinates(1000, 400);
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickAddBlurButton();
+  await mainPage.changeValueForBlur("55");
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("path-blur.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-297 Add rotation to path", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreatePathButton();
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.clickViewportByCoordinates(1200, 700);
+  await mainPage.clickViewportByCoordinates(1000, 400);
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickViewport();
+  await mainPage.changeRotationForLayer("90");
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("path-rotated-90.png", {
+    mask: [mainPage.usersSection],
+  });
+  await mainPage.changeRotationForLayer("120");
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("path-rotated-120.png", {
+    mask: [mainPage.usersSection],
+  });
+  await mainPage.changeRotationForLayer("45");
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("path-rotated-45.png", {
+    mask: [mainPage.usersSection],
+  });
+  await mainPage.changeRotationForLayer("360");
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("path-rotated-359.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-298-1 Delete path via rightclick", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreatePathButton();
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.clickViewportByCoordinates(1200, 700);
+  await mainPage.clickViewportByCoordinates(1000, 400);
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.clickMoveButton();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isCreatedLayerVisible();
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.deleteLayerViaRightclick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("empty-canvas.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-298-2 Delete path via shortcut Del", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreatePathButton();
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.clickViewportByCoordinates(1200, 700);
+  await mainPage.clickViewportByCoordinates(1000, 400);
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.clickMoveButton();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isCreatedLayerVisible();
+  await mainPage.clickViewportByCoordinates(1200, 700);
+  await mainPage.deleteLayerViaShortcut();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("empty-canvas.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-310 Flip Vertical and Flip Horizontal path", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreatePathButton();
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.clickViewportByCoordinates(1200, 700);
+  await mainPage.clickViewportByCoordinates(1000, 400);
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.clickMoveButton();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.flipVerticalViaRightclick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("path-flipped-vertical.png", {
+    mask: [mainPage.usersSection],
+  });
+  await mainPage.flipHorizontalViaRightclick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("path-flipped-vertical-horizontal.png", {
+    mask: [mainPage.usersSection],
+  });
+  await mainPage.flipVerticalViaShortcut();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("path-flipped-horizontal.png", {
+    mask: [mainPage.usersSection],
+  });
+  await mainPage.flipHorizontalViaShortcut();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("path-non-flipped-jpeg.png", {
+    mask: [mainPage.usersSection],
+  });
+});
+
+mainTest("CO-322 Selection to board", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreatePathButton();
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.clickViewportByCoordinates(1200, 700);
+  await mainPage.clickViewportByCoordinates(1000, 400);
+  await mainPage.clickViewportByCoordinates(500, 200);
+  await mainPage.clickMoveButton();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.selectionToBoardViaRightclick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(page).toHaveScreenshot("path-to-board.png", {
+    mask: [mainPage.usersSection],
+  });
+});
