@@ -14,6 +14,7 @@ exports.MainPage = class MainPage {
     this.uploadImageSelector = page.locator("#image-upload");
     this.createCurveButton = page.locator('button[data-test="curve-btn"]');
     this.createPathButton = page.locator('button[data-test="path-btn"]');
+    this.createCommentButton = page.locator('button[alt="Comments (C)"]');
     this.createdLayer = page.locator('div *[id^="fills"] >> nth=0');
     this.createdBoardTitle = page.locator('g[class="frame-title"]');
     this.createdLayerOnLayersPanelNameInput = page.locator(
@@ -177,6 +178,64 @@ exports.MainPage = class MainPage {
 
     this.nodePanelToCurveButton = page.locator(
       'div[alt="To curve (C)"] >> nth=0'
+    );
+
+    this.commentInput = page.locator("textarea >> nth=0");
+
+    this.commentText = page.locator(
+      'div[class="thread-content"] span[class="text"]'
+    );
+
+    this.commentCommentsPanelText = page.locator(
+      'div[class="thread-groups"] span[class="text"]'
+    );
+
+    this.commentReplyText = page.locator(
+      'div[class="thread-content"] span[class="text"]  >> nth=1'
+    );
+
+    this.commentReplyCommentsPanelText = page.locator(
+      'div[class="thread-groups"] span:has-text("1 reply")'
+    );
+
+    this.postCommentButton = page.locator('input[value="Post"]');
+
+    this.fullNameInCommentTexts = page.locator('div[class="fullname"]');
+
+    this.timeAgoInCommentTexts = page.locator('div[class="timeago"]');
+
+    this.commentThreadIcon = page.locator(
+      'div[class="thread-bubble "]  >> nth=1'
+    );
+
+    this.commentResolvedThreadIcon = page.locator(
+      'div[class="thread-bubble resolved"]  >> nth=1'
+    );
+
+    this.commentReplyInput = page.locator('textarea[placeholder="Reply"]');
+
+    this.commentOptionsButton = page.locator(
+      'div[class="comments"] div[class="options-icon"] svg'
+    );
+
+    this.commentEditOptionMenuItem = page.locator(
+      'ul[class="dropdown comment-options-dropdown"] li:has-text("Edit")'
+    );
+
+    this.commentDeleteOptionMenuItem = page.locator(
+      'ul[class="dropdown comment-options-dropdown"] li:has-text("Delete thread")'
+    );
+
+    this.deleteThreadButton = page.locator(
+      'input[value="Delete conversation"]'
+    );
+
+    this.resolveCommentCheckbox = page.locator(
+      'div[class="options-resolve"] svg'
+    );
+
+    this.commentsPanelPlaceholderText = page.locator(
+      'div[class="thread-groups-placeholder"]'
     );
   }
 
@@ -527,5 +586,91 @@ exports.MainPage = class MainPage {
 
   async pressCKeyboardShortcut() {
     await this.page.keyboard.press("C");
+  }
+
+  async clickCreateCommentButton() {
+    await this.createCommentButton.click();
+  }
+
+  async enterCommentText(text) {
+    await this.commentInput.fill(text);
+  }
+
+  async clickPostCommentButton() {
+    await this.postCommentButton.click();
+  }
+
+  async clickCommentThreadIcon() {
+    await this.commentThreadIcon.click();
+  }
+
+  async clickResolvedCommentThreadIcon() {
+    await this.commentResolvedThreadIcon.click();
+  }
+
+  async enterReplyText(text) {
+    await this.commentReplyInput.fill(text);
+  }
+
+  async clickCommentOptionsButton() {
+    await this.commentOptionsButton.click();
+  }
+
+  async clickEditCommentOption() {
+    await this.commentEditOptionMenuItem.click();
+  }
+
+  async clickDeleteCommentOption() {
+    await this.commentDeleteOptionMenuItem.click();
+  }
+
+  async clearCommentInput() {
+    await this.clearInput(this.commentInput);
+  }
+
+  async clickDeleteThreadButton() {
+    await this.deleteThreadButton.click();
+  }
+
+  async clickResolveCommentCheckbox() {
+    await this.resolveCommentCheckbox.click();
+  }
+
+  async isCommentDisplayedInPopUp(text) {
+    await expect(this.commentText).toHaveText(text);
+  }
+
+  async isCommentDisplayedInCommentsPanel(text) {
+    await expect(this.commentCommentsPanelText).toHaveText(text);
+  }
+
+  async isCommentReplyDisplayedInPopUp(text) {
+    await expect(this.commentReplyText).toHaveText(text);
+  }
+
+  async isCommentReplyDisplayedInCommentsPanel() {
+    await expect(this.commentReplyCommentsPanelText).toBeVisible();
+  }
+
+  async isCommentThreadIconDisplayed() {
+    await expect(this.commentThreadIcon).toBeVisible();
+  }
+
+  async isCommentResolvedThreadIconDisplayed() {
+    await expect(this.commentResolvedThreadIcon).toBeVisible();
+  }
+
+  async isCommentThreadIconNotDisplayed() {
+    await expect(this.commentThreadIcon).not.toBeVisible();
+  }
+
+  async isCommentsPanelPlaceholderDisplayed(text) {
+    await expect(this.commentsPanelPlaceholderText).toHaveText(text);
+  }
+
+  async isResolveCommentCheckboxSelected() {
+    await expect(this.resolveCommentCheckbox).toHaveClass(
+      "icon-checkbox-checked"
+    );
   }
 };
