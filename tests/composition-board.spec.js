@@ -165,3 +165,16 @@ mainTest("CO-29 Change border radius multiple values", async ({ page }) => {
     mask: [mainPage.usersSection],
   });
 });
+
+mainTest("CO-411 Search board - ignore case", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateBoardButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+  await mainPage.renameCreatedLayer("Test");
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isBoardNameDisplayed("Test");
+  await mainPage.searchLayer("test");
+  await mainPage.isLayerSearched("Test");
+});

@@ -237,6 +237,14 @@ exports.MainPage = class MainPage {
     this.commentsPanelPlaceholderText = page.locator(
       'div[class="thread-groups-placeholder"]'
     );
+
+    this.searchLayersIcon = page.locator('svg[class="icon-search"]');
+
+    this.searchLayersInput = page.locator('input[placeholder="Search layers"]');
+
+    this.searchedLayerOnLayersPanelNameText = page.locator(
+      'span[class="element-name"] >> nth=1'
+    );
   }
 
   async clickMoveButton() {
@@ -672,5 +680,14 @@ exports.MainPage = class MainPage {
     await expect(this.resolveCommentCheckbox).toHaveClass(
       "icon-checkbox-checked"
     );
+  }
+
+  async searchLayer(name) {
+    await this.searchLayersIcon.click();
+    await this.searchLayersInput.fill(name);
+  }
+
+  async isLayerSearched(name) {
+    await expect(this.searchedLayerOnLayersPanelNameText).toHaveText(name);
   }
 };
