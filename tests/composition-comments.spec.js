@@ -15,6 +15,7 @@ mainTest("CO-339 Create comment (Toolbar)", async ({ page }) => {
       mainPage.fullNameInCommentTexts,
       mainPage.usersSection,
       mainPage.timeAgoInCommentTexts,
+      mainPage.commentAvatars,
     ],
   });
   await mainPage.clickViewportByCoordinates(600, 400);
@@ -24,6 +25,7 @@ mainTest("CO-339 Create comment (Toolbar)", async ({ page }) => {
       mainPage.fullNameInCommentTexts,
       mainPage.usersSection,
       mainPage.timeAgoInCommentTexts,
+      mainPage.commentAvatars,
     ],
   });
 });
@@ -49,6 +51,7 @@ mainTest(
         mainPage.fullNameInCommentTexts,
         mainPage.usersSection,
         mainPage.timeAgoInCommentTexts,
+        mainPage.commentAvatars,
       ],
     });
     await mainPage.clickViewportByCoordinates(600, 400);
@@ -58,6 +61,7 @@ mainTest(
         mainPage.fullNameInCommentTexts,
         mainPage.usersSection,
         mainPage.timeAgoInCommentTexts,
+        mainPage.commentAvatars,
       ],
     });
   }
@@ -86,6 +90,7 @@ mainTest(
         mainPage.fullNameInCommentTexts,
         mainPage.usersSection,
         mainPage.timeAgoInCommentTexts,
+        mainPage.commentAvatars,
       ],
     });
   }
@@ -117,6 +122,7 @@ mainTest(
         mainPage.fullNameInCommentTexts,
         mainPage.usersSection,
         mainPage.timeAgoInCommentTexts,
+        mainPage.commentAvatars,
       ],
     });
   }
@@ -142,6 +148,7 @@ mainTest("CO-356 Delete thread", async ({ page }) => {
       mainPage.fullNameInCommentTexts,
       mainPage.usersSection,
       mainPage.timeAgoInCommentTexts,
+      mainPage.commentAvatars,
     ],
   });
 });
@@ -160,6 +167,7 @@ mainTest("CO-360 Resolve comment", async ({ page }) => {
       mainPage.fullNameInCommentTexts,
       mainPage.usersSection,
       mainPage.timeAgoInCommentTexts,
+      mainPage.commentAvatars,
     ],
   });
   await mainPage.clickResolvedCommentThreadIcon();
@@ -169,6 +177,7 @@ mainTest("CO-360 Resolve comment", async ({ page }) => {
       mainPage.fullNameInCommentTexts,
       mainPage.usersSection,
       mainPage.timeAgoInCommentTexts,
+      mainPage.commentAvatars,
     ],
   });
 });
