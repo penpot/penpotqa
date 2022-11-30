@@ -163,6 +163,7 @@ exports.MainPage = class MainPage {
       'div[class="thread-groups"] span:has-text("1 reply")'
     );
     this.postCommentButton = page.locator('input[value="Post"]');
+    this.commentAvatars = page.locator('div[class="avatar"]');
     this.fullNameInCommentTexts = page.locator('div[class="fullname"]');
     this.timeAgoInCommentTexts = page.locator('div[class="timeago"]');
     this.commentThreadIcon = page.locator(
