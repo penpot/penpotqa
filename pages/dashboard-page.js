@@ -140,62 +140,45 @@ exports.DashboardPage = class DashboardPage {
       'input[placeholder="Emails, comma separated"]'
     );
     this.sendInvitationButton = page.locator('input[value="Send invitation"]');
-
     this.invitationRecord = page.locator('div[class="table-row"]');
-
     this.invitationRecordEmailCell = page.locator(
       'div[class="table-field mail"]'
     );
-
     this.invitationRecordRoleCell = page.locator(
       'div[class="table-field roles"]'
     );
-
     this.invitationRecordRoleSelector = page.locator(
       'div[class="rol-selector has-priv"]'
     );
-
     this.invitationRecordStatusCell = page.locator(
       'div[class="table-field status"] div'
     );
-
     this.invitationRecordOptionsMenuButton = page.locator(
       'div[class="table-field actions"] svg[class="icon-actions"]'
     );
-
     this.invitationRecordResendInvititationMenuItem = page.locator(
       'ul:has-text("Resend invitation")'
     );
-
     this.invitationRecordDeleteInvititationMenuItem = page.locator(
       'ul:has-text("Delete invitation")'
     );
     this.teamSettingsMenuItem = page.locator('li[data-test="team-settings"]');
-
     this.renameTeamMenuItem = page.locator('li[data-test="rename-team"]');
-
     this.uploadTeamImageButton = page.locator('input[type="file"]');
-
     this.renameTeamInput = page.locator("#name");
-
     this.updateTeamButton = page.locator('input[value="Update team"]');
-
     this.librariesAndTemplatesCarouselButton = page.locator(
       'span:has-text("Libraries & Templates")'
     );
-
     this.librariesAndTemplatesSection = page.locator(
       'div[class="dashboard-templates-section "]'
     );
-
     this.librariesAndTemplatesSectionLeftArrowButton = page.locator(
       'div[class="button left"]'
     );
-
     this.librariesAndTemplatesSectionRightArrowButton = page.locator(
       'div[class="button right"]'
     );
-
     this.teamInfoSection = page.locator('div[class="block info-block"]');
   }
 

@@ -59,191 +59,171 @@ exports.MainPage = class MainPage {
     this.addBlurButton = page.locator(
       'div[class="element-set"] div:has-text("Blur") svg'
     );
-
     this.blurValueInput = page.locator(
       'div[class="row-flex input-row"] div[class="input-element pixels"] input'
     );
-
     this.deleteLayerMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Delete")'
     );
-
     this.transformToPathMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Transform to path")'
     );
-
     this.selectionToBoardMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Selection to board")'
     );
-
     this.flipVerticalMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Flip vertical")'
     );
-
     this.flipHorizontalMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Flip horizontal")'
     );
-
     this.editPathMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Edit")'
     );
-
     this.layerRotationInput = page.locator(
       'div[class="input-element degrees"] input'
     );
-
     this.individualCornersRadiusButton = page.locator(
       'div[alt="Individual corners"]'
     );
-
     this.firstCornerRadiusInput = page.locator(
       'div[class="input-element mini"] input >> nth=0'
     );
-
     this.secondCornerRadiusInput = page.locator(
       'div[class="input-element mini"] input >> nth=1'
     );
-
     this.thirdCornerRadiusInput = page.locator(
       'div[class="input-element mini"] input >> nth=2'
     );
-
     this.fourthCornerRadiusInput = page.locator(
       'div[class="input-element mini"] input  >> nth=3'
     );
-
     this.fillColorIcon = page.locator(
       'div[title="Fill"] div[class="color-bullet-wrapper"]'
     );
-
     this.fillOpacityInput = page.locator(
       'div[title="Fill"] div[class="input-element percentail"] input'
     );
-
     this.firstNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=0'
     );
-
     this.secondNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=2'
     );
-
     this.thirdNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=3'
     );
-
     this.fourthNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=4'
     );
-
     this.fifthNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=5'
     );
-
     this.sixthNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=6'
     );
-
     this.nodePanelAddNodeButton = page.locator(
       'div[alt="Add node (Shift++)"] >> nth=0'
     );
-
     this.nodePanelDeleteNodeButton = page.locator(
       'div[alt="Delete node (Del)"] >> nth=0'
     );
-
     this.nodePanelMergeNodesButton = page.locator(
       'div[alt="Merge nodes (Ctrl+J)"] >> nth=0'
     );
-
     this.nodePanelDrawNodesButton = page.locator(
       'div[alt="Draw nodes (P)"] >> nth=0'
     );
-
     this.nodePanelMoveNodesButton = page.locator(
       'div[alt="Move nodes (M)"] >> nth=0'
     );
-
     this.nodePanelJoinNodesButton = page.locator(
       'div[alt="Join nodes (J)"] >> nth=0'
     );
-
     this.nodePanelSeparateNodesButton = page.locator(
       'div[alt="Separate nodes (K)"] >> nth=0'
     );
-
     this.nodePanelToCornerButton = page.locator(
       'div[alt="To corner (X)"] >> nth=0'
     );
-
     this.nodePanelToCurveButton = page.locator(
       'div[alt="To curve (C)"] >> nth=0'
     );
-
     this.commentInput = page.locator("textarea >> nth=0");
-
     this.commentText = page.locator(
       'div[class="thread-content"] span[class="text"]'
     );
-
     this.commentCommentsPanelText = page.locator(
       'div[class="thread-groups"] span[class="text"]'
     );
-
     this.commentReplyText = page.locator(
       'div[class="thread-content"] span[class="text"]  >> nth=1'
     );
-
     this.commentReplyCommentsPanelText = page.locator(
       'div[class="thread-groups"] span:has-text("1 reply")'
     );
-
     this.postCommentButton = page.locator('input[value="Post"]');
-
     this.fullNameInCommentTexts = page.locator('div[class="fullname"]');
-
     this.timeAgoInCommentTexts = page.locator('div[class="timeago"]');
-
     this.commentThreadIcon = page.locator(
       'div[class="thread-bubble "]  >> nth=1'
     );
-
     this.commentResolvedThreadIcon = page.locator(
       'div[class="thread-bubble resolved"]  >> nth=1'
     );
-
     this.commentReplyInput = page.locator('textarea[placeholder="Reply"]');
-
     this.commentOptionsButton = page.locator(
       'div[class="comments"] div[class="options-icon"] svg'
     );
-
     this.commentEditOptionMenuItem = page.locator(
       'ul[class="dropdown comment-options-dropdown"] li:has-text("Edit")'
     );
-
     this.commentDeleteOptionMenuItem = page.locator(
       'ul[class="dropdown comment-options-dropdown"] li:has-text("Delete thread")'
     );
-
     this.deleteThreadButton = page.locator(
       'input[value="Delete conversation"]'
     );
-
     this.resolveCommentCheckbox = page.locator(
       'div[class="options-resolve"] svg'
     );
-
     this.commentsPanelPlaceholderText = page.locator(
       'div[class="thread-groups-placeholder"]'
     );
-
     this.searchLayersIcon = page.locator('svg[class="icon-search"]');
-
     this.searchLayersInput = page.locator('input[placeholder="Search layers"]');
-
     this.searchedLayerOnLayersPanelNameText = page.locator(
       'span[class="element-name"] >> nth=1'
+    );
+    this.gridMainOptionSection = page.locator('div[class="grid-option-main"]');
+    this.addGridButton = page.locator(
+      'div[class="element-set"] div:has-text("Grid") svg'
+    );
+    this.removeGridButton = page.locator(
+      'div[class="grid-option-main-actions"] svg[class="icon-minus"]'
+    );
+    this.gridTypeSelector = page.locator(
+      'div[class="custom-select flex-grow"]'
+    );
+    this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
+    this.gridTypeSelectorColumnsOption = page.locator(
+      'span:has-text("Columns")'
+    );
+    this.gridTypeSelectorRowsOption = page.locator('span:has-text("Rows")');
+    this.gridSizeInput = page.locator('div[class="grid-option"] input');
+    this.gridActionsButton = page.locator(
+      'div[class="grid-option"] svg[class="icon-actions"] >> visible=true'
+    );
+    this.gridOpacityInput = page.locator(
+      'div[class="grid-option"] div[class="input-element percentail"] input'
+    );
+    this.useDefaultGridButton = page.locator('button:has-text("Use default")');
+    this.setAsDefaultGridButton = page.locator(
+      'button:has-text("Set as default")'
+    );
+    this.gridSizeInput = page.locator('div[class="grid-option"] input');
+    this.gridWidthInput = page.locator(
+      'div[class="row-flex input-row"] input >> nth=1'
     );
   }
 
@@ -689,5 +669,57 @@ exports.MainPage = class MainPage {
 
   async isLayerSearched(name) {
     await expect(this.searchedLayerOnLayersPanelNameText).toHaveText(name);
+  }
+
+  async clickAddGridButton() {
+    await this.addGridButton.click();
+  }
+
+  async clickRemoveGridButton() {
+    await this.gridMainOptionSection.hover();
+    await this.removeGridButton.click();
+  }
+
+  async changeSizeForGrid(value) {
+    await this.clearInput(this.gridSizeInput);
+    await this.gridSizeInput.fill(value);
+  }
+
+  async clickGridActionsButton() {
+    await this.gridActionsButton.click();
+  }
+
+  async changeOpacityForGrid(value) {
+    await this.clearInput(this.gridOpacityInput);
+    await this.gridOpacityInput.fill(value);
+  }
+
+  async clickUseDefaultGridButton() {
+    await this.useDefaultGridButton.click();
+  }
+
+  async selectGridType(type) {
+    await this.gridTypeSelector.click();
+    switch (type) {
+      case "Square":
+        await this.gridTypeSelectorSquareOption.click();
+        break;
+      case "Columns":
+        await this.gridTypeSelectorColumnsOption.click();
+        break;
+      case "Rows":
+        await this.gridTypeSelectorRowsOption.click();
+        break;
+    }
+  }
+
+  async changeColumnsOrRowsNumberForGrid(value) {
+    await this.clearInput(this.gridSizeInput);
+    await this.gridSizeInput.fill(value);
+  }
+
+  async changeWidthForGrid(value) {
+    await this.clearInput(this.gridWidthInput);
+    await this.gridWidthInput.fill(value);
   }
 };
