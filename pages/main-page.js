@@ -235,6 +235,68 @@ exports.MainPage = class MainPage {
     this.removeFillButton = page.locator(
       'div[title="Fill"] svg[class="icon-minus"]'
     );
+    this.mainMenuButton = page.locator(
+      'div[class="menu-section"] svg[class="icon-actions"]'
+    );
+    this.viewMainMenuItem = page.locator(
+      'ul[class="menu"] span:has-text("View")'
+    );
+    this.viewMainMenuItem = page.locator(
+      'ul[class="menu"] span:has-text("View")'
+    );
+    this.fileMainMenuItem = page.locator(
+      'ul[class="menu"] span:has-text("File")'
+    );
+    this.showRulersMainMenuSubItem = page.locator(
+      'ul[class="sub-menu view"] span:has-text("Show rulers")'
+    );
+    this.hideRulersMainMenuSubItem = page.locator(
+      'ul[class="sub-menu view"] span:has-text("Hide rulers")'
+    );
+    this.showBoardNamesMainMenuSubItem = page.locator(
+      'ul[class="sub-menu view"] span:has-text("Show boards names")'
+    );
+    this.hideBoardNamesMainMenuSubItem = page.locator(
+      'ul[class="sub-menu view"] span:has-text("Hide board names")'
+    );
+    this.showPixelGridMainMenuSubItem = page.locator(
+      'ul[class="sub-menu view"] span:has-text("Show pixel grid")'
+    );
+    this.hidePixelGridMainMenuSubItem = page.locator(
+      'ul[class="sub-menu view"] span:has-text("Hide pixel grid")'
+    );
+    this.showHideUIMainMenuSubItem = page.locator(
+      'ul[class="sub-menu view"] span:has-text("Show/Hide UI")'
+    );
+    this.dowloadPenpotFileMenuSubItem = page.locator(
+      'ul[class="sub-menu file"] span:has-text("Download Penpot file (.penpot)")'
+    );
+    this.dowloadStandartFileMenuSubItem = page.locator(
+      'ul[class="sub-menu file"] span:has-text("Download standard file (.svg + .json)")'
+    );
+    this.addAsSharedLibraryFileMenuSubItem = page.locator(
+      'ul[class="sub-menu file"] span:has-text("Add as Shared Library")'
+    );
+    this.removeAsSharedLibraryFileMenuSubItem = page.locator(
+      'ul[class="sub-menu file"] span:has-text("Remove as Shared Library")'
+    );
+    this.zoomPlusButton = page.locator(
+      'span[class="zoom-btns"] button:has-text("+")'
+    );
+    this.zoomMinusButton = page.locator(
+      'span[class="zoom-btns"] button:has-text("-")'
+    );
+    this.zoomButton = page.locator('div[class="zoom-widget"]');
+    this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
+    this.downloadFileCloseButton = page.locator('input[value="Close"]');
+    this.assetsTab = page.locator('div[data-id=":assets"]');
+    this.addAsSharedLibraryButton = page.locator(
+      'input[value="Add as Shared Library"]'
+    );
+    this.removeAsSharedLibraryButton = page.locator(
+      'input[value="Remove as Shared Library"]'
+    );
+    this.sharedLibraryBadge = page.locator('span:has-text("SHARED")');
   }
 
   async clickMoveButton() {
@@ -747,5 +809,118 @@ exports.MainPage = class MainPage {
 
   async clickRemoveFillButton() {
     await this.removeFillButton.click();
+  }
+
+  async clickMainMenuButton() {
+    await this.mainMenuButton.click();
+  }
+  async clickViewMainMenuItem() {
+    await this.viewMainMenuItem.click();
+  }
+
+  async clickFileMainMenuItem() {
+    await this.fileMainMenuItem.click();
+  }
+
+  async clickShowRulersMainMenuSubItem() {
+    await this.showRulersMainMenuSubItem.click();
+  }
+
+  async clickHideRulersMainMenuSubItem() {
+    await this.hideRulersMainMenuSubItem.click();
+  }
+
+  async pressHideShowRulersShortcut() {
+    await this.page.keyboard.press("Control+Shift+R");
+  }
+
+  async clickShowBoardNamesMainMenuSubItem() {
+    await this.showBoardNamesMainMenuSubItem.click();
+  }
+
+  async clickHideBoardNamesMainMenuSubItem() {
+    await this.hideBoardNamesMainMenuSubItem.click();
+  }
+
+  async clickShowPixelGridMainMenuSubItem() {
+    await this.showPixelGridMainMenuSubItem.click();
+  }
+
+  async clickHidePixelGridMainMenuSubItem() {
+    await this.hidePixelGridMainMenuSubItem.click();
+  }
+
+  async clickShowHideUIMainMenuSubItem() {
+    await this.showHideUIMainMenuSubItem.click();
+  }
+
+  async clickAddAsSharedLibraryMainMenuSubItem() {
+    await this.addAsSharedLibraryFileMenuSubItem.click();
+  }
+
+  async clickRemoveAsSharedLibraryMainMenuSubItem() {
+    await this.removeAsSharedLibraryFileMenuSubItem.click();
+  }
+
+  async clickZoomButton() {
+    await this.zoomButton.click();
+  }
+
+  async increaseZoom(numberOfTimes) {
+    await this.clickZoomButton();
+    for (let i = 0; i <= numberOfTimes; i++) {
+      await this.zoomPlusButton.click();
+    }
+    await this.clickZoomButton();
+  }
+
+  async decreaseZoom(numberOfTimes) {
+    await this.clickZoomButton();
+    for (let i = 0; i <= numberOfTimes; i++) {
+      await this.zoomMinusButton.click();
+    }
+    await this.clickZoomButton();
+  }
+
+  async pressHideShowPixelGridShortcut() {
+    await this.page.keyboard.press("Shift+,");
+  }
+
+  async pressHideShowUIShortcut() {
+    await this.page.keyboard.press("Backslash");
+  }
+
+  async downloadPenpotFileViaMenu() {
+    await this.dowloadPenpotFileMenuSubItem.click();
+    await this.page.waitForEvent("download");
+    await expect(this.downloadFileTickIcon).toBeVisible();
+    await this.downloadFileCloseButton.click();
+  }
+
+  async downloadStandardFileViaMenu() {
+    await this.dowloadStandartFileMenuSubItem.click();
+    await this.page.waitForEvent("download");
+    await expect(this.downloadFileTickIcon).toBeVisible();
+    await this.downloadFileCloseButton.click();
+  }
+
+  async clickAssetsTab() {
+    await this.assetsTab.click();
+  }
+
+  async clickAddAsSharedLibraryButton() {
+    await this.addAsSharedLibraryButton.click();
+  }
+
+  async clickRemoveAsSharedLibraryButton() {
+    await this.removeAsSharedLibraryButton.click();
+  }
+
+  async isSharedLibraryBadgeVisible() {
+    await expect(this.sharedLibraryBadge).toBeVisible();
+  }
+
+  async isSharedLibraryBadgeNotVisible() {
+    await expect(this.sharedLibraryBadge).not.toBeVisible();
   }
 };
