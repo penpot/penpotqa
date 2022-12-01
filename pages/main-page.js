@@ -101,6 +101,9 @@ exports.MainPage = class MainPage {
     this.fillColorIcon = page.locator(
       'div[title="Fill"] div[class="color-bullet-wrapper"]'
     );
+    this.fillColorInput = page.locator(
+      'div[title="Fill"] div[class="color-info"] input'
+    );
     this.fillOpacityInput = page.locator(
       'div[title="Fill"] div[class="input-element percentail"] input'
     );
@@ -225,6 +228,12 @@ exports.MainPage = class MainPage {
     this.gridSizeInput = page.locator('div[class="grid-option"] input');
     this.gridWidthInput = page.locator(
       'div[class="row-flex input-row"] input >> nth=1'
+    );
+    this.addFillButton = page.locator(
+      'div[class="element-set"] div:has-text("Fill") svg'
+    );
+    this.removeFillButton = page.locator(
+      'div[title="Fill"] svg[class="icon-minus"]'
     );
   }
 
@@ -722,5 +731,21 @@ exports.MainPage = class MainPage {
   async changeWidthForGrid(value) {
     await this.clearInput(this.gridWidthInput);
     await this.gridWidthInput.fill(value);
+  }
+
+  async isFillHexCodeSet(value) {
+    await expect(this.fillColorInput).toHaveValue(value);
+  }
+
+  async isFillOpacitySet(value) {
+    await expect(this.fillOpacityInput).toHaveValue(value);
+  }
+
+  async clickAddFillButton() {
+    await this.addFillButton.click();
+  }
+
+  async clickRemoveFillButton() {
+    await this.removeFillButton.click();
   }
 };
