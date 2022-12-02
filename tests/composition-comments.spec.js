@@ -18,7 +18,7 @@ mainTest("CO-339 Create comment (Toolbar)", async ({ page }) => {
       mainPage.commentAvatars,
     ],
   });
-  await mainPage.clickViewportByCoordinates(600, 400);
+  await mainPage.clickCreateCommentButton();
   await mainPage.isCommentThreadIconDisplayed();
   await expect(page).toHaveScreenshot("comment-closed-pop-up.png", {
     mask: [
@@ -54,7 +54,7 @@ mainTest(
         mainPage.commentAvatars,
       ],
     });
-    await mainPage.clickViewportByCoordinates(600, 400);
+    await mainPage.clickCreateCommentButton();
     await mainPage.isCommentThreadIconDisplayed();
     await expect(page).toHaveScreenshot("comment-latin-closed-pop-up.png", {
       mask: [
@@ -160,7 +160,7 @@ mainTest("CO-360 Resolve comment", async ({ page }) => {
   await mainPage.enterCommentText("Test Comment");
   await mainPage.clickPostCommentButton();
   await mainPage.clickResolveCommentCheckbox();
-  await mainPage.clickViewportByCoordinates(600, 400);
+  await mainPage.clickCreateCommentButton();
   await mainPage.isCommentResolvedThreadIconDisplayed();
   await expect(page).toHaveScreenshot("comment-resolved-closed-pop-up.png", {
     mask: [
