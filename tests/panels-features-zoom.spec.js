@@ -47,7 +47,7 @@ mainTest("PF-136 Zoom to fit all via top right menu", async ({ page }) => {
 mainTest("PF-138 Zoom to selected via top right menu", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportOnTop();
+  await mainPage.clickViewportByCoordinates(900, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.zoomToFitSelected();
   await mainPage.clickViewport();

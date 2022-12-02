@@ -100,8 +100,8 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.openNodesPanelViaRightclick();
     await mainPage.clickDrawNodesButtonOnNodePanel();
-    await mainPage.clickViewportByCoordinates(600, 400);
-    await mainPage.clickViewportByCoordinates(750, 500);
+    await mainPage.clickViewportByCoordinates(600, 200);
+    await mainPage.clickViewportByCoordinates(750, 300);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickMoveNodesButtonOnNodePanel();
     await mainPage.waitForChangeIsSaved();

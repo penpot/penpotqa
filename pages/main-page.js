@@ -376,13 +376,9 @@ exports.MainPage = class MainPage {
     await this.viewport.click();
   }
 
-  async clickViewportOnTop() {
-    await this.viewport.click({ position: { x: 900, y: 100 } });
-    await this.viewport.click({ position: { x: 900, y: 100 } });
-  }
-
   async clickViewportByCoordinates(x, y) {
-    await this.page.mouse.click(x, y);
+    await this.viewport.click({ position: { x: x, y: y } });
+    await this.viewport.click({ position: { x: x, y: y } });
   }
 
   async waitForChangeIsSaved() {
