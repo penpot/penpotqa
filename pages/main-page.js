@@ -297,6 +297,39 @@ exports.MainPage = class MainPage {
       'input[value="Remove as Shared Library"]'
     );
     this.sharedLibraryBadge = page.locator('span:has-text("SHARED")');
+    this.addPageButton = page.locator('div[class="add-page"] svg');
+    this.firstPageListItem = page.locator(
+      'ul[class="element-list pages-list"] div[class^="element-list-body"] >>nth=0'
+    );
+    this.secondPageListItem = page.locator(
+      'ul[class="element-list pages-list"] div[class^="element-list-body"] >>nth=1'
+    );
+    this.thirdPageListItem = page.locator(
+      'ul[class="element-list pages-list"] div[class^="element-list-body"] >>nth=1'
+    );
+    this.firstPageNameInput = page.locator(
+      'ul[class="element-list pages-list"] div[class^="element-list-body"] input'
+    );
+    this.secondPageNameInput = page.locator(
+      'ul[class="element-list pages-list"] div[class^="element-list-body"] input'
+    );
+    this.assetsPanelPagesSection = page.locator("#sitemap");
+    this.renamePageMenuItem = page.locator(
+      'li[class="context-menu-item "] a:has-text("Rename")'
+    );
+    this.duplicatePageMenuItem = page.locator(
+      'li[class="context-menu-item "] a:has-text("Duplicate")'
+    );
+    this.deletePageMenuItem = page.locator(
+      'li[class="context-menu-item "] a:has-text("Delete")'
+    );
+    this.collapseExpandPagesButton = page.locator(
+      'div[class="collapse-pages"]'
+    );
+    this.pageTrashIcon = page.locator(
+      'svg[class="icon-trash"] >> visible=true'
+    );
+    this.deletePageOkButton = page.locator('input[value="Ok"]');
   }
 
   async clickMoveButton() {
@@ -814,6 +847,7 @@ exports.MainPage = class MainPage {
   async clickMainMenuButton() {
     await this.mainMenuButton.click();
   }
+
   async clickViewMainMenuItem() {
     await this.viewMainMenuItem.click();
   }
@@ -922,5 +956,75 @@ exports.MainPage = class MainPage {
 
   async isSharedLibraryBadgeNotVisible() {
     await expect(this.sharedLibraryBadge).not.toBeVisible();
+  }
+
+  async clickAddPageButton() {
+    await this.addPageButton.click();
+  }
+
+  async isFirstPageAddedToAssetsPanel() {
+    await expect(this.firstPageListItem).toBeVisible();
+  }
+
+  async isFirstPageNameDisplayed(name) {
+    await expect(this.firstPageListItem).toHaveText(name);
+  }
+
+  async isSecondPageAddedToAssetsPanel() {
+    await expect(this.secondPageListItem).toBeVisible();
+  }
+
+  async isSecondPageNameDisplayed(name) {
+    await expect(this.secondPageListItem).toHaveText(name);
+  }
+
+  async renameFirstPageViaRightclick(newName) {
+    await this.firstPageListItem.click({ button: "right" });
+    await this.renamePageMenuItem.click();
+    await this.clearInput(this.firstPageNameInput);
+    await this.firstPageNameInput.fill(newName);
+    await this.clickViewport();
+  }
+
+  async renameSecondPageViaDoubleclick(newName) {
+    await this.secondPageListItem.dblclick();
+    await this.clearInput(this.secondPageNameInput);
+    await this.secondPageNameInput.fill(newName);
+    await this.clickViewport();
+  }
+
+  async duplicatePageViaRightclick() {
+    await this.firstPageListItem.click({ button: "right" });
+    await this.duplicatePageMenuItem.click();
+  }
+
+  async clickFirstPageOnAssetsPanel() {
+    await this.firstPageListItem.click();
+    await expect(this.firstPageListItem).toHaveClass(
+      "element-list-body selected"
+    );
+  }
+
+  async clickSecondPageOnAssetsPanel() {
+    await this.secondPageListItem.click();
+    await expect(this.secondPageListItem).toHaveClass(
+      "element-list-body selected"
+    );
+  }
+
+  async clickCollapseExpandPagesButton() {
+    await this.collapseExpandPagesButton.click();
+  }
+
+  async deleteSecondPageViaRightclick() {
+    await this.secondPageListItem.click({ button: "right" });
+    await this.deletePageMenuItem.click();
+    await this.deletePageOkButton.click();
+  }
+
+  async deleteSecondPageViaTrashIcon() {
+    await this.secondPageListItem.hover();
+    await this.pageTrashIcon.dblclick();
+    await this.deletePageOkButton.click();
   }
 };
