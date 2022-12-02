@@ -286,7 +286,10 @@ exports.MainPage = class MainPage {
     this.zoomMinusButton = page.locator(
       'span[class="zoom-btns"] button:has-text("-")'
     );
+    this.zoomResetButton = page.locator('button[class="reset-btn"]');
     this.zoomButton = page.locator('div[class="zoom-widget"]');
+    this.zoomToFitAllMenuItem = page.locator('li:has-text("Zoom to fit all")');
+    this.zoomSelectedMenuItem = page.locator('li:has-text("Zoom to selected")');
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
     this.assetsTab = page.locator('div[data-id=":assets"]');
@@ -371,6 +374,11 @@ exports.MainPage = class MainPage {
   async clickViewport() {
     await this.viewport.click();
     await this.viewport.click();
+  }
+
+  async clickViewportOnTop() {
+    await this.viewport.click({ position: { x: 900, y: 100 } });
+    await this.viewport.click({ position: { x: 900, y: 100 } });
   }
 
   async clickViewportByCoordinates(x, y) {
@@ -914,6 +922,21 @@ exports.MainPage = class MainPage {
       await this.zoomMinusButton.click();
     }
     await this.clickZoomButton();
+  }
+
+  async resetZoom() {
+    await this.clickZoomButton();
+    await this.zoomResetButton.click();
+  }
+
+  async zoomToFitAll() {
+    await this.clickZoomButton();
+    await this.zoomToFitAllMenuItem.click();
+  }
+
+  async zoomToFitSelected() {
+    await this.clickZoomButton();
+    await this.zoomSelectedMenuItem.click();
   }
 
   async pressHideShowPixelGridShortcut() {
