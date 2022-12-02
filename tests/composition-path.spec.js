@@ -13,7 +13,7 @@ mainTest("CO-272 Create Path (Toolbar) - closed", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.checkHtmlOfCreatedLayer(
-    '<path rx="0" ry="0" d="M196,152L896,652L696,352L196,152Z"></path>'
+    '<path rx="0" ry="0" d="M500,200L1200,700L1000,400L500,200ZM500,200"></path>'
   );
   await expect(page).toHaveScreenshot("path-closed.png", {
     mask: [mainPage.usersSection],
@@ -30,7 +30,7 @@ mainTest("CO-274 Create Path (Toolbar) - opened", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.checkHtmlOfCreatedLayer(
-    '<path rx="0" ry="0" d="M196,152L896,652L696,352"></path>'
+    '<path rx="0" ry="0" d="M500,200L1200,700L1000,400"></path>'
   );
   await expect(page).toHaveScreenshot("path-opened.png", {
     mask: [mainPage.usersSection],
@@ -113,7 +113,7 @@ mainTest("CO-297 Add rotation to path", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(1000, 400);
   await mainPage.clickViewportByCoordinates(500, 200);
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewport();
+  await mainPage.clickMoveButton();
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
   await expect(page).toHaveScreenshot("path-rotated-90.png", {
