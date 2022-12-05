@@ -374,6 +374,15 @@ exports.MainPage = class MainPage {
     this.historyPanelActionRecord = page.locator(
       'div[class="history-entry-summary-text"]'
     );
+    this.addExportButton = page.locator(
+      'div[class="element-set exports-options"] svg'
+    );
+    this.removeExportButton = page.locator(
+      'div[class="element-set exports-options"] svg[class="icon-minus"]'
+    );
+    this.exportElementButton = page.locator(
+      'div[class="btn-icon-dark download-button "]'
+    );
   }
 
   async clickMoveButton() {
@@ -1160,5 +1169,21 @@ exports.MainPage = class MainPage {
 
   async isActionDisplayedOnHistoryPanel(actionName) {
     await expect(this.historyPanelActionRecord).toHaveText(actionName);
+  }
+
+  async clickAddExportButton() {
+    await this.addExportButton.click();
+  }
+
+  async clickRemoveExportButton() {
+    await this.removeExportButton.click();
+  }
+
+  async isExportElementButtonDisplayed(title) {
+    await expect(this.exportElementButton).toHaveText(title);
+  }
+
+  async isExportElementButtonNotDisplayed() {
+    await expect(this.exportElementButton).not.toBeVisible();
   }
 };
