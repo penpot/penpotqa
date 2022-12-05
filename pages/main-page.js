@@ -333,6 +333,43 @@ exports.MainPage = class MainPage {
       'svg[class="icon-trash"] >> visible=true'
     );
     this.deletePageOkButton = page.locator('input[value="Ok"]');
+    this.prototypeTab = page.locator('div[data-id=":prototype"]');
+    this.prototypeArrowConnector = page.locator(
+      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=0'
+    );
+    this.prototypeArrowSecondConnector = page.locator(
+      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=1'
+    );
+    this.prototypePanelFlowNameText = page.locator(
+      'span[class="element-label flow-name"]'
+    );
+    this.prototypePanelFlowNameInput = page.locator(
+      'input[class="element-name"]'
+    );
+    this.prototypePanelFirstFlowNameText = page.locator(
+      'span[class="element-label flow-name"] >>nth=0'
+    );
+    this.prototypePanelSecondFlowNameText = page.locator(
+      'span[class="element-label flow-name"] >>nth=1'
+    );
+    this.addInteractionButton = page.locator(
+      'div:has-text("Interactions") svg[class="icon-plus"]'
+    );
+    this.removeSecondInteractionButton = page.locator(
+      'div[class="element-set-actions-button"] svg[class="icon-minus"] >>nth=1'
+    );
+    this.firstInteractionRecord = page.locator(
+      'div[class="interactions-summary"] >>nth=0'
+    );
+    this.secondInteractionRecord = page.locator(
+      'div[class="interactions-summary"] >>nth=1'
+    );
+    this.interactionDestinationSelector = page.locator(
+      'div[class="interactions-element"] select'
+    );
+    this.removeFlowButton = page.locator(
+      'div[class="flow-element"] svg[class="icon-minus"]'
+    );
   }
 
   async clickMoveButton() {
@@ -1045,5 +1082,70 @@ exports.MainPage = class MainPage {
     await this.secondPageListItem.hover();
     await this.pageTrashIcon.dblclick();
     await this.deletePageOkButton.click();
+  }
+
+  async clickPrototypeTab() {
+    await this.prototypeTab.click();
+  }
+
+  async dragAndDropPrototypeArrowConnector() {
+    await this.prototypeArrowConnector.hover();
+    await this.page.mouse.down();
+    const box = await this.createdLayer.boundingBox();
+    await this.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await this.page.mouse.up();
+  }
+
+  async isFlowNameDisplayedOnPrototypePanel(name) {
+    await expect(this.prototypePanelFlowNameText).toHaveText(name);
+  }
+
+  async isFirstFlowNameDisplayedOnPrototypePanel(name) {
+    await expect(this.prototypePanelFirstFlowNameText).toHaveText(name);
+  }
+
+  async isSecondFlowNameDisplayedOnPrototypePanel(name) {
+    await expect(this.prototypePanelSecondFlowNameText).toHaveText(name);
+  }
+
+  async isFlowNameNotDisplayedOnPrototypePanel() {
+    await expect(this.prototypePanelFlowNameText).not.toBeVisible();
+  }
+
+  async clickAddInteractionButton() {
+    await this.addInteractionButton.click();
+  }
+
+  async isPrototypeArrowSecondConnectorDisplayed() {
+    await expect(this.prototypeArrowSecondConnector).toBeVisible();
+  }
+
+  async isPrototypeArrowSecondConnectorNotDisplayed() {
+    await expect(this.prototypeArrowSecondConnector).not.toBeVisible();
+  }
+
+  async clickRemoveSecondInteractionButton() {
+    await this.secondInteractionRecord.hover();
+    await this.removeSecondInteractionButton.click();
+  }
+
+  async clickFirstInteractionRecord() {
+    await this.firstInteractionRecord.click();
+  }
+
+  async renameFlow(newName) {
+    await this.prototypePanelFlowNameText.dblclick();
+    await this.clearInput(this.prototypePanelFlowNameInput);
+    await this.prototypePanelFlowNameInput.fill(newName);
+    await this.clickPrototypeTab();
+  }
+  async clickRemoveFlowButton() {
+    await this.removeFlowButton.click();
+  }
+
+  async selectInteractionDestination(boardName) {
+    await this.interactionDestinationSelector.selectOption({
+      label: boardName,
+    });
   }
 };
