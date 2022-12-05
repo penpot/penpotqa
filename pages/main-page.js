@@ -370,6 +370,10 @@ exports.MainPage = class MainPage {
     this.removeFlowButton = page.locator(
       'div[class="flow-element"] svg[class="icon-minus"]'
     );
+    this.historyPanelButton = page.locator('button[class^="document-history"]');
+    this.historyPanelActionRecord = page.locator(
+      'div[class="history-entry-summary-text"]'
+    );
   }
 
   async clickMoveButton() {
@@ -1139,6 +1143,7 @@ exports.MainPage = class MainPage {
     await this.prototypePanelFlowNameInput.fill(newName);
     await this.clickPrototypeTab();
   }
+
   async clickRemoveFlowButton() {
     await this.removeFlowButton.click();
   }
@@ -1147,5 +1152,13 @@ exports.MainPage = class MainPage {
     await this.interactionDestinationSelector.selectOption({
       label: boardName,
     });
+  }
+
+  async clickHistoryPanelButton() {
+    await this.historyPanelButton.click();
+  }
+
+  async isActionDisplayedOnHistoryPanel(actionName) {
+    await expect(this.historyPanelActionRecord).toHaveText(actionName);
   }
 };
