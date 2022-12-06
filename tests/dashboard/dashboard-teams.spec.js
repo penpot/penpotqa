@@ -1,5 +1,5 @@
-const { dashboardTest } = require("../fixtures");
-const { DashboardPage } = require("../pages/dashboard-page");
+const { dashboardTest } = require("../../fixtures");
+const { DashboardPage } = require("../../pages/dashboard-page");
 const { test, expect } = require("@playwright/test");
 
 test.afterEach(async ({ page }) => {
