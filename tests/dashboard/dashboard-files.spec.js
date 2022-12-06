@@ -1,6 +1,6 @@
-const { dashboardTest } = require("../fixtures");
-const { MainPage } = require("../pages/main-page");
-const { DashboardPage } = require("../pages/dashboard-page");
+const { dashboardTest } = require("../../fixtures");
+const { MainPage } = require("../../pages/main-page");
+const { DashboardPage } = require("../../pages/dashboard-page");
 
 dashboardTest(
   "DA-2 Create new file (in Drafts) via 'New file' placeholder",

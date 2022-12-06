@@ -1,7 +1,7 @@
-const { mainTest } = require("../fixtures");
-const { MainPage } = require("../pages/main-page");
+const { mainTest } = require("../../fixtures");
+const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
-const { ColorPalettePopUp } = require("../pages/color-palette-popup");
+const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
 
 mainTest("CO-162 Create a text (toolbar)", async ({ page }) => {
   const mainPage = new MainPage(page);

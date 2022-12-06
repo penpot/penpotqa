@@ -1,5 +1,5 @@
-const { mainTest } = require("../fixtures");
-const { MainPage } = require("../pages/main-page");
+const { mainTest } = require("../../fixtures");
+const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
 
 mainTest("CO-268 Create curve line (Toolbar)", async ({ page }) => {

@@ -1,5 +1,5 @@
-const { mainTest } = require("../fixtures");
-const { MainPage } = require("../pages/main-page");
+const { mainTest } = require("../../fixtures");
+const { MainPage } = require("../../pages/main-page");
 
 mainTest(
   "PF-172 Open history panel (with recent changes)",

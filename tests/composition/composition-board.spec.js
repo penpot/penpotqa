@@ -1,6 +1,6 @@
-const { mainTest } = require("../fixtures");
-const { MainPage } = require("../pages/main-page");
-const { ColorPalettePopUp } = require("../pages/color-palette-popup");
+const { mainTest } = require("../../fixtures");
+const { MainPage } = require("../../pages/main-page");
+const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
 const { expect } = require("@playwright/test");
 
 mainTest("CO-1 Change color background", async ({ page }) => {

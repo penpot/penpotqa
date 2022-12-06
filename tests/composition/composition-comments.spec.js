@@ -1,5 +1,5 @@
-const { mainTest } = require("../fixtures");
-const { MainPage } = require("../pages/main-page");
+const { mainTest } = require("../../fixtures");
+const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
 
 mainTest("CO-339 Create comment (Toolbar)", async ({ page }) => {
