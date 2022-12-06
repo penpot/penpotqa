@@ -6,6 +6,9 @@ exports.ColorPalettePopUp = class ColorPalettePopUp {
   constructor(page) {
     this.page = page;
     this.hexInput = page.locator("#hex-value");
+    this.saveColorStyleButton = page.locator(
+      'button:has-text("Save color style")'
+    );
   }
 
   async setHex(value) {
@@ -19,5 +22,9 @@ exports.ColorPalettePopUp = class ColorPalettePopUp {
     for (let i = 0; i <= text.length; i++) {
       await this.page.keyboard.press("Backspace");
     }
+  }
+
+  async clickSaveColorStyleButton() {
+    await this.saveColorStyleButton.click();
   }
 };
