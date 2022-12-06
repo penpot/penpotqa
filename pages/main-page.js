@@ -293,6 +293,9 @@ exports.MainPage = class MainPage {
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
     this.assetsTab = page.locator('div[data-id=":assets"]');
+    this.assetsPanel = page.locator('div[class="assets-bar"]');
+    this.layersTab = page.locator('div[data-id=":layers"]');
+    this.layersPanel = page.locator('div[class="layers-tab"]');
     this.addAsSharedLibraryButton = page.locator(
       'input[value="Add as Shared Library"]'
     );
@@ -382,6 +385,35 @@ exports.MainPage = class MainPage {
     );
     this.exportElementButton = page.locator(
       'div[class="btn-icon-dark download-button "]'
+    );
+    this.assetsTitleText = page.locator('div[class^="asset-title"]');
+    this.assetsTypeSelector = page.locator('div[class="assets-bar"] select');
+    this.fileLibraryGraphicsUploadImageSelector = page.locator(
+      'div[class="libraries-wrapper"] input[accept="image/gif,image/png,image/svg+xml,image/webp,image/jpeg"]'
+    );
+    this.fileLibraryGraphicsUploadedImageLabel = page.locator(
+      'div[class="grid-cell"]'
+    );
+    this.renameFileLibraryGraphicsMenuItem = page.locator(
+      'li:has-text("Rename")'
+    );
+    this.deleteFileLibraryGraphicsMenuItem = page.locator(
+      'li:has-text("Delete")'
+    );
+    this.createGroupFileLibraryGraphicsMenuItem = page.locator(
+      'li:has-text("Group")'
+    );
+    this.renameGroupFileLibraryMenuItem = page.locator('li:has-text("Rename")');
+    this.ungroupFileLibraryMenuItem = page.locator('li:has-text("Ungroup")');
+    this.fileLibraryGraphicsUploadedImageNameInput = page.locator(
+      'div[class="grid-cell"] input'
+    );
+    this.groupNameInput = page.locator("#asset-name");
+    this.createGroupButton = page.locator('input[value="Create"]');
+    this.renameGroupButton = page.locator('input[value="Rename"]');
+    this.fileLibraryGroupTitle = page.locator('div[class="group-title "]');
+    this.fileLibraryChangeViewButton = page.locator(
+      'div[class="listing-option-btn"] svg'
     );
   }
 
@@ -1011,6 +1043,26 @@ exports.MainPage = class MainPage {
     await this.assetsTab.click();
   }
 
+  async switchToAssetsPanelViaShortcut() {
+    await this.page.keyboard.press("Alt+I");
+  }
+
+  async isAssetsPanelDisplayed() {
+    await expect(this.assetsPanel).toBeVisible();
+  }
+
+  async clickLayersTab() {
+    await this.layersTab.click();
+  }
+
+  async switchToLayersPanelViaShortcut() {
+    await this.page.keyboard.press("Alt+L");
+  }
+
+  async isLayersPanelDisplayed() {
+    await expect(this.layersPanel).toBeVisible();
+  }
+
   async clickAddAsSharedLibraryButton() {
     await this.addAsSharedLibraryButton.click();
   }
@@ -1185,5 +1237,78 @@ exports.MainPage = class MainPage {
 
   async isExportElementButtonNotDisplayed() {
     await expect(this.exportElementButton).not.toBeVisible();
+  }
+
+  async selectTypeFromAllAssetsSelector(type) {
+    switch (type) {
+      case "All assets":
+        await this.assetsTypeSelector.selectOption(":all");
+        break;
+      case "Components":
+        await this.assetsTypeSelector.selectOption(":components");
+        break;
+      case "Graphics":
+        await this.assetsTypeSelector.selectOption(":graphics");
+        break;
+      case "Colors":
+        await this.assetsTypeSelector.selectOption(":colors");
+        break;
+      case "Typographies":
+        await this.assetsTypeSelector.selectOption(":typographies");
+        break;
+    }
+  }
+
+  async isAssetsTitleDisplayed(title) {
+    await expect(this.assetsTitleText).toHaveText(title);
+  }
+
+  async uploadImageToFileLibraryGraphics(filePath) {
+    await this.fileLibraryGraphicsUploadImageSelector.setInputFiles(filePath);
+  }
+
+  async isImageUploadedToFileLibraryGraphics() {
+    await expect(this.fileLibraryGraphicsUploadedImageLabel).toBeVisible();
+  }
+
+  async isImageNotUploadedToFileLibraryGraphics() {
+    await expect(this.fileLibraryGraphicsUploadedImageLabel).not.toBeVisible();
+  }
+
+  async deleteFileLibraryGraphics() {
+    await this.fileLibraryGraphicsUploadedImageLabel.click({ button: "right" });
+    await this.deleteFileLibraryGraphicsMenuItem.click();
+  }
+
+  async createGroupFileLibraryGraphics(newGroupName) {
+    await this.fileLibraryGraphicsUploadedImageLabel.click({ button: "right" });
+    await this.createGroupFileLibraryGraphicsMenuItem.click();
+    await this.groupNameInput.fill(newGroupName);
+    await this.createGroupButton.click();
+  }
+
+  async isFileLibraryGroupCreated(groupName) {
+    await expect(this.fileLibraryGroupTitle).toHaveText(groupName);
+  }
+
+  async isFileLibraryGroupRemoved() {
+    await expect(this.fileLibraryGroupTitle).not.toBeVisible();
+  }
+
+  async renameGroupFileLibrary(newGroupName) {
+    await this.fileLibraryGroupTitle.click({ button: "right" });
+    await this.renameGroupFileLibraryMenuItem.click();
+    await this.clearInput(this.groupNameInput);
+    await this.groupNameInput.fill(newGroupName);
+    await this.renameGroupButton.click();
+  }
+
+  async ungroupFileLibrary() {
+    await this.fileLibraryGroupTitle.click({ button: "right" });
+    await this.ungroupFileLibraryMenuItem.click();
+  }
+
+  async clickFileLibraryChangeViewButton() {
+    await this.fileLibraryChangeViewButton.click();
   }
 };
