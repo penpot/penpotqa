@@ -394,15 +394,10 @@ exports.MainPage = class MainPage {
     this.fileLibraryGraphicsUploadedImageLabel = page.locator(
       'div[class="grid-cell"]'
     );
-    this.renameFileLibraryGraphicsMenuItem = page.locator(
-      'li:has-text("Rename")'
-    );
-    this.deleteFileLibraryGraphicsMenuItem = page.locator(
-      'li:has-text("Delete")'
-    );
-    this.createGroupFileLibraryGraphicsMenuItem = page.locator(
-      'li:has-text("Group")'
-    );
+    this.renameFileLibraryMenuItem = page.locator('li:has-text("Rename")');
+    this.deleteFileLibraryMenuItem = page.locator('li:has-text("Delete")');
+    this.editFileLibraryMenuItem = page.locator('li:has-text("Edit")');
+    this.createGroupFileLibraryMenuItem = page.locator('li:has-text("Group")');
     this.renameGroupFileLibraryMenuItem = page.locator('li:has-text("Rename")');
     this.ungroupFileLibraryMenuItem = page.locator('li:has-text("Ungroup")');
     this.fileLibraryGraphicsUploadedImageNameInput = page.locator(
@@ -414,6 +409,16 @@ exports.MainPage = class MainPage {
     this.fileLibraryGroupTitle = page.locator('div[class="group-title "]');
     this.fileLibraryChangeViewButton = page.locator(
       'div[class="listing-option-btn"] svg'
+    );
+    this.addFileLibraryColorButton = page.locator(
+      'div[class="asset-section"] svg[class="icon-plus"] >>nth=1'
+    );
+    this.fileLibraryColorsColorBullet = page.locator(
+      'div[class="color-bullet tooltip tooltip-right is-library-color"]'
+    );
+    this.fileLibraryColorsColorTitle = page.locator('div[class="name-block"]');
+    this.fileLibraryColorsColorNameInput = page.locator(
+      'input[class="element-name"]'
     );
   }
 
@@ -1277,12 +1282,12 @@ exports.MainPage = class MainPage {
 
   async deleteFileLibraryGraphics() {
     await this.fileLibraryGraphicsUploadedImageLabel.click({ button: "right" });
-    await this.deleteFileLibraryGraphicsMenuItem.click();
+    await this.deleteFileLibraryMenuItem.click();
   }
 
   async createGroupFileLibraryGraphics(newGroupName) {
     await this.fileLibraryGraphicsUploadedImageLabel.click({ button: "right" });
-    await this.createGroupFileLibraryGraphicsMenuItem.click();
+    await this.createGroupFileLibraryMenuItem.click();
     await this.groupNameInput.fill(newGroupName);
     await this.createGroupButton.click();
   }
@@ -1310,5 +1315,42 @@ exports.MainPage = class MainPage {
 
   async clickFileLibraryChangeViewButton() {
     await this.fileLibraryChangeViewButton.click();
+  }
+
+  async clickAddFileLibraryColorButton() {
+    await this.addFileLibraryColorButton.click();
+  }
+
+  async isColorAddedToFileLibraryColors(colorName) {
+    await expect(this.fileLibraryColorsColorBullet).toBeVisible();
+    await expect(this.fileLibraryColorsColorTitle).toHaveText(colorName);
+  }
+
+  async isColorNotAddedToFileLibraryColors() {
+    await expect(this.fileLibraryColorsColorBullet).not.toBeVisible();
+  }
+
+  async editFileLibraryColor() {
+    await this.fileLibraryColorsColorBullet.click({ button: "right" });
+    await this.editFileLibraryMenuItem.click();
+  }
+
+  async renameFileLibraryColor(newColorName) {
+    await this.fileLibraryColorsColorBullet.click({ button: "right" });
+    await this.renameFileLibraryMenuItem.click();
+    await this.clearInput(this.fileLibraryColorsColorNameInput);
+    await this.fileLibraryColorsColorNameInput.fill(newColorName);
+  }
+
+  async deleteFileLibraryColor() {
+    await this.fileLibraryColorsColorBullet.click({ button: "right" });
+    await this.deleteFileLibraryMenuItem.click();
+  }
+
+  async createGroupFileLibraryColors(newGroupName) {
+    await this.fileLibraryColorsColorBullet.click({ button: "right" });
+    await this.createGroupFileLibraryMenuItem.click();
+    await this.groupNameInput.fill(newGroupName);
+    await this.createGroupButton.click();
   }
 };
