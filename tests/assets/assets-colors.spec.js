@@ -75,7 +75,7 @@ mainTest("AS-26 File library colors - delete", async ({ page }) => {
   await mainPage.isAssetsTitleDisplayed("Colors (0)");
 });
 
-mainTest("AS-27 File library colors- create group", async ({ page }) => {
+mainTest("AS-27 File library colors - create group", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickAssetsTab();
@@ -88,4 +88,58 @@ mainTest("AS-27 File library colors- create group", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFileLibraryGroupCreated("Test Group");
   await expect(mainPage.assetsPanel).toHaveScreenshot("group-colors.png");
+});
+
+mainTest("AS-29 File library colors - rename group", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const colorPalettePopUp = new ColorPalettePopUp(page);
+  await mainPage.clickAssetsTab();
+  await mainPage.clickAddFileLibraryColorButton();
+  await colorPalettePopUp.setHex("#ffff00");
+  await colorPalettePopUp.clickSaveColorStyleButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createGroupFileLibraryColors("Test Group");
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.renameGroupFileLibrary("New Group");
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isFileLibraryGroupCreated("New Group");
+  await expect(mainPage.assetsPanel).toHaveScreenshot(
+    "group-colors-renamed.png"
+  );
+});
+
+mainTest("AS-32 File library colors- ungroup", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const colorPalettePopUp = new ColorPalettePopUp(page);
+  await mainPage.clickAssetsTab();
+  await mainPage.clickAddFileLibraryColorButton();
+  await colorPalettePopUp.setHex("#ffff00");
+  await colorPalettePopUp.clickSaveColorStyleButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createGroupFileLibraryColors("Test Group");
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.ungroupFileLibrary();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isFileLibraryGroupRemoved();
+  await expect(mainPage.assetsPanel).toHaveScreenshot("colors-add-color.png");
+});
+
+mainTest("AS-34 File library colors - apply to element", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const colorPalettePopUp = new ColorPalettePopUp(page);
+  await mainPage.clickAssetsTab();
+  await mainPage.clickAddFileLibraryColorButton();
+  await colorPalettePopUp.setHex("#ffff00");
+  await colorPalettePopUp.clickSaveColorStyleButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickCreateBoardButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickFileLibraryColorsColorBullet();
+  await expect(mainPage.createdLayer).toHaveScreenshot(
+    "apply-color-to-board.png"
+  );
 });

@@ -1353,4 +1353,8 @@ exports.MainPage = class MainPage {
     await this.groupNameInput.fill(newGroupName);
     await this.createGroupButton.click();
   }
+
+  async clickFileLibraryColorsColorBullet() {
+    await this.fileLibraryColorsColorBullet.click();
+  }
 };
