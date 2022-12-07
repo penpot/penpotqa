@@ -420,6 +420,28 @@ exports.MainPage = class MainPage {
     this.fileLibraryColorsColorNameInput = page.locator(
       'input[class="element-name"]'
     );
+    this.addFileLibraryTypographyButton = page.locator(
+      'div[class="asset-section"] svg[class="icon-plus"] >>nth=2'
+    );
+    this.expandMinimizeFileLibraryTypographyButton = page.locator(
+      'div[class="element-set-actions-button"] >> visible=true'
+    );
+    this.fileLibraryTypographyRecord = page.locator(
+      'div[class^="element-set-options-group typography-entry"]'
+    );
+    this.fontSelector = page.locator('div[class="input-select font-option"]');
+    this.fontSelectorSearchInput = page.locator(
+      'div[class="font-selector-dropdown"] header input'
+    );
+    this.fontSizeSelector = page.locator(
+      'div[class="editable-select input-option size-option"] span'
+    );
+    this.typographyNameInput = page.locator(
+      'input[class="element-name adv-typography-name"]'
+    );
+    this.fontRecordOnTypographiesBottomPanel = page.locator(
+      'div[class="typography-item"]'
+    );
   }
 
   async clickMoveButton() {
@@ -1356,5 +1378,71 @@ exports.MainPage = class MainPage {
 
   async clickFileLibraryColorsColorBullet() {
     await this.fileLibraryColorsColorBullet.click();
+  }
+
+  async clickAddFileLibraryTypographyButton() {
+    await this.addFileLibraryTypographyButton.click();
+  }
+
+  async minimizeFileLibraryTypography() {
+    await this.expandMinimizeFileLibraryTypographyButton.click();
+  }
+
+  async expandFileLibraryTypography() {
+    await this.fileLibraryTypographyRecord.hover();
+    await this.expandMinimizeFileLibraryTypographyButton.click();
+  }
+
+  async selectFont(fontName) {
+    await this.fontSelector.click();
+    await this.fontSelectorSearchInput.fill(fontName);
+    await this.page
+      .locator(
+        `div[class="ReactVirtualized__Grid__innerScrollContainer"] div:has-text('${fontName}')`
+      )
+      .click();
+  }
+
+  async selectFontSize(value) {
+    await this.fontSizeSelector.click();
+    await this.page
+      .locator(`ul[class="custom-select-dropdown"] li:has-text('${value}')`)
+      .click();
+  }
+
+  async editFileLibraryTypography() {
+    await this.fileLibraryTypographyRecord.click({ button: "right" });
+    await this.editFileLibraryMenuItem.click();
+  }
+
+  async renameFileLibraryTypography(newName) {
+    await this.fileLibraryTypographyRecord.click({ button: "right" });
+    await this.renameFileLibraryMenuItem.click();
+    await this.clearInput(this.typographyNameInput);
+    await this.typographyNameInput.fill(newName);
+  }
+
+  async deleteFileLibraryTypography() {
+    await this.fileLibraryTypographyRecord.click({ button: "right" });
+    await this.deleteFileLibraryMenuItem.click();
+  }
+
+  async createGroupFileLibraryTypographies(newGroupName) {
+    await this.fileLibraryTypographyRecord.click({ button: "right" });
+    await this.createGroupFileLibraryMenuItem.click();
+    await this.groupNameInput.fill(newGroupName);
+    await this.createGroupButton.click();
+  }
+
+  async clickFileLibraryTypographiesTypographyRecord() {
+    await this.fileLibraryTypographyRecord.click();
+  }
+
+  async pressOpenTypographiesBottomPanelShortcut() {
+    await this.page.keyboard.press("Alt+T");
+  }
+
+  async clickFontRecordOnTypographiesBottomPanel() {
+    await this.fontRecordOnTypographiesBottomPanel.click();
   }
 };
