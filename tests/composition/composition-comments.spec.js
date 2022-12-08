@@ -11,22 +11,12 @@ mainTest("CO-339 Create comment (Toolbar)", async ({ page }) => {
   await mainPage.isCommentDisplayedInPopUp("Test Comment");
   await mainPage.isCommentDisplayedInCommentsPanel("Test Comment");
   await expect(page).toHaveScreenshot("comment-opened-pop-up.png", {
-    mask: [
-      mainPage.fullNameInCommentTexts,
-      mainPage.usersSection,
-      mainPage.timeAgoInCommentTexts,
-      mainPage.commentAvatars,
-    ],
+    mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
   });
   await mainPage.clickCreateCommentButton();
   await mainPage.isCommentThreadIconDisplayed();
   await expect(page).toHaveScreenshot("comment-closed-pop-up.png", {
-    mask: [
-      mainPage.fullNameInCommentTexts,
-      mainPage.usersSection,
-      mainPage.timeAgoInCommentTexts,
-      mainPage.commentAvatars,
-    ],
+    mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
   });
 });
 
@@ -47,22 +37,12 @@ mainTest(
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
     );
     await expect(page).toHaveScreenshot("comment-latin-opened-pop-up.png", {
-      mask: [
-        mainPage.fullNameInCommentTexts,
-        mainPage.usersSection,
-        mainPage.timeAgoInCommentTexts,
-        mainPage.commentAvatars,
-      ],
+      mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
     });
     await mainPage.clickCreateCommentButton();
     await mainPage.isCommentThreadIconDisplayed();
     await expect(page).toHaveScreenshot("comment-latin-closed-pop-up.png", {
-      mask: [
-        mainPage.fullNameInCommentTexts,
-        mainPage.usersSection,
-        mainPage.timeAgoInCommentTexts,
-        mainPage.commentAvatars,
-      ],
+      mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
     });
   }
 );
@@ -86,12 +66,7 @@ mainTest(
     );
     await mainPage.isCommentReplyDisplayedInCommentsPanel();
     await expect(page).toHaveScreenshot("comment-reply.png", {
-      mask: [
-        mainPage.fullNameInCommentTexts,
-        mainPage.usersSection,
-        mainPage.timeAgoInCommentTexts,
-        mainPage.commentAvatars,
-      ],
+      mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
     });
   }
 );
@@ -118,12 +93,7 @@ mainTest(
     await mainPage.clickCommentThreadIcon();
     await mainPage.isCommentDisplayedInPopUp("Edited Test Comment");
     await expect(page).toHaveScreenshot("comment-edited.png", {
-      mask: [
-        mainPage.fullNameInCommentTexts,
-        mainPage.usersSection,
-        mainPage.timeAgoInCommentTexts,
-        mainPage.commentAvatars,
-      ],
+      mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
     });
   }
 );
@@ -144,12 +114,7 @@ mainTest("CO-356 Delete thread", async ({ page }) => {
     "You have no pending comment notifications"
   );
   await expect(page).toHaveScreenshot("comment-removed.png", {
-    mask: [
-      mainPage.fullNameInCommentTexts,
-      mainPage.usersSection,
-      mainPage.timeAgoInCommentTexts,
-      mainPage.commentAvatars,
-    ],
+    mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
   });
 });
 
@@ -163,21 +128,11 @@ mainTest("CO-360 Resolve comment", async ({ page }) => {
   await mainPage.clickCreateCommentButton();
   await mainPage.isCommentResolvedThreadIconDisplayed();
   await expect(page).toHaveScreenshot("comment-resolved-closed-pop-up.png", {
-    mask: [
-      mainPage.fullNameInCommentTexts,
-      mainPage.usersSection,
-      mainPage.timeAgoInCommentTexts,
-      mainPage.commentAvatars,
-    ],
+    mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
   });
   await mainPage.clickResolvedCommentThreadIcon();
   await mainPage.isResolveCommentCheckboxSelected();
   await expect(page).toHaveScreenshot("comment-resolved-opened-pop-up.png", {
-    mask: [
-      mainPage.fullNameInCommentTexts,
-      mainPage.usersSection,
-      mainPage.timeAgoInCommentTexts,
-      mainPage.commentAvatars,
-    ],
+    mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
   });
 });

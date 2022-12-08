@@ -31,6 +31,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.savedChangesIcon = page.locator('div[class="saved"]');
     this.pencilBoxButton = page.locator('div[class="main-icon"]');
     this.usersSection = page.locator('div[class="users-section"]');
+    this.commentsAuthorSection = page.locator('div[class="author"]');
     this.canvasBackgroundColorIcon = page.locator(
       'div[class="color-bullet-wrapper"]'
     );
