@@ -7,6 +7,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
    */
   constructor(page) {
     super(page);
+    this.successMessage = page.locator('div[class="banner success fixed"]');
+    this.infoMessage = page.locator('div[class="banner info fixed"]');
+
+    //Files
     this.numberOfFilesText = page.locator(
       'div[class="project-name-wrapper"] span[class="info"]'
     );
@@ -50,8 +54,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fileOptionsMenuButton = page.locator(
       'div[class="project-th-icon menu"] svg[class="icon-actions"]'
     );
-    this.successMessage = page.locator('div[class="banner success fixed"]');
-    this.infoMessage = page.locator('div[class="banner info fixed"]');
+
+    //Projects
     this.addProjectButton = page.locator('a[data-test="new-project-button"]');
     this.projectNameInput = page.locator(
       'div[class="project-name-wrapper"] div[class="edit-wrapper"]'
@@ -76,11 +80,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.projectsSidebarItem = page.locator('li:has-text("Projects")');
     this.draftsSidebarItem = page.locator('li:has-text("Drafts")');
-    this.fontsSidebarItem = page.locator('li:has-text("Fonts")');
     this.pinnedProjectsSidebarItem = page.locator(
       'div[data-test="pinned-projects"]'
     );
     this.searchInput = page.locator("#search-input");
+
+    //Fonts
+    this.fontsSidebarItem = page.locator('li:has-text("Fonts")');
     this.uploadFontSelector = page.locator("#font-upload");
     this.uploadFontButton = page.locator('button:has-text("Upload")');
     this.fontNameTableCell = page.locator(
@@ -102,17 +108,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class="font-item table-row"] input[type="text"]'
     );
     this.saveFontButton = page.locator('button:has-text("Save")');
-
     this.searchFontInput = page.locator("input[placeholder='Search font']");
-
     this.teamSelector = page.locator("div[class='current-team']");
-
     this.createNewTeamMenuItem = page.locator(
       "li[data-test='create-new-team']"
     );
 
+    //Teams
     this.teamNameInput = page.locator("#name");
-
     this.createNewTeamButton = page.locator("input[value='Create new team']");
     this.teamMenuItem = page.locator("li[class='team-name']");
     this.teamOptionsMenuButton = page.locator(
@@ -167,6 +170,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.uploadTeamImageButton = page.locator('input[type="file"]');
     this.renameTeamInput = page.locator("#name");
     this.updateTeamButton = page.locator('input[value="Update team"]');
+
+    //Libraries & Templates
     this.librariesAndTemplatesCarouselButton = page.locator(
       'span:has-text("Libraries & Templates")'
     );

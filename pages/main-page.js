@@ -7,6 +7,8 @@ exports.MainPage = class MainPage extends BasePage {
 
   constructor(page) {
     super(page);
+    //Left Toolbar
+    this.pencilBoxButton = page.locator('div[class="main-icon"]');
     this.moveButton = page.locator('button[alt="Move (V)"]');
     this.createBoardButton = page.locator('button[data-test="artboard-btn"]');
     this.createRectangleButton = page.locator('button[data-test="rect-btn"]');
@@ -16,25 +18,77 @@ exports.MainPage = class MainPage extends BasePage {
     this.createCurveButton = page.locator('button[data-test="curve-btn"]');
     this.createPathButton = page.locator('button[data-test="path-btn"]');
     this.createCommentButton = page.locator('button[alt="Comments (C)"]');
+
+    //Viewport
+    this.viewport = page.locator('div[class="viewport"]');
     this.createdLayer = page.locator('div *[id^="fills"] >> nth=0');
     this.createdBoardTitle = page.locator('g[class="frame-title"]');
+    this.textbox = page.locator(
+      'div[role="textbox"] div[contenteditable="true"]'
+    );
+
+    //Layer right-click menu items
+    this.deleteLayerMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Delete")'
+    );
+    this.transformToPathMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Transform to path")'
+    );
+    this.selectionToBoardMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Selection to board")'
+    );
+    this.createComponentMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Create component")'
+    );
+    this.flipVerticalMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Flip vertical")'
+    );
+    this.flipHorizontalMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Flip horizontal")'
+    );
+    this.editPathMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Edit")'
+    );
+
+    //Layers panel
+    this.layersTab = page.locator('div[data-id=":layers"]');
+    this.layersPanel = page.locator('div[class="layers-tab"]');
     this.createdLayerOnLayersPanelNameInput = page.locator(
       'input[class="element-name"]'
     );
     this.createdLayerOnLayersPanelNameText = page.locator(
       'span[class="element-name"]'
     );
-    this.textbox = page.locator(
-      'div[role="textbox"] div[contenteditable="true"]'
+    this.searchLayersIcon = page.locator('svg[class="icon-search"]');
+    this.searchLayersInput = page.locator('input[placeholder="Search layers"]');
+    this.searchedLayerOnLayersPanelNameText = page.locator(
+      'span[class="element-name"] >> nth=1'
     );
-    this.viewport = page.locator('div[class="viewport"]');
-    this.savedChangesIcon = page.locator('div[class="saved"]');
-    this.pencilBoxButton = page.locator('div[class="main-icon"]');
-    this.usersSection = page.locator('div[class="users-section"]');
-    this.commentsAuthorSection = page.locator('div[class="author"]');
+
+    //Design panel
     this.canvasBackgroundColorIcon = page.locator(
       'div[class="color-bullet-wrapper"]'
     );
+    this.layerRotationInput = page.locator(
+      'div[class="input-element degrees"] input'
+    );
+    this.individualCornersRadiusButton = page.locator(
+      'div[alt="Individual corners"]'
+    );
+    this.firstCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input >> nth=0'
+    );
+    this.secondCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input >> nth=1'
+    );
+    this.thirdCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input >> nth=2'
+    );
+    this.fourthCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input  >> nth=3'
+    );
+
+    //Design panel - Shadow section
     this.addShadowButton = page.locator(
       'div[class="element-set shadow-options"] div[class="add-page"] svg'
     );
@@ -58,51 +112,16 @@ exports.MainPage = class MainPage extends BasePage {
     this.shadowTypeSelector = page.locator(
       'div[class="element-set shadow-options"] select >> nth=1'
     );
+
+    //Design panel - Blur section
     this.addBlurButton = page.locator(
       'div[class="element-set"] div:has-text("Blur") svg'
     );
     this.blurValueInput = page.locator(
       'div[class="row-flex input-row"] div[class="input-element pixels"] input'
     );
-    this.deleteLayerMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Delete")'
-    );
-    this.transformToPathMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Transform to path")'
-    );
-    this.selectionToBoardMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Selection to board")'
-    );
-    this.createComponentMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Create component")'
-    );
-    this.flipVerticalMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Flip vertical")'
-    );
-    this.flipHorizontalMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Flip horizontal")'
-    );
-    this.editPathMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Edit")'
-    );
-    this.layerRotationInput = page.locator(
-      'div[class="input-element degrees"] input'
-    );
-    this.individualCornersRadiusButton = page.locator(
-      'div[alt="Individual corners"]'
-    );
-    this.firstCornerRadiusInput = page.locator(
-      'div[class="input-element mini"] input >> nth=0'
-    );
-    this.secondCornerRadiusInput = page.locator(
-      'div[class="input-element mini"] input >> nth=1'
-    );
-    this.thirdCornerRadiusInput = page.locator(
-      'div[class="input-element mini"] input >> nth=2'
-    );
-    this.fourthCornerRadiusInput = page.locator(
-      'div[class="input-element mini"] input  >> nth=3'
-    );
+
+    //Design panel - Fill section
     this.fillColorIcon = page.locator(
       'div[title="Fill"] div[class="color-bullet-wrapper"]'
     );
@@ -112,6 +131,57 @@ exports.MainPage = class MainPage extends BasePage {
     this.fillOpacityInput = page.locator(
       'div[title="Fill"] div[class="input-element percentail"] input'
     );
+    this.addFillButton = page.locator(
+      'div[class="element-set"] div:has-text("Fill") svg'
+    );
+    this.removeFillButton = page.locator(
+      'div[title="Fill"] svg[class="icon-minus"]'
+    );
+
+    //Design panel - Grid section
+    this.gridMainOptionSection = page.locator('div[class="grid-option-main"]');
+    this.addGridButton = page.locator(
+      'div[class="element-set"] div:has-text("Grid") svg'
+    );
+    this.removeGridButton = page.locator(
+      'div[class="grid-option-main-actions"] svg[class="icon-minus"]'
+    );
+    this.gridTypeSelector = page.locator(
+      'div[class="custom-select flex-grow"]'
+    );
+    this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
+    this.gridTypeSelectorColumnsOption = page.locator(
+      'span:has-text("Columns")'
+    );
+    this.gridTypeSelectorRowsOption = page.locator('span:has-text("Rows")');
+    this.gridSizeInput = page.locator('div[class="grid-option"] input');
+    this.gridActionsButton = page.locator(
+      'div[class="grid-option"] svg[class="icon-actions"] >> visible=true'
+    );
+    this.gridOpacityInput = page.locator(
+      'div[class="grid-option"] div[class="input-element percentail"] input'
+    );
+    this.useDefaultGridButton = page.locator('button:has-text("Use default")');
+    this.setAsDefaultGridButton = page.locator(
+      'button:has-text("Set as default")'
+    );
+    this.gridSizeInput = page.locator('div[class="grid-option"] input');
+    this.gridWidthInput = page.locator(
+      'div[class="row-flex input-row"] input >> nth=1'
+    );
+
+    //Design panel - Export section
+    this.addExportButton = page.locator(
+      'div[class="element-set exports-options"] svg'
+    );
+    this.removeExportButton = page.locator(
+      'div[class="element-set exports-options"] svg[class="icon-minus"]'
+    );
+    this.exportElementButton = page.locator(
+      'div[class="btn-icon-dark download-button "]'
+    );
+
+    //Node panel
     this.firstNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=0'
     );
@@ -157,6 +227,8 @@ exports.MainPage = class MainPage extends BasePage {
     this.nodePanelToCurveButton = page.locator(
       'div[alt="To curve (C)"] >> nth=0'
     );
+
+    //Comments
     this.commentInput = page.locator("textarea >> nth=0");
     this.commentText = page.locator(
       'div[class="thread-content"] span[class="text"]'
@@ -171,9 +243,6 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class="thread-groups"] span:has-text("1 reply")'
     );
     this.postCommentButton = page.locator('input[value="Post"]');
-    this.commentAvatars = page.locator('div[class="avatar"]');
-    this.fullNameInCommentTexts = page.locator('div[class="fullname"]');
-    this.timeAgoInCommentTexts = page.locator('div[class="timeago"]');
     this.commentThreadIcon = page.locator(
       'div[class="thread-bubble "]  >> nth=1'
     );
@@ -199,47 +268,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.commentsPanelPlaceholderText = page.locator(
       'div[class="thread-groups-placeholder"]'
     );
-    this.searchLayersIcon = page.locator('svg[class="icon-search"]');
-    this.searchLayersInput = page.locator('input[placeholder="Search layers"]');
-    this.searchedLayerOnLayersPanelNameText = page.locator(
-      'span[class="element-name"] >> nth=1'
-    );
-    this.gridMainOptionSection = page.locator('div[class="grid-option-main"]');
-    this.addGridButton = page.locator(
-      'div[class="element-set"] div:has-text("Grid") svg'
-    );
-    this.removeGridButton = page.locator(
-      'div[class="grid-option-main-actions"] svg[class="icon-minus"]'
-    );
-    this.gridTypeSelector = page.locator(
-      'div[class="custom-select flex-grow"]'
-    );
-    this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
-    this.gridTypeSelectorColumnsOption = page.locator(
-      'span:has-text("Columns")'
-    );
-    this.gridTypeSelectorRowsOption = page.locator('span:has-text("Rows")');
-    this.gridSizeInput = page.locator('div[class="grid-option"] input');
-    this.gridActionsButton = page.locator(
-      'div[class="grid-option"] svg[class="icon-actions"] >> visible=true'
-    );
-    this.gridOpacityInput = page.locator(
-      'div[class="grid-option"] div[class="input-element percentail"] input'
-    );
-    this.useDefaultGridButton = page.locator('button:has-text("Use default")');
-    this.setAsDefaultGridButton = page.locator(
-      'button:has-text("Set as default")'
-    );
-    this.gridSizeInput = page.locator('div[class="grid-option"] input');
-    this.gridWidthInput = page.locator(
-      'div[class="row-flex input-row"] input >> nth=1'
-    );
-    this.addFillButton = page.locator(
-      'div[class="element-set"] div:has-text("Fill") svg'
-    );
-    this.removeFillButton = page.locator(
-      'div[title="Fill"] svg[class="icon-minus"]'
-    );
+    this.commentsAuthorSection = page.locator('div[class="author"]');
+
+    //Main menu
     this.mainMenuButton = page.locator(
       'div[class="menu-section"] svg[class="icon-actions"]'
     );
@@ -285,6 +316,8 @@ exports.MainPage = class MainPage extends BasePage {
     this.removeAsSharedLibraryFileMenuSubItem = page.locator(
       'ul[class="sub-menu file"] span:has-text("Remove as Shared Library")'
     );
+
+    //Zoom
     this.zoomPlusButton = page.locator(
       'span[class="zoom-btns"] button:has-text("+")'
     );
@@ -297,10 +330,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.zoomSelectedMenuItem = page.locator('li:has-text("Zoom to selected")');
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
+
+    //Assets panel
     this.assetsTab = page.locator('div[data-id=":assets"]');
     this.assetsPanel = page.locator('div[class="assets-bar"]');
-    this.layersTab = page.locator('div[data-id=":layers"]');
-    this.layersPanel = page.locator('div[class="layers-tab"]');
     this.addAsSharedLibraryButton = page.locator(
       'input[value="Add as Shared Library"]'
     );
@@ -341,56 +374,6 @@ exports.MainPage = class MainPage extends BasePage {
       'svg[class="icon-trash"] >> visible=true'
     );
     this.deletePageOkButton = page.locator('input[value="Ok"]');
-    this.prototypeTab = page.locator('div[data-id=":prototype"]');
-    this.prototypeArrowConnector = page.locator(
-      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=0'
-    );
-    this.prototypeArrowSecondConnector = page.locator(
-      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=1'
-    );
-    this.prototypePanelFlowNameText = page.locator(
-      'span[class="element-label flow-name"]'
-    );
-    this.prototypePanelFlowNameInput = page.locator(
-      'input[class="element-name"]'
-    );
-    this.prototypePanelFirstFlowNameText = page.locator(
-      'span[class="element-label flow-name"] >>nth=0'
-    );
-    this.prototypePanelSecondFlowNameText = page.locator(
-      'span[class="element-label flow-name"] >>nth=1'
-    );
-    this.addInteractionButton = page.locator(
-      'div:has-text("Interactions") svg[class="icon-plus"]'
-    );
-    this.removeSecondInteractionButton = page.locator(
-      'div[class="element-set-actions-button"] svg[class="icon-minus"] >>nth=1'
-    );
-    this.firstInteractionRecord = page.locator(
-      'div[class="interactions-summary"] >>nth=0'
-    );
-    this.secondInteractionRecord = page.locator(
-      'div[class="interactions-summary"] >>nth=1'
-    );
-    this.interactionDestinationSelector = page.locator(
-      'div[class="interactions-element"] select'
-    );
-    this.removeFlowButton = page.locator(
-      'div[class="flow-element"] svg[class="icon-minus"]'
-    );
-    this.historyPanelButton = page.locator('button[class^="document-history"]');
-    this.historyPanelActionRecord = page.locator(
-      'div[class="history-entry-summary-text"]'
-    );
-    this.addExportButton = page.locator(
-      'div[class="element-set exports-options"] svg'
-    );
-    this.removeExportButton = page.locator(
-      'div[class="element-set exports-options"] svg[class="icon-minus"]'
-    );
-    this.exportElementButton = page.locator(
-      'div[class="btn-icon-dark download-button "]'
-    );
     this.assetsTitleText = page.locator('div[class^="asset-title"]');
     this.assetsTypeSelector = page.locator('div[class="assets-bar"] select');
     this.fileLibraryGraphicsUploadImageSelector = page.locator(
@@ -452,6 +435,55 @@ exports.MainPage = class MainPage extends BasePage {
     );
     this.fileLibraryGraphicsSecondComponentLabel = page.locator(
       'div[class="grid-cell"] >>nth=1'
+    );
+
+    //Prototype panel
+    this.prototypeTab = page.locator('div[data-id=":prototype"]');
+    this.prototypeArrowConnector = page.locator(
+      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=0'
+    );
+    this.prototypeArrowSecondConnector = page.locator(
+      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=1'
+    );
+    this.prototypePanelFlowNameText = page.locator(
+      'span[class="element-label flow-name"]'
+    );
+    this.prototypePanelFlowNameInput = page.locator(
+      'input[class="element-name"]'
+    );
+    this.prototypePanelFirstFlowNameText = page.locator(
+      'span[class="element-label flow-name"] >>nth=0'
+    );
+    this.prototypePanelSecondFlowNameText = page.locator(
+      'span[class="element-label flow-name"] >>nth=1'
+    );
+    this.addInteractionButton = page.locator(
+      'div:has-text("Interactions") svg[class="icon-plus"]'
+    );
+    this.removeSecondInteractionButton = page.locator(
+      'div[class="element-set-actions-button"] svg[class="icon-minus"] >>nth=1'
+    );
+    this.firstInteractionRecord = page.locator(
+      'div[class="interactions-summary"] >>nth=0'
+    );
+    this.secondInteractionRecord = page.locator(
+      'div[class="interactions-summary"] >>nth=1'
+    );
+    this.interactionDestinationSelector = page.locator(
+      'div[class="interactions-element"] select'
+    );
+    this.removeFlowButton = page.locator(
+      'div[class="flow-element"] svg[class="icon-minus"]'
+    );
+
+    //Header
+    this.savedChangesIcon = page.locator('div[class="saved"]');
+    this.usersSection = page.locator('div[class="users-section"]');
+
+    //History panel
+    this.historyPanelButton = page.locator('button[class^="document-history"]');
+    this.historyPanelActionRecord = page.locator(
+      'div[class="history-entry-summary-text"]'
     );
   }
 
