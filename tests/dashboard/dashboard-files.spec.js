@@ -19,7 +19,7 @@ dashboardTest("DA-3 Open file (in Drafts)", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickPencilBoxButton();
   await dashboardPage.checkNumberOfFiles("1 file");
-  await page.reload();
+  await dashboardPage.reloadPage();
   await dashboardPage.openFIle();
   await mainPage.isMainPageLoaded();
 });
@@ -46,7 +46,7 @@ dashboardTest(
     await dashboardPage.isSuccessMessageDisplayed(
       "Your file has been duplicated successfully"
     );
-    await page.reload();
+    await dashboardPage.reloadPage();
     await dashboardPage.checkNumberOfFiles("2 files");
   }
 );
@@ -170,13 +170,13 @@ dashboardTest("DA-29 Duplicate file (in Project)", async ({ page }) => {
   await dashboardPage.isSuccessMessageDisplayed(
     "Your file has been duplicated successfully"
   );
-  await page.reload();
+  await dashboardPage.reloadPage();
   await dashboardPage.checkNumberOfFiles("2 files");
   await dashboardPage.duplicateFileViaOptionsIcon();
   await dashboardPage.isSuccessMessageDisplayed(
     "Your file has been duplicated successfully"
   );
-  await page.reload();
+  await dashboardPage.reloadPage();
   await dashboardPage.checkNumberOfFiles("3 files");
 });
 
@@ -239,7 +239,7 @@ dashboardTest(
     await mainPage.clickPencilBoxButton();
     await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
     await dashboardPage.isSharedLibraryIconDisplayed();
-    await page.reload();
+    await dashboardPage.reloadPage();
     await dashboardPage.deleteFileAsSharedLibraryViaOptionsIcon();
     await dashboardPage.isSharedLibraryIconNotDisplayed();
   }

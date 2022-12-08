@@ -1,11 +1,12 @@
 const { expect } = require("@playwright/test");
-exports.MainPage = class MainPage {
+const { BasePage } = require("./base-page");
+exports.MainPage = class MainPage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
 
   constructor(page) {
-    this.page = page;
+    super(page);
     this.moveButton = page.locator('button[alt="Move (V)"]');
     this.createBoardButton = page.locator('button[data-test="artboard-btn"]');
     this.createRectangleButton = page.locator('button[data-test="rect-btn"]');
@@ -593,14 +594,6 @@ exports.MainPage = class MainPage {
 
   async clickShadowColorIcon() {
     await this.shadowColorIcon.click();
-  }
-
-  async clearInput(input) {
-    await input.click();
-    let text = await input.inputValue();
-    for (let i = 0; i <= text.length; i++) {
-      await this.page.keyboard.press("Backspace");
-    }
   }
 
   async selectTypeForShadow(type) {
