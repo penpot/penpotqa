@@ -182,7 +182,7 @@ mainTest(
     await mainPage.clickViewport();
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.editFileLibraryTypography();
-    await mainPage.selectFont("Black Han Sans");
+    await mainPage.selectFont("Bad Script");
     await mainPage.selectFontSize("36");
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewport();
@@ -197,7 +197,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickMoveButton();
     await expect(mainPage.createdLayer).toHaveScreenshot(
-      "apply-typography-to-text-from-bottom-panel.png"
+      "apply-typography-to-text.png"
     );
   }
 );
