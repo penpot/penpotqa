@@ -112,7 +112,7 @@ mainTest(
     await mainPage.enterCommentText("Edited Test Comment");
     await mainPage.clickPostCommentButton();
     await mainPage.isCommentDisplayedInPopUp("Edited Test Comment");
-    await page.reload();
+    await mainPage.reloadPage();
     await mainPage.clickCreateCommentButton();
     await mainPage.isCommentDisplayedInCommentsPanel("Edited Test Comment");
     await mainPage.clickCommentThreadIcon();

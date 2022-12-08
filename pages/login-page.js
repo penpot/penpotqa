@@ -1,11 +1,11 @@
 const { expect } = require("@playwright/test");
-exports.LoginPage = class LoginPage {
+const { BasePage } = require("./base-page");
+exports.LoginPage = class LoginPage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
   constructor(page) {
-    this.page = page;
-    this.header = page.locator("h1");
+    super(page);
     this.emailInput = page.locator("#email");
     this.pwdInput = page.locator("#password");
     this.loginButton = page.locator('input[name="submit"]');

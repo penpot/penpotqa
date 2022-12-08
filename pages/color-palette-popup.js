@@ -1,10 +1,11 @@
-exports.ColorPalettePopUp = class ColorPalettePopUp {
+const { BasePage } = require("./base-page");
+exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
 
   constructor(page) {
-    this.page = page;
+    super(page);
     this.hexInput = page.locator("#hex-value");
     this.saveColorStyleButton = page.locator(
       'button:has-text("Save color style")'
@@ -14,14 +15,6 @@ exports.ColorPalettePopUp = class ColorPalettePopUp {
   async setHex(value) {
     await this.clearInput(this.hexInput);
     await this.hexInput.fill(value);
-  }
-
-  async clearInput(input) {
-    await input.click();
-    let text = await input.inputValue();
-    for (let i = 0; i <= text.length; i++) {
-      await this.page.keyboard.press("Backspace");
-    }
   }
 
   async clickSaveColorStyleButton() {

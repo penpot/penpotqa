@@ -1,12 +1,12 @@
 const { expect } = require("@playwright/test");
+const { BasePage } = require("./base-page");
 
-exports.DashboardPage = class DashboardPage {
+exports.DashboardPage = class DashboardPage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
   constructor(page) {
-    this.page = page;
-    this.header = page.locator("h1");
+    super(page);
     this.numberOfFilesText = page.locator(
       'div[class="project-name-wrapper"] span[class="info"]'
     );
@@ -503,14 +503,6 @@ exports.DashboardPage = class DashboardPage {
     await this.fontNameInput.type(newFontName);
     await this.saveFontButton.click();
     await expect(this.fontNameTableCell).toHaveText(newFontName);
-  }
-
-  async clearInput(input) {
-    await input.click();
-    let text = await input.inputValue();
-    for (let i = 0; i <= text.length; i++) {
-      await this.page.keyboard.press("Backspace");
-    }
   }
 
   async searchFont(fontName) {

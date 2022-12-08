@@ -1,11 +1,11 @@
 const { expect } = require("@playwright/test");
-exports.ProfilePage = class ProfilePage {
+const { BasePage } = require("./base-page");
+exports.ProfilePage = class ProfilePage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
   constructor(page) {
-    this.page = page;
-    this.header = page.locator("h1");
+    super(page);
     this.profileMenuButton = page.locator('div[data-test="profile-btn"]');
     this.yourAccountMenuItem = page.locator(
       'li[data-test="profile-profile-opt"]'
@@ -40,14 +40,6 @@ exports.ProfilePage = class ProfilePage {
   async isHeaderDisplayed(title) {
     await expect(this.header).toBeVisible();
     await expect(this.header).toHaveText(title);
-  }
-
-  async clearInput(input) {
-    await input.click();
-    let text = await input.inputValue();
-    for (let i = 0; i <= text.length; i++) {
-      await this.page.keyboard.press("Backspace");
-    }
   }
 
   async changeProfileName(newName) {
