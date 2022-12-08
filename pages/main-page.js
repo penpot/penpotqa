@@ -71,6 +71,9 @@ exports.MainPage = class MainPage {
     this.selectionToBoardMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Selection to board")'
     );
+    this.createComponentMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Create component")'
+    );
     this.flipVerticalMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Flip vertical")'
     );
@@ -397,12 +400,12 @@ exports.MainPage = class MainPage {
     this.renameFileLibraryMenuItem = page.locator('li:has-text("Rename")');
     this.deleteFileLibraryMenuItem = page.locator('li:has-text("Delete")');
     this.editFileLibraryMenuItem = page.locator('li:has-text("Edit")');
+    this.duplicateFileLibraryMenuItem = page.locator(
+      'li:has-text("Duplicate")'
+    );
     this.createGroupFileLibraryMenuItem = page.locator('li:has-text("Group")');
     this.renameGroupFileLibraryMenuItem = page.locator('li:has-text("Rename")');
     this.ungroupFileLibraryMenuItem = page.locator('li:has-text("Ungroup")');
-    this.fileLibraryGraphicsUploadedImageNameInput = page.locator(
-      'div[class="grid-cell"] input'
-    );
     this.groupNameInput = page.locator("#asset-name");
     this.createGroupButton = page.locator('input[value="Create"]');
     this.renameGroupButton = page.locator('input[value="Rename"]');
@@ -441,6 +444,12 @@ exports.MainPage = class MainPage {
     );
     this.fontRecordOnTypographiesBottomPanel = page.locator(
       'div[class="typography-item"]'
+    );
+    this.fileLibraryGraphicsComponentLabel = page.locator(
+      'div[class="grid-cell"]'
+    );
+    this.fileLibraryGraphicsSecondComponentLabel = page.locator(
+      'div[class="grid-cell"] >>nth=1'
     );
   }
 
@@ -627,6 +636,11 @@ exports.MainPage = class MainPage {
   async selectionToBoardViaRightclick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.selectionToBoardMenuItem.click();
+  }
+
+  async createComponentViaRightclick() {
+    await this.createdLayer.click({ button: "right", force: true });
+    await this.createComponentMenuItem.click();
   }
 
   async flipVerticalViaRightclick() {
@@ -1444,5 +1458,27 @@ exports.MainPage = class MainPage {
 
   async clickFontRecordOnTypographiesBottomPanel() {
     await this.fontRecordOnTypographiesBottomPanel.click();
+  }
+
+  async isComponentAddedToFileLibraryComponents() {
+    await expect(this.fileLibraryGraphicsComponentLabel).toBeVisible();
+  }
+
+  async isSecondComponentAddedToFileLibraryComponents() {
+    await expect(this.fileLibraryGraphicsSecondComponentLabel).toBeVisible();
+  }
+
+  async isComponentNotAddedToFileLibraryComponents() {
+    await expect(this.fileLibraryGraphicsComponentLabel).not.toBeVisible();
+  }
+
+  async duplicateFileLibraryComponents() {
+    await this.fileLibraryGraphicsComponentLabel.click({ button: "right" });
+    await this.duplicateFileLibraryMenuItem.click();
+  }
+
+  async deleteFileLibraryComponents() {
+    await this.fileLibraryGraphicsComponentLabel.click({ button: "right" });
+    await this.deleteFileLibraryMenuItem.click();
   }
 };
