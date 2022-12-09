@@ -18,6 +18,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.createCurveButton = page.locator('button[data-test="curve-btn"]');
     this.createPathButton = page.locator('button[data-test="path-btn"]');
     this.createCommentButton = page.locator('button[alt="Comments (C)"]');
+    this.shortcutsPanelButton = page.locator('button[alt="Shortcuts (?)"]');
 
     //Viewport
     this.viewport = page.locator('div[class="viewport"]');
@@ -491,6 +492,8 @@ exports.MainPage = class MainPage extends BasePage {
     this.historyPanelActionRecord = page.locator(
       'div[class="history-entry-summary-text"]'
     );
+    //Shortcuts panel
+    this.shortcutsPanel = page.locator('div[class="shortcuts"]');
   }
 
   async clickMoveButton() {
@@ -1544,5 +1547,17 @@ exports.MainPage = class MainPage extends BasePage {
         `div[class="tool-window-bar library-bar"] span:has-text('${libraryName}')`
       )
     ).not.toBeVisible();
+  }
+
+  async clickShortcutsPanelButton() {
+    await this.shortcutsPanelButton.click();
+  }
+
+  async isShortcutsPanelDisplayed() {
+    await expect(this.shortcutsPanel).toBeVisible();
+  }
+
+  async isShortcutsPanelNotDisplayed() {
+    await expect(this.shortcutsPanel).not.toBeVisible();
   }
 };
