@@ -13,9 +13,7 @@ mainTest("CO-162 Create a text (toolbar)", async ({ page }) => {
   await mainPage.checkHtmlOfCreatedLayer(
     '<text y="459" textLength="72.4375" lengthAdjust="spacingAndGlyphs" x="680" dominant-baseline="text-before-edge" style="text-transform: none; font-family: sourcesanspro; letter-spacing: normal; font-style: normal; font-weight: 400; white-space: pre; font-size: 14px; text-decoration: none solid rgb(0, 0, 0); direction: ltr; fill: rgb(0, 0, 0); fill-opacity: 1;">Hello World!</text>'
   );
-  await expect(page).toHaveScreenshot("text.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("text.png");
 });
 
 mainTest("CO-165 Add rotation to text", async ({ page }) => {
@@ -25,24 +23,16 @@ mainTest("CO-165 Add rotation to text", async ({ page }) => {
   await mainPage.typeText("Hello World!");
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("text-rotated-90.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("text-rotated-90.png");
   await mainPage.changeRotationForLayer("120");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("text-rotated-120.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("text-rotated-120.png");
   await mainPage.changeRotationForLayer("45");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("text-rotated-45.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("text-rotated-45.png");
   await mainPage.changeRotationForLayer("360");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("text-rotated-359.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("text-rotated-359.png");
 });
 
 mainTest("CO-167 Add and edit Shadow to text", async ({ page }) => {
@@ -62,9 +52,7 @@ mainTest("CO-167 Add and edit Shadow to text", async ({ page }) => {
   await colorPalettePopUp.setHex("#304d6a");
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("text-drop-shadow.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("text-drop-shadow.png");
   await mainPage.selectTypeForShadow("Inner shadow");
   await mainPage.changeXForShadow("5");
   await mainPage.changeYForShadow("7");
@@ -75,9 +63,7 @@ mainTest("CO-167 Add and edit Shadow to text", async ({ page }) => {
   await colorPalettePopUp.setHex("#96e637");
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("text-inner-shadow.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("text-inner-shadow.png");
 });
 
 mainTest("CO-170 Add and edit Blur to text", async ({ page }) => {
@@ -88,9 +74,7 @@ mainTest("CO-170 Add and edit Blur to text", async ({ page }) => {
   await mainPage.clickAddBlurButton();
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("text-blur.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("text-blur.png");
 });
 
 mainTest("CO-173-1 Delete text via rightclick", async ({ page }) => {
@@ -103,9 +87,7 @@ mainTest("CO-173-1 Delete text via rightclick", async ({ page }) => {
   await mainPage.isCreatedLayerVisible();
   await mainPage.deleteLayerViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("empty-canvas.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
 
 mainTest("CO-173-2 Delete text via shortcut Del", async ({ page }) => {
@@ -118,9 +100,7 @@ mainTest("CO-173-2 Delete text via shortcut Del", async ({ page }) => {
   await mainPage.isCreatedLayerVisible();
   await mainPage.deleteLayerViaShortcut();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("empty-canvas.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
 
 mainTest("CO-177 Rename text with valid name", async ({ page }) => {
@@ -151,9 +131,7 @@ mainTest(
     await mainPage.changeOpacityForFill("50");
     await mainPage.clickViewport();
     await mainPage.waitForChangeIsSaved();
-    await expect(page).toHaveScreenshot("text-fill-opacity.png", {
-      mask: [mainPage.usersSection],
-    });
+    await expect(mainPage.viewport).toHaveScreenshot("text-fill-opacity.png");
   }
 );
 
@@ -166,7 +144,5 @@ mainTest("CO-219 Selection to board", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.selectionToBoardViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("text-to-board.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("text-to-board.png");
 });

@@ -15,9 +15,7 @@ mainTest("CO-272 Create Path (Toolbar) - closed", async ({ page }) => {
   await mainPage.checkHtmlOfCreatedLayer(
     '<path rx="0" ry="0" d="M500,200L1200,700L1000,400L500,200ZM500,200"></path>'
   );
-  await expect(page).toHaveScreenshot("path-closed.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-closed.png");
 });
 
 mainTest("CO-274 Create Path (Toolbar) - opened", async ({ page }) => {
@@ -32,9 +30,7 @@ mainTest("CO-274 Create Path (Toolbar) - opened", async ({ page }) => {
   await mainPage.checkHtmlOfCreatedLayer(
     '<path rx="0" ry="0" d="M500,200L1200,700L1000,400"></path>'
   );
-  await expect(page).toHaveScreenshot("path-opened.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-opened.png");
 });
 
 mainTest("CO-277 Rename path with valid name", async ({ page }) => {
@@ -71,9 +67,7 @@ mainTest("CO-280 Add and edit Shadow to path", async ({ page }) => {
   await colorPalettePopUp.setHex("#304d6a");
   await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-drop-shadow.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-drop-shadow.png");
   await mainPage.selectTypeForShadow("Inner shadow");
   await mainPage.changeXForShadow("5");
   await mainPage.changeYForShadow("7");
@@ -84,9 +78,7 @@ mainTest("CO-280 Add and edit Shadow to path", async ({ page }) => {
   await colorPalettePopUp.setHex("#96e637");
   await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-inner-shadow.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-inner-shadow.png");
 });
 
 mainTest("CO-283 Add and edit Blur to path", async ({ page }) => {
@@ -100,9 +92,7 @@ mainTest("CO-283 Add and edit Blur to path", async ({ page }) => {
   await mainPage.clickAddBlurButton();
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-blur.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-blur.png");
 });
 
 mainTest("CO-297 Add rotation to path", async ({ page }) => {
@@ -116,24 +106,16 @@ mainTest("CO-297 Add rotation to path", async ({ page }) => {
   await mainPage.clickMoveButton();
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-rotated-90.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-rotated-90.png");
   await mainPage.changeRotationForLayer("120");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-rotated-120.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-rotated-120.png");
   await mainPage.changeRotationForLayer("45");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-rotated-45.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-rotated-45.png");
   await mainPage.changeRotationForLayer("360");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-rotated-359.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-rotated-359.png");
 });
 
 mainTest("CO-298-1 Delete path via rightclick", async ({ page }) => {
@@ -149,9 +131,7 @@ mainTest("CO-298-1 Delete path via rightclick", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(500, 200);
   await mainPage.deleteLayerViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("empty-canvas.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
 
 mainTest("CO-298-2 Delete path via shortcut Del", async ({ page }) => {
@@ -167,9 +147,7 @@ mainTest("CO-298-2 Delete path via shortcut Del", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(1200, 700);
   await mainPage.deleteLayerViaShortcut();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("empty-canvas.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
 
 mainTest("CO-310 Flip Vertical and Flip Horizontal path", async ({ page }) => {
@@ -183,24 +161,20 @@ mainTest("CO-310 Flip Vertical and Flip Horizontal path", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.flipVerticalViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-flipped-vertical.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-flipped-vertical.png");
   await mainPage.flipHorizontalViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-flipped-vertical-horizontal.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "path-flipped-vertical-horizontal.png"
+  );
   await mainPage.flipVerticalViaShortcut();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-flipped-horizontal.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "path-flipped-horizontal.png"
+  );
   await mainPage.flipHorizontalViaShortcut();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-non-flipped-jpeg.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-non-flipped-jpeg.png");
 });
 
 mainTest("CO-322 Selection to board", async ({ page }) => {
@@ -214,7 +188,5 @@ mainTest("CO-322 Selection to board", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.selectionToBoardViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("path-to-board.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("path-to-board.png");
 });
