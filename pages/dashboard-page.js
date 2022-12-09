@@ -15,6 +15,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class="project-name-wrapper"] span[class="info"]'
     );
     this.fileTile = page.locator('div[class="grid-item-th"]');
+    this.secondFileTile = page.locator('div[class="grid-item-th"] >>nth=1');
     this.fileInfoPanel = page.locator('div[class="item-info"]');
     this.fileNameTitle = page.locator('div[class="item-info"] h3');
     this.deleteFileMenuItem = page.locator('a[data-test="file-delete"]');
@@ -185,6 +186,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class="button right"]'
     );
     this.teamInfoSection = page.locator('div[class="block info-block"]');
+    this.continueButton = page.locator('input[value="Continue"]');
+    this.acceptButton = page.locator('input[value="Accept"]');
   }
 
   async isHeaderDisplayed(title) {
@@ -676,7 +679,19 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.waitForPageLoaded();
   }
 
-  async openFIle() {
+  async openFile() {
     await this.fileTile.dblclick();
+  }
+
+  async openSecondFile() {
+    await this.secondFileTile.dblclick();
+  }
+
+  async importSharedLibrary(libraryName) {
+    await this.page
+      .locator(`div[class="card-name"] span:has-text('${libraryName}')`)
+      .click();
+    await this.continueButton.click();
+    await this.acceptButton.click();
   }
 };
