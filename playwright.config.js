@@ -36,6 +36,7 @@ const config = {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.BASE_URL,
     browserName: "chromium",
+    channel: "chrome",
     headless: false,
     viewport: null,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */

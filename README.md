@@ -4,7 +4,7 @@ QA Test for Penpot
 
 Based on Playwright framework.
 
-By default, the tests are configured to run in Chromium browser on Windows.
+By default, the tests are configured to run in Chrome browser on Windows (screen resolution 1920x1080).
 For running locally, put the .env file to the root of the project with 3 env variables:
 
 LOGIN_EMAIL (email from your Penpot account)
