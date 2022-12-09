@@ -182,6 +182,11 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class="btn-icon-dark download-button "]'
     );
 
+    //Design panel - Stroke section
+    this.addStrokeButton = page.locator(
+      'div[class="element-set"] div:has-text("Stroke") svg'
+    );
+
     //Node panel
     this.firstNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=0'
@@ -1429,6 +1434,12 @@ exports.MainPage = class MainPage extends BasePage {
     await this.fileLibraryColorsColorBullet.click();
   }
 
+  async clickAndPressAltFileLibraryColorsColorBullet() {
+    await this.page.keyboard.down("Alt");
+    await this.fileLibraryColorsColorBullet.click();
+    await this.page.keyboard.up("Alt");
+  }
+
   async clickAddFileLibraryTypographyButton() {
     await this.addFileLibraryTypographyButton.click();
   }
@@ -1559,5 +1570,9 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isShortcutsPanelNotDisplayed() {
     await expect(this.shortcutsPanel).not.toBeVisible();
+  }
+
+  async clickAddStrokeButton() {
+    await this.addStrokeButton.click();
   }
 };
