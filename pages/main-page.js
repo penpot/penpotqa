@@ -19,6 +19,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.createPathButton = page.locator('button[data-test="path-btn"]');
     this.createCommentButton = page.locator('button[alt="Comments (C)"]');
     this.shortcutsPanelButton = page.locator('button[alt="Shortcuts (?)"]');
+    this.colorsPanelButton = page.locator(
+      'button[alt="Color Palette (Alt+P)"]'
+    );
 
     //Viewport
     this.viewport = page.locator('div[class="viewport"]');
@@ -185,6 +188,9 @@ exports.MainPage = class MainPage extends BasePage {
     //Design panel - Stroke section
     this.addStrokeButton = page.locator(
       'div[class="element-set"] div:has-text("Stroke") svg'
+    );
+    this.strokeColorBullet = page.locator(
+      'div[title="Stroke color"] div[class="color-bullet tooltip tooltip-right is-not-library-color"]'
     );
 
     //Node panel
@@ -497,8 +503,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.historyPanelActionRecord = page.locator(
       'div[class="history-entry-summary-text"]'
     );
+
     //Shortcuts panel
     this.shortcutsPanel = page.locator('div[class="shortcuts"]');
+
+    //Colors panel
+    this.colorsPanel = page.locator('div[class="color-palette "]');
   }
 
   async clickMoveButton() {
@@ -1572,7 +1582,23 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.shortcutsPanel).not.toBeVisible();
   }
 
+  async clickColorsPanelButton() {
+    await this.colorsPanelButton.click();
+  }
+
+  async isColorsPanelDisplayed() {
+    await expect(this.colorsPanel).toBeVisible();
+  }
+
+  async isColorsPanelNotDisplayed() {
+    await expect(this.colorsPanel).not.toBeVisible();
+  }
+
   async clickAddStrokeButton() {
     await this.addStrokeButton.click();
+  }
+
+  async clickStrokeColorBullet() {
+    await this.strokeColorBullet.click();
   }
 };
