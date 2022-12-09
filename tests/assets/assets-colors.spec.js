@@ -143,3 +143,24 @@ mainTest("AS-34 File library colors - apply to element", async ({ page }) => {
     "apply-color-to-board.png"
   );
 });
+
+mainTest("AS-117 File library colors - apply to stroke", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const colorPalettePopUp = new ColorPalettePopUp(page);
+  await mainPage.clickAssetsTab();
+  await mainPage.clickAddFileLibraryColorButton();
+  await colorPalettePopUp.setHex("#ffff00");
+  await colorPalettePopUp.clickSaveColorStyleButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickCreateBoardButton();
+  await mainPage.clickViewport();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickAddStrokeButton();
+  await mainPage.clickAndPressAltFileLibraryColorsColorBullet();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickViewportByCoordinates(900, 100);
+  await expect(mainPage.createdLayer).toHaveScreenshot(
+    "apply-color-to-stroke-board.png"
+  );
+});
