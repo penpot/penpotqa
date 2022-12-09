@@ -20,7 +20,7 @@ dashboardTest("DA-3 Open file (in Drafts)", async ({ page }) => {
   await mainPage.clickPencilBoxButton();
   await dashboardPage.checkNumberOfFiles("1 file");
   await dashboardPage.reloadPage();
-  await dashboardPage.openFIle();
+  await dashboardPage.openFile();
   await mainPage.isMainPageLoaded();
 });
 

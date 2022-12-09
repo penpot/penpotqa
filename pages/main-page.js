@@ -334,6 +334,12 @@ exports.MainPage = class MainPage extends BasePage {
     //Assets panel
     this.assetsTab = page.locator('div[data-id=":assets"]');
     this.assetsPanel = page.locator('div[class="assets-bar"]');
+    this.librariesTab = page.locator('div[class="libraries-button"]');
+    this.addSharedLibraryButton = page.locator('input[value="Add"]');
+    this.removeSharedLibraryButton = page.locator('input[value="Remove"]');
+    this.closeLibrariesPopUpButton = page.locator(
+      'div[class="modal libraries-dialog"] svg[class="icon-close"]'
+    );
     this.addAsSharedLibraryButton = page.locator(
       'input[value="Add as Shared Library"]'
     );
@@ -1506,5 +1512,37 @@ exports.MainPage = class MainPage extends BasePage {
   async deleteFileLibraryComponents() {
     await this.fileLibraryGraphicsComponentLabel.click({ button: "right" });
     await this.deleteFileLibraryMenuItem.click();
+  }
+
+  async clickLibrariesTab() {
+    await this.librariesTab.click();
+  }
+
+  async clickAddSharedLibraryButton() {
+    await this.addSharedLibraryButton.click();
+  }
+
+  async clickRemoveSharedLibraryButton() {
+    await this.removeSharedLibraryButton.click();
+  }
+
+  async clickCloseLibrariesPopUpButton() {
+    await this.closeLibrariesPopUpButton.click();
+  }
+
+  async expandFileLibraryOnAccessPanel(libraryName) {
+    await this.page
+      .locator(
+        `div[class="tool-window-bar library-bar"] span:has-text('${libraryName}')`
+      )
+      .click();
+  }
+
+  async isFileLibraryOnAccessPanelNotDisplayed(libraryName) {
+    await expect(
+      this.page.locator(
+        `div[class="tool-window-bar library-bar"] span:has-text('${libraryName}')`
+      )
+    ).not.toBeVisible();
   }
 };

@@ -102,7 +102,7 @@ mainTest(
   }
 );
 
-mainTest("PF-111 Download penpot file (.penpot))", async ({ page }) => {
+mainTest("PF-111 Download penpot file (.penpot)", async ({ page }) => {
   const mainPage = new MainPage(page);
   await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
   await mainPage.clickMainMenuButton();
@@ -110,7 +110,7 @@ mainTest("PF-111 Download penpot file (.penpot))", async ({ page }) => {
   await mainPage.downloadPenpotFileViaMenu();
 });
 
-mainTest("PF-111 Download standard file (.svg+.json))", async ({ page }) => {
+mainTest("PF-111 Download standard file (.svg+.json)", async ({ page }) => {
   const mainPage = new MainPage(page);
   await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
   await mainPage.clickMainMenuButton();
