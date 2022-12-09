@@ -12,9 +12,7 @@ mainTest("CO-220 Import JPEG image", async ({ page }) => {
   await mainPage.checkPartialHtmlOfCreatedLayer(
     '<rect rx="0" ry="0" x="360" y="247.5" transform="" width="640" height="426" fill='
   );
-  await expect(page).toHaveScreenshot("image-jpeg.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-jpeg.png");
 });
 
 mainTest("CO-221 Import PNG image", async ({ page }) => {
@@ -26,9 +24,7 @@ mainTest("CO-221 Import PNG image", async ({ page }) => {
   await mainPage.checkPartialHtmlOfCreatedLayer(
     '<rect rx="0" ry="0" x="528.5" y="395.5" transform="" width="303" height="130" fill='
   );
-  await expect(page).toHaveScreenshot("image-png.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-png.png");
 });
 
 mainTest("CO-222 Import GIF image", async ({ page }) => {
@@ -70,9 +66,7 @@ mainTest("CO-228 Add and edit Shadow to image", async ({ page }) => {
   await colorPalettePopUp.setHex("#304d6a");
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-drop-shadow.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-drop-shadow.png");
   await mainPage.selectTypeForShadow("Inner shadow");
   await mainPage.changeXForShadow("5");
   await mainPage.changeYForShadow("7");
@@ -83,9 +77,7 @@ mainTest("CO-228 Add and edit Shadow to image", async ({ page }) => {
   await colorPalettePopUp.setHex("#96e637");
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-inner-shadow.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-inner-shadow.png");
 });
 
 mainTest("CO-242-1 Delete image via rightclick", async ({ page }) => {
@@ -96,9 +88,7 @@ mainTest("CO-242-1 Delete image via rightclick", async ({ page }) => {
   await mainPage.isCreatedLayerVisible();
   await mainPage.deleteLayerViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("empty-canvas.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
 
 mainTest("CO-242-2 Delete image via shortcut Del", async ({ page }) => {
@@ -109,9 +99,7 @@ mainTest("CO-242-2 Delete image via shortcut Del", async ({ page }) => {
   await mainPage.isCreatedLayerVisible();
   await mainPage.deleteLayerViaShortcut();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("empty-canvas.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
 
 mainTest("CO-244 Change border radius multiple values", async ({ page }) => {
@@ -125,17 +113,13 @@ mainTest("CO-244 Change border radius multiple values", async ({ page }) => {
   await mainPage.changeThirdCornerRadiusForLayer("90");
   await mainPage.changeFourthCornerRadiusForLayer("120");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-changed-corners.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-changed-corners.png");
   await mainPage.changeFirstCornerRadiusForLayer("0");
   await mainPage.changeSecondCornerRadiusForLayer("0");
   await mainPage.changeThirdCornerRadiusForLayer("0");
   await mainPage.changeFourthCornerRadiusForLayer("0");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-default-corners.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-png.png");
 });
 
 mainTest("CO-412 Add rotation to image", async ({ page }) => {
@@ -144,24 +128,16 @@ mainTest("CO-412 Add rotation to image", async ({ page }) => {
   await mainPage.clickViewport();
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-rotated-90.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-rotated-90.png");
   await mainPage.changeRotationForLayer("120");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-rotated-120.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-rotated-120.png");
   await mainPage.changeRotationForLayer("45");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-rotated-45.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-rotated-45.png");
   await mainPage.changeRotationForLayer("360");
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-rotated-359.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-rotated-359.png");
 });
 
 mainTest("CO-267 Selection to board", async ({ page }) => {
@@ -171,9 +147,7 @@ mainTest("CO-267 Selection to board", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.selectionToBoardViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-to-board.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("image-to-board.png");
 });
 
 mainTest("CO-259 Flip Vertical and Flip Horizontal image", async ({ page }) => {
@@ -183,22 +157,22 @@ mainTest("CO-259 Flip Vertical and Flip Horizontal image", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.flipVerticalViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-flipped-vertical.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-flipped-vertical.png"
+  );
   await mainPage.flipHorizontalViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-flipped-vertical-horizontal.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-flipped-vertical-horizontal.png"
+  );
   await mainPage.flipVerticalViaShortcut();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-flipped-horizontal.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-flipped-horizontal.png"
+  );
   await mainPage.flipHorizontalViaShortcut();
   await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot("image-non-flipped-jpeg.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-non-flipped-jpeg.png"
+  );
 });

@@ -11,9 +11,7 @@ mainTest("CO-268 Create curve line (Toolbar)", async ({ page }) => {
   await mainPage.checkHtmlOfCreatedLayer(
     '<path rx="0" ry="0" d="M596,252L296,152"></path>'
   );
-  await expect(page).toHaveScreenshot("curve.png", {
-    mask: [mainPage.usersSection],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("curve.png");
 });
 
 mainTest(
