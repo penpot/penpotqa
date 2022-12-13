@@ -19,8 +19,8 @@ Prerequisites for local run:
 
 **2. Test run - main notes.**
 
-By default, npm test runs all tests (the script "test": "npx playwright test" on package.js).
-To run the specific test/tests, change the test script on package.js in the next ways (or add a separate script):
+By default, `npm test` runs all tests (the script `"test": "npx playwright test"` on package.js).
+To run the specific test/tests, change the test script on _package.js_ in the next ways (or add a separate script):
 
 - Run single test (by title) - e.g. `"npx playwright test -g \"CO-154 Transform ellipse to path\""`,
 - Run single test spec (file) - e.g. `"npx playwright test tests/login.spec.js"`
@@ -30,7 +30,7 @@ Currently there are 238 tests at all, average time of execution - 30-35 minutes.
 
 **3. Test run - additional settings.**
 
-Some of the settings from playwright.config.js may be useful:
+Some of the settings from _playwright.config.js_ may be useful:
 
 - By default test retries are disabled. To enable them, change the value of `retries` property. E.g. `retries: 2` would re-run each test 2 times in case of failure.
 - `timeout` and `expect.timeout` - maximum time of execution a single test and of a waiting expect() condition to be met accordingly
