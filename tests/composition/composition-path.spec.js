@@ -12,9 +12,6 @@ mainTest("CO-272 Create Path (Toolbar) - closed", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(500, 200);
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.checkHtmlOfCreatedLayer(
-    '<path rx="0" ry="0" d="M500,200L1200,700L1000,400L500,200ZM500,200"></path>'
-  );
   await expect(mainPage.viewport).toHaveScreenshot("path-closed.png");
 });
 
@@ -27,9 +24,6 @@ mainTest("CO-274 Create Path (Toolbar) - opened", async ({ page }) => {
   await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.checkHtmlOfCreatedLayer(
-    '<path rx="0" ry="0" d="M500,200L1200,700L1000,400"></path>'
-  );
   await expect(mainPage.viewport).toHaveScreenshot("path-opened.png");
 });
 

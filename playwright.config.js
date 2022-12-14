@@ -9,6 +9,7 @@ require("dotenv").config();
  * @type {import('@playwright/test').PlaywrightTestConfig}
  */
 const config = {
+  snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/{projectName}/{arg}{ext}`,
   testDir: "./tests",
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
@@ -35,16 +36,33 @@ const config = {
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.BASE_URL,
-    browserName: "chromium",
-    channel: "chrome",
     headless: false,
-    viewport: null,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
-    launchOptions: {
-      args: ["--start-maximized"],
-    },
   },
+  projects: [
+    {
+      name: "chrome",
+      use: {
+        browserName: "chromium",
+        channel: "chrome",
+        viewport: null,
+        launchOptions: {
+          args: ["--start-maximized"],
+        },
+      },
+    },
+    {
+      name: "firefox",
+      use: {
+        browserName: "firefox",
+        viewport: {
+          height: 969,
+          width: 1920,
+        },
+      },
+    },
+  ],
 };
 
 module.exports = config;

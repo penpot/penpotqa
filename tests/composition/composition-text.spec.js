@@ -10,9 +10,6 @@ mainTest("CO-162 Create a text (toolbar)", async ({ page }) => {
   await mainPage.typeText("Hello World!");
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.checkHtmlOfCreatedLayer(
-    '<text y="459" textLength="72.4375" lengthAdjust="spacingAndGlyphs" x="680" dominant-baseline="text-before-edge" style="text-transform: none; font-family: sourcesanspro; letter-spacing: normal; font-style: normal; font-weight: 400; white-space: pre; font-size: 14px; text-decoration: none solid rgb(0, 0, 0); direction: ltr; fill: rgb(0, 0, 0); fill-opacity: 1;">Hello World!</text>'
-  );
   await expect(mainPage.viewport).toHaveScreenshot("text.png");
 });
 

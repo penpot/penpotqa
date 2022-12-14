@@ -24,10 +24,12 @@ mainTest(
       "typographies-add-typography-expanded.png"
     );
     await mainPage.minimizeFileLibraryTypography();
+    await mainPage.clickViewport();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
       "typographies-add-typography-minimized.png"
     );
     await mainPage.expandFileLibraryTypography();
+    await mainPage.clickViewport();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
       "typographies-add-typography-expanded.png"
     );
@@ -50,10 +52,12 @@ mainTest("AS-40 Typographic styles - edit", async ({ page }) => {
     "typographies-edit-typography-expanded.png"
   );
   await mainPage.minimizeFileLibraryTypography();
+  await mainPage.clickViewport();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-edit-typography-minimized.png"
   );
   await mainPage.expandFileLibraryTypography();
+  await mainPage.clickViewport();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-edit-typography-expanded.png"
   );
@@ -73,10 +77,12 @@ mainTest("AS-41 Typographic styles - rename", async ({ page }) => {
     "typographies-rename-typography-expanded.png"
   );
   await mainPage.minimizeFileLibraryTypography();
+  await mainPage.clickViewport();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-rename-typography-minimized.png"
   );
   await mainPage.expandFileLibraryTypography();
+  await mainPage.clickViewport();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-rename-typography-expanded.png"
   );

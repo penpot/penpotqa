@@ -161,10 +161,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class="table-field actions"] svg[class="icon-actions"]'
     );
     this.invitationRecordResendInvititationMenuItem = page.locator(
-      'ul:has-text("Resend invitation")'
+      'li:has-text("Resend invitation")'
     );
     this.invitationRecordDeleteInvititationMenuItem = page.locator(
-      'ul:has-text("Delete invitation")'
+      'li:has-text("Delete invitation")'
     );
     this.teamSettingsMenuItem = page.locator('li[data-test="team-settings"]');
     this.renameTeamMenuItem = page.locator('li[data-test="rename-team"]');

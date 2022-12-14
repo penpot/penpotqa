@@ -19,9 +19,6 @@ mainTest("CO-2 Create a board (Toolbar)", async ({ page }) => {
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.checkHtmlOfCreatedLayer(
-    '<rect rx="0" ry="0" x="630" y="410" transform="" width="100" height="100" class="frame-background" style="fill: rgb(255, 255, 255); fill-opacity: 1;"></rect>'
-  );
   await expect(mainPage.viewport).toHaveScreenshot("board.png");
 });
 
@@ -57,7 +54,6 @@ mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("board-drop-shadow.png");
-
   await mainPage.selectTypeForShadow("Inner shadow");
   await mainPage.changeXForShadow("5");
   await mainPage.changeYForShadow("7");

@@ -7,6 +7,7 @@ test.beforeEach(async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickPencilBoxButton();
   const dashboardPage = new DashboardPage(page);
+  await dashboardPage.reloadPage();
   await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
   await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
   await dashboardPage.flipRightLibrariesAndTemplatesCarousel();

@@ -12,11 +12,13 @@ mainTest("CO-339 Create comment (Toolbar)", async ({ page }) => {
   await mainPage.isCommentDisplayedInCommentsPanel("Test Comment");
   await expect(page).toHaveScreenshot("comment-opened-pop-up.png", {
     mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
+    maxDiffPixels: 5,
   });
   await mainPage.clickCreateCommentButton();
   await mainPage.isCommentThreadIconDisplayed();
   await expect(page).toHaveScreenshot("comment-closed-pop-up.png", {
     mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
+    maxDiffPixels: 5,
   });
 });
 
@@ -38,11 +40,13 @@ mainTest(
     );
     await expect(page).toHaveScreenshot("comment-latin-opened-pop-up.png", {
       mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
+      maxDiffPixels: 5,
     });
     await mainPage.clickCreateCommentButton();
     await mainPage.isCommentThreadIconDisplayed();
     await expect(page).toHaveScreenshot("comment-latin-closed-pop-up.png", {
       mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
+      maxDiffPixels: 5,
     });
   }
 );
@@ -67,6 +71,7 @@ mainTest(
     await mainPage.isCommentReplyDisplayedInCommentsPanel();
     await expect(page).toHaveScreenshot("comment-reply.png", {
       mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
+      maxDiffPixels: 5,
     });
   }
 );
@@ -94,6 +99,7 @@ mainTest(
     await mainPage.isCommentDisplayedInPopUp("Edited Test Comment");
     await expect(page).toHaveScreenshot("comment-edited.png", {
       mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
+      maxDiffPixels: 5,
     });
   }
 );
@@ -115,6 +121,7 @@ mainTest("CO-356 Delete thread", async ({ page }) => {
   );
   await expect(page).toHaveScreenshot("comment-removed.png", {
     mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
+    maxDiffPixels: 5,
   });
 });
 
@@ -129,10 +136,12 @@ mainTest("CO-360 Resolve comment", async ({ page }) => {
   await mainPage.isCommentResolvedThreadIconDisplayed();
   await expect(page).toHaveScreenshot("comment-resolved-closed-pop-up.png", {
     mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
+    maxDiffPixels: 5,
   });
   await mainPage.clickResolvedCommentThreadIcon();
   await mainPage.isResolveCommentCheckboxSelected();
   await expect(page).toHaveScreenshot("comment-resolved-opened-pop-up.png", {
     mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
+    maxDiffPixels: 5,
   });
 });
