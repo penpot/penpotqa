@@ -6,6 +6,7 @@ mainTest("PF-114 Create new page", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
+  await mainPage.clickMoveButton();
   await mainPage.isFirstPageAddedToAssetsPanel();
   await mainPage.isSecondPageAddedToAssetsPanel();
   await expect(mainPage.assetsPanelPagesSection).toHaveScreenshot(
@@ -13,7 +14,7 @@ mainTest("PF-114 Create new page", async ({ page }) => {
   );
 });
 
-mainTest("PF-115 Create new page", async ({ page }) => {
+mainTest("PF-115 Rename page", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
@@ -59,6 +60,7 @@ mainTest("PF-118 Collapse/expand pages list", async ({ page }) => {
   );
   await mainPage.clickCollapseExpandPagesButton();
   await mainPage.waitForChangeIsSaved();
+  await mainPage.clickMoveButton();
   await expect(mainPage.assetsPanelPagesSection).toHaveScreenshot(
     "page-1-and-page-2.png"
   );

@@ -9,9 +9,6 @@ mainTest("CO-59 Create a rectangle (Toolbar)", async ({ page }) => {
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.checkHtmlOfCreatedLayer(
-    '<rect rx="0" ry="0" x="630" y="410" transform="" width="100" height="100" style="fill: rgb(177, 178, 181); fill-opacity: 1;"></rect>'
-  );
   await expect(mainPage.viewport).toHaveScreenshot("rectangle.png");
 });
 
@@ -127,9 +124,7 @@ mainTest("CO-63 Change border radius multiple values", async ({ page }) => {
   await mainPage.changeThirdCornerRadiusForLayer("0");
   await mainPage.changeFourthCornerRadiusForLayer("0");
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle.png"
-  );
+  await expect(mainPage.viewport).toHaveScreenshot("rectangle.png");
 });
 
 mainTest("CO-104 Transform rectangle to path", async ({ page }) => {

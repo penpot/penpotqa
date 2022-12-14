@@ -9,9 +9,6 @@ mainTest("CO-220 Import JPEG image", async ({ page }) => {
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.checkPartialHtmlOfCreatedLayer(
-    '<rect rx="0" ry="0" x="360" y="247.5" transform="" width="640" height="426" fill='
-  );
   await expect(mainPage.viewport).toHaveScreenshot("image-jpeg.png");
 });
 
@@ -21,9 +18,6 @@ mainTest("CO-221 Import PNG image", async ({ page }) => {
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.checkPartialHtmlOfCreatedLayer(
-    '<rect rx="0" ry="0" x="528.5" y="395.5" transform="" width="303" height="130" fill='
-  );
   await expect(mainPage.viewport).toHaveScreenshot("image-png.png");
 });
 
@@ -33,9 +27,6 @@ mainTest("CO-222 Import GIF image", async ({ page }) => {
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.checkPartialHtmlOfCreatedLayer(
-    '<rect rx="0" ry="0" x="547.5" y="361" transform="" width="265" height="199" fill='
-  );
 });
 
 mainTest("CO-225 Rename image with valid name", async ({ page }) => {

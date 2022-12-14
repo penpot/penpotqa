@@ -25,7 +25,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Viewport
     this.viewport = page.locator('div[class="viewport"]');
-    this.createdLayer = page.locator('div *[id^="fills"] >> nth=0');
+    this.createdLayer = page.locator('div *[id^="shape"] >> nth=0');
     this.createdBoardTitle = page.locator('g[class="frame-title"]');
     this.textbox = page.locator(
       'div[role="textbox"] div[contenteditable="true"]'
@@ -563,14 +563,6 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isCreatedLayerVisible() {
     await expect(this.createdLayer).toBeVisible();
-  }
-
-  async checkHtmlOfCreatedLayer(expectedHTML) {
-    expect(await this.createdLayer.innerHTML()).toEqual(expectedHTML);
-  }
-
-  async checkPartialHtmlOfCreatedLayer(expectedHTML) {
-    expect(await this.createdLayer.innerHTML()).toContain(expectedHTML);
   }
 
   async doubleClickCreatedBoardTitleOnCanvas() {

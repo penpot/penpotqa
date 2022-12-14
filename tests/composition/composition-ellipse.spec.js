@@ -9,9 +9,6 @@ mainTest("CO-112 Create an ellipse (toolbar)", async ({ page }) => {
   await mainPage.clickViewport();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.checkHtmlOfCreatedLayer(
-    '<ellipse rx="50" ry="50" cx="680" cy="460" transform="" style="fill: rgb(177, 178, 181); fill-opacity: 1;"></ellipse>'
-  );
   await expect(mainPage.viewport).toHaveScreenshot("ellipse.png");
 });
 
