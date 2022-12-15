@@ -4,7 +4,9 @@ QA Test for Penpot
 
 Based on Playwright framework.
 
-##1. Initial requirements and configuration
+**1. Initial requirements and configuration**
+
+
 Prerequisites for local run:
 
 - Windows OS
@@ -16,7 +18,8 @@ Prerequisites for local run:
   - `LOGIN_PWD` (password from your Penpot account)
   - `BASE_URL` (Penpot url - e.g. http://localhost:9001/ if deployed locally)
 
-##2. Test run - main notes.
+**2. Test run - main notes.**
+
 Upon cloning the repo and truing to run tests, you may be prompted to install the browsers:
 `npx playwright install`
 By default, `npm test` runs all tests in Chrome browser (the script `"test": "npx playwright test --project=chrome"` in _package.js_).
@@ -32,7 +35,8 @@ To run the tests in Firefox and Webkit browsers, use `"firefox"` and `"webkit"` 
 
 Currently, there are 238 tests at all, average time of execution - 35 minutes.
 
-##3. Test run - additional settings.
+**3. Test run - additional settings.**
+
 Some settings from _playwright.config.js_ may be useful:
 
 - By default, test retries are enabled (test retries 2 times in case of failure). To disable them, change the value of `retries` property to 0
@@ -40,7 +44,8 @@ Some settings from _playwright.config.js_ may be useful:
 - `use.headless `- change to _false_ to run in headed browser mode
 - `use.channel: "chrome"` - comment out to run tests in Chromium instead of Chrome (for "chrome" project)
 
-##4. Snapshots comparison.
+**4. Snapshots comparison.**
+
 Expected snapshots are stored in _tests/{spec-name}-snapshots/{project-name}_ folders (where project-name is the browser name).
 In most of the cases, they capture and compare not the whole visible area of the screen but only the single element/section (e.g. created shape or canvas with created board).
 It helps to avoid the failure of the tests upon such changes in the UI like adding new sections to the Design panel, new buttons to the toolbars and so on.
@@ -61,5 +66,6 @@ However, it is rather simple to update snapshots:
 Note 1: there is a known issue that Chrome does render differently in headless and headed modes, that's why
 `expect.toHaveScreenshot.maxDiffPixelRatio: 0.01` is set in _playwright.config.js_ for "chrome" project , which means that
 an acceptable ratio of pixels that are different to the total amount of pixels is 1% within screenshot comparison.
+
 Note 2: expected screenshots for Firefox represent headless mode. Since scrollbars are hidden in headless mode and
 there is no way to unhide them in Firefox (unlike Chrome) - screenshots comparison in headed Firefox mode may fail in a few tests.
