@@ -36,7 +36,7 @@ const config = {
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.BASE_URL,
-    headless: false,
+    headless: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
@@ -46,9 +46,9 @@ const config = {
       use: {
         browserName: "chromium",
         channel: "chrome",
-        viewport: null,
-        launchOptions: {
-          args: ["--start-maximized"],
+        viewport: {
+          height: 969,
+          width: 1920,
         },
       },
     },
