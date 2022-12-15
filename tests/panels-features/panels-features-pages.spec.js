@@ -55,6 +55,7 @@ mainTest("PF-118 Collapse/expand pages list", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCollapseExpandPagesButton();
   await mainPage.waitForChangeIsSaved();
+  await mainPage.clickMoveButton();
   await expect(mainPage.assetsPanelPagesSection).toHaveScreenshot(
     "hidden-pages.png"
   );

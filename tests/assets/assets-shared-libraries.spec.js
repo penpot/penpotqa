@@ -18,29 +18,39 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest("AS-92 Import shared library (LIBRARIES pop-up", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickAssetsTab();
-  await mainPage.clickLibrariesTab();
-  await mainPage.clickAddSharedLibraryButton();
-  await mainPage.clickCloseLibrariesPopUpButton();
-  await mainPage.expandFileLibraryOnAccessPanel("Whiteboarding & mapping kit");
-  await expect(mainPage.assetsPanel).toHaveScreenshot("imported-library.png");
-});
+mainTest(
+  "AS-92 Import shared library from LIBRARIES pop-up",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.clickAssetsTab();
+    await mainPage.clickLibrariesTab();
+    await mainPage.clickAddSharedLibraryButton();
+    await mainPage.clickCloseLibrariesPopUpButton();
+    await mainPage.expandFileLibraryOnAccessPanel(
+      "Whiteboarding & mapping kit"
+    );
+    await expect(mainPage.assetsPanel).toHaveScreenshot("imported-library.png");
+  }
+);
 
-mainTest("AS-93 Remove shared library (LIBRARIES pop-up", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickAssetsTab();
-  await mainPage.clickLibrariesTab();
-  await mainPage.clickAddSharedLibraryButton();
-  await mainPage.clickCloseLibrariesPopUpButton();
-  await mainPage.expandFileLibraryOnAccessPanel("Whiteboarding & mapping kit");
-  await expect(mainPage.assetsPanel).toHaveScreenshot("imported-library.png");
-  await mainPage.clickLibrariesTab();
-  await mainPage.clickRemoveSharedLibraryButton();
-  await mainPage.clickCloseLibrariesPopUpButton();
-  await mainPage.isFileLibraryOnAccessPanelNotDisplayed(
-    "Whiteboarding & mapping kit"
-  );
-  await expect(mainPage.assetsPanel).toHaveScreenshot("removed-library.png");
-});
+mainTest(
+  "AS-93 Remove shared library from LIBRARIES pop-up",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.clickAssetsTab();
+    await mainPage.clickLibrariesTab();
+    await mainPage.clickAddSharedLibraryButton();
+    await mainPage.clickCloseLibrariesPopUpButton();
+    await mainPage.expandFileLibraryOnAccessPanel(
+      "Whiteboarding & mapping kit"
+    );
+    await expect(mainPage.assetsPanel).toHaveScreenshot("imported-library.png");
+    await mainPage.clickLibrariesTab();
+    await mainPage.clickRemoveSharedLibraryButton();
+    await mainPage.clickCloseLibrariesPopUpButton();
+    await mainPage.isFileLibraryOnAccessPanelNotDisplayed(
+      "Whiteboarding & mapping kit"
+    );
+    await expect(mainPage.assetsPanel).toHaveScreenshot("removed-library.png");
+  }
+);
