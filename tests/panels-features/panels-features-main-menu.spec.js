@@ -2,12 +2,12 @@ const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
 
-mainTest("PF-99-1 Hide/show rulers (via main menu')", async ({ page }) => {
+mainTest("PF-99-1 Hide/show rulers via main menu'", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickHideRulersMainMenuSubItem();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await expect(mainPage.viewport).toHaveScreenshot(
     "viewport-hidden-rulers.png"
   );
@@ -18,15 +18,23 @@ mainTest("PF-99-1 Hide/show rulers (via main menu')", async ({ page }) => {
 });
 
 mainTest(
-  "PF-99-2 Hide/show rulers (vis shortcut CTRL+SHIFT+R)",
-  async ({ page }) => {
+  "PF-99-2 Hide/show rulers via shortcut CTRL SHIFT R",
+  async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickViewport();
-    await mainPage.pressHideShowRulersShortcut();
+    await mainPage.clickViewportTwice();
+    if (browserName === "webkit") {
+      await mainPage.pressHideShowRulersShortcutWebkit();
+    } else {
+      await mainPage.pressHideShowRulersShortcut();
+    }
     await expect(mainPage.viewport).toHaveScreenshot(
       "viewport-hidden-rulers.png"
     );
-    await mainPage.pressHideShowRulersShortcut();
+    if (browserName === "webkit") {
+      await mainPage.pressHideShowRulersShortcutWebkit();
+    } else {
+      await mainPage.pressHideShowRulersShortcut();
+    }
     await expect(mainPage.viewport).toHaveScreenshot("viewport-default.png");
   }
 );
@@ -34,7 +42,7 @@ mainTest(
 mainTest("PF-102 Hide/show board names", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.clickMainMenuButton();
@@ -47,9 +55,9 @@ mainTest("PF-102 Hide/show board names", async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot("board-show-name.png");
 });
 
-mainTest("PF-103-1 Hide/show pixel grid (via main menu)", async ({ page }) => {
+mainTest("PF-103-1 Hide/show pixel grid via main menu", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.increaseZoom(10);
   await expect(mainPage.viewport).toHaveScreenshot(
     "canvas-show-pixel-grid.png"
@@ -69,10 +77,10 @@ mainTest("PF-103-1 Hide/show pixel grid (via main menu)", async ({ page }) => {
 });
 
 mainTest(
-  "PF-103-2 Hide/show pixel grid (via shortcut SHIFT+,)",
+  "PF-103-2 Hide/show pixel grid via shortcut SHIFT ,",
   async ({ page }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.increaseZoom(10);
     await expect(mainPage.viewport).toHaveScreenshot(
       "canvas-show-pixel-grid.png"
@@ -89,7 +97,7 @@ mainTest(
 );
 
 mainTest(
-  "PF-104 Hide/show UI (via main menu and shortcut '/')",
+  "PF-104 Hide/show UI via main menu and shortcut '/'",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
@@ -102,7 +110,7 @@ mainTest(
   }
 );
 
-mainTest("PF-111 Download penpot file (.penpot)", async ({ page }) => {
+mainTest("PF-111 Download penpot file .penpot", async ({ page }) => {
   const mainPage = new MainPage(page);
   await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
   await mainPage.clickMainMenuButton();
@@ -110,7 +118,7 @@ mainTest("PF-111 Download penpot file (.penpot)", async ({ page }) => {
   await mainPage.downloadPenpotFileViaMenu();
 });
 
-mainTest("PF-111 Download standard file (.svg+.json)", async ({ page }) => {
+mainTest("PF-111 Download standard file .svg+.json", async ({ page }) => {
   const mainPage = new MainPage(page);
   await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
   await mainPage.clickMainMenuButton();

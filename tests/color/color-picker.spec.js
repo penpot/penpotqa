@@ -20,7 +20,7 @@ mainTest("CP-2 Open color picker from Fill menu", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
   await colorPalettePopUp.isColorPalettePopUpOpened();
@@ -40,21 +40,21 @@ mainTest("CP-7 Use Recent colors", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
   await colorPalettePopUp.setHex("#FF0000");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
   await colorPalettePopUp.setHex("#B1B2B5");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
   await colorPalettePopUp.isFirstFileLibraryColorBulletDisplayed();
   await colorPalettePopUp.isSecondFileLibraryColorBulletDisplayed();
   await colorPalettePopUp.clickSecondFileLibraryColorBullet();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.createdLayer).toHaveScreenshot(
     "board-recent-color.png"
@@ -68,16 +68,16 @@ mainTest("CP-8 Use colors from File library", async ({ page }) => {
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
   await colorPalettePopUp.selectFileLibraryColors();
   await colorPalettePopUp.isRecentColorsColorBulletDisplayed();
   await colorPalettePopUp.clickRecentColorsColorBullet();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.createdLayer).toHaveScreenshot(
     "rectangle-file-library-color.png"
@@ -88,15 +88,15 @@ mainTest("CP-18 Open Color palette from toolbar", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
   await colorPalettePopUp.setHex("#FF0000");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
   await colorPalettePopUp.setHex("#B1B2B5");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickColorsPanelButton();
   await mainPage.isColorsPanelDisplayed();

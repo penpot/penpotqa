@@ -3,10 +3,10 @@ const { MainPage } = require("../../pages/main-page");
 const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
 const { expect } = require("@playwright/test");
 
-mainTest("PF-68 Add fill (board)", async ({ page }) => {
+mainTest("PF-68 Add fill to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.isFillHexCodeSet("FFFFFF");
@@ -14,10 +14,10 @@ mainTest("PF-68 Add fill (board)", async ({ page }) => {
   await expect(mainPage.createdLayer).toHaveScreenshot("board-fill.png");
 });
 
-mainTest("PF-69 Add fill (shape)", async ({ page }) => {
+mainTest("PF-69 Add fill to shape", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.isFillHexCodeSet("B1B2B5");
@@ -25,7 +25,7 @@ mainTest("PF-69 Add fill (shape)", async ({ page }) => {
   await expect(mainPage.createdLayer).toHaveScreenshot("rectangle-fill.png");
 });
 
-mainTest("PF-72 Add fill (path)", async ({ page }) => {
+mainTest("PF-72 Add fill to path", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreatePathButton();
   await mainPage.clickViewportByCoordinates(500, 200);
@@ -42,16 +42,16 @@ mainTest("PF-72 Add fill (path)", async ({ page }) => {
   await expect(mainPage.createdLayer).toHaveScreenshot("path-fill.png");
 });
 
-mainTest("PF-73 Change fill color (board)", async ({ page }) => {
+mainTest("PF-73 Change fill color for board", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.clickFillColorIcon();
   await colorPalettePopUp.setHex("#FF0000");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFillHexCodeSet("FF0000");
   await mainPage.isFillOpacitySet("100");
@@ -60,16 +60,16 @@ mainTest("PF-73 Change fill color (board)", async ({ page }) => {
   );
 });
 
-mainTest("PF-74 Change fill color (shape)", async ({ page }) => {
+mainTest("PF-74 Change fill color for shape", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.clickFillColorIcon();
   await colorPalettePopUp.setHex("#FF0000");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFillHexCodeSet("FF0000");
   await mainPage.isFillOpacitySet("100");
@@ -78,7 +78,7 @@ mainTest("PF-74 Change fill color (shape)", async ({ page }) => {
   );
 });
 
-mainTest("PF-77 Change fill color (path)", async ({ page }) => {
+mainTest("PF-77 Change fill color for path", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreatePathButton();
@@ -99,14 +99,14 @@ mainTest("PF-77 Change fill color (path)", async ({ page }) => {
   await expect(mainPage.createdLayer).toHaveScreenshot("path-changed-fill.png");
 });
 
-mainTest("PF-78 Change fill opacity (board)", async ({ page }) => {
+mainTest("PF-78 Change fill opacity for board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.changeOpacityForFill("70");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFillHexCodeSet("FFFFFF");
   await mainPage.isFillOpacitySet("70");
@@ -115,14 +115,14 @@ mainTest("PF-78 Change fill opacity (board)", async ({ page }) => {
   );
 });
 
-mainTest("PF-79 Change fill opacity (shape)", async ({ page }) => {
+mainTest("PF-79 Change fill opacity for shape", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.changeOpacityForFill("70");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.isFillHexCodeSet("B1B2B5");
   await mainPage.isFillOpacitySet("70");
   await expect(mainPage.createdLayer).toHaveScreenshot(
@@ -130,7 +130,7 @@ mainTest("PF-79 Change fill opacity (shape)", async ({ page }) => {
   );
 });
 
-mainTest("PF-82 Change fill opacity (path)", async ({ page }) => {
+mainTest("PF-82 Change fill opacity for path", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreatePathButton();
   await mainPage.clickViewportByCoordinates(500, 200);
@@ -150,10 +150,10 @@ mainTest("PF-82 Change fill opacity (path)", async ({ page }) => {
   );
 });
 
-mainTest("PF-93 Remove fill (board)", async ({ page }) => {
+mainTest("PF-93 Remove fill for board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.clickRemoveFillButton();
@@ -163,10 +163,10 @@ mainTest("PF-93 Remove fill (board)", async ({ page }) => {
   );
 });
 
-mainTest("PF-94 Remove fill (shape)", async ({ page }) => {
+mainTest("PF-94 Remove fill for shape", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.clickRemoveFillButton();
@@ -176,7 +176,7 @@ mainTest("PF-94 Remove fill (shape)", async ({ page }) => {
   );
 });
 
-mainTest("PF-97 Remove fill (path)", async ({ page }) => {
+mainTest("PF-97 Remove fill for path", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreatePathButton();
   await mainPage.clickViewportByCoordinates(500, 200);

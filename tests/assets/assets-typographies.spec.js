@@ -13,23 +13,23 @@ mainTest(
 );
 
 mainTest(
-  "AS-39 Typographic styles - add (from Assets panel)",
+  "AS-39 Typographic styles - add from Assets panel",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickAssetsTab();
     await mainPage.clickAddFileLibraryTypographyButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
       "typographies-add-typography-expanded.png"
     );
     await mainPage.minimizeFileLibraryTypography();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
       "typographies-add-typography-minimized.png"
     );
     await mainPage.expandFileLibraryTypography();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
       "typographies-add-typography-expanded.png"
     );
@@ -41,23 +41,23 @@ mainTest("AS-40 Typographic styles - edit", async ({ page }) => {
   await mainPage.clickAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.minimizeFileLibraryTypography();
   await mainPage.editFileLibraryTypography();
   await mainPage.selectFont("Bellefair");
   await mainPage.selectFontSize("12");
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-edit-typography-expanded.png"
   );
   await mainPage.minimizeFileLibraryTypography();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-edit-typography-minimized.png"
   );
   await mainPage.expandFileLibraryTypography();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-edit-typography-expanded.png"
   );
@@ -68,21 +68,21 @@ mainTest("AS-41 Typographic styles - rename", async ({ page }) => {
   await mainPage.clickAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.minimizeFileLibraryTypography();
   await mainPage.renameFileLibraryTypography("Test Font");
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-rename-typography-expanded.png"
   );
   await mainPage.minimizeFileLibraryTypography();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-rename-typography-minimized.png"
   );
   await mainPage.expandFileLibraryTypography();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-rename-typography-expanded.png"
   );
@@ -93,11 +93,11 @@ mainTest("AS-42 Typographic styles - delete", async ({ page }) => {
   await mainPage.clickAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.minimizeFileLibraryTypography();
   await mainPage.deleteFileLibraryTypography();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "typographies-deleted-typography.png"
   );
@@ -108,7 +108,7 @@ mainTest("AS-43 Typographic styles - create group", async ({ page }) => {
   await mainPage.clickAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.minimizeFileLibraryTypography();
   await mainPage.createGroupFileLibraryTypographies("Test Group");
   await mainPage.waitForChangeIsSaved();
@@ -121,7 +121,7 @@ mainTest("AS-45 Typographic styles - rename group", async ({ page }) => {
   await mainPage.clickAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.minimizeFileLibraryTypography();
   await mainPage.createGroupFileLibraryTypographies("Test Group");
   await mainPage.waitForChangeIsSaved();
@@ -138,7 +138,7 @@ mainTest("AS-48 Typographic styles - ungroup", async ({ page }) => {
   await mainPage.clickAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.minimizeFileLibraryTypography();
   await mainPage.createGroupFileLibraryTypographies("Test Group");
   await mainPage.waitForChangeIsSaved();
@@ -151,23 +151,28 @@ mainTest("AS-48 Typographic styles - ungroup", async ({ page }) => {
 });
 
 mainTest(
-  "AS-50 Typographic styles - apply style to text (from Assets panel)",
-  async ({ page }) => {
+  "AS-50 Typographic styles - apply style to text from Assets panel",
+  async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickAssetsTab();
     await mainPage.clickAddFileLibraryTypographyButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.editFileLibraryTypography();
     await mainPage.selectFont("Bad Script");
     await mainPage.selectFontSize("36");
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.clickCreateTextButton();
-    await mainPage.clickViewport();
-    await mainPage.typeText("Hello World!");
+    if (browserName === "webkit") {
+      await mainPage.clickViewportOnce();
+      await mainPage.typeTextFromKeyboard();
+    } else {
+      await mainPage.clickViewportTwice();
+      await mainPage.typeText("Hello World!");
+    }
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickMoveButton();
     await mainPage.clickFileLibraryTypographiesTypographyRecord();
@@ -179,23 +184,28 @@ mainTest(
 );
 
 mainTest(
-  "AS-54 Typographic styles - apply style to text (from Typographies panel)",
-  async ({ page }) => {
+  "AS-54 Typographic styles - apply style to text from Typographies panel",
+  async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickAssetsTab();
     await mainPage.clickAddFileLibraryTypographyButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.editFileLibraryTypography();
     await mainPage.selectFont("Bad Script");
     await mainPage.selectFontSize("36");
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.clickCreateTextButton();
-    await mainPage.clickViewport();
-    await mainPage.typeText("Hello World!");
+    if (browserName === "webkit") {
+      await mainPage.clickViewportOnce();
+      await mainPage.typeTextFromKeyboard();
+    } else {
+      await mainPage.clickViewportTwice();
+      await mainPage.typeText("Hello World!");
+    }
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickMoveButton();
     await mainPage.pressOpenTypographiesBottomPanelShortcut();

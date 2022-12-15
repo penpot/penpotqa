@@ -19,9 +19,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.createPathButton = page.locator('button[data-test="path-btn"]');
     this.createCommentButton = page.locator('button[alt="Comments (C)"]');
     this.shortcutsPanelButton = page.locator('button[alt="Shortcuts (?)"]');
-    this.colorsPanelButton = page.locator(
-      'button[alt="Color Palette (Alt+P)"]'
-    );
+    this.colorsPanelButton = page.locator('button[alt^="Color Palette"]');
 
     //Viewport
     this.viewport = page.locator('div[class="viewport"]');
@@ -212,14 +210,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.sixthNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=6'
     );
-    this.nodePanelAddNodeButton = page.locator(
-      'div[alt="Add node (Shift++)"] >> nth=0'
-    );
+    this.nodePanelAddNodeButton = page.locator('div[alt^="Add node"] >> nth=0');
     this.nodePanelDeleteNodeButton = page.locator(
-      'div[alt="Delete node (Del)"] >> nth=0'
+      'div[alt^="Delete node"] >> nth=0'
     );
     this.nodePanelMergeNodesButton = page.locator(
-      'div[alt="Merge nodes (Ctrl+J)"] >> nth=0'
+      'div[alt^="Merge nodes"] >> nth=0'
     );
     this.nodePanelDrawNodesButton = page.locator(
       'div[alt="Draw nodes (P)"] >> nth=0'
@@ -535,6 +531,21 @@ exports.MainPage = class MainPage extends BasePage {
     await this.textbox.fill(text);
   }
 
+  async typeTextFromKeyboard() {
+    await this.page.keyboard.press("H");
+    await this.page.keyboard.press("e");
+    await this.page.keyboard.press("l");
+    await this.page.keyboard.press("l");
+    await this.page.keyboard.press("o");
+    await this.page.keyboard.press("Space");
+    await this.page.keyboard.press("W");
+    await this.page.keyboard.press("o");
+    await this.page.keyboard.press("r");
+    await this.page.keyboard.press("l");
+    await this.page.keyboard.press("d");
+    await this.page.keyboard.press("!");
+  }
+
   async uploadImage(filePath) {
     await this.uploadImageSelector.setInputFiles(filePath);
   }
@@ -547,7 +558,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.createPathButton.click();
   }
 
-  async clickViewport() {
+  async clickViewportOnce() {
+    await this.viewport.click();
+  }
+
+  async clickViewportTwice() {
     await this.viewport.click();
     await this.viewport.click();
   }
@@ -1037,6 +1052,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press("Control+Shift+R");
   }
 
+  async pressHideShowRulersShortcutWebkit() {
+    await this.page.keyboard.press("Meta+Shift+R");
+  }
+
   async clickShowBoardNamesMainMenuSubItem() {
     await this.showBoardNamesMainMenuSubItem.click();
   }
@@ -1187,14 +1206,14 @@ exports.MainPage = class MainPage extends BasePage {
     await this.renamePageMenuItem.click();
     await this.clearInput(this.firstPageNameInput);
     await this.firstPageNameInput.fill(newName);
-    await this.clickViewport();
+    await this.clickViewportTwice();
   }
 
   async renameSecondPageViaDoubleclick(newName) {
     await this.secondPageListItem.dblclick();
     await this.clearInput(this.secondPageNameInput);
     await this.secondPageNameInput.fill(newName);
-    await this.clickViewport();
+    await this.clickViewportTwice();
   }
 
   async duplicatePageViaRightclick() {

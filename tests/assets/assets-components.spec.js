@@ -12,10 +12,10 @@ mainTest(
   }
 );
 
-mainTest("AS-57 Create component (shape)", async ({ page }) => {
+mainTest("AS-57 Create component shape", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();
@@ -26,10 +26,10 @@ mainTest("AS-57 Create component (shape)", async ({ page }) => {
   );
 });
 
-mainTest("AS-58 Create component (image)", async ({ page }) => {
+mainTest("AS-58 Create component image", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.uploadImage("images/sample.jpeg");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();
@@ -38,12 +38,17 @@ mainTest("AS-58 Create component (image)", async ({ page }) => {
   await expect(mainPage.assetsPanel).toHaveScreenshot("components-image.png");
 });
 
-mainTest("AS-59 Create component (text)", async ({ page }) => {
+mainTest("AS-59 Create component text", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateTextButton();
-  await mainPage.clickViewport();
-  await mainPage.typeText("Hello World!");
-  await mainPage.clickViewport();
+  if (browserName === "webkit") {
+    await mainPage.clickViewportOnce();
+    await mainPage.typeTextFromKeyboard();
+  } else {
+    await mainPage.clickViewportTwice();
+    await mainPage.typeText("Hello World!");
+  }
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();
@@ -52,7 +57,7 @@ mainTest("AS-59 Create component (text)", async ({ page }) => {
   await expect(mainPage.assetsPanel).toHaveScreenshot("components-text.png");
 });
 
-mainTest("AS-61 Create component (path)", async ({ page }) => {
+mainTest("AS-61 Create component path", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreatePathButton();
   await mainPage.clickViewportByCoordinates(500, 200);
@@ -71,7 +76,7 @@ mainTest("AS-61 Create component (path)", async ({ page }) => {
 mainTest("AS-80 Duplicate component", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();
@@ -87,7 +92,7 @@ mainTest("AS-80 Duplicate component", async ({ page }) => {
 mainTest("AS-81 Delete component", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();
@@ -102,7 +107,7 @@ mainTest("AS-81 Delete component", async ({ page }) => {
 mainTest("AS-83 Components - create group", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();
@@ -116,7 +121,7 @@ mainTest("AS-83 Components - create group", async ({ page }) => {
 mainTest("AS-85 Components - rename group", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();
@@ -134,7 +139,7 @@ mainTest("AS-85 Components - rename group", async ({ page }) => {
 mainTest("AS-88 Components - ungroup", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();
@@ -149,24 +154,22 @@ mainTest("AS-88 Components - ungroup", async ({ page }) => {
   );
 });
 
-mainTest("AS-90 Components - change view (list / tile)", async ({ page }) => {
+mainTest("AS-90 Components - change view list tile", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.deleteLayerViaRightclick();
   await mainPage.uploadImage("images/sample.jpeg");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.deleteLayerViaRightclick();
-  await mainPage.clickCreateTextButton();
-  await mainPage.clickViewport();
-  await mainPage.typeText("Hello World!");
-  await mainPage.clickViewport();
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
   await mainPage.waitForChangeIsSaved();

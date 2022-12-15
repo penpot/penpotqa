@@ -8,15 +8,15 @@ mainTest("CO-1 Change color background", async ({ page }) => {
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCanvasBackgroundColorIcon();
   await colorPalettePopUp.setHex("#304d6a");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("color-background.png");
 });
 
-mainTest("CO-2 Create a board (Toolbar)", async ({ page }) => {
+mainTest("CO-2 Create a board from toolbar", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await expect(mainPage.viewport).toHaveScreenshot("board.png");
@@ -25,7 +25,7 @@ mainTest("CO-2 Create a board (Toolbar)", async ({ page }) => {
 mainTest("CO-4 Rename board with valid name", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.doubleClickCreatedBoardTitleOnCanvas();
   await mainPage.renameCreatedLayer("New test board");
@@ -41,7 +41,7 @@ mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.clickAddShadowButton();
   await mainPage.clickShadowActionsButton();
   await mainPage.changeXForShadow("10");
@@ -51,7 +51,7 @@ mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   await mainPage.changeOpacityForShadow("50");
   await mainPage.clickShadowColorIcon();
   await colorPalettePopUp.setHex("#304d6a");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("board-drop-shadow.png");
   await mainPage.selectTypeForShadow("Inner shadow");
@@ -62,7 +62,7 @@ mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   await mainPage.changeOpacityForShadow("25");
   await mainPage.clickShadowColorIcon();
   await colorPalettePopUp.setHex("#96e637");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("board-inner-shadow.png");
 });
@@ -70,7 +70,7 @@ mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
 mainTest("CO-13 Add and edit Blur to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.clickAddBlurButton();
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
@@ -80,7 +80,7 @@ mainTest("CO-13 Add and edit Blur to board", async ({ page }) => {
 mainTest("CO-25-1 Delete board via rightclick", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.deleteLayerViaRightclick();
@@ -91,7 +91,7 @@ mainTest("CO-25-1 Delete board via rightclick", async ({ page }) => {
 mainTest("CO-25-2 Delete board via shortcut Del", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.deleteLayerViaShortcut();
@@ -102,7 +102,7 @@ mainTest("CO-25-2 Delete board via shortcut Del", async ({ page }) => {
 mainTest("CO-28 Add rotation to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("board-rotated-90.png");
@@ -120,7 +120,7 @@ mainTest("CO-28 Add rotation to board", async ({ page }) => {
 mainTest("CO-29 Change border radius multiple values", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickIndividualCornersRadiusButton();
   await mainPage.changeFirstCornerRadiusForLayer("30");
@@ -140,7 +140,7 @@ mainTest("CO-29 Change border radius multiple values", async ({ page }) => {
 mainTest("CO-411 Search board - ignore case", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.doubleClickCreatedBoardTitleOnCanvas();
   await mainPage.renameCreatedLayer("Test");

@@ -3,11 +3,11 @@ const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
 
 mainTest(
-  "CO-329 Add nodes (via Node panel and SHIFT++ shortcut)",
+  "CO-329 Add nodes via Node panel and SHIFT PLUS shortcut",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateEllipseButton();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.transformToPathViaRightclick();
     await mainPage.waitForChangeIsSaved();
@@ -32,11 +32,11 @@ mainTest(
 );
 
 mainTest(
-  "CO-330 Delete node (via Node panel and Del shortcut)",
+  "CO-330 Delete node via Node panel and Del shortcut",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateEllipseButton();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.transformToPathViaRightclick();
     await mainPage.waitForChangeIsSaved();
@@ -57,11 +57,11 @@ mainTest(
 );
 
 mainTest(
-  "CO-332 Merge nodes (via Node panel and CTRL+J shortcut)",
+  "CO-332 Merge nodes via Node panel and CTRL J shortcut",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateEllipseButton();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.transformToPathViaRightclick();
     await mainPage.waitForChangeIsSaved();
@@ -88,11 +88,11 @@ mainTest(
 );
 
 mainTest(
-  "CO-333 Join nodes (via Node panel and J shortcut)",
+  "CO-333 Join nodes via Node panel and J shortcut",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateEllipseButton();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.transformToPathViaRightclick();
     await mainPage.waitForChangeIsSaved();
@@ -125,11 +125,11 @@ mainTest(
 );
 
 mainTest(
-  "CO-334 Separate nodes (via Node panel and K shortcut)",
+  "CO-334 Separate nodes via Node panel and K shortcut",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateEllipseButton();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.transformToPathViaRightclick();
     await mainPage.waitForChangeIsSaved();
@@ -156,11 +156,11 @@ mainTest(
 );
 
 mainTest(
-  "CO-335 To corner (via Node panel and X shortcut) - single node",
+  "CO-335 To corner via Node panel and X shortcut - single node",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateEllipseButton();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.transformToPathViaRightclick();
     await mainPage.waitForChangeIsSaved();
@@ -181,11 +181,11 @@ mainTest(
 );
 
 mainTest(
-  "CO-337 To curve (via Node panel and C shortcut) - single node",
+  "CO-337 To curve via Node panel and C shortcut - single node",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateRectangleButton();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.transformToPathViaRightclick();
     await mainPage.waitForChangeIsSaved();

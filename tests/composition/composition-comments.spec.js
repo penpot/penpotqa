@@ -2,10 +2,10 @@ const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
 
-mainTest("CO-339 Create comment (Toolbar)", async ({ page }) => {
+mainTest("CO-339 Create comment from toolbar", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateCommentButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.enterCommentText("Test Comment");
   await mainPage.clickPostCommentButton();
   await mainPage.isCommentDisplayedInPopUp("Test Comment");
@@ -27,7 +27,7 @@ mainTest(
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateCommentButton();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.enterCommentText(
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
     );
@@ -56,7 +56,7 @@ mainTest(
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateCommentButton();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.enterCommentText("Test Comment");
     await mainPage.clickPostCommentButton();
     await mainPage.clickViewportByCoordinates(600, 400);
@@ -81,7 +81,7 @@ mainTest(
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateCommentButton();
-    await mainPage.clickViewport();
+    await mainPage.clickViewportTwice();
     await mainPage.enterCommentText("Test Comment");
     await mainPage.clickPostCommentButton();
     await mainPage.clickViewportByCoordinates(600, 400);
@@ -107,7 +107,7 @@ mainTest(
 mainTest("CO-356 Delete thread", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateCommentButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.enterCommentText("Test Comment");
   await mainPage.clickPostCommentButton();
   await mainPage.clickViewportByCoordinates(600, 400);
@@ -128,7 +128,7 @@ mainTest("CO-356 Delete thread", async ({ page }) => {
 mainTest("CO-360 Resolve comment", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateCommentButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.enterCommentText("Test Comment");
   await mainPage.clickPostCommentButton();
   await mainPage.clickResolveCommentCheckbox();

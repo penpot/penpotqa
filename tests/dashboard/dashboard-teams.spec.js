@@ -202,7 +202,7 @@ dashboardTest(
   }
 );
 
-dashboardTest("DA-119 Rename a team (via owner)", async ({ page }) => {
+dashboardTest("DA-119 Rename a team via owner", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.createTeam("QA Team");
   await dashboardPage.isTeamSelected("QA Team");
@@ -210,7 +210,7 @@ dashboardTest("DA-119 Rename a team (via owner)", async ({ page }) => {
   await dashboardPage.isTeamSelected("Renamed Team");
 });
 
-dashboardTest("DA-122 Delete a team (via owner)", async ({ page }) => {
+dashboardTest("DA-122 Delete a team via owner", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.createTeam("QA Team");
   await dashboardPage.isTeamSelected("QA Team");
