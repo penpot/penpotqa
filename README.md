@@ -6,6 +6,7 @@ Based on Playwright framework.
 
 ##1. Initial requirements and configuration
 Prerequisites for local run:
+
 - Windows OS
 - Screen resolution 1920x1080
 - Installed Node.js
@@ -33,24 +34,32 @@ Currently, there are 238 tests at all, average time of execution - 35 minutes.
 
 ##3. Test run - additional settings.
 Some settings from _playwright.config.js_ may be useful:
+
 - By default, test retries are enabled (test retries 2 times in case of failure). To disable them, change the value of `retries` property to 0
 - `timeout` and `expect.timeout` - maximum time of execution a single test and of a waiting expect() condition to be met accordingly
 - `use.headless `- change to _false_ to run in headed browser mode
 - `use.channel: "chrome"` - comment out to run tests in Chromium instead of Chrome (for "chrome" project)
 
 ##4. Snapshots comparison.
-Expected snapshots are stored in _tests/{spec-name}-snapshots/{project-name}_ folders (where project-name is the browser name). 
-In most of the cases, they capture and compare not the whole visible area of the screen but only the single element/section (e.g. created shape or canvas with created board). 
+Expected snapshots are stored in _tests/{spec-name}-snapshots/{project-name}_ folders (where project-name is the browser name).
+In most of the cases, they capture and compare not the whole visible area of the screen but only the single element/section (e.g. created shape or canvas with created board).
 It helps to avoid the failure of the tests upon such changes in the UI like adding new sections to the Design panel, new buttons to the toolbars and so on.
 Such tests use the pattern:
 `await expect(<pageName.elementName>).toHaveScreenshot("snapshotName.png");`
-However, about 10% of the tests capture and compare all visible area of the screen, since in such scenarios it makes sense to check not only the layers/canvas, but the panels, toolbar, etc. 
+However, about 10% of the tests capture and compare all visible area of the screen, since in such scenarios it makes sense to check not only the layers/canvas, but the panels, toolbar, etc.
 These tests are use the pattern:
 `await expect(page).toHaveScreenshot("snapshotName.png", { mask: [pageName.elementName], });`
 Masking is used in order to ignore the elements which have unpredictable text content or values (e.g. username, timestamp, etc.).
-Therefore, however the impact of future UI changes to snapshots comparison is minimized, it is impossible to avoid such cases at all. 
+Therefore, however the impact of future UI changes to snapshots comparison is minimized, it is impossible to avoid such cases at all.
 However, it is rather simple to update snapshots:
+
 - Upon test failure, compare the actual and expected snapshots and verify that the difference occurred due to intended changes in UI.
 - Delete expected snapshot from folder.
 - Run the test one more time, which will capture the actual snapshot and write it as expected to the appropriate folder.
 - Commit the new expected snapshot and push.
+
+Note 1: there is a known issue that Chrome does render differently in headless and headed modes, that's why
+`expect.toHaveScreenshot.maxDiffPixelRatio: 0.01` is set in _playwright.config.js_ for "chrome" project , which means that
+an acceptable ratio of pixels that are different to the total amount of pixels is 1% within screenshot comparison.
+Note 2: expected screenshots for Firefox represent headless mode. Since scrollbars are hidden in headless mode and
+there is no way to unhide them in Firefox (unlike Chrome) - screenshots comparison in headed Firefox mode may fail in a few tests.
