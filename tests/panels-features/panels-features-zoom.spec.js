@@ -4,7 +4,7 @@ const { expect } = require("@playwright/test");
 
 mainTest("PF-132 Zoom +/- via top right menu", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.increaseZoom(1);
   await expect(page).toHaveScreenshot("canvas-zoom-in.png", {
     mask: [mainPage.usersSection],
@@ -17,7 +17,7 @@ mainTest("PF-132 Zoom +/- via top right menu", async ({ page }) => {
 
 mainTest("PF-134 Reset zoom via top right menu", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.increaseZoom(1);
   await expect(page).toHaveScreenshot("canvas-zoom-in.png", {
     mask: [mainPage.usersSection],
@@ -31,14 +31,14 @@ mainTest("PF-134 Reset zoom via top right menu", async ({ page }) => {
 mainTest("PF-136 Zoom to fit all via top right menu", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await page.mouse.wheel(0, 1000);
   await mainPage.clickCreateEllipseButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.zoomToFitAll();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await expect(page).toHaveScreenshot("canvas-zoom-to-fit-all.png", {
     mask: [mainPage.usersSection],
   });
@@ -50,7 +50,7 @@ mainTest("PF-138 Zoom to selected via top right menu", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(900, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.zoomToFitSelected();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await expect(page).toHaveScreenshot("canvas-zoom-to-selected.png", {
     mask: [mainPage.usersSection],
   });

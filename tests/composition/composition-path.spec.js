@@ -3,7 +3,7 @@ const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
 const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
 
-mainTest("CO-272 Create Path (Toolbar) - closed", async ({ page }) => {
+mainTest("CO-272 Create Path from toolbar - closed", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreatePathButton();
   await mainPage.clickViewportByCoordinates(500, 200);
@@ -15,7 +15,7 @@ mainTest("CO-272 Create Path (Toolbar) - closed", async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot("path-closed.png");
 });
 
-mainTest("CO-274 Create Path (Toolbar) - opened", async ({ page }) => {
+mainTest("CO-274 Create Path from toolbar - opened", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreatePathButton();
   await mainPage.clickViewportByCoordinates(500, 200);

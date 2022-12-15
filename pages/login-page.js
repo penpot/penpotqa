@@ -55,12 +55,8 @@ exports.LoginPage = class LoginPage extends BasePage {
     await expect(this.loginButton).toBeDisabled();
   }
 
-  async clickSection() {
-    await this.section.click();
-  }
-
-  async isLoginErrorBannerDisplayed() {
-    await expect(this.loginErrorBanner).toBeVisible();
+  async clickHeader() {
+    await this.header.click();
   }
 
   async isLoginErrorMessageDisplayed(message) {

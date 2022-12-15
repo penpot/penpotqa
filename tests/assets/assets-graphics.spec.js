@@ -3,7 +3,7 @@ const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
 
 mainTest(
-  "AS-1 Switch from Layers to Assets (via clicking tab and ALT+I / ALT+L shortcuts)",
+  "AS-1 Switch from Layers to Assets via clicking tab and ALT I ALT L shortcuts)",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickAssetsTab();
@@ -24,7 +24,7 @@ mainTest("AS-2 Filter Graphics from All Assets drop-down", async ({ page }) => {
   await mainPage.isAssetsTitleDisplayed("Graphics (0)");
 });
 
-mainTest("AS-3 File library graphics - add (.png)", async ({ page }) => {
+mainTest("AS-3 File library graphics - add .png", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAssetsTab();
   await mainPage.uploadImageToFileLibraryGraphics("images/images.png");
@@ -33,7 +33,7 @@ mainTest("AS-3 File library graphics - add (.png)", async ({ page }) => {
   await expect(mainPage.assetsPanel).toHaveScreenshot("graphics-png.png");
 });
 
-mainTest("AS-4 File library graphics - add (.jpg)", async ({ page }) => {
+mainTest("AS-4 File library graphics - add .jpg", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAssetsTab();
   await mainPage.uploadImageToFileLibraryGraphics("images/sample.jpeg");
@@ -42,7 +42,7 @@ mainTest("AS-4 File library graphics - add (.jpg)", async ({ page }) => {
   await expect(mainPage.assetsPanel).toHaveScreenshot("graphics-jpg.png");
 });
 
-mainTest("AS-5 File library graphics - add (.svg)", async ({ page }) => {
+mainTest("AS-5 File library graphics - add .svg", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAssetsTab();
   await mainPage.uploadImageToFileLibraryGraphics(
@@ -105,7 +105,7 @@ mainTest("AS-17 File library graphics - ungroup", async ({ page }) => {
 });
 
 mainTest(
-  "AS-19 File library graphics - change view (list / tile)",
+  "AS-19 File library graphics - change view list tile",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickAssetsTab();

@@ -3,10 +3,10 @@ const { MainPage } = require("../../pages/main-page");
 const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
 const { expect } = require("@playwright/test");
 
-mainTest("CO-59 Create a rectangle (Toolbar)", async ({ page }) => {
+mainTest("CO-59 Create a rectangle from toolbar", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await expect(mainPage.viewport).toHaveScreenshot("rectangle.png");
@@ -15,7 +15,7 @@ mainTest("CO-59 Create a rectangle (Toolbar)", async ({ page }) => {
 mainTest("CO-80 Rename rectangle with valid name", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.doubleClickCreatedLayerOnLayersPanel();
   await mainPage.renameCreatedLayer("renamed rectangle");
@@ -27,7 +27,7 @@ mainTest("CO-70 Add and edit Shadow to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.clickAddShadowButton();
   await mainPage.clickShadowActionsButton();
   await mainPage.changeXForShadow("10");
@@ -37,7 +37,7 @@ mainTest("CO-70 Add and edit Shadow to rectangle", async ({ page }) => {
   await mainPage.changeOpacityForShadow("50");
   await mainPage.clickShadowColorIcon();
   await colorPalettePopUp.setHex("#304d6a");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("rectangle-drop-shadow.png");
   await mainPage.selectTypeForShadow("Inner shadow");
@@ -48,7 +48,7 @@ mainTest("CO-70 Add and edit Shadow to rectangle", async ({ page }) => {
   await mainPage.changeOpacityForShadow("25");
   await mainPage.clickShadowColorIcon();
   await colorPalettePopUp.setHex("#96e637");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "rectangle-inner-shadow.png"
@@ -58,7 +58,7 @@ mainTest("CO-70 Add and edit Shadow to rectangle", async ({ page }) => {
 mainTest("CO-73 Add and edit Blur to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.clickAddBlurButton();
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
@@ -68,7 +68,7 @@ mainTest("CO-73 Add and edit Blur to rectangle", async ({ page }) => {
 mainTest("CO-76-1 Delete rectangle via rightclick", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.deleteLayerViaRightclick();
@@ -79,7 +79,7 @@ mainTest("CO-76-1 Delete rectangle via rightclick", async ({ page }) => {
 mainTest("CO-76-2 Delete rectangle via shortcut Del", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.deleteLayerViaShortcut();
@@ -90,7 +90,7 @@ mainTest("CO-76-2 Delete rectangle via shortcut Del", async ({ page }) => {
 mainTest("CO-62 Add rotation to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("rectangle-rotated-90.png");
@@ -108,7 +108,7 @@ mainTest("CO-62 Add rotation to rectangle", async ({ page }) => {
 mainTest("CO-63 Change border radius multiple values", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickIndividualCornersRadiusButton();
   await mainPage.changeFirstCornerRadiusForLayer("30");
@@ -130,7 +130,7 @@ mainTest("CO-63 Change border radius multiple values", async ({ page }) => {
 mainTest("CO-104 Transform rectangle to path", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.transformToPathViaRightclick();
   await mainPage.waitForChangeIsSaved();
@@ -142,7 +142,7 @@ mainTest("CO-104 Transform rectangle to path", async ({ page }) => {
 mainTest("CO-111 Selection to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.selectionToBoardViaRightclick();
   await mainPage.waitForChangeIsSaved();

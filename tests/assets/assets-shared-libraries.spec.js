@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest("AS-92 Import shared library (LIBRARIES pop-up)", async ({ page }) => {
+mainTest("AS-92 Import shared library (LIBRARIES pop-up", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAssetsTab();
   await mainPage.clickLibrariesTab();
@@ -28,7 +28,7 @@ mainTest("AS-92 Import shared library (LIBRARIES pop-up)", async ({ page }) => {
   await expect(mainPage.assetsPanel).toHaveScreenshot("imported-library.png");
 });
 
-mainTest("AS-93 Remove shared library (LIBRARIES pop-up)", async ({ page }) => {
+mainTest("AS-93 Remove shared library (LIBRARIES pop-up", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAssetsTab();
   await mainPage.clickLibrariesTab();

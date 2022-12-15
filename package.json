@@ -6,6 +6,7 @@
   "scripts": {
     "test": "npx playwright test --project=chrome",
     "firefox": "npx playwright test --project=firefox",
+    "webkit": "npx playwright test --project=webkit",
     "prettier": "npx prettier --write ."
   },
   "repository": {

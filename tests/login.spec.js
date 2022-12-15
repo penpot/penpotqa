@@ -27,7 +27,7 @@ test("ON-14 Login with no password", async ({ page }) => {
   await loginPage.goto();
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);
   await loginPage.clickPwdInput();
-  await loginPage.clickSection();
+  await loginPage.clickHeader();
   await loginPage.isPwdInputErrorDisplayed();
   await loginPage.isLoginButtonDisplayed();
   await loginPage.isLoginButtonDisabled();

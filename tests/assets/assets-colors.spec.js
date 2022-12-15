@@ -17,7 +17,7 @@ mainTest("AS-23 File library colors - add", async ({ page }) => {
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isColorAddedToFileLibraryColors("#ffff00");
   await expect(mainPage.assetsPanel).toHaveScreenshot("colors-add-color.png");
@@ -30,12 +30,12 @@ mainTest("AS-24 File library colors - edit", async ({ page }) => {
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.editFileLibraryColor();
   await colorPalettePopUp.setHex("#00ff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isColorAddedToFileLibraryColors("#ffff00#00ff00");
   await expect(mainPage.assetsPanel).toHaveScreenshot("colors-edit-color.png");
@@ -48,10 +48,10 @@ mainTest("AS-25 File library colors - rename", async ({ page }) => {
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.renameFileLibraryColor("test color");
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isColorAddedToFileLibraryColors("test color#ffff00");
   await expect(mainPage.assetsPanel).toHaveScreenshot(
@@ -66,7 +66,7 @@ mainTest("AS-26 File library colors - delete", async ({ page }) => {
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.deleteFileLibraryColor();
   await mainPage.waitForChangeIsSaved();
@@ -82,7 +82,7 @@ mainTest("AS-27 File library colors - create group", async ({ page }) => {
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createGroupFileLibraryColors("Test Group");
   await mainPage.waitForChangeIsSaved();
@@ -97,7 +97,7 @@ mainTest("AS-29 File library colors - rename group", async ({ page }) => {
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createGroupFileLibraryColors("Test Group");
   await mainPage.waitForChangeIsSaved();
@@ -116,7 +116,7 @@ mainTest("AS-32 File library colors- ungroup", async ({ page }) => {
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createGroupFileLibraryColors("Test Group");
   await mainPage.waitForChangeIsSaved();
@@ -133,10 +133,10 @@ mainTest("AS-34 File library colors - apply to element", async ({ page }) => {
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFileLibraryColorsColorBullet();
   await expect(mainPage.createdLayer).toHaveScreenshot(
@@ -151,10 +151,10 @@ mainTest("AS-117 File library colors - apply to stroke", async ({ page }) => {
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewport();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddStrokeButton();
   await mainPage.clickAndPressAltFileLibraryColorsColorBullet();
