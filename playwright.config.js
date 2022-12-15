@@ -43,12 +43,20 @@ const config = {
   projects: [
     {
       name: "chrome",
+      expect: {
+        toHaveScreenshot: {
+          maxDiffPixelRatio: 0.01,
+        },
+      },
       use: {
         browserName: "chromium",
         channel: "chrome",
         viewport: {
           height: 969,
           width: 1920,
+        },
+        launchOptions: {
+          ignoreDefaultArgs: ["--hide-scrollbars"],
         },
       },
     },
