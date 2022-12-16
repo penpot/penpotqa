@@ -4,7 +4,7 @@ QA Test for Penpot
 
 Based on Playwright framework.
 
-**1. Initial requirements and configuration**
+**1. Initial requirements and configuration.**
 
 
 Prerequisites for local run:
@@ -20,12 +20,12 @@ Prerequisites for local run:
 
 **2. Test run - main notes.**
 
-Upon cloning the repo and truing to run tests, you may be prompted to install the browsers:
+Upon cloning the repo and trying to run tests, you may be prompted to install the browsers:
 `npx playwright install`
 By default, `npm test` runs all tests in Chrome browser (the script `"test": "npx playwright test --project=chrome"` in _package.js_).
 To run the specific test/tests, change the test script in _package.js_ in the next ways (or add a separate script):
 
-- Run single test (by title) - e.g. `"npx playwright test -g \"CO-154 Transform ellipse to path\" --project=chrome"`,
+- Run single test (by title) - e.g. `"npx playwright test -g \"CO-154 Transform ellipse to path\" --project=chrome"`
 - Run single test spec (file) - e.g. `"npx playwright test tests/login.spec.js --project=chrome"`
 - Run specific tests package (folder) - e.g. `"npx playwright test tests/dashboard --project=chrome"`
 
