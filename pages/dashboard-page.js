@@ -26,7 +26,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'button[class="create-new"]'
     );
     this.createFileButtonTitlePanel = page.locator(
-      'a[data-test="project-new-file"]'
+      '*[data-test="project-new-file"]'
     );
     this.renameFileMenuItem = page.locator('a[data-test="file-rename"]');
     this.duplicateFileMenuItem = page.locator('a[data-test="file-duplicate"]');
@@ -57,7 +57,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
 
     //Projects
-    this.addProjectButton = page.locator('a[data-test="new-project-button"]');
+    this.addProjectButton = page.locator(
+      'button[data-test="new-project-button"]'
+    );
     this.projectNameInput = page.locator(
       'div[class="project-name-wrapper"] div[class="edit-wrapper"]'
     );
@@ -72,12 +74,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.duplicateProjectMenuItem = page.locator(
       'a[data-test="project-duplicate"]'
     );
-    this.pinUnpinProjectButton = page.locator('span[alt="Pin/Unpin"] svg');
+    this.pinUnpinProjectButton = page.locator('button[alt="Pin/Unpin"] svg');
     this.projectNameInput = page.locator(
       'div[class="project-name-wrapper"] div[class="edit-wrapper"]'
     );
     this.projectOptionsMenuButton = page.locator(
-      'a[data-test="project-options"] svg[class="icon-actions"]'
+      '*[data-test="project-options"] .icon-actions'
     );
     this.projectsSidebarItem = page.locator('li:has-text("Projects")');
     this.draftsSidebarItem = page.locator('li:has-text("Drafts")');
@@ -110,18 +112,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.saveFontButton = page.locator('button:has-text("Save")');
     this.searchFontInput = page.locator("input[placeholder='Search font']");
-    this.teamSelector = page.locator("div[class='current-team']");
-    this.createNewTeamMenuItem = page.locator(
-      "li[data-test='create-new-team']"
-    );
+    this.teamSelector = page.locator(".current-team");
+    this.createNewTeamMenuItem = page.locator("#teams-selector-create-team");
 
     //Teams
     this.teamNameInput = page.locator("#name");
     this.createNewTeamButton = page.locator("input[value='Create new team']");
-    this.teamMenuItem = page.locator("li[class='team-name']");
-    this.teamOptionsMenuButton = page.locator(
-      'div[class="switch-options"] svg[class="icon-actions"]'
-    );
+    this.teamMenuItem = page.locator(".current-team .team-name");
+    this.teamOptionsMenuButton = page.locator(".switch-options .icon-actions");
     this.deleteTeamMenuItem = page.locator('li[data-test="delete-team"]');
     this.deleteTeamButton = page.locator('input[value="Delete team"]');
     this.invitationsMenuItem = page.locator('li[data-test="team-invitations"]');
@@ -180,10 +178,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class="dashboard-templates-section "]'
     );
     this.librariesAndTemplatesSectionLeftArrowButton = page.locator(
-      'div[class="button left"]'
+      'button[class="button left"]'
     );
     this.librariesAndTemplatesSectionRightArrowButton = page.locator(
-      'div[class="button right"]'
+      'button[class="button right"]'
     );
     this.teamInfoSection = page.locator('div[class="block info-block"]');
     this.continueButton = page.locator('input[value="Continue"]');

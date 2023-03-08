@@ -19,7 +19,6 @@ dashboardTest(
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
     await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
     await dashboardPage.openInvitationsPageViaOptionsMenu();
     await dashboardPage.isHeaderDisplayed("Invitations");
     await dashboardPage.clickInviteMembersToTeamButton();
@@ -35,7 +34,6 @@ dashboardTest(
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
     await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
     await dashboardPage.clickInviteMembersTeamHeroButton();
     await dashboardPage.isInviteMembersPopUpHeaderDisplayed(
       "Invite members to the team"
@@ -48,7 +46,6 @@ dashboardTest(
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
     await dashboardPage.isTeamSelected("QA Team");
     await dashboardPage.openInvitationsPageViaOptionsMenu();
     await dashboardPage.isHeaderDisplayed("Invitations");
@@ -75,7 +72,6 @@ dashboardTest(
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
     await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
     await dashboardPage.openInvitationsPageViaOptionsMenu();
     await dashboardPage.isHeaderDisplayed("Invitations");
     await dashboardPage.clickInviteMembersToTeamButton();
@@ -101,7 +97,6 @@ dashboardTest(
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
     await dashboardPage.isTeamSelected("QA Team");
     await dashboardPage.openInvitationsPageViaOptionsMenu();
     await dashboardPage.isHeaderDisplayed("Invitations");
@@ -132,7 +127,6 @@ dashboardTest(
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
     await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
     await dashboardPage.openInvitationsPageViaOptionsMenu();
     await dashboardPage.isHeaderDisplayed("Invitations");
     await dashboardPage.clickInviteMembersToTeamButton();
@@ -159,7 +153,6 @@ dashboardTest(
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.createTeam("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
     await dashboardPage.isTeamSelected("QA Team");
     await dashboardPage.openInvitationsPageViaOptionsMenu();
     await dashboardPage.isHeaderDisplayed("Invitations");

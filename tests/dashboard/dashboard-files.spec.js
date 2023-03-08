@@ -116,7 +116,7 @@ dashboardTest("DA-24 Create new project ", async ({ page }) => {
 });
 
 dashboardTest(
-  "DA-25 Create a file in Project via '+' button on title panel",
+  "DA-25 Create a file in Project via plus button on title panel",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -408,7 +408,7 @@ dashboardTest("DA-60-2 Delete project via Options icon", async ({ page }) => {
   await dashboardPage.isProjectTitleDisplayed("Drafts");
 });
 
-dashboardTest("DA-62 Search file (from Drafts", async ({ page }) => {
+dashboardTest("DA-62 Search file from Drafts", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.createFileViaPlaceholder();
   const mainPage = new MainPage(page);
@@ -420,7 +420,7 @@ dashboardTest("DA-62 Search file (from Drafts", async ({ page }) => {
   await dashboardPage.isFileNameDisplayed("qwe");
 });
 
-dashboardTest("DA-63 Search file (from Projects", async ({ page }) => {
+dashboardTest("DA-63 Search file from Projects", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
