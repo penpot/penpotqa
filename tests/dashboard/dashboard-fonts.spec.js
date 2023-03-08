@@ -38,6 +38,6 @@ dashboardTest("DA-72 Delete font", async ({ page }) => {
   await dashboardPage.isFontUploaded("Pacifico", "Regular");
   await dashboardPage.deleteFont();
   await dashboardPage.isFontsTablePlaceholderDisplayed(
-    "You still have no custom fonts installed."
+    "Custom fonts you upload will appear here."
   );
 });
