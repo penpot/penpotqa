@@ -9,16 +9,16 @@ exports.MainPage = class MainPage extends BasePage {
     super(page);
     //Left Toolbar
     this.pencilBoxButton = page.locator('div[class="main-icon"]');
-    this.moveButton = page.locator('button[alt="Move (V)"]');
+    this.moveButton = page.locator('button[title="Move (V)"]');
     this.createBoardButton = page.locator('button[data-test="artboard-btn"]');
     this.createRectangleButton = page.locator('button[data-test="rect-btn"]');
     this.createEllipseButton = page.locator('button[data-test="ellipse-btn"]');
-    this.createTextButton = page.locator('button[alt="Text (T)"]');
+    this.createTextButton = page.locator('button[title="Text (T)"]');
     this.uploadImageSelector = page.locator("#image-upload");
     this.createCurveButton = page.locator('button[data-test="curve-btn"]');
     this.createPathButton = page.locator('button[data-test="path-btn"]');
     this.createCommentButton = page.locator('button[alt="Comments (C)"]');
-    this.shortcutsPanelButton = page.locator('button[alt="Shortcuts (?)"]');
+    this.shortcutsPanelButton = page.locator(".icon-shortcut");
     this.colorsPanelButton = page.locator('button[alt^="Color Palette"]');
 
     //Viewport
@@ -413,10 +413,10 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class="listing-option-btn"] svg'
     );
     this.addFileLibraryColorButton = page.locator(
-      'div[class="asset-section"] svg[class="icon-plus"] >>nth=1'
+      ".asset-section .icon-plus >>nth=1"
     );
     this.fileLibraryColorsColorBullet = page.locator(
-      'div[class="color-bullet tooltip tooltip-right is-library-color"]'
+      'div[class="color-bullet is-library-color"]'
     );
     this.fileLibraryColorsColorTitle = page.locator('div[class="name-block"]');
     this.fileLibraryColorsColorNameInput = page.locator(
@@ -1452,13 +1452,14 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickFileLibraryColorsColorBullet() {
-    await this.fileLibraryColorsColorBullet.click();
+    await this.fileLibraryColorsColorBullet.click({ delay: 500 });
   }
 
   async clickAndPressAltFileLibraryColorsColorBullet() {
-    await this.page.keyboard.down("Alt");
-    await this.fileLibraryColorsColorBullet.click();
-    await this.page.keyboard.up("Alt");
+    await this.fileLibraryColorsColorBullet.click({
+      delay: 500,
+      modifiers: ["Alt"],
+    });
   }
 
   async clickAddFileLibraryTypographyButton() {
