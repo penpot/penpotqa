@@ -7,23 +7,21 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
 
   constructor(page) {
     super(page);
-    this.popUp = page.locator('div[class="colorpicker-tooltip"]');
+    this.popUp = page.locator(".colorpicker-tooltip");
     this.hexInput = page.locator("#hex-value");
     this.saveColorStyleButton = page.locator(
       'button:has-text("Save color style")'
     );
     this.firstFileLibraryColorBullet = page.locator(
-      'div[class="selected-colors"] div[class="color-bullet tooltip tooltip-right is-not-library-color"] >>nth=0'
+      '.selected-colors .class="color-bullet tooltip tooltip-right is-not-library-color >>nth=0'
     );
     this.secondFileLibraryColorBullet = page.locator(
-      'div[class="selected-colors"] div[class="color-bullet tooltip tooltip-right is-not-library-color"] >>nth=1'
+      ".selected-colors .color-bullet tooltip tooltip-right is-not-library-color >>nth=1"
     );
     this.recentColorsColorBullet = page.locator(
-      'div[class="selected-colors"] div[class="color-bullet tooltip tooltip-right is-library-color"] >>nth=0'
+      ".selected-colors .color-bullet tooltip tooltip-right is-library-color >>nth=0"
     );
-    this.colorsSelector = page.locator(
-      'div[class="colorpicker-tooltip"] select'
-    );
+    this.colorsSelector = page.locator(".colorpicker-tooltip select");
   }
 
   async setHex(value) {
