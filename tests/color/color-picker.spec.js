@@ -51,9 +51,9 @@ mainTest("CP-7 Use Recent colors", async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.isFirstFileLibraryColorBulletDisplayed();
-  await colorPalettePopUp.isSecondFileLibraryColorBulletDisplayed();
-  await colorPalettePopUp.clickSecondFileLibraryColorBullet();
+  await colorPalettePopUp.isFirstRecentColorBulletDisplayed();
+  await colorPalettePopUp.isSecondRecentColorBulletDisplayed();
+  await colorPalettePopUp.clickSecondRecentColorBullet();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.createdLayer).toHaveScreenshot(
@@ -75,8 +75,8 @@ mainTest("CP-8 Use colors from File library", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
   await colorPalettePopUp.selectFileLibraryColors();
-  await colorPalettePopUp.isRecentColorsColorBulletDisplayed();
-  await colorPalettePopUp.clickRecentColorsColorBullet();
+  await colorPalettePopUp.isFileLibraryColorBulletDisplayed();
+  await colorPalettePopUp.clickFirstFileLibraryColorBullet();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.createdLayer).toHaveScreenshot(

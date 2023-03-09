@@ -12,15 +12,16 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
     this.saveColorStyleButton = page.locator(
       'button:has-text("Save color style")'
     );
-    this.firstFileLibraryColorBullet = page.locator(
-      '.selected-colors .class="color-bullet tooltip tooltip-right is-not-library-color >>nth=0'
+    this.firstRecentColorBullet = page.locator(
+      'div[class="selected-colors"] div[class="color-bullet is-not-library-color"] >>nth=0'
     );
-    this.secondFileLibraryColorBullet = page.locator(
-      ".selected-colors .color-bullet tooltip tooltip-right is-not-library-color >>nth=1"
+    this.secondRecentColorBullet = page.locator(
+      'div[class="selected-colors"] div[class="color-bullet is-not-library-color"] >>nth=1'
     );
-    this.recentColorsColorBullet = page.locator(
-      ".selected-colors .color-bullet tooltip tooltip-right is-library-color >>nth=0"
+    this.fileLibraryColorBullet = page.locator(
+      'div[class="selected-colors"] div[class="color-bullet is-library-color"] >>nth=0'
     );
+
     this.colorsSelector = page.locator(".colorpicker-tooltip select");
   }
 
@@ -37,28 +38,28 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
     await expect(this.popUp).toBeVisible();
   }
 
-  async isFirstFileLibraryColorBulletDisplayed() {
-    await expect(this.firstFileLibraryColorBullet).toBeVisible();
+  async isFirstRecentColorBulletDisplayed() {
+    await expect(this.firstRecentColorBullet).toBeVisible();
   }
 
-  async isSecondFileLibraryColorBulletDisplayed() {
-    await expect(this.secondFileLibraryColorBullet).toBeVisible();
+  async isSecondRecentColorBulletDisplayed() {
+    await expect(this.secondRecentColorBullet).toBeVisible();
   }
 
-  async isRecentColorsColorBulletDisplayed() {
-    await expect(this.recentColorsColorBullet).toBeVisible();
+  async isFileLibraryColorBulletDisplayed() {
+    await expect(this.fileLibraryColorBullet).toBeVisible();
   }
 
   async clickFirstFileLibraryColorBullet() {
-    await this.firstFileLibraryColorBullet.click();
+    await this.fileLibraryColorBullet.click();
   }
 
-  async clickSecondFileLibraryColorBullet() {
-    await this.secondFileLibraryColorBullet.click();
+  async clickSecondRecentColorBullet() {
+    await this.secondRecentColorBullet.click();
   }
 
-  async clickRecentColorsColorBullet() {
-    await this.recentColorsColorBullet.click();
+  async clickRecentColorBullet() {
+    await this.firstRecentColorBullet.click();
   }
 
   async selectFileLibraryColors() {
