@@ -19,7 +19,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.createPathButton = page.locator('button[data-test="path-btn"]');
     this.createCommentButton = page.locator('button[alt="Comments (C)"]');
     this.shortcutsPanelButton = page.locator(".icon-shortcut");
-    this.colorsPanelButton = page.locator('button[alt^="Color Palette"]');
+    this.colorsPanelButton = page.locator('button[title^="Color Palette"]');
 
     //Viewport
     this.viewport = page.locator('div[class="viewport"]');
@@ -188,7 +188,7 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class="element-set"] div:has-text("Stroke") svg'
     );
     this.strokeColorBullet = page.locator(
-      'div[title="Stroke color"] div[class="color-bullet tooltip tooltip-right is-not-library-color"]'
+      'div[title="Stroke color"] div[class="color-bullet is-not-library-color"]'
     );
 
     //Node panel
