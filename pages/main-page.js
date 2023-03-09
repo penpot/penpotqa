@@ -17,7 +17,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.uploadImageSelector = page.locator("#image-upload");
     this.createCurveButton = page.locator('button[data-test="curve-btn"]');
     this.createPathButton = page.locator('button[data-test="path-btn"]');
-    this.createCommentButton = page.locator('button[alt="Comments (C)"]');
+    this.createCommentButton = page.locator('button[title="Comments (C)"]');
     this.shortcutsPanelButton = page.locator(".icon-shortcut");
     this.colorsPanelButton = page.locator('button[title^="Color Palette"]');
 
@@ -624,7 +624,9 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickAddShadowButton() {
-    await this.addShadowButton.click();
+    while (await this.shadowActionsButton.isHidden()) {
+      await this.addShadowButton.click({ delay: 500 });
+    }
   }
 
   async clickShadowActionsButton() {
@@ -672,7 +674,9 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickAddBlurButton() {
-    await this.addBlurButton.click();
+    while (await this.blurValueInput.isHidden()) {
+      await this.addBlurButton.click({ delay: 500 });
+    }
   }
 
   async changeValueForBlur(value) {
