@@ -156,7 +156,7 @@ mainTest("CO-356 Delete thread", async ({ page, browserName }) => {
   await mainPage.clickDeleteThreadButton();
   await mainPage.isCommentThreadIconNotDisplayed();
   await mainPage.isCommentsPanelPlaceholderDisplayed(
-    "You have no pending comment notifications"
+    "You're all caught up! New comment notifications will appear here."
   );
   if (browserName === "chromium") {
     await expect(page).toHaveScreenshot("comment-removed.png", {
