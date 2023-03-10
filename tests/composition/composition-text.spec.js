@@ -6,11 +6,10 @@ const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
 mainTest("CO-162 Create a text from toolbar", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateTextButton();
+  await mainPage.clickViewportTwice();
   if (browserName === "webkit") {
-    await mainPage.clickViewportOnce();
     await mainPage.typeTextFromKeyboard();
   } else {
-    await mainPage.clickViewportTwice();
     await mainPage.typeText("Hello World!");
   }
   await mainPage.waitForChangeIsSaved();
@@ -21,11 +20,10 @@ mainTest("CO-162 Create a text from toolbar", async ({ page, browserName }) => {
 mainTest("CO-165 Add rotation to text", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateTextButton();
+  await mainPage.clickViewportTwice();
   if (browserName === "webkit") {
-    await mainPage.clickViewportOnce();
     await mainPage.typeTextFromKeyboard();
   } else {
-    await mainPage.clickViewportTwice();
     await mainPage.typeText("Hello World!");
   }
   await mainPage.changeRotationForLayer("90");
@@ -48,11 +46,10 @@ mainTest(
     const mainPage = new MainPage(page);
     const colorPalettePopUp = new ColorPalettePopUp(page);
     await mainPage.clickCreateTextButton();
+    await mainPage.clickViewportTwice();
     if (browserName === "webkit") {
-      await mainPage.clickViewportOnce();
       await mainPage.typeTextFromKeyboard();
     } else {
-      await mainPage.clickViewportTwice();
       await mainPage.typeText("Hello World!");
     }
     await mainPage.clickAddShadowButton();
@@ -84,11 +81,10 @@ mainTest(
 mainTest("CO-170 Add and edit Blur to text", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateTextButton();
+  await mainPage.clickViewportTwice();
   if (browserName === "webkit") {
-    await mainPage.clickViewportOnce();
     await mainPage.typeTextFromKeyboard();
   } else {
-    await mainPage.clickViewportTwice();
     await mainPage.typeText("Hello World!");
   }
   await mainPage.clickAddBlurButton();
@@ -102,14 +98,14 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateTextButton();
+    await mainPage.clickViewportTwice();
     if (browserName === "webkit") {
-      await mainPage.clickViewportOnce();
       await mainPage.typeTextFromKeyboard();
     } else {
-      await mainPage.clickViewportTwice();
       await mainPage.typeText("Hello World!");
     }
     await mainPage.isCreatedLayerVisible();
+    await mainPage.clickMoveButton();
     await mainPage.clickViewportTwice();
     await mainPage.deleteLayerViaRightclick();
     await mainPage.waitForChangeIsSaved();
@@ -122,14 +118,14 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateTextButton();
+    await mainPage.clickViewportTwice();
     if (browserName === "webkit") {
-      await mainPage.clickViewportOnce();
       await mainPage.typeTextFromKeyboard();
     } else {
-      await mainPage.clickViewportTwice();
       await mainPage.typeText("Hello World!");
     }
     await mainPage.isCreatedLayerVisible();
+    await mainPage.clickMoveButton();
     await mainPage.clickViewportTwice();
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
@@ -142,11 +138,10 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateTextButton();
+    await mainPage.clickViewportTwice();
     if (browserName === "webkit") {
-      await mainPage.clickViewportOnce();
       await mainPage.typeTextFromKeyboard();
     } else {
-      await mainPage.clickViewportTwice();
       await mainPage.typeText("Hello World!");
     }
     await mainPage.waitForChangeIsSaved();
@@ -163,11 +158,10 @@ mainTest(
     const mainPage = new MainPage(page);
     const colorPalettePopUp = new ColorPalettePopUp(page);
     await mainPage.clickCreateTextButton();
+    await mainPage.clickViewportTwice();
     if (browserName === "webkit") {
-      await mainPage.clickViewportOnce();
       await mainPage.typeTextFromKeyboard();
     } else {
-      await mainPage.clickViewportTwice();
       await mainPage.typeText("Hello World!");
     }
     await mainPage.clickViewportTwice();
@@ -183,13 +177,13 @@ mainTest(
 mainTest("CO-219 Selection to board", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateTextButton();
+  await mainPage.clickViewportTwice();
   if (browserName === "webkit") {
-    await mainPage.clickViewportOnce();
     await mainPage.typeTextFromKeyboard();
   } else {
-    await mainPage.clickViewportTwice();
     await mainPage.typeText("Hello World!");
   }
+  await mainPage.clickMoveButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.selectionToBoardViaRightclick();
