@@ -166,11 +166,10 @@ mainTest(
     await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.clickCreateTextButton();
+    await mainPage.clickViewportTwice();
     if (browserName === "webkit") {
-      await mainPage.clickViewportOnce();
       await mainPage.typeTextFromKeyboard();
     } else {
-      await mainPage.clickViewportTwice();
       await mainPage.typeText("Hello World!");
     }
     await mainPage.waitForChangeIsSaved();
