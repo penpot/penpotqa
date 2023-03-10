@@ -24,7 +24,7 @@ exports.MainPage = class MainPage extends BasePage {
     //Viewport
     this.viewport = page.locator('div[class="viewport"]');
     this.createdLayer = page.locator('div *[id^="shape"] >> nth=0');
-    this.createdBoardTitle = page.locator('g[class="frame-title"]');
+    this.createdBoardTitle = page.locator('g[class="frame-title"] >> nth=0');
     this.textbox = page.locator(
       'div[role="textbox"] div[contenteditable="true"]'
     );
@@ -567,9 +567,19 @@ exports.MainPage = class MainPage extends BasePage {
     await this.viewport.click();
   }
 
+  async clickViewportTwice(delayMs) {
+    await this.viewport.click({ delay: delayMs });
+    await this.viewport.click({ delay: delayMs });
+  }
+
   async clickViewportByCoordinates(x, y) {
     await this.viewport.click({ position: { x: x, y: y } });
     await this.viewport.click({ position: { x: x, y: y } });
+  }
+
+  async clickViewportByCoordinates(x, y, delayMs) {
+    await this.viewport.click({ position: { x: x, y: y }, delay: delayMs });
+    await this.viewport.click({ position: { x: x, y: y }, delay: delayMs });
   }
 
   async waitForChangeIsSaved() {
@@ -1259,12 +1269,12 @@ exports.MainPage = class MainPage extends BasePage {
     await this.prototypeTab.click();
   }
 
-  async dragAndDropPrototypeArrowConnector() {
+  async dragAndDropPrototypeArrowConnector(x, y) {
     await this.prototypeArrowConnector.hover();
-    await this.page.mouse.down();
-    const box = await this.createdLayer.boundingBox();
-    await this.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-    await this.page.mouse.up();
+    await this.prototypeArrowConnector.dragTo(this.viewport, {
+      force: false,
+      targetPosition: { x: x, y: y },
+    });
   }
 
   async isFlowNameDisplayedOnPrototypePanel(name) {
@@ -1284,7 +1294,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickAddInteractionButton() {
-    await this.addInteractionButton.click();
+    await this.addInteractionButton.click({ delay: 500 });
   }
 
   async isPrototypeArrowSecondConnectorDisplayed() {
@@ -1315,9 +1325,9 @@ exports.MainPage = class MainPage extends BasePage {
     await this.removeFlowButton.click();
   }
 
-  async selectInteractionDestination(boardName) {
+  async selectInteractionDestination(index) {
     await this.interactionDestinationSelector.selectOption({
-      label: boardName,
+      index: index,
     });
   }
 
