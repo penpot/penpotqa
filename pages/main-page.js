@@ -322,7 +322,7 @@ exports.MainPage = class MainPage extends BasePage {
       'ul[class="sub-menu file"] span:has-text("Add as Shared Library")'
     );
     this.removeAsSharedLibraryFileMenuSubItem = page.locator(
-      'ul[class="sub-menu file"] span:has-text("Remove as Shared Library")'
+      'ul[class="sub-menu file"] span:has-text("Unpublish Library")'
     );
 
     //Zoom
@@ -351,9 +351,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.addAsSharedLibraryButton = page.locator(
       'input[value="Add as Shared Library"]'
     );
-    this.removeAsSharedLibraryButton = page.locator(
-      'input[value="Remove as Shared Library"]'
-    );
+    this.removeAsSharedLibraryButton = page.locator('input[value="Unpublish"]');
     this.sharedLibraryBadge = page.locator('span:has-text("SHARED")');
     this.addPageButton = page.locator('div[class="add-page"] svg');
     this.firstPageListItem = page.locator(
@@ -1125,7 +1123,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async zoomToFitAll() {
     await this.clickZoomButton();
-    await this.zoomToFitAllMenuItem.click();
+    await this.zoomToFitAllMenuItem.click({ delay: 500 });
   }
 
   async zoomToFitSelected() {
