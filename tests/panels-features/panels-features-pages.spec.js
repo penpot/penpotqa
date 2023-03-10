@@ -30,8 +30,8 @@ mainTest("PF-116 Duplicate page", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.duplicatePageViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.isFirstPageNameDisplayed("Page-1");
-  await mainPage.isSecondPageNameDisplayed("Page-2");
+  await mainPage.isFirstPageNameDisplayed("Page 1");
+  await mainPage.isSecondPageNameDisplayed("Page 2");
 });
 
 mainTest("PF-117 Switch between pages", async ({ page }) => {
@@ -75,13 +75,13 @@ mainTest("PF-119 Delete page", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.deleteSecondPageViaRightclick();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.isFirstPageNameDisplayed("Page-1");
-  await mainPage.isSecondPageNameDisplayed("Page-3");
+  await mainPage.isFirstPageNameDisplayed("Page 1");
+  await mainPage.isSecondPageNameDisplayed("Page 3");
   await expect(mainPage.assetsPanelPagesSection).toHaveScreenshot(
     "page-1-and-page-3.png"
   );
   await mainPage.deleteSecondPageViaTrashIcon();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.isFirstPageNameDisplayed("Page-1");
+  await mainPage.isFirstPageNameDisplayed("Page 1");
   await expect(mainPage.assetsPanelPagesSection).toHaveScreenshot("page-1.png");
 });
