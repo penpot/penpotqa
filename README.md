@@ -6,7 +6,6 @@ Based on Playwright framework.
 
 **1. Initial requirements and configuration.**
 
-
 Prerequisites for local run:
 
 - Windows OS
@@ -33,7 +32,7 @@ To run the tests in Firefox and Webkit browsers, use `"firefox"` and `"webkit"` 
 `"firefox": "npx playwright test --project=firefox"`
 `"webkit": "npx playwright test --project=webkit"`
 
-Currently, there are 238 tests at all, average time of execution - 35 minutes.
+Currently, there are 239 tests at all, average time of execution - 35 minutes.
 
 **3. Test run - additional settings.**
 

@@ -272,7 +272,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async renameFileViaRightclick(newFileName) {
     await this.fileInfoPanel.click({ button: "right" });
+    let text = await this.fileNameTitle.textContent();
     await this.renameFileMenuItem.click();
+    await this.fileNameInput.click();
+    for (let i = 0; i <= text.length; i++) {
+      await this.page.keyboard.press("Backspace");
+    }
     await this.fileNameInput.type(newFileName);
     await this.page.keyboard.press("Enter");
     await this.isFileNameDisplayed(newFileName);
@@ -282,7 +287,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fileInfoPanel.first().hover();
     await this.fileOptionsMenuButton.first().hover();
     await this.fileOptionsMenuButton.first().click();
+    let text = await this.fileNameTitle.textContent();
     await this.renameFileMenuItem.click();
+    await this.fileNameInput.click();
+    for (let i = 0; i <= text.length; i++) {
+      await this.page.keyboard.press("Backspace");
+    }
     await this.fileNameInput.type(newFileName);
     await this.page.keyboard.press("Enter");
     await this.isFileNameDisplayed(newFileName);
@@ -401,17 +411,27 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async renameProjectViaRightclick(newProjectName) {
+    let text = await this.projectNameTitle.first().textContent();
     await this.projectNameTitle.first().click({ button: "right" });
     await this.renameProjectMenuItem.click();
+    await this.projectNameInput.click();
+    for (let i = 0; i <= text.length; i++) {
+      await this.page.keyboard.press("Backspace");
+    }
     await this.projectNameInput.type(newProjectName);
     await this.page.keyboard.press("Enter");
     await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
   }
 
   async renameProjectViaOptionsIcon(newProjectName) {
+    let text = await this.projectNameTitle.first().textContent();
     await this.projectNameTitle.first().hover();
     await this.projectOptionsMenuButton.first().click({ force: true });
     await this.renameProjectMenuItem.click();
+    await this.projectNameInput.click();
+    for (let i = 0; i <= text.length; i++) {
+      await this.page.keyboard.press("Backspace");
+    }
     await this.projectNameInput.type(newProjectName);
     await this.page.keyboard.press("Enter");
     await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
