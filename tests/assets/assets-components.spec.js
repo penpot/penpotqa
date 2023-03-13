@@ -41,13 +41,13 @@ mainTest("AS-58 Create component image", async ({ page }) => {
 mainTest("AS-59 Create component text", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateTextButton();
+  await mainPage.clickViewportTwice();
   if (browserName === "webkit") {
-    await mainPage.clickViewportOnce();
     await mainPage.typeTextFromKeyboard();
   } else {
-    await mainPage.clickViewportTwice();
     await mainPage.typeText("Hello World!");
   }
+  await mainPage.clickMoveButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightclick();
