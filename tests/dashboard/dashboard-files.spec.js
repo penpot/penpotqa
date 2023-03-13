@@ -143,7 +143,7 @@ dashboardTest(
   }
 );
 
-dashboardTest("DA-28 Rename file (in Project", async ({ page }) => {
+dashboardTest("DA-28 Rename file in Project", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -155,7 +155,7 @@ dashboardTest("DA-28 Rename file (in Project", async ({ page }) => {
   await dashboardPage.renameFileViaRightclick("test_rightclick");
 });
 
-dashboardTest("DA-29 Duplicate file (in Project", async ({ page }) => {
+dashboardTest("DA-29 Duplicate file in Project", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -328,7 +328,20 @@ dashboardTest(
   }
 );
 
-dashboardTest("DA-52 Rename project", async ({ page }) => {
+dashboardTest("DA-52-1 Rename project via rightclick", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName("TestProject");
+  await dashboardPage.isProjectTitleDisplayed("TestProject");
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.renameProjectViaRightclick(
+    "Renamed new Project Via Right Click"
+  );
+});
+
+dashboardTest("DA-52-2 Rename project via Options icon", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName("TestProject");
@@ -338,9 +351,6 @@ dashboardTest("DA-52 Rename project", async ({ page }) => {
   await mainPage.clickPencilBoxButton();
   await dashboardPage.renameProjectViaOptionsIcon(
     "New Renamed Project Via Options Icon"
-  );
-  await dashboardPage.renameProjectViaRightclick(
-    "Renamed new Project Via Right Click"
   );
 });
 

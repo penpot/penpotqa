@@ -94,7 +94,7 @@ mainTest("PF-77 Change fill color for path", async ({ page }) => {
   await colorPalettePopUp.setHex("#FF0000");
   await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.isFillHexCodeSet("ff0000");
+  await mainPage.isFillHexCodeSet("FF0000");
   await mainPage.isFillOpacitySet("100");
   await expect(mainPage.createdLayer).toHaveScreenshot("path-changed-fill.png");
 });
