@@ -75,7 +75,7 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class="input-element degrees"] input'
     );
     this.individualCornersRadiusButton = page.locator(
-      'div[alt="Individual corners"]'
+      'div[alt="Independent corners"]'
     );
     this.firstCornerRadiusInput = page.locator(
       'div[class="input-element mini"] input >> nth=0'
