@@ -61,7 +61,7 @@ mainTest(
     await mainPage.changeOpacityForShadow("50");
     await mainPage.clickShadowColorIcon();
     await colorPalettePopUp.setHex("#304d6a");
-    await mainPage.clickViewportTwice();
+    await mainPage.clickMoveButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-drop-shadow.png");
     await mainPage.selectTypeForShadow("Inner shadow");
