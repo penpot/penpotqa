@@ -776,6 +776,13 @@ exports.MainPage = class MainPage extends BasePage {
     await this.fillOpacityInput.fill(value);
   }
 
+  async changeOpacityForFillFromKeyboard() {
+    await this.fillOpacityInput.click();
+    await this.clearInput(this.fillOpacityInput);
+    await this.page.keyboard.press("5");
+    await this.page.keyboard.press("0");
+  }
+
   async openNodesPanelViaRightclick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.editPathMenuItem.click();
