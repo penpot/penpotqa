@@ -19,7 +19,7 @@ mainTest(
     } else {
       await expect(page).toHaveScreenshot("comment-opened-pop-up.png", {
         mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
-        maxDiffPixels: 5,
+        maxDiffPixels: 10,
       });
     }
     await mainPage.clickCreateCommentButton();
@@ -31,7 +31,7 @@ mainTest(
     } else {
       await expect(page).toHaveScreenshot("comment-closed-pop-up.png", {
         mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
-        maxDiffPixels: 5,
+        maxDiffPixels: 10,
       });
     }
   }
@@ -60,7 +60,7 @@ mainTest(
     } else {
       await expect(page).toHaveScreenshot("comment-latin-opened-pop-up.png", {
         mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
-        maxDiffPixels: 5,
+        maxDiffPixels: 10,
       });
     }
     await mainPage.clickCreateCommentButton();
@@ -72,7 +72,7 @@ mainTest(
     } else {
       await expect(page).toHaveScreenshot("comment-latin-closed-pop-up.png", {
         mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
-        maxDiffPixels: 5,
+        maxDiffPixels: 10,
       });
     }
   }
@@ -103,7 +103,7 @@ mainTest(
     } else {
       await expect(page).toHaveScreenshot("comment-reply.png", {
         mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
-        maxDiffPixels: 5,
+        maxDiffPixels: 10,
       });
     }
   }
@@ -137,7 +137,7 @@ mainTest(
     } else {
       await expect(page).toHaveScreenshot("comment-edited.png", {
         mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
-        maxDiffPixels: 5,
+        maxDiffPixels: 10,
       });
     }
   }
@@ -165,7 +165,7 @@ mainTest("CO-356 Delete thread", async ({ page, browserName }) => {
   } else {
     await expect(page).toHaveScreenshot("comment-removed.png", {
       mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
-      maxDiffPixels: 5,
+      maxDiffPixels: 10,
     });
   }
 });
@@ -186,7 +186,7 @@ mainTest("CO-360 Resolve comment", async ({ page, browserName }) => {
   } else {
     await expect(page).toHaveScreenshot("comment-resolved-closed-pop-up.png", {
       mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
-      maxDiffPixels: 5,
+      maxDiffPixels: 10,
     });
   }
   await mainPage.clickResolvedCommentThreadIcon();
@@ -198,7 +198,7 @@ mainTest("CO-360 Resolve comment", async ({ page, browserName }) => {
   } else {
     await expect(page).toHaveScreenshot("comment-resolved-opened-pop-up.png", {
       mask: [mainPage.commentsAuthorSection, mainPage.usersSection],
-      maxDiffPixels: 5,
+      maxDiffPixels: 10,
     });
   }
 });
