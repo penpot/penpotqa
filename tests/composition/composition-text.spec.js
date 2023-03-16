@@ -164,12 +164,16 @@ mainTest(
     } else {
       await mainPage.typeText("Hello World!");
     }
-    await mainPage.clickViewportTwice();
     await mainPage.clickFillColorIcon();
     await colorPalettePopUp.setHex("#304d6a");
-    await mainPage.changeOpacityForFill("50");
+    if (browserName === "webkit") {
+      await mainPage.changeOpacityForFillFromKeyboard();
+    } else {
+      await mainPage.changeOpacityForFill("50");
+    }
+    await mainPage.clickViewportByCoordinates(1200, 700);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickMoveButton();
+    await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot("text-fill-opacity.png");
   }
 );
