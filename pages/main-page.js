@@ -642,27 +642,22 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async changeXForShadow(value) {
-    await this.clearInput(this.shadowXInput);
     await this.shadowXInput.fill(value);
   }
 
   async changeYForShadow(value) {
-    await this.clearInput(this.shadowYInput);
     await this.shadowYInput.fill(value);
   }
 
   async changeBlurForShadow(value) {
-    await this.clearInput(this.shadowBlurInput);
     await this.shadowBlurInput.fill(value);
   }
 
   async changeSpreadForShadow(value) {
-    await this.clearInput(this.shadowSpreadInput);
     await this.shadowSpreadInput.fill(value);
   }
 
   async changeOpacityForShadow(value) {
-    await this.clearInput(this.shadowOpacityInput);
     await this.shadowOpacityInput.fill(value);
   }
 
