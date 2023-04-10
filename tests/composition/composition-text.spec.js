@@ -187,7 +187,6 @@ mainTest("CO-219 Selection to board", async ({ page, browserName }) => {
     await mainPage.typeText("Hello World!");
   }
   await mainPage.clickMoveButton();
-  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.selectionToBoardViaRightclick();
   await mainPage.waitForChangeIsSaved();
