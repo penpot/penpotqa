@@ -205,9 +205,8 @@ mainTest(
       await mainPage.typeText("Hello World!");
     }
     await mainPage.clickMoveButton();
-    await mainPage.clickViewportTwice();
+    await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickMoveButton();
     await mainPage.pressOpenTypographiesBottomPanelShortcut();
     await mainPage.clickFontRecordOnTypographiesBottomPanel();
     await mainPage.waitForChangeIsSaved();

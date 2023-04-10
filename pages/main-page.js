@@ -448,6 +448,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.fileLibraryGraphicsSecondComponentLabel = page.locator(
       'div[class="grid-cell"] >>nth=1'
     );
+    this.bottomPaletteContentBlock = page.locator(
+      'div[class="color-palette-content"]'
+    );
 
     //Prototype panel
     this.prototypeTab = page.locator('div[data-id=":prototype"]');
@@ -557,7 +560,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickViewportOnce() {
-    await this.viewport.click();
+    await this.viewport.click({ force: true });
   }
 
   async clickViewportTwice() {
@@ -1528,6 +1531,11 @@ exports.MainPage = class MainPage extends BasePage {
 
   async pressOpenTypographiesBottomPanelShortcut() {
     await this.page.keyboard.press("Alt+T");
+    await this.waitForBottomPaletteIsOpened();
+  }
+
+  async waitForBottomPaletteIsOpened() {
+    await expect(this.bottomPaletteContentBlock).toBeVisible();
   }
 
   async clickFontRecordOnTypographiesBottomPanel() {
