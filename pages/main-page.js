@@ -51,6 +51,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.editPathMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Edit")'
     );
+    this.addFlexLayout = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Add flex layout")'
+    );
+    this.removeFlexLayout = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Remove flex layout")'
+    );
 
     //Layers panel
     this.layersTab = page.locator('div[data-id=":layers"]');
@@ -66,6 +72,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.searchedLayerOnLayersPanelNameText = page.locator(
       'span[class="element-name"] >> nth=1'
     );
+    this.layoutIcon = page.locator('svg[class="icon-layout-rows"]');
 
     //Design panel
     this.canvasBackgroundColorIcon = page.locator(
@@ -88,6 +95,12 @@ exports.MainPage = class MainPage extends BasePage {
     );
     this.fourthCornerRadiusInput = page.locator(
       'div[class="input-element mini"] input  >> nth=3'
+    );
+    this.sizeWidthInput = page.locator(
+      'div[class="input-element width"] input'
+    );
+    this.sizeHeightInput = page.locator(
+      'div[class="input-element height"] input'
     );
 
     //Design panel - Shadow section
@@ -189,6 +202,80 @@ exports.MainPage = class MainPage extends BasePage {
     );
     this.strokeColorBullet = page.locator(
       'div[title="Stroke color"] div[class="color-bullet is-not-library-color"]'
+    );
+
+    //Design panel - Flex Layout section
+    this.removeLayoutButton = page.locator(
+      'div[class="element-set-title"] button[class="remove-layout"]'
+    );
+    this.layoutMenu = page.locator(
+      'div[class="element-set-content layout-menu"]'
+    );
+    this.layoutDirectRowBtn = page.locator(
+      'div[class="layout-row"] button[alt="Row"]'
+    );
+    this.layoutDirectRowReverseBtn = page.locator(
+      'div[class="layout-row"] button[alt="Row reverse"]'
+    );
+    this.layoutDirectColumnBtn = page.locator(
+      'div[class="layout-row"] button[alt="Column"]'
+    );
+    this.layoutDirectColumnReverseBtn = page.locator(
+      'div[class="layout-row"] button[alt="Column reverse"]'
+    );
+    this.layoutAlignStartBtn = page.locator(
+      'div[class="layout-row"] button[alt="Align items start"]'
+    );
+    this.layoutAlignCenterBtn = page.locator(
+      'div[class="layout-row"] button[alt="Align items center"]'
+    );
+    this.layoutAlignEndBtn = page.locator(
+      'div[class="layout-row"] button[alt="Align items end"]'
+    );
+    this.layoutJustifyStartBtn = page.locator(
+      'div[class="layout-row"] button[alt="Justify content start"]'
+    );
+    this.layoutJustifyCenterBtn = page.locator(
+      'div[class="layout-row"] button[alt="Justify content center"]'
+    );
+    this.layoutJustifyEndBtn = page.locator(
+      'div[class="layout-row"] button[alt="Justify content end"]'
+    );
+    this.layoutJustifySpaceBetweenBtn = page.locator(
+      'div[class="layout-row"] button[alt="Justify content space-between"]'
+    );
+    this.layoutJustifySpaceAroundBtn = page.locator(
+      'div[class="layout-row"] button[alt="Justify content space-around"]'
+    );
+    this.layoutJustifySpaceEvenlyBtn = page.locator(
+      'div[class="layout-row"] button[alt="Justify content space-evenly"]'
+    );
+    this.layoutColumnGapInput = page.locator(
+      'div[class="gap-group"] div[alt="Column gap"] input'
+    );
+    this.layoutRowGapInput = page.locator(
+      'div[class="gap-group"] div[alt="Row gap"] input'
+    );
+    this.layoutVerticalPaddingInput = page.locator(
+      'div[class="padding-group"] div[alt="Vertical padding"] input'
+    );
+    this.layoutHorizontPaddingInput = page.locator(
+      'div[class="padding-group"] div[alt="Horizontal padding"] input'
+    );
+    this.layoutIndepPaddingsIcon = page.locator(
+      'div[class="padding-icons"] div[alt="Independent paddings"]'
+    );
+    this.layoutPaddingTopInput = page.locator(
+      'div[class="padding-row"] div[alt="Top"] input'
+    );
+    this.layoutPaddingRightInput = page.locator(
+      'div[class="padding-row"] div[alt="Right"] input'
+    );
+    this.layoutPaddingBottomInput = page.locator(
+      'div[class="padding-row"] div[alt="Bottom"] input'
+    );
+    this.layoutPaddingLeftInput = page.locator(
+      'div[class="padding-row"] div[alt="Left"] input'
     );
 
     //Node panel
@@ -595,6 +682,25 @@ exports.MainPage = class MainPage extends BasePage {
     await this.createdBoardTitle.dblclick();
   }
 
+  async clickCreatedBoardTitleOnCanvas() {
+    await this.createdBoardTitle.click();
+  }
+
+  async changeWidthForLayer(width) {
+    await this.sizeWidthInput.fill(width);
+    await this.clickOnEnter();
+  }
+
+  async changeHeightForLayer(height) {
+    await this.sizeHeightInput.fill(height);
+    await this.clickOnEnter();
+  }
+
+  async changeHeightAndWidthForLayer(height, width) {
+    await this.changeWidthForLayer(width);
+    await this.changeHeightForLayer(height);
+  }
+
   async doubleClickCreatedLayerOnLayersPanel() {
     await this.createdLayerOnLayersPanelNameText.dblclick();
   }
@@ -693,6 +799,139 @@ exports.MainPage = class MainPage extends BasePage {
   async deleteLayerViaRightclick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.deleteLayerMenuItem.click();
+  }
+
+  async addFlexLayoutViaRightClick() {
+    await this.createdLayer.click({ button: "right", force: true });
+    await this.addFlexLayout.click();
+  }
+
+  async removeFlexLayoutViaRightClick() {
+    await this.createdLayer.click({ button: "right", force: true });
+    await this.removeFlexLayout.click();
+  }
+
+  async pressFlexLayoutShortcut() {
+    await this.createdLayer.click({ force: true });
+    await this.page.keyboard.press("Shift+A");
+  }
+
+  async isLayoutMenuExpanded(condition = true) {
+    if (condition === true) {
+      await expect(this.layoutMenu).toBeVisible();
+    } else {
+      await expect(this.layoutMenu).toBeHidden();
+    }
+  }
+
+  async isLayoutIconVisibleOnLayer(condition = true) {
+    if (condition === true) {
+      await expect(this.layoutIcon).toBeVisible();
+    } else {
+      await expect(this.layoutIcon).toBeHidden();
+    }
+  }
+
+  async removeLayoutFromDesignPanel() {
+    await this.removeLayoutButton.click();
+  }
+
+  async changeLayoutDirection(direction) {
+    switch (direction) {
+      case "Row":
+        await this.layoutDirectRowBtn.click();
+        break;
+      case "Row reverse":
+        await this.layoutDirectRowReverseBtn.click();
+        break;
+      case "Column":
+        await this.layoutDirectColumnBtn.click();
+        break;
+      case "Column reverse":
+        await this.layoutDirectColumnReverseBtn.click();
+        break;
+    }
+  }
+
+  async changeLayoutAlignment(alignment) {
+    switch (alignment) {
+      case "Start":
+        await this.layoutAlignStartBtn.click();
+        break;
+      case "Center":
+        await this.layoutAlignCenterBtn.click();
+        break;
+      case "End":
+        await this.layoutAlignEndBtn.click();
+        break;
+    }
+  }
+
+  async changeLayoutJustification(justify) {
+    switch (justify) {
+      case "Start":
+        await this.layoutJustifyStartBtn.click();
+        break;
+      case "Center":
+        await this.layoutJustifyCenterBtn.click();
+        break;
+      case "End":
+        await this.layoutJustifyEndBtn.click();
+        break;
+      case "Space between":
+        await this.layoutJustifySpaceBetweenBtn.click();
+        break;
+      case "Space around":
+        await this.layoutJustifySpaceAroundBtn.click();
+        break;
+      case "Space evenly":
+        await this.layoutJustifySpaceEvenlyBtn.click();
+        break;
+    }
+  }
+
+  async changeLayoutColumnGap(value) {
+    await this.layoutColumnGapInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutRowGap(value) {
+    await this.layoutRowGapInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutVerticalPadding(value) {
+    await this.layoutVerticalPaddingInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutHorizontalPadding(value) {
+    await this.layoutHorizontPaddingInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async switchToIndependentPadding() {
+    await this.layoutIndepPaddingsIcon.click();
+  }
+
+  async changeLayoutTopPadding(value) {
+    await this.layoutPaddingTopInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutBottomPadding(value) {
+    await this.layoutPaddingBottomInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutRightPadding(value) {
+    await this.layoutPaddingRightInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutLeftPadding(value) {
+    await this.layoutPaddingLeftInput.fill(value);
+    await this.clickOnEnter();
   }
 
   async transformToPathViaRightclick() {

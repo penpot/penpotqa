@@ -18,4 +18,8 @@ exports.BasePage = class BasePage {
   async reloadPage() {
     await this.page.reload();
   }
+
+  async clickOnEnter() {
+    await this.page.keyboard.press("Enter");
+  }
 };
