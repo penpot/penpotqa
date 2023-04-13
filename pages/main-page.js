@@ -208,7 +208,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.removeLayoutButton = page.locator(
       'div[class="element-set-title"] button[class="remove-layout"]'
     );
-    this.layoutMenu = page.locator(
+    this.layoutSection = page.locator(
       'div[class="element-set-content layout-menu"]'
     );
     this.layoutDirectRowBtn = page.locator(
@@ -818,9 +818,9 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isLayoutMenuExpanded(condition = true) {
     if (condition === true) {
-      await expect(this.layoutMenu).toBeVisible();
+      await expect(this.layoutSection).toBeVisible();
     } else {
-      await expect(this.layoutMenu).toBeHidden();
+      await expect(this.layoutSection).toBeHidden();
     }
   }
 
@@ -895,6 +895,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickOnEnter();
   }
 
+  async clickLayoutColumnGapField() {
+    await this.layoutColumnGapInput.click();
+  }
+
   async changeLayoutRowGap(value) {
     await this.layoutRowGapInput.fill(value);
     await this.clickOnEnter();
@@ -908,6 +912,14 @@ exports.MainPage = class MainPage extends BasePage {
   async changeLayoutHorizontalPadding(value) {
     await this.layoutHorizontPaddingInput.fill(value);
     await this.clickOnEnter();
+  }
+
+  async clickLayoutVerticalPaddingField() {
+    await this.layoutVerticalPaddingInput.click();
+  }
+
+  async clickLayoutHorizontalPaddingField() {
+    await this.layoutHorizontPaddingInput.click();
   }
 
   async switchToIndependentPadding() {
