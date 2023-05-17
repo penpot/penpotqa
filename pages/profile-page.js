@@ -7,9 +7,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   constructor(page) {
     super(page);
     this.profileMenuButton = page.locator('div[data-test="profile-btn"]');
-    this.yourAccountMenuItem = page.locator(
-      'li[data-test="profile-profile-opt"]'
-    );
+    this.yourAccountMenuItem = page.locator('li[data-test="profile-profile-opt"]');
     this.logoutMenuItem = page.locator('li[data-test="logout-profile-opt"]');
     this.giveFeedbackMenuItem = page.locator(
       'li[data-test="feedback-profile-opt"]'
