@@ -458,13 +458,13 @@ exports.MainPage = class MainPage extends BasePage {
     );
     this.assetsPanelPagesSection = page.locator("#sitemap");
     this.renamePageMenuItem = page.locator(
-      'li[class="context-menu-item "] a:has-text("Rename")'
+      'ul[class="workspace-context-menu"] li span:has-text("Rename")'
     );
     this.duplicatePageMenuItem = page.locator(
-      'li[class="context-menu-item "] a:has-text("Duplicate")'
+      'ul[class="workspace-context-menu"] li span:has-text("Duplicate")'
     );
     this.deletePageMenuItem = page.locator(
-      'li[class="context-menu-item "] a:has-text("Delete")'
+      'ul[class="workspace-context-menu"] li span:has-text("Delete")'
     );
     this.collapseExpandPagesButton = page.locator(
       'div[class="collapse-pages"]'
@@ -796,7 +796,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.blurValueInput.fill(value);
   }
 
-  async deleteLayerViaRightclick() {
+  async deleteLayerViaRightClick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.deleteLayerMenuItem.click();
   }
@@ -946,27 +946,27 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickOnEnter();
   }
 
-  async transformToPathViaRightclick() {
+  async transformToPathViaRightClick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.transformToPathMenuItem.click();
   }
 
-  async selectionToBoardViaRightclick() {
+  async selectionToBoardViaRightClick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.selectionToBoardMenuItem.click();
   }
 
-  async createComponentViaRightclick() {
+  async createComponentViaRightClick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.createComponentMenuItem.click();
   }
 
-  async flipVerticalViaRightclick() {
+  async flipVerticalViaRightClick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.flipVerticalMenuItem.click();
   }
 
-  async flipHorizontalViaRightclick() {
+  async flipHorizontalViaRightClick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.flipHorizontalMenuItem.click();
   }
@@ -1024,7 +1024,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.fillOpacityInput.fill(value);
   }
 
-  async openNodesPanelViaRightclick() {
+  async openNodesPanelViaRightClick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.editPathMenuItem.click();
   }
@@ -1461,7 +1461,7 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.secondPageListItem).toHaveText(name);
   }
 
-  async renameFirstPageViaRightclick(newName) {
+  async renameFirstPageViaRightClick(newName) {
     await this.firstPageListItem.click({ button: "right" });
     await this.renamePageMenuItem.click();
     await this.clearInput(this.firstPageNameInput);
@@ -1469,14 +1469,14 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportTwice();
   }
 
-  async renameSecondPageViaDoubleclick(newName) {
+  async renameSecondPageViaDoubleClick(newName) {
     await this.secondPageListItem.dblclick();
     await this.clearInput(this.secondPageNameInput);
     await this.secondPageNameInput.fill(newName);
     await this.clickViewportTwice();
   }
 
-  async duplicatePageViaRightclick() {
+  async duplicatePageViaRightClick() {
     await this.firstPageListItem.click({ button: "right" });
     await this.duplicatePageMenuItem.click();
   }
@@ -1499,7 +1499,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.collapseExpandPagesButton.click();
   }
 
-  async deleteSecondPageViaRightclick() {
+  async deleteSecondPageViaRightClick() {
     await this.secondPageListItem.click({ button: "right" });
     await this.deletePageMenuItem.click();
     await this.deletePageOkButton.click();

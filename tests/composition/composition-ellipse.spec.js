@@ -70,7 +70,7 @@ mainTest("CO-136-1 Delete ellipse via rightclick", async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.deleteLayerViaRightclick();
+  await mainPage.deleteLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
@@ -109,7 +109,7 @@ mainTest("CO-154 Transform ellipse to path", async ({ page }) => {
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.transformToPathViaRightclick();
+  await mainPage.transformToPathViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(page).toHaveScreenshot("ellipse-to-path.png", {
     mask: [mainPage.usersSection],
@@ -121,7 +121,7 @@ mainTest("CO-161 Selection to board", async ({ page }) => {
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.selectionToBoardViaRightclick();
+  await mainPage.selectionToBoardViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("ellipse-to-board.png");
 });

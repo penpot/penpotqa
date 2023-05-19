@@ -71,7 +71,7 @@ mainTest("CO-76-1 Delete rectangle via rightclick", async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.deleteLayerViaRightclick();
+  await mainPage.deleteLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
@@ -132,7 +132,7 @@ mainTest("CO-104 Transform rectangle to path", async ({ page }) => {
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.transformToPathViaRightclick();
+  await mainPage.transformToPathViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(page).toHaveScreenshot("rectangle-to-path.png", {
     mask: [mainPage.usersSection],
@@ -144,7 +144,7 @@ mainTest("CO-111 Selection to board", async ({ page }) => {
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.selectionToBoardViaRightclick();
+  await mainPage.selectionToBoardViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("rectangle-to-board.png");
 });

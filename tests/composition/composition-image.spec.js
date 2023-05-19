@@ -77,7 +77,7 @@ mainTest("CO-242-1 Delete image via rightclick", async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.deleteLayerViaRightclick();
+  await mainPage.deleteLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
@@ -136,7 +136,7 @@ mainTest("CO-267 Selection to board", async ({ page }) => {
   await mainPage.uploadImage("images/images.png");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.selectionToBoardViaRightclick();
+  await mainPage.selectionToBoardViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("image-to-board.png");
 });
@@ -146,12 +146,12 @@ mainTest("CO-259 Flip Vertical and Flip Horizontal image", async ({ page }) => {
   await mainPage.uploadImage("images/sample.jpeg");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.flipVerticalViaRightclick();
+  await mainPage.flipVerticalViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "image-flipped-vertical.png"
   );
-  await mainPage.flipHorizontalViaRightclick();
+  await mainPage.flipHorizontalViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "image-flipped-vertical-horizontal.png"

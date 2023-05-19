@@ -18,17 +18,17 @@ mainTest("PF-115 Rename page", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.renameFirstPageViaRightclick("NewFirstPage");
+  await mainPage.renameFirstPageViaRightClick("NewFirstPage");
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed("NewFirstPage");
-  await mainPage.renameSecondPageViaDoubleclick("NewSecondPage");
+  await mainPage.renameSecondPageViaDoubleClick("NewSecondPage");
   await mainPage.waitForChangeIsSaved();
   await mainPage.isSecondPageNameDisplayed("NewSecondPage");
 });
 
 mainTest("PF-116 Duplicate page", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.duplicatePageViaRightclick();
+  await mainPage.duplicatePageViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed("Page 1");
   await mainPage.isSecondPageNameDisplayed("Page 2");
@@ -73,7 +73,7 @@ mainTest("PF-119 Delete page", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.deleteSecondPageViaRightclick();
+  await mainPage.deleteSecondPageViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed("Page 1");
   await mainPage.isSecondPageNameDisplayed("Page 3");

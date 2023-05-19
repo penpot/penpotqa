@@ -123,7 +123,7 @@ mainTest("CO-298-1 Delete path via rightclick", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
   await mainPage.clickViewportByCoordinates(500, 200);
-  await mainPage.deleteLayerViaRightclick();
+  await mainPage.deleteLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
@@ -153,10 +153,10 @@ mainTest("CO-310 Flip Vertical and Flip Horizontal path", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(500, 200);
   await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.flipVerticalViaRightclick();
+  await mainPage.flipVerticalViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("path-flipped-vertical.png");
-  await mainPage.flipHorizontalViaRightclick();
+  await mainPage.flipHorizontalViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "path-flipped-vertical-horizontal.png"
@@ -180,7 +180,7 @@ mainTest("CO-322 Selection to board", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(500, 200);
   await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.selectionToBoardViaRightclick();
+  await mainPage.selectionToBoardViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("path-to-board.png");
 });

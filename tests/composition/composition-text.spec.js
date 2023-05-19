@@ -107,7 +107,7 @@ mainTest(
     await mainPage.isCreatedLayerVisible();
     await mainPage.clickMoveButton();
     await mainPage.clickViewportTwice();
-    await mainPage.deleteLayerViaRightclick();
+    await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
   }
@@ -188,7 +188,7 @@ mainTest("CO-219 Selection to board", async ({ page, browserName }) => {
   }
   await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.selectionToBoardViaRightclick();
+  await mainPage.selectionToBoardViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("text-to-board.png");
 });
