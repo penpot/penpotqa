@@ -1,6 +1,7 @@
-name: Playwright Tests
+name: Penpot Regression Tests
 on:
-  workflow_dispatch:
+  schedule: ## run tests each Friday at 11:00 am
+    - cron: "0 11 * * 5"
 jobs:
   test:
     timeout-minutes: 60
@@ -15,7 +16,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: npx playwright test -g "CP-1 Open color picker from Stroke menu" --project=chrome
+        run: npx playwright test -g "CP-1 Open color picker from Stroke menu"
       - uses: actions/upload-artifact@v3
         if: always()
         with:
