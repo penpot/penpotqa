@@ -1,11 +1,9 @@
 name: Penpot Regression Tests on PRE env
 on:
-  schedule: ## run tests each Friday at 11:00 am
-    - cron: "0 11 * * 5"
   workflow_dispatch:
 jobs:
-  test:
-    environment: PRE
+  tests:
+    environment: PRO
     timeout-minutes: 240
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +20,7 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-        run: npx playwright test -g "CP-1 Open color picker from Stroke menu"
+        run: npx playwright test
       - uses: actions/upload-artifact@v3
         if: always()
         with:
