@@ -1,7 +1,7 @@
 name: Penpot Regression Tests on PRE env
 on:
   schedule: ## run tests each Friday at 8:00am UTC
-    - cron: "45 11 * * 4"
+    - cron: "55 7 * * 5"
   workflow_dispatch:
 jobs:
   tests:
@@ -21,7 +21,7 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-        run: npx playwright test assets/assets-typographies.spec.js --project=firefox
+        run: npx playwright test /tests/dashboard/dashboard-libraries.spec.js --project=firefox
       - uses: actions/upload-artifact@v3
         if: always()
         with:
