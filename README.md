@@ -32,7 +32,7 @@ To run the tests in Firefox and Webkit browsers, use `"firefox"` and `"webkit"` 
 `"firefox": "npx playwright test --project=firefox"`
 `"webkit": "npx playwright test --project=webkit"`
 
-Currently, there are 239 tests at all, average time of execution - 35 minutes.
+Currently, there are 256 tests for regression suite, average time of execution per one browser - 60 minutes.
 
 **3. Test run - additional settings.**
 
@@ -42,6 +42,7 @@ Some settings from _playwright.config.js_ may be useful:
 - `timeout` and `expect.timeout` - maximum time of execution a single test and of a waiting expect() condition to be met accordingly
 - `use.headless `- change to _false_ to run in headed browser mode
 - `use.channel: "chrome"` - comment out to run tests in Chromium instead of Chrome (for "chrome" project)
+- `workers: 1` - for now tests are running sequentially (parallelism is disabled)
 
 **4. Snapshots comparison.**
 
@@ -68,3 +69,46 @@ an acceptable ratio of pixels that are different to the total amount of pixels i
 
 Note 2: expected screenshots for Firefox represent headless mode. Since scrollbars are hidden in headless mode and
 there is no way to unhide them in Firefox (unlike Chrome) - screenshots comparison in headed Firefox mode may fail in a few tests.
+
+**4. Performance testing.**
+
+To exclude performance tests from the periodical regression test run the following scripts should be used:
+- for Chrome: `"test": "npx playwright test --project=chrome -gv 'PERF'"`
+- for Firefox: `"firefox": "npx playwright test --project=firefox -gv 'PERF'"`
+- for Webkit: `"webkit": "npx playwright test --project=webkit -gv 'PERF'"`
+
+**5. Running tests via GitHub Actions.**
+
+On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
+For each environment the appropriate secrets were added:
+  - _LOGIN_EMAIL_ (email from your Penpot account, which is used for tests)
+  - _LOGIN_PWD_ (password from your Penpot account, which is used for tests)
+  - _BASE_URL_ (Penpot url)
+
+2 _.yml_ files were added into _.github/workflows_ directory with settings for environments:
+  - tests for _PRE_ env will be run by schedule: each Friday at 8:00 am UTC (and also it is possible to trigger them manually)
+  - tests for _PRO_ env will be run only by request and triggered manually
+
+**Note**:
+- The UTC time is used for schedule set up.
+- There may be a delay for start running tests by schedule. It will take nearly 5-15 minutes.
+
+There are 2 workflows on _Actions_ tab:
+- Penpot Regression Tests on PRO env
+- Penpot Regression Tests on PRE env
+
+To run workflow by request you need to open it from the left sidebar and click on _[Run workflow]_ > _[Run workflow]_.
+In a few seconds running should be start.
+
+**Tests run results:**
+
+When the run will be finished the appropriate marker will appear near the current workflow:
+- `green icon` - workflow has been passed
+- `red icon` - workflow has been failed
+
+It is possible to open workflows (both passed and failed) and look through the _Summary_ info:
+- Status
+- Total duration
+- Artifacts
+
+In _Artifacts_ section there will be a _'playwright-report.zip'_ file. It is possible to download it, extract and open _index.html_ file with the default playwright report.
