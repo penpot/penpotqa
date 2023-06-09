@@ -70,14 +70,17 @@ an acceptable ratio of pixels that are different to the total amount of pixels i
 Note 2: expected screenshots for Firefox represent headless mode. Since scrollbars are hidden in headless mode and
 there is no way to unhide them in Firefox (unlike Chrome) - screenshots comparison in headed Firefox mode may fail in a few tests.
 
-**4. Performance testing.**
+**5. Performance testing.**
 
 To exclude performance tests from the periodical regression test run the following scripts should be used:
-- for Chrome: `"test": "npx playwright test --project=chrome -gv 'PERF'"`
-- for Firefox: `"firefox": "npx playwright test --project=firefox -gv 'PERF'"`
-- for Webkit: `"webkit": "npx playwright test --project=webkit -gv 'PERF'"`
+- for Chrome: `"npx playwright test --project=chrome -gv 'PERF'"`
+- for Firefox: `"npx playwright test --project=firefox -gv 'PERF'"`
+- for Webkit: `"npx playwright test --project=webkit -gv 'PERF'"`
 
-**5. Running tests via GitHub Actions.**
+Note: The above scripts should be executed via the command line. Do not run them directly from the _package.json_,
+because in such way performance tests are not ignored.
+
+**6. Running tests via GitHub Actions.**
 
 On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:
