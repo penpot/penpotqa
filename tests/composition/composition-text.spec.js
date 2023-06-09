@@ -118,15 +118,16 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateTextButton();
-    await mainPage.clickViewportTwice();
     if (browserName === "webkit") {
+      await mainPage.clickViewportTwice();
       await mainPage.typeTextFromKeyboard();
     } else {
+      await mainPage.clickViewportOnce();
       await mainPage.typeText("Hello World!");
     }
     await mainPage.isCreatedLayerVisible();
     await mainPage.clickMoveButton();
-    await mainPage.clickViewportTwice();
+    await mainPage.clickViewportOnce();
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
