@@ -81,6 +81,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.projectOptionsMenuButton = page.locator(
       '*[data-test="project-options"] .icon-actions'
     );
+    this.projectOptions = page.locator('[data-test="project-options"]');
+    this.fileImport = page.locator('[data-test="file-import"]');
+    this.modal = page.locator('#modal');
+    this.modalCloseButton = page.locator('.modal-close-button');
+    this.modalTitle = page.locator('.modal-header-title h2');
+    this.modalCancelButton = page.locator('.modal-footer .action-buttons .cancel-button');
+    this.modalAcceptButton = page.locator('.modal-footer .action-buttons .accept-button');
+    this.feedbackBanner = page.locator('.feedback-banner')
+    this.feedbackBannerMessage = page.locator('.feedback-banner .message')
     this.projectsSidebarItem = page.locator('li:has-text("Projects")');
     this.draftsSidebarItem = page.locator('li:has-text("Drafts")');
     this.pinnedProjectsSidebarItem = page.locator(
@@ -711,5 +720,24 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .click();
     await this.continueButton.click();
     await this.acceptButton.click();
+  }
+
+  async importFile(file) {
+    await this.projectOptions.click();
+    const fileChooserPromise = this.page.waitForEvent("filechooser");
+    await this.fileImport.click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(file);
+    await expect(this.modalTitle).toBeVisible();
+    await expect(this.modalTitle).toHaveText("Import Penpot files");
+    await this.modalAcceptButton.click();
+    await this.feedbackBanner.waitFor('visible');
+    await expect(this.feedbackBannerMessage).toHaveText("1 file has been imported successfully.");
+    await this.modalAcceptButton.click();
+  }
+
+  async importAndOpenFile(file) {
+    await this.importFile(file);
+    await this.openFile();
   }
 };
