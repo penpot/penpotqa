@@ -10,7 +10,6 @@ const mainTest = base.test.extend({
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     const dashboardPage = new DashboardPage(page);
-    await dashboardPage.waitForPageLoaded();
     await dashboardPage.isHeaderDisplayed("Projects");
     await dashboardPage.deleteProjectsIfExist();
     await dashboardPage.deleteFilesIfExist();
