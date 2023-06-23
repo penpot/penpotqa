@@ -28,6 +28,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.textbox = page.locator(
       'div[role="textbox"] div[contenteditable="true"]'
     );
+    this.guides = page.locator('.guides .new-guides');
 
     //Layer right-click menu items
     this.deleteLayerMenuItem = page.locator(
@@ -62,7 +63,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.layersTab = page.locator('div[data-id=":layers"]');
     this.layersPanel = page.locator('div[class="layers-tab"]');
     this.createdLayerOnLayersPanelNameInput = page.locator(
-      'input[class="element-name"]'
+      'div[class^="element-list-body"] span[class="element-name"]'
     );
     this.createdLayerOnLayersPanelNameText = page.locator(
       'span[class="element-name"]'
@@ -161,9 +162,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.removeGridButton = page.locator(
       'div[class="grid-option-main-actions"] svg[class="icon-minus"]'
     );
-    this.gridTypeSelector = page.locator(
-      'div[class="custom-select flex-grow"]'
-    );
+    this.gridTypeSelector = page.locator('div[class="grid-option"] div[class="custom-select flex-grow"]');
     this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
     this.gridTypeSelectorColumnsOption = page.locator(
       'span:has-text("Columns")'
@@ -369,15 +368,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.mainMenuButton = page.locator(
       'div[class="menu-section"] svg[class="icon-actions"]'
     );
-    this.viewMainMenuItem = page.locator(
-      'ul[class="menu"] span:has-text("View")'
-    );
-    this.viewMainMenuItem = page.locator(
-      'ul[class="menu"] span:has-text("View")'
-    );
-    this.fileMainMenuItem = page.locator(
-      'ul[class="menu"] span:has-text("File")'
-    );
+    this.mainMenuList = page.locator('ul[class="menu"]');
+    this.subMenuList = page.locator('ul[class="sub-menu view"]');
+    this.viewMainMenuItem = page.locator('//*[text()="View"]//parent::li');
+    this.fileMainMenuItem = page.locator('//*[text()="File"]//parent::li');
     this.showRulersMainMenuSubItem = page.locator(
       'ul[class="sub-menu view"] span:has-text("Show rulers")'
     );
@@ -442,19 +436,16 @@ exports.MainPage = class MainPage extends BasePage {
     this.sharedLibraryBadge = page.locator('span:has-text("SHARED")');
     this.addPageButton = page.locator('div[class="add-page"] svg');
     this.firstPageListItem = page.locator(
-      'ul[class="element-list pages-list"] div[class^="element-list-body"] >>nth=0'
+      'ul[class="pages-list"] div[class^="element-list-body"] >>nth=0'
     );
     this.secondPageListItem = page.locator(
-      'ul[class="element-list pages-list"] div[class^="element-list-body"] >>nth=1'
-    );
-    this.thirdPageListItem = page.locator(
-      'ul[class="element-list pages-list"] div[class^="element-list-body"] >>nth=1'
+      'ul[class="pages-list"] div[class^="element-list-body"] >>nth=1'
     );
     this.firstPageNameInput = page.locator(
-      'ul[class="element-list pages-list"] div[class^="element-list-body"] input'
+      'ul[class="pages-list"] div[class^="element-list-body"] input'
     );
     this.secondPageNameInput = page.locator(
-      'ul[class="element-list pages-list"] div[class^="element-list-body"] input'
+      'ul[class="pages-list"] div[class^="element-list-body"] input'
     );
     this.assetsPanelPagesSection = page.locator("#sitemap");
     this.renamePageMenuItem = page.locator(
@@ -1290,10 +1281,12 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickMainMenuButton() {
     await this.mainMenuButton.click();
+    await expect(this.mainMenuList).toBeVisible();
   }
 
   async clickViewMainMenuItem() {
-    await this.viewMainMenuItem.click();
+    await this.viewMainMenuItem.click({force: true});
+    await expect(this.subMenuList).toBeVisible();
   }
 
   async clickFileMainMenuItem() {

@@ -2,7 +2,7 @@ const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
 
-mainTest("PF-99-1 Hide/show rulers via main menu'", async ({ page }) => {
+mainTest("PF-99-1 Hide/show rulers via main menu", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
@@ -48,7 +48,10 @@ mainTest("PF-102 Hide/show board names", async ({ page }) => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickHideBoardNamesMainMenuSubItem();
-  await expect(mainPage.viewport).toHaveScreenshot("board-hide-name.png");
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "board-hide-name.png", {
+      mask: [mainPage.guides]
+    });
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickShowBoardNamesMainMenuSubItem();

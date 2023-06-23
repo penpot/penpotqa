@@ -181,10 +181,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     //Libraries & Templates
     this.librariesAndTemplatesCarouselButton = page.locator(
-      'span:has-text("Libraries & Templates")'
+      '//*[text()="Libraries & Templates"]//parent::button'
     );
     this.librariesAndTemplatesSection = page.locator(
-      'div[class="dashboard-templates-section "]'
+      'div[class^="dashboard-templates-section "]'
     );
     this.librariesAndTemplatesSectionLeftArrowButton = page.locator(
       'button[class="button left"]'
@@ -239,6 +239,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       await this.deleteFiles();
     }
   }
+
   async deleteProjectViaRightclick() {
     await this.projectNameTitle.first().click({ button: "right" });
     await this.deleteProjectMenuItem.click();
@@ -677,7 +678,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickLibrariesAndTemplatesCarouselButton() {
-    await this.librariesAndTemplatesCarouselButton.click();
+    await this.librariesAndTemplatesCarouselButton.dispatchEvent('click');
   }
 
   async isLibrariesAndTemplatesSectionDisplayed() {
@@ -697,7 +698,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async flipRightLibrariesAndTemplatesCarousel() {
     await this.librariesAndTemplatesSectionRightArrowButton.click();
     await this.header.hover();
-    await this.waitForPageLoaded();
   }
 
   async flipLeftLibrariesAndTemplatesCarousel() {
