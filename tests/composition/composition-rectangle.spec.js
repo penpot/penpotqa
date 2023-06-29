@@ -146,5 +146,8 @@ mainTest("CO-111 Selection to board", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.selectionToBoardViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot("rectangle-to-board.png");
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "rectangle-to-board.png", {
+      mask: [mainPage.guides]
+    });
 });

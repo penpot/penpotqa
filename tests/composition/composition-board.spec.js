@@ -19,7 +19,10 @@ mainTest("CO-2 Create a board from toolbar", async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await expect(mainPage.viewport).toHaveScreenshot("board.png");
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "board.png", {
+      mask: [mainPage.guides]
+    });
 });
 
 mainTest("CO-4 Rename board with valid name", async ({ page }) => {
@@ -53,7 +56,10 @@ mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   await colorPalettePopUp.setHex("#304d6a");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot("board-drop-shadow.png");
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "board-drop-shadow.png", {
+      mask: [mainPage.guides]
+    });
   await mainPage.selectTypeForShadow("Inner shadow");
   await mainPage.changeXForShadow("5");
   await mainPage.changeYForShadow("7");
@@ -64,7 +70,10 @@ mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   await colorPalettePopUp.setHex("#96e637");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot("board-inner-shadow.png");
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "board-inner-shadow.png", {
+      mask: [mainPage.guides]
+    });
 });
 
 mainTest("CO-13 Add and edit Blur to board", async ({ page }) => {
@@ -74,7 +83,10 @@ mainTest("CO-13 Add and edit Blur to board", async ({ page }) => {
   await mainPage.clickAddBlurButton();
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot("board-blur.png");
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "board-blur.png", {
+      mask: [mainPage.guides]
+    });
 });
 
 mainTest("CO-25-1 Delete board via rightclick", async ({ page }) => {
@@ -134,7 +146,10 @@ mainTest("CO-29 Change border radius multiple values", async ({ page }) => {
   await mainPage.changeThirdCornerRadiusForLayer("0");
   await mainPage.changeFourthCornerRadiusForLayer("0");
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot("board.png");
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "board.png", {
+      mask: [mainPage.guides]
+    });
 });
 
 mainTest("CO-411 Search board - ignore case", async ({ page }) => {

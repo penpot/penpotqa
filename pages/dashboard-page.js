@@ -16,14 +16,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.fileTile = page.locator('div[class="grid-item-th"]');
     this.secondFileTile = page.locator('div[class="grid-item-th"] >>nth=1');
-    this.fileInfoPanel = page.locator('div[class="item-info"]');
+    this.fileInfoPanel = page.locator('div[class="dashboard-grid"] div[class="grid-item-th"]');
     this.fileNameTitle = page.locator('div[class="item-info"] h3');
     this.deleteFileMenuItem = page.locator('a[data-test="file-delete"]');
     this.deleteFileButton = page.locator(
       'input[value="Delete files"],input[value="Delete file"]'
     );
     this.createFileButtonPlaceholder = page.locator(
-      'button[class="create-new"]'
+      'div[class="dashboard-grid"] button[class="create-new"]'
     );
     this.createFileButtonTitlePanel = page.locator(
       '*[data-test="project-new-file"]'
@@ -184,7 +184,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       '//*[text()="Libraries & Templates"]//parent::button'
     );
     this.librariesAndTemplatesSection = page.locator(
-      'div[class^="dashboard-templates-section "]'
+      'div[class^="dashboard-templates-section"]'
+    );
+    this.librariesAndTemplatesSectionCollapsed = page.locator(
+      'div[class="dashboard-templates-section collapsed"]'
     );
     this.librariesAndTemplatesSectionLeftArrowButton = page.locator(
       'button[class="button left"]'
@@ -234,6 +237,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async deleteFilesIfExist() {
+    await expect(this.numberOfFilesText).toBeVisible();
     const text = (await this.numberOfFilesText.innerText()).valueOf();
     if (!text.includes("0 files")) {
       await this.deleteFiles();
@@ -253,26 +257,24 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.deleteProjectButton.click();
   }
 
-  async deleteProjects() {
-    for (const el of await this.projectNameTitle.elementHandles()) {
-      const text = (await el.innerText()).valueOf();
-      if (!text.includes("Drafts")) {
-        await el.click({ button: "right" });
+  async deleteProjectsIfExist() {
+    for (const project of await this.projectNameTitle.elementHandles()) {
+      const name = (await project.innerText()).valueOf();
+      if (!name.includes("Drafts")) {
+        await project.click({ button: "right" });
         await this.deleteProjectMenuItem.click();
         await this.deleteProjectButton.click();
       }
     }
   }
 
-  async deleteProjectsIfExist() {
-    const text = (await this.projectNameTitle.first().innerText()).valueOf();
-    if (!text.includes("Drafts")) {
-      await this.deleteProjects();
-    }
-  }
-
   async waitForPageLoaded() {
     await this.page.waitForLoadState("networkidle");
+  }
+
+  async isDashboardOpened() {
+    await expect(this.page).toHaveURL(/.*dashboard/);
+    await expect(this.page).toHaveTitle(/.*Projects - Your Penpot/);
   }
 
   async checkNumberOfFiles(numberOfFiles) {
@@ -678,7 +680,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickLibrariesAndTemplatesCarouselButton() {
-    await this.librariesAndTemplatesCarouselButton.dispatchEvent('click');
+    await this.librariesAndTemplatesCarouselButton.click();
   }
 
   async isLibrariesAndTemplatesSectionDisplayed() {
@@ -686,7 +688,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async isLibrariesAndTemplatesSectionNotDisplayed() {
-    await expect(this.librariesAndTemplatesSection).not.toBeVisible();
+    await expect(this.librariesAndTemplatesSectionCollapsed).toBeVisible();
   }
 
   async minimizeLibrariesAndTemplatesCarouselIfExpanded() {
