@@ -63,10 +63,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.layersTab = page.locator('div[data-id=":layers"]');
     this.layersPanel = page.locator('div[class="layers-tab"]');
     this.createdLayerOnLayersPanelNameInput = page.locator(
-      'div[class^="element-list-body"] span[class="element-name"]'
+      'div[class^="element-list-body"] input[class="element-name"]'
     );
     this.createdLayerOnLayersPanelNameText = page.locator(
-      'span[class="element-name"]'
+      'div[class^="element-list-body"] span[class="element-name"]'
     );
     this.searchLayersIcon = page.locator('svg[class="icon-search"]');
     this.searchLayersInput = page.locator('input[placeholder="Search layers"]');

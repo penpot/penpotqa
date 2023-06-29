@@ -63,6 +63,11 @@ const config = {
     },
     {
       name: "firefox",
+      expect: {
+        toHaveScreenshot: {
+          maxDiffPixelRatio: 0.01
+        }
+      },
       use: {
         browserName: "firefox",
         viewport: {
@@ -73,6 +78,11 @@ const config = {
     },
     {
       name: "webkit",
+      expect: {
+        toHaveScreenshot: {
+          maxDiffPixelRatio: 0.01
+        }
+      },
       use: {
         browserName: "webkit",
         viewport: {
