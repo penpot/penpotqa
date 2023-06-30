@@ -122,6 +122,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.saveFontButton = page.locator('button:has-text("Save")');
     this.searchFontInput = page.locator("input[placeholder='Search font']");
     this.teamSelector = page.locator(".current-team");
+    this.teamList = page.locator("ul[class*='teams-dropdown']");
     this.createNewTeamMenuItem = page.locator("#teams-selector-create-team");
 
     //Teams
@@ -273,12 +274,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async isDashboardOpened() {
-    await expect(this.page).toHaveURL(/.*dashboard/);
+    await this.page.waitForURL(/.*dashboard\/team/, { waitUntil: "load" });
     await expect(this.page).toHaveTitle(/.*Projects - Your Penpot/);
   }
 
   async checkNumberOfFiles(numberOfFiles) {
-    await this.waitForPageLoaded();
+    await this.isDashboardOpened();
     await expect(this.numberOfFilesText.first()).toHaveText(numberOfFiles);
   }
 
@@ -475,21 +476,17 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickUnpinProjectButton() {
-    await this.waitForPageLoaded();
     await this.projectNameTitle.first().hover();
-    await this.waitForPageLoaded();
     await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin-fill");
     await this.pinUnpinProjectButton.click();
-    await this.waitForPageLoaded();
+    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin");
   }
 
   async clickPinProjectButton() {
-    await this.waitForPageLoaded();
     await this.projectNameTitle.first().hover();
-    await this.waitForPageLoaded();
     await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin");
     await this.pinUnpinProjectButton.click();
-    await this.waitForPageLoaded();
+    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin-fill");
   }
 
   async checkPinnedProjectsSidebarItem(text) {
@@ -550,7 +547,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async createTeam(teamName) {
-    await this.teamSelector.click();
+    await this.openTeamsListIfClosed();
     await this.createNewTeamMenuItem.click();
     await this.teamNameInput.fill(teamName);
     await this.createNewTeamButton.click();
@@ -560,16 +557,23 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.teamSelector).toHaveText(teamName);
   }
 
+  async openTeamsListIfClosed() {
+    if (!await this.teamList.isVisible()) {
+      await this.teamSelector.click();
+    }
+    await expect(this.teamList).toBeVisible();
+  }
+
   async deleteTeam(teamName) {
-    await this.teamSelector.click();
+    await this.openTeamsListIfClosed();
     for (const el of await this.teamMenuItem.elementHandles()) {
       const text = (await el.innerText()).valueOf();
       if (text.includes(teamName)) {
         await el.click();
+        await this.isTeamSelected(teamName);
         await this.teamOptionsMenuButton.click();
         await this.deleteTeamMenuItem.click();
         await this.deleteTeamButton.click();
-        await this.waitForPageLoaded();
         await expect(this.teamSelector).not.toHaveText(teamName);
       }
     }
@@ -584,7 +588,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
         await this.teamOptionsMenuButton.click();
         await this.deleteTeamMenuItem.click();
         await this.deleteTeamButton.click();
-        await this.waitForPageLoaded();
         await expect(this.teamSelector).toHaveText("Your Penpot");
         await this.teamSelector.click();
       }
@@ -593,10 +596,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async isTeamDeleted(teamName) {
-    await this.teamSelector.click();
+    await this.openTeamsListIfClosed();
     for (const el of await this.teamMenuItem.elementHandles()) {
       const text = (await el.innerText()).valueOf();
-      expect(text).not.toEqual(teamName);
+      await expect(text).not.toEqual(teamName);
     }
   }
 
@@ -705,7 +708,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async flipLeftLibrariesAndTemplatesCarousel() {
     await this.librariesAndTemplatesSectionLeftArrowButton.click();
     await this.header.hover();
-    await this.waitForPageLoaded();
   }
 
   async openFile() {
