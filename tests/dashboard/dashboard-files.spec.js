@@ -168,12 +168,14 @@ dashboardTest("DA-29 Duplicate file in Project", async ({ page }) => {
     "Your file has been duplicated successfully"
   );
   await dashboardPage.reloadPage();
+  await dashboardPage.isHeaderDisplayed("Projects");
   await dashboardPage.checkNumberOfFiles("2 files");
   await dashboardPage.duplicateFileViaOptionsIcon();
   await dashboardPage.isSuccessMessageDisplayed(
     "Your file has been duplicated successfully"
   );
   await dashboardPage.reloadPage();
+  await dashboardPage.isHeaderDisplayed("Projects");
   await dashboardPage.checkNumberOfFiles("3 files");
 });
 
