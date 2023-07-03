@@ -230,15 +230,18 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async deleteFiles() {
-    for (const el of await this.fileInfoPanel.elementHandles()) {
-      await el.click({ button: "right" });
+    let counter = 0;
+    while (await this.fileInfoPanel.count()) {
+      await this.fileInfoPanel.first().click({ button: "right" });
       await this.deleteFileMenuItem.click();
       await this.deleteFileButton.click();
+      counter++;
     }
+    await expect(this.fileInfoPanel).toHaveCount(0);
   }
 
   async deleteFilesIfExist() {
-    await expect(this.numberOfFilesText).toBeVisible();
+    await this.numberOfFilesText.waitFor();
     const text = (await this.numberOfFilesText.innerText()).valueOf();
     if (!text.includes("0 files")) {
       await this.deleteFiles();
@@ -267,6 +270,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
         await this.deleteProjectButton.click();
       }
     }
+    await expect(this.projectNameTitle).toHaveCount(1);
   }
 
   async waitForPageLoaded() {
@@ -275,11 +279,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isDashboardOpened() {
     await this.page.waitForURL(/.*dashboard\/team/, { waitUntil: "load" });
-    await expect(this.page).toHaveTitle(/.*Projects - Your Penpot/);
+    await this.page.waitForResponse(/get-team-recent-files/);
   }
 
   async checkNumberOfFiles(numberOfFiles) {
-    await this.isDashboardOpened();
     await expect(this.numberOfFilesText.first()).toHaveText(numberOfFiles);
   }
 
@@ -329,6 +332,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isSuccessMessageDisplayed(message) {
     await expect(this.successMessage).toHaveText(message);
+  }
+
+  async waitSuccessMessageHidden() {
+    await this.successMessage.waitFor({ state:"hidden" });
   }
 
   async isInfoMessageDisplayed(message) {

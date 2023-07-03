@@ -1,27 +1,33 @@
-const { expect } = require("@playwright/test");
+const { expect, test } = require("@playwright/test");
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/main-page");
 const { LayersPage } = require("../../pages/workspace/layers");
 const { DesignPanelPage} = require("../../pages/workspace/design-panel");
 
-mainTest.describe("Flex Layout & Elements", async () => {
-    mainTest.beforeEach(async ({ page }, testInfo) => {
-      testInfo.setTimeout(testInfo.timeout + 30000);
-        const mainPage = new MainPage(page);
-        await mainPage.clickCreateBoardButton();
-        await mainPage.clickViewportTwice();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.isCreatedLayerVisible();
-        await mainPage.changeHeightAndWidthForLayer("300", "300");
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickCreateRectangleButton();
-        await mainPage.clickViewportTwice();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickCreateEllipseButton();
-        await mainPage.clickViewportTwice();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickCreatedBoardTitleOnCanvas();
-    });
+test.describe("Flex Layout & Elements", async () => {
+    test.beforeEach(async ({ page, browserName }, testInfo) => {
+      testInfo.setTimeout(testInfo.timeout + 20000);
+      const mainPage = new MainPage(page);
+      await mainPage.clickCreateBoardButton();
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isCreatedLayerVisible();
+      await mainPage.changeHeightAndWidthForLayer("300", "300");
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickCreateRectangleButton();
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      if (browserName !== "webkit") {
+        await mainPage.isLayerAddedToBoard("Rectangle");
+      }
+      await mainPage.clickCreateEllipseButton();
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      if (browserName !== "webkit") {
+        await mainPage.isLayerAddedToBoard("Ellipse");
+      }
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+  });
 
     mainTest("FL-1 Add flex layout to board from rightclick", async ({ page }) => {
         const mainPage = new MainPage(page);
@@ -482,29 +488,38 @@ mainTest.describe("Flex Layout & Elements", async () => {
 
 });
 
-mainTest.describe("Margins & Paddings & Position", async () => {
-    mainTest.beforeEach(async ({ page }, testInfo) => {
-        testInfo.setTimeout(testInfo.timeout + 30000);
-        const mainPage = new MainPage(page);
-        await mainPage.clickCreateBoardButton();
-        await mainPage.clickViewportTwice();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.isCreatedLayerVisible();
-        await mainPage.changeHeightAndWidthForLayer("500", "500");
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickCreateEllipseButton();
-        await mainPage.clickViewportTwice();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickCreateEllipseButton();
-        await mainPage.clickViewportTwice();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickCreateEllipseButton();
-        await mainPage.clickViewportTwice();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickCreatedBoardTitleOnCanvas();
-        await mainPage.addFlexLayoutViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-    });
+test.describe("Margins & Paddings & Position", async () => {
+    test.beforeEach(async ({ page, browserName }, testInfo) => {
+      testInfo.setTimeout(testInfo.timeout + 20000);
+      const mainPage = new MainPage(page);
+      await mainPage.clickCreateBoardButton();
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isCreatedLayerVisible();
+      await mainPage.changeHeightAndWidthForLayer("500", "500");
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickCreateEllipseButton();
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      if (browserName !== "webkit") {
+        await mainPage.isLayerAddedToBoard("Ellipse");
+      }
+      await mainPage.clickCreateEllipseButton();
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      if (browserName !== "webkit") {
+        await mainPage.isLayerAddedToBoard("Ellipse");
+      }
+      await mainPage.clickCreateEllipseButton();
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      if (browserName !== "webkit") {
+        await mainPage.isLayerAddedToBoard("Ellipse");
+      }
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+      await mainPage.addFlexLayoutViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+  });
 
     mainTest("FL-37 Set margins and padding to 0", async ({ page }) => {
         const mainPage = new MainPage(page);
@@ -551,7 +566,6 @@ mainTest.describe("Margins & Paddings & Position", async () => {
 
     mainTest("FL-42 Use absolute position and look if element still inside a board",
         async ({ page }) => {
-        mainTest.setTimeout(120000);
         const mainPage = new MainPage(page);
         const layersPage = new LayersPage(page);
         const designPanelPage = new DesignPanelPage(page);

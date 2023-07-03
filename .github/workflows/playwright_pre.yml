@@ -21,7 +21,7 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-        run: npx playwright test --project=chrome -gv 'PERF'
+        run: npx playwright test -gv 'PERF'
       - uses: actions/upload-artifact@v3
         if: always()
         with:
