@@ -23,7 +23,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Viewport
     this.viewport = page.locator('div[class="viewport"]');
-    this.createdLayer = page.locator('div *[id^="shape"] >> nth=0');
+    this.createdLayer = page.locator('div[class="viewport"] [id^="shape"] >> nth=0');
     this.createdBoardTitle = page.locator('g[class="frame-title"] >> nth=0');
     this.textbox = page.locator(
       'div[role="textbox"] div[contenteditable="true"]'
@@ -662,7 +662,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async waitForChangeIsSaved() {
-    await expect(this.savedChangesIcon).toBeVisible();
+    await this.savedChangesIcon.waitFor({ state: "visible" });
   }
 
   async isCreatedLayerVisible() {
@@ -685,6 +685,12 @@ exports.MainPage = class MainPage extends BasePage {
   async changeHeightForLayer(height) {
     await this.sizeHeightInput.fill(height);
     await this.clickOnEnter();
+  }
+
+  async isLayerAddedToBoard(layer) {
+    const layerSel = await
+      this.page.locator(`ul.element-children li.selected span.element-name:has-text('${layer}')`);
+    await expect(layerSel).toBeVisible();
   }
 
   async changeHeightAndWidthForLayer(height, width) {

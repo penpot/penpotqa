@@ -43,7 +43,7 @@ dashboardTest(
     await dashboardPage.isSuccessMessageDisplayed(
       "Your file has been duplicated successfully"
     );
-    await dashboardPage.reloadPage();
+    await dashboardPage.waitSuccessMessageHidden();
     await dashboardPage.checkNumberOfFiles("2 files");
   }
 );
@@ -104,6 +104,8 @@ dashboardTest(
     const mainPage = new MainPage(page);
     await mainPage.clickPencilBoxButton();
     await dashboardPage.deleteFileViaRightclick();
+    await dashboardPage.isSuccessMessageDisplayed("Your file has been deleted successfully");
+    await dashboardPage.waitSuccessMessageHidden();
     await dashboardPage.checkNumberOfFiles("0 files");
   }
 );
@@ -311,6 +313,8 @@ dashboardTest(
     const mainPage = new MainPage(page);
     await mainPage.clickPencilBoxButton();
     await dashboardPage.deleteFileViaRightclick();
+    await dashboardPage.isSuccessMessageDisplayed("Your file has been deleted successfully");
+    await dashboardPage.waitSuccessMessageHidden();
     await dashboardPage.checkNumberOfFiles("0 files");
   }
 );
@@ -326,6 +330,8 @@ dashboardTest(
     const mainPage = new MainPage(page);
     await mainPage.clickPencilBoxButton();
     await dashboardPage.deleteFileViaOptionsIcon();
+    await dashboardPage.isSuccessMessageDisplayed("Your file has been deleted successfully");
+    await dashboardPage.waitSuccessMessageHidden();
     await dashboardPage.checkNumberOfFiles("0 files");
   }
 );
