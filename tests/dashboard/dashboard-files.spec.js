@@ -2,14 +2,22 @@ const { dashboardTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/main-page");
 const { DashboardPage } = require("../../pages/dashboard-page");
 
-dashboardTest(
-  "DA-2 Create new file in Drafts via 'New file' placeholder",
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createFileViaPlaceholder();
-    const mainPage = new MainPage(page);
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.checkNumberOfFiles("1 file");
+dashboardTest("DA-1 Create new file in Drafts on title panel",async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.createFileViaTitlePanel();
+  const mainPage = new MainPage(page);
+  await mainPage.isMainPageLoaded();
+  await mainPage.isProjectAndFileNameExistInFile("Drafts", "New File 1");
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.checkNumberOfFiles("1 file");
+});
+
+dashboardTest("DA-2 Create new file in Drafts via 'New file' placeholder", async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.createFileViaPlaceholder();
+  const mainPage = new MainPage(page);
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.checkNumberOfFiles("1 file");
   }
 );
 
@@ -60,6 +68,24 @@ dashboardTest(
   }
 );
 
+dashboardTest("DA-11 Remove file as Shared Library via Options icon in Drafts",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.isMainPageLoaded();
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
+    await dashboardPage.isSharedLibraryIconDisplayed();
+    await dashboardPage.openSidebarItem("Libraries");
+    await dashboardPage.isFileNameDisplayed("New File 1");
+    await dashboardPage.openSidebarItem("Drafts");
+    await dashboardPage.deleteFileAsSharedLibraryViaOptionsIcon();
+    await dashboardPage.isSharedLibraryIconNotDisplayed();
+    await dashboardPage.openSidebarItem("Libraries");
+    await dashboardPage.checkNoLibrariesExist();
+  });
+
 dashboardTest(
   "DA-12 Remove file as Shared Library in Drafts via rightclick",
   async ({ page }) => {
@@ -95,6 +121,21 @@ dashboardTest(
     await dashboardPage.downloadStandardFileViaRightclick();
   }
 );
+
+dashboardTest("DA-17 Import file to Drafts .penpot", async ({page}) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.openSidebarItem("Drafts");
+  await dashboardPage.importFileFromProjectPage("documents/QA test file.penpot")
+  await dashboardPage.isFileNameDisplayed("Wireframing kit"); // issue is reported 5596
+  }
+);
+
+dashboardTest("DA-18 Import file to Drafts svgjson", async ({page}) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.openSidebarItem("Drafts");
+  // await dashboardPage.importFileFromProjectPage("documents/QA test zip file.zip")
+  // await dashboardPage.isFileNameDisplayed("Wireframing kit"); // issue is reported 5597
+});
 
 dashboardTest(
   "DA-22 Delete file in Drafts via rightclick",
@@ -372,7 +413,7 @@ dashboardTest("DA-53 Duplicate Project", async ({ page }) => {
   await mainPage.clickPencilBoxButton();
   await dashboardPage.duplicateProjectViaRightclick();
   await dashboardPage.isHeaderDisplayed("TestProject (copy)");
-  await dashboardPage.clickSidebarItem("Projects");
+  await dashboardPage.openSidebarItem("Projects");
   await dashboardPage.duplicateProjectViaOptionsIcon();
   await dashboardPage.isHeaderDisplayed("TestProject (copy) (copy)");
 });
@@ -400,6 +441,12 @@ dashboardTest("DA-55 Pin project", async ({ page }) => {
   );
   await dashboardPage.clickPinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem("TestProject");
+});
+
+dashboardTest("DA-59 Import file to project - fail invalid format", async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.openSidebarItem("Drafts");
+    await dashboardPage.importFileWithInvalidFormat("images/images.png")
 });
 
 dashboardTest("DA-60-1 Delete project via rightclick", async ({ page }) => {
@@ -432,7 +479,7 @@ dashboardTest("DA-62 Search file from Drafts", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickPencilBoxButton();
   await dashboardPage.renameFileViaRightclick("qwe");
-  await dashboardPage.clickSidebarItem("Drafts");
+  await dashboardPage.openSidebarItem("Drafts");
   await dashboardPage.search("qwe");
   await dashboardPage.isHeaderDisplayed("Search results");
   await dashboardPage.isFileNameDisplayed("qwe");
@@ -447,7 +494,7 @@ dashboardTest("DA-63 Search file from Projects", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickPencilBoxButton();
   await dashboardPage.renameFileViaRightclick("qaz");
-  await dashboardPage.clickSidebarItem("Projects");
+  await dashboardPage.openSidebarItem("Projects");
   await dashboardPage.search("qaz");
   await dashboardPage.isHeaderDisplayed("Search results");
   await dashboardPage.isFileNameDisplayed("qaz");

@@ -4,7 +4,7 @@ exports.BasePage = class BasePage {
    */
   constructor(page) {
     this.page = page;
-    this.header = page.locator("h1");
+    this.header = page.locator('div[class="dashboard-title"] h1');
   }
 
   async clearInput(input) {

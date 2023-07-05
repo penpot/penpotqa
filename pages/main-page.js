@@ -572,6 +572,8 @@ exports.MainPage = class MainPage extends BasePage {
     //Header
     this.savedChangesIcon = page.locator('div[class="saved"]');
     this.usersSection = page.locator('div[class="users-section"]');
+    this.projectNameSpan = page.locator('div[class="project-tree"] span[class="project-name"]');
+    this.fileNameSpan = page.locator('div[class="project-tree"] span')
 
     //History panel
     this.historyPanelButton = page.locator('button[class^="document-history"]');
@@ -731,6 +733,11 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isMainPageLoaded() {
     await expect(this.pencilBoxButton).toBeVisible();
+  }
+
+  async isProjectAndFileNameExistInFile(projectName, fileName) {
+    await expect(this.projectNameSpan).toContainText(projectName);
+    await expect(this.fileNameSpan.last()).toHaveText(fileName);
   }
 
   async clickCanvasBackgroundColorIcon() {
