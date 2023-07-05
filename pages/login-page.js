@@ -6,6 +6,7 @@ exports.LoginPage = class LoginPage extends BasePage {
    */
   constructor(page) {
     super(page);
+    this.pageTitle = page.locator('h1[data-test="login-title"]');
     this.emailInput = page.locator("#email");
     this.pwdInput = page.locator("#password");
     this.loginButton = page.locator('input[name="submit"]');
@@ -17,6 +18,7 @@ exports.LoginPage = class LoginPage extends BasePage {
     );
     this.section = page.locator('section[class="auth-content"]');
     this.loginErrorBanner = page.locator('div[data-test="login-banner"]');
+    this.createAccountLink = page.locator('a:has-text("Create an account")');
   }
 
   async goto() {
@@ -56,7 +58,7 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async clickHeader() {
-    await this.header.click();
+    await this.pageTitle.click();
   }
 
   async isLoginErrorMessageDisplayed(message) {
@@ -66,5 +68,9 @@ exports.LoginPage = class LoginPage extends BasePage {
   async isHeaderDisplayed(title) {
     await expect(this.header).toBeVisible();
     await expect(this.header).toHaveText(title);
+  }
+
+  async clickOnCreateAccount() {
+    await this.createAccountLink.click();
   }
 };
