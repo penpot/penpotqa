@@ -1,28 +1,43 @@
 const { dashboardTest } = require("../../fixtures");
-const { DashboardPage } = require("../../pages/dashboard-page");
+const { TeamPage } = require("../../pages/team-page");
 const { test, expect } = require("@playwright/test");
+const { ProfilePage } = require("../../pages/profile-page");
+const { DashboardPage } = require("../../pages/dashboard-page");
+const { random } = require("../../helpers/string-generator");
 
 test.afterEach(async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.deleteTeamsIfExist();
+  const teamPage = new TeamPage(page);
+  await teamPage.deleteTeamsIfExist();
 });
 
 dashboardTest("DA-76 Create a team", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.createTeam("New Test Team");
-  await dashboardPage.isTeamSelected("New Test Team");
+  const teamPage = new TeamPage(page);
+  await teamPage.createTeam("New Test Team");
+  await teamPage.isTeamSelected("New Test Team");
+});
+
+dashboardTest("DA-77 Team.Switch between teams", async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const teamFirst = "QA Test Team 1";
+  const teamSecond = "QA Test Team 2";
+
+  await teamPage.createTeam(teamFirst);
+  await teamPage.isTeamSelected(teamFirst);
+  await teamPage.createTeam(teamSecond);
+  await teamPage.isTeamSelected(teamSecond);
+  await teamPage.switchTeam(teamFirst);
+  await teamPage.switchTeam(teamSecond);
 });
 
 dashboardTest(
   "DA-78 Team Invitations - open the form via Invitations tab",
   async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createTeam("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.openInvitationsPageViaOptionsMenu();
-    await dashboardPage.isHeaderDisplayed("Invitations");
-    await dashboardPage.clickInviteMembersToTeamButton();
-    await dashboardPage.isInviteMembersPopUpHeaderDisplayed(
+    const teamPage = new TeamPage(page);
+    await teamPage.createTeam("QA Team");
+    await teamPage.isTeamSelected("QA Team");
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed(
       "Invite members to the team"
     );
   }
@@ -31,11 +46,11 @@ dashboardTest(
 dashboardTest(
   "DA-79 Team Invitations - open the form via Team Hero",
   async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createTeam("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.clickInviteMembersTeamHeroButton();
-    await dashboardPage.isInviteMembersPopUpHeaderDisplayed(
+    const teamPage = new TeamPage(page);
+    await teamPage.createTeam("QA Team");
+    await teamPage.isTeamSelected("QA Team");
+    await teamPage.clickInviteMembersTeamHeroButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed(
       "Invite members to the team"
     );
   }
@@ -44,47 +59,39 @@ dashboardTest(
 dashboardTest(
   "DA-80 Team Invitations - invite via owner (single invitation, editor)",
   async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createTeam("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.openInvitationsPageViaOptionsMenu();
-    await dashboardPage.isHeaderDisplayed("Invitations");
-    await dashboardPage.clickInviteMembersToTeamButton();
-    await dashboardPage.isInviteMembersPopUpHeaderDisplayed(
+    const teamPage = new TeamPage(page);
+    await teamPage.createTeam("QA Team");
+    await teamPage.isTeamSelected("QA Team");
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed(
       "Invite members to the team"
     );
-    await dashboardPage.enterEmailToInviteMembersPopUp("testeditor@test.com");
-    await dashboardPage.clickSendInvitationButton();
-    await dashboardPage.isSuccessMessageDisplayed(
-      "Invitation sent successfully"
-    );
-    await dashboardPage.isInvitationRecordDisplayed(
-      "testeditor@test.com",
-      "Editor",
-      "Pending"
-    );
+    await teamPage.enterEmailToInviteMembersPopUp("testeditor@test.com");
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed("Invitation sent successfully");
+    await teamPage.isInvitationRecordDisplayed("testeditor@test.com", "Editor", "Pending");
   }
 );
 
 dashboardTest(
   "DA-81 Team Invitations - invite via owner (single invitation, admin)",
   async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createTeam("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.openInvitationsPageViaOptionsMenu();
-    await dashboardPage.isHeaderDisplayed("Invitations");
-    await dashboardPage.clickInviteMembersToTeamButton();
-    await dashboardPage.isInviteMembersPopUpHeaderDisplayed(
+    const teamPage = new TeamPage(page);
+    await teamPage.createTeam("QA Team");
+    await teamPage.isTeamSelected("QA Team");
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed(
       "Invite members to the team"
     );
-    await dashboardPage.selectInvitationRoleInPopUp("Admin");
-    await dashboardPage.enterEmailToInviteMembersPopUp("testadmin@test.com");
-    await dashboardPage.clickSendInvitationButton();
-    await dashboardPage.isSuccessMessageDisplayed(
+    await teamPage.selectInvitationRoleInPopUp("Admin");
+    await teamPage.enterEmailToInviteMembersPopUp("testadmin@test.com");
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed(
       "Invitation sent successfully"
     );
-    await dashboardPage.isInvitationRecordDisplayed(
+    await teamPage.isInvitationRecordDisplayed(
       "testadmin@test.com",
       "Admin",
       "Pending"
@@ -92,30 +99,43 @@ dashboardTest(
   }
 );
 
+dashboardTest("DA-89 Team.Invitations-fail to send invitation to existing team member",
+  async ({ page }) => {
+    const teamPage = new TeamPage(page);
+    await teamPage.createTeam("QA Team");
+    await teamPage.isTeamSelected("QA Team");
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed("Invite members to the team");
+    await teamPage.enterEmailToInviteMembersPopUp(process.env.LOGIN_EMAIL);
+    await teamPage.isSendInvitationBtnDisabled();
+    await teamPage.isSendInvitationWarningExist(
+      "Some emails are from current team members. Their invitations will not be sent.")
+  });
+
 dashboardTest(
   "DA-90 Team Invitations - resend invitation via owner",
   async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createTeam("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.openInvitationsPageViaOptionsMenu();
-    await dashboardPage.isHeaderDisplayed("Invitations");
-    await dashboardPage.clickInviteMembersToTeamButton();
-    await dashboardPage.isInviteMembersPopUpHeaderDisplayed(
+    const teamPage = new TeamPage(page);
+    await teamPage.createTeam("QA Team");
+    await teamPage.isTeamSelected("QA Team");
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed(
       "Invite members to the team"
     );
-    await dashboardPage.enterEmailToInviteMembersPopUp("testeditor@test.com");
-    await dashboardPage.clickSendInvitationButton();
-    await dashboardPage.isSuccessMessageDisplayed(
+    await teamPage.enterEmailToInviteMembersPopUp("testeditor@test.com");
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed(
       "Invitation sent successfully"
     );
-    await dashboardPage.isInvitationRecordDisplayed(
+    await teamPage.isInvitationRecordDisplayed(
       "testeditor@test.com",
       "Editor",
       "Pending"
     );
-    await dashboardPage.resendInvitation();
-    await dashboardPage.isSuccessMessageDisplayed(
+    await teamPage.resendInvitation();
+    await teamPage.isSuccessMessageDisplayed(
       "Invitation sent successfully"
     );
   }
@@ -124,54 +144,52 @@ dashboardTest(
 dashboardTest(
   "DA-92 Team Invitations - delete invitation via owner",
   async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createTeam("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.openInvitationsPageViaOptionsMenu();
-    await dashboardPage.isHeaderDisplayed("Invitations");
-    await dashboardPage.clickInviteMembersToTeamButton();
-    await dashboardPage.isInviteMembersPopUpHeaderDisplayed(
+    const teamPage = new TeamPage(page);
+    await teamPage.createTeam("QA Team");
+    await teamPage.isTeamSelected("QA Team");
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed(
       "Invite members to the team"
     );
-    await dashboardPage.enterEmailToInviteMembersPopUp("testeditor@test.com");
-    await dashboardPage.clickSendInvitationButton();
-    await dashboardPage.isSuccessMessageDisplayed(
+    await teamPage.enterEmailToInviteMembersPopUp("testeditor@test.com");
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed(
       "Invitation sent successfully"
     );
-    await dashboardPage.isInvitationRecordDisplayed(
+    await teamPage.isInvitationRecordDisplayed(
       "testeditor@test.com",
       "Editor",
       "Pending"
     );
-    await dashboardPage.deleteInvitation();
-    await dashboardPage.isInvitationRecordRemoved();
+    await teamPage.deleteInvitation();
+    await teamPage.isInvitationRecordRemoved();
   }
 );
 
 dashboardTest(
   "DA-95 Team Invitations - change role in invitation via owner",
   async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createTeam("QA Team");
-    await dashboardPage.isTeamSelected("QA Team");
-    await dashboardPage.openInvitationsPageViaOptionsMenu();
-    await dashboardPage.isHeaderDisplayed("Invitations");
-    await dashboardPage.clickInviteMembersToTeamButton();
-    await dashboardPage.isInviteMembersPopUpHeaderDisplayed(
+    const teamPage = new TeamPage(page);
+    await teamPage.createTeam("QA Team");
+    await teamPage.isTeamSelected("QA Team");
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed(
       "Invite members to the team"
     );
-    await dashboardPage.enterEmailToInviteMembersPopUp("testrole@test.com");
-    await dashboardPage.clickSendInvitationButton();
-    await dashboardPage.isSuccessMessageDisplayed(
+    await teamPage.enterEmailToInviteMembersPopUp("testrole@test.com");
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed(
       "Invitation sent successfully"
     );
-    await dashboardPage.isInvitationRecordDisplayed(
+    await teamPage.isInvitationRecordDisplayed(
       "testrole@test.com",
       "Editor",
       "Pending"
     );
-    await dashboardPage.selectInvitationRoleInInvitationRecord("Admin");
-    await dashboardPage.isInvitationRecordDisplayed(
+    await teamPage.selectInvitationRoleInInvitationRecord("Admin");
+    await teamPage.isInvitationRecordDisplayed(
       "testrole@test.com",
       "Admin",
       "Pending"
@@ -182,31 +200,75 @@ dashboardTest(
 dashboardTest(
   "DA-114 Team Settings - upload team profile picture",
   async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.createTeam("New Test Team");
-    await dashboardPage.isTeamSelected("New Test Team");
-    await dashboardPage.openTeamSettingsPageViaOptionsMenu();
-    await dashboardPage.uploadTeamImage("images/images.png");
-    await dashboardPage.isInfoMessageDisplayed("Loading image…");
-    await dashboardPage.isInfoMessageNotDisplayed();
-    await expect(dashboardPage.teamInfoSection).toHaveScreenshot(
+    const teamPage = new TeamPage(page);
+    await teamPage.createTeam("New Test Team");
+    await teamPage.isTeamSelected("New Test Team");
+    await teamPage.openTeamSettingsPageViaOptionsMenu();
+    await teamPage.uploadTeamImage("images/images.png");
+    await teamPage.isInfoMessageDisplayed("Loading image…");
+    await teamPage.waitInfoMessageHidden();
+    await expect(teamPage.teamInfoSection).toHaveScreenshot(
       "team-profile-image.png"
     );
   }
 );
 
+dashboardTest("DA-116 Team. Settings - check 'Team members' info",
+  async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const profilePage = new ProfilePage(page);
+  await profilePage.openYourAccountPage();
+  await profilePage.isHeaderDisplayed("Your account");
+  await profilePage.changeProfileName("QA Engineer");
+  await profilePage.uploadProfileImage("images/sample.jpeg");
+  await profilePage.waitInfoMessageHidden();
+  await profilePage.backToDashboardFromAccount();
+  await teamPage.createTeam("New Test Team");
+  await teamPage.isTeamSelected("New Test Team");
+  await teamPage.openTeamSettingsPageViaOptionsMenu();
+
+  const teamOwner = await profilePage.getProfileFullName() + ' (Owner)';
+  await teamPage.isTeamOwnerInfoDisplayed(teamOwner);
+  await teamPage.isTeamMembersInfoDisplayed("1 members");
+  await expect(teamPage.teamOwnerSection).toHaveScreenshot("team-owner-block.png")
+});
+
+dashboardTest("DA-117 Team. Settings - check 'Team projects' info",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    const teamPage = new TeamPage(page);
+    const projectFirst = "QA Project 1";
+    const projectSecond = "QA Project 2";
+
+    await teamPage.createTeam("New Test Team");
+    await teamPage.isTeamSelected("New Test Team");
+    await dashboardPage.createProject(projectFirst);
+    await dashboardPage.createProject(projectSecond);
+    await dashboardPage.openSidebarItem("Drafts");
+    await dashboardPage.createFileViaPlaceholder();
+    await dashboardPage.openProjectFromLeftSidebar(projectFirst);
+    await dashboardPage.createFileViaPlaceholder();
+    await dashboardPage.openProjectFromLeftSidebar(projectSecond);
+    await dashboardPage.createFileViaPlaceholder();
+
+    await teamPage.openTeamSettingsPageViaOptionsMenu();
+    await teamPage.isTeamProjectsInfoDisplayed("2 projects");
+    await teamPage.isTeamFilesInfoDisplayed("3 files");
+    await expect(teamPage.teamStatsSection).toHaveScreenshot("team-stats-block.png")
+  });
+
 dashboardTest("DA-119 Rename a team via owner", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.createTeam("QA Team");
-  await dashboardPage.isTeamSelected("QA Team");
-  await dashboardPage.renameTeam("Renamed Team");
-  await dashboardPage.isTeamSelected("Renamed Team");
+  const teamPage = new TeamPage(page);
+  await teamPage.createTeam("QA Team");
+  await teamPage.isTeamSelected("QA Team");
+  await teamPage.renameTeam("Renamed Team");
+  await teamPage.isTeamSelected("Renamed Team");
 });
 
 dashboardTest("DA-122 Delete a team via owner", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.createTeam("QA Team");
-  await dashboardPage.isTeamSelected("QA Team");
-  await dashboardPage.deleteTeam("QA Team");
-  await dashboardPage.isTeamDeleted("QA Team");
+  const teamPage = new TeamPage(page);
+  await teamPage.createTeam("QA Team");
+  await teamPage.isTeamSelected("QA Team");
+  await teamPage.deleteTeam("QA Team");
+  await teamPage.isTeamDeleted("QA Team");
 });

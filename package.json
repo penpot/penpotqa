@@ -9,6 +9,8 @@
     "webkit": "npx playwright test --project=webkit -gv 'PERF'",
     "performance": "npx playwright test --retries=1 --project=chrome -g 'PERF'",
     "performance:debug": "npx playwright test --debug --project=chrome -g 'PERF'",
+    "script": "npx playwright test -g \"PF-104 Hide/show UI via main menu and shortcut '/'\"",
+    "spec": "npx playwright test tests/composition/composition-ellipse.spec.js",
     "prettier": "npx prettier --write ."
   },
   "repository": {

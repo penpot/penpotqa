@@ -23,7 +23,7 @@ test.describe(() => {
       await mainPage.clickCreateCurveButton();
       await mainPage.drawCurve(900, 300, 600, 200);
       await mainPage.waitForChangeIsSaved();
-      await mainPage.doubleClickCreatedLayerOnLayersPanel();
+      await mainPage.doubleClickLayerOnLayersTab();
       await mainPage.renameCreatedLayer("renamed curve");
       await mainPage.waitForChangeIsSaved();
       await mainPage.isLayerNameDisplayed("renamed curve");
