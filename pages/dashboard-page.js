@@ -7,8 +7,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
    */
   constructor(page) {
     super(page);
-    this.successMessage = page.locator('div[class="banner success fixed"]');
-    this.infoMessage = page.locator('div[class="banner info fixed"]');
 
     //Files
     this.numberOfFilesText = page.locator(
@@ -127,66 +125,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class="font-item table-row"] input[type="text"]'
     );
     this.saveFontButton = page.locator('button:has-text("Save")');
-    this.searchFontInput = page.locator("input[placeholder='Search font']");
-    this.fontFormatError = page.locator("div[class='banner error fixed']");
-
-    //Teams
-    this.teamSelector = page.locator(".current-team");
-    this.teamList = page.locator("ul[class*='teams-dropdown']");
-    this.createNewTeamMenuItem = page.locator("#teams-selector-create-team");
-    this.teamNameInput = page.locator("#name");
-    this.createNewTeamButton = page.locator("input[value='Create new team']");
-    this.teamMenuItem = page.locator(".current-team .team-name");
-    this.teamOptionsMenuButton = page.locator(".switch-options .icon-actions");
-    this.deleteTeamMenuItem = page.locator('li[data-test="delete-team"]');
-    this.deleteTeamButton = page.locator('input[value="Delete team"]');
-    this.invitationsMenuItem = page.locator('li[data-test="team-invitations"]');
-    this.inviteMembersToTeamButton = page.locator(
-      'a[data-test="invite-member"]'
-    );
-    this.inviteMembersPopUpHeader = page.locator(
-      'div[class^="modal dashboard-invite-modal form-container "] div[class="title"]'
-    );
-    this.inviteMembersTeamHeroButton = page.locator(
-      'button[class="btn-primary invite"]'
-    );
-    this.inviteMembersToTeamRoleSelectorButton = page.locator(
-      'div[class="custom-select"]'
-    );
-    this.inviteMembersToTeamRoleSelector = page.locator(
-      'div[class="custom-select"] select'
-    );
-    this.inviteMembersToTeamEmailInput = page.locator(
-      'input[placeholder="Emails, comma separated"]'
-    );
-    this.sendInvitationButton = page.locator('input[value="Send invitation"]');
-    this.invitationRecord = page.locator('div[class="table-row"]');
-    this.invitationRecordEmailCell = page.locator(
-      'div[class="table-field mail"]'
-    );
-    this.invitationRecordRoleCell = page.locator(
-      'div[class="table-field roles"]'
-    );
-    this.invitationRecordRoleSelector = page.locator(
-      'div[class="rol-selector has-priv"]'
-    );
-    this.invitationRecordStatusCell = page.locator(
-      'div[class="table-field status"] div'
-    );
-    this.invitationRecordOptionsMenuButton = page.locator(
-      'div[class="table-field actions"] svg[class="icon-actions"]'
-    );
-    this.invitationRecordResendInvititationMenuItem = page.locator(
-      'li:has-text("Resend invitation")'
-    );
-    this.invitationRecordDeleteInvititationMenuItem = page.locator(
-      'li:has-text("Delete invitation")'
-    );
-    this.teamSettingsMenuItem = page.locator('li[data-test="team-settings"]');
-    this.renameTeamMenuItem = page.locator('li[data-test="rename-team"]');
-    this.uploadTeamImageButton = page.locator('input[type="file"]');
-    this.renameTeamInput = page.locator("#name");
-    this.updateTeamButton = page.locator('input[value="Update team"]');
+    this.searchFontInput = page.locator('input[placeholder="Search font"]');
+    this.fontFormatError = page.locator('div[class="banner error fixed"]');
 
     //Libraries & Templates
     this.librariesAndTemplatesCarouselButton = page.locator(
@@ -204,15 +144,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.librariesAndTemplatesSectionRightArrowButton = page.locator(
       'button[class="button right"]'
     );
-    this.teamInfoSection = page.locator('div[class="block info-block"]');
     this.continueButton = page.locator('input[value="Continue"]');
     this.acceptButton = page.locator('input[value="Accept"]');
     this.noLibrariesPlacelder = page.locator('div[data-test="empty-placeholder"] p');
-  }
-
-  async isHeaderDisplayed(title) {
-    await expect(this.header).toBeVisible();
-    await expect(this.header).toHaveText(title);
   }
 
   async createFileViaPlaceholder() {
@@ -339,22 +273,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.duplicateFileMenuItem.click();
   }
 
-  async isSuccessMessageDisplayed(message) {
-    await expect(this.successMessage).toHaveText(message);
-  }
-
-  async waitSuccessMessageHidden() {
-    await this.successMessage.waitFor({ state:"hidden" });
-  }
-
-  async isInfoMessageDisplayed(message) {
-    await expect(this.infoMessage).toHaveText(message);
-  }
-
-  async isInfoMessageNotDisplayed() {
-    await expect(this.infoMessage).not.toBeVisible();
-  }
-
   async addFileAsSharedLibraryViaRightclick() {
     await this.fileInfoPanel.click({ button: "right" });
     await this.addFileAsSharedLibraryMenuItem.click();
@@ -439,6 +357,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
   }
 
+  async createProject(name) {
+    await this.clickAddProjectButton();
+    await this.setProjectName(name);
+    await this.isProjectTitleDisplayed(name);
+  }
+
   async renameProjectViaRightclick(newProjectName) {
     let text = await this.projectNameTitle.first().textContent();
     await this.projectNameTitle.first().click({ button: "right" });
@@ -493,6 +417,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
         break;
     }
     await expect(this.header).toHaveText(item);
+  }
+
+  async openProjectFromLeftSidebar(projectName) {
+    const projectSel = await this.page.locator(
+      `div[data-test="pinned-projects"] span.element-title:has-text("${projectName}")`);
+    await projectSel.click();
+    await this.isHeaderDisplayed(projectName);
   }
 
   async checkNoLibrariesExist() {
@@ -575,142 +506,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.searchFontInput.type(fontName);
     await expect(this.fontNameTableCell).toHaveText(fontName);
     await expect(this.fontNameTableCell).toHaveCount(1);
-  }
-
-  async createTeam(teamName) {
-    await this.openTeamsListIfClosed();
-    await this.createNewTeamMenuItem.click();
-    await this.teamNameInput.fill(teamName);
-    await this.createNewTeamButton.click();
-  }
-
-  async isTeamSelected(teamName) {
-    await expect(this.teamSelector).toHaveText(teamName);
-  }
-
-  async openTeamsListIfClosed() {
-    if (!await this.teamList.isVisible()) {
-      await this.teamSelector.click();
-    }
-    await expect(this.teamList).toBeVisible();
-  }
-
-  async deleteTeam(teamName) {
-    await this.openTeamsListIfClosed();
-    for (const el of await this.teamMenuItem.elementHandles()) {
-      const text = (await el.innerText()).valueOf();
-      if (text.includes(teamName)) {
-        await el.click();
-        await this.isTeamSelected(teamName);
-        await this.teamOptionsMenuButton.click();
-        await this.deleteTeamMenuItem.click();
-        await this.deleteTeamButton.click();
-        await expect(this.teamSelector).not.toHaveText(teamName);
-      }
-    }
-  }
-
-  async deleteTeamsIfExist() {
-    await this.teamSelector.click();
-    for (const el of await this.teamMenuItem.elementHandles()) {
-      const text = (await el.innerText()).valueOf();
-      if (!text.includes("Your Penpot")) {
-        await el.click();
-        await this.teamOptionsMenuButton.click();
-        await this.deleteTeamMenuItem.click();
-        await this.deleteTeamButton.click();
-        await expect(this.teamSelector).toHaveText("Your Penpot");
-        await this.teamSelector.click();
-      }
-    }
-    await this.teamSelector.click();
-  }
-
-  async isTeamDeleted(teamName) {
-    await this.openTeamsListIfClosed();
-    for (const el of await this.teamMenuItem.elementHandles()) {
-      const text = (await el.innerText()).valueOf();
-      await expect(text).not.toEqual(teamName);
-    }
-  }
-
-  async openInvitationsPageViaOptionsMenu() {
-    await this.teamOptionsMenuButton.click();
-    await this.invitationsMenuItem.click();
-  }
-
-  async clickInviteMembersToTeamButton() {
-    await this.inviteMembersToTeamButton.click();
-  }
-
-  async isInviteMembersPopUpHeaderDisplayed(title) {
-    await expect(this.inviteMembersPopUpHeader).toHaveText(title);
-  }
-
-  async clickInviteMembersTeamHeroButton() {
-    await this.inviteMembersTeamHeroButton.click();
-  }
-
-  async enterEmailToInviteMembersPopUp(email) {
-    await this.inviteMembersToTeamEmailInput.type(email);
-  }
-
-  async clickSendInvitationButton() {
-    await this.sendInvitationButton.click();
-  }
-
-  async isInvitationRecordDisplayed(email, role, status) {
-    await expect(this.invitationRecordEmailCell).toHaveText(email);
-    await expect(this.invitationRecordRoleCell).toHaveText(role);
-    await expect(this.invitationRecordStatusCell).toHaveText(status);
-  }
-
-  async selectInvitationRoleInPopUp(role) {
-    await this.inviteMembersToTeamRoleSelectorButton.click();
-    switch (role) {
-      case "Admin":
-        await this.inviteMembersToTeamRoleSelector.selectOption("admin");
-        break;
-      case "Editor":
-        await this.inviteMembersToTeamRoleSelector.selectOption("editor");
-        break;
-    }
-  }
-
-  async selectInvitationRoleInInvitationRecord(role) {
-    await this.invitationRecordRoleSelector.click();
-    await this.page.locator(`li:has-text('${role}')`).click();
-  }
-
-  async resendInvitation() {
-    await this.invitationRecordOptionsMenuButton.click();
-    await this.invitationRecordResendInvititationMenuItem.click();
-  }
-
-  async deleteInvitation() {
-    await this.invitationRecordOptionsMenuButton.click();
-    await this.invitationRecordDeleteInvititationMenuItem.click();
-  }
-
-  async isInvitationRecordRemoved() {
-    await expect(this.invitationRecord).not.toBeVisible();
-  }
-
-  async openTeamSettingsPageViaOptionsMenu() {
-    await this.teamOptionsMenuButton.click();
-    await this.teamSettingsMenuItem.click();
-  }
-
-  async uploadTeamImage(filePath) {
-    await this.uploadTeamImageButton.setInputFiles(filePath);
-  }
-
-  async renameTeam(teamName) {
-    await this.teamOptionsMenuButton.click();
-    await this.renameTeamMenuItem.click();
-    await this.clearInput(this.renameTeamInput);
-    await this.renameTeamInput.fill(teamName);
-    await this.updateTeamButton.click();
   }
 
   async clickLibrariesAndTemplatesCarouselButton() {

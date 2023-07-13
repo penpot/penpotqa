@@ -17,10 +17,48 @@ mainTest("CO-114 Rename ellipse with valid name", async ({ page }) => {
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.doubleClickCreatedLayerOnLayersPanel();
+  await mainPage.doubleClickLayerOnLayersTab();
   await mainPage.renameCreatedLayer("renamed ellipse");
   await mainPage.waitForChangeIsSaved();
   await mainPage.isLayerNameDisplayed("renamed ellipse");
+});
+
+mainTest("CO-117 Add, hide, unhide, change type and delete Shadow to ellipse",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.clickCreateEllipseButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickAddShadowButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "ellipse-drop-shadow-default.png", {
+        mask: [mainPage.guides]
+      });
+    await mainPage.hideShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "ellipse-drop-shadow-hide.png", {
+        mask: [mainPage.guides]
+      });
+    await mainPage.unhideShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "ellipse-drop-shadow-unhide.png", {
+        mask: [mainPage.guides]
+      });
+    await mainPage.selectTypeForShadow("Inner shadow");
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "ellipse-inner-shadow-default.png", {
+        mask: [mainPage.guides]
+      });
+    await mainPage.removeShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "ellipse-inner-shadow-remove.png", {
+        mask: [mainPage.guides]
+      });
 });
 
 mainTest("CO-118 Add and edit Shadow to ellipse", async ({ page }) => {
@@ -54,6 +92,41 @@ mainTest("CO-118 Add and edit Shadow to ellipse", async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot("ellipse-inner-shadow.png");
 });
 
+mainTest("CO-119 Add, hide, unhide and delete Blur to ellipse",async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const colorPalettePopUp = new ColorPalettePopUp(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickCanvasBackgroundColorIcon();
+  await colorPalettePopUp.setHex("#304d6a");
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickAddBlurButton();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "ellipse-blur-default.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.hideBlur();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "ellipse-blur-hide.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.unhideBlur();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "ellipse-blur-unhide.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.removeBlur();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "ellipse-blur-remove.png", {
+      mask: [mainPage.guides]
+    });
+});
+
 mainTest("CO-120 Add and edit Blur to ellipse", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateEllipseButton();
@@ -62,6 +135,86 @@ mainTest("CO-120 Add and edit Blur to ellipse", async ({ page }) => {
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("ellipse-blur.png");
+});
+
+mainTest("CO-121 Add, edit and delete Stroke to ellipse", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewportByCoordinates(100, 100);
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickAddStrokeButton();
+  await mainPage.clickViewportByCoordinates(200, 200);
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "ellipse-stroke-default.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.clickOnLayerOnCanvas();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.changeStrokeSettings('#43E50B','60', '10', 'Inside', 'Dotted');
+  await mainPage.clickViewportByCoordinates(200, 200);
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "ellipse-stroke-inside-dotted.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.clickOnLayerOnCanvas();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.changeStrokeSettings('#F5358F','80', '5', 'Outside', 'Dashed');
+  await mainPage.clickViewportByCoordinates(200, 200);
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "ellipse-stroke-outside-dashed.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.clickOnLayerOnCanvas();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.changeStrokeSettings('#F5358F','100', '3', 'Center', 'Solid');
+  await mainPage.clickViewportByCoordinates(200, 200);
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "ellipse-stroke-center-solid.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.clickOnLayerOnCanvas();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.changeStrokeSettings('#F5358F','40', '4', 'Center', 'Mixed');
+  await mainPage.clickViewportByCoordinates(200, 200);
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "ellipse-stroke-center-mixed.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.clickOnLayerOnCanvas();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.removeStroke();
+  await mainPage.clickViewportByCoordinates(200, 200);
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "ellipse-stroke-remove.png", {
+      mask: [mainPage.guides]
+    });
+});
+
+mainTest("CO-126 Click 'Focus off' ellipse from shortcut F",async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.focusLayerViaRightClickOnCanvas();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isLayerPresentOnLayersTab("Ellipse", true);
+  await mainPage.isFocusModeOn();
+  await expect(page).toHaveScreenshot(
+    "ellipse-single-focus-on.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
+  );
+  await mainPage.focusLayerViaShortcut();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isLayerPresentOnLayersTab("Ellipse", true);
+  await mainPage.isFocusModeOff();
+  await expect(page).toHaveScreenshot(
+    "ellipse-single-focus-off.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
+  );
 });
 
 mainTest("CO-136-1 Delete ellipse via rightclick", async ({ page }) => {

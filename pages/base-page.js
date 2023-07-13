@@ -1,3 +1,4 @@
+const { expect } = require("@playwright/test");
 exports.BasePage = class BasePage {
   /**
    * @param {import('@playwright/test').Page} page
@@ -5,14 +6,14 @@ exports.BasePage = class BasePage {
   constructor(page) {
     this.page = page;
     this.header = page.locator('div[class="dashboard-title"] h1');
+    this.successMessage = page.locator('div[class="banner success fixed"]');
+    this.infoMessage = page.locator('div[class="banner info fixed"]');
   }
 
   async clearInput(input) {
     await input.click();
-    let text = await input.inputValue();
-    for (let i = 0; i <= text.length; i++) {
-      await this.page.keyboard.press("Backspace");
-    }
+    await this.page.keyboard.press("Control+A");
+    await this.page.keyboard.press("Delete");
   }
 
   async reloadPage() {
@@ -22,4 +23,26 @@ exports.BasePage = class BasePage {
   async clickOnEnter() {
     await this.page.keyboard.press("Enter");
   }
+
+  async isHeaderDisplayed(title) {
+    await expect(this.header).toBeVisible();
+    await expect(this.header).toHaveText(title);
+  }
+
+  async isSuccessMessageDisplayed(message) {
+    await expect(this.successMessage).toHaveText(message);
+  }
+
+  async waitSuccessMessageHidden() {
+    await this.successMessage.waitFor({ state:"hidden" });
+  }
+
+  async isInfoMessageDisplayed(message) {
+    await expect(this.infoMessage).toHaveText(message);
+  }
+
+  async waitInfoMessageHidden() {
+    await this.infoMessage.waitFor({ state:"hidden" });
+  }
+
 };
