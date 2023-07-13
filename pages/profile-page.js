@@ -6,18 +6,36 @@ exports.ProfilePage = class ProfilePage extends BasePage {
    */
   constructor(page) {
     super(page);
+
+    //Account
     this.profileMenuButton = page.locator('div[data-test="profile-btn"]');
+    this.profileNameSpan = page.locator('div.profile span');
     this.yourAccountMenuItem = page.locator('li[data-test="profile-profile-opt"]');
     this.logoutMenuItem = page.locator('li[data-test="logout-profile-opt"]');
-    this.giveFeedbackMenuItem = page.locator(
-      'li[data-test="feedback-profile-opt"]'
-    );
-    this.profileNameInput = page.locator("#fullname");
+    this.giveFeedbackMenuItem = page.locator('li[data-test="feedback-profile-opt"]');
+    this.backToDashboardBtn = page.locator('div.back-to-dashboard');
+
+    //Profile
+    this.profileNameInput = page.locator('#fullname');
+    this.profileEmailInput = page.locator('#email');
     this.saveSettingsButton = page.locator('input[value="Save settings"]');
-    this.successMessage = page.locator('div[class="banner success fixed"]');
-    this.feedbackSubjectInput = page.locator("#subject");
-    this.feedbackDescriptionInput = page.locator("textarea");
+    this.profileImageInput = page.locator('input[data-test="profile-image-input"]')
+    this.profileAvatarBlock = page.locator('div.form-container.two-columns');
+
+    //Feedback
+    this.feedbackSubjectInput = page.locator('#subject');
+    this.feedbackDescriptionInput = page.locator('textarea');
     this.sendFeedbackButton = page.locator('input[value="Send"]');
+
+    //Password
+    this.passwordSidebarOption = page.locator(
+      'div.sidebar-content-section li span.element-title:text-is("Password")');
+    this.passwordFormHeader = page.locator('.password-form h2');
+    this.passwordOldInput = page.locator('#password-old');
+    this.passwordNewInput = page.locator('input[label="New password"]');
+    this.passwordConfirmInput = page.locator('input[label="Confirm password"]');
+    this.updateSettingsBtn = page.locator('input[value="Update settings"]');
+    this.passwordInputError = page.locator('span[data-test="-error"]')
   }
 
   async openYourAccountPage() {
@@ -30,14 +48,34 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await this.giveFeedbackMenuItem.click();
   }
 
+  async openPasswordPageInAccount() {
+    await this.passwordSidebarOption.click();
+    await expect(this.passwordFormHeader).toHaveText('Change password');
+  }
+
+  async enterCurrentPassword(value) {
+    await this.passwordOldInput.fill(value);
+  }
+
+  async enterNewPassword(value) {
+    await this.passwordNewInput.fill(value);
+  }
+
+  async enterConfirmPassword(value) {
+    await this.passwordConfirmInput.fill(value);
+  }
+
+  async isPasswordInputErrorDisplayed(error) {
+    await expect(this.passwordInputError).toHaveText(error);
+  }
+
+  async isUpdateSettingsBtnDisabled() {
+    await expect(this.updateSettingsBtn).toBeDisabled();
+  }
+
   async logout() {
     await this.profileMenuButton.click();
     await this.logoutMenuItem.click();
-  }
-
-  async isHeaderDisplayed(title) {
-    await expect(this.header).toBeVisible();
-    await expect(this.header).toHaveText(title);
   }
 
   async changeProfileName(newName) {
@@ -58,10 +96,6 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await this.clearInput(this.feedbackSubjectInput);
   }
 
-  async clearDescriptionInputInGiveFeedbackForm() {
-    await this.clearInput(this.feedbackDescriptionInput);
-  }
-
   async clickSendFeedbackButton() {
     await this.sendFeedbackButton.click();
   }
@@ -70,11 +104,21 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await expect(this.sendFeedbackButton).toBeDisabled();
   }
 
-  async isSuccessMessageDisplayed(message) {
-    await expect(this.successMessage).toHaveText(message);
-  }
-
   async isAccountNameDisplayed(name) {
     await expect(this.profileMenuButton).toHaveText(name);
   }
+
+  async getProfileFullName() {
+    return await this.profileNameSpan.innerText();
+  }
+
+  async uploadProfileImage(filePath) {
+    await this.profileImageInput.setInputFiles(filePath);
+  }
+
+  async backToDashboardFromAccount() {
+    await this.backToDashboardBtn.click();
+    await this.isHeaderDisplayed("Projects");
+  }
+
 };

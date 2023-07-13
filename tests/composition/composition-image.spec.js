@@ -34,7 +34,7 @@ mainTest("CO-225 Rename image with valid name", async ({ page }) => {
   await mainPage.uploadImage("images/images.png");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.doubleClickCreatedLayerOnLayersPanel();
+  await mainPage.doubleClickLayerOnLayersTab();
   await mainPage.renameCreatedLayer("renamed image");
   await mainPage.waitForChangeIsSaved();
   await mainPage.isLayerNameDisplayed("renamed image");

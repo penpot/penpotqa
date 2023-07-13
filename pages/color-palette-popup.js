@@ -7,8 +7,8 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
 
   constructor(page) {
     super(page);
-    this.popUp = page.locator(".colorpicker-tooltip");
-    this.hexInput = page.locator("#hex-value");
+    this.popUp = page.locator('.colorpicker-tooltip');
+    this.hexInput = page.locator('#hex-value');
     this.saveColorStyleButton = page.locator(
       'button:has-text("Save color style")'
     );
@@ -21,8 +21,11 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
     this.fileLibraryColorBullet = page.locator(
       'div[class="selected-colors"] div[class="color-bullet is-library-color"] >>nth=0'
     );
-
-    this.colorsSelector = page.locator(".colorpicker-tooltip select");
+    this.colorsSelector = page.locator('.colorpicker-tooltip select');
+    this.colorPaletteActionsBtn = page.locator('div.color-palette-actions');
+    this.colorPaletteMenu = page.locator('ul.workspace-context-menu.palette-menu');
+    this.colorPaletteFileLibraryOpt = page.locator('li.palette-library:has-text("File library")');
+    this.colorPaletteRecentColorsOpt = page.locator('li.palette-library:has-text("Recent colors")');
   }
 
   async setHex(value) {
@@ -58,11 +61,32 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
     await this.secondRecentColorBullet.click();
   }
 
-  async clickRecentColorBullet() {
-    await this.firstRecentColorBullet.click();
-  }
-
   async selectFileLibraryColors() {
     await this.colorsSelector.selectOption("file");
   }
+
+  async openColorPaletteMenu() {
+    await this.colorPaletteActionsBtn.click();
+    await expect(this.colorPaletteMenu).toBeVisible();
+  }
+
+  async isPaletteFileLibraryOptExist() {
+    await expect(this.colorPaletteFileLibraryOpt).toBeVisible();
+  }
+
+  async isPaletteRecentColorsOptExist() {
+    await expect(this.colorPaletteRecentColorsOpt).toBeVisible();
+  }
+
+  async selectColorPaletteMenuOption(value) {
+    const menuSel = this.page.locator(`li.palette-library:has-text("${value}")`);
+    await menuSel.click();
+    await expect(this.colorPaletteMenu).not.toBeVisible();
+  }
+
+  async selectColorBulletFromPalette(value) {
+    const colorSel = this.page.locator(`div.color-palette-inside div[title="${value}"]`);
+    await colorSel.click();
+  }
+
 };
