@@ -1,5 +1,6 @@
 const { expect } = require("@playwright/test");
 const { BasePage } = require("./base-page");
+
 exports.MainPage = class MainPage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
@@ -19,7 +20,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.createPathButton = page.locator('button[data-test="path-btn"]');
     this.createCommentButton = page.locator('button[title="Comments (C)"]');
     this.shortcutsPanelButton = page.locator(".icon-shortcut");
-    this.colorsPanelButton = page.locator('button[title^="Color Palette"]');
+    this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
 
     //Viewport
     this.viewport = page.locator('div[class="viewport"]');
@@ -33,6 +34,15 @@ exports.MainPage = class MainPage extends BasePage {
     //Layer right-click menu items
     this.deleteLayerMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Delete")'
+    );
+    this.hideLayerMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Hide")'
+    );
+    this.showLayerMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Show")'
+    );
+    this.focusOnLayerMenuItem = page.locator(
+      'ul[class="workspace-context-menu"] li:has-text("Focus on")'
     );
     this.transformToPathMenuItem = page.locator(
       'ul[class="workspace-context-menu"] li:has-text("Transform to path")'
@@ -74,6 +84,7 @@ exports.MainPage = class MainPage extends BasePage {
       'span[class="element-name"] >> nth=1'
     );
     this.layoutIcon = page.locator('svg[class="icon-layout-rows"]');
+    this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
 
     //Design panel
     this.canvasBackgroundColorIcon = page.locator(
@@ -125,9 +136,11 @@ exports.MainPage = class MainPage extends BasePage {
     this.shadowOpacityInput = page.locator(
       'div[class="element-set shadow-options"] div[class="input-element percentail"] input'
     );
-    this.shadowTypeSelector = page.locator(
-      'div[class="element-set shadow-options"] select >> nth=1'
-    );
+    this.shadowTypeSelector = page.locator('div[class="element-set shadow-options"] select');
+    this.shadowOption = page.locator('div.shadow-option-main');
+    this.shadowHideIcon = page.locator('div.shadow-option-main-actions .icon-eye');
+    this.shadowUnhideIcon = page.locator('div.shadow-option-main-actions .icon-eye-closed');
+    this.shadowRemoveIcon = page.locator('div.shadow-option-main-actions .icon-minus');
 
     //Design panel - Blur section
     this.addBlurButton = page.locator(
@@ -136,6 +149,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.blurValueInput = page.locator(
       'div[class="row-flex input-row"] div[class="input-element pixels"] input'
     );
+    this.blurHideIcon = page.locator('div.element-set-title-actions .icon-eye');
+    this.blurUnhideIcon = page.locator('div.element-set-title-actions .icon-eye-closed');
+    this.blurRemoveIcon = page.locator('div.element-set-title-actions .icon-minus');
 
     //Design panel - Fill section
     this.fillColorIcon = page.locator(
@@ -162,6 +178,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.removeGridButton = page.locator(
       'div[class="grid-option-main-actions"] svg[class="icon-minus"]'
     );
+    this.hideGridButton = page.locator(
+      'div[class="grid-option-main-actions"] svg[class="icon-eye"]'
+    );
+    this.unhideGridButton = page.locator(
+      'div[class="grid-option-main-actions"] svg[class="icon-eye-closed"]'
+    );
     this.gridTypeSelector = page.locator('div[class="grid-option"] div[class="custom-select flex-grow"]');
     this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
     this.gridTypeSelectorColumnsOption = page.locator(
@@ -176,12 +198,11 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class="grid-option"] div[class="input-element percentail"] input'
     );
     this.useDefaultGridButton = page.locator('button:has-text("Use default")');
-    this.setAsDefaultGridButton = page.locator(
-      'button:has-text("Set as default")'
-    );
-    this.gridSizeInput = page.locator('div[class="grid-option"] input');
     this.gridWidthInput = page.locator(
-      'div[class="row-flex input-row"] input >> nth=1'
+      '//*[text()="Width"]//parent::div[@class="row-flex input-row"]//input'
+    );
+    this.gridHeightInput = page.locator(
+      '//*[text()="Height"]//parent::div[@class="row-flex input-row"]//input'
     );
 
     //Design panel - Export section
@@ -202,6 +223,15 @@ exports.MainPage = class MainPage extends BasePage {
     this.strokeColorBullet = page.locator(
       'div[title="Stroke color"] div[class="color-bullet is-not-library-color"]'
     );
+    this.strokeRemoveIcon = page.locator('div[title="Stroke color"] .icon-minus');
+    this.strokeColorInput = page.locator('div[title="Stroke color"] div[class="color-info"] input');
+    this.strokeWidthInput = page.locator('div[title="Stroke width"] input');
+    this.strokeOpacityInput = page.locator(
+      'div[title="Stroke color"] div[class="input-element percentail"] input'
+    );
+    this.strokePositionSelect = page.locator('//div[@title="Stroke width"]/parent::div//select[1]');
+    this.strokeTypeSelect = page.locator('//div[@title="Stroke width"]/parent::div//select[2]');
+
 
     //Design panel - Flex Layout section
     this.removeLayoutButton = page.locator(
@@ -372,11 +402,21 @@ exports.MainPage = class MainPage extends BasePage {
     this.subMenuList = page.locator('ul[class="sub-menu view"]');
     this.viewMainMenuItem = page.locator('//*[text()="View"]//parent::li');
     this.fileMainMenuItem = page.locator('//*[text()="File"]//parent::li');
+    this.editMainMenuItem = page.locator('//*[text()="Edit"]//parent::li');
     this.showRulersMainMenuSubItem = page.locator(
       'ul[class="sub-menu view"] span:has-text("Show rulers")'
     );
     this.hideRulersMainMenuSubItem = page.locator(
       'ul[class="sub-menu view"] span:has-text("Hide rulers")'
+    );
+    this.hideGridsMainMenuSubItem = page.locator('ul[class^="sub-menu"] span:text-is("Hide grids")');
+    this.showGridsMainMenuSubItem = page.locator('ul[class^="sub-menu"] span:text-is("Show grid")');
+    this.selectAllMainMenuSubItem = page.locator('ul[class^="sub-menu"] span:text-is("Select all")');
+    this.showColorPaletteMainMenuSubItem = page.locator(
+      'ul[class="sub-menu view"] span:text-is("Show color palette")'
+    );
+    this.hideColorPaletteMainMenuSubItem = page.locator(
+      'ul[class="sub-menu view"] span:text-is("Hide color palette")'
     );
     this.showBoardNamesMainMenuSubItem = page.locator(
       'ul[class="sub-menu view"] span:has-text("Show boards names")'
@@ -391,7 +431,7 @@ exports.MainPage = class MainPage extends BasePage {
       'ul[class="sub-menu view"] span:has-text("Hide pixel grid")'
     );
     this.showHideUIMainMenuSubItem = page.locator(
-      'ul[class="sub-menu view"] span:has-text("Show/Hide UI")'
+      'ul[class="sub-menu view"] span:has-text("Show / Hide UI")'
     );
     this.dowloadPenpotFileMenuSubItem = page.locator(
       'ul[class="sub-menu file"] span:has-text("Download Penpot file (.penpot)")'
@@ -570,7 +610,8 @@ exports.MainPage = class MainPage extends BasePage {
     );
 
     //Header
-    this.savedChangesIcon = page.locator('div[class="saved"]');
+    this.savedChangesIcon = page.locator('div.saved span:text-is("Saved")');
+    this.unSavedChangesIcon = page.locator('div.pending span:text-is("Unsaved changes")');
     this.usersSection = page.locator('div[class="users-section"]');
     this.projectNameSpan = page.locator('div[class="project-tree"] span[class="project-name"]');
     this.fileNameSpan = page.locator('div[class="project-tree"] span')
@@ -585,7 +626,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.shortcutsPanel = page.locator('div[class="shortcuts"]');
 
     //Colors panel
-    this.colorsPanel = page.locator('div[class="color-palette "]');
+    this.colorsPalette = page.locator('div[class="color-palette "]');
   }
 
   async clickMoveButton() {
@@ -598,6 +639,37 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickCreateRectangleButton() {
     await this.createRectangleButton.click();
+  }
+
+  async createDefaultBoardByCoordinates(x, y) {
+    await this.clickCreateBoardButton();
+    await this.clickViewportByCoordinates(x, y);
+    await this.waitForChangeIsSaved();
+  }
+
+  async createDefaultRectangleByCoordinates(x, y) {
+    await this.clickCreateRectangleButton();
+    await this.clickViewportByCoordinates(x, y);
+    await this.waitForChangeIsSaved();
+  }
+
+  async createDefaultEllipseByCoordinates(x, y) {
+    await this.clickCreateEllipseButton();
+    await this.clickViewportByCoordinates(x, y);
+    await this.waitForChangeIsSaved();
+  }
+
+  async createDefaultTextLayer(browserName, x=200, y=300) {
+    await this.clickCreateTextButton();
+    await this.clickViewportByCoordinates(x, y);
+    await this.waitForChangeIsSaved();
+    if (browserName === "webkit") {
+      await this.typeTextFromKeyboard();
+    } else {
+      await this.typeText("Hello World!");
+    }
+    await this.clickMoveButton();
+    await this.waitForChangeIsSaved();
   }
 
   async clickCreateEllipseButton() {
@@ -667,6 +739,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.savedChangesIcon.waitFor({ state: "visible" });
   }
 
+  async isUnSavedChangesDisplayed() {
+    await expect(this.unSavedChangesIcon).toBeVisible();
+  }
+
   async isCreatedLayerVisible() {
     await expect(this.createdLayer).toBeVisible();
   }
@@ -677,6 +753,79 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickCreatedBoardTitleOnCanvas() {
     await this.createdBoardTitle.click();
+  }
+
+  async clickOnLayerOnCanvas() {
+    await this.createdLayer.click({ force: true, delay: 500 });
+  }
+
+  async doubleClickBoardTitleOnCanvas(title) {
+    const boardSel = this.page.locator(`//*[text()="${title}"]//parent::*[@class="frame-title"]`);
+    await boardSel.dblclick();
+  }
+
+  async hideUnhideLayerByIconOnLayersTab(layer) {
+    const commonSel = `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`;
+    const layerSel = this.page.locator(commonSel);
+    const hideUnhideIconSel = this.page.locator(commonSel + '//*[contains(@class, "icon-eye")]');
+
+    await layerSel.hover();
+    await hideUnhideIconSel.click();
+  }
+
+  async isLayerPresentOnLayersTab(layer, isVisible) {
+    const layerSel = this.page.locator(
+      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`);
+    if (isVisible) {
+      await expect(layerSel).toBeVisible();
+    } else {
+      await expect(layerSel).not.toBeVisible();
+    }
+  }
+
+  async hideLayerViaRightClickOnCanvas(title) {
+    const boardSel = this.page.locator(`//*[text()="${title}"]//parent::*[@class="frame-title"]`);
+    await boardSel.click({ button: "right", force: true });
+    await this.hideLayerMenuItem.click();
+  }
+
+  async unHideLayerViaRightClickOnLayersTab(layer) {
+    const layerSel = this.page.locator(`//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`);
+    await layerSel.click({ button: "right", force: true });
+    await this.showLayerMenuItem.click();
+  }
+
+  async focusBoardViaRightClickOnCanvas(title) {
+    const boardSel = this.page.locator(`//*[text()="${title}"]//parent::*[@class="frame-title"]`);
+    await boardSel.click({ button: "right", force: true });
+    await this.focusOnLayerMenuItem.click();
+  }
+
+  async focusLayerViaRightClickOnCanvas() {
+    await this.createdLayer.click({ button: "right", force: true });
+    await this.focusOnLayerMenuItem.click();
+  }
+
+  async focusLayerViaRightClickOnLayersTab(layer) {
+    const layerSel = this.page.locator(`//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`);
+    await layerSel.click({ button: "right", force: true });
+    await this.focusOnLayerMenuItem.click();
+  }
+
+  async focusLayerViaShortcut() {
+    await this.page.keyboard.press('F');
+  }
+
+  async isFocusModeOn() {
+    await expect(this.focusModeDiv).toBeVisible();
+  }
+
+  async isFocusModeOff() {
+    await expect(this.focusModeDiv).not.toBeVisible();
+  }
+
+  async clickOnFocusModeLabel() {
+    await this.focusModeDiv.click();
   }
 
   async changeWidthForLayer(width) {
@@ -700,8 +849,19 @@ exports.MainPage = class MainPage extends BasePage {
     await this.changeHeightForLayer(height);
   }
 
-  async doubleClickCreatedLayerOnLayersPanel() {
+  async doubleClickLayerOnLayersTab() {
     await this.createdLayerOnLayersPanelNameText.dblclick();
+  }
+
+  async doubleClickLayerOnLayersTabWithTitle(title) {
+    const layerSel = this.page.locator(
+      `div[class^="element-list-body"] span[class="element-name"]:text-is("${title}")`);
+    await layerSel.dblclick();
+  }
+
+  async doubleClickLayerIconOnLayersTab(layer) {
+    const iconSel = this.page.locator(`//*[text()="${layer}"]//parent::div//div[@class="icon"]`);
+    await iconSel.dblclick();
   }
 
   async renameCreatedLayer(newName) {
@@ -745,8 +905,8 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickAddShadowButton() {
-    while (await this.shadowActionsButton.isHidden()) {
-      await this.addShadowButton.click({ delay: 500 });
+    while (await this.shadowOption.isHidden()) {
+      await this.addShadowButton.click({ delay: 700 });
     }
   }
 
@@ -781,17 +941,17 @@ exports.MainPage = class MainPage extends BasePage {
   async selectTypeForShadow(type) {
     switch (type) {
       case "Drop shadow":
-        await this.shadowTypeSelector.selectOption(":drop-shadow");
+        await this.shadowTypeSelector.last().selectOption(":drop-shadow");
         break;
       case "Inner shadow":
-        await this.shadowTypeSelector.selectOption(":inner-shadow");
+        await this.shadowTypeSelector.last().selectOption(":inner-shadow");
         break;
     }
   }
 
   async clickAddBlurButton() {
     while (await this.blurValueInput.isHidden()) {
-      await this.addBlurButton.click({ delay: 500 });
+      await this.addBlurButton.click({ delay: 700 });
     }
   }
 
@@ -1233,6 +1393,16 @@ exports.MainPage = class MainPage extends BasePage {
     await this.removeGridButton.click();
   }
 
+  async clickHideGridButton() {
+    await this.gridMainOptionSection.hover();
+    await this.hideGridButton.click();
+  }
+
+  async clickUnhideGridButton() {
+    await this.gridMainOptionSection.hover();
+    await this.unhideGridButton.click();
+  }
+
   async changeSizeForGrid(value) {
     await this.clearInput(this.gridSizeInput);
     await this.gridSizeInput.fill(value);
@@ -1276,6 +1446,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.gridWidthInput.fill(value);
   }
 
+  async changeHeightForGrid(value) {
+    await this.clearInput(this.gridHeightInput);
+    await this.gridHeightInput.fill(value);
+  }
+
   async isFillHexCodeSet(value) {
     await expect(this.fillColorInput).toHaveValue(value);
   }
@@ -1298,12 +1473,16 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickViewMainMenuItem() {
-    await this.viewMainMenuItem.click({force: true});
+    await this.viewMainMenuItem.click({ force: true });
     await expect(this.subMenuList).toBeVisible();
   }
 
   async clickFileMainMenuItem() {
     await this.fileMainMenuItem.click();
+  }
+
+  async clickEditMainMenuItem() {
+    await this.editMainMenuItem.click();
   }
 
   async clickShowRulersMainMenuSubItem() {
@@ -1314,12 +1493,48 @@ exports.MainPage = class MainPage extends BasePage {
     await this.hideRulersMainMenuSubItem.click();
   }
 
-  async pressHideShowRulersShortcut() {
-    await this.page.keyboard.press("Control+Shift+R");
+  async clickHideGridsMainMenuSubItem() {
+    await this.hideGridsMainMenuSubItem.click();
   }
 
-  async pressHideShowRulersShortcutWebkit() {
-    await this.page.keyboard.press("Meta+Shift+R");
+  async clickShowGridsMainMenuSubItem() {
+    await this.showGridsMainMenuSubItem.click();
+  }
+
+  async clickSelectAllMainMenuSubItem() {
+    await this.selectAllMainMenuSubItem.click();
+  }
+
+  async clickShowColorPaletteMainMenuSubItem() {
+    await this.showColorPaletteMainMenuSubItem.click();
+  }
+
+  async clickHideColorPaletteMainMenuSubItem() {
+    await this.hideColorPaletteMainMenuSubItem.click();
+  }
+
+  async pressHideShowRulersShortcut(browserName) {
+    if (browserName === 'webkit') {
+      await this.page.keyboard.press("Meta+Shift+R");
+    } else {
+      await this.page.keyboard.press("Control+Shift+R");
+    }
+  }
+
+  async pressHideShowGridsShortcut(browserName) {
+    if (browserName === 'webkit') {
+      await this.page.keyboard.press("Meta+'");
+    } else {
+      await this.page.keyboard.press("Control+'");
+    }
+  }
+
+  async pressSelectAllShortcut(browserName) {
+    if (browserName === 'webkit') {
+      await this.page.keyboard.press("Meta+A");
+    } else {
+      await this.page.keyboard.press("Control+A");
+    }
   }
 
   async clickShowBoardNamesMainMenuSubItem() {
@@ -1865,16 +2080,20 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.shortcutsPanel).not.toBeVisible();
   }
 
-  async clickColorsPanelButton() {
-    await this.colorsPanelButton.click();
+  async openCloseColorsPaletteFromSidebar() {
+    await this.colorsPaletteButton.click();
   }
 
-  async isColorsPanelDisplayed() {
-    await expect(this.colorsPanel).toBeVisible();
+  async pressColorsPaletteShortcut() {
+    await this.page.keyboard.press("Alt+P");
   }
 
-  async isColorsPanelNotDisplayed() {
-    await expect(this.colorsPanel).not.toBeVisible();
+  async isColorsPaletteDisplayed() {
+    await expect(this.colorsPalette).toBeVisible();
+  }
+
+  async isColorsPaletteNotDisplayed() {
+    await expect(this.colorsPalette).not.toBeVisible();
   }
 
   async clickAddStrokeButton() {
@@ -1884,4 +2103,92 @@ exports.MainPage = class MainPage extends BasePage {
   async clickStrokeColorBullet() {
     await this.strokeColorBullet.click();
   }
+
+  async hideShadow() {
+    await this.shadowOption.hover();
+    await this.shadowHideIcon.click();
+  }
+
+  async unhideShadow() {
+    await this.shadowOption.hover();
+    await this.shadowUnhideIcon.click();
+  }
+
+  async removeShadow() {
+    await this.shadowOption.hover();
+    await this.shadowRemoveIcon.click();
+  }
+
+  async hideBlur() {
+    await this.blurHideIcon.click();
+  }
+
+  async unhideBlur() {
+    await this.blurUnhideIcon.click();
+  }
+
+  async removeBlur() {
+    await this.blurRemoveIcon.click();
+  }
+
+  async removeStroke() {
+    await this.strokeRemoveIcon.click();
+  }
+
+  async setStrokeColor(value) {
+    await this.clearInput(this.strokeColorInput);
+    await this.strokeColorInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async setStrokePosition(value) {
+    switch (value) {
+      case 'Center':
+        await this.strokePositionSelect.selectOption(':center');
+        break;
+      case 'Inside':
+        await this.strokePositionSelect.selectOption(':inner');
+        break;
+      case 'Outside':
+        await this.strokePositionSelect.selectOption(':outer');
+        break;
+    }
+  }
+
+  async setStrokeType(value) {
+    if (await this.strokeTypeSelect.isHidden()) return;
+    switch (value) {
+      case 'Solid':
+        await this.strokeTypeSelect.selectOption(':solid');
+        break;
+      case 'Dotted':
+        await this.strokeTypeSelect.selectOption(':dotted');
+        break;
+      case 'Dashed':
+        await this.strokeTypeSelect.selectOption(':dashed');
+        break;
+      case 'Mixed':
+        await this.strokeTypeSelect.selectOption(':mixed');
+        break;
+    }
+  }
+
+  async setStrokeWidth(value) {
+    await this.strokeWidthInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async setStrokeOpacity(value) {
+    await this.strokeOpacityInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeStrokeSettings(color, opacity, width, position, type= '') {
+    await this.setStrokeColor(color);
+    await this.setStrokeOpacity(opacity);
+    await this.setStrokeWidth(width);
+    await this.setStrokePosition(position);
+    await this.setStrokeType(type);
+  }
+
 };

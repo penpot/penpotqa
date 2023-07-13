@@ -35,7 +35,7 @@ mainTest("CO-277 Rename path with valid name", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(1000, 400);
   await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.doubleClickCreatedLayerOnLayersPanel();
+  await mainPage.doubleClickLayerOnLayersTab();
   await mainPage.renameCreatedLayer("renamed path");
   await mainPage.waitForChangeIsSaved();
   await mainPage.isLayerNameDisplayed("renamed path");

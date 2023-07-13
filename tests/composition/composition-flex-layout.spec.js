@@ -5,7 +5,7 @@ const { LayersPage } = require("../../pages/workspace/layers");
 const { DesignPanelPage} = require("../../pages/workspace/design-panel");
 
 test.describe("Flex Layout & Elements", async () => {
-    test.beforeEach(async ({ page, browserName }, testInfo) => {
+    test.beforeEach(async ({ page, browserName}, testInfo) => {
       testInfo.setTimeout(testInfo.timeout + 20000);
       const mainPage = new MainPage(page);
       await mainPage.clickCreateBoardButton();

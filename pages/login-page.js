@@ -65,12 +65,13 @@ exports.LoginPage = class LoginPage extends BasePage {
     await expect(this.loginErrorBanner).toHaveText(message);
   }
 
-  async isHeaderDisplayed(title) {
-    await expect(this.header).toBeVisible();
-    await expect(this.header).toHaveText(title);
-  }
-
   async clickOnCreateAccount() {
     await this.createAccountLink.click();
   }
+
+  async isLoginPageOpened() {
+    await expect(this.pageTitle).toBeVisible();
+    await expect(this.pageTitle).toHaveText("Great to see you again!");
+  }
+
 };
