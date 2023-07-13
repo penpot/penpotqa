@@ -55,6 +55,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fileOptionsMenuButton = page.locator(
       'div[class="project-th-icon menu"] svg[class="icon-actions"]'
     );
+    this.headerOptionsMenuButton = page.locator(
+      'div[class="dashboard-header-actions"] svg[class="icon-actions"]'
+    );
 
     //Projects
     this.addProjectButton = page.locator(
@@ -81,21 +84,25 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.projectOptionsMenuButton = page.locator(
       '*[data-test="project-options"] .icon-actions'
     );
+    this.projectsSidebarItem = page.locator('li:has-text("Projects")');
+    this.draftsSidebarItem = page.locator('li:has-text("Drafts")');
+    this.librariesSidebarItem = page.locator('li:has-text("Libraries")');
+    this.pinnedProjectsSidebarItem = page.locator(
+      'div[data-test="pinned-projects"]'
+    );
+    this.searchInput = page.locator('#search-input');
     this.projectOptions = page.locator('[data-test="project-options"]');
+
+    // Import files
     this.fileImport = page.locator('[data-test="file-import"]');
     this.modal = page.locator('#modal');
     this.modalCloseButton = page.locator('.modal-close-button');
     this.modalTitle = page.locator('.modal-header-title h2');
     this.modalCancelButton = page.locator('.modal-footer .action-buttons .cancel-button');
     this.modalAcceptButton = page.locator('.modal-footer .action-buttons .accept-button');
-    this.feedbackBanner = page.locator('.feedback-banner')
-    this.feedbackBannerMessage = page.locator('.feedback-banner .message')
-    this.projectsSidebarItem = page.locator('li:has-text("Projects")');
-    this.draftsSidebarItem = page.locator('li:has-text("Drafts")');
-    this.pinnedProjectsSidebarItem = page.locator(
-      'div[data-test="pinned-projects"]'
-    );
-    this.searchInput = page.locator("#search-input");
+    this.feedbackBanner = page.locator('.feedback-banner');
+    this.feedbackBannerMessage = page.locator('.feedback-banner .message');
+    this.importErrorMessage = page.locator('div[class="error-message"]');
 
     //Fonts
     this.fontsSidebarItem = page.locator('li:has-text("Fonts")');
@@ -121,11 +128,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.saveFontButton = page.locator('button:has-text("Save")');
     this.searchFontInput = page.locator("input[placeholder='Search font']");
+    this.fontFormatError = page.locator("div[class='banner error fixed']");
+
+    //Teams
     this.teamSelector = page.locator(".current-team");
     this.teamList = page.locator("ul[class*='teams-dropdown']");
     this.createNewTeamMenuItem = page.locator("#teams-selector-create-team");
-
-    //Teams
     this.teamNameInput = page.locator("#name");
     this.createNewTeamButton = page.locator("input[value='Create new team']");
     this.teamMenuItem = page.locator(".current-team .team-name");
@@ -199,6 +207,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.teamInfoSection = page.locator('div[class="block info-block"]');
     this.continueButton = page.locator('input[value="Continue"]');
     this.acceptButton = page.locator('input[value="Accept"]');
+    this.noLibrariesPlacelder = page.locator('div[data-test="empty-placeholder"] p');
   }
 
   async isHeaderDisplayed(title) {
@@ -468,7 +477,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.duplicateProjectMenuItem.click();
   }
 
-  async clickSidebarItem(item) {
+  async openSidebarItem(item) {
     switch (item) {
       case "Projects":
         await this.projectsSidebarItem.click();
@@ -479,7 +488,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       case "Fonts":
         await this.fontsSidebarItem.click();
         break;
+      case "Libraries":
+        await this.librariesSidebarItem.click();
+        break;
     }
+    await expect(this.header).toHaveText(item);
+  }
+
+  async checkNoLibrariesExist() {
+    await expect(this.noLibrariesPlacelder).toContainText("Files added to Libraries will appear here.");
   }
 
   async clickUnpinProjectButton() {
@@ -508,6 +525,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.uploadFontSelector.setInputFiles(filePath);
     await this.uploadFontButton.click();
     await expect(this.uploadFontButton).not.toBeVisible();
+  }
+
+  async uploadFontWithInvalidFormat(filePath) {
+    const fontName = filePath.split('/')[1];
+    const warning =`The font '${fontName}' could not be loaded`;
+    await this.uploadFontSelector.setInputFiles(filePath);
+    await expect(this.fontFormatError).toHaveText(warning);
   }
 
   async isFontUploaded(fontName, fontStyle) {
@@ -733,8 +757,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.acceptButton.click();
   }
 
-  async importFile(file) {
-    await this.projectOptions.click();
+  async importFileProcessingSuccess(file) {
     const fileChooserPromise = this.page.waitForEvent("filechooser");
     await this.fileImport.click();
     const fileChooser = await fileChooserPromise;
@@ -742,9 +765,38 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.modalTitle).toBeVisible();
     await expect(this.modalTitle).toHaveText("Import Penpot files");
     await this.modalAcceptButton.click();
-    await this.feedbackBanner.waitFor('visible');
+    await this.feedbackBanner.waitFor({ state: 'visible' });
     await expect(this.feedbackBannerMessage).toHaveText("1 file has been imported successfully.");
     await this.modalAcceptButton.click();
+  }
+
+  async importFileProcessingError(file) {
+    const fileChooserPromise = this.page.waitForEvent("filechooser");
+    await this.fileImport.click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(file);
+    await expect(this.modalTitle).toBeVisible();
+    await expect(this.modalTitle).toHaveText("Import Penpot files");
+    await expect(this.modalAcceptButton).toBeVisible();
+    await expect(this.modalAcceptButton).toBeDisabled();
+
+    await expect(this.importErrorMessage).toHaveText("Oops! We couldn't import this file");
+    await this.modalCancelButton.click();
+  }
+
+  async importFile(file) {
+    await this.projectOptions.click();
+    await this.importFileProcessingSuccess(file);
+  }
+
+  async importFileFromProjectPage(file) {
+    await this.headerOptionsMenuButton.click();
+    await this.importFileProcessingSuccess(file);
+  }
+
+  async importFileWithInvalidFormat(file) {
+    await this.headerOptionsMenuButton.click();
+    await this.importFileProcessingError(file);
   }
 
   async importAndOpenFile(file) {
