@@ -34,7 +34,7 @@ exports.BasePage = class BasePage {
   }
 
   async waitSuccessMessageHidden() {
-    await this.successMessage.waitFor({ state:"hidden" });
+    await this.successMessage.waitFor({ state: "hidden" });
   }
 
   async isInfoMessageDisplayed(message) {
@@ -42,7 +42,7 @@ exports.BasePage = class BasePage {
   }
 
   async waitInfoMessageHidden() {
-    await this.infoMessage.waitFor({ state:"hidden" });
+    await this.infoMessage.waitFor({ state: "hidden" });
   }
 
 };

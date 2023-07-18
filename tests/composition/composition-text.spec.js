@@ -236,11 +236,10 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateTextButton();
+    await mainPage.clickViewportTwice();
     if (browserName === "webkit") {
-      await mainPage.clickViewportTwice();
       await mainPage.typeTextFromKeyboard();
     } else {
-      await mainPage.clickViewportOnce();
       await mainPage.typeText("Hello World!");
     }
     await mainPage.isCreatedLayerVisible();
@@ -270,41 +269,6 @@ mainTest(
     await mainPage.isLayerNameDisplayed("renamed text");
   }
 );
-
-// mainTest("CO-192 Hide and show text from rightclick and icon",
-//   async ({ page, browserName }) => {
-//     const mainPage = new MainPage(page);
-//     const defaultText = "Hello World!";
-//     const text1 = "Text Layer #1";
-//     const text2 = "Text Layer #2";
-//     await mainPage.createDefaultTextLayer(browserName);
-//     await mainPage.doubleClickLayerOnLayersTabWithTitle(defaultText);
-//     await mainPage.renameCreatedLayer(text1);
-//     await mainPage.waitForChangeIsSaved();
-//     await mainPage.createDefaultTextLayer(browserName, 400, 500);
-//     await mainPage.doubleClickLayerOnLayersTabWithTitle(defaultText);
-//     await mainPage.renameCreatedLayer(text2);
-//     await mainPage.waitForChangeIsSaved();
-//     await mainPage.hideUnhideLayerByIconOnLayersTab(text1);
-//     await mainPage.waitForChangeIsSaved();
-//     await expect(page).toHaveScreenshot(
-//       "text-first-hide.png", { mask: [mainPage.guides, mainPage.usersSection] }
-//     );
-//     await mainPage.hideLayerViaRightClickOnCanvas(text2);
-//     await mainPage.waitForChangeIsSaved();
-//     await expect(page).toHaveScreenshot(
-//       "text-second-hide.png", { mask: [mainPage.guides, mainPage.usersSection] }
-//     );
-//     await mainPage.hideUnhideLayerByIconOnLayersTab(text2);
-//     await mainPage.waitForChangeIsSaved();
-//     await expect(page).toHaveScreenshot(
-//       "text-second-show.png", { mask: [mainPage.guides, mainPage.usersSection] }
-//     );
-//     await mainPage.unHideLayerViaRightClickOnLayersTab(text1);
-//     await expect(page).toHaveScreenshot(
-//       "text-first-show.png", { mask: [mainPage.guides, mainPage.usersSection] }
-//     );
-// });
 
 mainTest(
   "CO-216 Change text color and opacity by typing color code",

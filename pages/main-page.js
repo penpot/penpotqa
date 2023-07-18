@@ -641,27 +641,27 @@ exports.MainPage = class MainPage extends BasePage {
     await this.createRectangleButton.click();
   }
 
-  async createDefaultBoardByCoordinates(x, y) {
+  async createDefaultBoardByCoordinates(x, y, delayMs) {
     await this.clickCreateBoardButton();
-    await this.clickViewportByCoordinates(x, y);
+    await this.clickViewportByCoordinates(x, y, delayMs);
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultRectangleByCoordinates(x, y) {
+  async createDefaultRectangleByCoordinates(x, y, delayMs) {
     await this.clickCreateRectangleButton();
-    await this.clickViewportByCoordinates(x, y);
+    await this.clickViewportByCoordinates(x, y, delayMs);
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultEllipseByCoordinates(x, y) {
+  async createDefaultEllipseByCoordinates(x, y, delayMs) {
     await this.clickCreateEllipseButton();
-    await this.clickViewportByCoordinates(x, y);
+    await this.clickViewportByCoordinates(x, y, delayMs);
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayer(browserName, x=200, y=300) {
+  async createDefaultTextLayer(browserName, delayMs, x=200, y=300) {
     await this.clickCreateTextButton();
-    await this.clickViewportByCoordinates(x, y);
+    await this.clickViewportByCoordinates(x, y, delayMs);
     await this.waitForChangeIsSaved();
     if (browserName === "webkit") {
       await this.typeTextFromKeyboard();
@@ -711,26 +711,19 @@ exports.MainPage = class MainPage extends BasePage {
     await this.createPathButton.click();
   }
 
-  async clickViewportOnce() {
-    await this.viewport.click({ force: true });
+  async clickViewportOnce(delayMs=200) {
+    await this.page.waitForTimeout(500);
+    await this.viewport.click({ force: true, delay: delayMs });
   }
 
-  async clickViewportTwice() {
-    await this.viewport.click();
-    await this.viewport.click();
-  }
-
-  async clickViewportTwice(delayMs) {
+  async clickViewportTwice(delayMs=200) {
+    await this.page.waitForTimeout(500);
     await this.viewport.click({ delay: delayMs });
     await this.viewport.click({ delay: delayMs });
   }
 
-  async clickViewportByCoordinates(x, y) {
-    await this.viewport.click({ position: { x: x, y: y } });
-    await this.viewport.click({ position: { x: x, y: y } });
-  }
-
-  async clickViewportByCoordinates(x, y, delayMs) {
+  async clickViewportByCoordinates(x, y, delayMs=200) {
+    await this.page.waitForTimeout(500);
     await this.viewport.click({ position: { x: x, y: y }, delay: delayMs });
     await this.viewport.click({ position: { x: x, y: y }, delay: delayMs });
   }
@@ -752,7 +745,13 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickCreatedBoardTitleOnCanvas() {
-    await this.createdBoardTitle.click();
+    await this.createdBoardTitle.click({ force: true });
+    await this.isLayerSelectedOnLayersTab("Board");
+  }
+
+  async isLayerSelectedOnLayersTab(name) {
+    const layerSel = this.page.locator(`//*[text()="${name}"]//parent::div[contains(@class, "selected")]`);
+    await expect(layerSel).toBeVisible();
   }
 
   async clickOnLayerOnCanvas() {
@@ -838,12 +837,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickOnEnter();
   }
 
-  async isLayerAddedToBoard(layer) {
-    const layerSel = await
-      this.page.locator(`ul.element-children li.selected span.element-name:has-text('${layer}')`);
-    await expect(layerSel).toBeVisible();
-  }
-
   async changeHeightAndWidthForLayer(height, width) {
     await this.changeWidthForLayer(width);
     await this.changeHeightForLayer(height);
@@ -880,6 +873,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async drawCurve(x1, y1, x2, y2) {
     await this.viewport.hover();
+    await this.page.waitForTimeout(200);
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.down();
     await this.page.mouse.move(x1, y1);
@@ -966,12 +960,12 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async addFlexLayoutViaRightClick() {
-    await this.createdLayer.click({ button: "right", force: true });
+    await this.createdBoardTitle.click({ button: "right", force: true });
     await this.addFlexLayout.click();
   }
 
   async removeFlexLayoutViaRightClick() {
-    await this.createdLayer.click({ button: "right", force: true });
+    await this.createdBoardTitle.click({ button: "right", force: true });
     await this.removeFlexLayout.click();
   }
 
@@ -2189,6 +2183,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.setStrokeWidth(width);
     await this.setStrokePosition(position);
     await this.setStrokeType(type);
+  }
+
+  async backToDashboardFromFileEditor() {
+    await this.clickPencilBoxButton();
+    await this.isHeaderDisplayed("Projects");
   }
 
 };

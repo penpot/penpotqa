@@ -64,8 +64,8 @@ mainTest("AS-61 Create component path", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(1200, 700);
   await mainPage.clickViewportByCoordinates(1000, 400);
   await mainPage.clickViewportByCoordinates(500, 200);
-  await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
+  await mainPage.clickMoveButton();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAssetsTab();
@@ -157,23 +157,20 @@ mainTest("AS-88 Components - ungroup", async ({ page }) => {
 mainTest("AS-90 Components - change view list tile", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
+  await mainPage.clickViewportByCoordinates(300, 400);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.deleteLayerViaRightClick();
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewportByCoordinates(200, 300);
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.uploadImage("images/sample.jpeg");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.deleteLayerViaRightClick();
-  await mainPage.clickCreateEllipseButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.createComponentViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.deleteLayerViaRightClick();
   await mainPage.clickAssetsTab();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
     "components-tile-view.png"

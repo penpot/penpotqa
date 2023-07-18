@@ -13,7 +13,7 @@ mainTest(
 );
 
 mainTest(
-  "AS-39 Typographic styles - add from Assets panel",
+  "AS-38 Typographic styles - add from Assets panel",
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickAssetsTab();

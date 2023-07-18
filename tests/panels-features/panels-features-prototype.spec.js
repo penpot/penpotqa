@@ -10,7 +10,7 @@ mainTest(
     await mainPage.clickViewportByCoordinates(900, 100);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickCreateBoardButton();
-    await mainPage.clickViewportTwice(500);
+    await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickPrototypeTab();
     await mainPage.dragAndDropPrototypeArrowConnector(900, 100);
@@ -31,7 +31,7 @@ mainTest("PF-143 Add Interaction via Prototype panel", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(900, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice(500);
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickPrototypeTab();
   await mainPage.dragAndDropPrototypeArrowConnector(900, 100);
@@ -50,7 +50,7 @@ mainTest("PF-144 Remove Interaction via Prototype panel", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(900, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice(500);
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickPrototypeTab();
   await mainPage.dragAndDropPrototypeArrowConnector(900, 100);
@@ -75,7 +75,7 @@ mainTest("PF-147 Change destination via Prototype panel", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(900, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice(500);
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickPrototypeTab();
   await mainPage.dragAndDropPrototypeArrowConnector(900, 100);
@@ -101,7 +101,7 @@ mainTest("PF-152 Add 2nd Flow", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(900, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice(500);
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickPrototypeTab();
   await mainPage.dragAndDropPrototypeArrowConnector(900, 100);
@@ -126,7 +126,7 @@ mainTest("PF-154 Rename flow", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(900, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice(500);
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickPrototypeTab();
   await mainPage.dragAndDropPrototypeArrowConnector(900, 100);
@@ -145,7 +145,7 @@ mainTest("PF-155 Delete flow", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(900, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice(500);
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickPrototypeTab();
   await mainPage.dragAndDropPrototypeArrowConnector(900, 100);
