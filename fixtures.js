@@ -1,6 +1,7 @@
 const base = require("@playwright/test");
 const { LoginPage } = require("./pages/login-page.js");
 const { DashboardPage } = require("./pages/dashboard-page.js");
+const { MainPage } = require("./pages/main-page");
 
 const mainTest = base.test.extend({
   page: async ({ page }, use) => {
@@ -15,6 +16,8 @@ const mainTest = base.test.extend({
     await dashboardPage.deleteProjectsIfExist();
     await dashboardPage.deleteFilesIfExist();
     await dashboardPage.createFileViaPlaceholder();
+    const mainPage = new MainPage(page);
+    await mainPage.isMainPageLoaded();
     await use(page);
   },
 });

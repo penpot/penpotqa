@@ -1,8 +1,9 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
-const {ColorPalettePopUp} = require("../../pages/color-palette-popup");
+const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
 
+// todo: add test for main menu
 mainTest("PF-99 Hide/show grids via shortcut CTRL '",async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
@@ -21,7 +22,7 @@ mainTest("PF-99 Hide/show grids via shortcut CTRL '",async ({ page, browserName 
   await expect(mainPage.createdLayer).toHaveScreenshot("square-grid-unhide.png");
 });
 
-mainTest("PF-99-1 Hide/show rulers via main menu", async ({ page }) => {
+mainTest("PF-98-1 Hide/show rulers via main menu", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
@@ -37,7 +38,7 @@ mainTest("PF-99-1 Hide/show rulers via main menu", async ({ page }) => {
 });
 
 mainTest(
-  "PF-99-2 Hide/show rulers via shortcut CTRL SHIFT R",
+  "PF-98-2 Hide/show rulers via shortcut CTRL SHIFT R",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickViewportTwice();
@@ -135,7 +136,7 @@ mainTest(
   "PF-104 Hide/show UI via main menu and shortcut '/'",
   async ({ page }) => {
     const mainPage = new MainPage(page);
-    // await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
+    await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
     await mainPage.clickMainMenuButton();
     await mainPage.clickViewMainMenuItem();
     await mainPage.clickShowHideUIMainMenuSubItem();
@@ -182,7 +183,7 @@ mainTest("PF-111 Download penpot file .penpot", async ({ page }) => {
   await mainPage.downloadPenpotFileViaMenu();
 });
 
-mainTest("PF-111 Download standard file .svg+.json", async ({ page }) => {
+mainTest("PF-112 Download standard file .svg+.json", async ({ page }) => {
   const mainPage = new MainPage(page);
   await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
   await mainPage.clickMainMenuButton();

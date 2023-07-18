@@ -3,7 +3,7 @@ const { TeamPage } = require("../../pages/team-page");
 const { test, expect } = require("@playwright/test");
 const { ProfilePage } = require("../../pages/profile-page");
 const { DashboardPage } = require("../../pages/dashboard-page");
-const { random } = require("../../helpers/string-generator");
+const { MainPage } = require("../../pages/main-page");
 
 test.afterEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
@@ -237,6 +237,7 @@ dashboardTest("DA-117 Team. Settings - check 'Team projects' info",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     const teamPage = new TeamPage(page);
+    const mainPage = new MainPage(page);
     const projectFirst = "QA Project 1";
     const projectSecond = "QA Project 2";
 
@@ -246,10 +247,13 @@ dashboardTest("DA-117 Team. Settings - check 'Team projects' info",
     await dashboardPage.createProject(projectSecond);
     await dashboardPage.openSidebarItem("Drafts");
     await dashboardPage.createFileViaPlaceholder();
+    await mainPage.backToDashboardFromFileEditor();
     await dashboardPage.openProjectFromLeftSidebar(projectFirst);
     await dashboardPage.createFileViaPlaceholder();
+    await mainPage.backToDashboardFromFileEditor();
     await dashboardPage.openProjectFromLeftSidebar(projectSecond);
     await dashboardPage.createFileViaPlaceholder();
+    await mainPage.backToDashboardFromFileEditor();
 
     await teamPage.openTeamSettingsPageViaOptionsMenu();
     await teamPage.isTeamProjectsInfoDisplayed("2 projects");

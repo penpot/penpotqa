@@ -133,8 +133,8 @@ dashboardTest("DA-17 Import file to Drafts .penpot", async ({page}) => {
 dashboardTest("DA-18 Import file to Drafts svgjson", async ({page}) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem("Drafts");
-  // await dashboardPage.importFileFromProjectPage("documents/QA test zip file.zip")
-  // await dashboardPage.isFileNameDisplayed("Wireframing kit"); // todo: issue is reported 5597
+  await dashboardPage.importFileFromProjectPage("documents/QA test zip file.zip")
+  await dashboardPage.isFileNameDisplayed("Wireframing kit"); // todo: issue is reported 5597
 });
 
 dashboardTest(
