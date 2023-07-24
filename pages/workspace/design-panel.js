@@ -1,4 +1,4 @@
-const {expect} = require("@playwright/test");
+const { expect } = require("@playwright/test");
 const { BasePage } = require("../base-page");
 exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
@@ -29,13 +29,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     async changeFlexElementAlignment(alignment) {
         switch (alignment) {
             case 'Start':
-                await this.flexElementAlignStartBtn.click({delay: 2000});
+                await this.flexElementAlignStartBtn.click();
                 break;
             case 'Center':
-                await this.flexElementAlignCenterBtn.click({delay: 2000});
+                await this.flexElementAlignCenterBtn.click();
                 break;
             case 'End':
-                await this.flexElementAlignEndBtn.click({delay: 2000});
+                await this.flexElementAlignEndBtn.click();
                 break;
         }
     }

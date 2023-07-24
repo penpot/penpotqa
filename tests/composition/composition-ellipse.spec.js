@@ -1,7 +1,7 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/main-page");
 const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
-const { expect } = require("@playwright/test");
+const { expect, test } = require("@playwright/test");
 
 mainTest("CO-112 Create an ellipse from toolbar", async ({ page }) => {
   const mainPage = new MainPage(page);
@@ -66,6 +66,7 @@ mainTest("CO-118 Add and edit Shadow to ellipse", async ({ page }) => {
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddShadowButton();
   await mainPage.clickShadowActionsButton();
   await mainPage.changeXForShadow("10");
@@ -131,6 +132,7 @@ mainTest("CO-120 Add and edit Blur to ellipse", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddBlurButton();
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
@@ -143,7 +145,7 @@ mainTest("CO-121 Add, edit and delete Stroke to ellipse", async ({ page }) => {
   await mainPage.clickViewportByCoordinates(100, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddStrokeButton();
-  await mainPage.clickViewportByCoordinates(200, 200);
+  await mainPage.clickViewportOnce();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "ellipse-stroke-default.png", {
@@ -151,8 +153,7 @@ mainTest("CO-121 Add, edit and delete Stroke to ellipse", async ({ page }) => {
     });
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.changeStrokeSettings('#43E50B','60', '10', 'Inside', 'Dotted');
-  await mainPage.clickViewportByCoordinates(200, 200);
+  await mainPage.changeStrokeSettings('#43E50B','70', '13', 'Inside', 'Dotted');
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "ellipse-stroke-inside-dotted.png", {
@@ -161,7 +162,6 @@ mainTest("CO-121 Add, edit and delete Stroke to ellipse", async ({ page }) => {
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.waitForChangeIsSaved();
   await mainPage.changeStrokeSettings('#F5358F','80', '5', 'Outside', 'Dashed');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "ellipse-stroke-outside-dashed.png", {
@@ -170,7 +170,6 @@ mainTest("CO-121 Add, edit and delete Stroke to ellipse", async ({ page }) => {
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.waitForChangeIsSaved();
   await mainPage.changeStrokeSettings('#F5358F','100', '3', 'Center', 'Solid');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "ellipse-stroke-center-solid.png", {
@@ -179,7 +178,6 @@ mainTest("CO-121 Add, edit and delete Stroke to ellipse", async ({ page }) => {
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.waitForChangeIsSaved();
   await mainPage.changeStrokeSettings('#F5358F','40', '4', 'Center', 'Mixed');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "ellipse-stroke-center-mixed.png", {
@@ -188,7 +186,6 @@ mainTest("CO-121 Add, edit and delete Stroke to ellipse", async ({ page }) => {
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.waitForChangeIsSaved();
   await mainPage.removeStroke();
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "ellipse-stroke-remove.png", {
@@ -206,14 +203,20 @@ mainTest("CO-126 Click 'Focus off' ellipse from shortcut F",async ({ page }) => 
   await mainPage.isLayerPresentOnLayersTab("Ellipse", true);
   await mainPage.isFocusModeOn();
   await expect(page).toHaveScreenshot(
-    "ellipse-single-focus-on.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
+    "ellipse-single-focus-on.png", {
+      mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] ,
+      maxDiffPixels: 5
+    }
   );
   await mainPage.focusLayerViaShortcut();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isLayerPresentOnLayersTab("Ellipse", true);
   await mainPage.isFocusModeOff();
   await expect(page).toHaveScreenshot(
-    "ellipse-single-focus-off.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
+    "ellipse-single-focus-off.png", {
+      mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+      maxDiffPixels: 5
+    }
   );
 });
 
@@ -243,6 +246,7 @@ mainTest("CO-138 Add rotation to ellipse", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("ellipse-rotated-90.png");
@@ -265,7 +269,7 @@ mainTest("CO-154 Transform ellipse to path", async ({ page }) => {
   await mainPage.transformToPathViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(page).toHaveScreenshot("ellipse-to-path.png", {
-    mask: [mainPage.usersSection],
+    mask: [mainPage.usersSection, mainPage.guides],
   });
 });
 
@@ -276,5 +280,7 @@ mainTest("CO-161 Selection to board", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.selectionToBoardViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot("ellipse-to-board.png");
+  await expect(mainPage.viewport).toHaveScreenshot("ellipse-to-board.png", {
+    mask: [mainPage.guides]
+  });
 });

@@ -15,7 +15,7 @@ mainTest(
 mainTest("AS-57 Create component shape", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
+  await mainPage.clickViewportByCoordinates(200, 300);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -29,8 +29,8 @@ mainTest("AS-57 Create component shape", async ({ page }) => {
 mainTest("AS-58 Create component image", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.uploadImage("images/sample.jpeg");
-  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
+  await mainPage.clickMoveButton();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAssetsTab();
@@ -41,14 +41,13 @@ mainTest("AS-58 Create component image", async ({ page }) => {
 mainTest("AS-59 Create component text", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateTextButton();
-  await mainPage.clickViewportTwice();
+  await mainPage.clickViewportByCoordinates(200, 300);
   if (browserName === "webkit") {
     await mainPage.typeTextFromKeyboard();
   } else {
     await mainPage.typeText("Hello World!");
   }
   await mainPage.clickMoveButton();
-  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -76,7 +75,7 @@ mainTest("AS-61 Create component path", async ({ page }) => {
 mainTest("AS-80 Duplicate component", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
+  await mainPage.clickViewportByCoordinates(200, 300);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -92,7 +91,7 @@ mainTest("AS-80 Duplicate component", async ({ page }) => {
 mainTest("AS-81 Delete component", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
+  await mainPage.clickViewportByCoordinates(200, 300);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -107,7 +106,7 @@ mainTest("AS-81 Delete component", async ({ page }) => {
 mainTest("AS-83 Components - create group", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
+  await mainPage.clickViewportByCoordinates(200, 300);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -121,7 +120,7 @@ mainTest("AS-83 Components - create group", async ({ page }) => {
 mainTest("AS-85 Components - rename group", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
+  await mainPage.clickViewportByCoordinates(200, 300);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -139,7 +138,7 @@ mainTest("AS-85 Components - rename group", async ({ page }) => {
 mainTest("AS-88 Components - ungroup", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
+  await mainPage.clickViewportByCoordinates(200, 300);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -162,11 +161,12 @@ mainTest("AS-90 Components - change view list tile", async ({ page }) => {
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCreateEllipseButton();
-  await mainPage.clickViewportByCoordinates(200, 300);
+  await mainPage.clickViewportByCoordinates(100, 200);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.uploadImage("images/sample.jpeg");
+  await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
