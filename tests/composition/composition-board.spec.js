@@ -1,7 +1,7 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/main-page");
 const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
-const { expect } = require("@playwright/test");
+const { expect, test } = require("@playwright/test");
 
 mainTest("CO-1 Change color background", async ({ page }) => {
   const mainPage = new MainPage(page);
@@ -82,6 +82,7 @@ mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddShadowButton();
   await mainPage.clickShadowActionsButton();
   await mainPage.changeXForShadow("10");
@@ -152,6 +153,7 @@ mainTest("CO-13 Add and edit Blur to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddBlurButton();
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
@@ -167,7 +169,6 @@ mainTest("CO-14 Add, edit and delete Stroke to board",async ({ page }) => {
   await mainPage.clickViewportByCoordinates(100, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddStrokeButton();
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "board-stroke-default.png", {
@@ -175,7 +176,6 @@ mainTest("CO-14 Add, edit and delete Stroke to board",async ({ page }) => {
     });
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await mainPage.changeStrokeSettings('#43E50B','60', '10', 'Inside', 'Dotted');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "board-stroke-inside-dotted.png", {
@@ -183,7 +183,6 @@ mainTest("CO-14 Add, edit and delete Stroke to board",async ({ page }) => {
     });
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await mainPage.changeStrokeSettings('#F5358F','80', '5', 'Outside', 'Dashed');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "board-stroke-outside-dashed.png", {
@@ -191,7 +190,6 @@ mainTest("CO-14 Add, edit and delete Stroke to board",async ({ page }) => {
     });
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await mainPage.changeStrokeSettings('#F5358F','100', '3', 'Center', 'Solid');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "board-stroke-center-solid.png", {
@@ -199,7 +197,6 @@ mainTest("CO-14 Add, edit and delete Stroke to board",async ({ page }) => {
     });
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await mainPage.changeStrokeSettings('#F5358F','40', '4', 'Center', 'Mixed');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "board-stroke-center-mixed.png", {
@@ -207,7 +204,6 @@ mainTest("CO-14 Add, edit and delete Stroke to board",async ({ page }) => {
     });
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await mainPage.removeStroke();
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "board-stroke-remove.png", {
@@ -241,6 +237,7 @@ mainTest("CO-28 Add rotation to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("board-rotated-90.png");
@@ -266,16 +263,17 @@ mainTest("CO-29 Change border radius multiple values", async ({ page }) => {
   await mainPage.changeThirdCornerRadiusForLayer("90");
   await mainPage.changeFourthCornerRadiusForLayer("120");
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot("board-changed-corners.png");
+  await expect(mainPage.viewport).toHaveScreenshot("board-changed-corners.png", {
+    mask: [mainPage.guides]
+  });
   await mainPage.changeFirstCornerRadiusForLayer("0");
   await mainPage.changeSecondCornerRadiusForLayer("0");
   await mainPage.changeThirdCornerRadiusForLayer("0");
   await mainPage.changeFourthCornerRadiusForLayer("0");
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board.png", {
+  await expect(mainPage.viewport).toHaveScreenshot("board.png", {
       mask: [mainPage.guides]
-    });
+  });
 });
 
 mainTest("CO-33 Zoom to board by double click board icon on the list",async ({ page }) => {
@@ -358,39 +356,42 @@ mainTest("CO-53 Click 'Focus on' board from right click", async ({ page }) => {
   await mainPage.renameCreatedLayer(board2);
   await mainPage.waitForChangeIsSaved();
 
-  await mainPage.focusBoardViaRightClickOnCanvas(board1);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isLayerPresentOnLayersTab(board1, true);
-  await mainPage.isLayerPresentOnLayersTab(board2, false);
-  await mainPage.isFocusModeOn();
-  await expect(page).toHaveScreenshot(
-    "board-first-focus-on.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
-  );
-  await mainPage.clickOnFocusModeLabel();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isLayerPresentOnLayersTab(board1, true);
-  await mainPage.isLayerPresentOnLayersTab(board2, true);
-  await mainPage.isFocusModeOff();
-  await expect(page).toHaveScreenshot(
-    "board-focus-off.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
-  );
-
-  await mainPage.focusLayerViaRightClickOnLayersTab(board2);
+  await mainPage.focusBoardViaRightClickOnCanvas(board2);
   await mainPage.waitForChangeIsSaved();
   await mainPage.isLayerPresentOnLayersTab(board1, false);
   await mainPage.isLayerPresentOnLayersTab(board2, true);
   await mainPage.isFocusModeOn();
-  await expect(page).toHaveScreenshot(
-    "board-second-focus-on.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
-  );
+  await expect(page).toHaveScreenshot("board-second-focus-on.png", {
+    mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+    maxDiffPixels: 5
+  });
   await mainPage.clickOnFocusModeLabel();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isLayerPresentOnLayersTab(board1, true);
   await mainPage.isLayerPresentOnLayersTab(board2, true);
   await mainPage.isFocusModeOff();
-  await expect(page).toHaveScreenshot(
-    "board-focus-off.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
-  );
+  await expect(page).toHaveScreenshot("board-second-focus-off.png", {
+    mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+    maxDiffPixels: 5
+  });
+  await mainPage.focusLayerViaRightClickOnLayersTab(board1);
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isLayerPresentOnLayersTab(board1, true);
+  await mainPage.isLayerPresentOnLayersTab(board2, false);
+  await mainPage.isFocusModeOn();
+  await expect(page).toHaveScreenshot("board-first-focus-on.png", {
+    mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+    maxDiffPixels: 5
+  });
+  await mainPage.clickOnFocusModeLabel();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isLayerPresentOnLayersTab(board1, true);
+  await mainPage.isLayerPresentOnLayersTab(board2, true);
+  await mainPage.isFocusModeOff();
+  await expect(page).toHaveScreenshot("board-first-focus-off.png", {
+    mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+    maxDiffPixels: 5
+  });
 });
 
 mainTest("CO-56 Click 'Focus off' board from shortcut F",async ({ page }) => {
@@ -402,16 +403,18 @@ mainTest("CO-56 Click 'Focus off' board from shortcut F",async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isLayerPresentOnLayersTab("Board", true);
   await mainPage.isFocusModeOn();
-  await expect(page).toHaveScreenshot(
-    "board-single-focus-on.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
-  );
+  await expect(page).toHaveScreenshot("board-single-focus-on.png", {
+    mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+    maxDiffPixels: 5
+  });
   await mainPage.focusLayerViaShortcut();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isLayerPresentOnLayersTab("Board", true);
   await mainPage.isFocusModeOff();
-  await expect(page).toHaveScreenshot(
-    "board-single-focus-off.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
-  );
+  await expect(page).toHaveScreenshot("board-single-focus-off.png", {
+    mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+    maxDiffPixels: 5
+  });
 });
 
 mainTest("CO-411 Search board - ignore case", async ({ page }) => {

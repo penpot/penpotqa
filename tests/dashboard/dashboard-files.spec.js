@@ -78,7 +78,7 @@ dashboardTest("DA-11 Remove file as Shared Library via Options icon in Drafts",
     await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
     await dashboardPage.isSharedLibraryIconDisplayed();
     await dashboardPage.openSidebarItem("Libraries");
-    await dashboardPage.isFileNameDisplayed("New File 1");
+    await dashboardPage.isFilePresent("New File 1");
     await dashboardPage.openSidebarItem("Drafts");
     await dashboardPage.deleteFileAsSharedLibraryViaOptionsIcon();
     await dashboardPage.isSharedLibraryIconNotDisplayed();
@@ -126,7 +126,7 @@ dashboardTest("DA-17 Import file to Drafts .penpot", async ({page}) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem("Drafts");
   await dashboardPage.importFileFromProjectPage("documents/QA test file.penpot")
-  await dashboardPage.isFileNameDisplayed("Wireframing kit"); // todo: issue is reported 5596
+  await dashboardPage.isFilePresent("Wireframing kit"); // todo: issue is reported 5596
   }
 );
 
@@ -134,7 +134,7 @@ dashboardTest("DA-18 Import file to Drafts svgjson", async ({page}) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem("Drafts");
   await dashboardPage.importFileFromProjectPage("documents/QA test zip file.zip")
-  await dashboardPage.isFileNameDisplayed("Wireframing kit"); // todo: issue is reported 5597
+  await dashboardPage.isFilePresent("Wireframing kit"); // todo: issue is reported 5597
 });
 
 dashboardTest(
@@ -482,7 +482,7 @@ dashboardTest("DA-62 Search file from Drafts", async ({ page }) => {
   await dashboardPage.openSidebarItem("Drafts");
   await dashboardPage.search("qwe");
   await dashboardPage.isHeaderDisplayed("Search results");
-  await dashboardPage.isFileNameDisplayed("qwe");
+  await dashboardPage.isFilePresent("qwe");
 });
 
 dashboardTest("DA-63 Search file from Projects", async ({ page }) => {
@@ -497,5 +497,5 @@ dashboardTest("DA-63 Search file from Projects", async ({ page }) => {
   await dashboardPage.openSidebarItem("Projects");
   await dashboardPage.search("qaz");
   await dashboardPage.isHeaderDisplayed("Search results");
-  await dashboardPage.isFileNameDisplayed("qaz");
+  await dashboardPage.isFilePresent("qaz");
 });

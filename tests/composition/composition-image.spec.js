@@ -1,6 +1,6 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/main-page");
-const { expect } = require("@playwright/test");
+const { expect, test } = require("@playwright/test");
 const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
 
 mainTest("CO-220 Import JPEG image", async ({ page }) => {
@@ -40,6 +40,43 @@ mainTest("CO-225 Rename image with valid name", async ({ page }) => {
   await mainPage.isLayerNameDisplayed("renamed image");
 });
 
+mainTest("CO-227 Add, hide, unhide, change type and delete Shadow to image",async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.uploadImage("images/images.png");
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickAddShadowButton();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-drop-shadow-default.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.hideShadow();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-drop-shadow-hide.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.unhideShadow();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-drop-shadow-unhide.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.selectTypeForShadow("Inner shadow");
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-inner-shadow-default.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.removeShadow();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-inner-shadow-remove.png", {
+      mask: [mainPage.guides]
+    });
+});
+
 mainTest("CO-228 Add and edit Shadow to image", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
@@ -69,6 +106,80 @@ mainTest("CO-228 Add and edit Shadow to image", async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("image-inner-shadow.png");
+});
+
+mainTest("CO-229 Add, hide, unhide and delete Blur to image", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.uploadImage("images/sample.jpeg");
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickAddBlurButton();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-blur-default.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.hideBlur();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-blur-hide.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.unhideBlur();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-blur-unhide.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.removeBlur();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-blur-remove.png", {
+      mask: [mainPage.guides]
+    });
+});
+
+mainTest("CO-231 Add, edit and delete Stroke to image",async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.uploadImage("images/sample.jpeg");
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickAddStrokeButton();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-stroke-default.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.changeStrokeSettings('#43E50B','60', '10', 'Inside', 'Dotted');
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-stroke-inside-dotted.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.changeStrokeSettings('#F5358F','80', '5', 'Outside', 'Dashed');
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-stroke-outside-dashed.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.changeStrokeSettings('#F5358F','100', '3', 'Center', 'Solid');
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-stroke-center-solid.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.changeStrokeSettings('#F5358F','40', '4', 'Center', 'Mixed');
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-stroke-center-mixed.png", {
+      mask: [mainPage.guides]
+    });
+  await mainPage.removeStroke();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "image-stroke-remove.png", {
+      mask: [mainPage.guides]
+    });
 });
 
 mainTest("CO-242-1 Delete image via rightclick", async ({ page }) => {
@@ -113,10 +224,31 @@ mainTest("CO-244 Change border radius multiple values", async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot("image-png.png");
 });
 
+mainTest("CO-245 Change border radius one value", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.uploadImage("images/sample.jpeg");
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickAllCornersRadiusButton();
+  await mainPage.changeGeneralCornerRadiusForLayer("30");
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot("image-corners-30.png");
+  await mainPage.changeGeneralCornerRadiusForLayer("90");
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot("image-corners-90.png");
+  await mainPage.changeGeneralCornerRadiusForLayer("180");
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot("image-corners-180.png");
+  await mainPage.changeGeneralCornerRadiusForLayer("0");
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot("image-corners-0.png");
+});
+
 mainTest("CO-412 Add rotation to image", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.uploadImage("images/sample.jpeg");
   await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("image-rotated-90.png");

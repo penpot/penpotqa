@@ -13,7 +13,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class="project-name-wrapper"] span[class="info"]'
     );
     this.fileTile = page.locator('div[class="grid-item-th"]');
-    this.secondFileTile = page.locator('div[class="grid-item-th"] >>nth=1');
     this.fileInfoPanel = page.locator('div[class="dashboard-grid"] div[class="grid-item-th"]');
     this.fileNameTitle = page.locator('div[class="item-info"] h3');
     this.deleteFileMenuItem = page.locator('a[data-test="file-delete"]');
@@ -220,7 +219,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.page.waitForLoadState("networkidle");
   }
 
-  async isDashboardOpened() {
+  async isDashboardOpenedAfterLogin() {
     await this.page.waitForURL(/.*dashboard\/team/, { waitUntil: "load" });
     await this.page.waitForResponse(/get-team-recent-files/);
   }
@@ -239,7 +238,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     }
     await this.fileNameInput.type(newFileName);
     await this.page.keyboard.press("Enter");
-    await this.isFileNameDisplayed(newFileName);
+    await this.isFilePresent(newFileName);
   }
 
   async renameFileViaOptionsIcon(newFileName) {
@@ -254,10 +253,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     }
     await this.fileNameInput.type(newFileName);
     await this.page.keyboard.press("Enter");
-    await this.isFileNameDisplayed(newFileName);
+    await this.isFilePresent(newFileName);
   }
 
-  async isFileNameDisplayed(fileName) {
+  async isFilePresent(fileName) {
     await expect(this.fileNameTitle).toHaveText(fileName);
   }
 
@@ -540,14 +539,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fileTile.dblclick();
   }
 
-  async openSecondFile() {
-    await this.secondFileTile.dblclick();
+  async openSecondFile(fileName) {
+    const fileSel = this.page.locator(`div.info-wrapper:has-text("${fileName}")`);
+    await fileSel.dblclick();
   }
 
   async importSharedLibrary(libraryName) {
-    await this.page
-      .locator(`div[class="card-name"] span:has-text('${libraryName}')`)
-      .click();
+    await this.page.locator(`div[class="card-name"] span:has-text('${libraryName}')`).click();
     await this.continueButton.click();
     await this.acceptButton.click();
   }

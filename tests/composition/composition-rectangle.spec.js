@@ -22,14 +22,20 @@ mainTest("CO-68 Click 'Focus off' rectangle from shortcut F",async ({ page }) =>
   await mainPage.isLayerPresentOnLayersTab("Rectangle", true);
   await mainPage.isFocusModeOn();
   await expect(page).toHaveScreenshot(
-    "rectangle-single-focus-on.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
+    "rectangle-single-focus-on.png", {
+      mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+      maxDiffPixels: 5
+    }
   );
   await mainPage.focusLayerViaShortcut();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isLayerPresentOnLayersTab("Rectangle", true);
   await mainPage.isFocusModeOff();
   await expect(page).toHaveScreenshot(
-    "rectangle-single-focus-off.png", { mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton] }
+    "rectangle-single-focus-off.png", {
+      mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+      maxDiffPixels: 5
+    }
   );
 });
 
@@ -108,10 +114,10 @@ mainTest("CO-72 Add, hide, unhide and delete Blur to rectangle",async ({ page })
 mainTest("CO-74 Add, edit and delete Stroke to rectangle",async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportByCoordinates(100, 100);
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddStrokeButton();
-  await mainPage.clickViewportByCoordinates(200, 200);
+  await mainPage.clickViewportOnce();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "rectangle-stroke-default.png", {
@@ -119,7 +125,6 @@ mainTest("CO-74 Add, edit and delete Stroke to rectangle",async ({ page }) => {
     });
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.changeStrokeSettings('#43E50B','60', '10', 'Inside', 'Dotted');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "rectangle-stroke-inside-dotted.png", {
@@ -127,7 +132,6 @@ mainTest("CO-74 Add, edit and delete Stroke to rectangle",async ({ page }) => {
     });
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.changeStrokeSettings('#F5358F','80', '5', 'Outside', 'Dashed');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "rectangle-stroke-outside-dashed.png", {
@@ -135,7 +139,6 @@ mainTest("CO-74 Add, edit and delete Stroke to rectangle",async ({ page }) => {
     });
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.changeStrokeSettings('#F5358F','100', '3', 'Center', 'Solid');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "rectangle-stroke-center-solid.png", {
@@ -143,7 +146,6 @@ mainTest("CO-74 Add, edit and delete Stroke to rectangle",async ({ page }) => {
     });
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.changeStrokeSettings('#F5358F','40', '4', 'Center', 'Mixed');
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "rectangle-stroke-center-mixed.png", {
@@ -151,7 +153,6 @@ mainTest("CO-74 Add, edit and delete Stroke to rectangle",async ({ page }) => {
     });
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.removeStroke();
-  await mainPage.clickViewportByCoordinates(200, 200);
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "rectangle-stroke-remove.png", {
@@ -175,6 +176,7 @@ mainTest("CO-70 Add and edit Shadow to rectangle", async ({ page }) => {
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddShadowButton();
   await mainPage.clickShadowActionsButton();
   await mainPage.changeXForShadow("10");
@@ -206,6 +208,7 @@ mainTest("CO-73 Add and edit Blur to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddBlurButton();
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
@@ -238,6 +241,7 @@ mainTest("CO-62 Add rotation to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("rectangle-rotated-90.png");
