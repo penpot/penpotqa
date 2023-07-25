@@ -28,7 +28,7 @@ mainTest("AS-111 Open panel (icon bottom left", async ({ page }) => {
 
 mainTest("AS-115 Show/hide panel", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickShortcutsPanelShortcut();
+  await mainPage.pressShortcutsPanelShortcut();
   await mainPage.isShortcutsPanelDisplayed();
   await mainPage.clickViewportTwice();
   await expect(mainPage.shortcutsPanel).toHaveScreenshot("shortcuts-panel.png");

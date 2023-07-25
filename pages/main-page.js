@@ -2124,7 +2124,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.shortcutsPanelButton.click();
   }
 
-  async clickShortcutsPanelShortcut() {
+  async pressShortcutsPanelShortcut() {
     await this.page.keyboard.press("Shift+?")
   }
 
