@@ -32,7 +32,10 @@ To run the tests in Firefox and Webkit browsers, use `"firefox"` and `"webkit"` 
 `"firefox": "npx playwright test --project=firefox"`
 `"webkit": "npx playwright test --project=webkit"`
 
-Currently, there are 256 tests for regression suite, average time of execution per one browser - 60 minutes.
+Currently, there are 318 tests at all. For each browser there is the following execution time:
+- Chrome - 75 min
+- Firefox - 80 min
+- Webkit - 90 min
 
 **3. Test run - additional settings.**
 
