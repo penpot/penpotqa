@@ -3,7 +3,6 @@ const { MainPage } = require("../../pages/main-page");
 const { expect } = require("@playwright/test");
 const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
 
-// todo: add test for main menu
 mainTest("PF-99 Hide/show grids via shortcut CTRL '",async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
