@@ -172,8 +172,8 @@ mainTest(
     } else {
       await mainPage.typeText("Hello World!");
     }
-    await mainPage.waitForChangeIsSaved();
     await mainPage.clickMoveButton();
+    await mainPage.waitForChangeIsSaved();
     await mainPage.clickFileLibraryTypographiesTypographyRecord();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.createdLayer).toHaveScreenshot(
@@ -205,12 +205,10 @@ mainTest(
       await mainPage.typeText("Hello World!");
     }
     await mainPage.clickMoveButton();
-    await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
     await mainPage.pressOpenTypographiesBottomPanelShortcut();
     await mainPage.clickFontRecordOnTypographiesBottomPanel();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickMoveButton();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       "apply-typography-to-text.png"
     );
