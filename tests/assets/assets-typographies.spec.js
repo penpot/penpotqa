@@ -165,17 +165,10 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
-    await mainPage.clickCreateTextButton();
-    await mainPage.clickViewportTwice();
-    if (browserName === "webkit") {
-      await mainPage.typeTextFromKeyboard();
-    } else {
-      await mainPage.typeText("Hello World!");
-    }
-    await mainPage.clickMoveButton();
-    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultTextLayer(browserName);
     await mainPage.clickFileLibraryTypographiesTypographyRecord();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportTwice();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       "apply-typography-to-text.png"
     );
@@ -197,18 +190,11 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
-    await mainPage.clickCreateTextButton();
-    await mainPage.clickViewportTwice();
-    if (browserName === "webkit") {
-      await mainPage.typeTextFromKeyboard();
-    } else {
-      await mainPage.typeText("Hello World!");
-    }
-    await mainPage.clickMoveButton();
-    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultTextLayer(browserName);
     await mainPage.pressOpenTypographiesBottomPanelShortcut();
     await mainPage.clickFontRecordOnTypographiesBottomPanel();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportTwice();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       "apply-typography-to-text.png"
     );

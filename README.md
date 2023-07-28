@@ -92,7 +92,7 @@ For each environment the appropriate secrets were added:
   - _BASE_URL_ (Penpot url)
 
 2 _.yml_ files were added into _.github/workflows_ directory with settings for environments:
-  - tests for _PRE_ env will be run by schedule: each Friday at 8:00 am UTC (and also it is possible to trigger them manually)
+  - tests for _PRE_ env will be run by schedule: each Thursday at 6:00 am UTC (and also it is possible to trigger them manually)
   - tests for _PRO_ env will be run only by request and triggered manually
 
 **Note**:

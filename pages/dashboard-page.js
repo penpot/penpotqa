@@ -221,7 +221,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isDashboardOpenedAfterLogin() {
     await this.page.waitForURL(/.*dashboard\/team/, { waitUntil: "load" });
-    await this.page.waitForResponse(/get-team-recent-files/);
+    await this.page.waitForResponse(/push-audit-events/);
   }
 
   async checkNumberOfFiles(numberOfFiles) {
