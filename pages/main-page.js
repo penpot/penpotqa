@@ -98,6 +98,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.fourthCornerRadiusInput = page.locator('div[class="input-element mini"] input  >> nth=3');
     this.sizeWidthInput = page.locator('div[class="input-element width"] input');
     this.sizeHeightInput = page.locator('div[class="input-element height"] input');
+    this.canvasBackgroundBlock = page.locator('div[class="element-set-title"]:has-text("Canvas background")');
 
     //Design panel - Shadow section
     this.shadowSection = page.locator('div.element-set-title:has-text("Shadow")');
@@ -308,6 +309,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.textIconRTL = page.locator('div.align-icons svg.icon-text-direction-rtl');
 
     //Node panel
+    this.pathActionsBlock = page.locator('div[class="path-actions"]');
     this.firstNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=0'
     );
@@ -702,6 +704,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickCreatePathButton() {
     await this.createPathButton.click();
+    await expect(this.pathActionsBlock).toBeVisible();
   }
 
   async clickViewportOnce() {
@@ -2349,7 +2352,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async waitDesignTabCollapsed() {
-    await expect(this.strokeSection).toBeHidden();
+    await expect(this.canvasBackgroundBlock).toBeHidden();
   }
 
 };

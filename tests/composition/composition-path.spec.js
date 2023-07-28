@@ -176,7 +176,6 @@ mainTest("CO-298-2 Delete path via shortcut Del", async ({ page }) => {
 });
 
 mainTest("CO-303 Hide and show path from rightclick and icons",async ({ page }) => {
-  test.setTimeout(43000);
   const mainPage = new MainPage(page);
   const path1 = "Path #1";
   const path2 = "Path #2";
