@@ -166,6 +166,7 @@ mainTest(
     await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.createDefaultTextLayer(browserName);
+    await mainPage.changeHeightAndWidthForLayer("100", "100");
     await mainPage.clickFileLibraryTypographiesTypographyRecord();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
@@ -191,6 +192,7 @@ mainTest(
     await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.createDefaultTextLayer(browserName);
+    await mainPage.changeHeightAndWidthForLayer("100", "100");
     await mainPage.pressOpenTypographiesBottomPanelShortcut();
     await mainPage.clickFontRecordOnTypographiesBottomPanel();
     await mainPage.waitForChangeIsSaved();

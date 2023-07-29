@@ -98,7 +98,6 @@ exports.MainPage = class MainPage extends BasePage {
     this.fourthCornerRadiusInput = page.locator('div[class="input-element mini"] input  >> nth=3');
     this.sizeWidthInput = page.locator('div[class="input-element width"] input');
     this.sizeHeightInput = page.locator('div[class="input-element height"] input');
-    this.canvasBackgroundBlock = page.locator('div[class="element-set-title"]:has-text("Canvas background")');
 
     //Design panel - Shadow section
     this.shadowSection = page.locator('div.element-set-title:has-text("Shadow")');
@@ -2352,7 +2351,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async waitDesignTabCollapsed() {
-    await expect(this.canvasBackgroundBlock).toBeHidden();
+    await expect(this.strokeSection).toBeHidden();
   }
 
 };
