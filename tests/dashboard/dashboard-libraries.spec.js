@@ -42,6 +42,7 @@ dashboardTest(
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+    await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
     await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
     await dashboardPage.isLibrariesAndTemplatesSectionNotDisplayed();
   }

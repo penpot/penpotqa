@@ -129,7 +129,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     //Libraries & Templates
     this.librariesAndTemplatesCarouselButton = page.locator(
-      '//*[text()="Libraries & Templates"]//parent::button'
+      'div.dashboard-templates-section div.title button'
     );
     this.librariesAndTemplatesSection = page.locator(
       'div[class^="dashboard-templates-section"]'
