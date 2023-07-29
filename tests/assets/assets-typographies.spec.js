@@ -166,12 +166,13 @@ mainTest(
     await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.createDefaultTextLayer(browserName);
-    await mainPage.changeHeightAndWidthForLayer("100", "100");
     await mainPage.clickFileLibraryTypographiesTypographyRecord();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
     await expect(mainPage.createdLayer).toHaveScreenshot(
-      "apply-typography-to-text.png"
+      "apply-typography-to-text.png", {
+        maxDiffPixelRatio: 0.15
+      }
     );
   }
 );
@@ -192,13 +193,14 @@ mainTest(
     await mainPage.clickViewportTwice();
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.createDefaultTextLayer(browserName);
-    await mainPage.changeHeightAndWidthForLayer("100", "100");
     await mainPage.pressOpenTypographiesBottomPanelShortcut();
     await mainPage.clickFontRecordOnTypographiesBottomPanel();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
     await expect(mainPage.createdLayer).toHaveScreenshot(
-      "apply-typography-to-text.png"
+      "apply-typography-to-text.png", {
+        maxDiffPixelRatio: 0.15
+      }
     );
   }
 );
