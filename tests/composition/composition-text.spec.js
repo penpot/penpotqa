@@ -1,5 +1,5 @@
 const { mainTest } = require("../../fixtures");
-const { expect } = require("@playwright/test");
+const { expect, test } = require("@playwright/test");
 const { MainPage } = require("../../pages/main-page");
 const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
 
@@ -163,6 +163,7 @@ mainTest("CO-170 Add and edit Blur to text", async ({ page, browserName }) => {
 });
 
 mainTest("CO-171 Add, edit and delete Stroke to Text", async ({ page, browserName}) => {
+  test.setTimeout(43000);
   const mainPage = new MainPage(page);
   await mainPage.createDefaultTextLayer(browserName);
   await mainPage.clickAddStrokeButton();

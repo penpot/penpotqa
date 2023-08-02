@@ -169,9 +169,9 @@ mainTest(
     await mainPage.clickFileLibraryTypographiesTypographyRecord();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      "apply-typography-to-text.png", {
-        maxDiffPixelRatio: 0.15
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "apply-typography-to-text_from_assets.png", {
+        mask: [mainPage.guides],
       }
     );
   }
@@ -197,9 +197,9 @@ mainTest(
     await mainPage.clickFontRecordOnTypographiesBottomPanel();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
+    await expect(mainPage.viewport).toHaveScreenshot(
       "apply-typography-to-text.png", {
-        maxDiffPixelRatio: 0.15
+        mask: [mainPage.guides],
       }
     );
   }

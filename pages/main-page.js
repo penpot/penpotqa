@@ -2338,7 +2338,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayer(browserName, delayMs, x=200, y=300) {
+  async createDefaultTextLayer(browserName, delayMs=300, x=200, y=300) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y, delayMs);
     if (browserName === "webkit") {
