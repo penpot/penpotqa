@@ -698,6 +698,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickCreateCurveButton() {
     await this.createCurveButton.click();
+    await this.page.waitForTimeout(100);
     await this.waitDesignTabCollapsed();
   }
 
