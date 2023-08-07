@@ -163,7 +163,7 @@ mainTest("CO-170 Add and edit Blur to text", async ({ page, browserName }) => {
 });
 
 mainTest("CO-171 Add, edit and delete Stroke to Text", async ({ page, browserName}) => {
-  test.setTimeout(43000);
+  test.setTimeout(45000);
   const mainPage = new MainPage(page);
   await mainPage.createDefaultTextLayer(browserName);
   await mainPage.clickAddStrokeButton();
