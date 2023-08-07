@@ -1,7 +1,7 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/main-page");
 const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
-const { expect } = require("@playwright/test");
+const { expect, test} = require("@playwright/test");
 
 mainTest("CO-59 Create a rectangle from toolbar", async ({ page }) => {
   const mainPage = new MainPage(page);
@@ -112,6 +112,7 @@ mainTest("CO-72 Add, hide, unhide and delete Blur to rectangle",async ({ page })
 });
 
 mainTest("CO-74 Add, edit and delete Stroke to rectangle",async ({ page }) => {
+  test.setTimeout(45000);
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();

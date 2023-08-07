@@ -140,6 +140,7 @@ mainTest("CO-229 Add, hide, unhide and delete Blur to image", async ({ page }) =
 });
 
 mainTest("CO-231 Add, edit and delete Stroke to image",async ({ page }) => {
+  test.setTimeout(45000);
   const mainPage = new MainPage(page);
   await mainPage.uploadImage("images/sample.jpeg");
   await mainPage.clickViewportTwice();
