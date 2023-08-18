@@ -25,7 +25,7 @@ jobs:
         if: always()
         with:
           name: playwright-report-chromium
-          path: playwright-report-chromium/
+          path: playwright-report/
           retention-days: 30
   tests_firefox:
     if: ${{ always() }}
@@ -52,7 +52,7 @@ jobs:
         if: always()
         with:
           name: playwright-report-firefox
-          path: playwright-report-firefox/
+          path: playwright-report/
           retention-days: 30
   tests_webkit:
     if: ${{ always() }}
@@ -79,5 +79,5 @@ jobs:
         if: always()
         with:
           name: playwright-report-webkit
-          path: playwright-report-webkit/
+          path: playwright-report/
           retention-days: 30
