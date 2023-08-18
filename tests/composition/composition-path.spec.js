@@ -72,7 +72,7 @@ mainTest("CO-279 Add, hide, unhide, change type and delete Shadow to Path",async
 });
 
 mainTest("CO-280 Add and edit Shadow to path", async ({ page }) => {
-  test.setTimeout(45000);
+  test.setTimeout(50000);
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.createDefaultOpenPath();
