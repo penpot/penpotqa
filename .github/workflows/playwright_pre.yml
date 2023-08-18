@@ -22,11 +22,12 @@ jobs:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
         run: npx playwright test --project=chrome -gv 'PERF'
-      - uses: actions/upload-artifact@v3
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: playwright-report-chromium
+          path: playwright-report-chromium/
           retention-days: 30
   tests_firefox:
     if: ${{ always() }}
@@ -48,11 +49,12 @@ jobs:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
         run: npx playwright test --project=firefox -gv 'PERF'
-      - uses: actions/upload-artifact@v3
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: playwright-report-firefox
+          path: playwright-report-firefox/
           retention-days: 30
   tests_webkit:
     if: ${{ always() }}
@@ -74,9 +76,10 @@ jobs:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
         run: npx playwright test --project=webkit -gv 'PERF'
-      - uses: actions/upload-artifact@v3
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: playwright-report-webkit
+          path: playwright-report-webkit/
           retention-days: 30
