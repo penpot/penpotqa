@@ -1,4 +1,5 @@
 const { expect } = require("@playwright/test");
+const { getPlatformName } = require("../helpers/string-generator");
 exports.BasePage = class BasePage {
   /**
    * @param {import('@playwright/test').Page} page
@@ -12,7 +13,11 @@ exports.BasePage = class BasePage {
 
   async clearInput(input) {
     await input.click();
-    await this.page.keyboard.press("Control+A");
+    if (getPlatformName() === "MacOS") {
+      await this.page.keyboard.press("Meta+A");
+    } else {
+      await this.page.keyboard.press("Control+A");
+    }
     await this.page.keyboard.press("Delete");
   }
 
