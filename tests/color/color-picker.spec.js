@@ -37,23 +37,25 @@ mainTest(
 );
 
 mainTest("CP-7 Use Recent colors", async ({ page }) => {
+  const color1 = "#FF0000";
+  const color2 = "#B1B2B5";
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex("#FF0000");
+  await colorPalettePopUp.setHex(color1);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex("#B1B2B5");
+  await colorPalettePopUp.setHex(color2);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.isFirstRecentColorBulletDisplayed();
-  await colorPalettePopUp.isSecondRecentColorBulletDisplayed();
-  await colorPalettePopUp.clickSecondRecentColorBullet();
+  await colorPalettePopUp.isRecentColorBulletDisplayed(color1);
+  await colorPalettePopUp.isRecentColorBulletDisplayed(color2);
+  await colorPalettePopUp.clickRecentColorBullet(color1);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.createdLayer).toHaveScreenshot(
