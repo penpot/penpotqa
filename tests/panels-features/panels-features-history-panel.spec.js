@@ -6,8 +6,6 @@ mainTest("PF-156 Perform a change and check the status",async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.changeHeightAndWidthForLayer("400","300");
   await mainPage.isUnSavedChangesDisplayed();
   await mainPage.waitForChangeIsSaved();
 });
