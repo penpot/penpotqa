@@ -12,12 +12,6 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
     this.saveColorStyleButton = page.locator(
       'button:has-text("Save color style")'
     );
-    this.firstRecentColorBullet = page.locator(
-      'div[class="selected-colors"] div[class="color-bullet is-not-library-color"] >>nth=0'
-    );
-    this.secondRecentColorBullet = page.locator(
-      'div[class="selected-colors"] div[class="color-bullet is-not-library-color"] >>nth=1'
-    );
     this.fileLibraryColorBullet = page.locator(
       'div[class="selected-colors"] div[class="color-bullet is-library-color"] >>nth=0'
     );
@@ -41,12 +35,9 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
     await expect(this.popUp).toBeVisible();
   }
 
-  async isFirstRecentColorBulletDisplayed() {
-    await expect(this.firstRecentColorBullet).toBeVisible();
-  }
-
-  async isSecondRecentColorBulletDisplayed() {
-    await expect(this.secondRecentColorBullet).toBeVisible();
+  async isRecentColorBulletDisplayed(color) {
+    const selector = await this.page.locator(`div[class="selected-colors"] div[title="${color}"]`);
+    await expect(selector).toBeVisible();
   }
 
   async isFileLibraryColorBulletDisplayed() {
@@ -57,8 +48,9 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
     await this.fileLibraryColorBullet.click();
   }
 
-  async clickSecondRecentColorBullet() {
-    await this.secondRecentColorBullet.click();
+  async clickRecentColorBullet(color) {
+    const selector = await this.page.locator(`div[class="selected-colors"] div[title="${color}"]`);
+    await selector.click();
   }
 
   async selectFileLibraryColors() {

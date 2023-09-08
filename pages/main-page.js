@@ -87,7 +87,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
 
     //Design panel
-    this.canvasBackgroundColorIcon = page.locator('div[class="color-bullet-wrapper"]');
+    this.canvasBackgroundColorIcon = page.locator('div[title="Fill"] div[class="color-bullet-wrapper"]');
     this.layerRotationInput = page.locator('div[class="input-element degrees"] input');
     this.individualCornersRadiusButton = page.locator('div[alt="Independent corners"]');
     this.allCornersRadiusButton = page.locator('div[alt="All corners"]');
