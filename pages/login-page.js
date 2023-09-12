@@ -9,7 +9,7 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.pageTitle = page.locator('h1[data-test="login-title"]');
     this.emailInput = page.locator("#email");
     this.pwdInput = page.locator("#password");
-    this.loginButton = page.locator('input[name="submit"]');
+    this.loginButton = page.locator('[data-test="login-submit"]');
     this.emailInputError = page.locator(
       'div[class=" invalid with-icon custom-input"] #email'
     );
