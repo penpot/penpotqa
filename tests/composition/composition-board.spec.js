@@ -120,7 +120,7 @@ mainTest("CO-12 Add, hide, unhide and delete Blur to board", async ({ page }) =>
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickCanvasBackgroundColorIcon();
+  await mainPage.clickFillColorIcon();
   await colorPalettePopUp.setHex("#304d6a");
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddBlurButton();

@@ -99,7 +99,7 @@ mainTest("CO-119 Add, hide, unhide and delete Blur to ellipse",async ({ page }) 
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickCanvasBackgroundColorIcon();
+  await mainPage.clickFillColorIcon();
   await colorPalettePopUp.setHex("#304d6a");
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddBlurButton();

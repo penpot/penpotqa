@@ -117,7 +117,7 @@ mainTest("CO-169 Add, hide, unhide and delete Blur to text",async ({ page, brows
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
   await mainPage.createDefaultTextLayer(browserName);
-  await mainPage.clickCanvasBackgroundColorIcon();
+  await mainPage.clickFillColorIcon();
   await colorPalettePopUp.setHex("#304d6a");
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddBlurButton();

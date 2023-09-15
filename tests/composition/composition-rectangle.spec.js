@@ -82,7 +82,7 @@ mainTest("CO-72 Add, hide, unhide and delete Blur to rectangle",async ({ page })
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickCanvasBackgroundColorIcon();
+  await mainPage.clickFillColorIcon();
   await colorPalettePopUp.setHex("#304d6a");
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddBlurButton();
