@@ -236,7 +236,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     for (let i = 0; i <= text.length; i++) {
       await this.page.keyboard.press("Backspace");
     }
-    await this.fileNameInput.type(newFileName);
+    await this.fileNameInput.pressSequentially(newFileName);
     await this.page.keyboard.press("Enter");
     await this.isFilePresent(newFileName);
   }
@@ -251,7 +251,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     for (let i = 0; i <= text.length; i++) {
       await this.page.keyboard.press("Backspace");
     }
-    await this.fileNameInput.type(newFileName);
+    await this.fileNameInput.pressSequentially(newFileName);
     await this.page.keyboard.press("Enter");
     await this.isFilePresent(newFileName);
   }
@@ -348,7 +348,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async setProjectName(newProjectName) {
-    await this.projectNameInput.type(newProjectName);
+    await this.projectNameInput.pressSequentially(newProjectName);
     await this.page.keyboard.press("Enter");
   }
 
@@ -370,7 +370,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     for (let i = 0; i <= text.length; i++) {
       await this.page.keyboard.press("Backspace");
     }
-    await this.projectNameInput.type(newProjectName);
+    await this.projectNameInput.pressSequentially(newProjectName);
     await this.page.keyboard.press("Enter");
     await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
   }
@@ -384,7 +384,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     for (let i = 0; i <= text.length; i++) {
       await this.page.keyboard.press("Backspace");
     }
-    await this.projectNameInput.type(newProjectName);
+    await this.projectNameInput.pressSequentially(newProjectName);
     await this.page.keyboard.press("Enter");
     await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
   }
@@ -448,7 +448,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async search(text) {
-    await this.searchInput.type(text);
+    await this.searchInput.pressSequentially(text);
   }
 
   async uploadFont(filePath) {
@@ -496,13 +496,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fontOptionsMenuButton.click();
     await this.editFontMenuItem.click();
     await this.clearInput(this.fontNameInput);
-    await this.fontNameInput.type(newFontName);
+    await this.fontNameInput.pressSequentially(newFontName);
     await this.saveFontButton.click();
     await expect(this.fontNameTableCell).toHaveText(newFontName);
   }
 
   async searchFont(fontName) {
-    await this.searchFontInput.type(fontName);
+    await this.searchFontInput.pressSequentially(fontName);
     await expect(this.fontNameTableCell).toHaveText(fontName);
     await expect(this.fontNameTableCell).toHaveCount(1);
   }

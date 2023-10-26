@@ -158,7 +158,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async enterEmailToInviteMembersPopUp(email) {
-    await this.inviteMembersToTeamEmailInput.type(email);
+    await this.inviteMembersToTeamEmailInput.pressSequentially(email);
   }
 
   async clickSendInvitationButton() {
