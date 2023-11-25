@@ -1,5 +1,5 @@
 const { expect } = require("@playwright/test");
-const { BasePage } = require("./base-page");
+const { BasePage } = require("../base-page");
 
 exports.DashboardPage = class DashboardPage extends BasePage {
   /**
@@ -92,8 +92,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     // Import files
     this.fileImport = page.locator('[data-test="file-import"]');
-    this.modal = page.locator('#modal');
-    this.modalCloseButton = page.locator('.modal-close-button');
     this.modalTitle = page.locator('.modal-header-title h2');
     this.modalCancelButton = page.locator('.modal-footer .action-buttons .cancel-button');
     this.modalAcceptButton = page.locator('.modal-footer .action-buttons .accept-button');
@@ -132,7 +130,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div.dashboard-templates-section div.title button'
     );
     this.librariesAndTemplatesSection = page.locator(
-      'div[class^="dashboard-templates-section"]'
+      'div[class="dashboard-templates-section "]'
     );
     this.librariesAndTemplatesSectionCollapsed = page.locator(
       'div[class="dashboard-templates-section collapsed"]'
@@ -221,7 +219,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isDashboardOpenedAfterLogin() {
     await this.page.waitForURL(/.*dashboard\/team/, { waitUntil: "load" });
-    await this.page.waitForResponse(/push-audit-events/);
+    // await this.page.waitForResponse(/push-audit-events/);
   }
 
   async checkNumberOfFiles(numberOfFiles) {
@@ -475,19 +473,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.deleteFontButton.click();
   }
 
-  async deleteFonts() {
-    for (const el of await this.fontOptionsMenuButton.elementHandles()) {
-      await el.click();
-      await this.deleteFontMenuItem.click();
-      await this.deleteFontButton.click();
-    }
-  }
-
-  async deleteFontsIfExist() {
-    const fontRecords = await this.page.$$('div[class="font-item table-row"]');
-    if (fontRecords) await this.deleteFonts();
-  }
-
   async isFontsTablePlaceholderDisplayed(text) {
     await expect(this.fontsTablePlaceholder).toHaveText(text);
   }
@@ -515,23 +500,39 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.librariesAndTemplatesSection).toBeVisible();
   }
 
-  async isLibrariesAndTemplatesSectionNotDisplayed() {
+  async isLibrariesAndTemplatesSectionHidden() {
     await expect(this.librariesAndTemplatesSectionCollapsed).toBeVisible();
   }
 
-  async minimizeLibrariesAndTemplatesCarouselIfExpanded() {
-    if (await this.librariesAndTemplatesSection.isVisible()) {
-      await this.clickLibrariesAndTemplatesCarouselButton();
+  async isLibrariesAndTemplatesCarouselVisible() {
+    try {
+      await this.librariesAndTemplatesSection.waitFor({ state: 'visible', timeout: 3000 });
+      return true;
+    } catch(error) {
+      return false;
     }
   }
 
-  async flipRightLibrariesAndTemplatesCarousel() {
-    await this.librariesAndTemplatesSectionRightArrowButton.click();
-    await this.header.hover();
+  async minimizeLibrariesAndTemplatesCarousel() {
+    if (await this.isLibrariesAndTemplatesCarouselVisible) {
+      await this.clickLibrariesAndTemplatesCarouselButton();
+    }
+    await this.isLibrariesAndTemplatesSectionHidden();
   }
 
-  async flipLeftLibrariesAndTemplatesCarousel() {
-    await this.librariesAndTemplatesSectionLeftArrowButton.click();
+  async maximizeLibrariesAndTemplatesCarousel() {
+    if (!await this.isLibrariesAndTemplatesCarouselVisible()) {
+      await this.clickLibrariesAndTemplatesCarouselButton();
+    }
+    await this.isLibrariesAndTemplatesSectionDisplayed();
+  }
+
+  async flipLibrariesAndTemplatesCarousel(direction, times=1) {
+    if (direction === 'left') {
+      await this.librariesAndTemplatesSectionLeftArrowButton.click({ clickCount: times });
+    } else {
+      await this.librariesAndTemplatesSectionRightArrowButton.click({ clickCount: times });
+    }
     await this.header.hover();
   }
 

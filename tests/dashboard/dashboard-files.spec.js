@@ -1,6 +1,24 @@
 const { dashboardTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
-const { DashboardPage } = require("../../pages/dashboard-page");
+const { MainPage } = require("../../pages/workspace/main-page");
+const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
+const { random } = require("../../helpers/string-generator");
+const { test } = require("@playwright/test");
+const { TeamPage } = require("../../pages/dashboard/team-page");
+
+const teamName = random().concat('autotest');
+
+test.beforeEach( async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const dashboardPage = new DashboardPage(page);
+  await teamPage.createTeam(teamName);
+  await dashboardPage.deleteProjectsIfExist();
+  await dashboardPage.deleteFilesIfExist();
+});
+
+test.afterEach(async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  await teamPage.deleteTeam(teamName);
+});
 
 dashboardTest("DA-1 Create new file in Drafts on title panel",async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
@@ -30,6 +48,7 @@ dashboardTest("DA-3 Open file in Drafts", async ({ page }) => {
   await dashboardPage.reloadPage();
   await dashboardPage.openFile();
   await mainPage.isMainPageLoaded();
+  await mainPage.backToDashboardFromFileEditor();
 });
 
 dashboardTest("DA-5 Rename file in Drafts via rightclick", async ({ page }) => {
@@ -288,7 +307,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "DA-35-1 Download Penpot file in Project via rigthclick",
+  "DA-35-1 Download Penpot file in Project via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();
@@ -316,7 +335,7 @@ dashboardTest(
 );
 
 dashboardTest(
-  "DA-36-1 Download standard file in Project via rigthclick",
+  "DA-36-1 Download standard file in Project via rightclick",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickAddProjectButton();

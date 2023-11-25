@@ -1,6 +1,6 @@
 const { test } = require("@playwright/test");
 const { LoginPage } = require("../pages/login-page");
-const { DashboardPage } = require("../pages/dashboard-page");
+const { DashboardPage } = require("../pages/dashboard/dashboard-page");
 
 test("ON-8 Login with an email address", async ({ page }) => {
   const loginPage = new LoginPage(page);
