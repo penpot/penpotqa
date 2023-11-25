@@ -1,6 +1,29 @@
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
-const { expect } = require("@playwright/test");
+const { MainPage } = require("../../pages/workspace/main-page");
+const { expect, test } = require("@playwright/test");
+const { random } = require("../../helpers/string-generator");
+const { TeamPage } = require("../../pages/dashboard/team-page");
+const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
+
+const teamName = random().concat('autotest');
+
+test.beforeEach( async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await teamPage.createTeam(teamName);
+  await dashboardPage.deleteProjectsIfExist();
+  await dashboardPage.deleteFilesIfExist();
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+});
+
+test.afterEach(async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const mainPage = new MainPage(page);
+  await mainPage.backToDashboardFromFileEditor();
+  await teamPage.deleteTeam(teamName);
+});
 
 mainTest(
   "PF-139 Add connector between 2 boards via mouse drag",

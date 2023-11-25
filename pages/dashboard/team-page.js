@@ -1,4 +1,4 @@
-const { BasePage } = require("./base-page");
+const { BasePage } = require("../base-page");
 const { expect } = require("@playwright/test");
 
 exports.TeamPage = class TeamPage extends BasePage {
@@ -115,13 +115,13 @@ exports.TeamPage = class TeamPage extends BasePage {
     }
   }
 
-  async deleteTeamsIfExist() {
+  async deleteTeams(teams) {
     await this.openTeamsListIfClosed();
-    for (const teamName of await this.teamListItem.allInnerTexts()) {
-      if (!teamName.includes("Your Penpot")) {
-        const teamSel = this.page.locator(`li.team-name span.team-text:text-is("${teamName}")`).last();
+    for (const team of teams) {
+      const teamSel = this.page.locator(`li.team-name span:text-is("${team}")`);
+      if (await teamSel.isVisible()) {
         await teamSel.click();
-        await this.teamOptionsMenuButton.waitFor();
+        await this.isTeamSelected(team);
         await this.teamOptionsMenuButton.click();
         await this.deleteTeamMenuItem.click();
         await this.deleteTeamButton.click();

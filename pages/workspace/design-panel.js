@@ -1,7 +1,7 @@
 const { expect } = require("@playwright/test");
 const { BasePage } = require("../base-page");
-exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
+exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     /**
      * @param {import('@playwright/test').Page} page
      */

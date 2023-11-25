@@ -1,8 +1,31 @@
 const { expect, test } = require("@playwright/test");
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
-const { LayersPage } = require("../../pages/workspace/layers");
-const { DesignPanelPage} = require("../../pages/workspace/design-panel");
+const { MainPage } = require("../../pages/workspace/main-page");
+const { LayersPanelPage } = require("../../pages/workspace/layers-panel");
+const { DesignPanelPage } = require("../../pages/workspace/design-panel");
+const { random } = require("../../helpers/string-generator");
+const { TeamPage } = require("../../pages/dashboard/team-page");
+const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
+
+const teamName = random().concat('autotest');
+
+test.beforeEach( async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await teamPage.createTeam(teamName);
+  await dashboardPage.deleteProjectsIfExist();
+  await dashboardPage.deleteFilesIfExist();
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+});
+
+test.afterEach(async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const mainPage = new MainPage(page);
+  await mainPage.backToDashboardFromFileEditor();
+  await teamPage.deleteTeam(teamName);
+});
 
 test.describe("Flex Layout & Elements", async () => {
   test.beforeEach(async ({ page, browserName}, testInfo) => {
@@ -398,7 +421,7 @@ test.describe("Flex Layout & Elements", async () => {
 
   mainTest("FL-21 Flex elements change - alignment", async ({ page }) => {
     const mainPage = new MainPage(page);
-    const layersPage = new LayersPage(page);
+    const layersPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
 
     await mainPage.addFlexLayoutViaRightClick();
@@ -437,7 +460,7 @@ test.describe("Flex Layout & Elements", async () => {
 
   mainTest("FL-22 Flex elements - change margin single", async ({ page }) => {
     const mainPage = new MainPage(page);
-    const layersPage = new LayersPage(page);
+    const layersPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
 
     await mainPage.addFlexLayoutViaRightClick();
@@ -546,7 +569,7 @@ test.describe("Margins & Paddings & Position", async () => {
   mainTest("FL-42 Use absolute position and look if element still inside a board",
     async ({ page }) => {
     const mainPage = new MainPage(page);
-    const layersPage = new LayersPage(page);
+    const layersPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
 
     await layersPage.selectBoardChildEllipse();

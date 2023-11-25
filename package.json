@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/penpot/penpotqa#readme",
   "devDependencies": {
-    "@playwright/test": "^1.39.0",
+    "@playwright/test": "^1.40.0",
     "dotenv": "^16.3.1"
   },
   "dependencies": {

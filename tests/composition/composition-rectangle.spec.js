@@ -1,7 +1,30 @@
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
-const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
-const { expect, test} = require("@playwright/test");
+const { MainPage } = require("../../pages/workspace/main-page");
+const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup");
+const { expect, test } = require("@playwright/test");
+const { random } = require("../../helpers/string-generator");
+const { TeamPage } = require("../../pages/dashboard/team-page");
+const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
+
+const teamName = random().concat('autotest');
+
+test.beforeEach( async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await teamPage.createTeam(teamName);
+  await dashboardPage.deleteProjectsIfExist();
+  await dashboardPage.deleteFilesIfExist();
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+});
+
+test.afterEach(async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const mainPage = new MainPage(page);
+  await mainPage.backToDashboardFromFileEditor();
+  await teamPage.deleteTeam(teamName);
+});
 
 mainTest("CO-59 Create a rectangle from toolbar", async ({ page }) => {
   const mainPage = new MainPage(page);

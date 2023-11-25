@@ -1,5 +1,5 @@
 const { expect } = require("@playwright/test");
-const { BasePage } = require("./base-page");
+const { BasePage } = require("../base-page");
 
 exports.MainPage = class MainPage extends BasePage {
   /**
@@ -576,12 +576,8 @@ exports.MainPage = class MainPage extends BasePage {
     this.removeSharedLibraryButton = page.locator('input[value="Remove"]');
     this.publishSharedLibraryButton = page.locator('input[value="Publish"]');
     this.unPublishSharedLibraryButton = page.locator('input[value="Unpublish"]');
-    this.closeLibrariesPopUpButton = page.locator(
-      'div[class="modal libraries-dialog"] svg[class="icon-close"]'
-    );
-    this.addAsSharedLibraryButton = page.locator(
-      'input[value="Add as Shared Library"]'
-    );
+    this.closeLibrariesPopUpButton = page.locator('div.libraries-dialog a.close');
+    this.addAsSharedLibraryButton = page.locator('input[value="Add as Shared Library"]');
     this.removeAsSharedLibraryButton = page.locator('input[value="Unpublish"]');
     this.sharedLibraryBadge = page.locator('span:has-text("SHARED")');
     this.searchLibraryInput = page.locator('div.libraries-search input.search-input');

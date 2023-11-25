@@ -1,5 +1,6 @@
 const { expect } = require("@playwright/test");
 const { getPlatformName } = require("../helpers/string-generator");
+
 exports.BasePage = class BasePage {
   /**
    * @param {import('@playwright/test').Page} page

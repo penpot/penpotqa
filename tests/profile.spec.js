@@ -2,7 +2,7 @@ const { dashboardTest } = require("../fixtures");
 const { ProfilePage } = require("../pages/profile-page");
 const { random } = require("../helpers/string-generator");
 const { LoginPage } = require("../pages/login-page");
-const {expect} = require("@playwright/test");
+const { expect } = require("@playwright/test");
 
 dashboardTest("PR-1 Edit profile name", async ({ page }) => {
   const newName = random();
