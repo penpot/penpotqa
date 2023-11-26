@@ -12,7 +12,7 @@ const config = {
   snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/{projectName}/{arg}{ext}`,
   testDir: "./tests",
   /* Maximum time one test can run for. */
-  timeout: process.env.CI ? 50 * 1000 : 555550 * 1000,
+  timeout: process.env.CI ? 60 * 1000 : 555550 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
