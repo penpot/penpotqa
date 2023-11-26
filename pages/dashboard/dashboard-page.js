@@ -219,7 +219,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isDashboardOpenedAfterLogin() {
     await this.page.waitForURL(/.*dashboard\/team/, { waitUntil: "load" });
-    // await this.page.waitForResponse(/push-audit-events/);
   }
 
   async checkNumberOfFiles(numberOfFiles) {
@@ -506,7 +505,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isLibrariesAndTemplatesCarouselVisible() {
     try {
-      await this.librariesAndTemplatesSection.waitFor({ state: 'visible', timeout: 3000 });
+      await this.librariesAndTemplatesSection.waitFor({ state: 'visible', timeout: 4000 });
       return true;
     } catch(error) {
       return false;
@@ -514,7 +513,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async minimizeLibrariesAndTemplatesCarousel() {
-    if (await this.isLibrariesAndTemplatesCarouselVisible) {
+    if (await this.isLibrariesAndTemplatesCarouselVisible()) {
       await this.clickLibrariesAndTemplatesCarouselButton();
     }
     await this.isLibrariesAndTemplatesSectionHidden();

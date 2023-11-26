@@ -35,5 +35,16 @@ dashboardTest("DA-130 Flip Libraries & Templates carousel",async ({ page }) => {
     await expect(dashboardPage.librariesAndTemplatesSection).toHaveScreenshot(
       "libraries-carousel-flipped-left.png"
     );
+  });
+
+dashboardTest(
+  "DA-129 Minimize Libraries & Templates carousel",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+    await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
+    await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
+    await dashboardPage.isLibrariesAndTemplatesSectionHidden();
   }
 );
+
