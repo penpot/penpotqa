@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test --project=chrome -gv 'PERF'",
+    "file": "npx playwright test -g \"Create component shape\" --project=chrome",
+    "spec": "npx playwright test tests/components/ma --project=chrome",
     "firefox": "npx playwright test --project=firefox -gv 'PERF'",
     "webkit": "npx playwright test --project=webkit -gv 'PERF'",
     "performance": "npx playwright test --retries=1 --project=chrome -g 'PERF'",

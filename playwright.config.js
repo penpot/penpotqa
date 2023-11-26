@@ -12,7 +12,7 @@ const config = {
   snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/{projectName}/{arg}{ext}`,
   testDir: "./tests",
   /* Maximum time one test can run for. */
-  timeout: process.env.CI ? 50 * 1000 : 555550 * 1000,
+  timeout: process.env.CI ? 50 * 1000 : 50 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -25,7 +25,7 @@ const config = {
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 2,
+  retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */

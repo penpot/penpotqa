@@ -33,40 +33,40 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Layer right-click menu items
     this.deleteLayerMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Delete")'
+      'ul[class^="workspace_context_menu"] span:has-text("Delete")'
     );
     this.hideLayerMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Hide")'
+      'ul[class^="workspace_context_menu"] span:has-text("Hide")'
     );
     this.showLayerMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Show")'
+      'ul[class^="workspace_context_menu"] span:has-text("Show")'
     );
     this.focusOnLayerMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Focus on")'
+      'ul[class^="workspace_context_menu"] span:has-text("Focus on")'
     );
     this.transformToPathMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Transform to path")'
+      'ul[class^="workspace_context_menu"] span:has-text("Transform to path")'
     );
     this.selectionToBoardMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Selection to board")'
+      'ul[class^="workspace_context_menu"] span:has-text("Selection to board")'
     );
     this.createComponentMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Create component")'
+      'ul[class^="workspace_context_menu"] span:has-text("Create component")'
     );
     this.flipVerticalMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Flip vertical")'
+      'ul[class^="workspace_context_menu"] span:has-text("Flip vertical")'
     );
     this.flipHorizontalMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Flip horizontal")'
+      'ul[class^="workspace_context_menu"] span:has-text("Flip horizontal")'
     );
     this.editPathMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Edit")'
+      'ul[class^="workspace_context_menu"] span:has-text("Edit")'
     );
     this.addFlexLayout = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Add flex layout")'
+      'ul[class^="workspace_context_menu"] span:has-text("Add flex layout")'
     );
     this.removeFlexLayout = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Remove flex layout")'
+      'ul[class^="workspace_context_menu"] span:has-text("Remove flex layout")'
     );
 
     //Layers panel
@@ -471,8 +471,8 @@ exports.MainPage = class MainPage extends BasePage {
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
     //Assets panel
-    this.assetsTab = page.locator('div[data-id=":assets"]');
-    this.assetsPanel = page.locator('div[class="assets-bar"]');
+    this.assetsTab = page.locator('div[data-id="assets"]');
+    this.assetsPanel = page.locator('[id="left-sidebar-aside"] div[class^="sidebar_assets_assets-bar"]');
     this.librariesTab = page.locator('div[class="libraries-button"]');
 
     this.addPageButton = page.locator('div[class="add-page"] svg');
@@ -561,14 +561,20 @@ exports.MainPage = class MainPage extends BasePage {
     this.fontRecordOnTypographiesBottomPanel = page.locator(
       'div[class="typography-item"]'
     );
-    this.fileLibraryGraphicsComponentLabel = page.locator(
-      'div[class="grid-cell"]'
+    this.assetComponentLabel = page.locator(
+      'div[class^="assets_components_grid-cell"]'
     );
     this.fileLibraryGraphicsSecondComponentLabel = page.locator(
       'div[class="grid-cell"] >>nth=1'
     );
     this.bottomPaletteContentBlock = page.locator(
       'div[class="color-palette-content"]'
+    );
+    this.componentsTitleBarOnAssetsTab = page.locator(
+      'div[class^="components_title_bar"] span:text-is("Components")'
+    );
+    this.componentsGridOnAssetsTab = page.locator(
+      'div[class^="assets_components_asset-grid"]'
     );
 
     //Assets panel - Libraries
@@ -629,7 +635,7 @@ exports.MainPage = class MainPage extends BasePage {
     );
 
     //Header
-    this.savedChangesIcon = page.locator('div.saved span:text-is("Saved")');
+    this.savedChangesIcon = page.locator('div[title="Saved"]');
     this.unSavedChangesIcon = page.locator('div.pending span:text-is("Unsaved changes")');
     this.usersSection = page.locator('div[class="users-section"]');
     this.projectNameSpan = page.locator('div[class="project-tree"] span[class="project-name"]');
@@ -2053,7 +2059,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async isComponentAddedToFileLibraryComponents() {
-    await expect(this.fileLibraryGraphicsComponentLabel).toBeVisible();
+    await expect(this.assetComponentLabel).toBeVisible();
   }
 
   async isSecondComponentAddedToFileLibraryComponents() {
@@ -2061,17 +2067,24 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async isComponentNotAddedToFileLibraryComponents() {
-    await expect(this.fileLibraryGraphicsComponentLabel).not.toBeVisible();
+    await expect(this.assetComponentLabel).not.toBeVisible();
   }
 
   async duplicateFileLibraryComponents() {
-    await this.fileLibraryGraphicsComponentLabel.click({ button: "right" });
+    await this.assetComponentLabel.click({ button: "right" });
     await this.duplicateFileLibraryMenuItem.click();
   }
 
   async deleteFileLibraryComponents() {
-    await this.fileLibraryGraphicsComponentLabel.click({ button: "right" });
+    await this.assetComponentLabel.click({ button: "right" });
     await this.deleteFileLibraryMenuItem.click();
+  }
+
+  async expandComponentsBlockOnAssetsTab() {
+    if (!await this.componentsGridOnAssetsTab.isVisible()) {
+      await this.componentsTitleBarOnAssetsTab.click();
+    }
+    await expect(this.componentsGridOnAssetsTab).toBeVisible();
   }
 
   async clickLibrariesTab() {

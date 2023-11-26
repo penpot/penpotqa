@@ -12,20 +12,6 @@ mainTest(
   }
 );
 
-mainTest("AS-57 Create component shape", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportByCoordinates(200, 300);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.createComponentViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickAssetsTab();
-  await mainPage.isComponentAddedToFileLibraryComponents();
-  await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "components-rectangle.png"
-  );
-});
-
 mainTest("AS-58 Create component image", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.uploadImage("images/sample.jpeg");
