@@ -11,8 +11,7 @@ test.beforeEach( async ({ page }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   await teamPage.createTeam(teamName);
-  await dashboardPage.deleteProjectsIfExist();
-  await dashboardPage.deleteFilesIfExist();
+  await teamPage.isTeamSelected(teamName);
 });
 
 test.afterEach(async ({ page }) => {

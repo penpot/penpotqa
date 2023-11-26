@@ -14,8 +14,7 @@ test.beforeEach( async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
-  await dashboardPage.deleteProjectsIfExist();
-  await dashboardPage.deleteFilesIfExist();
+  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });
@@ -28,7 +27,7 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe("Flex Layout & Elements", async () => {
-  test.beforeEach(async ({ page, browserName}, testInfo) => {
+  test.beforeEach(async ({ page, browserName }, testInfo) => {
     testInfo.setTimeout(testInfo.timeout + 10000);
     const mainPage = new MainPage(page);
     await mainPage.clickCreateBoardButton();
