@@ -131,6 +131,22 @@ exports.TeamPage = class TeamPage extends BasePage {
     }
   }
 
+  async deleteTeamsIfExist() {
+    await this.openTeamsListIfClosed();
+    for (const teamName of await this.teamListItem.allInnerTexts()) {
+      if (!teamName.includes("Your Penpot")) {
+        const teamSel = this.page.locator(`li.team-name span.team-text:text-is("${teamName}")`).last();
+        await teamSel.click();
+        await this.teamOptionsMenuButton.waitFor();
+        await this.teamOptionsMenuButton.click();
+        await this.deleteTeamMenuItem.click();
+        await this.deleteTeamButton.click();
+        await expect(this.teamCurrentBtn).toHaveText("Your Penpot");
+        await this.openTeamsListIfClosed();
+      }
+    }
+  }
+
   async isTeamDeleted(teamName) {
     await this.openTeamsListIfClosed();
     for (const el of await this.teamCurrentNameDiv.elementHandles()) {

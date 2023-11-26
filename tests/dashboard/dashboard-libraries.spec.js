@@ -10,6 +10,7 @@ test.beforeEach( async ({ page }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   await teamPage.createTeam(teamName);
+  await teamPage.isTeamSelected(teamName);
   await dashboardPage.minimizeLibrariesAndTemplatesCarousel();
 });
 

@@ -5,8 +5,6 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test --project=chrome -gv 'PERF'",
-    "file": "npx playwright test -g \"AS-27 File library colors - create group\" --project=chrome",
-    "spec": "npx playwright test tests/assets/assets-colors.spec.js --project=chrome",
     "firefox": "npx playwright test --project=firefox -gv 'PERF'",
     "webkit": "npx playwright test --project=webkit -gv 'PERF'",
     "performance": "npx playwright test --retries=1 --project=chrome -g 'PERF'",

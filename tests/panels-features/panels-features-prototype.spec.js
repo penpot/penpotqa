@@ -12,8 +12,7 @@ test.beforeEach( async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
-  await dashboardPage.deleteProjectsIfExist();
-  await dashboardPage.deleteFilesIfExist();
+  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });
