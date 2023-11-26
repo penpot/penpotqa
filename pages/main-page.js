@@ -9,7 +9,7 @@ exports.MainPage = class MainPage extends BasePage {
   constructor(page) {
     super(page);
     //Left Toolbar
-    this.pencilBoxButton = page.locator('div[class="main-icon"]');
+    this.pencilBoxButton = page.locator('svg[class="icon-penpot-logo-icon"]');
     this.moveButton = page.locator('button[title="Move (V)"]');
     this.createBoardButton = page.locator('button[data-test="artboard-btn"]');
     this.createRectangleButton = page.locator('button[data-test="rect-btn"]');
