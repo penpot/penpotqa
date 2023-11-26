@@ -1,5 +1,5 @@
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
+const { MainPage } = require("../../pages/workspace/main-page");
 const { test, expect} = require("@playwright/test");
 
 test.beforeEach(async ({ page}) => {

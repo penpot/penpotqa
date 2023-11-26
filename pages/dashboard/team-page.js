@@ -1,4 +1,4 @@
-const { BasePage } = require("./base-page");
+const { BasePage } = require("../base-page");
 const { expect } = require("@playwright/test");
 
 exports.TeamPage = class TeamPage extends BasePage {

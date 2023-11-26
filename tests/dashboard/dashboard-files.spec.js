@@ -1,6 +1,6 @@
 const { dashboardTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
-const { DashboardPage } = require("../../pages/dashboard-page");
+const { MainPage } = require("../../pages/workspace/main-page");
+const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 
 dashboardTest("DA-1 Create new file in Drafts on title panel",async ({ page }) => {
   const dashboardPage = new DashboardPage(page);

@@ -1,6 +1,6 @@
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
-const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
+const { MainPage } = require("../../pages/workspace/main-page");
+const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup");
 const { expect } = require("@playwright/test");
 
 mainTest("CP-1 Open color picker from Stroke menu", async ({ page }) => {

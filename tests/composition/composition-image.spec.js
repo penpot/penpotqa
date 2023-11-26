@@ -1,7 +1,7 @@
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
+const { MainPage } = require("../../pages/workspace/main-page");
 const { expect, test } = require("@playwright/test");
-const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
+const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup");
 
 mainTest("CO-220 Import JPEG image", async ({ page }) => {
   const mainPage = new MainPage(page);

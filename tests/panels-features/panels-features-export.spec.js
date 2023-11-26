@@ -1,5 +1,5 @@
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
+const { MainPage } = require("../../pages/workspace/main-page");
 
 mainTest("PF-179 Add export setting via design panel", async ({ page }) => {
   const mainPage = new MainPage(page);

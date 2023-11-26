@@ -1,8 +1,7 @@
-const {expect} = require("@playwright/test");
+const { expect } = require("@playwright/test");
 const { BasePage } = require("../base-page");
 
-exports.LayersPage = class LayersPage extends BasePage {
-
+exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     /**
      * @param {import('@playwright/test').Page} page
      */
@@ -17,6 +16,8 @@ exports.LayersPage = class LayersPage extends BasePage {
         this.layerBoardChildEllipse = page.locator(
             'div[class="element-list-body "] span:has-text("Ellipse") >>nth=-1'
         );
+        this.layersTab = page.locator('div[data-id="layers"]');
+        this.layersSidebar = page.locator('#layers');
     }
 
     async expandBoardOnLayers() {
@@ -34,6 +35,10 @@ exports.LayersPage = class LayersPage extends BasePage {
     async selectBoardChildEllipse() {
         await this.expandBoardOnLayers();
         await this.layerBoardChildEllipse.click();
+    }
+
+    async openLayersTab() {
+      await this.layersTab.click();
     }
 
 }

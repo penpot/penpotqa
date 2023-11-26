@@ -1,5 +1,5 @@
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
+const { MainPage } = require("../../pages/workspace/main-page");
 const { expect } = require("@playwright/test");
 
 mainTest("AS-110 Open panel main menu - help&info", async ({ page }) => {

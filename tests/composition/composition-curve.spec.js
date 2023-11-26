@@ -1,5 +1,5 @@
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
+const { MainPage } = require("../../pages/workspace/main-page");
 const { expect } = require("@playwright/test");
 const { test } = require("@playwright/test");
 
