@@ -1,5 +1,6 @@
 const { expect } = require("@playwright/test");
-const { BasePage } = require("./base-page");
+const { BasePage } = require("../base-page");
+const {getPlatformName} = require("../../helpers/string-generator");
 
 exports.MainPage = class MainPage extends BasePage {
   /**
@@ -8,8 +9,9 @@ exports.MainPage = class MainPage extends BasePage {
 
   constructor(page) {
     super(page);
+
     //Left Toolbar
-    this.pencilBoxButton = page.locator('svg[class="icon-penpot-logo-icon"]');
+    this.pencilBoxButton = page.locator('a[class^="workspace_left_header_main-icon"]');
     this.moveButton = page.locator('button[title="Move (V)"]');
     this.createBoardButton = page.locator('button[data-test="artboard-btn"]');
     this.createRectangleButton = page.locator('button[data-test="rect-btn"]');
@@ -87,7 +89,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
 
     //Design panel
-    this.canvasBackgroundColorIcon = page.locator('div[title="Canvas background"] div[class="color-bullet-wrapper"]');
+    this.canvasBackgroundColorIcon = page.locator(
+      'div[title="Canvas background"] div[class="color-bullet-wrapper"]'
+    );
     this.layerRotationInput = page.locator('div[class="input-element degrees"] input');
     this.individualCornersRadiusButton = page.locator('div[alt="Independent corners"]');
     this.allCornersRadiusButton = page.locator('div[alt="All corners"]');
@@ -1123,6 +1127,15 @@ exports.MainPage = class MainPage extends BasePage {
     await this.createComponentMenuItem.click();
   }
 
+  async createComponentViaShortcut(browserName) {
+    await this.createdLayer.click({ force: true });
+    if (browserName === 'webkit') {
+      await this.page.keyboard.press("Meta+K");
+    } else {
+      await this.page.keyboard.press("Control+K");
+    }
+  }
+
   async flipVerticalViaRightClick() {
     await this.createdLayer.click({ button: "right", force: true });
     await this.flipVerticalMenuItem.click();
@@ -1783,7 +1796,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.prototypeArrowConnector.hover();
     await this.prototypeArrowConnector.dragTo(this.viewport, {
       force: false,
-      targetPosition: { x: x, y: y },
+      targetPosition: { x: x, y: y }
     });
   }
 
@@ -2060,6 +2073,12 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isComponentAddedToFileLibraryComponents() {
     await expect(this.assetComponentLabel).toBeVisible();
+  }
+
+  async dragComponentOnCanvas(x, y) {
+    await this.assetComponentLabel.dragTo(this.viewport, {
+      targetPosition: { x: x, y: y }
+    });
   }
 
   async isSecondComponentAddedToFileLibraryComponents() {

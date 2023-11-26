@@ -1,5 +1,5 @@
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
+const { MainPage } = require("../../pages/workspace/main-page");
 
 
 mainTest("PF-156 Perform a change and check the status",async ({ page }) => {

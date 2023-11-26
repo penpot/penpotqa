@@ -1,6 +1,6 @@
 const base = require("@playwright/test");
 const { LoginPage } = require("./pages/login-page.js");
-const { DashboardPage } = require("./pages/dashboard-page.js");
+const { DashboardPage } = require("./pages/dashboard/dashboard-page.js");
 
 const mainTest = base.test.extend({
   page: async ({ page }, use) => {

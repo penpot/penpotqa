@@ -1,5 +1,5 @@
 const { dashboardTest } = require("../../fixtures");
-const { DashboardPage } = require("../../pages/dashboard-page");
+const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 const { test } = require("@playwright/test");
 
 test.beforeEach(async ({ page }) => {

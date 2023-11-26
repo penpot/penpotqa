@@ -1,11 +1,11 @@
 const { expect, test } = require("@playwright/test");
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
-const { LayersPage } = require("../../pages/workspace/layers");
+const { MainPage } = require("../../pages/workspace/main-page");
+const { LayersPanelPage } = require("../../pages/workspace/layers-panel-page");
 const { DesignPanelPage} = require("../../pages/workspace/design-panel");
 
 test.describe("Flex Layout & Elements", async () => {
-  test.beforeEach(async ({ page, browserName}, testInfo) => {
+  test.beforeEach(async ({ page }, testInfo) => {
     testInfo.setTimeout(testInfo.timeout + 10000);
     const mainPage = new MainPage(page);
     await mainPage.clickCreateBoardButton();
@@ -398,7 +398,7 @@ test.describe("Flex Layout & Elements", async () => {
 
   mainTest("FL-21 Flex elements change - alignment", async ({ page }) => {
     const mainPage = new MainPage(page);
-    const layersPage = new LayersPage(page);
+    const layersPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
 
     await mainPage.addFlexLayoutViaRightClick();
@@ -437,7 +437,7 @@ test.describe("Flex Layout & Elements", async () => {
 
   mainTest("FL-22 Flex elements - change margin single", async ({ page }) => {
     const mainPage = new MainPage(page);
-    const layersPage = new LayersPage(page);
+    const layersPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
 
     await mainPage.addFlexLayoutViaRightClick();
@@ -478,7 +478,7 @@ test.describe("Flex Layout & Elements", async () => {
 });
 
 test.describe("Margins & Paddings & Position", async () => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+  test.beforeEach(async ({ page }, testInfo) => {
       testInfo.setTimeout(testInfo.timeout + 10000);
       const mainPage = new MainPage(page);
       await mainPage.clickCreateBoardButton();
@@ -546,7 +546,7 @@ test.describe("Margins & Paddings & Position", async () => {
   mainTest("FL-42 Use absolute position and look if element still inside a board",
     async ({ page }) => {
     const mainPage = new MainPage(page);
-    const layersPage = new LayersPage(page);
+    const layersPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
 
     await layersPage.selectBoardChildEllipse();

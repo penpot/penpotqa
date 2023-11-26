@@ -1,7 +1,7 @@
 const { mainTest } = require("../../fixtures");
-const { MainPage } = require("../../pages/main-page");
+const { MainPage } = require("../../pages/workspace/main-page");
 const { expect, test } = require("@playwright/test");
-const { ColorPalettePopUp } = require("../../pages/color-palette-popup");
+const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup");
 
 mainTest("CO-272 Create Path from toolbar - closed", async ({ page }) => {
   const mainPage = new MainPage(page);

@@ -1,9 +1,9 @@
 const { dashboardTest } = require("../../fixtures");
-const { TeamPage } = require("../../pages/team-page");
+const { TeamPage } = require("../../pages/dashboard/team-page");
 const { test, expect } = require("@playwright/test");
 const { ProfilePage } = require("../../pages/profile-page");
-const { DashboardPage } = require("../../pages/dashboard-page");
-const { MainPage } = require("../../pages/main-page");
+const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
+const { MainPage } = require("../../pages/workspace/main-page");
 
 test.afterEach(async ({ page }) => {
   const teamPage = new TeamPage(page);

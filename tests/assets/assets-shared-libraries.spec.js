@@ -1,7 +1,7 @@
 const { mainTest } = require("../../fixtures");
 const { expect, test } = require("@playwright/test");
-const { DashboardPage } = require("../../pages/dashboard-page");
-const { MainPage } = require("../../pages/main-page");
+const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
+const { MainPage } = require("../../pages/workspace/main-page");
 
 test.describe(() => {
   test.beforeEach(async ({ page }) => {
