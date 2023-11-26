@@ -14,7 +14,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamList = page.locator('ul[class*="teams-dropdown"]');
     this.createNewTeamMenuItem = page.locator('#teams-selector-create-team');
     this.teamNameInput = page.locator('#name');
-    this.createNewTeamButton = page.locator('input[value="Create new team"]');
+    this.createNewTeamButton = page.locator('button[name="submit"] span:text-is("Create new team")');
     this.teamCurrentNameDiv = page.locator('.current-team .team-name');
     this.teamListItem = page.locator('li[class="team-name"] span[class="team-text"]');
     this.teamOptionsMenuButton = page.locator('.switch-options .icon-actions');
