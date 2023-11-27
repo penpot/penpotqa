@@ -1,5 +1,6 @@
 const { expect } = require("@playwright/test");
 const { BasePage } = require("../base-page");
+const { getPlatformName } = require("../../helpers/string-generator");
 
 exports.MainPage = class MainPage extends BasePage {
   /**
@@ -1520,26 +1521,41 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressHideShowRulersShortcut(browserName) {
-    if (browserName === 'webkit') {
+    const os = getPlatformName();
+    if (os === 'MacOS') {
       await this.page.keyboard.press("Meta+Shift+R");
     } else {
-      await this.page.keyboard.press("Control+Shift+R");
+      if (browserName === 'webkit') {
+        await this.page.keyboard.press("Meta+Shift+R");
+      } else {
+        await this.page.keyboard.press("Control+Shift+R");
+      }
     }
   }
 
   async pressHideShowGridsShortcut(browserName) {
-    if (browserName === 'webkit') {
+    const os = getPlatformName();
+    if (os === "MacOS") {
       await this.page.keyboard.press("Meta+'");
     } else {
-      await this.page.keyboard.press("Control+'");
+      if (browserName === 'webkit') {
+        await this.page.keyboard.press("Meta+'");
+      } else {
+        await this.page.keyboard.press("Control+'");
+      }
     }
   }
 
   async pressSelectAllShortcut(browserName) {
-    if (browserName === 'webkit') {
+    const os = getPlatformName();
+    if (os === "MacOS") {
       await this.page.keyboard.press("Meta+A");
     } else {
-      await this.page.keyboard.press("Control+A");
+      if (browserName === 'webkit') {
+        await this.page.keyboard.press("Meta+A");
+      } else {
+        await this.page.keyboard.press("Control+A");
+      }
     }
   }
 
