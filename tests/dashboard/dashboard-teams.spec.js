@@ -214,7 +214,7 @@ dashboardTest(
 dashboardTest(
   "DA-114 Team Settings - upload team profile picture",
   async ({ page }) => {
-    const team = "QA Team";
+    const team = random().concat('autotest');
     const teamPage = new TeamPage(page);
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
@@ -223,7 +223,9 @@ dashboardTest(
     await teamPage.isInfoMessageDisplayed("Loading image…");
     await teamPage.waitInfoMessageHidden();
     await expect(teamPage.teamInfoSection).toHaveScreenshot(
-      "team-profile-image.png"
+      "team-profile-image.png", {
+        mask: [teamPage.teamNameLabel]
+      }
     );
     await teamPage.deleteTeam(team);
   }

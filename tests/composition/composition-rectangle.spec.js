@@ -134,7 +134,6 @@ mainTest("CO-72 Add, hide, unhide and delete Blur to rectangle",async ({ page })
 });
 
 mainTest("CO-74 Add, edit and delete Stroke to rectangle",async ({ page }) => {
-  test.setTimeout(45000);
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();

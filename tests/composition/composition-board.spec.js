@@ -186,7 +186,6 @@ mainTest("CO-13 Add and edit Blur to board", async ({ page }) => {
 });
 
 mainTest("CO-14 Add, edit and delete Stroke to board",async ({ page }) => {
-  test.setTimeout(45000);
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportByCoordinates(100, 100);

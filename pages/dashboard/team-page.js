@@ -30,6 +30,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamProjectsSpan = page.locator('div.stats-block .projects span.text');
     this.teamFilesSpan = page.locator('div.stats-block .files span.text');
     this.teamInfoSection = page.locator('div[class="block info-block"]');
+    this.teamNameLabel = page.locator('div.block.info-block div.name');
     this.teamOwnerSection = page.locator('div[class="block owner-block"]');
     this.teamStatsSection = page.locator('div[class="block stats-block"]');
 
