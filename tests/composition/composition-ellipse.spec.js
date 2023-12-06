@@ -162,7 +162,6 @@ mainTest("CO-120 Add and edit Blur to ellipse", async ({ page }) => {
 });
 
 mainTest("CO-121 Add, edit and delete Stroke to ellipse", async ({ page }) => {
-  test.setTimeout(45000);
   const mainPage = new MainPage(page);
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportByCoordinates(100, 100);
