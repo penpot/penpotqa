@@ -20,7 +20,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'input[value="Delete files"],input[value="Delete file"]'
     );
     this.createFileButtonPlaceholder = page.locator(
-      'div[class="dashboard-grid"] button[class="create-new"]'
+      'div[class*="dashboard-grid"] button[class*="create-new"]'
     );
     this.createFileButtonTitlePanel = page.locator(
       '*[data-test="project-new-file"]'

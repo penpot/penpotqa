@@ -1,6 +1,5 @@
 const { expect } = require("@playwright/test");
 const { BasePage } = require("../base-page");
-const {getPlatformName} = require("../../helpers/string-generator");
 
 exports.MainPage = class MainPage extends BasePage {
   /**
@@ -11,7 +10,7 @@ exports.MainPage = class MainPage extends BasePage {
     super(page);
 
     //Left Toolbar
-    this.pencilBoxButton = page.locator('a[class^="workspace_left_header_main-icon"]');
+    this.pencilBoxButton = page.locator('a[class*="left_header__main-icon"]');
     this.moveButton = page.locator('button[title="Move (V)"]');
     this.createBoardButton = page.locator('button[data-test="artboard-btn"]');
     this.createRectangleButton = page.locator('button[data-test="rect-btn"]');
@@ -53,7 +52,7 @@ exports.MainPage = class MainPage extends BasePage {
       'ul[class^="workspace_context_menu"] span:has-text("Selection to board")'
     );
     this.createComponentMenuItem = page.locator(
-      'ul[class^="workspace_context_menu"] span:has-text("Create component")'
+      'ul[class*="workspace_context_menu"] span:has-text("Create component")'
     );
     this.flipVerticalMenuItem = page.locator(
       'ul[class^="workspace_context_menu"] span:has-text("Flip vertical")'
@@ -78,7 +77,7 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class^="element-list-body"] input[class="element-name"]'
     );
     this.createdLayerOnLayersPanelNameText = page.locator(
-      'div[class^="element-list-body"] span[class="element-name"]'
+      'ul[class*="layers__element-list"] div[class*="element-list-body"]'
     );
     this.searchLayersIcon = page.locator('svg[class="icon-search"]');
     this.searchLayersInput = page.locator('input[placeholder="Search layers"]');
@@ -89,10 +88,11 @@ exports.MainPage = class MainPage extends BasePage {
     this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
 
     //Design panel
+    this.designTab = page.locator('div[data-id="design"]');
     this.canvasBackgroundColorIcon = page.locator(
       'div[title="Canvas background"] div[class="color-bullet-wrapper"]'
     );
-    this.layerRotationInput = page.locator('div[class="input-element degrees"] input');
+    this.layerRotationInput = page.locator('div[title="Rotation"] input');
     this.individualCornersRadiusButton = page.locator('div[alt="Independent corners"]');
     this.allCornersRadiusButton = page.locator('div[alt="All corners"]');
     this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
@@ -312,7 +312,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.textIconRTL = page.locator('div.align-icons svg.icon-text-direction-rtl');
 
     //Node panel
-    this.pathActionsBlock = page.locator('div[class="path-actions"]');
+    this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
     this.firstNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=0'
     );
@@ -476,7 +476,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Assets panel
     this.assetsTab = page.locator('div[data-id="assets"]');
-    this.assetsPanel = page.locator('[id="left-sidebar-aside"] div[class^="sidebar_assets_assets-bar"]');
+    this.assetsPanel = page.locator('div[class*="assets__assets-bar"]');
     this.librariesTab = page.locator('div[class="libraries-button"]');
 
     this.addPageButton = page.locator('div[class="add-page"] svg');
@@ -566,7 +566,7 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class="typography-item"]'
     );
     this.assetComponentLabel = page.locator(
-      'div[class^="assets_components_grid-cell"]'
+      'div[class*="assets_components__grid-cell"]'
     );
     this.fileLibraryGraphicsSecondComponentLabel = page.locator(
       'div[class="grid-cell"] >>nth=1'
@@ -575,10 +575,10 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class="color-palette-content"]'
     );
     this.componentsTitleBarOnAssetsTab = page.locator(
-      'div[class^="components_title_bar"] span:text-is("Components")'
+      'div[class*="components_title_bar"] span:text-is("Components")'
     );
     this.componentsGridOnAssetsTab = page.locator(
-      'div[class^="assets_components_asset-grid"]'
+      'div[class*="assets_components__asset-grid"]'
     );
 
     //Assets panel - Libraries
@@ -661,6 +661,10 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickMoveButton() {
     await this.moveButton.click();
+  }
+
+  async clickOnDesignPanel() {
+    await this.designTab.click();
   }
 
   async clickCreateBoardButton() {
@@ -853,6 +857,10 @@ exports.MainPage = class MainPage extends BasePage {
 
   async doubleClickLayerOnLayersTab() {
     await this.createdLayerOnLayersPanelNameText.dblclick();
+  }
+
+  async clickLayerOnLayersTab() {
+    await this.createdLayerOnLayersPanelNameText.click();
   }
 
   async doubleClickLayerOnLayersTabViaTitle(title) {
@@ -2358,7 +2366,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(1200, 700, delayMs);
     await this.clickViewportByCoordinates(1000, 400, delayMs);
     await this.clickViewportByCoordinates(500, 200, delayMs);
-    await this.clickMoveButton();
+    await this.clickOnDesignPanel();
     await this.waitForChangeIsSaved();
   }
 
