@@ -35,7 +35,7 @@ mainTest("Create component shape", async ({ page }) => {
   await expect(mainPage.assetsPanel).toHaveScreenshot("rectangle-component-asset.png");
 });
 
-mainTest("Drag a component from assets tab and drop into workspace", async ({ page }) => {
+mainTest("Drag a component from assets tab and drop into workspace", async ({ page }) => { //todo
   const mainPage = new MainPage(page);
   const layersPanelPage = new LayersPanelPage(page);
   await mainPage.createDefaultEllipseByCoordinates(200, 300);
@@ -104,3 +104,67 @@ mainTest("Create component from text by right-click", async ({ page, browserName
   await mainPage.isComponentAddedToFileLibraryComponents();
   await expect(mainPage.assetsPanel).toHaveScreenshot("text-component-asset.png");
 });
+
+mainTest("Create component from image by right-click", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const layersPanelPage = new LayersPanelPage(page);
+  await mainPage.uploadImage("images/sample.jpeg");
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot('image-main-component-canvas.png');
+  await expect(layersPanelPage.layersSidebar).toHaveScreenshot('image-main-component-layer.png');
+  await mainPage.clickAssetsTab();
+  await mainPage.expandComponentsBlockOnAssetsTab();
+  await mainPage.isComponentAddedToFileLibraryComponents();
+  await expect(mainPage.assetsPanel).toHaveScreenshot("image-component-asset.png");
+});
+
+mainTest("Create component from path by right-click", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const layersPanelPage = new LayersPanelPage(page);
+  await mainPage.createDefaultClosedPath();
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot('path-main-component-canvas.png');
+  await expect(layersPanelPage.layersSidebar).toHaveScreenshot('path-main-component-layer.png');
+  await mainPage.clickAssetsTab();
+  await mainPage.expandComponentsBlockOnAssetsTab();
+  await mainPage.isComponentAddedToFileLibraryComponents();
+  await expect(mainPage.assetsPanel).toHaveScreenshot("path-component-asset.png");
+});
+
+mainTest("Create component from curve by right-click", async ({ page }) => { //todo need to change
+  const mainPage = new MainPage(page);
+  const layersPanelPage = new LayersPanelPage(page);
+  await mainPage.clickCreateCurveButton();
+  await mainPage.drawCurve(900, 300, 600, 200);
+  await mainPage.clickMoveButton();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickLayerOnLayersTab();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot('curve-main-component-canvas.png');
+  await expect(layersPanelPage.layersSidebar).toHaveScreenshot('curve-main-component-layer.png');
+  await mainPage.clickAssetsTab();
+  await mainPage.expandComponentsBlockOnAssetsTab();
+  await mainPage.isComponentAddedToFileLibraryComponents();
+  await expect(mainPage.assetsPanel).toHaveScreenshot("curve-component-asset.png");
+});
+
+mainTest("Undo component", async ({ page, browserName }) => {
+  const mainPage = new MainPage(page);
+  await mainPage.createDefaultRectangleByCoordinates(200, 300);
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickOnLayerOnCanvas();
+  await mainPage.changeRotationForLayer("200");
+  await expect(mainPage.viewport).toHaveScreenshot("component-change_rotation.png");
+  await mainPage.clickShortcutCtrlZ(browserName);
+  await expect(mainPage.viewport).toHaveScreenshot("component-change_rotation_undo.png");
+});
+
+mainTest("Create main component from Cut option", async () => {})
+

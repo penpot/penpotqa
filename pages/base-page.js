@@ -1,12 +1,13 @@
 const { expect } = require("@playwright/test");
 const { getPlatformName } = require("../helpers/string-generator");
+
 exports.BasePage = class BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
   constructor(page) {
     this.page = page;
-    this.header = page.locator('div[class="dashboard-title"] h1');
+    this.header = page.locator('div[class^="main_ui_dashboard"] h1');
     this.successMessage = page.locator('div[class="banner success fixed"]');
     this.infoMessage = page.locator('div[class="banner info fixed"]');
   }
@@ -19,6 +20,18 @@ exports.BasePage = class BasePage {
       await this.page.keyboard.press("Control+A");
     }
     await this.page.keyboard.press("Delete");
+  }
+
+  async clickShortcutCtrlZ(browserName) {
+    if (getPlatformName() === "MacOS") {
+      await this.page.keyboard.press("Meta+Z");
+    } else {
+      if (browserName !== "webkit") {
+        await this.page.keyboard.press("Control+Z");
+      } else {
+        await this.page.keyboard.press("Meta+Z");
+      }
+    }
   }
 
   async reloadPage() {
