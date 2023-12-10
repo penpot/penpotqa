@@ -66,7 +66,7 @@ mainTest("CP-7 Use Recent colors", async ({ page }) => {
 mainTest("CP-8 Use colors from File library", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -132,7 +132,7 @@ mainTest("CP-18 Open Color palette from toolbar", async ({ page }) => {
 mainTest("CP-20 Choose file library colors", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -183,7 +183,7 @@ mainTest("CP-21 Click any layer and change Fill color from palette",async ({ pag
 mainTest("CP-26 Open color picker from add or edit color in assets",async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePopUp = new ColorPalettePopUp(page);
-    await mainPage.clickAssetsTab();
+    await mainPage.openAssetsTab();
     await mainPage.clickAddFileLibraryColorButton();
     await colorPalettePopUp.isColorPalettePopUpOpened();
 });

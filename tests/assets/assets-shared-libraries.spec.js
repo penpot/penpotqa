@@ -20,7 +20,7 @@ test.describe(() => {
 
   mainTest("AS-92 Import shared library from LIBRARIES pop-up",async ({ page }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickAssetsTab();
+    await mainPage.openAssetsTab();
     await mainPage.clickLibrariesTab();
     await mainPage.clickAddSharedLibraryButton();
     await mainPage.clickCloseLibrariesPopUpButton();
@@ -30,7 +30,7 @@ test.describe(() => {
 
   mainTest("AS-93 Remove shared library from LIBRARIES pop-up",async ({ page }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickAssetsTab();
+    await mainPage.openAssetsTab();
     await mainPage.clickLibrariesTab();
     await mainPage.clickAddSharedLibraryButton();
     await mainPage.clickCloseLibrariesPopUpButton();
@@ -57,7 +57,7 @@ test.describe(() => {
     await dashboardPage.reloadPage();
     await dashboardPage.openSecondFile("New File 1");
     await mainPage.isMainPageLoaded();
-    await mainPage.clickAssetsTab();
+    await mainPage.openAssetsTab();
     await mainPage.clickLibrariesTab();
 
     await mainPage.searchForLibrary("Circ");
@@ -78,7 +78,7 @@ test.describe(() => {
 mainTest("AS-95 Publish Shared library",async ({ page }) => {
   const mainPage = new MainPage(page);
   const dashboardPage = new DashboardPage(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.uploadImageToFileLibraryGraphics("images/images.png");
   await mainPage.waitForChangeIsSaved();
   await mainPage.isImageUploadedToFileLibraryGraphics();
@@ -95,7 +95,7 @@ mainTest("AS-95 Publish Shared library",async ({ page }) => {
 mainTest("AS-96 Unpublish Shared library",async ({ page }) => {
   const mainPage = new MainPage(page);
   const dashboardPage = new DashboardPage(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.uploadImageToFileLibraryGraphics("images/images.png");
   await mainPage.waitForChangeIsSaved();
   await mainPage.isImageUploadedToFileLibraryGraphics();
@@ -109,7 +109,7 @@ mainTest("AS-96 Unpublish Shared library",async ({ page }) => {
   await dashboardPage.isFilePresent("New File 1");
 
   await dashboardPage.openFile();
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickLibrariesTab();
   await mainPage.unPublishSharedLibrary();
   await mainPage.isPublishLibraryBtnPresent();

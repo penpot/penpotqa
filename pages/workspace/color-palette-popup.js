@@ -1,5 +1,6 @@
 const { BasePage } = require("../base-page");
 const { expect } = require("@playwright/test");
+
 exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
