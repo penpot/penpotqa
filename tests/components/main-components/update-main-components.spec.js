@@ -5,7 +5,7 @@ const { TeamPage } = require("../../../pages/dashboard/team-page");
 const { MainPage } = require("../../../pages/workspace/main-page");
 const { random } = require("../../../helpers/string-generator");
 const { ColorPalettePopUp } = require("../../../pages/workspace/color-palette-popup");
-const {LayersPanelPage} = require("../../../pages/workspace/layers-panel-page");
+const { LayersPanelPage } = require("../../../pages/workspace/layers-panel-page");
 
 const teamName = random().concat("autotest");
 
