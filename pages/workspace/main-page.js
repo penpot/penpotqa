@@ -34,7 +34,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Layer right-click menu items
     this.deleteLayerMenuItem = page.locator(
-      'ul[class^="workspace_context_menu"] span:has-text("Delete")'
+      'ul[class*="workspace_context_menu"] span:has-text("Delete")'
     );
     this.hideLayerMenuItem = page.locator(
       'ul[class^="workspace_context_menu"] span:has-text("Hide")'
@@ -54,6 +54,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.createComponentMenuItem = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Create component")'
     );
+    this.updateMainComponentMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Update main component")'
+    );
+    this.createMultipleComponentsMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Create multiple components")'
+    );
     this.flipVerticalMenuItem = page.locator(
       'ul[class^="workspace_context_menu"] span:has-text("Flip vertical")'
     );
@@ -69,14 +75,23 @@ exports.MainPage = class MainPage extends BasePage {
     this.removeFlexLayout = page.locator(
       'ul[class^="workspace_context_menu"] span:has-text("Remove flex layout")'
     );
+    this.showInAssetsPanelOption = page.locator(
+        'ul[class*="workspace_context_menu"] span:has-text("Show in assets panel")'
+    );
+    this.createAnnotationOption = page.locator(
+        'ul[class*="workspace_context_menu"] span:has-text("Create annotation")'
+    );
+    this.duplicateOption = page.locator(
+        'ul[class*="workspace_context_menu"] span:has-text("Duplicate")'
+    );
 
     //Layers panel
     this.layersTab = page.locator('div[data-id=":layers"]');
     this.layersPanel = page.locator('div[class="layers-tab"]');
     this.createdLayerOnLayersPanelNameInput = page.locator(
-      'div[class^="element-list-body"] input[class="element-name"]'
+      'div[class*="element-list-body"] input[class*="element-name"]'
     );
-    this.createdLayerOnLayersPanelNameText = page.locator(
+    this.createdLayerOnLayersPanel = page.locator(
       'ul[class*="layers__element-list"] div[class*="element-list-body"]'
     );
     this.searchLayersIcon = page.locator('svg[class="icon-search"]');
@@ -86,12 +101,12 @@ exports.MainPage = class MainPage extends BasePage {
     );
     this.layoutIcon = page.locator('svg[class="icon-layout-rows"]');
     this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
+    this.mainComponentLayer = page.locator('//*[@class="icon-component-refactor"]//parent::div');
+    this.copyComponentLayer = page.locator('//*[@class="icon-copy-refactor"]//parent::div');
 
     //Design panel
     this.designTab = page.locator('div[data-id="design"]');
-    this.canvasBackgroundColorIcon = page.locator(
-      'div[title="Canvas background"] div[class="color-bullet-wrapper"]'
-    );
+    this.canvasBackgroundColorIcon = page.locator('div[class*="color-bullet-wrapper"]');
     this.layerRotationInput = page.locator('div[title="Rotation"] input');
     this.individualCornersRadiusButton = page.locator('div[alt="Independent corners"]');
     this.allCornersRadiusButton = page.locator('div[alt="All corners"]');
@@ -102,6 +117,8 @@ exports.MainPage = class MainPage extends BasePage {
     this.fourthCornerRadiusInput = page.locator('div[class="input-element mini"] input  >> nth=3');
     this.sizeWidthInput = page.locator('div[class="input-element width"] input');
     this.sizeHeightInput = page.locator('div[class="input-element height"] input');
+    this.xAxisInput = page.locator('div[title="X axis"] input');
+    this.yAxisInput = page.locator('div[title="Y axis"] input');
 
     //Design panel - Shadow section
     this.shadowSection = page.locator('div.element-set-title:has-text("Shadow")');
@@ -311,6 +328,28 @@ exports.MainPage = class MainPage extends BasePage {
     this.textIconLTR = page.locator('div.align-icons svg.icon-text-direction-ltr');
     this.textIconRTL = page.locator('div.align-icons svg.icon-text-direction-rtl');
 
+    //Design panel - Component section
+    this.componentMenuButton = page.locator(
+        'div[class*="component__element-content"] div[class*="component-actions"]'
+    );
+    this.showInAssetsPanelOptionDesign = page.locator(
+        'ul[class*="component__custom-select-dropdown"] span:text-is("Show in assets panel")'
+    );
+    this.componentBlockOnDesignTab = page.locator('div[class*="component__element-set"]');
+
+    this.createAnnotationOptionDesign = page.locator(
+        'ul[class*="component__custom-select-dropdown"] span:text-is("Create annotation")'
+    );
+    this.annotationTextArea = page.locator('#annotation-textarea');
+    this.annotationCreateTitle = page.locator('div[class^="component-annotation"] div[class^=title]');
+    this.createAnnotationTick = page.locator('div[title="Create"] svg[class="icon-tick"]');
+    this.saveAnnotationTick = page.locator('div[title="Save"] svg[class="icon-tick"]');
+    this.discardAnnotationTick = page.locator('div[title="Discard"] svg[class="icon-cross"]');
+    this.editAnnotationTick = page.locator('div[title="Edit"] svg[class="icon-pencil"]');
+    this.deleteAnnotationTick = page.locator('div[title="Delete"] svg[class="icon-trash"]');
+    this.deleteAnnotationPopup = page.locator('div[class*="modal-container"] h2:text-is("Delete annotation")');
+    this.deleteAnnotationOkBtn = page.locator('div[class*="modal-container"] input[value="Ok"]');
+
     //Node panel
     this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
     this.firstNode = page.locator(
@@ -357,6 +396,10 @@ exports.MainPage = class MainPage extends BasePage {
       'div[alt="To curve (C)"] >> nth=0'
     );
 
+    //Inspect panel
+    this.inspectTab = page.locator('div[data-id="inspect"]');
+    this.annotationBlockOnInspect = page.locator('div.attributes-block.inspect-annotation');
+
     //Comments
     this.commentInput = page.locator("textarea >> nth=0");
     this.commentText = page.locator(
@@ -401,18 +444,18 @@ exports.MainPage = class MainPage extends BasePage {
 
     // Main menu - first level
     this.mainMenuButton = page.locator(
-      'div[class="menu-section"] svg[class="icon-actions"]'
+      'div[class*="menu-section"] svg[class="icon-menu-refactor"]'
     );
-    this.mainMenuList = page.locator('ul[class="menu"]');
+    this.mainMenuList = page.locator('ul[role="menu"]');
     this.viewMainMenuItem = page.locator('li[data-menu="view"]');
     this.fileMainMenuItem = page.locator('li[data-menu="file"]');
-    this.editMainMenuItem = page.locator('li[data-menu="edit"]');
+    this.editMainMenuItem = page.locator('li[data-test="edit"]');
     this.helpInfoMenuItem = page.locator('li[data-menu="help-info"]');
 
     // Main menu - second level
     this.subMenuViewList = page.locator('ul[class="sub-menu view"]');
     this.subMenuFileList = page.locator('ul[class="sub-menu file"]');
-    this.subMenuEditList = page.locator('ul[class="sub-menu edit"]');
+    this.subMenuEditList = page.locator('ul[class*="sub-menu"]');
     this.subMenuHelpInfoList = page.locator('ul[class="sub-menu help-info"]');
     this.showRulersMainMenuSubItem = page.locator(
       'ul[class="sub-menu view"] span:has-text("Show rulers")'
@@ -422,7 +465,7 @@ exports.MainPage = class MainPage extends BasePage {
     );
     this.hideGridsMainMenuSubItem = page.locator('ul[class^="sub-menu"] span:text-is("Hide grids")');
     this.showGridsMainMenuSubItem = page.locator('ul[class^="sub-menu"] span:text-is("Show grid")');
-    this.selectAllMainMenuSubItem = page.locator('ul[class^="sub-menu"] span:text-is("Select all")');
+    this.selectAllMainMenuSubItem = page.locator('#file-menu-select-all');
     this.showColorPaletteMainMenuSubItem = page.locator(
       'ul[class="sub-menu view"] span:text-is("Show color palette")'
     );
@@ -468,7 +511,7 @@ exports.MainPage = class MainPage extends BasePage {
       'span[class="zoom-btns"] button:has-text("-")'
     );
     this.zoomResetButton = page.locator('button[class="reset-btn"]');
-    this.zoomButton = page.locator('div[class="zoom-widget"]');
+    this.zoomButton = page.locator('div[class*="zoom-widget"]');
     this.zoomToFitAllMenuItem = page.locator('li:has-text("Zoom to fit all")');
     this.zoomSelectedMenuItem = page.locator('li:has-text("Zoom to selected")');
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
@@ -514,22 +557,18 @@ exports.MainPage = class MainPage extends BasePage {
     this.fileLibraryGraphicsUploadImageSelector = page.locator(
       'div[class="libraries-wrapper"] input[accept="image/gif,image/png,image/svg+xml,image/webp,image/jpeg"]'
     );
-    this.fileLibraryGraphicsUploadedImageLabel = page.locator(
-      'div[class="grid-cell"]'
-    );
+    this.fileLibraryGraphicsUploadedImageLabel = page.locator('div[class*="grid-cell"]');
     this.renameFileLibraryMenuItem = page.locator('li:has-text("Rename")');
     this.deleteFileLibraryMenuItem = page.locator('li:has-text("Delete")');
     this.editFileLibraryMenuItem = page.locator('li:has-text("Edit")');
-    this.duplicateFileLibraryMenuItem = page.locator(
-      'li:has-text("Duplicate")'
-    );
+    this.duplicateMainComponentMenuItem = page.locator('li:has-text("Duplicate main")');
+    this.showMainComponentMenuItem = page.locator('li:has-text("Show main component")');
     this.createGroupFileLibraryMenuItem = page.locator('li:has-text("Group")');
-    this.renameGroupFileLibraryMenuItem = page.locator('li:has-text("Rename")');
     this.ungroupFileLibraryMenuItem = page.locator('li:has-text("Ungroup")');
     this.groupNameInput = page.locator("#asset-name");
     this.createGroupButton = page.locator('input[value="Create"]');
     this.renameGroupButton = page.locator('input[value="Rename"]');
-    this.fileLibraryGroupTitle = page.locator('div[class="group-title "]');
+    this.fileLibraryGroupTitle = page.locator('div[class*="group-title"]');
     this.fileLibraryChangeViewButton = page.locator(
       'div[class="listing-option-btn"] svg'
     );
@@ -542,6 +581,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.fileLibraryColorsColorTitle = page.locator('div[class="name-block"]');
     this.fileLibraryColorsColorNameInput = page.locator(
       'input[class="element-name"]'
+    );
+    this.fileLibraryComponentNameInput = page.locator(
+      'div[class*="assets_components__editing"] input'
     );
     this.addFileLibraryTypographyButton = page.locator(
       'div[class="asset-section"] svg[class="icon-plus"] >>nth=2'
@@ -569,7 +611,7 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class*="assets_components__grid-cell"]'
     );
     this.fileLibraryGraphicsSecondComponentLabel = page.locator(
-      'div[class="grid-cell"] >>nth=1'
+      'div[class*="grid-cell"] >>nth=1'
     );
     this.bottomPaletteContentBlock = page.locator(
       'div[class="color-palette-content"]'
@@ -641,7 +683,7 @@ exports.MainPage = class MainPage extends BasePage {
     //Header
     this.savedChangesIcon = page.locator('div[title="Saved"]');
     this.unSavedChangesIcon = page.locator('div.pending span:text-is("Unsaved changes")');
-    this.usersSection = page.locator('div[class="users-section"]');
+    this.usersSection = page.locator('div[class*="users-section"]');
     this.projectNameSpan = page.locator('div[class="project-tree"] span[class="project-name"]');
     this.fileNameSpan = page.locator('div[class="project-tree"] span')
 
@@ -756,7 +798,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickOnLayerOnCanvas() {
-    await this.createdLayer.click({ force: true, delay: 500});
+    await this.createdLayer.click({ force: true, delay: 500 });
   }
 
   async doubleClickBoardTitleOnCanvas(title) {
@@ -856,11 +898,15 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async doubleClickLayerOnLayersTab() {
-    await this.createdLayerOnLayersPanelNameText.dblclick();
+    await this.createdLayerOnLayersPanel.dblclick();
   }
 
-  async clickLayerOnLayersTab() {
-    await this.createdLayerOnLayersPanelNameText.click();
+  async clickMainComponentOnLayersTab() {
+    await this.mainComponentLayer.click();
+  }
+
+  async clickCopyComponentOnLayersTab() {
+    await this.copyComponentLayer.click();
   }
 
   async doubleClickLayerOnLayersTabViaTitle(title) {
@@ -881,12 +927,12 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async isLayerNameDisplayed(name) {
-    await expect(this.createdLayerOnLayersPanelNameText).toHaveText(name);
+    await expect(this.createdLayerOnLayersPanel).toHaveText(name);
   }
 
   async isBoardNameDisplayed(name) {
     await expect(this.createdBoardTitle).toHaveText(name);
-    await expect(this.createdLayerOnLayersPanelNameText).toHaveText(name);
+    await expect(this.createdLayerOnLayersPanel).toHaveText(name);
   }
 
   async drawCurve(x1, y1, x2, y2) {
@@ -899,7 +945,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickPencilBoxButton() {
-    await this.pencilBoxButton.click();
+    await this.pencilBoxButton.click( { force: true });
   }
 
   async isMainPageLoaded() {
@@ -1133,6 +1179,32 @@ exports.MainPage = class MainPage extends BasePage {
     const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
     await layerSel.last().click({ button: "right", force: true });
     await this.createComponentMenuItem.click();
+  }
+
+  async updateMainComponentViaRightClick() {
+    await this.copyComponentLayer.click({ button: "right", force: true});
+    await this.updateMainComponentMenuItem.click();
+  }
+
+  async duplicateLayerViaRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({ button: "right", force: true });
+    await this.duplicateOption.click();
+  }
+
+  async createComponentViaRightClickLayers() {
+    await this.createdLayerOnLayersPanel.click({ button: "right", force: true });
+    await this.createComponentMenuItem.click();
+  }
+
+  async createComponentsMultipleShapesRightClick(singleComponent=true) {
+    const layerSel = this.page.locator('div.viewport .main.viewport-selrect');
+    await layerSel.last().click({ button: "right", force: true });
+    if (singleComponent) {
+      await this.createComponentMenuItem.click();
+    } else {
+      await this.createMultipleComponentsMenuItem.click();
+    }
   }
 
   async createComponentViaShortcut(browserName) {
@@ -1662,7 +1734,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.downloadFileCloseButton.click();
   }
 
-  async clickAssetsTab() {
+  async openAssetsTab() {
     await this.assetsTab.click();
   }
 
@@ -1939,13 +2011,20 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.fileLibraryGroupTitle).toHaveText(groupName);
   }
 
+  async expandFileLibraryGroup(groupName) {
+    const selector = this.page.locator(
+        `div[class*="component-group"] div[class*="group-title"] has:text("${groupName}")`
+    );
+    await selector.click();
+  }
+
   async isFileLibraryGroupRemoved() {
     await expect(this.fileLibraryGroupTitle).not.toBeVisible();
   }
 
   async renameGroupFileLibrary(newGroupName) {
     await this.fileLibraryGroupTitle.click({ button: "right" });
-    await this.renameGroupFileLibraryMenuItem.click();
+    await this.renameFileLibraryMenuItem.click();
     await this.clearInput(this.groupNameInput);
     await this.groupNameInput.fill(newGroupName);
     await this.renameGroupButton.click();
@@ -2097,9 +2176,21 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.assetComponentLabel).not.toBeVisible();
   }
 
-  async duplicateFileLibraryComponents() {
+  async duplicateFileLibraryComponent() {
     await this.assetComponentLabel.click({ button: "right" });
-    await this.duplicateFileLibraryMenuItem.click();
+    await this.duplicateMainComponentMenuItem.click();
+  }
+
+  async showFileLibraryMainComponent() {
+    await this.assetComponentLabel.click({ button: "right" });
+    await this.showMainComponentMenuItem.click();
+  }
+
+  async renameFileLibraryComponent(newName) {
+    await this.assetComponentLabel.click({ button: "right" });
+    await this.renameFileLibraryMenuItem.click();
+    await this.fileLibraryComponentNameInput.fill(newName);
+    await this.clickOnEnter();
   }
 
   async deleteFileLibraryComponents() {
@@ -2391,8 +2482,110 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
+  async createDefaultCurveLayer() {
+    await this.clickCreateCurveButton();
+    await this.drawCurve(900, 300, 600, 200);
+    await this.clickMoveButton();
+    await this.waitForChangeIsSaved();
+  }
+
   async waitDesignTabCollapsed() {
     await expect(this.strokeSection).toBeHidden();
+  }
+
+  async clickOnComponentMenuButton() {
+    await this.componentMenuButton.click();
+  }
+
+  async clickOnShowInAssetsPanel() {
+    await this.showInAssetsPanelOptionDesign.click();
+  }
+
+  async addAnnotationForComponent(value) {
+    await this.enterTextIntoAnnotationField(value);
+    await this.submitAnnotationCreation();
+  }
+
+  async editAnnotationForComponent(value) {
+    await this.enterTextIntoAnnotationField(value);
+    await this.submitAnnotationEditing();
+  }
+
+  async cancelAddAnnotationForComponent(value) {
+    await this.enterTextIntoAnnotationField(value);
+    await this.discardAnnotationCreation();
+  }
+
+  async clickOnCreateAnnotationOption() {
+    await this.createAnnotationOptionDesign.click();
+    await expect(this.annotationTextArea).toBeVisible();
+  }
+
+  async enterTextIntoAnnotationField(value) {
+    await this.annotationTextArea.fill(value);
+  }
+
+  async submitAnnotationCreation() {
+    await this.annotationCreateTitle.hover();
+    await this.createAnnotationTick.click();
+  }
+
+  async submitAnnotationEditing() {
+    await this.annotationCreateTitle.hover();
+    await this.saveAnnotationTick.click();
+  }
+
+  async discardAnnotationCreation() {
+    await this.annotationCreateTitle.hover();
+    await this.discardAnnotationTick.click();
+  }
+
+  async clickOnEditAnnotation() {
+    await this.annotationCreateTitle.hover();
+    await this.editAnnotationTick.click();
+  }
+
+  async clickOnDeleteAnnotation() {
+    await this.annotationCreateTitle.hover();
+    await this.deleteAnnotationTick.click();
+    await expect(this.deleteAnnotationPopup).toBeVisible();
+  }
+
+  async confirmDeleteAnnotation() {
+    await this.deleteAnnotationOkBtn.click();
+  }
+
+  async createAnnotationRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({ button: "right", force: true });
+    await this.createAnnotationOption.click();
+    await expect(this.annotationTextArea).toBeVisible();
+  }
+
+  async isAnnotationAddedToComponent(value) {
+    const selector = this.page.locator(
+        `div[class^="component-annotation"] div[data-replicated-value="${value}"]`
+    );
+    await expect(selector).toBeVisible();
+  }
+
+  async showInAssetsPanelRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({button: "right", force: true });
+    await this.showInAssetsPanelOption.click();
+  }
+
+  async openInspectTab() {
+    await this.inspectTab.click();
+  }
+
+  async isAnnotationExistOnInspectTab() {
+    await expect(this.annotationBlockOnInspect).toBeVisible();
+  }
+
+  async changeAxisXandYForLayer(x, y) {
+    await this.xAxisInput.fill(x);
+    await this.yAxisInput.fill(y);
   }
 
 };

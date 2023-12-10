@@ -6,7 +6,7 @@ mainTest(
   "AS-37 Filter Typographies from All Assets drop-down",
   async ({ page }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickAssetsTab();
+    await mainPage.openAssetsTab();
     await mainPage.selectTypeFromAllAssetsSelector("Typographies");
     await mainPage.isAssetsTitleDisplayed("Typographies (0)");
   }
@@ -16,7 +16,7 @@ mainTest(
   "AS-38 Typographic styles - add from Assets panel",
   async ({ page }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickAssetsTab();
+    await mainPage.openAssetsTab();
     await mainPage.clickAddFileLibraryTypographyButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
@@ -38,7 +38,7 @@ mainTest(
 
 mainTest("AS-40 Typographic styles - edit", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportTwice();
@@ -65,7 +65,7 @@ mainTest("AS-40 Typographic styles - edit", async ({ page }) => {
 
 mainTest("AS-41 Typographic styles - rename", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportTwice();
@@ -90,7 +90,7 @@ mainTest("AS-41 Typographic styles - rename", async ({ page }) => {
 
 mainTest("AS-42 Typographic styles - delete", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportTwice();
@@ -105,7 +105,7 @@ mainTest("AS-42 Typographic styles - delete", async ({ page }) => {
 
 mainTest("AS-43 Typographic styles - create group", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportTwice();
@@ -118,7 +118,7 @@ mainTest("AS-43 Typographic styles - create group", async ({ page }) => {
 
 mainTest("AS-45 Typographic styles - rename group", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportTwice();
@@ -135,7 +135,7 @@ mainTest("AS-45 Typographic styles - rename group", async ({ page }) => {
 
 mainTest("AS-48 Typographic styles - ungroup", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportTwice();
@@ -154,7 +154,7 @@ mainTest(
   "AS-50 Typographic styles - apply style to text from Assets panel",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickAssetsTab();
+    await mainPage.openAssetsTab();
     await mainPage.clickAddFileLibraryTypographyButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
@@ -181,7 +181,7 @@ mainTest(
   "AS-54 Typographic styles - apply style to text from Typographies panel",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickAssetsTab();
+    await mainPage.openAssetsTab();
     await mainPage.clickAddFileLibraryTypographyButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();

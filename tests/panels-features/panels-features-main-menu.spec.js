@@ -51,7 +51,7 @@ mainTest(
 mainTest("PF-101 Hide/show color palette - file library check",async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -197,7 +197,7 @@ mainTest("PF-113 Add/Remove as shared library", async ({ page }) => {
   await mainPage.clickFileMainMenuItem();
   await mainPage.clickAddAsSharedLibraryMainMenuSubItem();
   await mainPage.clickAddAsSharedLibraryButton();
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.isSharedLibraryBadgeVisible();
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();

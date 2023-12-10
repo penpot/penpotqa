@@ -39,7 +39,7 @@ const config = {
     headless: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
-    video: "on",
+    video: "on"
   },
   projects: [
     {

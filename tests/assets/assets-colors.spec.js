@@ -5,7 +5,7 @@ const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup
 
 mainTest("AS-22 Filter Colors from All Assets drop-down", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.selectTypeFromAllAssetsSelector("Colors");
   await mainPage.isAssetsTitleDisplayed("Colors (0)");
 });
@@ -13,7 +13,7 @@ mainTest("AS-22 Filter Colors from All Assets drop-down", async ({ page }) => {
 mainTest("AS-23 File library colors - add", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -26,7 +26,7 @@ mainTest("AS-23 File library colors - add", async ({ page }) => {
 mainTest("AS-24 File library colors - edit", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -44,7 +44,7 @@ mainTest("AS-24 File library colors - edit", async ({ page }) => {
 mainTest("AS-25 File library colors - rename", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -62,7 +62,7 @@ mainTest("AS-25 File library colors - rename", async ({ page }) => {
 mainTest("AS-26 File library colors - delete", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -78,7 +78,7 @@ mainTest("AS-26 File library colors - delete", async ({ page }) => {
 mainTest("AS-27 File library colors - create group", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -93,7 +93,7 @@ mainTest("AS-27 File library colors - create group", async ({ page }) => {
 mainTest("AS-29 File library colors - rename group", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -112,7 +112,7 @@ mainTest("AS-29 File library colors - rename group", async ({ page }) => {
 mainTest("AS-32 File library colors- ungroup", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -129,7 +129,7 @@ mainTest("AS-32 File library colors- ungroup", async ({ page }) => {
 mainTest("AS-34 File library colors - apply to element", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
@@ -147,7 +147,7 @@ mainTest("AS-34 File library colors - apply to element", async ({ page }) => {
 mainTest("AS-117 File library colors - apply to stroke", async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
+  await mainPage.openAssetsTab();
   await mainPage.clickAddFileLibraryColorButton();
   await colorPalettePopUp.setHex("#ffff00");
   await colorPalettePopUp.clickSaveColorStyleButton();
