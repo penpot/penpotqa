@@ -58,7 +58,7 @@ jobs:
           retention-days: 30
   tests_webkit:
     if: ${{ always() }}
-    needs: [ tests_chromium, tests_firefox]
+    needs: [tests_chromium, tests_firefox]
     environment: PRE
     runs-on: windows-latest
     steps:

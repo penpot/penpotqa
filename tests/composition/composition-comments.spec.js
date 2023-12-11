@@ -34,7 +34,7 @@ mainTest(
         maxDiffPixels: 10,
       });
     }
-  }
+  },
 );
 
 mainTest(
@@ -44,14 +44,14 @@ mainTest(
     await mainPage.clickCreateCommentButton();
     await mainPage.clickViewportTwice();
     await mainPage.enterCommentText(
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     );
     await mainPage.clickPostCommentButton();
     await mainPage.isCommentDisplayedInPopUp(
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     );
     await mainPage.isCommentDisplayedInCommentsPanel(
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     );
     if (browserName === "chromium") {
       await expect(page).toHaveScreenshot("comment-latin-opened-pop-up.png", {
@@ -75,7 +75,7 @@ mainTest(
         maxDiffPixels: 10,
       });
     }
-  }
+  },
 );
 
 mainTest(
@@ -89,11 +89,11 @@ mainTest(
     await mainPage.clickViewportByCoordinates(600, 400);
     await mainPage.clickCommentThreadIcon();
     await mainPage.enterReplyText(
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry"
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
     );
     await mainPage.clickPostCommentButton();
     await mainPage.isCommentReplyDisplayedInPopUp(
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry"
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
     );
     await mainPage.isCommentReplyDisplayedInCommentsPanel();
     if (browserName === "chromium") {
@@ -106,7 +106,7 @@ mainTest(
         maxDiffPixels: 10,
       });
     }
-  }
+  },
 );
 
 mainTest(
@@ -140,7 +140,7 @@ mainTest(
         maxDiffPixels: 10,
       });
     }
-  }
+  },
 );
 
 mainTest("CO-356 Delete thread", async ({ page, browserName }) => {
@@ -156,7 +156,7 @@ mainTest("CO-356 Delete thread", async ({ page, browserName }) => {
   await mainPage.clickDeleteThreadButton();
   await mainPage.isCommentThreadIconNotDisplayed();
   await mainPage.isCommentsPanelPlaceholderDisplayed(
-    "You're all caught up! New comment notifications will appear here."
+    "You're all caught up! New comment notifications will appear here.",
   );
   if (browserName === "chromium") {
     await expect(page).toHaveScreenshot("comment-removed.png", {

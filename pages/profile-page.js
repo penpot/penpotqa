@@ -9,33 +9,40 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
     //Account
     this.profileMenuButton = page.locator('div[data-test="profile-btn"]');
-    this.profileNameSpan = page.locator('div.profile span');
-    this.yourAccountMenuItem = page.locator('li[data-test="profile-profile-opt"]');
+    this.profileNameSpan = page.locator("div.profile span");
+    this.yourAccountMenuItem = page.locator(
+      'li[data-test="profile-profile-opt"]',
+    );
     this.logoutMenuItem = page.locator('li[data-test="logout-profile-opt"]');
-    this.giveFeedbackMenuItem = page.locator('li[data-test="feedback-profile-opt"]');
-    this.backToDashboardBtn = page.locator('div.back-to-dashboard');
+    this.giveFeedbackMenuItem = page.locator(
+      'li[data-test="feedback-profile-opt"]',
+    );
+    this.backToDashboardBtn = page.locator("div.back-to-dashboard");
 
     //Profile
-    this.profileNameInput = page.locator('#fullname');
-    this.profileEmailInput = page.locator('#email');
+    this.profileNameInput = page.locator("#fullname");
+    this.profileEmailInput = page.locator("#email");
     this.saveSettingsButton = page.locator('input[value="Save settings"]');
-    this.profileImageInput = page.locator('input[data-test="profile-image-input"]')
-    this.profileAvatarBlock = page.locator('div.form-container.two-columns');
+    this.profileImageInput = page.locator(
+      'input[data-test="profile-image-input"]',
+    );
+    this.profileAvatarBlock = page.locator("div.form-container.two-columns");
 
     //Feedback
-    this.feedbackSubjectInput = page.locator('#subject');
-    this.feedbackDescriptionInput = page.locator('textarea');
+    this.feedbackSubjectInput = page.locator("#subject");
+    this.feedbackDescriptionInput = page.locator("textarea");
     this.sendFeedbackButton = page.locator('input[value="Send"]');
 
     //Password
     this.passwordSidebarOption = page.locator(
-      'div.sidebar-content-section li span.element-title:text-is("Password")');
-    this.passwordFormHeader = page.locator('.password-form h2');
-    this.passwordOldInput = page.locator('#password-old');
+      'div.sidebar-content-section li span.element-title:text-is("Password")',
+    );
+    this.passwordFormHeader = page.locator(".password-form h2");
+    this.passwordOldInput = page.locator("#password-old");
     this.passwordNewInput = page.locator('input[label="New password"]');
     this.passwordConfirmInput = page.locator('input[label="Confirm password"]');
     this.updateSettingsBtn = page.locator('input[value="Update settings"]');
-    this.passwordInputError = page.locator('span[data-test="-error"]')
+    this.passwordInputError = page.locator('span[data-test="-error"]');
   }
 
   async openYourAccountPage() {
@@ -50,7 +57,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
   async openPasswordPageInAccount() {
     await this.passwordSidebarOption.click();
-    await expect(this.passwordFormHeader).toHaveText('Change password');
+    await expect(this.passwordFormHeader).toHaveText("Change password");
   }
 
   async enterCurrentPassword(value) {
@@ -120,5 +127,4 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await this.backToDashboardBtn.click();
     await this.isHeaderDisplayed("Projects");
   }
-
 };

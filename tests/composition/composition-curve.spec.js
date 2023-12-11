@@ -27,6 +27,6 @@ test.describe(() => {
       await mainPage.renameCreatedLayer("renamed curve");
       await mainPage.waitForChangeIsSaved();
       await mainPage.isLayerNameDisplayed("renamed curve");
-    }
+    },
   );
 });

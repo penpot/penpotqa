@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test --project=chrome -gv 'PERF'",
+    "test11": "npx playwright test -g \"Create a component and 2 copies of it, change stroke color of main\"",
     "firefox": "npx playwright test --project=firefox -gv 'PERF'",
     "webkit": "npx playwright test --project=webkit -gv 'PERF'",
     "performance": "npx playwright test --retries=1 --project=chrome -g 'PERF'",

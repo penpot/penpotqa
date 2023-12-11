@@ -40,42 +40,55 @@ mainTest("CO-225 Rename image with valid name", async ({ page }) => {
   await mainPage.isLayerNameDisplayed("renamed image");
 });
 
-mainTest("CO-227 Add, hide, unhide, change type and delete Shadow to image",async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.uploadImage("images/images.png");
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickAddShadowButton();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-drop-shadow-default.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.hideShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-drop-shadow-hide.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.unhideShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-drop-shadow-unhide.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.selectTypeForShadow("Inner shadow");
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-inner-shadow-default.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.removeShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-inner-shadow-remove.png", {
-      mask: [mainPage.guides]
-    });
-});
+mainTest(
+  "CO-227 Add, hide, unhide, change type and delete Shadow to image",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.uploadImage("images/images.png");
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickAddShadowButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "image-drop-shadow-default.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.hideShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "image-drop-shadow-hide.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.unhideShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "image-drop-shadow-unhide.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.selectTypeForShadow("Inner shadow");
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "image-inner-shadow-default.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.removeShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "image-inner-shadow-remove.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+  },
+);
 
 mainTest("CO-228 Add and edit Shadow to image", async ({ page }) => {
   const mainPage = new MainPage(page);
@@ -108,38 +121,37 @@ mainTest("CO-228 Add and edit Shadow to image", async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot("image-inner-shadow.png");
 });
 
-mainTest("CO-229 Add, hide, unhide and delete Blur to image", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.uploadImage("images/sample.jpeg");
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickAddBlurButton();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-blur-default.png", {
-      mask: [mainPage.guides]
+mainTest(
+  "CO-229 Add, hide, unhide and delete Blur to image",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.uploadImage("images/sample.jpeg");
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("image-blur-default.png", {
+      mask: [mainPage.guides],
     });
-  await mainPage.hideBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-blur-hide.png", {
-      mask: [mainPage.guides]
+    await mainPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("image-blur-hide.png", {
+      mask: [mainPage.guides],
     });
-  await mainPage.unhideBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-blur-unhide.png", {
-      mask: [mainPage.guides]
+    await mainPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("image-blur-unhide.png", {
+      mask: [mainPage.guides],
     });
-  await mainPage.removeBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-blur-remove.png", {
-      mask: [mainPage.guides]
+    await mainPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("image-blur-remove.png", {
+      mask: [mainPage.guides],
     });
-});
+  },
+);
 
-mainTest("CO-231 Add, edit and delete Stroke to image",async ({ page }) => {
+mainTest("CO-231 Add, edit and delete Stroke to image", async ({ page }) => {
   test.setTimeout(45000);
   const mainPage = new MainPage(page);
   await mainPage.uploadImage("images/sample.jpeg");
@@ -147,40 +159,58 @@ mainTest("CO-231 Add, edit and delete Stroke to image",async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddStrokeButton();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-stroke-default.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.changeStrokeSettings('#43E50B','60', '10', 'Inside', 'Dotted');
+  await expect(mainPage.viewport).toHaveScreenshot("image-stroke-default.png", {
+    mask: [mainPage.guides],
+  });
+  await mainPage.changeStrokeSettings(
+    "#43E50B",
+    "60",
+    "10",
+    "Inside",
+    "Dotted",
+  );
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "image-stroke-inside-dotted.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.changeStrokeSettings('#F5358F','80', '5', 'Outside', 'Dashed');
+    "image-stroke-inside-dotted.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
+  await mainPage.changeStrokeSettings(
+    "#F5358F",
+    "80",
+    "5",
+    "Outside",
+    "Dashed",
+  );
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "image-stroke-outside-dashed.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.changeStrokeSettings('#F5358F','100', '3', 'Center', 'Solid');
+    "image-stroke-outside-dashed.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
+  await mainPage.changeStrokeSettings("#F5358F", "100", "3", "Center", "Solid");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "image-stroke-center-solid.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.changeStrokeSettings('#F5358F','40', '4', 'Center', 'Mixed');
+    "image-stroke-center-solid.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
+  await mainPage.changeStrokeSettings("#F5358F", "40", "4", "Center", "Mixed");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "image-stroke-center-mixed.png", {
-      mask: [mainPage.guides]
-    });
+    "image-stroke-center-mixed.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.removeStroke();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "image-stroke-remove.png", {
-      mask: [mainPage.guides]
-    });
+  await expect(mainPage.viewport).toHaveScreenshot("image-stroke-remove.png", {
+    mask: [mainPage.guides],
+  });
 });
 
 mainTest("CO-242-1 Delete image via rightclick", async ({ page }) => {
@@ -211,16 +241,16 @@ mainTest("CO-244 Change border radius multiple values", async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickIndividualCornersRadiusButton();
-  await mainPage.changeFirstCornerRadiusForLayer("30");
-  await mainPage.changeSecondCornerRadiusForLayer("60");
-  await mainPage.changeThirdCornerRadiusForLayer("90");
-  await mainPage.changeFourthCornerRadiusForLayer("120");
+  await mainPage.changeTopLeftCornerRadiusForLayer("30");
+  await mainPage.changeTopRightCornerRadiusForLayer("60");
+  await mainPage.changeBottomLeftCornerRadiusForLayer("90");
+  await mainPage.changeBottomRightCornerRadiusForLayer("120");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("image-changed-corners.png");
-  await mainPage.changeFirstCornerRadiusForLayer("0");
-  await mainPage.changeSecondCornerRadiusForLayer("0");
-  await mainPage.changeThirdCornerRadiusForLayer("0");
-  await mainPage.changeFourthCornerRadiusForLayer("0");
+  await mainPage.changeTopLeftCornerRadiusForLayer("0");
+  await mainPage.changeTopRightCornerRadiusForLayer("0");
+  await mainPage.changeBottomLeftCornerRadiusForLayer("0");
+  await mainPage.changeBottomRightCornerRadiusForLayer("0");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("image-png.png");
 });
@@ -282,21 +312,21 @@ mainTest("CO-259 Flip Vertical and Flip Horizontal image", async ({ page }) => {
   await mainPage.flipVerticalViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "image-flipped-vertical.png"
+    "image-flipped-vertical.png",
   );
   await mainPage.flipHorizontalViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "image-flipped-vertical-horizontal.png"
+    "image-flipped-vertical-horizontal.png",
   );
   await mainPage.flipVerticalViaShortcut();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "image-flipped-horizontal.png"
+    "image-flipped-horizontal.png",
   );
   await mainPage.flipHorizontalViaShortcut();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "image-non-flipped-jpeg.png"
+    "image-non-flipped-jpeg.png",
   );
 });
