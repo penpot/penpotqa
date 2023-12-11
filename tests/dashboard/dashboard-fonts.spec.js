@@ -15,11 +15,14 @@ dashboardTest("DA-66 Upload single font", async ({ page }) => {
   await dashboardPage.isFontUploaded("Pacifico", "Regular");
 });
 
-dashboardTest("DA-68 Fonts - upload fail invalid file format", async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.openSidebarItem("Fonts");
-  await dashboardPage.uploadFontWithInvalidFormat("images/images.png");
-});
+dashboardTest(
+  "DA-68 Fonts - upload fail invalid file format",
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.openSidebarItem("Fonts");
+    await dashboardPage.uploadFontWithInvalidFormat("images/images.png");
+  },
+);
 
 dashboardTest("DA-69 Search font", async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
@@ -44,6 +47,6 @@ dashboardTest("DA-72 Delete font", async ({ page }) => {
   await dashboardPage.isFontUploaded("Pacifico", "Regular");
   await dashboardPage.deleteFont();
   await dashboardPage.isFontsTablePlaceholderDisplayed(
-    "Custom fonts you upload will appear here."
+    "Custom fonts you upload will appear here.",
   );
 });

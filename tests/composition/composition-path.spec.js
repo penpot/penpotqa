@@ -36,40 +36,53 @@ mainTest("CO-277 Rename path with valid name", async ({ page }) => {
   await mainPage.isLayerNameDisplayed("renamed path");
 });
 
-mainTest("CO-279 Add, hide, unhide, change type and delete Shadow to Path",async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.createDefaultOpenPath();
-  await mainPage.clickAddShadowButton();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "path-drop-shadow-default.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.hideShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "path-drop-shadow-hide.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.unhideShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "path-drop-shadow-unhide.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.selectTypeForShadow("Inner shadow");
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "path-inner-shadow-default.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.removeShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "path-inner-shadow-remove.png", {
-      mask: [mainPage.guides]
-    });
-});
+mainTest(
+  "CO-279 Add, hide, unhide, change type and delete Shadow to Path",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.createDefaultOpenPath();
+    await mainPage.clickAddShadowButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "path-drop-shadow-default.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.hideShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "path-drop-shadow-hide.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.unhideShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "path-drop-shadow-unhide.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.selectTypeForShadow("Inner shadow");
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "path-inner-shadow-default.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.removeShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "path-inner-shadow-remove.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+  },
+);
 
 mainTest("CO-280 Add and edit Shadow to path", async ({ page }) => {
   test.setTimeout(50000);
@@ -101,34 +114,33 @@ mainTest("CO-280 Add and edit Shadow to path", async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot("path-inner-shadow.png");
 });
 
-mainTest("CO-282 Add, hide, unhide and delete Blur to Path",async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.createDefaultClosedPath();
-  await mainPage.clickAddBlurButton();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "path-blur-default.png", {
-      mask: [mainPage.guides]
+mainTest(
+  "CO-282 Add, hide, unhide and delete Blur to Path",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.createDefaultClosedPath();
+    await mainPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("path-blur-default.png", {
+      mask: [mainPage.guides],
     });
-  await mainPage.hideBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "path-blur-hide.png", {
-      mask: [mainPage.guides]
+    await mainPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("path-blur-hide.png", {
+      mask: [mainPage.guides],
     });
-  await mainPage.unhideBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "path-blur-unhide.png", {
-      mask: [mainPage.guides]
+    await mainPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("path-blur-unhide.png", {
+      mask: [mainPage.guides],
     });
-  await mainPage.removeBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "path-blur-remove.png", {
-      mask: [mainPage.guides]
+    await mainPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("path-blur-remove.png", {
+      mask: [mainPage.guides],
     });
-});
+  },
+);
 
 mainTest("CO-283 Add and edit Blur to path", async ({ page }) => {
   const mainPage = new MainPage(page);
@@ -176,45 +188,48 @@ mainTest("CO-298-2 Delete path via shortcut Del", async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
 });
 
-mainTest("CO-303 Hide and show path from rightclick and icons",async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const path1 = "Path #1";
-  const path2 = "Path #2";
-  await mainPage.createDefaultClosedPath();
-  await mainPage.doubleClickLayerOnLayersTabViaTitle("Path");
-  await mainPage.renameCreatedLayer(path1);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickCreatePathButton();
-  await mainPage.clickViewportByCoordinates(200, 300);
-  await mainPage.clickViewportByCoordinates(300, 500);
-  await mainPage.clickViewportByCoordinates(100, 200);
-  await mainPage.clickViewportByCoordinates(200, 300);
-  await mainPage.clickMoveButton();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.doubleClickLayerOnLayersTabViaTitle("Path");
-  await mainPage.renameCreatedLayer(path2);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickViewportOnce();
-  await mainPage.hideUnhideLayerByIconOnLayersTab(path1);
-  await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot(
-    "path-first-hide.png", { mask: [mainPage.guides, mainPage.usersSection] }
-  );
-  await mainPage.hideLayerViaRightClickOnLayersTab(path2);
-  await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot(
-    "path-second-hide.png", { mask: [mainPage.guides, mainPage.usersSection] }
-  );
-  await mainPage.hideUnhideLayerByIconOnLayersTab(path2);
-  await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot(
-    "path-second-show.png", { mask: [mainPage.guides, mainPage.usersSection] }
-  );
-  await mainPage.unHideLayerViaRightClickOnLayersTab(path1);
-  await expect(page).toHaveScreenshot(
-    "path-first-show.png", { mask: [mainPage.guides, mainPage.usersSection] }
-  );
-});
+mainTest(
+  "CO-303 Hide and show path from rightclick and icons",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const path1 = "Path #1";
+    const path2 = "Path #2";
+    await mainPage.createDefaultClosedPath();
+    await mainPage.doubleClickLayerOnLayersTabViaTitle("Path");
+    await mainPage.renameCreatedLayer(path1);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickCreatePathButton();
+    await mainPage.clickViewportByCoordinates(200, 300);
+    await mainPage.clickViewportByCoordinates(300, 500);
+    await mainPage.clickViewportByCoordinates(100, 200);
+    await mainPage.clickViewportByCoordinates(200, 300);
+    await mainPage.clickMoveButton();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.doubleClickLayerOnLayersTabViaTitle("Path");
+    await mainPage.renameCreatedLayer(path2);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportOnce();
+    await mainPage.hideUnhideLayerByIconOnLayersTab(path1);
+    await mainPage.waitForChangeIsSaved();
+    await expect(page).toHaveScreenshot("path-first-hide.png", {
+      mask: [mainPage.guides, mainPage.usersSection],
+    });
+    await mainPage.hideLayerViaRightClickOnLayersTab(path2);
+    await mainPage.waitForChangeIsSaved();
+    await expect(page).toHaveScreenshot("path-second-hide.png", {
+      mask: [mainPage.guides, mainPage.usersSection],
+    });
+    await mainPage.hideUnhideLayerByIconOnLayersTab(path2);
+    await mainPage.waitForChangeIsSaved();
+    await expect(page).toHaveScreenshot("path-second-show.png", {
+      mask: [mainPage.guides, mainPage.usersSection],
+    });
+    await mainPage.unHideLayerViaRightClickOnLayersTab(path1);
+    await expect(page).toHaveScreenshot("path-first-show.png", {
+      mask: [mainPage.guides, mainPage.usersSection],
+    });
+  },
+);
 
 mainTest("CO-310 Flip Vertical and Flip Horizontal path", async ({ page }) => {
   const mainPage = new MainPage(page);
@@ -225,12 +240,12 @@ mainTest("CO-310 Flip Vertical and Flip Horizontal path", async ({ page }) => {
   await mainPage.flipHorizontalViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "path-flipped-vertical-horizontal.png"
+    "path-flipped-vertical-horizontal.png",
   );
   await mainPage.flipVerticalViaShortcut();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "path-flipped-horizontal.png"
+    "path-flipped-horizontal.png",
   );
   await mainPage.flipHorizontalViaShortcut();
   await mainPage.waitForChangeIsSaved();

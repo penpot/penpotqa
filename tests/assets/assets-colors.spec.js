@@ -6,7 +6,7 @@ const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup
 mainTest("AS-22 Filter Colors from All Assets drop-down", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.openAssetsTab();
-  await mainPage.selectTypeFromAllAssetsSelector("Colors");
+  await mainPage.selectTypeFromAllAssetsDropdown("Colors");
   await mainPage.isAssetsTitleDisplayed("Colors (0)");
 });
 
@@ -55,7 +55,7 @@ mainTest("AS-25 File library colors - rename", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isColorAddedToFileLibraryColors("test color#ffff00");
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "colors-rename-color.png"
+    "colors-rename-color.png",
   );
 });
 
@@ -71,7 +71,7 @@ mainTest("AS-26 File library colors - delete", async ({ page }) => {
   await mainPage.deleteFileLibraryColor();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isColorNotAddedToFileLibraryColors();
-  await mainPage.selectTypeFromAllAssetsSelector("Colors");
+  await mainPage.selectTypeFromAllAssetsDropdown("Colors");
   await mainPage.isAssetsTitleDisplayed("Colors (0)");
 });
 
@@ -105,7 +105,7 @@ mainTest("AS-29 File library colors - rename group", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFileLibraryGroupCreated("New Group");
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "group-colors-renamed.png"
+    "group-colors-renamed.png",
   );
 });
 
@@ -140,7 +140,7 @@ mainTest("AS-34 File library colors - apply to element", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFileLibraryColorsColorBullet();
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "apply-color-to-board.png"
+    "apply-color-to-board.png",
   );
 });
 
@@ -161,6 +161,6 @@ mainTest("AS-117 File library colors - apply to stroke", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportByCoordinates(900, 100);
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "apply-color-to-stroke-board.png"
+    "apply-color-to-stroke-board.png",
   );
 });

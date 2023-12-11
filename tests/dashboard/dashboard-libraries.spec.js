@@ -13,7 +13,7 @@ dashboardTest(
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
     await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
-  }
+  },
 );
 
 dashboardTest(
@@ -26,15 +26,15 @@ dashboardTest(
     await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
     await dashboardPage.flipRightLibrariesAndTemplatesCarousel();
     await expect(dashboardPage.librariesAndTemplatesSection).toHaveScreenshot(
-      "libraries-carousel-flipped-right.png"
+      "libraries-carousel-flipped-right.png",
     );
     await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
     await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
     await dashboardPage.flipLeftLibrariesAndTemplatesCarousel();
     await expect(dashboardPage.librariesAndTemplatesSection).toHaveScreenshot(
-      "libraries-carousel-flipped-left.png"
+      "libraries-carousel-flipped-left.png",
     );
-  }
+  },
 );
 
 dashboardTest(
@@ -45,5 +45,5 @@ dashboardTest(
     await dashboardPage.isLibrariesAndTemplatesSectionDisplayed();
     await dashboardPage.clickLibrariesAndTemplatesCarouselButton();
     await dashboardPage.isLibrariesAndTemplatesSectionNotDisplayed();
-  }
+  },
 );

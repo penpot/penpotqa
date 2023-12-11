@@ -9,16 +9,16 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     super(page);
 
     this.pageTitle = page.locator('h1[data-test="registration-title"]');
-    this.emailInput = page.locator('#email');
-    this.passwordInput = page.locator('#password');
+    this.emailInput = page.locator("#email");
+    this.passwordInput = page.locator("#password");
     this.createAccountBtn = page.locator('input[value="Create an account"]');
     this.emailInputError = page.locator('span[data-test="email-input-error"]');
-    this.passwordInputError = page.locator('span[data-test="-error"]')
+    this.passwordInputError = page.locator('span[data-test="-error"]');
   }
 
   async isRegisterPageOpened() {
     await expect(this.pageTitle).toBeVisible();
-    await expect(this.pageTitle).toHaveText('Create an account');
+    await expect(this.pageTitle).toHaveText("Create an account");
   }
 
   async enterEmail(email) {
@@ -58,5 +58,4 @@ exports.RegisterPage = class RegisterPage extends BasePage {
   async clickOnHeader() {
     await this.pageTitle.click();
   }
-
-}
+};

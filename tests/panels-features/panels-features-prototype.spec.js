@@ -9,7 +9,7 @@ mainTest(
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportByCoordinates(900, 100);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickCreateBoardButton()
+    await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportByCoordinates(500, 200);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickPrototypeTab();
@@ -20,9 +20,9 @@ mainTest(
       "connector-between-board2-and-board1.png",
       {
         mask: [mainPage.usersSection],
-      }
+      },
     );
-  }
+  },
 );
 
 mainTest("PF-143 Add Interaction via Prototype panel", async ({ page }) => {
@@ -65,7 +65,7 @@ mainTest("PF-144 Remove Interaction via Prototype panel", async ({ page }) => {
     "connector-between-board2-and-board1.png",
     {
       mask: [mainPage.usersSection],
-    }
+    },
   );
 });
 
@@ -91,7 +91,7 @@ mainTest("PF-147 Change destination via Prototype panel", async ({ page }) => {
     "connector-between-board2-and-board3.png",
     {
       mask: [mainPage.usersSection],
-    }
+    },
   );
 });
 

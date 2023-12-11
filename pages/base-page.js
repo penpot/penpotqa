@@ -62,5 +62,4 @@ exports.BasePage = class BasePage {
   async waitInfoMessageHidden() {
     await this.infoMessage.waitFor({ state: "hidden" });
   }
-
 };

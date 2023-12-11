@@ -37,33 +37,33 @@ export function createPoint(x = 0, y = 0, z = 0, w = 1) {
  * @returns {DOMRect}
  */
 export function createRect(x = 0, y = 0, width = 0, height = 0) {
-  if (!('DOMRect' in globalThis)) {
+  if (!("DOMRect" in globalThis)) {
     class DOMRect {
       static fromRect({ x, y, width, height }) {
-        return new DOMRect(x, y, width, height)
+        return new DOMRect(x, y, width, height);
       }
 
       constructor(x = 0, y = 0, width = 0, height = 0) {
-        this.x = x
-        this.y = y
-        this.width = width
-        this.height = height
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
       }
 
       get top() {
-        return this.y
+        return this.y;
       }
 
       get left() {
-        return this.x
+        return this.x;
       }
 
       get bottom() {
-        return this.y + this.height
+        return this.y + this.height;
       }
 
       get right() {
-        return this.x + this.width
+        return this.x + this.width;
       }
     }
 
@@ -79,11 +79,11 @@ export function createRect(x = 0, y = 0, width = 0, height = 0) {
  * @returns {DOMPoint}
  */
 export function getCenterPoint(rect) {
-  return createPoint(rect.x + rect.width / 2, rect.y + rect.height / 2, 0, 1)
+  return createPoint(rect.x + rect.width / 2, rect.y + rect.height / 2, 0, 1);
 }
 
 export default {
   createRect,
   createPoint,
-  getCenterPoint
-}
+  getCenterPoint,
+};

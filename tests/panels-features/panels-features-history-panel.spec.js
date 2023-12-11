@@ -1,8 +1,7 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/workspace/main-page");
 
-
-mainTest("PF-156 Perform a change and check the status",async ({ page }) => {
+mainTest("PF-156 Perform a change and check the status", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
@@ -18,4 +17,3 @@ mainTest("PF-172 Open history panel with recent changes", async ({ page }) => {
   await mainPage.clickHistoryPanelButton();
   await mainPage.isActionDisplayedOnHistoryPanel("New board");
 });
-

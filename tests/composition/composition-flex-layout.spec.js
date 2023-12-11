@@ -2,7 +2,7 @@ const { expect, test } = require("@playwright/test");
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/workspace/main-page");
 const { LayersPanelPage } = require("../../pages/workspace/layers-panel-page");
-const { DesignPanelPage} = require("../../pages/workspace/design-panel");
+const { DesignPanelPage } = require("../../pages/workspace/design-panel");
 
 test.describe("Flex Layout & Elements", async () => {
   test.beforeEach(async ({ page }, testInfo) => {
@@ -23,95 +23,117 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest("FL-1 Add flex layout to board from rightclick", async ({ page }) => {
+  mainTest(
+    "FL-1 Add flex layout to board from rightclick",
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      await mainPage.addFlexLayoutViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isLayoutIconVisibleOnLayer();
+      await mainPage.isLayoutMenuExpanded();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        "board-with-layout.png",
+        {
+          mask: [mainPage.guides],
+        },
+      );
+    },
+  );
+
+  mainTest("FL-2 Add flex layout to board from shortcut", async ({ page }) => {
     const mainPage = new MainPage(page);
-    await mainPage.addFlexLayoutViaRightClick();
+    await mainPage.pressFlexLayoutShortcut();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isLayoutIconVisibleOnLayer();
     await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
+    await expect(mainPage.viewport).toHaveScreenshot("board-with-layout.png", {
+      mask: [mainPage.guides],
     });
   });
 
-  mainTest("FL-2 Add flex layout to board from shortcut", async ({ page }) => {
+  mainTest(
+    "FL-4 Remove flex layout from board from rightclick",
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      await mainPage.addFlexLayoutViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isLayoutIconVisibleOnLayer();
+      await mainPage.isLayoutMenuExpanded();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        "board-with-layout.png",
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+      await mainPage.removeFlexLayoutViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isLayoutIconVisibleOnLayer(false);
+      await mainPage.isLayoutMenuExpanded(false);
+      await expect(mainPage.viewport).toHaveScreenshot(
+        "board-without-layout.png",
+        {
+          mask: [mainPage.guides],
+        },
+      );
+    },
+  );
+
+  mainTest(
+    "FL-5 Remove flex layout from board from shortcut",
+    async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.pressFlexLayoutShortcut();
       await mainPage.waitForChangeIsSaved();
       await mainPage.isLayoutIconVisibleOnLayer();
       await mainPage.isLayoutMenuExpanded();
       await expect(mainPage.viewport).toHaveScreenshot(
-        "board-with-layout.png", {
-          mask: [mainPage.guides]
-      });
-  });
+        "board-with-layout.png",
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+      await mainPage.pressFlexLayoutShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isLayoutIconVisibleOnLayer(false);
+      await mainPage.isLayoutMenuExpanded(false);
+      await expect(mainPage.viewport).toHaveScreenshot(
+        "board-without-layout.png",
+        {
+          mask: [mainPage.guides],
+        },
+      );
+    },
+  );
 
-  mainTest("FL-4 Remove flex layout from board from rightclick",async ({ page }) => {
-    const mainPage = new MainPage(page);
-    await mainPage.addFlexLayoutViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isLayoutIconVisibleOnLayer();
-    await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
-    await mainPage.clickCreatedBoardTitleOnCanvas();
-    await mainPage.removeFlexLayoutViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isLayoutIconVisibleOnLayer(false);
-    await mainPage.isLayoutMenuExpanded(false);
-    await expect(mainPage.viewport).toHaveScreenshot(
-        "board-without-layout.png", {
-          mask: [mainPage.guides]
-      }
-    );
-});
-
-  mainTest("FL-5 Remove flex layout from board from shortcut",async ({ page }) => {
-    const mainPage = new MainPage(page);
-    await mainPage.pressFlexLayoutShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isLayoutIconVisibleOnLayer();
-    await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
-    await mainPage.clickCreatedBoardTitleOnCanvas();
-    await mainPage.pressFlexLayoutShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isLayoutIconVisibleOnLayer(false);
-    await mainPage.isLayoutMenuExpanded(false);
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-without-layout.png", {
-        mask: [mainPage.guides]
-      }
-    );
-  });
-
-  mainTest("FL-6 Remove flex layout from board from Design panel",async ({ page }) => {
-    const mainPage = new MainPage(page);
-    await mainPage.addFlexLayoutViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isLayoutIconVisibleOnLayer();
-    await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
-    await mainPage.clickCreatedBoardTitleOnCanvas();
-    await mainPage.removeLayoutFromDesignPanel();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isLayoutIconVisibleOnLayer(false);
-    await mainPage.isLayoutMenuExpanded(false);
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-without-layout.png", {
-        mask: [mainPage.guides]
-      }
-    );
-  });
+  mainTest(
+    "FL-6 Remove flex layout from board from Design panel",
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      await mainPage.addFlexLayoutViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isLayoutIconVisibleOnLayer();
+      await mainPage.isLayoutMenuExpanded();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        "board-with-layout.png",
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+      await mainPage.removeLayoutFromDesignPanel();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isLayoutIconVisibleOnLayer(false);
+      await mainPage.isLayoutMenuExpanded(false);
+      await expect(mainPage.viewport).toHaveScreenshot(
+        "board-without-layout.png",
+        {
+          mask: [mainPage.guides],
+        },
+      );
+    },
+  );
 
   mainTest("FL-7 Change direction", async ({ page }) => {
     const mainPage = new MainPage(page);
@@ -119,40 +141,43 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.isLayoutIconVisibleOnLayer();
     await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
+    await expect(mainPage.viewport).toHaveScreenshot("board-with-layout.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.changeLayoutDirection("Row reverse");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-        "layout-row-reverse-direction.png", {
-          mask: [mainPage.guides]
-      }
+      "layout-row-reverse-direction.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutDirection("Column");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-        "layout-column-direction.png", {
-          mask: [mainPage.guides]
-      }
+      "layout-column-direction.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutDirection("Column reverse");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-        "layout-column-reverse-direction.png", {
-          mask: [mainPage.guides]
-      }
+      "layout-column-reverse-direction.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutDirection("Row");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-row-direction.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-row-direction.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
-});
+  });
 
   mainTest("FL-9 Change alignment", async ({ page }) => {
     const mainPage = new MainPage(page);
@@ -160,32 +185,28 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.isLayoutIconVisibleOnLayer();
     await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
+    await expect(mainPage.viewport).toHaveScreenshot("board-with-layout.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.changeLayoutAlignment("Center");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-align-center.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-align-center.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutAlignment("End");
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-align-end.png", {
-        mask: [mainPage.guides]
-      }
-    );
+    await expect(mainPage.viewport).toHaveScreenshot("layout-align-end.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.changeLayoutAlignment("Start");
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-align-start.png", {
-        mask: [mainPage.guides]
-      }
-    );
+    await expect(mainPage.viewport).toHaveScreenshot("layout-align-start.png", {
+      mask: [mainPage.guides],
+    });
   });
 
   mainTest("FL-10 Change justification", async ({ page }) => {
@@ -194,54 +215,56 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.isLayoutIconVisibleOnLayer();
     await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
+    await expect(mainPage.viewport).toHaveScreenshot("board-with-layout.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.changeLayoutJustification("Center");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-justify-center.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-justify-center.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutJustification("End");
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-justify-end.png", {
-        mask: [mainPage.guides]
-      }
-    );
+    await expect(mainPage.viewport).toHaveScreenshot("layout-justify-end.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.changeLayoutJustification("Space between");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-        "layout-justify-space-between.png", {
-          mask: [mainPage.guides]
-      }
+      "layout-justify-space-between.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutJustification("Space around");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-        "layout-justify-space-around.png", {
-          mask: [mainPage.guides]
-      }
+      "layout-justify-space-around.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutJustification("Space evenly");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-        "layout-justify-space-evenly.png", {
-          mask: [mainPage.guides]
-      }
+      "layout-justify-space-evenly.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutJustification("Start");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-justify-start.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-justify-start.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
-});
+  });
 
   mainTest("FL-12 Change column gap", async ({ page }) => {
     const mainPage = new MainPage(page);
@@ -249,32 +272,34 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.isLayoutIconVisibleOnLayer();
     await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
+    await expect(mainPage.viewport).toHaveScreenshot("board-with-layout.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.changeLayoutColumnGap("5");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-column-gap-5.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-column-gap-5.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutColumnGap("15");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-column-gap-15.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-column-gap-15.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutColumnGap("0");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-column-gap-0.png", {
-        mask: [mainPage.guides]
-        }
-      );
+      "layout-column-gap-0.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
   });
 
   mainTest("FL-13 Change row gap", async ({ page }) => {
@@ -283,34 +308,27 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.isLayoutIconVisibleOnLayer();
     await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
+    await expect(mainPage.viewport).toHaveScreenshot("board-with-layout.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.changeLayoutDirection("Column");
     await mainPage.waitForChangeIsSaved();
     await mainPage.changeLayoutRowGap("5");
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-row-gap-5.png", {
-        mask: [mainPage.guides]
-      }
-    );
+    await expect(mainPage.viewport).toHaveScreenshot("layout-row-gap-5.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.changeLayoutRowGap("15");
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-row-gap-15.png", {
-        mask: [mainPage.guides]
-      }
-    );
+    await expect(mainPage.viewport).toHaveScreenshot("layout-row-gap-15.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.changeLayoutRowGap("0");
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-row-gap-0.png", {
-        mask: [mainPage.guides]
-      }
-    );
+    await expect(mainPage.viewport).toHaveScreenshot("layout-row-gap-0.png", {
+      mask: [mainPage.guides],
+    });
   });
 
   mainTest("FL-14 Change single padding", async ({ page }) => {
@@ -319,33 +337,35 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.isLayoutIconVisibleOnLayer();
     await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
+    await expect(mainPage.viewport).toHaveScreenshot("board-with-layout.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.changeLayoutVerticalPadding("5");
     await mainPage.waitForChangeIsSaved();
     await mainPage.changeLayoutHorizontalPadding("15");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-padding-5-15.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-padding-5-15.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutHorizontalPadding("0");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-        "layout-horizontal_padding-0.png", {
-          mask: [mainPage.guides]
-      }
+      "layout-horizontal_padding-0.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutVerticalPadding("0");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-        "layout-vertical_padding-0.png", {
-          mask: [mainPage.guides]
-      }
+      "layout-vertical_padding-0.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
   });
 
@@ -355,10 +375,9 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.isLayoutIconVisibleOnLayer();
     await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
+    await expect(mainPage.viewport).toHaveScreenshot("board-with-layout.png", {
+      mask: [mainPage.guides],
+    });
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.switchToIndependentPadding();
     await mainPage.waitForChangeIsSaved();
@@ -367,32 +386,36 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.changeLayoutLeftPadding("15");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-top-left-padding-10-15.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-top-left-padding-10-15.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutJustification("End");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-top-left-padding-10-15-justify.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-top-left-padding-10-15-justify.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutRightPadding("20");
     await mainPage.waitForChangeIsSaved();
-    await mainPage.changeLayoutAlignment('End');
+    await mainPage.changeLayoutAlignment("End");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-top-left-right-padding-justify-align.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-top-left-right-padding-justify-align.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.changeLayoutBottomPadding("25");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-top-left-right-bottom-padding.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-top-left-right-bottom-padding.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
   });
 
@@ -405,33 +428,35 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.isLayoutIconVisibleOnLayer();
     await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
+    await expect(mainPage.viewport).toHaveScreenshot("board-with-layout.png", {
+      mask: [mainPage.guides],
+    });
 
     await layersPage.selectBoardChildRect();
     await designPanelPage.waitFlexElementSectionExpanded();
     await designPanelPage.changeFlexElementAlignment("Center");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "flex-element-align-center.png", {
-        mask: [mainPage.guides]
-      }
+      "flex-element-align-center.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await designPanelPage.changeFlexElementAlignment("End");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "flex-element-align-end.png", {
-        mask: [mainPage.guides]
-      }
+      "flex-element-align-end.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await designPanelPage.changeFlexElementAlignment("Start");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "flex-element-align-start.png", {
-        mask: [mainPage.guides]
-      }
+      "flex-element-align-start.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
   });
 
@@ -444,10 +469,9 @@ test.describe("Flex Layout & Elements", async () => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.isLayoutIconVisibleOnLayer();
     await mainPage.isLayoutMenuExpanded();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "board-with-layout.png", {
-        mask: [mainPage.guides]
-      });
+    await expect(mainPage.viewport).toHaveScreenshot("board-with-layout.png", {
+      mask: [mainPage.guides],
+    });
 
     await layersPage.selectBoardChildRect();
     await designPanelPage.waitFlexElementSectionExpanded();
@@ -456,48 +480,51 @@ test.describe("Flex Layout & Elements", async () => {
     await designPanelPage.changeFlexElementHorizontalMargin("25");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "flex-element-margin-10-25.png", {
-        mask: [mainPage.guides]
-      }
+      "flex-element-margin-10-25.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await designPanelPage.changeFlexElementVerticalMargin("0");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "flex-element-margin-vert-0.png", {
-        mask: [mainPage.guides]
-      }
+      "flex-element-margin-vert-0.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await designPanelPage.changeFlexElementHorizontalMargin("0");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "flex-element-margin-horizont-0.png", {
-        mask: [mainPage.guides]
-      }
+      "flex-element-margin-horizont-0.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
-});
+  });
 });
 
 test.describe("Margins & Paddings & Position", async () => {
   test.beforeEach(async ({ page }, testInfo) => {
-      testInfo.setTimeout(testInfo.timeout + 10000);
-      const mainPage = new MainPage(page);
-      await mainPage.clickCreateBoardButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.isCreatedLayerVisible();
-      await mainPage.changeHeightAndWidthForLayer("500", "500");
-      await mainPage.clickCreateEllipseButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickCreateEllipseButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickCreateEllipseButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await mainPage.addFlexLayoutViaRightClick();
-      await mainPage.waitForChangeIsSaved();
+    testInfo.setTimeout(testInfo.timeout + 10000);
+    const mainPage = new MainPage(page);
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.isCreatedLayerVisible();
+    await mainPage.changeHeightAndWidthForLayer("500", "500");
+    await mainPage.clickCreateEllipseButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickCreateEllipseButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickCreateEllipseButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await mainPage.addFlexLayoutViaRightClick();
+    await mainPage.waitForChangeIsSaved();
   });
 
   mainTest("FL-37 Set margins and padding to 0", async ({ page }) => {
@@ -509,26 +536,31 @@ test.describe("Margins & Paddings & Position", async () => {
     await mainPage.changeLayoutColumnGap("0");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-padding-gap-0.png", {
-        mask: [mainPage.guides]
-      });
+      "layout-padding-gap-0.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
     await mainPage.clickLayoutVerticalPaddingField();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-no-vertical-padding.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-no-vertical-padding.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.clickLayoutHorizontalPaddingField();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-no-horizont-padding.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-no-horizont-padding.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
     await mainPage.clickLayoutColumnGapField();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-no-column-gap.png", {
-        mask: [mainPage.guides]
-      }
+      "layout-no-column-gap.png",
+      {
+        mask: [mainPage.guides],
+      },
     );
   });
 
@@ -538,24 +570,30 @@ test.describe("Margins & Paddings & Position", async () => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickLayoutColumnGapField();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "layout-column-gap-highlighted.png", {
-        mask: [mainPage.guides]
-      });
+      "layout-column-gap-highlighted.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
   });
 
-  mainTest("FL-42 Use absolute position and look if element still inside a board",
+  mainTest(
+    "FL-42 Use absolute position and look if element still inside a board",
     async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPage = new LayersPanelPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+      const mainPage = new MainPage(page);
+      const layersPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
 
-    await layersPage.selectBoardChildEllipse();
-    await designPanelPage.waitFlexElementSectionExpanded();
-    await designPanelPage.setFlexElementPositionAbsolute();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      "flex-element-position-absolute.png", {
-        mask: [mainPage.guides]
-      });
-  });
+      await layersPage.selectBoardChildEllipse();
+      await designPanelPage.waitFlexElementSectionExpanded();
+      await designPanelPage.setFlexElementPositionAbsolute();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        "flex-element-position-absolute.png",
+        {
+          mask: [mainPage.guides],
+        },
+      );
+    },
+  );
 });

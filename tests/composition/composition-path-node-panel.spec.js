@@ -26,9 +26,9 @@ mainTest(
     await mainPage.pressShiftPlusKeyboardShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-added-two-nodes.png"
+      "path-added-two-nodes.png",
     );
-  }
+  },
 );
 
 mainTest(
@@ -45,15 +45,15 @@ mainTest(
     await mainPage.clickDeleteNodeButtonOnNodePanel();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-deleted-one-node.png"
+      "path-deleted-one-node.png",
     );
     await mainPage.clickSecondNode();
     await mainPage.pressDeleteKeyboardButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-deleted-two-nodes.png"
+      "path-deleted-two-nodes.png",
     );
-  }
+  },
 );
 
 mainTest(
@@ -73,7 +73,7 @@ mainTest(
     await mainPage.clickMergeNodesButtonOnNodePanel();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-merged-nodes-once.png"
+      "path-merged-nodes-once.png",
     );
     await mainPage.holdShiftKeyboardButton();
     await mainPage.clickFirstNode();
@@ -82,9 +82,9 @@ mainTest(
     await mainPage.pressCtrlJKeyboardShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-merged-nodes-twice.png"
+      "path-merged-nodes-twice.png",
     );
-  }
+  },
 );
 
 mainTest(
@@ -110,7 +110,7 @@ mainTest(
     await mainPage.clickJoinNodesButtonOnNodePanel();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-joined-nodes-once.png"
+      "path-joined-nodes-once.png",
     );
     await mainPage.holdShiftKeyboardButton();
     await mainPage.clickFifthNode();
@@ -119,9 +119,9 @@ mainTest(
     await mainPage.pressJKeyboardShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-joined-nodes-twice.png"
+      "path-joined-nodes-twice.png",
     );
-  }
+  },
 );
 
 mainTest(
@@ -141,7 +141,7 @@ mainTest(
     await mainPage.clickSeparateNodesButtonOnNodePanel();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-separated-nodes-once.png"
+      "path-separated-nodes-once.png",
     );
     await mainPage.clickSecondNode();
     await mainPage.holdShiftKeyboardButton();
@@ -150,9 +150,9 @@ mainTest(
     await mainPage.pressKKeyboardShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-separated-nodes-twice.png"
+      "path-separated-nodes-twice.png",
     );
-  }
+  },
 );
 
 mainTest(
@@ -169,15 +169,15 @@ mainTest(
     await mainPage.clickToCornerButtonOnNodePanel();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-to-corner-one-node.png"
+      "path-to-corner-one-node.png",
     );
     await mainPage.clickSecondNode();
     await mainPage.pressXKeyboardShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-to-corner-two-nodes.png"
+      "path-to-corner-two-nodes.png",
     );
-  }
+  },
 );
 
 mainTest(
@@ -194,13 +194,13 @@ mainTest(
     await mainPage.clickToCurveButtonOnNodePanel();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-to-curve-one-node.png"
+      "path-to-curve-one-node.png",
     );
     await mainPage.clickSecondNode();
     await mainPage.pressCKeyboardShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "path-to-curve-two-nodes.png"
+      "path-to-curve-two-nodes.png",
     );
-  }
+  },
 );

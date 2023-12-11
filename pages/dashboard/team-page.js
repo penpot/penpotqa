@@ -2,7 +2,6 @@ const { BasePage } = require("../base-page");
 const { expect } = require("@playwright/test");
 
 exports.TeamPage = class TeamPage extends BasePage {
-
   /**
    * @param {import('@playwright/test').Page} page
    */
@@ -12,67 +11,81 @@ exports.TeamPage = class TeamPage extends BasePage {
     // Teams
     this.teamCurrentBtn = page.locator('button[class*="current-team"]');
     this.teamList = page.locator('ul[class*="teams-dropdown"]');
-    this.createNewTeamMenuItem = page.locator('#teams-selector-create-team');
-    this.teamNameInput = page.locator('#name');
-    this.createNewTeamButton = page.locator('button[name="submit"] span:text-is("Create new team")');
-    this.teamCurrentNameDiv = page.locator('button[class*="current-team"] div[class*="team-name"]');
-    this.teamListItem = page.locator('li[class="team-name"] span[class="team-text"]');
-    this.teamOptionsMenuButton = page.locator('button[class*="switch-options"]');
-    this.deleteTeamMenuItem = page.locator('#teams-options-delete-team');
+    this.createNewTeamMenuItem = page.locator("#teams-selector-create-team");
+    this.teamNameInput = page.locator("#name");
+    this.createNewTeamButton = page.locator(
+      'button[name="submit"] span:text-is("Create new team")',
+    );
+    this.teamCurrentNameDiv = page.locator(
+      'button[class*="current-team"] div[class*="team-name"]',
+    );
+    this.teamListItem = page.locator(
+      'li[class="team-name"] span[class="team-text"]',
+    );
+    this.teamOptionsMenuButton = page.locator(
+      'button[class*="switch-options"]',
+    );
+    this.deleteTeamMenuItem = page.locator("#teams-options-delete-team");
     this.deleteTeamButton = page.locator('input[value="Delete team"]');
     this.teamSettingsMenuItem = page.locator('li[data-test="team-settings"]');
     this.renameTeamMenuItem = page.locator('li[data-test="rename-team"]');
     this.uploadTeamImageButton = page.locator('input[type="file"]');
     this.renameTeamInput = page.locator("#name");
     this.updateTeamButton = page.locator('input[value="Update team"]');
-    this.teamOwnerSpan = page.locator('div.owner-block .owner span.text');
-    this.teamMembersSpan = page.locator('div.owner-block .summary span.text');
-    this.teamProjectsSpan = page.locator('div.stats-block .projects span.text');
-    this.teamFilesSpan = page.locator('div.stats-block .files span.text');
+    this.teamOwnerSpan = page.locator("div.owner-block .owner span.text");
+    this.teamMembersSpan = page.locator("div.owner-block .summary span.text");
+    this.teamProjectsSpan = page.locator("div.stats-block .projects span.text");
+    this.teamFilesSpan = page.locator("div.stats-block .files span.text");
     this.teamInfoSection = page.locator('div[class="block info-block"]');
     this.teamOwnerSection = page.locator('div[class="block owner-block"]');
     this.teamStatsSection = page.locator('div[class="block stats-block"]');
 
     //Invitations
     this.invitationsMenuItem = page.locator('li[data-test="team-invitations"]');
-    this.inviteMembersToTeamButton = page.locator('a[data-test="invite-member"]');
-    this.inviteMembersPopUpHeader = page.locator(
-      'div[class^="modal dashboard-invite-modal form-container "] div[class="title"]'
+    this.inviteMembersToTeamButton = page.locator(
+      'a[data-test="invite-member"]',
     );
-    this.inviteMembersTeamHeroButton = page.locator('button[class="btn-primary invite"]');
+    this.inviteMembersPopUpHeader = page.locator(
+      'div[class^="modal dashboard-invite-modal form-container "] div[class="title"]',
+    );
+    this.inviteMembersTeamHeroButton = page.locator(
+      'button[class="btn-primary invite"]',
+    );
     this.inviteMembersToTeamRoleSelectorButton = page.locator(
-      'div[class="custom-select"]'
+      'div[class="custom-select"]',
     );
     this.inviteMembersToTeamRoleSelector = page.locator(
-      'div[class="custom-select"] select'
+      'div[class="custom-select"] select',
     );
     this.inviteMembersToTeamEmailInput = page.locator(
-      'input[placeholder="Emails, comma separated"]'
+      'input[placeholder="Emails, comma separated"]',
     );
     this.sendInvitationButton = page.locator('input[value="Send invitation"]');
     this.invitationRecord = page.locator('div[class="table-row"]');
     this.invitationRecordEmailCell = page.locator(
-      'div[class="table-field mail"]'
+      'div[class="table-field mail"]',
     );
     this.invitationRecordRoleCell = page.locator(
-      'div[class="table-field roles"]'
+      'div[class="table-field roles"]',
     );
     this.invitationRecordRoleSelector = page.locator(
-      'div[class="rol-selector has-priv"]'
+      'div[class="rol-selector has-priv"]',
     );
     this.invitationRecordStatusCell = page.locator(
-      'div[class="table-field status"] div'
+      'div[class="table-field status"] div',
     );
     this.invitationRecordOptionsMenuButton = page.locator(
-      'div[class="table-field actions"] svg[class="icon-actions"]'
+      'div[class="table-field actions"] svg[class="icon-actions"]',
     );
     this.invitationRecordResendInvititationMenuItem = page.locator(
-      'li:has-text("Resend invitation")'
+      'li:has-text("Resend invitation")',
     );
     this.invitationRecordDeleteInvititationMenuItem = page.locator(
-      'li:has-text("Delete invitation")'
+      'li:has-text("Delete invitation")',
     );
-    this.invitationWarningSpan = page.locator('div.dashboard-invite-modal .warning span.text');
+    this.invitationWarningSpan = page.locator(
+      "div.dashboard-invite-modal .warning span.text",
+    );
   }
 
   async createTeam(teamName) {
@@ -87,7 +100,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async openTeamsListIfClosed() {
-    if (!await this.teamList.isVisible()) {
+    if (!(await this.teamList.isVisible())) {
       await this.teamCurrentBtn.click();
     }
     await expect(this.teamList).toBeVisible();
@@ -95,7 +108,9 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async switchTeam(teamName) {
     await this.openTeamsListIfClosed();
-    const teamOption = this.page.locator(`li.team-name span.team-text:has-text("${teamName}")`);
+    const teamOption = this.page.locator(
+      `li.team-name span.team-text:has-text("${teamName}")`,
+    );
     await teamOption.click();
     await this.isTeamSelected(teamName);
   }
@@ -119,7 +134,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.openTeamsListIfClosed();
     for (const teamName of await this.teamListItem.allInnerTexts()) {
       if (!teamName.includes("Your Penpot")) {
-        const teamSel = this.page.locator(`li.team-name span.team-text:text-is("${teamName}")`).last();
+        const teamSel = this.page
+          .locator(`li.team-name span.team-text:text-is("${teamName}")`)
+          .last();
         await teamSel.click();
         await this.teamOptionsMenuButton.waitFor();
         await this.teamOptionsMenuButton.click();
@@ -243,5 +260,4 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.renameTeamInput.fill(teamName);
     await this.updateTeamButton.click();
   }
-
-}
+};
