@@ -6,9 +6,9 @@ const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 
-const teamName = random().concat('autotest');
+const teamName = random().concat("autotest");
 
-test.beforeEach( async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
@@ -41,10 +41,9 @@ mainTest("CO-2 Create a board from toolbar", async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board.png", {
-      mask: [mainPage.guides]
-    });
+  await expect(mainPage.viewport).toHaveScreenshot("board.png", {
+    mask: [mainPage.guides],
+  });
 });
 
 mainTest("CO-4 Rename board with valid name", async ({ page }) => {
@@ -62,42 +61,55 @@ mainTest("CO-4 Rename board with valid name", async ({ page }) => {
   await mainPage.isBoardNameDisplayed("renamed board");
 });
 
-mainTest("CO-9 Add, hide, unhide, change type and delete Shadow to board", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickAddShadowButton();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-drop-shadow-default.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.hideShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-drop-shadow-hide.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.unhideShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-drop-shadow-unhide.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.selectTypeForShadow("Inner shadow");
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-inner-shadow-default.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.removeShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-inner-shadow-remove.png", {
-      mask: [mainPage.guides]
-    });
-});
+mainTest(
+  "CO-9 Add, hide, unhide, change type and delete Shadow to board",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickAddShadowButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "board-drop-shadow-default.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.hideShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "board-drop-shadow-hide.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.unhideShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "board-drop-shadow-unhide.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.selectTypeForShadow("Inner shadow");
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "board-inner-shadow-default.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.removeShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "board-inner-shadow-remove.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+  },
+);
 
 mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   const mainPage = new MainPage(page);
@@ -116,10 +128,9 @@ mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   await colorPalettePopUp.setHex("#304d6a");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-drop-shadow.png", {
-      mask: [mainPage.guides]
-    });
+  await expect(mainPage.viewport).toHaveScreenshot("board-drop-shadow.png", {
+    mask: [mainPage.guides],
+  });
   await mainPage.selectTypeForShadow("Inner shadow");
   await mainPage.changeXForShadow("5");
   await mainPage.changeYForShadow("7");
@@ -130,46 +141,44 @@ mainTest("CO-10 Add and edit Shadow to board", async ({ page }) => {
   await colorPalettePopUp.setHex("#96e637");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-inner-shadow.png", {
-      mask: [mainPage.guides]
-    });
+  await expect(mainPage.viewport).toHaveScreenshot("board-inner-shadow.png", {
+    mask: [mainPage.guides],
+  });
 });
 
-mainTest("CO-12 Add, hide, unhide and delete Blur to board", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex("#304d6a");
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickAddBlurButton();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-blur-default.png", {
-      mask: [mainPage.guides]
+mainTest(
+  "CO-12 Add, hide, unhide and delete Blur to board",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const colorPalettePopUp = new ColorPalettePopUp(page);
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickFillColorIcon();
+    await colorPalettePopUp.setHex("#304d6a");
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("board-blur-default.png", {
+      mask: [mainPage.guides],
     });
-  await mainPage.hideBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-blur-hide.png", {
-      mask: [mainPage.guides]
+    await mainPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("board-blur-hide.png", {
+      mask: [mainPage.guides],
     });
-  await mainPage.unhideBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-blur-unhide.png", {
-      mask: [mainPage.guides]
+    await mainPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("board-blur-unhide.png", {
+      mask: [mainPage.guides],
     });
-  await mainPage.removeBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-blur-remove.png", {
-      mask: [mainPage.guides]
+    await mainPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot("board-blur-remove.png", {
+      mask: [mainPage.guides],
     });
-});
+  },
+);
 
 mainTest("CO-13 Add and edit Blur to board", async ({ page }) => {
   const mainPage = new MainPage(page);
@@ -179,58 +188,75 @@ mainTest("CO-13 Add and edit Blur to board", async ({ page }) => {
   await mainPage.clickAddBlurButton();
   await mainPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-blur.png", {
-      mask: [mainPage.guides]
-    });
+  await expect(mainPage.viewport).toHaveScreenshot("board-blur.png", {
+    mask: [mainPage.guides],
+  });
 });
 
-mainTest("CO-14 Add, edit and delete Stroke to board",async ({ page }) => {
+mainTest("CO-14 Add, edit and delete Stroke to board", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportByCoordinates(100, 100);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddStrokeButton();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-stroke-default.png", {
-      mask: [mainPage.guides]
-    });
+  await expect(mainPage.viewport).toHaveScreenshot("board-stroke-default.png", {
+    mask: [mainPage.guides],
+  });
   await mainPage.clickCreatedBoardTitleOnCanvas();
-  await mainPage.changeStrokeSettings('#43E50B','60', '10', 'Inside', 'Dotted');
+  await mainPage.changeStrokeSettings(
+    "#43E50B",
+    "60",
+    "10",
+    "Inside",
+    "Dotted",
+  );
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "board-stroke-inside-dotted.png", {
-      mask: [mainPage.guides]
-    });
+    "board-stroke-inside-dotted.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.clickCreatedBoardTitleOnCanvas();
-  await mainPage.changeStrokeSettings('#F5358F','80', '5', 'Outside', 'Dashed');
+  await mainPage.changeStrokeSettings(
+    "#F5358F",
+    "80",
+    "5",
+    "Outside",
+    "Dashed",
+  );
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "board-stroke-outside-dashed.png", {
-      mask: [mainPage.guides]
-    });
+    "board-stroke-outside-dashed.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.clickCreatedBoardTitleOnCanvas();
-  await mainPage.changeStrokeSettings('#F5358F','100', '3', 'Center', 'Solid');
+  await mainPage.changeStrokeSettings("#F5358F", "100", "3", "Center", "Solid");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "board-stroke-center-solid.png", {
-      mask: [mainPage.guides]
-    });
+    "board-stroke-center-solid.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.clickCreatedBoardTitleOnCanvas();
-  await mainPage.changeStrokeSettings('#F5358F','40', '4', 'Center', 'Mixed');
+  await mainPage.changeStrokeSettings("#F5358F", "40", "4", "Center", "Mixed");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "board-stroke-center-mixed.png", {
-      mask: [mainPage.guides]
-    });
+    "board-stroke-center-mixed.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await mainPage.removeStroke();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-stroke-remove.png", {
-      mask: [mainPage.guides]
-    });
+  await expect(mainPage.viewport).toHaveScreenshot("board-stroke-remove.png", {
+    mask: [mainPage.guides],
+  });
 });
 
 mainTest("CO-25-1 Delete board via rightclick", async ({ page }) => {
@@ -285,81 +311,90 @@ mainTest("CO-29 Change border radius multiple values", async ({ page }) => {
   await mainPage.changeThirdCornerRadiusForLayer("90");
   await mainPage.changeFourthCornerRadiusForLayer("120");
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot("board-changed-corners.png", {
-    mask: [mainPage.guides]
-  });
+  await expect(mainPage.viewport).toHaveScreenshot(
+    "board-changed-corners.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.changeFirstCornerRadiusForLayer("0");
   await mainPage.changeSecondCornerRadiusForLayer("0");
   await mainPage.changeThirdCornerRadiusForLayer("0");
   await mainPage.changeFourthCornerRadiusForLayer("0");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("board.png", {
-      mask: [mainPage.guides]
+    mask: [mainPage.guides],
   });
 });
 
-mainTest("CO-33 Zoom to board by double click board icon on the list",async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const board1 = "Board #1";
-  const board2 = "Board #2";
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportByCoordinates(100, 150);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.doubleClickBoardTitleOnCanvas("Board");
-  await mainPage.renameCreatedLayer(board1);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportByCoordinates(250, 300);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.doubleClickBoardTitleOnCanvas("Board");
-  await mainPage.renameCreatedLayer(board2);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.doubleClickLayerIconOnLayersTab(board1);
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-first-zoom.png", { mask: [mainPage.guides], }
-  );
-  await mainPage.doubleClickLayerIconOnLayersTab(board2);
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "board-second-zoom.png", { mask: [mainPage.guides] }
-  );
-});
+mainTest(
+  "CO-33 Zoom to board by double click board icon on the list",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const board1 = "Board #1";
+    const board2 = "Board #2";
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportByCoordinates(100, 150);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.doubleClickBoardTitleOnCanvas("Board");
+    await mainPage.renameCreatedLayer(board1);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportByCoordinates(250, 300);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.doubleClickBoardTitleOnCanvas("Board");
+    await mainPage.renameCreatedLayer(board2);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.doubleClickLayerIconOnLayersTab(board1);
+    await expect(mainPage.viewport).toHaveScreenshot("board-first-zoom.png", {
+      mask: [mainPage.guides],
+    });
+    await mainPage.doubleClickLayerIconOnLayersTab(board2);
+    await expect(mainPage.viewport).toHaveScreenshot("board-second-zoom.png", {
+      mask: [mainPage.guides],
+    });
+  },
+);
 
-mainTest("CO-34 Hide and show board from rightclick and icons",async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const board1 = "Board #1";
-  const board2 = "Board #2";
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportByCoordinates(100, 150);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.doubleClickBoardTitleOnCanvas("Board");
-  await mainPage.renameCreatedLayer(board1);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportByCoordinates(250, 300);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.doubleClickBoardTitleOnCanvas("Board");
-  await mainPage.renameCreatedLayer(board2);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.hideUnhideLayerByIconOnLayersTab(board1);
-  await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot(
-    "board-first-hide.png", { mask: [mainPage.guides, mainPage.usersSection] }
-  );
-  await mainPage.hideLayerViaRightClickOnCanvas(board2);
-  await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot(
-    "board-second-hide.png", { mask: [mainPage.guides, mainPage.usersSection] }
-  );
-  await mainPage.hideUnhideLayerByIconOnLayersTab(board2);
-  await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot(
-    "board-second-show.png", { mask: [mainPage.guides, mainPage.usersSection] }
-  );
-  await mainPage.unHideLayerViaRightClickOnLayersTab(board1);
-  await expect(page).toHaveScreenshot(
-    "board-first-show.png", { mask: [mainPage.guides, mainPage.usersSection] }
-  );
-});
+mainTest(
+  "CO-34 Hide and show board from rightclick and icons",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const board1 = "Board #1";
+    const board2 = "Board #2";
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportByCoordinates(100, 150);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.doubleClickBoardTitleOnCanvas("Board");
+    await mainPage.renameCreatedLayer(board1);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportByCoordinates(250, 300);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.doubleClickBoardTitleOnCanvas("Board");
+    await mainPage.renameCreatedLayer(board2);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.hideUnhideLayerByIconOnLayersTab(board1);
+    await mainPage.waitForChangeIsSaved();
+    await expect(page).toHaveScreenshot("board-first-hide.png", {
+      mask: [mainPage.guides, mainPage.usersSection],
+    });
+    await mainPage.hideLayerViaRightClickOnCanvas(board2);
+    await mainPage.waitForChangeIsSaved();
+    await expect(page).toHaveScreenshot("board-second-hide.png", {
+      mask: [mainPage.guides, mainPage.usersSection],
+    });
+    await mainPage.hideUnhideLayerByIconOnLayersTab(board2);
+    await mainPage.waitForChangeIsSaved();
+    await expect(page).toHaveScreenshot("board-second-show.png", {
+      mask: [mainPage.guides, mainPage.usersSection],
+    });
+    await mainPage.unHideLayerViaRightClickOnLayersTab(board1);
+    await expect(page).toHaveScreenshot("board-first-show.png", {
+      mask: [mainPage.guides, mainPage.usersSection],
+    });
+  },
+);
 
 mainTest("CO-53 Click 'Focus on' board from right click", async ({ page }) => {
   const mainPage = new MainPage(page);
@@ -385,7 +420,7 @@ mainTest("CO-53 Click 'Focus on' board from right click", async ({ page }) => {
   await mainPage.isFocusModeOn();
   await expect(page).toHaveScreenshot("board-second-focus-on.png", {
     mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-    maxDiffPixels: 5
+    maxDiffPixels: 5,
   });
   await mainPage.clickOnFocusModeLabel();
   await mainPage.waitForChangeIsSaved();
@@ -394,7 +429,7 @@ mainTest("CO-53 Click 'Focus on' board from right click", async ({ page }) => {
   await mainPage.isFocusModeOff();
   await expect(page).toHaveScreenshot("board-second-focus-off.png", {
     mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-    maxDiffPixels: 5
+    maxDiffPixels: 5,
   });
   await mainPage.focusLayerViaRightClickOnLayersTab(board1);
   await mainPage.waitForChangeIsSaved();
@@ -403,7 +438,7 @@ mainTest("CO-53 Click 'Focus on' board from right click", async ({ page }) => {
   await mainPage.isFocusModeOn();
   await expect(page).toHaveScreenshot("board-first-focus-on.png", {
     mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-    maxDiffPixels: 5
+    maxDiffPixels: 5,
   });
   await mainPage.clickOnFocusModeLabel();
   await mainPage.waitForChangeIsSaved();
@@ -412,11 +447,11 @@ mainTest("CO-53 Click 'Focus on' board from right click", async ({ page }) => {
   await mainPage.isFocusModeOff();
   await expect(page).toHaveScreenshot("board-first-focus-off.png", {
     mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-    maxDiffPixels: 5
+    maxDiffPixels: 5,
   });
 });
 
-mainTest("CO-56 Click 'Focus off' board from shortcut F",async ({ page }) => {
+mainTest("CO-56 Click 'Focus off' board from shortcut F", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
@@ -427,7 +462,7 @@ mainTest("CO-56 Click 'Focus off' board from shortcut F",async ({ page }) => {
   await mainPage.isFocusModeOn();
   await expect(page).toHaveScreenshot("board-single-focus-on.png", {
     mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-    maxDiffPixels: 5
+    maxDiffPixels: 5,
   });
   await mainPage.focusLayerViaShortcut();
   await mainPage.waitForChangeIsSaved();
@@ -435,7 +470,7 @@ mainTest("CO-56 Click 'Focus off' board from shortcut F",async ({ page }) => {
   await mainPage.isFocusModeOff();
   await expect(page).toHaveScreenshot("board-single-focus-off.png", {
     mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-    maxDiffPixels: 5
+    maxDiffPixels: 5,
   });
 });
 

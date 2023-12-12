@@ -1,13 +1,13 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/workspace/main-page");
-const { expect, test} = require("@playwright/test");
+const { expect, test } = require("@playwright/test");
 const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 
-const teamName = random().concat('autotest');
+const teamName = random().concat("autotest");
 
-test.beforeEach( async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
@@ -31,7 +31,7 @@ mainTest(
     await mainPage.clickAssetsTab();
     await mainPage.selectTypeFromAllAssetsSelector("Components");
     await mainPage.isAssetsTitleDisplayed("Components (0)");
-  }
+  },
 );
 
 mainTest("AS-57 Create component shape", async ({ page }) => {
@@ -44,7 +44,7 @@ mainTest("AS-57 Create component shape", async ({ page }) => {
   await mainPage.clickAssetsTab();
   await mainPage.isComponentAddedToFileLibraryComponents();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "components-rectangle.png"
+    "components-rectangle.png",
   );
 });
 
@@ -106,7 +106,7 @@ mainTest("AS-80 Duplicate component", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isSecondComponentAddedToFileLibraryComponents();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "components-rectangle-duplicated.png"
+    "components-rectangle-duplicated.png",
   );
 });
 
@@ -153,7 +153,7 @@ mainTest("AS-85 Components - rename group", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFileLibraryGroupCreated("New Group");
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "group-components-renamed.png"
+    "group-components-renamed.png",
   );
 });
 
@@ -171,7 +171,7 @@ mainTest("AS-88 Components - ungroup", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFileLibraryGroupRemoved();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "components-rectangle.png"
+    "components-rectangle.png",
   );
 });
 
@@ -195,16 +195,16 @@ mainTest("AS-90 Components - change view list tile", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAssetsTab();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "components-tile-view.png"
+    "components-tile-view.png",
   );
   await mainPage.clickFileLibraryChangeViewButton();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "components-list-view.png"
+    "components-list-view.png",
   );
   await mainPage.clickFileLibraryChangeViewButton();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "components-tile-view.png"
+    "components-tile-view.png",
   );
 });

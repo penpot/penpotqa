@@ -6,9 +6,9 @@ const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 
-const teamName = random().concat('autotest');
+const teamName = random().concat("autotest");
 
-test.beforeEach( async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
@@ -78,7 +78,7 @@ mainTest("PF-73 Change fill color for board", async ({ page }) => {
   await mainPage.isFillHexCodeSet("FF0000");
   await mainPage.isFillOpacitySet("100");
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "board-changed-fill.png"
+    "board-changed-fill.png",
   );
 });
 
@@ -96,7 +96,7 @@ mainTest("PF-74 Change fill color for shape", async ({ page }) => {
   await mainPage.isFillHexCodeSet("FF0000");
   await mainPage.isFillOpacitySet("100");
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "rectangle-changed-fill.png"
+    "rectangle-changed-fill.png",
   );
 });
 
@@ -133,7 +133,7 @@ mainTest("PF-78 Change fill opacity for board", async ({ page }) => {
   await mainPage.isFillHexCodeSet("FFFFFF");
   await mainPage.isFillOpacitySet("70");
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "board-changed-opacity.png"
+    "board-changed-opacity.png",
   );
 });
 
@@ -148,7 +148,7 @@ mainTest("PF-79 Change fill opacity for shape", async ({ page }) => {
   await mainPage.isFillHexCodeSet("B1B2B5");
   await mainPage.isFillOpacitySet("70");
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "rectangle-changed-opacity.png"
+    "rectangle-changed-opacity.png",
   );
 });
 
@@ -168,7 +168,7 @@ mainTest("PF-82 Change fill opacity for path", async ({ page }) => {
   await mainPage.isFillHexCodeSet("B1B2B5");
   await mainPage.isFillOpacitySet("70");
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "path-changed-opacity.png"
+    "path-changed-opacity.png",
   );
 });
 
@@ -181,7 +181,7 @@ mainTest("PF-93 Remove fill for board", async ({ page }) => {
   await mainPage.clickRemoveFillButton();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "board-removed-fill.png"
+    "board-removed-fill.png",
   );
 });
 
@@ -194,7 +194,7 @@ mainTest("PF-94 Remove fill for shape", async ({ page }) => {
   await mainPage.clickRemoveFillButton();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "rectangle--removed-fill.png"
+    "rectangle--removed-fill.png",
   );
 });
 

@@ -1,14 +1,14 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/workspace/main-page");
-const { expect, test} = require("@playwright/test");
+const { expect, test } = require("@playwright/test");
 const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup");
 const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 
-const teamName = random().concat('autotest');
+const teamName = random().concat("autotest");
 
-test.beforeEach( async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
@@ -77,7 +77,7 @@ mainTest("AS-25 File library colors - rename", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isColorAddedToFileLibraryColors("test color#ffff00");
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "colors-rename-color.png"
+    "colors-rename-color.png",
   );
 });
 
@@ -127,7 +127,7 @@ mainTest("AS-29 File library colors - rename group", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFileLibraryGroupCreated("New Group");
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "group-colors-renamed.png"
+    "group-colors-renamed.png",
   );
 });
 
@@ -162,7 +162,7 @@ mainTest("AS-34 File library colors - apply to element", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickFileLibraryColorsColorBullet();
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "apply-color-to-board.png"
+    "apply-color-to-board.png",
   );
 });
 
@@ -183,6 +183,6 @@ mainTest("AS-117 File library colors - apply to stroke", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportByCoordinates(900, 100);
   await expect(mainPage.createdLayer).toHaveScreenshot(
-    "apply-color-to-stroke-board.png"
+    "apply-color-to-stroke-board.png",
   );
 });

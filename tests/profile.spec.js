@@ -22,20 +22,24 @@ dashboardTest("PR-9 Add profile picture jpeg", async ({ page }) => {
   await profilePage.isInfoMessageDisplayed("Loading image…");
   await profilePage.waitInfoMessageHidden();
   await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
-    "profile-avatar-block-png.png", {
-      mask: [profilePage.profileNameInput, profilePage.profileEmailInput]
-    });
+    "profile-avatar-block-png.png",
+    {
+      mask: [profilePage.profileNameInput, profilePage.profileEmailInput],
+    },
+  );
   await profilePage.uploadProfileImage("images/sample.jpeg");
   await profilePage.isInfoMessageDisplayed("Loading image…");
   await profilePage.waitInfoMessageHidden();
   await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
-    "profile-avatar-block-jpeg.png", {
-      mask: [profilePage.profileNameInput, profilePage.profileEmailInput]
-    });
+    "profile-avatar-block-jpeg.png",
+    {
+      mask: [profilePage.profileNameInput, profilePage.profileEmailInput],
+    },
+  );
 });
 
 dashboardTest("PR-12 Change password to invalid", async ({ page }) => {
-  const newPassword = '1234567';
+  const newPassword = "1234567";
   const profilePage = new ProfilePage(page);
 
   await profilePage.openYourAccountPage();
@@ -45,10 +49,13 @@ dashboardTest("PR-12 Change password to invalid", async ({ page }) => {
   await profilePage.enterNewPassword(newPassword);
   await profilePage.enterConfirmPassword(newPassword);
   await profilePage.isUpdateSettingsBtnDisabled();
-  await profilePage.isPasswordInputErrorDisplayed("Password should at least be 8 characters");
+  await profilePage.isPasswordInputErrorDisplayed(
+    "Password should at least be 8 characters",
+  );
 });
 
-dashboardTest("PR-16 Fail to change password confirmation does not match",
+dashboardTest(
+  "PR-16 Fail to change password confirmation does not match",
   async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
@@ -56,11 +63,14 @@ dashboardTest("PR-16 Fail to change password confirmation does not match",
     await profilePage.isHeaderDisplayed("Your account");
     await profilePage.openPasswordPageInAccount();
     await profilePage.enterCurrentPassword(process.env.LOGIN_PWD);
-    await profilePage.enterNewPassword('test12345');
-    await profilePage.enterConfirmPassword('test54321');
+    await profilePage.enterNewPassword("test12345");
+    await profilePage.enterConfirmPassword("test54321");
     await profilePage.isUpdateSettingsBtnDisabled();
-    await profilePage.isPasswordInputErrorDisplayed("Confirmation password must match");
-  });
+    await profilePage.isPasswordInputErrorDisplayed(
+      "Confirmation password must match",
+    );
+  },
+);
 
 dashboardTest("PR-19 Logout from Account", async ({ page }) => {
   const profilePage = new ProfilePage(page);
@@ -80,10 +90,10 @@ dashboardTest(
     await profilePage.isSendFeedbackButtonDisabled();
     await profilePage.clearSubjectInputInGiveFeedbackForm();
     await profilePage.enterDescriptionToGiveFeedbackForm(
-      "This is a test feedback triggered by QA team"
+      "This is a test feedback triggered by QA team",
     );
     await profilePage.isSendFeedbackButtonDisabled();
-  }
+  },
 );
 
 dashboardTest("PR-22 Send feedback email with valid data", async ({ page }) => {
@@ -92,7 +102,7 @@ dashboardTest("PR-22 Send feedback email with valid data", async ({ page }) => {
   await profilePage.isHeaderDisplayed("Your account");
   await profilePage.enterSubjectToGiveFeedbackForm("QA Test");
   await profilePage.enterDescriptionToGiveFeedbackForm(
-    "This is a test feedback triggered by QA team"
+    "This is a test feedback triggered by QA team",
   );
   await profilePage.clickSendFeedbackButton();
   await profilePage.isSuccessMessageDisplayed("Feedback sent");

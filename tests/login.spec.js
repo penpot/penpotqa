@@ -40,6 +40,6 @@ test("ON-15 Login with incorrect password", async ({ page }) => {
   await loginPage.enterPwd("11223344");
   await loginPage.clickLoginButton();
   await loginPage.isLoginErrorMessageDisplayed(
-    "Email or password is incorrect."
+    "Email or password is incorrect.",
   );
 });

@@ -5,23 +5,23 @@ const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 
-const teamName = random().concat('autotest');
+const teamName = random().concat("autotest");
 
-test.beforeEach( async ({ page }) => {
-    const teamPage = new TeamPage(page);
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
+test.beforeEach(async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await teamPage.createTeam(teamName);
+  await teamPage.isTeamSelected(teamName);
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
 });
 
 test.afterEach(async ({ page }) => {
-    const teamPage = new TeamPage(page);
-    const mainPage = new MainPage(page);
-    await mainPage.backToDashboardFromFileEditor();
-    await teamPage.deleteTeam(teamName);
+  const teamPage = new TeamPage(page);
+  const mainPage = new MainPage(page);
+  await mainPage.backToDashboardFromFileEditor();
+  await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
@@ -31,7 +31,7 @@ mainTest(
     await mainPage.clickAssetsTab();
     await mainPage.selectTypeFromAllAssetsSelector("Typographies");
     await mainPage.isAssetsTitleDisplayed("Typographies (0)");
-  }
+  },
 );
 
 mainTest(
@@ -43,19 +43,19 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
-      "typographies-add-typography-expanded.png"
+      "typographies-add-typography-expanded.png",
     );
     await mainPage.minimizeFileLibraryTypography();
     await mainPage.clickViewportTwice();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
-      "typographies-add-typography-minimized.png"
+      "typographies-add-typography-minimized.png",
     );
     await mainPage.expandFileLibraryTypography();
     await mainPage.clickViewportTwice();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
-      "typographies-add-typography-expanded.png"
+      "typographies-add-typography-expanded.png",
     );
-  }
+  },
 );
 
 mainTest("AS-40 Typographic styles - edit", async ({ page }) => {
@@ -71,17 +71,17 @@ mainTest("AS-40 Typographic styles - edit", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "typographies-edit-typography-expanded.png"
+    "typographies-edit-typography-expanded.png",
   );
   await mainPage.minimizeFileLibraryTypography();
   await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "typographies-edit-typography-minimized.png"
+    "typographies-edit-typography-minimized.png",
   );
   await mainPage.expandFileLibraryTypography();
   await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "typographies-edit-typography-expanded.png"
+    "typographies-edit-typography-expanded.png",
   );
 });
 
@@ -96,17 +96,17 @@ mainTest("AS-41 Typographic styles - rename", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "typographies-rename-typography-expanded.png"
+    "typographies-rename-typography-expanded.png",
   );
   await mainPage.minimizeFileLibraryTypography();
   await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "typographies-rename-typography-minimized.png"
+    "typographies-rename-typography-minimized.png",
   );
   await mainPage.expandFileLibraryTypography();
   await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "typographies-rename-typography-expanded.png"
+    "typographies-rename-typography-expanded.png",
   );
 });
 
@@ -121,7 +121,7 @@ mainTest("AS-42 Typographic styles - delete", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportTwice();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "typographies-deleted-typography.png"
+    "typographies-deleted-typography.png",
   );
 });
 
@@ -151,7 +151,7 @@ mainTest("AS-45 Typographic styles - rename group", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFileLibraryGroupCreated("New Group");
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "group-typographies-renamed.png"
+    "group-typographies-renamed.png",
   );
 });
 
@@ -168,7 +168,7 @@ mainTest("AS-48 Typographic styles - ungroup", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFileLibraryGroupRemoved();
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "typographies-add-typography-minimized.png"
+    "typographies-add-typography-minimized.png",
   );
 });
 
@@ -192,11 +192,12 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "apply-typography-to-text_from_assets.png", {
+      "apply-typography-to-text_from_assets.png",
+      {
         mask: [mainPage.guides],
-      }
+      },
     );
-  }
+  },
 );
 
 mainTest(
@@ -220,9 +221,10 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "apply-typography-to-text.png", {
+      "apply-typography-to-text.png",
+      {
         mask: [mainPage.guides],
-      }
+      },
     );
-  }
+  },
 );
