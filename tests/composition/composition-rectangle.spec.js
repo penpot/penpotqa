@@ -6,9 +6,9 @@ const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 
-const teamName = random().concat('autotest');
+const teamName = random().concat("autotest");
 
-test.beforeEach( async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
@@ -34,106 +34,129 @@ mainTest("CO-59 Create a rectangle from toolbar", async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot("rectangle.png");
 });
 
-mainTest("CO-68 Click 'Focus off' rectangle from shortcut F",async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.focusLayerViaRightClickOnCanvas();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isLayerPresentOnLayersTab("Rectangle", true);
-  await mainPage.isFocusModeOn();
-  await expect(page).toHaveScreenshot(
-    "rectangle-single-focus-on.png", {
+mainTest(
+  "CO-68 Click 'Focus off' rectangle from shortcut F",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.clickCreateRectangleButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.focusLayerViaRightClickOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.isLayerPresentOnLayersTab("Rectangle", true);
+    await mainPage.isFocusModeOn();
+    await expect(page).toHaveScreenshot("rectangle-single-focus-on.png", {
       mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-      maxDiffPixels: 5
-    }
-  );
-  await mainPage.focusLayerViaShortcut();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isLayerPresentOnLayersTab("Rectangle", true);
-  await mainPage.isFocusModeOff();
-  await expect(page).toHaveScreenshot(
-    "rectangle-single-focus-off.png", {
+      maxDiffPixels: 5,
+    });
+    await mainPage.focusLayerViaShortcut();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.isLayerPresentOnLayersTab("Rectangle", true);
+    await mainPage.isFocusModeOff();
+    await expect(page).toHaveScreenshot("rectangle-single-focus-off.png", {
       mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-      maxDiffPixels: 5
-    }
-  );
-});
+      maxDiffPixels: 5,
+    });
+  },
+);
 
-mainTest("CO-69 Add, hide, unhide, change type and delete Shadow to rectangle",async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickAddShadowButton();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-drop-shadow-default.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.hideShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-drop-shadow-hide.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.unhideShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-drop-shadow-unhide.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.selectTypeForShadow("Inner shadow");
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-inner-shadow-default.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.removeShadow();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-inner-shadow-remove.png", {
-      mask: [mainPage.guides]
-    });
-});
+mainTest(
+  "CO-69 Add, hide, unhide, change type and delete Shadow to rectangle",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.clickCreateRectangleButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickAddShadowButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "rectangle-drop-shadow-default.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.hideShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "rectangle-drop-shadow-hide.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.unhideShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "rectangle-drop-shadow-unhide.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.selectTypeForShadow("Inner shadow");
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "rectangle-inner-shadow-default.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.removeShadow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "rectangle-inner-shadow-remove.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+  },
+);
 
-mainTest("CO-72 Add, hide, unhide and delete Blur to rectangle",async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex("#304d6a");
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickAddBlurButton();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-blur-default.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.hideBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-blur-hide.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.unhideBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-blur-unhide.png", {
-      mask: [mainPage.guides]
-    });
-  await mainPage.removeBlur();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-blur-remove.png", {
-      mask: [mainPage.guides]
-    });
-});
+mainTest(
+  "CO-72 Add, hide, unhide and delete Blur to rectangle",
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const colorPalettePopUp = new ColorPalettePopUp(page);
+    await mainPage.clickCreateRectangleButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickFillColorIcon();
+    await colorPalettePopUp.setHex("#304d6a");
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "rectangle-blur-default.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "rectangle-blur-hide.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "rectangle-blur-unhide.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      "rectangle-blur-remove.png",
+      {
+        mask: [mainPage.guides],
+      },
+    );
+  },
+);
 
-mainTest("CO-74 Add, edit and delete Stroke to rectangle",async ({ page }) => {
+mainTest("CO-74 Add, edit and delete Stroke to rectangle", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
@@ -142,44 +165,68 @@ mainTest("CO-74 Add, edit and delete Stroke to rectangle",async ({ page }) => {
   await mainPage.clickViewportOnce();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-stroke-default.png", {
-      mask: [mainPage.guides]
-    });
+    "rectangle-stroke-default.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.clickOnLayerOnCanvas();
-  await mainPage.changeStrokeSettings('#43E50B','60', '10', 'Inside', 'Dotted');
+  await mainPage.changeStrokeSettings(
+    "#43E50B",
+    "60",
+    "10",
+    "Inside",
+    "Dotted",
+  );
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-stroke-inside-dotted.png", {
-      mask: [mainPage.guides]
-    });
+    "rectangle-stroke-inside-dotted.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.clickOnLayerOnCanvas();
-  await mainPage.changeStrokeSettings('#F5358F','80', '5', 'Outside', 'Dashed');
+  await mainPage.changeStrokeSettings(
+    "#F5358F",
+    "80",
+    "5",
+    "Outside",
+    "Dashed",
+  );
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-stroke-outside-dashed.png", {
-      mask: [mainPage.guides]
-    });
+    "rectangle-stroke-outside-dashed.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.clickOnLayerOnCanvas();
-  await mainPage.changeStrokeSettings('#F5358F','100', '3', 'Center', 'Solid');
+  await mainPage.changeStrokeSettings("#F5358F", "100", "3", "Center", "Solid");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-stroke-center-solid.png", {
-      mask: [mainPage.guides]
-    });
+    "rectangle-stroke-center-solid.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.clickOnLayerOnCanvas();
-  await mainPage.changeStrokeSettings('#F5358F','40', '4', 'Center', 'Mixed');
+  await mainPage.changeStrokeSettings("#F5358F", "40", "4", "Center", "Mixed");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-stroke-center-mixed.png", {
-      mask: [mainPage.guides]
-    });
+    "rectangle-stroke-center-mixed.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.removeStroke();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-stroke-remove.png", {
-      mask: [mainPage.guides]
-    });
+    "rectangle-stroke-remove.png",
+    {
+      mask: [mainPage.guides],
+    },
+  );
 });
 
 mainTest("CO-80 Rename rectangle with valid name", async ({ page }) => {
@@ -222,7 +269,7 @@ mainTest("CO-70 Add and edit Shadow to rectangle", async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-inner-shadow.png"
+    "rectangle-inner-shadow.png",
   );
 });
 
@@ -290,7 +337,7 @@ mainTest("CO-63 Change border radius multiple values", async ({ page }) => {
   await mainPage.changeFourthCornerRadiusForLayer("120");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-changed-corners.png"
+    "rectangle-changed-corners.png",
   );
   await mainPage.changeFirstCornerRadiusForLayer("0");
   await mainPage.changeSecondCornerRadiusForLayer("0");
@@ -319,8 +366,7 @@ mainTest("CO-111 Selection to board", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.selectionToBoardViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    "rectangle-to-board.png", {
-      mask: [mainPage.guides]
-    });
+  await expect(mainPage.viewport).toHaveScreenshot("rectangle-to-board.png", {
+    mask: [mainPage.guides],
+  });
 });

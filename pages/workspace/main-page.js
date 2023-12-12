@@ -26,380 +26,437 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Viewport
     this.viewport = page.locator('div[class="viewport"]');
-    this.createdLayer = page.locator('div[class="viewport"] [id^="shape"] >> nth=0');
+    this.createdLayer = page.locator(
+      'div[class="viewport"] [id^="shape"] >> nth=0',
+    );
     this.createdBoardTitle = page.locator('g[class="frame-title"] >> nth=0');
     this.textbox = page.locator(
-      'div[role="textbox"] div[contenteditable="true"]'
+      'div[role="textbox"] div[contenteditable="true"]',
     );
-    this.guides = page.locator('.guides .new-guides');
+    this.guides = page.locator(".guides .new-guides");
 
     //Layer right-click menu items
     this.deleteLayerMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Delete")'
+      'ul[class="workspace-context-menu"] li:has-text("Delete")',
     );
     this.hideLayerMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Hide")'
+      'ul[class="workspace-context-menu"] li:has-text("Hide")',
     );
     this.showLayerMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Show")'
+      'ul[class="workspace-context-menu"] li:has-text("Show")',
     );
     this.focusOnLayerMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Focus on")'
+      'ul[class="workspace-context-menu"] li:has-text("Focus on")',
     );
     this.transformToPathMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Transform to path")'
+      'ul[class="workspace-context-menu"] li:has-text("Transform to path")',
     );
     this.selectionToBoardMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Selection to board")'
+      'ul[class="workspace-context-menu"] li:has-text("Selection to board")',
     );
     this.createComponentMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Create component")'
+      'ul[class="workspace-context-menu"] li:has-text("Create component")',
     );
     this.flipVerticalMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Flip vertical")'
+      'ul[class="workspace-context-menu"] li:has-text("Flip vertical")',
     );
     this.flipHorizontalMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Flip horizontal")'
+      'ul[class="workspace-context-menu"] li:has-text("Flip horizontal")',
     );
     this.editPathMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Edit")'
+      'ul[class="workspace-context-menu"] li:has-text("Edit")',
     );
     this.addFlexLayout = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Add flex layout")'
+      'ul[class="workspace-context-menu"] li:has-text("Add flex layout")',
     );
     this.removeFlexLayout = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Remove flex layout")'
+      'ul[class="workspace-context-menu"] li:has-text("Remove flex layout")',
     );
 
     //Layers panel
     this.layersTab = page.locator('div[data-id=":layers"]');
     this.layersPanel = page.locator('div[class="layers-tab"]');
     this.createdLayerOnLayersPanelNameInput = page.locator(
-      'div[class^="element-list-body"] input[class="element-name"]'
+      'div[class^="element-list-body"] input[class="element-name"]',
     );
     this.createdLayerOnLayersPanelNameText = page.locator(
-      'div[class^="element-list-body"] span[class="element-name"]'
+      'div[class^="element-list-body"] span[class="element-name"]',
     );
     this.searchLayersIcon = page.locator('svg[class="icon-search"]');
     this.searchLayersInput = page.locator('input[placeholder="Search layers"]');
     this.searchedLayerOnLayersPanelNameText = page.locator(
-      'span[class="element-name"] >> nth=1'
+      'span[class="element-name"] >> nth=1',
     );
     this.layoutIcon = page.locator('svg[class="icon-layout-rows"]');
     this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
 
     //Design panel
-    this.canvasBackgroundColorIcon = page.locator('div[title="Canvas background"] div[class="color-bullet-wrapper"]');
-    this.layerRotationInput = page.locator('div[class="input-element degrees"] input');
-    this.individualCornersRadiusButton = page.locator('div[alt="Independent corners"]');
+    this.canvasBackgroundColorIcon = page.locator(
+      'div[title="Canvas background"] div[class="color-bullet-wrapper"]',
+    );
+    this.layerRotationInput = page.locator(
+      'div[class="input-element degrees"] input',
+    );
+    this.individualCornersRadiusButton = page.locator(
+      'div[alt="Independent corners"]',
+    );
     this.allCornersRadiusButton = page.locator('div[alt="All corners"]');
     this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
-    this.firstCornerRadiusInput = page.locator('div[class="input-element mini"] input >> nth=0');
-    this.secondCornerRadiusInput = page.locator('div[class="input-element mini"] input >> nth=1');
-    this.thirdCornerRadiusInput = page.locator('div[class="input-element mini"] input >> nth=2');
-    this.fourthCornerRadiusInput = page.locator('div[class="input-element mini"] input  >> nth=3');
-    this.sizeWidthInput = page.locator('div[class="input-element width"] input');
-    this.sizeHeightInput = page.locator('div[class="input-element height"] input');
+    this.firstCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input >> nth=0',
+    );
+    this.secondCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input >> nth=1',
+    );
+    this.thirdCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input >> nth=2',
+    );
+    this.fourthCornerRadiusInput = page.locator(
+      'div[class="input-element mini"] input  >> nth=3',
+    );
+    this.sizeWidthInput = page.locator(
+      'div[class="input-element width"] input',
+    );
+    this.sizeHeightInput = page.locator(
+      'div[class="input-element height"] input',
+    );
 
     //Design panel - Shadow section
-    this.shadowSection = page.locator('div.element-set-title:has-text("Shadow")');
+    this.shadowSection = page.locator(
+      'div.element-set-title:has-text("Shadow")',
+    );
     this.addShadowButton = page.locator(
-      'div[class="element-set shadow-options"] div[class="add-page"] svg'
+      'div[class="element-set shadow-options"] div[class="add-page"] svg',
     );
     this.shadowActionsButton = page.locator(
-      'div[class="element-set shadow-options"] svg[class="icon-actions"]'
+      'div[class="element-set shadow-options"] svg[class="icon-actions"]',
     );
     this.shadowXInput = page.locator(
-      'div[class="element-set shadow-options"] div[title="X"] input'
+      'div[class="element-set shadow-options"] div[title="X"] input',
     );
     this.shadowYInput = page.locator(
-      'div[class="element-set shadow-options"] div[title="Y"] input'
+      'div[class="element-set shadow-options"] div[title="Y"] input',
     );
     this.shadowBlurInput = page.locator('div[title="Blur"] input');
     this.shadowSpreadInput = page.locator('div[title="Spread"] input');
     this.shadowColorIcon = page.locator(
-      'div[class="element-set shadow-options"] div[class="color-bullet-wrapper"]'
+      'div[class="element-set shadow-options"] div[class="color-bullet-wrapper"]',
     );
     this.shadowOpacityInput = page.locator(
-      'div[class="element-set shadow-options"] div[class="input-element percentail"] input'
+      'div[class="element-set shadow-options"] div[class="input-element percentail"] input',
     );
-    this.shadowTypeSelector = page.locator('div[class="element-set shadow-options"] select');
-    this.shadowOption = page.locator('div.shadow-option-main');
-    this.shadowHideIcon = page.locator('div.shadow-option-main-actions .icon-eye');
-    this.shadowUnhideIcon = page.locator('div.shadow-option-main-actions .icon-eye-closed');
-    this.shadowRemoveIcon = page.locator('div.shadow-option-main-actions .icon-minus');
+    this.shadowTypeSelector = page.locator(
+      'div[class="element-set shadow-options"] select',
+    );
+    this.shadowOption = page.locator("div.shadow-option-main");
+    this.shadowHideIcon = page.locator(
+      "div.shadow-option-main-actions .icon-eye",
+    );
+    this.shadowUnhideIcon = page.locator(
+      "div.shadow-option-main-actions .icon-eye-closed",
+    );
+    this.shadowRemoveIcon = page.locator(
+      "div.shadow-option-main-actions .icon-minus",
+    );
 
     //Design panel - Blur section
     this.blurSection = page.locator('div.element-set-title:has-text("Blur")');
     this.addBlurButton = page.locator(
-      'div[class="element-set"] div:has-text("Blur") svg'
+      'div[class="element-set"] div:has-text("Blur") svg',
     );
     this.blurValueInput = page.locator(
-      'div[class="row-flex input-row"] div[class="input-element pixels"] input'
+      'div[class="row-flex input-row"] div[class="input-element pixels"] input',
     );
-    this.blurHideIcon = page.locator('div.element-set-title-actions .icon-eye');
-    this.blurUnhideIcon = page.locator('div.element-set-title-actions .icon-eye-closed');
-    this.blurRemoveIcon = page.locator('div.element-set-title-actions .icon-minus');
+    this.blurHideIcon = page.locator("div.element-set-title-actions .icon-eye");
+    this.blurUnhideIcon = page.locator(
+      "div.element-set-title-actions .icon-eye-closed",
+    );
+    this.blurRemoveIcon = page.locator(
+      "div.element-set-title-actions .icon-minus",
+    );
 
     //Design panel - Fill section
     this.fillColorIcon = page.locator(
-      'div[title="Fill"] div[class="color-bullet-wrapper"]'
+      'div[title="Fill"] div[class="color-bullet-wrapper"]',
     );
     this.fillColorInput = page.locator(
-      'div[title="Fill"] div[class="color-info"] input'
+      'div[title="Fill"] div[class="color-info"] input',
     );
     this.fillOpacityInput = page.locator(
-      'div[title="Fill"] div[class="input-element percentail"] input'
+      'div[title="Fill"] div[class="input-element percentail"] input',
     );
     this.addFillButton = page.locator(
-      'div[class="element-set"] div:has-text("Fill") svg'
+      'div[class="element-set"] div:has-text("Fill") svg',
     );
     this.removeFillButton = page.locator(
-      'div[title="Fill"] svg[class="icon-minus"]'
+      'div[title="Fill"] svg[class="icon-minus"]',
     );
 
     //Design panel - Grid section
     this.gridSection = page.locator('div.element-set-title:has-text("Grid")');
     this.gridMainOptionSection = page.locator('div[class="grid-option-main"]');
     this.addGridButton = page.locator(
-      'div[class="element-set"] div:has-text("Grid") svg'
+      'div[class="element-set"] div:has-text("Grid") svg',
     );
     this.removeGridButton = page.locator(
-      'div[class="grid-option-main-actions"] svg[class="icon-minus"]'
+      'div[class="grid-option-main-actions"] svg[class="icon-minus"]',
     );
     this.hideGridButton = page.locator(
-      'div[class="grid-option-main-actions"] svg[class="icon-eye"]'
+      'div[class="grid-option-main-actions"] svg[class="icon-eye"]',
     );
     this.unhideGridButton = page.locator(
-      'div[class="grid-option-main-actions"] svg[class="icon-eye-closed"]'
+      'div[class="grid-option-main-actions"] svg[class="icon-eye-closed"]',
     );
-    this.gridTypeSelector = page.locator('div[class="grid-option"] div[class="custom-select flex-grow"]');
+    this.gridTypeSelector = page.locator(
+      'div[class="grid-option"] div[class="custom-select flex-grow"]',
+    );
     this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
     this.gridTypeSelectorColumnsOption = page.locator(
-      'span:has-text("Columns")'
+      'span:has-text("Columns")',
     );
     this.gridTypeSelectorRowsOption = page.locator('span:has-text("Rows")');
     this.gridSizeInput = page.locator('div[class="grid-option"] input');
     this.gridActionsButton = page.locator(
-      'div[class="grid-option"] svg[class="icon-actions"] >> visible=true'
+      'div[class="grid-option"] svg[class="icon-actions"] >> visible=true',
     );
     this.gridOpacityInput = page.locator(
-      'div[class="grid-option"] div[class="input-element percentail"] input'
+      'div[class="grid-option"] div[class="input-element percentail"] input',
     );
     this.useDefaultGridButton = page.locator('button:has-text("Use default")');
     this.gridWidthInput = page.locator(
-      '//*[text()="Width"]//parent::div[@class="row-flex input-row"]//input'
+      '//*[text()="Width"]//parent::div[@class="row-flex input-row"]//input',
     );
     this.gridHeightInput = page.locator(
-      '//*[text()="Height"]//parent::div[@class="row-flex input-row"]//input'
+      '//*[text()="Height"]//parent::div[@class="row-flex input-row"]//input',
     );
 
     //Design panel - Export section
-    this.exportSection = page.locator('div.element-set-title:has-text("Export")');
+    this.exportSection = page.locator(
+      'div.element-set-title:has-text("Export")',
+    );
     this.addExportButton = page.locator(
-      'div[class="element-set exports-options"] svg'
+      'div[class="element-set exports-options"] svg',
     );
     this.removeExportButton = page.locator(
-      'div[class="element-set exports-options"] svg[class="icon-minus"]'
+      'div[class="element-set exports-options"] svg[class="icon-minus"]',
     );
     this.exportElementButton = page.locator(
-      'div[class="btn-icon-dark download-button "]'
+      'div[class="btn-icon-dark download-button "]',
     );
 
     //Design panel - Stroke section
     this.addStrokeButton = page.locator(
-      'div[class="element-set"] div:has-text("Stroke") svg'
+      'div[class="element-set"] div:has-text("Stroke") svg',
     );
-    this.strokeSection = page.locator('div.element-set-title:has-text("Stroke")');
+    this.strokeSection = page.locator(
+      'div.element-set-title:has-text("Stroke")',
+    );
     this.strokeColorBullet = page.locator(
-      'div[title="Stroke color"] div[class="color-bullet is-not-library-color"]'
+      'div[title="Stroke color"] div[class="color-bullet is-not-library-color"]',
     );
-    this.strokeRemoveIcon = page.locator('div[title="Stroke color"] .icon-minus');
-    this.strokeColorInput = page.locator('div[title="Stroke color"] div[class="color-info"] input');
+    this.strokeRemoveIcon = page.locator(
+      'div[title="Stroke color"] .icon-minus',
+    );
+    this.strokeColorInput = page.locator(
+      'div[title="Stroke color"] div[class="color-info"] input',
+    );
     this.strokeWidthInput = page.locator('div[title="Stroke width"] input');
     this.strokeOpacityInput = page.locator(
-      'div[title="Stroke color"] div[class="input-element percentail"] input'
+      'div[title="Stroke color"] div[class="input-element percentail"] input',
     );
-    this.strokePositionSelect = page.locator('//div[@title="Stroke width"]/parent::div//select[1]');
-    this.strokeTypeSelect = page.locator('//div[@title="Stroke width"]/parent::div//select[2]');
-
+    this.strokePositionSelect = page.locator(
+      '//div[@title="Stroke width"]/parent::div//select[1]',
+    );
+    this.strokeTypeSelect = page.locator(
+      '//div[@title="Stroke width"]/parent::div//select[2]',
+    );
 
     //Design panel - Flex Layout section
     this.removeLayoutButton = page.locator(
-      'div[class="element-set-title"] button[class="remove-layout"]'
+      'div[class="element-set-title"] button[class="remove-layout"]',
     );
     this.layoutSection = page.locator(
-      'div[class="element-set-content layout-menu"]'
+      'div[class="element-set-content layout-menu"]',
     );
     this.layoutDirectRowBtn = page.locator(
-      'div[class="layout-row"] button[alt="Row"]'
+      'div[class="layout-row"] button[alt="Row"]',
     );
     this.layoutDirectRowReverseBtn = page.locator(
-      'div[class="layout-row"] button[alt="Row reverse"]'
+      'div[class="layout-row"] button[alt="Row reverse"]',
     );
     this.layoutDirectColumnBtn = page.locator(
-      'div[class="layout-row"] button[alt="Column"]'
+      'div[class="layout-row"] button[alt="Column"]',
     );
     this.layoutDirectColumnReverseBtn = page.locator(
-      'div[class="layout-row"] button[alt="Column reverse"]'
+      'div[class="layout-row"] button[alt="Column reverse"]',
     );
     this.layoutAlignStartBtn = page.locator(
-      'div[class="layout-row"] button[alt="Align items start"]'
+      'div[class="layout-row"] button[alt="Align items start"]',
     );
     this.layoutAlignCenterBtn = page.locator(
-      'div[class="layout-row"] button[alt="Align items center"]'
+      'div[class="layout-row"] button[alt="Align items center"]',
     );
     this.layoutAlignEndBtn = page.locator(
-      'div[class="layout-row"] button[alt="Align items end"]'
+      'div[class="layout-row"] button[alt="Align items end"]',
     );
     this.layoutJustifyStartBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content start"]'
+      'div[class="layout-row"] button[alt="Justify content start"]',
     );
     this.layoutJustifyCenterBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content center"]'
+      'div[class="layout-row"] button[alt="Justify content center"]',
     );
     this.layoutJustifyEndBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content end"]'
+      'div[class="layout-row"] button[alt="Justify content end"]',
     );
     this.layoutJustifySpaceBetweenBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content space-between"]'
+      'div[class="layout-row"] button[alt="Justify content space-between"]',
     );
     this.layoutJustifySpaceAroundBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content space-around"]'
+      'div[class="layout-row"] button[alt="Justify content space-around"]',
     );
     this.layoutJustifySpaceEvenlyBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content space-evenly"]'
+      'div[class="layout-row"] button[alt="Justify content space-evenly"]',
     );
     this.layoutColumnGapInput = page.locator(
-      'div[class="gap-group"] div[alt="Column gap"] input'
+      'div[class="gap-group"] div[alt="Column gap"] input',
     );
     this.layoutRowGapInput = page.locator(
-      'div[class="gap-group"] div[alt="Row gap"] input'
+      'div[class="gap-group"] div[alt="Row gap"] input',
     );
     this.layoutVerticalPaddingInput = page.locator(
-      'div[class="padding-group"] div[alt="Vertical padding"] input'
+      'div[class="padding-group"] div[alt="Vertical padding"] input',
     );
     this.layoutHorizontPaddingInput = page.locator(
-      'div[class="padding-group"] div[alt="Horizontal padding"] input'
+      'div[class="padding-group"] div[alt="Horizontal padding"] input',
     );
     this.layoutIndepPaddingsIcon = page.locator(
-      'div[class="padding-icons"] div[alt="Independent paddings"]'
+      'div[class="padding-icons"] div[alt="Independent paddings"]',
     );
     this.layoutPaddingTopInput = page.locator(
-      'div[class="padding-row"] div[alt="Top"] input'
+      'div[class="padding-row"] div[alt="Top"] input',
     );
     this.layoutPaddingRightInput = page.locator(
-      'div[class="padding-row"] div[alt="Right"] input'
+      'div[class="padding-row"] div[alt="Right"] input',
     );
     this.layoutPaddingBottomInput = page.locator(
-      'div[class="padding-row"] div[alt="Bottom"] input'
+      'div[class="padding-row"] div[alt="Bottom"] input',
     );
     this.layoutPaddingLeftInput = page.locator(
-      'div[class="padding-row"] div[alt="Left"] input'
+      'div[class="padding-row"] div[alt="Left"] input',
     );
 
     //Design panel - Text section
-    this.textUpperCaseIcon = page.locator('div.align-icons svg.icon-uppercase');
-    this.textLowerCaseIcon = page.locator('div.align-icons svg.icon-lowercase');
-    this.textTitleCaseIcon = page.locator('div.align-icons svg.icon-titlecase');
-    this.textNoneCaseIcon = page.locator('div.align-icons svg.icon-minus >> nth=0');
-    this.textAlignTop = page.locator('div.align-icons svg.icon-align-top');
-    this.textAlignMiddle = page.locator('div.align-icons svg.icon-align-middle');
-    this.textAlignBottom = page.locator('div.align-icons svg.icon-align-bottom');
-    this.textIconLTR = page.locator('div.align-icons svg.icon-text-direction-ltr');
-    this.textIconRTL = page.locator('div.align-icons svg.icon-text-direction-rtl');
+    this.textUpperCaseIcon = page.locator("div.align-icons svg.icon-uppercase");
+    this.textLowerCaseIcon = page.locator("div.align-icons svg.icon-lowercase");
+    this.textTitleCaseIcon = page.locator("div.align-icons svg.icon-titlecase");
+    this.textNoneCaseIcon = page.locator(
+      "div.align-icons svg.icon-minus >> nth=0",
+    );
+    this.textAlignTop = page.locator("div.align-icons svg.icon-align-top");
+    this.textAlignMiddle = page.locator(
+      "div.align-icons svg.icon-align-middle",
+    );
+    this.textAlignBottom = page.locator(
+      "div.align-icons svg.icon-align-bottom",
+    );
+    this.textIconLTR = page.locator(
+      "div.align-icons svg.icon-text-direction-ltr",
+    );
+    this.textIconRTL = page.locator(
+      "div.align-icons svg.icon-text-direction-rtl",
+    );
 
     //Node panel
     this.pathActionsBlock = page.locator('div[class="path-actions"]');
     this.firstNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=0'
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=0',
     );
     this.secondNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=2'
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=2',
     );
     this.thirdNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=3'
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=3',
     );
     this.fourthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=4'
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=4',
     );
     this.fifthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=5'
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=5',
     );
     this.sixthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=6'
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=6',
     );
     this.nodePanelAddNodeButton = page.locator('div[alt^="Add node"] >> nth=0');
     this.nodePanelDeleteNodeButton = page.locator(
-      'div[alt^="Delete node"] >> nth=0'
+      'div[alt^="Delete node"] >> nth=0',
     );
     this.nodePanelMergeNodesButton = page.locator(
-      'div[alt^="Merge nodes"] >> nth=0'
+      'div[alt^="Merge nodes"] >> nth=0',
     );
     this.nodePanelDrawNodesButton = page.locator(
-      'div[alt="Draw nodes (P)"] >> nth=0'
+      'div[alt="Draw nodes (P)"] >> nth=0',
     );
     this.nodePanelMoveNodesButton = page.locator(
-      'div[alt="Move nodes (M)"] >> nth=0'
+      'div[alt="Move nodes (M)"] >> nth=0',
     );
     this.nodePanelJoinNodesButton = page.locator(
-      'div[alt="Join nodes (J)"] >> nth=0'
+      'div[alt="Join nodes (J)"] >> nth=0',
     );
     this.nodePanelSeparateNodesButton = page.locator(
-      'div[alt="Separate nodes (K)"] >> nth=0'
+      'div[alt="Separate nodes (K)"] >> nth=0',
     );
     this.nodePanelToCornerButton = page.locator(
-      'div[alt="To corner (X)"] >> nth=0'
+      'div[alt="To corner (X)"] >> nth=0',
     );
     this.nodePanelToCurveButton = page.locator(
-      'div[alt="To curve (C)"] >> nth=0'
+      'div[alt="To curve (C)"] >> nth=0',
     );
 
     //Comments
     this.commentInput = page.locator("textarea >> nth=0");
     this.commentText = page.locator(
-      'div[class="thread-content"] span[class="text"]'
+      'div[class="thread-content"] span[class="text"]',
     );
     this.commentCommentsPanelText = page.locator(
-      'div[class="thread-groups"] span[class="text"]'
+      'div[class="thread-groups"] span[class="text"]',
     );
     this.commentReplyText = page.locator(
-      'div[class="thread-content"] span[class="text"]  >> nth=1'
+      'div[class="thread-content"] span[class="text"]  >> nth=1',
     );
     this.commentReplyCommentsPanelText = page.locator(
-      'div[class="thread-groups"] span:has-text("1 reply")'
+      'div[class="thread-groups"] span:has-text("1 reply")',
     );
     this.postCommentButton = page.locator('input[value="Post"]');
     this.commentThreadIcon = page.locator(
-      'div[class="thread-bubble "]  >> nth=1'
+      'div[class="thread-bubble "]  >> nth=1',
     );
     this.commentResolvedThreadIcon = page.locator(
-      'div[class="thread-bubble resolved"]  >> nth=1'
+      'div[class="thread-bubble resolved"]  >> nth=1',
     );
     this.commentReplyInput = page.locator('textarea[placeholder="Reply"]');
     this.commentOptionsButton = page.locator(
-      'div[class="comments"] div[class="options-icon"] svg'
+      'div[class="comments"] div[class="options-icon"] svg',
     );
     this.commentEditOptionMenuItem = page.locator(
-      'ul[class="dropdown comment-options-dropdown"] li:has-text("Edit")'
+      'ul[class="dropdown comment-options-dropdown"] li:has-text("Edit")',
     );
     this.commentDeleteOptionMenuItem = page.locator(
-      'ul[class="dropdown comment-options-dropdown"] li:has-text("Delete thread")'
+      'ul[class="dropdown comment-options-dropdown"] li:has-text("Delete thread")',
     );
     this.deleteThreadButton = page.locator(
-      'input[value="Delete conversation"]'
+      'input[value="Delete conversation"]',
     );
     this.resolveCommentCheckbox = page.locator(
-      'div[class="options-resolve"] svg'
+      'div[class="options-resolve"] svg',
     );
     this.commentsPanelPlaceholderText = page.locator(
-      'div[class="thread-groups-placeholder"]'
+      'div[class="thread-groups-placeholder"]',
     );
     this.commentsAuthorSection = page.locator('div[class="author"]');
 
     // Main menu - first level
     this.mainMenuButton = page.locator(
-      'div[class="menu-section"] svg[class="icon-actions"]'
+      'div[class="menu-section"] svg[class="icon-actions"]',
     );
     this.mainMenuList = page.locator('ul[class="menu"]');
     this.viewMainMenuItem = page.locator('li[data-menu="view"]');
@@ -413,57 +470,63 @@ exports.MainPage = class MainPage extends BasePage {
     this.subMenuEditList = page.locator('ul[class="sub-menu edit"]');
     this.subMenuHelpInfoList = page.locator('ul[class="sub-menu help-info"]');
     this.showRulersMainMenuSubItem = page.locator(
-      'ul[class="sub-menu view"] span:has-text("Show rulers")'
+      'ul[class="sub-menu view"] span:has-text("Show rulers")',
     );
     this.hideRulersMainMenuSubItem = page.locator(
-      'ul[class="sub-menu view"] span:has-text("Hide rulers")'
+      'ul[class="sub-menu view"] span:has-text("Hide rulers")',
     );
-    this.hideGridsMainMenuSubItem = page.locator('ul[class^="sub-menu"] span:text-is("Hide grids")');
-    this.showGridsMainMenuSubItem = page.locator('ul[class^="sub-menu"] span:text-is("Show grid")');
-    this.selectAllMainMenuSubItem = page.locator('ul[class^="sub-menu"] span:text-is("Select all")');
+    this.hideGridsMainMenuSubItem = page.locator(
+      'ul[class^="sub-menu"] span:text-is("Hide grids")',
+    );
+    this.showGridsMainMenuSubItem = page.locator(
+      'ul[class^="sub-menu"] span:text-is("Show grid")',
+    );
+    this.selectAllMainMenuSubItem = page.locator(
+      'ul[class^="sub-menu"] span:text-is("Select all")',
+    );
     this.showColorPaletteMainMenuSubItem = page.locator(
-      'ul[class="sub-menu view"] span:text-is("Show color palette")'
+      'ul[class="sub-menu view"] span:text-is("Show color palette")',
     );
     this.hideColorPaletteMainMenuSubItem = page.locator(
-      'ul[class="sub-menu view"] span:text-is("Hide color palette")'
+      'ul[class="sub-menu view"] span:text-is("Hide color palette")',
     );
     this.showBoardNamesMainMenuSubItem = page.locator(
-      'ul[class="sub-menu view"] span:has-text("Show boards names")'
+      'ul[class="sub-menu view"] span:has-text("Show boards names")',
     );
     this.hideBoardNamesMainMenuSubItem = page.locator(
-      'ul[class="sub-menu view"] span:has-text("Hide board names")'
+      'ul[class="sub-menu view"] span:has-text("Hide board names")',
     );
     this.showPixelGridMainMenuSubItem = page.locator(
-      'ul[class="sub-menu view"] span:has-text("Show pixel grid")'
+      'ul[class="sub-menu view"] span:has-text("Show pixel grid")',
     );
     this.hidePixelGridMainMenuSubItem = page.locator(
-      'ul[class="sub-menu view"] span:has-text("Hide pixel grid")'
+      'ul[class="sub-menu view"] span:has-text("Hide pixel grid")',
     );
     this.showHideUIMainMenuSubItem = page.locator(
-      'ul[class="sub-menu view"] span:has-text("Show / Hide UI")'
+      'ul[class="sub-menu view"] span:has-text("Show / Hide UI")',
     );
     this.dowloadPenpotFileMenuSubItem = page.locator(
-      'ul[class="sub-menu file"] span:has-text("Download Penpot file (.penpot)")'
+      'ul[class="sub-menu file"] span:has-text("Download Penpot file (.penpot)")',
     );
     this.dowloadStandartFileMenuSubItem = page.locator(
-      'ul[class="sub-menu file"] span:has-text("Download standard file (.svg + .json)")'
+      'ul[class="sub-menu file"] span:has-text("Download standard file (.svg + .json)")',
     );
     this.addAsSharedLibraryFileMenuSubItem = page.locator(
-      'ul[class="sub-menu file"] span:has-text("Add as Shared Library")'
+      'ul[class="sub-menu file"] span:has-text("Add as Shared Library")',
     );
     this.removeAsSharedLibraryFileMenuSubItem = page.locator(
-      'ul[class="sub-menu file"] span:has-text("Unpublish Library")'
+      'ul[class="sub-menu file"] span:has-text("Unpublish Library")',
     );
     this.shortcutsMenuSubItem = page.locator(
-      'ul[class="sub-menu help-info"] span:has-text("Shortcuts")'
+      'ul[class="sub-menu help-info"] span:has-text("Shortcuts")',
     );
 
     //Zoom
     this.zoomPlusButton = page.locator(
-      'span[class="zoom-btns"] button:has-text("+")'
+      'span[class="zoom-btns"] button:has-text("+")',
     );
     this.zoomMinusButton = page.locator(
-      'span[class="zoom-btns"] button:has-text("-")'
+      'span[class="zoom-btns"] button:has-text("-")',
     );
     this.zoomResetButton = page.locator('button[class="reset-btn"]');
     this.zoomButton = page.locator('div[class="zoom-widget"]');
@@ -479,47 +542,47 @@ exports.MainPage = class MainPage extends BasePage {
 
     this.addPageButton = page.locator('div[class="add-page"] svg');
     this.firstPageListItem = page.locator(
-      'ul[class="pages-list"] div[class^="element-list-body"] >>nth=0'
+      'ul[class="pages-list"] div[class^="element-list-body"] >>nth=0',
     );
     this.secondPageListItem = page.locator(
-      'ul[class="pages-list"] div[class^="element-list-body"] >>nth=1'
+      'ul[class="pages-list"] div[class^="element-list-body"] >>nth=1',
     );
     this.firstPageNameInput = page.locator(
-      'ul[class="pages-list"] div[class^="element-list-body"] input'
+      'ul[class="pages-list"] div[class^="element-list-body"] input',
     );
     this.secondPageNameInput = page.locator(
-      'ul[class="pages-list"] div[class^="element-list-body"] input'
+      'ul[class="pages-list"] div[class^="element-list-body"] input',
     );
     this.assetsPanelPagesSection = page.locator("#sitemap");
     this.renamePageMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li span:has-text("Rename")'
+      'ul[class="workspace-context-menu"] li span:has-text("Rename")',
     );
     this.duplicatePageMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li span:has-text("Duplicate")'
+      'ul[class="workspace-context-menu"] li span:has-text("Duplicate")',
     );
     this.deletePageMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li span:has-text("Delete")'
+      'ul[class="workspace-context-menu"] li span:has-text("Delete")',
     );
     this.collapseExpandPagesButton = page.locator(
-      'div[class="collapse-pages"]'
+      'div[class="collapse-pages"]',
     );
     this.pageTrashIcon = page.locator(
-      'svg[class="icon-trash"] >> visible=true'
+      'svg[class="icon-trash"] >> visible=true',
     );
     this.deletePageOkButton = page.locator('input[value="Ok"]');
     this.assetsTitleText = page.locator('div[class^="asset-title"]');
     this.assetsTypeSelector = page.locator('div[class="assets-bar"] select');
     this.fileLibraryGraphicsUploadImageSelector = page.locator(
-      'div[class="libraries-wrapper"] input[accept="image/gif,image/png,image/svg+xml,image/webp,image/jpeg"]'
+      'div[class="libraries-wrapper"] input[accept="image/gif,image/png,image/svg+xml,image/webp,image/jpeg"]',
     );
     this.fileLibraryGraphicsUploadedImageLabel = page.locator(
-      'div[class="grid-cell"]'
+      'div[class="grid-cell"]',
     );
     this.renameFileLibraryMenuItem = page.locator('li:has-text("Rename")');
     this.deleteFileLibraryMenuItem = page.locator('li:has-text("Delete")');
     this.editFileLibraryMenuItem = page.locator('li:has-text("Edit")');
     this.duplicateFileLibraryMenuItem = page.locator(
-      'li:has-text("Duplicate")'
+      'li:has-text("Duplicate")',
     );
     this.createGroupFileLibraryMenuItem = page.locator('li:has-text("Group")');
     this.renameGroupFileLibraryMenuItem = page.locator('li:has-text("Rename")');
@@ -529,119 +592,131 @@ exports.MainPage = class MainPage extends BasePage {
     this.renameGroupButton = page.locator('input[value="Rename"]');
     this.fileLibraryGroupTitle = page.locator('div[class="group-title "]');
     this.fileLibraryChangeViewButton = page.locator(
-      'div[class="listing-option-btn"] svg'
+      'div[class="listing-option-btn"] svg',
     );
     this.addFileLibraryColorButton = page.locator(
-      ".asset-section .icon-plus >>nth=1"
+      ".asset-section .icon-plus >>nth=1",
     );
     this.fileLibraryColorsColorBullet = page.locator(
-      'div[class="color-bullet is-library-color"]'
+      'div[class="color-bullet is-library-color"]',
     );
     this.fileLibraryColorsColorTitle = page.locator('div[class="name-block"]');
     this.fileLibraryColorsColorNameInput = page.locator(
-      'input[class="element-name"]'
+      'input[class="element-name"]',
     );
     this.addFileLibraryTypographyButton = page.locator(
-      'div[class="asset-section"] svg[class="icon-plus"] >>nth=2'
+      'div[class="asset-section"] svg[class="icon-plus"] >>nth=2',
     );
     this.expandMinimizeFileLibraryTypographyButton = page.locator(
-      'div[class="element-set-actions-button"] >> visible=true'
+      'div[class="element-set-actions-button"] >> visible=true',
     );
     this.fileLibraryTypographyRecord = page.locator(
-      'div[class^="element-set-options-group typography-entry"]'
+      'div[class^="element-set-options-group typography-entry"]',
     );
     this.fontSelector = page.locator('div[class="input-select font-option"]');
     this.fontSelectorSearchInput = page.locator(
-      'div[class="font-selector-dropdown"] header input'
+      'div[class="font-selector-dropdown"] header input',
     );
     this.fontSizeSelector = page.locator(
-      'div[class="editable-select input-option size-option"] span'
+      'div[class="editable-select input-option size-option"] span',
     );
     this.typographyNameInput = page.locator(
-      'input[class="element-name adv-typography-name"]'
+      'input[class="element-name adv-typography-name"]',
     );
     this.fontRecordOnTypographiesBottomPanel = page.locator(
-      'div[class="typography-item"]'
+      'div[class="typography-item"]',
     );
     this.fileLibraryGraphicsComponentLabel = page.locator(
-      'div[class="grid-cell"]'
+      'div[class="grid-cell"]',
     );
     this.fileLibraryGraphicsSecondComponentLabel = page.locator(
-      'div[class="grid-cell"] >>nth=1'
+      'div[class="grid-cell"] >>nth=1',
     );
     this.bottomPaletteContentBlock = page.locator(
-      'div[class="color-palette-content"]'
+      'div[class="color-palette-content"]',
     );
 
     //Assets panel - Libraries
     this.addSharedLibraryButton = page.locator('input[value="Add"]');
     this.removeSharedLibraryButton = page.locator('input[value="Remove"]');
     this.publishSharedLibraryButton = page.locator('input[value="Publish"]');
-    this.unPublishSharedLibraryButton = page.locator('input[value="Unpublish"]');
-    this.closeLibrariesPopUpButton = page.locator('div.libraries-dialog a.close');
-    this.addAsSharedLibraryButton = page.locator('input[value="Add as Shared Library"]');
+    this.unPublishSharedLibraryButton = page.locator(
+      'input[value="Unpublish"]',
+    );
+    this.closeLibrariesPopUpButton = page.locator(
+      "div.libraries-dialog a.close",
+    );
+    this.addAsSharedLibraryButton = page.locator(
+      'input[value="Add as Shared Library"]',
+    );
     this.removeAsSharedLibraryButton = page.locator('input[value="Unpublish"]');
     this.sharedLibraryBadge = page.locator('span:has-text("SHARED")');
-    this.searchLibraryInput = page.locator('div.libraries-search input.search-input');
-    this.clearSearchInputIcon = page.locator('div.search-close svg.icon-close');
-    this.searchIcon = page.locator('div.libraries-content div.search-icon');
-    this.librariesEmptyList = page.locator('div.section-list-empty');
+    this.searchLibraryInput = page.locator(
+      "div.libraries-search input.search-input",
+    );
+    this.clearSearchInputIcon = page.locator("div.search-close svg.icon-close");
+    this.searchIcon = page.locator("div.libraries-content div.search-icon");
+    this.librariesEmptyList = page.locator("div.section-list-empty");
 
     //Prototype panel
     this.prototypeTab = page.locator('div[data-id=":prototype"]');
     this.prototypeArrowConnector = page.locator(
-      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=0'
+      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=0',
     );
     this.prototypeArrowSecondConnector = page.locator(
-      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=1'
+      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=1',
     );
     this.prototypePanelFlowNameText = page.locator(
-      'span[class="element-label flow-name"]'
+      'span[class="element-label flow-name"]',
     );
     this.prototypePanelFlowNameInput = page.locator(
-      'input[class="element-name"]'
+      'input[class="element-name"]',
     );
     this.prototypePanelFirstFlowNameText = page.locator(
-      'span[class="element-label flow-name"] >>nth=0'
+      'span[class="element-label flow-name"] >>nth=0',
     );
     this.prototypePanelSecondFlowNameText = page.locator(
-      'span[class="element-label flow-name"] >>nth=1'
+      'span[class="element-label flow-name"] >>nth=1',
     );
     this.addInteractionButton = page.locator(
-      'div:has-text("Interactions") svg[class="icon-plus"]'
+      'div:has-text("Interactions") svg[class="icon-plus"]',
     );
     this.removeSecondInteractionButton = page.locator(
-      'div[class="element-set-actions-button"] svg[class="icon-minus"] >>nth=1'
+      'div[class="element-set-actions-button"] svg[class="icon-minus"] >>nth=1',
     );
     this.firstInteractionRecord = page.locator(
-      'div[class="interactions-summary"] >>nth=0'
+      'div[class="interactions-summary"] >>nth=0',
     );
     this.secondInteractionRecord = page.locator(
-      'div[class="interactions-summary"] >>nth=1'
+      'div[class="interactions-summary"] >>nth=1',
     );
     this.interactionDestinationSelector = page.locator(
-      'div[class="interactions-element"] select'
+      'div[class="interactions-element"] select',
     );
     this.removeFlowButton = page.locator(
-      'div[class="flow-element"] svg[class="icon-minus"]'
+      'div[class="flow-element"] svg[class="icon-minus"]',
     );
 
     //Header
     this.savedChangesIcon = page.locator('div.saved span:text-is("Saved")');
-    this.unSavedChangesIcon = page.locator('div.pending span:text-is("Unsaved changes")');
+    this.unSavedChangesIcon = page.locator(
+      'div.pending span:text-is("Unsaved changes")',
+    );
     this.usersSection = page.locator('div[class="users-section"]');
-    this.projectNameSpan = page.locator('div[class="project-tree"] span[class="project-name"]');
-    this.fileNameSpan = page.locator('div[class="project-tree"] span')
+    this.projectNameSpan = page.locator(
+      'div[class="project-tree"] span[class="project-name"]',
+    );
+    this.fileNameSpan = page.locator('div[class="project-tree"] span');
 
     //History panel
     this.historyPanelButton = page.locator('button[class^="document-history"]');
     this.historyPanelActionRecord = page.locator(
-      'div[class="history-entry-summary-text"]'
+      'div[class="history-entry-summary-text"]',
     );
 
     //Shortcuts panel
     this.shortcutsPanel = page.locator('div[class="shortcuts"]');
-    this.closeShortcutsPanelIcon = page.locator('div.shortcuts svg.icon-close');
+    this.closeShortcutsPanelIcon = page.locator("div.shortcuts svg.icon-close");
 
     //Colors panel
     this.colorsPalette = page.locator('div[class="color-palette "]');
@@ -709,12 +784,12 @@ exports.MainPage = class MainPage extends BasePage {
     await this.viewport.click();
   }
 
-  async clickViewportTwice(delayMs=300) {
+  async clickViewportTwice(delayMs = 300) {
     await this.viewport.click({ delay: delayMs });
     await this.viewport.click({ delay: delayMs });
   }
 
-  async clickViewportByCoordinates(x, y, delayMs=300) {
+  async clickViewportByCoordinates(x, y, delayMs = 300) {
     await this.viewport.click({ position: { x: x, y: y }, delay: delayMs });
     await this.viewport.click({ position: { x: x, y: y }, delay: delayMs });
   }
@@ -740,18 +815,22 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickOnLayerOnCanvas() {
-    await this.createdLayer.click({ force: true, delay: 500});
+    await this.createdLayer.click({ force: true, delay: 500 });
   }
 
   async doubleClickBoardTitleOnCanvas(title) {
-    const boardSel = this.page.locator(`//*[text()="${title}"]//parent::*[@class="frame-title"]`);
+    const boardSel = this.page.locator(
+      `//*[text()="${title}"]//parent::*[@class="frame-title"]`,
+    );
     await boardSel.dblclick();
   }
 
   async hideUnhideLayerByIconOnLayersTab(layer) {
     const commonSel = `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`;
     const layerSel = this.page.locator(commonSel);
-    const hideUnhideIconSel = this.page.locator(commonSel + '//*[contains(@class, "icon-eye")]');
+    const hideUnhideIconSel = this.page.locator(
+      commonSel + '//*[contains(@class, "icon-eye")]',
+    );
 
     await layerSel.hover();
     await hideUnhideIconSel.click();
@@ -759,7 +838,8 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isLayerPresentOnLayersTab(layer, isVisible) {
     const layerSel = this.page.locator(
-      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`);
+      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`,
+    );
     if (isVisible) {
       await expect(layerSel).toBeVisible();
     } else {
@@ -768,14 +848,16 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async hideLayerViaRightClickOnCanvas(title) {
-    const boardSel = this.page.locator(`//*[text()="${title}"]//parent::*[@class="frame-title"]`);
+    const boardSel = this.page.locator(
+      `//*[text()="${title}"]//parent::*[@class="frame-title"]`,
+    );
     await boardSel.click({ button: "right", force: true });
     await this.hideLayerMenuItem.click();
   }
 
   async unHideLayerViaRightClickOnLayersTab(layer) {
     const layerSel = this.page.locator(
-      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`
+      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`,
     );
     await layerSel.click({ button: "right", force: true });
     await this.showLayerMenuItem.click();
@@ -783,14 +865,16 @@ exports.MainPage = class MainPage extends BasePage {
 
   async hideLayerViaRightClickOnLayersTab(layer) {
     const layerSel = this.page.locator(
-      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`
+      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`,
     );
     await layerSel.click({ button: "right", force: true });
     await this.hideLayerMenuItem.click();
   }
 
   async focusBoardViaRightClickOnCanvas(title) {
-    const boardSel = this.page.locator(`//*[text()="${title}"]//parent::*[@class="frame-title"]`);
+    const boardSel = this.page.locator(
+      `//*[text()="${title}"]//parent::*[@class="frame-title"]`,
+    );
     await boardSel.click({ button: "right", force: true });
     await this.focusOnLayerMenuItem.click();
   }
@@ -801,13 +885,15 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async focusLayerViaRightClickOnLayersTab(layer) {
-    const layerSel = this.page.locator(`//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`);
+    const layerSel = this.page.locator(
+      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`,
+    );
     await layerSel.click({ button: "right", force: true });
     await this.focusOnLayerMenuItem.click();
   }
 
   async focusLayerViaShortcut() {
-    await this.page.keyboard.press('F');
+    await this.page.keyboard.press("F");
   }
 
   async isFocusModeOn() {
@@ -845,13 +931,15 @@ exports.MainPage = class MainPage extends BasePage {
 
   async doubleClickLayerOnLayersTabViaTitle(title) {
     const layerSel = this.page.locator(
-      `div[class^="element-list-body"] span[class="element-name"]:text-is("${title}")`
+      `div[class^="element-list-body"] span[class="element-name"]:text-is("${title}")`,
     );
     await layerSel.dblclick();
   }
 
   async doubleClickLayerIconOnLayersTab(layer) {
-    const iconSel = this.page.locator(`//*[text()="${layer}"]//parent::div//div[@class="icon"]`);
+    const iconSel = this.page.locator(
+      `//*[text()="${layer}"]//parent::div//div[@class="icon"]`,
+    );
     await iconSel.dblclick();
   }
 
@@ -941,7 +1029,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickAddBlurButton() {
     await this.blurSection.waitFor();
-    await this.addBlurButton.click({ delay: 500});
+    await this.addBlurButton.click({ delay: 500 });
   }
 
   async changeValueForBlur(value) {
@@ -1370,7 +1458,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isResolveCommentCheckboxSelected() {
     await expect(this.resolveCommentCheckbox).toHaveClass(
-      "icon-checkbox-checked"
+      "icon-checkbox-checked",
     );
   }
 
@@ -1522,10 +1610,10 @@ exports.MainPage = class MainPage extends BasePage {
 
   async pressHideShowRulersShortcut(browserName) {
     const os = getPlatformName();
-    if (os === 'MacOS') {
+    if (os === "MacOS") {
       await this.page.keyboard.press("Meta+Shift+R");
     } else {
-      if (browserName === 'webkit') {
+      if (browserName === "webkit") {
         await this.page.keyboard.press("Meta+Shift+R");
       } else {
         await this.page.keyboard.press("Control+Shift+R");
@@ -1538,7 +1626,7 @@ exports.MainPage = class MainPage extends BasePage {
     if (os === "MacOS") {
       await this.page.keyboard.press("Meta+'");
     } else {
-      if (browserName === 'webkit') {
+      if (browserName === "webkit") {
         await this.page.keyboard.press("Meta+'");
       } else {
         await this.page.keyboard.press("Control+'");
@@ -1551,7 +1639,7 @@ exports.MainPage = class MainPage extends BasePage {
     if (os === "MacOS") {
       await this.page.keyboard.press("Meta+A");
     } else {
-      if (browserName === 'webkit') {
+      if (browserName === "webkit") {
         await this.page.keyboard.press("Meta+A");
       } else {
         await this.page.keyboard.press("Control+A");
@@ -1692,11 +1780,15 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isNoMatchedLibrariesFound(libraryName) {
     await expect(this.librariesEmptyList).toBeVisible();
-    await expect(this.librariesEmptyList).toHaveText(`No matches found for “${libraryName}“`);
+    await expect(this.librariesEmptyList).toHaveText(
+      `No matches found for “${libraryName}“`,
+    );
   }
 
   async isLibraryFoundAfterSearch(libraryName, isFound) {
-    const librarySel = this.page.locator(`div.section-list-item div.item-name:text-is("${libraryName}")`);
+    const librarySel = this.page.locator(
+      `div.section-list-item div.item-name:text-is("${libraryName}")`,
+    );
     if (isFound) {
       await expect(librarySel).toBeVisible();
     } else {
@@ -1755,14 +1847,14 @@ exports.MainPage = class MainPage extends BasePage {
   async clickFirstPageOnAssetsPanel() {
     await this.firstPageListItem.click();
     await expect(this.firstPageListItem).toHaveClass(
-      "element-list-body selected"
+      "element-list-body selected",
     );
   }
 
   async clickSecondPageOnAssetsPanel() {
     await this.secondPageListItem.click();
     await expect(this.secondPageListItem).toHaveClass(
-      "element-list-body selected"
+      "element-list-body selected",
     );
   }
 
@@ -2012,7 +2104,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.fontSelectorSearchInput.fill(fontName);
     await this.page
       .locator(
-        `div[class="ReactVirtualized__Grid__innerScrollContainer"] div:has-text('${fontName}')`
+        `div[class="ReactVirtualized__Grid__innerScrollContainer"] div:has-text('${fontName}')`,
       )
       .click();
   }
@@ -2123,7 +2215,7 @@ exports.MainPage = class MainPage extends BasePage {
   async expandFileLibraryOnAccessPanel(libraryName) {
     await this.page
       .locator(
-        `div[class="tool-window-bar library-bar"] span:has-text('${libraryName}')`
+        `div[class="tool-window-bar library-bar"] span:has-text('${libraryName}')`,
       )
       .click();
   }
@@ -2131,8 +2223,8 @@ exports.MainPage = class MainPage extends BasePage {
   async isFileLibraryOnAccessPanelNotDisplayed(libraryName) {
     await expect(
       this.page.locator(
-        `div[class="tool-window-bar library-bar"] span:has-text('${libraryName}')`
-      )
+        `div[class="tool-window-bar library-bar"] span:has-text('${libraryName}')`,
+      ),
     ).not.toBeVisible();
   }
 
@@ -2141,7 +2233,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressShortcutsPanelShortcut() {
-    await this.page.keyboard.press("Shift+?")
+    await this.page.keyboard.press("Shift+?");
   }
 
   async closeShortcutsPanel() {
@@ -2220,14 +2312,14 @@ exports.MainPage = class MainPage extends BasePage {
 
   async setStrokePosition(value) {
     switch (value) {
-      case 'Center':
-        await this.strokePositionSelect.selectOption(':center');
+      case "Center":
+        await this.strokePositionSelect.selectOption(":center");
         break;
-      case 'Inside':
-        await this.strokePositionSelect.selectOption(':inner');
+      case "Inside":
+        await this.strokePositionSelect.selectOption(":inner");
         break;
-      case 'Outside':
-        await this.strokePositionSelect.selectOption(':outer');
+      case "Outside":
+        await this.strokePositionSelect.selectOption(":outer");
         break;
     }
   }
@@ -2235,17 +2327,17 @@ exports.MainPage = class MainPage extends BasePage {
   async setStrokeType(value) {
     if (await this.strokeTypeSelect.isHidden()) return;
     switch (value) {
-      case 'Solid':
-        await this.strokeTypeSelect.selectOption(':solid');
+      case "Solid":
+        await this.strokeTypeSelect.selectOption(":solid");
         break;
-      case 'Dotted':
-        await this.strokeTypeSelect.selectOption(':dotted');
+      case "Dotted":
+        await this.strokeTypeSelect.selectOption(":dotted");
         break;
-      case 'Dashed':
-        await this.strokeTypeSelect.selectOption(':dashed');
+      case "Dashed":
+        await this.strokeTypeSelect.selectOption(":dashed");
         break;
-      case 'Mixed':
-        await this.strokeTypeSelect.selectOption(':mixed');
+      case "Mixed":
+        await this.strokeTypeSelect.selectOption(":mixed");
         break;
     }
   }
@@ -2260,7 +2352,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickOnEnter();
   }
 
-  async changeStrokeSettings(color, opacity, width, position, type= '') {
+  async changeStrokeSettings(color, opacity, width, position, type = "") {
     await this.setStrokeColor(color);
     await this.setStrokeOpacity(opacity);
     await this.setStrokeWidth(width);
@@ -2275,16 +2367,16 @@ exports.MainPage = class MainPage extends BasePage {
 
   async changeTextCase(value) {
     switch (value) {
-      case 'Upper':
+      case "Upper":
         await this.textUpperCaseIcon.click();
         break;
-      case 'Lower':
+      case "Lower":
         await this.textLowerCaseIcon.click();
         break;
-      case 'Title':
+      case "Title":
         await this.textTitleCaseIcon.click();
         break;
-      case 'None':
+      case "None":
         await this.textNoneCaseIcon.click();
         break;
     }
@@ -2292,13 +2384,13 @@ exports.MainPage = class MainPage extends BasePage {
 
   async changeTextAlignment(value) {
     switch (value) {
-      case 'Top':
+      case "Top":
         await this.textAlignTop.click();
         break;
-      case 'Middle':
+      case "Middle":
         await this.textAlignMiddle.click();
         break;
-      case 'Bottom':
+      case "Bottom":
         await this.textAlignBottom.click();
         break;
     }
@@ -2306,10 +2398,10 @@ exports.MainPage = class MainPage extends BasePage {
 
   async changeTextDirection(value) {
     switch (value) {
-      case 'RTL':
+      case "RTL":
         await this.textIconRTL.click();
         break;
-      case 'LTR':
+      case "LTR":
         await this.textIconLTR.click();
         break;
     }
@@ -2352,7 +2444,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayer(browserName, delayMs=300, x=200, y=300) {
+  async createDefaultTextLayer(browserName, delayMs = 300, x = 200, y = 300) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y, delayMs);
     if (browserName === "webkit") {
@@ -2367,5 +2459,4 @@ exports.MainPage = class MainPage extends BasePage {
   async waitDesignTabCollapsed() {
     await expect(this.strokeSection).toBeHidden();
   }
-
 };

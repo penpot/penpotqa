@@ -33,6 +33,7 @@ To run the tests in Firefox and Webkit browsers, use `"firefox"` and `"webkit"` 
 `"webkit": "npx playwright test --project=webkit"`
 
 Currently, there are 318 tests at all. For each browser there is the following execution time:
+
 - Chrome - 75 min
 - Firefox - 80 min
 - Webkit - 90 min
@@ -76,6 +77,7 @@ there is no way to unhide them in Firefox (unlike Chrome) - screenshots comparis
 **5. Performance testing.**
 
 To exclude performance tests from the periodical regression test run the following scripts should be used:
+
 - for Chrome: `"npx playwright test --project=chrome -gv 'PERF'"`
 - for Firefox: `"npx playwright test --project=firefox -gv 'PERF'"`
 - for Webkit: `"npx playwright test --project=webkit -gv 'PERF'"`
@@ -87,19 +89,23 @@ because in such way performance tests are not ignored.
 
 On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:
-  - _LOGIN_EMAIL_ (email from your Penpot account, which is used for tests)
-  - _LOGIN_PWD_ (password from your Penpot account, which is used for tests)
-  - _BASE_URL_ (Penpot url)
+
+- _LOGIN_EMAIL_ (email from your Penpot account, which is used for tests)
+- _LOGIN_PWD_ (password from your Penpot account, which is used for tests)
+- _BASE_URL_ (Penpot url)
 
 2 _.yml_ files were added into _.github/workflows_ directory with settings for environments:
-  - tests for _PRE_ env will be run by schedule: each Thursday at 6:00 am UTC (and also it is possible to trigger them manually)
-  - tests for _PRO_ env will be run only by request and triggered manually
+
+- tests for _PRE_ env will be run by schedule: each Thursday at 6:00 am UTC (and also it is possible to trigger them manually)
+- tests for _PRO_ env will be run only by request and triggered manually
 
 **Note**:
+
 - The UTC time is used for schedule set up.
 - There may be a delay for start running tests by schedule. It will take nearly 5-15 minutes.
 
 There are 2 workflows on _Actions_ tab:
+
 - Penpot Regression Tests on PRO env
 - Penpot Regression Tests on PRE env
 
@@ -109,10 +115,12 @@ In a few seconds running should be start.
 **Tests run results:**
 
 When the run will be finished the appropriate marker will appear near the current workflow:
+
 - `green icon` - workflow has been passed
 - `red icon` - workflow has been failed
 
 It is possible to open workflows (both passed and failed) and look through the _Summary_ info:
+
 - Status
 - Total duration
 - Artifacts

@@ -7,10 +7,10 @@ export function getPlatformName() {
   let currentOS = process.platform.toLowerCase();
 
   switch (currentOS) {
-    case 'win32':
+    case "win32":
       platformName = "Windows";
       break;
-    case 'darwin':
+    case "darwin":
       platformName = "MacOS";
       break;
     default:

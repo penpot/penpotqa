@@ -5,9 +5,9 @@ const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 
-const teamName = random().concat('autotest');
+const teamName = random().concat("autotest");
 
-test.beforeEach( async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
@@ -32,7 +32,7 @@ mainTest("PF-114 Create new page", async ({ page }) => {
   await mainPage.isFirstPageAddedToAssetsPanel();
   await mainPage.isSecondPageAddedToAssetsPanel();
   await expect(mainPage.assetsPanelPagesSection).toHaveScreenshot(
-    "page-1-and-page-2.png"
+    "page-1-and-page-2.png",
   );
 });
 
@@ -79,13 +79,13 @@ mainTest("PF-118 Collapse/expand pages list", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
   await expect(mainPage.assetsPanelPagesSection).toHaveScreenshot(
-    "hidden-pages.png"
+    "hidden-pages.png",
   );
   await mainPage.clickCollapseExpandPagesButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
   await expect(mainPage.assetsPanelPagesSection).toHaveScreenshot(
-    "page-1-and-page-2.png"
+    "page-1-and-page-2.png",
   );
 });
 
@@ -100,7 +100,7 @@ mainTest("PF-119 Delete page", async ({ page }) => {
   await mainPage.isFirstPageNameDisplayed("Page 1");
   await mainPage.isSecondPageNameDisplayed("Page 3");
   await expect(mainPage.assetsPanelPagesSection).toHaveScreenshot(
-    "page-1-and-page-3.png"
+    "page-1-and-page-3.png",
   );
   await mainPage.deleteSecondPageViaTrashIcon();
   await mainPage.waitForChangeIsSaved();

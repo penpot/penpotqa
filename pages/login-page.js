@@ -1,5 +1,6 @@
 const { expect } = require("@playwright/test");
 const { BasePage } = require("./base-page");
+
 exports.LoginPage = class LoginPage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
@@ -11,10 +12,10 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.pwdInput = page.locator("#password");
     this.loginButton = page.locator('[data-test="login-submit"]');
     this.emailInputError = page.locator(
-      'div[class=" invalid with-icon custom-input"] #email'
+      'div[class=" invalid with-icon custom-input"] #email',
     );
     this.pwdInputError = page.locator(
-      'div[class=" invalid empty with-icon custom-input"] #password'
+      'div[class=" invalid empty with-icon custom-input"] #password',
     );
     this.section = page.locator('section[class="auth-content"]');
     this.loginErrorBanner = page.locator('div[data-test="login-banner"]');
@@ -73,5 +74,4 @@ exports.LoginPage = class LoginPage extends BasePage {
     await expect(this.pageTitle).toBeVisible();
     await expect(this.pageTitle).toHaveText("Great to see you again!");
   }
-
 };

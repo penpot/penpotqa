@@ -5,23 +5,23 @@ const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 
-const teamName = random().concat('autotest');
+const teamName = random().concat("autotest");
 
-test.beforeEach( async ({ page }) => {
-    const teamPage = new TeamPage(page);
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
+test.beforeEach(async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await teamPage.createTeam(teamName);
+  await teamPage.isTeamSelected(teamName);
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
 });
 
 test.afterEach(async ({ page }) => {
-    const teamPage = new TeamPage(page);
-    const mainPage = new MainPage(page);
-    await mainPage.backToDashboardFromFileEditor();
-    await teamPage.deleteTeam(teamName);
+  const teamPage = new TeamPage(page);
+  const mainPage = new MainPage(page);
+  await mainPage.backToDashboardFromFileEditor();
+  await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
@@ -36,7 +36,7 @@ mainTest(
     await mainPage.isAssetsPanelDisplayed();
     await mainPage.switchToLayersPanelViaShortcut();
     await mainPage.isLayersPanelDisplayed();
-  }
+  },
 );
 
 mainTest("AS-2 Filter Graphics from All Assets drop-down", async ({ page }) => {
@@ -68,7 +68,7 @@ mainTest("AS-5 File library graphics - add .svg", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAssetsTab();
   await mainPage.uploadImageToFileLibraryGraphics(
-    "images/potato-snack-food-svgrepo-com.svg"
+    "images/potato-snack-food-svgrepo-com.svg",
   );
   await mainPage.waitForChangeIsSaved();
   await mainPage.isImageUploadedToFileLibraryGraphics();
@@ -109,7 +109,7 @@ mainTest("AS-14 File library graphics - rename group", async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFileLibraryGroupCreated("New Group");
   await expect(mainPage.assetsPanel).toHaveScreenshot(
-    "group-graphics-renamed.png"
+    "group-graphics-renamed.png",
   );
 });
 
@@ -136,21 +136,21 @@ mainTest(
     await mainPage.uploadImageToFileLibraryGraphics("images/sample.jpeg");
     await mainPage.waitForChangeIsSaved();
     await mainPage.uploadImageToFileLibraryGraphics(
-      "images/potato-snack-food-svgrepo-com.svg"
+      "images/potato-snack-food-svgrepo-com.svg",
     );
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
-      "graphics-tile-view.png"
+      "graphics-tile-view.png",
     );
     await mainPage.clickFileLibraryChangeViewButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
-      "graphics-list-view.png"
+      "graphics-list-view.png",
     );
     await mainPage.clickFileLibraryChangeViewButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.assetsPanel).toHaveScreenshot(
-      "graphics-tile-view.png"
+      "graphics-tile-view.png",
     );
-  }
+  },
 );

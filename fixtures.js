@@ -103,7 +103,7 @@ const performanceTest = base.test.extend({
         "#shape-5bdd2da0-d6b1-11ec-a04a-cf2544e40df7",
       ],
       frameTitleId: "#frame-title-5b3247a0-d6b1-11ec-a04a-cf2544e40df7",
-      frameId: "#frame-container-5b3247a0-d6b1-11ec-a04a-cf2544e40df7"
+      frameId: "#frame-container-5b3247a0-d6b1-11ec-a04a-cf2544e40df7",
     },
     { option: true },
   ],

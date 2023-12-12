@@ -5,9 +5,9 @@ const { test } = require("@playwright/test");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 
-const teamName = random().concat('autotest');
+const teamName = random().concat("autotest");
 
-test.beforeEach( async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
@@ -24,7 +24,7 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest("PF-156 Perform a change and check the status",async ({ page }) => {
+mainTest("PF-156 Perform a change and check the status", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
@@ -40,4 +40,3 @@ mainTest("PF-172 Open history panel with recent changes", async ({ page }) => {
   await mainPage.clickHistoryPanelButton();
   await mainPage.isActionDisplayedOnHistoryPanel("New board");
 });
-

@@ -10,93 +10,99 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     //Files
     this.numberOfFilesText = page.locator(
-      'div[class="project-name-wrapper"] span[class="info"]'
+      'div[class="project-name-wrapper"] span[class="info"]',
     );
     this.fileTile = page.locator('div[class="grid-item-th"]');
-    this.fileInfoPanel = page.locator('div[class="dashboard-grid"] div[class="grid-item-th"]');
+    this.fileInfoPanel = page.locator(
+      'div[class="dashboard-grid"] div[class="grid-item-th"]',
+    );
     this.fileNameTitle = page.locator('div[class="item-info"] h3');
     this.deleteFileMenuItem = page.locator('a[data-test="file-delete"]');
     this.deleteFileButton = page.locator(
-      'input[value="Delete files"],input[value="Delete file"]'
+      'input[value="Delete files"],input[value="Delete file"]',
     );
     this.createFileButtonPlaceholder = page.locator(
-      'div[class="dashboard-grid"] button[class="create-new"]'
+      'div[class="dashboard-grid"] button[class="create-new"]',
     );
     this.createFileButtonTitlePanel = page.locator(
-      '*[data-test="project-new-file"]'
+      '*[data-test="project-new-file"]',
     );
     this.renameFileMenuItem = page.locator('a[data-test="file-rename"]');
     this.duplicateFileMenuItem = page.locator('a[data-test="file-duplicate"]');
     this.addFileAsSharedLibraryMenuItem = page.locator(
-      'a[data-test="file-add-shared"]'
+      'a[data-test="file-add-shared"]',
     );
     this.addFileAsSharedLibraryButton = page.locator(
-      'input[value="Add as Shared Library"]'
+      'input[value="Add as Shared Library"]',
     );
     this.sharedLibraryIcon = page.locator('svg[class="icon-library"]');
     this.delFileAsSharedLibraryMenuItem = page.locator(
-      'a[data-test="file-del-shared"]'
+      'a[data-test="file-del-shared"]',
     );
     this.delFileAsSharedLibraryButton = page.locator(
-      'input[value="Unpublish"]'
+      'input[value="Unpublish"]',
     );
     this.downloadFilePenpotMenuItem = page.locator(
-      'a[data-test="download-binary-file"]'
+      'a[data-test="download-binary-file"]',
     );
     this.downloadFileStandardMenuItem = page.locator(
-      'a[data-test="download-standard-file"]'
+      'a[data-test="download-standard-file"]',
     );
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
     this.fileNameInput = page.locator('div[class="edit-wrapper"]');
     this.fileOptionsMenuButton = page.locator(
-      'div[class="project-th-icon menu"] svg[class="icon-actions"]'
+      'div[class="project-th-icon menu"] svg[class="icon-actions"]',
     );
     this.headerOptionsMenuButton = page.locator(
-      'div[class="dashboard-header-actions"] svg[class="icon-actions"]'
+      'div[class="dashboard-header-actions"] svg[class="icon-actions"]',
     );
 
     //Projects
     this.addProjectButton = page.locator(
-      'button[data-test="new-project-button"]'
+      'button[data-test="new-project-button"]',
     );
     this.projectNameInput = page.locator(
-      'div[class="project-name-wrapper"] div[class="edit-wrapper"]'
+      'div[class="project-name-wrapper"] div[class="edit-wrapper"]',
     );
     this.projectNameTitle = page.locator(
-      'div[class="project-name-wrapper"] h2'
+      'div[class="project-name-wrapper"] h2',
     );
     this.deleteProjectMenuItem = page.locator('a[data-test="project-delete"]');
     this.deleteProjectButton = page.locator(
-      'input[value="Delete files"],input[value="Delete project"]'
+      'input[value="Delete files"],input[value="Delete project"]',
     );
     this.renameProjectMenuItem = page.locator('a[data-test="project-rename"]');
     this.duplicateProjectMenuItem = page.locator(
-      'a[data-test="project-duplicate"]'
+      'a[data-test="project-duplicate"]',
     );
     this.pinUnpinProjectButton = page.locator('button[alt="Pin/Unpin"] svg');
     this.projectNameInput = page.locator(
-      'div[class="project-name-wrapper"] div[class="edit-wrapper"]'
+      'div[class="project-name-wrapper"] div[class="edit-wrapper"]',
     );
     this.projectOptionsMenuButton = page.locator(
-      '*[data-test="project-options"] .icon-actions'
+      '*[data-test="project-options"] .icon-actions',
     );
     this.projectsSidebarItem = page.locator('li:has-text("Projects")');
     this.draftsSidebarItem = page.locator('li:has-text("Drafts")');
     this.librariesSidebarItem = page.locator('li:has-text("Libraries")');
     this.pinnedProjectsSidebarItem = page.locator(
-      'div[data-test="pinned-projects"]'
+      'div[data-test="pinned-projects"]',
     );
-    this.searchInput = page.locator('#search-input');
+    this.searchInput = page.locator("#search-input");
     this.projectOptions = page.locator('[data-test="project-options"]');
 
     // Import files
     this.fileImport = page.locator('[data-test="file-import"]');
-    this.modalTitle = page.locator('.modal-header-title h2');
-    this.modalCancelButton = page.locator('.modal-footer .action-buttons .cancel-button');
-    this.modalAcceptButton = page.locator('.modal-footer .action-buttons .accept-button');
-    this.feedbackBanner = page.locator('.feedback-banner');
-    this.feedbackBannerMessage = page.locator('.feedback-banner .message');
+    this.modalTitle = page.locator(".modal-header-title h2");
+    this.modalCancelButton = page.locator(
+      ".modal-footer .action-buttons .cancel-button",
+    );
+    this.modalAcceptButton = page.locator(
+      ".modal-footer .action-buttons .accept-button",
+    );
+    this.feedbackBanner = page.locator(".feedback-banner");
+    this.feedbackBannerMessage = page.locator(".feedback-banner .message");
     this.importErrorMessage = page.locator('div[class="error-message"]');
 
     //Fonts
@@ -104,22 +110,22 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.uploadFontSelector = page.locator("#font-upload");
     this.uploadFontButton = page.locator('button:has-text("Upload")');
     this.fontNameTableCell = page.locator(
-      'div[class="font-item table-row"] div[class="table-field family"]'
+      'div[class="font-item table-row"] div[class="table-field family"]',
     );
     this.fontStyleTableCell = page.locator(
-      'div[class="font-item table-row"] div[class="table-field variants"]'
+      'div[class="font-item table-row"] div[class="table-field variants"]',
     );
     this.fontOptionsMenuButton = page.locator(
-      'div[class="table-field options"] svg[class="icon-actions"]'
+      'div[class="table-field options"] svg[class="icon-actions"]',
     );
     this.editFontMenuItem = page.locator('a[data-test="font-edit"]');
     this.deleteFontMenuItem = page.locator('a[data-test="font-delete"]');
     this.deleteFontButton = page.locator('input[value="Delete"]');
     this.fontsTablePlaceholder = page.locator(
-      'div[class="fonts-placeholder"] div[class="label"]'
+      'div[class="fonts-placeholder"] div[class="label"]',
     );
     this.fontNameInput = page.locator(
-      'div[class="font-item table-row"] input[type="text"]'
+      'div[class="font-item table-row"] input[type="text"]',
     );
     this.saveFontButton = page.locator('button:has-text("Save")');
     this.searchFontInput = page.locator('input[placeholder="Search font"]');
@@ -127,23 +133,25 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     //Libraries & Templates
     this.librariesAndTemplatesCarouselButton = page.locator(
-      'div.dashboard-templates-section div.title button'
+      "div.dashboard-templates-section div.title button",
     );
     this.librariesAndTemplatesSection = page.locator(
-      'div[class="dashboard-templates-section "]'
+      'div[class="dashboard-templates-section "]',
     );
     this.librariesAndTemplatesSectionCollapsed = page.locator(
-      'div[class="dashboard-templates-section collapsed"]'
+      'div[class="dashboard-templates-section collapsed"]',
     );
     this.librariesAndTemplatesSectionLeftArrowButton = page.locator(
-      'button[class="button left"]'
+      'button[class="button left"]',
     );
     this.librariesAndTemplatesSectionRightArrowButton = page.locator(
-      'button[class="button right"]'
+      'button[class="button right"]',
     );
     this.continueButton = page.locator('input[value="Continue"]');
     this.acceptButton = page.locator('input[value="Accept"]');
-    this.noLibrariesPlacelder = page.locator('div[data-test="empty-placeholder"] p');
+    this.noLibrariesPlacelder = page.locator(
+      'div[data-test="empty-placeholder"] p',
+    );
   }
 
   async createFileViaPlaceholder() {
@@ -417,13 +425,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async openProjectFromLeftSidebar(projectName) {
     const projectSel = await this.page.locator(
-      `div[data-test="pinned-projects"] span.element-title:has-text("${projectName}")`);
+      `div[data-test="pinned-projects"] span.element-title:has-text("${projectName}")`,
+    );
     await projectSel.click();
     await this.isHeaderDisplayed(projectName);
   }
 
   async checkNoLibrariesExist() {
-    await expect(this.noLibrariesPlacelder).toContainText("Files added to Libraries will appear here.");
+    await expect(this.noLibrariesPlacelder).toContainText(
+      "Files added to Libraries will appear here.",
+    );
   }
 
   async clickUnpinProjectButton() {
@@ -455,8 +466,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async uploadFontWithInvalidFormat(filePath) {
-    const fontName = filePath.split('/')[1];
-    const warning =`The font '${fontName}' could not be loaded`;
+    const fontName = filePath.split("/")[1];
+    const warning = `The font '${fontName}' could not be loaded`;
     await this.uploadFontSelector.setInputFiles(filePath);
     await expect(this.fontFormatError).toHaveText(warning);
   }
@@ -505,9 +516,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isLibrariesAndTemplatesCarouselVisible() {
     try {
-      await this.librariesAndTemplatesSection.waitFor({ state: 'visible', timeout: 4000 });
+      await this.librariesAndTemplatesSection.waitFor({
+        state: "visible",
+        timeout: 4000,
+      });
       return true;
-    } catch(error) {
+    } catch (error) {
       return false;
     }
   }
@@ -520,17 +534,21 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async maximizeLibrariesAndTemplatesCarousel() {
-    if (!await this.isLibrariesAndTemplatesCarouselVisible()) {
+    if (!(await this.isLibrariesAndTemplatesCarouselVisible())) {
       await this.clickLibrariesAndTemplatesCarouselButton();
     }
     await this.isLibrariesAndTemplatesSectionDisplayed();
   }
 
-  async flipLibrariesAndTemplatesCarousel(direction, times=1) {
-    if (direction === 'left') {
-      await this.librariesAndTemplatesSectionLeftArrowButton.click({ clickCount: times });
+  async flipLibrariesAndTemplatesCarousel(direction, times = 1) {
+    if (direction === "left") {
+      await this.librariesAndTemplatesSectionLeftArrowButton.click({
+        clickCount: times,
+      });
     } else {
-      await this.librariesAndTemplatesSectionRightArrowButton.click({ clickCount: times });
+      await this.librariesAndTemplatesSectionRightArrowButton.click({
+        clickCount: times,
+      });
     }
     await this.header.hover();
   }
@@ -540,12 +558,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async openSecondFile(fileName) {
-    const fileSel = this.page.locator(`div.info-wrapper:has-text("${fileName}")`);
+    const fileSel = this.page.locator(
+      `div.info-wrapper:has-text("${fileName}")`,
+    );
     await fileSel.dblclick();
   }
 
   async importSharedLibrary(libraryName) {
-    await this.page.locator(`div[class="card-name"] span:has-text('${libraryName}')`).click();
+    await this.page
+      .locator(`div[class="card-name"] span:has-text('${libraryName}')`)
+      .click();
     await this.continueButton.click();
     await this.acceptButton.click();
   }
@@ -558,8 +580,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.modalTitle).toBeVisible();
     await expect(this.modalTitle).toHaveText("Import Penpot files");
     await this.modalAcceptButton.click();
-    await this.feedbackBanner.waitFor({ state: 'visible' });
-    await expect(this.feedbackBannerMessage).toHaveText("1 file has been imported successfully.");
+    await this.feedbackBanner.waitFor({ state: "visible" });
+    await expect(this.feedbackBannerMessage).toHaveText(
+      "1 file has been imported successfully.",
+    );
     await this.modalAcceptButton.click();
   }
 
@@ -573,7 +597,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.modalAcceptButton).toBeVisible();
     await expect(this.modalAcceptButton).toBeDisabled();
 
-    await expect(this.importErrorMessage).toHaveText("Oops! We couldn't import this file");
+    await expect(this.importErrorMessage).toHaveText(
+      "Oops! We couldn't import this file",
+    );
     await this.modalCancelButton.click();
   }
 

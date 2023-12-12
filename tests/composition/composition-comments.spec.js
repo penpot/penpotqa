@@ -1,27 +1,27 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/workspace/main-page");
-const { expect, test} = require("@playwright/test");
+const { expect, test } = require("@playwright/test");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 const { random } = require("../../helpers/string-generator");
 
-const teamName = random().concat('autotest');
+const teamName = random().concat("autotest");
 
-test.beforeEach( async ({ page }) => {
-    const teamPage = new TeamPage(page);
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-    });
+test.beforeEach(async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await teamPage.createTeam(teamName);
+  await teamPage.isTeamSelected(teamName);
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+});
 
 test.afterEach(async ({ page }) => {
-    const teamPage = new TeamPage(page);
-    const mainPage = new MainPage(page);
-    await mainPage.backToDashboardFromFileEditor();
-    await teamPage.deleteTeam(teamName);
+  const teamPage = new TeamPage(page);
+  const mainPage = new MainPage(page);
+  await mainPage.backToDashboardFromFileEditor();
+  await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
@@ -56,7 +56,7 @@ mainTest(
         maxDiffPixels: 10,
       });
     }
-  }
+  },
 );
 
 mainTest(
@@ -66,14 +66,14 @@ mainTest(
     await mainPage.clickCreateCommentButton();
     await mainPage.clickViewportTwice();
     await mainPage.enterCommentText(
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     );
     await mainPage.clickPostCommentButton();
     await mainPage.isCommentDisplayedInPopUp(
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     );
     await mainPage.isCommentDisplayedInCommentsPanel(
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     );
     if (browserName === "chromium") {
       await expect(page).toHaveScreenshot("comment-latin-opened-pop-up.png", {
@@ -97,7 +97,7 @@ mainTest(
         maxDiffPixels: 10,
       });
     }
-  }
+  },
 );
 
 mainTest(
@@ -111,11 +111,11 @@ mainTest(
     await mainPage.clickViewportByCoordinates(600, 400);
     await mainPage.clickCommentThreadIcon();
     await mainPage.enterReplyText(
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry"
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
     );
     await mainPage.clickPostCommentButton();
     await mainPage.isCommentReplyDisplayedInPopUp(
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry"
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
     );
     await mainPage.isCommentReplyDisplayedInCommentsPanel();
     if (browserName === "chromium") {
@@ -128,7 +128,7 @@ mainTest(
         maxDiffPixels: 10,
       });
     }
-  }
+  },
 );
 
 mainTest(
@@ -162,7 +162,7 @@ mainTest(
         maxDiffPixels: 10,
       });
     }
-  }
+  },
 );
 
 mainTest("CO-356 Delete thread", async ({ page, browserName }) => {
@@ -178,7 +178,7 @@ mainTest("CO-356 Delete thread", async ({ page, browserName }) => {
   await mainPage.clickDeleteThreadButton();
   await mainPage.isCommentThreadIconNotDisplayed();
   await mainPage.isCommentsPanelPlaceholderDisplayed(
-    "You're all caught up! New comment notifications will appear here."
+    "You're all caught up! New comment notifications will appear here.",
   );
   if (browserName === "chromium") {
     await expect(page).toHaveScreenshot("comment-removed.png", {
