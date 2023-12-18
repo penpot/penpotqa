@@ -1,6 +1,6 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/workspace/main-page");
-const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup");
+const { ColorPalettePage } = require("../../pages/workspace/color-palette-page");
 const { expect, test } = require("@playwright/test");
 const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
@@ -66,7 +66,7 @@ mainTest("PF-72 Add fill to path", async ({ page }) => {
 
 mainTest("PF-73 Change fill color for board", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
+  const colorPalettePopUp = new ColorPalettePage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -84,7 +84,7 @@ mainTest("PF-73 Change fill color for board", async ({ page }) => {
 
 mainTest("PF-74 Change fill color for shape", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
+  const colorPalettePopUp = new ColorPalettePage(page);
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -102,7 +102,7 @@ mainTest("PF-74 Change fill color for shape", async ({ page }) => {
 
 mainTest("PF-77 Change fill color for path", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
+  const colorPalettePopUp = new ColorPalettePage(page);
   await mainPage.clickCreatePathButton();
   await mainPage.clickViewportByCoordinates(500, 200);
   await mainPage.clickViewportByCoordinates(1200, 700);

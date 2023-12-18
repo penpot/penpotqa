@@ -1,10 +1,12 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/workspace/main-page");
-const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup");
+const { ColorPalettePage } = require("../../pages/workspace/color-palette-page");
 const { expect, test } = require("@playwright/test");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
 const { random } = require("../../helpers/string-generator");
+const { DesignPanelPage } = require("../../pages/workspace/design-panel-page");
+const { AssetsPanelPage } = require("../../pages/workspace/assets-panel-page");
 
 const teamName = random().concat("autotest");
 
@@ -27,34 +29,31 @@ test.afterEach(async ({ page }) => {
 
 mainTest("CP-1 Open color picker from Stroke menu", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickCreatePathButton();
-  await mainPage.clickViewportByCoordinates(500, 200);
-  await mainPage.clickViewportByCoordinates(1200, 700);
-  await mainPage.clickViewportByCoordinates(1000, 400);
-  await mainPage.clickViewportByCoordinates(500, 200);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickStrokeColorBullet();
-  await colorPalettePopUp.isColorPalettePopUpOpened();
+  const colorPalettePage = new ColorPalettePage(page);
+  const designPanelPage = new DesignPanelPage(page);
+  await mainPage.createDefaultClosedPath();
+  await designPanelPage.clickStrokeColorBullet();
+  await colorPalettePage.isColorPalettePopUpOpened();
 });
 
 mainTest("CP-2 Open color picker from Fill menu", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
+  const designPanelPage = new DesignPanelPage(page);
+  const colorPalettePage = new ColorPalettePage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.isColorPalettePopUpOpened();
+  await designPanelPage.clickFillColorIcon();
+  await colorPalettePage.isColorPalettePopUpOpened();
 });
 
 mainTest(
   "CP-3 Open color picker from Canvas background menu",
   async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const colorPalettePopUp = new ColorPalettePopUp(page);
-    await mainPage.clickCanvasBackgroundColorIcon();
-    await colorPalettePopUp.isColorPalettePopUpOpened();
+    const designPanelPage = new DesignPanelPage(page);
+    const colorPalettePage = new ColorPalettePage(page);
+    await designPanelPage.clickCanvasBackgroundColorIcon();
+    await colorPalettePage.isColorPalettePopUpOpened();
   },
 );
 
@@ -62,22 +61,21 @@ mainTest("CP-7 Use Recent colors", async ({ page }) => {
   const color1 = "#FF0000";
   const color2 = "#B1B2B5";
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickCreateBoardButton();
+  const colorPalettePage = new ColorPalettePage(page);
+  const designPanelPage = new DesignPanelPage(page);
+  await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex(color1);
+  await designPanelPage.clickFillColorIcon();
+  await colorPalettePage.setHex(color1);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex(color2);
+  await designPanelPage.clickFillColorIcon();
+  await colorPalettePage.setHex(color2);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.isRecentColorBulletDisplayed(color1);
-  await colorPalettePopUp.isRecentColorBulletDisplayed(color2);
-  await colorPalettePopUp.clickRecentColorBullet(color1);
+  await designPanelPage.clickFillColorIcon();
+  await colorPalettePage.clickColorBullet(false, 1);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.createdLayer).toHaveScreenshot(
@@ -87,20 +85,19 @@ mainTest("CP-7 Use Recent colors", async ({ page }) => {
 
 mainTest("CP-8 Use colors from File library", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
-  await mainPage.clickAddFileLibraryColorButton();
-  await colorPalettePopUp.setHex("#ffff00");
-  await colorPalettePopUp.clickSaveColorStyleButton();
+  const colorPalettePage = new ColorPalettePage(page);
+  const designPanelPage = new DesignPanelPage(page);
+  const assetsPanelPage = new AssetsPanelPage(page);
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.clickAddFileLibraryColorButton();
+  await colorPalettePage.setHex("#ffff00");
+  await colorPalettePage.clickSaveColorStyleButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.selectFileLibraryColors();
-  await colorPalettePopUp.isFileLibraryColorBulletDisplayed();
-  await colorPalettePopUp.clickFirstFileLibraryColorBullet();
+  await mainPage.createDefaultBoardByCoordinates(200, 300);
+  await designPanelPage.clickFillColorIcon();
+  await colorPalettePage.selectFileLibraryColors();
+  await colorPalettePage.clickColorBullet();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.createdLayer).toHaveScreenshot(
@@ -110,69 +107,76 @@ mainTest("CP-8 Use colors from File library", async ({ page }) => {
 
 mainTest("CP-17 Open Color palette from shortcut", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
+  const colorPalettePage = new ColorPalettePage(page);
+  const designPanelPage = new DesignPanelPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex("#FF0000");
+  await designPanelPage.clickFillColorIcon();
+  await colorPalettePage.setHex("#FF0000");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex("#B1B2B5");
+  await designPanelPage.clickFillColorIcon();
+  await colorPalettePage.setHex("#B1B2B5");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
 
   await mainPage.pressColorsPaletteShortcut();
   await mainPage.isColorsPaletteDisplayed();
-  await expect(mainPage.colorsPalette).toHaveScreenshot("colors-panel.png");
+  await expect(mainPage.typographiesColorsBottomPanel).toHaveScreenshot(
+    "colors-panel.png",
+  );
   await mainPage.pressColorsPaletteShortcut();
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
 mainTest("CP-18 Open Color palette from toolbar", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
+  const colorPalettePage = new ColorPalettePage(page);
+  const designPanelPage = new DesignPanelPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex("#FF0000");
+  await designPanelPage.clickFillColorIcon();
+  await colorPalettePage.setHex("#FF0000");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex("#B1B2B5");
+  await designPanelPage.clickFillColorIcon();
+  await colorPalettePage.setHex("#B1B2B5");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.openCloseColorsPaletteFromSidebar();
   await mainPage.isColorsPaletteDisplayed();
-  await expect(mainPage.colorsPalette).toHaveScreenshot("colors-panel.png");
+  await expect(mainPage.typographiesColorsBottomPanel).toHaveScreenshot(
+    "colors-panel.png",
+  );
   await mainPage.openCloseColorsPaletteFromSidebar();
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
 mainTest("CP-20 Choose file library colors", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickAssetsTab();
-  await mainPage.clickAddFileLibraryColorButton();
-  await colorPalettePopUp.setHex("#ffff00");
-  await colorPalettePopUp.clickSaveColorStyleButton();
+  const colorPalettePage = new ColorPalettePage(page);
+  const assetsPanelPage = new AssetsPanelPage(page);
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.clickAddFileLibraryColorButton();
+  await colorPalettePage.setHex("#ffff00");
+  await colorPalettePage.clickSaveColorStyleButton();
   await mainPage.clickViewportOnce();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickAddFileLibraryColorButton();
-  await colorPalettePopUp.setHex("#cdc548");
-  await colorPalettePopUp.clickSaveColorStyleButton();
+  await assetsPanelPage.clickAddFileLibraryColorButton();
+  await colorPalettePage.setHex("#cdc548");
+  await colorPalettePage.clickSaveColorStyleButton();
   await mainPage.clickViewportOnce();
   await mainPage.waitForChangeIsSaved();
 
   await mainPage.pressColorsPaletteShortcut();
   await mainPage.isColorsPaletteDisplayed();
-  await colorPalettePopUp.openColorPaletteMenu();
-  await colorPalettePopUp.isPaletteRecentColorsOptExist();
-  await colorPalettePopUp.isPaletteFileLibraryOptExist();
-  await colorPalettePopUp.selectColorPaletteMenuOption("File library");
-  await expect(mainPage.colorsPalette).toHaveScreenshot(
+  await colorPalettePage.openColorPaletteMenu();
+  await colorPalettePage.isPaletteRecentColorsOptExist();
+  await colorPalettePage.isPaletteFileLibraryOptExist();
+  await colorPalettePage.selectColorPaletteMenuOption("File library");
+  await expect(mainPage.typographiesColorsBottomPanel).toHaveScreenshot(
     "colors-file-library.png",
   );
   await mainPage.pressColorsPaletteShortcut();
@@ -183,26 +187,28 @@ mainTest(
   "CP-21 Click any layer and change Fill color from palette",
   async ({ page }) => {
     const mainPage = new MainPage(page);
-    const colorPalettePopUp = new ColorPalettePopUp(page);
+    const colorPalettePage = new ColorPalettePage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickFillColorIcon();
-    await colorPalettePopUp.setHex("#FF0000");
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex("#FF0000");
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickFillColorIcon();
-    await colorPalettePopUp.setHex("#B1B2B5");
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex("#B1B2B5");
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       "rectangle-color-B1B2B5.png",
     );
-
     await mainPage.pressColorsPaletteShortcut();
     await mainPage.isColorsPaletteDisplayed();
-    await expect(mainPage.colorsPalette).toHaveScreenshot("colors-panel.png");
-    await colorPalettePopUp.selectColorBulletFromPalette("#FF0000");
+    await expect(mainPage.typographiesColorsBottomPanel).toHaveScreenshot(
+      "colors-panel.png",
+    );
+    await colorPalettePage.selectColorBulletFromPalette("#FF0000");
     await expect(mainPage.createdLayer).toHaveScreenshot(
       "rectangle-color-FF0000.png",
     );
@@ -214,10 +220,10 @@ mainTest(
 mainTest(
   "CP-26 Open color picker from add or edit color in assets",
   async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const colorPalettePopUp = new ColorPalettePopUp(page);
-    await mainPage.clickAssetsTab();
-    await mainPage.clickAddFileLibraryColorButton();
-    await colorPalettePopUp.isColorPalettePopUpOpened();
+    const assetsPanelPage = new AssetsPanelPage(page);
+    const colorPalettePage = new ColorPalettePage(page);
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.clickAddFileLibraryColorButton();
+    await colorPalettePage.isColorPalettePopUpOpened();
   },
 );

@@ -24,9 +24,7 @@ test("ON-6 Sign up with no password", async ({ page }) => {
   await registerPage.enterEmail(process.env.LOGIN_EMAIL);
   await registerPage.clickOnPasswordInput();
   await registerPage.clickOnHeader();
-  await registerPage.isPasswordInputErrorDisplayed(
-    "Password should at least be 8 characters",
-  );
+  await registerPage.isPasswordInputHintDisplayed("At least 8 characters");
   await registerPage.isCreateAccountBtnDisplayed();
   await registerPage.isCreateAccountBtnDisabled();
 });

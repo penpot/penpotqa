@@ -46,7 +46,7 @@ const config = {
       name: "chrome",
       expect: {
         toHaveScreenshot: {
-          maxDiffPixelRatio: 0.01,
+          maxDiffPixelRatio: 0,
         },
       },
       use: {
@@ -65,7 +65,7 @@ const config = {
       name: "firefox",
       expect: {
         toHaveScreenshot: {
-          maxDiffPixelRatio: 0.01,
+          maxDiffPixelRatio: 0,
         },
       },
       use: {
@@ -80,7 +80,7 @@ const config = {
       name: "webkit",
       expect: {
         toHaveScreenshot: {
-          maxDiffPixelRatio: 0.01,
+          maxDiffPixelRatio: 0,
         },
       },
       use: {

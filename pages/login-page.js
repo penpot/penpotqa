@@ -10,13 +10,8 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.pageTitle = page.locator('h1[data-test="login-title"]');
     this.emailInput = page.locator("#email");
     this.pwdInput = page.locator("#password");
-    this.loginButton = page.locator('[data-test="login-submit"]');
-    this.emailInputError = page.locator(
-      'div[class=" invalid with-icon custom-input"] #email',
-    );
-    this.pwdInputError = page.locator(
-      'div[class=" invalid empty with-icon custom-input"] #password',
-    );
+    this.loginButton = page.locator('button[data-test="login-submit"]');
+    this.emailInputError = page.locator('div[data-test="-error"]');
     this.section = page.locator('section[class="auth-content"]');
     this.loginErrorBanner = page.locator('div[data-test="login-banner"]');
     this.createAccountLink = page.locator('a:has-text("Create an account")');
@@ -42,12 +37,8 @@ exports.LoginPage = class LoginPage extends BasePage {
     await this.pwdInput.click();
   }
 
-  async isEmailInputErrorDisplayed() {
-    await expect(this.emailInputError).toBeVisible();
-  }
-
-  async isPwdInputErrorDisplayed() {
-    await expect(this.pwdInputError).toBeVisible();
+  async isEmailInputErrorDisplayed(error) {
+    await expect(this.emailInputError).toHaveText(error);
   }
 
   async isLoginButtonDisplayed() {

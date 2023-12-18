@@ -7,9 +7,11 @@ exports.BasePage = class BasePage {
    */
   constructor(page) {
     this.page = page;
-    this.header = page.locator('div[class="dashboard-title"] h1');
+    this.header = page.locator('div[class*="dashboard-title"] h1');
     this.successMessage = page.locator('div[class="banner success fixed"]');
     this.infoMessage = page.locator('div[class="banner info fixed"]');
+    this.moveButton = page.locator('button[title="Move (V)"]');
+    this.savedChangesIcon = page.locator('div[title="Saved"]');
   }
 
   async clearInput(input) {
@@ -49,5 +51,13 @@ exports.BasePage = class BasePage {
 
   async waitInfoMessageHidden() {
     await this.infoMessage.waitFor({ state: "hidden" });
+  }
+
+  async clickMoveButton() {
+    await this.moveButton.click();
+  }
+
+  async waitForChangeIsSaved() {
+    await this.savedChangesIcon.waitFor({ state: "visible" });
   }
 };

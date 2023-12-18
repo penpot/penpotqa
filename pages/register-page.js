@@ -11,9 +11,12 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     this.pageTitle = page.locator('h1[data-test="registration-title"]');
     this.emailInput = page.locator("#email");
     this.passwordInput = page.locator("#password");
-    this.createAccountBtn = page.locator('input[value="Create an account"]');
-    this.emailInputError = page.locator('span[data-test="email-input-error"]');
-    this.passwordInputError = page.locator('span[data-test="-error"]');
+    this.createAccountBtn = page.locator(
+      'button[data-test="register-form-submit"]',
+    );
+    this.emailInputError = page.locator('div[data-test="email-input-error"]');
+    this.passwordInputHint = page.locator("div.main_ui_components_forms__hint");
+    this.passwordInputError = page.locator('div[data-test="-error"]');
   }
 
   async isRegisterPageOpened() {
@@ -29,10 +32,6 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     await this.passwordInput.fill(password);
   }
 
-  async clickOnCreateAccount() {
-    await this.createAccountBtn.click();
-  }
-
   async isCreateAccountBtnDisplayed() {
     await expect(this.createAccountBtn).toBeVisible();
   }
@@ -42,12 +41,14 @@ exports.RegisterPage = class RegisterPage extends BasePage {
   }
 
   async isEmailInputErrorDisplayed(error) {
-    await expect(this.emailInputError).toBeVisible;
     await expect(this.emailInputError).toHaveText(error);
   }
 
+  async isPasswordInputHintDisplayed(error) {
+    await expect(this.passwordInputHint).toHaveText(error);
+  }
+
   async isPasswordInputErrorDisplayed(error) {
-    await expect(this.passwordInput).toBeVisible;
     await expect(this.passwordInputError).toHaveText(error);
   }
 

@@ -1,35 +1,37 @@
 const { BasePage } = require("../base-page");
 const { expect } = require("@playwright/test");
 
-exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
+exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
   constructor(page) {
     super(page);
-    this.popUp = page.locator(".colorpicker-tooltip");
+    this.popUp = page.locator('div[class*="colorpicker-tooltip"]');
     this.hexInput = page.locator("#hex-value");
     this.saveColorStyleButton = page.locator(
       'button:has-text("Save color style")',
     );
-    this.fileLibraryColorBullet = page.locator(
-      'div[class="selected-colors"] div[class="color-bullet is-library-color"] >>nth=0',
+    this.colorsLibrariesSelect = page.locator(
+      'div[class*="colorpicker_libraries__select-wrapper"]',
     );
-    this.colorsSelector = page.locator(".colorpicker-tooltip select");
-    this.colorPaletteActionsBtn = page.locator("div.color-palette-actions");
-    this.colorPaletteMenu = page.locator(
-      "ul.workspace-context-menu.palette-menu",
+    this.colorsFileLibraryOptions = page.locator(
+      'span:has-text("File library")',
     );
+    this.colorPaletteActionsBtn = page.locator(
+      'button[class*="palette-actions"]',
+    );
+    this.colorPaletteMenu = page.locator('ul[class*="palette-menu"]');
     this.colorPaletteFileLibraryOpt = page.locator(
-      'li.palette-library:has-text("File library")',
+      'li:has-text("File library")',
     );
     this.colorPaletteRecentColorsOpt = page.locator(
-      'li.palette-library:has-text("Recent colors")',
+      'li:has-text("Recent colors")',
     );
   }
 
   async setHex(value) {
-    await this.clearInput(this.hexInput);
+    // await this.clearInput(this.hexInput); //todo remove
     await this.hexInput.fill(value);
   }
 
@@ -41,30 +43,19 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
     await expect(this.popUp).toBeVisible();
   }
 
-  async isRecentColorBulletDisplayed(color) {
-    const selector = await this.page.locator(
-      `div[class="selected-colors"] div[title="${color}"]`,
-    );
-    await expect(selector).toBeVisible();
-  }
-
-  async isFileLibraryColorBulletDisplayed() {
-    await expect(this.fileLibraryColorBullet).toBeVisible();
-  }
-
-  async clickFirstFileLibraryColorBullet() {
-    await this.fileLibraryColorBullet.click();
-  }
-
-  async clickRecentColorBullet(color) {
-    const selector = await this.page.locator(
-      `div[class="selected-colors"] div[title="${color}"]`,
+  async clickColorBullet(isFileLibrary = true, value = 0) {
+    const classAttr = isFileLibrary
+      ? "color_bullet_new__is-library-color"
+      : "color_bullet_new__is-not-library-color";
+    const selector = this.page.locator(
+      `div[class*="selected-colors"] div[class*="${classAttr}"] >> nth=${value}`,
     );
     await selector.click();
   }
 
   async selectFileLibraryColors() {
-    await this.colorsSelector.selectOption("file");
+    await this.colorsLibrariesSelect.click();
+    await this.colorsFileLibraryOptions.click();
   }
 
   async openColorPaletteMenu() {
@@ -81,16 +72,14 @@ exports.ColorPalettePopUp = class ColorPalettePopUp extends BasePage {
   }
 
   async selectColorPaletteMenuOption(value) {
-    const menuSel = this.page.locator(
-      `li.palette-library:has-text("${value}")`,
-    );
+    const menuSel = this.page.locator(`li:has-text("${value}")`);
     await menuSel.click();
     await expect(this.colorPaletteMenu).not.toBeVisible();
   }
 
   async selectColorBulletFromPalette(value) {
     const colorSel = this.page.locator(
-      `div.color-palette-inside div[title="${value}"]`,
+      `div[class*="color-palette-inside"] div[title="${value}"]`,
     );
     await colorSel.click();
   }

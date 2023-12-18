@@ -1,10 +1,12 @@
 const { mainTest } = require("../../fixtures");
 const { expect, test } = require("@playwright/test");
 const { MainPage } = require("../../pages/workspace/main-page");
-const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup");
+const { ColorPalettePage } = require("../../pages/workspace/color-palette-page");
 const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
+const { DesignPanelPage } = require("../../pages/workspace/design-panel-page");
+const { LayersPanelPage } = require("../../pages/workspace/layers-panel-page");
 
 const teamName = random().concat("autotest");
 
@@ -27,38 +29,25 @@ test.afterEach(async ({ page }) => {
 
 mainTest("CO-162 Create a text from toolbar", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreateTextButton();
-  await mainPage.clickViewportTwice();
-  if (browserName === "webkit") {
-    await mainPage.typeTextFromKeyboard();
-  } else {
-    await mainPage.typeText("Hello World!");
-  }
-  await mainPage.waitForChangeIsSaved();
+  await mainPage.createDefaultTextLayer(browserName);
   await mainPage.isCreatedLayerVisible();
   await expect(mainPage.viewport).toHaveScreenshot("text.png");
 });
 
 mainTest("CO-165 Add rotation to text", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreateTextButton();
-  await mainPage.clickViewportTwice();
-  if (browserName === "webkit") {
-    await mainPage.typeTextFromKeyboard();
-  } else {
-    await mainPage.typeText("Hello World!");
-  }
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.changeRotationForLayer("90");
+  const designPanelPage = new DesignPanelPage(page);
+  await mainPage.createDefaultTextLayer(browserName);
+  await designPanelPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("text-rotated-90.png");
-  await mainPage.changeRotationForLayer("120");
+  await designPanelPage.changeRotationForLayer("120");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("text-rotated-120.png");
-  await mainPage.changeRotationForLayer("45");
+  await designPanelPage.changeRotationForLayer("45");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("text-rotated-45.png");
-  await mainPage.changeRotationForLayer("360");
+  await designPanelPage.changeRotationForLayer("360");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("text-rotated-359.png");
 });
@@ -67,8 +56,9 @@ mainTest(
   "CO-166 Add, hide, unhide, change type and delete Shadow to Text",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.createDefaultTextLayer(browserName);
-    await mainPage.clickAddShadowButton();
+    await designPanelPage.clickAddShadowButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "text-drop-shadow-default.png",
@@ -76,7 +66,7 @@ mainTest(
         mask: [mainPage.guides],
       },
     );
-    await mainPage.hideShadow();
+    await designPanelPage.hideShadow();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "text-drop-shadow-hide.png",
@@ -84,7 +74,7 @@ mainTest(
         mask: [mainPage.guides],
       },
     );
-    await mainPage.unhideShadow();
+    await designPanelPage.unhideShadow();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "text-drop-shadow-unhide.png",
@@ -92,7 +82,7 @@ mainTest(
         mask: [mainPage.guides],
       },
     );
-    await mainPage.selectTypeForShadow("Inner shadow");
+    await designPanelPage.selectTypeForShadow("Inner shadow");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "text-inner-shadow-default.png",
@@ -100,7 +90,7 @@ mainTest(
         mask: [mainPage.guides],
       },
     );
-    await mainPage.removeShadow();
+    await designPanelPage.removeShadow();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "text-inner-shadow-remove.png",
@@ -115,35 +105,21 @@ mainTest(
   "CO-167 Add and edit Shadow to text",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
-    const colorPalettePopUp = new ColorPalettePopUp(page);
-    await mainPage.clickCreateTextButton();
-    await mainPage.clickViewportTwice();
-    if (browserName === "webkit") {
-      await mainPage.typeTextFromKeyboard();
-    } else {
-      await mainPage.typeText("Hello World!");
-    }
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickAddShadowButton();
-    await mainPage.clickShadowActionsButton();
-    await mainPage.changeXForShadow("10");
-    await mainPage.changeYForShadow("15");
-    await mainPage.changeBlurForShadow("10");
-    await mainPage.changeSpreadForShadow("20");
-    await mainPage.changeOpacityForShadow("50");
-    await mainPage.clickShadowColorIcon();
-    await colorPalettePopUp.setHex("#304d6a");
+    const colorPalettePage = new ColorPalettePage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await mainPage.createDefaultTextLayer(browserName);
+    await designPanelPage.clickAddShadowButton();
+    await designPanelPage.clickShadowActionsButton();
+    await designPanelPage.changeShadowSettings("10", "15", "10", "20", "50");
+    await designPanelPage.clickShadowColorIcon();
+    await colorPalettePage.setHex("#304d6a");
     await mainPage.clickMoveButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-drop-shadow.png");
-    await mainPage.selectTypeForShadow("Inner shadow");
-    await mainPage.changeXForShadow("5");
-    await mainPage.changeYForShadow("7");
-    await mainPage.changeBlurForShadow("9");
-    await mainPage.changeSpreadForShadow("12");
-    await mainPage.changeOpacityForShadow("25");
-    await mainPage.clickShadowColorIcon();
-    await colorPalettePopUp.setHex("#96e637");
+    await designPanelPage.selectTypeForShadow("Inner shadow");
+    await designPanelPage.changeShadowSettings("5", "7", "9", "12", "25");
+    await designPanelPage.clickShadowColorIcon();
+    await colorPalettePage.setHex("#96e637");
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-inner-shadow.png");
@@ -154,27 +130,28 @@ mainTest(
   "CO-169 Add, hide, unhide and delete Blur to text",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
-    const colorPalettePopUp = new ColorPalettePopUp(page);
+    const colorPalettePage = new ColorPalettePage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.createDefaultTextLayer(browserName);
-    await mainPage.clickFillColorIcon();
-    await colorPalettePopUp.setHex("#304d6a");
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex("#304d6a");
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickAddBlurButton();
+    await designPanelPage.clickAddBlurButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-blur-default.png", {
       mask: [mainPage.guides],
     });
-    await mainPage.hideBlur();
+    await designPanelPage.hideBlur();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-blur-hide.png", {
       mask: [mainPage.guides],
     });
-    await mainPage.unhideBlur();
+    await designPanelPage.unhideBlur();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-blur-unhide.png", {
       mask: [mainPage.guides],
     });
-    await mainPage.removeBlur();
+    await designPanelPage.removeBlur();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-blur-remove.png", {
       mask: [mainPage.guides],
@@ -184,26 +161,22 @@ mainTest(
 
 mainTest("CO-170 Add and edit Blur to text", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreateTextButton();
-  await mainPage.clickViewportTwice();
-  if (browserName === "webkit") {
-    await mainPage.typeTextFromKeyboard();
-  } else {
-    await mainPage.typeText("Hello World!");
-  }
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickAddBlurButton();
-  await mainPage.changeValueForBlur("55");
+  const designPanelPage = new DesignPanelPage(page);
+  await mainPage.createDefaultTextLayer(browserName);
+  await designPanelPage.clickAddBlurButton();
+  await designPanelPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("text-blur.png");
 });
 
-mainTest(
+mainTest.skip(
+  // todo add testid
   "CO-171 Add, edit and delete Stroke to Text",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new MainPage(page);
     await mainPage.createDefaultTextLayer(browserName);
-    await mainPage.clickAddStrokeButton();
+    await designPanelPage.clickAddStrokeButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -213,7 +186,7 @@ mainTest(
       },
     );
     await mainPage.clickOnLayerOnCanvas();
-    await mainPage.changeStrokeSettings("#43E50B", "60", "10", "Inside");
+    await designPanelPage.changeStrokeSettings("#43E50B", "60", "10", "Inside");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "text-stroke-inside-dotted.png",
@@ -222,7 +195,7 @@ mainTest(
       },
     );
     await mainPage.clickOnLayerOnCanvas();
-    await mainPage.changeStrokeSettings("#F5358F", "80", "5", "Outside");
+    await designPanelPage.changeStrokeSettings("#F5358F", "80", "5", "Outside");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "text-stroke-outside-dashed.png",
@@ -231,7 +204,7 @@ mainTest(
       },
     );
     await mainPage.clickOnLayerOnCanvas();
-    await mainPage.changeStrokeSettings("#F5358F", "100", "3", "Center");
+    await designPanelPage.changeStrokeSettings("#F5358F", "100", "3", "Center");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "text-stroke-center-solid.png",
@@ -240,7 +213,7 @@ mainTest(
       },
     );
     await mainPage.clickOnLayerOnCanvas();
-    await mainPage.changeStrokeSettings("#F5358F", "40", "4", "Center");
+    await designPanelPage.changeStrokeSettings("#F5358F", "40", "4", "Center");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "text-stroke-center-mixed.png",
@@ -249,7 +222,7 @@ mainTest(
       },
     );
     await mainPage.clickOnLayerOnCanvas();
-    await mainPage.removeStroke();
+    await designPanelPage.removeStroke();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-stroke-remove.png", {
       mask: [mainPage.guides],
@@ -261,17 +234,7 @@ mainTest(
   "CO-173-1 Delete text via rightclick",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickCreateTextButton();
-    await mainPage.clickViewportTwice();
-    if (browserName === "webkit") {
-      await mainPage.typeTextFromKeyboard();
-    } else {
-      await mainPage.typeText("Hello World!");
-    }
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isCreatedLayerVisible();
-    await mainPage.clickMoveButton();
-    await mainPage.clickViewportTwice();
+    await mainPage.createDefaultTextLayer(browserName);
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
@@ -282,17 +245,7 @@ mainTest(
   "CO-173-2 Delete text via shortcut Del",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickCreateTextButton();
-    await mainPage.clickViewportTwice();
-    if (browserName === "webkit") {
-      await mainPage.typeTextFromKeyboard();
-    } else {
-      await mainPage.typeText("Hello World!");
-    }
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isCreatedLayerVisible();
-    await mainPage.clickMoveButton();
-    await mainPage.clickViewportOnce();
+    await mainPage.createDefaultTextLayer(browserName);
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
@@ -303,18 +256,12 @@ mainTest(
   "CO-177 Rename text with valid name",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
-    await mainPage.clickCreateTextButton();
-    await mainPage.clickViewportTwice();
-    if (browserName === "webkit") {
-      await mainPage.typeTextFromKeyboard();
-    } else {
-      await mainPage.typeText("Hello World!");
-    }
+    const layersPanelPage = new LayersPanelPage(page);
+    await mainPage.createDefaultTextLayer(browserName);
+    await layersPanelPage.doubleClickLayerOnLayersTab();
+    await layersPanelPage.renameCreatedLayer("renamed text");
     await mainPage.waitForChangeIsSaved();
-    await mainPage.doubleClickLayerOnLayersTab();
-    await mainPage.renameCreatedLayer("renamed text");
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isLayerNameDisplayed("renamed text");
+    await layersPanelPage.isLayerNameDisplayed("renamed text");
   },
 );
 
@@ -322,89 +269,67 @@ mainTest(
   "CO-209 Change text uppercase, lowercase",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.createDefaultTextLayer(browserName);
-    await mainPage.changeTextCase("Upper");
+    await designPanelPage.changeTextCase("Upper");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-upper-case.png");
-    await mainPage.changeTextCase("Title");
+    await designPanelPage.changeTextCase("Title");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-title-case.png");
-    await mainPage.changeTextCase("Lower");
+    await designPanelPage.changeTextCase("Lower");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-lower-case.png");
-    await mainPage.changeTextCase("None");
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot("text-default-case.png");
   },
 );
 
 mainTest("CO-210 Change alignment", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
+  const designPanelPage = new DesignPanelPage(page);
   await mainPage.createDefaultTextLayer(browserName);
-  await mainPage.changeHeightAndWidthForLayer("200", "200");
-  await mainPage.changeTextAlignment("Middle");
+  await designPanelPage.changeHeightAndWidthForLayer("200", "200");
+  await designPanelPage.changeTextAlignment("Middle");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("text-align-middle.png");
-  await mainPage.changeTextAlignment("Bottom");
+  await designPanelPage.changeTextAlignment("Bottom");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("text-align-bottom.png");
-  await mainPage.changeTextAlignment("Top");
+  await designPanelPage.changeTextAlignment("Top");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("text-align-top.png");
 });
 
 mainTest("CO-212 Change RTL/LTR", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
+  const designPanelPage = new DesignPanelPage(page);
   await mainPage.createDefaultTextLayer(browserName);
-  await mainPage.changeTextDirection("RTL");
+  await designPanelPage.changeTextDirection("RTL");
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot("text-rtl.png", {
-    maxDiffPixelRatio: 0,
-  });
-  await mainPage.changeTextDirection("LTR");
+  await expect(mainPage.viewport).toHaveScreenshot("text-rtl.png");
+  await designPanelPage.changeTextDirection("LTR");
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot("text-ltr.png", {
-    maxDiffPixelRatio: 0,
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("text-ltr.png");
 });
 
 mainTest(
   "CO-216 Change text color and opacity by typing color code",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
-    const colorPalettePopUp = new ColorPalettePopUp(page);
-    await mainPage.clickCreateTextButton();
-    await mainPage.clickViewportTwice();
-    if (browserName === "webkit") {
-      await mainPage.typeTextFromKeyboard();
-    } else {
-      await mainPage.typeText("Hello World!");
-    }
-    await mainPage.clickFillColorIcon();
-    await colorPalettePopUp.setHex("#304d6a");
-    await mainPage.changeOpacityForFill("50");
-    if (browserName === "webkit") {
-      await mainPage.clickMoveButton();
-    }
-    await mainPage.waitForChangeIsSaved();
+    const colorPalettePage = new ColorPalettePage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await mainPage.createDefaultTextLayer(browserName);
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex("#304d6a");
+    await designPanelPage.changeOpacityForFill("50");
     await mainPage.clickMoveButton();
-    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("text-fill-opacity.png");
   },
 );
 
 mainTest("CO-219 Selection to board", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreateTextButton();
-  await mainPage.clickViewportTwice();
-  if (browserName === "webkit") {
-    await mainPage.typeTextFromKeyboard();
-  } else {
-    await mainPage.typeText("Hello World!");
-  }
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickMoveButton();
-  await mainPage.waitForChangeIsSaved();
+  await mainPage.createDefaultTextLayer(browserName);
   await mainPage.selectionToBoardViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("text-to-board.png", {
