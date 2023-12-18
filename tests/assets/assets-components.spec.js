@@ -30,7 +30,7 @@ mainTest(
     const mainPage = new MainPage(page);
     await mainPage.clickAssetsTab();
     await mainPage.selectTypeFromAllAssetsSelector("Components");
-    await mainPage.isAssetsTitleDisplayed("Components (0)");
+    await mainPage.isAssetsSectionNameDisplayed("Components", "0");
   },
 );
 

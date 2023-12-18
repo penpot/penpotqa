@@ -1,7 +1,7 @@
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/workspace/main-page");
 const { expect, test } = require("@playwright/test");
-const { ColorPalettePopUp } = require("../../pages/workspace/color-palette-popup");
+const { ColorPalettePage } = require("../../pages/workspace/color-palette-page");
 const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
@@ -108,7 +108,7 @@ mainTest(
 
 mainTest("CO-280 Add and edit Shadow to path", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
+  const colorPalettePopUp = new ColorPalettePage(page);
   await mainPage.createDefaultOpenPath();
   await mainPage.clickAddShadowButton();
   await mainPage.clickShadowActionsButton();

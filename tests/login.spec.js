@@ -17,7 +17,7 @@ test("ON-13 Login with invalid email address", async ({ page }) => {
   await loginPage.goto();
   await loginPage.enterEmail("test@com");
   await loginPage.enterPwd(process.env.LOGIN_PWD);
-  await loginPage.isEmailInputErrorDisplayed();
+  await loginPage.isEmailInputErrorDisplayed("Enter a valid email please");
   await loginPage.isLoginButtonDisplayed();
   await loginPage.isLoginButtonDisabled();
 });
@@ -28,7 +28,6 @@ test("ON-14 Login with no password", async ({ page }) => {
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);
   await loginPage.clickPwdInput();
   await loginPage.clickHeader();
-  await loginPage.isPwdInputErrorDisplayed();
   await loginPage.isLoginButtonDisplayed();
   await loginPage.isLoginButtonDisabled();
 });

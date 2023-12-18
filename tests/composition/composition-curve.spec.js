@@ -5,6 +5,7 @@ const { test } = require("@playwright/test");
 const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
+const { LayersPanelPage } = require("../../pages/workspace/layers-panel-page");
 
 const teamName = random().concat("autotest");
 
@@ -42,13 +43,14 @@ test.describe(() => {
     "CO-270 Rename path, that was created with curve with valid name",
     async ({ page }) => {
       const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
       await mainPage.clickCreateCurveButton();
       await mainPage.drawCurve(900, 300, 600, 200);
       await mainPage.waitForChangeIsSaved();
-      await mainPage.doubleClickLayerOnLayersTab();
-      await mainPage.renameCreatedLayer("renamed curve");
+      await layersPanelPage.doubleClickLayerOnLayersTab();
+      await layersPanelPage.renameCreatedLayer("renamed curve");
       await mainPage.waitForChangeIsSaved();
-      await mainPage.isLayerNameDisplayed("renamed curve");
+      await layersPanelPage.isLayerNameDisplayed("renamed curve");
     },
   );
 });

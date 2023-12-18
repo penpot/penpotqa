@@ -1,8 +1,8 @@
 const { expect, test } = require("@playwright/test");
 const { mainTest } = require("../../fixtures");
 const { MainPage } = require("../../pages/workspace/main-page");
-const { LayersPanelPage } = require("../../pages/workspace/layers-panel");
-const { DesignPanelPage } = require("../../pages/workspace/design-panel");
+const { LayersPanelPage } = require("../../pages/workspace/layers-panel-page");
+const { DesignPanelPage } = require("../../pages/workspace/design-panel-page");
 const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");

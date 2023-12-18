@@ -9,17 +9,23 @@ exports.TeamPage = class TeamPage extends BasePage {
     super(page);
 
     // Teams
-    this.teamCurrentBtn = page.locator(".current-team");
+    this.teamCurrentBtn = page.locator('button[class*="current-team"]');
     this.teamList = page.locator('ul[class*="teams-dropdown"]');
     this.createNewTeamMenuItem = page.locator("#teams-selector-create-team");
     this.teamNameInput = page.locator("#name");
-    this.createNewTeamButton = page.locator('input[value="Create new team"]');
-    this.teamCurrentNameDiv = page.locator(".current-team .team-name");
+    this.createNewTeamButton = page.locator(
+      'button[name="submit"] span:text-is("Create new team")',
+    );
+    this.teamCurrentNameDiv = page.locator(
+      'button[class*="current-team"] div[class*="team-name"]',
+    );
     this.teamListItem = page.locator(
       'li[class="team-name"] span[class="team-text"]',
     );
-    this.teamOptionsMenuButton = page.locator(".switch-options .icon-actions");
-    this.deleteTeamMenuItem = page.locator('li[data-test="delete-team"]');
+    this.teamOptionsMenuButton = page.locator(
+      'button[class*="switch-options"]',
+    );
+    this.deleteTeamMenuItem = page.locator("#teams-options-delete-team");
     this.deleteTeamButton = page.locator('input[value="Delete team"]');
     this.teamSettingsMenuItem = page.locator('li[data-test="team-settings"]');
     this.renameTeamMenuItem = page.locator('li[data-test="rename-team"]');
@@ -31,7 +37,6 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamProjectsSpan = page.locator("div.stats-block .projects span.text");
     this.teamFilesSpan = page.locator("div.stats-block .files span.text");
     this.teamInfoSection = page.locator('div[class="block info-block"]');
-    this.teamNameLabel = page.locator("div.block.info-block div.name");
     this.teamOwnerSection = page.locator('div[class="block owner-block"]');
     this.teamStatsSection = page.locator('div[class="block stats-block"]');
 
