@@ -5,7 +5,6 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
-
   constructor(page) {
     super(page);
 
@@ -20,7 +19,6 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.assetsAllOption = page.locator("#section-all");
     this.assetsPanel = page.locator('div[class*="assets-bar"]');
     this.librariesTab = page.locator('div[class="libraries-button"]');
-    this.assetsPanelPagesSection = page.locator("#sitemap");
     this.assetsSectionName = page.locator(
       'span[class*="assets_common__section-name"]',
     );
@@ -100,7 +98,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       'input[value="Add as Shared Library"]',
     );
     this.removeAsSharedLibraryButton = page.locator('input[value="Unpublish"]');
-    this.sharedLibraryBadge = page.locator('span:has-text("SHARED")');
+    this.sharedLibraryBadge = page.locator('span[class*="shared-badge"]');
     this.searchLibraryInput = page.locator(
       "div.libraries-search input.search-input",
     );

@@ -24,14 +24,15 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest("PF-132 Zoom +/- via top right menu", async ({ page }) => {
+mainTest("PF-132 Zoom via top right menu", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickViewportTwice();
   await mainPage.increaseZoom(1);
+  await mainPage.clickViewportOnce();
   await expect(page).toHaveScreenshot("canvas-zoom-in.png", {
     mask: [mainPage.usersSection],
   });
   await mainPage.decreaseZoom(2);
+  await mainPage.clickViewportOnce();
   await expect(page).toHaveScreenshot("canvas-zoom-out.png", {
     mask: [mainPage.usersSection],
   });
@@ -39,8 +40,8 @@ mainTest("PF-132 Zoom +/- via top right menu", async ({ page }) => {
 
 mainTest("PF-134 Reset zoom via top right menu", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickViewportTwice();
   await mainPage.increaseZoom(1);
+  await mainPage.clickViewportOnce();
   await expect(page).toHaveScreenshot("canvas-zoom-in.png", {
     mask: [mainPage.usersSection],
   });

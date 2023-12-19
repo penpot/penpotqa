@@ -36,16 +36,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="fill__element-set"] div[class*="color-bullet-wrapper"]',
     );
     this.fillColorInput = page.locator(
-      'div[title="Fill"] div[class="color-info"] input',
+      'div[class*="fill__element-content"] input[class*="color-input"]',
     );
     this.fillOpacityInput = page.locator(
-      'div[class*="opacity-element-wrapper"] input',
+      'div[class*="fill__element-content"] div[class*="opacity-element-wrapper"] input',
     );
     this.addFillButton = page.locator(
-      'div[class="element-set"] div:has-text("Fill") svg',
+      'button[class*="fill__add-fill"]',
     );
     this.removeFillButton = page.locator(
-      'div[title="Fill"] svg[class="icon-minus"]',
+      'div[class*="fill__element-content"] svg[class="icon-remove-refactor"]',
     );
 
     //Design panel - Shadow section
@@ -81,7 +81,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.shadowTypeField = page.locator('div[class*="shadow-type-select"]');
 
-    // 'Flex element' section
+    //Design panel - Flex Layout section
     this.flexElementSection = page.locator(
       'div[class="element-set-content layout-item-menu"]',
     );
@@ -102,6 +102,78 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.flexElementPositionAbsolute = page.locator(
       'div[class="layout-row"] button[alt="Absolute"]',
+    );
+    this.removeLayoutButton = page.locator(
+        'div[class="element-set-title"] button[class="remove-layout"]',
+    );
+    this.layoutSection = page.locator(
+        'div[class*="layout_container__element-title"]:has-text("Layout")',
+    );
+    this.layoutDirectRowBtn = page.locator(
+        'div[class="layout-row"] button[alt="Row"]',
+    );
+    this.layoutDirectRowReverseBtn = page.locator(
+        'div[class="layout-row"] button[alt="Row reverse"]',
+    );
+    this.layoutDirectColumnBtn = page.locator(
+        'div[class="layout-row"] button[alt="Column"]',
+    );
+    this.layoutDirectColumnReverseBtn = page.locator(
+        'div[class="layout-row"] button[alt="Column reverse"]',
+    );
+    this.layoutAlignStartBtn = page.locator(
+        'div[class="layout-row"] button[alt="Align items start"]',
+    );
+    this.layoutAlignCenterBtn = page.locator(
+        'div[class="layout-row"] button[alt="Align items center"]',
+    );
+    this.layoutAlignEndBtn = page.locator(
+        'div[class="layout-row"] button[alt="Align items end"]',
+    );
+    this.layoutJustifyStartBtn = page.locator(
+        'div[class="layout-row"] button[alt="Justify content start"]',
+    );
+    this.layoutJustifyCenterBtn = page.locator(
+        'div[class="layout-row"] button[alt="Justify content center"]',
+    );
+    this.layoutJustifyEndBtn = page.locator(
+        'div[class="layout-row"] button[alt="Justify content end"]',
+    );
+    this.layoutJustifySpaceBetweenBtn = page.locator(
+        'div[class="layout-row"] button[alt="Justify content space-between"]',
+    );
+    this.layoutJustifySpaceAroundBtn = page.locator(
+        'div[class="layout-row"] button[alt="Justify content space-around"]',
+    );
+    this.layoutJustifySpaceEvenlyBtn = page.locator(
+        'div[class="layout-row"] button[alt="Justify content space-evenly"]',
+    );
+    this.layoutColumnGapInput = page.locator(
+        'div[class="gap-group"] div[alt="Column gap"] input',
+    );
+    this.layoutRowGapInput = page.locator(
+        'div[class="gap-group"] div[alt="Row gap"] input',
+    );
+    this.layoutVerticalPaddingInput = page.locator(
+        'div[class="padding-group"] div[alt="Vertical padding"] input',
+    );
+    this.layoutHorizontPaddingInput = page.locator(
+        'div[class="padding-group"] div[alt="Horizontal padding"] input',
+    );
+    this.layoutIndepPaddingsIcon = page.locator(
+        'div[class="padding-icons"] div[alt="Independent paddings"]',
+    );
+    this.layoutPaddingTopInput = page.locator(
+        'div[class="padding-row"] div[alt="Top"] input',
+    );
+    this.layoutPaddingRightInput = page.locator(
+        'div[class="padding-row"] div[alt="Right"] input',
+    );
+    this.layoutPaddingBottomInput = page.locator(
+        'div[class="padding-row"] div[alt="Bottom"] input',
+    );
+    this.layoutPaddingLeftInput = page.locator(
+        'div[class="padding-row"] div[alt="Left"] input',
     );
 
     //Design panel - Blur section
@@ -163,6 +235,62 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textAlignBottom = page.locator("svg.icon-text-bottom-refactor");
     this.textIconLTR = page.locator("svg.icon-text-ltr-refactor");
     this.textIconRTL = page.locator("svg.icon-text-rtl-refactor");
+
+    //Design panel - Export section
+    this.exportSection = page.locator(
+        'div[class*="exports__element-title"]:has-text("Export")',
+    );
+    this.addExportButton = page.locator(
+        'button[class*="exports__add-export"]',
+    );
+    this.removeExportButton = page.locator(
+        'button[class*="exports__action-btn"] svg[class="icon-remove-refactor"]',
+    );
+    this.exportElementButton = page.locator(
+        'button[class*="exports__export-btn"]',
+    );
+
+    //Design panel - Grid section
+    this.gridSection = page.locator('div[class*=element-set]:has-text("Guides")');
+    this.gridMainOptionSection = page.locator('div[class="grid-option-main"]');
+    this.addGridButton = page.locator(
+        'button[class*="grid__add-grid"]',
+    );
+    this.removeGridButton = page.locator(
+        'div[class*="grid__actions"] svg[class="icon-remove-refactor"]',
+    );
+    this.hideGridButton = page.locator(
+        'div[class*="grid__actions"] svg[class="icon-shown-refactor"]',
+    );
+    this.unhideGridButton = page.locator(
+        'div[class*="grid__actions"] svg[class="icon-hide-refactor"]',
+    );
+    this.gridTypeField = page.locator(
+        'div[class*="grid__option-row"] div[class*="type-select-wrapper"]',
+    );
+    this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
+    this.gridTypeSelectorColumnsOption = page.locator(
+        'span:has-text("Columns")',
+    );
+    this.gridTypeSelectorRowsOption = page.locator('span:has-text("Rows")');
+    this.gridSizeInput = page.locator('div[title="Size"] input');
+    this.gridColumnsRowsInput = page.locator('div[class*="grid__column-select"] input');
+    this.gridActionsButton = page.locator(
+        'button[class*="grid__show-options"]',
+    );
+    this.gridOpacityInput = page.locator(
+        'div[class*="grid__advanced-row"] input[class*="opacity-input"]',
+    );
+    this.gridMoreOptionsButton = page.locator(
+        'div[class*="grid__advanced-row"] button[class*="show-more-options"]'
+    );
+    this.useDefaultGridButton = page.locator('button:has-text("Use default")');
+    this.gridWidthInput = page.locator(
+        'div[title="Width"] input[class*="grid__numeric-input"]',
+    );
+    this.gridHeightInput = page.locator(
+        'div[title="Height"] input[class*="grid__numeric-input"]',
+    );
   }
 
   async waitFlexElementSectionExpanded() {
@@ -483,4 +611,205 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         break;
     }
   }
+
+  async isLayoutSectionExists(condition = true) {
+    if (condition === true) {
+      await expect(this.layoutSection).toBeVisible();
+    } else {
+      await expect(this.layoutSection).not.toBeVisible();
+    }
+  }
+
+  async removeLayoutFromDesignPanel() {
+    await this.removeLayoutButton.click();
+  }
+
+  async changeLayoutDirection(direction) {
+    switch (direction) {
+      case "Row":
+        await this.layoutDirectRowBtn.click();
+        break;
+      case "Row reverse":
+        await this.layoutDirectRowReverseBtn.click();
+        break;
+      case "Column":
+        await this.layoutDirectColumnBtn.click();
+        break;
+      case "Column reverse":
+        await this.layoutDirectColumnReverseBtn.click();
+        break;
+    }
+  }
+
+  async changeLayoutAlignment(alignment) {
+    switch (alignment) {
+      case "Start":
+        await this.layoutAlignStartBtn.click();
+        break;
+      case "Center":
+        await this.layoutAlignCenterBtn.click();
+        break;
+      case "End":
+        await this.layoutAlignEndBtn.click();
+        break;
+    }
+  }
+
+  async changeLayoutJustification(justify) {
+    switch (justify) {
+      case "Start":
+        await this.layoutJustifyStartBtn.click();
+        break;
+      case "Center":
+        await this.layoutJustifyCenterBtn.click();
+        break;
+      case "End":
+        await this.layoutJustifyEndBtn.click();
+        break;
+      case "Space between":
+        await this.layoutJustifySpaceBetweenBtn.click();
+        break;
+      case "Space around":
+        await this.layoutJustifySpaceAroundBtn.click();
+        break;
+      case "Space evenly":
+        await this.layoutJustifySpaceEvenlyBtn.click();
+        break;
+    }
+  }
+
+  async changeLayoutColumnGap(value) {
+    await this.layoutColumnGapInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async clickLayoutColumnGapField() {
+    await this.layoutColumnGapInput.click();
+  }
+
+  async changeLayoutRowGap(value) {
+    await this.layoutRowGapInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutVerticalPadding(value) {
+    await this.layoutVerticalPaddingInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutHorizontalPadding(value) {
+    await this.layoutHorizontPaddingInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async clickLayoutVerticalPaddingField() {
+    await this.layoutVerticalPaddingInput.click();
+  }
+
+  async clickLayoutHorizontalPaddingField() {
+    await this.layoutHorizontPaddingInput.click();
+  }
+
+  async switchToIndependentPadding() {
+    await this.layoutIndepPaddingsIcon.click();
+  }
+
+  async changeLayoutTopPadding(value) {
+    await this.layoutPaddingTopInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutBottomPadding(value) {
+    await this.layoutPaddingBottomInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutRightPadding(value) {
+    await this.layoutPaddingRightInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutLeftPadding(value) {
+    await this.layoutPaddingLeftInput.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async clickAddExportButton() {
+    await this.exportSection.waitFor();
+    await this.addExportButton.click();
+  }
+
+  async clickRemoveExportButton() {
+    await this.removeExportButton.click();
+  }
+
+  async isExportElementButtonDisplayed(title) {
+    await expect(this.exportElementButton).toHaveText(title);
+  }
+
+  async isExportElementButtonNotDisplayed() {
+    await expect(this.exportElementButton).not.toBeVisible();
+  }
+
+  async clickAddGridButton() {
+    await this.gridSection.waitFor();
+    await this.addGridButton.click();
+  }
+
+  async clickRemoveGridButton() {
+    await this.removeGridButton.click();
+  }
+
+  async clickHideGridButton() {
+    await this.hideGridButton.click();
+  }
+
+  async clickUnhideGridButton() {
+    await this.unhideGridButton.click();
+  }
+
+  async changeSizeForGrid(value) {
+    await this.gridSizeInput.fill(value);
+  }
+
+  async clickGridActionsButton() {
+    await this.gridActionsButton.click();
+  }
+
+  async changeOpacityForGrid(value) {
+    await this.gridOpacityInput.fill(value);
+  }
+
+  async clickUseDefaultGridButton() {
+    await this.gridMoreOptionsButton.click();
+    await this.useDefaultGridButton.click();
+  }
+
+  async selectGridType(type) {
+    await this.gridTypeField.click();
+    switch (type) {
+      case "Square":
+        await this.gridTypeSelectorSquareOption.click();
+        break;
+      case "Columns":
+        await this.gridTypeSelectorColumnsOption.click();
+        break;
+      case "Rows":
+        await this.gridTypeSelectorRowsOption.click();
+        break;
+    }
+  }
+
+  async changeColumnsOrRowsNumberForGrid(value) {
+    await this.gridColumnsRowsInput.fill(value);
+  }
+
+  async changeWidthForGrid(value) {
+    await this.gridWidthInput.fill(value);
+  }
+
+  async changeHeightForGrid(value) {
+    await this.gridHeightInput.fill(value);
+  }
+
 };

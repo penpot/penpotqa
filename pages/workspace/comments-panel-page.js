@@ -1,10 +1,13 @@
 const { expect } = require("@playwright/test");
+const { BasePage } = require("../base-page");
 
-exports.CommentsPanelPage = class CommentsPanelPage {
+exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
   constructor(page) {
+    super(page);
+
     this.commentsButton = page.locator('button[title="Comments (C)"]');
     this.commentInput = page.locator(
       'textarea[placeholder="Write new comment"]',

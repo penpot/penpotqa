@@ -19,7 +19,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     this.searchedLayerOnLayersPanelNameText = page.locator(
       'span[class*="element-name"] >> nth=1',
     );
-    this.layoutIcon = page.locator('svg[class="icon-layout-rows"]');
+    this.layoutIcon = page.locator('svg.icon-flex-vertical-refactor');
     this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
     this.layerBoardToggleContentExpand = page.locator(
       "ul.element-list span.toggle-content.inverse",
@@ -71,7 +71,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
 
   async doubleClickLayerOnLayersTabViaTitle(title) {
     const layerSel = this.page.locator(
-      `div[class^="element-list-body"] span[class="element-name"]:text-is("${title}")`,
+      `div[class*="element-list-body"] span[class*="element-name"]:text-is("${title}")`,
     );
     await layerSel.dblclick();
   }
@@ -92,7 +92,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await expect(this.searchedLayerOnLayersPanelNameText).toHaveText(name);
   }
 
-  async isLayoutIconVisibleOnLayer(condition = true) {
+  async isLayoutIconVisibleOnLayer(condition=true) {
     if (condition === true) {
       await expect(this.layoutIcon).toBeVisible();
     } else {
@@ -137,19 +137,4 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     }
   }
 
-  async unHideLayerViaRightClickOnLayersTab(layer) {
-    const layerSel = this.page.locator(
-      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`,
-    );
-    await layerSel.click({ button: "right", force: true });
-    await this.showLayerMenuItem.click();
-  }
-
-  async hideLayerViaRightClickOnLayersTab(layer) {
-    const layerSel = this.page.locator(
-      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`,
-    );
-    await layerSel.click({ button: "right", force: true });
-    await this.hideLayerMenuItem.click();
-  }
 };

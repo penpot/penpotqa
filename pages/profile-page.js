@@ -18,32 +18,30 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.giveFeedbackMenuItem = page.locator(
       'li[data-test="feedback-profile-opt"]',
     );
-    this.backToDashboardBtn = page.locator("div.back-to-dashboard");
+    this.backToDashboardBtn = page.locator('div.back-to-dashboard');
 
     //Profile
-    this.profileNameInput = page.locator("#fullname");
-    this.profileEmailInput = page.locator("#email");
-    this.saveSettingsButton = page.locator('input[value="Save settings"]');
+    this.profileNameInput = page.locator('#fullname');
+    this.profileEmailInput = page.locator('#email');
+    this.saveSettingsButton = page.locator('button:has-text("Save settings")');
     this.profileImageInput = page.locator(
       'input[data-test="profile-image-input"]',
     );
-    this.profileAvatarBlock = page.locator("div.form-container.two-columns");
+    this.profileAvatarBlock = page.locator('div.main_ui_settings_profile__form-container');
 
     //Feedback
     this.feedbackSubjectInput = page.locator("#subject");
     this.feedbackDescriptionInput = page.locator("textarea");
-    this.sendFeedbackButton = page.locator('input[value="Send"]');
+    this.sendFeedbackButton = page.locator('button[name="submit"]');
 
     //Password
-    this.passwordSidebarOption = page.locator(
-      'div.sidebar-content-section li span.element-title:text-is("Password")',
-    );
-    this.passwordFormHeader = page.locator(".password-form h2");
+    this.passwordSidebarOption = page.locator('li span:text-is("Password")');
+    this.passwordFormHeader = page.locator('div[class*="password__form-container"] h2');
     this.passwordOldInput = page.locator("#password-old");
     this.passwordNewInput = page.locator('input[label="New password"]');
     this.passwordConfirmInput = page.locator('input[label="Confirm password"]');
-    this.updateSettingsBtn = page.locator('input[value="Update settings"]');
-    this.passwordInputError = page.locator('span[data-test="-error"]');
+    this.updateSettingsBtn = page.locator('button[data-test="submit-password"]');
+    this.passwordInputError = page.locator('div[data-test="-error"]');
   }
 
   async openYourAccountPage() {
@@ -87,7 +85,6 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   }
 
   async changeProfileName(newName) {
-    await this.clearInput(this.profileNameInput);
     await this.profileNameInput.fill(newName);
     await this.saveSettingsButton.click();
   }

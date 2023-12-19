@@ -31,7 +31,6 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   }
 
   async setHex(value) {
-    // await this.clearInput(this.hexInput); //todo remove
     await this.hexInput.fill(value);
   }
 
