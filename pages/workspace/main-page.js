@@ -6,7 +6,6 @@ exports.MainPage = class MainPage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
-
   constructor(page) {
     super(page);
 
@@ -19,186 +18,18 @@ exports.MainPage = class MainPage extends BasePage {
     this.uploadImageSelector = page.locator("#image-upload");
     this.createCurveButton = page.locator('button[data-test="curve-btn"]');
     this.createPathButton = page.locator('button[data-test="path-btn"]');
-    this.shortcutsPanelButton = page.locator(".icon-shortcut");
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
     this.mainToolBar = page.locator(
       '[class*="main-toolbar"] button[class*="toolbar-handler"]',
     );
+    this.designTab = page.locator('div[data-id="design"]');
 
     //Viewport
-    this.viewport = page.locator('div[class="viewport"]');
-    this.createdLayer = page.locator(
-      'div[class="viewport"] [id^="shape"] >> nth=0',
-    );
-    this.createdBoardTitle = page.locator('g[class="frame-title"] >> nth=0');
+    this.viewport = page.locator('div.viewport');
     this.textbox = page.locator(
       'div[role="textbox"] div[contenteditable="true"]',
     );
     this.guides = page.locator(".guides .new-guides");
-
-    //Layer right-click menu items
-    this.deleteLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Delete")',
-    );
-    this.hideLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Hide")',
-    );
-    this.showLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Show")',
-    );
-    this.focusOnLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Focus on")',
-    );
-    this.transformToPathMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Transform to path")',
-    );
-    this.selectionToBoardMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Selection to board")',
-    );
-    this.createComponentMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Create component")',
-    );
-    this.flipVerticalMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Flip vertical")',
-    );
-    this.flipHorizontalMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Flip horizontal")',
-    );
-    this.editPathMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Edit")',
-    );
-    this.addFlexLayout = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Add flex layout")',
-    );
-    this.removeFlexLayout = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Remove flex layout")',
-    );
-
-    //Design panel - Grid section
-    this.gridSection = page.locator('div.element-set-title:has-text("Grid")');
-    this.gridMainOptionSection = page.locator('div[class="grid-option-main"]');
-    this.addGridButton = page.locator(
-      'div[class="element-set"] div:has-text("Grid") svg',
-    );
-    this.removeGridButton = page.locator(
-      'div[class="grid-option-main-actions"] svg[class="icon-minus"]',
-    );
-    this.hideGridButton = page.locator(
-      'div[class="grid-option-main-actions"] svg[class="icon-eye"]',
-    );
-    this.unhideGridButton = page.locator(
-      'div[class="grid-option-main-actions"] svg[class="icon-eye-closed"]',
-    );
-    this.gridTypeSelector = page.locator(
-      'div[class="grid-option"] div[class="custom-select flex-grow"]',
-    );
-    this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
-    this.gridTypeSelectorColumnsOption = page.locator(
-      'span:has-text("Columns")',
-    );
-    this.gridTypeSelectorRowsOption = page.locator('span:has-text("Rows")');
-    this.gridSizeInput = page.locator('div[class="grid-option"] input');
-    this.gridActionsButton = page.locator(
-      'div[class="grid-option"] svg[class="icon-actions"] >> visible=true',
-    );
-    this.gridOpacityInput = page.locator(
-      'div[class="grid-option"] div[class="input-element percentail"] input',
-    );
-    this.useDefaultGridButton = page.locator('button:has-text("Use default")');
-    this.gridWidthInput = page.locator(
-      '//*[text()="Width"]//parent::div[@class="row-flex input-row"]//input',
-    );
-    this.gridHeightInput = page.locator(
-      '//*[text()="Height"]//parent::div[@class="row-flex input-row"]//input',
-    );
-
-    //Design panel - Export section
-    this.exportSection = page.locator(
-      'div.element-set-title:has-text("Export")',
-    );
-    this.addExportButton = page.locator(
-      'div[class="element-set exports-options"] svg',
-    );
-    this.removeExportButton = page.locator(
-      'div[class="element-set exports-options"] svg[class="icon-minus"]',
-    );
-    this.exportElementButton = page.locator(
-      'div[class="btn-icon-dark download-button "]',
-    );
-
-    //Design panel - Flex Layout section
-    this.removeLayoutButton = page.locator(
-      'div[class="element-set-title"] button[class="remove-layout"]',
-    );
-    this.layoutSection = page.locator(
-      'div[class="element-set-content layout-menu"]',
-    );
-    this.layoutDirectRowBtn = page.locator(
-      'div[class="layout-row"] button[alt="Row"]',
-    );
-    this.layoutDirectRowReverseBtn = page.locator(
-      'div[class="layout-row"] button[alt="Row reverse"]',
-    );
-    this.layoutDirectColumnBtn = page.locator(
-      'div[class="layout-row"] button[alt="Column"]',
-    );
-    this.layoutDirectColumnReverseBtn = page.locator(
-      'div[class="layout-row"] button[alt="Column reverse"]',
-    );
-    this.layoutAlignStartBtn = page.locator(
-      'div[class="layout-row"] button[alt="Align items start"]',
-    );
-    this.layoutAlignCenterBtn = page.locator(
-      'div[class="layout-row"] button[alt="Align items center"]',
-    );
-    this.layoutAlignEndBtn = page.locator(
-      'div[class="layout-row"] button[alt="Align items end"]',
-    );
-    this.layoutJustifyStartBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content start"]',
-    );
-    this.layoutJustifyCenterBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content center"]',
-    );
-    this.layoutJustifyEndBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content end"]',
-    );
-    this.layoutJustifySpaceBetweenBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content space-between"]',
-    );
-    this.layoutJustifySpaceAroundBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content space-around"]',
-    );
-    this.layoutJustifySpaceEvenlyBtn = page.locator(
-      'div[class="layout-row"] button[alt="Justify content space-evenly"]',
-    );
-    this.layoutColumnGapInput = page.locator(
-      'div[class="gap-group"] div[alt="Column gap"] input',
-    );
-    this.layoutRowGapInput = page.locator(
-      'div[class="gap-group"] div[alt="Row gap"] input',
-    );
-    this.layoutVerticalPaddingInput = page.locator(
-      'div[class="padding-group"] div[alt="Vertical padding"] input',
-    );
-    this.layoutHorizontPaddingInput = page.locator(
-      'div[class="padding-group"] div[alt="Horizontal padding"] input',
-    );
-    this.layoutIndepPaddingsIcon = page.locator(
-      'div[class="padding-icons"] div[alt="Independent paddings"]',
-    );
-    this.layoutPaddingTopInput = page.locator(
-      'div[class="padding-row"] div[alt="Top"] input',
-    );
-    this.layoutPaddingRightInput = page.locator(
-      'div[class="padding-row"] div[alt="Right"] input',
-    );
-    this.layoutPaddingBottomInput = page.locator(
-      'div[class="padding-row"] div[alt="Bottom"] input',
-    );
-    this.layoutPaddingLeftInput = page.locator(
-      'div[class="padding-row"] div[alt="Left"] input',
-    );
 
     //Node panel
     this.pathActionsBlock = page.locator(
@@ -222,30 +53,30 @@ exports.MainPage = class MainPage extends BasePage {
     this.sixthNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=6',
     );
-    this.nodePanelAddNodeButton = page.locator('div[alt^="Add node"] >> nth=0');
+    this.nodePanelAddNodeButton = page.locator('button[title^="Add node"]');
     this.nodePanelDeleteNodeButton = page.locator(
-      'div[alt^="Delete node"] >> nth=0',
+      'button[title^="Delete node"]',
     );
     this.nodePanelMergeNodesButton = page.locator(
-      'div[alt^="Merge nodes"] >> nth=0',
+      'button[title^="Merge nodes"]',
     );
     this.nodePanelDrawNodesButton = page.locator(
-      'div[alt="Draw nodes (P)"] >> nth=0',
+      'button[title^="Draw nodes"]',
     );
     this.nodePanelMoveNodesButton = page.locator(
-      'div[alt="Move nodes (M)"] >> nth=0',
+      'button[title^="Move nodes"]',
     );
     this.nodePanelJoinNodesButton = page.locator(
-      'div[alt="Join nodes (J)"] >> nth=0',
+      'button[title^="Join nodes"]',
     );
     this.nodePanelSeparateNodesButton = page.locator(
-      'div[alt="Separate nodes (K)"] >> nth=0',
+      'button[title^="Separate nodes"]',
     );
     this.nodePanelToCornerButton = page.locator(
-      'div[alt="To corner (X)"] >> nth=0',
+      'button[title^="To corner"]',
     );
     this.nodePanelToCurveButton = page.locator(
-      'div[alt="To curve (C)"] >> nth=0',
+      'button[title^="To curve"]',
     );
 
     // Main menu - first level
@@ -302,50 +133,46 @@ exports.MainPage = class MainPage extends BasePage {
       "#file-menu-remove-shared",
     );
     this.shortcutsMenuSubItem = page.locator("#file-menu-shortcuts");
-
-    //Zoom
-    this.zoomPlusButton = page.locator(
-      'span[class="zoom-btns"] button:has-text("+")',
-    );
-    this.zoomMinusButton = page.locator(
-      'span[class="zoom-btns"] button:has-text("-")',
-    );
-    this.zoomResetButton = page.locator('button[class="reset-btn"]');
-    this.zoomButton = page.locator('div[class*="zoom-widget"]');
-    this.zoomToFitAllMenuItem = page.locator('li:has-text("Zoom to fit all")');
-    this.zoomSelectedMenuItem = page.locator('li:has-text("Zoom to selected")');
-    this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
+    this.downloadFileTickIcon = page.locator('svg[class="icon-tick-refactor"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
-    //Layers panel > Pages
-    this.addPageButton = page.locator('div[class="add-page"] svg');
+    //Zoom
+    this.zoomButton = page.locator('div[title="Zoom"]');
+    this.zoomPlusButton = page.locator(
+    'button[class*="header__zoom-btn"] svg[class="icon-add-refactor"]',
+  );
+    this.zoomMinusButton = page.locator(
+      'button[class*="header__zoom-btn"] svg[class="icon-remove-refactor"]',
+    );
+    this.zoomResetButton = page.locator('button:has-text("Reset")');
+    this.zoomToFitAllMenuItem = page.locator('li:has-text("Zoom to fit all")');
+    this.zoomSelectedMenuItem = page.locator('li:has-text("Zoom to selected")');
+
+    //Pages
+    this.addPageButton = page.locator('button[class*="add-page"]');
+    this.pagesBlock = page.locator('div.main_ui_workspace_sidebar_sitemap__sitemap');
     this.firstPageListItem = page.locator(
-      'ul[class="pages-list"] div[class^="element-list-body"] >>nth=0',
+      'ul[class*="pages-list"] div[class*="element-list-body"] >>nth=0',
     );
     this.secondPageListItem = page.locator(
-      'ul[class="pages-list"] div[class^="element-list-body"] >>nth=1',
+      'ul[class*="pages-list"] div[class*="element-list-body"] >>nth=1',
     );
-    this.firstPageNameInput = page.locator(
-      'ul[class="pages-list"] div[class^="element-list-body"] input',
-    );
-    this.secondPageNameInput = page.locator(
-      'ul[class="pages-list"] div[class^="element-list-body"] input',
+    this.pageNameInput = page.locator(
+      'ul[class*="pages-list"] div[class*="element-list-body"] input',
     );
     this.renamePageMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li span:has-text("Rename")',
+      'ul[class*="workspace-context-menu"] li span:has-text("Rename")',
     );
     this.duplicatePageMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li span:has-text("Duplicate")',
+      'ul[class*="workspace-context-menu"] li span:has-text("Duplicate")',
     );
     this.deletePageMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li span:has-text("Delete")',
+      'ul[class*="workspace-context-menu"] li span:has-text("Delete")',
     );
     this.collapseExpandPagesButton = page.locator(
-      'div[class="collapse-pages"]',
+      'span[class*="collapsabled-icon"]',
     );
-    this.pageTrashIcon = page.locator(
-      'svg[class="icon-trash"] >> visible=true',
-    );
+    this.pageTrashIcon = page.locator('div[class*="selected"] svg[class="icon-delete-refactor"]');
     this.deletePageOkButton = page.locator('input[value="Ok"]');
 
     // Bottom palette
@@ -359,59 +186,18 @@ exports.MainPage = class MainPage extends BasePage {
       "div.main_ui_workspace_palette__wide",
     );
 
-    //Prototype panel
-    this.prototypeTab = page.locator('div[data-id=":prototype"]');
-    this.prototypeArrowConnector = page.locator(
-      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=0',
-    );
-    this.prototypeArrowSecondConnector = page.locator(
-      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=1',
-    );
-    this.prototypePanelFlowNameText = page.locator(
-      'span[class="element-label flow-name"]',
-    );
-    this.prototypePanelFlowNameInput = page.locator(
-      'input[class="element-name"]',
-    );
-    this.prototypePanelFirstFlowNameText = page.locator(
-      'span[class="element-label flow-name"] >>nth=0',
-    );
-    this.prototypePanelSecondFlowNameText = page.locator(
-      'span[class="element-label flow-name"] >>nth=1',
-    );
-    this.addInteractionButton = page.locator(
-      'div:has-text("Interactions") svg[class="icon-plus"]',
-    );
-    this.removeSecondInteractionButton = page.locator(
-      'div[class="element-set-actions-button"] svg[class="icon-minus"] >>nth=1',
-    );
-    this.firstInteractionRecord = page.locator(
-      'div[class="interactions-summary"] >>nth=0',
-    );
-    this.secondInteractionRecord = page.locator(
-      'div[class="interactions-summary"] >>nth=1',
-    );
-    this.interactionDestinationSelector = page.locator(
-      'div[class="interactions-element"] select',
-    );
-    this.removeFlowButton = page.locator(
-      'div[class="flow-element"] svg[class="icon-minus"]',
-    );
-
     //Header
     this.unSavedChangesIcon = page.locator(
-      'div.pending span:text-is("Unsaved changes")',
+      'div[title="Unsaved changes"]',
     );
     this.usersSection = page.locator('div[class*="users-section"]');
-    this.projectNameSpan = page.locator(
-      'div[class="project-tree"] span[class="project-name"]',
-    );
-    this.fileNameSpan = page.locator('div[class="project-tree"] span');
+    this.projectNameSpan = page.locator('div[class*="project-name"]');
+    this.fileNameSpan = page.locator('div[class*="file-name"]');
 
     //History panel
-    this.historyPanelButton = page.locator('button[class^="document-history"]');
+    this.historyPanelButton = page.locator('button[title^="History"]');
     this.historyPanelActionRecord = page.locator(
-      'div[class="history-entry-summary-text"]',
+      'div[class*="history-entry-summary-text"]',
     );
 
     //Shortcuts panel
@@ -421,9 +207,6 @@ exports.MainPage = class MainPage extends BasePage {
     this.closeShortcutsPanelIcon = page.locator(
       'div[class*="shortcuts-close-button"]',
     );
-
-    //Colors panel
-    this.colorsPalette = page.locator('div[class="color-palette "]');
   }
 
   async clickCreateBoardButton() {
@@ -479,17 +262,16 @@ exports.MainPage = class MainPage extends BasePage {
     await this.viewport.click();
   }
 
-  async clickViewportTwice(delayMs = 300) {
-    await this.viewport.click({ delay: delayMs });
-    await this.viewport.click({ delay: delayMs });
+  async clickViewportTwice() {
+    await this.viewport.hover();
+    await this.viewport.click({ delay: 300, force: true });
+    await this.viewport.click({ delay: 300, force: true });
   }
 
   async clickViewportByCoordinates(x, y) {
-    await this.viewport.click({
-      position: { x: x, y: y },
-      clickCount: 2,
-      delay: 500,
-    });
+    await this.viewport.hover();
+    await this.viewport.click({ position: { x: x, y: y }, delay: 300 });
+    await this.viewport.click({ position: { x: x, y: y }, delay: 300 });
   }
 
   async isUnSavedChangesDisplayed() {
@@ -519,34 +301,6 @@ exports.MainPage = class MainPage extends BasePage {
     await boardSel.dblclick();
   }
 
-  async hideLayerViaRightClickOnCanvas(title) {
-    const boardSel = this.page.locator(
-      `//*[text()="${title}"]//parent::*[@class="frame-title"]`,
-    );
-    await boardSel.click({ button: "right", force: true });
-    await this.hideLayerMenuItem.click();
-  }
-
-  async focusBoardViaRightClickOnCanvas(title) {
-    const boardSel = this.page.locator(
-      `//*[text()="${title}"]//parent::*[@class="frame-title"]`,
-    );
-    await boardSel.click({ button: "right", force: true });
-    await this.focusOnLayerMenuItem.click();
-  }
-
-  async focusLayerViaRightClickOnCanvas() {
-    await this.createdLayer.click({ button: "right", force: true });
-    await this.focusOnLayerMenuItem.click();
-  }
-
-  async focusLayerViaRightClickOnLayersTab(layer) {
-    const layerSel = this.page.locator(
-      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`,
-    );
-    await layerSel.click({ button: "right", force: true });
-    await this.focusOnLayerMenuItem.click();
-  }
 
   async focusLayerViaShortcut() {
     await this.page.keyboard.press("F");
@@ -574,173 +328,11 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.fileNameSpan.last()).toHaveText(fileName);
   }
 
-  async deleteLayerViaRightClick() {
-    await this.createdLayer.click({ button: "right", force: true });
-    await this.deleteLayerMenuItem.click();
-  }
-
-  async addFlexLayoutViaRightClick() {
-    await this.createdBoardTitle.click({ button: "right", force: true });
-    await this.addFlexLayout.click();
-  }
-
-  async removeFlexLayoutViaRightClick() {
-    await this.createdBoardTitle.click({ button: "right", force: true });
-    await this.removeFlexLayout.click();
-  }
-
   async pressFlexLayoutShortcut() {
     await this.createdLayer.click({ force: true });
     await this.page.keyboard.press("Shift+A");
   }
 
-  async isLayoutMenuExpanded(condition = true) {
-    if (condition === true) {
-      await expect(this.layoutSection).toBeVisible();
-    } else {
-      await expect(this.layoutSection).toBeHidden();
-    }
-  }
-
-  async removeLayoutFromDesignPanel() {
-    await this.removeLayoutButton.click();
-  }
-
-  async changeLayoutDirection(direction) {
-    switch (direction) {
-      case "Row":
-        await this.layoutDirectRowBtn.click();
-        break;
-      case "Row reverse":
-        await this.layoutDirectRowReverseBtn.click();
-        break;
-      case "Column":
-        await this.layoutDirectColumnBtn.click();
-        break;
-      case "Column reverse":
-        await this.layoutDirectColumnReverseBtn.click();
-        break;
-    }
-  }
-
-  async changeLayoutAlignment(alignment) {
-    switch (alignment) {
-      case "Start":
-        await this.layoutAlignStartBtn.click();
-        break;
-      case "Center":
-        await this.layoutAlignCenterBtn.click();
-        break;
-      case "End":
-        await this.layoutAlignEndBtn.click();
-        break;
-    }
-  }
-
-  async changeLayoutJustification(justify) {
-    switch (justify) {
-      case "Start":
-        await this.layoutJustifyStartBtn.click();
-        break;
-      case "Center":
-        await this.layoutJustifyCenterBtn.click();
-        break;
-      case "End":
-        await this.layoutJustifyEndBtn.click();
-        break;
-      case "Space between":
-        await this.layoutJustifySpaceBetweenBtn.click();
-        break;
-      case "Space around":
-        await this.layoutJustifySpaceAroundBtn.click();
-        break;
-      case "Space evenly":
-        await this.layoutJustifySpaceEvenlyBtn.click();
-        break;
-    }
-  }
-
-  async changeLayoutColumnGap(value) {
-    await this.layoutColumnGapInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async clickLayoutColumnGapField() {
-    await this.layoutColumnGapInput.click();
-  }
-
-  async changeLayoutRowGap(value) {
-    await this.layoutRowGapInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async changeLayoutVerticalPadding(value) {
-    await this.layoutVerticalPaddingInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async changeLayoutHorizontalPadding(value) {
-    await this.layoutHorizontPaddingInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async clickLayoutVerticalPaddingField() {
-    await this.layoutVerticalPaddingInput.click();
-  }
-
-  async clickLayoutHorizontalPaddingField() {
-    await this.layoutHorizontPaddingInput.click();
-  }
-
-  async switchToIndependentPadding() {
-    await this.layoutIndepPaddingsIcon.click();
-  }
-
-  async changeLayoutTopPadding(value) {
-    await this.layoutPaddingTopInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async changeLayoutBottomPadding(value) {
-    await this.layoutPaddingBottomInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async changeLayoutRightPadding(value) {
-    await this.layoutPaddingRightInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async changeLayoutLeftPadding(value) {
-    await this.layoutPaddingLeftInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async transformToPathViaRightClick() {
-    await this.createdLayer.click({ button: "right", force: true });
-    await this.transformToPathMenuItem.click();
-  }
-
-  async selectionToBoardViaRightClick() {
-    await this.createdLayer.click({ button: "right", force: true });
-    await this.selectionToBoardMenuItem.click();
-  }
-
-  async createComponentViaRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
-    await layerSel.last().click({ button: "right", force: true });
-    await this.createComponentMenuItem.click();
-  }
-
-  async flipVerticalViaRightClick() {
-    await this.createdLayer.click({ button: "right", force: true });
-    await this.flipVerticalMenuItem.click();
-  }
-
-  async flipHorizontalViaRightClick() {
-    await this.createdLayer.click({ button: "right", force: true });
-    await this.flipHorizontalMenuItem.click();
-  }
 
   async flipVerticalViaShortcut() {
     await this.createdLayer.click({ force: true });
@@ -755,11 +347,6 @@ exports.MainPage = class MainPage extends BasePage {
   async deleteLayerViaShortcut() {
     await this.createdLayer.click({ force: true });
     await this.pressDeleteKeyboardButton();
-  }
-
-  async openNodesPanelViaRightClick() {
-    await this.createdLayer.click({ button: "right", force: true });
-    await this.editPathMenuItem.click();
   }
 
   async clickFirstNode() {
@@ -858,81 +445,13 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press("C");
   }
 
-  async clickAddGridButton() {
-    await this.gridSection.waitFor();
-    await this.addGridButton.click();
-  }
-
-  async clickRemoveGridButton() {
-    await this.gridMainOptionSection.hover();
-    await this.removeGridButton.click();
-  }
-
-  async clickHideGridButton() {
-    await this.gridMainOptionSection.hover();
-    await this.hideGridButton.click();
-  }
-
-  async clickUnhideGridButton() {
-    await this.gridMainOptionSection.hover();
-    await this.unhideGridButton.click();
-  }
-
-  async changeSizeForGrid(value) {
-    await this.clearInput(this.gridSizeInput);
-    await this.gridSizeInput.fill(value);
-  }
-
-  async clickGridActionsButton() {
-    await this.gridActionsButton.click();
-  }
-
-  async changeOpacityForGrid(value) {
-    await this.clearInput(this.gridOpacityInput);
-    await this.gridOpacityInput.fill(value);
-  }
-
-  async clickUseDefaultGridButton() {
-    await this.useDefaultGridButton.click();
-  }
-
-  async selectGridType(type) {
-    await this.gridTypeSelector.click();
-    switch (type) {
-      case "Square":
-        await this.gridTypeSelectorSquareOption.click();
-        break;
-      case "Columns":
-        await this.gridTypeSelectorColumnsOption.click();
-        break;
-      case "Rows":
-        await this.gridTypeSelectorRowsOption.click();
-        break;
-    }
-  }
-
-  async changeColumnsOrRowsNumberForGrid(value) {
-    await this.clearInput(this.gridSizeInput);
-    await this.gridSizeInput.fill(value);
-  }
-
-  async changeWidthForGrid(value) {
-    await this.clearInput(this.gridWidthInput);
-    await this.gridWidthInput.fill(value);
-  }
-
-  async changeHeightForGrid(value) {
-    await this.clearInput(this.gridHeightInput);
-    await this.gridHeightInput.fill(value);
-  }
-
   async clickMainMenuButton() {
     await this.mainMenuButton.click();
     await expect(this.mainMenuList).toBeVisible();
   }
 
   async clickViewMainMenuItem() {
-    await this.viewMainMenuItem.click({ force: true });
+    await this.viewMainMenuItem.click();
   }
 
   async clickFileMainMenuItem() {
@@ -1055,7 +574,6 @@ exports.MainPage = class MainPage extends BasePage {
     for (let i = 0; i <= numberOfTimes; i++) {
       await this.zoomPlusButton.click();
     }
-    await this.clickZoomButton();
   }
 
   async decreaseZoom(numberOfTimes) {
@@ -1063,7 +581,6 @@ exports.MainPage = class MainPage extends BasePage {
     for (let i = 0; i <= numberOfTimes; i++) {
       await this.zoomMinusButton.click();
     }
-    await this.clickZoomButton();
   }
 
   async resetZoom() {
@@ -1123,18 +640,14 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.secondPageListItem).toHaveText(name);
   }
 
-  async renameFirstPageViaRightClick(newName) {
-    await this.firstPageListItem.click({ button: "right" });
+  async renamePageViaRightClick(newName, isFirstPage=true) {
+    if (isFirstPage) {
+      await this.firstPageListItem.click({ button: "right" });
+    } else {
+      await this.secondPageListItem.click({ button: "right" });
+    }
     await this.renamePageMenuItem.click();
-    await this.clearInput(this.firstPageNameInput);
-    await this.firstPageNameInput.fill(newName);
-    await this.clickViewportTwice();
-  }
-
-  async renameSecondPageViaDoubleClick(newName) {
-    await this.secondPageListItem.dblclick();
-    await this.clearInput(this.secondPageNameInput);
-    await this.secondPageNameInput.fill(newName);
+    await this.pageNameInput.fill(newName);
     await this.clickViewportTwice();
   }
 
@@ -1143,18 +656,12 @@ exports.MainPage = class MainPage extends BasePage {
     await this.duplicatePageMenuItem.click();
   }
 
-  async clickFirstPageOnAssetsPanel() {
-    await this.firstPageListItem.click();
-    await expect(this.firstPageListItem).toHaveClass(
-      "element-list-body selected",
-    );
-  }
-
-  async clickSecondPageOnAssetsPanel() {
-    await this.secondPageListItem.click();
-    await expect(this.secondPageListItem).toHaveClass(
-      "element-list-body selected",
-    );
+  async clickOnPageOnLayersPanel(firstPage=true) {
+    if (firstPage) {
+      await this.firstPageListItem.click();
+    } else {
+      await this.secondPageListItem.click();
+    }
   }
 
   async clickCollapseExpandPagesButton() {
@@ -1168,75 +675,9 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async deleteSecondPageViaTrashIcon() {
-    await this.secondPageListItem.hover();
-    await this.pageTrashIcon.dblclick();
+    await this.secondPageListItem.click();
+    await this.pageTrashIcon.click();
     await this.deletePageOkButton.click();
-  }
-
-  async clickPrototypeTab() {
-    await this.prototypeTab.click();
-  }
-
-  async dragAndDropPrototypeArrowConnector(x, y) {
-    await this.prototypeArrowConnector.hover();
-    await this.prototypeArrowConnector.dragTo(this.viewport, {
-      force: false,
-      targetPosition: { x: x, y: y },
-    });
-  }
-
-  async isFlowNameDisplayedOnPrototypePanel(name) {
-    await expect(this.prototypePanelFlowNameText).toHaveText(name);
-  }
-
-  async isFirstFlowNameDisplayedOnPrototypePanel(name) {
-    await expect(this.prototypePanelFirstFlowNameText).toHaveText(name);
-  }
-
-  async isSecondFlowNameDisplayedOnPrototypePanel(name) {
-    await expect(this.prototypePanelSecondFlowNameText).toHaveText(name);
-  }
-
-  async isFlowNameNotDisplayedOnPrototypePanel() {
-    await expect(this.prototypePanelFlowNameText).not.toBeVisible();
-  }
-
-  async clickAddInteractionButton() {
-    await this.addInteractionButton.click({ delay: 500 });
-  }
-
-  async isPrototypeArrowSecondConnectorDisplayed() {
-    await expect(this.prototypeArrowSecondConnector).toBeVisible();
-  }
-
-  async isPrototypeArrowSecondConnectorNotDisplayed() {
-    await expect(this.prototypeArrowSecondConnector).not.toBeVisible();
-  }
-
-  async clickRemoveSecondInteractionButton() {
-    await this.secondInteractionRecord.hover();
-    await this.removeSecondInteractionButton.click();
-  }
-
-  async clickFirstInteractionRecord() {
-    await this.firstInteractionRecord.click();
-  }
-
-  async renameFlow(newName) {
-    await this.prototypePanelFlowNameText.dblclick();
-    await this.clearInput(this.prototypePanelFlowNameInput);
-    await this.prototypePanelFlowNameInput.fill(newName);
-    await this.clickPrototypeTab();
-  }
-
-  async clickRemoveFlowButton() {
-    await this.removeFlowButton.click();
-  }
-
-  async selectInteractionDestination(index) {
-    await this.interactionDestinationSelector.selectOption({
-      index: index,
-    });
   }
 
   async clickHistoryPanelButton() {
@@ -1247,33 +688,12 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.historyPanelActionRecord).toHaveText(actionName);
   }
 
-  async clickAddExportButton() {
-    await this.exportSection.waitFor();
-    await this.addExportButton.click();
-  }
-
-  async clickRemoveExportButton() {
-    await this.removeExportButton.click();
-  }
-
-  async isExportElementButtonDisplayed(title) {
-    await expect(this.exportElementButton).toHaveText(title);
-  }
-
-  async isExportElementButtonNotDisplayed() {
-    await expect(this.exportElementButton).not.toBeVisible();
-  }
-
   async waitForBottomPaletteIsOpened() {
     await expect(this.bottomPaletteContentBlock).toBeVisible();
   }
 
   async clickFontRecordOnTypographiesBottomPanel() {
     await this.fontRecordOnTypographiesBottomPanel.click();
-  }
-
-  async clickShortcutsPanelButton() {
-    await this.shortcutsPanelButton.click();
   }
 
   async pressShortcutsPanelShortcut() {
@@ -1336,23 +756,26 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultClosedPath(delayMs) {
+  async createDefaultClosedPath() {
     await this.clickCreatePathButton();
-    await this.clickViewportByCoordinates(500, 200, delayMs);
-    await this.clickViewportByCoordinates(1200, 700, delayMs);
-    await this.clickViewportByCoordinates(1000, 400, delayMs);
-    await this.clickViewportByCoordinates(500, 200, delayMs);
-    await this.clickOnMainToolBar();
-    await this.clickMoveButton();
+    await this.clickViewportByCoordinates(500, 200);
+    await this.clickViewportByCoordinates(1200, 700);
+    await this.clickViewportByCoordinates(1000, 400);
+    await this.clickViewportByCoordinates(500, 200);
+    await this.clickOnDesignTab();  // todo: need to remove after issue fix
+    // await this.clickOnMainToolBar(); //todo issue 6171
+    // await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultOpenPath(delayMs) {
+  async createDefaultOpenPath() {
     await this.clickCreatePathButton();
-    await this.clickViewportByCoordinates(500, 200, delayMs);
-    await this.clickViewportByCoordinates(1200, 700, delayMs);
-    await this.clickViewportByCoordinates(1000, 400, delayMs);
-    await this.clickMoveButton();
+    await this.clickViewportByCoordinates(500, 200);
+    await this.clickViewportByCoordinates(1200, 700);
+    await this.clickViewportByCoordinates(1000, 400);
+    await this.clickOnDesignTab();  // todo: need to remove after issue fix
+    // await this.clickOnMainToolBar(); //todo issue 6171
+    // await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
 
@@ -1371,4 +794,9 @@ exports.MainPage = class MainPage extends BasePage {
   async clickOnMainToolBar() {
     await this.mainToolBar.click();
   }
+
+  async clickOnDesignTab() {
+    await this.designTab.click();
+  }
+
 };

@@ -5,6 +5,8 @@ const { ColorPalettePage } = require("../../pages/workspace/color-palette-page")
 const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
+const { LayersPanelPage } = require("../../pages/workspace/layers-panel-page");
+const { DesignPanelPage } = require("../../pages/workspace/design-panel-page");
 
 const teamName = random().concat("autotest");
 
@@ -27,43 +29,35 @@ test.afterEach(async ({ page }) => {
 
 mainTest("CO-272 Create Path from toolbar - closed", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreatePathButton();
-  await mainPage.clickViewportByCoordinates(500, 200);
-  await mainPage.clickViewportByCoordinates(1200, 700);
-  await mainPage.clickViewportByCoordinates(1000, 400);
-  await mainPage.clickViewportByCoordinates(500, 200);
-  await mainPage.waitForChangeIsSaved();
+  await mainPage.createDefaultClosedPath();
   await mainPage.isCreatedLayerVisible();
   await expect(mainPage.viewport).toHaveScreenshot("path-closed.png");
 });
 
 mainTest("CO-274 Create Path from toolbar - opened", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await mainPage.clickCreatePathButton();
-  await mainPage.clickViewportByCoordinates(500, 200);
-  await mainPage.clickViewportByCoordinates(1200, 700);
-  await mainPage.clickViewportByCoordinates(1000, 400);
-  await mainPage.clickMoveButton();
-  await mainPage.waitForChangeIsSaved();
+  await mainPage.createDefaultOpenPath();
   await mainPage.isCreatedLayerVisible();
   await expect(mainPage.viewport).toHaveScreenshot("path-opened.png");
 });
 
 mainTest("CO-277 Rename path with valid name", async ({ page }) => {
   const mainPage = new MainPage(page);
+  const layersPanelPage = new LayersPanelPage(page);
   await mainPage.createDefaultClosedPath();
-  await mainPage.doubleClickLayerOnLayersTab();
-  await mainPage.renameCreatedLayer("renamed path");
+  await layersPanelPage.doubleClickLayerOnLayersTab();
+  await layersPanelPage.renameCreatedLayer("renamed path");
   await mainPage.waitForChangeIsSaved();
-  await mainPage.isLayerNameDisplayed("renamed path");
+  await layersPanelPage.isLayerNameDisplayed("renamed path");
 });
 
 mainTest(
   "CO-279 Add, hide, unhide, change type and delete Shadow to Path",
   async ({ page }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.createDefaultOpenPath();
-    await mainPage.clickAddShadowButton();
+    await designPanelPage.clickAddShadowButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "path-drop-shadow-default.png",
@@ -71,7 +65,7 @@ mainTest(
         mask: [mainPage.guides],
       },
     );
-    await mainPage.hideShadow();
+    await designPanelPage.hideShadow();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "path-drop-shadow-hide.png",
@@ -79,7 +73,7 @@ mainTest(
         mask: [mainPage.guides],
       },
     );
-    await mainPage.unhideShadow();
+    await designPanelPage.unhideShadow();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "path-drop-shadow-unhide.png",
@@ -87,7 +81,7 @@ mainTest(
         mask: [mainPage.guides],
       },
     );
-    await mainPage.selectTypeForShadow("Inner shadow");
+    await designPanelPage.selectTypeForShadow("Inner shadow");
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "path-inner-shadow-default.png",
@@ -95,7 +89,7 @@ mainTest(
         mask: [mainPage.guides],
       },
     );
-    await mainPage.removeShadow();
+    await designPanelPage.removeShadow();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       "path-inner-shadow-remove.png",
@@ -108,28 +102,21 @@ mainTest(
 
 mainTest("CO-280 Add and edit Shadow to path", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePage(page);
+  const colorPalettePage = new ColorPalettePage(page);
+  const designPanelPage = new DesignPanelPage(page);
   await mainPage.createDefaultOpenPath();
-  await mainPage.clickAddShadowButton();
-  await mainPage.clickShadowActionsButton();
-  await mainPage.changeXForShadow("10");
-  await mainPage.changeYForShadow("15");
-  await mainPage.changeBlurForShadow("10");
-  await mainPage.changeSpreadForShadow("20");
-  await mainPage.changeOpacityForShadow("50");
-  await mainPage.clickShadowColorIcon();
-  await colorPalettePopUp.setHex("#304d6a");
+  await designPanelPage.clickAddShadowButton();
+  await designPanelPage.clickShadowActionsButton();
+  await designPanelPage.changeShadowSettings("10", "15", "10", "20", "50");
+  await designPanelPage.clickShadowColorIcon();
+  await colorPalettePage.setHex("#304d6a");
   await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("path-drop-shadow.png");
-  await mainPage.selectTypeForShadow("Inner shadow");
-  await mainPage.changeXForShadow("5");
-  await mainPage.changeYForShadow("7");
-  await mainPage.changeBlurForShadow("9");
-  await mainPage.changeSpreadForShadow("12");
-  await mainPage.changeOpacityForShadow("25");
-  await mainPage.clickShadowColorIcon();
-  await colorPalettePopUp.setHex("#96e637");
+  await designPanelPage.selectTypeForShadow("Inner shadow");
+  await designPanelPage.changeShadowSettings("5", "7", "9", "12", "25");
+  await designPanelPage.clickShadowColorIcon();
+  await colorPalettePage.setHex("#96e637");
   await mainPage.clickMoveButton();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("path-inner-shadow.png");
@@ -139,23 +126,24 @@ mainTest(
   "CO-282 Add, hide, unhide and delete Blur to Path",
   async ({ page }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.createDefaultClosedPath();
-    await mainPage.clickAddBlurButton();
+    await designPanelPage.clickAddBlurButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("path-blur-default.png", {
       mask: [mainPage.guides],
     });
-    await mainPage.hideBlur();
+    await designPanelPage.hideBlur();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("path-blur-hide.png", {
       mask: [mainPage.guides],
     });
-    await mainPage.unhideBlur();
+    await designPanelPage.unhideBlur();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("path-blur-unhide.png", {
       mask: [mainPage.guides],
     });
-    await mainPage.removeBlur();
+    await designPanelPage.removeBlur();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot("path-blur-remove.png", {
       mask: [mainPage.guides],
@@ -165,26 +153,28 @@ mainTest(
 
 mainTest("CO-283 Add and edit Blur to path", async ({ page }) => {
   const mainPage = new MainPage(page);
+  const designPanelPage = new DesignPanelPage(page);
   await mainPage.createDefaultClosedPath();
-  await mainPage.clickAddBlurButton();
-  await mainPage.changeValueForBlur("55");
+  await designPanelPage.clickAddBlurButton();
+  await designPanelPage.changeValueForBlur("55");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("path-blur.png");
 });
 
 mainTest("CO-297 Add rotation to path", async ({ page }) => {
   const mainPage = new MainPage(page);
+  const designPanelPage = new DesignPanelPage(page);
   await mainPage.createDefaultClosedPath();
-  await mainPage.changeRotationForLayer("90");
+  await designPanelPage.changeRotationForLayer("90");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("path-rotated-90.png");
-  await mainPage.changeRotationForLayer("120");
+  await designPanelPage.changeRotationForLayer("120");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("path-rotated-120.png");
-  await mainPage.changeRotationForLayer("45");
+  await designPanelPage.changeRotationForLayer("45");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("path-rotated-45.png");
-  await mainPage.changeRotationForLayer("360");
+  await designPanelPage.changeRotationForLayer("360");
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("path-rotated-359.png");
 });
@@ -193,7 +183,6 @@ mainTest("CO-298-1 Delete path via rightclick", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.createDefaultClosedPath();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.clickViewportByCoordinates(500, 200);
   await mainPage.deleteLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
@@ -203,7 +192,6 @@ mainTest("CO-298-2 Delete path via shortcut Del", async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.createDefaultClosedPath();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.clickViewportByCoordinates(1200, 700);
   await mainPage.deleteLayerViaShortcut();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot("empty-canvas.png");
@@ -213,39 +201,40 @@ mainTest(
   "CO-303 Hide and show path from rightclick and icons",
   async ({ page }) => {
     const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
     const path1 = "Path #1";
     const path2 = "Path #2";
     await mainPage.createDefaultClosedPath();
-    await mainPage.doubleClickLayerOnLayersTabViaTitle("Path");
-    await mainPage.renameCreatedLayer(path1);
+    await layersPanelPage.doubleClickLayerOnLayersTabViaTitle("Path");
+    await layersPanelPage.renameCreatedLayer(path1);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickCreatePathButton();
     await mainPage.clickViewportByCoordinates(200, 300);
     await mainPage.clickViewportByCoordinates(300, 500);
     await mainPage.clickViewportByCoordinates(100, 200);
     await mainPage.clickViewportByCoordinates(200, 300);
-    await mainPage.clickMoveButton();
+    await mainPage.clickOnDesignTab();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.doubleClickLayerOnLayersTabViaTitle("Path");
-    await mainPage.renameCreatedLayer(path2);
+    await layersPanelPage.doubleClickLayerOnLayersTabViaTitle("Path");
+    await layersPanelPage.renameCreatedLayer(path2);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportOnce();
-    await mainPage.hideUnhideLayerByIconOnLayersTab(path1);
+    await layersPanelPage.hideUnhideLayerByIconOnLayersTab(path1);
     await mainPage.waitForChangeIsSaved();
     await expect(page).toHaveScreenshot("path-first-hide.png", {
       mask: [mainPage.guides, mainPage.usersSection],
     });
-    await mainPage.hideLayerViaRightClickOnLayersTab(path2);
+    await layersPanelPage.hideLayerViaRightClickOnLayersTab(path2);
     await mainPage.waitForChangeIsSaved();
     await expect(page).toHaveScreenshot("path-second-hide.png", {
       mask: [mainPage.guides, mainPage.usersSection],
     });
-    await mainPage.hideUnhideLayerByIconOnLayersTab(path2);
+    await layersPanelPage.hideUnhideLayerByIconOnLayersTab(path2, false);
     await mainPage.waitForChangeIsSaved();
     await expect(page).toHaveScreenshot("path-second-show.png", {
       mask: [mainPage.guides, mainPage.usersSection],
     });
-    await mainPage.unHideLayerViaRightClickOnLayersTab(path1);
+    await layersPanelPage.unHideLayerViaRightClickOnLayersTab(path1);
     await expect(page).toHaveScreenshot("path-first-show.png", {
       mask: [mainPage.guides, mainPage.usersSection],
     });

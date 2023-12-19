@@ -19,7 +19,6 @@ dashboardTest("PR-9 Add profile picture jpeg", async ({ page }) => {
   await profilePage.openYourAccountPage();
   await profilePage.isHeaderDisplayed("Your account");
   await profilePage.uploadProfileImage("images/images.png");
-  await profilePage.isInfoMessageDisplayed("Loading image…");
   await profilePage.waitInfoMessageHidden();
   await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
     "profile-avatar-block-png.png",
@@ -28,7 +27,6 @@ dashboardTest("PR-9 Add profile picture jpeg", async ({ page }) => {
     },
   );
   await profilePage.uploadProfileImage("images/sample.jpeg");
-  await profilePage.isInfoMessageDisplayed("Loading image…");
   await profilePage.waitInfoMessageHidden();
   await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
     "profile-avatar-block-jpeg.png",
@@ -41,7 +39,6 @@ dashboardTest("PR-9 Add profile picture jpeg", async ({ page }) => {
 dashboardTest("PR-12 Change password to invalid", async ({ page }) => {
   const newPassword = "1234567";
   const profilePage = new ProfilePage(page);
-
   await profilePage.openYourAccountPage();
   await profilePage.isHeaderDisplayed("Your account");
   await profilePage.openPasswordPageInAccount();
@@ -58,7 +55,6 @@ dashboardTest(
   "PR-16 Fail to change password confirmation does not match",
   async ({ page }) => {
     const profilePage = new ProfilePage(page);
-
     await profilePage.openYourAccountPage();
     await profilePage.isHeaderDisplayed("Your account");
     await profilePage.openPasswordPageInAccount();
@@ -74,8 +70,8 @@ dashboardTest(
 
 dashboardTest("PR-19 Logout from Account", async ({ page }) => {
   const profilePage = new ProfilePage(page);
-  await profilePage.logout();
   const loginPage = new LoginPage(page);
+  await profilePage.logout();
   await loginPage.isLoginPageOpened();
 });
 

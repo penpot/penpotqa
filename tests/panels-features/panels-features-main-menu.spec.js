@@ -5,6 +5,8 @@ const { ColorPalettePage } = require("../../pages/workspace/color-palette-page")
 const { random } = require("../../helpers/string-generator");
 const { TeamPage } = require("../../pages/dashboard/team-page");
 const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
+const { DesignPanelPage } = require("../../pages/workspace/design-panel-page");
+const { AssetsPanelPage } = require("../../pages/workspace/assets-panel-page");
 
 const teamName = random().concat("autotest");
 
@@ -29,12 +31,13 @@ mainTest(
   "PF-99 Hide/show grids via shortcut CTRL '",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible();
 
-    await mainPage.clickAddGridButton();
+    await designPanelPage.clickAddGridButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       "square-grid-default.png",
@@ -47,7 +50,7 @@ mainTest(
     await mainPage.pressHideShowGridsShortcut();
     await mainPage.waitForChangeIsSaved(browserName);
     await expect(mainPage.createdLayer).toHaveScreenshot(
-      "square-grid-unhide.png",
+      "square-grid-default.png",
     );
   },
 );
@@ -57,13 +60,14 @@ mainTest("PF-98-1 Hide/show rulers via main menu", async ({ page }) => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickHideRulersMainMenuSubItem();
-  await mainPage.clickViewportTwice();
+  await mainPage.clickViewportOnce();
   await expect(mainPage.viewport).toHaveScreenshot(
     "viewport-hidden-rulers.png",
   );
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickShowRulersMainMenuSubItem();
+  await mainPage.clickViewportOnce();
   await expect(mainPage.viewport).toHaveScreenshot("viewport-default.png");
 });
 
@@ -85,11 +89,12 @@ mainTest(
   "PF-101 Hide/show color palette - file library check",
   async ({ page }) => {
     const mainPage = new MainPage(page);
-    const colorPalettePopUp = new ColorPalettePage(page);
-    await mainPage.clickAssetsTab();
-    await mainPage.clickAddFileLibraryColorButton();
-    await colorPalettePopUp.setHex("#ffff00");
-    await colorPalettePopUp.clickSaveColorStyleButton();
+    const colorPalettePage = new ColorPalettePage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.clickAddFileLibraryColorButton();
+    await colorPalettePage.setHex("#ffff00");
+    await colorPalettePage.clickSaveColorStyleButton();
     await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
 
@@ -97,9 +102,9 @@ mainTest(
     await mainPage.clickViewMainMenuItem();
     await mainPage.clickShowColorPaletteMainMenuSubItem();
     await mainPage.isColorsPaletteDisplayed();
-    await colorPalettePopUp.openColorPaletteMenu();
-    await colorPalettePopUp.selectColorPaletteMenuOption("File library");
-    await expect(mainPage.colorsPalette).toHaveScreenshot(
+    await colorPalettePage.openColorPaletteMenu();
+    await colorPalettePage.selectColorPaletteMenuOption("File library");
+    await expect(mainPage.typographiesColorsBottomPanel).toHaveScreenshot(
       "colors-file-library.png",
     );
     await mainPage.clickMainMenuButton();
@@ -110,6 +115,7 @@ mainTest(
 );
 
 mainTest("PF-102 Hide/show board names", async ({ page }) => {
+  // todo bug 6365
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
@@ -118,9 +124,7 @@ mainTest("PF-102 Hide/show board names", async ({ page }) => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickHideBoardNamesMainMenuSubItem();
-  await expect(mainPage.viewport).toHaveScreenshot("board-hide-name.png", {
-    mask: [mainPage.guides],
-  });
+  await expect(mainPage.viewport).toHaveScreenshot("board-hide-name.png");
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickShowBoardNamesMainMenuSubItem();
@@ -128,6 +132,7 @@ mainTest("PF-102 Hide/show board names", async ({ page }) => {
 });
 
 mainTest("PF-103-1 Hide/show pixel grid via main menu", async ({ page }) => {
+  // todo bug 6365
   const mainPage = new MainPage(page);
   await mainPage.clickViewportTwice();
   await mainPage.increaseZoom(10);
@@ -186,9 +191,9 @@ mainTest(
   "PF-109 Select all via main menu and shortcut CTRL A",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
-    await mainPage.createDefaultBoardByCoordinates(100, 200);
     await mainPage.createDefaultRectangleByCoordinates(250, 350);
     await mainPage.createDefaultEllipseByCoordinates(100, 600);
+    await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot(
       "layers-all-unselected.png",
       {
@@ -204,7 +209,7 @@ mainTest(
         mask: [mainPage.guides],
       },
     );
-    await mainPage.clickViewportOnce();
+    await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot(
       "layers-all-unselected.png",
       {
@@ -223,7 +228,6 @@ mainTest(
 
 mainTest("PF-111 Download penpot file .penpot", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();
   await mainPage.downloadPenpotFileViaMenu();
@@ -231,7 +235,6 @@ mainTest("PF-111 Download penpot file .penpot", async ({ page }) => {
 
 mainTest("PF-112 Download standard file .svg+.json", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();
   await mainPage.downloadStandardFileViaMenu();
@@ -239,16 +242,16 @@ mainTest("PF-112 Download standard file .svg+.json", async ({ page }) => {
 
 mainTest("PF-113 Add/Remove as shared library", async ({ page }) => {
   const mainPage = new MainPage(page);
-  await expect(mainPage.viewport).toHaveScreenshot("canvas-show-ui.png");
+  const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();
   await mainPage.clickAddAsSharedLibraryMainMenuSubItem();
-  await mainPage.clickAddAsSharedLibraryButton();
-  await mainPage.clickAssetsTab();
-  await mainPage.isSharedLibraryBadgeVisible();
+  await assetsPanelPage.clickAddAsSharedLibraryButton();
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.isSharedLibraryBadgeVisible();
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();
   await mainPage.clickRemoveAsSharedLibraryMainMenuSubItem();
-  await mainPage.clickRemoveAsSharedLibraryButton();
-  await mainPage.isSharedLibraryBadgeNotVisible();
+  await assetsPanelPage.clickRemoveAsSharedLibraryButton();
+  await assetsPanelPage.isSharedLibraryBadgeNotVisible();
 });

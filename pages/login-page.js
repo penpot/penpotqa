@@ -7,6 +7,7 @@ exports.LoginPage = class LoginPage extends BasePage {
    */
   constructor(page) {
     super(page);
+
     this.pageTitle = page.locator('h1[data-test="login-title"]');
     this.emailInput = page.locator("#email");
     this.pwdInput = page.locator("#password");
@@ -62,7 +63,6 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async isLoginPageOpened() {
-    await expect(this.pageTitle).toBeVisible();
     await expect(this.pageTitle).toHaveText("Great to see you again!");
   }
 };
