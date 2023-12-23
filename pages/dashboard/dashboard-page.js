@@ -414,16 +414,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickUnpinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin-fill');
+    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin-fill");
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin');
+    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin");
   }
 
   async clickPinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin');
+    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin");
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin-fill');
+    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin-fill");
   }
 
   async checkPinnedProjectsSidebarItem(text) {
@@ -486,46 +486,23 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.librariesAndTemplatesSection).toBeVisible();
   }
 
-  async isLibrariesAndTemplatesSectionHidden() {
+  async isLibrariesAndTemplatesSectionNotDisplayed() {
     await expect(this.librariesAndTemplatesSectionCollapsed).toBeVisible();
   }
 
-  async isLibrariesAndTemplatesCarouselVisible() {
-    try {
-      await this.librariesAndTemplatesSection.waitFor({
-        state: 'visible',
-        timeout: 5000,
-      });
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async minimizeLibrariesAndTemplatesCarousel() {
-    if (await this.isLibrariesAndTemplatesCarouselVisible()) {
+  async minimizeLibrariesAndTemplatesCarouselIfExpanded() {
+    if (await this.librariesAndTemplatesSection.isVisible()) {
       await this.clickLibrariesAndTemplatesCarouselButton();
     }
-    await this.isLibrariesAndTemplatesSectionHidden();
   }
 
-  async maximizeLibrariesAndTemplatesCarousel() {
-    if (!(await this.isLibrariesAndTemplatesCarouselVisible())) {
-      await this.clickLibrariesAndTemplatesCarouselButton();
-    }
-    await this.isLibrariesAndTemplatesSectionDisplayed();
+  async flipRightLibrariesAndTemplatesCarousel() {
+    await this.librariesAndTemplatesSectionRightArrowButton.click();
+    await this.header.hover();
   }
 
-  async flipLibrariesAndTemplatesCarousel(direction, times = 1) {
-    if (direction === 'left') {
-      await this.librariesAndTemplatesSectionLeftArrowButton.click({
-        clickCount: times,
-      });
-    } else {
-      await this.librariesAndTemplatesSectionRightArrowButton.click({
-        clickCount: times,
-      });
-    }
+  async flipLeftLibrariesAndTemplatesCarousel() {
+    await this.librariesAndTemplatesSectionLeftArrowButton.click();
     await this.header.hover();
   }
 
@@ -534,26 +511,23 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async openSecondFile(fileName) {
-    const fileSel = this.page.locator(
-      `div.info-wrapper:has-text("${fileName}")`,
-    );
+    const fileSel = this.page.locator(`div.info-wrapper:has-text("${fileName}")`);
     await fileSel.dblclick();
   }
 
   async importSharedLibrary(libraryName) {
-    await this.page
-      .locator(`div[class="card-name"] span:has-text('${libraryName}')`)
-      .click();
+    await this.page.locator(`div[class="card-name"] span:has-text('${libraryName}')`).click();
     await this.continueButton.click();
     await this.acceptButton.click();
   }
 
   async importFileProcessingSuccess(file) {
-    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    const fileChooserPromise = this.page.waitForEvent("filechooser");
     await this.fileImport.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
-    await expect(this.modalTitle).toHaveText('Import Penpot files');
+    await expect(this.modalTitle).toBeVisible();
+    await expect(this.modalTitle).toHaveText("Import Penpot files");
     await this.modalAcceptButton.click();
     await this.feedbackBanner.waitFor();
     await expect(this.feedbackBannerMessage).toHaveText(
@@ -563,17 +537,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async importFileProcessingError(file) {
-    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    const fileChooserPromise = this.page.waitForEvent("filechooser");
     await this.fileImport.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
-    await expect(this.modalTitle).toHaveText('Import Penpot files');
+    await expect(this.modalTitle).toBeVisible();
+    await expect(this.modalTitle).toHaveText("Import Penpot files");
     await expect(this.modalAcceptButton).toBeVisible();
     await expect(this.modalAcceptButton).toBeDisabled();
 
-    await expect(this.importErrorMessage).toHaveText(
-      "Oops! We couldn't import this file",
-    );
+    await expect(this.importErrorMessage).toHaveText("Oops! We couldn't import this file");
     await this.modalCancelButton.click();
   }
 
