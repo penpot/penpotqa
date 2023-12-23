@@ -1,5 +1,5 @@
 const { expect } = require('@playwright/test');
-const { getPlatformName } = require('../helpers/get-platform');
+const getPlatformName = require('../helpers/get-platform');
 
 exports.BasePage = class BasePage {
   /**
