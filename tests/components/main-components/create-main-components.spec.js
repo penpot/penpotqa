@@ -5,6 +5,7 @@ const { DashboardPage } = require("../../../pages/dashboard/dashboard-page");
 const { TeamPage } = require("../../../pages/dashboard/team-page");
 const { random } = require("../../../helpers/string-generator");
 const { LayersPanelPage } = require("../../../pages/workspace/layers-panel-page");
+const {AssetsPanelPage} = require("../../../pages/workspace/assets-panel-page");
 
 const teamName = random().concat("autotest");
 
@@ -26,13 +27,14 @@ test.afterEach(async ({ page }) => {
 
 mainTest("Create component shape", async ({ page }) => {
   const mainPage = new MainPage(page);
+  const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.openAssetsTab();
-  await mainPage.expandComponentsBlockOnAssetsTab();
-  await mainPage.isComponentAddedToFileLibraryComponents();
-  await expect(mainPage.assetsPanel).toHaveScreenshot(
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     "rectangle-component-asset.png",
     {
       mask: [mainPage.guides],
@@ -46,12 +48,13 @@ mainTest(
     if (browserName !== "webkit") {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
+      const assetsPanelPage = new AssetsPanelPage(page);
       await mainPage.createDefaultEllipseByCoordinates(200, 300);
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.openAssetsTab();
-      await mainPage.expandComponentsBlockOnAssetsTab();
-      await mainPage.dragComponentOnCanvas(50, 100);
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+      await assetsPanelPage.dragComponentOnCanvas(50, 100);
       await layersPanelPage.openLayersTab();
       await expect(mainPage.viewport).toHaveScreenshot(
         "copy-main-components-on-canvas.png",
@@ -68,6 +71,7 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();

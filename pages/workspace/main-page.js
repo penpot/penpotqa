@@ -787,4 +787,15 @@ exports.MainPage = class MainPage extends BasePage {
   async clickOnDesignTab() {
     await this.designTab.click();
   }
+
+  async createComponentsMultipleShapesRightClick(singleComponent=true) {
+    const layerSel = this.page.locator("div.viewport .main.viewport-selrect");
+    await layerSel.last().click({ button: "right", force: true });
+    if (singleComponent) {
+      await this.createComponentMenuItem.click();
+    } else {
+      await this.createMultipleComponentsMenuItem.click();
+    }
+  }
+
 };
