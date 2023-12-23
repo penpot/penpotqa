@@ -81,10 +81,10 @@ mainTest(
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       "rectangle-main-component-layer.png",
     );
-    await mainPage.openAssetsTab();
-    await mainPage.expandComponentsBlockOnAssetsTab();
-    await mainPage.isComponentAddedToFileLibraryComponents();
-    await expect(mainPage.assetsPanel).toHaveScreenshot(
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       "rectangle-component-asset.png",
     );
   },
@@ -95,6 +95,7 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
@@ -104,10 +105,10 @@ mainTest(
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       "ellipse-main-component-layer.png",
     );
-    await mainPage.openAssetsTab();
-    await mainPage.expandComponentsBlockOnAssetsTab();
-    await mainPage.isComponentAddedToFileLibraryComponents();
-    await expect(mainPage.assetsPanel).toHaveScreenshot(
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       "ellipse-component-asset.png",
     );
   },
@@ -118,6 +119,7 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
@@ -127,10 +129,10 @@ mainTest(
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       "board-main-component-layer.png",
     );
-    await mainPage.openAssetsTab();
-    await mainPage.expandComponentsBlockOnAssetsTab();
-    await mainPage.isComponentAddedToFileLibraryComponents();
-    await expect(mainPage.assetsPanel).toHaveScreenshot(
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       "board-component-asset.png",
     );
   },
@@ -141,6 +143,7 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultTextLayer(browserName);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -150,10 +153,10 @@ mainTest(
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       "text-main-component-layer.png",
     );
-    await mainPage.openAssetsTab();
-    await mainPage.expandComponentsBlockOnAssetsTab();
-    await mainPage.isComponentAddedToFileLibraryComponents();
-    await expect(mainPage.assetsPanel).toHaveScreenshot(
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       "text-component-asset.png",
     );
   },
@@ -162,6 +165,7 @@ mainTest(
 mainTest("Create component from image by right-click", async ({ page }) => {
   const mainPage = new MainPage(page);
   const layersPanelPage = new LayersPanelPage(page);
+  const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.uploadImage("images/sample.jpeg");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -173,10 +177,10 @@ mainTest("Create component from image by right-click", async ({ page }) => {
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
     "image-main-component-layer.png",
   );
-  await mainPage.openAssetsTab();
-  await mainPage.expandComponentsBlockOnAssetsTab();
-  await mainPage.isComponentAddedToFileLibraryComponents();
-  await expect(mainPage.assetsPanel).toHaveScreenshot(
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     "image-component-asset.png",
   );
 });
@@ -184,6 +188,7 @@ mainTest("Create component from image by right-click", async ({ page }) => {
 mainTest("Create component from path by right-click", async ({ page }) => {
   const mainPage = new MainPage(page);
   const layersPanelPage = new LayersPanelPage(page);
+  const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultClosedPath();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -193,10 +198,10 @@ mainTest("Create component from path by right-click", async ({ page }) => {
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
     "path-main-component-layer.png",
   );
-  await mainPage.openAssetsTab();
-  await mainPage.expandComponentsBlockOnAssetsTab();
-  await mainPage.isComponentAddedToFileLibraryComponents();
-  await expect(mainPage.assetsPanel).toHaveScreenshot(
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     "path-component-asset.png",
   );
 });
@@ -204,6 +209,7 @@ mainTest("Create component from path by right-click", async ({ page }) => {
 mainTest("Create component from curve by right-click", async ({ page }) => {
   const mainPage = new MainPage(page);
   const layersPanelPage = new LayersPanelPage(page);
+  const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultCurveLayer();
   await mainPage.createComponentViaRightClickLayers();
   await mainPage.waitForChangeIsSaved();
@@ -213,10 +219,10 @@ mainTest("Create component from curve by right-click", async ({ page }) => {
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
     "curve-main-component-layer.png",
   );
-  await mainPage.openAssetsTab();
-  await mainPage.expandComponentsBlockOnAssetsTab();
-  await mainPage.isComponentAddedToFileLibraryComponents();
-  await expect(mainPage.assetsPanel).toHaveScreenshot(
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     "curve-component-asset.png",
   );
 });
@@ -242,6 +248,7 @@ mainTest(
   async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createDefaultEllipseByCoordinates(400, 600);
     await mainPage.clickMainMenuButton();
@@ -255,9 +262,9 @@ mainTest(
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       "multiple-components-layer.png",
     );
-    await mainPage.openAssetsTab();
-    await mainPage.expandComponentsBlockOnAssetsTab();
-    await expect(mainPage.assetsPanel).toHaveScreenshot(
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       "multiple-components-asset.png",
     );
   },
@@ -268,6 +275,7 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultTextLayer(browserName);
     await mainPage.createDefaultCurveLayer();
     await mainPage.uploadImage("images/sample.jpeg");
@@ -284,9 +292,9 @@ mainTest(
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       "multiple-components-layer-3-layers.png",
     );
-    await mainPage.openAssetsTab();
-    await mainPage.expandComponentsBlockOnAssetsTab();
-    await expect(mainPage.assetsPanel).toHaveScreenshot(
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       "multiple-components-asset-3-layers.png",
     );
   },

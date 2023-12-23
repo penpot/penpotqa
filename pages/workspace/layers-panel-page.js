@@ -27,6 +27,8 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     this.layerBoardToggleContentCollapse = page.locator(
       'div[class*="layers__element-list"] button[class*="toggle-content"]',
     );
+    this.layersTab = page.locator('div[data-id="layers"]');
+    this.layersSidebar = page.locator("#layers");
   }
 
   async expandBoardOnLayersTab() {
@@ -127,5 +129,9 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     } else {
       await expect(layerSel).not.toBeVisible();
     }
+  }
+
+  async openLayersTab() {
+    await this.layersTab.click();
   }
 };
