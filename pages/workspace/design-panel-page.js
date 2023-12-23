@@ -700,11 +700,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clickOnEnter();
   }
 
-  async changeLayoutHorizontalPadding(value) {
-    await this.expandFlexLayoutMenu();
-    await this.clickOnEnter();
-  }
-
   async clickLayoutVerticalPaddingField() {
     await this.layoutVerticalPaddingInput.click();
   }

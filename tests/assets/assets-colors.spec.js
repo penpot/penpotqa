@@ -50,7 +50,6 @@ test.describe(() => {
   });
 
   mainTest('AS-23 File library colors - add', async ({ page }) => {
-    const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00');
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
