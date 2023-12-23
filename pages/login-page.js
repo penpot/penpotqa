@@ -1,5 +1,5 @@
-const { expect } = require("@playwright/test");
-const { BasePage } = require("./base-page");
+const { expect } = require('@playwright/test');
+const { BasePage } = require('./base-page');
 
 exports.LoginPage = class LoginPage extends BasePage {
   /**
@@ -9,8 +9,8 @@ exports.LoginPage = class LoginPage extends BasePage {
     super(page);
 
     this.pageTitle = page.locator('h1[data-test="login-title"]');
-    this.emailInput = page.locator("#email");
-    this.pwdInput = page.locator("#password");
+    this.emailInput = page.locator('#email');
+    this.pwdInput = page.locator('#password');
     this.loginButton = page.locator('button[data-test="login-submit"]');
     this.emailInputError = page.locator('div[data-test="-error"]');
     this.section = page.locator('section[class="auth-content"]');
@@ -19,7 +19,7 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async goto() {
-    await this.page.goto("/#/auth/login");
+    await this.page.goto('/#/auth/login');
   }
 
   async enterEmail(loginEmail) {
@@ -63,6 +63,6 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async isLoginPageOpened() {
-    await expect(this.pageTitle).toHaveText("Great to see you again!");
+    await expect(this.pageTitle).toHaveText('Great to see you again!');
   }
 };

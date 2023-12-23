@@ -1,10 +1,10 @@
-const { dashboardTest } = require("../../fixtures");
-const { DashboardPage } = require("../../pages/dashboard/dashboard-page");
-const { test } = require("@playwright/test");
-const { random } = require("../../helpers/string-generator");
-const { TeamPage } = require("../../pages/dashboard/team-page");
+const { dashboardTest } = require('../../fixtures');
+const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
+const { test } = require('@playwright/test');
+const { random } = require('../../helpers/string-generator');
+const { TeamPage } = require('../../pages/dashboard/team-page');
 
-const teamName = random().concat("autotest");
+const teamName = random().concat('autotest');
 
 test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
@@ -18,45 +18,48 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-dashboardTest("DA-66 Upload single font", async ({ page }) => {
+dashboardTest('DA-66 Upload single font', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
-  await dashboardPage.openSidebarItem("Fonts");
-  await dashboardPage.uploadFont("fonts/Pacifico.ttf");
-  await dashboardPage.isFontUploaded("Pacifico", "Regular");
+  await dashboardPage.openSidebarItem('Fonts');
+  await dashboardPage.uploadFont('fonts/Pacifico.ttf');
+  await dashboardPage.isFontExists('Pacifico', 'Regular');
 });
 
 dashboardTest(
-  "DA-68 Fonts - upload fail invalid file format",
+  'DA-68 Fonts - upload fail invalid file format',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
-    await dashboardPage.openSidebarItem("Fonts");
-    await dashboardPage.uploadFontWithInvalidFormat("images/images.png");
+    await dashboardPage.openSidebarItem('Fonts');
+    await dashboardPage.uploadFontWithInvalidFormat('images/images.png');
   },
 );
 
-dashboardTest("DA-69 Search font", async ({ page }) => {
+dashboardTest('DA-69 Search font', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
-  await dashboardPage.openSidebarItem("Fonts");
-  await dashboardPage.uploadFont("fonts/ArialTh.ttf");
-  await dashboardPage.uploadFont("fonts/Allura-Regular.otf");
-  await dashboardPage.searchFont("Arial Th");
+  await dashboardPage.openSidebarItem('Fonts');
+  await dashboardPage.uploadFont('fonts/ArialTh.ttf');
+  await dashboardPage.uploadFont('fonts/Allura-Regular.otf');
+  await dashboardPage.searchFont('Arial Th');
+  await dashboardPage.isFontExists('Arial Th', 'Regular');
+  await dashboardPage.isFontNotExist('Allura-Regular');
 });
 
-dashboardTest("DA-71 Edit font", async ({ page }) => {
+dashboardTest('DA-71 Edit font', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
-  await dashboardPage.openSidebarItem("Fonts");
-  await dashboardPage.uploadFont("fonts/Allura-Regular.otf");
-  await dashboardPage.isFontUploaded("Allura", "Regular");
-  await dashboardPage.editFont("New Test Font");
+  await dashboardPage.openSidebarItem('Fonts');
+  await dashboardPage.uploadFont('fonts/Allura-Regular.otf');
+  await dashboardPage.isFontExists('Allura', 'Regular');
+  await dashboardPage.editFont('New Test Font');
+  await dashboardPage.isFontExists('New Test Font', 'Regular');
 });
 
-dashboardTest("DA-72 Delete font", async ({ page }) => {
+dashboardTest('DA-72 Delete font', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
-  await dashboardPage.openSidebarItem("Fonts");
-  await dashboardPage.uploadFont("fonts/Pacifico.ttf");
-  await dashboardPage.isFontUploaded("Pacifico", "Regular");
+  await dashboardPage.openSidebarItem('Fonts');
+  await dashboardPage.uploadFont('fonts/Pacifico.ttf');
+  await dashboardPage.isFontExists('Pacifico', 'Regular');
   await dashboardPage.deleteFont();
   await dashboardPage.isFontsTablePlaceholderDisplayed(
-    "Custom fonts you upload will appear here.",
+    'Custom fonts you upload will appear here.',
   );
 });

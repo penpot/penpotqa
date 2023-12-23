@@ -1,5 +1,5 @@
-const { expect } = require("@playwright/test");
-const { BasePage } = require("../base-page");
+const { expect } = require('@playwright/test');
+const { BasePage } = require('../base-page');
 
 exports.DashboardPage = class DashboardPage extends BasePage {
   /**
@@ -12,7 +12,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.numberOfFilesText = page.locator(
       'div[class*="project-name-wrapper"] span[class*="projects__info"]',
     );
-    this.fileTile = page.locator('div[class*="dashboard-grid"] div[class*="grid-item-th"]');
+    this.fileTile = page.locator(
+      'div[class*="dashboard-grid"] div[class*="grid-item-th"]',
+    );
     this.fileNameTitle = page.locator('div[class*="item-info"] h3');
     this.deleteFileMenuItem = page.locator('a[data-test="file-delete"]');
     this.deleteFileButton = page.locator(
@@ -75,69 +77,73 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.pinUnpinProjectButton = page.locator('button[alt="Pin/Unpin"] svg');
     this.projectOptionsMenuButton = page.locator(
-      '*[data-test="project-options"] .icon-actions',
+      'button[data-test="project-options"]',
     );
     this.projectsSidebarItem = page.locator('li:has-text("Projects")');
     this.draftsSidebarItem = page.locator('li:has-text("Drafts")');
     this.librariesSidebarItem = page.locator('li:has-text("Libraries")');
     this.pinnedProjectsSidebarItem = page.locator(
-      'div[data-test="pinned-projects"] li',
+      'div[data-test="pinned-projects"]',
     );
-    this.searchInput = page.locator("#search-input");
+    this.searchInput = page.locator('#search-input');
     this.projectOptions = page.locator('[data-test="project-options"]');
 
     // Import files
     this.fileImport = page.locator('a[data-test="file-import"]');
     this.modalTitle = page.locator('h2[class*="modal-title"]');
     this.modalCancelButton = page.locator(
-      ".modal-footer .action-buttons .cancel-button",
+      'div[class*="modal-footer"] input[class*="cancel-button"]',
     );
-    this.modalAcceptButton = page.locator('div[class*="modal-footer"] input[class*="accept-btn"]');
+    this.modalAcceptButton = page.locator(
+      'div[class*="modal-footer"] input[class*="accept-btn"]',
+    );
     this.feedbackBanner = page.locator('div[class*="feedback-banner"]');
-    this.feedbackBannerMessage = page.locator('div[class*="feedback-banner"] div[class*="message"]');
-    this.importErrorMessage = page.locator('div[class="error-message"]');
+    this.feedbackBannerMessage = page.locator(
+      'div[class*="feedback-banner"] div[class*="message"]',
+    );
+    this.importErrorMessage = page.locator('div[class*="error-message"]');
 
     //Fonts
     this.fontsSidebarItem = page.locator('li:has-text("Fonts")');
-    this.uploadFontSelector = page.locator("#font-upload");
-    this.uploadFontButton = page.locator('button:has-text("Upload")');
+    this.uploadFontSelector = page.locator('#font-upload');
+    this.uploadFontButton = page.locator('button:text-is("Upload")');
     this.fontNameTableCell = page.locator(
-      'div[class="font-item table-row"] div[class="table-field family"]',
+      'div[class*="installed-fonts"] div[class*="table-row"] div[class*="dashboard_fonts__family"]',
     );
     this.fontStyleTableCell = page.locator(
-      'div[class="font-item table-row"] div[class="table-field variants"]',
+      'div[class*="installed-fonts"] div[class*="table-row"] div[class*="dashboard_fonts__variants"]',
     );
     this.fontOptionsMenuButton = page.locator(
-      'div[class="table-field options"] svg[class="icon-actions"]',
+      'div[class*="fonts__options"] svg[class="icon-actions"]',
     );
     this.editFontMenuItem = page.locator('a[data-test="font-edit"]');
     this.deleteFontMenuItem = page.locator('a[data-test="font-delete"]');
     this.deleteFontButton = page.locator('input[value="Delete"]');
     this.fontsTablePlaceholder = page.locator(
-      'div[class="fonts-placeholder"] div[class="label"]',
+      'div[class*="fonts-placeholder"] div[class*="label"]',
     );
     this.fontNameInput = page.locator(
-      'div[class="font-item table-row"] input[type="text"]',
+      'div[class*="table-row"] input[type="text"]',
     );
-    this.saveFontButton = page.locator('button:has-text("Save")');
+    this.saveFontButton = page.locator('button:text-is("Save")');
     this.searchFontInput = page.locator('input[placeholder="Search font"]');
     this.fontFormatError = page.locator('div[class="banner error fixed"]');
 
     //Libraries & Templates
     this.librariesAndTemplatesCarouselButton = page.locator(
-      "div.dashboard-templates-section div.title button",
+      'div[class*="dashboard-templates-section"] div[class*="title"] button',
     );
     this.librariesAndTemplatesSection = page.locator(
-      'div[class="dashboard-templates-section "]',
+      'div[class*="dashboard-templates-section"]',
     );
     this.librariesAndTemplatesSectionCollapsed = page.locator(
-      'div[class="dashboard-templates-section collapsed"]',
+      'div[class*="dashboard_templates__collapsed"]',
     );
     this.librariesAndTemplatesSectionLeftArrowButton = page.locator(
-      'button[class="button left"]',
+      'button[class*="left"]',
     );
     this.librariesAndTemplatesSectionRightArrowButton = page.locator(
-      'button[class="button right"]',
+      'button[class*="right"]',
     );
     this.continueButton = page.locator('input[value="Continue"]');
     this.acceptButton = page.locator('input[value="Accept"]');
@@ -155,7 +161,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async deleteFileViaRightclick() {
-    await this.fileTile.click({ button: "right" });
+    await this.fileTile.click({ button: 'right' });
     await this.deleteFileMenuItem.click();
     await this.deleteFileButton.click();
   }
@@ -170,25 +176,25 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async deleteFiles() {
     let counter = 0;
-    while (await this.fileInfoPanel.count()) {
-      await this.fileInfoPanel.first().click({ button: "right" });
+    while (await this.fileTile.count()) {
+      await this.fileTile.first().click({ button: 'right' });
       await this.deleteFileMenuItem.click();
       await this.deleteFileButton.click();
       counter++;
     }
-    await expect(this.fileInfoPanel).toHaveCount(0);
+    await expect(this.fileTile).toHaveCount(0);
   }
 
   async deleteFilesIfExist() {
     await this.numberOfFilesText.waitFor();
     const text = (await this.numberOfFilesText.innerText()).valueOf();
-    if (!text.includes("0 files")) {
+    if (!text.includes('0 files')) {
       await this.deleteFiles();
     }
   }
 
   async deleteProjectViaRightclick() {
-    await this.projectNameTitle.first().click({ button: "right" });
+    await this.projectNameTitle.first().click({ button: 'right' });
     await this.deleteProjectMenuItem.click();
     await this.deleteProjectButton.click();
   }
@@ -203,8 +209,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async deleteProjectsIfExist() {
     for (const project of await this.projectNameTitle.elementHandles()) {
       const name = (await project.innerText()).valueOf();
-      if (!name.includes("Drafts")) {
-        await project.click({ button: "right" });
+      if (!name.includes('Drafts')) {
+        await project.click({ button: 'right' });
         await this.deleteProjectMenuItem.click();
         await this.deleteProjectButton.click();
       }
@@ -213,31 +219,31 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async waitForPageLoaded() {
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState('networkidle');
   }
 
   async isDashboardOpenedAfterLogin() {
-    await this.page.waitForURL(/.*dashboard\/team/, { waitUntil: "load" });
+    await this.page.waitForURL(/.*dashboard\/team/, { waitUntil: 'load' });
   }
 
   async checkNumberOfFiles(numberOfFiles) {
     await expect(this.numberOfFilesText.first()).toHaveText(numberOfFiles);
   }
 
-  async renameFile(newFileName, byRightClick=true) {
+  async renameFile(newFileName, byRightClick = true) {
     let text = await this.fileNameTitle.textContent();
     if (byRightClick) {
-      await this.fileTile.click({ button: "right" });
+      await this.fileTile.click({ button: 'right' });
     } else {
       await this.clickOnFileOptions();
     }
     await this.renameFileMenuItem.click();
     await this.fileNameInput.click();
     for (let i = 0; i <= text.length; i++) {
-      await this.page.keyboard.press("Backspace");
+      await this.page.keyboard.press('Backspace');
     }
     await this.fileNameInput.pressSequentially(newFileName);
-    await this.page.keyboard.press("Enter");
+    await this.page.keyboard.press('Enter');
     await this.isFilePresent(newFileName);
   }
 
@@ -246,7 +252,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async duplicateFileViaRightclick() {
-    await this.fileTile.click({ button: "right" });
+    await this.fileTile.click({ button: 'right' });
     await this.duplicateFileMenuItem.click();
   }
 
@@ -256,7 +262,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async addFileAsSharedLibraryViaRightclick() {
-    await this.fileTile.click({ button: "right" });
+    await this.fileTile.click({ button: 'right' });
     await this.addFileAsSharedLibraryMenuItem.click();
     await this.addFileAsSharedLibraryButton.click();
   }
@@ -274,7 +280,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async deleteFileAsSharedLibraryViaRightclick() {
-    await this.fileTile.click({ button: "right" });
+    await this.fileTile.click({ button: 'right' });
     await this.delFileAsSharedLibraryMenuItem.click();
     await this.delFileAsSharedLibraryButton.click();
   }
@@ -293,26 +299,26 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.sharedLibraryIcon).not.toBeVisible();
   }
 
-  async downloadFileViaRightClick(isStandardFile=true) {
-    await this.fileTile.click({ button: "right" });
+  async downloadFileViaRightClick(isStandardFile = true) {
+    await this.fileTile.click({ button: 'right' });
     if (isStandardFile) {
       await this.downloadFileStandardMenuItem.click();
     } else {
       await this.downloadFilePenpotMenuItem.click();
     }
-    await this.page.waitForEvent("download");
+    await this.page.waitForEvent('download');
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
 
-  async downloadFileViaOptionsIcon(isStandardFile=true) {
+  async downloadFileViaOptionsIcon(isStandardFile = true) {
     await this.clickOnFileOptions();
     if (isStandardFile) {
       await this.downloadFileStandardMenuItem.click();
     } else {
       await this.downloadFilePenpotMenuItem.click();
     }
-    await this.page.waitForEvent("download");
+    await this.page.waitForEvent('download');
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
@@ -323,7 +329,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async setProjectName(newProjectName) {
     await this.projectNameInput.pressSequentially(newProjectName);
-    await this.page.keyboard.press("Enter");
+    await this.page.keyboard.press('Enter');
   }
 
   async isProjectTitleDisplayed(newProjectName) {
@@ -338,14 +344,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async renameProjectViaRightclick(newProjectName) {
     let text = await this.projectNameTitle.first().textContent();
-    await this.projectNameTitle.first().click({ button: "right" });
+    await this.projectNameTitle.first().click({ button: 'right' });
     await this.renameProjectMenuItem.click();
     await this.projectNameInput.click();
     for (let i = 0; i <= text.length; i++) {
-      await this.page.keyboard.press("Backspace");
+      await this.page.keyboard.press('Backspace');
     }
     await this.projectNameInput.pressSequentially(newProjectName);
-    await this.page.keyboard.press("Enter");
+    await this.page.keyboard.press('Enter');
     await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
   }
 
@@ -356,15 +362,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.renameProjectMenuItem.click();
     await this.projectNameInput.click();
     for (let i = 0; i <= text.length; i++) {
-      await this.page.keyboard.press("Backspace");
+      await this.page.keyboard.press('Backspace');
     }
     await this.projectNameInput.pressSequentially(newProjectName);
-    await this.page.keyboard.press("Enter");
+    await this.page.keyboard.press('Enter');
     await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
   }
 
   async duplicateProjectViaRightclick() {
-    await this.projectNameTitle.first().click({ button: "right" });
+    await this.projectNameTitle.first().click({ button: 'right' });
     await this.duplicateProjectMenuItem.click();
   }
 
@@ -376,16 +382,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async openSidebarItem(item) {
     switch (item) {
-      case "Projects":
+      case 'Projects':
         await this.projectsSidebarItem.click();
         break;
-      case "Drafts":
+      case 'Drafts':
         await this.draftsSidebarItem.click();
         break;
-      case "Fonts":
+      case 'Fonts':
         await this.fontsSidebarItem.click();
         break;
-      case "Libraries":
+      case 'Libraries':
         await this.librariesSidebarItem.click();
         break;
     }
@@ -394,7 +400,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async openProjectFromLeftSidebar(projectName) {
     const projectSel = await this.page.locator(
-      `div[data-test="pinned-projects"] span.element-title:has-text("${projectName}")`,
+      `div[data-test="pinned-projects"] span[class*="element-title"]:has-text("${projectName}")`,
     );
     await projectSel.click();
     await this.isHeaderDisplayed(projectName);
@@ -402,22 +408,22 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async checkNoLibrariesExist() {
     await expect(this.noLibrariesPlacelder).toContainText(
-      "Files added to Libraries will appear here.",
+      'Files added to Libraries will appear here.',
     );
   }
 
   async clickUnpinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin-fill");
+    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin-fill');
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin");
+    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin');
   }
 
   async clickPinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin");
+    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin');
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin-fill");
+    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin-fill');
   }
 
   async checkPinnedProjectsSidebarItem(text) {
@@ -431,19 +437,23 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async uploadFont(filePath) {
     await this.uploadFontSelector.setInputFiles(filePath);
     await this.uploadFontButton.click();
-    await expect(this.uploadFontButton).not.toBeVisible();
+    await this.uploadFontButton.waitFor({ state: 'hidden' });
   }
 
   async uploadFontWithInvalidFormat(filePath) {
-    const fontName = filePath.split("/")[1];
+    const fontName = filePath.split('/')[1];
     const warning = `The font '${fontName}' could not be loaded`;
     await this.uploadFontSelector.setInputFiles(filePath);
     await expect(this.fontFormatError).toHaveText(warning);
   }
 
-  async isFontUploaded(fontName, fontStyle) {
+  async isFontExists(fontName, fontStyle) {
     await expect(this.fontNameTableCell).toHaveText(fontName);
     await expect(this.fontStyleTableCell).toHaveText(fontStyle);
+  }
+
+  async isFontNotExist(fontName) {
+    await expect(this.fontNameTableCell).not.toHaveText(fontName);
   }
 
   async deleteFont() {
@@ -459,15 +469,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async editFont(newFontName) {
     await this.fontOptionsMenuButton.click();
     await this.editFontMenuItem.click();
-    await this.clearInput(this.fontNameInput);
-    await this.fontNameInput.pressSequentially(newFontName);
+    await this.fontNameInput.fill(newFontName);
     await this.saveFontButton.click();
-    await expect(this.fontNameTableCell).toHaveText(newFontName);
   }
 
   async searchFont(fontName) {
     await this.searchFontInput.pressSequentially(fontName);
-    await expect(this.fontNameTableCell).toHaveText(fontName);
     await expect(this.fontNameTableCell).toHaveCount(1);
   }
 
@@ -486,8 +493,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async isLibrariesAndTemplatesCarouselVisible() {
     try {
       await this.librariesAndTemplatesSection.waitFor({
-        state: "visible",
-        timeout: 4000,
+        state: 'visible',
+        timeout: 5000,
       });
       return true;
     } catch (error) {
@@ -510,7 +517,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async flipLibrariesAndTemplatesCarousel(direction, times = 1) {
-    if (direction === "left") {
+    if (direction === 'left') {
       await this.librariesAndTemplatesSectionLeftArrowButton.click({
         clickCount: times,
       });
@@ -542,26 +549,25 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async importFileProcessingSuccess(file) {
-    const fileChooserPromise = this.page.waitForEvent("filechooser");
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.fileImport.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
-    await expect(this.modalTitle).toHaveText("Import Penpot files");
+    await expect(this.modalTitle).toHaveText('Import Penpot files');
     await this.modalAcceptButton.click();
     await this.feedbackBanner.waitFor();
     await expect(this.feedbackBannerMessage).toHaveText(
-      "1 file has been imported successfully.",
+      '1 file has been imported successfully.',
     );
     await this.modalAcceptButton.click();
   }
 
   async importFileProcessingError(file) {
-    const fileChooserPromise = this.page.waitForEvent("filechooser");
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.fileImport.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
-    await expect(this.modalTitle).toBeVisible();
-    await expect(this.modalTitle).toHaveText("Import Penpot files");
+    await expect(this.modalTitle).toHaveText('Import Penpot files');
     await expect(this.modalAcceptButton).toBeVisible();
     await expect(this.modalAcceptButton).toBeDisabled();
 

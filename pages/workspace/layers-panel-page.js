@@ -1,5 +1,5 @@
-const { expect } = require("@playwright/test");
-const { BasePage } = require("../base-page");
+const { expect, Locator } = require('@playwright/test');
+const { BasePage } = require('../base-page');
 
 exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   /**
@@ -21,35 +21,24 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     );
     this.layoutIcon = page.locator('svg.icon-flex-vertical-refactor');
     this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
-    this.layerBoardToggleContentExpand = page.locator(
-      "ul.element-list span.toggle-content.inverse",
+    this.layerItemToggleExpand = page.locator(
+      'div[class*="layers__element-list"] button[class*="sidebar_layer_item__inverse"]',
     );
     this.layerBoardToggleContentCollapse = page.locator(
-      "ul.element-list span.toggle-content",
-    );
-    this.layerBoardChildRect = page.locator(
-      'div[class="element-list-body "] span:has-text("Rectangle") >>nth=-1',
-    );
-    this.layerBoardChildEllipse = page.locator(
-      'div[class="element-list-body "] span:has-text("Ellipse") >>nth=-1',
+      'div[class*="layers__element-list"] button[class*="toggle-content"]',
     );
   }
 
-  async expandBoardOnLayers() {
-    if (!(await this.layerBoardToggleContentExpand.isVisible())) {
+  async expandBoardOnLayersTab() {
+    if (!(await this.layerItemToggleExpand.isVisible())) {
       await this.layerBoardToggleContentCollapse.click();
-      await expect(this.layerBoardToggleContentExpand).toBeVisible();
+      await expect(this.layerItemToggleExpand).toBeVisible();
     }
   }
 
-  async selectBoardChildRect() {
-    await this.expandBoardOnLayers();
-    await this.layerBoardChildRect.click();
-  }
-
-  async selectBoardChildEllipse() {
-    await this.expandBoardOnLayers();
-    await this.layerBoardChildEllipse.click();
+  async selectBoardChildLayer(name) {
+    await this.expandBoardOnLayersTab();
+    await this.clickLayerOnLayersTab(name);
   }
 
   async renameCreatedLayer(newName) {
@@ -65,15 +54,18 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await expect(this.createdLayerOnLayersPanelNameText).toHaveText(name);
   }
 
-  async doubleClickLayerOnLayersTab() {
-    await this.createdLayerOnLayersPanelNameText.dblclick();
+  async doubleClickLayerOnLayersTab(name) {
+    const layer = this.page.locator(
+      `div[class*="element-list-body"] span[class*="element-name"]:text-is("${name}") >>nth=0`,
+    );
+    await layer.dblclick();
   }
 
-  async doubleClickLayerOnLayersTabViaTitle(title) {
-    const layerSel = this.page.locator(
-      `div[class*="element-list-body"] span[class*="element-name"]:text-is("${title}")`,
+  async clickLayerOnLayersTab(name) {
+    const layer = this.page.locator(
+      `div[class*="element-list-body"] span[class*="element-name"]:text-is("${name}") >>nth=0`,
     );
-    await layerSel.dblclick();
+    await layer.click();
   }
 
   async doubleClickLayerIconOnLayersTab(layer) {
@@ -92,7 +84,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await expect(this.searchedLayerOnLayersPanelNameText).toHaveText(name);
   }
 
-  async isLayoutIconVisibleOnLayer(condition=true) {
+  async isLayoutIconVisibleOnLayer(condition = true) {
     if (condition === true) {
       await expect(this.layoutIcon).toBeVisible();
     } else {
@@ -136,5 +128,4 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
       await expect(layerSel).not.toBeVisible();
     }
   }
-
 };

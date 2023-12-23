@@ -1,5 +1,5 @@
-const { expect } = require("@playwright/test");
-const { BasePage } = require("../base-page");
+const { expect } = require('@playwright/test');
+const { BasePage } = require('../base-page');
 
 exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   /**
@@ -32,7 +32,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       'div[class="comments-section"] div[class*="thread-bubble"]',
     );
     this.commentResolvedThreadIcon = page.locator(
-      "div.comments-section div.main_ui_comments__resolved",
+      'div.comments-section div.main_ui_comments__resolved',
     );
     this.commentReplyInput = page.locator('textarea[placeholder="Reply"]');
     this.commentOptionsButton = page.locator(
@@ -138,7 +138,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
 
   async isResolveCommentCheckboxSelected() {
     await expect(this.resolveCommentCheckbox).toHaveClass(
-      "main_ui_comments__options-resolve checked",
+      'main_ui_comments__options-resolve checked',
     );
   }
 };

@@ -1,5 +1,5 @@
-const { BasePage } = require("../base-page");
-const { expect } = require("@playwright/test");
+const { BasePage } = require('../base-page');
+const { expect } = require('@playwright/test');
 
 exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   /**
@@ -11,12 +11,12 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     //Assets panel
     this.assetsTab = page.locator('div[data-id="assets"]');
     this.assetsSectionButton = page.locator(
-      "button[class*=assets__section-button]",
+      'button[class*=assets__section-button]',
     );
-    this.assetsComponentsOption = page.locator("#section-components");
-    this.assetsColorsOption = page.locator("#section-color");
-    this.assetsTypographiesOption = page.locator("#section-typography");
-    this.assetsAllOption = page.locator("#section-all");
+    this.assetsComponentsOption = page.locator('#section-components');
+    this.assetsColorsOption = page.locator('#section-color');
+    this.assetsTypographiesOption = page.locator('#section-typography');
+    this.assetsAllOption = page.locator('#section-all');
     this.assetsPanel = page.locator('div[class*="assets-bar"]');
     this.librariesTab = page.locator('div[class="libraries-button"]');
     this.assetsSectionName = page.locator(
@@ -40,7 +40,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.createGroupFileLibraryMenuItem = page.locator('li:has-text("Group")');
     this.renameGroupFileLibraryMenuItem = page.locator('li:has-text("Rename")');
     this.ungroupFileLibraryMenuItem = page.locator('li:has-text("Ungroup")');
-    this.groupNameInput = page.locator("#asset-name");
+    this.groupNameInput = page.locator('#asset-name');
     this.createGroupButton = page.locator('input[value="Create"]');
     this.renameGroupButton = page.locator('input[value="Rename"]');
     this.fileLibraryGroupTitle = page.locator('div[class*="group-title"]');
@@ -92,7 +92,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       'input[value="Unpublish"]',
     );
     this.closeLibrariesPopUpButton = page.locator(
-      "div.libraries-dialog a.close",
+      'div.libraries-dialog a.close',
     );
     this.addAsSharedLibraryButton = page.locator(
       'input[value="Add as Shared Library"]',
@@ -100,11 +100,11 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.removeAsSharedLibraryButton = page.locator('input[value="Unpublish"]');
     this.sharedLibraryBadge = page.locator('span[class*="shared-badge"]');
     this.searchLibraryInput = page.locator(
-      "div.libraries-search input.search-input",
+      'div.libraries-search input.search-input',
     );
-    this.clearSearchInputIcon = page.locator("div.search-close svg.icon-close");
-    this.searchIcon = page.locator("div.libraries-content div.search-icon");
-    this.librariesEmptyList = page.locator("div.section-list-empty");
+    this.clearSearchInputIcon = page.locator('div.search-close svg.icon-close');
+    this.searchIcon = page.locator('div.libraries-content div.search-icon');
+    this.librariesEmptyList = page.locator('div.section-list-empty');
   }
 
   async clickAssetsTab() {
@@ -112,7 +112,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async switchToAssetsPanelViaShortcut() {
-    await this.page.keyboard.press("Alt+I");
+    await this.page.keyboard.press('Alt+I');
   }
 
   async isAssetsPanelDisplayed() {
@@ -136,12 +136,12 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async duplicateFileLibraryComponents() {
-    await this.fileLibraryGraphicsComponentLabel.click({ button: "right" });
+    await this.fileLibraryGraphicsComponentLabel.click({ button: 'right' });
     await this.duplicateFileLibraryMenuItem.click();
   }
 
   async deleteFileLibraryComponents() {
-    await this.fileLibraryGraphicsComponentLabel.click({ button: "right" });
+    await this.fileLibraryGraphicsComponentLabel.click({ button: 'right' });
     await this.deleteFileLibraryMenuItem.click();
   }
 
@@ -193,16 +193,16 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   async selectTypeFromAllAssetsSelector(type) {
     await this.clickOnAssetsSectionButton();
     switch (type) {
-      case "All assets":
+      case 'All assets':
         await this.assetsAllOption.click();
         break;
-      case "Components":
+      case 'Components':
         await this.assetsComponentsOption.click();
         break;
-      case "Colors":
+      case 'Colors':
         await this.assetsColorsOption.click();
         break;
-      case "Typographies":
+      case 'Typographies':
         await this.assetsTypographiesOption.click();
         break;
     }
@@ -226,12 +226,12 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async deleteFileLibraryGraphics() {
-    await this.fileLibraryGraphicsUploadedImageLabel.click({ button: "right" });
+    await this.fileLibraryGraphicsUploadedImageLabel.click({ button: 'right' });
     await this.deleteFileLibraryMenuItem.click();
   }
 
   async createGroupFileLibraryGraphics(newGroupName) {
-    await this.fileLibraryGraphicsUploadedImageLabel.click({ button: "right" });
+    await this.fileLibraryGraphicsUploadedImageLabel.click({ button: 'right' });
     await this.createGroupFileLibraryMenuItem.click();
     await this.groupNameInput.fill(newGroupName);
     await this.createGroupButton.click();
@@ -246,14 +246,14 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async renameGroupFileLibrary(newGroupName) {
-    await this.fileLibraryGroupTitle.click({ button: "right" });
+    await this.fileLibraryGroupTitle.click({ button: 'right' });
     await this.renameGroupFileLibraryMenuItem.click();
     await this.groupNameInput.fill(newGroupName);
     await this.renameGroupButton.click();
   }
 
   async ungroupFileLibrary() {
-    await this.fileLibraryGroupTitle.click({ button: "right" });
+    await this.fileLibraryGroupTitle.click({ button: 'right' });
     await this.ungroupFileLibraryMenuItem.click();
   }
 
@@ -275,18 +275,18 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async editFileLibraryColor() {
-    await this.fileLibraryColorsColorBullet.click({ button: "right" });
+    await this.fileLibraryColorsColorBullet.click({ button: 'right' });
     await this.editFileLibraryMenuItem.click();
   }
 
   async renameFileLibraryColor(newColorName) {
-    await this.fileLibraryColorsColorBullet.click({ button: "right" });
+    await this.fileLibraryColorsColorBullet.click({ button: 'right' });
     await this.renameFileLibraryMenuItem.click();
     await this.fileLibraryColorsColorNameInput.fill(newColorName);
   }
 
   async deleteFileLibraryColor() {
-    await this.fileLibraryColorsColorBullet.click({ button: "right" });
+    await this.fileLibraryColorsColorBullet.click({ button: 'right' });
     await this.deleteFileLibraryMenuItem.click();
   }
 
@@ -297,7 +297,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   async clickAndPressAltFileLibraryColorsColorBullet() {
     await this.fileLibraryColorsColorBullet.click({
       delay: 500,
-      modifiers: ["Alt"],
+      modifiers: ['Alt'],
     });
   }
 
@@ -315,33 +315,33 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async editFileLibraryTypography() {
-    await this.fileLibraryTypographyRecord.click({ button: "right" });
+    await this.fileLibraryTypographyRecord.click({ button: 'right' });
     await this.editFileLibraryMenuItem.click();
   }
 
   async renameFileLibraryTypography(newName) {
-    await this.fileLibraryTypographyRecord.click({ button: "right" });
+    await this.fileLibraryTypographyRecord.click({ button: 'right' });
     await this.renameFileLibraryMenuItem.click();
     // await this.clearInput(this.typographyNameInput);
     await this.typographyNameInput.fill(newName);
   }
 
   async deleteFileLibraryTypography() {
-    await this.fileLibraryTypographyRecord.click({ button: "right" });
+    await this.fileLibraryTypographyRecord.click({ button: 'right' });
     await this.deleteFileLibraryMenuItem.click();
   }
 
   async createGroupFileLibraryAssets(assetType, newGroupName) {
     let selector;
     switch (assetType) {
-      case "Colors":
+      case 'Colors':
         selector = this.fileLibraryColorsColorBullet;
         break;
-      case "Typographies":
+      case 'Typographies':
         selector = this.fileLibraryTypographyRecord;
         break;
     }
-    await selector.click({ button: "right" });
+    await selector.click({ button: 'right' });
     await this.createGroupFileLibraryMenuItem.click();
     await this.groupNameInput.fill(newGroupName);
     await this.createGroupButton.click();
