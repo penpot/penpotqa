@@ -1,4 +1,4 @@
-const { expect, Locator } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { BasePage } = require('../base-page');
 
 exports.LayersPanelPage = class LayersPanelPage extends BasePage {
