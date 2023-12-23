@@ -9,9 +9,19 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     super(page);
 
     //Assets panel
+    this.librariesTab = page.locator('div[class="libraries-button"]');
     this.assetsTab = page.locator('div[data-id="assets"]');
     this.assetsSectionButton = page.locator(
       'button[class*=assets__section-button]',
+    );
+    this.assetComponentLabel = page.locator(
+      'div[class*="assets_components__grid-cell"]',
+    );
+    this.componentsGridOnAssetsTab = page.locator(
+      'div[class*="assets_components__asset-grid"]',
+    );
+    this.componentsTitleBarOnAssetsTab = page.locator(
+      'div[class*="components_title_bar"] span:text-is("Components")',
     );
     this.assetsComponentsOption = page.locator('#section-components');
     this.assetsColorsOption = page.locator('#section-color');
@@ -121,10 +131,6 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async clickLibrariesTab() {
     await this.librariesTab.click();
-  }
-
-  async isComponentAddedToFileLibraryComponents() {
-    await expect(this.fileLibraryGraphicsComponentLabel).toBeVisible();
   }
 
   async isSecondComponentAddedToFileLibraryComponents() {
@@ -322,7 +328,6 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   async renameFileLibraryTypography(newName) {
     await this.fileLibraryTypographyRecord.click({ button: 'right' });
     await this.renameFileLibraryMenuItem.click();
-    // await this.clearInput(this.typographyNameInput);
     await this.typographyNameInput.fill(newName);
   }
 
@@ -410,4 +415,22 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   async clickOnAssetsSectionButton() {
     await this.assetsSectionButton.click();
   }
+
+  async dragComponentOnCanvas(x, y) {
+    await this.assetComponentLabel.dragTo(this.viewport, {
+      targetPosition: { x: x, y: y },
+    });
+  }
+
+  async expandComponentsBlockOnAssetsTab() {
+    if (!(await this.componentsGridOnAssetsTab.isVisible())) {
+      await this.componentsTitleBarOnAssetsTab.click();
+    }
+    await expect(this.componentsGridOnAssetsTab).toBeVisible();
+  }
+
+  async isComponentAddedToFileLibraryComponents() {
+    await expect(this.assetComponentLabel).toBeVisible();
+  }
+
 };
