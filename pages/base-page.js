@@ -70,6 +70,18 @@ exports.BasePage = class BasePage {
     await this.page.keyboard.press('Delete');
   }
 
+  async clickShortcutCtrlZ(browserName) {
+    if (getPlatformName() === "MacOS") {
+      await this.page.keyboard.press("Meta+Z");
+    } else {
+      if (browserName !== "webkit") {
+        await this.page.keyboard.press("Control+Z");
+      } else {
+        await this.page.keyboard.press("Meta+Z");
+      }
+    }
+  }
+
   async reloadPage() {
     await this.page.reload();
   }

@@ -82,6 +82,22 @@ test.describe(() => {
       'board-removed-fill.png',
     );
   });
+mainTest("PF-74 Change fill color for shape", async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const colorPalettePopUp = new ColorPalettePopUp(page);
+  await mainPage.clickCreateRectangleButton();
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isCreatedLayerVisible();
+  await mainPage.clickFillColorIcon();
+  await colorPalettePopUp.setHex("#FF0000");
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isFillHexCodeSet("FF0000");
+  await mainPage.isFillOpacitySet("100");
+  await expect(mainPage.createdLayer).toHaveScreenshot(
+    "rectangle-changed-fill.png",
+  );
 });
 
 test.describe(() => {
