@@ -1,5 +1,5 @@
-const { BasePage } = require("../base-page");
-const { expect } = require("@playwright/test");
+const { BasePage } = require('../base-page');
+const { expect } = require('@playwright/test');
 
 exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   /**
@@ -8,7 +8,7 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   constructor(page) {
     super(page);
     this.popUp = page.locator('div[class*="colorpicker-tooltip"]');
-    this.hexInput = page.locator("#hex-value");
+    this.hexInput = page.locator('#hex-value');
     this.saveColorStyleButton = page.locator(
       'button:has-text("Save color style")',
     );
@@ -44,8 +44,8 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
 
   async clickColorBullet(isFileLibrary = true, value = 0) {
     const classAttr = isFileLibrary
-      ? "color_bullet_new__is-library-color"
-      : "color_bullet_new__is-not-library-color";
+      ? 'color_bullet_new__is-library-color'
+      : 'color_bullet_new__is-not-library-color';
     const selector = this.page.locator(
       `div[class*="selected-colors"] div[class*="${classAttr}"] >> nth=${value}`,
     );

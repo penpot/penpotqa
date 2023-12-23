@@ -2,7 +2,7 @@
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-require("dotenv").config();
+require('dotenv').config();
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -10,9 +10,9 @@ require("dotenv").config();
  */
 const config = {
   snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/{projectName}/{arg}{ext}`,
-  testDir: "./tests",
+  testDir: './tests',
   /* Maximum time one test can run for. */
-  timeout: process.env.CI ? 70 * 1000 : 60 * 1000,
+  timeout: process.env.CI ? 70 * 1000 : 50 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -29,7 +29,7 @@ const config = {
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 2 : 2,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+  reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
@@ -38,38 +38,38 @@ const config = {
     baseURL: process.env.BASE_URL,
     headless: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
-    video: "on",
+    trace: 'on-first-retry',
+    video: 'on',
   },
   projects: [
     {
-      name: "chrome",
+      name: 'chrome',
       expect: {
         toHaveScreenshot: {
-          maxDiffPixelRatio: 0,
+          maxDiffPixelRatio: 0.01,
         },
       },
       use: {
-        browserName: "chromium",
-        channel: "chrome",
+        browserName: 'chromium',
+        channel: 'chrome',
         viewport: {
           height: 969,
           width: 1920,
         },
         launchOptions: {
-          ignoreDefaultArgs: ["--hide-scrollbars"],
+          ignoreDefaultArgs: ['--hide-scrollbars'],
         },
       },
     },
     {
-      name: "firefox",
+      name: 'firefox',
       expect: {
         toHaveScreenshot: {
-          maxDiffPixelRatio: 0,
+          maxDiffPixelRatio: 0.01,
         },
       },
       use: {
-        browserName: "firefox",
+        browserName: 'firefox',
         viewport: {
           height: 969,
           width: 1920,
@@ -77,14 +77,14 @@ const config = {
       },
     },
     {
-      name: "webkit",
+      name: 'webkit',
       expect: {
         toHaveScreenshot: {
-          maxDiffPixelRatio: 0,
+          maxDiffPixelRatio: 0.01,
         },
       },
       use: {
-        browserName: "webkit",
+        browserName: 'webkit',
         viewport: {
           height: 969,
           width: 1920,

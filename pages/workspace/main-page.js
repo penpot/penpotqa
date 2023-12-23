@@ -1,6 +1,6 @@
-const { expect } = require("@playwright/test");
-const { BasePage } = require("../base-page");
-const { getPlatformName } = require("../../helpers/string-generator");
+const { expect } = require('@playwright/test');
+const { BasePage } = require('../base-page');
+const { getPlatformName } = require('../../helpers/get-platform');
 
 exports.MainPage = class MainPage extends BasePage {
   /**
@@ -15,7 +15,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.createRectangleButton = page.locator('button[data-test="rect-btn"]');
     this.createEllipseButton = page.locator('button[data-test="ellipse-btn"]');
     this.createTextButton = page.locator('button[title="Text (T)"]');
-    this.uploadImageSelector = page.locator("#image-upload");
+    this.uploadImageSelector = page.locator('#image-upload');
     this.createCurveButton = page.locator('button[data-test="curve-btn"]');
     this.createPathButton = page.locator('button[data-test="path-btn"]');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
@@ -29,7 +29,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.textbox = page.locator(
       'div[role="textbox"] div[contenteditable="true"]',
     );
-    this.guides = page.locator(".guides .new-guides");
+    this.guides = page.locator('.guides .new-guides');
 
     //Node panel
     this.pathActionsBlock = page.locator(
@@ -60,32 +60,22 @@ exports.MainPage = class MainPage extends BasePage {
     this.nodePanelMergeNodesButton = page.locator(
       'button[title^="Merge nodes"]',
     );
-    this.nodePanelDrawNodesButton = page.locator(
-      'button[title^="Draw nodes"]',
-    );
-    this.nodePanelMoveNodesButton = page.locator(
-      'button[title^="Move nodes"]',
-    );
-    this.nodePanelJoinNodesButton = page.locator(
-      'button[title^="Join nodes"]',
-    );
+    this.nodePanelDrawNodesButton = page.locator('button[title^="Draw nodes"]');
+    this.nodePanelMoveNodesButton = page.locator('button[title^="Move nodes"]');
+    this.nodePanelJoinNodesButton = page.locator('button[title^="Join nodes"]');
     this.nodePanelSeparateNodesButton = page.locator(
       'button[title^="Separate nodes"]',
     );
-    this.nodePanelToCornerButton = page.locator(
-      'button[title^="To corner"]',
-    );
-    this.nodePanelToCurveButton = page.locator(
-      'button[title^="To curve"]',
-    );
+    this.nodePanelToCornerButton = page.locator('button[title^="To corner"]');
+    this.nodePanelToCurveButton = page.locator('button[title^="To curve"]');
 
     // Main menu - first level
     this.mainMenuButton = page.locator('div[class*="header__menu-btn"]');
     this.mainMenuList = page.locator('ul[class*="header__menu"]');
-    this.viewMainMenuItem = page.locator("#file-menu-view");
-    this.fileMainMenuItem = page.locator("#file-menu-file");
-    this.editMainMenuItem = page.locator("#file-menu-edit");
-    this.helpInfoMenuItem = page.locator("#file-menu-help-info");
+    this.viewMainMenuItem = page.locator('#file-menu-view');
+    this.fileMainMenuItem = page.locator('#file-menu-file');
+    this.editMainMenuItem = page.locator('#file-menu-edit');
+    this.helpInfoMenuItem = page.locator('#file-menu-help-info');
 
     // Main menu - second level
     this.showRulersMainMenuSubItem = page.locator(
@@ -100,7 +90,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.showGridsMainMenuSubItem = page.locator(
       'li[data-test="display-grid"] span:text-is("Show grid")',
     );
-    this.selectAllMainMenuSubItem = page.locator("#file-menu-select-all");
+    this.selectAllMainMenuSubItem = page.locator('#file-menu-select-all');
     this.showColorPaletteMainMenuSubItem = page.locator(
       '#file-menu-color-palette span:text-is("Show color palette")',
     );
@@ -122,25 +112,25 @@ exports.MainPage = class MainPage extends BasePage {
     this.showHideUIMainMenuSubItem = page.locator(
       'li[data-test="hide-ui"] span:text-is("Show / Hide UI")',
     );
-    this.dowloadPenpotFileMenuSubItem = page.locator("#file-menu-binary-file");
+    this.dowloadPenpotFileMenuSubItem = page.locator('#file-menu-binary-file');
     this.dowloadStandartFileMenuSubItem = page.locator(
-      "#file-menu-standard-file",
+      '#file-menu-standard-file',
     );
     this.addAsSharedLibraryFileMenuSubItem = page.locator(
-      "#file-menu-add-shared",
+      '#file-menu-add-shared',
     );
     this.removeAsSharedLibraryFileMenuSubItem = page.locator(
-      "#file-menu-remove-shared",
+      '#file-menu-remove-shared',
     );
-    this.shortcutsMenuSubItem = page.locator("#file-menu-shortcuts");
+    this.shortcutsMenuSubItem = page.locator('#file-menu-shortcuts');
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick-refactor"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
     //Zoom
     this.zoomButton = page.locator('div[title="Zoom"]');
     this.zoomPlusButton = page.locator(
-    'button[class*="header__zoom-btn"] svg[class="icon-add-refactor"]',
-  );
+      'button[class*="header__zoom-btn"] svg[class="icon-add-refactor"]',
+    );
     this.zoomMinusButton = page.locator(
       'button[class*="header__zoom-btn"] svg[class="icon-remove-refactor"]',
     );
@@ -150,7 +140,9 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Pages
     this.addPageButton = page.locator('button[class*="add-page"]');
-    this.pagesBlock = page.locator('div.main_ui_workspace_sidebar_sitemap__sitemap');
+    this.pagesBlock = page.locator(
+      'div.main_ui_workspace_sidebar_sitemap__sitemap',
+    );
     this.firstPageListItem = page.locator(
       'ul[class*="pages-list"] div[class*="element-list-body"] >>nth=0',
     );
@@ -172,7 +164,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.collapseExpandPagesButton = page.locator(
       'span[class*="collapsabled-icon"]',
     );
-    this.pageTrashIcon = page.locator('div[class*="selected"] svg[class="icon-delete-refactor"]');
+    this.pageTrashIcon = page.locator(
+      'div[class*="selected"] svg[class="icon-delete-refactor"]',
+    );
     this.deletePageOkButton = page.locator('input[value="Ok"]');
 
     // Bottom palette
@@ -183,13 +177,11 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class*="text_palette__typography-item"]',
     );
     this.typographiesColorsBottomPanel = page.locator(
-      "div.main_ui_workspace_palette__wide",
+      'div.main_ui_workspace_palette__wide',
     );
 
     //Header
-    this.unSavedChangesIcon = page.locator(
-      'div[title="Unsaved changes"]',
-    );
+    this.unSavedChangesIcon = page.locator('div[title="Unsaved changes"]');
     this.usersSection = page.locator('div[class*="users-section"]');
     this.projectNameSpan = page.locator('div[class*="project-name"]');
     this.fileNameSpan = page.locator('div[class*="file-name"]');
@@ -230,18 +222,18 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async typeTextFromKeyboard() {
-    await this.page.keyboard.press("H");
-    await this.page.keyboard.press("e");
-    await this.page.keyboard.press("l");
-    await this.page.keyboard.press("l");
-    await this.page.keyboard.press("o");
-    await this.page.keyboard.press("Space");
-    await this.page.keyboard.press("W");
-    await this.page.keyboard.press("o");
-    await this.page.keyboard.press("r");
-    await this.page.keyboard.press("l");
-    await this.page.keyboard.press("d");
-    await this.page.keyboard.press("!");
+    await this.page.keyboard.press('H');
+    await this.page.keyboard.press('e');
+    await this.page.keyboard.press('l');
+    await this.page.keyboard.press('l');
+    await this.page.keyboard.press('o');
+    await this.page.keyboard.press('Space');
+    await this.page.keyboard.press('W');
+    await this.page.keyboard.press('o');
+    await this.page.keyboard.press('r');
+    await this.page.keyboard.press('l');
+    await this.page.keyboard.press('d');
+    await this.page.keyboard.press('!');
   }
 
   async uploadImage(filePath) {
@@ -301,9 +293,8 @@ exports.MainPage = class MainPage extends BasePage {
     await boardSel.dblclick();
   }
 
-
   async focusLayerViaShortcut() {
-    await this.page.keyboard.press("F");
+    await this.page.keyboard.press('F');
   }
 
   async drawCurve(x1, y1, x2, y2) {
@@ -330,18 +321,17 @@ exports.MainPage = class MainPage extends BasePage {
 
   async pressFlexLayoutShortcut() {
     await this.createdLayer.click({ force: true });
-    await this.page.keyboard.press("Shift+A");
+    await this.page.keyboard.press('Shift+A');
   }
-
 
   async flipVerticalViaShortcut() {
     await this.createdLayer.click({ force: true });
-    await this.page.keyboard.press("Shift+V");
+    await this.page.keyboard.press('Shift+V');
   }
 
   async flipHorizontalViaShortcut() {
     await this.createdLayer.click({ force: true });
-    await this.page.keyboard.press("Shift+H");
+    await this.page.keyboard.press('Shift+H');
   }
 
   async deleteLayerViaShortcut() {
@@ -374,11 +364,11 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async holdShiftKeyboardButton() {
-    await this.page.keyboard.down("Shift");
+    await this.page.keyboard.down('Shift');
   }
 
   async releaseShiftKeyboardButton() {
-    await this.page.keyboard.up("Shift");
+    await this.page.keyboard.up('Shift');
   }
 
   async clickAddNodeButtonOnNodePanel() {
@@ -386,7 +376,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressShiftPlusKeyboardShortcut() {
-    await this.page.keyboard.press("Shift+NumpadAdd");
+    await this.page.keyboard.press('Shift+NumpadAdd');
   }
 
   async clickDeleteNodeButtonOnNodePanel() {
@@ -394,7 +384,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressDeleteKeyboardButton() {
-    await this.page.keyboard.press("Delete");
+    await this.page.keyboard.press('Delete');
   }
 
   async clickMergeNodesButtonOnNodePanel() {
@@ -402,7 +392,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressCtrlJKeyboardShortcut() {
-    await this.page.keyboard.press("Control+J");
+    await this.page.keyboard.press('Control+J');
   }
 
   async clickDrawNodesButtonOnNodePanel() {
@@ -418,7 +408,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressJKeyboardShortcut() {
-    await this.page.keyboard.press("J");
+    await this.page.keyboard.press('J');
   }
 
   async clickSeparateNodesButtonOnNodePanel() {
@@ -426,7 +416,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressKKeyboardShortcut() {
-    await this.page.keyboard.press("K");
+    await this.page.keyboard.press('K');
   }
 
   async clickToCornerButtonOnNodePanel() {
@@ -434,7 +424,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressXKeyboardShortcut() {
-    await this.page.keyboard.press("X");
+    await this.page.keyboard.press('X');
   }
 
   async clickToCurveButtonOnNodePanel() {
@@ -442,7 +432,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressCKeyboardShortcut() {
-    await this.page.keyboard.press("C");
+    await this.page.keyboard.press('C');
   }
 
   async clickMainMenuButton() {
@@ -495,24 +485,23 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressHideShowRulersShortcut(browserName) {
-    const os = getPlatformName();
-    if (os === "MacOS") {
-      await this.page.keyboard.press("Meta+Shift+R");
+    if (getPlatformName() === 'MacOS') {
+      await this.page.keyboard.press('Meta+Shift+R');
     } else {
-      if (browserName === "webkit") {
-        await this.page.keyboard.press("Meta+Shift+R");
+      if (browserName === 'webkit') {
+        await this.page.keyboard.press('Meta+Shift+R');
       } else {
-        await this.page.keyboard.press("Control+Shift+R");
+        await this.page.keyboard.press('Control+Shift+R');
       }
     }
   }
 
   async pressHideShowGridsShortcut(browserName) {
     const os = getPlatformName();
-    if (os === "MacOS") {
+    if (os === 'MacOS') {
       await this.page.keyboard.press("Meta+'");
     } else {
-      if (browserName === "webkit") {
+      if (browserName === 'webkit') {
         await this.page.keyboard.press("Meta+'");
       } else {
         await this.page.keyboard.press("Control+'");
@@ -522,13 +511,13 @@ exports.MainPage = class MainPage extends BasePage {
 
   async pressSelectAllShortcut(browserName) {
     const os = getPlatformName();
-    if (os === "MacOS") {
-      await this.page.keyboard.press("Meta+A");
+    if (os === 'MacOS') {
+      await this.page.keyboard.press('Meta+A');
     } else {
-      if (browserName === "webkit") {
-        await this.page.keyboard.press("Meta+A");
+      if (browserName === 'webkit') {
+        await this.page.keyboard.press('Meta+A');
       } else {
-        await this.page.keyboard.press("Control+A");
+        await this.page.keyboard.press('Control+A');
       }
     }
   }
@@ -599,23 +588,23 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressHideShowPixelGridShortcut() {
-    await this.page.keyboard.press("Shift+,");
+    await this.page.keyboard.press('Shift+,');
   }
 
   async pressHideShowUIShortcut() {
-    await this.page.keyboard.press("Backslash");
+    await this.page.keyboard.press('Backslash');
   }
 
   async downloadPenpotFileViaMenu() {
     await this.dowloadPenpotFileMenuSubItem.click();
-    await this.page.waitForEvent("download");
+    await this.page.waitForEvent('download');
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
 
   async downloadStandardFileViaMenu() {
     await this.dowloadStandartFileMenuSubItem.click();
-    await this.page.waitForEvent("download");
+    await this.page.waitForEvent('download');
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
@@ -640,11 +629,11 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.secondPageListItem).toHaveText(name);
   }
 
-  async renamePageViaRightClick(newName, isFirstPage=true) {
+  async renamePageViaRightClick(newName, isFirstPage = true) {
     if (isFirstPage) {
-      await this.firstPageListItem.click({ button: "right" });
+      await this.firstPageListItem.click({ button: 'right' });
     } else {
-      await this.secondPageListItem.click({ button: "right" });
+      await this.secondPageListItem.click({ button: 'right' });
     }
     await this.renamePageMenuItem.click();
     await this.pageNameInput.fill(newName);
@@ -652,11 +641,11 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async duplicatePageViaRightClick() {
-    await this.firstPageListItem.click({ button: "right" });
+    await this.firstPageListItem.click({ button: 'right' });
     await this.duplicatePageMenuItem.click();
   }
 
-  async clickOnPageOnLayersPanel(firstPage=true) {
+  async clickOnPageOnLayersPanel(firstPage = true) {
     if (firstPage) {
       await this.firstPageListItem.click();
     } else {
@@ -669,7 +658,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async deleteSecondPageViaRightClick() {
-    await this.secondPageListItem.click({ button: "right" });
+    await this.secondPageListItem.click({ button: 'right' });
     await this.deletePageMenuItem.click();
     await this.deletePageOkButton.click();
   }
@@ -697,7 +686,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressShortcutsPanelShortcut() {
-    await this.page.keyboard.press("Shift+?");
+    await this.page.keyboard.press('Shift+?');
   }
 
   async closeShortcutsPanel() {
@@ -717,7 +706,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressColorsPaletteShortcut() {
-    await this.page.keyboard.press("Alt+P");
+    await this.page.keyboard.press('Alt+P');
   }
 
   async isColorsPaletteDisplayed() {
@@ -730,11 +719,11 @@ exports.MainPage = class MainPage extends BasePage {
 
   async backToDashboardFromFileEditor() {
     await this.clickPencilBoxButton();
-    await this.isHeaderDisplayed("Projects");
+    await this.isHeaderDisplayed('Projects');
   }
 
   async pressOpenTypographiesBottomPanelShortcut() {
-    await this.page.keyboard.press("Alt+T");
+    await this.page.keyboard.press('Alt+T');
     await this.waitForBottomPaletteIsOpened();
   }
 
@@ -762,8 +751,8 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(1200, 700);
     await this.clickViewportByCoordinates(1000, 400);
     await this.clickViewportByCoordinates(500, 200);
-    await this.clickOnDesignTab();  // todo: need to remove after issue fix
-    // await this.clickOnMainToolBar(); //todo issue 6171
+    await this.clickOnDesignTab(); // todo: need to remove after issue fix
+    // await this.clickOnMainToolBar(); //todo bug 6171 > need to uncomment after fix these 2 rows
     // await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
@@ -773,8 +762,8 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(500, 200);
     await this.clickViewportByCoordinates(1200, 700);
     await this.clickViewportByCoordinates(1000, 400);
-    await this.clickOnDesignTab();  // todo: need to remove after issue fix
-    // await this.clickOnMainToolBar(); //todo issue 6171
+    await this.clickOnDesignTab(); // todo: need to remove after issue fix
+    // await this.clickOnMainToolBar(); //todo bug 6171 > need to uncomment after fix these 2 rows
     // await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
@@ -782,10 +771,10 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultTextLayer(browserName, x = 200, y = 300) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
-    if (browserName === "webkit") {
+    if (browserName === 'webkit') {
       await this.typeTextFromKeyboard();
     } else {
-      await this.typeText("Hello World!");
+      await this.typeText('Hello World!');
     }
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
@@ -798,5 +787,4 @@ exports.MainPage = class MainPage extends BasePage {
   async clickOnDesignTab() {
     await this.designTab.click();
   }
-
 };

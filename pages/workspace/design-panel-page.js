@@ -1,5 +1,5 @@
-const { expect } = require("@playwright/test");
-const { BasePage } = require("../base-page");
+const { expect } = require('@playwright/test');
+const { BasePage } = require('../base-page');
 
 exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   /**
@@ -41,9 +41,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.fillOpacityInput = page.locator(
       'div[class*="fill__element-content"] div[class*="opacity-element-wrapper"] input',
     );
-    this.addFillButton = page.locator(
-      'button[class*="fill__add-fill"]',
-    );
+    this.addFillButton = page.locator('button[class*="fill__add-fill"]');
     this.removeFillButton = page.locator(
       'div[class*="fill__element-content"] svg[class="icon-remove-refactor"]',
     );
@@ -82,98 +80,90 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowTypeField = page.locator('div[class*="shadow-type-select"]');
 
     //Design panel - Flex Layout section
-    this.flexElementSection = page.locator(
-      'div[class="element-set-content layout-item-menu"]',
+    this.flexLayoutMenu = page.locator('div[class*="flex-layout-menu"]');
+    this.flexElementMenu = page.locator('div[class*="flex-element-menu"]');
+    this.flexLayoutCollapsedIcon = page.locator(
+      'div[class*="layout_container"] button[class*="collapsabled-icon"]',
     );
     this.flexElementAlignStartBtn = page.locator(
-      'div.layout-item-menu button[alt="Align self start"]',
+      'label[title="Align self start"] span',
     );
     this.flexElementAlignCenterBtn = page.locator(
-      'div.layout-item-menu button[alt="Align self center"]',
+      'label[title="Align self center"] span',
     );
     this.flexElementAlignEndBtn = page.locator(
-      'div.layout-item-menu button[alt="Align self end"]',
+      'label[title="Align self end"] span',
     );
     this.flexElementMarginVertInput = page.locator(
-      'div[class="margin-row"] div[alt="Vertical margin"] input',
+      'div[title="Vertical margin"] input',
     );
     this.flexElementMarginHorizontInput = page.locator(
-      'div[class="margin-row"] div[alt="Horizontal margin"] input',
+      'div[title="Horizontal margin"] input',
     );
     this.flexElementPositionAbsolute = page.locator(
-      'div[class="layout-row"] button[alt="Absolute"]',
-    );
-    this.removeLayoutButton = page.locator(
-        'div[class="element-set-title"] button[class="remove-layout"]',
+      'label[for=":absolute-position"] span',
     );
     this.layoutSection = page.locator(
-        'div[class*="layout_container__element-title"]:has-text("Layout")',
+      'div[class*="layout_container__element-title"]:has-text("Layout")',
     );
-    this.layoutDirectRowBtn = page.locator(
-        'div[class="layout-row"] button[alt="Row"]',
+    this.layoutRemoveButton = page.locator(
+      'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
     );
+    this.layoutDirectRowBtn = page.locator('label[title="Row"] span');
     this.layoutDirectRowReverseBtn = page.locator(
-        'div[class="layout-row"] button[alt="Row reverse"]',
+      'label[title="Row reverse"] span',
     );
-    this.layoutDirectColumnBtn = page.locator(
-        'div[class="layout-row"] button[alt="Column"]',
-    );
+    this.layoutDirectColumnBtn = page.locator('label[title="Column"] span');
     this.layoutDirectColumnReverseBtn = page.locator(
-        'div[class="layout-row"] button[alt="Column reverse"]',
+      'label[title="Column reverse"] span',
     );
     this.layoutAlignStartBtn = page.locator(
-        'div[class="layout-row"] button[alt="Align items start"]',
+      'label[title="Align items start"] span',
     );
     this.layoutAlignCenterBtn = page.locator(
-        'div[class="layout-row"] button[alt="Align items center"]',
+      'label[title="Align items center"] span',
     );
     this.layoutAlignEndBtn = page.locator(
-        'div[class="layout-row"] button[alt="Align items end"]',
+      'label[title="Align items end"] span',
     );
     this.layoutJustifyStartBtn = page.locator(
-        'div[class="layout-row"] button[alt="Justify content start"]',
+      'label[title="Justify content start"] span',
     );
     this.layoutJustifyCenterBtn = page.locator(
-        'div[class="layout-row"] button[alt="Justify content center"]',
+      'label[title="Justify content center"] span',
     );
     this.layoutJustifyEndBtn = page.locator(
-        'div[class="layout-row"] button[alt="Justify content end"]',
+      'label[title="Justify content end"] span',
     );
     this.layoutJustifySpaceBetweenBtn = page.locator(
-        'div[class="layout-row"] button[alt="Justify content space-between"]',
+      'label[title="Justify content space-between"] span',
     );
     this.layoutJustifySpaceAroundBtn = page.locator(
-        'div[class="layout-row"] button[alt="Justify content space-around"]',
+      'label[title="Justify content space-around"] span',
     );
     this.layoutJustifySpaceEvenlyBtn = page.locator(
-        'div[class="layout-row"] button[alt="Justify content space-evenly"]',
+      'label[title="Justify content space-evenly"] span',
     );
-    this.layoutColumnGapInput = page.locator(
-        'div[class="gap-group"] div[alt="Column gap"] input',
-    );
-    this.layoutRowGapInput = page.locator(
-        'div[class="gap-group"] div[alt="Row gap"] input',
-    );
+    this.layoutColumnGapInput = page.locator('div[title="Column gap"] input');
+    this.layoutRowGapInput = page.locator('div[title="Row gap"] input');
     this.layoutVerticalPaddingInput = page.locator(
-        'div[class="padding-group"] div[alt="Vertical padding"] input',
+      'div[title="Vertical padding"] input',
     );
     this.layoutHorizontPaddingInput = page.locator(
-        'div[class="padding-group"] div[alt="Horizontal padding"] input',
+      'div[title="Horizontal padding"] input',
     );
     this.layoutIndepPaddingsIcon = page.locator(
-        'div[class="padding-icons"] div[alt="Independent paddings"]',
+      'button[class*="padding-toggle"]',
     );
-    this.layoutPaddingTopInput = page.locator(
-        'div[class="padding-row"] div[alt="Top"] input',
-    );
+    this.layoutPaddingTopInput = page.locator('div[title="Top padding"] input');
     this.layoutPaddingRightInput = page.locator(
-        'div[class="padding-row"] div[alt="Right"] input',
+      'div[title="Right padding"] input',
     );
     this.layoutPaddingBottomInput = page.locator(
-        'div[class="padding-row"] div[alt="Bottom"] input',
+      'div[title="Bottom padding"] input',
     );
     this.layoutPaddingLeftInput = page.locator(
-        'div[class="padding-row"] div[alt="Left"] input',
+      'div[title="Left padding"] input',
     );
 
     //Design panel - Blur section
@@ -182,7 +172,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.addBlurButton = page.locator('button[class*="blur__add-blur"]');
     this.blurMoreOptions = page.locator('button[class*="blur__show-more"]');
-    this.blurValueInput = page.locator("#blur-input-sidebar");
+    this.blurValueInput = page.locator('#blur-input-sidebar');
     this.blurHideIcon = page.locator(
       'div[class*="blur__actions"] svg[class="icon-shown-refactor"]',
     );
@@ -202,7 +192,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="stroke-data"] div[class*="color_bullet_new__is-not-library-color"]',
     );
     this.strokeRemoveIcon = page.locator(
-      'div[title="Stroke color"] .icon-minus',
+      'div[class*="stroke-data"] button[class*="remove-btn"]',
     );
     this.strokeColorInput = page.locator(
       'div[class*="stroke-data"] input[class*="color-input"]',
@@ -213,111 +203,114 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeOpacityInput = page.locator(
       'div[class*="stroke-data"] input[class*="opacity-input"]',
     );
-    this.strokePositionSelect = page.locator(
-      '//div[@title="Stroke width"]/parent::div//select[1]',
+    this.strokeAlignmentField = page.locator(
+      'div[data-test="stroke.alignment"]',
     );
+    this.strokeTypeField = page.locator('div[data-test="stroke.style"]');
     this.strokeTypeSelect = page.locator(
       '//div[@title="Stroke width"]/parent::div//select[2]',
     );
 
     //Design panel - Text section
-    this.textUpperCaseIcon = page.locator("svg.icon-text-uppercase-refactor");
-    this.textLowerCaseIcon = page.locator("svg.icon-text-lowercase-refactor");
-    this.textTitleCaseIcon = page.locator("svg.icon-text-mixed-refactor");
+    this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase-refactor');
+    this.textLowerCaseIcon = page.locator('svg.icon-text-lowercase-refactor');
+    this.textTitleCaseIcon = page.locator('svg.icon-text-mixed-refactor');
     this.textMoreOptionsIcon = page.locator(
       'button[class*="text__more-options"]',
     );
     this.textVerticalOptionsBlock = page.locator(
       'div[class*="vertical-align-options"]',
     );
-    this.textAlignTop = page.locator("svg.icon-text-top-refactor");
-    this.textAlignMiddle = page.locator("svg.icon-text-middle-refactor");
-    this.textAlignBottom = page.locator("svg.icon-text-bottom-refactor");
-    this.textIconLTR = page.locator("svg.icon-text-ltr-refactor");
-    this.textIconRTL = page.locator("svg.icon-text-rtl-refactor");
+    this.textAlignTop = page.locator('svg.icon-text-top-refactor');
+    this.textAlignMiddle = page.locator('svg.icon-text-middle-refactor');
+    this.textAlignBottom = page.locator('svg.icon-text-bottom-refactor');
+    this.textIconLTR = page.locator('svg.icon-text-ltr-refactor');
+    this.textIconRTL = page.locator('svg.icon-text-rtl-refactor');
 
     //Design panel - Export section
     this.exportSection = page.locator(
-        'div[class*="exports__element-title"]:has-text("Export")',
+      'div[class*="exports__element-title"]:has-text("Export")',
     );
-    this.addExportButton = page.locator(
-        'button[class*="exports__add-export"]',
-    );
+    this.addExportButton = page.locator('button[class*="exports__add-export"]');
     this.removeExportButton = page.locator(
-        'button[class*="exports__action-btn"] svg[class="icon-remove-refactor"]',
+      'button[class*="exports__action-btn"] svg[class="icon-remove-refactor"]',
     );
     this.exportElementButton = page.locator(
-        'button[class*="exports__export-btn"]',
+      'button[class*="exports__export-btn"]',
     );
 
     //Design panel - Grid section
-    this.gridSection = page.locator('div[class*=element-set]:has-text("Guides")');
-    this.gridMainOptionSection = page.locator('div[class="grid-option-main"]');
-    this.addGridButton = page.locator(
-        'button[class*="grid__add-grid"]',
+    this.gridSection = page.locator(
+      'div[class*=element-set]:has-text("Guides")',
     );
+    this.gridMainOptionSection = page.locator('div[class="grid-option-main"]');
+    this.addGridButton = page.locator('button[class*="grid__add-grid"]');
     this.removeGridButton = page.locator(
-        'div[class*="grid__actions"] svg[class="icon-remove-refactor"]',
+      'div[class*="grid__actions"] svg[class="icon-remove-refactor"]',
     );
     this.hideGridButton = page.locator(
-        'div[class*="grid__actions"] svg[class="icon-shown-refactor"]',
+      'div[class*="grid__actions"] svg[class="icon-shown-refactor"]',
     );
     this.unhideGridButton = page.locator(
-        'div[class*="grid__actions"] svg[class="icon-hide-refactor"]',
+      'div[class*="grid__actions"] svg[class="icon-hide-refactor"]',
     );
     this.gridTypeField = page.locator(
-        'div[class*="grid__option-row"] div[class*="type-select-wrapper"]',
+      'div[class*="grid__option-row"] div[class*="type-select-wrapper"]',
     );
     this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
     this.gridTypeSelectorColumnsOption = page.locator(
-        'span:has-text("Columns")',
+      'span:has-text("Columns")',
     );
     this.gridTypeSelectorRowsOption = page.locator('span:has-text("Rows")');
     this.gridSizeInput = page.locator('div[title="Size"] input');
-    this.gridColumnsRowsInput = page.locator('div[class*="grid__column-select"] input');
+    this.gridColumnsRowsInput = page.locator(
+      'div[class*="grid__column-select"] input',
+    );
     this.gridActionsButton = page.locator(
-        'button[class*="grid__show-options"]',
+      'button[class*="grid__show-options"]',
     );
     this.gridOpacityInput = page.locator(
-        'div[class*="grid__advanced-row"] input[class*="opacity-input"]',
+      'div[class*="grid__advanced-row"] input[class*="opacity-input"]',
     );
     this.gridMoreOptionsButton = page.locator(
-        'div[class*="grid__advanced-row"] button[class*="show-more-options"]'
+      'div[class*="grid__advanced-row"] button[class*="show-more-options"]',
     );
     this.useDefaultGridButton = page.locator('button:has-text("Use default")');
     this.gridWidthInput = page.locator(
-        'div[title="Width"] input[class*="grid__numeric-input"]',
+      'div[title="Width"] input[class*="grid__numeric-input"]',
     );
     this.gridHeightInput = page.locator(
-        'div[title="Height"] input[class*="grid__numeric-input"]',
+      'div[title="Height"] input[class*="grid__numeric-input"]',
     );
   }
 
-  async waitFlexElementSectionExpanded() {
-    await expect(this.flexElementSection).toBeVisible();
+  async isFlexElementSectionOpened() {
+    await expect(this.flexElementMenu).toBeVisible();
   }
 
   async changeFlexElementAlignment(alignment) {
     switch (alignment) {
-      case "Start":
+      case 'Start':
         await this.flexElementAlignStartBtn.click();
         break;
-      case "Center":
+      case 'Center':
         await this.flexElementAlignCenterBtn.click();
         break;
-      case "End":
+      case 'End':
         await this.flexElementAlignEndBtn.click();
         break;
     }
   }
 
-  async changeFlexElementVerticalMargin(value) {
-    await this.flexElementMarginVertInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async changeFlexElementHorizontalMargin(value) {
-    await this.flexElementMarginHorizontInput.fill(value);
+  async changeFlexElementMargin(type, value) {
+    switch (type) {
+      case 'Vertical':
+        await this.flexElementMarginVertInput.fill(value);
+        break;
+      case 'Horizontal':
+        await this.flexElementMarginHorizontInput.fill(value);
+        break;
+    }
     await this.clickOnEnter();
   }
 
@@ -343,36 +336,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clickOnEnter();
   }
 
-  async setStrokePosition(value) {
-    switch (value) {
-      case "Center":
-        await this.strokePositionSelect.selectOption(":center");
-        break;
-      case "Inside":
-        await this.strokePositionSelect.selectOption(":inner");
-        break;
-      case "Outside":
-        await this.strokePositionSelect.selectOption(":outer");
-        break;
-    }
+  async setStrokeAlignment(value) {
+    const optionSel = this.page.locator(`li span:text-is("${value}")`);
+    await this.strokeAlignmentField.click();
+    await optionSel.click();
   }
 
   async setStrokeType(value) {
-    if (await this.strokeTypeSelect.isHidden()) return;
-    switch (value) {
-      case "Solid":
-        await this.strokeTypeSelect.selectOption(":solid");
-        break;
-      case "Dotted":
-        await this.strokeTypeSelect.selectOption(":dotted");
-        break;
-      case "Dashed":
-        await this.strokeTypeSelect.selectOption(":dashed");
-        break;
-      case "Mixed":
-        await this.strokeTypeSelect.selectOption(":mixed");
-        break;
-    }
+    const optionSel = this.page.locator(`li span:text-is("${value}")`);
+    await this.strokeTypeField.click();
+    await optionSel.click();
   }
 
   async setStrokeWidth(value) {
@@ -385,12 +358,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clickOnEnter();
   }
 
-  async changeStrokeSettings(color, opacity, width, position, type = "") {
+  async changeStrokeSettings(color, opacity, width, position, type) {
     await this.setStrokeColor(color);
     await this.setStrokeOpacity(opacity);
     await this.setStrokeWidth(width);
-    await this.setStrokePosition(position);
-    await this.setStrokeType(type);
+    await this.setStrokeAlignment(position);
+    if (type) {
+      await this.setStrokeType(type);
+    }
   }
 
   async clickFillColorIcon() {
@@ -566,13 +541,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeTextCase(value) {
     switch (value) {
-      case "Upper":
+      case 'Upper':
         await this.textUpperCaseIcon.click();
         break;
-      case "Lower":
+      case 'Lower':
         await this.textLowerCaseIcon.click();
         break;
-      case "Title":
+      case 'Title':
         await this.textTitleCaseIcon.click();
         break;
     }
@@ -588,13 +563,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeTextAlignment(value) {
     await this.openTextMoreOptionsBlock();
     switch (value) {
-      case "Top":
+      case 'Top':
         await this.textAlignTop.click();
         break;
-      case "Middle":
+      case 'Middle':
         await this.textAlignMiddle.click();
         break;
-      case "Bottom":
+      case 'Bottom':
         await this.textAlignBottom.click();
         break;
     }
@@ -603,10 +578,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeTextDirection(value) {
     await this.openTextMoreOptionsBlock();
     switch (value) {
-      case "RTL":
+      case 'RTL':
         await this.textIconRTL.click();
         break;
-      case "LTR":
+      case 'LTR':
         await this.textIconLTR.click();
         break;
     }
@@ -620,65 +595,84 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  async isLayoutRemoveButtonExists(condition = true) {
+    if (condition === true) {
+      await expect(this.layoutRemoveButton).toBeVisible();
+    } else {
+      await expect(this.layoutRemoveButton).not.toBeVisible();
+    }
+  }
+
   async removeLayoutFromDesignPanel() {
-    await this.removeLayoutButton.click();
+    await this.layoutRemoveButton.click();
+  }
+
+  async expandFlexLayoutMenu() {
+    if (!(await this.flexLayoutMenu.isVisible())) {
+      await this.flexLayoutCollapsedIcon.click();
+    }
+    await expect(this.flexLayoutMenu).toBeVisible();
   }
 
   async changeLayoutDirection(direction) {
+    await this.expandFlexLayoutMenu();
     switch (direction) {
-      case "Row":
+      case 'Row':
         await this.layoutDirectRowBtn.click();
         break;
-      case "Row reverse":
+      case 'Row reverse':
         await this.layoutDirectRowReverseBtn.click();
         break;
-      case "Column":
+      case 'Column':
         await this.layoutDirectColumnBtn.click();
         break;
-      case "Column reverse":
+      case 'Column reverse':
         await this.layoutDirectColumnReverseBtn.click();
         break;
     }
   }
 
   async changeLayoutAlignment(alignment) {
+    await this.expandFlexLayoutMenu();
     switch (alignment) {
-      case "Start":
+      case 'Start':
         await this.layoutAlignStartBtn.click();
         break;
-      case "Center":
+      case 'Center':
         await this.layoutAlignCenterBtn.click();
         break;
-      case "End":
+      case 'End':
         await this.layoutAlignEndBtn.click();
         break;
     }
   }
 
   async changeLayoutJustification(justify) {
+    await this.expandFlexLayoutMenu();
     switch (justify) {
-      case "Start":
+      case 'Start':
         await this.layoutJustifyStartBtn.click();
         break;
-      case "Center":
+      case 'Center':
         await this.layoutJustifyCenterBtn.click();
         break;
-      case "End":
+      case 'End':
         await this.layoutJustifyEndBtn.click();
         break;
-      case "Space between":
+      case 'Space between':
         await this.layoutJustifySpaceBetweenBtn.click();
         break;
-      case "Space around":
+      case 'Space around':
         await this.layoutJustifySpaceAroundBtn.click();
         break;
-      case "Space evenly":
+      case 'Space evenly':
         await this.layoutJustifySpaceEvenlyBtn.click();
         break;
     }
   }
 
   async changeLayoutColumnGap(value) {
+    await this.expandFlexLayoutMenu();
     await this.layoutColumnGapInput.fill(value);
     await this.clickOnEnter();
   }
@@ -688,17 +682,26 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async changeLayoutRowGap(value) {
+    await this.expandFlexLayoutMenu();
     await this.layoutRowGapInput.fill(value);
     await this.clickOnEnter();
   }
 
-  async changeLayoutVerticalPadding(value) {
-    await this.layoutVerticalPaddingInput.fill(value);
+  async changeLayoutPadding(type, value) {
+    await this.expandFlexLayoutMenu();
+    switch (type) {
+      case 'Vertical':
+        await this.layoutVerticalPaddingInput.fill(value);
+        break;
+      case 'Horizontal':
+        await this.layoutHorizontPaddingInput.fill(value);
+        break;
+    }
     await this.clickOnEnter();
   }
 
   async changeLayoutHorizontalPadding(value) {
-    await this.layoutHorizontPaddingInput.fill(value);
+    await this.expandFlexLayoutMenu();
     await this.clickOnEnter();
   }
 
@@ -711,26 +714,26 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async switchToIndependentPadding() {
+    await this.expandFlexLayoutMenu();
     await this.layoutIndepPaddingsIcon.click();
   }
 
-  async changeLayoutTopPadding(value) {
-    await this.layoutPaddingTopInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async changeLayoutBottomPadding(value) {
-    await this.layoutPaddingBottomInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async changeLayoutRightPadding(value) {
-    await this.layoutPaddingRightInput.fill(value);
-    await this.clickOnEnter();
-  }
-
-  async changeLayoutLeftPadding(value) {
-    await this.layoutPaddingLeftInput.fill(value);
+  async changeLayoutIndependentPadding(type, value) {
+    await this.expandFlexLayoutMenu();
+    switch (type) {
+      case 'Bottom':
+        await this.layoutPaddingBottomInput.fill(value);
+        break;
+      case 'Right':
+        await this.layoutPaddingRightInput.fill(value);
+        break;
+      case 'Left':
+        await this.layoutPaddingLeftInput.fill(value);
+        break;
+      case 'Top':
+        await this.layoutPaddingTopInput.fill(value);
+        break;
+    }
     await this.clickOnEnter();
   }
 
@@ -788,13 +791,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async selectGridType(type) {
     await this.gridTypeField.click();
     switch (type) {
-      case "Square":
+      case 'Square':
         await this.gridTypeSelectorSquareOption.click();
         break;
-      case "Columns":
+      case 'Columns':
         await this.gridTypeSelectorColumnsOption.click();
         break;
-      case "Rows":
+      case 'Rows':
         await this.gridTypeSelectorRowsOption.click();
         break;
     }
@@ -811,5 +814,4 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeHeightForGrid(value) {
     await this.gridHeightInput.fill(value);
   }
-
 };

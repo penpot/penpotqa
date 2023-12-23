@@ -1,5 +1,5 @@
-const { expect} = require("@playwright/test");
-const { BasePage } = require("../base-page");
+const { expect } = require('@playwright/test');
+const { BasePage } = require('../base-page');
 
 exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
   /**
@@ -34,9 +34,7 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
     this.interactionDestinationField = page.locator(
       '//*[text()="Destination"]//parent::div//div[contains(@class, "custom-select")]',
     );
-    this.removeFlowButton = page.locator(
-      'div[class*="remove-flow-btn"]',
-    );
+    this.removeFlowButton = page.locator('div[class*="remove-flow-btn"]');
   }
 
   async clickPrototypeTab() {
@@ -91,10 +89,9 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
 
   async selectInteractionDestination(value) {
     const optionSel = this.page.locator(
-      `div[class*="interaction-type-select"] span:has-text("${value}")`
+      `div[class*="interaction-type-select"] span:has-text("${value}")`,
     );
     await this.interactionDestinationField.click();
     await optionSel.click();
   }
-
-}
+};
