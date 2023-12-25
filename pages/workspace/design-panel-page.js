@@ -282,6 +282,46 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridHeightInput = page.locator(
       'div[title="Height"] input[class*="grid__numeric-input"]',
     );
+
+    //Design panel - Component section
+    this.componentMenuButton = page.locator(
+      'div[class*="component__element-content"] div[class*="component-actions"]',
+    );
+    this.showInAssetsPanelOptionDesign = page.locator(
+      'ul[class*="component__custom-select-dropdown"] span:text-is("Show in assets panel")',
+    );
+    this.componentBlockOnDesignTab = page.locator(
+      'div[class*="component__element-set"]',
+    );
+
+    this.createAnnotationOptionDesign = page.locator(
+      'ul[class*="component__custom-select-dropdown"] span:text-is("Create annotation")',
+    );
+    this.annotationTextArea = page.locator("#annotation-textarea");
+    this.annotationCreateTitle = page.locator(
+      'div[class^="component-annotation"] div[class^=title]',
+    );
+    this.createAnnotationTick = page.locator(
+      'div[title="Create"] svg[class="icon-tick"]',
+    );
+    this.saveAnnotationTick = page.locator(
+      'div[title="Save"] svg[class="icon-tick"]',
+    );
+    this.discardAnnotationTick = page.locator(
+      'div[title="Discard"] svg[class="icon-cross"]',
+    );
+    this.editAnnotationTick = page.locator(
+      'div[title="Edit"] svg[class="icon-pencil"]',
+    );
+    this.deleteAnnotationTick = page.locator(
+      'div[title="Delete"] svg[class="icon-trash"]',
+    );
+    this.deleteAnnotationPopup = page.locator(
+      'div[class*="modal-container"] h2:text-is("Delete annotation")',
+    );
+    this.deleteAnnotationOkBtn = page.locator(
+      'div[class*="modal-container"] input[value="Ok"]',
+    );
   }
 
   async isFlexElementSectionOpened() {
@@ -808,5 +848,96 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeHeightForGrid(value) {
     await this.gridHeightInput.fill(value);
+  }
+
+  async clickOnComponentMenuButton() {
+    await this.componentMenuButton.click();
+  }
+
+  async clickOnShowInAssetsPanel() {
+    await this.showInAssetsPanelOptionDesign.click();
+  }
+
+  async addAnnotationForComponent(value) {
+    await this.enterTextIntoAnnotationField(value);
+    await this.submitAnnotationCreation();
+  }
+
+  async editAnnotationForComponent(value) {
+    await this.enterTextIntoAnnotationField(value);
+    await this.submitAnnotationEditing();
+  }
+
+  async cancelAddAnnotationForComponent(value) {
+    await this.enterTextIntoAnnotationField(value);
+    await this.discardAnnotationCreation();
+  }
+
+  async clickOnCreateAnnotationOption() {
+    await this.createAnnotationOptionDesign.click();
+    await expect(this.annotationTextArea).toBeVisible();
+  }
+
+  async enterTextIntoAnnotationField(value) {
+    await this.annotationTextArea.fill(value);
+  }
+
+  async submitAnnotationCreation() {
+    await this.annotationCreateTitle.hover();
+    await this.createAnnotationTick.click();
+  }
+
+  async submitAnnotationEditing() {
+    await this.annotationCreateTitle.hover();
+    await this.saveAnnotationTick.click();
+  }
+
+  async discardAnnotationCreation() {
+    await this.annotationCreateTitle.hover();
+    await this.discardAnnotationTick.click();
+  }
+
+  async clickOnEditAnnotation() {
+    await this.annotationCreateTitle.hover();
+    await this.editAnnotationTick.click();
+  }
+
+  async clickOnDeleteAnnotation() {
+    await this.annotationCreateTitle.hover();
+    await this.deleteAnnotationTick.click();
+    await expect(this.deleteAnnotationPopup).toBeVisible();
+  }
+
+  async confirmDeleteAnnotation() {
+    await this.deleteAnnotationOkBtn.click();
+  }
+
+  async createAnnotationRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({ button: "right", force: true });
+    await this.createAnnotationOption.click();
+    await expect(this.annotationTextArea).toBeVisible();
+  }
+
+  async isAnnotationAddedToComponent(value) {
+    const selector = this.page.locator(
+      `div[class^="component-annotation"] div[data-replicated-value="${value}"]`,
+    );
+    await expect(selector).toBeVisible();
+  }
+
+  async showInAssetsPanelRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({ button: "right", force: true });
+    await this.showInAssetsPanelOption.click();
+  }
+
+  async isAnnotationExistOnInspectTab() {
+    await expect(this.annotationBlockOnInspect).toBeVisible();
+  }
+
+  async changeAxisXandYForLayer(x, y) {
+    await this.xAxisInput.fill(x);
+    await this.yAxisInput.fill(y);
   }
 };

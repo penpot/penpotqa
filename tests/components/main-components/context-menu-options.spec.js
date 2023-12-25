@@ -5,7 +5,8 @@ const { DashboardPage } = require("../../../pages/dashboard/dashboard-page");
 const { TeamPage } = require("../../../pages/dashboard/team-page");
 const { random } = require("../../../helpers/string-generator");
 const { LayersPanelPage } = require("../../../pages/workspace/layers-panel-page");
-const {DesignPanelPage} = require("../../../pages/workspace/design-panel-page");
+const { DesignPanelPage } = require("../../../pages/workspace/design-panel-page");
+const {AssetsPanelPage} = require("../../../pages/workspace/assets-panel-page");
 
 const teamName = random().concat("autotest");
 const annotation = "Test annotation for automation";
@@ -49,7 +50,8 @@ test.describe(() => {
     "Show in assets panel option from component context menu",
     async ({ page }) => {
       const mainPage = new MainPage(page);
-      await mainPage.showInAssetsPanelRightClick();
+      const designPanelPage = new DesignPanelPage(page);
+      await designPanelPage.showInAssetsPanelRightClick();
       await expect(page).toHaveScreenshot(
         "component-show-in-assets-panel.png",
         {
@@ -61,23 +63,25 @@ test.describe(() => {
 
   mainTest("Create annotation with valid text", async ({ page }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.clickOnLayerOnCanvas();
-    await mainPage.clickOnComponentMenuButton();
-    await mainPage.clickOnCreateAnnotationOption();
-    await mainPage.addAnnotationForComponent(annotation);
+    await designPanelPage.clickOnComponentMenuButton();
+    await designPanelPage.clickOnCreateAnnotationOption();
+    await designPanelPage.addAnnotationForComponent(annotation);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isAnnotationAddedToComponent(annotation);
-    await expect(mainPage.componentBlockOnDesignTab).toHaveScreenshot(
+    await designPanelPage.isAnnotationAddedToComponent(annotation);
+    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
       "component-annotation.png",
     );
   });
 
   mainTest("Create annotation from context menu", async ({ page }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.createAnnotationRightClick();
-    await mainPage.addAnnotationForComponent(annotation);
+    await designPanelPage.addAnnotationForComponent(annotation);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isAnnotationAddedToComponent(annotation);
+    await designPanelPage.isAnnotationAddedToComponent(annotation);
     await expect(mainPage.componentBlockOnDesignTab).toHaveScreenshot(
       "component-annotation.png",
     );
@@ -85,11 +89,12 @@ test.describe(() => {
 
   mainTest("Cancel annotation creation and accept", async ({ page }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.clickOnLayerOnCanvas();
-    await mainPage.clickOnComponentMenuButton();
-    await mainPage.clickOnCreateAnnotationOption();
-    await mainPage.cancelAddAnnotationForComponent(annotation);
-    await expect(mainPage.componentBlockOnDesignTab).toHaveScreenshot(
+    await designPanelPage.clickOnComponentMenuButton();
+    await designPanelPage.clickOnCreateAnnotationOption();
+    await designPanelPage.cancelAddAnnotationForComponent(annotation);
+    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
       "component-annotation-discard.png",
     );
   });
@@ -97,37 +102,40 @@ test.describe(() => {
   mainTest("Edit annotation with valid text", async ({ page }) => {
     const newAnnotation = "Edit annotation";
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.createAnnotationRightClick();
-    await mainPage.addAnnotationForComponent(annotation);
+    await designPanelPage.addAnnotationForComponent(annotation);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isAnnotationAddedToComponent(annotation);
-    await mainPage.clickOnEditAnnotation();
-    await mainPage.editAnnotationForComponent(newAnnotation);
+    await designPanelPage.isAnnotationAddedToComponent(annotation);
+    await designPanelPage.clickOnEditAnnotation();
+    await designPanelPage.editAnnotationForComponent(newAnnotation);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isAnnotationAddedToComponent(newAnnotation);
-    await expect(mainPage.componentBlockOnDesignTab).toHaveScreenshot(
+    await designPanelPage.isAnnotationAddedToComponent(newAnnotation);
+    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
       "component-annotation-edit.png",
     );
   });
 
   mainTest("Delete annotation", async ({ page }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.createAnnotationRightClick();
-    await mainPage.addAnnotationForComponent(annotation);
+    await designPanelPage.addAnnotationForComponent(annotation);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isAnnotationAddedToComponent(annotation);
-    await mainPage.clickOnDeleteAnnotation();
-    await mainPage.confirmDeleteAnnotation();
+    await designPanelPage.isAnnotationAddedToComponent(annotation);
+    await designPanelPage.clickOnDeleteAnnotation();
+    await designPanelPage.confirmDeleteAnnotation();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.componentBlockOnDesignTab).toHaveScreenshot(
+    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
       "component-annotation-delete.png",
     );
   });
 
   mainTest("Annotation on Inspect tab", async ({ page }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.createAnnotationRightClick();
-    await mainPage.addAnnotationForComponent(annotation);
+    await designPanelPage.addAnnotationForComponent(annotation);
     await mainPage.waitForChangeIsSaved();
     await mainPage.openInspectTab();
     await mainPage.isAnnotationExistOnInspectTab();
@@ -139,12 +147,13 @@ test.describe(() => {
   mainTest("Duplicate main component", async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
-    await mainPage.openAssetsTab();
-    await mainPage.expandComponentsBlockOnAssetsTab();
-    await mainPage.duplicateFileLibraryComponent();
+    const assetsPanelPage = new AssetsPanelPage(page);
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.duplicateFileLibraryComponent();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isSecondComponentAddedToFileLibraryComponents();
-    await expect(mainPage.assetsPanel).toHaveScreenshot(
+    await assetsPanelPage.isSecondComponentAddedToFileLibraryComponents();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       "component-rectangle-duplicated-asset.png",
     );
     await layersPanelPage.openLayersTab();
@@ -155,9 +164,10 @@ test.describe(() => {
 
   mainTest("Check Show main component option", async ({ page }) => {
     const mainPage = new MainPage(page);
-    await mainPage.openAssetsTab();
-    await mainPage.expandComponentsBlockOnAssetsTab();
-    await mainPage.showFileLibraryMainComponent();
+    const assetsPanelPage = new AssetsPanelPage(page);
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.showFileLibraryMainComponent();
     await expect(mainPage.viewport).toHaveScreenshot("component-show-main.png");
   });
 
@@ -165,15 +175,17 @@ test.describe(() => {
     "Check annotation applies for copies and inspect tab",
     async ({ page }) => {
       const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
       await mainPage.duplicateLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.clickMainComponentOnLayersTab();
-      await mainPage.clickOnComponentMenuButton();
-      await mainPage.clickOnCreateAnnotationOption();
-      await mainPage.addAnnotationForComponent(annotation);
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.clickOnComponentMenuButton();
+      await designPanelPage.clickOnCreateAnnotationOption();
+      await designPanelPage.addAnnotationForComponent(annotation);
       await mainPage.waitForChangeIsSaved();
-      await mainPage.clickCopyComponentOnLayersTab();
-      await expect(mainPage.componentBlockOnDesignTab).toHaveScreenshot(
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
         "copy-component-annotation.png",
       );
       await mainPage.openInspectTab();
@@ -190,6 +202,7 @@ mainTest(
   async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createDefaultEllipseByCoordinates(400, 600);
     await mainPage.clickMainMenuButton();
@@ -203,10 +216,10 @@ mainTest(
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       "ellipse-complex-component-layer.png",
     );
-    await mainPage.openAssetsTab();
-    await mainPage.expandComponentsBlockOnAssetsTab();
-    await mainPage.isComponentAddedToFileLibraryComponents();
-    await expect(mainPage.assetsPanel).toHaveScreenshot(
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       "ellipse-complex-component-asset.png",
     );
   },
@@ -218,13 +231,14 @@ mainTest(
     const groupName = "Test Group";
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.openAssetsTab();
-    await mainPage.expandComponentsBlockOnAssetsTab();
-    await mainPage.createGroupFileLibraryGraphics(groupName);
-    await mainPage.isFileLibraryGroupCreated(groupName);
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.createGroupFileLibraryGraphics(groupName);
+    await assetsPanelPage.isFileLibraryGroupCreated(groupName);
     await layersPanelPage.openLayersTab();
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       "component-group-layer.png",
@@ -239,12 +253,13 @@ mainTest("Rename component with valid name", async ({ page }) => {
   const newName = "Renamed ellipse name";
   const mainPage = new MainPage(page);
   const layersPanelPage = new LayersPanelPage(page);
+  const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultEllipseByCoordinates(400, 600);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.openAssetsTab();
-  await mainPage.expandComponentsBlockOnAssetsTab();
-  await mainPage.renameFileLibraryComponent(newName);
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await assetsPanelPage.renameFileLibraryComponent(newName);
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.openLayersTab();
   await expect(mainPage.viewport).toHaveScreenshot(
