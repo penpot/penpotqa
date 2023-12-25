@@ -1,4 +1,4 @@
-function getPlatformName() {
+export const getPlatformName = () => {
   let platformName;
   let currentOS = process.platform.toLowerCase();
 
@@ -14,5 +14,3 @@ function getPlatformName() {
   }
   return platformName;
 }
-
-export default getPlatformName;

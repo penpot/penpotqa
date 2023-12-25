@@ -25,7 +25,6 @@ exports.MainPage = class MainPage extends BasePage {
     this.designTab = page.locator('div[data-id="design"]');
 
     //Viewport
-    this.viewport = page.locator('div.viewport');
     this.textbox = page.locator(
       'div[role="textbox"] div[contenteditable="true"]',
     );
@@ -242,7 +241,6 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickCreateCurveButton() {
     await this.createCurveButton.click();
-    await this.page.waitForTimeout(100);
   }
 
   async clickCreatePathButton() {
@@ -497,8 +495,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressHideShowGridsShortcut(browserName) {
-    const os = getPlatformName();
-    if (os === 'MacOS') {
+    if (getPlatformName() === 'MacOS') {
       await this.page.keyboard.press("Meta+'");
     } else {
       if (browserName === 'webkit') {
@@ -510,8 +507,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressSelectAllShortcut(browserName) {
-    const os = getPlatformName();
-    if (os === 'MacOS') {
+    if (getPlatformName() === 'MacOS') {
       await this.page.keyboard.press('Meta+A');
     } else {
       if (browserName === 'webkit') {
@@ -765,6 +761,13 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickOnDesignTab(); // todo: need to remove after issue fix
     // await this.clickOnMainToolBar(); //todo bug 6171 > need to uncomment after fix these 2 rows
     // await this.clickMoveButton();
+    await this.waitForChangeIsSaved();
+  }
+
+  async createDefaultCurveLayer() {
+    await this.clickCreateCurveButton();
+    await this.drawCurve(900, 300, 600, 200);
+    await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
 

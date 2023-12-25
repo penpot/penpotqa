@@ -4,9 +4,8 @@ const { expect, test } = require("@playwright/test");
 const { DashboardPage } = require("../../../pages/dashboard/dashboard-page");
 const { TeamPage } = require("../../../pages/dashboard/team-page");
 const { random } = require("../../../helpers/string-generator");
-const {
-  LayersPanelPage,
-} = require("../../../pages/workspace/layers-panel-page");
+const { LayersPanelPage } = require("../../../pages/workspace/layers-panel-page");
+const {DesignPanelPage} = require("../../../pages/workspace/design-panel-page");
 
 const teamName = random().concat("autotest");
 const annotation = "Test annotation for automation";
@@ -37,9 +36,10 @@ test.describe(() => {
 
   mainTest("Show in assets panel option from Design tab", async ({ page }) => {
     const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.clickOnLayerOnCanvas();
-    await mainPage.clickOnComponentMenuButton();
-    await mainPage.clickOnShowInAssetsPanel();
+    await designPanelPage.clickOnComponentMenuButton();
+    await designPanelPage.clickOnShowInAssetsPanel();
     await expect(page).toHaveScreenshot("component-show-in-assets-panel.png", {
       mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
     });

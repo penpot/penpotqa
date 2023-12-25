@@ -1,8 +1,6 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const {ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
@@ -29,7 +27,7 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({page}) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
@@ -37,7 +35,7 @@ test.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest('PF-68 Add fill to board', async ({ page }) => {
+  mainTest('PF-68 Add fill to board', async ({page}) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.isFillHexCodeSet('FFFFFF');
@@ -45,7 +43,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('board-fill.png');
   });
 
-  mainTest('PF-73 Change fill color for board', async ({ page }) => {
+  mainTest('PF-73 Change fill color for board', async ({page}) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -60,7 +58,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-78 Change fill opacity for board', async ({ page }) => {
+  mainTest('PF-78 Change fill opacity for board', async ({page}) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeOpacityForFill('70');
@@ -73,7 +71,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-93 Remove fill for board', async ({ page }) => {
+  mainTest('PF-93 Remove fill for board', async ({page}) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickRemoveFillButton();
@@ -82,22 +80,6 @@ test.describe(() => {
       'board-removed-fill.png',
     );
   });
-mainTest("PF-74 Change fill color for shape", async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
-  await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isCreatedLayerVisible();
-  await mainPage.clickFillColorIcon();
-  await colorPalettePopUp.setHex("#FF0000");
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isFillHexCodeSet("FF0000");
-  await mainPage.isFillOpacitySet("100");
-  await expect(mainPage.createdLayer).toHaveScreenshot(
-    "rectangle-changed-fill.png",
-  );
 });
 
 test.describe(() => {
@@ -179,21 +161,6 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('rectangle-fill.png');
   });
 
-  mainTest('PF-74 Change fill color for shape', async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const colorPalettePage = new ColorPalettePage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await designPanelPage.clickFillColorIcon();
-    await colorPalettePage.setHex('#FF0000');
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet('FF0000');
-    await designPanelPage.isFillOpacitySet('100');
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'rectangle-changed-fill.png',
-    );
-  });
-
   mainTest('PF-79 Change fill opacity for shape', async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -213,6 +180,21 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'rectangle--removed-fill.png',
+    );
+  });
+
+  mainTest("PF-74 Change fill color for shape", async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const colorPalettePage = new ColorPalettePage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex("#FF0000");
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.isFillHexCodeSet("FF0000");
+    await designPanelPage.isFillOpacitySet("100");
+    await expect(mainPage.createdLayer).toHaveScreenshot(
+      "rectangle-changed-fill.png",
     );
   });
 });
