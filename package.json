@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test --project=chrome -gv 'PERF'",
-    "file": "npx playwright test -g \"DA-77 Team.Switch between teams\"",
-    "spec": "npx playwright test tests/composition/composition-flex-layout.spec.js --project=webkit",
+    "file": "npx playwright test -g \"Create component from curve by right-click\" --project=chrome",
+    "spec": "npx playwright test tests/components/main-components/create-main-components.spec.js --project=chrome",
     "firefox": "npx playwright test --project=firefox -gv 'PERF'",
     "webkit": "npx playwright test --project=webkit -gv 'PERF'",
     "performance": "npx playwright test --retries=1 --timeout=555550000 --project=chrome -g 'PERF'",

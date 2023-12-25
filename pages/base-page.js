@@ -1,5 +1,5 @@
 const { expect } = require('@playwright/test');
-const getPlatformName = require('../helpers/get-platform');
+const { getPlatformName } = require("../helpers/get-platform");
 
 exports.BasePage = class BasePage {
   /**
@@ -12,6 +12,7 @@ exports.BasePage = class BasePage {
     this.infoMessage = page.locator('div[class="banner info fixed"]');
     this.moveButton = page.locator('button[title="Move (V)"]');
     this.savedChangesIcon = page.locator('div[title="Saved"]');
+    this.viewport = page.locator('div.viewport');
 
     //Layer right-click menu items
     this.createdLayer = page.locator(
@@ -37,7 +38,10 @@ exports.BasePage = class BasePage {
       'ul[class*="workspace-context-menu"] li:has-text("Selection to board")',
     );
     this.createComponentMenuItem = page.locator(
-      'ul[class="workspace-context-menu"] li:has-text("Create component")',
+      'ul[class*="workspace-context-menu"] li:has-text("Create component")',
+    );
+    this.createMultipleComponentsMenuItem = page.locator(
+      'ul[class*="workspace-context-menu"] li:has-text("Create multiple components")',
     );
     this.flipVerticalMenuItem = page.locator(
       'ul[class*="workspace-context-menu"] li:has-text("Flip vertical")',
@@ -71,7 +75,7 @@ exports.BasePage = class BasePage {
   }
 
   async clickShortcutCtrlZ(browserName) {
-    if (getPlatformName() === "MacOS") {
+    if ( getPlatformName() === "MacOS") {
       await this.page.keyboard.press("Meta+Z");
     } else {
       if (browserName !== "webkit") {

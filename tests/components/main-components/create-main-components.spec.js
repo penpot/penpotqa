@@ -5,7 +5,8 @@ const { DashboardPage } = require("../../../pages/dashboard/dashboard-page");
 const { TeamPage } = require("../../../pages/dashboard/team-page");
 const { random } = require("../../../helpers/string-generator");
 const { LayersPanelPage } = require("../../../pages/workspace/layers-panel-page");
-const {AssetsPanelPage} = require("../../../pages/workspace/assets-panel-page");
+const { AssetsPanelPage } = require("../../../pages/workspace/assets-panel-page");
+const {DesignPanelPage} = require("../../../pages/workspace/design-panel-page");
 
 const teamName = random().concat("autotest");
 
@@ -211,7 +212,7 @@ mainTest("Create component from curve by right-click", async ({ page }) => {
   const layersPanelPage = new LayersPanelPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultCurveLayer();
-  await mainPage.createComponentViaRightClickLayers();
+  await layersPanelPage.createComponentViaRightClickLayers();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     "curve-main-component-canvas.png",
@@ -229,11 +230,12 @@ mainTest("Create component from curve by right-click", async ({ page }) => {
 
 mainTest("Undo component", async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
+  const designPanelPage = new DesignPanelPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickOnLayerOnCanvas();
-  await mainPage.changeRotationForLayer("200");
+  await designPanelPage.changeRotationForLayer("200");
   await expect(mainPage.viewport).toHaveScreenshot(
     "component-change_rotation.png",
   );

@@ -8,10 +8,26 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   constructor(page) {
     super(page);
 
+    this.layersTab = page.locator('div[data-id="layers"]');
+    this.layersSidebar = page.locator("#layers");
+    this.layersPanel = page.locator('div[class="layers-tab"]');
     this.createdLayerOnLayersPanelNameInput = page.locator(
       'div[class*="element-list-body"] input[class*="element-name"]',
     );
-    this.createdLayerOnLayersPanelNameText = page.locator(
+    this.searchLayersIcon = page.locator('svg[class="icon-search"]');
+    this.searchLayersInput = page.locator('input[placeholder="Search layers"]');
+    this.searchedLayerOnLayersPanelNameText = page.locator(
+      'span[class="element-name"] >> nth=1',
+    );
+    this.layoutIcon = page.locator('svg[class="icon-layout-rows"]');
+    this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
+    this.mainComponentLayer = page.locator(
+      '//*[@class="icon-component-refactor"]//parent::div',
+    );
+    this.copyComponentLayer = page.locator(
+      '//*[@class="icon-copy-refactor"]//parent::div',
+    );
+    this.createdLayerOnLayersPanelSpan = page.locator(
       'div[class*="element-list-body"] span[class*="element-name"]',
     );
     this.searchLayersIcon = page.locator('svg[class="icon-search-refactor"]');
@@ -27,8 +43,6 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     this.layerBoardToggleContentCollapse = page.locator(
       'div[class*="layers__element-list"] button[class*="toggle-content"]',
     );
-    this.layersTab = page.locator('div[data-id="layers"]');
-    this.layersSidebar = page.locator("#layers");
   }
 
   async expandBoardOnLayersTab() {
@@ -49,11 +63,11 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   }
 
   async isLayerNameDisplayed(name) {
-    await expect(this.createdLayerOnLayersPanelNameText).toHaveText(name);
+    await expect(this.createdLayerOnLayersPanelSpan).toHaveText(name);
   }
 
   async isBoardNameDisplayed(name) {
-    await expect(this.createdLayerOnLayersPanelNameText).toHaveText(name);
+    await expect(this.createdLayerOnLayersPanelSpan).toHaveText(name);
   }
 
   async doubleClickLayerOnLayersTab(name) {
@@ -134,4 +148,13 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   async openLayersTab() {
     await this.layersTab.click();
   }
+
+  async createComponentViaRightClickLayers() {
+    await this.createdLayerOnLayersPanelSpan.click({
+      button: "right",
+      force: true,
+    });
+    await this.createComponentMenuItem.click();
+  }
+
 };
