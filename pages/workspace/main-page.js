@@ -810,4 +810,7 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
+  async openInspectTab() {
+    await this.inspectTab.click();
+  }
 };
