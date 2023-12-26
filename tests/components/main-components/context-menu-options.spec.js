@@ -31,7 +31,7 @@ test.afterEach(async ({ page }) => {
 test.describe(() => {
   test.beforeEach(async ({ page }) => {
     const mainPage = new MainPage(page);
-    await mainPage.createDefaultRectangleByCoordinates(200, 300);
+    await mainPage.createDefaultRectangleByCoordinates(400, 500);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
   });

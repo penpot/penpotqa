@@ -1,4 +1,4 @@
-const { dashboardTest } = require('../../fixtures');
+const { mainTest } = require('../../fixtures');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { expect, test } = require('@playwright/test');
 const { ProfilePage } = require('../../pages/profile-page');
@@ -9,7 +9,7 @@ const { random } = require('../../helpers/string-generator');
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest('DA-76 Create a team', async ({ page }) => {
+  mainTest('DA-76 Create a team', async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
@@ -25,7 +25,7 @@ test.describe(() => {
   const team1 = random().concat('QA Test team 1');
   const team2 = random().concat('QA Test team 2');
 
-  dashboardTest('DA-77 Team.Switch between teams', async ({ page }) => {
+  mainTest('DA-77 Team.Switch between teams', async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.createTeam(team1);
     await teamPage.isTeamSelected(team1);
@@ -44,7 +44,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     'DA-78 Team Invitations - open the form via Invitations tab',
     async ({ page }) => {
       const teamPage = new TeamPage(page);
@@ -67,7 +67,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     'DA-79 Team Invitations - open the form via Team Hero',
     async ({ page }) => {
       const teamPage = new TeamPage(page);
@@ -89,7 +89,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     'DA-80 Team Invitations invite via owner single invitation, editor',
     async ({ page }) => {
       const teamPage = new TeamPage(page);
@@ -120,7 +120,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     'DA-81 Team Invitations - invite via owner single invitation, admin',
     async ({ page }) => {
       const teamPage = new TeamPage(page);
@@ -152,7 +152,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     'DA-89 Team.Invitations-fail to send invitation to existing team member',
     async ({ page }) => {
       const teamPage = new TeamPage(page);
@@ -180,7 +180,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     'DA-90 Team Invitations - resend invitation via owner',
     async ({ page }) => {
       const teamPage = new TeamPage(page);
@@ -213,7 +213,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     'DA-92 Team Invitations - delete invitation via owner',
     async ({ page }) => {
       const teamPage = new TeamPage(page);
@@ -246,7 +246,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     'DA-95 Team Invitations - change role in invitation via owner',
     async ({ page }) => {
       const teamPage = new TeamPage(page);
@@ -283,7 +283,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     'DA-114 Team Settings - upload team profile picture',
     async ({ page }) => {
       const teamPage = new TeamPage(page);
@@ -292,6 +292,7 @@ test.describe(() => {
       await teamPage.openTeamSettingsPageViaOptionsMenu();
       await teamPage.uploadTeamImage('images/images.png');
       await teamPage.waitInfoMessageHidden();
+      await teamPage.hoverOnTeamName();
       await expect(teamPage.teamInfoSection).toHaveScreenshot(
         'team-profile-image.png',
         {
@@ -310,7 +311,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     "DA-116 Team. Settings - check 'Team members' info",
     async ({ page }) => {
       const teamPage = new TeamPage(page);
@@ -343,7 +344,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest(
+  mainTest(
     "DA-117 Team. Settings - check 'Team projects' info",
     async ({ page }) => {
       const dashboardPage = new DashboardPage(page);
@@ -385,7 +386,7 @@ test.describe(() => {
   const team = random().concat('autotest');
   const teamNew = random().concat('autotest');
 
-  dashboardTest('DA-119 Rename a team via owner', async ({ page }) => {
+  mainTest('DA-119 Rename a team via owner', async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
@@ -402,7 +403,7 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  dashboardTest('DA-122 Delete a team via owner', async ({ page }) => {
+  mainTest('DA-122 Delete a team via owner', async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);

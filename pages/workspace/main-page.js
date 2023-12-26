@@ -201,19 +201,19 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickCreateBoardButton() {
-    await this.createBoardButton.click();
+    await this.createBoardButton.click({ delay: 500 });
   }
 
   async clickCreateRectangleButton() {
-    await this.createRectangleButton.click();
+    await this.createRectangleButton.click({ delay: 500 });
   }
 
   async clickCreateEllipseButton() {
-    await this.createEllipseButton.click();
+    await this.createEllipseButton.click({ delay: 500 });
   }
 
   async clickCreateTextButton() {
-    await this.createTextButton.click();
+    await this.createTextButton.click({ delay: 500 });
   }
 
   async typeText(text) {
@@ -240,11 +240,11 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickCreateCurveButton() {
-    await this.createCurveButton.click();
+    await this.createCurveButton.click({ delay: 500 });
   }
 
   async clickCreatePathButton() {
-    await this.createPathButton.click();
+    await this.createPathButton.click({ delay: 500 });
     await expect(this.pathActionsBlock).toBeVisible();
   }
 
@@ -254,14 +254,14 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickViewportTwice() {
     await this.viewport.hover();
-    await this.viewport.click({ delay: 300, force: true });
-    await this.viewport.click({ delay: 300, force: true });
+    await this.viewport.click({ delay: 300 });
+    await this.viewport.click({ delay: 300 });
   }
 
   async clickViewportByCoordinates(x, y) {
     await this.viewport.hover();
-    await this.viewport.click({ position: { x: x, y: y }, delay: 300, force: true });
-    await this.viewport.click({ position: { x: x, y: y }, delay: 300, force: true });
+    await this.viewport.click({ position: { x: x, y: y }, delay: 300 });
+    await this.viewport.click({ position: { x: x, y: y }, delay: 300 });
   }
 
   async isUnSavedChangesDisplayed() {
@@ -731,21 +731,21 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForBottomPaletteIsOpened();
   }
 
-  async createDefaultBoardByCoordinates(x, y, delayMs) {
+  async createDefaultBoardByCoordinates(x, y) {
     await this.clickCreateBoardButton();
-    await this.clickViewportByCoordinates(x, y, delayMs);
+    await this.clickViewportByCoordinates(x, y);
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultRectangleByCoordinates(x, y, delayMs) {
+  async createDefaultRectangleByCoordinates(x, y) {
     await this.clickCreateRectangleButton();
-    await this.clickViewportByCoordinates(x, y, delayMs);
+    await this.clickViewportByCoordinates(x, y);
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultEllipseByCoordinates(x, y, delayMs) {
+  async createDefaultEllipseByCoordinates(x, y) {
     await this.clickCreateEllipseButton();
-    await this.clickViewportByCoordinates(x, y, delayMs);
+    await this.clickViewportByCoordinates(x, y);
     await this.waitForChangeIsSaved();
   }
 
@@ -779,9 +779,9 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayer(browserName, x = 200, y = 300) {
+  async createDefaultTextLayer(browserName) {
     await this.clickCreateTextButton();
-    await this.clickViewportByCoordinates(x, y);
+    await this.clickViewportByCoordinates(200, 300);
     if (browserName === 'webkit') {
       await this.typeTextFromKeyboard();
     } else {
