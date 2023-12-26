@@ -32,12 +32,6 @@ To run the tests in Firefox and Webkit browsers, use `"firefox"` and `"webkit"` 
 `"firefox": "npx playwright test --project=firefox"`
 `"webkit": "npx playwright test --project=webkit"`
 
-Currently, there are 318 tests at all. For each browser there is the following execution time:
-
-- Chrome - 75 min
-- Firefox - 80 min
-- Webkit - 90 min
-
 **3. Test run - additional settings.**
 
 Some settings from _playwright.config.js_ may be useful:
@@ -46,9 +40,22 @@ Some settings from _playwright.config.js_ may be useful:
 - `timeout` and `expect.timeout` - maximum time of execution a single test and of a waiting expect() condition to be met accordingly
 - `use.headless `- change to _false_ to run in headed browser mode
 - `use.channel: "chrome"` - comment out to run tests in Chromium instead of Chrome (for "chrome" project)
-- `workers: 1` - for now tests are running sequentially (parallelism is disabled)
 
-**4. Snapshots comparison.**
+**4. Parallel tests execution.**
+
+- All tests should be independent for running them in parallel mode
+- For run tests in parallel mode need to update key `workers` in `playwright.config.js` file
+- `workers`: `process.env.CI ? 2 : 2` - by default 2 workers are used for local run and run on CI/CD.
+- For disabling parallelism set `workers` to 1.
+
+**5. Tests amount and execution time.**
+- For now there are 327 tests in current repository
+- If parallel execution is enabled with default amount of workers (2) the average time for each browser is the following:
+- Chrome: 43 mins
+- Firefox: 45 mins
+- Webkit: 55 mins
+
+**6. Snapshots comparison.**
 
 Expected snapshots are stored in _tests/{spec-name}-snapshots/{project-name}_ folders (where project-name is the browser name).
 In most of the cases, they capture and compare not the whole visible area of the screen but only the single element/section (e.g. created shape or canvas with created board).
@@ -65,16 +72,14 @@ However, it is rather simple to update snapshots:
 - Upon test failure, compare the actual and expected snapshots and verify that the difference occurred due to intended changes in UI.
 - Delete expected snapshot from folder.
 - Run the test one more time, which will capture the actual snapshot and write it as expected to the appropriate folder.
+- Run tests in headless mode to get new snapshots.
 - Commit the new expected snapshot and push.
 
 Note 1: there is a known issue that Chrome does render differently in headless and headed modes, that's why
 `expect.toHaveScreenshot.maxDiffPixelRatio: 0.01` is set in _playwright.config.js_ for "chrome" project , which means that
 an acceptable ratio of pixels that are different to the total amount of pixels is 1% within screenshot comparison.
 
-Note 2: expected screenshots for Firefox represent headless mode. Since scrollbars are hidden in headless mode and
-there is no way to unhide them in Firefox (unlike Chrome) - screenshots comparison in headed Firefox mode may fail in a few tests.
-
-**5. Performance testing.**
+**7. Performance testing.**
 
 To exclude performance tests from the periodical regression test run the following scripts should be used:
 
@@ -85,7 +90,7 @@ To exclude performance tests from the periodical regression test run the followi
 Note: The above scripts should be executed via the command line. Do not run them directly from the _package.json_,
 because in such way performance tests are not ignored.
 
-**6. Running tests via GitHub Actions.**
+**8. Running tests via GitHub Actions.**
 
 On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:
@@ -111,6 +116,9 @@ There are 2 workflows on _Actions_ tab:
 
 To run workflow by request you need to open it from the left sidebar and click on _[Run workflow]_ > _[Run workflow]_.
 In a few seconds running should be start.
+
+**Note**:
+Before running tests on PRO env need to manually log in with test account on PRO server and close the 'Release Notes' popup.
 
 **Tests run results:**
 
