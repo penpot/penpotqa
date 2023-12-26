@@ -1,8 +1,6 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');

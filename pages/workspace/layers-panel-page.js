@@ -10,7 +10,6 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
 
     this.layersTab = page.locator('div[data-id="layers"]');
     this.layersSidebar = page.locator("#layers");
-    this.layersPanel = page.locator('div[class="layers-tab"]');
     this.createdLayerOnLayersPanelNameInput = page.locator(
       'div[class*="element-list-body"] input[class*="element-name"]',
     );
@@ -157,4 +156,21 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await this.createComponentMenuItem.click();
   }
 
+  async clickCopyComponentOnLayersTab() {
+    await this.copyComponentLayer.last().click();
+  }
+
+  async clickMainComponentOnLayersTab() {
+    await this.mainComponentLayer.last().click();
+  }
+
+  async restoreMainComponentViaRightClick() {
+    await this.copyComponentLayer.click({ button: "right", force: true });
+    await this.restoreMainComponentMenuItem.click();
+  }
+
+  async updateMainComponentViaRightClick() {
+    await this.copyComponentLayer.click({ button: "right", force: true });
+    await this.updateMainComponentMenuItem.click();
+  }
 };

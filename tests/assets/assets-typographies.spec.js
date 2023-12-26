@@ -30,7 +30,7 @@ mainTest(
   async ({ page }) => {
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.selectTypeFromAllAssetsSelector('Typographies');
+    await assetsPanelPage.selectTypeFromAllAssetsDropdown('Typographies');
     await assetsPanelPage.isAssetsSectionNameDisplayed('Typographies', '0');
   },
 );

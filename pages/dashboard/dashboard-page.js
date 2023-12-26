@@ -130,23 +130,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontFormatError = page.locator('div[class="banner error fixed"]');
 
     //Libraries & Templates
-    this.librariesAndTemplatesCarouselButton = page.locator(
-      'div[class*="dashboard-templates-section"] div[class*="title"] button',
-    );
-    this.librariesAndTemplatesSection = page.locator(
-      'div[class*="dashboard-templates-section"]',
-    );
-    this.librariesAndTemplatesSectionCollapsed = page.locator(
-      'div[class*="dashboard_templates__collapsed"]',
-    );
-    this.librariesAndTemplatesSectionLeftArrowButton = page.locator(
-      'button[class*="left"]',
-    );
-    this.librariesAndTemplatesSectionRightArrowButton = page.locator(
-      'button[class*="right"]',
-    );
-    this.continueButton = page.locator('input[value="Continue"]');
-    this.acceptButton = page.locator('input[value="Accept"]');
     this.noLibrariesPlacelder = page.locator(
       'div[data-test="empty-placeholder"] p',
     );
@@ -478,47 +461,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.fontNameTableCell).toHaveCount(1);
   }
 
-  async clickLibrariesAndTemplatesCarouselButton() {
-    await this.librariesAndTemplatesCarouselButton.click();
-  }
-
-  async isLibrariesAndTemplatesSectionDisplayed() {
-    await expect(this.librariesAndTemplatesSection).toBeVisible();
-  }
-
-  async isLibrariesAndTemplatesSectionNotDisplayed() {
-    await expect(this.librariesAndTemplatesSectionCollapsed).toBeVisible();
-  }
-
-  async minimizeLibrariesAndTemplatesCarouselIfExpanded() {
-    if (await this.librariesAndTemplatesSection.isVisible()) {
-      await this.clickLibrariesAndTemplatesCarouselButton();
-    }
-  }
-
-  async flipRightLibrariesAndTemplatesCarousel() {
-    await this.librariesAndTemplatesSectionRightArrowButton.click();
-    await this.header.hover();
-  }
-
-  async flipLeftLibrariesAndTemplatesCarousel() {
-    await this.librariesAndTemplatesSectionLeftArrowButton.click();
-    await this.header.hover();
-  }
-
   async openFile() {
     await this.fileTile.dblclick();
-  }
-
-  async openSecondFile(fileName) {
-    const fileSel = this.page.locator(`div.info-wrapper:has-text("${fileName}")`);
-    await fileSel.dblclick();
-  }
-
-  async importSharedLibrary(libraryName) {
-    await this.page.locator(`div[class="card-name"] span:has-text('${libraryName}')`).click();
-    await this.continueButton.click();
-    await this.acceptButton.click();
   }
 
   async importFileProcessingSuccess(file) {

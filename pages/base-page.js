@@ -58,6 +58,30 @@ exports.BasePage = class BasePage {
     this.removeFlexLayout = page.locator(
       'ul[class*="workspace-context-menu"] li:has-text("Remove flex layout")',
     );
+    this.deleteLayerMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Delete")',
+    );
+    this.createComponentMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Create component")',
+    );
+    this.updateMainComponentMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Update main component")',
+    );
+    this.restoreMainComponentMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Restore main component")',
+    );
+    this.createMultipleComponentsMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Create multiple components")',
+    );
+    this.showInAssetsPanelOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Show in assets panel")',
+    );
+    this.createAnnotationOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Create annotation")',
+    );
+    this.duplicateOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Duplicate")',
+    );
   }
 
   async clearInput(input, browserName) {
