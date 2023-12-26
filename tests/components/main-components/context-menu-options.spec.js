@@ -129,7 +129,6 @@ test.describe(() => {
   });
 
   mainTest("Annotation on Inspect tab", async ({ page }) => {
-    const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     const inspectPanelPage = new InspectPanelPage(page);
     await designPanelPage.createAnnotationRightClick();
