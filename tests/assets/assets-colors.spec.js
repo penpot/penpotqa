@@ -1,9 +1,7 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { expect, test } = require('@playwright/test');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
@@ -32,7 +30,7 @@ test.afterEach(async ({ page }) => {
 mainTest('AS-22 Filter Colors from All Assets drop-down', async ({ page }) => {
   const assetsPanelPage = new AssetsPanelPage(page);
   await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.selectTypeFromAllAssetsSelector('Colors');
+  await assetsPanelPage.selectTypeFromAllAssetsDropdown('Colors');
   await assetsPanelPage.isAssetsSectionNameDisplayed('Colors', '0');
 });
 
@@ -90,7 +88,7 @@ test.describe(() => {
     await assetsPanelPage.deleteFileLibraryColor();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isColorNotAddedToFileLibraryColors();
-    await assetsPanelPage.selectTypeFromAllAssetsSelector('Colors');
+    await assetsPanelPage.selectTypeFromAllAssetsDropdown('Colors');
     await assetsPanelPage.isAssetsSectionNameDisplayed('Colors', '0');
   });
 

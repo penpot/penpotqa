@@ -28,7 +28,6 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamSettingsMenuItem = page.locator('li[data-test="team-settings"]');
     this.renameTeamMenuItem = page.locator('li[data-test="rename-team"]');
     this.uploadTeamImageButton = page.locator('input[type="file"]');
-    this.renameTeamInput = page.locator('#name');
     this.updateTeamButton = page.locator('button:has-text("Update team")');
     this.teamOwnerSpan = page.locator(
       'div[class$="team__owner"] span[class*="team__text"]',
@@ -254,7 +253,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   async renameTeam(teamName) {
     await this.teamOptionsMenuButton.click();
     await this.renameTeamMenuItem.click();
-    await this.renameTeamInput.fill(teamName);
+    await this.teamNameInput.fill(teamName);
     await this.updateTeamButton.click();
   }
 };

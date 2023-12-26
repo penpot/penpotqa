@@ -16,7 +16,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.individualCornersRadiusButton = page.locator(
       'button[title="Independent corners"]',
     );
-    this.allCornersRadiusButton = page.locator('button[title="All corners"]');
     this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
     this.topLeftCornerRadiusInput = page.locator('div[title="Top left"] input');
     this.topRightCornerRadiusInput = page.locator(
@@ -30,10 +29,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.sizeWidthInput = page.locator('div[title="Width"] input');
     this.sizeHeightInput = page.locator('div[title="Height"] input');
+    this.xAxisInput = page.locator('div[title="X axis"] input');
+    this.yAxisInput = page.locator('div[title="Y axis"] input');
 
     //Design panel - Fill section
     this.fillColorIcon = page.locator(
       'div[class*="fill__element-set"] div[class*="color-bullet-wrapper"]',
+    );
+    this.fillColorComponentIcon = page.locator(
+      'div[class*="selected-color-group"] span[class*="color-bullet-wrapper"]',
     );
     this.fillColorInput = page.locator(
       'div[class*="fill__element-content"] input[class*="color-input"]',
@@ -102,9 +106,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
-    );
-    this.layoutSection = page.locator(
-      'div[class*="layout_container__element-title"]:has-text("Layout")',
     );
     this.layoutRemoveButton = page.locator(
       'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
@@ -207,9 +208,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[data-test="stroke.alignment"]',
     );
     this.strokeTypeField = page.locator('div[data-test="stroke.style"]');
-    this.strokeTypeSelect = page.locator(
-      '//div[@title="Stroke width"]/parent::div//select[2]',
-    );
 
     //Design panel - Text section
     this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase-refactor');
@@ -243,7 +241,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridSection = page.locator(
       'div[class*=element-set]:has-text("Guides")',
     );
-    this.gridMainOptionSection = page.locator('div[class="grid-option-main"]');
     this.addGridButton = page.locator('button[class*="grid__add-grid"]');
     this.removeGridButton = page.locator(
       'div[class*="grid__actions"] svg[class="icon-remove-refactor"]',
@@ -293,7 +290,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.componentBlockOnDesignTab = page.locator(
       'div[class*="component__element-set"]',
     );
-
     this.createAnnotationOptionDesign = page.locator(
       'ul[class*="component__custom-select-dropdown"] span:text-is("Create annotation")',
     );
@@ -436,6 +432,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.canvasBackgroundColorIcon.click();
   }
 
+  async clickComponentFillColorIcon() {
+    await this.fillColorComponentIcon.click();
+  }
+
   async changeRotationForLayer(value) {
     await this.layerRotationInput.fill(value);
     await this.clickOnEnter();
@@ -450,10 +450,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.changeTopRightCornerRadiusForLayer(topRight);
     await this.changeBottomLeftCornerRadiusForLayer(bottomLeft);
     await this.changeBottomRightCornerRadiusForLayer(bottomRight);
-  }
-
-  async clickAllCornersRadiusButton() {
-    await this.allCornersRadiusButton.click();
   }
 
   async changeGeneralCornerRadiusForLayer(value) {
@@ -627,15 +623,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
-  async isLayoutSectionExists(condition = true) {
-    if (condition === true) {
-      await expect(this.layoutSection).toBeVisible();
-    } else {
-      await expect(this.layoutSection).not.toBeVisible();
-    }
-  }
-
-  async isLayoutRemoveButtonExists(condition = true) {
+  async isLayoutRemoveButtonExists(condition=true) {
     if (condition === true) {
       await expect(this.layoutRemoveButton).toBeVisible();
     } else {
@@ -926,18 +914,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(selector).toBeVisible();
   }
 
-  async showInAssetsPanelRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
-    await layerSel.last().click({ button: "right", force: true });
-    await this.showInAssetsPanelOption.click();
-  }
-
-  async isAnnotationExistOnInspectTab() {
-    await expect(this.annotationBlockOnInspect).toBeVisible();
-  }
-
   async changeAxisXandYForLayer(x, y) {
     await this.xAxisInput.fill(x);
+    await this.clickOnEnter();
+    await this.waitForChangeIsSaved();
     await this.yAxisInput.fill(y);
+    await this.clickOnEnter();
+    await this.waitForChangeIsSaved();
   }
 };

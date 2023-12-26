@@ -71,11 +71,11 @@ mainTest("Restore main component from context menu", async ({ page }) => {
   await assetsPanelPage.deleteFileLibraryComponents();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.openLayersTab();
-  await mainPage.restoreMainComponentViaRightClick();
+  await layersPanelPage.restoreMainComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await expect(mainPage.assetsPanel).toHaveScreenshot(
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     "rectangle-component-asset.png",
   );
 });

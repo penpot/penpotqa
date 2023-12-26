@@ -42,7 +42,7 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     await expect(this.popUp).toBeVisible();
   }
 
-  async clickColorBullet(isFileLibrary = true, value = 0) {
+  async clickColorBullet(isFileLibrary=true, value=0) {
     const classAttr = isFileLibrary
       ? 'color_bullet_new__is-library-color'
       : 'color_bullet_new__is-not-library-color';

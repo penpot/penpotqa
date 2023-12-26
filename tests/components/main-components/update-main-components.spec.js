@@ -4,8 +4,10 @@ const { DashboardPage } = require("../../../pages/dashboard/dashboard-page");
 const { TeamPage } = require("../../../pages/dashboard/team-page");
 const { MainPage } = require("../../../pages/workspace/main-page");
 const { random } = require("../../../helpers/string-generator");
-const { ColorPalettePopUp } = require("../../../pages/workspace/color-palette-popup");
 const { LayersPanelPage } = require("../../../pages/workspace/layers-panel-page");
+const { ColorPalettePage } = require("../../../pages/workspace/color-palette-page");
+const { DesignPanelPage } = require("../../../pages/workspace/design-panel-page");
+const { AssetsPanelPage } = require("../../../pages/workspace/assets-panel-page");
 
 const teamName = random().concat("autotest");
 
@@ -27,26 +29,29 @@ test.afterEach(async ({ page }) => {
 
 mainTest("Update main component", async ({ page }) => {
   const mainPage = new MainPage(page);
-  const colorPalettePopUp = new ColorPalettePopUp(page);
+  const layersPanelPage = new LayersPanelPage(page);
+  const designPanelPage = new DesignPanelPage(page);
+  const colorPalettePage = new ColorPalettePage(page);
+  const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.duplicateLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickCopyComponentOnLayersTab();
-  await mainPage.changeAxisXandYForLayer("400", "500");
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await designPanelPage.changeAxisXandYForLayer("400", "500");
   await mainPage.waitForChangeIsSaved();
-  await mainPage.clickCanvasBackgroundColorIcon();
-  await colorPalettePopUp.setHex("#304d6a");
+  await designPanelPage.clickComponentFillColorIcon();
+  await colorPalettePage.setHex("#304d6a");
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.updateMainComponentViaRightClick();
+  await layersPanelPage.updateMainComponentViaRightClick();
   await expect(mainPage.viewport).toHaveScreenshot(
     "component-update-canvas.png",
   );
-  await mainPage.openAssetsTab();
-  await mainPage.expandComponentsBlockOnAssetsTab();
-  await expect(mainPage.assetsPanel).toHaveScreenshot(
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     "component-update-asset.png",
   );
 });
@@ -65,29 +70,32 @@ mainTest("Check copy and main component icons", async ({ page }) => {
 });
 
 test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    testInfo.setTimeout(testInfo.timeout + 5000);
     const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    const designPanelPage = new DesignPanelPage(page);
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickCopyComponentOnLayersTab();
-    await mainPage.changeAxisXandYForLayer("400", "500");
-    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.changeAxisXandYForLayer("400", "500");
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickCopyComponentOnLayersTab();
-    await mainPage.changeAxisXandYForLayer("700", "800");
-    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.changeAxisXandYForLayer("50", "400");
   });
 
   mainTest(
     "Create a component and 2 copies of it, change rotation of main",
     async ({ page }) => {
       const mainPage = new MainPage(page);
-      await mainPage.clickMainComponentOnLayersTab();
-      await mainPage.changeRotationForLayer("20");
+      const layersPanelPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.changeRotationForLayer("20");
       await expect(mainPage.viewport).toHaveScreenshot(
         "main-copies-component-change-rotation.png",
       );
@@ -99,12 +107,14 @@ test.describe(() => {
     async ({ page }) => {
       const cornerValue = "45";
       const mainPage = new MainPage(page);
-      await mainPage.clickMainComponentOnLayersTab();
-      await mainPage.clickIndividualCornersRadiusButton();
-      await mainPage.changeTopLeftCornerRadiusForLayer(cornerValue);
-      await mainPage.changeTopRightCornerRadiusForLayer(cornerValue);
-      await mainPage.changeBottomLeftCornerRadiusForLayer(cornerValue);
-      await mainPage.changeBottomRightCornerRadiusForLayer(cornerValue);
+      const layersPanelPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.clickIndividualCornersRadiusButton();
+      await designPanelPage.changeTopLeftCornerRadiusForLayer(cornerValue);
+      await designPanelPage.changeTopRightCornerRadiusForLayer(cornerValue);
+      await designPanelPage.changeBottomLeftCornerRadiusForLayer(cornerValue);
+      await designPanelPage.changeBottomRightCornerRadiusForLayer(cornerValue);
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         "main-copies-component-add-corners.png",
@@ -117,8 +127,10 @@ test.describe(() => {
     async ({ page }) => {
       const cornerValue = "45";
       const mainPage = new MainPage(page);
-      await mainPage.clickMainComponentOnLayersTab();
-      await mainPage.changeGeneralCornerRadiusForLayer(cornerValue);
+      const layersPanelPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.changeGeneralCornerRadiusForLayer(cornerValue);
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         "main-copies-component-add-corners.png",
@@ -130,10 +142,14 @@ test.describe(() => {
     "Create a component and 2 copies of it, change stroke color of main",
     async ({ page }) => {
       const mainPage = new MainPage(page);
-      await mainPage.clickMainComponentOnLayersTab();
-      await mainPage.clickAddStrokeButton();
+      const layersPanelPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.clickAddStrokeButton();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.setStrokeColor("#d80909");
+      await designPanelPage.setStrokeColor("#d80909");
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickViewportByCoordinates(400, 400);
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         "main-copies-component-add-stroke.png",

@@ -260,8 +260,8 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickViewportByCoordinates(x, y) {
     await this.viewport.hover();
-    await this.viewport.click({ position: { x: x, y: y }, delay: 300 });
-    await this.viewport.click({ position: { x: x, y: y }, delay: 300 });
+    await this.viewport.click({ position: { x: x, y: y }, delay: 300, force: true });
+    await this.viewport.click({ position: { x: x, y: y }, delay: 300, force: true });
   }
 
   async isUnSavedChangesDisplayed() {
@@ -389,8 +389,16 @@ exports.MainPage = class MainPage extends BasePage {
     await this.nodePanelMergeNodesButton.click();
   }
 
-  async pressCtrlJKeyboardShortcut() {
-    await this.page.keyboard.press('Control+J');
+  async pressCtrlJKeyboardShortcut(browserName) {
+    if (getPlatformName() === 'MacOS') {
+      await this.page.keyboard.press('Meta+J');
+    } else {
+      if (browserName === 'webkit') {
+        await this.page.keyboard.press('Meta+J');
+      } else {
+        await this.page.keyboard.press('Control+J');
+      }
+    }
   }
 
   async clickDrawNodesButtonOnNodePanel() {
@@ -810,7 +818,15 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
-  async openInspectTab() {
-    await this.inspectTab.click();
+  async duplicateLayerViaRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({ button: "right", force: true });
+    await this.duplicateOption.click();
+  }
+
+  async showInAssetsPanelRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({ button: "right", force: true });
+    await this.showInAssetsPanelOption.click();
   }
 };
