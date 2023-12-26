@@ -1,10 +1,10 @@
-const { dashboardTest } = require('../fixtures');
+const { mainTest} = require('../fixtures');
 const { ProfilePage } = require('../pages/profile-page');
 const { random } = require('../helpers/string-generator');
 const { LoginPage } = require('../pages/login-page');
 const { expect } = require('@playwright/test');
 
-dashboardTest('PR-1 Edit profile name', async ({ page }) => {
+mainTest('PR-1 Edit profile name', async ({ page }) => {
   const newName = random();
   const profilePage = new ProfilePage(page);
   await profilePage.openYourAccountPage();
@@ -14,7 +14,7 @@ dashboardTest('PR-1 Edit profile name', async ({ page }) => {
   await profilePage.isAccountNameDisplayed(newName);
 });
 
-dashboardTest('PR-9 Add profile picture jpeg', async ({ page }) => {
+mainTest('PR-9 Add profile picture jpeg', async ({ page }) => {
   const profilePage = new ProfilePage(page);
   await profilePage.openYourAccountPage();
   await profilePage.isHeaderDisplayed('Your account');
@@ -36,7 +36,7 @@ dashboardTest('PR-9 Add profile picture jpeg', async ({ page }) => {
   );
 });
 
-dashboardTest('PR-12 Change password to invalid', async ({ page }) => {
+mainTest('PR-12 Change password to invalid', async ({ page }) => {
   const newPassword = '1234567';
   const profilePage = new ProfilePage(page);
   await profilePage.openYourAccountPage();
@@ -51,7 +51,7 @@ dashboardTest('PR-12 Change password to invalid', async ({ page }) => {
   );
 });
 
-dashboardTest(
+mainTest(
   'PR-16 Fail to change password confirmation does not match',
   async ({ page }) => {
     const profilePage = new ProfilePage(page);
@@ -68,14 +68,14 @@ dashboardTest(
   },
 );
 
-dashboardTest('PR-19 Logout from Account', async ({ page }) => {
+mainTest('PR-19 Logout from Account', async ({ page }) => {
   const profilePage = new ProfilePage(page);
   const loginPage = new LoginPage(page);
   await profilePage.logout();
   await loginPage.isLoginPageOpened();
 });
 
-dashboardTest(
+mainTest(
   'PR-21 Send feedback email with empty fields',
   async ({ page }) => {
     const profilePage = new ProfilePage(page);
@@ -92,7 +92,7 @@ dashboardTest(
   },
 );
 
-dashboardTest('PR-22 Send feedback email with valid data', async ({ page }) => {
+mainTest('PR-22 Send feedback email with valid data', async ({ page }) => {
   const profilePage = new ProfilePage(page);
   await profilePage.openGiveFeedbackPage();
   await profilePage.isHeaderDisplayed('Your account');

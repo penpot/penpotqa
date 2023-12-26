@@ -16,20 +16,6 @@ const mainTest = base.test.extend({
   },
 });
 
-const dashboardTest = base.test.extend({
-  page: async ({ page }, use) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.goto();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await use(page);
-  },
-});
-
 const performanceTest = base.test.extend({
   workingFile: [
     'documents/Penpot - Design System v2.0.penpot',
@@ -124,5 +110,4 @@ const performanceTest = base.test.extend({
 });
 
 exports.mainTest = mainTest;
-exports.dashboardTest = dashboardTest;
 exports.performanceTest = performanceTest;

@@ -273,13 +273,13 @@ mainTest(
 );
 
 mainTest(
-  "Create multiple components from text, curve and image",
+  "Create multiple components from text, board and image",
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultTextLayer(browserName);
-    await mainPage.createDefaultCurveLayer();
+    await mainPage.createDefaultBoardByCoordinates(200, 400);
     await mainPage.uploadImage("images/sample.jpeg");
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();

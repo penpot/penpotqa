@@ -1,4 +1,4 @@
-const { dashboardTest } = require('../../fixtures');
+const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { random } = require('../../helpers/string-generator');
@@ -18,7 +18,7 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-dashboardTest(
+mainTest(
   'DA-1 Create new file in Drafts on title panel',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -31,7 +31,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   "DA-2 Create new file in Drafts via 'New file' placeholder",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -42,7 +42,7 @@ dashboardTest(
   },
 );
 
-dashboardTest('DA-3 Open file in Drafts', async ({ page }) => {
+mainTest('DA-3 Open file in Drafts', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.createFileViaPlaceholder();
@@ -54,7 +54,7 @@ dashboardTest('DA-3 Open file in Drafts', async ({ page }) => {
   await mainPage.backToDashboardFromFileEditor();
 });
 
-dashboardTest('DA-5 Rename file in Drafts via rightclick', async ({ page }) => {
+mainTest('DA-5 Rename file in Drafts via rightclick', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.createFileViaPlaceholder();
@@ -62,7 +62,7 @@ dashboardTest('DA-5 Rename file in Drafts via rightclick', async ({ page }) => {
   await dashboardPage.renameFile('test');
 });
 
-dashboardTest(
+mainTest(
   'DA-7 Duplicate file in Drafts via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -78,7 +78,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-9 Add file as Shared Library in Drafts via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -90,7 +90,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-11 Remove file as Shared Library via Options icon in Drafts',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -110,7 +110,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-12 Remove file as Shared Library in Drafts via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -124,7 +124,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-13 Download Penpot file in Drafts via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -135,7 +135,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-15 Download standard file in Drafts via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -146,7 +146,7 @@ dashboardTest(
   },
 );
 
-dashboardTest.skip('DA-17 Import file to Drafts .penpot', async ({ page }) => {
+mainTest.skip('DA-17 Import file to Drafts .penpot', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage(
@@ -156,17 +156,17 @@ dashboardTest.skip('DA-17 Import file to Drafts .penpot', async ({ page }) => {
   await dashboardPage.isFilePresent('Wireframing kit'); // todo: issue 5596
 });
 
-dashboardTest.skip('DA-18 Import file to Drafts svgjson', async ({ page }) => {
+mainTest.skip('DA-18 Import file to Drafts svgjson', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage(
     // todo issue 6390 > need to check after fix
     'documents/QA test zip file.zip',
   );
-  await dashboardPage.isFilePresent('Wireframing kit'); // todo: issue 5597
+  await dashboardPage.isFilePresent('Wireframing kit');
 });
 
-dashboardTest(
+mainTest(
   'DA-22 Delete file in Drafts via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -182,14 +182,14 @@ dashboardTest(
   },
 );
 
-dashboardTest('DA-24 Create new project', async ({ page }) => {
+mainTest('DA-24 Create new project', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName('Test Project');
   await dashboardPage.isProjectTitleDisplayed('Test Project');
 });
 
-dashboardTest(
+mainTest(
   'DA-25 Create a file in Project via plus button on title panel',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -203,7 +203,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   "DA-26 Create a file in Project via 'New file' placeholder",
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -217,7 +217,7 @@ dashboardTest(
   },
 );
 
-dashboardTest('DA-28 Rename file in Project', async ({ page }) => {
+mainTest('DA-28 Rename file in Project', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.clickAddProjectButton();
@@ -229,7 +229,7 @@ dashboardTest('DA-28 Rename file in Project', async ({ page }) => {
   await dashboardPage.renameFile('test_rightclick');
 });
 
-dashboardTest('DA-29 Duplicate file in Project', async ({ page }) => {
+mainTest('DA-29 Duplicate file in Project', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.clickAddProjectButton();
@@ -253,7 +253,7 @@ dashboardTest('DA-29 Duplicate file in Project', async ({ page }) => {
   await dashboardPage.checkNumberOfFiles('3 files');
 });
 
-dashboardTest(
+mainTest(
   'DA-33-1 Add file as Shared Library in Project via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -268,7 +268,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-33-2 Add file as Shared Library in Project via Options icon',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -283,7 +283,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-34-1 Remove file as Shared Library in Project via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -300,7 +300,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-34-2 Remove file as Shared Library in Project via Options icon',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -318,7 +318,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-35-1 Download Penpot file in Project via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -332,7 +332,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-35-2 Download Penpot file in Project via Options icon',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -346,7 +346,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-36-1 Download standard file in Project via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -360,7 +360,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-36-2 Download standard file in Project via Options icon',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -374,7 +374,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-37-1 Delete file in Project via rightclick',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -393,7 +393,7 @@ dashboardTest(
   },
 );
 
-dashboardTest(
+mainTest(
   'DA-37-2 Delete file in Project via Options icon',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -412,7 +412,7 @@ dashboardTest(
   },
 );
 
-dashboardTest('DA-52-1 Rename project via rightclick', async ({ page }) => {
+mainTest('DA-52-1 Rename project via rightclick', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.clickAddProjectButton();
@@ -425,7 +425,7 @@ dashboardTest('DA-52-1 Rename project via rightclick', async ({ page }) => {
   );
 });
 
-dashboardTest('DA-52-2 Rename project via Options icon', async ({ page }) => {
+mainTest('DA-52-2 Rename project via Options icon', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.clickAddProjectButton();
@@ -438,7 +438,7 @@ dashboardTest('DA-52-2 Rename project via Options icon', async ({ page }) => {
   );
 });
 
-dashboardTest('DA-53 Duplicate Project', async ({ page }) => {
+mainTest('DA-53 Duplicate Project', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.clickAddProjectButton();
@@ -453,7 +453,7 @@ dashboardTest('DA-53 Duplicate Project', async ({ page }) => {
   await dashboardPage.isHeaderDisplayed('Test Project (copy) (copy)');
 });
 
-dashboardTest('DA-54 Unpin project', async ({ page }) => {
+mainTest('DA-54 Unpin project', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName('Test Project');
@@ -465,7 +465,7 @@ dashboardTest('DA-54 Unpin project', async ({ page }) => {
   );
 });
 
-dashboardTest('DA-55 Pin project', async ({ page }) => {
+mainTest('DA-55 Pin project', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName('Test Project');
@@ -478,7 +478,7 @@ dashboardTest('DA-55 Pin project', async ({ page }) => {
   await dashboardPage.checkPinnedProjectsSidebarItem('Test Project');
 });
 
-dashboardTest(
+mainTest(
   'DA-59 Import file to project - fail invalid format',
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
@@ -487,7 +487,7 @@ dashboardTest(
   },
 );
 
-dashboardTest('DA-60-1 Delete project via rightclick', async ({ page }) => {
+mainTest('DA-60-1 Delete project via rightclick', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.clickAddProjectButton();
@@ -499,7 +499,7 @@ dashboardTest('DA-60-1 Delete project via rightclick', async ({ page }) => {
   await dashboardPage.isProjectTitleDisplayed('Drafts');
 });
 
-dashboardTest('DA-60-2 Delete project via Options icon', async ({ page }) => {
+mainTest('DA-60-2 Delete project via Options icon', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.clickAddProjectButton();
@@ -511,7 +511,7 @@ dashboardTest('DA-60-2 Delete project via Options icon', async ({ page }) => {
   await dashboardPage.isProjectTitleDisplayed('Drafts');
 });
 
-dashboardTest('DA-62 Search file from Drafts', async ({ page }) => {
+mainTest('DA-62 Search file from Drafts', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.createFileViaPlaceholder();
@@ -523,7 +523,7 @@ dashboardTest('DA-62 Search file from Drafts', async ({ page }) => {
   await dashboardPage.isFilePresent('qwe');
 });
 
-dashboardTest('DA-63 Search file from Projects', async ({ page }) => {
+mainTest('DA-63 Search file from Projects', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await dashboardPage.clickAddProjectButton();

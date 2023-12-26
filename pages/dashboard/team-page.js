@@ -256,4 +256,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.teamNameInput.fill(teamName);
     await this.updateTeamButton.click();
   }
+
+  async hoverOnTeamName() {
+    await this.teamInfoSection.hover();
+  }
 };
