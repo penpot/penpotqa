@@ -254,14 +254,14 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickViewportTwice() {
     await this.viewport.hover();
-    await this.viewport.click({ delay: 300 });
-    await this.viewport.click({ delay: 300 });
+    await this.viewport.click({ delay: 300, force: true });
+    await this.viewport.click({ delay: 300, force: true });
   }
 
   async clickViewportByCoordinates(x, y) {
     await this.viewport.hover();
-    await this.viewport.click({ position: { x: x, y: y }, delay: 300 });
-    await this.viewport.click({ position: { x: x, y: y }, delay: 300 });
+    await this.viewport.click({ position: { x: x, y: y }, delay: 300, force: true });
+    await this.viewport.click({ position: { x: x, y: y }, delay: 300, force: true });
   }
 
   async isUnSavedChangesDisplayed() {
