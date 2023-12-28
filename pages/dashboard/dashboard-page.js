@@ -397,16 +397,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickUnpinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin-fill");
+    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin-fill');
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin");
+    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin');
   }
 
   async clickPinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin");
+    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin');
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass("icon-pin-fill");
+    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin-fill');
   }
 
   async checkPinnedProjectsSidebarItem(text) {
@@ -466,12 +466,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async importFileProcessingSuccess(file) {
-    const fileChooserPromise = this.page.waitForEvent("filechooser");
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.fileImport.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
     await expect(this.modalTitle).toBeVisible();
-    await expect(this.modalTitle).toHaveText("Import Penpot files");
+    await expect(this.modalTitle).toHaveText('Import Penpot files');
     await this.modalAcceptButton.click();
     await this.feedbackBanner.waitFor();
     await expect(this.feedbackBannerMessage).toHaveText(
@@ -481,16 +481,18 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async importFileProcessingError(file) {
-    const fileChooserPromise = this.page.waitForEvent("filechooser");
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.fileImport.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
     await expect(this.modalTitle).toBeVisible();
-    await expect(this.modalTitle).toHaveText("Import Penpot files");
+    await expect(this.modalTitle).toHaveText('Import Penpot files');
     await expect(this.modalAcceptButton).toBeVisible();
     await expect(this.modalAcceptButton).toBeDisabled();
 
-    await expect(this.importErrorMessage).toHaveText("Oops! We couldn't import this file");
+    await expect(this.importErrorMessage).toHaveText(
+      "Oops! We couldn't import this file",
+    );
     await this.modalCancelButton.click();
   }
 

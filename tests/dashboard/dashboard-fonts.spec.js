@@ -24,14 +24,11 @@ mainTest('DA-66 Upload single font', async ({ page }) => {
   await dashboardPage.isFontExists('Pacifico', 'Regular');
 });
 
-mainTest(
-  'DA-68 Fonts - upload fail invalid file format',
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.openSidebarItem('Fonts');
-    await dashboardPage.uploadFontWithInvalidFormat('images/images.png');
-  },
-);
+mainTest('DA-68 Fonts - upload fail invalid file format', async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.openSidebarItem('Fonts');
+  await dashboardPage.uploadFontWithInvalidFormat('images/images.png');
+});
 
 mainTest('DA-69 Search font', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);

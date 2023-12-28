@@ -18,18 +18,15 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(
-  'DA-1 Create new file in Drafts on title panel',
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await dashboardPage.createFileViaTitlePanel();
-    await mainPage.isMainPageLoaded();
-    await mainPage.isProjectAndFileNameExistInFile('Drafts', 'New File 1');
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.checkNumberOfFiles('1 file');
-  },
-);
+mainTest('DA-1 Create new file in Drafts on title panel', async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await dashboardPage.createFileViaTitlePanel();
+  await mainPage.isMainPageLoaded();
+  await mainPage.isProjectAndFileNameExistInFile('Drafts', 'New File 1');
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.checkNumberOfFiles('1 file');
+});
 
 mainTest(
   "DA-2 Create new file in Drafts via 'New file' placeholder",
@@ -62,21 +59,18 @@ mainTest('DA-5 Rename file in Drafts via rightclick', async ({ page }) => {
   await dashboardPage.renameFile('test');
 });
 
-mainTest(
-  'DA-7 Duplicate file in Drafts via rightclick',
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.duplicateFileViaRightclick();
-    await dashboardPage.isSuccessMessageDisplayed(
-      'Your file has been duplicated successfully',
-    );
-    await dashboardPage.waitSuccessMessageHidden();
-    await dashboardPage.checkNumberOfFiles('2 files');
-  },
-);
+mainTest('DA-7 Duplicate file in Drafts via rightclick', async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.duplicateFileViaRightclick();
+  await dashboardPage.isSuccessMessageDisplayed(
+    'Your file has been duplicated successfully',
+  );
+  await dashboardPage.waitSuccessMessageHidden();
+  await dashboardPage.checkNumberOfFiles('2 files');
+});
 
 mainTest(
   'DA-9 Add file as Shared Library in Drafts via rightclick',
@@ -166,21 +160,18 @@ mainTest.skip('DA-18 Import file to Drafts svgjson', async ({ page }) => {
   await dashboardPage.isFilePresent('Wireframing kit');
 });
 
-mainTest(
-  'DA-22 Delete file in Drafts via rightclick',
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.deleteFileViaRightclick();
-    await dashboardPage.isSuccessMessageDisplayed(
-      'Your file has been deleted successfully',
-    );
-    await dashboardPage.waitSuccessMessageHidden();
-    await dashboardPage.checkNumberOfFiles('0 files');
-  },
-);
+mainTest('DA-22 Delete file in Drafts via rightclick', async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.deleteFileViaRightclick();
+  await dashboardPage.isSuccessMessageDisplayed(
+    'Your file has been deleted successfully',
+  );
+  await dashboardPage.waitSuccessMessageHidden();
+  await dashboardPage.checkNumberOfFiles('0 files');
+});
 
 mainTest('DA-24 Create new project', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
@@ -374,24 +365,21 @@ mainTest(
   },
 );
 
-mainTest(
-  'DA-37-1 Delete file in Project via rightclick',
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await dashboardPage.clickAddProjectButton();
-    await dashboardPage.setProjectName('Test Project');
-    await dashboardPage.isProjectTitleDisplayed('Test Project');
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.deleteFileViaRightclick();
-    await dashboardPage.isSuccessMessageDisplayed(
-      'Your file has been deleted successfully',
-    );
-    await dashboardPage.waitSuccessMessageHidden();
-    await dashboardPage.checkNumberOfFiles('0 files');
-  },
-);
+mainTest('DA-37-1 Delete file in Project via rightclick', async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName('Test Project');
+  await dashboardPage.isProjectTitleDisplayed('Test Project');
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.deleteFileViaRightclick();
+  await dashboardPage.isSuccessMessageDisplayed(
+    'Your file has been deleted successfully',
+  );
+  await dashboardPage.waitSuccessMessageHidden();
+  await dashboardPage.checkNumberOfFiles('0 files');
+});
 
 mainTest(
   'DA-37-2 Delete file in Project via Options icon',

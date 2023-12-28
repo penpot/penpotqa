@@ -1,14 +1,20 @@
-const { mainTest } = require("../../../fixtures");
-const { MainPage } = require("../../../pages/workspace/main-page");
-const { expect, test } = require("@playwright/test");
-const { DashboardPage } = require("../../../pages/dashboard/dashboard-page");
-const { TeamPage } = require("../../../pages/dashboard/team-page");
-const { random } = require("../../../helpers/string-generator");
-const { LayersPanelPage } = require("../../../pages/workspace/layers-panel-page");
-const { AssetsPanelPage } = require("../../../pages/workspace/assets-panel-page");
-const { DesignPanelPage } = require("../../../pages/workspace/design-panel-page");
+const { mainTest } = require('../../../fixtures');
+const { MainPage } = require('../../../pages/workspace/main-page');
+const { expect, test } = require('@playwright/test');
+const { DashboardPage } = require('../../../pages/dashboard/dashboard-page');
+const { TeamPage } = require('../../../pages/dashboard/team-page');
+const { random } = require('../../../helpers/string-generator');
+const {
+  LayersPanelPage,
+} = require('../../../pages/workspace/layers-panel-page');
+const {
+  AssetsPanelPage,
+} = require('../../../pages/workspace/assets-panel-page');
+const {
+  DesignPanelPage,
+} = require('../../../pages/workspace/design-panel-page');
 
-const teamName = random().concat("autotest");
+const teamName = random().concat('autotest');
 
 test.beforeEach(async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
@@ -26,7 +32,7 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest("Create component shape", async ({ page }) => {
+mainTest('Create component shape', async ({ page }) => {
   const mainPage = new MainPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -36,7 +42,7 @@ mainTest("Create component shape", async ({ page }) => {
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await assetsPanelPage.isComponentAddedToFileLibraryComponents();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-    "rectangle-component-asset.png",
+    'rectangle-component-asset.png',
     {
       mask: [mainPage.guides],
     },
@@ -44,9 +50,9 @@ mainTest("Create component shape", async ({ page }) => {
 });
 
 mainTest(
-  "Drag a component from assets tab and drop into workspace",
+  'Drag a component from assets tab and drop into workspace',
   async ({ page, browserName }) => {
-    if (browserName !== "webkit") {
+    if (browserName !== 'webkit') {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
       const assetsPanelPage = new AssetsPanelPage(page);
@@ -58,17 +64,17 @@ mainTest(
       await assetsPanelPage.dragComponentOnCanvas(50, 100);
       await layersPanelPage.openLayersTab();
       await expect(mainPage.viewport).toHaveScreenshot(
-        "copy-main-components-on-canvas.png",
+        'copy-main-components-on-canvas.png',
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-        "copy-main-components-layers.png",
+        'copy-main-components-layers.png',
       );
     }
   },
 );
 
 mainTest(
-  "Create component from rectangle by clicking CTRL K",
+  'Create component from rectangle by clicking CTRL K',
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -77,22 +83,22 @@ mainTest(
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "rectangle-main-component-canvas.png",
+      'rectangle-main-component-canvas.png',
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      "rectangle-main-component-layer.png",
+      'rectangle-main-component-layer.png',
     );
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      "rectangle-component-asset.png",
+      'rectangle-component-asset.png',
     );
   },
 );
 
 mainTest(
-  "Create component from ellipse by clicking CTRL K",
+  'Create component from ellipse by clicking CTRL K',
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -101,22 +107,22 @@ mainTest(
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "ellipse-main-component-canvas.png",
+      'ellipse-main-component-canvas.png',
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      "ellipse-main-component-layer.png",
+      'ellipse-main-component-layer.png',
     );
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      "ellipse-component-asset.png",
+      'ellipse-component-asset.png',
     );
   },
 );
 
 mainTest(
-  "Create component from board by clicking CTRL K",
+  'Create component from board by clicking CTRL K',
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -125,22 +131,22 @@ mainTest(
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "board-main-component-canvas.png",
+      'board-main-component-canvas.png',
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      "board-main-component-layer.png",
+      'board-main-component-layer.png',
     );
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      "board-component-asset.png",
+      'board-component-asset.png',
     );
   },
 );
 
 mainTest(
-  "Create component from text by right-click",
+  'Create component from text by right-click',
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -149,44 +155,44 @@ mainTest(
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "text-main-component-canvas.png",
+      'text-main-component-canvas.png',
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      "text-main-component-layer.png",
+      'text-main-component-layer.png',
     );
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      "text-component-asset.png",
+      'text-component-asset.png',
     );
   },
 );
 
-mainTest("Create component from image by right-click", async ({ page }) => {
+mainTest('Create component from image by right-click', async ({ page }) => {
   const mainPage = new MainPage(page);
   const layersPanelPage = new LayersPanelPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
-  await mainPage.uploadImage("images/sample.jpeg");
+  await mainPage.uploadImage('images/sample.jpeg');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "image-main-component-canvas.png",
+    'image-main-component-canvas.png',
   );
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-    "image-main-component-layer.png",
+    'image-main-component-layer.png',
   );
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await assetsPanelPage.isComponentAddedToFileLibraryComponents();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-    "image-component-asset.png",
+    'image-component-asset.png',
   );
 });
 
-mainTest("Create component from path by right-click", async ({ page }) => {
+mainTest('Create component from path by right-click', async ({ page }) => {
   const mainPage = new MainPage(page);
   const layersPanelPage = new LayersPanelPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
@@ -194,20 +200,20 @@ mainTest("Create component from path by right-click", async ({ page }) => {
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "path-main-component-canvas.png",
+    'path-main-component-canvas.png',
   );
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-    "path-main-component-layer.png",
+    'path-main-component-layer.png',
   );
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await assetsPanelPage.isComponentAddedToFileLibraryComponents();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-    "path-component-asset.png",
+    'path-component-asset.png',
   );
 });
 
-mainTest("Create component from curve by right-click", async ({ page }) => {
+mainTest('Create component from curve by right-click', async ({ page }) => {
   const mainPage = new MainPage(page);
   const layersPanelPage = new LayersPanelPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
@@ -215,38 +221,38 @@ mainTest("Create component from curve by right-click", async ({ page }) => {
   await layersPanelPage.createComponentViaRightClickLayers();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    "curve-main-component-canvas.png",
+    'curve-main-component-canvas.png',
   );
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-    "curve-main-component-layer.png",
+    'curve-main-component-layer.png',
   );
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await assetsPanelPage.isComponentAddedToFileLibraryComponents();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-    "curve-component-asset.png",
+    'curve-component-asset.png',
   );
 });
 
-mainTest("Undo component", async ({ page, browserName }) => {
+mainTest('Undo component', async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   const designPanelPage = new DesignPanelPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickOnLayerOnCanvas();
-  await designPanelPage.changeRotationForLayer("200");
+  await designPanelPage.changeRotationForLayer('200');
   await expect(mainPage.viewport).toHaveScreenshot(
-    "component-change_rotation.png",
+    'component-change_rotation.png',
   );
   await mainPage.clickShortcutCtrlZ(browserName);
   await expect(mainPage.viewport).toHaveScreenshot(
-    "component-change_rotation_undo.png",
+    'component-change_rotation_undo.png',
   );
 });
 
 mainTest(
-  "Create multiple components from rectangle and ellipse",
+  'Create multiple components from rectangle and ellipse',
   async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -259,28 +265,28 @@ mainTest(
     await mainPage.createComponentsMultipleShapesRightClick(false);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "multiple-components-canvas.png",
+      'multiple-components-canvas.png',
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      "multiple-components-layer.png",
+      'multiple-components-layer.png',
     );
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      "multiple-components-asset.png",
+      'multiple-components-asset.png',
     );
   },
 );
 
 mainTest(
-  "Create multiple components from text, board and image",
+  'Create multiple components from text, board and image',
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultTextLayer(browserName);
     await mainPage.createDefaultBoardByCoordinates(200, 400);
-    await mainPage.uploadImage("images/sample.jpeg");
+    await mainPage.uploadImage('images/sample.jpeg');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickMainMenuButton();
@@ -289,15 +295,15 @@ mainTest(
     await mainPage.createComponentsMultipleShapesRightClick(false);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      "multiple-components-canvas-3-layers.png",
+      'multiple-components-canvas-3-layers.png',
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      "multiple-components-layer-3-layers.png",
+      'multiple-components-layer-3-layers.png',
     );
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      "multiple-components-asset-3-layers.png",
+      'multiple-components-asset-3-layers.png',
     );
   },
 );

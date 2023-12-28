@@ -30,7 +30,8 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    test.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
     await mainPage.clickCreateEllipseButton();
     await mainPage.clickViewportTwice();
@@ -101,7 +102,6 @@ test.describe(() => {
   );
 
   mainTest('CO-118 Add and edit Shadow to ellipse', async ({ page }) => {
-    test.setTimeout(60000);
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -181,7 +181,6 @@ test.describe(() => {
   mainTest(
     'CO-121 Add, edit and delete Stroke to ellipse',
     async ({ page }) => {
-      test.setTimeout(70000);
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
       await designPanelPage.clickAddStrokeButton();

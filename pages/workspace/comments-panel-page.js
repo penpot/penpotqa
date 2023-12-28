@@ -60,7 +60,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.commentsButton.click();
   }
 
-  async enterCommentText(text, isEdit=false) {
+  async enterCommentText(text, isEdit = false) {
     if (isEdit) {
       await this.commentEditInput.fill(text);
     } else {
