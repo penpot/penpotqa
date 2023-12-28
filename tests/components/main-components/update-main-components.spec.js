@@ -4,18 +4,10 @@ const { DashboardPage } = require('../../../pages/dashboard/dashboard-page');
 const { TeamPage } = require('../../../pages/dashboard/team-page');
 const { MainPage } = require('../../../pages/workspace/main-page');
 const { random } = require('../../../helpers/string-generator');
-const {
-  LayersPanelPage,
-} = require('../../../pages/workspace/layers-panel-page');
-const {
-  ColorPalettePage,
-} = require('../../../pages/workspace/color-palette-page');
-const {
-  DesignPanelPage,
-} = require('../../../pages/workspace/design-panel-page');
-const {
-  AssetsPanelPage,
-} = require('../../../pages/workspace/assets-panel-page');
+const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
+const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
+const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
+const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 
 const teamName = random().concat('autotest');
 
@@ -55,9 +47,7 @@ mainTest('Update main component', async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.updateMainComponentViaRightClick();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    'component-update-canvas.png',
-  );
+  await expect(mainPage.viewport).toHaveScreenshot('component-update-canvas.png');
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(

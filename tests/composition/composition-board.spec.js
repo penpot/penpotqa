@@ -1,8 +1,6 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
@@ -146,46 +144,34 @@ test.describe(() => {
     });
   });
 
-  mainTest(
-    'CO-12 Add, hide, unhide and delete Blur to board',
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const colorPalettePage = new ColorPalettePage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#304d6a');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-blur-default.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await designPanelPage.hideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-blur-hide.png', {
-        mask: [mainPage.guides],
-      });
-      await designPanelPage.unhideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-blur-unhide.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await designPanelPage.removeBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-blur-remove.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-    },
-  );
+  mainTest('CO-12 Add, hide, unhide and delete Blur to board', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const colorPalettePage = new ColorPalettePage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#304d6a');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-blur-default.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-blur-hide.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-blur-unhide.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-blur-remove.png', {
+      mask: [mainPage.guides],
+    });
+  });
 
   mainTest('CO-13 Add and edit Blur to board', async ({ page }) => {
     const mainPage = new MainPage(page);
@@ -204,12 +190,9 @@ test.describe(() => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'board-stroke-default.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('board-stroke-default.png', {
+      mask: [mainPage.guides],
+    });
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeStrokeSettings(
       '#43E50B',
@@ -278,12 +261,9 @@ test.describe(() => {
     await designPanelPage.removeStroke();
     await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'board-stroke-remove.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('board-stroke-remove.png', {
+      mask: [mainPage.guides],
+    });
   });
 
   mainTest('CO-25-1 Delete board via rightclick', async ({ page }) => {
@@ -325,12 +305,9 @@ test.describe(() => {
     await designPanelPage.clickIndividualCornersRadiusButton();
     await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'board-changed-corners.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('board-changed-corners.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board.png', {
@@ -405,12 +382,9 @@ test.describe(() => {
         mask: [mainPage.guides],
       });
       await layersPanelPage.doubleClickLayerIconOnLayersTab(board2);
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-second-zoom.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
+      await expect(mainPage.viewport).toHaveScreenshot('board-second-zoom.png', {
+        mask: [mainPage.guides],
+      });
     },
   );
 

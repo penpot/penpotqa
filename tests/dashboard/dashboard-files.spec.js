@@ -118,16 +118,13 @@ mainTest(
   },
 );
 
-mainTest(
-  'DA-13 Download Penpot file in Drafts via rightclick',
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.downloadFileViaRightClick(false);
-  },
-);
+mainTest('DA-13 Download Penpot file in Drafts via rightclick', async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.downloadFileViaRightClick(false);
+});
 
 mainTest(
   'DA-15 Download standard file in Drafts via rightclick',
@@ -381,24 +378,21 @@ mainTest('DA-37-1 Delete file in Project via rightclick', async ({ page }) => {
   await dashboardPage.checkNumberOfFiles('0 files');
 });
 
-mainTest(
-  'DA-37-2 Delete file in Project via Options icon',
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await dashboardPage.clickAddProjectButton();
-    await dashboardPage.setProjectName('Test Project');
-    await dashboardPage.isProjectTitleDisplayed('Test Project');
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.deleteFileViaOptionsIcon();
-    await dashboardPage.isSuccessMessageDisplayed(
-      'Your file has been deleted successfully',
-    );
-    await dashboardPage.waitSuccessMessageHidden();
-    await dashboardPage.checkNumberOfFiles('0 files');
-  },
-);
+mainTest('DA-37-2 Delete file in Project via Options icon', async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName('Test Project');
+  await dashboardPage.isProjectTitleDisplayed('Test Project');
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.deleteFileViaOptionsIcon();
+  await dashboardPage.isSuccessMessageDisplayed(
+    'Your file has been deleted successfully',
+  );
+  await dashboardPage.waitSuccessMessageHidden();
+  await dashboardPage.checkNumberOfFiles('0 files');
+});
 
 mainTest('DA-52-1 Rename project via rightclick', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
@@ -466,14 +460,11 @@ mainTest('DA-55 Pin project', async ({ page }) => {
   await dashboardPage.checkPinnedProjectsSidebarItem('Test Project');
 });
 
-mainTest(
-  'DA-59 Import file to project - fail invalid format',
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.openSidebarItem('Drafts');
-    await dashboardPage.importFileWithInvalidFormat('images/images.png');
-  },
-);
+mainTest('DA-59 Import file to project - fail invalid format', async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.openSidebarItem('Drafts');
+  await dashboardPage.importFileWithInvalidFormat('images/images.png');
+});
 
 mainTest('DA-60-1 Delete project via rightclick', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);

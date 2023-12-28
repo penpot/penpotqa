@@ -4,12 +4,8 @@ const { expect, test } = require('@playwright/test');
 const { random } = require('../../../helpers/string-generator');
 const { DashboardPage } = require('../../../pages/dashboard/dashboard-page');
 const { TeamPage } = require('../../../pages/dashboard/team-page');
-const {
-  LayersPanelPage,
-} = require('../../../pages/workspace/layers-panel-page');
-const {
-  AssetsPanelPage,
-} = require('../../../pages/workspace/assets-panel-page');
+const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
+const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 
 const teamName = random().concat('autotest');
 
@@ -35,9 +31,7 @@ mainTest('Undo deleted component', async ({ page, browserName }) => {
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.deleteLayerViaRightClick();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    'rectangle-component-delete.png',
-  );
+  await expect(mainPage.viewport).toHaveScreenshot('rectangle-component-delete.png');
   await mainPage.clickShortcutCtrlZ(browserName);
   await expect(mainPage.viewport).toHaveScreenshot(
     'rectangle-component-delete-undo.png',

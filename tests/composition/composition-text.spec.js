@@ -1,9 +1,7 @@
 const { mainTest } = require('../../fixtures');
 const { expect, test } = require('@playwright/test');
 const { MainPage } = require('../../pages/workspace/main-page');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
@@ -74,12 +72,9 @@ test.describe(() => {
       );
       await designPanelPage.hideShadow();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'text-drop-shadow-hide.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
+      await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow-hide.png', {
+        mask: [mainPage.guides],
+      });
       await designPanelPage.unhideShadow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -128,40 +123,34 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png');
   });
 
-  mainTest(
-    'CO-169 Add, hide, unhide and delete Blur to text',
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const colorPalettePage = new ColorPalettePage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#304d6a');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'text-blur-default.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await designPanelPage.hideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-blur-hide.png', {
-        mask: [mainPage.guides],
-      });
-      await designPanelPage.unhideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-blur-unhide.png', {
-        mask: [mainPage.guides],
-      });
-      await designPanelPage.removeBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
-        mask: [mainPage.guides],
-      });
-    },
-  );
+  mainTest('CO-169 Add, hide, unhide and delete Blur to text', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const colorPalettePage = new ColorPalettePage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#304d6a');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-blur-default.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-blur-hide.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-blur-unhide.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
+      mask: [mainPage.guides],
+    });
+  });
 
   mainTest('CO-170 Add and edit Blur to text', async ({ page }) => {
     const mainPage = new MainPage(page);
@@ -178,12 +167,9 @@ test.describe(() => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'text-stroke-default.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('text-stroke-default.png', {
+      mask: [mainPage.guides],
+    });
     await mainPage.clickOnLayerOnCanvas();
     await designPanelPage.changeStrokeSettings('#43E50B', '60', '10', 'Inside');
     await mainPage.waitForChangeIsSaved();

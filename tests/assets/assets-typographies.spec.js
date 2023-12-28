@@ -25,39 +25,33 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(
-  'AS-37 Filter Typographies from All Assets drop-down',
-  async ({ page }) => {
-    const assetsPanelPage = new AssetsPanelPage(page);
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.selectTypeFromAllAssetsDropdown('Typographies');
-    await assetsPanelPage.isAssetsSectionNameDisplayed('Typographies', '0');
-  },
-);
+mainTest('AS-37 Filter Typographies from All Assets drop-down', async ({ page }) => {
+  const assetsPanelPage = new AssetsPanelPage(page);
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.selectTypeFromAllAssetsDropdown('Typographies');
+  await assetsPanelPage.isAssetsSectionNameDisplayed('Typographies', '0');
+});
 
-mainTest(
-  'AS-38 Typographic styles - add from Assets panel',
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickAddFileLibraryTypographyButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'typographies-add-typography-expanded.png',
-    );
-    await assetsPanelPage.minimizeFileLibraryTypography();
-    await mainPage.clickViewportTwice();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'typographies-add-typography-minimized.png',
-    );
-    await assetsPanelPage.expandFileLibraryTypography();
-    await mainPage.clickViewportTwice();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'typographies-add-typography-expanded.png',
-    );
-  },
-);
+mainTest('AS-38 Typographic styles - add from Assets panel', async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const assetsPanelPage = new AssetsPanelPage(page);
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.clickAddFileLibraryTypographyButton();
+  await mainPage.waitForChangeIsSaved();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+    'typographies-add-typography-expanded.png',
+  );
+  await assetsPanelPage.minimizeFileLibraryTypography();
+  await mainPage.clickViewportTwice();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+    'typographies-add-typography-minimized.png',
+  );
+  await assetsPanelPage.expandFileLibraryTypography();
+  await mainPage.clickViewportTwice();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+    'typographies-add-typography-expanded.png',
+  );
+});
 
 test.describe(() => {
   test.beforeEach(async ({ page }) => {
@@ -121,10 +115,7 @@ test.describe(() => {
   mainTest('AS-43 Typographic styles - create group', async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
-    await assetsPanelPage.createGroupFileLibraryAssets(
-      'Typographies',
-      'Test Group',
-    );
+    await assetsPanelPage.createGroupFileLibraryAssets('Typographies', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
@@ -135,10 +126,7 @@ test.describe(() => {
   mainTest('AS-45 Typographic styles - rename group', async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
-    await assetsPanelPage.createGroupFileLibraryAssets(
-      'Typographies',
-      'Test Group',
-    );
+    await assetsPanelPage.createGroupFileLibraryAssets('Typographies', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.renameGroupFileLibrary('New Group');
     await mainPage.waitForChangeIsSaved();
@@ -151,10 +139,7 @@ test.describe(() => {
   mainTest('AS-48 Typographic styles - ungroup', async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
-    await assetsPanelPage.createGroupFileLibraryAssets(
-      'Typographies',
-      'Test Group',
-    );
+    await assetsPanelPage.createGroupFileLibraryAssets('Typographies', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.ungroupFileLibrary();
     await mainPage.waitForChangeIsSaved();

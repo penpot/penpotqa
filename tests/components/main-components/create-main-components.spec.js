@@ -4,15 +4,9 @@ const { expect, test } = require('@playwright/test');
 const { DashboardPage } = require('../../../pages/dashboard/dashboard-page');
 const { TeamPage } = require('../../../pages/dashboard/team-page');
 const { random } = require('../../../helpers/string-generator');
-const {
-  LayersPanelPage,
-} = require('../../../pages/workspace/layers-panel-page');
-const {
-  AssetsPanelPage,
-} = require('../../../pages/workspace/assets-panel-page');
-const {
-  DesignPanelPage,
-} = require('../../../pages/workspace/design-panel-page');
+const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
+const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
+const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 
 const teamName = random().concat('autotest');
 
@@ -199,9 +193,7 @@ mainTest('Create component from path by right-click', async ({ page }) => {
   await mainPage.createDefaultClosedPath();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    'path-main-component-canvas.png',
-  );
+  await expect(mainPage.viewport).toHaveScreenshot('path-main-component-canvas.png');
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
     'path-main-component-layer.png',
   );
@@ -242,9 +234,7 @@ mainTest('Undo component', async ({ page, browserName }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickOnLayerOnCanvas();
   await designPanelPage.changeRotationForLayer('200');
-  await expect(mainPage.viewport).toHaveScreenshot(
-    'component-change_rotation.png',
-  );
+  await expect(mainPage.viewport).toHaveScreenshot('component-change_rotation.png');
   await mainPage.clickShortcutCtrlZ(browserName);
   await expect(mainPage.viewport).toHaveScreenshot(
     'component-change_rotation_undo.png',

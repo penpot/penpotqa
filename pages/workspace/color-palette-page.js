@@ -9,25 +9,15 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     super(page);
     this.popUp = page.locator('div[class*="colorpicker-tooltip"]');
     this.hexInput = page.locator('#hex-value');
-    this.saveColorStyleButton = page.locator(
-      'button:has-text("Save color style")',
-    );
+    this.saveColorStyleButton = page.locator('button:has-text("Save color style")');
     this.colorsLibrariesSelect = page.locator(
       'div[class*="colorpicker_libraries__select-wrapper"]',
     );
-    this.colorsFileLibraryOptions = page.locator(
-      'span:has-text("File library")',
-    );
-    this.colorPaletteActionsBtn = page.locator(
-      'button[class*="palette-actions"]',
-    );
+    this.colorsFileLibraryOptions = page.locator('span:has-text("File library")');
+    this.colorPaletteActionsBtn = page.locator('button[class*="palette-actions"]');
     this.colorPaletteMenu = page.locator('ul[class*="palette-menu"]');
-    this.colorPaletteFileLibraryOpt = page.locator(
-      'li:has-text("File library")',
-    );
-    this.colorPaletteRecentColorsOpt = page.locator(
-      'li:has-text("Recent colors")',
-    );
+    this.colorPaletteFileLibraryOpt = page.locator('li:has-text("File library")');
+    this.colorPaletteRecentColorsOpt = page.locator('li:has-text("Recent colors")');
   }
 
   async setHex(value) {

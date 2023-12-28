@@ -311,29 +311,24 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  mainTest(
-    "DA-116 Team. Settings - check 'Team members' info",
-    async ({ page }) => {
-      const teamPage = new TeamPage(page);
-      const profilePage = new ProfilePage(page);
-      await profilePage.openYourAccountPage();
-      await profilePage.isHeaderDisplayed('Your account');
-      await profilePage.changeProfileName('QA Engineer');
-      await profilePage.uploadProfileImage('images/sample.jpeg');
-      await profilePage.waitInfoMessageHidden();
-      await profilePage.backToDashboardFromAccount();
-      await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openTeamSettingsPageViaOptionsMenu();
+  mainTest("DA-116 Team. Settings - check 'Team members' info", async ({ page }) => {
+    const teamPage = new TeamPage(page);
+    const profilePage = new ProfilePage(page);
+    await profilePage.openYourAccountPage();
+    await profilePage.isHeaderDisplayed('Your account');
+    await profilePage.changeProfileName('QA Engineer');
+    await profilePage.uploadProfileImage('images/sample.jpeg');
+    await profilePage.waitInfoMessageHidden();
+    await profilePage.backToDashboardFromAccount();
+    await teamPage.createTeam(team);
+    await teamPage.isTeamSelected(team);
+    await teamPage.openTeamSettingsPageViaOptionsMenu();
 
-      const teamOwner = 'QA Engineer (Owner)';
-      await teamPage.isTeamOwnerInfoDisplayed(teamOwner);
-      await teamPage.isTeamMembersInfoDisplayed('1 members');
-      await expect(teamPage.teamOwnerSection).toHaveScreenshot(
-        'team-owner-block.png',
-      );
-    },
-  );
+    const teamOwner = 'QA Engineer (Owner)';
+    await teamPage.isTeamOwnerInfoDisplayed(teamOwner);
+    await teamPage.isTeamMembersInfoDisplayed('1 members');
+    await expect(teamPage.teamOwnerSection).toHaveScreenshot('team-owner-block.png');
+  });
 
   test.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);

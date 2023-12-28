@@ -16,15 +16,9 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
     this.prototypeArrowSecondConnector = page.locator(
       'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=1',
     );
-    this.prototypePanelFlowNameText = page.locator(
-      'span[class*="flow-name-label"]',
-    );
-    this.prototypePanelFlowNameInput = page.locator(
-      'input[class*="interactions"]',
-    );
-    this.addInteractionButton = page.locator(
-      'button[class*="add-interaction-btn"]',
-    );
+    this.prototypePanelFlowNameText = page.locator('span[class*="flow-name-label"]');
+    this.prototypePanelFlowNameInput = page.locator('input[class*="interactions"]');
+    this.addInteractionButton = page.locator('button[class*="add-interaction-btn"]');
     this.removeSecondInteractionButton = page.locator(
       'button[class*="interactions__remove-btn"] >>nth=1',
     );

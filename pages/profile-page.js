@@ -10,22 +10,16 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
     //Account
     this.profileMenuButton = page.locator('div[data-test="profile-btn"]');
-    this.yourAccountMenuItem = page.locator(
-      'li[data-test="profile-profile-opt"]',
-    );
+    this.yourAccountMenuItem = page.locator('li[data-test="profile-profile-opt"]');
     this.logoutMenuItem = page.locator('li[data-test="logout-profile-opt"]');
-    this.giveFeedbackMenuItem = page.locator(
-      'li[data-test="feedback-profile-opt"]',
-    );
+    this.giveFeedbackMenuItem = page.locator('li[data-test="feedback-profile-opt"]');
     this.backToDashboardBtn = page.locator('div[class*="back-to-dashboard"]');
 
     //Profile
     this.profileNameInput = page.locator('#fullname');
     this.profileEmailInput = page.locator('#email');
     this.saveSettingsButton = page.locator('button:has-text("Save settings")');
-    this.profileImageInput = page.locator(
-      'input[data-test="profile-image-input"]',
-    );
+    this.profileImageInput = page.locator('input[data-test="profile-image-input"]');
     this.profileAvatarBlock = page.locator(
       'div.main_ui_settings_profile__form-container',
     );
@@ -43,9 +37,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.passwordOldInput = page.locator('#password-old');
     this.passwordNewInput = page.locator('input[label="New password"]');
     this.passwordConfirmInput = page.locator('input[label="Confirm password"]');
-    this.updateSettingsBtn = page.locator(
-      'button[data-test="submit-password"]',
-    );
+    this.updateSettingsBtn = page.locator('button[data-test="submit-password"]');
     this.passwordInputError = page.locator('div[data-test="-error"]');
   }
 

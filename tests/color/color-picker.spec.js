@@ -1,8 +1,6 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { expect, test } = require('@playwright/test');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
@@ -49,15 +47,12 @@ mainTest('CP-2 Open color picker from Fill menu', async ({ page }) => {
   await colorPalettePage.isColorPalettePopUpOpened();
 });
 
-mainTest(
-  'CP-3 Open color picker from Canvas background menu',
-  async ({ page }) => {
-    const designPanelPage = new DesignPanelPage(page);
-    const colorPalettePage = new ColorPalettePage(page);
-    await designPanelPage.clickCanvasBackgroundColorIcon();
-    await colorPalettePage.isColorPalettePopUpOpened();
-  },
-);
+mainTest('CP-3 Open color picker from Canvas background menu', async ({ page }) => {
+  const designPanelPage = new DesignPanelPage(page);
+  const colorPalettePage = new ColorPalettePage(page);
+  await designPanelPage.clickCanvasBackgroundColorIcon();
+  await colorPalettePage.isColorPalettePopUpOpened();
+});
 
 mainTest('CP-7 Use Recent colors', async ({ page }) => {
   const color1 = '#FF0000';
@@ -80,9 +75,7 @@ mainTest('CP-7 Use Recent colors', async ({ page }) => {
   await colorPalettePage.clickColorBullet(false, 1);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.createdLayer).toHaveScreenshot(
-    'board-recent-color.png',
-  );
+  await expect(mainPage.createdLayer).toHaveScreenshot('board-recent-color.png');
 });
 
 mainTest('CP-8 Use colors from File library', async ({ page }) => {

@@ -127,9 +127,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
         .locator(commonSel.concat('//button[@title="Hide"]'))
         .click({ force: true });
     } else {
-      await this.page
-        .locator(commonSel.concat('//button[@title="Show"]'))
-        .click();
+      await this.page.locator(commonSel.concat('//button[@title="Show"]')).click();
     }
   }
 

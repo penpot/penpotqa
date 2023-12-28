@@ -43,24 +43,18 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
-    'FL-1 Add flex layout to board from rightclick',
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const layersPanelPage = new LayersPanelPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await mainPage.addFlexLayoutViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
-      await designPanelPage.isLayoutRemoveButtonExists();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-with-layout.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-    },
-  );
+  mainTest('FL-1 Add flex layout to board from rightclick', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await mainPage.addFlexLayoutViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isLayoutIconVisibleOnLayer();
+    await designPanelPage.isLayoutRemoveButtonExists();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
+      mask: [mainPage.guides],
+    });
+  });
 
   mainTest('FL-2 Add flex layout to board from shortcut', async ({ page }) => {
     const mainPage = new MainPage(page);
@@ -93,23 +87,20 @@ test.describe(() => {
     },
   );
 
-  mainTest(
-    'FL-5 Remove flex layout from board from shortcut',
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const layersPanelPage = new LayersPanelPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await mainPage.pressFlexLayoutShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
-      await designPanelPage.isLayoutRemoveButtonExists();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await mainPage.pressFlexLayoutShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer(false);
-      await designPanelPage.isLayoutRemoveButtonExists(false);
-    },
-  );
+  mainTest('FL-5 Remove flex layout from board from shortcut', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await mainPage.pressFlexLayoutShortcut();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isLayoutIconVisibleOnLayer();
+    await designPanelPage.isLayoutRemoveButtonExists();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await mainPage.pressFlexLayoutShortcut();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isLayoutIconVisibleOnLayer(false);
+    await designPanelPage.isLayoutRemoveButtonExists(false);
+  });
 
   mainTest(
     'FL-6 Remove flex layout from board from Design panel',
@@ -147,12 +138,9 @@ test.describe(() => {
     );
     await designPanelPage.changeLayoutDirection('Column');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-column-direction.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-column-direction.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.changeLayoutDirection('Column reverse');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -163,12 +151,9 @@ test.describe(() => {
     );
     await designPanelPage.changeLayoutDirection('Row');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-row-direction.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-row-direction.png', {
+      mask: [mainPage.guides],
+    });
   });
 
   mainTest('FL-9 Change alignment', async ({ page }) => {
@@ -181,12 +166,9 @@ test.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeLayoutAlignment('Center');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-align-center.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-align-center.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.changeLayoutAlignment('End');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-align-end.png', {
@@ -209,12 +191,9 @@ test.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeLayoutJustification('Center');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-justify-center.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-justify-center.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.changeLayoutJustification('End');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-justify-end.png', {
@@ -246,12 +225,9 @@ test.describe(() => {
     );
     await designPanelPage.changeLayoutJustification('Start');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-justify-start.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-justify-start.png', {
+      mask: [mainPage.guides],
+    });
   });
 
   mainTest('FL-12 Change column gap', async ({ page }) => {
@@ -264,28 +240,19 @@ test.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeLayoutColumnGap('5');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-column-gap-5.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-column-gap-5.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.changeLayoutColumnGap('15');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-column-gap-15.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-column-gap-15.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.changeLayoutColumnGap('0');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-column-gap-0.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-column-gap-0.png', {
+      mask: [mainPage.guides],
+    });
   });
 
   mainTest('FL-13 Change row gap', async ({ page }) => {
@@ -327,12 +294,9 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeLayoutPadding('Horizontal', '15');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-padding-5-15.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-padding-5-15.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.changeLayoutPadding('Horizontal', '0');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -419,12 +383,9 @@ test.describe(() => {
     );
     await designPanelPage.changeFlexElementAlignment('End');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'flex-element-align-end.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('flex-element-align-end.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.changeFlexElementAlignment('Start');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -501,33 +462,21 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeLayoutColumnGap('0');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-padding-gap-0.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-padding-gap-0.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.clickLayoutVerticalPaddingField();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-padding-gap-0.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-padding-gap-0.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.clickLayoutHorizontalPaddingField();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-padding-gap-0.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-padding-gap-0.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.clickLayoutColumnGapField();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'layout-padding-gap-0.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('layout-padding-gap-0.png', {
+      mask: [mainPage.guides],
+    });
   });
 
   mainTest('FL-39 Gap click highlight', async ({ page }) => {
@@ -554,12 +503,9 @@ test.describe(() => {
       await designPanelPage.isFlexElementSectionOpened();
       await designPanelPage.setFlexElementPositionAbsolute();
       await mainPage.waitForChangeIsSaved();
-      await expect(page).toHaveScreenshot(
-        'flex-element-position-absolute.png',
-        {
-          mask: [mainPage.guides, mainPage.usersSection],
-        },
-      );
+      await expect(page).toHaveScreenshot('flex-element-position-absolute.png', {
+        mask: [mainPage.guides, mainPage.usersSection],
+      });
     },
   );
 });
