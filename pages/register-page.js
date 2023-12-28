@@ -11,9 +11,7 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     this.pageTitle = page.locator('h1[data-test="registration-title"]');
     this.emailInput = page.locator('#email');
     this.passwordInput = page.locator('#password');
-    this.createAccountBtn = page.locator(
-      'button[data-test="register-form-submit"]',
-    );
+    this.createAccountBtn = page.locator('button[data-test="register-form-submit"]');
     this.emailInputError = page.locator('div[data-test="email-input-error"]');
     this.passwordInputHint = page.locator('div.main_ui_components_forms__hint');
     this.passwordInputError = page.locator('div[data-test="-error"]');

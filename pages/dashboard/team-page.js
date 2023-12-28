@@ -20,9 +20,7 @@ exports.TeamPage = class TeamPage extends BasePage {
       'button[class*="current-team"] div[class*="team-name"]',
     );
     this.teamNameLabel = page.locator('div[class*="team__name"]');
-    this.teamOptionsMenuButton = page.locator(
-      'button[class*="switch-options"]',
-    );
+    this.teamOptionsMenuButton = page.locator('button[class*="switch-options"]');
     this.deleteTeamMenuItem = page.locator('#teams-options-delete-team');
     this.deleteTeamButton = page.locator('input[value="Delete team"]');
     this.teamSettingsMenuItem = page.locator('li[data-test="team-settings"]');
@@ -47,9 +45,7 @@ exports.TeamPage = class TeamPage extends BasePage {
 
     //Invitations
     this.invitationsMenuItem = page.locator('li[data-test="team-invitations"]');
-    this.inviteMembersToTeamButton = page.locator(
-      'a[data-test="invite-member"]',
-    );
+    this.inviteMembersToTeamButton = page.locator('a[data-test="invite-member"]');
     this.inviteMembersPopUpHeader = page.locator(
       'div[class*="modal-team-container"] div[class*="title"]',
     );
@@ -64,9 +60,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.inviteMembersToTeamEmailInput = page.locator(
       'input[placeholder="Emails, comma separated"]',
     );
-    this.sendInvitationButton = page.locator(
-      'button:has-text("Send invitation")',
-    );
+    this.sendInvitationButton = page.locator('button:has-text("Send invitation")');
     this.invitationRecord = page.locator(
       'div[class*="table-rows"] div[class*="table-row"]',
     );
@@ -76,9 +70,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.invitationRecordRoleCell = page.locator(
       'div[class*="dashboard_team__roles"]',
     );
-    this.invitationRecordRoleSelector = page.locator(
-      'div[class*="team__has-priv"]',
-    );
+    this.invitationRecordRoleSelector = page.locator('div[class*="team__has-priv"]');
     this.invitationRecordStatusCell = page.locator(
       'div[class*="dashboard_team__status"] div',
     );

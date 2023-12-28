@@ -18,9 +18,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
     this.topLeftCornerRadiusInput = page.locator('div[title="Top left"] input');
-    this.topRightCornerRadiusInput = page.locator(
-      'div[title="Top right"] input',
-    );
+    this.topRightCornerRadiusInput = page.locator('div[title="Top right"] input');
     this.bottomLeftCornerRadiusInput = page.locator(
       'div[title="Bottom left"] input',
     );
@@ -55,9 +53,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="shadow__element-title"]:has-text("Shadow")',
     );
     this.addShadowButton = page.locator('button[class*="shadow__add-shadow"]');
-    this.shadowActionsButton = page.locator(
-      'button[class*="shadow__more-options"]',
-    );
+    this.shadowActionsButton = page.locator('button[class*="shadow__more-options"]');
     this.shadowXInput = page.locator(
       'div[class*="shadow-advanced-options"] div[title="X"] input',
     );
@@ -95,9 +91,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementAlignCenterBtn = page.locator(
       'label[title="Align self center"] span',
     );
-    this.flexElementAlignEndBtn = page.locator(
-      'label[title="Align self end"] span',
-    );
+    this.flexElementAlignEndBtn = page.locator('label[title="Align self end"] span');
     this.flexElementMarginVertInput = page.locator(
       'div[title="Vertical margin"] input',
     );
@@ -111,22 +105,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
     );
     this.layoutDirectRowBtn = page.locator('label[title="Row"] span');
-    this.layoutDirectRowReverseBtn = page.locator(
-      'label[title="Row reverse"] span',
-    );
+    this.layoutDirectRowReverseBtn = page.locator('label[title="Row reverse"] span');
     this.layoutDirectColumnBtn = page.locator('label[title="Column"] span');
     this.layoutDirectColumnReverseBtn = page.locator(
       'label[title="Column reverse"] span',
     );
-    this.layoutAlignStartBtn = page.locator(
-      'label[title="Align items start"] span',
-    );
+    this.layoutAlignStartBtn = page.locator('label[title="Align items start"] span');
     this.layoutAlignCenterBtn = page.locator(
       'label[title="Align items center"] span',
     );
-    this.layoutAlignEndBtn = page.locator(
-      'label[title="Align items end"] span',
-    );
+    this.layoutAlignEndBtn = page.locator('label[title="Align items end"] span');
     this.layoutJustifyStartBtn = page.locator(
       'label[title="Justify content start"] span',
     );
@@ -153,19 +141,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.layoutHorizontPaddingInput = page.locator(
       'div[title="Horizontal padding"] input',
     );
-    this.layoutIndepPaddingsIcon = page.locator(
-      'button[class*="padding-toggle"]',
-    );
+    this.layoutIndepPaddingsIcon = page.locator('button[class*="padding-toggle"]');
     this.layoutPaddingTopInput = page.locator('div[title="Top padding"] input');
-    this.layoutPaddingRightInput = page.locator(
-      'div[title="Right padding"] input',
-    );
+    this.layoutPaddingRightInput = page.locator('div[title="Right padding"] input');
     this.layoutPaddingBottomInput = page.locator(
       'div[title="Bottom padding"] input',
     );
-    this.layoutPaddingLeftInput = page.locator(
-      'div[title="Left padding"] input',
-    );
+    this.layoutPaddingLeftInput = page.locator('div[title="Left padding"] input');
 
     //Design panel - Blur section
     this.blurSection = page.locator(
@@ -204,18 +186,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeOpacityInput = page.locator(
       'div[class*="stroke-data"] input[class*="opacity-input"]',
     );
-    this.strokeAlignmentField = page.locator(
-      'div[data-test="stroke.alignment"]',
-    );
+    this.strokeAlignmentField = page.locator('div[data-test="stroke.alignment"]');
     this.strokeTypeField = page.locator('div[data-test="stroke.style"]');
 
     //Design panel - Text section
     this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase-refactor');
     this.textLowerCaseIcon = page.locator('svg.icon-text-lowercase-refactor');
     this.textTitleCaseIcon = page.locator('svg.icon-text-mixed-refactor');
-    this.textMoreOptionsIcon = page.locator(
-      'button[class*="text__more-options"]',
-    );
+    this.textMoreOptionsIcon = page.locator('button[class*="text__more-options"]');
     this.textVerticalOptionsBlock = page.locator(
       'div[class*="vertical-align-options"]',
     );
@@ -233,14 +211,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.removeExportButton = page.locator(
       'button[class*="exports__action-btn"] svg[class="icon-remove-refactor"]',
     );
-    this.exportElementButton = page.locator(
-      'button[class*="exports__export-btn"]',
-    );
+    this.exportElementButton = page.locator('button[class*="exports__export-btn"]');
 
     //Design panel - Grid section
-    this.gridSection = page.locator(
-      'div[class*=element-set]:has-text("Guides")',
-    );
+    this.gridSection = page.locator('div[class*=element-set]:has-text("Guides")');
     this.addGridButton = page.locator('button[class*="grid__add-grid"]');
     this.removeGridButton = page.locator(
       'div[class*="grid__actions"] svg[class="icon-remove-refactor"]',
@@ -255,17 +229,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="grid__option-row"] div[class*="type-select-wrapper"]',
     );
     this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
-    this.gridTypeSelectorColumnsOption = page.locator(
-      'span:has-text("Columns")',
-    );
+    this.gridTypeSelectorColumnsOption = page.locator('span:has-text("Columns")');
     this.gridTypeSelectorRowsOption = page.locator('span:has-text("Rows")');
     this.gridSizeInput = page.locator('div[title="Size"] input');
     this.gridColumnsRowsInput = page.locator(
       'div[class*="grid__column-select"] input',
     );
-    this.gridActionsButton = page.locator(
-      'button[class*="grid__show-options"]',
-    );
+    this.gridActionsButton = page.locator('button[class*="grid__show-options"]');
     this.gridOpacityInput = page.locator(
       'div[class*="grid__advanced-row"] input[class*="opacity-input"]',
     );

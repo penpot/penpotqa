@@ -38,7 +38,5 @@ test('ON-15 Login with incorrect password', async ({ page }) => {
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);
   await loginPage.enterPwd('11223344');
   await loginPage.clickLoginButton();
-  await loginPage.isLoginErrorMessageDisplayed(
-    'Email or password is incorrect.',
-  );
+  await loginPage.isLoginErrorMessageDisplayed('Email or password is incorrect.');
 });

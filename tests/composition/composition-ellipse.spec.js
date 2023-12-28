@@ -1,8 +1,6 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
@@ -120,9 +118,7 @@ test.describe(() => {
     await colorPalettePage.setHex('#96e637');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'ellipse-inner-shadow.png',
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('ellipse-inner-shadow.png');
   });
 
   mainTest(
@@ -136,36 +132,24 @@ test.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickAddBlurButton();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-blur-default.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
+      await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-default.png', {
+        mask: [mainPage.guides],
+      });
       await designPanelPage.hideBlur();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-blur-hide.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
+      await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-hide.png', {
+        mask: [mainPage.guides],
+      });
       await designPanelPage.unhideBlur();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-blur-unhide.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
+      await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-unhide.png', {
+        mask: [mainPage.guides],
+      });
       await designPanelPage.removeBlur();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-blur-remove.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
+      await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-remove.png', {
+        mask: [mainPage.guides],
+      });
     },
   );
 
@@ -178,95 +162,86 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur.png');
   });
 
-  mainTest(
-    'CO-121 Add, edit and delete Stroke to ellipse',
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await designPanelPage.clickAddStrokeButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-default.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeStrokeSettings(
-        '#43E50B',
-        '70',
-        '13',
-        'Inside',
-        'Dotted',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-inside-dotted.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '80',
-        '5',
-        'Outside',
-        'Dashed',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-outside-dashed.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '100',
-        '3',
-        'Center',
-        'Solid',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-center-solid.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '40',
-        '4',
-        'Center',
-        'Mixed',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-center-mixed.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.removeStroke();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-remove.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-    },
-  );
+  mainTest('CO-121 Add, edit and delete Stroke to ellipse', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await designPanelPage.clickAddStrokeButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-default.png', {
+      mask: [mainPage.guides],
+    });
+    await mainPage.clickOnLayerOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeStrokeSettings(
+      '#43E50B',
+      '70',
+      '13',
+      'Inside',
+      'Dotted',
+    );
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'ellipse-stroke-inside-dotted.png',
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeStrokeSettings(
+      '#F5358F',
+      '80',
+      '5',
+      'Outside',
+      'Dashed',
+    );
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'ellipse-stroke-outside-dashed.png',
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeStrokeSettings(
+      '#F5358F',
+      '100',
+      '3',
+      'Center',
+      'Solid',
+    );
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'ellipse-stroke-center-solid.png',
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeStrokeSettings(
+      '#F5358F',
+      '40',
+      '4',
+      'Center',
+      'Mixed',
+    );
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'ellipse-stroke-center-mixed.png',
+      {
+        mask: [mainPage.guides],
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.removeStroke();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-remove.png', {
+      mask: [mainPage.guides],
+    });
+  });
 
   mainTest.skip(
     // todo bug 6359 > need to update after fix

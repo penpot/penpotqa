@@ -15,9 +15,7 @@ exports.BasePage = class BasePage {
     this.viewport = page.locator('div.viewport');
 
     //Layer right-click menu items
-    this.createdLayer = page.locator(
-      'div[class="viewport"] [id^="shape"] >> nth=0',
-    );
+    this.createdLayer = page.locator('div[class="viewport"] [id^="shape"] >> nth=0');
     this.createdBoardTitle = page.locator('g[class="frame-title"] >> nth=0');
     this.deleteLayerMenuItem = page.locator(
       'ul[class*="workspace-context-menu"] li:has-text("Delete")',

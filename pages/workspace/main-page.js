@@ -25,15 +25,11 @@ exports.MainPage = class MainPage extends BasePage {
     this.designTab = page.locator('div[data-id="design"]');
 
     //Viewport
-    this.textbox = page.locator(
-      'div[role="textbox"] div[contenteditable="true"]',
-    );
+    this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
     this.guides = page.locator('.guides .new-guides');
 
     //Node panel
-    this.pathActionsBlock = page.locator(
-      'div[class$="path_actions__sub-actions"]',
-    );
+    this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
     this.firstNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=0',
     );
@@ -53,12 +49,8 @@ exports.MainPage = class MainPage extends BasePage {
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=6',
     );
     this.nodePanelAddNodeButton = page.locator('button[title^="Add node"]');
-    this.nodePanelDeleteNodeButton = page.locator(
-      'button[title^="Delete node"]',
-    );
-    this.nodePanelMergeNodesButton = page.locator(
-      'button[title^="Merge nodes"]',
-    );
+    this.nodePanelDeleteNodeButton = page.locator('button[title^="Delete node"]');
+    this.nodePanelMergeNodesButton = page.locator('button[title^="Merge nodes"]');
     this.nodePanelDrawNodesButton = page.locator('button[title^="Draw nodes"]');
     this.nodePanelMoveNodesButton = page.locator('button[title^="Move nodes"]');
     this.nodePanelJoinNodesButton = page.locator('button[title^="Join nodes"]');
@@ -112,12 +104,8 @@ exports.MainPage = class MainPage extends BasePage {
       'li[data-test="hide-ui"] span:text-is("Show / Hide UI")',
     );
     this.dowloadPenpotFileMenuSubItem = page.locator('#file-menu-binary-file');
-    this.dowloadStandartFileMenuSubItem = page.locator(
-      '#file-menu-standard-file',
-    );
-    this.addAsSharedLibraryFileMenuSubItem = page.locator(
-      '#file-menu-add-shared',
-    );
+    this.dowloadStandartFileMenuSubItem = page.locator('#file-menu-standard-file');
+    this.addAsSharedLibraryFileMenuSubItem = page.locator('#file-menu-add-shared');
     this.removeAsSharedLibraryFileMenuSubItem = page.locator(
       '#file-menu-remove-shared',
     );
@@ -139,9 +127,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Pages
     this.addPageButton = page.locator('button[class*="add-page"]');
-    this.pagesBlock = page.locator(
-      'div.main_ui_workspace_sidebar_sitemap__sitemap',
-    );
+    this.pagesBlock = page.locator('div.main_ui_workspace_sidebar_sitemap__sitemap');
     this.firstPageListItem = page.locator(
       'ul[class*="pages-list"] div[class*="element-list-body"] >>nth=0',
     );

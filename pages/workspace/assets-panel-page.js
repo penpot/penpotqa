@@ -63,13 +63,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       'div[class*="typography-entry"]',
     );
     this.fontSelector = page.locator('div[class*="typography__font-option"]');
-    this.fontSelectorSearchInput = page.locator(
-      'input[placeholder="Search font"]',
-    );
+    this.fontSelectorSearchInput = page.locator('input[placeholder="Search font"]');
     this.fontSizeInput = page.locator('div[class*="font-size-select"] input');
-    this.typographyNameInput = page.locator(
-      'input[class*="adv-typography-name"]',
-    );
+    this.typographyNameInput = page.locator('input[class*="adv-typography-name"]');
     this.assetsTitleText = page.locator(
       'div[class*="asset-section"] span[class*="title-name"]',
     );

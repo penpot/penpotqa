@@ -1,9 +1,7 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { expect, test } = require('@playwright/test');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
@@ -100,9 +98,7 @@ test.describe(() => {
     await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'group-colors.png',
-    );
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot('group-colors.png');
   });
 
   mainTest('AS-29 File library colors - rename group', async ({ page }) => {
@@ -139,9 +135,7 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.clickFileLibraryColorsColorBullet();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'apply-color-to-board.png',
-    );
+    await expect(mainPage.createdLayer).toHaveScreenshot('apply-color-to-board.png');
   });
 
   mainTest('AS-117 File library colors - apply to stroke', async ({ page }) => {

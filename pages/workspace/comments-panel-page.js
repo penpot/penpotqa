@@ -9,9 +9,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     super(page);
 
     this.commentsButton = page.locator('button[title="Comments (C)"]');
-    this.commentInput = page.locator(
-      'textarea[placeholder="Write new comment"]',
-    );
+    this.commentInput = page.locator('textarea[placeholder="Write new comment"]');
     this.commentEditInput = page.locator(
       'div[class*="comments__edit-form"] textarea',
     );
@@ -44,9 +42,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentDeleteOptionMenuItem = page.locator(
       'ul[class*="comment-options-dropdown"] li:has-text("Delete thread")',
     );
-    this.deleteThreadButton = page.locator(
-      'input[value="Delete conversation"]',
-    );
+    this.deleteThreadButton = page.locator('input[value="Delete conversation"]');
     this.resolveCommentCheckbox = page.locator(
       'div[class*="comments__options-resolve-wrapper"] span',
     );

@@ -1,9 +1,7 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { expect, test } = require('@playwright/test');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
@@ -59,36 +57,30 @@ test.describe(() => {
     await layersPanelPage.isLayerNameDisplayed('renamed path');
   });
 
-  mainTest(
-    'CO-282 Add, hide, unhide and delete Blur to Path',
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'path-blur-default.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await designPanelPage.hideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('path-blur-hide.png', {
-        mask: [mainPage.guides],
-      });
-      await designPanelPage.unhideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('path-blur-unhide.png', {
-        mask: [mainPage.guides],
-      });
-      await designPanelPage.removeBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('path-blur-remove.png', {
-        mask: [mainPage.guides],
-      });
-    },
-  );
+  mainTest('CO-282 Add, hide, unhide and delete Blur to Path', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await designPanelPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('path-blur-default.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('path-blur-hide.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('path-blur-unhide.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('path-blur-remove.png', {
+      mask: [mainPage.guides],
+    });
+  });
 
   mainTest('CO-283 Add and edit Blur to path', async ({ page }) => {
     const mainPage = new MainPage(page);
@@ -175,32 +167,23 @@ test.describe(() => {
     },
   );
 
-  mainTest(
-    'CO-310 Flip Vertical and Flip Horizontal path',
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      await mainPage.flipVerticalViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'path-flipped-vertical.png',
-      );
-      await mainPage.flipHorizontalViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'path-flipped-vertical-horizontal.png',
-      );
-      await mainPage.flipVerticalViaShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'path-flipped-horizontal.png',
-      );
-      await mainPage.flipHorizontalViaShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'path-non-flipped-jpeg.png',
-      );
-    },
-  );
+  mainTest('CO-310 Flip Vertical and Flip Horizontal path', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.flipVerticalViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('path-flipped-vertical.png');
+    await mainPage.flipHorizontalViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'path-flipped-vertical-horizontal.png',
+    );
+    await mainPage.flipVerticalViaShortcut();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('path-flipped-horizontal.png');
+    await mainPage.flipHorizontalViaShortcut();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('path-non-flipped-jpeg.png');
+  });
 
   mainTest('CO-322 Selection to board', async ({ page }) => {
     const mainPage = new MainPage(page);
@@ -232,12 +215,9 @@ test.describe(() => {
       );
       await designPanelPage.hideShadow();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'path-drop-shadow-hide.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
+      await expect(mainPage.viewport).toHaveScreenshot('path-drop-shadow-hide.png', {
+        mask: [mainPage.guides],
+      });
       await designPanelPage.unhideShadow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(

@@ -1,9 +1,7 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { expect, test } = require('@playwright/test');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
@@ -128,9 +126,7 @@ test.describe(() => {
     await designPanelPage.clickIndividualCornersRadiusButton();
     await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'image-changed-corners.png',
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('image-changed-corners.png');
     await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('image-png.png');
@@ -159,54 +155,39 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('image-jpeg.png');
   });
 
-  mainTest(
-    'CO-229 Add, hide, unhide and delete Blur to image',
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'image-blur-default.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await designPanelPage.hideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('image-blur-hide.png', {
-        mask: [mainPage.guides],
-      });
-      await designPanelPage.unhideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'image-blur-unhide.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-      await designPanelPage.removeBlur();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'image-blur-remove.png',
-        {
-          mask: [mainPage.guides],
-        },
-      );
-    },
-  );
+  mainTest('CO-229 Add, hide, unhide and delete Blur to image', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await designPanelPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-default.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-hide.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-unhide.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-remove.png', {
+      mask: [mainPage.guides],
+    });
+  });
 
   mainTest('CO-231 Add, edit and delete Stroke to image', async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddStrokeButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'image-stroke-default.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('image-stroke-default.png', {
+      mask: [mainPage.guides],
+    });
     await designPanelPage.changeStrokeSettings(
       '#43E50B',
       '60',
@@ -265,12 +246,9 @@ test.describe(() => {
     );
     await designPanelPage.removeStroke();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'image-stroke-remove.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('image-stroke-remove.png', {
+      mask: [mainPage.guides],
+    });
   });
 
   mainTest('CO-242-1 Delete image via rightclick', async ({ page }) => {
@@ -315,32 +293,23 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('image-rotated-359.png');
   });
 
-  mainTest(
-    'CO-259 Flip Vertical and Flip Horizontal image',
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      await mainPage.flipVerticalViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'image-flipped-vertical.png',
-      );
-      await mainPage.flipHorizontalViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'image-flipped-vertical-horizontal.png',
-      );
-      await mainPage.flipVerticalViaShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'image-flipped-horizontal.png',
-      );
-      await mainPage.flipHorizontalViaShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'image-non-flipped-jpeg.png',
-      );
-    },
-  );
+  mainTest('CO-259 Flip Vertical and Flip Horizontal image', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.flipVerticalViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('image-flipped-vertical.png');
+    await mainPage.flipHorizontalViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'image-flipped-vertical-horizontal.png',
+    );
+    await mainPage.flipVerticalViaShortcut();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('image-flipped-horizontal.png');
+    await mainPage.flipHorizontalViaShortcut();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('image-non-flipped-jpeg.png');
+  });
 });
 
 test.describe(() => {

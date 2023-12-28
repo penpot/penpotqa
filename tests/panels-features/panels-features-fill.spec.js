@@ -1,8 +1,6 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const {
-  ColorPalettePage,
-} = require('../../pages/workspace/color-palette-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
@@ -55,9 +53,7 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.isFillHexCodeSet('FF0000');
     await designPanelPage.isFillOpacitySet('100');
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'board-changed-fill.png',
-    );
+    await expect(mainPage.createdLayer).toHaveScreenshot('board-changed-fill.png');
   });
 
   mainTest('PF-78 Change fill opacity for board', async ({ page }) => {
@@ -78,9 +74,7 @@ test.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickRemoveFillButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'board-removed-fill.png',
-    );
+    await expect(mainPage.createdLayer).toHaveScreenshot('board-removed-fill.png');
   });
 });
 
@@ -113,9 +107,7 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.isFillHexCodeSet('FF0000');
     await designPanelPage.isFillOpacitySet('100');
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'path-changed-fill.png',
-    );
+    await expect(mainPage.createdLayer).toHaveScreenshot('path-changed-fill.png');
   });
 
   mainTest('PF-82 Change fill opacity for path', async ({ page }) => {
@@ -127,9 +119,7 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.isFillHexCodeSet('B1B2B5');
     await designPanelPage.isFillOpacitySet('70');
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'path-changed-opacity.png',
-    );
+    await expect(mainPage.createdLayer).toHaveScreenshot('path-changed-opacity.png');
   });
 
   mainTest('PF-97 Remove fill for path', async ({ page }) => {
@@ -140,9 +130,7 @@ test.describe(() => {
     await designPanelPage.clickRemoveFillButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnDesignTab();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'path-removed-fill.png',
-    );
+    await expect(mainPage.createdLayer).toHaveScreenshot('path-removed-fill.png');
   });
 });
 

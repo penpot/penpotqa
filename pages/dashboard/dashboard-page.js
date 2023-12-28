@@ -38,9 +38,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.delFileAsSharedLibraryMenuItem = page.locator(
       'a[data-test="file-del-shared"]',
     );
-    this.delFileAsSharedLibraryButton = page.locator(
-      'input[value="Unpublish"]',
-    );
+    this.delFileAsSharedLibraryButton = page.locator('input[value="Unpublish"]');
     this.downloadFilePenpotMenuItem = page.locator(
       'a[data-test="download-binary-file"]',
     );
@@ -58,23 +56,17 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
 
     //Projects
-    this.addProjectButton = page.locator(
-      'button[data-test="new-project-button"]',
-    );
+    this.addProjectButton = page.locator('button[data-test="new-project-button"]');
     this.projectNameInput = page.locator(
       'div[class*="project-name-wrapper"] div[class*="edit-wrapper"]',
     );
-    this.projectNameTitle = page.locator(
-      'div[class*="project-name-wrapper"] h2',
-    );
+    this.projectNameTitle = page.locator('div[class*="project-name-wrapper"] h2');
     this.deleteProjectMenuItem = page.locator('a[data-test="project-delete"]');
     this.deleteProjectButton = page.locator(
       'input[value="Delete files"],input[value="Delete project"]',
     );
     this.renameProjectMenuItem = page.locator('a[data-test="project-rename"]');
-    this.duplicateProjectMenuItem = page.locator(
-      'a[data-test="project-duplicate"]',
-    );
+    this.duplicateProjectMenuItem = page.locator('a[data-test="project-duplicate"]');
     this.pinUnpinProjectButton = page.locator('button[alt="Pin/Unpin"] svg');
     this.projectOptionsMenuButton = page.locator(
       'button[data-test="project-options"]',
@@ -122,17 +114,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontsTablePlaceholder = page.locator(
       'div[class*="fonts-placeholder"] div[class*="label"]',
     );
-    this.fontNameInput = page.locator(
-      'div[class*="table-row"] input[type="text"]',
-    );
+    this.fontNameInput = page.locator('div[class*="table-row"] input[type="text"]');
     this.saveFontButton = page.locator('button:text-is("Save")');
     this.searchFontInput = page.locator('input[placeholder="Search font"]');
     this.fontFormatError = page.locator('div[class="banner error fixed"]');
 
     //Libraries & Templates
-    this.noLibrariesPlacelder = page.locator(
-      'div[data-test="empty-placeholder"] p',
-    );
+    this.noLibrariesPlacelder = page.locator('div[data-test="empty-placeholder"] p');
   }
 
   async createFileViaPlaceholder() {
