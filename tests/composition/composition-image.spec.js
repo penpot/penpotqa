@@ -30,7 +30,8 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    test.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
     await mainPage.uploadImage('images/images.png');
     await mainPage.clickViewportTwice();
@@ -55,7 +56,6 @@ test.describe(() => {
   mainTest(
     'CO-227 Add, hide, unhide, change type and delete Shadow to image',
     async ({ page }) => {
-      test.setTimeout(60000);
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
       await designPanelPage.clickAddShadowButton();
@@ -145,7 +145,8 @@ test.describe(() => {
 });
 
 test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    testInfo.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
     await mainPage.uploadImage('images/sample.jpeg');
     await mainPage.clickViewportTwice();
@@ -196,7 +197,6 @@ test.describe(() => {
   );
 
   mainTest('CO-231 Add, edit and delete Stroke to image', async ({ page }) => {
-    test.setTimeout(70000);
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddStrokeButton();

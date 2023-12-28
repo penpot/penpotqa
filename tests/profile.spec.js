@@ -1,4 +1,4 @@
-const { mainTest} = require('../fixtures');
+const { mainTest } = require('../fixtures');
 const { ProfilePage } = require('../pages/profile-page');
 const { random } = require('../helpers/string-generator');
 const { LoginPage } = require('../pages/login-page');
@@ -75,22 +75,19 @@ mainTest('PR-19 Logout from Account', async ({ page }) => {
   await loginPage.isLoginPageOpened();
 });
 
-mainTest(
-  'PR-21 Send feedback email with empty fields',
-  async ({ page }) => {
-    const profilePage = new ProfilePage(page);
-    await profilePage.openGiveFeedbackPage();
-    await profilePage.isHeaderDisplayed('Your account');
-    await profilePage.isSendFeedbackButtonDisabled();
-    await profilePage.enterSubjectToGiveFeedbackForm('QA Test');
-    await profilePage.isSendFeedbackButtonDisabled();
-    await profilePage.clearSubjectInputInGiveFeedbackForm();
-    await profilePage.enterDescriptionToGiveFeedbackForm(
-      'This is a test feedback triggered by QA team',
-    );
-    await profilePage.isSendFeedbackButtonDisabled();
-  },
-);
+mainTest('PR-21 Send feedback email with empty fields', async ({ page }) => {
+  const profilePage = new ProfilePage(page);
+  await profilePage.openGiveFeedbackPage();
+  await profilePage.isHeaderDisplayed('Your account');
+  await profilePage.isSendFeedbackButtonDisabled();
+  await profilePage.enterSubjectToGiveFeedbackForm('QA Test');
+  await profilePage.isSendFeedbackButtonDisabled();
+  await profilePage.clearSubjectInputInGiveFeedbackForm();
+  await profilePage.enterDescriptionToGiveFeedbackForm(
+    'This is a test feedback triggered by QA team',
+  );
+  await profilePage.isSendFeedbackButtonDisabled();
+});
 
 mainTest('PR-22 Send feedback email with valid data', async ({ page }) => {
   const profilePage = new ProfilePage(page);

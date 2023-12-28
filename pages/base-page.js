@@ -1,5 +1,5 @@
 const { expect } = require('@playwright/test');
-const { getPlatformName } = require("../helpers/get-platform");
+const { getPlatformName } = require('../helpers/get-platform');
 
 exports.BasePage = class BasePage {
   /**
@@ -99,13 +99,13 @@ exports.BasePage = class BasePage {
   }
 
   async clickShortcutCtrlZ(browserName) {
-    if ( getPlatformName() === "MacOS") {
-      await this.page.keyboard.press("Meta+Z");
+    if (getPlatformName() === 'MacOS') {
+      await this.page.keyboard.press('Meta+Z');
     } else {
-      if (browserName !== "webkit") {
-        await this.page.keyboard.press("Control+Z");
+      if (browserName !== 'webkit') {
+        await this.page.keyboard.press('Control+Z');
       } else {
-        await this.page.keyboard.press("Meta+Z");
+        await this.page.keyboard.press('Meta+Z');
       }
     }
   }

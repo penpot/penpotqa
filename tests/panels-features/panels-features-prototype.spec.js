@@ -4,7 +4,9 @@ const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { PrototypePanelPage } = require('../../pages/workspace/prototype-panel-page');
+const {
+  PrototypePanelPage,
+} = require('../../pages/workspace/prototype-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 
 const teamName = random().concat('autotest');

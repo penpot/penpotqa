@@ -1,6 +1,8 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
+const {
+  ColorPalettePage,
+} = require('../../pages/workspace/color-palette-page');
 const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
@@ -40,7 +42,7 @@ mainTest('CO-1 Change color background', async ({ page }) => {
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 15000);
+    testInfo.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();

@@ -49,6 +49,7 @@ Some settings from _playwright.config.js_ may be useful:
 - For disabling parallelism set `workers` to 1.
 
 **5. Tests amount and execution time.**
+
 - For now there are 327 tests in current repository
 - If parallel execution is enabled with default amount of workers (2) the average time for each browser is the following:
 - Chrome: 43 mins

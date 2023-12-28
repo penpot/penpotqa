@@ -260,8 +260,16 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickViewportByCoordinates(x, y) {
     await this.viewport.hover();
-    await this.viewport.click({ position: { x: x, y: y }, delay: 300, force: true });
-    await this.viewport.click({ position: { x: x, y: y }, delay: 300, force: true });
+    await this.viewport.click({
+      position: { x: x, y: y },
+      delay: 300,
+      force: true,
+    });
+    await this.viewport.click({
+      position: { x: x, y: y },
+      delay: 300,
+      force: true,
+    });
   }
 
   async isUnSavedChangesDisplayed() {
@@ -799,9 +807,9 @@ exports.MainPage = class MainPage extends BasePage {
     await this.designTab.click();
   }
 
-  async createComponentsMultipleShapesRightClick(singleComponent=true) {
-    const layerSel = this.page.locator("div.viewport .main.viewport-selrect");
-    await layerSel.last().click({ button: "right", force: true });
+  async createComponentsMultipleShapesRightClick(singleComponent = true) {
+    const layerSel = this.page.locator('div.viewport .main.viewport-selrect');
+    await layerSel.last().click({ button: 'right', force: true });
     if (singleComponent) {
       await this.createComponentMenuItem.click();
     } else {
@@ -811,22 +819,22 @@ exports.MainPage = class MainPage extends BasePage {
 
   async createComponentViaShortcut(browserName) {
     await this.createdLayer.click({ force: true });
-    if (browserName === "webkit") {
-      await this.page.keyboard.press("Meta+K");
+    if (browserName === 'webkit') {
+      await this.page.keyboard.press('Meta+K');
     } else {
-      await this.page.keyboard.press("Control+K");
+      await this.page.keyboard.press('Control+K');
     }
   }
 
   async duplicateLayerViaRightClick() {
     const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
-    await layerSel.last().click({ button: "right", force: true });
+    await layerSel.last().click({ button: 'right', force: true });
     await this.duplicateOption.click();
   }
 
   async showInAssetsPanelRightClick() {
     const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
-    await layerSel.last().click({ button: "right", force: true });
+    await layerSel.last().click({ button: 'right', force: true });
     await this.showInAssetsPanelOption.click();
   }
 };

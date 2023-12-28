@@ -9,7 +9,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     super(page);
 
     this.layersTab = page.locator('div[data-id="layers"]');
-    this.layersSidebar = page.locator("#layers");
+    this.layersSidebar = page.locator('#layers');
     this.createdLayerOnLayersPanelNameInput = page.locator(
       'div[class*="element-list-body"] input[class*="element-name"]',
     );
@@ -150,14 +150,14 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
 
   async createComponentViaRightClickLayers() {
     await this.createdLayerOnLayersPanelSpan.click({
-      button: "right",
+      button: 'right',
       force: true,
     });
     await this.createComponentMenuItem.click();
   }
 
   async clickCopyComponentOnLayersTab() {
-    await this.copyComponentLayer.last().click();
+    await this.copyComponentLayer.first().click();
   }
 
   async clickMainComponentOnLayersTab() {
@@ -165,12 +165,12 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   }
 
   async restoreMainComponentViaRightClick() {
-    await this.copyComponentLayer.click({ button: "right", force: true });
+    await this.copyComponentLayer.click({ button: 'right', force: true });
     await this.restoreMainComponentMenuItem.click();
   }
 
   async updateMainComponentViaRightClick() {
-    await this.copyComponentLayer.click({ button: "right", force: true });
+    await this.copyComponentLayer.click({ button: 'right', force: true });
     await this.updateMainComponentMenuItem.click();
   }
 };

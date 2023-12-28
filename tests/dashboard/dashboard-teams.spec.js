@@ -55,7 +55,7 @@ test.describe(() => {
       await teamPage.isInviteMembersPopUpHeaderDisplayed(
         'Invite members to the team',
       );
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {
@@ -77,7 +77,7 @@ test.describe(() => {
       await teamPage.isInviteMembersPopUpHeaderDisplayed(
         'Invite members to the team',
       );
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {
@@ -108,7 +108,7 @@ test.describe(() => {
         'Editor',
         'Pending',
       );
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {
@@ -140,7 +140,7 @@ test.describe(() => {
         'Admin',
         'Pending',
       );
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {
@@ -168,7 +168,7 @@ test.describe(() => {
       await teamPage.isSendInvitationWarningExist(
         'Some emails are from current team members. Their invitations will not be sent.',
       );
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {
@@ -201,7 +201,7 @@ test.describe(() => {
       );
       await teamPage.resendInvitation();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {
@@ -234,7 +234,7 @@ test.describe(() => {
       );
       await teamPage.deleteInvitation();
       await teamPage.isInvitationRecordRemoved();
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {
@@ -271,7 +271,7 @@ test.describe(() => {
         'Admin',
         'Pending',
       );
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {
@@ -299,7 +299,7 @@ test.describe(() => {
           mask: [teamPage.teamNameLabel],
         },
       );
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {
@@ -332,7 +332,7 @@ test.describe(() => {
       await expect(teamPage.teamOwnerSection).toHaveScreenshot(
         'team-owner-block.png',
       );
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {
@@ -373,7 +373,7 @@ test.describe(() => {
       await expect(teamPage.teamStatsSection).toHaveScreenshot(
         'team-stats-block.png',
       );
-    }
+    },
   );
 
   test.afterEach(async ({ page }) => {

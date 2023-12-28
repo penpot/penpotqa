@@ -293,7 +293,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.createAnnotationOptionDesign = page.locator(
       'ul[class*="component__custom-select-dropdown"] span:text-is("Create annotation")',
     );
-    this.annotationTextArea = page.locator("#annotation-textarea");
+    this.annotationTextArea = page.locator('#annotation-textarea');
     this.annotationCreateTitle = page.locator(
       'div[class^="component-annotation"] div[class^=title]',
     );
@@ -623,7 +623,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
-  async isLayoutRemoveButtonExists(condition=true) {
+  async isLayoutRemoveButtonExists(condition = true) {
     if (condition === true) {
       await expect(this.layoutRemoveButton).toBeVisible();
     } else {
@@ -902,7 +902,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async createAnnotationRightClick() {
     const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
-    await layerSel.last().click({ button: "right", force: true });
+    await layerSel.last().click({ button: 'right', force: true });
     await this.createAnnotationOption.click();
     await expect(this.annotationTextArea).toBeVisible();
   }

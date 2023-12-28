@@ -13,4 +13,4 @@ export const getPlatformName = () => {
       platformName = 'Linux';
   }
   return platformName;
-}
+};

@@ -1,5 +1,5 @@
-const { BasePage } = require("../base-page");
-const { expect } = require("@playwright/test");
+const { BasePage } = require('../base-page');
+const { expect } = require('@playwright/test');
 
 exports.InspectPanelPage = class InspectPanelPage extends BasePage {
   /**
@@ -10,7 +10,7 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
 
     this.inspectTab = page.locator('div[data-id="inspect"]');
     this.annotationBlockOnInspect = page.locator(
-      "div.attributes-block.inspect-annotation",
+      'div.attributes-block.inspect-annotation',
     );
   }
 
@@ -21,4 +21,4 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
   async isAnnotationExistOnInspectTab() {
     await expect(this.annotationBlockOnInspect).toBeVisible();
   }
-}
+};

@@ -30,7 +30,8 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    testInfo.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
@@ -68,7 +69,6 @@ test.describe(() => {
   mainTest(
     'CO-69 Add, hide, unhide, change type and delete Shadow to rectangle',
     async ({ page }) => {
-      test.setTimeout(70000);
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
       await designPanelPage.clickAddShadowButton();
@@ -161,7 +161,6 @@ test.describe(() => {
   mainTest(
     'CO-74 Add, edit and delete Stroke to rectangle',
     async ({ page }) => {
-      test.setTimeout(70000);
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
       await designPanelPage.clickAddStrokeButton();

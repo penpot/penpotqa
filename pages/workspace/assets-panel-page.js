@@ -77,10 +77,10 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       'div[class*="assets-header"] button[class*="section-button"]',
     );
     this.assetsTypeDropdown = page.locator('ul[class*="context-menu-items"]');
-    this.assetsTypeAll = page.locator("#section-all");
-    this.assetsTypeComponents = page.locator("#section-components");
-    this.assetsTypeColors = page.locator("#section-color");
-    this.assetsTypeTypographies = page.locator("#section-typography");
+    this.assetsTypeAll = page.locator('#section-all');
+    this.assetsTypeComponents = page.locator('#section-components');
+    this.assetsTypeColors = page.locator('#section-color');
+    this.assetsTypeTypographies = page.locator('#section-typography');
     this.duplicateMainComponentMenuItem = page.locator(
       'li:has-text("Duplicate main")',
     );
@@ -293,33 +293,33 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.assetsTypeButton.click();
     await expect(this.assetsTypeDropdown).toBeVisible();
     switch (type) {
-      case "All assets":
+      case 'All assets':
         await this.assetsTypeAll.click();
         break;
-      case "Components":
+      case 'Components':
         await this.assetsTypeComponents.click();
         break;
-      case "Colors":
+      case 'Colors':
         await this.assetsTypeColors.click();
         break;
-      case "Typographies":
+      case 'Typographies':
         await this.assetsTypeTypographies.click();
         break;
     }
   }
 
   async duplicateFileLibraryComponent() {
-    await this.assetComponentLabel.click({ button: "right" });
+    await this.assetComponentLabel.click({ button: 'right' });
     await this.duplicateMainComponentMenuItem.click();
   }
 
   async showFileLibraryMainComponent() {
-    await this.assetComponentLabel.click({ button: "right" });
+    await this.assetComponentLabel.click({ button: 'right' });
     await this.showMainComponentMenuItem.click();
   }
 
   async renameFileLibraryComponent(newName) {
-    await this.assetComponentLabel.click({ button: "right" });
+    await this.assetComponentLabel.click({ button: 'right' });
     await this.renameFileLibraryMenuItem.click();
     await this.fileLibraryComponentNameInput.fill(newName);
     await this.clickOnEnter();
