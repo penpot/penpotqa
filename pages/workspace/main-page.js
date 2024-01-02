@@ -805,10 +805,14 @@ exports.MainPage = class MainPage extends BasePage {
 
   async createComponentViaShortcut(browserName) {
     await this.createdLayer.click({ force: true });
-    if (browserName === 'webkit') {
+    if (getPlatformName() === 'MacOS') {
       await this.page.keyboard.press('Meta+K');
     } else {
-      await this.page.keyboard.press('Control+K');
+      if (browserName === 'webkit') {
+        await this.page.keyboard.press('Meta+K');
+      } else {
+        await this.page.keyboard.press('Control+K');
+      }
     }
   }
 
