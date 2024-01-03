@@ -17,7 +17,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       'div[class*="comments__content"] span[class*="comments__text"]',
     );
     this.commentCommentsPanelText = page.locator(
-      'div[class*="comments__threads"] div[class*="comments__content"]',
+      'div[class*="sidebar"] div[class*="comments__threads"] div[class*="comments__content"]',
     );
     this.commentReplyText = page.locator(
       'div[class*="thread-content"] span[class*="comments__text"] >> nth=1',
@@ -27,10 +27,10 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     );
     this.postCommentButton = page.locator('input[value="Post"]');
     this.commentThreadIcon = page.locator(
-      'div[class="comments-section"] div[class*="thread-bubble"]',
+      'div[class*="comments-container"] div[class*="thread-bubble"]',
     );
     this.commentResolvedThreadIcon = page.locator(
-      'div.comments-section div.main_ui_comments__resolved',
+      'div[class*="comments-container"] div.main_ui_comments__resolved',
     );
     this.commentReplyInput = page.locator('textarea[placeholder="Reply"]');
     this.commentOptionsButton = page.locator(

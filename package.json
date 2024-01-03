@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test --project=chrome -gv 'PERF'",
+    "updateSnapshots": "npx playwright test --update-snapshots",
     "firefox": "npx playwright test --project=firefox -gv 'PERF'",
     "webkit": "npx playwright test --project=webkit -gv 'PERF'",
     "performance": "npx playwright test --retries=1 --timeout=555550000 --project=chrome -g 'PERF'",
