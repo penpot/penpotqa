@@ -248,7 +248,7 @@ mainTest(
     const layersPanelPage = new LayersPanelPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
-    await mainPage.createDefaultEllipseByCoordinates(400, 600);
+    await mainPage.createDefaultEllipseByCoordinates(400, 600, true);
     await mainPage.clickMainMenuButton();
     await mainPage.clickEditMainMenuItem();
     await mainPage.clickSelectAllMainMenuSubItem();

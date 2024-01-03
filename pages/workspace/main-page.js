@@ -129,13 +129,13 @@ exports.MainPage = class MainPage extends BasePage {
     this.addPageButton = page.locator('button[class*="add-page"]');
     this.pagesBlock = page.locator('div.main_ui_workspace_sidebar_sitemap__sitemap');
     this.firstPageListItem = page.locator(
-      'ul[class*="pages-list"] div[class*="element-list-body"] >>nth=0',
+      'ul[class*="page-list"] div[class*="element-list-body"] >>nth=0',
     );
     this.secondPageListItem = page.locator(
-      'ul[class*="pages-list"] div[class*="element-list-body"] >>nth=1',
+      'ul[class*="page-list"] div[class*="element-list-body"] >>nth=1',
     );
     this.pageNameInput = page.locator(
-      'ul[class*="pages-list"] div[class*="element-list-body"] input',
+      'ul[class*="page-list"] div[class*="element-list-body"] input',
     );
     this.renamePageMenuItem = page.locator(
       'ul[class*="workspace-context-menu"] li span:has-text("Rename")',
@@ -239,23 +239,24 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickViewportTwice() {
+    await this.page.waitForTimeout(100)
     await this.viewport.hover();
-    await this.viewport.click({ delay: 300, force: true });
-    await this.viewport.click({ delay: 300, force: true });
+    await this.viewport.click({ delay: 100, force: true });
+    await this.page.waitForTimeout(100)
+    await this.viewport.click({ delay: 100, force: true });
   }
 
-  async clickViewportByCoordinates(x, y) {
+  async clickViewportByCoordinates(x, y, count = 1) {
+    await this.page.waitForTimeout(100)
     await this.viewport.hover();
-    await this.viewport.click({
-      position: { x: x, y: y },
-      delay: 300,
-      force: true,
-    });
-    await this.viewport.click({
-      position: { x: x, y: y },
-      delay: 300,
-      force: true,
-    });
+    for (let i = 0; i < count; i++) {
+      await this.page.waitForTimeout(100)
+      await this.viewport.click({
+        position: {x: x, y: y},
+        force: true,
+        delay: 200,
+      });
+    }
   }
 
   async isUnSavedChangesDisplayed() {
@@ -290,6 +291,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async drawCurve(x1, y1, x2, y2) {
+    await this.page.waitForTimeout(100)
     await this.viewport.hover();
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.down();
@@ -725,21 +727,24 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForBottomPaletteIsOpened();
   }
 
-  async createDefaultBoardByCoordinates(x, y) {
+  async createDefaultBoardByCoordinates(x, y, double = false) {
     await this.clickCreateBoardButton();
     await this.clickViewportByCoordinates(x, y);
+    double === true ? await this.clickViewportByCoordinates(x, y) :
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultRectangleByCoordinates(x, y) {
+  async createDefaultRectangleByCoordinates(x, y, double = false) {
     await this.clickCreateRectangleButton();
     await this.clickViewportByCoordinates(x, y);
+    double === true ? await this.clickViewportByCoordinates(x, y) :
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultEllipseByCoordinates(x, y) {
+  async createDefaultEllipseByCoordinates(x, y, double = false) {
     await this.clickCreateEllipseButton();
     await this.clickViewportByCoordinates(x, y);
+    double === true ? await this.clickViewportByCoordinates(x, y) :
     await this.waitForChangeIsSaved();
   }
 
