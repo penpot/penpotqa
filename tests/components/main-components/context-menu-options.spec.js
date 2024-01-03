@@ -225,7 +225,7 @@ test.describe(() => {
   mainTest('Components - change view list tile', async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
-    await mainPage.createDefaultEllipseByCoordinates(100, 200);
+    await mainPage.createDefaultEllipseByCoordinates(100, 200, true);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.uploadImage('images/sample.jpeg');

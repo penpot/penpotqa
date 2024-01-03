@@ -31,7 +31,7 @@ test.describe(() => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(900, 100);
-    await mainPage.createDefaultBoardByCoordinates(500, 200);
+    await mainPage.createDefaultBoardByCoordinates(500, 200, true);
     await prototypePanelPage.clickPrototypeTab();
     await prototypePanelPage.dragAndDropPrototypeArrowConnector(900, 100);
     await mainPage.waitForChangeIsSaved();

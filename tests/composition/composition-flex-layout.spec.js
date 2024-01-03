@@ -37,8 +37,8 @@ test.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-    await mainPage.createDefaultEllipseByCoordinates(200, 300);
-    await mainPage.createDefaultRectangleByCoordinates(200, 300);
+    await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
+    await mainPage.createDefaultRectangleByCoordinates(200, 300, true);
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.waitForChangeIsSaved();
   });

@@ -148,7 +148,7 @@ test.describe(() => {
     await designPanelPage.clickAddStrokeButton();
     await assetsPanelPage.clickAndPressAltFileLibraryColorsColorBullet();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickViewportByCoordinates(900, 100);
+    await mainPage.clickViewportByCoordinates(900, 100, 3);
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'apply-color-to-stroke-board.png',
     );

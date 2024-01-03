@@ -97,8 +97,8 @@ test.describe(() => {
   mainTest('CO-333 Join nodes via Node panel and J shortcut', async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickDrawNodesButtonOnNodePanel();
-    await mainPage.clickViewportByCoordinates(600, 200);
-    await mainPage.clickViewportByCoordinates(750, 300);
+    await mainPage.clickViewportByCoordinates(600, 200, 2);
+    await mainPage.clickViewportByCoordinates(750, 300, 2);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickMoveNodesButtonOnNodePanel();
     await mainPage.waitForChangeIsSaved();
