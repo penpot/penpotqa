@@ -28,7 +28,7 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
     this.interactionDestinationField = page.locator(
       '//*[text()="Destination"]//parent::div//div[contains(@class, "custom-select")]',
     );
-    this.removeFlowButton = page.locator('div[class*="remove-flow-btn"]');
+    this.removeFlowButton = page.locator('button[class*="remove-flow-btn"]');
   }
 
   async clickPrototypeTab() {
@@ -36,7 +36,9 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
   }
 
   async dragAndDropPrototypeArrowConnector(x, y) {
+    await this.page.waitForTimeout(200)
     await this.prototypeArrowConnector.hover();
+    await this.viewport.click()
     await this.prototypeArrowConnector.dragTo(this.viewport, {
       force: false,
       targetPosition: { x: x, y: y },
@@ -44,11 +46,11 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
   }
 
   async isFlowNameDisplayedOnPrototypePanel(name) {
-    await expect(this.prototypePanelFlowNameText).toHaveText(name);
+    await expect(this.prototypePanelFlowNameInput).toHaveValue(name);
   }
 
   async isFlowNameNotDisplayedOnPrototypePanel() {
-    await expect(this.prototypePanelFlowNameText).not.toBeVisible();
+    await expect(this.prototypePanelFlowNameInput).not.toBeVisible();
   }
 
   async clickAddInteractionButton() {
@@ -72,7 +74,7 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
   }
 
   async renameFlow(newName) {
-    await this.prototypePanelFlowNameText.dblclick();
+    await this.prototypePanelFlowNameInput.dblclick();
     await this.prototypePanelFlowNameInput.fill(newName);
     await this.clickOnEnter();
   }
