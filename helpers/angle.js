@@ -11,5 +11,5 @@ export function radiansToDegrees(radians) {
 
 export default {
   degreesToRadians,
-  radiansToDegrees
-}
+  radiansToDegrees,
+};
