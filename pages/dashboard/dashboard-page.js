@@ -45,6 +45,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.downloadFileStandardMenuItem = page.locator(
       'a[data-test="download-standard-file"]',
     );
+    this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick-refactor"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
@@ -117,7 +118,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontNameInput = page.locator('div[class*="table-row"] input[type="text"]');
     this.saveFontButton = page.locator('button:text-is("Save")');
     this.searchFontInput = page.locator('input[placeholder="Search font"]');
-    this.fontFormatError = page.locator('div[class="banner error fixed"]');
+    this.fontFormatError = page.locator('.main_ui_messages__content span');
 
     //Libraries & Templates
     this.noLibrariesPlacelder = page.locator('div[data-test="empty-placeholder"] p');

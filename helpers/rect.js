@@ -8,7 +8,7 @@
  * @returns {DOMPoint}
  */
 export function createPoint(x = 0, y = 0, z = 0, w = 1) {
-  if (!("DOMPoint" in globalThis)) {
+  if (!('DOMPoint' in globalThis)) {
     class DOMPoint {
       static fromPoint({ x = 0, y = 0, z = 0, w = 1 }) {
         return new DOMPoint(x, y, z, w);
@@ -37,7 +37,7 @@ export function createPoint(x = 0, y = 0, z = 0, w = 1) {
  * @returns {DOMRect}
  */
 export function createRect(x = 0, y = 0, width = 0, height = 0) {
-  if (!("DOMRect" in globalThis)) {
+  if (!('DOMRect' in globalThis)) {
     class DOMRect {
       static fromRect({ x, y, width, height }) {
         return new DOMRect(x, y, width, height);

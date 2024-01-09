@@ -17,10 +17,7 @@ const mainTest = base.test.extend({
 });
 
 const performanceTest = base.test.extend({
-  workingFile: [
-    'documents/Penpot - Design System v2.0.penpot',
-    { option: true },
-  ],
+  workingFile: ['documents/Penpot - Design System v2.0.penpot', { option: true }],
   workingShapes: [
     {
       pageId: '582296a0-d6b1-11ec-a04a-cf2544e40df7',
