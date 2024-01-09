@@ -1,7 +1,7 @@
-import { expect } from "@playwright/test";
-import { BasePage } from "./base-page";
-import { createPoint, createRect, getCenterPoint } from "../helpers/rect";
-import { degreesToRadians } from "../helpers/angle";
+import { expect } from '@playwright/test';
+import { BasePage } from './base-page';
+import { createPoint, createRect, getCenterPoint } from '../helpers/rect';
+import { degreesToRadians } from '../helpers/angle';
 
 exports.PerformancePage = class PerformancePage extends BasePage {
   /**
@@ -12,8 +12,8 @@ exports.PerformancePage = class PerformancePage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.viewportControls = page.locator(".viewport-controls");
-    this.selectionHandlers = page.locator(".selection-handlers");
+    this.viewportControls = page.locator('.viewport-controls');
+    this.selectionHandlers = page.locator('.selection-handlers');
   }
 
   /**
@@ -22,7 +22,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    * @returns {Promise<void>}
    */
   async waitForPageLoaded() {
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState('networkidle');
   }
 
   /**
@@ -40,7 +40,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    * @returns {Promise<void>}
    */
   async waitForSelectionHandlers() {
-    await this.page.waitForSelector(".selection-handlers", { delay: 100 });
+    await this.page.waitForSelector('.selection-handlers', { delay: 100 });
   }
 
   /**
@@ -54,7 +54,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
         console.log(list.getEntries());
       });
       window.penpotPerformanceObserver.observe({
-        entryTypes: ["longtask", "taskattribution"],
+        entryTypes: ['longtask', 'taskattribution'],
       });
     });
   }
@@ -174,16 +174,14 @@ exports.PerformancePage = class PerformancePage extends BasePage {
               this.#framesPerSecond = this.#frameCount;
               this.#frameCount = 0;
 
-              const shouldContinue = this.#recorder.record(
-                this.#framesPerSecond,
-              );
+              const shouldContinue = this.#recorder.record(this.#framesPerSecond);
               if (!shouldContinue && this.#shouldStopWhenFull) {
                 shouldStop = true;
               }
             }
             if (shouldStop) {
               if (this.stop()) {
-                this.dispatchEvent(new Event("ended"));
+                this.dispatchEvent(new Event('ended'));
               }
               return;
             }
@@ -218,7 +216,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
       }
 
       // If the FrameRateRecorder is already defined, do nothing.
-      if (typeof window.FrameRateRecorder !== "function") {
+      if (typeof window.FrameRateRecorder !== 'function') {
         window.FrameRateRecorder = provide();
       }
     });
@@ -229,27 +227,24 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    *
    * @returns {Promise<void>}
    */
-  startRecordingFrameRate({
-    maxRecords = 60 * 60,
-    shouldStopWhenFull = true,
-  } = {}) {
+  startRecordingFrameRate({ maxRecords = 60 * 60, shouldStopWhenFull = true } = {}) {
     return this.page.evaluate(
       ({ maxRecords, shouldStopWhenFull }) => {
-        if (typeof window.FrameRateRecorder !== "function") {
+        if (typeof window.FrameRateRecorder !== 'function') {
           throw new Error(
-            "FrameRateRecorder is not defined. Call `injectFrameRateRecorder` first.",
+            'FrameRateRecorder is not defined. Call `injectFrameRateRecorder` first.',
           );
         }
 
         window.penpotFrameRateRecorder_OnEnded = () => {
-          throw new Error("Insufficient buffer size to record frame rate.");
+          throw new Error('Insufficient buffer size to record frame rate.');
         };
         window.penpotFrameRateRecorder = new FrameRateRecorder({
           maxRecords,
           shouldStopWhenFull,
         });
         window.penpotFrameRateRecorder.addEventListener(
-          "ended",
+          'ended',
           window.penpotFrameRateRecorder_OnEnded,
         );
         window.penpotFrameRateRecorder.start();
@@ -265,13 +260,13 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    */
   stopRecordingFrameRate() {
     return this.page.evaluate(() => {
-      if (typeof window.FrameRateRecorder !== "function") {
+      if (typeof window.FrameRateRecorder !== 'function') {
         throw new Error(
-          "FrameRateRecorder is not defined. Call `injectFrameRateRecorder` first.",
+          'FrameRateRecorder is not defined. Call `injectFrameRateRecorder` first.',
         );
       }
       window.penpotFrameRateRecorder.removeEventListener(
-        "ended",
+        'ended',
         window.penpotFrameRateRecorder_OnEnded,
       );
       window.penpotFrameRateRecorder.stop();
@@ -357,7 +352,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    * @returns {Promise<Locator>}
    */
   async getSelectorOrLocator(selectorOrLocator) {
-    if (typeof selectorOrLocator === "string") {
+    if (typeof selectorOrLocator === 'string') {
       return this.page.locator(selectorOrLocator);
     }
     return selectorOrLocator;
@@ -388,35 +383,38 @@ exports.PerformancePage = class PerformancePage extends BasePage {
     );
 
     const boundingClientRect = await Promise.all(
-      boundingBoxes.reduce((rect, boundingBox) => {
-        const { top, left, bottom, right } = boundingBox;
-        rect.top = Math.min(top, rect.top);
-        rect.left = Math.min(left, rect.left);
-        rect.bottom = Math.max(bottom, rect.bottom);
-        rect.right = Math.max(right, rect.right);
-        return rect;
-      }, createRect(Infinity, Infinity, -Infinity, -Infinity)),
+      boundingBoxes.reduce(
+        (rect, boundingBox) => {
+          const { top, left, bottom, right } = boundingBox;
+          rect.top = Math.min(top, rect.top);
+          rect.left = Math.min(left, rect.left);
+          rect.bottom = Math.max(bottom, rect.bottom);
+          rect.right = Math.max(right, rect.right);
+          return rect;
+        },
+        createRect(Infinity, Infinity, -Infinity, -Infinity),
+      ),
     );
 
-    return boundingClientRect
+    return boundingClientRect;
   }
 
   /**
    * Undo the last action.
    */
   async undo() {
-    await this.page.keyboard.down("Control");
-    await this.page.keyboard.press("KeyZ");
-    await this.page.keyboard.up("Control");
+    await this.page.keyboard.down('Control');
+    await this.page.keyboard.press('KeyZ');
+    await this.page.keyboard.up('Control');
   }
 
   /**
    * Redoes the last action.
    */
   async redo() {
-    await this.page.keyboard.down("Control");
-    await this.page.keyboard.press("KeyY");
-    await this.page.keyboard.up("Control");
+    await this.page.keyboard.down('Control');
+    await this.page.keyboard.press('KeyY');
+    await this.page.keyboard.up('Control');
   }
 
   /**
@@ -437,11 +435,11 @@ exports.PerformancePage = class PerformancePage extends BasePage {
   async measure() {
     const [frameRateRecords, longTasksRecords] = await this.stopAll();
     const averageFrameRate = this.calculateAverageFrameRate(frameRateRecords);
-    console.log("FPS", averageFrameRate);
+    console.log('FPS', averageFrameRate);
     expect(averageFrameRate).toBeGreaterThan(30);
     const averageLongTaskDuration =
       this.calculateAverageLongTaskDuration(longTasksRecords);
-    console.log("LTS", averageLongTaskDuration);
+    console.log('LTS', averageLongTaskDuration);
     expect(averageLongTaskDuration).toBeLessThan(100);
     return [averageFrameRate, averageLongTaskDuration];
   }
@@ -456,9 +454,9 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    */
   async pan(dx, dy, steps) {
     await this.waitForViewportControls();
-    await this.page.mouse.down({ button: "middle" });
+    await this.page.mouse.down({ button: 'middle' });
     await this.page.mouse.move(dx, dy, { steps });
-    await this.page.mouse.up({ button: "middle" });
+    await this.page.mouse.up({ button: 'middle' });
   }
 
   /**
@@ -474,9 +472,9 @@ exports.PerformancePage = class PerformancePage extends BasePage {
   async panFromTo(fx, fy, tx, ty, steps) {
     await this.waitForViewportControls();
     await this.page.mouse.move(tx, ty);
-    await this.page.mouse.down({ button: "middle" });
+    await this.page.mouse.down({ button: 'middle' });
     await this.page.mouse.move(fx, fy, { steps });
-    await this.page.mouse.up({ button: "middle" });
+    await this.page.mouse.up({ button: 'middle' });
   }
 
   /**
@@ -488,11 +486,11 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    */
   async zoom(dy, steps) {
     await this.waitForViewportControls();
-    await this.page.keyboard.down("Control");
+    await this.page.keyboard.down('Control');
     for (let index = 0; index < steps; index++) {
       await this.page.mouse.wheel(0, dy);
     }
-    await this.page.keyboard.up("Control");
+    await this.page.keyboard.up('Control');
   }
 
   /**
@@ -503,9 +501,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    */
   async centerInView(selectorOrLocator) {
     await this.waitForViewportControls();
-    const viewportRect = await this.getBoundingClientRect(
-      this.viewportControls,
-    );
+    const viewportRect = await this.getBoundingClientRect(this.viewportControls);
     const centerPoint = getCenterPoint(viewportRect);
     const element = await this.getSelectorOrLocator(selectorOrLocator);
     const elementRect = await this.getBoundingClientRect(element);
@@ -521,9 +517,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
   }
 
   async centerSelectedInView() {
-    const viewportRect = await this.getBoundingClientRect(
-      this.viewportControls,
-    );
+    const viewportRect = await this.getBoundingClientRect(this.viewportControls);
     const centerPoint = getCenterPoint(viewportRect);
     const elementRect = await this.getBoundingClientRect(this.selectionHandlers);
     const elementCenterPoint = getCenterPoint(elementRect);
@@ -576,7 +570,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    * @returns {Promise<void>}
    */
   async selectShapes(shapeIds) {
-    await this.page.keyboard.down("Shift");
+    await this.page.keyboard.down('Shift');
     for (const shapeId of shapeIds) {
       const locator = await this.page.locator(shapeId);
       const { x, y, width, height } = await locator.boundingBox();
@@ -584,7 +578,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
       await this.page.mouse.click(x + width / 2, y + height / 2);
       await this.page.waitForTimeout(100);
     }
-    await this.page.keyboard.up("Shift");
+    await this.page.keyboard.up('Shift');
     await this.page.waitForTimeout(100);
   }
 
@@ -601,14 +595,17 @@ exports.PerformancePage = class PerformancePage extends BasePage {
       if (shapes.some((shape) => !shape)) {
         throw new Error(`Shape "shape-${shapeId}" not found.`);
       }
-      const boundingClientRect = shapes.reduce((rect, shape) => {
-        const { top, left, bottom, right } = shape.getBoundingClientRect();
-        rect.top = Math.min(top, rect.top);
-        rect.left = Math.min(left, rect.left);
-        rect.bottom = Math.max(bottom, rect.bottom);
-        rect.right = Math.max(right, rect.right);
-        return rect;
-      }, new DOMRect(Infinity, Infinity, -Infinity, -Infinity));
+      const boundingClientRect = shapes.reduce(
+        (rect, shape) => {
+          const { top, left, bottom, right } = shape.getBoundingClientRect();
+          rect.top = Math.min(top, rect.top);
+          rect.left = Math.min(left, rect.left);
+          rect.bottom = Math.max(bottom, rect.bottom);
+          rect.right = Math.max(right, rect.right);
+          return rect;
+        },
+        new DOMRect(Infinity, Infinity, -Infinity, -Infinity),
+      );
       return boundingClientRect;
     }, shapeIds);
   }
@@ -619,21 +616,21 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    * @param {string} name
    * @returns {Promise<ElementHandle>}
    */
-  async getResizeHandler(name = "bottom-right") {
+  async getResizeHandler(name = 'bottom-right') {
     const names = [
-      "top",
-      "bottom",
-      "right",
-      "left",
-      "top-left",
-      "top-right",
-      "bottom-right",
-      "bottom-left",
+      'top',
+      'bottom',
+      'right',
+      'left',
+      'top-left',
+      'top-right',
+      'bottom-right',
+      'bottom-left',
     ];
 
     // -}~:Ztva;:E]gU8u$[Vf
 
-    const handlers = await this.page.$$("g.resize-handler");
+    const handlers = await this.page.$$('g.resize-handler');
     if (handlers.length < names.length) {
       throw new Error(`Invalid amount of resize handlers.`);
     }
@@ -651,12 +648,12 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    * @param {string} position
    * @returns {Promise<ElementHandle>}
    */
-  async getRotateHandler(position = "top-left") {
+  async getRotateHandler(position = 'top-left') {
     const positions = new Map([
-      ["top-left", "0"],
-      ["top-right", "90"],
-      ["bottom-right", "180"],
-      ["bottom-left", "270"],
+      ['top-left', '0'],
+      ['top-right', '90'],
+      ['bottom-right', '180'],
+      ['bottom-left', '270'],
     ]);
     return this.page.$(`rect.cursor-rotate-${positions.get(position)}`);
   }
@@ -676,17 +673,15 @@ exports.PerformancePage = class PerformancePage extends BasePage {
     y,
     { x: dx = 2, y: dy = 2, steps = 10 } = {},
   ) {
-    const { x: ex, y: ey } = await this.getBoundingClientRect(
-      selectorOrLocator,
-    );
+    const { x: ex, y: ey } = await this.getBoundingClientRect(selectorOrLocator);
     await this.page.mouse.click(ex + dx, ey + dy);
     await this.page.waitForTimeout(100);
     await this.page.mouse.click(ex + dx, ey + dy);
-    await this.page.mouse.down({ button: "left" });
+    await this.page.mouse.down({ button: 'left' });
     await this.page.waitForTimeout(100);
     await this.page.mouse.move(ex + x, ey + y, { steps });
     await this.page.waitForTimeout(100);
-    await this.page.mouse.up({ button: "left" });
+    await this.page.mouse.up({ button: 'left' });
   }
 
   /**
@@ -699,13 +694,18 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    */
   async moveSelectedBy(x, y, { x: dx = 2, y: dy = 2, steps = 10 } = {}) {
     await this.waitForSelectionHandlers();
-    const { x: ex, y: ey, width, height } = await this.getBoundingClientRect(this.selectionHandlers);
-    console.log(x, y, width, height)
-    await this.page.mouse.down({ button: "left" });
+    const {
+      x: ex,
+      y: ey,
+      width,
+      height,
+    } = await this.getBoundingClientRect(this.selectionHandlers);
+    console.log(x, y, width, height);
+    await this.page.mouse.down({ button: 'left' });
     await this.page.waitForTimeout(100);
     await this.page.mouse.move(ex + x, ey + y, { steps });
     await this.page.waitForTimeout(100);
-    await this.page.mouse.up({ button: "left" });
+    await this.page.mouse.up({ button: 'left' });
   }
 
   /**
@@ -719,7 +719,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
   async rotateShapeBy(selectorOrLocator, degrees, { steps = 10 } = {}) {
     const boundingBox = await this.getBoundingClientRect(selectorOrLocator);
     const { x: centerX, y: centerY } = getCenterPoint(boundingBox);
-    const rotateHandler = await this.getRotateHandler("top-left");
+    const rotateHandler = await this.getRotateHandler('top-left');
     const { x: rx, y: ry } = await this.getBoundingClientRect(rotateHandler);
     const radians = degreesToRadians(degrees);
     const dx = Math.cos(radians);
@@ -729,11 +729,11 @@ exports.PerformancePage = class PerformancePage extends BasePage {
     const y = centerY + dy * d;
     await rotateHandler.click();
     await this.page.waitForTimeout(100);
-    await this.page.mouse.down({ button: "left" });
+    await this.page.mouse.down({ button: 'left' });
     await this.page.waitForTimeout(100);
     await this.page.mouse.move(x, y, { steps });
     await this.page.waitForTimeout(100);
-    await this.page.mouse.up({ button: "left" });
+    await this.page.mouse.up({ button: 'left' });
   }
 
   /**
@@ -749,7 +749,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
       this.selectionHandlers,
     );
     const { x: centerX, y: centerY } = getCenterPoint(boundingBox);
-    const rotateHandler = await this.getRotateHandler("top-left");
+    const rotateHandler = await this.getRotateHandler('top-left');
     const { x: rx, y: ry } = await this.getBoundingClientRect(rotateHandler);
     const radians = degreesToRadians(degrees);
     const dx = Math.cos(radians);
@@ -759,11 +759,11 @@ exports.PerformancePage = class PerformancePage extends BasePage {
     const y = centerY + dy * d;
     await rotateHandler.click();
     await this.page.waitForTimeout(100);
-    await this.page.mouse.down({ button: "left" });
+    await this.page.mouse.down({ button: 'left' });
     await this.page.waitForTimeout(100);
     await this.page.mouse.move(x, y, { steps });
     await this.page.waitForTimeout(100);
-    await this.page.mouse.up({ button: "left" });
+    await this.page.mouse.up({ button: 'left' });
   }
 
   /**
@@ -778,7 +778,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
     selectorOrLocator,
     sx,
     sy,
-    { x: dx = 2, y: dy = 2, steps = 10, handler = "bottom-right" } = {},
+    { x: dx = 2, y: dy = 2, steps = 10, handler = 'bottom-right' } = {},
   ) {
     // Clicks on the element to select it.
     const { x: ex, y: ey } = await this.getBoundingClientRect(selectorOrLocator);
@@ -790,11 +790,11 @@ exports.PerformancePage = class PerformancePage extends BasePage {
     console.log(x, y, x + sx, y + sy);
     await resizeHandler.click();
     await this.page.waitForTimeout(100);
-    await this.page.mouse.down({ button: "left" });
+    await this.page.mouse.down({ button: 'left' });
     await this.page.waitForTimeout(100);
     await this.page.mouse.move(x + sx, y + sy, { steps });
     await this.page.waitForTimeout(100);
-    await this.page.mouse.up({ button: "left" });
+    await this.page.mouse.up({ button: 'left' });
   }
 
   /**
@@ -805,17 +805,21 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    * @param {object} [options]
    * @returns {Promise<void>}
    */
-  async scaleSelectedBy(sx, sy, { x: dx = 2, y: dy = 2, steps = 10, handler = "bottom-right" } = {}) {
+  async scaleSelectedBy(
+    sx,
+    sy,
+    { x: dx = 2, y: dy = 2, steps = 10, handler = 'bottom-right' } = {},
+  ) {
     // Clicks on the element to select it.
     await this.waitForSelectionHandlers();
     const resizeHandler = await this.getResizeHandler(handler);
     const { x, y } = await this.getBoundingClientRect(resizeHandler);
     await resizeHandler.click();
     await this.page.waitForTimeout(100);
-    await this.page.mouse.down({ button: "left" });
+    await this.page.mouse.down({ button: 'left' });
     await this.page.waitForTimeout(100);
     await this.page.mouse.move(x + sx, y + sy, { steps });
     await this.page.waitForTimeout(100);
-    await this.page.mouse.up({ button: "left" });
+    await this.page.mouse.up({ button: 'left' });
   }
 };

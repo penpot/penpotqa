@@ -209,38 +209,38 @@ test.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-drop-shadow-default.png',
-        {
-          mask: [mainPage.guides],
-        },
+        // {
+        //   mask: [mainPage.guides],
+        // },
       );
       await designPanelPage.hideShadow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('path-drop-shadow-hide.png', {
-        mask: [mainPage.guides],
+        // mask: [mainPage.guides],
       });
       await designPanelPage.unhideShadow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-drop-shadow-unhide.png',
-        {
-          mask: [mainPage.guides],
-        },
+        // {
+        //   mask: [mainPage.guides],
+        // },
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-inner-shadow-default.png',
-        {
-          mask: [mainPage.guides],
-        },
+        // {
+        //   mask: [mainPage.guides],
+        // },
       );
       await designPanelPage.removeShadow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-inner-shadow-remove.png',
-        {
-          mask: [mainPage.guides],
-        },
+        // {
+        //   mask: [mainPage.guides],
+        // },
       );
     },
   );
