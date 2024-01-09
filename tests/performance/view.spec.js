@@ -1,30 +1,29 @@
-import { expect } from "@playwright/test";
+import { expect } from '@playwright/test';
 import { performanceTest } from '../../fixtures.js';
-import { PerformancePage } from "../../pages/performance-page";
+import { PerformancePage } from '../../pages/performance-page';
 
-performanceTest("PERF Viewport: Pan viewport in workspace", async ({ page }) => {
+performanceTest('PERF Viewport: Pan viewport in workspace', async ({ page }) => {
   const performancePage = new PerformancePage(page);
   await performancePage.waitForPageLoaded();
   await performancePage.injectFrameRateRecorder();
   await performancePage.waitForViewportControls();
   await performancePage.startAll();
-  await performancePage.pan(10, 0, 10)
-  await performancePage.pan(0, 10, 10)
-  await performancePage.pan(-10, 0, 10)
-  await performancePage.pan(0, -10, 10)
+  await performancePage.pan(10, 0, 10);
+  await performancePage.pan(0, 10, 10);
+  await performancePage.pan(-10, 0, 10);
+  await performancePage.pan(0, -10, 10);
   const [frameRateRecords, longTasksRecords] = await performancePage.stopAll();
   const averageFrameRate =
     performancePage.calculateAverageFrameRate(frameRateRecords);
-  console.log("FPS", averageFrameRate);
+  console.log('FPS', averageFrameRate);
   expect(averageFrameRate).toBeGreaterThan(30);
   const averageLongTaskDuration =
     performancePage.calculateAverageLongTaskDuration(longTasksRecords);
-  console.log("LTS", averageLongTaskDuration);
+  console.log('LTS', averageLongTaskDuration);
   expect(averageLongTaskDuration).toBeLessThan(100);
-
 });
 
-performanceTest("PERF Viewport: Zoom viewport in workspace", async ({ page }) => {
+performanceTest('PERF Viewport: Zoom viewport in workspace', async ({ page }) => {
   const performancePage = new PerformancePage(page);
   await performancePage.waitForPageLoaded();
   await performancePage.injectFrameRateRecorder();
@@ -33,10 +32,12 @@ performanceTest("PERF Viewport: Zoom viewport in workspace", async ({ page }) =>
   await performancePage.zoom(10, 10);
   await performancePage.zoom(-10, 10);
   const [frameRateRecords, longTasksRecords] = await performancePage.stopAll();
-  const averageFrameRate = performancePage.calculateAverageFrameRate(frameRateRecords);
-  console.log("FPS", averageFrameRate);
+  const averageFrameRate =
+    performancePage.calculateAverageFrameRate(frameRateRecords);
+  console.log('FPS', averageFrameRate);
   expect(averageFrameRate).toBeGreaterThan(30);
-  const averageLongTaskDuration = performancePage.calculateAverageLongTaskDuration(longTasksRecords);
-  console.log("LTS", averageLongTaskDuration);
+  const averageLongTaskDuration =
+    performancePage.calculateAverageLongTaskDuration(longTasksRecords);
+  console.log('LTS', averageLongTaskDuration);
   expect(averageLongTaskDuration).toBeLessThan(100);
 });

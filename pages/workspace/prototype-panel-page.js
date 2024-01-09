@@ -36,9 +36,9 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
   }
 
   async dragAndDropPrototypeArrowConnector(x, y) {
-    await this.page.waitForTimeout(200)
+    await this.page.waitForTimeout(200);
     await this.prototypeArrowConnector.hover();
-    await this.viewport.click()
+    await this.viewport.click();
     await this.prototypeArrowConnector.dragTo(this.viewport, {
       force: false,
       targetPosition: { x: x, y: y },

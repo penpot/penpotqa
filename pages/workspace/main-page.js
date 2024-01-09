@@ -184,6 +184,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.closeShortcutsPanelIcon = page.locator(
       'div[class*="shortcuts-close-button"]',
     );
+
+    this.fileLeftSidebarAside = page.locator('#left-sidebar-aside');
+    this.fileRightSidebarAside = page.locator('#right-sidebar-aside');
   }
 
   async clickCreateBoardButton() {
@@ -239,20 +242,20 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickViewportTwice() {
-    await this.page.waitForTimeout(100)
+    await this.page.waitForTimeout(100);
     await this.viewport.hover();
     await this.viewport.click({ delay: 100, force: true });
-    await this.page.waitForTimeout(100)
+    await this.page.waitForTimeout(100);
     await this.viewport.click({ delay: 100, force: true });
   }
 
   async clickViewportByCoordinates(x, y, count = 1) {
-    await this.page.waitForTimeout(100)
+    await this.page.waitForTimeout(100);
     await this.viewport.hover();
     for (let i = 0; i < count; i++) {
-      await this.page.waitForTimeout(100)
+      await this.page.waitForTimeout(100);
       await this.viewport.click({
-        position: {x: x, y: y},
+        position: { x: x, y: y },
         force: true,
         delay: 200,
       });
@@ -291,7 +294,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async drawCurve(x1, y1, x2, y2) {
-    await this.page.waitForTimeout(100)
+    await this.page.waitForTimeout(100);
     await this.viewport.hover();
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.down();
@@ -730,22 +733,25 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultBoardByCoordinates(x, y, double = false) {
     await this.clickCreateBoardButton();
     await this.clickViewportByCoordinates(x, y);
-    double === true ? await this.clickViewportByCoordinates(x, y) :
-    await this.waitForChangeIsSaved();
+    double === true
+      ? await this.clickViewportByCoordinates(x, y)
+      : await this.waitForChangeIsSaved();
   }
 
   async createDefaultRectangleByCoordinates(x, y, double = false) {
     await this.clickCreateRectangleButton();
     await this.clickViewportByCoordinates(x, y);
-    double === true ? await this.clickViewportByCoordinates(x, y) :
-    await this.waitForChangeIsSaved();
+    double === true
+      ? await this.clickViewportByCoordinates(x, y)
+      : await this.waitForChangeIsSaved();
   }
 
   async createDefaultEllipseByCoordinates(x, y, double = false) {
     await this.clickCreateEllipseButton();
     await this.clickViewportByCoordinates(x, y);
-    double === true ? await this.clickViewportByCoordinates(x, y) :
-    await this.waitForChangeIsSaved();
+    double === true
+      ? await this.clickViewportByCoordinates(x, y)
+      : await this.waitForChangeIsSaved();
   }
 
   async createDefaultClosedPath() {

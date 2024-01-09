@@ -86,6 +86,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.invitationWarningSpan = page.locator(
       'div[class*="warning-msg"] span[class*="team__message"]',
     );
+    this.teamSettingsSection = page.locator('.main_ui_dashboard__dashboard-content');
+    this.teamIcon = page.locator(`div[class*='team__icon'] span`);
   }
 
   async createTeam(teamName) {

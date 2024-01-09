@@ -8,6 +8,8 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   constructor(page) {
     super(page);
 
+    this.profileSection = page.locator('.main_ui_settings__dashboard-content');
+
     //Account
     this.profileMenuButton = page.locator('div[data-test="profile-btn"]');
     this.yourAccountMenuItem = page.locator('li[data-test="profile-profile-opt"]');
@@ -37,8 +39,15 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.passwordOldInput = page.locator('#password-old');
     this.passwordNewInput = page.locator('input[label="New password"]');
     this.passwordConfirmInput = page.locator('input[label="Confirm password"]');
-    this.updateSettingsBtn = page.locator('button[data-test="submit-password"]');
+    this.updateSettingsBtn = page.locator('button[name="submit"]');
     this.passwordInputError = page.locator('div[data-test="-error"]');
+
+    //Settings
+    this.settingsMenuButton = page.locator('li[data-test="settings-profile"]');
+    this.darkThemeOption = page.locator('li span:text-is("Penpot Dark (default)")');
+    this.lightThemeOption = page.locator('li span:text-is("Penpot Light")');
+    this.uiThemeDropdown = page.locator('[class*="select-wrapper"] >>nth=1');
+    this.giveFeedbackMenuItem = page.locator('li[data-test="feedback-profile-opt"]');
   }
 
   async openYourAccountPage() {
@@ -46,9 +55,17 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await this.yourAccountMenuItem.click();
   }
 
+  async goToAccountPage() {
+    await this.page.goto('https://design.penpot.dev/#/settings/profile');
+  }
+
   async openGiveFeedbackPage() {
     await this.profileMenuButton.click();
     await this.giveFeedbackMenuItem.click();
+  }
+
+  async clickOnProfileTab() {
+    await this.profileMenuButton.click();
   }
 
   async openPasswordPageInAccount() {
@@ -118,5 +135,23 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   async backToDashboardFromAccount() {
     await this.backToDashboardBtn.click();
     await this.isHeaderDisplayed('Projects');
+  }
+
+  async selectLightTheme() {
+    await this.uiThemeDropdown.click();
+    await this.lightThemeOption.click();
+    await this.updateSettingsBtn.click();
+    await this.isSuccessMessageDisplayed('Profile saved successfully!');
+  }
+
+  async selectDarkTheme() {
+    await this.uiThemeDropdown.click();
+    await this.darkThemeOption.click();
+    await this.updateSettingsBtn.click();
+    await this.isSuccessMessageDisplayed('Profile saved successfully!');
+  }
+
+  async openSettingsTab() {
+    await this.settingsMenuButton.click();
   }
 };
