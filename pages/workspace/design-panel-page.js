@@ -231,7 +231,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
     this.gridTypeSelectorColumnsOption = page.locator('span:has-text("Columns")');
     this.gridTypeSelectorRowsOption = page.locator('span:has-text("Rows")');
-    this.gridSizeInput = page.locator('div[title="Size"] input');
+    this.gridSizeInput = page.locator(`input[class*='grid__numeric-input']`);
     this.gridColumnsRowsInput = page.locator(
       'div[class*="grid__column-select"] input',
     );
