@@ -4,7 +4,7 @@
   "description": "QA Test for Penpot",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test --project=chrome -gv 'PERF'",
+    "test": "npx playwright test --project=webkit -gv 'PERF'",
     "updateSnapshots": "npx playwright test --update-snapshots",
     "firefox": "npx playwright test --project=firefox -gv 'PERF'",
     "webkit": "npx playwright test --project=webkit -gv 'PERF'",

@@ -140,6 +140,11 @@ exports.BasePage = class BasePage {
     await this.savedChangesIcon.waitFor({ state: 'visible' });
   }
 
+  async refreshPage() {
+    await this.page.reload();
+    await this.page.waitForTimeout(2000)
+  }
+
   async deleteLayerViaRightClick() {
     await this.createdLayer.click({ button: 'right', force: true });
     await this.deleteLayerMenuItem.click();
