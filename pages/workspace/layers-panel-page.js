@@ -162,6 +162,20 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await this.mainComponentLayer.last().click();
   }
 
+  async doubleClickCopyComponentOnLayersTab() {
+    const layer = this.page.locator(
+      `div[class*="element-list-body"] span[class*="element-name"]`,
+    ).first();
+    await layer.dblclick();
+  }
+
+  async doubleClickMainComponentOnLayersTab() {
+    const layer = this.page.locator(
+      `div[class*="element-list-body"] span[class*="element-name"]`,
+    ).last();
+    await layer.dblclick();
+  }
+
   async restoreMainComponentViaRightClick() {
     await this.copyComponentLayer.click({ button: 'right', force: true });
     await this.restoreMainComponentMenuItem.click();
@@ -170,5 +184,28 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   async updateMainComponentViaRightClick() {
     await this.copyComponentLayer.click({ button: 'right', force: true });
     await this.updateMainComponentMenuItem.click();
+  }
+
+  async expandMainComponentOnLayersTab() {
+    if (!(await this.layerItemToggleExpand.last().isVisible())) {
+      await this.layerBoardToggleContentCollapse.last().click();
+      await expect(this.layerItemToggleExpand.last()).toBeVisible();
+    }
+  }
+
+  async selectMainComponentChildLayer() {
+    await this.expandMainComponentOnLayersTab();
+    await this.clickMainComponentChildLayerOnLayersTab();
+  }
+
+  async clickMainComponentChildLayerOnLayersTab() {
+    const layer = this.page.locator(
+      '//*[@class="icon-component-refactor"]/../../../../following-sibling::div//span[text()]',
+    );
+    await layer.click();
+  }
+
+  async isCopyComponentNameDisplayed(name) {
+    await expect(this.createdLayerOnLayersPanelSpan.first()).toHaveText(name);
   }
 };
