@@ -202,6 +202,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textAlignBottom = page.locator('svg.icon-text-bottom-refactor');
     this.textIconLTR = page.locator('svg.icon-text-ltr-refactor');
     this.textIconRTL = page.locator('svg.icon-text-rtl-refactor');
+    this.textFontSelector = page.locator('div[class*="typography__font-option"]');
+    this.textFontSelectorSearchInput = page.locator('input[placeholder="Search font"]');
+    this.textFontStyleSelector = page.locator('div[class*="typography__font-variant-options"]');
+    this.textFontSizeInput = page.locator('div[class*="font-size-select"] input');
 
     //Design panel - Export section
     this.exportSection = page.locator(
@@ -591,6 +595,25 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         await this.textIconLTR.click();
         break;
     }
+  }
+
+  async changeTextFont(fontName) {
+    await this.textFontSelector.click();
+    await this.textFontSelectorSearchInput.fill(fontName);
+    await this.page
+      .locator(`div[class*="font-item"] span:has-text('${fontName}')`)
+      .click();
+  }
+
+  async changeTextFontStyle(fontStyleName) {
+    await this.textFontStyleSelector.click();
+    await this.page
+      .locator(`div[class*="typography__font-variant-options"] span:has-text('${fontStyleName}')`)
+      .click();
+  }
+
+  async changeTextFontSize(value) {
+    await this.textFontSizeInput.fill(value);
   }
 
   async isLayoutRemoveButtonExists(condition = true) {
