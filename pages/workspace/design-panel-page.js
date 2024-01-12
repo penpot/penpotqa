@@ -907,6 +907,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(selector).toBeVisible();
   }
 
+  async isAnnotationOptionNotVisibleRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({ button: 'right', force: true });
+    await expect(this.createAnnotationOption).not.toBeVisible();
+  }
+
+  async isAnnotationOptionNotVisible() {
+    await expect(this.createAnnotationOptionDesign).not.toBeVisible();
+  }
+
   async changeAxisXandYForLayer(x, y) {
     await this.xAxisInput.fill(x);
     await this.clickOnEnter();

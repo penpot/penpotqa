@@ -208,4 +208,16 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   async isCopyComponentNameDisplayed(name) {
     await expect(this.createdLayerOnLayersPanelSpan.first()).toHaveText(name);
   }
+
+  async dragAndDropComponentToBoard(name) {
+    await this.page.waitForTimeout(200);
+    const component = this.page.locator(
+      `div[class*="element-list-body"] span[class*="element-name"]:text-is("${name}") >>nth=0`,
+    );
+    const board = this.page.locator(
+      `div[class*="element-list-body"] span[class*="element-name"]:text-is("Board") >>nth=0`,
+    );
+    await component.hover();
+    await component.dragTo(board);
+  }
 };

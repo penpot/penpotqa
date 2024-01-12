@@ -231,6 +231,12 @@ exports.BasePage = class BasePage {
     await this.addFlexLayout.click();
   }
 
+  async addFlexLayoutViaRightClickForNComponent(n) {
+    const board = this.page.locator(`g[class="frame-title"] >> nth=${n}`);
+    await board.click({ button: 'right', force: true });
+    await this.addFlexLayout.click();
+  }
+
   async removeFlexLayoutViaRightClick() {
     await this.createdBoardTitle.click({ button: 'right', force: true });
     await this.removeFlexLayout.click();
