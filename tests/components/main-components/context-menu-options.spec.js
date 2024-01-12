@@ -250,6 +250,31 @@ test.describe(() => {
       'component-grid-view.png',
     );
   });
+
+  mainTest(
+    'PENPOT-1399 Impossible to create annotation for copy component',
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await mainPage.duplicateLayerViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.changeAxisXandYForLayer('200', '0');
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isAnnotationOptionNotVisibleRightClick();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'copy-component-right-click-annotation-disabled.png',
+      );
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.clickOnComponentMenuButton();
+      await designPanelPage.isAnnotationOptionNotVisible();
+      await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
+        'copy-component-annotation-disabled.png',
+      );
+    },
+  );
+
 });
 
 mainTest(
