@@ -158,6 +158,14 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await this.copyComponentLayer.first().click();
   }
 
+  async clickFirstCopyComponentOnLayersTab() {
+    await this.copyComponentLayer.last().click();
+  }
+
+  async clickNCopyComponentOnLayersTab(index) {
+    await this.copyComponentLayer.nth(index).click();
+  }
+
   async clickMainComponentOnLayersTab() {
     await this.mainComponentLayer.last().click();
   }
@@ -182,7 +190,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   }
 
   async updateMainComponentViaRightClick() {
-    await this.copyComponentLayer.click({ button: 'right', force: true });
+    await this.copyComponentLayer.first().click({ button: 'right', force: true });
     await this.updateMainComponentMenuItem.click();
   }
 
@@ -219,5 +227,15 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     );
     await component.hover();
     await component.dragTo(board);
+  }
+
+  async deleteMainComponentViaRightClick() {
+    await this.mainComponentLayer.click({ button: 'right', force: true });
+    await this.deleteLayerMenuOption.click();
+  }
+
+  async detachInstanceCopyComponentViaRightClick() {
+    await this.copyComponentLayer.click({ button: 'right', force: true });
+    await this.detachInstanceOption.click();
   }
 };

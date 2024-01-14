@@ -16,6 +16,7 @@ exports.BasePage = class BasePage {
 
     //Layer right-click menu items
     this.createdLayer = page.locator('div[class="viewport"] [id^="shape"] >> nth=0');
+    this.copyLayer = page.locator('div[class="viewport"] [id^="shape"]').last();
     this.createdBoardTitle = page.locator('g[class="frame-title"] >> nth=0');
     this.deleteLayerMenuItem = page.locator(
       'ul[class*="workspace-context-menu"] li:has-text("Delete")',
@@ -56,7 +57,7 @@ exports.BasePage = class BasePage {
     this.removeFlexLayout = page.locator(
       'ul[class*="workspace-context-menu"] li:has-text("Remove flex layout")',
     );
-    this.deleteLayerMenuItem = page.locator(
+    this.deleteLayerMenuOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Delete")',
     );
     this.createComponentMenuItem = page.locator(
@@ -79,6 +80,15 @@ exports.BasePage = class BasePage {
     );
     this.duplicateOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Duplicate")',
+    );
+    this.showMainComponentOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Show main component")',
+    );
+    this.resetOverridesOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Reset overrides")',
+    );
+    this.detachInstanceOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Detach instance")',
     );
   }
 
@@ -240,5 +250,14 @@ exports.BasePage = class BasePage {
   async removeFlexLayoutViaRightClick() {
     await this.createdBoardTitle.click({ button: 'right', force: true });
     await this.removeFlexLayout.click();
+  }
+  async showMainComponentViaRightClick() {
+    await this.copyLayer.click({ button: 'right', force: true });
+    await this.showMainComponentOption.click();
+  }
+
+  async resetOverridesViaRightClick() {
+    await this.copyLayer.click({ button: 'right', force: true });
+    await this.resetOverridesOption.click();
   }
 };
