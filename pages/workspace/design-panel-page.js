@@ -292,6 +292,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.deleteAnnotationOkBtn = page.locator(
       'div[class*="modal-container"] input[value="Ok"]',
     );
+    this.resetOverridesOptionDesign = page.locator(
+      'ul[class*="component__custom-select-dropdown"] span:text-is("Reset overrides")',
+    );
+    this.detachInstanceOptionDesign = page.locator(
+      'ul[class*="component__custom-select-dropdown"] span:text-is("Detach instance")',
+    );
   }
 
   async isFlexElementSectionOpened() {
@@ -924,5 +930,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.yAxisInput.fill(y);
     await this.clickOnEnter();
     await this.waitForChangeIsSaved();
+  }
+
+  async clickOnResetOverridesOption() {
+    await this.resetOverridesOptionDesign.click();
+  }
+
+  async clickOnDetachInstanceOption() {
+    await this.detachInstanceOptionDesign.click();
   }
 };

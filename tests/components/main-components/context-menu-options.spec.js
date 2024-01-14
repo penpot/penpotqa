@@ -8,14 +8,22 @@ const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page'
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 const { InspectPanelPage } = require('../../../pages/workspace/inspect-panel-page');
+const { BasePage } = require('../../../pages/base-page');
+const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
 
 const teamName = random().concat('autotest');
 const annotation = 'Test annotation for automation';
 
+let mainPage, basePage, dashboardPage, teamPage, layersPanelPage, designPanelPage, colorPalettePage, assetsPanelPage;
 test.beforeEach(async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
+  dashboardPage = new DashboardPage(page);
+  teamPage = new TeamPage(page);
+  mainPage = new MainPage(page);
+  basePage = new BasePage(page);
+  layersPanelPage = new LayersPanelPage(page);
+  designPanelPage = new DesignPanelPage(page);
+  colorPalettePage = new ColorPalettePage(page);
+  assetsPanelPage = new AssetsPanelPage(page);
   await teamPage.createTeam(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
@@ -307,9 +315,6 @@ mainTest(
 
 mainTest('Create a group with component and check its name', async ({ page }) => {
   const groupName = 'Test Group';
-  const mainPage = new MainPage(page);
-  const layersPanelPage = new LayersPanelPage(page);
-  const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultBoardByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -326,9 +331,6 @@ mainTest('Create a group with component and check its name', async ({ page }) =>
 
 mainTest('Rename component with valid name', async ({ page }) => {
   const newName = 'Renamed ellipse name';
-  const mainPage = new MainPage(page);
-  const layersPanelPage = new LayersPanelPage(page);
-  const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultEllipseByCoordinates(400, 600);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -344,8 +346,240 @@ mainTest('Rename component with valid name', async ({ page }) => {
 });
 
 mainTest('Filter Components from All Assets drop-down', async ({ page }) => {
-  const assetsPanelPage = new AssetsPanelPage(page);
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.selectTypeFromAllAssetsDropdown('Components');
   await assetsPanelPage.isAssetsSectionNameDisplayed('Components', '0');
+});
+
+test.describe(() => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    testInfo.setTimeout(testInfo.timeout + 15000);
+    await mainPage.createDefaultEllipseByCoordinates(200, 300);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.duplicateLayerViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.changeAxisXandYForLayer('400', '300');
+  });
+
+  mainTest(
+    'PENPOT-1411 Click Show main component on copy',
+    async ({ page }) => {
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await basePage.showMainComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-copies-component-show-main.png',
+      );
+    },
+  );
+
+  mainTest(
+    'PENPOT-1412 Change copy and click Reset overrides',
+    async ({ page }) => {
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.changeHeightAndWidthForLayer('100', '150');
+      await basePage.resetOverridesViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-copies-component-reset-overrides.png',
+      );
+    },
+  );
+
+  mainTest(
+    'PENPOT-1413 Change copy color, change main color, right-click copy and click Reset overrides',
+    async ({ page }) => {
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.clickAddFillButton();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.clickFillColorIcon();
+      await colorPalettePage.setHex('#460EA2');
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isFillHexCodeSet('460EA2');
+
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.clickAddFillButton();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.clickFillColorIcon();
+      await colorPalettePage.setHex('#0EA27A');
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isFillHexCodeSet('0EA27A');
+
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.clickOnComponentMenuButton();
+      await designPanelPage.clickOnResetOverridesOption();
+      await mainPage.waitForChangeIsSaved();
+
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isFillHexCodeSet('0EA27A');
+
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-copies-component-change-color-reset-overrides.png',
+      );
+    },
+  );
+
+  mainTest(
+    'PENPOT-1300 Restore main component via context menu',
+    async ({ page }) => {
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await layersPanelPage.deleteMainComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await layersPanelPage.restoreMainComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-component-restore-main.png',
+      );
+    },
+  );
+
+  mainTest(
+    'PENPOT-1296 Detach instance from context menu',
+    async ({ page }) => {
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await layersPanelPage.detachInstanceCopyComponentViaRightClick();
+      await designPanelPage.changeHeightAndWidthForLayer('300', '300');
+      await designPanelPage.changeAxisXandYForLayer('400', '300');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-copies-component-detach-instance-right-click.png',
+      );
+    },
+  );
+
+  mainTest(
+    'PENPOT-1297 Detach instance from "Design" tab',
+    async ({ page }) => {
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.clickOnComponentMenuButton();
+      await designPanelPage.clickOnDetachInstanceOption();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.changeHeightAndWidthForLayer('300', '300');
+      await designPanelPage.changeAxisXandYForLayer('400', '300');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-copies-component-detach-instance-right-click.png',
+      );
+    },
+  );
+
+  mainTest(
+    'PENPOT-1298 Reset overrides via context menu',
+    async ({ page }) => {
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.changeHeightAndWidthForLayer('100', '150');
+      await designPanelPage.clickAddFillButton();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.clickFillColorIcon();
+      await colorPalettePage.setHex('#460EA2');
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isFillHexCodeSet('460EA2');
+
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.clickAddBlurButton();
+      await designPanelPage.changeValueForBlur('2');
+      await mainPage.waitForChangeIsSaved();
+
+      await basePage.resetOverridesViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-copies-component-reset-overrides.png',
+      );
+    },
+  );
+
+});
+
+test.describe(() => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    testInfo.setTimeout(testInfo.timeout + 15000);
+    await mainPage.createDefaultEllipseByCoordinates(200, 200);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.duplicateLayerViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.changeAxisXandYForLayer('400', '400');
+    await mainPage.duplicateLayerViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.changeAxisXandYForLayer('50', '400');
+
+    await layersPanelPage.clickFirstCopyComponentOnLayersTab();
+    await designPanelPage.clickAddFillButton();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#092062');
+    await layersPanelPage.clickFirstCopyComponentOnLayersTab();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.isFillHexCodeSet('092062');
+  });
+
+  mainTest(
+    'PENPOT-1416 Create 2 copies of main component. Change color of copy 1, change color of copy 2, right-click copy 2 and click "Update main component"',
+    async ({ page }) => {
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.clickAddFillButton();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.clickFillColorIcon();
+      await colorPalettePage.setHex('#CD0B4B');
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isFillHexCodeSet('CD0B4B');
+
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await layersPanelPage.updateMainComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+
+      await layersPanelPage.clickFirstCopyComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isFillHexCodeSet('092062');
+
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isFillHexCodeSet('CD0B4B');
+
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-copies-component-change-color-update-component.png',
+      );
+    },
+  );
+
+  mainTest(
+    'PENPOT-1417 Create a copy from main, change color of copy, create a copy from copy, change color of main',
+    async ({ page }) => {
+      await mainPage.duplicateLayerViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.clickNCopyComponentOnLayersTab(-2);
+      await designPanelPage.changeAxisXandYForLayer('250', '500');
+
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.clickAddFillButton();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.clickFillColorIcon();
+      await colorPalettePage.setHex('#0B33A9');
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isFillHexCodeSet('0B33A9');
+
+      await layersPanelPage.clickFirstCopyComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isFillHexCodeSet('092062');
+
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isFillHexCodeSet('0B33A9');
+
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-copies-component-change-color.png',
+      );
+    },
+  );
 });
