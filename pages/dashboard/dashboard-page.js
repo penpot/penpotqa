@@ -34,7 +34,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.addFileAsSharedLibraryButton = page.locator(
       'input[value="Add as Shared Library"]',
     );
-    this.sharedLibraryIcon = page.locator('svg[class="icon-library"]');
+    this.sharedLibraryIcon = page.locator('svg[class="icon-library-refactor"]');
     this.delFileAsSharedLibraryMenuItem = page.locator(
       'a[data-test="file-del-shared"]',
     );
