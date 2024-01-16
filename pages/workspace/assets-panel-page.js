@@ -96,6 +96,10 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     );
     this.removeAsSharedLibraryButton = page.locator('input[value="Unpublish"]');
     this.sharedLibraryBadge = page.locator('span[class*="shared-badge"]');
+    this.librariesOpenModalButton = page.locator('button[class*="libraries-button"]');
+    this.addSharedLibraryButton = page.locator('input[value="Publish"]');
+    this.cancelSharedLibraryButton = page.locator('input[value="Cancel"]');
+    this.searchSharedLibrariesInput = page.locator('input[placeholder="Search shared libraries"]');
   }
 
   async clickAssetsTab() {
@@ -260,6 +264,10 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.removeAsSharedLibraryButton.click();
   }
 
+  async isRemoveAsSharedLibraryButtonVisible() {
+    await expect(this.removeAsSharedLibraryButton).toBeVisible();
+  }
+
   async isSharedLibraryBadgeVisible() {
     await expect(this.sharedLibraryBadge).toBeVisible();
   }
@@ -319,5 +327,29 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.renameFileLibraryMenuItem.click();
     await this.fileLibraryComponentNameInput.fill(newName);
     await this.clickOnEnter();
+  }
+
+  async clickLibrariesButton() {
+    await this.librariesOpenModalButton.click();
+  }
+
+  async clickSharedLibraryButton() {
+    await this.addSharedLibraryButton.click();
+  }
+
+  async isSharedLibraryButtonVisible() {
+    await expect(this.addSharedLibraryButton).toBeVisible();
+  }
+
+  async clickCancelSharedLibraryButton() {
+    await this.cancelSharedLibraryButton.click();
+  }
+
+  async isSharedLibraryCancelButtonVisible() {
+    await expect(this.cancelSharedLibraryButton).toBeVisible();
+  }
+
+  async isSharedLibrarySearchInputVisible() {
+    await expect(this.searchSharedLibrariesInput).toBeVisible();
   }
 };
