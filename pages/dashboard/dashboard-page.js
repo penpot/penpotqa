@@ -107,10 +107,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class*="installed-fonts"] div[class*="table-row"] div[class*="dashboard_fonts__variants"]',
     );
     this.fontOptionsMenuButton = page.locator(
-      'div[class*="fonts__options"] svg[class="icon-actions"]',
+      'div[class*="fonts__options"] svg[class="icon-menu-refactor"]',
     );
-    this.editFontMenuItem = page.locator('a[data-test="font-edit"]');
-    this.deleteFontMenuItem = page.locator('a[data-test="font-delete"]');
+    this.editFontMenuItem = page.locator('li[id="font-edit"] a');
+    this.deleteFontMenuItem = page.locator('li[id="font-delete"] a');
     this.deleteFontButton = page.locator('input[value="Delete"]');
     this.fontsTablePlaceholder = page.locator(
       'div[class*="fonts-placeholder"] div[class*="label"]',

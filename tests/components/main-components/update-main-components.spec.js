@@ -172,9 +172,9 @@ test.describe(() => {
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.clickAddBlurButton();
-      await designPanelPage.changeValueForBlur('2');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-blur.png', {
         mask: [mainPage.guides],
