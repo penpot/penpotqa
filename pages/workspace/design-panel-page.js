@@ -269,22 +269,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.annotationTextArea = page.locator('#annotation-textarea');
     this.annotationCreateTitle = page.locator(
-      'div[class^="component-annotation"] div[class^=title]',
+      'div[class*="component-annotation"] div[class*=title]',
     );
     this.createAnnotationTick = page.locator(
-      'div[title="Create"] svg[class="icon-tick"]',
+      'div[title="Create"] svg[class="icon-tick-refactor"]',
     );
     this.saveAnnotationTick = page.locator(
-      'div[title="Save"] svg[class="icon-tick"]',
+      'div[title="Save"] svg[class="icon-tick-refactor"]',
     );
     this.discardAnnotationTick = page.locator(
-      'div[title="Discard"] svg[class="icon-cross"]',
+      'div[title="Discard"] svg[class="icon-close-refactor"]',
     );
     this.editAnnotationTick = page.locator(
-      'div[title="Edit"] svg[class="icon-pencil"]',
+      'div[title="Edit"] svg[class="icon-curve-refactor"]',
     );
     this.deleteAnnotationTick = page.locator(
-      'div[title="Delete"] svg[class="icon-trash"]',
+      'div[title="Delete"] svg[class="icon-delete-refactor"]',
     );
     this.deleteAnnotationPopup = page.locator(
       'div[class*="modal-container"] h2:text-is("Delete annotation")',
@@ -908,7 +908,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async isAnnotationAddedToComponent(value) {
     const selector = this.page.locator(
-      `div[class^="component-annotation"] div[data-replicated-value="${value}"]`,
+      `div[class*="component-annotation"] div[data-replicated-value="${value}"]`,
     );
     await expect(selector).toBeVisible();
   }
