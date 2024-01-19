@@ -179,7 +179,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Shortcuts panel
     this.shortcutsPanel = page.locator(
-      'div[class="main_ui_workspace_sidebar_shortcuts__shortcuts"]',
+      'div[class*="bar-content main_ui_workspace_sidebar_shortcuts__shortcuts"]',
     );
     this.closeShortcutsPanelIcon = page.locator(
       'div[class*="shortcuts-close-button"]',
@@ -294,8 +294,8 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async drawCurve(x1, y1, x2, y2) {
-    await this.page.waitForTimeout(100);
-    await this.viewport.hover();
+    await this.page.waitForTimeout(200);
+    // await this.viewport.hover();
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.down();
     await this.page.mouse.move(x1, y1);
@@ -784,7 +784,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayer(browserName) {
+  async createDefaultTextLayer() {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(200, 300);
     const platform = getPlatformName()

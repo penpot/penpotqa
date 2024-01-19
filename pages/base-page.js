@@ -9,7 +9,7 @@ exports.BasePage = class BasePage {
     this.page = page;
     this.header = page.locator('div[class*="dashboard-title"] h1');
     this.successMessage = page.locator('div[class*="main_ui_messages__success"]');
-    this.infoMessage = page.locator('div[class="banner info fixed"]');
+    this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
     this.moveButton = page.locator('button[title="Move (V)"]');
     this.savedChangesIcon = page.locator('div[title="Saved"]');
     this.viewport = page.locator('div.viewport');
