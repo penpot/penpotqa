@@ -20,6 +20,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.deleteFileButton = page.locator(
       'input[value="Delete files"],input[value="Delete file"]',
     );
+    this.deleteFileModalWindow = page.locator('div[class*="delete_shared__modal-container"]');
     this.createFileButtonPlaceholder = page.locator(
       'div[class*="dashboard-grid"] button[class*="create-new"]',
     );
@@ -39,6 +40,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'a[data-test="file-del-shared"]',
     );
     this.delFileAsSharedLibraryButton = page.locator('input[value="Unpublish"]');
+    this.moveToFileMenuItem = page.locator(
+      'a[data-test="file-move-to"]',
+    );
+    this.moveToOtherTeamMenuItem = page.locator(
+      'li[id="move-to-other-team"] a',
+    );
+    this.dashboardLibraryItem = page.locator(`button[title="New File 1"] div[class*="dashboard_grid__library"]`);
     this.downloadFilePenpotMenuItem = page.locator(
       'a[data-test="download-binary-file"]',
     );
@@ -503,5 +511,33 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async importAndOpenFile(file) {
     await this.importFile(file);
     await this.openFile();
+  }
+  async openFileWithName(name) {
+    const fileTitle = this.page.locator(`button[title="${name}"]`);
+    await fileTitle.first().dblclick();
+  }
+
+  async isFileVisibleByName(name) {
+    const elem = this.page.locator(`button[title="${name}"]`);
+    await expect(elem.first()).toBeVisible();
+  }
+
+  async deleteFileWithNameViaRightClick(name) {
+    const elem = this.page.locator(`button[title="${name}"]`).first();
+    await elem.click({ button: 'right' });
+    await this.deleteFileMenuItem.click();
+  }
+
+  async clickDeleteFileButton() {
+    await this.deleteFileButton.click();
+  }
+
+  async moveFileToOtherTeamViaRightClick(fileName, otherTeamName) {
+    const elem = this.page.locator(`button[title="${fileName}"]`).first();
+    await elem.click({ button: 'right' });
+    await this.moveToFileMenuItem.click();
+    await this.moveToOtherTeamMenuItem.click();
+    await this.page.locator(`li[role="menuitem"] a:has-text("${otherTeamName}")`).click();
+    await this.page.locator(`li[role="menuitem"] a:has-text("Drafts")`).click();
   }
 };

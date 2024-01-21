@@ -10,6 +10,7 @@ exports.BasePage = class BasePage {
     this.header = page.locator('div[class*="dashboard-title"] h1');
     this.successMessage = page.locator('div[class*="main_ui_messages__success"]');
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
+    this.wrapperMessage = page.locator('div[class*="main_ui_messages__wrapper"]');
     this.moveButton = page.locator('button[title="Move (V)"]');
     this.savedChangesIcon = page.locator('div[title="Saved"]');
     this.viewport = page.locator('div.viewport');
@@ -259,5 +260,9 @@ exports.BasePage = class BasePage {
   async resetOverridesViaRightClick() {
     await this.copyLayer.click({ button: 'right', force: true });
     await this.resetOverridesOption.click();
+  }
+
+  async isWrapperMessageVisible() {
+    await expect(this.wrapperMessage).toBeVisible();
   }
 };
