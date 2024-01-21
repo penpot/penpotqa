@@ -100,6 +100,16 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.addSharedLibraryButton = page.locator('input[value="Publish"]');
     this.cancelSharedLibraryButton = page.locator('input[value="Cancel"]');
     this.searchSharedLibrariesInput = page.locator('input[placeholder="Search shared libraries"]');
+    this.libraryTitle = page.locator('div[class*="special-title"]');
+    this.libraryComponentsTitle = page.locator(
+      '//*[@class="icon-component-refactor"]/../../../../span/*[@class="icon-arrow-refactor"]'
+    );
+    this.dismissButton = page.locator('button:text-is("Dismiss")');
+    this.librariesUpdatesTab = page.locator('div[data-id="updates"]');
+    this.librariesUpdateButton = page.locator('input[value="Update"]');
+    this.librariesMoreInfoButton = page.locator('input[value="More info"]');
+    this.closeModalButton = page.locator('svg[class="icon-close-refactor"]');
+    this.librariesModal = page.locator('div[class*="libraries__modal-dialog"]');
   }
 
   async clickAssetsTab() {
@@ -351,5 +361,56 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async isSharedLibrarySearchInputVisible() {
     await expect(this.searchSharedLibrariesInput).toBeVisible();
+  }
+
+  async clickSharedLibraryImportButton(name) {
+    const elem = this.page.locator(`//div[text()="${name}"]/../../button`);
+    await elem.first().click();
+  }
+
+  async isSharedLibraryVisibleByName(name) {
+    const elem = this.page.locator(`//div[text()="${name}"]/../../button`);
+    await expect(elem.first()).toBeVisible();
+  }
+
+  async dragAndDropComponentToViewport(name) {
+    await this.page.waitForTimeout(200);
+    const component = this.page.locator(
+      `//span[@title="${name}"]/..`,
+    ).last();
+    await component.hover();
+    await component.dragTo(this.viewport);
+  }
+
+  async clickLibraryTitle() {
+    await this.libraryTitle.last().click();
+  }
+
+  async clickLibraryComponentsTitle() {
+    await this.libraryComponentsTitle.last().click();
+  }
+
+  async clickDismissButton() {
+    await this.dismissButton.last().click();
+  }
+
+  async clickUpdatesTab() {
+    await this.librariesUpdatesTab.click();
+  }
+
+  async clickLibrariesUpdateButton() {
+    await this.librariesUpdateButton.click();
+  }
+
+  async clickCloseModalButton() {
+    await this.closeModalButton.click();
+  }
+
+  async clickLibrariesMoreInfoButton() {
+    await this.librariesMoreInfoButton.click();
+  }
+
+  async isLibrariesUpdateButtonVisible() {
+    await expect(this.librariesUpdateButton.first()).toBeVisible();
   }
 };
