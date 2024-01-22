@@ -230,7 +230,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   }
 
   async deleteMainComponentViaRightClick() {
-    await this.mainComponentLayer.click({ button: 'right', force: true });
+    await this.mainComponentLayer.first().click({ button: 'right', force: true });
     await this.deleteLayerMenuOption.click();
   }
 

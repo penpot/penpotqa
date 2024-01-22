@@ -540,4 +540,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.page.locator(`li[role="menuitem"] a:has-text("${otherTeamName}")`).click();
     await this.page.locator(`li[role="menuitem"] a:has-text("Drafts")`).click();
   }
+
+  async addFileWithNameAsSharedLibraryViaRightClick(fileName) {
+    const elem = this.page.locator(`button[title="${fileName}"]`).first();
+    await elem.click({ button: 'right' });
+    await this.addFileAsSharedLibraryMenuItem.click();
+    await this.addFileAsSharedLibraryButton.click();
+  }
 };

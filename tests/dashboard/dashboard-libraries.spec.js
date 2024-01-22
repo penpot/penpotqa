@@ -160,3 +160,30 @@ mainTest(
     );
   },
 );
+
+test.describe(() => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
+    await dashboardPage.isSharedLibraryIconDisplayed();
+    await dashboardPage.openSidebarItem('Libraries');
+    await dashboardPage.isFilePresent('New File 1');
+  });
+
+  mainTest(
+    'PENPOT-1057 Rename file from Libraries tab',
+    async ({ page }) => {
+      await dashboardPage.renameFile('Renamed Test File');
+      await dashboardPage.isFilePresent('Renamed Test File');
+    },
+  );
+
+  mainTest(
+    'PENPOT-1058 Duplicate file from Libraries tab',
+    async ({ page }) => {
+      await dashboardPage.duplicateFileViaRightclick();
+      await dashboardPage.openSidebarItem('Projects');
+      await dashboardPage.checkNumberOfFiles('2 files');
+    },
+  );
+});
