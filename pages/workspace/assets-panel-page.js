@@ -390,6 +390,11 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.libraryComponentsTitle.last().click();
   }
 
+  async clickLibraryTitleWithName(libraryName) {
+    const libTitle = this.page.locator(`div[class*="special-title"]:has-text("${libraryName}")`);
+    await libTitle.last().click();
+  }
+
   async clickDismissButton() {
     await this.dismissButton.last().click();
   }

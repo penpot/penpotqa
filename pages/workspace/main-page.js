@@ -643,8 +643,12 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportTwice();
   }
 
-  async duplicatePageViaRightClick() {
-    await this.firstPageListItem.click({ button: 'right' });
+  async duplicatePageViaRightClick(isFirstPage = true) {
+    if (isFirstPage) {
+      await this.firstPageListItem.click({ button: 'right' });
+    } else {
+      await this.secondPageListItem.click({ button: 'right' });
+    }
     await this.duplicatePageMenuItem.click();
   }
 
