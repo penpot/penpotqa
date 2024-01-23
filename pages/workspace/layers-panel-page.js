@@ -170,6 +170,10 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await this.mainComponentLayer.last().click();
   }
 
+  async clickNMainComponentOnLayersTab(index) {
+    await this.mainComponentLayer.nth(index).click();
+  }
+
   async doubleClickCopyComponentOnLayersTab() {
     const layer = this.page.locator(
       `div[class*="element-list-body"] span[class*="element-name"]`,

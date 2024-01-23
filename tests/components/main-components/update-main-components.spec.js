@@ -372,3 +372,158 @@ test.describe(() => {
     },
   );
 });
+
+mainTest('PENPOT-1478 Changed direct, not overriden', async () => {
+  await mainPage.createDefaultRectangleByCoordinates(200, 300);
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.duplicateLayerViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await designPanelPage.changeAxisXandYForLayer('400', '500');
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickMainComponentOnLayersTab();
+  await designPanelPage.clickComponentFillColorIcon();
+  await colorPalettePage.setHex('#093EDC');
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    '1478-component-update-canvas.png'
+  );
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+    '1478-component-update-asset.png',
+  );
+});
+
+mainTest('PENPOT-1479 Changed remote, not overriden', async () => {
+  await mainPage.createDefaultRectangleByCoordinates(200, 300);
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.duplicateLayerViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await designPanelPage.changeAxisXandYForLayer('400', '500');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createComponentViaRightClick();
+  await mainPage.duplicateLayerViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await designPanelPage.changeAxisXandYForLayer('200', '500');
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickMainComponentOnLayersTab();
+  await designPanelPage.clickComponentFillColorIcon();
+  await colorPalettePage.setHex('#C41ABC');
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    '1479-component-update-canvas.png'
+  );
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+    '1479-component-update-asset.png',
+  );
+});
+
+mainTest('PENPOT-1480 Changed direct, overriden in copy', async () => {
+  await mainPage.createDefaultRectangleByCoordinates(200, 300);
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.duplicateLayerViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await designPanelPage.changeAxisXandYForLayer('400', '500');
+  await mainPage.waitForChangeIsSaved();
+  await designPanelPage.clickComponentFillColorIcon();
+  await colorPalettePage.setHex('#DC08D3');
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickMainComponentOnLayersTab();
+  await designPanelPage.clickComponentFillColorIcon();
+  await colorPalettePage.setHex('#660E62');
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    '1480-component-update-canvas.png'
+  );
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+    '1480-component-update-asset.png',
+  );
+});
+
+mainTest('PENPOT-1482 Changed remote, overriden in copy', async () => {
+  await mainPage.createDefaultRectangleByCoordinates(200, 300);
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.duplicateLayerViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await designPanelPage.changeAxisXandYForLayer('400', '500');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createComponentViaRightClick();
+  await mainPage.duplicateLayerViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await designPanelPage.changeAxisXandYForLayer('200', '500');
+  await mainPage.waitForChangeIsSaved();
+  await designPanelPage.clickComponentFillColorIcon();
+  await colorPalettePage.setHex('#0F602A');
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickMainComponentOnLayersTab();
+  await designPanelPage.clickComponentFillColorIcon();
+  await colorPalettePage.setHex('#C41ABC');
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    '1482-component-update-canvas.png'
+  );
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+    '1482-component-update-asset.png',
+  );
+});
+
+mainTest('PENPOT-1483 Changed remote, overriden in near, overriden in copy', async () => {
+  await mainPage.createDefaultRectangleByCoordinates(200, 300);
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.duplicateLayerViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await designPanelPage.changeAxisXandYForLayer('400', '500');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createComponentViaRightClick();
+  await mainPage.duplicateLayerViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await designPanelPage.changeAxisXandYForLayer('200', '500');
+  await mainPage.waitForChangeIsSaved();
+  await designPanelPage.clickComponentFillColorIcon();
+  await colorPalettePage.setHex('#0F602A');
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickNMainComponentOnLayersTab(-2);
+  await designPanelPage.clickComponentFillColorIcon();
+  await colorPalettePage.setHex('#83B092');
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickMainComponentOnLayersTab();
+  await designPanelPage.clickComponentFillColorIcon();
+  await colorPalettePage.setHex('#326F46');
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    '1483-component-update-canvas.png'
+  );
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+    '1483-component-update-asset.png',
+  );
+});

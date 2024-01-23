@@ -4,6 +4,11 @@ const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
+const { BasePage } = require('../../pages/base-page');
+const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
+const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
+const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 
 const teamName = random().concat('autotest');
 
@@ -99,3 +104,82 @@ mainTest('PF-119 Delete page', async ({ page }) => {
   await mainPage.isFirstPageNameDisplayed('Page 1');
   await expect(mainPage.pagesBlock).toHaveScreenshot('page-1.png');
 });
+
+mainTest('PENPOT-1519 Copy and paste components from Page 1 to Page 2, on Page 2 right-click component and select "Show main component"',
+  async ({ page, browserName }) => {
+  const mainPage = new MainPage(page);
+  const basePage = new BasePage(page);
+  const layersPanelPage = new LayersPanelPage(page);
+  await mainPage.createDefaultRectangleByCoordinates(300, 300);
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.pressCopyShortcut(browserName);
+  await mainPage.clickAddPageButton();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickOnPageOnLayersPanel(false);
+  await mainPage.pressPasteShortcut(browserName);
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await basePage.showMainComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    'page-copies-component-show-main.png',
+  );
+});
+
+mainTest('PENPOT-1526 Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Reset overrides"',
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const basePage = new BasePage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await mainPage.createDefaultRectangleByCoordinates(300, 300);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickAddPageButton();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickOnPageOnLayersPanel(false);
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.dragComponentOnCanvas(100, 100);
+    await layersPanelPage.openLayersTab();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.changeHeightAndWidthForLayer('100', '150');
+    await basePage.resetOverridesViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'page-copies-component-reset-overrides.png',
+    );
+  });
+
+mainTest('PENPOT-1527 Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Update main component"',
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    const colorPalettePage = new ColorPalettePage(page);
+    await mainPage.createDefaultRectangleByCoordinates(200, 200);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickAddPageButton();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickOnPageOnLayersPanel(false);
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.dragComponentOnCanvas(500, 500);
+    await layersPanelPage.openLayersTab();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.clickComponentFillColorIcon();
+    await colorPalettePage.setHex('#243E8E');
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.updateMainComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickOnPageOnLayersPanel(true);
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'page-copies-component-update-main.png',
+    );
+  });
