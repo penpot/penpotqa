@@ -525,6 +525,30 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
+  async pressCopyShortcut(browserName) {
+    if (getPlatformName() === 'MacOS') {
+      await this.page.keyboard.press('Meta+C');
+    } else {
+      if (browserName === 'webkit') {
+        await this.page.keyboard.press('Meta+C');
+      } else {
+        await this.page.keyboard.press('Control+C');
+      }
+    }
+  }
+
+  async pressPasteShortcut(browserName) {
+    if (getPlatformName() === 'MacOS') {
+      await this.page.keyboard.press('Meta+V');
+    } else {
+      if (browserName === 'webkit') {
+        await this.page.keyboard.press('Meta+V');
+      } else {
+        await this.page.keyboard.press('Control+V');
+      }
+    }
+  }
+
   async clickShowBoardNamesMainMenuSubItem() {
     await this.showBoardNamesMainMenuSubItem.click();
   }
