@@ -141,7 +141,7 @@ mainTest(
   },
 );
 
-mainTest.only(
+mainTest(
   'PENPOT-1374 Check Library backup file in case of unpublishing a few shared libraries',
   async ({ page }) => {
     await mainPage.clickPencilBoxButton();

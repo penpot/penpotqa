@@ -645,3 +645,52 @@ test.describe(() => {
     await teamPage.deleteTeam(team2);
   });
 });
+
+test.describe(() => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.addFileAsSharedLibraryViaRightclick();
+    await dashboardPage.isSharedLibraryIconDisplayed();
+    await dashboardPage.renameFileWithNameViaRightClick(
+      'New File 1',
+      'Whiteboarding & mapping kit'
+    );
+    await dashboardPage.createFileViaTitlePanel();
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.isHeaderDisplayed('Projects');
+    await dashboardPage.isFileVisibleByName('New File 1');
+    await dashboardPage.checkNumberOfFiles('2 files');
+    await dashboardPage.addFileWithNameAsSharedLibraryViaRightClick('New File 1');
+    await dashboardPage.renameFileWithNameViaRightClick('New File 1', 'Circum Icons pack');
+    await dashboardPage.createFileViaTitlePanel();
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.clickLibrariesButton();
+
+  });
+
+  mainTest(
+    'PENPOT-1004 Search shared library (LIBRARIES pop-up)',
+    async ({ page }) => {
+      await assetsPanelPage.searchSharedLibraries('Whiteboarding & mapping kit');
+      await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
+        'libraries-window-search.png',
+      );
+      await assetsPanelPage.clearSearchSharedLibraries();
+      await assetsPanelPage.searchSharedLibraries('Circ');
+      await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
+        'libraries-window-part-search.png',
+      );
+      await assetsPanelPage.clearSearchSharedLibraries();
+      await assetsPanelPage.searchSharedLibraries('qwer');
+      await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
+        'libraries-window-invalid-search.png',
+      );
+      await assetsPanelPage.clearSearchSharedLibraries();
+    },
+  );
+
+  test.afterEach(async ({ page }, testInfo) => {
+    await assetsPanelPage.clickCloseModalButton();
+    await mainPage.backToDashboardFromFileEditor();
+  });
+});

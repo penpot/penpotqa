@@ -100,6 +100,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.addSharedLibraryButton = page.locator('input[value="Publish"]');
     this.cancelSharedLibraryButton = page.locator('input[value="Cancel"]');
     this.searchSharedLibrariesInput = page.locator('input[placeholder="Search shared libraries"]');
+    this.searchSharedLibrariesClearButton = page.locator('button[class*="search_bar__clear"]');
     this.libraryTitle = page.locator('div[class*="special-title"]');
     this.libraryComponentsTitle = page.locator(
       '//*[@class="icon-component-refactor"]/../../../../span/*[@class="icon-arrow-refactor"]'
@@ -417,5 +418,15 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async isLibrariesUpdateButtonVisible() {
     await expect(this.librariesUpdateButton.first()).toBeVisible();
+  }
+
+  async searchSharedLibraries(name) {
+    await this.searchSharedLibrariesInput.click();
+    await this.searchSharedLibrariesInput.pressSequentially(name);
+    await this.page.keyboard.press('Enter');
+  }
+
+  async clearSearchSharedLibraries() {
+    await this.searchSharedLibrariesClearButton.click();
   }
 };
