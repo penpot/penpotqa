@@ -547,4 +547,23 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.addFileAsSharedLibraryMenuItem.click();
     await this.addFileAsSharedLibraryButton.click();
   }
+
+  async isFilePresentWithName(fileName) {
+    const fileNameTitle = this.page.locator(`button[title="${fileName}"] div[class*="item-info"] h3`);
+    await expect(fileNameTitle).toHaveText(fileName);
+  }
+
+  async renameFileWithNameViaRightClick(oldFileName ,newFileName) {
+    const fileTitle = this.page.locator(`button[title="${oldFileName}"]`).first();
+    let text = await fileTitle.textContent();
+    await fileTitle.click({ button: 'right' });
+    await this.renameFileMenuItem.click();
+    await this.fileNameInput.click();
+    for (let i = 0; i <= text.length; i++) {
+      await this.page.keyboard.press('Backspace');
+    }
+    await this.fileNameInput.pressSequentially(newFileName);
+    await this.page.keyboard.press('Enter');
+    await this.isFilePresentWithName(newFileName);
+  }
 };
