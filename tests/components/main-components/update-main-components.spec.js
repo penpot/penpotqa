@@ -30,7 +30,7 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest('PENPOT-1444 Update main component', async ({ page }) => {
+mainTest('Update main component', async ({ page }) => {
   test.setTimeout(60000);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
@@ -133,6 +133,26 @@ test.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-add-stroke.png',
+      );
+    },
+  );
+
+  mainTest(
+    'PENPOT-1444 Create a component and 2 copies of it, change fill of main',
+    async () => {
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await layersPanelPage.selectMainComponentChildLayer();
+      await designPanelPage.changeHeightAndWidthForLayer('50', '50');
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.clickAddFillButton();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.clickFillColorIcon();
+      await colorPalettePage.setHex('#0538D1');
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-component-change-fill-color.png',
       );
     },
   );
