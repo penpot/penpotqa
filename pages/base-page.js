@@ -16,7 +16,7 @@ exports.BasePage = class BasePage {
 
     //Layer right-click menu items
     this.createdLayer = page.locator('div[class="viewport"] [id^="shape"] >> nth=0');
-    this.createdBoardTitle = page.locator('g[class="frame-title"] >> nth=0');
+    this.createdBoardTitle = page.locator('g[class="frame-title"] div >> nth=0');
     this.deleteLayerMenuItem = page.locator(
       'ul[class*="workspace-context-menu"] li:has-text("Delete")',
     );
@@ -147,7 +147,7 @@ exports.BasePage = class BasePage {
 
   async hideLayerViaRightClickOnCanvas(title) {
     const boardSel = this.page.locator(
-      `//*[text()="${title}"]//parent::*[@class="frame-title"]`,
+      `//*[@class='frame-title']//../*[text()='${title}']`,
     );
     await boardSel.click({ button: 'right', force: true });
     await this.hideLayerMenuItem.click();

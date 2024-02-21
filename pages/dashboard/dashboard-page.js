@@ -34,7 +34,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.addFileAsSharedLibraryButton = page.locator(
       'input[value="Add as Shared Library"]',
     );
-    this.sharedLibraryIcon = page.locator('svg[class="icon-library"]');
+    this.sharedLibraryIcon = page.locator('svg[class="icon-library-refactor"]');
     this.delFileAsSharedLibraryMenuItem = page.locator(
       'a[data-test="file-del-shared"]',
     );
@@ -68,7 +68,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.renameProjectMenuItem = page.locator('a[data-test="project-rename"]');
     this.duplicateProjectMenuItem = page.locator('a[data-test="project-duplicate"]');
-    this.pinUnpinProjectButton = page.locator('button[alt="Pin/Unpin"] svg');
+    this.pinUnpinProjectButton = page.locator('button[aria-label="Pin/Unpin"]');
     this.projectOptionsMenuButton = page.locator(
       'button[data-test="project-options"]',
     );
@@ -386,16 +386,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickUnpinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin-fill');
+    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button main_ui_dashboard_pin_button__button-active');
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin');
+    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button ');
   }
 
   async clickPinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin');
+    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button ');
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin-fill');
+    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button main_ui_dashboard_pin_button__button-active');
   }
 
   async checkPinnedProjectsSidebarItem(text) {
