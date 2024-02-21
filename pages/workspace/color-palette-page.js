@@ -68,7 +68,7 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
 
   async selectColorBulletFromPalette(value) {
     const colorSel = this.page.locator(
-      `div[class*="color-palette-inside"] div[title="${value}"]`,
+      `div[class*="color-palette-inside"] div[title="${value}"] span`,
     );
     await colorSel.click();
   }

@@ -61,8 +61,8 @@ exports.MainPage = class MainPage extends BasePage {
     this.nodePanelToCurveButton = page.locator('button[title^="To curve"]');
 
     // Main menu - first level
-    this.mainMenuButton = page.locator('div[class*="header__menu-btn"]');
-    this.mainMenuList = page.locator('ul[class*="header__menu"]');
+    this.mainMenuButton = page.locator('#left-sidebar-aside svg.icon-menu-refactor');
+    this.mainMenuList = page.locator('ul[class*="main_ui_workspace_main_menu__menu"]');
     this.viewMainMenuItem = page.locator('#file-menu-view');
     this.fileMainMenuItem = page.locator('#file-menu-file');
     this.editMainMenuItem = page.locator('#file-menu-edit');
@@ -70,16 +70,16 @@ exports.MainPage = class MainPage extends BasePage {
 
     // Main menu - second level
     this.showRulersMainMenuSubItem = page.locator(
-      'li[data-test="rules"] span:text-is("Show rulers")',
+      '#file-menu-rulers span:text-is("Show rulers")',
     );
     this.hideRulersMainMenuSubItem = page.locator(
-      'li[data-test="rules"] span:text-is("Hide rulers")',
+      '#file-menu-rulers span:text-is("Hide rulers")',
     );
     this.hideGridsMainMenuSubItem = page.locator(
-      'li[data-test="display-grid"] span:text-is("Hide grids")',
+      '#file-menu-grid span:text-is("Hide grids")',
     );
     this.showGridsMainMenuSubItem = page.locator(
-      'li[data-test="display-grid"] span:text-is("Show grid")',
+      '#file-menu-grid span:text-is("Show grid")',
     );
     this.selectAllMainMenuSubItem = page.locator('#file-menu-select-all');
     this.showColorPaletteMainMenuSubItem = page.locator(
@@ -284,7 +284,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async doubleClickBoardTitleOnCanvas(title) {
     const boardSel = this.page.locator(
-      `//*[text()="${title}"]//parent::*[@class="frame-title"]`,
+      `//*[@class='frame-title']//../*[text()='${title}']`,
     );
     await boardSel.dblclick();
   }
@@ -478,6 +478,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickSelectAllMainMenuSubItem() {
+    await this.page.waitForTimeout(300)
     await this.selectAllMainMenuSubItem.click();
   }
 

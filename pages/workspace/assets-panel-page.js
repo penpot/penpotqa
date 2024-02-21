@@ -22,7 +22,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.componentsTitleBarOnAssetsTab = page.locator(
       'div[class*="components_title_bar"] span:text-is("Components")',
     );
-    this.assetsPanel = page.locator('div[class*="assets-bar"]');
+    this.assetsPanel = page.locator('article[class*="assets-bar"]');
     this.assetsSectionName = page.locator(
       'span[class*="assets_common__section-name"]',
     );
