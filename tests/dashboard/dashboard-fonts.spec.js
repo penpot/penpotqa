@@ -40,7 +40,7 @@ mainTest('DA-69 Search font', async ({ page }) => {
   await dashboardPage.isFontNotExist('Allura-Regular');
 });
 
-mainTest('DA-71 Edit font', async ({ page }) => {
+mainTest('DA-71 Edit font BUG', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem('Fonts');
   await dashboardPage.uploadFont('fonts/Allura-Regular.otf');

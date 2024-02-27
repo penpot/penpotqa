@@ -27,7 +27,7 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest('CO-272 Create Path from toolbar - closed', async ({ page }) => {
+mainTest('CO-272 Create Path from toolbar - closed BUG', async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.createDefaultClosedPath();
   await mainPage.isCreatedLayerVisible();
@@ -48,7 +48,7 @@ test.describe(() => {
     await mainPage.createDefaultClosedPath();
   });
 
-  mainTest('CO-277 Rename path with valid name', async ({ page }) => {
+  mainTest('CO-277 Rename path with valid name BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('Path');
@@ -57,7 +57,7 @@ test.describe(() => {
     await layersPanelPage.isLayerNameDisplayed('renamed path');
   });
 
-  mainTest('CO-282 Add, hide, unhide and delete Blur to Path', async ({ page }) => {
+  mainTest('CO-282 Add, hide, unhide and delete Blur to Path BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddBlurButton();
@@ -82,7 +82,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-283 Add and edit Blur to path', async ({ page }) => {
+  mainTest('CO-283 Add and edit Blur to path BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddBlurButton();
@@ -91,7 +91,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('path-blur.png');
   });
 
-  mainTest('CO-297 Add rotation to path', async ({ page }) => {
+  mainTest('CO-297 Add rotation to path BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
@@ -108,7 +108,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('path-rotated-359.png');
   });
 
-  mainTest('CO-298-1 Delete path via rightclick', async ({ page }) => {
+  mainTest('CO-298-1 Delete path via rightclick BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
@@ -116,7 +116,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest('CO-298-2 Delete path via shortcut Del', async ({ page }) => {
+  mainTest('CO-298-2 Delete path via shortcut Del BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();
@@ -125,7 +125,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-303 Hide and show path from rightclick and icons',
+    'CO-303 Hide and show path from rightclick and icons BUG',
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -167,7 +167,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-310 Flip Vertical and Flip Horizontal path', async ({ page }) => {
+  mainTest('CO-310 Flip Vertical and Flip Horizontal path BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.flipVerticalViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -185,7 +185,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('path-non-flipped-jpeg.png');
   });
 
-  mainTest('CO-322 Selection to board', async ({ page }) => {
+  mainTest('CO-322 Selection to board BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();

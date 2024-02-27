@@ -27,7 +27,7 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest('CP-1 Open color picker from Stroke menu', async ({ page }) => {
+mainTest('CP-1 Open color picker from Stroke menu BUG', async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
