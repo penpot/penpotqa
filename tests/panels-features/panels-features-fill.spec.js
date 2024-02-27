@@ -48,10 +48,10 @@ test.describe(() => {
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickFillColorIcon();
-    await colorPalettePage.setHex('#FF0000');
+    await colorPalettePage.modalSetHex('FF0000');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet('FF0000');
+    await designPanelPage.isFillHexCodeSet('ff0000');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.createdLayer).toHaveScreenshot('board-changed-fill.png');
   });
@@ -85,7 +85,7 @@ test.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest('PF-72 Add fill to path', async ({ page }) => {
+  mainTest('PF-72 Add fill to path BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddFillButton();
@@ -95,7 +95,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('path-fill.png');
   });
 
-  mainTest('PF-77 Change fill color for path', async ({ page }) => {
+  mainTest('PF-77 Change fill color for path BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -110,7 +110,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('path-changed-fill.png');
   });
 
-  mainTest('PF-82 Change fill opacity for path', async ({ page }) => {
+  mainTest('PF-82 Change fill opacity for path BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddFillButton();
@@ -122,7 +122,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('path-changed-opacity.png');
   });
 
-  mainTest('PF-97 Remove fill for path', async ({ page }) => {
+  mainTest('PF-97 Remove fill for path BUG', async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddFillButton();

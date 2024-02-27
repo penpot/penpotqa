@@ -32,7 +32,7 @@ test('ON-14 Login with no password', async ({ page }) => {
   await loginPage.isLoginButtonDisabled();
 });
 
-test('ON-15 Login with incorrect password', async ({ page }) => {
+test('ON-15 Login with incorrect password (BUG)', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);

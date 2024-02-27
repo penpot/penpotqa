@@ -11,10 +11,10 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
     this.viewport = page.locator('div.viewport');
     this.prototypeTab = page.locator('div[data-id="prototype"]');
     this.prototypeArrowConnector = page.locator(
-      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=0',
+      'g[class="interactions"] path[fill="var(--color-accent-tertiary)"] >>nth=0',
     );
     this.prototypeArrowSecondConnector = page.locator(
-      'g[class="interactions"] path[fill="var(--color-primary)"] >>nth=1',
+      'g[class="interactions"] path[fill="var(--color-accent-tertiary)"] >>nth=1',
     );
     this.prototypePanelFlowNameText = page.locator('span[class*="flow-name-label"]');
     this.prototypePanelFlowNameInput = page.locator('input[class*="interactions"]');
