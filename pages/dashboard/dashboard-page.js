@@ -90,9 +90,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.modalAcceptButton = page.locator(
       'div[class*="modal-footer"] input[class*="accept-btn"]',
     );
-    this.feedbackBanner = page.locator('div[class*="feedback-banner"]');
+    this.feedbackBanner = page.locator('aside[class*="main_ui_notifications_context_notification"]');
     this.feedbackBannerMessage = page.locator(
-      'div[class*="feedback-banner"] div[class*="message"]',
+      'div[class*="main_ui_notifications_context_notification__context-text"]',
     );
     this.importErrorMessage = page.locator('div[class*="error-message"]');
 
@@ -118,7 +118,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontNameInput = page.locator('div[class*="table-row"] input[type="text"]');
     this.saveFontButton = page.locator('button:text-is("Save")');
     this.searchFontInput = page.locator('input[placeholder="Search font"]');
-    this.fontFormatError = page.locator('.main_ui_messages__content span');
+    this.fontFormatError = page.locator('.main_ui_notifications_toast_notification__text');
 
     //Libraries & Templates
     this.noLibrariesPlacelder = page.locator('div[data-test="empty-placeholder"] p');
