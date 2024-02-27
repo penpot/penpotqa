@@ -76,7 +76,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.renameProjectMenuItem = page.locator('a[data-test="project-rename"]');
     this.duplicateProjectMenuItem = page.locator('a[data-test="project-duplicate"]');
-    this.pinUnpinProjectButton = page.locator('button[alt="Pin/Unpin"] svg');
+    this.pinUnpinProjectButton = page.locator('button[aria-label="Pin/Unpin"]');
     this.projectOptionsMenuButton = page.locator(
       'button[data-test="project-options"]',
     );
@@ -98,9 +98,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.modalAcceptButton = page.locator(
       'div[class*="modal-footer"] input[class*="accept-btn"]',
     );
-    this.feedbackBanner = page.locator('div[class*="feedback-banner"]');
+    this.feedbackBanner = page.locator('aside[class*="main_ui_notifications_context_notification"]');
     this.feedbackBannerMessage = page.locator(
-      'div[class*="feedback-banner"] div[class*="message"]',
+      'div[class*="main_ui_notifications_context_notification__context-text"]',
     );
     this.importErrorMessage = page.locator('div[class*="error-message"]');
 
@@ -117,8 +117,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontOptionsMenuButton = page.locator(
       'div[class*="fonts__options"] svg[class="icon-menu-refactor"]',
     );
-    this.editFontMenuItem = page.locator('li[id="font-edit"] a');
-    this.deleteFontMenuItem = page.locator('li[id="font-delete"] a');
+    this.editFontMenuItem = page.locator('#font-edit');
+    this.deleteFontMenuItem = page.locator('#font-delete');
     this.deleteFontButton = page.locator('input[value="Delete"]');
     this.fontsTablePlaceholder = page.locator(
       'div[class*="fonts-placeholder"] div[class*="label"]',
@@ -126,7 +126,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontNameInput = page.locator('div[class*="table-row"] input[type="text"]');
     this.saveFontButton = page.locator('button:text-is("Save")');
     this.searchFontInput = page.locator('input[placeholder="Search font"]');
-    this.fontFormatError = page.locator('.main_ui_messages__content span');
+    this.fontFormatError = page.locator('.main_ui_notifications_toast_notification__text');
 
     //Libraries & Templates
     this.noLibrariesPlacelder = page.locator('div[data-test="empty-placeholder"] p');
@@ -394,16 +394,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickUnpinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin-fill');
+    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button main_ui_dashboard_pin_button__button-active');
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin');
+    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button ');
   }
 
   async clickPinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin');
+    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button ');
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass('icon-pin-fill');
+    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button main_ui_dashboard_pin_button__button-active');
   }
 
   async checkPinnedProjectsSidebarItem(text) {

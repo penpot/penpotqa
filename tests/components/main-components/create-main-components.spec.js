@@ -186,7 +186,7 @@ mainTest('Create component from image by right-click', async ({ page }) => {
   );
 });
 
-mainTest('Create component from path by right-click', async ({ page }) => {
+mainTest('Create component from path by right-click BUG', async ({ page }) => {
   const mainPage = new MainPage(page);
   const layersPanelPage = new LayersPanelPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);

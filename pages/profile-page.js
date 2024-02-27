@@ -37,8 +37,8 @@ exports.ProfilePage = class ProfilePage extends BasePage {
       'div[class*="password__form-container"] h2',
     );
     this.passwordOldInput = page.locator('#password-old');
-    this.passwordNewInput = page.locator('input[label="New password"]');
-    this.passwordConfirmInput = page.locator('input[label="Confirm password"]');
+    this.passwordNewInput = page.locator('input[placeholder="New password"]');
+    this.passwordConfirmInput = page.locator('input[placeholder="Confirm password"]');
     this.updateSettingsBtn = page.locator('button[name="submit"]');
     this.passwordInputError = page.locator('div[data-test="-error"]');
 

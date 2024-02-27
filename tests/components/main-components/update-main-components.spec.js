@@ -41,7 +41,7 @@ mainTest('Update main component', async ({ page }) => {
   await designPanelPage.changeAxisXandYForLayer('400', '500');
   await mainPage.waitForChangeIsSaved();
   await designPanelPage.clickComponentFillColorIcon();
-  await colorPalettePage.setHex('#304d6a');
+  await colorPalettePage.modalSetHex('#304d6a');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.updateMainComponentViaRightClick();
