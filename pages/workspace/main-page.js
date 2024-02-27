@@ -179,7 +179,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Shortcuts panel
     this.shortcutsPanel = page.locator(
-      'div[class="main_ui_workspace_sidebar_shortcuts__shortcuts"]',
+      'div[class="main_ui_workspace_sidebar_shortcuts__shortcuts-list"]',
     );
     this.closeShortcutsPanelIcon = page.locator(
       'div[class*="shortcuts-close-button"]',
@@ -780,6 +780,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async createDefaultCurveLayer() {
     await this.clickCreateCurveButton();
+    await this.page.waitForTimeout(700)
     await this.drawCurve(900, 300, 600, 200);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();

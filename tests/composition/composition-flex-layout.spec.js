@@ -479,7 +479,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('FL-39 Gap click highlight', async ({ page }) => {
+  mainTest.only('FL-39 Gap click highlight', async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeLayoutColumnGap('20');

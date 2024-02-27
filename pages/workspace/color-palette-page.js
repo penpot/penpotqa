@@ -9,6 +9,7 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     super(page);
     this.popUp = page.locator('div[class*="colorpicker-tooltip"]');
     this.hexInput = page.locator('#hex-value');
+    this.modalHexInput = page.locator('div[class*="selected-color-group"] span[class*="color-input-wrapper"] input');
     this.saveColorStyleButton = page.locator('button:has-text("Save color style")');
     this.colorsLibrariesSelect = page.locator(
       'div[class*="colorpicker_libraries__select-wrapper"]',
@@ -21,7 +22,14 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   }
 
   async setHex(value) {
+    await this.hexInput.clear();
     await this.hexInput.fill(value);
+  }
+
+  async modalSetHex(value) {
+    await this.modalHexInput.clear();
+    await this.modalHexInput.fill(value);
+    await this.page.waitForTimeout(400)
   }
 
   async clickSaveColorStyleButton() {

@@ -35,7 +35,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="fill__element-set"] div[class*="color_bullet_new__color-bullet-wrapper"]',
     );
     this.fillColorComponentIcon = page.locator(
-      'div[class*="selected-color-group"] span[class*="color-bullet-wrapper"]',
+      'div[class*="selected-color-group"] span[class*="color-input-wrapper"]',
     );
     this.fillColorInput = page.locator(
       'div[class*="fill__element-content"] input[class*="color-input"]',
