@@ -6,6 +6,7 @@ on:
 
 jobs:
   test:
+    environment: PRE
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
