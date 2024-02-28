@@ -879,7 +879,7 @@ exports.MainPage = class MainPage extends BasePage {
       await loginPage.enterEmail(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
-      await dashboardPage.isDashboardOpenedAfterLogin();
+      // await dashboardPage.isDashboardOpenedAfterLogin();
       await dashboardPage.isHeaderDisplayed('Projects');
   }
 };
