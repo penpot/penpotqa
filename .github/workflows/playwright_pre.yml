@@ -4,11 +4,6 @@ on:
     - cron: '00 6 * * 4'
   workflow_dispatch:
 
-env:
-  BASE_URL: ${{ secrets.BASE_URL }}
-  LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
-  LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-
 jobs:
   test:
     timeout-minutes: 60
@@ -22,6 +17,10 @@ jobs:
         run: npm ci
       - name: Install Playwright
         run: npx playwright install --with-deps
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
       - name: Run Playwright tests
         run: npm run test
       - uses: actions/upload-artifact@v2
