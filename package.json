@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test --project=chrome -gv 'PERF'",
+    "testLogin": "npx playwright test --project=chrome -gv 'PERF' ./tests/login.spec.js",
     "updateSnapshots": "npx playwright test --update-snapshots",
     "firefox": "npx playwright test --project=firefox -gv 'PERF'",
     "webkit": "npx playwright test --project=webkit -gv 'PERF'",
