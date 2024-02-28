@@ -2,30 +2,28 @@ name: Penpot Regression Tests on PRE env
 on:
   schedule: ## run tests each Thursday at 6:00am UTC
     - cron: '00 6 * * 4'
-  workflow_dispatch:
+
+env:
+  BASE_URL: ${{ secrets.BASE_URL }}
+  LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+  LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+
 jobs:
-  tests_chromium:
-    environment: PRE
-    runs-on: windows-latest
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: '16.x'
       - name: Install dependencies
         run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install
-      - name: Run regression tests for chromium
-        env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
-          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-        run: npx playwright test --project=chrome -gv 'PERF'
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npm run test
+      - uses: actions/upload-artifact@v2
+        if: always()
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report-chromium
-          path: playwright-report/
-          retention-days: 30
