@@ -1,6 +1,9 @@
 const { expect } = require('@playwright/test');
 const { BasePage } = require('../base-page');
 const { getPlatformName } = require('../../helpers/get-platform');
+const base = require('@playwright/test');
+const { LoginPage } = require('../login-page');
+const { DashboardPage } = require('../dashboard/dashboard-page');
 
 exports.MainPage = class MainPage extends BasePage {
   /**
@@ -867,5 +870,16 @@ exports.MainPage = class MainPage extends BasePage {
     const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.showInAssetsPanelOption.click();
+  }
+
+  async mainTest() {
+      const loginPage = new LoginPage(this.page);
+      const dashboardPage = new DashboardPage(this.page);
+      await loginPage.goto();
+      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await dashboardPage.isHeaderDisplayed('Projects');
   }
 };

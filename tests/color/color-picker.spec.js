@@ -14,6 +14,7 @@ test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
+  await mainPage.mainTest();
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -27,7 +28,7 @@ test.afterEach(async ({ page }) => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest('CP-1 Open color picker from Stroke menu BUG', async ({ page }) => {
+test('CP-1 Open color picker from Stroke menu BUG', async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
@@ -36,7 +37,7 @@ mainTest('CP-1 Open color picker from Stroke menu BUG', async ({ page }) => {
   await colorPalettePage.isColorPalettePopUpOpened();
 });
 
-mainTest('CP-2 Open color picker from Fill menu', async ({ page }) => {
+test('CP-2 Open color picker from Fill menu', async ({ page }) => {
   const mainPage = new MainPage(page);
   const designPanelPage = new DesignPanelPage(page);
   const colorPalettePage = new ColorPalettePage(page);
@@ -47,14 +48,14 @@ mainTest('CP-2 Open color picker from Fill menu', async ({ page }) => {
   await colorPalettePage.isColorPalettePopUpOpened();
 });
 
-mainTest('CP-3 Open color picker from Canvas background menu', async ({ page }) => {
+test('CP-3 Open color picker from Canvas background menu', async ({ page }) => {
   const designPanelPage = new DesignPanelPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   await designPanelPage.clickCanvasBackgroundColorIcon();
   await colorPalettePage.isColorPalettePopUpOpened();
 });
 
-mainTest('CP-7 Use Recent colors', async ({ page }) => {
+test('CP-7 Use Recent colors', async ({ page }) => {
   const color1 = '#FF0000';
   const color2 = '#B1B2B5';
   const mainPage = new MainPage(page);
@@ -78,7 +79,7 @@ mainTest('CP-7 Use Recent colors', async ({ page }) => {
   await expect(mainPage.createdLayer).toHaveScreenshot('board-recent-color.png');
 });
 
-mainTest('CP-8 Use colors from File library', async ({ page }) => {
+test('CP-8 Use colors from File library', async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
@@ -100,7 +101,7 @@ mainTest('CP-8 Use colors from File library', async ({ page }) => {
   );
 });
 
-mainTest('CP-17 Open Color palette from shortcut', async ({ page }) => {
+test('CP-17 Open Color palette from shortcut', async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
@@ -125,7 +126,7 @@ mainTest('CP-17 Open Color palette from shortcut', async ({ page }) => {
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest('CP-18 Open Color palette from toolbar', async ({ page }) => {
+test('CP-18 Open Color palette from toolbar', async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
@@ -149,7 +150,7 @@ mainTest('CP-18 Open Color palette from toolbar', async ({ page }) => {
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest('CP-20 Choose file library colors', async ({ page }) => {
+test('CP-20 Choose file library colors', async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
@@ -178,7 +179,7 @@ mainTest('CP-20 Choose file library colors', async ({ page }) => {
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest(
+test(
   'CP-21 Click any layer and change Fill color from palette',
   async ({ page }) => {
     const mainPage = new MainPage(page);
@@ -212,7 +213,7 @@ mainTest(
   },
 );
 
-mainTest(
+test(
   'CP-26 Open color picker from add or edit color in assets',
   async ({ page }) => {
     const assetsPanelPage = new AssetsPanelPage(page);
