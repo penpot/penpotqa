@@ -17,11 +17,11 @@ jobs:
         run: npm ci
       - name: Install Playwright
         run: npx playwright install --with-deps
+      - name: Run Playwright tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-      - name: Run Playwright tests
         run: npm run test
       - uses: actions/upload-artifact@v2
         if: always()
