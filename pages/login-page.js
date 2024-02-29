@@ -20,6 +20,11 @@ exports.LoginPage = class LoginPage extends BasePage {
 
   async goto() {
     await this.page.goto('/#/auth/login');
+    await this.page.waitForTimeout(3000)
+    console.log(1111111111111111)
+    console.log(this.page.url())
+    console.log(process.env.LOGIN_EMAIL)
+    console.log(process.env.LOGIN_PWD)
   }
 
   async enterEmail(loginEmail) {
