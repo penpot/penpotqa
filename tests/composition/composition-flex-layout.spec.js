@@ -29,9 +29,9 @@ test.afterEach(async ({ page }) => {
 test.describe(() => {
   test.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
-      testInfo.setTimeout(testInfo.timeout + 20000);
+      await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
-      testInfo.setTimeout(testInfo.timeout + 15000);
+      await testInfo.setTimeout(testInfo.timeout + 15000);
     }
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -437,17 +437,17 @@ test.describe(() => {
 test.describe(() => {
   test.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
-      testInfo.setTimeout(testInfo.timeout + 20000);
+      await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
-      testInfo.setTimeout(testInfo.timeout + 15000);
+      await testInfo.setTimeout(testInfo.timeout + 15000);
     }
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('500', '500');
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
-    await mainPage.createDefaultEllipseByCoordinates(200, 300);
-    await mainPage.createDefaultEllipseByCoordinates(200, 300);
+    await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
+    await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();

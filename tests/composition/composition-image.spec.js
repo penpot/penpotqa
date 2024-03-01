@@ -142,7 +142,7 @@ test.describe(() => {
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 20000);
+    await testInfo.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
     await mainPage.uploadImage('images/sample.jpeg');
     await mainPage.clickViewportTwice();

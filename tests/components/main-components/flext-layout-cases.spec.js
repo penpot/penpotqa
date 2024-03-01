@@ -32,7 +32,7 @@ test.afterEach(async ({ page }) => {
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 15000);
+    await testInfo.setTimeout(testInfo.timeout + 15000);
 
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
@@ -91,7 +91,7 @@ test.describe(() => {
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 15000);
+    await testInfo.setTimeout(testInfo.timeout + 15000);
 
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');

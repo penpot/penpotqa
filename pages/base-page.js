@@ -95,7 +95,7 @@ exports.BasePage = class BasePage {
 
   async clearInput(input, browserName) {
     await input.click();
-    if (getPlatformName() === 'MacOS') {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
       await this.page.keyboard.press('Meta+A');
     } else {
       if (browserName === 'webkit') {
@@ -108,7 +108,7 @@ exports.BasePage = class BasePage {
   }
 
   async clickShortcutCtrlZ(browserName) {
-    if (getPlatformName() === 'MacOS') {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
       await this.page.keyboard.press('Meta+Z');
     } else {
       if (browserName !== 'webkit') {
@@ -141,6 +141,7 @@ exports.BasePage = class BasePage {
 
   async waitInfoMessageHidden() {
     await this.infoMessage.waitFor({ state: 'hidden' });
+    await this.page.waitForTimeout(400);
   }
 
   async clickMoveButton() {
@@ -263,6 +264,6 @@ exports.BasePage = class BasePage {
   }
 
   async isWrapperMessageVisible() {
-    await expect(this.wrapperMessage).toBeVisible();
+    await expect(this.wrapperMessage).toBeVisible({timeout: 10000});
   }
 };

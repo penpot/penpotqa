@@ -103,7 +103,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.searchSharedLibrariesClearButton = page.locator('button[class*="search_bar__clear"]');
     this.libraryTitle = page.locator('div[class*="special-title"]');
     this.libraryComponentsTitle = page.locator(
-      '//*[@class="icon-component-refactor"]/../../../../span/*[@class="icon-arrow-refactor"]'
+      '//*[@class="icon-component-refactor"]/../../../../../button/div/span'
     );
     this.dismissButton = page.locator('button:text-is("Dismiss")');
     this.librariesUpdatesTab = page.locator('div[data-id="updates"]');
@@ -388,6 +388,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async clickLibraryComponentsTitle() {
+    await this.page.waitForTimeout(300);
     await this.libraryComponentsTitle.last().click();
   }
 

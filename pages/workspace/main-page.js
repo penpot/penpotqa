@@ -388,7 +388,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressCtrlJKeyboardShortcut(browserName) {
-    if (getPlatformName() === 'MacOS') {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
       await this.page.keyboard.press('Meta+J');
     } else {
       if (browserName === 'webkit') {
@@ -490,7 +490,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressHideShowRulersShortcut(browserName) {
-    if (getPlatformName() === 'MacOS') {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
       await this.page.keyboard.press('Meta+Shift+R');
     } else {
       if (browserName === 'webkit') {
@@ -502,7 +502,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressHideShowGridsShortcut(browserName) {
-    if (getPlatformName() === 'MacOS') {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
       await this.page.keyboard.press("Meta+'");
     } else {
       if (browserName === 'webkit') {
@@ -514,7 +514,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressSelectAllShortcut(browserName) {
-    if (getPlatformName() === 'MacOS') {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
       await this.page.keyboard.press('Meta+A');
     } else {
       if (browserName === 'webkit') {
@@ -526,7 +526,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressCopyShortcut(browserName) {
-    if (getPlatformName() === 'MacOS') {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
       await this.page.keyboard.press('Meta+C');
     } else {
       if (browserName === 'webkit') {
@@ -538,7 +538,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressPasteShortcut(browserName) {
-    if (getPlatformName() === 'MacOS') {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
       await this.page.keyboard.press('Meta+V');
     } else {
       if (browserName === 'webkit') {
@@ -846,7 +846,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async createComponentViaShortcut(browserName) {
     await this.createdLayer.click({ force: true });
-    if (getPlatformName() === 'MacOS') {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
       await this.page.keyboard.press('Meta+K');
     } else {
       if (browserName === 'webkit') {

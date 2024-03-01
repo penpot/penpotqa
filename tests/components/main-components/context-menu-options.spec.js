@@ -38,7 +38,7 @@ test.afterEach(async ({ page }) => {
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 10000);
+    await testInfo.setTimeout(testInfo.timeout + 10000);
     const mainPage = new MainPage(page);
     await mainPage.createDefaultRectangleByCoordinates(400, 500);
     await mainPage.createComponentViaRightClick();
@@ -353,7 +353,7 @@ mainTest('Filter Components from All Assets drop-down', async ({ page }) => {
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 15000);
+    await testInfo.setTimeout(testInfo.timeout + 15000);
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -499,7 +499,7 @@ test.describe(() => {
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 15000);
+    await testInfo.setTimeout(testInfo.timeout + 15000);
     await mainPage.createDefaultEllipseByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
