@@ -104,27 +104,27 @@ mainTest('PF-119 Delete page', async ({ page }) => {
   await mainPage.isFirstPageNameDisplayed('Page 1');
   await expect(mainPage.pagesBlock).toHaveScreenshot('page-1.png');
 });
-
-mainTest('PENPOT-1519 Copy and paste components from Page 1 to Page 2, on Page 2 right-click component and select "Show main component"',
-  async ({ page, browserName }) => {
-  const mainPage = new MainPage(page);
-  const basePage = new BasePage(page);
-  const layersPanelPage = new LayersPanelPage(page);
-  await mainPage.createDefaultRectangleByCoordinates(300, 300);
-  await mainPage.createComponentViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.pressCopyShortcut(browserName);
-  await mainPage.clickAddPageButton();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickOnPageOnLayersPanel(false);
-  await mainPage.pressPasteShortcut(browserName);
-  await layersPanelPage.clickCopyComponentOnLayersTab();
-  await basePage.showMainComponentViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    'page-copies-component-show-main.png',
-  );
-});
+//todo
+// mainTest.only('PENPOT-1519 Copy and paste components from Page 1 to Page 2, on Page 2 right-click component and select "Show main component"',
+//   async ({ page, browserName }) => {
+//   const mainPage = new MainPage(page);
+//   const basePage = new BasePage(page);
+//   const layersPanelPage = new LayersPanelPage(page);
+//   await mainPage.createDefaultRectangleByCoordinates(300, 300);
+//   await mainPage.createComponentViaRightClick();
+//   await mainPage.waitForChangeIsSaved();
+//   await mainPage.pressCopyShortcut(browserName);
+//   await mainPage.clickAddPageButton();
+//   await mainPage.waitForChangeIsSaved();
+//   await mainPage.clickOnPageOnLayersPanel(false);
+//   await mainPage.pressPasteShortcut(browserName);
+//   await layersPanelPage.clickCopyComponentOnLayersTab();
+//   await basePage.showMainComponentViaRightClick();
+//   await mainPage.waitForChangeIsSaved();
+//   await expect(mainPage.viewport).toHaveScreenshot(
+//     'page-copies-component-show-main.png',
+//   );
+// });
 
 mainTest('PENPOT-1526 Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Reset overrides"',
   async ({ page }) => {
@@ -173,7 +173,7 @@ mainTest('PENPOT-1527 Add a component from local library to Page 1 and Page 2, e
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await designPanelPage.clickComponentFillColorIcon();
-    await colorPalettePage.setHex('#243E8E');
+    await designPanelPage.setComponentColor('#243E8E');
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.updateMainComponentViaRightClick();

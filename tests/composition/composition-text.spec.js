@@ -29,7 +29,7 @@ test.afterEach(async ({ page }) => {
 
 test.describe(() => {
   test.beforeEach(async ({ page, browserName }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 20000);
+    await testInfo.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
     await mainPage.createDefaultTextLayer(browserName);
   });

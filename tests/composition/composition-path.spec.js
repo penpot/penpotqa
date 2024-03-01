@@ -43,7 +43,7 @@ mainTest('CO-274 Create Path from toolbar - opened', async ({ page }) => {
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 15000);
+    await testInfo.setTimeout(testInfo.timeout + 15000);
     const mainPage = new MainPage(page);
     await mainPage.createDefaultClosedPath();
   });
@@ -195,7 +195,7 @@ test.describe(() => {
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 15000);
+    await testInfo.setTimeout(testInfo.timeout + 15000);
     const mainPage = new MainPage(page);
     await mainPage.createDefaultOpenPath();
   });

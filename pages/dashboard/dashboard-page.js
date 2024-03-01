@@ -58,7 +58,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
     this.fileOptionsMenuButton = page.locator(
-      'div[class*="project-th-icon"] svg[class="icon-actions"]',
+      'div[class*="project-th-icon"] svg',
     );
     this.headerOptionsMenuButton = page.locator(
       'div[class*="dashboard-header-actions"] svg[class="icon-actions"]',

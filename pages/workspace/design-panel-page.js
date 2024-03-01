@@ -47,6 +47,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.removeFillButton = page.locator(
       'div[class*="fill__element-content"] svg[class="icon-remove-refactor"]',
     );
+    this.componentColorInput = page.locator(`input[class*='rows_color_row__color-input']`)
 
     //Design panel - Shadow section
     this.shadowSection = page.locator(
@@ -332,6 +333,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clickOnEnter();
   }
 
+  async setComponentColor(color) {
+    await this.componentColorInput.clear();
+    await this.componentColorInput.pressSequentially(color);
+  }
+
   async setFlexElementPositionAbsolute() {
     await this.flexElementPositionAbsolute.click();
   }
@@ -400,6 +406,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async isFillHexCodeSet(value) {
     await expect(this.fillColorInput).toHaveValue(value);
+  }
+
+  async isFillHexCodeSetComponent(value) {
+    await expect(this.componentColorInput).toHaveValue(value);
   }
 
   async isFillOpacitySet(value) {

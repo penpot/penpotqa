@@ -49,17 +49,17 @@ test.beforeEach(async ({ page }) => {
   await dashboardPage.clickDeleteFileButton();
 
   await dashboardPage.openFileWithName('New File 2');
-  await mainPage.isSecondPageNameDisplayed('Library backup');
+  await mainPage.isSecondPageNameDisplayed('Main components');
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
   'PENPOT-1303 Check main components in Library backup',
-  async ({ page }) => {
+  async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-component-library-backup.png',
@@ -69,7 +69,7 @@ mainTest(
 
 mainTest(
   'PENPOT-1370 Rename Library backup page',
-  async ({ page }) => {
+  async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await mainPage.renamePageViaRightClick('Test', false);
     await mainPage.isSecondPageNameDisplayed('Test');
@@ -81,7 +81,7 @@ mainTest(
 
 mainTest(
   'PENPOT-1371 Add/Delete main components from Library backup page',
-  async ({ page }) => {
+  async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
@@ -97,7 +97,7 @@ mainTest(
 );
 
 test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+  test.beforeEach(async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
@@ -118,7 +118,7 @@ test.describe(() => {
 
 mainTest(
   'PENPOT-1373 Delete Library backup page',
-  async ({ page }) => {
+  async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await mainPage.deleteSecondPageViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -131,7 +131,7 @@ mainTest(
 
 mainTest(
   'PENPOT-1374 Duplicate Library backup page',
-  async ({ page }) => {
+  async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await mainPage.duplicatePageViaRightClick(false);
     await mainPage.waitForChangeIsSaved();
@@ -142,8 +142,8 @@ mainTest(
 );
 
 mainTest(
-  'PENPOT-1374 Check Library backup file in case of unpublishing a few shared libraries',
-  async ({ page }) => {
+  'PENPOT-1516 Check Library backup file in case of unpublishing a few shared libraries',
+  async () => {
     await mainPage.clickPencilBoxButton();
     await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.isFileVisibleByName('New File 2');

@@ -66,7 +66,7 @@ mainTest('Check copy and main component icons', async ({ page }) => {
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 15000);
+    await testInfo.setTimeout(testInfo.timeout + 15000);
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -205,7 +205,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1447 Create a component and 2 copies of it, change grid style and size of main',
-    async ({page}) => {
+    async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.clickAddGridButton();
       await designPanelPage.selectGridType('Rows');
@@ -231,7 +231,7 @@ test.describe(() => {
 
 test.describe("Text", () => {
   test.beforeEach(async ({page}, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 15000);
+    await testInfo.setTimeout(testInfo.timeout + 15000);
     await mainPage.createDefaultTextLayer(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -266,8 +266,8 @@ test.describe("Text", () => {
 });
 
 test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
-    testInfo.setTimeout(testInfo.timeout + 15000);
+  test.beforeEach(async ({}, testInfo) => {
+    await testInfo.setTimeout(testInfo.timeout + 15000);
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -279,19 +279,15 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1404 Change copy components shadow and update main components color',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.changeHeightAndWidthForLayer('100', '150');
-      await designPanelPage.clickAddFillButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#0538D1');
+      await designPanelPage.setComponentColor('#0538D1');
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isFillHexCodeSet('0538D1');
+      await designPanelPage.isFillHexCodeSetComponent('0538d1');
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -302,22 +298,17 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1403 Change copy components color and update main components color',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#050E23');
+      await designPanelPage.setComponentColor('#050E23');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.changeHeightAndWidthForLayer('100', '150');
-      await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#C10C43');
+      await designPanelPage.setComponentColor('#C10C43');
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isFillHexCodeSet('050E23');
+      await designPanelPage.isFillHexCodeSetComponent('050e23');
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -328,17 +319,13 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1405 Change copy components blur and update main components color',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddBlurButton();
       await designPanelPage.changeValueForBlur('2');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.changeHeightAndWidthForLayer('100', '150');
-      await designPanelPage.clickAddFillButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#0538D1');
+      await designPanelPage.setComponentColor('#0538D1');
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
@@ -350,17 +337,13 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1406 Change copy components grid and update main components color',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddGridButton();
       await designPanelPage.selectGridType('Rows');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.changeHeightAndWidthForLayer('100', '150');
-      await designPanelPage.clickAddFillButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#0538D1');
+      await designPanelPage.setComponentColor('#0538D1');
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-change-grid.png', {
@@ -372,7 +355,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1409 Change copy name and change component name',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
 
       await layersPanelPage.doubleClickCopyComponentOnLayersTab();
@@ -403,8 +386,7 @@ mainTest('PENPOT-1478 Changed direct, not overriden', async () => {
   await designPanelPage.changeAxisXandYForLayer('400', '500');
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
-  await designPanelPage.clickComponentFillColorIcon();
-  await colorPalettePage.setHex('#093EDC');
+  await designPanelPage.setComponentColor('#093EDC');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
@@ -433,8 +415,7 @@ mainTest('PENPOT-1479 Changed remote, not overriden', async () => {
   await designPanelPage.changeAxisXandYForLayer('200', '500');
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
-  await designPanelPage.clickComponentFillColorIcon();
-  await colorPalettePage.setHex('#C41ABC');
+  await designPanelPage.setComponentColor('#C41ABC');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
@@ -456,13 +437,11 @@ mainTest('PENPOT-1480 Changed direct, overriden in copy', async () => {
   await layersPanelPage.clickCopyComponentOnLayersTab();
   await designPanelPage.changeAxisXandYForLayer('400', '500');
   await mainPage.waitForChangeIsSaved();
-  await designPanelPage.clickComponentFillColorIcon();
-  await colorPalettePage.setHex('#DC08D3');
+  await designPanelPage.setComponentColor('#DC08D3');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
-  await designPanelPage.clickComponentFillColorIcon();
-  await colorPalettePage.setHex('#660E62');
+  await designPanelPage.setComponentColor('#660E62');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
@@ -490,13 +469,11 @@ mainTest('PENPOT-1482 Changed remote, overriden in copy', async () => {
   await layersPanelPage.clickCopyComponentOnLayersTab();
   await designPanelPage.changeAxisXandYForLayer('200', '500');
   await mainPage.waitForChangeIsSaved();
-  await designPanelPage.clickComponentFillColorIcon();
-  await colorPalettePage.setHex('#0F602A');
+  await designPanelPage.setComponentColor('#0F602A');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
-  await designPanelPage.clickComponentFillColorIcon();
-  await colorPalettePage.setHex('#C41ABC');
+  await designPanelPage.setComponentColor('#C41ABC');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
@@ -524,18 +501,15 @@ mainTest('PENPOT-1483 Changed remote, overriden in near, overriden in copy', asy
   await layersPanelPage.clickCopyComponentOnLayersTab();
   await designPanelPage.changeAxisXandYForLayer('200', '500');
   await mainPage.waitForChangeIsSaved();
-  await designPanelPage.clickComponentFillColorIcon();
-  await colorPalettePage.setHex('#0F602A');
+  await designPanelPage.setComponentColor('#0F602A');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickNMainComponentOnLayersTab(-2);
-  await designPanelPage.clickComponentFillColorIcon();
-  await colorPalettePage.setHex('#83B092');
+  await designPanelPage.setComponentColor('#83B092');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
-  await designPanelPage.clickComponentFillColorIcon();
-  await colorPalettePage.setHex('#326F46');
+  await designPanelPage.setComponentColor('#326F46');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
