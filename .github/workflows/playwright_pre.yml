@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  tests_chromium:
     environment: PRE
     timeout-minutes: 180
     runs-on: ubuntu-latest
@@ -24,8 +24,6 @@ jobs:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
         run: npm run test
-      - uses: actions/upload-artifact@v2
-        if: always()
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         if: always()
