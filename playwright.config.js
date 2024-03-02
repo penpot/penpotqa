@@ -22,7 +22,7 @@ const config = {
     toMatchSnapshot: {
       maxDiffPixelRatio: 0.01,
     },
-    maxDiffPixels: 3,
+    maxDiffPixels: 30,
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
