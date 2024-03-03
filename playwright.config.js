@@ -9,7 +9,7 @@ require('dotenv').config();
  * @type {import('@playwright/test').PlaywrightTestConfig}
  */
 const config = {
-  snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/darwin/{projectName}/{arg}{ext}`,
+  snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/win32/{projectName}/{arg}{ext}`,
   testDir: './tests',
   /* Maximum time one test can run for. */
   timeout: process.env.CI ? 60 * 1000 : 80 * 1000,
