@@ -157,7 +157,7 @@ test.describe(() => {
     },
   );
 
-  mainTest.only(
+  mainTest(
     'PENPOT-1445 Create a component and 2 copies of it, change shadow opacity and color of main',
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
