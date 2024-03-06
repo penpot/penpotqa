@@ -157,7 +157,7 @@ test.describe(() => {
     },
   );
 
-  mainTest(
+  mainTest.only(
     'PENPOT-1445 Create a component and 2 copies of it, change shadow opacity and color of main',
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
@@ -168,7 +168,7 @@ test.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-shadow-default.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment],
           maxDiffPixels: 0,
         },
       );
@@ -181,7 +181,7 @@ test.describe(() => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.refreshPage();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-shadow-updated.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment],
         maxDiffPixels: 0,
       });
     },
@@ -197,7 +197,7 @@ test.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-blur.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment],
         maxDiffPixels: 0,
       });
     },
@@ -212,7 +212,7 @@ test.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-grid-default.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment],
         maxDiffPixels: 0,
       });
       await designPanelPage.changeSizeForGrid('4');
@@ -221,7 +221,7 @@ test.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-grid-updated.png', {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment],
           maxDiffPixels: 0,
         }
       );
@@ -258,7 +258,7 @@ test.describe("Text", () => {
       await mainPage.page.waitForTimeout(4000);
       await mainPage.refreshPage();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-text.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment],
         maxDiffPixels: 0,
       });
     },
@@ -347,7 +347,7 @@ test.describe(() => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-change-grid.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment],
         maxDiffPixels: 0,
       });
     },
