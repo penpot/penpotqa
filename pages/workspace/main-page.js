@@ -27,6 +27,7 @@ exports.MainPage = class MainPage extends BasePage {
     //Viewport
     this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
     this.guides = page.locator('.guides .new-guides');
+    this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
 
     //Node panel
     this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
