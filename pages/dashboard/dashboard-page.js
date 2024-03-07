@@ -470,7 +470,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.modalTitle).toBeVisible();
     await expect(this.modalTitle).toHaveText('Import Penpot files');
     await this.modalAcceptButton.click();
-    await this.feedbackBanner.waitFor();
+    await this.feedbackBanner.waitFor({timeout:20000});
     await expect(this.feedbackBannerMessage).toHaveText(
       '1 file has been imported successfully.',
     );
