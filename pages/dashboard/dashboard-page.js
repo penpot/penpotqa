@@ -98,9 +98,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.modalAcceptButton = page.locator(
       'div[class*="modal-footer"] input[class*="accept-btn"]',
     );
-    this.feedbackBanner = page.locator('aside[class*="main_ui_notifications_context_notification"]');
+    this.feedbackBanner = page.locator('aside[class*="main_ui_notifications"]');
     this.feedbackBannerMessage = page.locator(
-      'div[class*="main_ui_notifications_context_notification__context-text"]',
+      'aside[class*="main_ui_notifications"] div',
     );
     this.importErrorMessage = page.locator('div[class*="error-message"]');
 
