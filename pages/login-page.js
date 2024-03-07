@@ -14,7 +14,7 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.loginButton = page.locator('button[data-test="login-submit"]');
     this.emailInputError = page.locator('div[data-test="-error"]');
     this.section = page.locator('section[class="auth-content"]');
-    this.loginErrorBanner = page.locator('div[data-test="login-banner"]');
+    this.loginErrorBanner = page.locator('div[class="main_ui_auth_login__error-wrapper"] div');
     this.createAccountLink = page.locator('a:has-text("Create an account")');
   }
 
