@@ -100,7 +100,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.feedbackBanner = page.locator('aside[class*="main_ui_notifications"]');
     this.feedbackBannerMessage = page.locator(
-      'aside[class*="main_ui_notifications"] div',
+      'div[class*="main_ui_notifications_context_notification__context-text"]',
     );
     this.importErrorMessage = page.locator('div[class*="error-message"]');
 
