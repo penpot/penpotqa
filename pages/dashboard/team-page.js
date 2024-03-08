@@ -28,20 +28,20 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.uploadTeamImageButton = page.locator('input[type="file"]');
     this.updateTeamButton = page.locator('button:has-text("Update team")');
     this.teamOwnerSpan = page.locator(
-      'div[class$="team__owner"] span[class*="team__text"]',
+      `//*[contains(@class,'owner-icon')]/../span`,
     );
     this.teamMembersSpan = page.locator(
-      'div[class*="team__summary"] span[class*="team__text"]',
+      `//*[contains(@class,'team__user-icon')]/../span`,
     );
     this.teamProjectsSpan = page.locator(
-      'div[class*="team__projects"] span[class*="team__text"]',
+      `//*[contains(@class,'team__group-icon')]/../span`,
     );
     this.teamFilesSpan = page.locator(
-      'div[class*="team__files"] span[class*="team__text"]',
+      `//*[contains(@class,'team__document-icon')]/../span`,
     );
-    this.teamInfoSection = page.locator('div[class*="info-block"]');
-    this.teamOwnerSection = page.locator('div[class*="team__owner-block"]');
-    this.teamStatsSection = page.locator('div[class*="team__stats-block"]');
+    this.teamInfoSection = page.locator(`div[class*="info-block"] div[class='main_ui_dashboard_team__block-text']`);
+    this.teamOwnerSection = page.locator(`//*[contains(@class,'team__group-icon')]/../../../div[2]`);
+    this.teamStatsSection = page.locator(`//*[contains(@class,'team__group-icon')]/../../../div[3]`);
 
     //Invitations
     this.invitationsMenuItem = page.locator('li[data-test="team-invitations"]');
@@ -65,17 +65,17 @@ exports.TeamPage = class TeamPage extends BasePage {
       'div[class*="table-rows"] div[class*="table-row"]',
     );
     this.invitationRecordEmailCell = page.locator(
-      'div[class*="dashboard_team__mail"]',
+      'div[class*="dashboard_team__field-email"]',
     );
     this.invitationRecordRoleCell = page.locator(
-      'div[class*="dashboard_team__roles"]',
+      'span[class*="dashboard_team__rol-label"]',
     );
     this.invitationRecordRoleSelector = page.locator('div[class*="team__has-priv"]');
     this.invitationRecordStatusCell = page.locator(
-      'div[class*="dashboard_team__status"] div',
+      'span[class*="dashboard_team__status"]',
     );
     this.invitationRecordOptionsMenuButton = page.locator(
-      'div[class*="dashboard_team__actions"] span',
+      'div[class*="main_ui_dashboard_team__table-field"] button',
     );
     this.invitationRecordResendInvititationMenuItem = page.locator(
       'li:has-text("Resend invitation")',
@@ -84,7 +84,7 @@ exports.TeamPage = class TeamPage extends BasePage {
       'li:has-text("Delete invitation")',
     );
     this.invitationWarningSpan = page.locator(
-      'div[class*="warning-msg"] span[class*="team__message"]',
+      'aside[class*="warning"] div[class*="context_notification"]',
     );
     this.teamSettingsSection = page.locator('.main_ui_dashboard__dashboard-content');
     this.teamIcon = page.locator(`div[class*='team__icon'] span`);
@@ -111,7 +111,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   async switchTeam(teamName) {
     await this.openTeamsListIfClosed();
     const teamOption = this.page.locator(
-      `li[class*="team-name"] span[class*="team-text"]:text-is("${teamName}")`,
+      `li[class*="team-dropdown-item"] span[class*="team-text"]:text-is("${teamName}")`,
     );
     await teamOption.click();
     await this.isTeamSelected(teamName);
@@ -120,7 +120,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   async deleteTeam(teamName) {
     await this.openTeamsListIfClosed();
     const teamSel = this.page.locator(
-      `ul[class*="teams-dropdown"] li[class*="team-name"] span[title="${teamName}"]`,
+      `ul[class*="teams-dropdown"] li[class*="team-dropdown-item"] span[title="${teamName}"]`,
     );
     if (await teamSel.isVisible()) {
       await teamSel.click();
@@ -140,6 +140,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isTeamDeleted(teamName) {
+    await this.page.waitForTimeout(5000)
     await this.openTeamsListIfClosed();
     for (const el of await this.teamCurrentNameDiv.elementHandles()) {
       const text = (await el.innerText()).valueOf();
