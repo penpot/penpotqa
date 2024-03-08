@@ -15,7 +15,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.yourAccountMenuItem = page.locator('li[data-test="profile-profile-opt"]');
     this.logoutMenuItem = page.locator('li[data-test="logout-profile-opt"]');
     this.giveFeedbackMenuItem = page.locator('li[data-test="feedback-profile-opt"]');
-    this.backToDashboardBtn = page.locator('div[class*="back-to-dashboard"]');
+    this.backToDashboardBtn = page.locator('button[class*="back-to-dashboard"]');
 
     //Profile
     this.profileNameInput = page.locator('#fullname');
