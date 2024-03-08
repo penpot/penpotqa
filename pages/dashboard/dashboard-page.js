@@ -61,7 +61,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class*="project-th-icon"] svg',
     );
     this.headerOptionsMenuButton = page.locator(
-      'div[class*="dashboard-header-actions"] svg[class="icon-actions"]',
+      'div[title="Options"] svg[class*="files__menu-icon"]',
     );
 
     //Projects
@@ -539,6 +539,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.moveToOtherTeamMenuItem.click();
     await this.page.locator(`li[role="menuitem"] a:has-text("${otherTeamName}")`).click();
     await this.page.locator(`li[role="menuitem"] a:has-text("Drafts")`).click();
+    await this.page.locator(`input[value="Move"]`).click();
   }
 
   async addFileWithNameAsSharedLibraryViaRightClick(fileName) {

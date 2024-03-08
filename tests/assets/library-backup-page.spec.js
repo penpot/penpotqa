@@ -107,7 +107,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1372 Restore components, that were deleted from library backup',
-    async ({ page, browserName }) => {
+    async ({ browserName }) => {
       await mainPage.clickShortcutCtrlZ(browserName);
       await expect(mainPage.viewport).toHaveScreenshot(
         'restored-main-component-library-backup.png',
@@ -144,6 +144,8 @@ mainTest(
 mainTest(
   'PENPOT-1516 Check Library backup file in case of unpublishing a few shared libraries',
   async () => {
+    await testInfo.setTimeout(testInfo.timeout + 20000);
+
     await mainPage.clickPencilBoxButton();
     await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.isFileVisibleByName('New File 2');

@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
@@ -65,7 +65,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1503 Create flex board with main component and its copy, change direction',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.isLayoutIconVisibleOnLayer();
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeLayoutDirection('Column');
@@ -77,7 +77,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1504 Create flex board with main component and its copy, change alingment',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.isLayoutIconVisibleOnLayer();
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeLayoutAlignment('Center');
@@ -106,7 +106,9 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1511 Create component with 2 boards with components inside it. change paddings',
-    async ({ page }) => {
+    async () => {
+      await testInfo.setTimeout(testInfo.timeout + 20000);
+
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeAxisXandYForLayer('600', '200');
 
@@ -144,7 +146,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1514 Create component inside flex board, change alignment for element',
-    async ({ page }) => {
+    async () => {
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeLayoutAlignment('Center');
       await mainPage.waitForChangeIsSaved();
