@@ -45,7 +45,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.addFillButton = page.locator('button[class*="fill__add-fill"]');
     this.removeFillButton = page.locator(
-      'div[class*="fill__element-content"] svg[class="icon-remove-refactor"]',
+      'div[class*="fill__element-content"] svg[class="icon-remove"]',
     );
     this.componentColorInput = page.locator(`input[class*='rows_color_row__color-input']`)
 
@@ -70,13 +70,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="shadow-advanced-options"] div[class*="color_row__opacity"] input',
     );
     this.shadowShowIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-shown-refactor"]',
+      'div[class*="shadow__actions"] svg[class="icon-shown"]',
     );
     this.shadowUnhideIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-hide-refactor"]',
+      'div[class*="shadow__actions"] svg[class="icon-hide"]',
     );
     this.shadowRemoveIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-remove-refactor"]',
+      'div[class*="shadow__actions"] svg[class="icon-remove"]',
     );
     this.shadowTypeField = page.locator('div[class*="shadow-type-select"]');
 
@@ -158,13 +158,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.blurMoreOptions = page.locator('button[class*="blur__show-more"]');
     this.blurValueInput = page.locator('#blur-input-sidebar');
     this.blurHideIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-shown-refactor"]',
+      'div[class*="blur__actions"] svg[class="icon-shown"]',
     );
     this.blurUnhideIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-hide-refactor"]',
+      'div[class*="blur__actions"] svg[class="icon-hide"]',
     );
     this.blurRemoveIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-remove-refactor"]',
+      'div[class*="blur__actions"] svg[class="icon-remove"]',
     );
 
     //Design panel - Stroke section
@@ -191,18 +191,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeTypeField = page.locator('div[data-test="stroke.style"]');
 
     //Design panel - Text section
-    this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase-refactor');
-    this.textLowerCaseIcon = page.locator('svg.icon-text-lowercase-refactor');
-    this.textTitleCaseIcon = page.locator('svg.icon-text-mixed-refactor');
+    this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase');
+    this.textLowerCaseIcon = page.locator('svg.icon-text-lowercase');
+    this.textTitleCaseIcon = page.locator('svg.icon-text-mixed');
     this.textMoreOptionsIcon = page.locator('button[class*="text__more-options"]');
     this.textVerticalOptionsBlock = page.locator(
       'div[class*="vertical-align-options"]',
     );
-    this.textAlignTop = page.locator('svg.icon-text-top-refactor');
-    this.textAlignMiddle = page.locator('svg.icon-text-middle-refactor');
-    this.textAlignBottom = page.locator('svg.icon-text-bottom-refactor');
-    this.textIconLTR = page.locator('svg.icon-text-ltr-refactor');
-    this.textIconRTL = page.locator('svg.icon-text-rtl-refactor');
+    this.textAlignTop = page.locator('svg.icon-text-top');
+    this.textAlignMiddle = page.locator('svg.icon-text-middle');
+    this.textAlignBottom = page.locator('svg.icon-text-bottom');
+    this.textIconLTR = page.locator('svg.icon-text-ltr');
+    this.textIconRTL = page.locator('svg.icon-text-rtl');
     this.textFontSelector = page.locator('div[class*="typography__font-option"]');
     this.textFontSelectorSearchInput = page.locator('input[placeholder="Search font"]');
     this.textFontStyleSelector = page.locator('div[class*="typography__font-variant-options"]');
@@ -214,7 +214,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.addExportButton = page.locator('button[class*="exports__add-export"]');
     this.removeExportButton = page.locator(
-      'button[class*="exports__action-btn"] svg[class="icon-remove-refactor"]',
+      'button[class*="exports__action-btn"] svg[class="icon-remove"]',
     );
     this.exportElementButton = page.locator('button[class*="exports__export-btn"]');
 
@@ -222,13 +222,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridSection = page.locator('div[class*=element-set]:has-text("Guides")');
     this.addGridButton = page.locator('button[class*="grid__add-grid"]');
     this.removeGridButton = page.locator(
-      'div[class*="grid__actions"] svg[class="icon-remove-refactor"]',
+      'div[class*="grid__actions"] svg[class="icon-remove"]',
     );
     this.hideGridButton = page.locator(
-      'div[class*="grid__actions"] svg[class="icon-shown-refactor"]',
+      'div[class*="grid__actions"] svg[class="icon-shown"]',
     );
     this.unhideGridButton = page.locator(
-      'div[class*="grid__actions"] svg[class="icon-hide-refactor"]',
+      'div[class*="grid__actions"] svg[class="icon-hide"]',
     );
     this.gridTypeField = page.locator(
       'div[class*="grid__option-row"] div[class*="type-select-wrapper"]',
@@ -276,16 +276,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[title*="Create"] svg[class*="icon-tick"]',
     );
     this.saveAnnotationTick = page.locator(
-      'div[title="Save"] svg[class="icon-tick-refactor"]',
+      'div[title="Save"] svg[class="icon-tick"]',
     );
     this.discardAnnotationTick = page.locator(
-      'div[title="Discard"] svg[class="icon-close-refactor"]',
+      'div[title="Discard"] svg[class="icon-close"]',
     );
     this.editAnnotationTick = page.locator(
-      'div[title="Edit"] svg[class="icon-curve-refactor"]',
+      'div[title="Edit"] svg[class="icon-curve"]',
     );
     this.deleteAnnotationTick = page.locator(
-      'div[title="Delete"] svg[class="icon-delete-refactor"]',
+      'div[title="Delete"] svg[class="icon-delete"]',
     );
     this.deleteAnnotationPopup = page.locator(
       'div[class*="modal-container"] h2:text-is("Delete annotation")',
