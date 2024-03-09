@@ -24,7 +24,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
       '//*[@class="icon-component"]//parent::div',
     );
     this.copyComponentLayer = page.locator(
-      '//*[@class="icon-copy"]//parent::div',
+      '//*[@class="icon-component-copy"]//parent::div',
     );
     this.createdLayerOnLayersPanelSpan = page.locator(
       'div[class*="element-list-body"] span[class*="element-name"]',
