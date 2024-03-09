@@ -62,7 +62,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.nodePanelToCurveButton = page.locator('button[title^="To curve"]');
 
     // Main menu - first level
-    this.mainMenuButton = page.locator('#left-sidebar-aside svg.icon-menu-refactor');
+    this.mainMenuButton = page.locator('#left-sidebar-aside svg.icon-menu');
     this.mainMenuList = page.locator('ul[class*="main_ui_workspace_main_menu__menu"]');
     this.viewMainMenuItem = page.locator('#file-menu-view');
     this.fileMainMenuItem = page.locator('#file-menu-file');
@@ -111,16 +111,16 @@ exports.MainPage = class MainPage extends BasePage {
       '#file-menu-remove-shared',
     );
     this.shortcutsMenuSubItem = page.locator('#file-menu-shortcuts');
-    this.downloadFileTickIcon = page.locator('svg[class="icon-tick-refactor"]');
+    this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
     //Zoom
     this.zoomButton = page.locator('div[title="Zoom"]');
     this.zoomPlusButton = page.locator(
-      'button[class*="header__zoom-btn"] svg[class="icon-add-refactor"]',
+      'button[class*="header__zoom-btn"] svg[class="icon-add"]',
     );
     this.zoomMinusButton = page.locator(
-      'button[class*="header__zoom-btn"] svg[class="icon-remove-refactor"]',
+      'button[class*="header__zoom-btn"] svg[class="icon-remove"]',
     );
     this.zoomResetButton = page.locator('button:has-text("Reset")');
     this.zoomToFitAllMenuItem = page.locator('li:has-text("Zoom to fit all")');
@@ -151,7 +151,7 @@ exports.MainPage = class MainPage extends BasePage {
       'span[class*="collapsabled-icon"]',
     );
     this.pageTrashIcon = page.locator(
-      'div[class*="selected"] svg[class="icon-delete-refactor"]',
+      'div[class*="selected"] svg[class="icon-delete"]',
     );
     this.deletePageOkButton = page.locator('input[value="Ok"]');
 

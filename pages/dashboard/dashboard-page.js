@@ -35,7 +35,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.addFileAsSharedLibraryButton = page.locator(
       'input[value="Add as Shared Library"]',
     );
-    this.sharedLibraryIcon = page.locator('svg[class="icon-library-refactor"]');
+    this.sharedLibraryIcon = page.locator('svg[class="icon-library"]');
     this.delFileAsSharedLibraryMenuItem = page.locator(
       'a[data-test="file-del-shared"]',
     );
@@ -54,7 +54,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'a[data-test="download-standard-file"]',
     );
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
-    this.downloadFileTickIcon = page.locator('svg[class="icon-tick-refactor"]');
+    this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
     this.fileOptionsMenuButton = page.locator(
@@ -115,7 +115,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class*="installed-fonts"] div[class*="table-row"] div[class*="dashboard_fonts__variants"]',
     );
     this.fontOptionsMenuButton = page.locator(
-      'div[class*="fonts__options"] svg[class="icon-menu-refactor"]',
+      'div[class*="fonts__options"] svg[class="icon-menu"]',
     );
     this.editFontMenuItem = page.locator('#font-edit');
     this.deleteFontMenuItem = page.locator('#font-delete');
