@@ -143,7 +143,7 @@ mainTest(
 
 mainTest(
   'PENPOT-1516 Check Library backup file in case of unpublishing a few shared libraries',
-  async () => {
+  async (args, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 20000);
 
     await mainPage.clickPencilBoxButton();
