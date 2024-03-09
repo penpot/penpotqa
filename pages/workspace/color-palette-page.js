@@ -42,8 +42,8 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
 
   async clickColorBullet(isFileLibrary = true, value = 0) {
     const classAttr = isFileLibrary
-      ? 'color_bullet_new__is-library-color'
-      : 'color_bullet_new__is-not-library-color';
+      ? 'color_bullet__is-library-color'
+      : 'color_bullet__is-not-library-color';
     const selector = this.page.locator(
       `div[class*="selected-colors"] div[class*="${classAttr}"] >> nth=${value}`,
     );

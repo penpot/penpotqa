@@ -32,7 +32,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel - Fill section
     this.fillColorIcon = page.locator(
-      'div[class*="fill__element-set"] div[class*="color_bullet_new__color-bullet-wrapper"]',
+      'div[class*="fill__element-set"] div[class*="color_bullet__color-bullet-wrapper"]',
     );
     this.fillColorComponentIcon = page.locator(
       'div[class*="selected-color-group"] span[class*="color-input-wrapper"]',
@@ -64,7 +64,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowBlurInput = page.locator('div[title="Blur"] input');
     this.shadowSpreadInput = page.locator('div[title="Spread"] input');
     this.shadowColorIcon = page.locator(
-      'div[class*="shadow-advanced-options"] div[class*="color_bullet_new__color-bullet-wrapper"]',
+      'div[class*="shadow-advanced-options"] div[class*="color_bullet__color-bullet-wrapper"]',
     );
     this.shadowOpacityInput = page.locator(
       'div[class*="shadow-advanced-options"] div[class*="color_row__opacity"] input',
@@ -173,7 +173,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="stroke__element-title"]:has-text("Stroke")',
     );
     this.strokeColorBullet = page.locator(
-      'div[class*="stroke-data"] div[class*="color_bullet_new__is-not-library-color"]',
+      'div[class*="bullet-wrapper"] div[class*="color_bullet__is-not-library-color"]',
     );
     this.strokeRemoveIcon = page.locator(
       'div[class*="stroke-data"] button[class*="remove-btn"]',
