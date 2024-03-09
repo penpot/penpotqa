@@ -106,7 +106,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1511 Create component with 2 boards with components inside it. change paddings',
-    async (args, testInfo) => {
+    async ( {page}, testInfo) => {
       await testInfo.setTimeout(testInfo.timeout + 20000);
 
       await mainPage.clickCreatedBoardTitleOnCanvas();
