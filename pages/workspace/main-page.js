@@ -277,6 +277,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickCreatedBoardTitleOnCanvas() {
     await this.createdBoardTitle.click({ force: true });
+    await this.createdBoardTitle.click({ force: true });
   }
 
   async clickOnLayerOnCanvas() {
