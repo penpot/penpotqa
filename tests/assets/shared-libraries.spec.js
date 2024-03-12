@@ -653,6 +653,7 @@ test.describe(() => {
   });
 
   test.afterEach(async ({ page }) => {
+    await teamPage.page.waitForTimeout(1000);
     await teamPage.deleteTeam(team2);
   });
 });

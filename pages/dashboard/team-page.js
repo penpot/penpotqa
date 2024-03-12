@@ -19,7 +19,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamCurrentNameDiv = page.locator(
       'button[class*="current-team"] div[class*="team-name"]',
     );
-    this.teamNameLabel = page.locator('div[class*="team__name"]');
+    this.teamNameLabel = page.locator('//div[text()="Team info"]/following-sibling::div[1]');
     this.teamOptionsMenuButton = page.locator('button[class*="switch-options"]');
     this.deleteTeamMenuItem = page.locator('#teams-options-delete-team');
     this.deleteTeamButton = page.locator('input[value="Delete team"]');
@@ -39,9 +39,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamFilesSpan = page.locator(
       `//*[contains(@class,'team__document-icon')]/../span`,
     );
-    this.teamInfoSection = page.locator(`div[class*="info-block"] div[class='main_ui_dashboard_team__block-text']`);
-    this.teamOwnerSection = page.locator(`//*[contains(@class,'team__group-icon')]/../../../div[2]`);
-    this.teamStatsSection = page.locator(`//*[contains(@class,'team__group-icon')]/../../../div[3]`);
+    this.teamInfoSection = page.locator('//div[text()="Team info"]/..');
+    this.teamOwnerSection = page.locator('//div[text()="Team members"]/..');
+    this.teamStatsSection = page.locator('//div[text()="Team projects"]/..');
 
     //Invitations
     this.invitationsMenuItem = page.locator('li[data-test="team-invitations"]');
@@ -87,7 +87,7 @@ exports.TeamPage = class TeamPage extends BasePage {
       'aside[class*="warning"] div[class*="context_notification"]',
     );
     this.teamSettingsSection = page.locator('.main_ui_dashboard__dashboard-content');
-    this.teamIcon = page.locator(`div[class*='team__icon'] span`);
+    this.teamIcon = page.locator(`div[class*='team-icon'] img`);
   }
 
   async createTeam(teamName) {
@@ -120,7 +120,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   async deleteTeam(teamName) {
     await this.openTeamsListIfClosed();
     const teamSel = this.page.locator(
-      `ul[class*="teams-dropdown"] li[class*="team-dropdown-item"] span[title="${teamName}"]`,
+      `ul[class*="teams-dropdown"] li[role="menuitem"] span[title="${teamName}"]`,
     );
     if (await teamSel.isVisible()) {
       await teamSel.click();
