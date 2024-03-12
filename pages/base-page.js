@@ -37,12 +37,12 @@ exports.BasePage = class BasePage {
     this.selectionToBoardMenuItem = page.locator(
       'ul[class*="workspace-context-menu"] li:has-text("Selection to board")',
     );
-    this.createComponentMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Create component")',
-    );
-    this.createMultipleComponentsMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Create multiple components")',
-    );
+    // this.createComponentMenuItem = page.locator(
+    //   'ul[class*="workspace-context-menu"] li:has-text("Create component")',
+    // );
+    // this.createMultipleComponentsMenuItem = page.locator(
+    //   'ul[class*="workspace-context-menu"] li:has-text("Create multiple components")',
+    // );
     this.flipVerticalMenuItem = page.locator(
       'ul[class*="workspace-context-menu"] li:has-text("Flip vertical")',
     );
@@ -71,7 +71,7 @@ exports.BasePage = class BasePage {
       'ul[class*="workspace_context_menu"] span:has-text("Restore main component")',
     );
     this.createMultipleComponentsMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Create multiple components")',
+      'li[class*="context-menu-item"] span:has-text("Create multiple components")',
     );
     this.showInAssetsPanelOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Show in assets panel")',

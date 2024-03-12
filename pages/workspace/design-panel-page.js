@@ -19,12 +19,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
     this.topLeftCornerRadiusInput = page.locator('div[title="Top left"] input');
     this.topRightCornerRadiusInput = page.locator('div[title="Top right"] input');
-    this.bottomLeftCornerRadiusInput = page.locator(
-      'div[title="Bottom left"] input',
-    );
-    this.bottomRightCornerRadiusInput = page.locator(
-      'div[title="Bottom right"] input',
-    );
+    this.bottomLeftCornerRadiusInput = page.locator('div[title="Bottom left"] input');
+    this.bottomRightCornerRadiusInput = page.locator('div[title="Bottom right"] input');
     this.sizeWidthInput = page.locator('div[title="Width"] input');
     this.sizeHeightInput = page.locator('div[title="Height"] input');
     this.xAxisInput = page.locator('div[title="X axis"] input');
@@ -299,6 +295,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.detachInstanceOptionDesign = page.locator(
       'ul[class*="component__custom-select-dropdown"] span:text-is("Detach instance")',
     );
+    this.clipContentButton = page.locator(
+      '//input[@id="clip-content"]/..',
+    );
   }
 
   async isFlexElementSectionOpened() {
@@ -452,31 +451,31 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeGeneralCornerRadiusForLayer(value) {
     await this.generalCornerRadiusInput.clear();
     await this.generalCornerRadiusInput.pressSequentially(value);
-    await this.clickMoveButton();
+    await this.clickOnEnter();
   }
 
   async changeTopLeftCornerRadiusForLayer(value) {
     await this.topLeftCornerRadiusInput.clear();
     await this.topLeftCornerRadiusInput.pressSequentially(value);
-    await this.clickMoveButton();
+    await this.clickOnEnter();
   }
 
   async changeTopRightCornerRadiusForLayer(value) {
     await this.topRightCornerRadiusInput.clear();
     await this.topRightCornerRadiusInput.pressSequentially(value);
-    await this.clickMoveButton();
+    await this.clickOnEnter();
   }
 
   async changeBottomLeftCornerRadiusForLayer(value) {
     await this.bottomLeftCornerRadiusInput.clear();
     await this.bottomLeftCornerRadiusInput.pressSequentially(value);
-    await this.clickMoveButton();
+    await this.clickOnEnter();
   }
 
   async changeBottomRightCornerRadiusForLayer(value) {
     await this.bottomRightCornerRadiusInput.clear();
     await this.bottomRightCornerRadiusInput.pressSequentially(value);
-    await this.clickMoveButton();
+    await this.clickOnEnter();
   }
 
   async changeWidthForLayer(width) {
@@ -988,5 +987,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickOnDetachInstanceOption() {
     await this.detachInstanceOptionDesign.click();
+  }
+
+  async clickOnClipContentButton() {
+    await this.clipContentButton.click();
   }
 };

@@ -99,15 +99,15 @@ test.describe(() => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
 
-    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
   });
 
   mainTest(
     'PENPOT-1511 Create component with 2 boards with components inside it. change paddings',
     async ( {page}, testInfo) => {
       await testInfo.setTimeout(testInfo.timeout + 20000);
+
+      await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+      await mainPage.waitForChangeIsSaved();
 
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeAxisXandYForLayer('600', '200');
@@ -119,7 +119,6 @@ test.describe(() => {
       await mainPage.waitForChangeIsSaved();
 
       await mainPage.createDefaultEllipseByCoordinates(200, 200, true);
-      await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
 
       await mainPage.clickViewportTwice();
@@ -147,6 +146,9 @@ test.describe(() => {
   mainTest(
     'PENPOT-1514 Create component inside flex board, change alignment for element',
     async () => {
+      await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeLayoutAlignment('Center');
       await mainPage.waitForChangeIsSaved();

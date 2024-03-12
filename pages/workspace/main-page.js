@@ -842,6 +842,7 @@ exports.MainPage = class MainPage extends BasePage {
     if (singleComponent) {
       await this.createComponentMenuItem.click();
     } else {
+      await this.page.waitForTimeout(200);
       await this.createMultipleComponentsMenuItem.click();
     }
   }

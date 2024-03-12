@@ -70,6 +70,8 @@ test.describe(() => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickOnClipContentButton();
+    await mainPage.waitForChangeIsSaved();
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
