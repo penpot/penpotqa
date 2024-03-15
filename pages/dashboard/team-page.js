@@ -72,7 +72,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     );
     this.invitationRecordRoleSelector = page.locator('div[class*="team__has-priv"]');
     this.invitationRecordStatusCell = page.locator(
-      'span[class*="dashboard_team__status"]',
+      'div[class*="dashboard_team__field-status"] aside',
     );
     this.invitationRecordOptionsMenuButton = page.locator(
       'div[class*="main_ui_dashboard_team__table-field"] button',
