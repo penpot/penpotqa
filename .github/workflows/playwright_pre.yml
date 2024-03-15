@@ -23,7 +23,8 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-        run: npx playwright test --project=chrome -gv 'PERF'
+          GITHUB_RUN_ID: ${{ github.run.id }}
+        run: npx playwright test --project=chrome -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         if: always()
@@ -31,3 +32,9 @@ jobs:
           name: playwright-report-chromium
           path: playwright-report/
           retention-days: 30
+      - name: Archive Allure Results
+        if: always()
+        run: tar -czvf playwright-report.tar.gz playwright-report/
+      - name: Send Mattermost Message
+        if: always()
+        run: node -r dotenv/config -r ts-node/register ./helpers/mattermost.helper.js sendMessage
