@@ -50,5 +50,6 @@ async function updateTestResults(result, retryCount) {
   }
 }
 
-export { readResultsFromFile,  updateTestResults};
+module.exports = { readResultsFromFile,  updateTestResults};
+
 
