@@ -83,4 +83,4 @@ async function sendMessage() {
     }
   }
 
-  export { sendMessage };
+module.exports = { sendMessage };
