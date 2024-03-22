@@ -32,9 +32,6 @@ jobs:
           name: playwright-report-chromium
           path: playwright-report/
           retention-days: 30
-      - name: Archive Allure Results
+      - name: Send mattermost Message
         if: always()
-        run: tar -czvf playwright-report.tar.gz playwright-report/
-      - name: Send Mattermost Message
-        if: always()
-        run: node -r dotenv/config -r ts-node/register ./helpers/mattermost.helper.js sendMessage
+        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage()"
