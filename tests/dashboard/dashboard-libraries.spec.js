@@ -8,6 +8,7 @@ const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
+const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 
@@ -26,13 +27,14 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
 mainTest(
   'PENPOT-1084 Check view for empty library',
-  async ({ page }) => {
+  async () => {
     await mainPage.clickPencilBoxButton();
     await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
     await dashboardPage.isSharedLibraryIconDisplayed();
@@ -46,7 +48,7 @@ mainTest(
 
 mainTest(
   'PENPOT-1541 Create 2 rectangles and look library view',
-  async ({ page }) => {
+  async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -66,7 +68,7 @@ mainTest(
 
 mainTest(
   'PENPOT-1542 Create 4 ellipses and look at library view',
-  async ({ page }) => {
+  async () => {
     await mainPage.createDefaultEllipseByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -92,7 +94,7 @@ mainTest(
 
 mainTest(
   'PENPOT-1351 Check actual library view after adding / updating / removing assets',
-  async ({ page }) => {
+  async () => {
     await mainPage.createDefaultTextLayer(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -138,7 +140,7 @@ mainTest(
 
 mainTest(
   'PENPOT-1476 Check view for library with one type of assets',
-  async ({ page }) => {
+  async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -162,7 +164,7 @@ mainTest(
 );
 
 test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+  test.beforeEach(async () => {
     await mainPage.clickPencilBoxButton();
     await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
     await dashboardPage.isSharedLibraryIconDisplayed();
@@ -172,7 +174,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1057 Rename file from Libraries tab',
-    async ({ page }) => {
+    async () => {
       await dashboardPage.renameFile('Renamed Test File');
       await dashboardPage.isFilePresent('Renamed Test File');
     },
@@ -180,7 +182,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1058 Duplicate file from Libraries tab',
-    async ({ page }) => {
+    async () => {
       await dashboardPage.duplicateFileViaRightclick();
       await dashboardPage.openSidebarItem('Projects');
       await dashboardPage.checkNumberOfFiles('2 files');

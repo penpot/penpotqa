@@ -8,7 +8,7 @@ const { BasePage } = require('../../pages/base-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
-const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
+const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 
@@ -22,11 +22,12 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
   const teamPage = new TeamPage(page);
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
 mainTest('PF-114 Create new page', async ({ page }) => {
@@ -159,7 +160,6 @@ mainTest('PENPOT-1527 Add a component from local library to Page 1 and Page 2, e
     const layersPanelPage = new LayersPanelPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
-    const colorPalettePage = new ColorPalettePage(page);
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();

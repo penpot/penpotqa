@@ -8,6 +8,7 @@ const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
+const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 
@@ -25,8 +26,9 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async () => {
+test.afterEach(async ({}, testInfo) => {
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
 test.describe(() => {
@@ -591,7 +593,7 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }, testInfo) => {
+  test.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
   });
 });
@@ -652,14 +654,14 @@ test.describe(() => {
     // );
   });
 
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async () => {
     await teamPage.page.waitForTimeout(1000);
     await teamPage.deleteTeam(team2);
   });
 });
 
 test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+  test.beforeEach(async () => {
     await mainPage.clickPencilBoxButton();
     await dashboardPage.addFileAsSharedLibraryViaRightclick();
     await dashboardPage.isSharedLibraryIconDisplayed();
@@ -682,7 +684,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1004 Search shared library (LIBRARIES pop-up)',
-    async ({ page }) => {
+    async () => {
       await assetsPanelPage.searchSharedLibraries('Whiteboarding & mapping kit');
       await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
         'libraries-window-search.png',
@@ -701,7 +703,7 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }, testInfo) => {
+  test.afterEach(async () => {
     await assetsPanelPage.clickCloseModalButton();
     await mainPage.backToDashboardFromFileEditor();
   });

@@ -8,6 +8,7 @@ const { TeamPage } = require('../../pages/dashboard/team-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
 const { ViewModePage } = require('../../pages/workspace/view-mode-page');
+const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 
 let profilePage,
   teamPage,
@@ -143,4 +144,5 @@ test.afterEach(async ({}) => {
   await profilePage.selectDarkTheme();
   await profilePage.backToDashboardFromAccount();
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });

@@ -1,6 +1,7 @@
 const { test } = require('@playwright/test');
 const { LoginPage } = require('../pages/login-page');
 const { RegisterPage } = require('../pages/register-page');
+const { updateTestResults } = require('./../helpers/saveTestResults.js');
 
 test('ON-5 Sign up with invalid email address', async ({ page }) => {
   const loginPage = new LoginPage(page);
@@ -42,4 +43,8 @@ test('ON-7 Sign up with incorrect password', async ({ page }) => {
   );
   await registerPage.isCreateAccountBtnDisplayed();
   await registerPage.isCreateAccountBtnDisabled();
+});
+
+test.afterEach(async ({ page }, testInfo) => {
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
