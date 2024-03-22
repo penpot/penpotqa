@@ -7,6 +7,7 @@ const { random } = require('../../../helpers/string-generator');
 const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
+const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 
@@ -23,13 +24,14 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
   const teamPage = new TeamPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest('PENPOT-1497 Delete copy component from DEL button', async ({ page }) => {
+mainTest('PENPOT-1497 Delete copy component from DEL button', async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();

@@ -8,6 +8,7 @@ const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page'
 const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
+const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 
@@ -25,12 +26,13 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest('Update main component', async ({ page }) => {
+mainTest('Update main component', async () => {
   test.setTimeout(60000);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
@@ -53,7 +55,7 @@ mainTest('Update main component', async ({ page }) => {
   );
 });
 
-mainTest('Check copy and main component icons', async ({ page }) => {
+mainTest('Check copy and main component icons', async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -84,7 +86,7 @@ test.describe(() => {
 
   mainTest(
     'Create a component and 2 copies of it, change rotation of main',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.changeRotationForLayer('20');
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -95,7 +97,7 @@ test.describe(() => {
 
   mainTest(
     'Create a component and 2 copies of it, change all corners of main',
-    async ({ page }) => {
+    async () => {
       const cornerValue = '45';
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.clickIndividualCornersRadiusButton();
@@ -112,7 +114,7 @@ test.describe(() => {
 
   mainTest(
     "Create a component and 2 copies of it, change corners of main separate by using 'All corners'",
-    async ({ page }) => {
+    async () => {
       const cornerValue = '45';
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.changeGeneralCornerRadiusForLayer(cornerValue);
@@ -125,7 +127,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1408 Create a component and 2 copies of it, change stroke color of main',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.clickAddStrokeButton();
       await mainPage.waitForChangeIsSaved();

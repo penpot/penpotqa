@@ -5,6 +5,8 @@ const { ProfilePage } = require('../../pages/profile-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
+const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+
 
 test.describe(() => {
   const team = random().concat('autotest');
@@ -410,4 +412,8 @@ test.describe(() => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
+});
+
+test.afterEach(async ({ page }, testInfo) => {
+  await updateTestResults(testInfo.status, testInfo.retry)
 });

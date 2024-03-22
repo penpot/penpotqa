@@ -8,6 +8,7 @@ const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
+const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 
@@ -52,9 +53,10 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isSecondPageNameDisplayed('Main components');
 });
 
-test.afterEach(async () => {
+test.afterEach(async ({}, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
 mainTest(
