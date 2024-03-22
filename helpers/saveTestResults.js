@@ -42,7 +42,6 @@ async function updateTestResults(result, retryCount) {
   testResults.PercentPassed = (testResults.Passed / totalTests) * 100;
 
 
-  // Запись обновленных результатов в файл
   try {
     fs.writeFileSync('testResults.json', JSON.stringify(testResults, null, 2));
     console.log('Test results updated:', testResults);
@@ -50,5 +49,6 @@ async function updateTestResults(result, retryCount) {
     console.error('Error writing testResults.json:', err);
   }
 }
-module.exports = readResultsFromFile;
-module.exports = updateTestResults;
+
+export { readResultsFromFile,  updateTestResults};
+
