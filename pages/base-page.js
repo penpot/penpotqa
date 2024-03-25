@@ -20,43 +20,43 @@ exports.BasePage = class BasePage {
     this.copyLayer = page.locator('div[class="viewport"] [id^="shape"]').last();
     this.createdBoardTitle = page.locator('g[class="frame-title"] div >> nth=0');
     this.deleteLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Delete")',
+      'ul[class*="workspace_context_menu"] li:has-text("Delete")',
     );
     this.hideLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Hide")',
+      'ul[class*="workspace_context_menu"] li:has-text("Hide")',
     );
     this.showLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Show")',
+      'ul[class*="workspace_context_menu"] li:has-text("Show")',
     );
     this.focusOnLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Focus on")',
+      'ul[class*="workspace_context_menu"] li:has-text("Focus on")',
     );
     this.transformToPathMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Transform to path")',
+      'ul[class*="workspace_context_menu"] li:has-text("Transform to path")',
     );
     this.selectionToBoardMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Selection to board")',
+      'ul[class*="workspace_context_menu"] li:has-text("Selection to board")',
     );
     // this.createComponentMenuItem = page.locator(
-    //   'ul[class*="workspace-context-menu"] li:has-text("Create component")',
+    //   'ul[class*="workspace_context_menu"] li:has-text("Create component")',
     // );
     // this.createMultipleComponentsMenuItem = page.locator(
-    //   'ul[class*="workspace-context-menu"] li:has-text("Create multiple components")',
+    //   'ul[class*="workspace_context_menu"] li:has-text("Create multiple components")',
     // );
     this.flipVerticalMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Flip vertical")',
+      'ul[class*="workspace_context_menu"] li:has-text("Flip vertical")',
     );
     this.flipHorizontalMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Flip horizontal")',
+      'ul[class*="workspace_context_menu"] li:has-text("Flip horizontal")',
     );
     this.editPathMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Edit")',
+      'ul[class*="workspace_context_menu"] li:has-text("Edit")',
     );
     this.addFlexLayout = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Add flex layout")',
+      'ul[class*="workspace_context_menu"] li:has-text("Add flex layout")',
     );
     this.removeFlexLayout = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Remove flex layout")',
+      'ul[class*="workspace_context_menu"] li:has-text("Remove flex layout")',
     );
     this.deleteLayerMenuOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Delete")',

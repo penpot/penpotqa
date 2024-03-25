@@ -77,10 +77,10 @@ exports.MainPage = class MainPage extends BasePage {
       '#file-menu-rulers span:text-is("Hide rulers")',
     );
     this.hideGridsMainMenuSubItem = page.locator(
-      '#file-menu-grid span:text-is("Hide grids")',
+      '#file-menu-pixel-grid span:text-is("Hide pixel grid")',
     );
     this.showGridsMainMenuSubItem = page.locator(
-      '#file-menu-grid span:text-is("Show grid")',
+      '#file-menu-pixel-grid span:text-is("Show pixel grid")',
     );
     this.selectAllMainMenuSubItem = page.locator('#file-menu-select-all');
     this.showColorPaletteMainMenuSubItem = page.locator(

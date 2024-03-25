@@ -109,7 +109,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.librariesUpdatesTab = page.locator('div[data-id="updates"]');
     this.librariesUpdateButton = page.locator('input[value="Update"]');
     this.librariesMoreInfoButton = page.locator('input[value="More info"]');
-    this.closeModalButton = page.locator('svg[class="icon-close"]');
+    this.closeModalButton = page.locator('svg[class*="close-icon"]');
     this.librariesModal = page.locator('div[class*="libraries__modal-dialog"]');
   }
 
