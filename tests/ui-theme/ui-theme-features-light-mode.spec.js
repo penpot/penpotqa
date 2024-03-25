@@ -138,7 +138,7 @@ test.describe('Settings - UI THEME', () => {
   );
 });
 
-test.afterEach(async ({}) => {
+test.afterEach(async ({}, testInfo) => {
   await profilePage.goToAccountPage();
   await profilePage.openSettingsTab();
   await profilePage.selectDarkTheme();
