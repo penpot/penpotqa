@@ -139,13 +139,13 @@ exports.MainPage = class MainPage extends BasePage {
       'ul[class*="page-list"] div[class*="element-list-body"] input',
     );
     this.renamePageMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li span:has-text("Rename")',
+      'ul[class*="workspace_context_menu"] li span:has-text("Rename")',
     );
     this.duplicatePageMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li span:has-text("Duplicate")',
+      'ul[class*="workspace_context_menu"] li span:has-text("Duplicate")',
     );
     this.deletePageMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li span:has-text("Delete")',
+      'ul[class*="workspace_context_menu"] li span:has-text("Delete")',
     );
     this.collapseExpandPagesButton = page.locator(
       'span[class*="collapsabled-icon"]',
