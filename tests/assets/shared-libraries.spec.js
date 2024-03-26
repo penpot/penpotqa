@@ -255,7 +255,7 @@ test.describe(() => {
       await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
       await assetsPanelPage.clickCloseModalButton();
       await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.clickLibraryComponentsTitle();
+      // await assetsPanelPage.clickLibraryComponentsTitle();
       await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
       await mainPage.waitForChangeIsSaved();
 
