@@ -24,7 +24,7 @@ jobs:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
           GITHUB_RUN_ID: ${{ github.run.id }}
-        run: npx playwright test --project=chrome -gv 'PERF'
+        run: npx playwright test --project=chrome -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         if: always()
