@@ -24,6 +24,9 @@ jobs:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
           GITHUB_RUN_ID: ${{ github.run.id }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
+          PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
         run: npx playwright test --project=chrome -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
