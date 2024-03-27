@@ -27,7 +27,7 @@ jobs:
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
-        run: npx playwright test --project=chrome -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js
+        run: npx playwright test --project=chrome -gv 'PERF'
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         if: always()
