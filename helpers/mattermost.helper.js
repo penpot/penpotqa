@@ -5,11 +5,11 @@ const { readResultsFromFile } = require('./saveTestResults');
 
 
 const baseUrl = 'https://chat.kaleidos.net/api/v4';
-const channel_id = process.env.CHANNEL_ID;
+const channel_id = `${process.env.CHANNEL_ID}`;
 
   async function getToken() {
     const url = `${baseUrl}/users/login`;
-    const requestBody = {"login_id":process.env.LOGIN_ID_MATTERMOST,"password":process.env.PASSWORD_MATTERMOST};
+    const requestBody = {"login_id":`${process.env.LOGIN_ID_MATTERMOST}`,"password":`${process.env.PASSWORD_MATTERMOST}`};
 
     try {
       const response = await axios.post(url, requestBody, {
