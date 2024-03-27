@@ -1,15 +1,15 @@
 const axios = require('axios');
 const { readResultsFromFile } = require('./saveTestResults');
-const fs = require('fs')
-const FormData = require('form-data');
+// const fs = require('fs')
+// const FormData = require('form-data');
 
 
 const baseUrl = 'https://chat.kaleidos.net/api/v4';
-const channel_id = 'athjkcftxjyuux5qx64ha9dzsr';
+const channel_id = process.env.CHANNEL_ID;
 
   async function getToken() {
     const url = `${baseUrl}/users/login`;
-    const requestBody = {"login_id":"cstanislav@qawerk.com","password":"23QwertyStas"};
+    const requestBody = {"login_id":process.env.LOGIN_ID_MATTERMOST,"password":process.env.PASSWORD_MATTERMOST};
 
     try {
       const response = await axios.post(url, requestBody, {
@@ -58,10 +58,12 @@ async function sendMessage() {
     const token = await getToken();
 
     // await uploadFile()
-
+    function roundNumber(num) {
+      return Math.round(num * 100) / 100;
+    }
     const results = await readResultsFromFile()
     const messageWithLink =
-      `**Total Tests** : **${results.Passed+results.Failed+results.Flaky}**   :person_doing_cartwheel:   **Success Percentage:** **${results.PercentPassed}%**
+      `**Total Tests** : **${results.Passed+results.Failed+results.Flaky}**   :person_doing_cartwheel:   **Success Percentage:** **${roundNumber(results.PercentPassed)}%**
        :white_check_mark: Success: ${results.Passed}
        :x: Failure: ${results.Failed}
        :ballot_box_with_check: Flaky: ${results.Flaky}
