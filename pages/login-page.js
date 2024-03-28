@@ -18,6 +18,10 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.createAccountLink = page.locator('a:has-text("Create an account")');
   }
 
+  async checkLoginError(text) {
+    return this.page.locator(`//aside[contains(@class,"context_notification__warning")]/div[text()='${text}']`).isVisible()
+  }
+
   async goto() {
     await this.page.goto('/#/auth/login');
   }
@@ -55,7 +59,7 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async isLoginErrorMessageDisplayed(message) {
-    await expect(this.loginErrorBanner).toHaveText(message);
+    await expect(await this.checkLoginError(message)).toBeTruthy;
   }
 
   async clickOnCreateAccount() {
