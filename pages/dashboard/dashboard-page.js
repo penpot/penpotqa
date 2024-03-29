@@ -386,6 +386,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.isHeaderDisplayed(projectName);
   }
 
+  async pinProjectByName(projectName) {
+    const projectSel = await this.page.locator(
+      `//*[@title='${projectName}']/../../../div[contains(@class,'projects__grid-container')]/..//button[contains(@class,'main_ui_dashboard_pin_button__button')]`,
+    );
+    await projectSel.click();
+  }
+
   async checkNoLibrariesExist() {
     await expect(this.noLibrariesPlacelder).toContainText(
       'Files added to Libraries will appear here.',
