@@ -353,7 +353,9 @@ test.describe(() => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await dashboardPage.createProject(projectFirst);
+      await dashboardPage.pinProjectByName(projectFirst)
       await dashboardPage.createProject(projectSecond);
+      await dashboardPage.pinProjectByName(projectSecond)
       await dashboardPage.openSidebarItem('Drafts');
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.backToDashboardFromFileEditor();
