@@ -149,7 +149,7 @@ test.describe(() => {
     });
   });
 
-  mainTest.only('PENPOT-1695 Change columns and rows', async ({ page }) => {
+  mainTest('PENPOT-1695 Change columns and rows', async ({ page }) => {
     await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsSaved();
     await mainPage.addRowGridLayoutBtnClick();
