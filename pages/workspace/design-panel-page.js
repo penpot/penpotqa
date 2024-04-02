@@ -98,6 +98,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
+    this.gridEditButton = page.locator(
+      'button[alt="Grid edit mode"]',
+    );
+    this.gridDoneButton = page.locator(
+      'button[class*="done-btn"]',
+    );
+    this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]');
     this.layoutRemoveButton = page.locator(
       'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
     );
@@ -145,6 +152,24 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[title="Bottom padding"] input',
     );
     this.layoutPaddingLeftInput = page.locator('div[title="Left padding"] input');
+    this.layoutGridJustifyStartBtn = page.locator(
+      'label[title="Justify items start"] span',
+    );
+    this.layoutGridJustifyCenterBtn = page.locator(
+      'label[title="Justify items center"] span',
+    );
+    this.layoutGridJustifyEndBtn = page.locator(
+      'label[title="Justify items end"] span',
+    );
+    this.layoutGridJustifySpaceBetweenBtn = page.locator(
+      'label[title="Justify items space-between"] span',
+    );
+    this.layoutGridJustifySpaceAroundBtn = page.locator(
+      'label[title="Justify items space-around"] span',
+    );
+    this.layoutGridJustifySpaceEvenlyBtn = page.locator(
+      'label[title="Justify items space-evenly"] span',
+    );
 
     //Design panel - Blur section
     this.blurSection = page.locator(
@@ -663,6 +688,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.layoutRemoveButton.click();
   }
 
+  async openGridEditModeFromDesignPanel() {
+    await this.gridEditButton.click();
+  }
+  async clickGridDoneButton() {
+    await this.gridDoneButton.click();
+  }
+
   async expandFlexLayoutMenu() {
     if (!(await this.flexLayoutMenu.isVisible())) {
       await this.flexLayoutCollapsedIcon.click();
@@ -670,8 +702,17 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.flexLayoutMenu).toBeVisible();
   }
 
-  async changeLayoutDirection(direction) {
-    await this.expandFlexLayoutMenu();
+  async expandGridLayoutMenu() {
+    if (!(await this.gridLayoutMenu.isVisible())) {
+      await this.flexLayoutCollapsedIcon.click();
+    }
+    await expect(this.gridLayoutMenu).toBeVisible();
+  }
+
+  async changeLayoutDirection(direction, flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
     switch (direction) {
       case 'Row':
         await this.layoutDirectRowBtn.click();
@@ -688,47 +729,97 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
-  async changeLayoutAlignment(alignment) {
-    await this.expandFlexLayoutMenu();
-    switch (alignment) {
-      case 'Start':
-        await this.layoutAlignStartBtn.click();
-        break;
-      case 'Center':
-        await this.layoutAlignCenterBtn.click();
-        break;
-      case 'End':
-        await this.layoutAlignEndBtn.click();
-        break;
+  async changeLayoutAlignment(alignment, flex = true) {
+    if(flex) {
+      await this.expandFlexLayoutMenu();
+      switch (alignment) {
+        case 'Start':
+          await this.layoutAlignStartBtn.click();
+          break;
+        case 'Center':
+          await this.layoutAlignCenterBtn.click();
+          break;
+        case 'End':
+          await this.layoutAlignEndBtn.click();
+          break;
+      }
+    } else {
+      await this.expandGridLayoutMenu();
+      switch (alignment) {
+        case 'Start':
+          await this.layoutAlignStartBtn.first().click();
+          await this.layoutAlignStartBtn.last().click();
+          break;
+        case 'Center':
+          await this.layoutAlignCenterBtn.first().click();
+          await this.layoutAlignCenterBtn.last().click();
+          break;
+        case 'End':
+          await this.layoutAlignEndBtn.first().click();
+          await this.layoutAlignEndBtn.last().click();
+          break;
+      }
     }
   }
 
-  async changeLayoutJustification(justify) {
-    await this.expandFlexLayoutMenu();
-    switch (justify) {
-      case 'Start':
-        await this.layoutJustifyStartBtn.click();
-        break;
-      case 'Center':
-        await this.layoutJustifyCenterBtn.click();
-        break;
-      case 'End':
-        await this.layoutJustifyEndBtn.click();
-        break;
-      case 'Space between':
-        await this.layoutJustifySpaceBetweenBtn.click();
-        break;
-      case 'Space around':
-        await this.layoutJustifySpaceAroundBtn.click();
-        break;
-      case 'Space evenly':
-        await this.layoutJustifySpaceEvenlyBtn.click();
-        break;
+  async changeLayoutJustification(justify, flex = true) {
+    if(flex) {
+      await this.expandFlexLayoutMenu();
+      switch (justify) {
+        case 'Start':
+          await this.layoutJustifyStartBtn.click();
+          break;
+        case 'Center':
+          await this.layoutJustifyCenterBtn.click();
+          break;
+        case 'End':
+          await this.layoutJustifyEndBtn.click();
+          break;
+        case 'Space between':
+          await this.layoutJustifySpaceBetweenBtn.click();
+          break;
+        case 'Space around':
+          await this.layoutJustifySpaceAroundBtn.click();
+          break;
+        case 'Space evenly':
+          await this.layoutJustifySpaceEvenlyBtn.click();
+          break;
+      }
+    } else {
+      await this.expandGridLayoutMenu();
+      switch (justify) {
+        case 'Start':
+          await this.layoutGridJustifyStartBtn.first().click();
+          await this.layoutGridJustifyStartBtn.last().click();
+          break;
+        case 'Center':
+          await this.layoutGridJustifyCenterBtn.first().click();
+          await this.layoutGridJustifyCenterBtn.last().click();
+          break;
+        case 'End':
+          await this.layoutGridJustifyEndBtn.first().click();
+          await this.layoutGridJustifyEndBtn.last().click();
+          break;
+        case 'Space between':
+          await this.layoutGridJustifySpaceBetweenBtn.first().click();
+          await this.layoutGridJustifySpaceBetweenBtn.last().click();
+          break;
+        case 'Space around':
+          await this.layoutGridJustifySpaceAroundBtn.first().click();
+          await this.layoutGridJustifySpaceAroundBtn.last().click();
+          break;
+        case 'Space evenly':
+          await this.layoutGridJustifySpaceEvenlyBtn.first().click();
+          await this.layoutGridJustifySpaceEvenlyBtn.last().click();
+          break;
+      }
     }
   }
 
-  async changeLayoutColumnGap(value) {
-    await this.expandFlexLayoutMenu();
+  async changeLayoutColumnGap(value, flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
     await this.layoutColumnGapInput.clear();
     await this.layoutColumnGapInput.pressSequentially(value);
     await this.clickOnEnter();
@@ -738,15 +829,31 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.layoutColumnGapInput.click();
   }
 
-  async changeLayoutRowGap(value) {
-    await this.expandFlexLayoutMenu();
+  async changeLayoutColumnGapOnGridEdit(value) {
+    await this.layoutColumnGapInput.clear();
+    await this.layoutColumnGapInput.pressSequentially(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutRowGap(value, flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
     await this.layoutRowGapInput.clear();
     await this.layoutRowGapInput.pressSequentially(value);
     await this.clickOnEnter();
   }
 
-  async changeLayoutPadding(type, value) {
-    await this.expandFlexLayoutMenu();
+  async changeLayoutRowGapOnGridEdit(value) {
+    await this.layoutRowGapInput.clear();
+    await this.layoutRowGapInput.pressSequentially(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutPadding(type, value, flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
     switch (type) {
       case 'Vertical':
         await this.layoutVerticalPaddingInput.clear();
@@ -768,13 +875,43 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.layoutHorizontPaddingInput.click();
   }
 
-  async switchToIndependentPadding() {
-    await this.expandFlexLayoutMenu();
+  async switchToIndependentPadding(flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
     await this.layoutIndepPaddingsIcon.click();
   }
 
-  async changeLayoutIndependentPadding(type, value) {
-    await this.expandFlexLayoutMenu();
+  async switchToIndependentPaddingOnGridEdit() {
+    await this.layoutIndepPaddingsIcon.click();
+  }
+
+  async changeLayoutIndependentPadding(type, value, flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
+    switch (type) {
+      case 'Bottom':
+        await this.layoutPaddingBottomInput.clear();
+        await this.layoutPaddingBottomInput.pressSequentially(value);
+        break;
+      case 'Right':
+        await this.layoutPaddingRightInput.clear();
+        await this.layoutPaddingRightInput.pressSequentially(value);
+        break;
+      case 'Left':
+        await this.layoutPaddingLeftInput.clear();
+        await this.layoutPaddingLeftInput.pressSequentially(value);
+        break;
+      case 'Top':
+        await this.layoutPaddingTopInput.clear();
+        await this.layoutPaddingTopInput.pressSequentially(value);
+        break;
+    }
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutIndependentPaddingOnGridEdit(type, value) {
     switch (type) {
       case 'Bottom':
         await this.layoutPaddingBottomInput.clear();

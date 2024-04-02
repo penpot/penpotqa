@@ -58,6 +58,19 @@ exports.BasePage = class BasePage {
     this.removeFlexLayout = page.locator(
       'ul[class*="workspace_context_menu"] li:has-text("Remove flex layout")',
     );
+    this.addGridLayout = page.locator(
+      'ul[class*="workspace_context_menu"] li:has-text("Add grid layout")',
+    );
+    this.removeGridLayout = page.locator(
+      'ul[class*="workspace_context_menu"] li:has-text("Remove grid layout")',
+    );
+    this.addRowGridLayoutBtn = page.locator('g[class*="grid-plus-button"]',
+    ).first();
+    this.addColumnGridLayoutBtn = page.locator('g[class*="grid-plus-button"]',
+    ).last();
+    this.removeGridLayout = page.locator(
+      'ul[class*="workspace_context_menu"] li:has-text("Remove grid layout")',
+    );
     this.deleteLayerMenuOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Delete")',
     );
@@ -253,6 +266,24 @@ exports.BasePage = class BasePage {
     await this.createdBoardTitle.click({ button: 'right', force: true });
     await this.removeFlexLayout.click();
   }
+
+  async addGridLayoutViaRightClick() {
+    await this.createdBoardTitle.click({ button: 'right', force: true });
+    await this.addGridLayout.click();
+  }
+  async removeGridLayoutViaRightClick() {
+    await this.createdBoardTitle.click({ button: 'right', force: true });
+    await this.removeGridLayout.click();
+  }
+
+  async addRowGridLayoutBtnClick() {
+    await this.addRowGridLayoutBtn.click();
+  }
+
+  async addColumnGridLayoutBtnClick() {
+    await this.addColumnGridLayoutBtn.click();
+  }
+
   async showMainComponentViaRightClick() {
     await this.copyLayer.click({ button: 'right', force: true });
     await this.showMainComponentOption.click();
