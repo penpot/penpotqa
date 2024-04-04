@@ -11,7 +11,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     //Assets panel
     this.viewModeButton = page.locator(`a[class*='viewer-btn']`);
     this.viewerLoyautSection = page.locator('#viewer-layout');
-    this.inspectButton = page.locator(`button .icon-code-refactor`);
+    this.inspectButton = page.locator(`button .icon-code`);
     this.rightSidebar = page.locator(`aside[class*='inspect_right_sidebar']`);
   }
 

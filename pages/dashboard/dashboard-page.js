@@ -35,7 +35,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.addFileAsSharedLibraryButton = page.locator(
       'input[value="Add as Shared Library"]',
     );
-    this.sharedLibraryIcon = page.locator('svg[class="icon-library-refactor"]');
+    this.sharedLibraryIcon = page.locator('svg[class="icon-library"]');
     this.delFileAsSharedLibraryMenuItem = page.locator(
       'a[data-test="file-del-shared"]',
     );
@@ -54,7 +54,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'a[data-test="download-standard-file"]',
     );
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
-    this.downloadFileTickIcon = page.locator('svg[class="icon-tick-refactor"]');
+    this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
     this.fileOptionsMenuButton = page.locator(
@@ -115,7 +115,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class*="installed-fonts"] div[class*="table-row"] div[class*="dashboard_fonts__variants"]',
     );
     this.fontOptionsMenuButton = page.locator(
-      'div[class*="fonts__options"] svg[class="icon-menu-refactor"]',
+      'div[class*="fonts__options"] svg[class="icon-menu"]',
     );
     this.editFontMenuItem = page.locator('#font-edit');
     this.deleteFontMenuItem = page.locator('#font-delete');
@@ -386,6 +386,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.isHeaderDisplayed(projectName);
   }
 
+  async pinProjectByName(projectName) {
+    const projectSel = await this.page.locator(
+      `//*[@title='${projectName}']/../../../div[contains(@class,'projects__grid-container')]/..//button[contains(@class,'main_ui_dashboard_pin_button__button')]`,
+    );
+    await projectSel.click();
+  }
+
   async checkNoLibrariesExist() {
     await expect(this.noLibrariesPlacelder).toContainText(
       'Files added to Libraries will appear here.',
@@ -535,10 +542,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async moveFileToOtherTeamViaRightClick(fileName, otherTeamName) {
     const elem = this.page.locator(`button[title="${fileName}"]`).first();
     await elem.click({ button: 'right' });
+    await this.page.waitForTimeout(500);
     await this.moveToFileMenuItem.click();
     await this.moveToOtherTeamMenuItem.click();
-    await this.page.locator(`li[role="menuitem"] a:has-text("${otherTeamName}")`).click();
-    await this.page.locator(`li[role="menuitem"] a:has-text("Drafts")`).click();
+    await this.page.locator(`//li[@role="menuitem"]/a[text()="${otherTeamName}"]`).click();
+    await this.page.locator(`//li[@role="menuitem"]/a[text()="Drafts"]`).click();
     await this.page.locator(`input[value="Move"]`).click();
   }
 

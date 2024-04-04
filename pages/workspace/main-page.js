@@ -62,7 +62,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.nodePanelToCurveButton = page.locator('button[title^="To curve"]');
 
     // Main menu - first level
-    this.mainMenuButton = page.locator('#left-sidebar-aside svg.icon-menu-refactor');
+    this.mainMenuButton = page.locator('#left-sidebar-aside svg.icon-menu');
     this.mainMenuList = page.locator('ul[class*="main_ui_workspace_main_menu__menu"]');
     this.viewMainMenuItem = page.locator('#file-menu-view');
     this.fileMainMenuItem = page.locator('#file-menu-file');
@@ -77,10 +77,10 @@ exports.MainPage = class MainPage extends BasePage {
       '#file-menu-rulers span:text-is("Hide rulers")',
     );
     this.hideGridsMainMenuSubItem = page.locator(
-      '#file-menu-grid span:text-is("Hide grids")',
+      '#file-menu-pixel-grid span:text-is("Hide pixel grid")',
     );
     this.showGridsMainMenuSubItem = page.locator(
-      '#file-menu-grid span:text-is("Show grid")',
+      '#file-menu-pixel-grid span:text-is("Show pixel grid")',
     );
     this.selectAllMainMenuSubItem = page.locator('#file-menu-select-all');
     this.showColorPaletteMainMenuSubItem = page.locator(
@@ -111,16 +111,16 @@ exports.MainPage = class MainPage extends BasePage {
       '#file-menu-remove-shared',
     );
     this.shortcutsMenuSubItem = page.locator('#file-menu-shortcuts');
-    this.downloadFileTickIcon = page.locator('svg[class="icon-tick-refactor"]');
+    this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
     //Zoom
     this.zoomButton = page.locator('div[title="Zoom"]');
     this.zoomPlusButton = page.locator(
-      'button[class*="header__zoom-btn"] svg[class="icon-add-refactor"]',
+      'button[class*="header__zoom-btn"] svg[class="icon-add"]',
     );
     this.zoomMinusButton = page.locator(
-      'button[class*="header__zoom-btn"] svg[class="icon-remove-refactor"]',
+      'button[class*="header__zoom-btn"] svg[class="icon-remove"]',
     );
     this.zoomResetButton = page.locator('button:has-text("Reset")');
     this.zoomToFitAllMenuItem = page.locator('li:has-text("Zoom to fit all")');
@@ -139,19 +139,19 @@ exports.MainPage = class MainPage extends BasePage {
       'ul[class*="page-list"] div[class*="element-list-body"] input',
     );
     this.renamePageMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li span:has-text("Rename")',
+      'ul[class*="workspace_context_menu"] li span:has-text("Rename")',
     );
     this.duplicatePageMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li span:has-text("Duplicate")',
+      'ul[class*="workspace_context_menu"] li span:has-text("Duplicate")',
     );
     this.deletePageMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li span:has-text("Delete")',
+      'ul[class*="workspace_context_menu"] li span:has-text("Delete")',
     );
     this.collapseExpandPagesButton = page.locator(
       'span[class*="collapsabled-icon"]',
     );
     this.pageTrashIcon = page.locator(
-      'div[class*="selected"] svg[class="icon-delete-refactor"]',
+      'div[class*="selected"] svg[class="icon-delete"]',
     );
     this.deletePageOkButton = page.locator('input[value="Ok"]');
 
@@ -276,6 +276,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickCreatedBoardTitleOnCanvas() {
+    await this.createdBoardTitle.click({ force: true });
     await this.createdBoardTitle.click({ force: true });
   }
 
@@ -841,6 +842,7 @@ exports.MainPage = class MainPage extends BasePage {
     if (singleComponent) {
       await this.createComponentMenuItem.click();
     } else {
+      await this.page.waitForTimeout(200);
       await this.createMultipleComponentsMenuItem.click();
     }
   }

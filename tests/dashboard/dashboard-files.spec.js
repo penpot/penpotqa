@@ -4,6 +4,7 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { random } = require('../../helpers/string-generator');
 const { test } = require('@playwright/test');
 const { TeamPage } = require('../../pages/dashboard/team-page');
+const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 
@@ -13,9 +14,10 @@ test.beforeEach(async ({ page }) => {
   await teamPage.isTeamSelected(teamName);
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
   const teamPage = new TeamPage(page);
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
 mainTest('DA-1 Create new file in Drafts on title panel', async ({ page }) => {
@@ -439,6 +441,7 @@ mainTest('DA-54 Unpin project', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName('Test Project');
+  await dashboardPage.clickPinProjectButton();
   await dashboardPage.isProjectTitleDisplayed('Test Project');
   await dashboardPage.checkPinnedProjectsSidebarItem('Test Project');
   await dashboardPage.clickUnpinProjectButton();
@@ -451,6 +454,7 @@ mainTest('DA-55 Pin project', async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName('Test Project');
+  await dashboardPage.clickPinProjectButton();
   await dashboardPage.isProjectTitleDisplayed('Test Project');
   await dashboardPage.clickUnpinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem(

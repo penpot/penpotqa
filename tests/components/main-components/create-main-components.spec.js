@@ -7,6 +7,7 @@ const { random } = require('../../../helpers/string-generator');
 const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
+const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 
@@ -19,11 +20,12 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
   const teamPage = new TeamPage(page);
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
 mainTest('Create component shape', async ({ page }) => {

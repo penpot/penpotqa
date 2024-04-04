@@ -10,6 +10,7 @@ const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page'
 const { InspectPanelPage } = require('../../../pages/workspace/inspect-panel-page');
 const { BasePage } = require('../../../pages/base-page');
 const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
+const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 const annotation = 'Test annotation for automation';
@@ -29,11 +30,12 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
   const teamPage = new TeamPage(page);
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
 test.describe(() => {
@@ -313,7 +315,7 @@ mainTest(
   },
 );
 
-mainTest('Create a group with component and check its name', async ({ page }) => {
+mainTest('Create a group with component and check its name', async () => {
   const groupName = 'Test Group';
   await mainPage.createDefaultBoardByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
@@ -329,7 +331,7 @@ mainTest('Create a group with component and check its name', async ({ page }) =>
   await expect(mainPage.viewport).toHaveScreenshot('component-group-canvas.png');
 });
 
-mainTest('Rename component with valid name', async ({ page }) => {
+mainTest('Rename component with valid name', async () => {
   const newName = 'Renamed ellipse name';
   await mainPage.createDefaultEllipseByCoordinates(400, 600);
   await mainPage.createComponentViaRightClick();
@@ -345,7 +347,7 @@ mainTest('Rename component with valid name', async ({ page }) => {
   );
 });
 
-mainTest('Filter Components from All Assets drop-down', async ({ page }) => {
+mainTest('Filter Components from All Assets drop-down', async () => {
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.selectTypeFromAllAssetsDropdown('Components');
   await assetsPanelPage.isAssetsSectionNameDisplayed('Components', '0');
@@ -365,7 +367,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1411 Click Show main component on copy',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await basePage.showMainComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -377,7 +379,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1412 Change copy and click Reset overrides',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.changeHeightAndWidthForLayer('100', '150');
       await basePage.resetOverridesViaRightClick();
@@ -390,7 +392,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1413 Change copy color, change main color, right-click copy and click Reset overrides',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
@@ -426,7 +428,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1300 Restore main component via context menu',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.deleteMainComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -441,7 +443,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1296 Detach instance from context menu',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await layersPanelPage.detachInstanceCopyComponentViaRightClick();
       await designPanelPage.changeHeightAndWidthForLayer('300', '300');
@@ -455,7 +457,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1297 Detach instance from "Design" tab',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.clickOnDetachInstanceOption();
@@ -471,7 +473,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1298 Reset overrides via context menu',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.changeHeightAndWidthForLayer('100', '150');
       await designPanelPage.clickAddFillButton();
@@ -524,7 +526,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1416 Create 2 copies of main component. Change color of copy 1, change color of copy 2, right-click copy 2 and click "Update main component"',
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
@@ -554,7 +556,7 @@ test.describe(() => {
 
   mainTest(
     'PENPOT-1417 Create a copy from main, change color of copy, create a copy from copy, change color of main',
-    async ({ page }) => {
+    async () => {
       await mainPage.duplicateLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickNCopyComponentOnLayersTab(-2);

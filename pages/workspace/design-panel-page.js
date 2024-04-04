@@ -19,12 +19,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
     this.topLeftCornerRadiusInput = page.locator('div[title="Top left"] input');
     this.topRightCornerRadiusInput = page.locator('div[title="Top right"] input');
-    this.bottomLeftCornerRadiusInput = page.locator(
-      'div[title="Bottom left"] input',
-    );
-    this.bottomRightCornerRadiusInput = page.locator(
-      'div[title="Bottom right"] input',
-    );
+    this.bottomLeftCornerRadiusInput = page.locator('div[title="Bottom left"] input');
+    this.bottomRightCornerRadiusInput = page.locator('div[title="Bottom right"] input');
     this.sizeWidthInput = page.locator('div[title="Width"] input');
     this.sizeHeightInput = page.locator('div[title="Height"] input');
     this.xAxisInput = page.locator('div[title="X axis"] input');
@@ -32,7 +28,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel - Fill section
     this.fillColorIcon = page.locator(
-      'div[class*="fill__element-set"] div[class*="color_bullet_new__color-bullet-wrapper"]',
+      'div[class*="fill__element-set"] div[class*="color_bullet__color-bullet-wrapper"]',
     );
     this.fillColorComponentIcon = page.locator(
       'div[class*="selected-color-group"] span[class*="color-input-wrapper"]',
@@ -45,7 +41,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.addFillButton = page.locator('button[class*="fill__add-fill"]');
     this.removeFillButton = page.locator(
-      'div[class*="fill__element-content"] svg[class="icon-remove-refactor"]',
+      'div[class*="fill__element-content"] svg[class="icon-remove"]',
     );
     this.componentColorInput = page.locator(`input[class*='rows_color_row__color-input']`)
 
@@ -64,19 +60,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowBlurInput = page.locator('div[title="Blur"] input');
     this.shadowSpreadInput = page.locator('div[title="Spread"] input');
     this.shadowColorIcon = page.locator(
-      'div[class*="shadow-advanced-options"] div[class*="color_bullet_new__color-bullet-wrapper"]',
+      'div[class*="shadow-advanced-options"] div[class*="color_bullet__color-bullet-wrapper"]',
     );
     this.shadowOpacityInput = page.locator(
       'div[class*="shadow-advanced-options"] div[class*="color_row__opacity"] input',
     );
     this.shadowShowIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-shown-refactor"]',
+      'div[class*="shadow__actions"] svg[class="icon-shown"]',
     );
     this.shadowUnhideIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-hide-refactor"]',
+      'div[class*="shadow__actions"] svg[class="icon-hide"]',
     );
     this.shadowRemoveIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-remove-refactor"]',
+      'div[class*="shadow__actions"] svg[class="icon-remove"]',
     );
     this.shadowTypeField = page.locator('div[class*="shadow-type-select"]');
 
@@ -102,6 +98,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
+    this.gridEditButton = page.locator(
+      'button[alt="Grid edit mode"]',
+    );
+    this.gridDoneButton = page.locator(
+      'button[class*="done-btn"]',
+    );
+    this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]');
     this.layoutRemoveButton = page.locator(
       'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
     );
@@ -149,6 +152,24 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[title="Bottom padding"] input',
     );
     this.layoutPaddingLeftInput = page.locator('div[title="Left padding"] input');
+    this.layoutGridJustifyStartBtn = page.locator(
+      'label[title="Justify items start"] span',
+    );
+    this.layoutGridJustifyCenterBtn = page.locator(
+      'label[title="Justify items center"] span',
+    );
+    this.layoutGridJustifyEndBtn = page.locator(
+      'label[title="Justify items end"] span',
+    );
+    this.layoutGridJustifySpaceBetweenBtn = page.locator(
+      'label[title="Justify items space-between"] span',
+    );
+    this.layoutGridJustifySpaceAroundBtn = page.locator(
+      'label[title="Justify items space-around"] span',
+    );
+    this.layoutGridJustifySpaceEvenlyBtn = page.locator(
+      'label[title="Justify items space-evenly"] span',
+    );
 
     //Design panel - Blur section
     this.blurSection = page.locator(
@@ -158,13 +179,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.blurMoreOptions = page.locator('button[class*="blur__show-more"]');
     this.blurValueInput = page.locator('#blur-input-sidebar');
     this.blurHideIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-shown-refactor"]',
+      'div[class*="blur__actions"] svg[class="icon-shown"]',
     );
     this.blurUnhideIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-hide-refactor"]',
+      'div[class*="blur__actions"] svg[class="icon-hide"]',
     );
     this.blurRemoveIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-remove-refactor"]',
+      'div[class*="blur__actions"] svg[class="icon-remove"]',
     );
 
     //Design panel - Stroke section
@@ -173,7 +194,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="stroke__element-title"]:has-text("Stroke")',
     );
     this.strokeColorBullet = page.locator(
-      'div[class*="stroke-data"] div[class*="color_bullet_new__is-not-library-color"]',
+      'div[class*="bullet-wrapper"] div[class*="color_bullet__is-not-library-color"]',
     );
     this.strokeRemoveIcon = page.locator(
       'div[class*="stroke-data"] button[class*="remove-btn"]',
@@ -191,18 +212,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeTypeField = page.locator('div[data-test="stroke.style"]');
 
     //Design panel - Text section
-    this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase-refactor');
-    this.textLowerCaseIcon = page.locator('svg.icon-text-lowercase-refactor');
-    this.textTitleCaseIcon = page.locator('svg.icon-text-mixed-refactor');
+    this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase');
+    this.textLowerCaseIcon = page.locator('svg.icon-text-lowercase');
+    this.textTitleCaseIcon = page.locator('svg.icon-text-mixed');
     this.textMoreOptionsIcon = page.locator('button[class*="text__more-options"]');
     this.textVerticalOptionsBlock = page.locator(
       'div[class*="vertical-align-options"]',
     );
-    this.textAlignTop = page.locator('svg.icon-text-top-refactor');
-    this.textAlignMiddle = page.locator('svg.icon-text-middle-refactor');
-    this.textAlignBottom = page.locator('svg.icon-text-bottom-refactor');
-    this.textIconLTR = page.locator('svg.icon-text-ltr-refactor');
-    this.textIconRTL = page.locator('svg.icon-text-rtl-refactor');
+    this.textAlignTop = page.locator('svg.icon-text-top');
+    this.textAlignMiddle = page.locator('svg.icon-text-middle');
+    this.textAlignBottom = page.locator('svg.icon-text-bottom');
+    this.textIconLTR = page.locator('svg.icon-text-ltr');
+    this.textIconRTL = page.locator('svg.icon-text-rtl');
     this.textFontSelector = page.locator('div[class*="typography__font-option"]');
     this.textFontSelectorSearchInput = page.locator('input[placeholder="Search font"]');
     this.textFontStyleSelector = page.locator('div[class*="typography__font-variant-options"]');
@@ -214,7 +235,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.addExportButton = page.locator('button[class*="exports__add-export"]');
     this.removeExportButton = page.locator(
-      'button[class*="exports__action-btn"] svg[class="icon-remove-refactor"]',
+      'button[class*="exports__action-btn"] svg[class="icon-remove"]',
     );
     this.exportElementButton = page.locator('button[class*="exports__export-btn"]');
 
@@ -222,13 +243,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridSection = page.locator('div[class*=element-set]:has-text("Guides")');
     this.addGridButton = page.locator('button[class*="grid__add-grid"]');
     this.removeGridButton = page.locator(
-      'div[class*="grid__actions"] svg[class="icon-remove-refactor"]',
+      'div[class*="grid__actions"] svg[class="icon-remove"]',
     );
     this.hideGridButton = page.locator(
-      'div[class*="grid__actions"] svg[class="icon-shown-refactor"]',
+      'div[class*="grid__actions"] svg[class="icon-shown"]',
     );
     this.unhideGridButton = page.locator(
-      'div[class*="grid__actions"] svg[class="icon-hide-refactor"]',
+      'div[class*="grid__actions"] svg[class="icon-hide"]',
     );
     this.gridTypeField = page.locator(
       'div[class*="grid__option-row"] div[class*="type-select-wrapper"]',
@@ -276,16 +297,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[title*="Create"] svg[class*="icon-tick"]',
     );
     this.saveAnnotationTick = page.locator(
-      'div[title="Save"] svg[class="icon-tick-refactor"]',
+      'div[title="Save"] svg[class="icon-tick"]',
     );
     this.discardAnnotationTick = page.locator(
-      'div[title="Discard"] svg[class="icon-close-refactor"]',
+      'div[title="Discard"] svg[class="icon-close"]',
     );
     this.editAnnotationTick = page.locator(
-      'div[title="Edit"] svg[class="icon-curve-refactor"]',
+      'div[title="Edit"] svg[class="icon-curve"]',
     );
     this.deleteAnnotationTick = page.locator(
-      'div[title="Delete"] svg[class="icon-delete-refactor"]',
+      'div[title="Delete"] svg[class="icon-delete"]',
     );
     this.deleteAnnotationPopup = page.locator(
       'div[class*="modal-container"] h2:text-is("Delete annotation")',
@@ -298,6 +319,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.detachInstanceOptionDesign = page.locator(
       'ul[class*="component__custom-select-dropdown"] span:text-is("Detach instance")',
+    );
+    this.clipContentButton = page.locator(
+      '//input[@id="clip-content"]/..',
     );
   }
 
@@ -452,31 +476,31 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeGeneralCornerRadiusForLayer(value) {
     await this.generalCornerRadiusInput.clear();
     await this.generalCornerRadiusInput.pressSequentially(value);
-    await this.clickMoveButton();
+    await this.clickOnEnter();
   }
 
   async changeTopLeftCornerRadiusForLayer(value) {
     await this.topLeftCornerRadiusInput.clear();
     await this.topLeftCornerRadiusInput.pressSequentially(value);
-    await this.clickMoveButton();
+    await this.clickOnEnter();
   }
 
   async changeTopRightCornerRadiusForLayer(value) {
     await this.topRightCornerRadiusInput.clear();
     await this.topRightCornerRadiusInput.pressSequentially(value);
-    await this.clickMoveButton();
+    await this.clickOnEnter();
   }
 
   async changeBottomLeftCornerRadiusForLayer(value) {
     await this.bottomLeftCornerRadiusInput.clear();
     await this.bottomLeftCornerRadiusInput.pressSequentially(value);
-    await this.clickMoveButton();
+    await this.clickOnEnter();
   }
 
   async changeBottomRightCornerRadiusForLayer(value) {
     await this.bottomRightCornerRadiusInput.clear();
     await this.bottomRightCornerRadiusInput.pressSequentially(value);
-    await this.clickMoveButton();
+    await this.clickOnEnter();
   }
 
   async changeWidthForLayer(width) {
@@ -664,6 +688,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.layoutRemoveButton.click();
   }
 
+  async openGridEditModeFromDesignPanel() {
+    await this.gridEditButton.click();
+  }
+  async clickGridDoneButton() {
+    await this.gridDoneButton.click();
+  }
+
   async expandFlexLayoutMenu() {
     if (!(await this.flexLayoutMenu.isVisible())) {
       await this.flexLayoutCollapsedIcon.click();
@@ -671,8 +702,17 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.flexLayoutMenu).toBeVisible();
   }
 
-  async changeLayoutDirection(direction) {
-    await this.expandFlexLayoutMenu();
+  async expandGridLayoutMenu() {
+    if (!(await this.gridLayoutMenu.isVisible())) {
+      await this.flexLayoutCollapsedIcon.click();
+    }
+    await expect(this.gridLayoutMenu).toBeVisible();
+  }
+
+  async changeLayoutDirection(direction, flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
     switch (direction) {
       case 'Row':
         await this.layoutDirectRowBtn.click();
@@ -689,47 +729,97 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
-  async changeLayoutAlignment(alignment) {
-    await this.expandFlexLayoutMenu();
-    switch (alignment) {
-      case 'Start':
-        await this.layoutAlignStartBtn.click();
-        break;
-      case 'Center':
-        await this.layoutAlignCenterBtn.click();
-        break;
-      case 'End':
-        await this.layoutAlignEndBtn.click();
-        break;
+  async changeLayoutAlignment(alignment, flex = true) {
+    if(flex) {
+      await this.expandFlexLayoutMenu();
+      switch (alignment) {
+        case 'Start':
+          await this.layoutAlignStartBtn.click();
+          break;
+        case 'Center':
+          await this.layoutAlignCenterBtn.click();
+          break;
+        case 'End':
+          await this.layoutAlignEndBtn.click();
+          break;
+      }
+    } else {
+      await this.expandGridLayoutMenu();
+      switch (alignment) {
+        case 'Start':
+          await this.layoutAlignStartBtn.first().click();
+          await this.layoutAlignStartBtn.last().click();
+          break;
+        case 'Center':
+          await this.layoutAlignCenterBtn.first().click();
+          await this.layoutAlignCenterBtn.last().click();
+          break;
+        case 'End':
+          await this.layoutAlignEndBtn.first().click();
+          await this.layoutAlignEndBtn.last().click();
+          break;
+      }
     }
   }
 
-  async changeLayoutJustification(justify) {
-    await this.expandFlexLayoutMenu();
-    switch (justify) {
-      case 'Start':
-        await this.layoutJustifyStartBtn.click();
-        break;
-      case 'Center':
-        await this.layoutJustifyCenterBtn.click();
-        break;
-      case 'End':
-        await this.layoutJustifyEndBtn.click();
-        break;
-      case 'Space between':
-        await this.layoutJustifySpaceBetweenBtn.click();
-        break;
-      case 'Space around':
-        await this.layoutJustifySpaceAroundBtn.click();
-        break;
-      case 'Space evenly':
-        await this.layoutJustifySpaceEvenlyBtn.click();
-        break;
+  async changeLayoutJustification(justify, flex = true) {
+    if(flex) {
+      await this.expandFlexLayoutMenu();
+      switch (justify) {
+        case 'Start':
+          await this.layoutJustifyStartBtn.click();
+          break;
+        case 'Center':
+          await this.layoutJustifyCenterBtn.click();
+          break;
+        case 'End':
+          await this.layoutJustifyEndBtn.click();
+          break;
+        case 'Space between':
+          await this.layoutJustifySpaceBetweenBtn.click();
+          break;
+        case 'Space around':
+          await this.layoutJustifySpaceAroundBtn.click();
+          break;
+        case 'Space evenly':
+          await this.layoutJustifySpaceEvenlyBtn.click();
+          break;
+      }
+    } else {
+      await this.expandGridLayoutMenu();
+      switch (justify) {
+        case 'Start':
+          await this.layoutGridJustifyStartBtn.first().click();
+          await this.layoutGridJustifyStartBtn.last().click();
+          break;
+        case 'Center':
+          await this.layoutGridJustifyCenterBtn.first().click();
+          await this.layoutGridJustifyCenterBtn.last().click();
+          break;
+        case 'End':
+          await this.layoutGridJustifyEndBtn.first().click();
+          await this.layoutGridJustifyEndBtn.last().click();
+          break;
+        case 'Space between':
+          await this.layoutGridJustifySpaceBetweenBtn.first().click();
+          await this.layoutGridJustifySpaceBetweenBtn.last().click();
+          break;
+        case 'Space around':
+          await this.layoutGridJustifySpaceAroundBtn.first().click();
+          await this.layoutGridJustifySpaceAroundBtn.last().click();
+          break;
+        case 'Space evenly':
+          await this.layoutGridJustifySpaceEvenlyBtn.first().click();
+          await this.layoutGridJustifySpaceEvenlyBtn.last().click();
+          break;
+      }
     }
   }
 
-  async changeLayoutColumnGap(value) {
-    await this.expandFlexLayoutMenu();
+  async changeLayoutColumnGap(value, flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
     await this.layoutColumnGapInput.clear();
     await this.layoutColumnGapInput.pressSequentially(value);
     await this.clickOnEnter();
@@ -739,15 +829,31 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.layoutColumnGapInput.click();
   }
 
-  async changeLayoutRowGap(value) {
-    await this.expandFlexLayoutMenu();
+  async changeLayoutColumnGapOnGridEdit(value) {
+    await this.layoutColumnGapInput.clear();
+    await this.layoutColumnGapInput.pressSequentially(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutRowGap(value, flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
     await this.layoutRowGapInput.clear();
     await this.layoutRowGapInput.pressSequentially(value);
     await this.clickOnEnter();
   }
 
-  async changeLayoutPadding(type, value) {
-    await this.expandFlexLayoutMenu();
+  async changeLayoutRowGapOnGridEdit(value) {
+    await this.layoutRowGapInput.clear();
+    await this.layoutRowGapInput.pressSequentially(value);
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutPadding(type, value, flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
     switch (type) {
       case 'Vertical':
         await this.layoutVerticalPaddingInput.clear();
@@ -769,13 +875,43 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.layoutHorizontPaddingInput.click();
   }
 
-  async switchToIndependentPadding() {
-    await this.expandFlexLayoutMenu();
+  async switchToIndependentPadding(flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
     await this.layoutIndepPaddingsIcon.click();
   }
 
-  async changeLayoutIndependentPadding(type, value) {
-    await this.expandFlexLayoutMenu();
+  async switchToIndependentPaddingOnGridEdit() {
+    await this.layoutIndepPaddingsIcon.click();
+  }
+
+  async changeLayoutIndependentPadding(type, value, flex = true) {
+    flex
+      ? await this.expandFlexLayoutMenu()
+      : await this.expandGridLayoutMenu();
+    switch (type) {
+      case 'Bottom':
+        await this.layoutPaddingBottomInput.clear();
+        await this.layoutPaddingBottomInput.pressSequentially(value);
+        break;
+      case 'Right':
+        await this.layoutPaddingRightInput.clear();
+        await this.layoutPaddingRightInput.pressSequentially(value);
+        break;
+      case 'Left':
+        await this.layoutPaddingLeftInput.clear();
+        await this.layoutPaddingLeftInput.pressSequentially(value);
+        break;
+      case 'Top':
+        await this.layoutPaddingTopInput.clear();
+        await this.layoutPaddingTopInput.pressSequentially(value);
+        break;
+    }
+    await this.clickOnEnter();
+  }
+
+  async changeLayoutIndependentPaddingOnGridEdit(type, value) {
     switch (type) {
       case 'Bottom':
         await this.layoutPaddingBottomInput.clear();
@@ -988,5 +1124,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickOnDetachInstanceOption() {
     await this.detachInstanceOptionDesign.click();
+  }
+
+  async clickOnClipContentButton() {
+    await this.clipContentButton.click();
   }
 };

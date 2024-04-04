@@ -21,20 +21,20 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     this.layoutIcon = page.locator('svg[class="icon-layout-rows"]');
     this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
     this.mainComponentLayer = page.locator(
-      '//*[@class="icon-component-refactor"]//parent::div',
+      '//*[@class="icon-component"]//parent::div',
     );
     this.copyComponentLayer = page.locator(
-      '//*[@class="icon-copy-refactor"]//parent::div',
+      '//*[@class="icon-component-copy"]//parent::div',
     );
     this.createdLayerOnLayersPanelSpan = page.locator(
       'div[class*="element-list-body"] span[class*="element-name"]',
     );
-    this.searchLayersIcon = page.locator('svg[class="icon-search-refactor"]');
+    this.searchLayersIcon = page.locator('svg[class="icon-search"]');
     this.searchLayersInput = page.locator('input[placeholder="Search layers"]');
     this.searchedLayerOnLayersPanelNameText = page.locator(
       'span[class*="element-name"] >> nth=1',
     );
-    this.layoutIcon = page.locator('svg.icon-flex-vertical-refactor');
+    this.layoutIcon = page.locator('svg.icon-flex-vertical');
     this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
     this.layerItemToggleExpand = page.locator(
       'div[class*="layers__element-list"] button[class*="sidebar_layer_item__inverse"]',
@@ -212,7 +212,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
 
   async clickMainComponentChildLayerOnLayersTab() {
     const layer = this.page.locator(
-      '//*[@class="icon-component-refactor"]/../../../../following-sibling::div//span[text()]',
+      '//*[@class="icon-component"]/../../../../following-sibling::div//span[text()]',
     );
     await layer.click();
   }

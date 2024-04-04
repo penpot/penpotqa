@@ -34,7 +34,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     );
     this.commentReplyInput = page.locator('textarea[placeholder="Reply"]');
     this.commentOptionsButton = page.locator(
-      'div[class*="comments__options"] svg[class="icon-menu-refactor"]',
+      'div[class*="comments__options"] svg[class="icon-menu"]',
     );
     this.commentEditOptionMenuItem = page.locator(
       'ul[class*="comment-options-dropdown"] li:has-text("Edit")',

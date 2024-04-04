@@ -5,6 +5,8 @@ const { ProfilePage } = require('../../pages/profile-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
+const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+
 
 test.describe(() => {
   const team = random().concat('autotest');
@@ -351,7 +353,9 @@ test.describe(() => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await dashboardPage.createProject(projectFirst);
+      await dashboardPage.pinProjectByName(projectFirst)
       await dashboardPage.createProject(projectSecond);
+      await dashboardPage.pinProjectByName(projectSecond)
       await dashboardPage.openSidebarItem('Drafts');
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.backToDashboardFromFileEditor();
@@ -410,4 +414,8 @@ test.describe(() => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
+});
+
+test.afterEach(async ({ page }, testInfo) => {
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
