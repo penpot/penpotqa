@@ -160,3 +160,138 @@ test.describe(() => {
     });
   });
 });
+
+mainTest('PENPOT-1697,1735 Check if the grid layout is resized automatically', async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(200, 300);
+  await designPanelPage.changeHeightAndWidthForLayer('300', '400');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.addGridLayoutViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await designPanelPage.isLayoutRemoveButtonExists();
+  await mainPage.clickViewportOnce();
+  await mainPage.clickCreatedBoardTitleOnCanvas();
+  await designPanelPage.changeHeightAndWidthForLayer('400', '600');
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot('resized-board-with-grid-layout.png', {
+    mask: [mainPage.guides],
+  });
+  await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+  await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+  await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+  await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickViewportOnce();
+  await mainPage.clickCreatedBoardTitleOnCanvas();
+  await designPanelPage.changeHeightAndWidthForLayer('200', '300');
+  await expect(mainPage.viewport).toHaveScreenshot('resized-board-with-rectangle.png', {
+    mask: [mainPage.guides],
+  });
+});
+
+mainTest('PENPOT-1698 Upload an image and add it to the table - check the resizing of the image inside the table', async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(200, 300);
+  await designPanelPage.changeHeightAndWidthForLayer('600', '600');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.addGridLayoutViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await designPanelPage.isLayoutRemoveButtonExists();
+  await mainPage.uploadImage('images/sample.jpeg');
+  await layersPanelPage.dragAndDropComponentToBoard('sample');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickViewportOnce();
+  await mainPage.clickCreatedBoardTitleOnCanvas();
+  await designPanelPage.changeHeightAndWidthForLayer('700', '800');
+  await designPanelPage.openGridEditModeFromDesignPanel();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot('resized-board-with-image.png', {
+    mask: [mainPage.guides],
+  });
+});
+
+test.describe(() => {
+  test.beforeEach(async ({ page, browserName }, testInfo) => {
+    if (browserName === 'webkit') {
+      await testInfo.setTimeout(testInfo.timeout + 20000);
+    } else {
+      await testInfo.setTimeout(testInfo.timeout + 15000);
+    }
+    await mainPage.createDefaultBoardByCoordinates(400, 300);
+    await designPanelPage.changeHeightAndWidthForLayer('500', '600');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.addGridLayoutViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.isLayoutRemoveButtonExists();
+
+    await mainPage.uploadImage('images/mini_sample.jpg');
+    await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+    await mainPage.waitForChangeIsSaved();
+
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+  });
+
+  mainTest('PENPOT-1699 Image and change -  alignment and change vertical, horizontal margin', async ({ page }) => {
+    await mainPage.uploadImage('images/mini_sample.jpg');
+    await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.uploadImage('images/mini_sample.jpg');
+    await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.uploadImage('images/mini_sample.jpg');
+    await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+    await mainPage.waitForChangeIsSaved();
+
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+
+    await designPanelPage.changeLayoutAlignment('Center', false);
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-image-alignment-center.png', {
+      mask: [mainPage.guides],
+    });
+
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+
+    await designPanelPage.openGridEditModeFromDesignPanel();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.switchToIndependentPaddingOnGridEdit();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Top', '50');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Left', '50');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Bottom', '50');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Right', '50');
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-image-paddings.png', {
+      mask: [mainPage.guides],
+    });
+  });
+
+  mainTest('PENPOT-1700 Create a board with Grid Layout with a image and create duplicate this image in next column (change vertical direction)', async ({ page }) => {
+    await designPanelPage.changeLayoutDirection('Column', false);
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickLayerOnLayersTab('mini_sample');
+    await mainPage.duplicateLayerViaLayersTab('mini_sample');
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'column-direction-image.png', {
+        mask: [mainPage.guides],
+      });
+  });
+
+  mainTest('PENPOT-1701 Create a board with Grid Layout with a image and create duplicate this image in next column (change horizontal direction)', async ({ page }) => {
+    await designPanelPage.changeLayoutDirection('Row', false);
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickLayerOnLayersTab('mini_sample');
+    await mainPage.duplicateLayerViaLayersTab('mini_sample');
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'row-direction-image.png', {
+        mask: [mainPage.guides],
+      });
+  });
+
+});
