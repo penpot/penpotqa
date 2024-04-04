@@ -8,6 +8,7 @@ const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page'
 const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
+const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 
@@ -25,9 +26,10 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async () => {
+test.afterEach(async ({}, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
 test.describe(() => {
@@ -99,15 +101,15 @@ test.describe(() => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
 
-    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
   });
 
   mainTest(
     'PENPOT-1511 Create component with 2 boards with components inside it. change paddings',
     async ( {page}, testInfo) => {
       await testInfo.setTimeout(testInfo.timeout + 20000);
+
+      await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+      await mainPage.waitForChangeIsSaved();
 
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeAxisXandYForLayer('600', '200');
@@ -119,7 +121,6 @@ test.describe(() => {
       await mainPage.waitForChangeIsSaved();
 
       await mainPage.createDefaultEllipseByCoordinates(200, 200, true);
-      await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
 
       await mainPage.clickViewportTwice();
@@ -147,6 +148,9 @@ test.describe(() => {
   mainTest(
     'PENPOT-1514 Create component inside flex board, change alignment for element',
     async () => {
+      await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeLayoutAlignment('Center');
       await mainPage.waitForChangeIsSaved();

@@ -2,7 +2,8 @@ const { mainTest } = require('../fixtures');
 const { ProfilePage } = require('../pages/profile-page');
 const { random } = require('../helpers/string-generator');
 const { LoginPage } = require('../pages/login-page');
-const { expect } = require('@playwright/test');
+const { expect, test } = require('@playwright/test');
+const { updateTestResults } = require('./../helpers/saveTestResults.js');
 
 mainTest('PR-1 Edit profile name', async ({ page }) => {
   const newName = random();
@@ -99,4 +100,8 @@ mainTest('PR-22 Send feedback email with valid data', async ({ page }) => {
   );
   await profilePage.clickSendFeedbackButton();
   await profilePage.isSuccessMessageDisplayed('Feedback sent');
+});
+
+test.afterEach(async ({ page }, testInfo) => {
+  await updateTestResults(testInfo.status, testInfo.retry)
 });

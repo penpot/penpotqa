@@ -14,8 +14,12 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.loginButton = page.locator('button[data-test="login-submit"]');
     this.emailInputError = page.locator('div[data-test="-error"]');
     this.section = page.locator('section[class="auth-content"]');
-    this.loginErrorBanner = page.locator('div[class="main_ui_auth_login__error-wrapper"] div');
+    this.loginErrorBanner = page.locator('aside[class*="context_notification__warning"] div:nth-of-type(2)');
     this.createAccountLink = page.locator('a:has-text("Create an account")');
+  }
+
+  async checkLoginError(text) {
+    return this.page.locator(`//aside[contains(@class,"context_notification__warning")]/div[text()='${text}']`).isVisible()
   }
 
   async goto() {
@@ -55,7 +59,7 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async isLoginErrorMessageDisplayed(message) {
-    await expect(this.loginErrorBanner).toHaveText(message);
+    await expect(await this.checkLoginError(message)).toBeTruthy;
   }
 
   async clickOnCreateAccount() {
@@ -63,6 +67,6 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async isLoginPageOpened() {
-    await expect(this.pageTitle).toHaveText('Great to see you again!');
+    await expect(this.pageTitle).toHaveText('Log into my account');
   }
 };

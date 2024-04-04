@@ -1,6 +1,7 @@
 const { test } = require('@playwright/test');
 const { LoginPage } = require('../pages/login-page');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
+const { updateTestResults } = require('./../helpers/saveTestResults.js');
 
 test('ON-8 Login with an email address', async ({ page }) => {
   const loginPage = new LoginPage(page);
@@ -32,11 +33,15 @@ test('ON-14 Login with no password', async ({ page }) => {
   await loginPage.isLoginButtonDisabled();
 });
 
-test('ON-15 Login with incorrect password (BUG)', async ({ page }) => {
+test('ON-15 Login with incorrect password', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);
   await loginPage.enterPwd('11223344');
   await loginPage.clickLoginButton();
   await loginPage.isLoginErrorMessageDisplayed('Email or password is incorrect.');
+});
+
+test.afterEach(async ({ page }, testInfo) => {
+  await updateTestResults(testInfo.status, testInfo.retry)
 });

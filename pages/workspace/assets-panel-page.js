@@ -103,13 +103,13 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.searchSharedLibrariesClearButton = page.locator('button[class*="search_bar__clear"]');
     this.libraryTitle = page.locator('div[class*="special-title"]');
     this.libraryComponentsTitle = page.locator(
-      '//*[@class="icon-component-refactor"]/../../../../../button/div/span'
+      '//*[@class="icon-component"]/../../../../../button/div/span'
     );
     this.dismissButton = page.locator('button:text-is("Dismiss")');
     this.librariesUpdatesTab = page.locator('div[data-id="updates"]');
     this.librariesUpdateButton = page.locator('input[value="Update"]');
     this.librariesMoreInfoButton = page.locator('input[value="More info"]');
-    this.closeModalButton = page.locator('svg[class="icon-close-refactor"]');
+    this.closeModalButton = page.locator('svg[class*="close-icon"]');
     this.librariesModal = page.locator('div[class*="libraries__modal-dialog"]');
   }
 

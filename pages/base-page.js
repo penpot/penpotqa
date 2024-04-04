@@ -20,43 +20,56 @@ exports.BasePage = class BasePage {
     this.copyLayer = page.locator('div[class="viewport"] [id^="shape"]').last();
     this.createdBoardTitle = page.locator('g[class="frame-title"] div >> nth=0');
     this.deleteLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Delete")',
+      'ul[class*="workspace_context_menu"] li:has-text("Delete")',
     );
     this.hideLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Hide")',
+      'ul[class*="workspace_context_menu"] li:has-text("Hide")',
     );
     this.showLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Show")',
+      'ul[class*="workspace_context_menu"] li:has-text("Show")',
     );
     this.focusOnLayerMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Focus on")',
+      'ul[class*="workspace_context_menu"] li:has-text("Focus on")',
     );
     this.transformToPathMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Transform to path")',
+      'ul[class*="workspace_context_menu"] li:has-text("Transform to path")',
     );
     this.selectionToBoardMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Selection to board")',
+      'ul[class*="workspace_context_menu"] li:has-text("Selection to board")',
     );
-    this.createComponentMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Create component")',
-    );
-    this.createMultipleComponentsMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Create multiple components")',
-    );
+    // this.createComponentMenuItem = page.locator(
+    //   'ul[class*="workspace_context_menu"] li:has-text("Create component")',
+    // );
+    // this.createMultipleComponentsMenuItem = page.locator(
+    //   'ul[class*="workspace_context_menu"] li:has-text("Create multiple components")',
+    // );
     this.flipVerticalMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Flip vertical")',
+      'ul[class*="workspace_context_menu"] li:has-text("Flip vertical")',
     );
     this.flipHorizontalMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Flip horizontal")',
+      'ul[class*="workspace_context_menu"] li:has-text("Flip horizontal")',
     );
     this.editPathMenuItem = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Edit")',
+      'ul[class*="workspace_context_menu"] li:has-text("Edit")',
     );
     this.addFlexLayout = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Add flex layout")',
+      'ul[class*="workspace_context_menu"] li:has-text("Add flex layout")',
     );
     this.removeFlexLayout = page.locator(
-      'ul[class*="workspace-context-menu"] li:has-text("Remove flex layout")',
+      'ul[class*="workspace_context_menu"] li:has-text("Remove flex layout")',
+    );
+    this.addGridLayout = page.locator(
+      'ul[class*="workspace_context_menu"] li:has-text("Add grid layout")',
+    );
+    this.removeGridLayout = page.locator(
+      'ul[class*="workspace_context_menu"] li:has-text("Remove grid layout")',
+    );
+    this.addRowGridLayoutBtn = page.locator('g[class*="grid-plus-button"]',
+    ).first();
+    this.addColumnGridLayoutBtn = page.locator('g[class*="grid-plus-button"]',
+    ).last();
+    this.removeGridLayout = page.locator(
+      'ul[class*="workspace_context_menu"] li:has-text("Remove grid layout")',
     );
     this.deleteLayerMenuOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Delete")',
@@ -71,7 +84,7 @@ exports.BasePage = class BasePage {
       'ul[class*="workspace_context_menu"] span:has-text("Restore main component")',
     );
     this.createMultipleComponentsMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Create multiple components")',
+      'li[class*="context-menu-item"] span:has-text("Create multiple components")',
     );
     this.showInAssetsPanelOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Show in assets panel")',
@@ -154,7 +167,7 @@ exports.BasePage = class BasePage {
 
   async refreshPage() {
     await this.page.reload();
-    await this.page.waitForTimeout(2000)
+    await this.page.waitForTimeout(3000)
   }
 
   async deleteLayerViaRightClick() {
@@ -253,6 +266,24 @@ exports.BasePage = class BasePage {
     await this.createdBoardTitle.click({ button: 'right', force: true });
     await this.removeFlexLayout.click();
   }
+
+  async addGridLayoutViaRightClick() {
+    await this.createdBoardTitle.click({ button: 'right', force: true });
+    await this.addGridLayout.click();
+  }
+  async removeGridLayoutViaRightClick() {
+    await this.createdBoardTitle.click({ button: 'right', force: true });
+    await this.removeGridLayout.click();
+  }
+
+  async addRowGridLayoutBtnClick() {
+    await this.addRowGridLayoutBtn.click();
+  }
+
+  async addColumnGridLayoutBtnClick() {
+    await this.addColumnGridLayoutBtn.click();
+  }
+
   async showMainComponentViaRightClick() {
     await this.copyLayer.click({ button: 'right', force: true });
     await this.showMainComponentOption.click();

@@ -7,6 +7,7 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { random } = require('../../helpers/string-generator');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
+const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 
 const teamName = random().concat('autotest');
 
@@ -20,14 +21,15 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
   const teamPage = new TeamPage(page);
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
+  await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest('CP-1 Open color picker from Stroke menu BUG', async ({ page }) => {
+mainTest('CP-1 Open color picker from Stroke menu', async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
