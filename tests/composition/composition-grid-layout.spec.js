@@ -7,16 +7,20 @@ const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
+const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 
 const teamName = random().concat('autotest');
 
-let teamPage,dashboardPage,mainPage,designPanelPage,layersPanelPage;
+let teamPage,dashboardPage,mainPage,designPanelPage,layersPanelPage,inspectPanelPage,assetsPanelPage;
 test.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
+  inspectPanelPage = new InspectPanelPage(page);
+  assetsPanelPage = new AssetsPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -139,7 +143,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PENPOT-1693 Change row gap', async ({ page }) => {
+  mainTest('PENPOT-1693,1716 Change row gap, Check Gap info on inspect tab', async ({ page }) => {
     await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeLayoutRowGapOnGridEdit('50');
@@ -147,6 +151,14 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-row-gap.png', {
       mask: [mainPage.guides],
     });
+    await inspectPanelPage.openInspectTab();
+    await inspectPanelPage.isRowGapExistOnInspectTab();
+    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+      'right-sidebar-inspect-row-gap-image.png',
+      {
+        mask: [mainPage.usersSection],
+      },
+    );
   });
 
   mainTest('PENPOT-1695 Change columns and rows', async ({ page }) => {
@@ -294,4 +306,23 @@ test.describe(() => {
       });
   });
 
+});
+
+mainTest('PENPOT-1715 Add grid lines, check edit mode and add the text', async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(400, 400);
+  await designPanelPage.changeHeightAndWidthForLayer('300', '400');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.addGridLayoutViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await designPanelPage.isLayoutRemoveButtonExists();
+  await mainPage.clickViewportOnce();
+  await mainPage.clickCreatedBoardTitleOnCanvas();
+
+  await mainPage.createDefaultTextLayer();
+  await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
+  await mainPage.waitForChangeIsSaved();
+
+  await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-text.png', {
+    mask: [mainPage.guides],
+  });
 });
