@@ -291,6 +291,20 @@ exports.MainPage = class MainPage extends BasePage {
     await boardSel.dblclick();
   }
 
+  async clickBoardOnCanvas() {
+    const boardSel = this.page.locator(
+      `rect[class="main viewport-selrect"]`,
+    );
+    await boardSel.click();
+  }
+
+  async doubleClickBoardOnCanvas() {
+    const boardSel = this.page.locator(
+      `rect[class="main viewport-selrect"]`,
+    );
+    await boardSel.dblclick();
+  }
+
   async focusLayerViaShortcut() {
     await this.page.keyboard.press('F');
   }

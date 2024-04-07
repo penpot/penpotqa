@@ -306,6 +306,46 @@ test.describe(() => {
       });
   });
 
+  mainTest('PENPOT-1704 Change position and alignment within the Board', async ({ page }) => {
+    await mainPage.clickBoardOnCanvas();
+    await mainPage.doubleClickBoardOnCanvas();
+    await designPanelPage.changeLayoutAlignment('Center', false);
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'alignment-image.png', {
+        mask: [mainPage.guides],
+      });
+    await designPanelPage.changeLayoutJustification('Space between', false);
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'position-image.png', {
+        mask: [mainPage.guides],
+      });
+  });
+
+  mainTest('PENPOT-1705 Change margin and padding within the Board', async ({ page }) => {
+    await mainPage.clickBoardOnCanvas();
+    await mainPage.doubleClickBoardOnCanvas();
+    await designPanelPage.switchToIndependentPaddingOnGridEdit();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Top', '50');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Left', '50');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Bottom', '50');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Right', '50');
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-image-grid-paddings.png', {
+      mask: [mainPage.guides],
+    });
+    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+      'grid-edit-right-sidebar-paddings-image2.png',
+      {
+        mask: [mainPage.usersSection],
+      },
+    );
+  });
+
 });
 
 mainTest('PENPOT-1715 Add grid lines, check edit mode and add the text', async ({ page }) => {
