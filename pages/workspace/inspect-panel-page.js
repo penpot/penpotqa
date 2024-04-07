@@ -12,6 +12,9 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     this.annotationBlockOnInspect = page.locator(
       'div.main_ui_viewer_inspect_annotation__attributes-block',
     );
+    this.rowGapOnInspect = page.locator(
+      'div[class*="layout-row"] div[title="Row gap"]',
+    );
   }
 
   async openInspectTab() {
@@ -20,5 +23,9 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
 
   async isAnnotationExistOnInspectTab() {
     await expect(this.annotationBlockOnInspect).toBeVisible();
+  }
+
+  async isRowGapExistOnInspectTab() {
+    await expect(this.rowGapOnInspect).toBeVisible();
   }
 };
