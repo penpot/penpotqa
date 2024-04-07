@@ -104,7 +104,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridDoneButton = page.locator(
       'button[class*="done-btn"]',
     );
-    this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]');
+    this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]').first();
     this.layoutRemoveButton = page.locator(
       'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
     );
