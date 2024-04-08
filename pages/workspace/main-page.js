@@ -30,6 +30,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
     this.gridEditorButton = page.locator('button[class*="grid-editor-button"]');
+    this.gridEditorCell = page.locator('rect[class*="grid-cell-outline"]');
 
     //Node panel
     this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
@@ -918,5 +919,24 @@ exports.MainPage = class MainPage extends BasePage {
     await this.gridEditorLabel.last().hover();
     await this.gridEditorButton.click();
     await this.AddRowBelowMenuItem.click();
+  }
+
+  async addGridColumnRight() {
+    await this.gridEditorLabel.first().hover();
+    await this.gridEditorButton.click();
+    await this.AddColumnRightMenuItem.click();
+  }
+
+  async selectGridCellMultiple(startCell, endCell) {
+    const startCellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${startCell-1}`);
+    const endCellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${endCell-1}`);
+    await startCellLocator.click();
+    await endCellLocator.click({ modifiers: ['Shift'] });
+  }
+
+  async mergeGridCellViaRightClick(cell) {
+    const cellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${cell-1}`);
+    await cellLocator.click({ button: 'right', force: true });
+    await this.mergeGridCellMenuItem.click();
   }
 };

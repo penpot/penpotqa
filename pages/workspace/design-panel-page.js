@@ -1,5 +1,6 @@
 const { expect } = require('@playwright/test');
 const { BasePage } = require('../base-page');
+const { mainTest } = require('../../fixtures');
 
 exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   /**
@@ -107,6 +108,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'button[class*="done-btn"]',
     );
     this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]').first();
+    this.areaButton = page.locator('label[for=":area"]');
+    this.areaNameInput = page.locator('input[aria-label="grid-area-name"]');
+    this.gridExpandGridColumnLengthButton = page.locator('div[class*="grid-track-header"] button[class*="expand-icon"]').first();
+    this.gridExpandGridRowLengthButton = page.locator('div[class*="grid-track-header"] button[class*="expand-icon"]').last();
+    this.flexMenuItem = page.locator('li[data-value=":flex"]');
+    this.autoMenuItem = page.locator('li[data-value=":auto"]');
+    this.fixedMenuItem = page.locator('li[data-value=":fixed"]');
+    this.percentMenuItem = page.locator('li[data-value=":percent"]');
     this.layoutRemoveButton = page.locator(
       'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
     );
@@ -1140,5 +1149,48 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickOnClipContentButton() {
     await this.clipContentButton.click();
+  }
+
+  async clickOnAreaButton() {
+    await this.areaButton.click();
+  }
+
+  async enterAreaName(name) {
+    await this.areaNameInput.fill(name);
+  }
+
+  async selectGridCellUnit(cellNumber, unit='PX') {
+    const dropdownLocator = await this.page.locator(`div[class*="track-info-unit"] span[class*="current-label"] >>nth=${cellNumber-1}`);
+    await dropdownLocator.click();
+    switch (unit) {
+      case 'FR':
+        await this.flexMenuItem.click();
+        break;
+      case 'AUTO':
+        await this.autoMenuItem.click();
+        break;
+      case 'PX':
+        await this.fixedMenuItem.click();
+        break;
+      case '%':
+        await this.percentMenuItem.click();
+        break;
+    }
+
+  }
+
+  async enterGridCellValue(cellNumber, value) {
+    const inputLocator = await this.page.locator(`div[class*="track-info-value"] input[class="input-text"] >>nth=${cellNumber-1}`);
+    await inputLocator.click();
+    await inputLocator.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async clickOnGridExpandRowUnitButton() {
+    await this.gridExpandGridRowLengthButton.click();
+  }
+
+  async clickOnGridExpandColumnUnitButton() {
+    await this.gridExpandGridColumnLengthButton.click();
   }
 };
