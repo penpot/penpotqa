@@ -134,6 +134,9 @@ exports.BasePage = class BasePage {
     this.deleteAndShapesColumnMenuItem = page.locator(
       'ul[class*="workspace_context_menu"] li span:has-text("Delete column and shapes")',
     );
+    this.mergeGridCellMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Merge cells")',
+    );
   }
 
   async clearInput(input, browserName) {

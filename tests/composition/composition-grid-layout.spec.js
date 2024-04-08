@@ -359,6 +359,32 @@ test.describe(() => {
     );
   });
 
+  mainTest('PENPOT-1711 add grid lines as a dashboard - table - change duplicate, add row, delete row, change column numbers', async ({ page }) => {
+    await designPanelPage.changeHeightAndWidthForLayer('600', '400');
+    await mainPage.clickBoardOnCanvas();
+    await mainPage.doubleClickBoardOnCanvas();
+    await mainPage.deleteGridRow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-image-delete-row.png', {
+      mask: [mainPage.guides],
+    });
+    await mainPage.duplicateGridRow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-image-duplicated-row.png', {
+      mask: [mainPage.guides],
+    });
+    await mainPage.addGridRowBelow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-image-add-row-below.png', {
+      mask: [mainPage.guides],
+    });
+    await mainPage.addGridColumnRight();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-image-add-column-right.png', {
+      mask: [mainPage.guides],
+    });
+  });
+
   mainTest('PENPOT-1745 Check code section', async ({ page }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
@@ -432,5 +458,101 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('board-with-px-row.png', {
       mask: [mainPage.guides],
     });
+  });
+
+  mainTest('PENPOT-1708 Check occupy two cells (button Area) - vertical and horizontal', async ({ page }) => {
+    await mainPage.clickBoardOnCanvas();
+    await mainPage.doubleClickBoardOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.addRowGridLayoutBtnClick();
+    await mainPage.addColumnGridLayoutBtnClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.selectGridCellMultiple(6,9);
+    await designPanelPage.clickOnAreaButton();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-vertical-area.png', {
+      mask: [mainPage.guides],
+    });
+    await mainPage.selectGridCellMultiple(1,2);
+    await designPanelPage.clickOnAreaButton();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-horizontal-area.png', {
+      mask: [mainPage.guides],
+    });
+  });
+
+  mainTest('PENPOT-1709 Check occupy four cells (button Area) - Create Area name', async ({ page }) => {
+    await mainPage.clickBoardOnCanvas();
+    await mainPage.doubleClickBoardOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.selectGridCellMultiple(1,4);
+    await designPanelPage.clickOnAreaButton();
+    await designPanelPage.enterAreaName('Test Area  Name');
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-4cell-area.png', {
+      mask: [mainPage.guides],
+    });
+  });
+});
+
+mainTest('PENPOT-1707 Add grid lines, and upload the images, check removed some image', async ({ page, browserName }) => {
+  await mainPage.createDefaultBoardByCoordinates(400, 300);
+  await designPanelPage.changeHeightAndWidthForLayer('500', '600');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.addGridLayoutViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await designPanelPage.isLayoutRemoveButtonExists();
+
+  await mainPage.uploadImage('images/mini_sample.jpg');
+  await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickShortcutCtrlZ(browserName);
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickShortcutCtrlZ(browserName);
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot('grid-with-removed-image.png', {
+    mask: [mainPage.guides],
+  });
+});
+
+mainTest('PENPOT-1710 Add grid lines as a dashboard - table', async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(200, 300);
+  await designPanelPage.changeHeightAndWidthForLayer('300', '400');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+  await layersPanelPage.renameCreatedLayer('Dashboard');
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.isBoardNameDisplayed('Dashboard');
+  await layersPanelPage.clickLayerOnLayersTab('Dashboard');
+  await designPanelPage.addLayoutFromDesignPanel('grid');
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot('dashboard-with-grid-layout.png', {
+    mask: [mainPage.guides],
+  });
+});
+
+mainTest('PENPOT-1712 Add grid lines, change px for all column', async ({ page, browserName }) => {
+  await mainPage.createDefaultBoardByCoordinates(400, 300);
+  await designPanelPage.changeHeightAndWidthForLayer('500', '600');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.addGridLayoutViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await designPanelPage.isLayoutRemoveButtonExists();
+  await mainPage.clickBoardOnCanvas();
+  await mainPage.doubleClickBoardOnCanvas();
+
+  await designPanelPage.clickOnGridExpandColumnUnitButton();
+  await designPanelPage.selectGridCellUnit(1,'PX');
+  await designPanelPage.selectGridCellUnit(2,'PX');
+  await mainPage.waitForChangeIsSaved();
+  await designPanelPage.enterGridCellValue(1,'200');
+  await designPanelPage.enterGridCellValue(2,'200');
+  await designPanelPage.clickOnGridExpandColumnUnitButton();
+  await designPanelPage.clickOnGridExpandRowUnitButton();
+  await designPanelPage.selectGridCellUnit(1,'PX');
+  await designPanelPage.selectGridCellUnit(2,'PX');
+  await mainPage.waitForChangeIsSaved();
+  await designPanelPage.enterGridCellValue(1,'200');
+  await designPanelPage.enterGridCellValue(2,'200');
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot('grid-with-px-all-column.png', {
+    mask: [mainPage.guides],
   });
 });
