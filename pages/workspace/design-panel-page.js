@@ -98,6 +98,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
+    this.flexAddLayoutButton = page.locator('button[data-type="flex"]');
+    this.gridAddLayoutButton = page.locator('button[data-type="grid"]');
     this.gridEditButton = page.locator(
       'button[alt="Grid edit mode"]',
     );
@@ -107,6 +109,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]').first();
     this.layoutRemoveButton = page.locator(
       'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
+    );
+    this.layoutAddButton = page.locator(
+      'div[class*="layout_container__element-title"] button[class*="add-layout"]',
     );
     this.layoutDirectRowBtn = page.locator('label[title="Row"] span');
     this.layoutDirectRowReverseBtn = page.locator('label[title="Row reverse"] span');
@@ -686,6 +691,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async removeLayoutFromDesignPanel() {
     await this.layoutRemoveButton.click();
+  }
+
+  async addLayoutFromDesignPanel(layoutName) {
+    await this.layoutAddButton.click();
+    layoutName === 'flex'
+      ? await this.flexAddLayoutButton.click()
+      : await this.gridAddLayoutButton.click();
   }
 
   async openGridEditModeFromDesignPanel() {

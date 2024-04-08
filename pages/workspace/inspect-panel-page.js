@@ -15,6 +15,7 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     this.rowGapOnInspect = page.locator(
       'div[class*="layout-row"] div[title="Row gap"]',
     );
+    this.codeTabButton = page.locator('div[data-id="code"]');
   }
 
   async openInspectTab() {
@@ -27,5 +28,9 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
 
   async isRowGapExistOnInspectTab() {
     await expect(this.rowGapOnInspect).toBeVisible();
+  }
+
+  async openCodeTab() {
+    await this.codeTabButton.click();
   }
 };

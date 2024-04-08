@@ -58,7 +58,6 @@ mainTest('PENPOT-1689,1696 Check grid lines, check edit mode in the right panel'
       mask: [mainPage.usersSection],
     },
   );
-
 });
 
 test.describe(() => {
@@ -346,23 +345,92 @@ test.describe(() => {
     );
   });
 
+  mainTest('PENPOT-1706 Adding Flex Board', async ({ page }) => {
+    await designPanelPage.addLayoutFromDesignPanel('flex');
+    await designPanelPage.isFlexElementSectionOpened();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-flex-layout.png', {
+      mask: [mainPage.guides],
+    });
+    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+      'flex-layout-right-sidebar-image.png',
+      {
+        mask: [mainPage.usersSection],
+      },
+    );
+  });
+
+  mainTest('PENPOT-1745 Check code section', async ({ page }) => {
+    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await inspectPanelPage.openInspectTab();
+    await inspectPanelPage.openCodeTab();
+    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+      'right-sidebar-inspect-code-section-image.png',
+      {
+        mask: [mainPage.usersSection],
+      },
+    );
+  });
 });
 
-mainTest('PENPOT-1715 Add grid lines, check edit mode and add the text', async ({ page }) => {
-  await mainPage.createDefaultBoardByCoordinates(400, 400);
-  await designPanelPage.changeHeightAndWidthForLayer('300', '400');
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.addGridLayoutViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await designPanelPage.isLayoutRemoveButtonExists();
-  await mainPage.clickViewportOnce();
-  await mainPage.clickCreatedBoardTitleOnCanvas();
+test.describe(() => {
+  test.beforeEach(async ({ page, browserName }, testInfo) => {
+    if (browserName === 'webkit') {
+      await testInfo.setTimeout(testInfo.timeout + 20000);
+    } else {
+      await testInfo.setTimeout(testInfo.timeout + 15000);
+    }
+    await mainPage.createDefaultBoardByCoordinates(400, 400);
+    await designPanelPage.changeHeightAndWidthForLayer('300', '400');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.addGridLayoutViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.isLayoutRemoveButtonExists();
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+  });
 
-  await mainPage.createDefaultTextLayer();
-  await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
-  await mainPage.waitForChangeIsSaved();
+  mainTest('PENPOT-1715 Add grid lines, check edit mode and add the text', async ({ page }) => {
+    await mainPage.createDefaultTextLayer();
+    await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
+    await mainPage.waitForChangeIsSaved();
 
-  await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-text.png', {
-    mask: [mainPage.guides],
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-text.png', {
+      mask: [mainPage.guides],
+    });
+  });
+
+  mainTest('PENPOT-1702 Check fraction units, three dots and check duplicate, add row, delete row', async ({ page }) => {
+    await designPanelPage.changeHeightAndWidthForLayer('600', '400');
+    await mainPage.clickBoardOnCanvas();
+    await mainPage.doubleClickBoardOnCanvas();
+    await mainPage.duplicateGridRow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-duplicated-row.png', {
+      mask: [mainPage.guides],
+    });
+    await mainPage.deleteGridRow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-delete-row.png', {
+      mask: [mainPage.guides],
+    });
+    await mainPage.addGridRowBelow();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-add-row-below.png', {
+      mask: [mainPage.guides],
+    });
+  });
+
+  mainTest('PENPOT-1703 Check fraction units, change px column manual', async ({ page }) => {
+    await mainPage.clickBoardOnCanvas();
+    await mainPage.doubleClickBoardOnCanvas();
+    await mainPage.changeGridRowLabel('100 PX');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-px-row.png', {
+      mask: [mainPage.guides],
+    });
   });
 });

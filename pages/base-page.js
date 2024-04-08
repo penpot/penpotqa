@@ -104,6 +104,36 @@ exports.BasePage = class BasePage {
     this.detachInstanceOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Detach instance")',
     );
+    this.duplicateRowMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Duplicate row")',
+    );
+    this.addRowAboveMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Add 1 row above")',
+    );
+    this.AddRowBelowMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Add 1 row below")',
+    );
+    this.deleteRowMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Delete row")',
+    ).first();
+    this.deleteAndShapesRowMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Delete row and shapes")',
+    );
+    this.duplicateColumnMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Duplicate column")',
+    );
+    this.addColumnLeftMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Add 1 column to the left")',
+    );
+    this.AddColumnRightMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Add 1 column to the right")',
+    );
+    this.deleteColumnMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Delete column")',
+    ).first();
+    this.deleteAndShapesColumnMenuItem = page.locator(
+      'ul[class*="workspace_context_menu"] li span:has-text("Delete column and shapes")',
+    );
   }
 
   async clearInput(input, browserName) {

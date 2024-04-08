@@ -28,6 +28,8 @@ exports.MainPage = class MainPage extends BasePage {
     this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
     this.guides = page.locator('.guides .new-guides');
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
+    this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
+    this.gridEditorButton = page.locator('button[class*="grid-editor-button"]');
 
     //Node panel
     this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
@@ -892,5 +894,29 @@ exports.MainPage = class MainPage extends BasePage {
     const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.showInAssetsPanelOption.click();
+  }
+
+  async changeGridRowLabel(value) {
+    await this.gridEditorLabel.last().click();
+    await this.gridEditorLabel.last().fill(value);
+    await this.clickOnEnter();
+  }
+
+  async duplicateGridRow() {
+    await this.gridEditorLabel.last().hover();
+    await this.gridEditorButton.click();
+    await this.duplicateRowMenuItem.click();
+  }
+
+  async deleteGridRow() {
+    await this.gridEditorLabel.last().hover();
+    await this.gridEditorButton.click();
+    await this.deleteRowMenuItem.click();
+  }
+
+  async addGridRowBelow() {
+    await this.gridEditorLabel.last().hover();
+    await this.gridEditorButton.click();
+    await this.AddRowBelowMenuItem.click();
   }
 };
