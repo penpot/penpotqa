@@ -104,6 +104,9 @@ exports.BasePage = class BasePage {
     this.detachInstanceOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Detach instance")',
     );
+    this.acceptCookieButton = page.locator(
+      'button[class*="CookieConsent_accept"]',
+    );
   }
 
   async clearInput(input, browserName) {
@@ -296,5 +299,12 @@ exports.BasePage = class BasePage {
 
   async isWrapperMessageVisible() {
     await expect(this.wrapperMessage).toBeVisible({timeout: 10000});
+  }
+
+  async acceptCookie() {
+    if (await this.acceptCookieButton.isVisible()) {
+      await this.acceptCookieButton.click();
+    }
+    await expect(this.acceptCookieButton).not.toBeVisible();
   }
 };
