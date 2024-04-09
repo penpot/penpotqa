@@ -7,6 +7,7 @@ const mainTest = base.test.extend({
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     await loginPage.goto();
+    await loginPage.acceptCookie();
     await loginPage.enterEmail(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
@@ -93,6 +94,7 @@ const performanceTest = base.test.extend({
   page: async ({ page, workingFile }, use) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
+    await loginPage.acceptCookie();
     await loginPage.enterEmail(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
