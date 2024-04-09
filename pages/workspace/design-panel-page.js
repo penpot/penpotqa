@@ -108,10 +108,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'button[class*="done-btn"]',
     );
     this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]').first();
+    this.manualButton = page.locator('label[for=":manual"]');
     this.areaButton = page.locator('label[for=":area"]');
     this.areaNameInput = page.locator('input[aria-label="grid-area-name"]');
     this.gridExpandGridColumnLengthButton = page.locator('div[class*="grid-track-header"] button[class*="expand-icon"]').first();
     this.gridExpandGridRowLengthButton = page.locator('div[class*="grid-track-header"] button[class*="expand-icon"]').last();
+    this.gridFirstColumnSelectButton = page.locator('div[class*="track-info-dir-icon"] svg[class*="icon-flex-vertical"]').first();
     this.flexMenuItem = page.locator('li[data-value=":flex"]');
     this.autoMenuItem = page.locator('li[data-value=":auto"]');
     this.fixedMenuItem = page.locator('li[data-value=":fixed"]');
@@ -1151,6 +1153,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clipContentButton.click();
   }
 
+  async clickOnManualButton() {
+    await this.manualButton.click();
+  }
   async clickOnAreaButton() {
     await this.areaButton.click();
   }
@@ -1192,5 +1197,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickOnGridExpandColumnUnitButton() {
     await this.gridExpandGridColumnLengthButton.click();
+  }
+
+  async hoverOnGridFirstColumnSelectButton() {
+    await this.gridFirstColumnSelectButton.hover();
+  }
+
+  async enterGridCellCoordinate(rowColumn,startOrEnd, value) {
+    let cellNumber = startOrEnd === 'start' ? 0 : 1;
+    cellNumber = rowColumn === 'row' ? cellNumber+2 : cellNumber;
+    const inputLocator = await this.page.locator(`div[class*="grid_cell__row"] div[class*="grid_cell__coord-input"] input >>nth=${cellNumber}`);
+    await inputLocator.click();
+    await inputLocator.fill(value);
+    await this.clickOnEnter();
   }
 };
