@@ -142,7 +142,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PENPOT-1693,1716 Change row gap, Check Gap info on inspect tab', async ({ page }) => {
+  mainTest('PENPOT-1693,1716,1744 Change row gap, Check Gap info on inspect tab', async ({ page }) => {
     await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeLayoutRowGapOnGridEdit('50');
@@ -487,6 +487,43 @@ test.describe(() => {
     await designPanelPage.clickOnAreaButton();
     await designPanelPage.enterAreaName('Test Area  Name');
     await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-4cell-area.png', {
+      mask: [mainPage.guides],
+    });
+  });
+
+  mainTest('PENPOT-1736 Check row numbers in right menu', async ({ page }) => {
+    await mainPage.clickBoardOnCanvas();
+    await mainPage.doubleClickBoardOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickOnGridExpandColumnUnitButton();
+    await designPanelPage.hoverOnGridFirstColumnSelectButton();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-selected-column.png', {
+      mask: [mainPage.guides],
+    });
+  });
+
+  mainTest('PENPOT-1746 Check to add area - manually', async ({ page }) => {
+    await mainPage.clickBoardOnCanvas();
+    await mainPage.doubleClickBoardOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickOnGridCell(1);
+    await designPanelPage.clickOnManualButton();
+    await designPanelPage.enterGridCellCoordinate('row', 'end', '3');
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-manual-area.png', {
+      mask: [mainPage.guides],
+    });
+  });
+
+  mainTest('PENPOT-1748 Check to add area - When you select cells and then “right click” merge cells', async ({ page }) => {
+    await mainPage.clickBoardOnCanvas();
+    await mainPage.doubleClickBoardOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.addRowGridLayoutBtnClick();
+    await mainPage.addColumnGridLayoutBtnClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.selectGridCellMultiple(1,3);
+    await mainPage.mergeGridCellViaRightClick(3);
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-horizontal-area-right.png', {
       mask: [mainPage.guides],
     });
   });

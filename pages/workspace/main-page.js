@@ -939,4 +939,9 @@ exports.MainPage = class MainPage extends BasePage {
     await cellLocator.click({ button: 'right', force: true });
     await this.mergeGridCellMenuItem.click();
   }
+
+  async clickOnGridCell(cell) {
+    const cellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${cell-1}`);
+    await cellLocator.click();
+  }
 };
