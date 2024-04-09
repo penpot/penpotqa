@@ -6,6 +6,7 @@ const { updateTestResults } = require('./../helpers/saveTestResults.js');
 test('ON-8 Login with an email address', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
+  await loginPage.acceptCookie();
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);
   await loginPage.enterPwd(process.env.LOGIN_PWD);
   await loginPage.clickLoginButton();
@@ -16,6 +17,7 @@ test('ON-8 Login with an email address', async ({ page }) => {
 test('ON-13 Login with invalid email address', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
+  await loginPage.acceptCookie();
   await loginPage.enterEmail('test@com');
   await loginPage.enterPwd(process.env.LOGIN_PWD);
   await loginPage.isEmailInputErrorDisplayed('Enter a valid email please');
