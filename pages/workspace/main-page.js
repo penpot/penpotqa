@@ -308,6 +308,13 @@ exports.MainPage = class MainPage extends BasePage {
     await boardSel.dblclick();
   }
 
+  async hoverBoardOnCanvas() {
+    const boardSel = this.page.locator(
+      `rect[class="main viewport-selrect"]`,
+    );
+    await boardSel.hover();
+  }
+
   async focusLayerViaShortcut() {
     await this.page.keyboard.press('F');
   }
@@ -943,5 +950,18 @@ exports.MainPage = class MainPage extends BasePage {
   async clickOnGridCell(cell) {
     const cellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${cell-1}`);
     await cellLocator.click();
+  }
+
+  async dragAndDropComponentToAnotherFraction(cellNumber, page) {
+    await this.page.waitForTimeout(200);
+    const selectedElement = this.page.locator(
+      `rect[class*="main viewport-selrect"]`,
+    );
+    const board = this.page.locator(
+      `rect[class*="grid-cell-outline"] >>nth=${cellNumber-1}`,
+    );
+    await selectedElement.hover();
+    await page.waitForTimeout(500);
+    await selectedElement.dragTo(board);
   }
 };
