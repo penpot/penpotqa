@@ -104,9 +104,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridEditButton = page.locator(
       'button[alt="Grid edit mode"]',
     );
-    this.gridDoneButton = page.locator(
-      'button[class*="done-btn"]',
-    );
+    this.gridDoneButton = page.locator('button[class*="done-btn"]');
+    this.gridLocateButton = page.locator('button[class*="locate-btn"]');
     this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]').first();
     this.manualButton = page.locator('label[for=":manual"]');
     this.areaButton = page.locator('label[for=":area"]');
@@ -716,6 +715,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
   async clickGridDoneButton() {
     await this.gridDoneButton.click();
+  }
+
+  async clickGridLocateButton() {
+    await this.gridLocateButton.click();
   }
 
   async expandFlexLayoutMenu() {

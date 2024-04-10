@@ -9,10 +9,11 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 
 const teamName = random().concat('autotest');
 
-let teamPage,dashboardPage,mainPage,designPanelPage,layersPanelPage,inspectPanelPage,assetsPanelPage;
+let teamPage,dashboardPage,mainPage,designPanelPage,layersPanelPage,inspectPanelPage,assetsPanelPage,colorPalettePage;
 test.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
@@ -21,6 +22,7 @@ test.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
+  colorPalettePage = new ColorPalettePage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -385,6 +387,30 @@ test.describe(() => {
     });
   });
 
+  mainTest('PENPOT-1713  Add 4 pictures of different sizes and change the color for the back', async ({ page }) => {
+    await mainPage.uploadImage('images/horizontal_sample.jpg');
+    await layersPanelPage.dragAndDropComponentToBoard('horizontal_sample');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.uploadImage('images/vertical_sample.jpg');
+    await layersPanelPage.dragAndDropComponentToBoard('vertical_sample');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.uploadImage('images/mini_sample2.jpg');
+    await layersPanelPage.dragAndDropComponentToBoard('mini_sample2');
+    await mainPage.waitForChangeIsSaved();
+
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#FF0000');
+    await mainPage.waitForChangeIsSaved();
+
+    await expect(mainPage.viewport).toHaveScreenshot('red-board-with-4-image.png', {
+      mask: [mainPage.guides],
+    });
+  });
+
   mainTest('PENPOT-1745 Check code section', async ({ page }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
@@ -502,6 +528,81 @@ test.describe(() => {
     });
   });
 
+  mainTest('PENPOT-1737 Locate button', async ({ page }) => {
+    await mainPage.clickBoardOnCanvas();
+    await designPanelPage.changeAxisXandYForLayer('400', '2000');
+    await designPanelPage.addLayoutFromDesignPanel('grid');
+    await designPanelPage.openGridEditModeFromDesignPanel();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-not-visible.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.clickGridLocateButton();
+    await expect(mainPage.viewport).toHaveScreenshot('board-visible.png', {
+      mask: [mainPage.guides],
+    });
+  });
+
+  // mainTest.only('PENPOT-1738 Move element inside grid board', async ({ page }) => {
+  //   await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+  //   await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+  //   await mainPage.waitForChangeIsSaved();
+  //   await mainPage.dragAndDropComponentToAnotherFraction(2, page);
+  //   await mainPage.waitForChangeIsSaved();
+  //   await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-move-element.png', {
+  //     mask: [mainPage.guides],
+  //   });
+  // });
+
+  mainTest('PENPOT-1739,1742 Duplicate vertical and horizontal direction, undo element duplication', async ({ browserName }) => {
+    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+
+    await designPanelPage.changeLayoutDirection('Column', false);
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+    await mainPage.duplicateLayerViaLayersTab('Rectangle');
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'column-direction-rectangle.png', {
+        mask: [mainPage.guides],
+      });
+    await mainPage.clickShortcutCtrlZ(browserName);
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeLayoutDirection('Row', false);
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+    await mainPage.duplicateLayerViaLayersTab('Rectangle');
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'row-direction-rectangle.png', {
+        mask: [mainPage.guides],
+      });
+  });
+
+  mainTest('PENPOT-1743 Undo element editing', async ({ browserName }) => {
+    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#00FF00');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'rectangle-green-color.png', {
+        mask: [mainPage.guides],
+      });
+    await mainPage.clickViewportOnce();
+    await mainPage.clickShortcutCtrlZ(browserName);
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'rectangle-undo-color.png', {
+        mask: [mainPage.guides],
+      });
+  });
+
   mainTest('PENPOT-1746 Check to add area - manually', async ({ page }) => {
     await mainPage.clickBoardOnCanvas();
     await mainPage.doubleClickBoardOnCanvas();
@@ -529,7 +630,7 @@ test.describe(() => {
   });
 });
 
-mainTest('PENPOT-1707 Add grid lines, and upload the images, check removed some image', async ({ page, browserName }) => {
+mainTest('PENPOT-1707,1741 Add grid lines, and upload the images, check removed some image', async ({ page, browserName }) => {
   await mainPage.createDefaultBoardByCoordinates(400, 300);
   await designPanelPage.changeHeightAndWidthForLayer('500', '600');
   await mainPage.waitForChangeIsSaved();
