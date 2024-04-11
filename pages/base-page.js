@@ -168,6 +168,18 @@ exports.BasePage = class BasePage {
     }
   }
 
+  async clickShortcutCtrlD(browserName) {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
+      await this.page.keyboard.press('Meta+D');
+    } else {
+      if (browserName !== 'webkit') {
+        await this.page.keyboard.press('Control+D');
+      } else {
+        await this.page.keyboard.press('Meta+D');
+      }
+    }
+  }
+
   async reloadPage() {
     await this.page.reload();
   }
