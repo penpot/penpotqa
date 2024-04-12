@@ -95,6 +95,12 @@ exports.BasePage = class BasePage {
     this.duplicateOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Duplicate")',
     );
+    this.copyOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Copy")',
+    );
+    this.pasteOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Paste")',
+    );
     this.showMainComponentOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Show main component")',
     );
