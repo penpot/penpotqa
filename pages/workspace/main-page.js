@@ -801,7 +801,9 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(500, 200);
     await this.clickViewportByCoordinates(1200, 700);
     await this.clickViewportByCoordinates(1000, 400);
-    await this.clickOnDesignTab(); // todo: need to remove after issue fix
+    await this.clickMoveNodesButtonOnNodePanel();
+    await this.clickDrawNodesButtonOnNodePanel();
+    // await this.clickOnDesignTab();  // todo: need to remove after issue fix
     // await this.clickOnMainToolBar(); //todo bug 6171 > need to uncomment after fix these 2 rows
     // await this.clickMoveButton();
     await this.waitForChangeIsSaved();
