@@ -884,6 +884,18 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
+  async copyLayerViaRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.copyOption.click();
+  }
+
+  async pasteLayerViaRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"]');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.pasteOption.click();
+  }
+
   async duplicateLayerViaRightClick() {
     const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
     await layerSel.last().click({ button: 'right', force: true });
