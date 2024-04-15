@@ -95,6 +95,12 @@ exports.BasePage = class BasePage {
     this.duplicateOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Duplicate")',
     );
+    this.copyOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Copy")',
+    );
+    this.pasteOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Paste")',
+    );
     this.groupOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Group")',
     );
@@ -167,6 +173,18 @@ exports.BasePage = class BasePage {
         await this.page.keyboard.press('Control+Z');
       } else {
         await this.page.keyboard.press('Meta+Z');
+      }
+    }
+  }
+
+  async clickShortcutCtrlD(browserName) {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
+      await this.page.keyboard.press('Meta+D');
+    } else {
+      if (browserName !== 'webkit') {
+        await this.page.keyboard.press('Control+D');
+      } else {
+        await this.page.keyboard.press('Meta+D');
       }
     }
   }
