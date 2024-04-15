@@ -28,6 +28,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.yAxisInput = page.locator('div[title="Y axis"] input');
 
     //Design panel - Fill section
+    this.firstColorIcon = page.locator(
+      'div[class*="color_bullet__color-bullet-wrapper"]',
+    ).first();
     this.fillColorIcon = page.locator(
       'div[class*="fill__element-set"] div[class*="color_bullet__color-bullet-wrapper"]',
     );
@@ -49,6 +52,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Shadow section
     this.shadowSection = page.locator(
       'div[class*="shadow__element-title"]:has-text("Shadow")',
+    );
+    this.groupShadowSection = page.locator(
+      'div[class*="shadow__element-title"]:has-text("Group shadow")',
     );
     this.addShadowButton = page.locator('button[class*="shadow__add-shadow"]');
     this.shadowActionsButton = page.locator('button[class*="shadow__more-options"]');
@@ -434,6 +440,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  async clickFirstColorIcon() {
+    await this.firstColorIcon.click();
+  }
   async clickFillColorIcon() {
     await this.fillColorIcon.click();
   }
@@ -539,6 +548,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickAddShadowButton() {
     await this.shadowSection.waitFor();
+    await this.addShadowButton.click();
+  }
+
+  async clickAddGroupShadowButton() {
+    await this.groupShadowSection.waitFor();
     await this.addShadowButton.click();
   }
 

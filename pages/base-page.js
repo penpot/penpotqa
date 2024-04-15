@@ -95,6 +95,9 @@ exports.BasePage = class BasePage {
     this.duplicateOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Duplicate")',
     );
+    this.groupOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Group")',
+    );
     this.showMainComponentOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Show main component")',
     );
