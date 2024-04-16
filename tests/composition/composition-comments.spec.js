@@ -46,7 +46,7 @@ test.describe(() => {
     await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
       mask: [commentsPanelPage.commentsAuthorSection, mainPage.usersSection],
     });
-    await commentsPanelPage.clickCreateCommentButton();
+    await mainPage.clickViewportOnce();
     await commentsPanelPage.isCommentThreadIconDisplayed();
     await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
       mask: [commentsPanelPage.commentsAuthorSection, mainPage.usersSection],
@@ -111,7 +111,7 @@ test.describe(() => {
     const mainPage = new MainPage(page);
     const commentsPanelPage = new CommentsPanelPage(page);
     await commentsPanelPage.clickResolveCommentCheckbox();
-    await commentsPanelPage.clickCreateCommentButton();
+    await mainPage.clickViewportOnce();
     await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
     await expect(page).toHaveScreenshot('comment-resolved-closed-pop-up.png', {
       mask: [commentsPanelPage.commentsAuthorSection, mainPage.usersSection],
@@ -140,7 +140,7 @@ mainTest(
     await expect(page).toHaveScreenshot('comment-latin-opened-pop-up.png', {
       mask: [commentsPanelPage.commentsAuthorSection, mainPage.usersSection],
     });
-    await commentsPanelPage.clickCreateCommentButton();
+    await mainPage.clickViewportOnce();
     await commentsPanelPage.isCommentThreadIconDisplayed();
     await expect(page).toHaveScreenshot('comment-latin-closed-pop-up.png', {
       mask: [commentsPanelPage.commentsAuthorSection, mainPage.usersSection],
