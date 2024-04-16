@@ -44,6 +44,13 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     );
   }
 
+  async expandGroupOnLayersTab() {
+    if (!(await this.layerItemToggleExpand.isVisible())) {
+      await this.layerBoardToggleContentCollapse.first().click();
+      await expect(this.layerItemToggleExpand).toBeVisible();
+    }
+  }
+
   async expandBoardOnLayersTab() {
     if (!(await this.layerItemToggleExpand.isVisible())) {
       await this.layerBoardToggleContentCollapse.click();
