@@ -1,5 +1,6 @@
 const { expect } = require('@playwright/test');
 const { BasePage } = require('../base-page');
+const { mainTest } = require('../../fixtures');
 
 exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   /**
@@ -27,6 +28,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.yAxisInput = page.locator('div[title="Y axis"] input');
 
     //Design panel - Fill section
+    this.firstColorIcon = page.locator(
+      'div[class*="color_bullet__color-bullet-wrapper"]',
+    ).first();
     this.fillColorIcon = page.locator(
       'div[class*="fill__element-set"] div[class*="color_bullet__color-bullet-wrapper"]',
     );
@@ -48,6 +52,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Shadow section
     this.shadowSection = page.locator(
       'div[class*="shadow__element-title"]:has-text("Shadow")',
+    );
+    this.groupShadowSection = page.locator(
+      'div[class*="shadow__element-title"]:has-text("Group shadow")',
     );
     this.addShadowButton = page.locator('button[class*="shadow__add-shadow"]');
     this.shadowActionsButton = page.locator('button[class*="shadow__more-options"]');
@@ -98,15 +105,29 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
+    this.flexAddLayoutButton = page.locator('button[data-type="flex"]');
+    this.gridAddLayoutButton = page.locator('button[data-type="grid"]');
     this.gridEditButton = page.locator(
       'button[alt="Grid edit mode"]',
     );
-    this.gridDoneButton = page.locator(
-      'button[class*="done-btn"]',
-    );
-    this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]');
+    this.gridDoneButton = page.locator('button[class*="done-btn"]');
+    this.gridLocateButton = page.locator('button[class*="locate-btn"]');
+    this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]').first();
+    this.manualButton = page.locator('label[for=":manual"]');
+    this.areaButton = page.locator('label[for=":area"]');
+    this.areaNameInput = page.locator('input[aria-label="grid-area-name"]');
+    this.gridExpandGridColumnLengthButton = page.locator('div[class*="grid-track-header"] button[class*="expand-icon"]').first();
+    this.gridExpandGridRowLengthButton = page.locator('div[class*="grid-track-header"] button[class*="expand-icon"]').last();
+    this.gridFirstColumnSelectButton = page.locator('div[class*="track-info-dir-icon"] svg[class*="icon-flex-vertical"]').first();
+    this.flexMenuItem = page.locator('li[data-value=":flex"]');
+    this.autoMenuItem = page.locator('li[data-value=":auto"]');
+    this.fixedMenuItem = page.locator('li[data-value=":fixed"]');
+    this.percentMenuItem = page.locator('li[data-value=":percent"]');
     this.layoutRemoveButton = page.locator(
       'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
+    );
+    this.layoutAddButton = page.locator(
+      'div[class*="layout_container__element-title"] button[class*="add-layout"]',
     );
     this.layoutDirectRowBtn = page.locator('label[title="Row"] span');
     this.layoutDirectRowReverseBtn = page.locator('label[title="Row reverse"] span');
@@ -419,6 +440,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  async clickFirstColorIcon() {
+    await this.firstColorIcon.click();
+  }
   async clickFillColorIcon() {
     await this.fillColorIcon.click();
   }
@@ -524,6 +548,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickAddShadowButton() {
     await this.shadowSection.waitFor();
+    await this.addShadowButton.click();
+  }
+
+  async clickAddGroupShadowButton() {
+    await this.groupShadowSection.waitFor();
     await this.addShadowButton.click();
   }
 
@@ -688,11 +717,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.layoutRemoveButton.click();
   }
 
+  async addLayoutFromDesignPanel(layoutName) {
+    await this.layoutAddButton.click();
+    layoutName === 'flex'
+      ? await this.flexAddLayoutButton.click()
+      : await this.gridAddLayoutButton.click();
+  }
+
   async openGridEditModeFromDesignPanel() {
     await this.gridEditButton.click();
   }
   async clickGridDoneButton() {
     await this.gridDoneButton.click();
+  }
+
+  async clickGridLocateButton() {
+    await this.gridLocateButton.click();
   }
 
   async expandFlexLayoutMenu() {
@@ -1128,5 +1168,64 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickOnClipContentButton() {
     await this.clipContentButton.click();
+  }
+
+  async clickOnManualButton() {
+    await this.manualButton.click();
+  }
+  async clickOnAreaButton() {
+    await this.areaButton.click();
+  }
+
+  async enterAreaName(name) {
+    await this.areaNameInput.fill(name);
+  }
+
+  async selectGridCellUnit(cellNumber, unit='PX') {
+    const dropdownLocator = await this.page.locator(`div[class*="track-info-unit"] span[class*="current-label"] >>nth=${cellNumber-1}`);
+    await dropdownLocator.click();
+    switch (unit) {
+      case 'FR':
+        await this.flexMenuItem.click();
+        break;
+      case 'AUTO':
+        await this.autoMenuItem.click();
+        break;
+      case 'PX':
+        await this.fixedMenuItem.click();
+        break;
+      case '%':
+        await this.percentMenuItem.click();
+        break;
+    }
+
+  }
+
+  async enterGridCellValue(cellNumber, value) {
+    const inputLocator = await this.page.locator(`div[class*="track-info-value"] input[class="input-text"] >>nth=${cellNumber-1}`);
+    await inputLocator.click();
+    await inputLocator.fill(value);
+    await this.clickOnEnter();
+  }
+
+  async clickOnGridExpandRowUnitButton() {
+    await this.gridExpandGridRowLengthButton.click();
+  }
+
+  async clickOnGridExpandColumnUnitButton() {
+    await this.gridExpandGridColumnLengthButton.click();
+  }
+
+  async hoverOnGridFirstColumnSelectButton() {
+    await this.gridFirstColumnSelectButton.hover();
+  }
+
+  async enterGridCellCoordinate(rowColumn,startOrEnd, value) {
+    let cellNumber = startOrEnd === 'start' ? 0 : 1;
+    cellNumber = rowColumn === 'row' ? cellNumber+2 : cellNumber;
+    const inputLocator = await this.page.locator(`div[class*="grid_cell__row"] div[class*="grid_cell__coord-input"] input >>nth=${cellNumber}`);
+    await inputLocator.click();
+    await inputLocator.fill(value);
+    await this.clickOnEnter();
   }
 };

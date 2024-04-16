@@ -28,6 +28,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
     this.guides = page.locator('.guides .new-guides');
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
+    this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
+    this.gridEditorButton = page.locator('button[class*="grid-editor-button"]');
+    this.gridEditorCell = page.locator('rect[class*="grid-cell-outline"]');
 
     //Node panel
     this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
@@ -289,6 +292,27 @@ exports.MainPage = class MainPage extends BasePage {
       `//*[@class='frame-title']//../*[text()='${title}']`,
     );
     await boardSel.dblclick();
+  }
+
+  async clickBoardOnCanvas() {
+    const boardSel = this.page.locator(
+      `rect[class="main viewport-selrect"]`,
+    );
+    await boardSel.click();
+  }
+
+  async doubleClickBoardOnCanvas() {
+    const boardSel = this.page.locator(
+      `rect[class="main viewport-selrect"]`,
+    );
+    await boardSel.dblclick();
+  }
+
+  async hoverBoardOnCanvas() {
+    const boardSel = this.page.locator(
+      `rect[class="main viewport-selrect"]`,
+    );
+    await boardSel.hover();
   }
 
   async focusLayerViaShortcut() {
@@ -862,15 +886,102 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
+  async copyLayerViaRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.copyOption.click();
+  }
+
+  async pasteLayerViaRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"]');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.pasteOption.click();
+  }
+
   async duplicateLayerViaRightClick() {
     const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.duplicateOption.click();
   }
 
+  async duplicateLayerViaLayersTab(name) {
+    const layerSel = this.page.locator(
+      `div[class*="element-list-body"] span[class*="element-name"]:text-is("${name}") >>nth=0`,
+    );
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.duplicateOption.click();
+  }
+
+  async groupLayerViaRightClick() {
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.groupOption.click();
+  }
+
   async showInAssetsPanelRightClick() {
     const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.showInAssetsPanelOption.click();
+  }
+
+  async changeGridRowLabel(value) {
+    await this.gridEditorLabel.last().click();
+    await this.gridEditorLabel.last().fill(value);
+    await this.clickOnEnter();
+  }
+
+  async duplicateGridRow() {
+    await this.gridEditorLabel.last().hover();
+    await this.gridEditorButton.click();
+    await this.duplicateRowMenuItem.click();
+  }
+
+  async deleteGridRow() {
+    await this.gridEditorLabel.last().hover();
+    await this.gridEditorButton.click();
+    await this.deleteRowMenuItem.click();
+  }
+
+  async addGridRowBelow() {
+    await this.gridEditorLabel.last().hover();
+    await this.gridEditorButton.click();
+    await this.AddRowBelowMenuItem.click();
+  }
+
+  async addGridColumnRight() {
+    await this.gridEditorLabel.first().hover();
+    await this.gridEditorButton.click();
+    await this.AddColumnRightMenuItem.click();
+  }
+
+  async selectGridCellMultiple(startCell, endCell) {
+    const startCellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${startCell-1}`);
+    const endCellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${endCell-1}`);
+    await startCellLocator.click();
+    await endCellLocator.click({ modifiers: ['Shift'] });
+  }
+
+  async mergeGridCellViaRightClick(cell) {
+    const cellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${cell-1}`);
+    await cellLocator.click({ button: 'right', force: true });
+    await this.mergeGridCellMenuItem.click();
+  }
+
+  async clickOnGridCell(cell) {
+    const cellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${cell-1}`);
+    await cellLocator.click();
+  }
+
+  async dragAndDropComponentToAnotherFraction(cellNumber, page) {
+    await this.page.waitForTimeout(200);
+    const selectedElement = this.page.locator(
+      `rect[class*="main viewport-selrect"]`,
+    );
+    const board = this.page.locator(
+      `rect[class*="grid-cell-outline"] >>nth=${cellNumber-1}`,
+    );
+    await selectedElement.hover();
+    await page.waitForTimeout(500);
+    await selectedElement.dragTo(board);
   }
 };

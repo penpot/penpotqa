@@ -8,6 +8,7 @@ const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page'
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
+const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
 
 const teamName = random().concat('autotest');
 
@@ -296,6 +297,59 @@ mainTest(
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'multiple-components-asset-3-layers.png',
+    );
+  },
+);
+
+mainTest('PENPOT-1751 Grouping component copies',
+  async ( {page}, testInfo) => {
+    await testInfo.setTimeout(testInfo.timeout + 20000);
+
+    const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    await mainPage.createDefaultEllipseByCoordinates(200, 200);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultRectangleByCoordinates(500, 200, true);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickMainMenuButton();
+    await mainPage.clickEditMainMenuItem();
+    await mainPage.clickSelectAllMainMenuSubItem();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.duplicateLayerViaRightClick();
+    await mainPage.groupLayerViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.expandGroupOnLayersTab();
+    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
+      'copy-components-group-layers.png',
+    );
+  },
+);
+
+mainTest('PENPOT-1749 Change group shadow color',
+  async ( {page}, testInfo) => {
+    await testInfo.setTimeout(testInfo.timeout + 20000);
+
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    const colorPalettePage = new ColorPalettePage(page);
+    await mainPage.createDefaultRectangleByCoordinates(200, 200);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.groupLayerViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickAddGroupShadowButton();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickFirstColorIcon();
+    await colorPalettePage.setHex('#ff0000');
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'components-change-group-shadow-color.png',
     );
   },
 );
