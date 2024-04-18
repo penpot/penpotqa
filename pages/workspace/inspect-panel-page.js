@@ -12,6 +12,9 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     this.annotationBlockOnInspect = page.locator(
       'div.main_ui_viewer_inspect_annotation__attributes-block',
     );
+    this.textBlockOnInspect = page.locator(
+      'div.main_ui_viewer_inspect_attributes_text__attributes-block',
+    );
     this.rowGapOnInspect = page.locator(
       'div[class*="layout-row"] div[title="Row gap"]',
     );
