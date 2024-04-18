@@ -349,6 +349,35 @@ test.describe(() => {
     await layersPanelPage.searchLayer('test');
     await layersPanelPage.isLayerSearched('Test');
   });
+
+  mainTest('PENPOT-1756 Absolute positioned board moving', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    await designPanelPage.changeHeightAndWidthForLayer('400', '500');
+    await mainPage.pressFlexLayoutShortcut();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+    await layersPanelPage.renameCreatedLayer('Main Board');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultBoardByCoordinates(200, 200);
+    await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultEllipseByCoordinates(220, 220);
+    await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.dragAndDropElementToElement('Board', 'Main Board');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.setFlexElementPositionAbsolute();
+    await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board.png', {
+      mask: [mainPage.guides],
+    });
+    await designPanelPage.changeAxisXandYForLayer('700', '600');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board-moved.png', {
+      mask: [mainPage.guides],
+    });
+  });
 });
 
 test.describe(() => {
