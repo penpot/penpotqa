@@ -240,6 +240,18 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await component.dragTo(board);
   }
 
+  async dragAndDropElementToElement(name, dragToName) {
+    await this.page.waitForTimeout(200);
+    const component = this.page.locator(
+      `div[class*="element-list-body"] span[class*="element-name"]:text-is("${name}") >>nth=0`,
+    );
+    const board = this.page.locator(
+      `div[class*="element-list-body"] span[class*="element-name"]:text-is("${dragToName}") >>nth=0`,
+    );
+    await component.hover();
+    await component.dragTo(board);
+  }
+
   async deleteMainComponentViaRightClick() {
     await this.mainComponentLayer.first().click({ button: 'right', force: true });
     await this.deleteLayerMenuOption.click();

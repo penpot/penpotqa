@@ -8,6 +8,7 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
 
 const teamName = random().concat('autotest');
 
@@ -284,17 +285,22 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-216 Change text color and opacity by typing color code',
+    'CO-216 Change text color and opacity by typing color code, PENPOT-1753 Check text color in inspect mode',
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const colorPalettePage = new ColorPalettePage(page);
       const designPanelPage = new DesignPanelPage(page);
+      const inspectPanelPage = new InspectPanelPage(page);
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#304d6a');
       await designPanelPage.changeOpacityForFill('50');
       await mainPage.clickMoveButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-fill-opacity.png');
+      await inspectPanelPage.openInspectTab();
+      await expect(inspectPanelPage.textBlockOnInspect).toHaveScreenshot(
+        'inspect-text-block-color.png',
+      );
     },
   );
 

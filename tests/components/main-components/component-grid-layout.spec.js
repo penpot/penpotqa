@@ -320,10 +320,20 @@ test.describe(() => {
 
   });
 
-  mainTest('PENPOT-1725 Create annotation for component', async ({}) => {
+  mainTest('PENPOT-1725,1752 Create annotation for component, that already has annotation', async ({}) => {
     await designPanelPage.isAnnotationAddedToComponent(annotation);
     await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
       'component-annotation.png',
+    );
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.isAnnotationOptionNotVisibleRightClick();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'component-right-click-annotation-disabled.png',
+    );
+    await designPanelPage.clickOnComponentMenuButton();
+    await designPanelPage.isAnnotationOptionNotVisible();
+    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
+      'component-annotation-disabled.png',
     );
   });
 
