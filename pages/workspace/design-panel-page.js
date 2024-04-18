@@ -231,6 +231,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.strokeAlignmentField = page.locator('div[data-test="stroke.alignment"]');
     this.strokeTypeField = page.locator('div[data-test="stroke.style"]');
+    this.strokeFirstCapDropdown = page.locator('div[class*="stroke_row__cap-select"]').first();
+    this.strokeSecondCapDropdown = page.locator('div[class*="stroke_row__cap-select"]').last();
 
     //Design panel - Text section
     this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase');
@@ -1227,5 +1229,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await inputLocator.click();
     await inputLocator.fill(value);
     await this.clickOnEnter();
+  }
+
+  async changeCap(capName, firstSecond = 'first') {
+    firstSecond === 'first'
+      ? await this.strokeFirstCapDropdown.click()
+      : await this.strokeSecondCapDropdown.click();
+    await this.page
+      .locator(`ul[class*="stroke-cap-dropdown"] span:has-text('${capName}')`)
+      .click();
   }
 };

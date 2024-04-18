@@ -43,6 +43,17 @@ mainTest('CO-274 Create Path from toolbar - opened', async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot('path-opened.png');
 });
 
+mainTest('PENPOT-1755 Create Path from toolbar with cap', async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const designPanelPage = new DesignPanelPage(page);
+  await mainPage.createDefaultOpenPath();
+  await mainPage.isCreatedLayerVisible();
+  await designPanelPage.changeCap('Arrow', 'first');
+  await designPanelPage.changeCap('Triangle', 'second');
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot('path-opened-with-cap.png');
+});
+
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
