@@ -350,6 +350,7 @@ test.describe(() => {
   mainTest('PENPOT-1706 Adding Flex Board', async ({ page }) => {
     await designPanelPage.addLayoutFromDesignPanel('flex');
     await designPanelPage.isFlexElementSectionOpened();
+    await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-with-flex-layout.png', {
       mask: [mainPage.guides],
     });
