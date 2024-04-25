@@ -1,13 +1,11 @@
 name: Penpot Regression Tests on PRE env
 on:
   schedule: ## run tests each Thursday at 6:00am UTC
-    - cron: '00 6 * * 1-5'
+    - cron: '00 6 * * 4'
   workflow_dispatch:
-
 jobs:
   tests_chromium:
     environment: PRE
-    timeout-minutes: 180
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,14 +14,13 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: npm ci
-      - name: Install Playwright
+      - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Run Playwright tests
+      - name: Run regression tests for chromium
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-          GITHUB_RUN_ID: ${{ github.run.id }}
         run: npx playwright test --project=chrome -gv 'PERF'
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
@@ -32,10 +29,57 @@ jobs:
           name: playwright-report-chromium
           path: playwright-report/
           retention-days: 30
-      - name: Send mattermost Message
+  tests_firefox:
+    if: ${{ always() }}
+    needs: [tests_chromium]
+    environment: PRE
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run regression tests for firefox
         env:
-          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
-          LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
-          PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+        run: npx playwright test --project=firefox -gv 'PERF'
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v3
         if: always()
-        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage()"
+        with:
+          name: playwright-report-firefox
+          path: playwright-report/
+          retention-days: 30
+  tests_webkit:
+    if: ${{ always() }}
+    needs: [tests_chromium, tests_firefox]
+    environment: PRE
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run regression tests for webkit
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+        run: npx playwright test --project=webkit -gv 'PERF'
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report-webkit
+          path: playwright-report/
+          retention-days: 30
