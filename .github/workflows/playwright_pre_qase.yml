@@ -1,4 +1,4 @@
-name: Penpot Regression Tests on PRE env
+name: Penpot Regression Tests on PRE env Qase
 on:
   workflow_dispatch:
     inputs:
