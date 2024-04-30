@@ -224,7 +224,7 @@ exports.BasePage = class BasePage {
 
   async refreshPage() {
     await this.page.reload();
-    await this.page.waitForTimeout(3000)
+    await this.page.waitForTimeout(5000)
   }
 
   async deleteLayerViaRightClick() {
