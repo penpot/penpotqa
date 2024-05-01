@@ -39,7 +39,7 @@ test.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase(1,'PF-68 Add fill to board'), async ({ page }) => {
+  mainTest(qase(786,'PF-68 Add fill to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.isFillHexCodeSet('FFFFFF');
@@ -60,7 +60,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('board-changed-fill.png');
   });
 
-  mainTest('PF-78 Change fill opacity for board', async ({ page }) => {
+  mainTest(qase(796,'PF-78 Change fill opacity for board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeOpacityForFill('70');
@@ -73,7 +73,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-93 Remove fill for board', async ({ page }) => {
+  mainTest(qase(811,'PF-93 Remove fill for board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickRemoveFillButton();
@@ -89,7 +89,7 @@ test.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest('PF-72 Add fill to path', async ({ page }) => {
+  mainTest(qase(790,'PF-72 Add fill to path'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddFillButton();
@@ -99,7 +99,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('path-fill.png');
   });
 
-  mainTest('PF-77 Change fill color for path', async ({ page }) => {
+  mainTest(qase(795,'PF-77 Change fill color for path'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -114,7 +114,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('path-changed-fill.png');
   });
 
-  mainTest('PF-82 Change fill opacity for path', async ({ page }) => {
+  mainTest(qase(800,'PF-82 Change fill opacity for path'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddFillButton();
@@ -126,7 +126,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('path-changed-opacity.png');
   });
 
-  mainTest('PF-97 Remove fill for path', async ({ page }) => {
+  mainTest(qase(815,'PF-97 Remove fill for path'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddFillButton();
@@ -147,7 +147,7 @@ test.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest('PF-69 Add fill to shape', async ({ page }) => {
+  mainTest(qase(787,'PF-69 Add fill to shape'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.isFillHexCodeSet('B1B2B5');
@@ -155,7 +155,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('rectangle-fill.png');
   });
 
-  mainTest('PF-79 Change fill opacity for shape', async ({ page }) => {
+  mainTest(qase(797,'PF-79 Change fill opacity for shape'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeOpacityForFill('70');
@@ -167,7 +167,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-94 Remove fill for shape', async ({ page }) => {
+  mainTest(qase(812,'PF-94 Remove fill for shape'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickRemoveFillButton();
@@ -177,7 +177,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-74 Change fill color for shape', async ({ page }) => {
+  mainTest(qase(792,'PF-74 Change fill color for shape'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);

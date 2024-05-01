@@ -9,6 +9,7 @@ const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -60,7 +61,7 @@ test.afterEach(async ({}, testInfo) => {
 });
 
 mainTest(
-  'PENPOT-1303 Check main components in Library backup',
+  qase(1303,'PENPOT-1303 Check main components in Library backup'),
   async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -70,7 +71,7 @@ mainTest(
 );
 
 mainTest(
-  'PENPOT-1370 Rename Library backup page',
+  qase(1370,'PENPOT-1370 Rename Library backup page'),
   async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await mainPage.renamePageViaRightClick('Test', false);
@@ -82,7 +83,7 @@ mainTest(
 );
 
 mainTest(
-  'PENPOT-1371 Add/Delete main components from Library backup page',
+  qase(1371,'PENPOT-1371 Add/Delete main components from Library backup page'),
   async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
@@ -108,7 +109,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'PENPOT-1372 Restore components, that were deleted from library backup',
+    qase(1372,'PENPOT-1372 Restore components, that were deleted from library backup'),
     async ({ browserName }) => {
       await mainPage.clickShortcutCtrlZ(browserName);
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -119,7 +120,7 @@ test.describe(() => {
 });
 
 mainTest(
-  'PENPOT-1373 Delete Library backup page',
+  qase(1373,'PENPOT-1373 Delete Library backup page'),
   async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await mainPage.deleteSecondPageViaRightClick();
@@ -132,7 +133,7 @@ mainTest(
 );
 
 mainTest(
-  'PENPOT-1374 Duplicate Library backup page',
+  qase(1374,'PENPOT-1374 Duplicate Library backup page'),
   async () => {
     await mainPage.clickOnPageOnLayersPanel(false);
     await mainPage.duplicatePageViaRightClick(false);
@@ -144,7 +145,7 @@ mainTest(
 );
 
 mainTest(
-  'PENPOT-1516 Check Library backup file in case of unpublishing a few shared libraries',
+  qase(1516,'PENPOT-1516 Check Library backup file in case of unpublishing a few shared libraries'),
   async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 20000);
 

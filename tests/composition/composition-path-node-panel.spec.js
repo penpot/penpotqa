@@ -5,6 +5,7 @@ const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -38,7 +39,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-329 Add nodes via Node panel and SHIFT PLUS shortcut',
+    qase(544,'CO-329 Add nodes via Node panel and SHIFT PLUS shortcut'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.holdShiftKeyboardButton();
@@ -59,7 +60,7 @@ test.describe(() => {
   );
 
   mainTest(
-    'CO-330 Delete node via Node panel and Del shortcut',
+    qase(545,'CO-330 Delete node via Node panel and Del shortcut'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.clickFirstNode();
@@ -74,7 +75,7 @@ test.describe(() => {
   );
 
   mainTest(
-    'CO-332 Merge nodes via Node panel and CTRL J shortcut',
+    qase(547,'CO-332 Merge nodes via Node panel and CTRL J shortcut'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.holdShiftKeyboardButton();
@@ -96,7 +97,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-333 Join nodes via Node panel and J shortcut', async ({ page }) => {
+  mainTest(qase(548,'CO-333 Join nodes via Node panel and J shortcut'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickDrawNodesButtonOnNodePanel();
     await mainPage.clickViewportByCoordinates(600, 200, 2);
@@ -121,7 +122,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-334 Separate nodes via Node panel and K shortcut',
+    qase(549,'CO-334 Separate nodes via Node panel and K shortcut'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.holdShiftKeyboardButton();
@@ -146,7 +147,7 @@ test.describe(() => {
   );
 
   mainTest(
-    'CO-335 To corner via Node panel and X shortcut - single node',
+    qase(550,'CO-335 To corner via Node panel and X shortcut - single node'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.clickFirstNode();
@@ -166,7 +167,7 @@ test.describe(() => {
 });
 
 mainTest(
-  'CO-337 To curve via Node panel and C shortcut - single node',
+  qase(552,'CO-337 To curve via Node panel and C shortcut - single node'),
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateRectangleButton();

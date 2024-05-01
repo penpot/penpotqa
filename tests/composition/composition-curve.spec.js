@@ -7,6 +7,7 @@ const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -32,7 +33,7 @@ test.describe(() => {
   // All tests in this describe group will get 2 retry attempts.
   test.describe.configure({ retries: 2 });
 
-  mainTest('CO-268 Create curve line from toolbar', async ({ page }) => {
+  mainTest(qase(483,'CO-268 Create curve line from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateCurveButton();
     await mainPage.drawCurve(900, 300, 600, 200);
@@ -42,7 +43,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-270 Rename path, that was created with curve with valid name',
+    qase(485,'CO-270 Rename path, that was created with curve with valid name'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
