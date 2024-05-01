@@ -7,6 +7,7 @@ const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -45,7 +46,7 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest('FL-1 Add flex layout to board from rightclick', async ({ page }) => {
+  mainTest(qase(607,'FL-1 Add flex layout to board from rightclick'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -58,7 +59,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('FL-2 Add flex layout to board from shortcut', async ({ page }) => {
+  mainTest(qase(608,'FL-2 Add flex layout to board from shortcut'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -72,7 +73,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'FL-4 Remove flex layout from board from rightclick',
+    qase(610,'FL-4 Remove flex layout from board from rightclick'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -89,7 +90,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('FL-5 Remove flex layout from board from shortcut', async ({ page }) => {
+  mainTest(qase(611,'FL-5 Remove flex layout from board from shortcut'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -105,7 +106,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'FL-6 Remove flex layout from board from Design panel',
+    qase(612,'FL-6 Remove flex layout from board from Design panel'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -122,7 +123,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('FL-7 Change direction', async ({ page }) => {
+  mainTest(qase(613,'FL-7 Change direction'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -158,7 +159,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('FL-9 Change alignment', async ({ page }) => {
+  mainTest(qase(615,'FL-9 Change alignment'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -183,7 +184,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('FL-10 Change justification', async ({ page }) => {
+  mainTest(qase(616,'FL-10 Change justification'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -232,7 +233,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('FL-12 Change column gap', async ({ page }) => {
+  mainTest(qase(618,'FL-12 Change column gap'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -257,7 +258,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('FL-13 Change row gap', async ({ page }) => {
+  mainTest(qase(619,'FL-13 Change row gap'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -284,7 +285,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('FL-14 Change single padding', async ({ page }) => {
+  mainTest(qase(620,'FL-14 Change single padding'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -317,7 +318,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('FL-15 Change multiple padding', async ({ page }) => {
+  mainTest(qase(621,'FL-15 Change multiple padding'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -365,7 +366,7 @@ test.describe(() => {
     );
   });
 
-  mainTest.skip('FL-21 Flex elements change - alignment', async ({ page }) => {
+  mainTest.skip(qase(627,'FL-21 Flex elements change - alignment'), async ({ page }) => {
     // todo bug 6389 > need to update after fix
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -398,7 +399,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('FL-22 Flex elements - change margin single', async ({ page }) => {
+  mainTest(qase(628,'FL-22 Flex elements - change margin single'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -455,7 +456,7 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest('FL-37 Set margins and padding to 0', async ({ page }) => {
+  mainTest(qase(643,'FL-37 Set margins and padding to 0'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeLayoutPadding('Vertical', '0');
@@ -481,7 +482,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('FL-39 Gap click highlight', async ({ page }) => {
+  mainTest(qase(645,'FL-39 Gap click highlight'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeLayoutColumnGap('20');
@@ -496,7 +497,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'FL-42 Use absolute position and look if element still inside a board',
+    qase(647,'FL-42 Use absolute position and look if element still inside a board'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);

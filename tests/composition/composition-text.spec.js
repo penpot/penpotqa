@@ -9,6 +9,7 @@ const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -37,13 +38,13 @@ test.describe(() => {
     await mainPage.createDefaultTextLayer(browserName);
   });
 
-  mainTest('CO-162 Create a text from toolbar', async ({ page }) => {
+  mainTest(qase(377,'CO-162 Create a text from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text.png');
   });
 
-  mainTest('CO-165 Add rotation to text', async ({ page }) => {
+  mainTest(qase(380,'CO-165 Add rotation to text'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
@@ -61,7 +62,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-166 Add, hide, unhide, change type and delete Shadow to Text',
+    qase(381,'CO-166 Add, hide, unhide, change type and delete Shadow to Text'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
@@ -105,7 +106,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-167 Add and edit Shadow to text', async ({ page }) => {
+  mainTest(qase(382,'CO-167 Add and edit Shadow to text'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -126,7 +127,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png');
   });
 
-  mainTest('CO-169 Add, hide, unhide and delete Blur to text', async ({ page }) => {
+  mainTest(qase(384,'CO-169 Add, hide, unhide and delete Blur to text'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -155,7 +156,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-170 Add and edit Blur to text', async ({ page }) => {
+  mainTest(qase(385,'CO-170 Add and edit Blur to text'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddBlurButton();
@@ -164,7 +165,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('text-blur.png');
   });
 
-  mainTest('CO-171 Add, edit and delete Stroke to Text', async ({ page }) => {
+  mainTest(qase(386,'CO-171 Add, edit and delete Stroke to Text'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddStrokeButton();
@@ -217,21 +218,21 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-173-1 Delete text via rightclick', async ({ page }) => {
+  mainTest(qase(388,'CO-173-1 Delete text via rightclick'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest('CO-173-2 Delete text via shortcut Del', async ({ page }) => {
+  mainTest(qase(388,'CO-173-2 Delete text via shortcut Del'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest('CO-177 Rename text with valid name', async ({ page }) => {
+  mainTest(qase(392,'CO-177 Rename text with valid name'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('Hello World!');
@@ -240,7 +241,7 @@ test.describe(() => {
     await layersPanelPage.isLayerNameDisplayed('renamed text');
   });
 
-  mainTest('CO-209 Change text uppercase, lowercase', async ({ page }) => {
+  mainTest(qase(424,'CO-209 Change text uppercase, lowercase'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeTextCase('Upper');
@@ -254,7 +255,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('text-lower-case.png');
   });
 
-  mainTest('CO-210 Change alignment', async ({ page }) => {
+  mainTest(qase(425,'CO-210 Change alignment'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
@@ -269,7 +270,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('text-align-top.png');
   });
 
-  mainTest('CO-212 Change RTL/LTR', async ({ page }) => {
+  mainTest(qase(427,'CO-212 Change RTL/LTR'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeTextDirection('RTL');
@@ -285,7 +286,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-216 Change text color and opacity by typing color code, PENPOT-1753 Check text color in inspect mode',
+    qase(431,'CO-216 Change text color and opacity by typing color code, PENPOT-1753 Check text color in inspect mode'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const colorPalettePage = new ColorPalettePage(page);
@@ -304,7 +305,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-219 Selection to board', async ({ page }) => {
+  mainTest(qase(434,'CO-219 Selection to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();

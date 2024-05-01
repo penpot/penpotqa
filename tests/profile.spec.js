@@ -4,8 +4,9 @@ const { random } = require('../helpers/string-generator');
 const { LoginPage } = require('../pages/login-page');
 const { expect, test } = require('@playwright/test');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
-mainTest('PR-1 Edit profile name', async ({ page }) => {
+mainTest(qase(187,'PR-1 Edit profile name'), async ({ page }) => {
   const newName = random();
   const profilePage = new ProfilePage(page);
   await profilePage.openYourAccountPage();
@@ -15,7 +16,7 @@ mainTest('PR-1 Edit profile name', async ({ page }) => {
   await profilePage.isAccountNameDisplayed(newName);
 });
 
-mainTest('PR-9 Add profile picture jpeg', async ({ page }) => {
+mainTest(qase(195,'PR-9 Add profile picture jpeg'), async ({ page }) => {
   const profilePage = new ProfilePage(page);
   await profilePage.openYourAccountPage();
   await profilePage.isHeaderDisplayed('Your account');
@@ -37,7 +38,7 @@ mainTest('PR-9 Add profile picture jpeg', async ({ page }) => {
   );
 });
 
-mainTest('PR-12 Change password to invalid', async ({ page }) => {
+mainTest(qase(198,'PR-12 Change password to invalid'), async ({ page }) => {
   const newPassword = '1234567';
   const profilePage = new ProfilePage(page);
   await profilePage.openYourAccountPage();
@@ -53,7 +54,7 @@ mainTest('PR-12 Change password to invalid', async ({ page }) => {
 });
 
 mainTest(
-  'PR-16 Fail to change password confirmation does not match',
+  qase(202,'PR-16 Fail to change password confirmation does not match'),
   async ({ page }) => {
     const profilePage = new ProfilePage(page);
     await profilePage.openYourAccountPage();
@@ -69,14 +70,14 @@ mainTest(
   },
 );
 
-mainTest('PR-19 Logout from Account', async ({ page }) => {
+mainTest(qase(205,'PR-19 Logout from Account'), async ({ page }) => {
   const profilePage = new ProfilePage(page);
   const loginPage = new LoginPage(page);
   await profilePage.logout();
   await loginPage.isLoginPageOpened();
 });
 
-mainTest('PR-21 Send feedback email with empty fields', async ({ page }) => {
+mainTest(qase(207,'PR-21 Send feedback email with empty fields'), async ({ page }) => {
   const profilePage = new ProfilePage(page);
   await profilePage.openGiveFeedbackPage();
   await profilePage.isHeaderDisplayed('Your account');
@@ -90,7 +91,7 @@ mainTest('PR-21 Send feedback email with empty fields', async ({ page }) => {
   await profilePage.isSendFeedbackButtonDisabled();
 });
 
-mainTest('PR-22 Send feedback email with valid data', async ({ page }) => {
+mainTest(qase(208,'PR-22 Send feedback email with valid data'), async ({ page }) => {
   const profilePage = new ProfilePage(page);
   await profilePage.openGiveFeedbackPage();
   await profilePage.isHeaderDisplayed('Your account');

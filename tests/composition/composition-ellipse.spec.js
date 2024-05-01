@@ -8,6 +8,7 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -38,13 +39,13 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest('CO-112 Create an ellipse from toolbar', async ({ page }) => {
+  mainTest(qase(327,'CO-112 Create an ellipse from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('ellipse.png');
   });
 
-  mainTest('CO-114 Rename ellipse with valid name', async ({ page }) => {
+  mainTest(qase(329,'CO-114 Rename ellipse with valid name'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('Ellipse');
@@ -54,7 +55,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-117 Add, hide, unhide, change type and delete Shadow to ellipse',
+    qase(332,'CO-117 Add, hide, unhide, change type and delete Shadow to ellipse'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
@@ -101,7 +102,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-118 Add and edit Shadow to ellipse', async ({ page }) => {
+  mainTest(qase(333,'CO-118 Add and edit Shadow to ellipse'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -124,7 +125,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-119 Add, hide, unhide and delete Blur to ellipse',
+    qase(334,'CO-119 Add, hide, unhide and delete Blur to ellipse'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const colorPalettePage = new ColorPalettePage(page);
@@ -155,7 +156,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-120 Add and edit Blur to ellipse', async ({ page }) => {
+  mainTest(qase(335,'CO-120 Add and edit Blur to ellipse'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddBlurButton();
@@ -164,7 +165,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur.png');
   });
 
-  mainTest('CO-121 Add, edit and delete Stroke to ellipse', async ({ page }) => {
+  mainTest(qase(336,'CO-121 Add, edit and delete Stroke to ellipse'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddStrokeButton();
@@ -247,7 +248,7 @@ test.describe(() => {
 
   mainTest.skip(
     // todo bug 6359 > need to update after fix
-    "CO-126 Click 'Focus off' ellipse from shortcut F",
+    qase(341,"CO-126 Click 'Focus off' ellipse from shortcut F"),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -268,7 +269,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-136-1 Delete ellipse via rightclick', async ({ page }) => {
+  mainTest(qase(351,'CO-136-1 Delete ellipse via rightclick'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
@@ -276,7 +277,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest('CO-136-2 Delete ellipse via shortcut Del', async ({ page }) => {
+  mainTest(qase(351,'CO-136-2 Delete ellipse via shortcut Del'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();
@@ -284,7 +285,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest('CO-138 Add rotation to ellipse', async ({ page }) => {
+  mainTest(qase(353,'CO-138 Add rotation to ellipse'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
@@ -301,7 +302,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('ellipse-rotated-359.png');
   });
 
-  mainTest('CO-154 Transform ellipse to path', async ({ page }) => {
+  mainTest(qase(369,'CO-154 Transform ellipse to path'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.transformToPathViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -310,7 +311,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-161 Selection to board', async ({ page }) => {
+  mainTest(qase(376,'CO-161 Selection to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();

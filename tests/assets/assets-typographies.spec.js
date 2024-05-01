@@ -6,6 +6,7 @@ const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -27,14 +28,14 @@ test.afterEach(async ({ page },testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest('AS-37 Filter Typographies from All Assets drop-down', async ({ page }) => {
+mainTest(qase(947,'AS-37 Filter Typographies from All Assets drop-down'), async ({ page }) => {
   const assetsPanelPage = new AssetsPanelPage(page);
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.selectTypeFromAllAssetsDropdown('Typographies');
   await assetsPanelPage.isAssetsSectionNameDisplayed('Typographies', '0');
 });
 
-mainTest('AS-38 Typographic styles - add from Assets panel', async ({ page }) => {
+mainTest(qase(948,'AS-38 Typographic styles - add from Assets panel'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
   await assetsPanelPage.clickAssetsTab();
@@ -65,7 +66,7 @@ test.describe(() => {
     await assetsPanelPage.minimizeFileLibraryTypography();
   });
 
-  mainTest('AS-40 Typographic styles - edit', async ({ page }) => {
+  mainTest(qase(950,'AS-40 Typographic styles - edit'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.editFileLibraryTypography();
@@ -88,7 +89,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('AS-41 Typographic styles - rename', async ({ page }) => {
+  mainTest(qase(951,'AS-41 Typographic styles - rename'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.renameFileLibraryTypography('Test Font');
@@ -104,7 +105,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('AS-42 Typographic styles - delete', async ({ page }) => {
+  mainTest(qase(952,'AS-42 Typographic styles - delete'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.deleteFileLibraryTypography();
@@ -114,7 +115,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('AS-43 Typographic styles - create group', async ({ page }) => {
+  mainTest(qase(953,'AS-43 Typographic styles - create group'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.createGroupFileLibraryAssets('Typographies', 'Test Group');
@@ -125,7 +126,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('AS-45 Typographic styles - rename group', async ({ page }) => {
+  mainTest(qase(955,'AS-45 Typographic styles - rename group'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.createGroupFileLibraryAssets('Typographies', 'Test Group');
@@ -138,7 +139,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('AS-48 Typographic styles - ungroup', async ({ page }) => {
+  mainTest(qase(958,'AS-48 Typographic styles - ungroup'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.createGroupFileLibraryAssets('Typographies', 'Test Group');
@@ -152,7 +153,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'AS-50 Typographic styles - apply style to text from Assets panel',
+    qase(960,'AS-50 Typographic styles - apply style to text from Assets panel'),
     async ({ page, browserName }) => {
       const mainPage = new MainPage(page);
       const assetsPanelPage = new AssetsPanelPage(page);
@@ -175,7 +176,7 @@ test.describe(() => {
   );
 
   mainTest(
-    'AS-54 Typographic styles - apply style to text from Typographies panel',
+    qase(964,'AS-54 Typographic styles - apply style to text from Typographies panel'),
     async ({ page, browserName }) => {
       const mainPage = new MainPage(page);
       const assetsPanelPage = new AssetsPanelPage(page);

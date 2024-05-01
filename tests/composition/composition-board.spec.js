@@ -8,6 +8,7 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -29,7 +30,7 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest('CO-1 Change color background', async ({ page }) => {
+mainTest(qase(216,'CO-1 Change color background'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
@@ -49,7 +50,7 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest('CO-2 Create a board from toolbar', async ({ page }) => {
+  mainTest(qase(217,'CO-2 Create a board from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board.png', {
@@ -57,7 +58,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-4 Rename board with valid name', async ({ page }) => {
+  mainTest(qase(219,'CO-4 Rename board with valid name'), async ({ page }) => {
     const newName = 'New test board';
     const renamedName = 'renamed board';
     const mainPage = new MainPage(page);
@@ -74,7 +75,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-9 Add, hide, unhide, change type and delete Shadow to board',
+    qase(224,'CO-9 Add, hide, unhide, change type and delete Shadow to board'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
@@ -121,7 +122,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-10 Add and edit Shadow to board', async ({ page }) => {
+  mainTest(qase(225,'CO-10 Add and edit Shadow to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -146,7 +147,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-12 Add, hide, unhide and delete Blur to board', async ({ page }) => {
+  mainTest(qase(227,'CO-12 Add, hide, unhide and delete Blur to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -175,7 +176,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-13 Add and edit Blur to board', async ({ page }) => {
+  mainTest(qase(228,'CO-13 Add and edit Blur to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddBlurButton();
@@ -186,7 +187,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-14 Add, edit and delete Stroke to board', async ({ page }) => {
+  mainTest(qase(229,'CO-14 Add, edit and delete Stroke to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddStrokeButton();
@@ -268,7 +269,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-25-1 Delete board via rightclick', async ({ page }) => {
+  mainTest(qase(240,'CO-25-1 Delete board via rightclick'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
@@ -276,7 +277,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest('CO-25-2 Delete board via shortcut Del', async ({ page }) => {
+  mainTest(qase(240,'CO-25-2 Delete board via shortcut Del'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();
@@ -284,7 +285,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest('CO-28 Add rotation to board', async ({ page }) => {
+  mainTest(qase(243,'CO-28 Add rotation to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
@@ -301,7 +302,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('board-rotated-359.png');
   });
 
-  mainTest('CO-29 Change border radius multiple values', async ({ page }) => {
+  mainTest(qase(244,'CO-29 Change border radius multiple values'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickIndividualCornersRadiusButton();
@@ -318,7 +319,7 @@ test.describe(() => {
   });
 
   mainTest.skip(
-    "CO-56 Click 'Focus off' board from shortcut F",
+    qase(271,"CO-56 Click 'Focus off' board from shortcut F"),
     async ({ page }) => {
       // todo bug 6359 > need to update after fix
       const mainPage = new MainPage(page);
@@ -339,7 +340,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-411 Search board - ignore case', async ({ page }) => {
+  mainTest(qase(604,'CO-411 Search board - ignore case'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await mainPage.doubleClickCreatedBoardTitleOnCanvas();
@@ -350,7 +351,7 @@ test.describe(() => {
     await layersPanelPage.isLayerSearched('Test');
   });
 
-  mainTest('PENPOT-1756 Absolute positioned board moving', async ({ page }) => {
+  mainTest(qase(1756,'PENPOT-1756 Absolute positioned board moving'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -402,7 +403,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-33 Zoom to board by double click board icon on the list',
+    qase(248,'CO-33 Zoom to board by double click board icon on the list'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -420,7 +421,7 @@ test.describe(() => {
   );
 
   mainTest(
-    'CO-34 Hide and show board from rightclick and icons',
+    qase(249,'CO-34 Hide and show board from rightclick and icons'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -450,7 +451,7 @@ test.describe(() => {
   );
 
   mainTest.skip(
-    "CO-53 Click 'Focus on' board from right click",
+    qase(268,"CO-53 Click 'Focus on' board from right click"),
     async ({ page }) => {
       // todo bug 6359 > need to update after fix
       const mainPage = new MainPage(page);
