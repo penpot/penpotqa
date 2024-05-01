@@ -7,6 +7,7 @@ const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 
 const teamName = random().concat('autotest');
@@ -38,7 +39,7 @@ test.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest('PF-68 Add fill to board', async ({ page }) => {
+  mainTest(qase(1,'PF-68 Add fill to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.isFillHexCodeSet('FFFFFF');
@@ -46,7 +47,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('board-fill.png');
   });
 
-  mainTest('PF-73 Change fill color for board', async ({ page }) => {
+  mainTest(qase(791,'PF-73 Change fill color for board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
