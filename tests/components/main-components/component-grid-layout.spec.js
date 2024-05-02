@@ -166,7 +166,8 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('board-from-library-file.png');
 
     await mainPage.showMainComponentViaRightClick();
-    const newPage = await page.waitForEvent('popup');
+    const newPage = await page.context().waitForEvent('page');
+    await page.waitForTimeout(1000);
     await expect(newPage).toHaveScreenshot('board-component-on-first-file.png', {
       mask: [mainPage.usersSection],
     });
