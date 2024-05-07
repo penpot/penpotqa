@@ -8,6 +8,7 @@ const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page'
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -31,7 +32,7 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest('PENPOT-1497 Delete copy component from DEL button', async () => {
+mainTest(qase(1497,'PENPOT-1497 Delete copy component from DEL button'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();

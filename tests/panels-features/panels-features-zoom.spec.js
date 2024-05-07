@@ -5,6 +5,7 @@ const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -26,7 +27,7 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest('PF-132 Zoom via top right menu', async ({ page }) => {
+mainTest(qase(850,'PF-132 Zoom via top right menu'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.increaseZoom(1);
   await mainPage.clickViewportOnce();
@@ -40,7 +41,7 @@ mainTest('PF-132 Zoom via top right menu', async ({ page }) => {
   });
 });
 
-mainTest('PF-134 Reset zoom via top right menu', async ({ page }) => {
+mainTest(qase(852,'PF-134 Reset zoom via top right menu'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.increaseZoom(1);
   await mainPage.clickViewportOnce();
@@ -53,7 +54,7 @@ mainTest('PF-134 Reset zoom via top right menu', async ({ page }) => {
   });
 });
 
-mainTest('PF-136 Zoom to fit all via top right menu', async ({ page }) => {
+mainTest(qase(854,'PF-136 Zoom to fit all via top right menu'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
@@ -69,7 +70,7 @@ mainTest('PF-136 Zoom to fit all via top right menu', async ({ page }) => {
   });
 });
 
-mainTest('PF-138 Zoom to selected via top right menu', async ({ page }) => {
+mainTest(qase(856,'PF-138 Zoom to selected via top right menu'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportByCoordinates(900, 100);

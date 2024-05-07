@@ -8,6 +8,7 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -38,13 +39,13 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest('CO-221 Import PNG image', async ({ page }) => {
+  mainTest(qase(436,'CO-221 Import PNG image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('image-png.png');
   });
 
-  mainTest('CO-225 Rename image with valid name', async ({ page }) => {
+  mainTest(qase(440,'CO-225 Rename image with valid name'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('images');
@@ -54,7 +55,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'CO-227 Add, hide, unhide, change type and delete Shadow to image',
+    qase(442,'CO-227 Add, hide, unhide, change type and delete Shadow to image'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
@@ -101,7 +102,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-228 Add and edit Shadow to image', async ({ page }) => {
+  mainTest(qase(443,'CO-228 Add and edit Shadow to image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -122,7 +123,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('image-inner-shadow.png');
   });
 
-  mainTest('CO-244 Change border radius multiple values', async ({ page }) => {
+  mainTest(qase(459,'CO-244 Change border radius multiple values'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickIndividualCornersRadiusButton();
@@ -134,7 +135,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('image-png.png');
   });
 
-  mainTest('CO-267 Selection to board', async ({ page }) => {
+  mainTest(qase(482,'CO-267 Selection to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -151,13 +152,13 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest('CO-220 Import JPEG image', async ({ page }) => {
+  mainTest(qase(435,'CO-220 Import JPEG image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('image-jpeg.png');
   });
 
-  mainTest('CO-229 Add, hide, unhide and delete Blur to image', async ({ page }) => {
+  mainTest(qase(444,'CO-229 Add, hide, unhide and delete Blur to image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddBlurButton();
@@ -182,7 +183,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-231 Add, edit and delete Stroke to image', async ({ page }) => {
+  mainTest(qase(446,'CO-231 Add, edit and delete Stroke to image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddStrokeButton();
@@ -253,7 +254,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-242-1 Delete image via rightclick', async ({ page }) => {
+  mainTest(qase(457,'CO-242-1 Delete image via rightclick'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
@@ -261,7 +262,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest('CO-245 Change border radius one value', async ({ page }) => {
+  mainTest(qase(460,'CO-245 Change border radius one value'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeGeneralCornerRadiusForLayer('30');
@@ -278,7 +279,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('image-corners-0.png');
   });
 
-  mainTest('CO-412 Add rotation to image', async ({ page }) => {
+  mainTest(qase(1270,'CO-412 Add rotation to image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
@@ -295,7 +296,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('image-rotated-359.png');
   });
 
-  mainTest('CO-259 Flip Vertical and Flip Horizontal image', async ({ page }) => {
+  mainTest(qase(474,'CO-259 Flip Vertical and Flip Horizontal image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.flipVerticalViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -322,12 +323,12 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest('CO-222 Import GIF image', async ({ page }) => {
+  mainTest(qase(437,'CO-222 Import GIF image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest('CO-242-2 Delete image via shortcut Del', async ({ page }) => {
+  mainTest(qase(457,'CO-242-2 Delete image via shortcut Del'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();

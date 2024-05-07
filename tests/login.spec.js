@@ -2,8 +2,9 @@ const { test } = require('@playwright/test');
 const { LoginPage } = require('../pages/login-page');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
-test('ON-8 Login with an email address', async ({ page }) => {
+test(qase(35,'ON-8 Login with an email address'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.acceptCookie();
@@ -14,7 +15,7 @@ test('ON-8 Login with an email address', async ({ page }) => {
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
-test('ON-13 Login with invalid email address', async ({ page }) => {
+test(qase(40,'ON-13 Login with invalid email address'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.acceptCookie();
@@ -25,7 +26,7 @@ test('ON-13 Login with invalid email address', async ({ page }) => {
   await loginPage.isLoginButtonDisabled();
 });
 
-test('ON-14 Login with no password', async ({ page }) => {
+test(qase(41,'ON-14 Login with no password'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);
@@ -35,7 +36,7 @@ test('ON-14 Login with no password', async ({ page }) => {
   await loginPage.isLoginButtonDisabled();
 });
 
-test('ON-15 Login with incorrect password', async ({ page }) => {
+test(qase(42,'ON-15 Login with incorrect password'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.enterEmail(process.env.LOGIN_EMAIL);

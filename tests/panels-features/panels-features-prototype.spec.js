@@ -7,6 +7,7 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { PrototypePanelPage } = require('../../pages/workspace/prototype-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -40,7 +41,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'PF-139 Add connector between 2 boards via mouse drag',
+    qase(857,'PF-139 Add connector between 2 boards via mouse drag'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const prototypePanelPage = new PrototypePanelPage(page);
@@ -54,7 +55,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('PF-143 Add Interaction via Prototype panel', async ({ page }) => {
+  mainTest(qase(861,'PF-143 Add Interaction via Prototype panel'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await prototypePanelPage.clickAddInteractionButton();
@@ -65,7 +66,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('PF-144 Remove Interaction via Prototype panel', async ({ page }) => {
+  mainTest(qase(862,'PF-144 Remove Interaction via Prototype panel'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await prototypePanelPage.clickAddInteractionButton();
@@ -79,7 +80,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('PF-152 Add 2nd Flow', async ({ page }) => {
+  mainTest(qase(870,'PF-152 Add 2nd Flow'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(200, 600);
@@ -93,7 +94,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('PF-154 Rename flow', async ({ page }) => {
+  mainTest(qase(872,'PF-154 Rename flow'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await prototypePanelPage.renameFlow('qa');
@@ -104,7 +105,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('PF-155 Delete flow', async ({ page }) => {
+  mainTest(qase(873,'PF-155 Delete flow'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await prototypePanelPage.clickRemoveFlowButton();
@@ -116,7 +117,7 @@ test.describe(() => {
   });
 });
 
-mainTest('PF-147 Change destination via Prototype panel', async ({ page }) => {
+mainTest(qase(865,'PF-147 Change destination via Prototype panel'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const prototypePanelPage = new PrototypePanelPage(page);
   const layersPanelPage = new LayersPanelPage(page);

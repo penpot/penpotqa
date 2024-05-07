@@ -8,6 +8,7 @@ const { random } = require('../../helpers/string-generator');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -29,7 +30,7 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest('CP-1 Open color picker from Stroke menu', async ({ page }) => {
+mainTest(qase(1029,'CP-1 Open color picker from Stroke menu'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
@@ -38,7 +39,7 @@ mainTest('CP-1 Open color picker from Stroke menu', async ({ page }) => {
   await colorPalettePage.isColorPalettePopUpOpened();
 });
 
-mainTest('CP-2 Open color picker from Fill menu', async ({ page }) => {
+mainTest(qase(1030,'CP-2 Open color picker from Fill menu'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const designPanelPage = new DesignPanelPage(page);
   const colorPalettePage = new ColorPalettePage(page);
@@ -49,14 +50,14 @@ mainTest('CP-2 Open color picker from Fill menu', async ({ page }) => {
   await colorPalettePage.isColorPalettePopUpOpened();
 });
 
-mainTest('CP-3 Open color picker from Canvas background menu', async ({ page }) => {
+mainTest(qase(1031,'CP-3 Open color picker from Canvas background menu'), async ({ page }) => {
   const designPanelPage = new DesignPanelPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   await designPanelPage.clickCanvasBackgroundColorIcon();
   await colorPalettePage.isColorPalettePopUpOpened();
 });
 
-mainTest('CP-7 Use Recent colors', async ({ page }) => {
+mainTest(qase(1035,'CP-7 Use Recent colors'), async ({ page }) => {
   const color1 = '#FF0000';
   const color2 = '#B1B2B5';
   const mainPage = new MainPage(page);
@@ -80,7 +81,7 @@ mainTest('CP-7 Use Recent colors', async ({ page }) => {
   await expect(mainPage.createdLayer).toHaveScreenshot('board-recent-color.png');
 });
 
-mainTest('CP-8 Use colors from File library', async ({ page }) => {
+mainTest(qase(1036,'CP-8 Use colors from File library'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
@@ -102,7 +103,7 @@ mainTest('CP-8 Use colors from File library', async ({ page }) => {
   );
 });
 
-mainTest('CP-17 Open Color palette from shortcut', async ({ page }) => {
+mainTest(qase(1045,'CP-17 Open Color palette from shortcut'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
@@ -127,7 +128,7 @@ mainTest('CP-17 Open Color palette from shortcut', async ({ page }) => {
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest('CP-18 Open Color palette from toolbar', async ({ page }) => {
+mainTest(qase(1046,'CP-18 Open Color palette from toolbar'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const designPanelPage = new DesignPanelPage(page);
@@ -151,7 +152,7 @@ mainTest('CP-18 Open Color palette from toolbar', async ({ page }) => {
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest('CP-20 Choose file library colors', async ({ page }) => {
+mainTest(qase(1048,'CP-20 Choose file library colors'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const colorPalettePage = new ColorPalettePage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
@@ -181,7 +182,7 @@ mainTest('CP-20 Choose file library colors', async ({ page }) => {
 });
 
 mainTest(
-  'CP-21 Click any layer and change Fill color from palette',
+  qase(1049,'CP-21 Click any layer and change Fill color from palette'),
   async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
@@ -215,7 +216,7 @@ mainTest(
 );
 
 mainTest(
-  'CP-26 Open color picker from add or edit color in assets',
+  qase(1054,'CP-26 Open color picker from add or edit color in assets'),
   async ({ page }) => {
     const assetsPanelPage = new AssetsPanelPage(page);
     const colorPalettePage = new ColorPalettePage(page);
