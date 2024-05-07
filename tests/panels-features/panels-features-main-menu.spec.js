@@ -104,8 +104,7 @@ mainTest(qase(819,'PF-101 Hide/show color palette - file library check'), async 
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest.skip(qase(820,'PF-102 Hide/show board names'), async ({ page }) => {
-  // todo bug 6365 > need to check after fix
+mainTest(qase(820,'PF-102 Hide/show board names'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();

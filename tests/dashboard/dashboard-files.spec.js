@@ -140,21 +140,19 @@ mainTest(
   },
 );
 
-mainTest.skip(qase(71,'DA-17 Import file to Drafts .penpot'), async ({ page }) => {
+mainTest(qase(71,'DA-17 Import file to Drafts .penpot'), async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage(
-    // todo issue 6390 > need to check after fix
     'documents/QA test file.penpot',
   );
-  await dashboardPage.isFilePresent('Wireframing kit'); // todo: issue 5596
+  await dashboardPage.isFilePresent('QA test file');
 });
 
-mainTest.skip(qase(72,'DA-18 Import file to Drafts svgjson'), async ({ page }) => {
+mainTest(qase(72,'DA-18 Import file to Drafts svg json'), async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage(
-    // todo issue 6390 > need to check after fix
     'documents/QA test zip file.zip',
   );
   await dashboardPage.isFilePresent('Wireframing kit');
