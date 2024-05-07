@@ -7,6 +7,7 @@ const { TeamPage } = require('../../../pages/dashboard/team-page');
 const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -27,7 +28,7 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest('Undo deleted component', async ({ page, browserName }) => {
+mainTest(qase(1295,'Undo deleted component'), async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
@@ -40,7 +41,7 @@ mainTest('Undo deleted component', async ({ page, browserName }) => {
   );
 });
 
-mainTest('Delete component Assets tab', async ({ page }) => {
+mainTest(qase(1456,'Delete component Assets tab'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -57,7 +58,7 @@ mainTest('Delete component Assets tab', async ({ page }) => {
   );
 });
 
-mainTest('Restore main component from context menu', async ({ page }) => {
+mainTest(qase(1345,'Restore main component from context menu'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const layersPanelPage = new LayersPanelPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);

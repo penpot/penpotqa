@@ -8,6 +8,7 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -38,7 +39,7 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest('CO-59 Create a rectangle from toolbar', async ({ page }) => {
+  mainTest(qase(274,'CO-59 Create a rectangle from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle.png');
@@ -46,7 +47,7 @@ test.describe(() => {
 
   mainTest.skip(
     // todo bug 6359 > need to update after fix
-    "CO-68 Click 'Focus off' rectangle from shortcut F",
+    qase(283,"CO-68 Click 'Focus off' rectangle from shortcut F"),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.focusLayerViaRightClickOnCanvas();
@@ -67,7 +68,7 @@ test.describe(() => {
   );
 
   mainTest(
-    'CO-69 Add, hide, unhide, change type and delete Shadow to rectangle',
+    qase(284,'CO-69 Add, hide, unhide, change type and delete Shadow to rectangle'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
@@ -115,7 +116,7 @@ test.describe(() => {
   );
 
   mainTest(
-    'CO-72 Add, hide, unhide and delete Blur to rectangle',
+    qase(287,'CO-72 Add, hide, unhide and delete Blur to rectangle'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const colorPalettePage = new ColorPalettePage(page);
@@ -149,7 +150,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('CO-74 Add, edit and delete Stroke to rectangle', async ({ page }) => {
+  mainTest(qase(289,'CO-74 Add, edit and delete Stroke to rectangle'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddStrokeButton();
@@ -228,7 +229,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-80 Rename rectangle with valid name', async ({ page }) => {
+  mainTest(qase(295,'CO-80 Rename rectangle with valid name'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('Rectangle');
@@ -237,7 +238,7 @@ test.describe(() => {
     await layersPanelPage.isLayerNameDisplayed('renamed rectangle');
   });
 
-  mainTest('CO-70 Add and edit Shadow to rectangle', async ({ page }) => {
+  mainTest(qase(285,'CO-70 Add and edit Shadow to rectangle'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -258,7 +259,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-inner-shadow.png');
   });
 
-  mainTest('CO-73 Add and edit Blur to rectangle', async ({ page }) => {
+  mainTest(qase(288,'CO-73 Add and edit Blur to rectangle'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddBlurButton();
@@ -267,7 +268,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-blur.png');
   });
 
-  mainTest('CO-76-1 Delete rectangle via rightclick', async ({ page }) => {
+  mainTest(qase(291,'CO-76-1 Delete rectangle via rightclick'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
@@ -275,7 +276,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest('CO-76-2 Delete rectangle via shortcut Del', async ({ page }) => {
+  mainTest(qase(291,'CO-76-2 Delete rectangle via shortcut Del'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();
@@ -283,7 +284,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest('CO-62 Add rotation to rectangle', async ({ page }) => {
+  mainTest(qase(277,'CO-62 Add rotation to rectangle'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
@@ -300,7 +301,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-359.png');
   });
 
-  mainTest('CO-63 Change border radius multiple values', async ({ page }) => {
+  mainTest(qase(278,'CO-63 Change border radius multiple values'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickIndividualCornersRadiusButton();
@@ -314,7 +315,7 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('rectangle.png');
   });
 
-  mainTest('CO-104 Transform rectangle to path', async ({ page }) => {
+  mainTest(qase(319,'CO-104 Transform rectangle to path'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.transformToPathViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -323,7 +324,7 @@ test.describe(() => {
     });
   });
 
-  mainTest('CO-111 Selection to board', async ({ page }) => {
+  mainTest(qase(326,'CO-111 Selection to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();

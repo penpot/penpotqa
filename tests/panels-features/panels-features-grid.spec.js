@@ -6,6 +6,7 @@ const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
@@ -36,7 +37,7 @@ test.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest('PF-1 Set square grid', async ({ page }) => {
+  mainTest(qase(719,'PF-1 Set square grid'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -44,7 +45,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('square-grid-default.png');
   });
 
-  mainTest('PF-2 Square grid - change size', async ({ page }) => {
+  mainTest(qase(720,'PF-2 Square grid - change size'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -57,7 +58,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-3 Square grid - change opacity', async ({ page }) => {
+  mainTest(qase(721,'PF-3 Square grid - change opacity'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -71,7 +72,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-4 Use default square grid', async ({ page }) => {
+  mainTest(qase(722,'PF-4 Use default square grid'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -85,7 +86,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('square-grid-default.png');
   });
 
-  mainTest('PF-6 Hide and unhide square grid via Design panel', async ({ page }) => {
+  mainTest(qase(724,'PF-6 Hide and unhide square grid via Design panel'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -99,7 +100,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('square-grid-unhide.png');
   });
 
-  mainTest('PF-7 Hide and unhide square grid via Main menu', async ({ page }) => {
+  mainTest(qase(725,'PF-7 Hide and unhide square grid via Main menu'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -117,7 +118,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('square-grid-unhide.png');
   });
 
-  mainTest('PF-11 Remove square grid', async ({ page }) => {
+  mainTest(qase(729,'PF-11 Remove square grid'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -127,7 +128,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('board-without-grid.png');
   });
 
-  mainTest('PF-12 Set columns grid', async ({ page }) => {
+  mainTest(qase(730,'PF-12 Set columns grid'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -136,7 +137,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('columns-grid-default.png');
   });
 
-  mainTest('PF-13 Columns grid - change columns number', async ({ page }) => {
+  mainTest(qase(731,'PF-13 Columns grid - change columns number'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -150,7 +151,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-14 Columns grid - change width', async ({ page }) => {
+  mainTest(qase(732,'PF-14 Columns grid - change width'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -167,7 +168,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-17 Columns grid - change opacity', async ({ page }) => {
+  mainTest(qase(735,'PF-17 Columns grid - change opacity'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -189,7 +190,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-18 Use default columns grid', async ({ page }) => {
+  mainTest(qase(736,'PF-18 Use default columns grid'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -204,7 +205,7 @@ test.describe(() => {
   });
 
   mainTest(
-    'PF-20 Hide and unhide columns grid via Design panel',
+    qase(738,'PF-20 Hide and unhide columns grid via Design panel'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
@@ -225,7 +226,7 @@ test.describe(() => {
     },
   );
 
-  mainTest('PF-25 Remove columns grid', async ({ page }) => {
+  mainTest(qase(743,'PF-25 Remove columns grid'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -236,7 +237,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('board-without-grid.png');
   });
 
-  mainTest('PF-26 Set rows grid', async ({ page }) => {
+  mainTest(qase(744,'PF-26 Set rows grid'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -245,7 +246,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('rows-grid-default.png');
   });
 
-  mainTest('PF-27 Rows grid - change rows number', async ({ page }) => {
+  mainTest(qase(745,'PF-27 Rows grid - change rows number'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -259,7 +260,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-28 Rows grid - change height', async ({ page }) => {
+  mainTest(qase(746,'PF-28 Rows grid - change height'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -276,7 +277,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-31 Rows grid - change opacity', async ({ page }) => {
+  mainTest(qase(749,'PF-31 Rows grid - change opacity'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -296,7 +297,7 @@ test.describe(() => {
     );
   });
 
-  mainTest('PF-32 Use default rows grid', async ({ page }) => {
+  mainTest(qase(750,'PF-32 Use default rows grid'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -310,7 +311,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('rows-grid-default.png');
   });
 
-  mainTest('PF-35 Hide and unhide rows grid via Main menu', async ({ page }) => {
+  mainTest(qase(753,'PF-35 Hide and unhide rows grid via Main menu'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();
@@ -329,7 +330,7 @@ test.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('rows-grid-unhide.png');
   });
 
-  mainTest('PF-39 Remove rows grid', async ({ page }) => {
+  mainTest(qase(757,'PF-39 Remove rows grid'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddGridButton();

@@ -2,8 +2,9 @@ const { test } = require('@playwright/test');
 const { LoginPage } = require('../pages/login-page');
 const { RegisterPage } = require('../pages/register-page');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
 
-test('ON-5 Sign up with invalid email address', async ({ page }) => {
+test(qase(32,'ON-5 Sign up with invalid email address'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   await loginPage.goto();
@@ -16,7 +17,7 @@ test('ON-5 Sign up with invalid email address', async ({ page }) => {
   await registerPage.isCreateAccountBtnDisabled();
 });
 
-test('ON-6 Sign up with no password', async ({ page }) => {
+test(qase(33,'ON-6 Sign up with no password'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   await loginPage.goto();
@@ -30,7 +31,7 @@ test('ON-6 Sign up with no password', async ({ page }) => {
   await registerPage.isCreateAccountBtnDisabled();
 });
 
-test('ON-7 Sign up with incorrect password', async ({ page }) => {
+test(qase(34,'ON-7 Sign up with incorrect password'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   await loginPage.goto();
