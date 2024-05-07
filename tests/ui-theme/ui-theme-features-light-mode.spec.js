@@ -117,7 +117,7 @@ test.describe('Settings - UI THEME', () => {
 
   mainTest(
     'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
-    async ({}) => {
+    async () => {
       await profilePage.backToDashboardFromAccount();
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.isMainPageLoaded();
