@@ -246,8 +246,7 @@ test.describe(() => {
     });
   });
 
-  mainTest.skip(
-    // todo bug 6359 > need to update after fix
+  mainTest(
     qase(341,"CO-126 Click 'Focus off' ellipse from shortcut F"),
     async ({ page }) => {
       const mainPage = new MainPage(page);

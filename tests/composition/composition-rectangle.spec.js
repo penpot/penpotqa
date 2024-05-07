@@ -45,22 +45,22 @@ test.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('rectangle.png');
   });
 
-  mainTest.skip(
-    // todo bug 6359 > need to update after fix
+  mainTest(
     qase(283,"CO-68 Click 'Focus off' rectangle from shortcut F"),
     async ({ page }) => {
       const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
       await mainPage.focusLayerViaRightClickOnCanvas();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.isLayerPresentOnLayersTab('Rectangle', true);
-      await mainPage.isFocusModeOn();
+      await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
+      await layersPanelPage.isFocusModeOn();
       await expect(page).toHaveScreenshot('rectangle-single-focus-on.png', {
         mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
       });
       await mainPage.focusLayerViaShortcut();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.isLayerPresentOnLayersTab('Rectangle', true);
-      await mainPage.isFocusModeOff();
+      await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
+      await layersPanelPage.isFocusModeOff();
       await expect(page).toHaveScreenshot('rectangle-single-focus-off.png', {
         mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
       });

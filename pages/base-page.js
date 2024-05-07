@@ -242,7 +242,7 @@ exports.BasePage = class BasePage {
 
   async focusBoardViaRightClickOnCanvas(title) {
     const boardSel = this.page.locator(
-      `//*[text()="${title}"]//parent::*[@class="frame-title"]`,
+      `span[class*="workspace_sidebar_layer_name"]:has-text("${title}")`,
     );
     await boardSel.click({ button: 'right', force: true });
     await this.focusOnLayerMenuItem.click();

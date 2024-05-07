@@ -366,8 +366,7 @@ test.describe(() => {
     );
   });
 
-  mainTest.skip(qase(627,'FL-21 Flex elements change - alignment'), async ({ page }) => {
-    // todo bug 6389 > need to update after fix
+  mainTest(qase(627,'FL-21 Flex elements change - alignment'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);

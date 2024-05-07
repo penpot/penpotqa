@@ -19,7 +19,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
       'span[class="element-name"] >> nth=1',
     );
     this.layoutIcon = page.locator('svg[class="icon-layout-rows"]');
-    this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
+    this.focusModeDiv = page.locator('aside:text-is("Focus mode")');
     this.mainComponentLayer = page.locator(
       '//*[@class="icon-component"]//parent::div',
     );
@@ -35,7 +35,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
       'span[class*="element-name"] >> nth=1',
     );
     this.layoutIcon = page.locator('svg.icon-flex-vertical');
-    this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
+    // this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
     this.layerItemToggleExpand = page.locator(
       'div[class*="layers__element-list"] button[class*="sidebar_layer_item__inverse"]',
     );
