@@ -16,12 +16,9 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   }
 
   async clickViewModeButton() {
+    const popupPromise = this.page.waitForEvent('popup');
     await this.viewModeButton.click();
-    const [newPage] = await Promise.all([
-      this.page.context().waitForEvent('page'),
-      this.page.waitForTimeout(300),
-    ]);
-    return newPage;
+    return popupPromise;
   }
 
   async openInspectTab() {
