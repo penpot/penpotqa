@@ -16,6 +16,7 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.section = page.locator('section[class="auth-content"]');
     this.loginErrorBanner = page.locator('aside[class*="context_notification__warning"] div:nth-of-type(2)');
     this.createAccountLink = page.locator('a:has-text("Create an account")');
+    this.forgotPasswordLink = page.locator('data-test=forgot-password');
   }
 
   async checkLoginError(text) {
@@ -64,6 +65,10 @@ exports.LoginPage = class LoginPage extends BasePage {
 
   async clickOnCreateAccount() {
     await this.createAccountLink.click();
+  }
+
+  async clickOnForgotPassword() {
+    await this.forgotPasswordLink.click();
   }
 
   async isLoginPageOpened() {
