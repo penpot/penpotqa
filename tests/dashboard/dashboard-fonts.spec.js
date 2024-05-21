@@ -62,3 +62,12 @@ mainTest(qase(1158,'DA-72 Delete font'), async ({ page }) => {
     'Custom fonts you upload will appear here.',
   );
 });
+
+mainTest(qase(1159,'DA-73 Delete font - Cancel button check'), async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.openSidebarItem('Fonts');
+  await dashboardPage.uploadFont('fonts/Pacifico.ttf');
+  await dashboardPage.isFontExists('Pacifico', 'Regular');
+  await dashboardPage.cancelDeleteFont();
+  await dashboardPage.isFontExists('Pacifico', 'Regular');
+});
