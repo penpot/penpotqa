@@ -22,6 +22,7 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.recoveryPwdInput = page.locator('#password-1');
     this.recoveryPwdConfirmInput = page.locator('#password-2');
     this.changePwdButton = page.locator('button[class*="auth_recovery__submit-btn"]')
+    this.forgotPasswordLink = page.locator('data-test=forgot-password');
   }
 
   async checkLoginError(text) {
@@ -93,6 +94,10 @@ exports.LoginPage = class LoginPage extends BasePage {
 
   async clickOnChangePwdButton() {
     await this.changePwdButton.click();
+  }
+
+  async clickOnForgotPassword() {
+    await this.forgotPasswordLink.click();
   }
 
   async isLoginPageOpened() {
