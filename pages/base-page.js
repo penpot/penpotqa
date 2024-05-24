@@ -95,12 +95,8 @@ exports.BasePage = class BasePage {
     this.duplicateOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Duplicate")',
     );
-    this.copyOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Copy")',
-    );
-    this.pasteOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Paste")',
-    );
+    this.copyOption = page.getByRole('listitem').filter({ hasText: 'Copy'});
+    this.pasteOption = page.getByRole('listitem').filter({ hasText: 'Paste'});
     this.groupOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Group")',
     );
