@@ -47,6 +47,9 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: npx playwright test --project=chrome -gv 'PERF' ./tests/login.spec.js
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
