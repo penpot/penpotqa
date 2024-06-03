@@ -106,3 +106,4 @@ dist
 /playwright-report/
 /playwright/.cache/
 /.idea/
+/helpers/gmail_cred/

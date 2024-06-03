@@ -3,6 +3,10 @@ const { LoginPage } = require('../pages/login-page');
 const { RegisterPage } = require('../pages/register-page');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { random } = require('../helpers/string-generator');
+const { getRegisterMessage, checkRegisterText } = require('../helpers/gmail');
+const { DashboardPage } = require('../pages/dashboard/dashboard-page');
+const { TeamPage } = require('../pages/dashboard/team-page');
 
 test(qase(32,'ON-5 Sign up with invalid email address'), async ({ page }) => {
   const loginPage = new LoginPage(page);
@@ -44,6 +48,72 @@ test(qase(34,'ON-7 Sign up with incorrect password'), async ({ page }) => {
   );
   await registerPage.isCreateAccountBtnDisplayed();
   await registerPage.isCreateAccountBtnDisabled();
+});
+
+test.describe(() => {
+  let randomName,email,invite;
+  test.beforeEach(async ({ page }, testInfo) => {
+    await testInfo.setTimeout(testInfo.timeout + 30000);
+    randomName = random().concat('autotest');
+    email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
+    const loginPage = new LoginPage(page);
+    const registerPage = new RegisterPage(page);
+    await loginPage.goto();
+    await loginPage.acceptCookie();
+    await loginPage.clickOnCreateAccount();
+    await registerPage.isRegisterPageOpened();
+    await registerPage.enterEmail(email);
+    await registerPage.enterPassword(process.env.LOGIN_PWD);
+    await registerPage.clickOnCreateAccountBtn();
+
+    await registerPage.enterFullName(randomName);
+    await registerPage.clickOnAcceptTermsCheckbox();
+    await registerPage.clickOnCreateAccountSecondBtn();
+    await registerPage.isRegisterEmailCorrect(email);
+    await page.waitForTimeout(30000);
+    invite = await getRegisterMessage(email);
+    console.log(invite.inviteUrl);
+  });
+
+  test(qase(28,'ON-1 Sign up with an email address'), async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await checkRegisterText(invite.inviteText, randomName);
+    await page.goto(invite.inviteUrl);
+    await dashboardPage.isOnboardingNextBtnDisplayed();
+  });
+
+  test.only(qase([43,44],'ON-16,17 Onboarding questions flow'), async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    const teamPage = new TeamPage(page);
+    await page.goto(invite.inviteUrl);
+    await dashboardPage.isOnboardingNextBtnDisplayed();
+    await dashboardPage.clickOnOnboardingNextBtn();
+    await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
+    await dashboardPage.clickOnOnboardingNextBtn();
+    await dashboardPage.selectPlaningToUsing('Start to work on my project');
+    await dashboardPage.clickOnNextButton();
+    await dashboardPage.fillSecondOnboardPage('none', 'some', 'a-lot');
+    await dashboardPage.selectFigmaTool();
+    await dashboardPage.clickOnNextButton();
+    await dashboardPage.selectOnboardingOtherRole('QA');
+    await dashboardPage.selectTeamSize('11-30');
+    await dashboardPage.clickOnStartButton();
+    await dashboardPage.isOnboardingNewsHeaderDisplayed();
+    await dashboardPage.isOnboardingNewsUpdatesCheckboxDisplayed();
+    await dashboardPage.isOnboardingNewsCheckboxDisplayed();
+    await dashboardPage.clickOnOnboardingContinueBtn();
+    await dashboardPage.enterOnboardingTeamName(randomName);
+    await dashboardPage.clickOnOnboardingContinueCreateTeamButton();
+    const rand1 = random().concat('autotest');
+    const firstEmail = `${process.env.GMAIL_NAME}+${rand1}@gmail.com`;
+    const rand2 = random().concat('autotest');
+    const secondEmail = `${process.env.GMAIL_NAME}+${rand2}@gmail.com`;
+    const emails = `${firstEmail}, ${secondEmail}`;
+    await dashboardPage.enterOnboardingInviteEmails(emails);
+    await dashboardPage.clickOnOnboardingCreateTeamButton();
+    await teamPage.isTeamSelected(randomName);
+  });
+
 });
 
 test.afterEach(async ({ page }, testInfo) => {
