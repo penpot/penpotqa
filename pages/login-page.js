@@ -70,6 +70,7 @@ exports.LoginPage = class LoginPage extends BasePage {
   async clickOnLoginHereLinc() {
     await this.loginHereButton.click();
   }
+
   async clickOnForgotPassword() {
     await this.forgotPasswordLink.click();
   }
