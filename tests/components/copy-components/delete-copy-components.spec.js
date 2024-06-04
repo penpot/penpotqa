@@ -32,6 +32,24 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
+
+mainTest(qase(1496,'PENPOT-1496 Undo deleted component'), async ({ browserName }) => {
+  await mainPage.createDefaultRectangleByCoordinates(200, 300);
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.duplicateLayerViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await layersPanelPage.clickCopyComponentOnLayersTab();
+  await designPanelPage.changeAxisXandYForLayer('400', '300');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.pressDeleteKeyboardButton()
+  await expect(mainPage.viewport).toHaveScreenshot('rectangle-copy-component-delete.png');
+  await mainPage.clickShortcutCtrlZ(browserName);
+  await expect(mainPage.viewport).toHaveScreenshot(
+    'rectangle-copy-component-delete-undo.png',
+  );
+});
+
 mainTest(qase(1497,'PENPOT-1497 Delete copy component from DEL button'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
