@@ -460,6 +460,22 @@ test.describe(() => {
   );
 
   mainTest(
+    qase(251,'CO-36 Copy and Paste Board'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      const board1 = 'Board #1';
+      await mainPage.copyLayerViaRightClick();
+      await mainPage.pasteLayerViaRightClick();
+      await layersPanelPage.copyLayerViaRightClick(board1);
+      await mainPage.pasteLayerViaRightClick();
+      await mainPage.pressCopyShortcut();
+      await mainPage.pressPasteShortcut();
+      await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
+    },
+  );
+
+  mainTest(
     qase(268,"CO-53 Click 'Focus on' board from right click"),
     async ({ page }) => {
       const mainPage = new MainPage(page);
