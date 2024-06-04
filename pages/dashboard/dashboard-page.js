@@ -120,6 +120,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.editFontMenuItem = page.locator('#font-edit');
     this.deleteFontMenuItem = page.locator('#font-delete');
     this.deleteFontButton = page.locator('input[value="Delete"]');
+    this.cancelDeleteFontButton = page.getByRole('button', { name: 'Cancel' });
     this.fontsTablePlaceholder = page.locator(
       'div[class*="fonts-placeholder"] div[class*="label"]',
     );
@@ -464,6 +465,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fontOptionsMenuButton.click();
     await this.deleteFontMenuItem.click();
     await this.deleteFontButton.click();
+  }
+
+  async cancelDeleteFont() {
+    await this.fontOptionsMenuButton.click();
+    await this.deleteFontMenuItem.click();
+    await this.cancelDeleteFontButton.click();
   }
 
   async isFontsTablePlaceholderDisplayed(text) {
