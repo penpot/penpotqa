@@ -7,6 +7,9 @@ const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { getRegisterMessage, checkInviteText } = require('../../helpers/gmail');
+const { LoginPage } = require('../../pages/login-page');
+const { RegisterPage } = require('../../pages/register-page');
 
 
 test.describe(() => {
@@ -113,6 +116,59 @@ test.describe(() => {
       );
     },
   );
+
+  // mainTest(
+  //   qase(1166,'DA-80 Team Invitations invite via owner single invitation, editor'),
+  //   async ({ page }) => {
+  //     const email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
+  //     const teamPage = new TeamPage(page);
+  //     const profilePage = new ProfilePage(page);
+  //     const loginPage = new LoginPage(page);
+  //     const dashboardPage = new DashboardPage(page);
+  //     await teamPage.createTeam(team);
+  //     await teamPage.isTeamSelected(team);
+  //     await teamPage.openInvitationsPageViaOptionsMenu();
+  //     await teamPage.clickInviteMembersToTeamButton();
+  //     await teamPage.isInviteMembersPopUpHeaderDisplayed(
+  //       'Invite members to the team',
+  //     );
+  //     await teamPage.enterEmailToInviteMembersPopUp(email);
+  //     await teamPage.clickSendInvitationButton();
+  //     await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+  //     await teamPage.isInvitationRecordDisplayed(
+  //       email,
+  //       'Editor',
+  //       'Pending',
+  //     );
+  //     await page.waitForTimeout(30000);
+  //     const invite = await getRegisterMessage(email);
+  //     await checkInviteText(invite.inviteText, team);
+  //     await profilePage.logout();
+  //     await loginPage.isLoginPageOpened();
+  //
+  //     await page.goto(invite.inviteUrl);
+  //     await registerPage.isRegisterPageOpened();
+  //     await registerPage.enterEmail(email);
+  //     await registerPage.enterPassword(process.env.LOGIN_PWD);
+  //     await registerPage.clickOnCreateAccountBtn();
+  //     await registerPage.enterFullName(team);
+  //     await registerPage.clickOnAcceptTermsCheckbox();
+  //     await registerPage.clickOnCreateAccountSecondBtn();
+  //     await registerPage.isRegisterEmailCorrect(email);
+  //     await page.waitForTimeout(30000);
+  //     const confirm = await getRegisterMessage(email);
+  //     console.log(confirm.inviteUrl);
+  //     await page.goto(confirm.inviteUrl);
+  //     await teamPage.isTeamSelected(team);
+  //
+  //     await profilePage.logout();
+  //     await loginPage.isLoginPageOpened();
+  //     await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+  //     await loginPage.enterPwd(process.env.LOGIN_PWD);
+  //     await loginPage.clickLoginButton();
+  //     await dashboardPage.isDashboardOpenedAfterLogin();
+  //   },
+  // );
 
   test.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
@@ -413,6 +469,244 @@ test.describe(() => {
 
   test.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
+    await teamPage.deleteTeam(team);
+  });
+});
+
+test.describe(() => {
+  const team = random().concat('autotest');
+  const firstEditor = random().concat('autotest');
+  const secondEditor = random().concat('autotest');
+
+  mainTest(
+    qase(1168,'DA-82 Team. Invitations - invite via owner (multiple invitations, editor)'),
+    async ({ page }) => {
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondEditor}@gmail.com`;
+      const profilePage = new ProfilePage(page);
+      const dashboardPage = new DashboardPage(page);
+      const loginPage = new LoginPage(page);
+      const teamPage = new TeamPage(page);
+      const registerPage = new RegisterPage(page);
+      await teamPage.createTeam(team);
+      await teamPage.isTeamSelected(team);
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderDisplayed(
+        'Invite members to the team',
+      );
+      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}, ${secondEmail}`);
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      await teamPage.isMultipleInvitationRecordDisplayed(
+        firstEmail,
+        'Editor',
+        'Pending',
+      );
+      await teamPage.isMultipleInvitationRecordDisplayed(
+        secondEmail,
+        'Editor',
+        'Pending'
+      );
+      await page.waitForTimeout(30000);
+      const firstInvite = await getRegisterMessage(firstEmail);
+      const secondInvite = await getRegisterMessage(secondEmail);
+      await checkInviteText(firstInvite.inviteText, team);
+      await checkInviteText(secondInvite.inviteText, team);
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+
+      await page.goto(firstInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(firstEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(firstEditor);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.isOnboardingNextBtnDisplayed();
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.reloadPage();
+      await teamPage.isTeamSelected(team);
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await page.goto(secondInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(secondEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(secondEditor);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.isOnboardingNextBtnDisplayed();
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.reloadPage();
+      await teamPage.isTeamSelected(team);
+
+      await teamPage.openMembersPageViaOptionsMenu();
+      await teamPage.isMultipleMemberRecordDisplayed(
+        firstEditor,
+        firstEmail,
+        'Editor'
+      );
+      await teamPage.isMultipleMemberRecordDisplayed(
+        secondEditor,
+        secondEmail,
+        'Editor'
+      );
+    },
+  );
+
+  test.afterEach(async ({ page }) => {
+    const teamPage = new TeamPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const loginPage = new LoginPage(page);
+    const profilePage = new ProfilePage(page);
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.switchTeam(team);
+    await teamPage.deleteTeam(team);
+  });
+});
+
+test.describe(() => {
+  const team = random().concat('autotest');
+  const mainAdmin = random().concat('autotest');
+  const firstAdmin = random().concat('autotest');
+  const secondAdmin = random().concat('autotest');
+  const mainEmail = `${process.env.GMAIL_NAME}+${mainAdmin}@gmail.com`;
+  const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+  const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
+
+  mainTest(
+    qase(1173,'DA-87 Team. Invitations - invite via admin (multiple invitations, admin)'),
+    async ({ page }, testInfo) => {
+      await testInfo.setTimeout(testInfo.timeout + 60000);
+      const profilePage = new ProfilePage(page);
+      const dashboardPage = new DashboardPage(page);
+      const loginPage = new LoginPage(page);
+      const teamPage = new TeamPage(page);
+      const registerPage = new RegisterPage(page);
+
+      await teamPage.createTeam(team);
+      await teamPage.isTeamSelected(team);
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.selectInvitationRoleInPopUp('Admin');
+      await teamPage.enterEmailToInviteMembersPopUp(mainEmail);
+      await teamPage.clickSendInvitationButton();
+      await page.waitForTimeout(30000);
+      const mainInvite = await getRegisterMessage(mainEmail);
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+
+      await page.goto(mainInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(mainEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(mainAdmin);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.isOnboardingNextBtnDisplayed();
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.reloadPage();
+      await teamPage.isTeamSelected(team);
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderDisplayed(
+        'Invite members to the team',
+      );
+      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}, ${secondEmail}`);
+      await teamPage.selectInvitationRoleInPopUp('Admin');
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      await teamPage.isMultipleInvitationRecordDisplayed(
+        firstEmail,
+        'Admin',
+        'Pending',
+      );
+      await teamPage.isMultipleInvitationRecordDisplayed(
+        secondEmail,
+        'Admin',
+        'Pending'
+      );
+      await page.waitForTimeout(30000);
+      const firstInvite = await getRegisterMessage(firstEmail);
+      const secondInvite = await getRegisterMessage(secondEmail);
+      await checkInviteText(firstInvite.inviteText, team, mainAdmin);
+      await checkInviteText(secondInvite.inviteText, team, mainAdmin);
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+
+      await page.goto(firstInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(firstEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(firstAdmin);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.isOnboardingNextBtnDisplayed();
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.reloadPage();
+      await teamPage.isTeamSelected(team);
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await page.goto(secondInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(secondEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(secondAdmin);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.isOnboardingNextBtnDisplayed();
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.reloadPage();
+      await teamPage.isTeamSelected(team);
+
+      await teamPage.openMembersPageViaOptionsMenu();
+      await teamPage.isMultipleMemberRecordDisplayed(
+        firstAdmin,
+        firstEmail,
+        'Admin'
+      );
+      await teamPage.isMultipleMemberRecordDisplayed(
+        secondAdmin,
+        secondEmail,
+        'Admin'
+      );
+    },
+  );
+
+  test.afterEach(async ({ page }) => {
+    const teamPage = new TeamPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const loginPage = new LoginPage(page);
+    const profilePage = new ProfilePage(page);
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.switchTeam(team);
     await teamPage.deleteTeam(team);
   });
 });

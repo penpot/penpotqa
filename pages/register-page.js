@@ -12,9 +12,14 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     this.emailInput = page.locator('#email');
     this.passwordInput = page.locator('#password');
     this.createAccountBtn = page.locator('button[data-test="register-form-submit"]');
+    this.createAccountSecondBtn = page.locator('button[type="submit"]');
     this.emailInputError = page.locator('div[data-test="email-input-error"]');
     this.passwordInputHint = page.locator('div.main_ui_components_forms__hint');
     this.passwordInputError = page.locator('div[data-test="-error"]');
+    this.fullnameInput = page.locator('input[id="fullname"]');
+    this.acceptTermsCheckbox = page.locator('label[for="accept-terms-and-privacy"] span');
+    this.regEmailNotification = page.locator('div[class*="notification-text-email"]');
+    this.createDemoAccountBtn = page.locator('div[class*="auth_register__demo-account"]');
   }
 
   async isRegisterPageOpened() {
@@ -28,6 +33,22 @@ exports.RegisterPage = class RegisterPage extends BasePage {
 
   async enterPassword(password) {
     await this.passwordInput.fill(password);
+  }
+
+  async enterFullName(name) {
+    await this.fullnameInput.fill(name);
+  }
+
+  async clickOnAcceptTermsCheckbox() {
+    await this.acceptTermsCheckbox.click();
+  }
+
+  async clickOnCreateAccountBtn() {
+    await this.createAccountBtn.click();
+  }
+
+  async clickOnCreateAccountSecondBtn() {
+    await this.createAccountSecondBtn.click();
   }
 
   async isCreateAccountBtnDisplayed() {
@@ -56,5 +77,14 @@ exports.RegisterPage = class RegisterPage extends BasePage {
 
   async clickOnHeader() {
     await this.pageTitle.click();
+  }
+
+  async isRegisterEmailCorrect(email) {
+    await expect(this.regEmailNotification).toBeVisible();
+    await expect(this.regEmailNotification).toHaveText(email);
+  }
+
+  async clickOnCreateDemoAccountBtn() {
+    await this.createDemoAccountBtn.click();
   }
 };
