@@ -197,6 +197,11 @@ exports.BasePage = class BasePage {
     await this.page.keyboard.press('Enter');
   }
 
+  async clickOnBackspaceAndEnter() {
+    await this.page.keyboard.press('Backspace');
+    await this.page.keyboard.press('Enter');
+  }
+
   async isHeaderDisplayed(title) {
     await expect(this.header).toHaveText(title);
   }
