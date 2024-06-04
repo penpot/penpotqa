@@ -8,7 +8,6 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { RegisterPage } = require('../pages/register-page');
 const { getRegisterMessage, checkNewEmailText } = require('../helpers/gmail');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
-const { TeamPage } = require('../pages/dashboard/team-page');
 
 mainTest(qase(187,'PR-1 Edit profile name'), async ({ page }) => {
   const newName = random();
