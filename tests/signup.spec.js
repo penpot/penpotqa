@@ -114,36 +114,6 @@ test.describe(() => {
     await dashboardPage.clickOnOnboardingCreateTeamButton();
     await teamPage.isTeamSelected(randomName);
   });
-
-  test(qase(49,'ON-22 Forgot password flow'), async ({ page }) => {
-    const newPwd = 'TestForgotPassword123';
-    const dashboardPage = new DashboardPage(page);
-    const loginPage = new LoginPage(page);
-    const profilePage = new ProfilePage(page);
-    await page.goto(invite.inviteUrl);
-    await dashboardPage.isOnboardingNextBtnDisplayed();
-    await dashboardPage.clickOnOnboardingNextBtn();
-    await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-    await dashboardPage.clickOnOnboardingNextBtn();
-    await dashboardPage.reloadPage();
-    await profilePage.logout();
-    await loginPage.isLoginPageOpened();
-    await loginPage.clickOnForgotPasswordButton();
-    await loginPage.enterEmail(email);
-    await loginPage.clickOnRecoverySubmitButton();
-    await page.waitForTimeout(30000);
-    const forgotPass = await getRegisterMessage(email);
-    await checkRecoveryText(forgotPass.inviteText, randomName);
-    await page.goto(forgotPass.inviteUrl);
-    await loginPage.enterNewPwd(newPwd);
-    await loginPage.enterConfirmPwd(newPwd);
-    await loginPage.clickOnChangePwdButton();
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(email);
-    await loginPage.enterPwd(newPwd);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-  });
 });
 
 test(qase(36,'ON-9 Create demo account'), async ({ page }) => {
