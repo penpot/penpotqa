@@ -37,15 +37,12 @@ async function listMessages(auth, email) {
   const inboxMessages = await searchMessages('INBOX', email);
   const spamMessages = await searchMessages('SPAM', email);
   const messages = [...inboxMessages, ...spamMessages];
-  let decodedBody = '';
-  for (const message of messages) {
-    const msg = await gmail.users.messages.get({
-      userId: 'me',
-      id: message.id,
-    });
-    decodedBody = Buffer.from(msg.data.payload.parts[0].parts[0].body.data, 'base64').toString('utf-8');
-  }
-  return decodedBody;
+
+  const msg = await gmail.users.messages.get({
+    userId: 'me',
+    id: messages[0].id,
+  });
+  return Buffer.from(msg.data.payload.parts[0].parts[0].body.data, 'base64').toString('utf-8');
 }
 
 async function getRegisterMessage(email) {
@@ -94,5 +91,38 @@ async function checkRegisterText(text, name) {
   await expect(text).toBe(messageText);
 }
 
-module.exports = {checkInviteText, getRegisterMessage, checkRegisterText};
+async function checkRecoveryText(text, name) {
+  const messageText = `Hello ${name}!\r\n` +
+    '\r\n' +
+    'We received a request to reset your password. Click the link below to choose a\r\n' +
+    'new one:\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'If you received this email by mistake, you can safely ignore it. Your password\r\n' +
+    "won't be changed.\r\n" +
+    '\r\n' +
+    'Enjoy!\r\n' +
+    'The Penpot team.';
+  await expect(text).toBe(messageText);
+}
+
+async function checkNewEmailText(text, name, newEmail) {
+  const messageText = `Hello ${name}!\r\n` +
+    '\r\n' +
+    `We received a request to change your current email to ${newEmail}.\r\n` +
+    '\r\n' +
+    'Click to the link below to confirm the change:\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'If you received this email by mistake, please consider changing your password\r\n' +
+    'for security reasons.\r\n' +
+    '\r\n' +
+    'Enjoy!\r\n' +
+    'The Penpot team.';
+  await expect(text).toBe(messageText);
+}
+
+module.exports = {checkInviteText, getRegisterMessage, checkRegisterText, checkRecoveryText, checkNewEmailText};
 

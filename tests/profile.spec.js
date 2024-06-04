@@ -5,6 +5,10 @@ const { LoginPage } = require('../pages/login-page');
 const { expect, test } = require('@playwright/test');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { RegisterPage } = require('../pages/register-page');
+const { getRegisterMessage, checkNewEmailText } = require('../helpers/gmail');
+const { DashboardPage } = require('../pages/dashboard/dashboard-page');
+const { TeamPage } = require('../pages/dashboard/team-page');
 
 mainTest(qase(187,'PR-1 Edit profile name'), async ({ page }) => {
   const newName = random();
@@ -101,6 +105,58 @@ mainTest(qase(208,'PR-22 Send feedback email with valid data'), async ({ page })
   );
   await profilePage.clickSendFeedbackButton();
   await profilePage.isSuccessMessageDisplayed('Feedback sent');
+});
+
+test.describe(() => {
+  let randomName,email,invite;
+  test.beforeEach(async ({ page }, testInfo) => {
+    await testInfo.setTimeout(testInfo.timeout + 30000);
+    randomName = random().concat('autotest');
+    email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
+    const loginPage = new LoginPage(page);
+    const registerPage = new RegisterPage(page);
+    await loginPage.goto();
+    await loginPage.acceptCookie();
+    await loginPage.clickOnCreateAccount();
+    await registerPage.isRegisterPageOpened();
+    await registerPage.enterEmail(email);
+    await registerPage.enterPassword(process.env.LOGIN_PWD);
+    await registerPage.clickOnCreateAccountBtn();
+
+    await registerPage.enterFullName(randomName);
+    await registerPage.clickOnAcceptTermsCheckbox();
+    await registerPage.clickOnCreateAccountSecondBtn();
+    await registerPage.isRegisterEmailCorrect(email);
+    await page.waitForTimeout(30000);
+    invite = await getRegisterMessage(email);
+    console.log(invite.inviteUrl);
+  });
+
+  test(qase(190,'PR-4 Change email to valid'), async ({ page }) => {
+    const newEmail = `${process.env.GMAIL_NAME}+${random().concat('autotest')}@gmail.com`;
+    const dashboardPage = new DashboardPage(page);
+    const loginPage = new LoginPage(page);
+    const profilePage = new ProfilePage(page);
+    await page.goto(invite.inviteUrl);
+    await dashboardPage.isOnboardingNextBtnDisplayed();
+    await dashboardPage.clickOnOnboardingNextBtn();
+    await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
+    await dashboardPage.clickOnOnboardingNextBtn();
+    await dashboardPage.reloadPage();
+    await profilePage.changeEmail(newEmail);
+    await page.waitForTimeout(30000);
+    const changeEmail = await getRegisterMessage(email);
+    console.log(changeEmail.inviteUrl);
+    await checkNewEmailText(changeEmail.inviteText, randomName, newEmail);
+    await page.goto(changeEmail.inviteUrl);
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(newEmail);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+  });
+
 });
 
 test.afterEach(async ({ page }, testInfo) => {

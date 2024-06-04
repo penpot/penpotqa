@@ -43,6 +43,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamOwnerSection = page.locator('//div[text()="Team members"]/..');
     this.teamStatsSection = page.locator('//div[text()="Team projects"]/..');
 
+    this.membersMenuItem = page.locator('li[data-test="team-members"]');
+
     //Invitations
     this.invitationsMenuItem = page.locator('li[data-test="team-invitations"]');
     this.inviteMembersToTeamButton = page.locator('a[data-test="invite-member"]');
@@ -148,6 +150,12 @@ exports.TeamPage = class TeamPage extends BasePage {
     }
   }
 
+  async openMembersPageViaOptionsMenu() {
+    await this.teamOptionsMenuButton.click();
+    await this.membersMenuItem.click();
+    await this.isHeaderDisplayed('Members');
+  }
+
   async openInvitationsPageViaOptionsMenu() {
     await this.teamOptionsMenuButton.click();
     await this.invitationsMenuItem.click();
@@ -186,6 +194,26 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.invitationRecordEmailCell).toHaveText(email);
     await expect(this.invitationRecordRoleCell).toHaveText(role);
     await expect(this.invitationRecordStatusCell).toHaveText(status);
+  }
+
+  async isMultipleInvitationRecordDisplayed(email, role, status) {
+    const emailSelector = `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]`
+    const emailLocator = await this.page.locator(emailSelector);
+    const roleLocator = await this.page.locator(`${emailSelector}/following-sibling::div//span`);
+    const statusLocator = await this.page.locator(`${emailSelector}/following-sibling::div//aside`);
+    await expect(emailLocator).toHaveText(email);
+    await expect(roleLocator).toHaveText(role);
+    await expect(statusLocator).toHaveText(status);
+  }
+
+  async isMultipleMemberRecordDisplayed(name, email, role) {
+    const nameSelector = `//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]`
+    const emailLocator = await this.page.locator(`${nameSelector}/following-sibling::div`);
+    const roleLocator = await this.page.locator(`${nameSelector}/../../following-sibling::div//span`);
+    const nameLocator = await this.page.locator(nameSelector);
+    await expect(nameLocator).toContainText(name);
+    await expect(emailLocator.first()).toHaveText(email);
+    await expect(roleLocator).toHaveText(role);
   }
 
   async selectInvitationRoleInPopUp(role) {

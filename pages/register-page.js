@@ -19,6 +19,7 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     this.fullnameInput = page.locator('input[id="fullname"]');
     this.acceptTermsCheckbox = page.locator('label[for="accept-terms-and-privacy"] span');
     this.regEmailNotification = page.locator('div[class*="notification-text-email"]');
+    this.createDemoAccountBtn = page.locator('div[class*="auth_register__demo-account"]');
   }
 
   async isRegisterPageOpened() {
@@ -81,5 +82,9 @@ exports.RegisterPage = class RegisterPage extends BasePage {
   async isRegisterEmailCorrect(email) {
     await expect(this.regEmailNotification).toBeVisible();
     await expect(this.regEmailNotification).toHaveText(email);
+  }
+
+  async clickOnCreateDemoAccountBtn() {
+    await this.createDemoAccountBtn.click();
   }
 };

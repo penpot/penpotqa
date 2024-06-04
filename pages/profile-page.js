@@ -25,6 +25,10 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.profileAvatarBlock = page.locator(
       'div.main_ui_settings_profile__form-container',
     );
+    this.changeEmailBtn = page.locator('div[class="change-email"]');
+    this.newEmailInput = page.locator('#email-1');
+    this.confirmNewEmailInput = page.locator('#email-2');
+    this.confirmChangeEmailBtn = page.locator('div[data-test="change-email-submit"] button');
 
     //Feedback
     this.feedbackSubjectInput = page.locator('#subject');
@@ -102,6 +106,15 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await this.clearInput(this.profileNameInput);
     await this.profileNameInput.fill(newName);
     await this.saveSettingsButton.click();
+  }
+
+  async changeEmail(newEmail) {
+    await this.profileMenuButton.click();
+    await this.yourAccountMenuItem.click();
+    await this.changeEmailBtn.click();
+    await this.newEmailInput.fill(newEmail);
+    await this.confirmNewEmailInput.fill(newEmail);
+    await this.confirmChangeEmailBtn.click();
   }
 
   async enterSubjectToGiveFeedbackForm(text) {

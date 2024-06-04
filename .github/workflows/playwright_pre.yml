@@ -24,6 +24,7 @@ jobs:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
         run: npx playwright test --project=chrome -gv 'PERF'
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
@@ -54,6 +55,7 @@ jobs:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
         run: npx playwright test --project=firefox -gv 'PERF'
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
@@ -84,6 +86,7 @@ jobs:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
         run: npx playwright test --project=webkit -gv 'PERF'
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
