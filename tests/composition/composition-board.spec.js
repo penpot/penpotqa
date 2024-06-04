@@ -74,6 +74,15 @@ test.describe(() => {
     await layersPanelPage.isBoardNameDisplayed(renamedName);
   });
 
+  mainTest(qase(220,'CO-5 Rename board with empty field'), async ({ page }) => {
+    const defaultBoardName = 'Board';
+    const layersPanelPage = new LayersPanelPage(page);
+    const mainPage = new MainPage(page);
+    await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+    await layersPanelPage.clickOnBackspaceAndEnter();
+    await layersPanelPage.isBoardNameDisplayed(defaultBoardName);
+  });
+
   mainTest(
     qase(224,'CO-9 Add, hide, unhide, change type and delete Shadow to board'),
     async ({ page }) => {
