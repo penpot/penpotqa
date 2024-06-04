@@ -62,6 +62,14 @@ mainTest(qase(59,'DA-5 Rename file in Drafts via right click'), async ({ page })
   await dashboardPage.renameFile('test');
 });
 
+mainTest(qase(60,'DA-6 Rename file (in Drafts) via Options icon'), async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    const mainPage = new MainPage(page);
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.renameFile('test', false);
+  });
+
 mainTest(qase(61,'DA-7 Duplicate file in Drafts via right click'), async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
