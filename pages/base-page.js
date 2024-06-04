@@ -95,12 +95,8 @@ exports.BasePage = class BasePage {
     this.duplicateOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Duplicate")',
     );
-    this.copyOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Copy")',
-    );
-    this.pasteOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Paste")',
-    );
+    this.copyOption = page.getByRole('listitem').filter({ hasText: 'Copy'});
+    this.pasteOption = page.getByRole('listitem').filter({ hasText: 'Paste'});
     this.groupOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Group")',
     );
@@ -194,6 +190,11 @@ exports.BasePage = class BasePage {
   }
 
   async clickOnEnter() {
+    await this.page.keyboard.press('Enter');
+  }
+
+  async clickOnBackspaceAndEnter() {
+    await this.page.keyboard.press('Backspace');
     await this.page.keyboard.press('Enter');
   }
 

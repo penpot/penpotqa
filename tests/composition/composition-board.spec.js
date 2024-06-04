@@ -74,6 +74,15 @@ test.describe(() => {
     await layersPanelPage.isBoardNameDisplayed(renamedName);
   });
 
+  mainTest(qase(220,'CO-5 Rename board with empty field'), async ({ page }) => {
+    const defaultBoardName = 'Board';
+    const layersPanelPage = new LayersPanelPage(page);
+    const mainPage = new MainPage(page);
+    await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+    await layersPanelPage.clickOnBackspaceAndEnter();
+    await layersPanelPage.isBoardNameDisplayed(defaultBoardName);
+  });
+
   mainTest(
     qase(224,'CO-9 Add, hide, unhide, change type and delete Shadow to board'),
     async ({ page }) => {
@@ -447,6 +456,22 @@ test.describe(() => {
       await expect(page).toHaveScreenshot('board-first-show.png', {
         mask: [mainPage.guides, mainPage.usersSection],
       });
+    },
+  );
+
+  mainTest(
+    qase(251,'CO-36 Copy and Paste Board'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      const board1 = 'Board #1';
+      await mainPage.copyLayerViaRightClick();
+      await mainPage.pasteLayerViaRightClick();
+      await layersPanelPage.copyLayerViaRightClick(board1);
+      await mainPage.pasteLayerViaRightClick();
+      await mainPage.pressCopyShortcut();
+      await mainPage.pressPasteShortcut();
+      await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
     },
   );
 

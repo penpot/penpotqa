@@ -120,6 +120,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.editFontMenuItem = page.locator('#font-edit');
     this.deleteFontMenuItem = page.locator('#font-delete');
     this.deleteFontButton = page.locator('input[value="Delete"]');
+    this.cancelDeleteFontButton = page.getByRole('button', { name: 'Cancel' });
     this.fontsTablePlaceholder = page.locator(
       'div[class*="fonts-placeholder"] div[class*="label"]',
     );
@@ -130,6 +131,23 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     //Libraries & Templates
     this.noLibrariesPlacelder = page.locator('div[data-test="empty-placeholder"] p');
+
+    this.onboardingNextBtn = page.locator('button[data-test="onboarding-next-btn"]');
+    this.onboardingContinueBtn = page.locator('button[class="main_ui_onboarding_newsletter__accept-btn"]');
+    this.onboardingHeader = page.locator('h1[data-test="onboarding-welcome"]');
+    this.planingToUsingDropdown = page.locator('div[class*="custom-select"]');
+    this.nextButton = page.locator('button[label="Next"]');
+    this.startButton = page.locator('button[label="Start"]');
+    this.figmaTool = page.locator('//input[@id="experience-design-tool-figma"]/..');
+    this.otherRole = page.locator('label[for="role-other"]').first();
+    this.otherRoleInput = page.locator('input[id="role-other"][type="text"]');
+    this.onboardingNewsHeader = page.locator('*[data-test="onboarding-newsletter-title"]');
+    this.onboardingNewsUpdatesCheckbox = page.locator('label[for="newsletter-updates"]');
+    this.onboardingNewsCheckbox = page.locator('label[for="newsletter-news"]');
+    this.onboardingCreateTeamInput = page.locator('input[class*="team-name-input"]');
+    this.onboardingContinueCreateTeamBtn = page.locator('button[label="Continue creating team"]');
+    this.onboardingInviteInput = page.locator('input[class*="components_forms__inside-input"]');
+    this.onboardingCreateTeamButton = page.locator('button[class*="main_ui_onboarding_team_choice__accept-button"]')
   }
 
   async createFileViaPlaceholder() {
@@ -449,6 +467,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.deleteFontButton.click();
   }
 
+  async cancelDeleteFont() {
+    await this.fontOptionsMenuButton.click();
+    await this.deleteFontMenuItem.click();
+    await this.cancelDeleteFontButton.click();
+  }
+
   async isFontsTablePlaceholderDisplayed(text) {
     await expect(this.fontsTablePlaceholder).toHaveText(text);
   }
@@ -574,5 +598,85 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fileNameInput.pressSequentially(newFileName);
     await this.page.keyboard.press('Enter');
     await this.isFilePresentWithName(newFileName);
+  }
+
+  async isOnboardingNextBtnDisplayed() {
+    await expect(this.onboardingNextBtn).toBeVisible();
+  }
+
+  async clickOnOnboardingNextBtn() {
+    await this.onboardingNextBtn.click();
+  }
+
+  async clickOnOnboardingContinueBtn() {
+    await this.onboardingContinueBtn.click();
+  }
+
+  async checkOnboardingWelcomeHeader(text) {
+    await expect(this.onboardingHeader.first()).toHaveText(text);
+  }
+
+  async selectPlaningToUsing(option) {
+    await this.planingToUsingDropdown.click();
+    const optionSelector = await this.page.locator(`li span:has-text("${option}")`);
+    await optionSelector.click();
+  }
+
+  async clickOnNextButton() {
+    await this.nextButton.click();
+  }
+
+  async clickOnStartButton() {
+    await this.startButton.click();
+  }
+
+  async fillSecondOnboardPage(branding, visual, wireframes) {
+    await this.page.locator(`//input[@id="experience-branding-illustrations-marketing-pieces-${branding}"]/..`).click();
+    await this.page.locator(`//input[@id="experience-interface-design-visual-assets-design-systems-${visual}"]/..`).click();
+    await this.page.locator(`//input[@id="experience-interface-wireframes-user-journeys-flows-navigation-trees-${wireframes}"]/..`).click();
+    await this.nextButton.click();
+  }
+
+  async selectFigmaTool() {
+    await this.figmaTool.click();
+  }
+
+  async selectOnboardingOtherRole(otherRole) {
+    await this.otherRole.click();
+    await this.otherRoleInput.fill(otherRole);
+  }
+
+  async selectTeamSize(option) {
+    await this.planingToUsingDropdown.click();
+    const optionSelector = await this.page.locator(`li span:has-text("${option}")`);
+    await optionSelector.click();
+  }
+
+  async isOnboardingNewsHeaderDisplayed() {
+    await expect(this.onboardingNewsHeader).toBeVisible();
+  }
+
+  async isOnboardingNewsUpdatesCheckboxDisplayed() {
+    await expect(this.onboardingNewsUpdatesCheckbox).toBeVisible();
+  }
+
+  async isOnboardingNewsCheckboxDisplayed() {
+    await expect(this.onboardingNewsCheckbox).toBeVisible();
+  }
+
+  async clickOnOnboardingContinueCreateTeamButton() {
+    await this.onboardingContinueCreateTeamBtn.click();
+  }
+
+  async enterOnboardingTeamName(name) {
+    await this.onboardingCreateTeamInput.fill(name);
+  }
+
+  async enterOnboardingInviteEmails(name) {
+    await this.onboardingInviteInput.fill(name);
+  }
+
+  async clickOnOnboardingCreateTeamButton() {
+    await this.onboardingCreateTeamButton.click();
   }
 };
