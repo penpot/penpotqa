@@ -16,12 +16,8 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.section = page.locator('section[class="auth-content"]');
     this.loginErrorBanner = page.locator('aside[class*="context_notification__warning"] div:nth-of-type(2)');
     this.createAccountLink = page.locator('a:has-text("Create an account")');
+    this.forgotPasswordLink = page.locator('a[data-test="forgot-password"]');
     this.loginHereButton = page.locator('*[data-test="login-here-link"]');
-    this.forgotPasswordBtn = page.locator('a[data-test="forgot-password"]');
-    this.recoverySubmitBtn = page.locator('button[data-test="recovery-resquest-submit"]');
-    this.recoveryPwdInput = page.locator('#password-1');
-    this.recoveryPwdConfirmInput = page.locator('#password-2');
-    this.changePwdButton = page.locator('button[class*="auth_recovery__submit-btn"]')
   }
 
   async checkLoginError(text) {
@@ -75,24 +71,8 @@ exports.LoginPage = class LoginPage extends BasePage {
     await this.loginHereButton.click();
   }
 
-  async clickOnForgotPasswordButton() {
-    await this.forgotPasswordBtn.click();
-  }
-
-  async clickOnRecoverySubmitButton() {
-    await this.recoverySubmitBtn.click();
-  }
-
-  async enterNewPwd(loginPwd) {
-    await this.recoveryPwdInput.fill(loginPwd);
-  }
-
-  async enterConfirmPwd(loginPwd) {
-    await this.recoveryPwdConfirmInput.fill(loginPwd);
-  }
-
-  async clickOnChangePwdButton() {
-    await this.changePwdButton.click();
+  async clickOnForgotPassword() {
+    await this.forgotPasswordLink.click();
   }
 
   async isLoginPageOpened() {
