@@ -9,6 +9,7 @@ const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { getRegisterMessage, checkInviteText } = require('../../helpers/gmail');
 const { LoginPage } = require('../../pages/login-page');
+const { RegisterPage } = require('../../pages/register-page');
 
 
 test.describe(() => {
@@ -468,6 +469,110 @@ test.describe(() => {
 
   test.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
+    await teamPage.deleteTeam(team);
+  });
+});
+
+test.describe(() => {
+  const team = random().concat('autotest');
+  const firstEditor = random().concat('autotest');
+  const secondEditor = random().concat('autotest');
+
+  mainTest(
+    qase(1168,'DA-82 Team. Invitations - invite via owner (multiple invitations, editor)'),
+    async ({ page }) => {
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondEditor}@gmail.com`;
+      const profilePage = new ProfilePage(page);
+      const dashboardPage = new DashboardPage(page);
+      const loginPage = new LoginPage(page);
+      const teamPage = new TeamPage(page);
+      const registerPage = new RegisterPage(page);
+      await teamPage.createTeam(team);
+      await teamPage.isTeamSelected(team);
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderDisplayed(
+        'Invite members to the team',
+      );
+      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}, ${secondEmail}`);
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      await teamPage.isMultipleInvitationRecordDisplayed(
+        firstEmail,
+        'Editor',
+        'Pending',
+      );
+      await teamPage.isMultipleInvitationRecordDisplayed(
+        secondEmail,
+        'Editor',
+        'Pending'
+      );
+      await page.waitForTimeout(30000);
+      const firstInvite = await getRegisterMessage(firstEmail);
+      const secondInvite = await getRegisterMessage(secondEmail);
+      await checkInviteText(firstInvite.inviteText, team);
+      await checkInviteText(secondInvite.inviteText, team);
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+
+      await page.goto(firstInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(firstEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(firstEditor);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.isOnboardingNextBtnDisplayed();
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.reloadPage();
+      await teamPage.isTeamSelected(team);
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await page.goto(secondInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(secondEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(secondEditor);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.isOnboardingNextBtnDisplayed();
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
+      await dashboardPage.clickOnOnboardingNextBtn();
+      await dashboardPage.reloadPage();
+      await teamPage.isTeamSelected(team);
+
+      await teamPage.openMembersPageViaOptionsMenu();
+      await teamPage.isMultipleMemberRecordDisplayed(
+        firstEditor,
+        firstEmail,
+        'Editor'
+      );
+      await teamPage.isMultipleMemberRecordDisplayed(
+        secondEditor,
+        secondEmail,
+        'Editor'
+      );
+    },
+  );
+
+  test.afterEach(async ({ page }) => {
+    const teamPage = new TeamPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const loginPage = new LoginPage(page);
+    const profilePage = new ProfilePage(page);
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.switchTeam(team);
     await teamPage.deleteTeam(team);
   });
 });
