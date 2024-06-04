@@ -10,6 +10,10 @@ exports.ForgotPasswordPage = class ForgotPasswordPage extends BasePage {
 
     this.emailInput = page.locator('#email');
     this.recoverPasswordButton = page.locator('data-test=recovery-resquest-submit');
+
+    this.recoveryPwdInput = page.locator('#password-1');
+    this.recoveryPwdConfirmInput = page.locator('#password-2');
+    this.changePwdButton = page.locator('button[class*="auth_recovery__submit-btn"]');
   }
 
   async enterEmail(loginEmail) {
@@ -22,5 +26,17 @@ exports.ForgotPasswordPage = class ForgotPasswordPage extends BasePage {
 
   async isRecoverPasswordButtonDisabled() {
     await expect(this.recoverPasswordButton).toBeDisabled();
+  }
+
+  async enterNewPwd(loginPwd) {
+    await this.recoveryPwdInput.fill(loginPwd);
+  }
+
+  async enterConfirmPwd(loginPwd) {
+    await this.recoveryPwdConfirmInput.fill(loginPwd);
+  }
+
+  async clickOnChangePwdButton() {
+    await this.changePwdButton.click();
   }
 };
