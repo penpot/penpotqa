@@ -72,6 +72,10 @@ const config = {
         launchOptions: {
           ignoreDefaultArgs: ['--hide-scrollbars'],
         },
+        contextOptions: {
+          // chromium-specific permissions
+          permissions: ['clipboard-read', 'clipboard-write'],
+        },
       },
     },
     {
@@ -87,6 +91,16 @@ const config = {
           height: 969,
           width: 1920,
         },
+      },
+      launchOptions: {
+        firefoxUserPrefs: {
+          'dom.events.asyncClipboard.readText': true,
+          'dom.events.testing.asyncClipboard': true,
+        },
+      },
+      contextOptions: {
+        // chromium-specific permissions
+        permissions: ['clipboard-read', 'clipboard-write'],
       },
     },
     {

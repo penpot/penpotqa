@@ -10,6 +10,9 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
 
     this.layersTab = page.locator('div[data-id="layers"]');
     this.layersSidebar = page.locator('#layers');
+    this.sidebarLayerItem = page.locator(
+      'div[class*="workspace_sidebar_layer_item__layer-row"]',
+    );
     this.createdLayerOnLayersPanelNameInput = page.locator(
       'div[class*="element-list-body"] input[class*="element-name"]',
     );
@@ -261,4 +264,15 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await this.copyComponentLayer.click({ button: 'right', force: true });
     await this.detachInstanceOption.click();
   }
+
+  async copyLayerViaRightClick(layerName) {
+    const layerSel = this.page.locator('#layers').getByText(layerName);
+    await layerSel.last().click({
+      button: 'right',
+      force: true,
+    });
+    await this.copyOption.click();
+  }
 };
+
+
