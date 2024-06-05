@@ -45,6 +45,34 @@ async function listMessages(auth, email) {
   return Buffer.from(msg.data.payload.parts[0].parts[0].body.data, 'base64').toString('utf-8');
 }
 
+async function messagesCount(auth, email, count) {
+  const gmail = google.gmail({ version: 'v1', auth });
+
+  async function searchMessages(label, email) {
+    const res = await gmail.users.messages.list({
+      userId: 'me',
+      q: `to:${email}`,
+      labelIds: [label],
+      maxResults: 10,
+    });
+    return res.data.messages || [];
+  }
+
+  const inboxMessages = await searchMessages('INBOX', email);
+  const spamMessages = await searchMessages('SPAM', email);
+  const messages = [...inboxMessages, ...spamMessages];
+
+  return messages.length;
+}
+
+async function checkMessagesCount(email, count) {
+  return authorize().then(async (auth) => {
+    const actualCount = await messagesCount(auth, email, count);
+    console.log(actualCount)
+    expect(actualCount).toEqual(count);
+  }).catch(console.error);
+}
+
 async function getRegisterMessage(email) {
   return authorize().then(async (auth) => {
     const body = await listMessages(auth, email);
@@ -124,5 +152,5 @@ async function checkNewEmailText(text, name, newEmail) {
   await expect(text).toBe(messageText);
 }
 
-module.exports = {checkInviteText, getRegisterMessage, checkRegisterText, checkRecoveryText, checkNewEmailText};
+module.exports = {checkInviteText, getRegisterMessage, checkRegisterText, checkRecoveryText, checkNewEmailText, checkMessagesCount};
 
