@@ -59,6 +59,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     );
     this.adminRoleSelector = page.locator('li:has-text("Admin")');
     this.editorRoleSelector = page.locator('li:has-text("Editor")');
+    this.ownerRoleSelector = page.locator('li:has-text("Owner")');
+    this.transferOwnershipButton = page.locator('input[value="Transfer ownership"]');
     this.inviteMembersToTeamEmailInput = page.locator(
       'input[placeholder="Emails, comma separated"]',
     );
@@ -207,7 +209,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isMultipleMemberRecordDisplayed(name, email, role) {
-    const nameSelector = `//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]`
+    const nameSelector = `//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]`;
     const emailLocator = await this.page.locator(`${nameSelector}/following-sibling::div`);
     const roleLocator = await this.page.locator(`${nameSelector}/../../following-sibling::div//span`);
     const nameLocator = await this.page.locator(nameSelector);
@@ -231,6 +233,26 @@ exports.TeamPage = class TeamPage extends BasePage {
   async selectInvitationRoleInInvitationRecord(role) {
     await this.invitationRecordRoleSelector.click();
     await this.page.locator(`li:has-text('${role}')`).click();
+  }
+
+  async selectMemberRoleInPopUp(name, role) {
+    const locator = this.page.locator(`//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div//span`);
+    await locator.click();
+    switch (role) {
+      case 'Admin':
+        await this.adminRoleSelector.click();
+        break;
+      case 'Editor':
+        await this.editorRoleSelector.click();
+        break;
+      case 'Owner':
+        await this.ownerRoleSelector.click();
+        break;
+    }
+  }
+
+  async clickOnTransferOwnershipButton() {
+    await this.transferOwnershipButton.click();
   }
 
   async resendInvitation() {
