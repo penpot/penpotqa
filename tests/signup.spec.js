@@ -133,6 +133,20 @@ test(qase(36,'ON-9 Create demo account'), async ({ page }) => {
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
+test(qase(54,'ON-27 Sign up with email of existing user'), async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  const registerPage = new RegisterPage(page);
+  await loginPage.goto();
+  await loginPage.clickOnCreateAccount();
+  await registerPage.isRegisterPageOpened();
+  await registerPage.enterEmail(process.env.LOGIN_EMAIL);
+  await registerPage.enterPassword(process.env.LOGIN_PWD);
+  await registerPage.clickOnCreateAccountBtn();
+  await registerPage.isEmailInputErrorDisplayed('Email already used');
+  await registerPage.isCreateAccountBtnDisplayed();
+  await registerPage.isCreateAccountBtnDisabled();
+});
+
 test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });

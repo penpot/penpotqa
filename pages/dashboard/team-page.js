@@ -61,6 +61,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.editorRoleSelector = page.locator('li:has-text("Editor")');
     this.ownerRoleSelector = page.locator('li:has-text("Owner")');
     this.transferOwnershipButton = page.locator('input[value="Transfer ownership"]');
+    this.leaveTeamButton = page.locator('input[value="Leave team"]');
     this.inviteMembersToTeamEmailInput = page.locator(
       'input[placeholder="Emails, comma separated"]',
     );
@@ -86,6 +87,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     );
     this.invitationRecordDeleteInvititationMenuItem = page.locator(
       'li:has-text("Delete invitation")',
+    );
+    this.memberRecordleaveTeamMenuItem = page.locator(
+      'li:has-text("Leave team")',
     );
     this.invitationWarningSpan = page.locator(
       'aside[class*="warning"] div[class*="context_notification"]',
@@ -255,6 +259,10 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.transferOwnershipButton.click();
   }
 
+  async clickOnLeaveTeamButton() {
+    await this.leaveTeamButton.click();
+  }
+
   async resendInvitation() {
     await this.invitationRecordOptionsMenuButton.click();
     await this.invitationRecordResendInvititationMenuItem.click();
@@ -263,6 +271,14 @@ exports.TeamPage = class TeamPage extends BasePage {
   async deleteInvitation() {
     await this.invitationRecordOptionsMenuButton.click();
     await this.invitationRecordDeleteInvititationMenuItem.click();
+  }
+
+  async leaveTeam(teamName) {
+    await this.invitationRecordOptionsMenuButton.click();
+    await this.memberRecordleaveTeamMenuItem.click();
+    await this.clickOnLeaveTeamButton();
+    await expect(this.teamCurrentBtn).not.toHaveText(teamName);
+    await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
   }
 
   async isInvitationRecordRemoved() {
