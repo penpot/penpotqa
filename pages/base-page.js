@@ -289,7 +289,7 @@ exports.BasePage = class BasePage {
   }
 
   async createComponentViaRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    const layerSel = this.page.locator('div[class="viewport"] [class*="viewport-selrect"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.createComponentMenuItem.click();
   }

@@ -50,6 +50,7 @@ test.beforeEach(async ({ page }) => {
   await dashboardPage.deleteFileWithNameViaRightClick('New File 1');
   await dashboardPage.clickDeleteFileButton();
 
+  await dashboardPage.checkNumberOfFiles('1 file');
   await dashboardPage.openFileWithName('New File 2');
   await mainPage.isSecondPageNameDisplayed('Main components');
 });
