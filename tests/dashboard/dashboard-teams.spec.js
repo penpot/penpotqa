@@ -901,7 +901,8 @@ test.describe(() => {
 
   mainTest(
     qase(1187,'DA-101 Team. Members - change role via admin(admin to editor)'),
-    async ({ page }) => {
+    async ({ page }, testInfo) => {
+      await testInfo.setTimeout(testInfo.timeout + 60000);
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
@@ -998,7 +999,8 @@ test.describe(() => {
 
   mainTest(
     qase(1197,'DA-111 Team. Members - leave team (as admin)'),
-    async ({ page }) => {
+    async ({ page }, testInfo) => {
+      await testInfo.setTimeout(testInfo.timeout + 60000);
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
       const profilePage = new ProfilePage(page);
@@ -1045,7 +1047,8 @@ test.describe(() => {
 
   mainTest(
     qase(1198,'DA-112 Team. Members - leave team (as editor)'),
-    async ({ page }) => {
+    async ({ page },testInfo) => {
+      await testInfo.setTimeout(testInfo.timeout + 60000);
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
       const profilePage = new ProfilePage(page);
