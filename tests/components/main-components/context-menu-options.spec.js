@@ -51,7 +51,7 @@ test.describe(() => {
   mainTest(qase(1452,'Show in assets panel option from Design tab'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
-    await mainPage.clickOnLayerOnCanvas();
+    // await mainPage.clickOnLayerOnCanvas();
     await designPanelPage.clickOnComponentMenuButton();
     await designPanelPage.clickOnShowInAssetsPanel();
     await expect(page).toHaveScreenshot('component-show-in-assets-panel.png', {
