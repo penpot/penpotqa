@@ -62,6 +62,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.ownerRoleSelector = page.locator('li:has-text("Owner")');
     this.transferOwnershipButton = page.locator('input[value="Transfer ownership"]');
     this.leaveTeamButton = page.locator('input[value="Leave team"]');
+    this.deleteMemberButton = page.locator('input[value="Delete member"]');
     this.inviteMembersToTeamEmailInput = page.locator(
       'input[placeholder="Emails, comma separated"]',
     );
@@ -90,6 +91,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     );
     this.memberRecordleaveTeamMenuItem = page.locator(
       'li:has-text("Leave team")',
+    );
+    this.memberRecordDeleteMemberMenuItem = page.locator(
+      'li:has-text("Remove member")',
     );
     this.invitationWarningSpan = page.locator(
       'aside[class*="warning"] div[class*="context_notification"]',
@@ -263,6 +267,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.leaveTeamButton.click();
   }
 
+  async clickOnDeleteMemberButton() {
+    await this.deleteMemberButton.click();
+  }
   async resendInvitation() {
     await this.invitationRecordOptionsMenuButton.click();
     await this.invitationRecordResendInvititationMenuItem.click();
@@ -320,5 +327,18 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async hoverOnTeamName() {
     await this.teamInfoSection.hover();
+  }
+
+  async deleteTeamMember(name) {
+    const locator = await this.page.locator(`//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div/button`);
+    await locator.click();
+    await this.memberRecordDeleteMemberMenuItem.click();
+    await this.clickOnDeleteMemberButton();
+    await expect(locator).not.toBeVisible();
+  }
+
+  async isDeleteTeamMemberDisabled(name) {
+    const locator = await this.page.locator(`//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div/button`);
+    await expect(locator).not.toBeVisible();
   }
 };
