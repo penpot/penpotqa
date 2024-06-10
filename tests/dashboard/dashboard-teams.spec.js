@@ -1829,6 +1829,47 @@ test.describe(() => {
     },
   );
 
+  mainTest(
+    qase(1180,'DA-94 Team. Invitations- delete team invitation'),
+    async ({ page }, testInfo) => {
+      await testInfo.setTimeout(testInfo.timeout + 60000);
+      const firstAdmin = random().concat('autotest');
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+      const profilePage = new ProfilePage(page);
+      const dashboardPage = new DashboardPage(page);
+      const loginPage = new LoginPage(page);
+      const teamPage = new TeamPage(page);
+      const registerPage = new RegisterPage(page);
+      await teamPage.createTeam(team);
+      await teamPage.isTeamSelected(team);
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderDisplayed(
+        'Invite members to the team',
+      );
+      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
+      await teamPage.selectInvitationRoleInPopUp('Admin');
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      await page.waitForTimeout(30000);
+      await teamPage.deleteInvitation();
+      await teamPage.isInvitationRecordRemoved();
+      const firstInvite = await getRegisterMessage(firstEmail);
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+
+      await page.goto(firstInvite.inviteUrl);
+      await teamPage.isSuccessMessageDisplayed('Something wrong has happened.');
+
+      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await teamPage.switchTeam(team);
+      await teamPage.deleteTeam(team);
+    },
+  );
+
 });
 
 test.afterEach(async ({ page }, testInfo) => {
