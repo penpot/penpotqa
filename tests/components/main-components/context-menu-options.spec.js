@@ -72,8 +72,9 @@ test.describe(() => {
 
   mainTest(qase(1419,'Create annotation with valid text'), async ({ page }) => {
     const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
-    await mainPage.clickOnLayerOnCanvas();
+    await layersPanelPage.clickMainComponentOnLayersTab();
     await designPanelPage.clickOnComponentMenuButton();
     await designPanelPage.clickOnCreateAnnotationOption();
     await designPanelPage.addAnnotationForComponent(annotation);
@@ -97,8 +98,9 @@ test.describe(() => {
 
   mainTest(qase(1424,'Cancel annotation creation and accept'), async ({ page }) => {
     const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
-    await mainPage.clickOnLayerOnCanvas();
+    await layersPanelPage.clickMainComponentOnLayersTab();
     await designPanelPage.clickOnComponentMenuButton();
     await designPanelPage.clickOnCreateAnnotationOption();
     await designPanelPage.cancelAddAnnotationForComponent(annotation);
