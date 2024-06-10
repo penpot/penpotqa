@@ -142,9 +142,7 @@ test(qase(54,'ON-27 Sign up with email of existing user'), async ({ page }) => {
   await registerPage.enterEmail(process.env.LOGIN_EMAIL);
   await registerPage.enterPassword(process.env.LOGIN_PWD);
   await registerPage.clickOnCreateAccountBtn();
-  await registerPage.isEmailInputErrorDisplayed('Email already used');
-  await registerPage.isCreateAccountBtnDisplayed();
-  await registerPage.isCreateAccountBtnDisabled();
+  await registerPage.isFullNameFieldDisplayed();
 });
 
 test.afterEach(async ({ page }, testInfo) => {

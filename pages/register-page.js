@@ -39,6 +39,10 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     await this.fullnameInput.fill(name);
   }
 
+  async isFullNameFieldDisplayed() {
+    await expect(this.fullnameInput).toBeVisible();
+  }
+
   async clickOnAcceptTermsCheckbox() {
     await this.acceptTermsCheckbox.click();
   }
