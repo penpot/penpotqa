@@ -62,6 +62,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.ownerRoleSelector = page.locator('li:has-text("Owner")');
     this.transferOwnershipButton = page.locator('input[value="Transfer ownership"]');
     this.leaveTeamButton = page.locator('input[value="Leave team"]');
+    this.ownerLeaveTeamButton = page.locator('input[value="Promote and leave"]');
     this.deleteMemberButton = page.locator('input[value="Delete member"]');
     this.inviteMembersToTeamEmailInput = page.locator(
       'input[placeholder="Emails, comma separated"]',
@@ -176,6 +177,10 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.inviteMembersToTeamButton.click();
   }
 
+  async isInviteMembersToTeamButtonDisabled() {
+    await expect(this.inviteMembersToTeamButton).not.toBeVisible();
+  }
+
   async isInviteMembersPopUpHeaderDisplayed(title) {
     await expect(this.inviteMembersPopUpHeader).toHaveText(title);
   }
@@ -226,6 +231,18 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(roleLocator).toHaveText(role);
   }
 
+  async changeInvitationRole(email, role) {
+    await this.page.locator(`//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div//span`).click();
+    switch (role) {
+      case 'Admin':
+        await this.adminRoleSelector.click();
+        break;
+      case 'Editor':
+        await this.editorRoleSelector.click();
+        break;
+    }
+  }
+
   async selectInvitationRoleInPopUp(role) {
     await this.inviteMembersToTeamRoleSelectorButton.click();
     switch (role) {
@@ -259,12 +276,52 @@ exports.TeamPage = class TeamPage extends BasePage {
     }
   }
 
+  async isMemberRoleInPopUpNotDisplayed(name, role) {
+    const locator = this.page.locator(`//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div//span`);
+    await locator.click();
+    let roleLoc;
+    switch (role) {
+      case 'Admin':
+        roleLoc = await this.adminRoleSelector;
+        break;
+      case 'Editor':
+        roleLoc = await this.editorRoleSelector;
+        break;
+      case 'Owner':
+        roleLoc = await this.ownerRoleSelector;
+        break;
+    }
+    await expect(roleLoc).not.toBeVisible();
+  }
+
+  async isInvitationRoleInPopUpNotDisplayed(email, role) {
+    const locator = this.page.locator(`//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div//span`);
+    await locator.click();
+    let roleLoc;
+    switch (role) {
+      case 'Admin':
+        roleLoc = await this.adminRoleSelector;
+        break;
+      case 'Editor':
+        roleLoc = await this.editorRoleSelector;
+        break;
+      case 'Owner':
+        roleLoc = await this.ownerRoleSelector;
+        break;
+    }
+    await expect(roleLoc).not.toBeVisible();
+  }
+
   async clickOnTransferOwnershipButton() {
     await this.transferOwnershipButton.click();
   }
 
   async clickOnLeaveTeamButton() {
     await this.leaveTeamButton.click();
+  }
+
+  async clickOnPromoteAndLeaveTeamButton() {
+    await this.ownerLeaveTeamButton.click();
   }
 
   async clickOnDeleteMemberButton() {
@@ -280,10 +337,12 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.invitationRecordDeleteInvititationMenuItem.click();
   }
 
-  async leaveTeam(teamName) {
-    await this.invitationRecordOptionsMenuButton.click();
+  async leaveTeam(teamName, role = 'Admin', name) {
+    await this.invitationRecordOptionsMenuButton.first().click();
     await this.memberRecordleaveTeamMenuItem.click();
-    await this.clickOnLeaveTeamButton();
+    role === 'Owner'
+      ? await this.selectMember(name)
+      : await this.clickOnLeaveTeamButton();
     await expect(this.teamCurrentBtn).not.toHaveText(teamName);
     await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
   }
@@ -340,5 +399,16 @@ exports.TeamPage = class TeamPage extends BasePage {
   async isDeleteTeamMemberDisabled(name) {
     const locator = await this.page.locator(`//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div/button`);
     await expect(locator).not.toBeVisible();
+  }
+
+  async isInvitationRecordOptionsDisabled(email) {
+    const locator = await this.page.locator(`//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div/button`);
+    await expect(locator).not.toBeVisible();
+  }
+
+  async selectMember(name) {
+    await this.page.locator('span[class*="dropdown-button"]').click();
+    await this.page.locator(`li span[class*="components_select"]:has-text("${name}")`).click();
+    await this.ownerLeaveTeamButton.click();
   }
 };

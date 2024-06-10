@@ -343,8 +343,8 @@ mainTest(qase(1749,'PENPOT-1749 Change group shadow color'),
     await mainPage.waitForChangeIsSaved();
     await mainPage.groupLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickViewportOnce();
-    await layersPanelPage.clickLayerOnLayersTab('Group');
+    // await mainPage.clickViewportOnce();
+    // await layersPanelPage.clickLayerOnLayersTab('Group');
     await designPanelPage.clickAddGroupShadowButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickFirstColorIcon();
