@@ -146,8 +146,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingNewsCheckbox = page.locator('label[for="newsletter-news"]');
     this.onboardingCreateTeamInput = page.locator('input[class*="team-name-input"]');
     this.onboardingContinueCreateTeamBtn = page.locator('button[label="Continue creating team"]');
+    this.onboardingContinueWithoutTeamBtn = page.locator('button[class*="onboarding_team_choice__accept-button"]').nth(1);
     this.onboardingInviteInput = page.locator('input[class*="components_forms__inside-input"]');
-    this.onboardingCreateTeamButton = page.locator('button[class*="main_ui_onboarding_team_choice__accept-button"]')
+    this.onboardingCreateTeamButton = page.locator('button[class*="main_ui_onboarding_team_choice__accept-button"]');
+
+    this.onboardingFirstHeader = page.locator('*[class*="onboarding_questions__modal-title"]');
   }
 
   async createFileViaPlaceholder() {
@@ -647,7 +650,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async selectTeamSize(option) {
-    await this.planingToUsingDropdown.click();
+    await this.planingToUsingDropdown.last().click();
     const optionSelector = await this.page.locator(`li span:has-text("${option}")`);
     await optionSelector.click();
   }
@@ -678,5 +681,73 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickOnOnboardingCreateTeamButton() {
     await this.onboardingCreateTeamButton.click();
+  }
+
+  async fillOnboardingQuestions() {
+    await expect(this.onboardingFirstHeader).toHaveText('Help us get to know you');
+    await this.selectRadioButton('Work');
+    await this.selectDropdownOptions('Testing before self-hosting');
+    await this.clickOnNextButton();
+    await this.selectFigmaTool();
+    await this.clickOnNextButton();
+    await this.selectKindOfWork('Development');
+    await this.selectRole('Team member');
+    await this.selectTeamSize('11-30');
+    await this.clickOnNextButton();
+    await this.selectGetStartedQuestion('Prototyping');
+    await this.clickOnNextButton();
+    await this.selectRadioButton('YouTube');
+    await this.clickOnStartButton();
+    await this.clickOnOnboardingContinueBtn();
+    await this.clickOnOnboardingContinueWithoutTeamButton();
+  }
+
+  async fillOnboardingFirstQuestions() {
+    await expect(this.onboardingFirstHeader).toHaveText('Help us get to know you');
+    await this.selectRadioButton('Work');
+    await this.selectDropdownOptions('Testing before self-hosting');
+    await this.clickOnNextButton();
+    await this.selectFigmaTool();
+    await this.clickOnNextButton();
+    await this.selectKindOfWork('Development');
+    await this.selectRole('Team member');
+    await this.selectTeamSize('11-30');
+    await this.clickOnNextButton();
+    await this.selectGetStartedQuestion('Prototyping');
+    await this.clickOnNextButton();
+    await this.selectRadioButton('YouTube');
+    await this.clickOnStartButton();
+  }
+
+  async selectRadioButton(name) {
+    await this.page.locator(`label[class*="radio-label"]:has-text("${name}") span`).first().click();
+  }
+
+  async selectGetStartedQuestion(name) {
+    await this.page.locator(`span[class*="forms__image-text"]:has-text("${name}")`).click();
+  }
+
+  async selectDropdownOptions(option) {
+    await this.planingToUsingDropdown.click();
+    const optionSelector = await this.page.locator(`li span:has-text("${option}")`);
+    await optionSelector.click();
+  }
+
+  async selectKindOfWork(option) {
+    await this.planingToUsingDropdown.first().click();
+    const optionSelector = await this.page.locator(`li span:has-text("${option}")`);
+    await optionSelector.click();
+  }
+
+  async selectRole(option) {
+    await this.planingToUsingDropdown.nth(1).click();
+    const optionSelector = await this.page.locator(`li span:has-text("${option}")`);
+    await optionSelector.click();
+  }
+
+  async clickOnOnboardingContinueWithoutTeamButton() {
+    await this.onboardingContinueWithoutTeamBtn.isVisible()
+      ? await this.onboardingContinueWithoutTeamBtn.click()
+      : null;
   }
 };

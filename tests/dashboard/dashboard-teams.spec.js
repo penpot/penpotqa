@@ -511,7 +511,7 @@ test.describe(() => {
       await page.waitForTimeout(30000);
       const firstInvite = await getRegisterMessage(firstEmail);
       const secondInvite = await getRegisterMessage(secondEmail);
-      const user = process.env.CI ? 'QA Engineer' : 'k8q6byz';
+      const user = process.env.CI ? 'QA Engineer' : 'QA Engineer';//'k8q6byz';
       await checkInviteText(firstInvite.inviteText, team, user);
       await checkInviteText(secondInvite.inviteText, team, user);
       await profilePage.logout();
@@ -525,11 +525,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstEditor);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -541,11 +537,7 @@ test.describe(() => {
       await registerPage.enterFullName(secondEditor);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -618,11 +610,7 @@ test.describe(() => {
       await registerPage.enterFullName(mainAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -660,11 +648,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -676,11 +660,7 @@ test.describe(() => {
       await registerPage.enterFullName(secondAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -725,11 +705,7 @@ test.describe(() => {
       await page.waitForTimeout(30000);
       const register = await getRegisterMessage(secondEmail);
       await page.goto(register.inviteUrl);
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -793,11 +769,7 @@ test.describe(() => {
       await registerPage.enterFullName(mainAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -859,11 +831,7 @@ test.describe(() => {
       await registerPage.enterFullName(secondUser);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await profilePage.logout();
@@ -938,11 +906,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -954,11 +918,7 @@ test.describe(() => {
       await registerPage.enterFullName(secondAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -1044,11 +1004,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1060,11 +1016,7 @@ test.describe(() => {
       await registerPage.enterFullName(secondAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -1119,15 +1071,11 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
-      const owner = process.env.CI ? 'QA Engineer' : 'k8q6byz';
+      const owner = process.env.CI ? 'QA Engineer' : 'QA Engineer';//'k8q6byz';
       await teamPage.isMemberRoleInPopUpNotDisplayed(owner, 'Owner');
     },
   );
@@ -1179,11 +1127,7 @@ test.describe(() => {
       await registerPage.enterFullName(secondAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -1229,11 +1173,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -1276,11 +1216,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -1324,11 +1260,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await profilePage.logout();
@@ -1388,11 +1320,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1404,11 +1332,7 @@ test.describe(() => {
       await registerPage.enterFullName(secondAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -1473,11 +1397,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1489,11 +1409,7 @@ test.describe(() => {
       await registerPage.enterFullName(secondAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -1557,11 +1473,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.isMultipleInvitationRecordDisplayed(
@@ -1627,11 +1539,7 @@ test.describe(() => {
       await page.waitForTimeout(30000);
       const register = await getRegisterMessage(secondEmail);
       await page.goto(register.inviteUrl);
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1712,11 +1620,7 @@ test.describe(() => {
       await page.waitForTimeout(30000);
       const register = await getRegisterMessage(secondEmail);
       await page.goto(register.inviteUrl);
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1804,11 +1708,7 @@ test.describe(() => {
       await registerPage.enterFullName(firstAdmin);
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.isOnboardingNextBtnDisplayed();
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-      await dashboardPage.clickOnOnboardingNextBtn();
-      await dashboardPage.reloadPage();
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
       await profilePage.logout();

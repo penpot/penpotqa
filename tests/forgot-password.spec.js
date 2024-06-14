@@ -53,11 +53,7 @@ test.describe(() => {
     await page.waitForTimeout(30000);
     invite = await getRegisterMessage(email);
     await page.goto(invite.inviteUrl);
-    await dashboardPage.isOnboardingNextBtnDisplayed();
-    await dashboardPage.clickOnOnboardingNextBtn();
-    await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-    await dashboardPage.clickOnOnboardingNextBtn();
-    await dashboardPage.reloadPage();
+    await dashboardPage.fillOnboardingQuestions();
   });
 
   test(qase(49,'ON-22 Forgot password flow'), async ({ page }) => {
