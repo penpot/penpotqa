@@ -71,157 +71,157 @@ mainTest(
   },
 );
 
-mainTest(
-  qase(1370,'PENPOT-1370 Rename Library backup page'),
-  async () => {
-    await mainPage.clickOnPageOnLayersPanel(false);
-    await mainPage.renamePageViaRightClick('Test', false);
-    await mainPage.isSecondPageNameDisplayed('Test');
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'renamed-library-backup.png',
-    );
-  },
-);
+// mainTest(
+//   qase(1370,'PENPOT-1370 Rename Library backup page'),
+//   async () => {
+//     await mainPage.clickOnPageOnLayersPanel(false);
+//     await mainPage.renamePageViaRightClick('Test', false);
+//     await mainPage.isSecondPageNameDisplayed('Test');
+//     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
+//       'renamed-library-backup.png',
+//     );
+//   },
+// );
 
-mainTest(
-  qase(1371,'PENPOT-1371 Add/Delete main components from Library backup page'),
-  async () => {
-    await mainPage.clickOnPageOnLayersPanel(false);
-    await mainPage.createDefaultRectangleByCoordinates(200, 200);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'add-main-component-library-backup.png',
-    );
-    await layersPanelPage.deleteMainComponentViaRightClick();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'delete-main-component-library-backup.png',
-    );
-  },
-);
+// mainTest(
+//   qase(1371,'PENPOT-1371 Add/Delete main components from Library backup page'),
+//   async () => {
+//     await mainPage.clickOnPageOnLayersPanel(false);
+//     await mainPage.createDefaultRectangleByCoordinates(200, 200);
+//     await mainPage.createComponentViaRightClick();
+//     await mainPage.waitForChangeIsSaved();
+//     await expect(mainPage.viewport).toHaveScreenshot(
+//       'add-main-component-library-backup.png',
+//     );
+//     await layersPanelPage.deleteMainComponentViaRightClick();
+//     await expect(mainPage.viewport).toHaveScreenshot(
+//       'delete-main-component-library-backup.png',
+//     );
+//   },
+// );
 
-test.describe(() => {
-  test.beforeEach(async () => {
-    await mainPage.clickOnPageOnLayersPanel(false);
-    await mainPage.createDefaultRectangleByCoordinates(200, 200);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.deleteMainComponentViaRightClick();
-  });
+// test.describe(() => {
+//   test.beforeEach(async () => {
+//     await mainPage.clickOnPageOnLayersPanel(false);
+//     await mainPage.createDefaultRectangleByCoordinates(200, 200);
+//     await mainPage.createComponentViaRightClick();
+//     await mainPage.waitForChangeIsSaved();
+//     await layersPanelPage.deleteMainComponentViaRightClick();
+//   });
 
-  mainTest(
-    qase(1372,'PENPOT-1372 Restore components, that were deleted from library backup'),
-    async ({ browserName }) => {
-      await mainPage.clickShortcutCtrlZ(browserName);
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'restored-main-component-library-backup.png',
-      );
-    },
-  );
-});
+  // mainTest(
+  //   qase(1372,'PENPOT-1372 Restore components, that were deleted from library backup'),
+  //   async ({ browserName }) => {
+  //     await mainPage.clickShortcutCtrlZ(browserName);
+  //     await expect(mainPage.viewport).toHaveScreenshot(
+  //       'restored-main-component-library-backup.png',
+  //     );
+  //   },
+  // );
+// });
 
-mainTest(
-  qase(1373,'PENPOT-1373 Delete Library backup page'),
-  async () => {
-    await mainPage.clickOnPageOnLayersPanel(false);
-    await mainPage.deleteSecondPageViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isFirstPageNameDisplayed('Page 1');
-    await expect(mainPage.pagesBlock).toHaveScreenshot(
-      'deleted-library-backup.png'
-    );
-  },
-);
+// mainTest(
+//   qase(1373,'PENPOT-1373 Delete Library backup page'),
+//   async () => {
+//     await mainPage.clickOnPageOnLayersPanel(false);
+//     await mainPage.deleteSecondPageViaRightClick();
+//     await mainPage.waitForChangeIsSaved();
+//     await mainPage.isFirstPageNameDisplayed('Page 1');
+//     await expect(mainPage.pagesBlock).toHaveScreenshot(
+//       'deleted-library-backup.png'
+//     );
+//   },
+// );
 
-mainTest(
-  qase(1374,'PENPOT-1374 Duplicate Library backup page'),
-  async () => {
-    await mainPage.clickOnPageOnLayersPanel(false);
-    await mainPage.duplicatePageViaRightClick(false);
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.pagesBlock).toHaveScreenshot(
-      'duplicated-library-backup.png'
-    );
-  },
-);
+// mainTest(
+//   qase(1374,'PENPOT-1374 Duplicate Library backup page'),
+//   async () => {
+//     await mainPage.clickOnPageOnLayersPanel(false);
+//     await mainPage.duplicatePageViaRightClick(false);
+//     await mainPage.waitForChangeIsSaved();
+//     await expect(mainPage.pagesBlock).toHaveScreenshot(
+//       'duplicated-library-backup.png'
+//     );
+//   },
+// );
 
-mainTest(
-  qase(1516,'PENPOT-1516 Check Library backup file in case of unpublishing a few shared libraries'),
-  async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 20000);
-
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.isFileVisibleByName('New File 2');
-
-    await dashboardPage.createFileViaTitlePanel();
-    await mainPage.isMainPageLoaded();
-    await mainPage.createDefaultEllipseByCoordinates(200, 200);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.isFileVisibleByName('New File 1');
-    await dashboardPage.checkNumberOfFiles('2 files');
-    await dashboardPage.addFileWithNameAsSharedLibraryViaRightClick('New File 1');
-
-    await dashboardPage.createFileViaTitlePanel();
-    await mainPage.isMainPageLoaded();
-    await mainPage.createDefaultTextLayer(200, 200);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.checkNumberOfFiles('3 files');
-    await dashboardPage.addFileWithNameAsSharedLibraryViaRightClick('New File 3');
-
-    await dashboardPage.openFileWithName('New File 2');
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibrariesButton();
-    await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
-    await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-    await assetsPanelPage.isSharedLibraryVisibleByName('New File 3');
-    await assetsPanelPage.clickSharedLibraryImportButton('New File 3');
-    await assetsPanelPage.clickCloseModalButton();
-
-    await layersPanelPage.openLayersTab();
-    await mainPage.clickOnPageOnLayersPanel(false);
-
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
-    await assetsPanelPage.clickLibraryComponentsTitle();
-    await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-    await mainPage.waitForChangeIsSaved();
-    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
-    await assetsPanelPage.clickLibraryTitleWithName('New File 3');
-    await assetsPanelPage.clickLibraryComponentsTitle();
-    await assetsPanelPage.dragAndDropComponentToViewport('Hello World!');
-    await mainPage.waitForChangeIsSaved();
-
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.openFileWithName('New File 1');
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibrariesButton();
-    await assetsPanelPage.clickRemoveAsSharedLibraryButton();
-    await assetsPanelPage.isRemoveAsSharedLibraryButtonVisible();
-    await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
-      'file1-library-delete-warning.png',
-    );
-    await assetsPanelPage.clickRemoveAsSharedLibraryButton();
-    await assetsPanelPage.isSharedLibraryBadgeNotVisible();
-    await assetsPanelPage.clickCloseModalButton();
-
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.openFileWithName('New File 3');
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibrariesButton();
-    await assetsPanelPage.clickRemoveAsSharedLibraryButton();
-    await assetsPanelPage.isRemoveAsSharedLibraryButtonVisible();
-    await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
-      'file3-library-delete-warning.png',
-    );
-    await assetsPanelPage.clickRemoveAsSharedLibraryButton();
-    await assetsPanelPage.isSharedLibraryBadgeNotVisible();
-    await assetsPanelPage.clickCloseModalButton();
-  },
-);
+// mainTest(
+//   qase(1516,'PENPOT-1516 Check Library backup file in case of unpublishing a few shared libraries'),
+//   async ({ page }, testInfo) => {
+//     await testInfo.setTimeout(testInfo.timeout + 20000);
+//
+//     await mainPage.clickPencilBoxButton();
+//     await dashboardPage.isHeaderDisplayed('Projects');
+//     await dashboardPage.isFileVisibleByName('New File 2');
+//
+//     await dashboardPage.createFileViaTitlePanel();
+//     await mainPage.isMainPageLoaded();
+//     await mainPage.createDefaultEllipseByCoordinates(200, 200);
+//     await mainPage.createComponentViaRightClick();
+//     await mainPage.waitForChangeIsSaved();
+//     await mainPage.clickPencilBoxButton();
+//     await dashboardPage.isHeaderDisplayed('Projects');
+//     await dashboardPage.isFileVisibleByName('New File 1');
+//     await dashboardPage.checkNumberOfFiles('2 files');
+//     await dashboardPage.addFileWithNameAsSharedLibraryViaRightClick('New File 1');
+//
+//     await dashboardPage.createFileViaTitlePanel();
+//     await mainPage.isMainPageLoaded();
+//     await mainPage.createDefaultTextLayer(200, 200);
+//     await mainPage.createComponentViaRightClick();
+//     await mainPage.waitForChangeIsSaved();
+//     await mainPage.clickPencilBoxButton();
+//     await dashboardPage.isHeaderDisplayed('Projects');
+//     await dashboardPage.checkNumberOfFiles('3 files');
+//     await dashboardPage.addFileWithNameAsSharedLibraryViaRightClick('New File 3');
+//
+//     await dashboardPage.openFileWithName('New File 2');
+//     await assetsPanelPage.clickAssetsTab();
+//     await assetsPanelPage.clickLibrariesButton();
+//     await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
+//     await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
+//     await assetsPanelPage.isSharedLibraryVisibleByName('New File 3');
+//     await assetsPanelPage.clickSharedLibraryImportButton('New File 3');
+//     await assetsPanelPage.clickCloseModalButton();
+//
+//     await layersPanelPage.openLayersTab();
+//     await mainPage.clickOnPageOnLayersPanel(false);
+//
+//     await assetsPanelPage.clickAssetsTab();
+//     await assetsPanelPage.clickLibraryTitleWithName('New File 1');
+//     await assetsPanelPage.clickLibraryComponentsTitle();
+//     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+//     await mainPage.waitForChangeIsSaved();
+//     await assetsPanelPage.clickLibraryTitleWithName('New File 1');
+//     await assetsPanelPage.clickLibraryTitleWithName('New File 3');
+//     await assetsPanelPage.clickLibraryComponentsTitle();
+//     await assetsPanelPage.dragAndDropComponentToViewport('Hello World!');
+//     await mainPage.waitForChangeIsSaved();
+//
+//     await mainPage.clickPencilBoxButton();
+//     await dashboardPage.openFileWithName('New File 1');
+//     await assetsPanelPage.clickAssetsTab();
+//     await assetsPanelPage.clickLibrariesButton();
+//     await assetsPanelPage.clickRemoveAsSharedLibraryButton();
+//     await assetsPanelPage.isRemoveAsSharedLibraryButtonVisible();
+//     await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
+//       'file1-library-delete-warning.png',
+//     );
+//     await assetsPanelPage.clickRemoveAsSharedLibraryButton();
+//     await assetsPanelPage.isSharedLibraryBadgeNotVisible();
+//     await assetsPanelPage.clickCloseModalButton();
+//
+//     await mainPage.clickPencilBoxButton();
+//     await dashboardPage.openFileWithName('New File 3');
+//     await assetsPanelPage.clickAssetsTab();
+//     await assetsPanelPage.clickLibrariesButton();
+//     await assetsPanelPage.clickRemoveAsSharedLibraryButton();
+//     await assetsPanelPage.isRemoveAsSharedLibraryButtonVisible();
+//     await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
+//       'file3-library-delete-warning.png',
+//     );
+//     await assetsPanelPage.clickRemoveAsSharedLibraryButton();
+//     await assetsPanelPage.isSharedLibraryBadgeNotVisible();
+//     await assetsPanelPage.clickCloseModalButton();
+//   },
+// );

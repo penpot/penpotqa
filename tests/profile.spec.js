@@ -137,11 +137,7 @@ test.describe(() => {
     const loginPage = new LoginPage(page);
     const profilePage = new ProfilePage(page);
     await page.goto(invite.inviteUrl);
-    await dashboardPage.isOnboardingNextBtnDisplayed();
-    await dashboardPage.clickOnOnboardingNextBtn();
-    await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-    await dashboardPage.clickOnOnboardingNextBtn();
-    await dashboardPage.reloadPage();
+    await dashboardPage.fillOnboardingQuestions();
     await profilePage.changeEmail(newEmail);
     await page.waitForTimeout(30000);
     const changeEmail = await getRegisterMessage(email);

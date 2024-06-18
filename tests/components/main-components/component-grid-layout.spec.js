@@ -169,6 +169,7 @@ test.describe(() => {
     const popupPromise = page.waitForEvent('popup');
     await mainPage.showMainComponentViaRightClick();
     const newPage = await popupPromise;
+    await mainPage.isCreatedLayerVisible();
     await expect(newPage).toHaveScreenshot('board-component-on-first-file.png', {
       mask: [mainPage.usersSection],
     });

@@ -80,7 +80,7 @@ test.describe(() => {
     const dashboardPage = new DashboardPage(page);
     await checkRegisterText(invite.inviteText, randomName);
     await page.goto(invite.inviteUrl);
-    await dashboardPage.isOnboardingNextBtnDisplayed();
+    await dashboardPage.fillOnboardingFirstQuestions();
   });
 
   test(qase([43,44],'ON-16,17 Onboarding questions flow'), async ({ page }) => {
