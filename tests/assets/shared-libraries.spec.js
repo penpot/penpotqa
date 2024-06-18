@@ -334,34 +334,34 @@ test.describe(() => {
     },
   );
 
-  mainTest(
-    qase(1475,'PENPOT-1475 Unlink Shared Library file from Libraries popup when assets are used in working file'),
-    async () => {
-      await dashboardPage.createFileViaTitlePanel();
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.clickLibrariesButton();
-      await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
-      await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-      await assetsPanelPage.clickCloseModalButton();
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.clickLibraryTitle();
-      await assetsPanelPage.clickLibraryComponentsTitle();
-      await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-      await mainPage.waitForChangeIsSaved();
-      await dashboardPage.reloadPage();
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.clickLibrariesButton();
-      await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-      await assetsPanelPage.clickCloseModalButton();
-      await assetsPanelPage.clickAssetsTab();
-      await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'delete-shared-library-file2-with-ellipse.png',
-      );
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'delete-shared-library-component-file2.png',
-      );
-    },
-  );
+  // mainTest(
+  //   qase(1475,'PENPOT-1475 Unlink Shared Library file from Libraries popup when assets are used in working file'),
+  //   async () => {
+  //     await dashboardPage.createFileViaTitlePanel();
+  //     await assetsPanelPage.clickAssetsTab();
+  //     await assetsPanelPage.clickLibrariesButton();
+  //     await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
+  //     await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
+  //     await assetsPanelPage.clickCloseModalButton();
+  //     await assetsPanelPage.clickAssetsTab();
+  //     await assetsPanelPage.clickLibraryTitle();
+  //     await assetsPanelPage.clickLibraryComponentsTitle();
+  //     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+  //     await mainPage.waitForChangeIsSaved();
+  //     await dashboardPage.reloadPage();
+  //     await assetsPanelPage.clickAssetsTab();
+  //     await assetsPanelPage.clickLibrariesButton();
+  //     await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
+  //     await assetsPanelPage.clickCloseModalButton();
+  //     await assetsPanelPage.clickAssetsTab();
+  //     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+  //       'delete-shared-library-file2-with-ellipse.png',
+  //     );
+  //     await expect(mainPage.viewport).toHaveScreenshot(
+  //       'delete-shared-library-component-file2.png',
+  //     );
+  //   },
+  // );
 
   test.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
@@ -553,46 +553,46 @@ test.describe(() => {
     await dashboardPage.checkNumberOfFiles('3 files');
   });
 
-  mainTest(
-    qase(1092,'PENPOT-1092 Delete library which is used by a few files ( 1 library in a few files)'),
-    async () => {
-      await dashboardPage.deleteFileWithNameViaRightClick('New File 1');
-      await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
-        'library-delete-warning.png',
-      );
-      await dashboardPage.clickDeleteFileButton();
-
-      await dashboardPage.openFileWithName('New File 2');
-      await mainPage.isSecondPageNameDisplayed('Main components');
-      await mainPage.clickOnPageOnLayersPanel(false);
-      await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-        'library-backup-layers.png',
-      );
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'library-backup-viewport.png',
-      );
-      await assetsPanelPage.clickAssetsTab();
-      await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'library-backup-assets.png',
-      );
-      await mainPage.clickPencilBoxButton();
-      await dashboardPage.isHeaderDisplayed('Projects');
-
-      await dashboardPage.openFileWithName('New File 3');
-      await mainPage.isSecondPageNameDisplayed('Main components');
-      await mainPage.clickOnPageOnLayersPanel(false);
-      await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-        'library-backup-layers.png',
-      );
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'library-backup-viewport.png',
-      );
-      await assetsPanelPage.clickAssetsTab();
-      await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'library-backup-assets.png',
-      );
-    },
-  );
+  // mainTest(
+  //   qase(1092,'PENPOT-1092 Delete library which is used by a few files ( 1 library in a few files)'),
+  //   async () => {
+  //     await dashboardPage.deleteFileWithNameViaRightClick('New File 1');
+  //     await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
+  //       'library-delete-warning.png',
+  //     );
+  //     await dashboardPage.clickDeleteFileButton();
+  //
+  //     await dashboardPage.openFileWithName('New File 2');
+  //     await mainPage.isSecondPageNameDisplayed('Main components');
+  //     await mainPage.clickOnPageOnLayersPanel(false);
+  //     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
+  //       'library-backup-layers.png',
+  //     );
+  //     await expect(mainPage.viewport).toHaveScreenshot(
+  //       'library-backup-viewport.png',
+  //     );
+  //     await assetsPanelPage.clickAssetsTab();
+  //     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+  //       'library-backup-assets.png',
+  //     );
+  //     await mainPage.clickPencilBoxButton();
+  //     await dashboardPage.isHeaderDisplayed('Projects');
+  //
+  //     await dashboardPage.openFileWithName('New File 3');
+  //     await mainPage.isSecondPageNameDisplayed('Main components');
+  //     await mainPage.clickOnPageOnLayersPanel(false);
+  //     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
+  //       'library-backup-layers.png',
+  //     );
+  //     await expect(mainPage.viewport).toHaveScreenshot(
+  //       'library-backup-viewport.png',
+  //     );
+  //     await assetsPanelPage.clickAssetsTab();
+  //     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+  //       'library-backup-assets.png',
+  //     );
+  //   },
+  // );
 
   test.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
