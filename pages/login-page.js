@@ -8,16 +8,16 @@ exports.LoginPage = class LoginPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.pageTitle = page.locator('h1[data-test="login-title"]');
+    this.pageTitle = page.locator('h1[data-testid="login-title"]');
     this.emailInput = page.locator('#email');
     this.pwdInput = page.locator('#password');
-    this.loginButton = page.locator('button[data-test="login-submit"]');
-    this.emailInputError = page.locator('div[data-test="-error"]');
+    this.loginButton = page.locator('button[data-testid="login-submit"]');
+    this.emailInputError = page.locator('div[data-testid="-error"]');
     this.section = page.locator('section[class="auth-content"]');
     this.loginErrorBanner = page.locator('aside[class*="context_notification__warning"] div:nth-of-type(2)');
     this.createAccountLink = page.locator('a:has-text("Create an account")');
-    this.forgotPasswordLink = page.locator('a[data-test="forgot-password"]');
-    this.loginHereButton = page.locator('*[data-test="login-here-link"]');
+    this.forgotPasswordLink = page.locator('a[data-testid="forgot-password"]');
+    this.loginHereButton = page.locator('*[data-testid="login-here-link"]');
   }
 
   async checkLoginError(text) {

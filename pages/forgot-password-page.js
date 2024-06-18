@@ -9,7 +9,7 @@ exports.ForgotPasswordPage = class ForgotPasswordPage extends BasePage {
     super(page);
 
     this.emailInput = page.locator('#email');
-    this.recoverPasswordButton = page.locator('data-test=recovery-resquest-submit');
+    this.recoverPasswordButton = page.locator('data-testid=recovery-resquest-submit');
 
     this.recoveryPwdInput = page.locator('#password-1');
     this.recoveryPwdConfirmInput = page.locator('#password-2');

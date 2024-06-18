@@ -11,13 +11,13 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Main Toolbar
     this.pencilBoxButton = page.locator('a[class*="header__main-icon"]');
-    this.createBoardButton = page.locator('button[data-test="artboard-btn"]');
-    this.createRectangleButton = page.locator('button[data-test="rect-btn"]');
-    this.createEllipseButton = page.locator('button[data-test="ellipse-btn"]');
+    this.createBoardButton = page.locator('button[data-testid="artboard-btn"]');
+    this.createRectangleButton = page.locator('button[data-testid="rect-btn"]');
+    this.createEllipseButton = page.locator('button[data-testid="ellipse-btn"]');
     this.createTextButton = page.locator('button[title="Text (T)"]');
     this.uploadImageSelector = page.locator('#image-upload');
-    this.createCurveButton = page.locator('button[data-test="curve-btn"]');
-    this.createPathButton = page.locator('button[data-test="path-btn"]');
+    this.createCurveButton = page.locator('button[data-testid="curve-btn"]');
+    this.createPathButton = page.locator('button[data-testid="path-btn"]');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
     this.mainToolBar = page.locator(
       '[class*="main-toolbar"] button[class*="toolbar-handler"]',
@@ -93,10 +93,10 @@ exports.MainPage = class MainPage extends BasePage {
       '#file-menu-color-palette span:text-is("Hide color palette")',
     );
     this.showBoardNamesMainMenuSubItem = page.locator(
-      'li[data-test="display-artboard-names"] span:text-is("Show boards names")',
+      'li[data-testid="display-artboard-names"] span:text-is("Show boards names")',
     );
     this.hideBoardNamesMainMenuSubItem = page.locator(
-      'li[data-test="display-artboard-names"] span:text-is("Hide board names")',
+      'li[data-testid="display-artboard-names"] span:text-is("Hide board names")',
     );
     this.showPixelGridMainMenuSubItem = page.locator(
       '#file-menu-pixel-grid span:text-is("Show pixel grid")',
@@ -105,7 +105,7 @@ exports.MainPage = class MainPage extends BasePage {
       '#file-menu-pixel-grid span:text-is("Hide pixel grid")',
     );
     this.showHideUIMainMenuSubItem = page.locator(
-      'li[data-test="hide-ui"] span:text-is("Show / Hide UI")',
+      'li[data-testid="hide-ui"] span:text-is("Show / Hide UI")',
     );
     this.dowloadPenpotFileMenuSubItem = page.locator('#file-menu-binary-file');
     this.dowloadStandartFileMenuSubItem = page.locator('#file-menu-standard-file');
