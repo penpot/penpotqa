@@ -8,14 +8,14 @@ exports.RegisterPage = class RegisterPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.pageTitle = page.locator('h1[data-test="registration-title"]');
+    this.pageTitle = page.locator('h1[data-testid="registration-title"]');
     this.emailInput = page.locator('#email');
     this.passwordInput = page.locator('#password');
-    this.createAccountBtn = page.locator('button[data-test="register-form-submit"]');
+    this.createAccountBtn = page.locator('button[data-testid="register-form-submit"]');
     this.createAccountSecondBtn = page.locator('button[type="submit"]');
-    this.emailInputError = page.locator('div[data-test="email-input-error"]');
+    this.emailInputError = page.locator('div[data-testid="email-input-error"]');
     this.passwordInputHint = page.locator('div.main_ui_components_forms__hint');
-    this.passwordInputError = page.locator('div[data-test="-error"]');
+    this.passwordInputError = page.locator('div[data-testid="-error"]');
     this.fullnameInput = page.locator('input[id="fullname"]');
     this.acceptTermsCheckbox = page.locator('label[for="accept-terms-and-privacy"] span');
     this.regEmailNotification = page.locator('div[class*="notification-text-email"]');

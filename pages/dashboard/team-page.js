@@ -23,8 +23,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamOptionsMenuButton = page.locator('button[class*="switch-options"]');
     this.deleteTeamMenuItem = page.locator('#teams-options-delete-team');
     this.deleteTeamButton = page.locator('input[value="Delete team"]');
-    this.teamSettingsMenuItem = page.locator('li[data-test="team-settings"]');
-    this.renameTeamMenuItem = page.locator('li[data-test="rename-team"]');
+    this.teamSettingsMenuItem = page.locator('li[data-testid="team-settings"]');
+    this.renameTeamMenuItem = page.locator('li[data-testid="rename-team"]');
     this.uploadTeamImageButton = page.locator('input[type="file"]');
     this.updateTeamButton = page.locator('button:has-text("Update team")');
     this.teamOwnerSpan = page.locator(
@@ -43,11 +43,11 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamOwnerSection = page.locator('//div[text()="Team members"]/..');
     this.teamStatsSection = page.locator('//div[text()="Team projects"]/..');
 
-    this.membersMenuItem = page.locator('li[data-test="team-members"]');
+    this.membersMenuItem = page.locator('li[data-testid="team-members"]');
 
     //Invitations
-    this.invitationsMenuItem = page.locator('li[data-test="team-invitations"]');
-    this.inviteMembersToTeamButton = page.locator('a[data-test="invite-member"]');
+    this.invitationsMenuItem = page.locator('li[data-testid="team-invitations"]');
+    this.inviteMembersToTeamButton = page.locator('a[data-testid="invite-member"]');
     this.inviteMembersPopUpHeader = page.locator(
       'div[class*="modal-team-container"] div[class*="title"]',
     );

@@ -537,7 +537,7 @@ exports.PerformancePage = class PerformancePage extends BasePage {
    * @returns {Promise<void>}
    */
   async selectPage(pageId) {
-    const pageItem = await this.page.locator(`[data-test="page-${pageId}"]`);
+    const pageItem = await this.page.locator(`[data-testid="page-${pageId}"]`);
     await pageItem.scrollIntoViewIfNeeded();
     await pageItem.click();
   }
