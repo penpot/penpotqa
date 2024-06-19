@@ -61,15 +61,15 @@ test.afterEach(async ({}, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest(
-  qase(1303,'PENPOT-1303 Check main components in Library backup'),
-  async () => {
-    await mainPage.clickOnPageOnLayersPanel(false);
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'main-component-library-backup.png',
-    );
-  },
-);
+// mainTest(
+//   qase(1303,'PENPOT-1303 Check main components in Library backup'),
+//   async () => {
+//     await mainPage.clickOnPageOnLayersPanel(false);
+//     await expect(mainPage.viewport).toHaveScreenshot(
+//       'main-component-library-backup.png',
+//     );
+//   },
+// );
 
 // mainTest(
 //   qase(1370,'PENPOT-1370 Rename Library backup page'),

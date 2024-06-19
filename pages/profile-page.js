@@ -11,7 +11,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.profileSection = page.locator('.main_ui_settings__dashboard-content');
 
     //Account
-    this.profileMenuButton = page.locator('div[data-test="profile-btn"]');
+    this.profileMenuButton = page.locator('button[data-test="profile-btn"]');
     this.yourAccountMenuItem = page.locator('li[data-test="profile-profile-opt"]');
     this.logoutMenuItem = page.locator('li[data-test="logout-profile-opt"]');
     this.giveFeedbackMenuItem = page.locator('li[data-test="feedback-profile-opt"]');
