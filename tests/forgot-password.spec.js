@@ -5,7 +5,7 @@ const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { random } = require('../helpers/string-generator');
 const { RegisterPage } = require('../pages/register-page');
-const { getRegisterMessage, checkRecoveryText } = require('../helpers/gmail');
+const { getRegisterMessage, checkRecoveryText, waitMessage, waitSecondMessage } = require('../helpers/gmail');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 const { ProfilePage } = require('../pages/profile-page');
 
@@ -50,8 +50,7 @@ test.describe(() => {
     await registerPage.clickOnAcceptTermsCheckbox();
     await registerPage.clickOnCreateAccountSecondBtn();
     await registerPage.isRegisterEmailCorrect(email);
-    await page.waitForTimeout(30000);
-    invite = await getRegisterMessage(email);
+    invite = await waitMessage(page, email, 40);
     await page.goto(invite.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
   });
@@ -67,7 +66,7 @@ test.describe(() => {
     await loginPage.clickOnForgotPassword();
     await forgotPasswordPage.enterEmail(email);
     await forgotPasswordPage.clickRecoverPasswordButton();
-    await page.waitForTimeout(30000);
+    await waitSecondMessage(page, email, 40);
     const forgotPass = await getRegisterMessage(email);
     await checkRecoveryText(forgotPass.inviteText, randomName);
     await page.goto(forgotPass.inviteUrl);
@@ -93,7 +92,7 @@ test.describe(() => {
     await loginPage.clickOnForgotPassword();
     await forgotPasswordPage.enterEmail(email);
     await forgotPasswordPage.clickRecoverPasswordButton();
-    await page.waitForTimeout(30000);
+    await waitSecondMessage(page, email, 40);
     const forgotPass = await getRegisterMessage(email);
     await checkRecoveryText(forgotPass.inviteText, randomName);
     await page.goto(forgotPass.inviteUrl);

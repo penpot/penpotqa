@@ -6,7 +6,7 @@ const { expect, test } = require('@playwright/test');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { RegisterPage } = require('../pages/register-page');
-const { getRegisterMessage, checkNewEmailText } = require('../helpers/gmail');
+const { getRegisterMessage, checkNewEmailText, waitMessage, waitSecondMessage } = require('../helpers/gmail');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 
 mainTest(qase(187,'PR-1 Edit profile name'), async ({ page }) => {
@@ -126,8 +126,7 @@ test.describe(() => {
     await registerPage.clickOnAcceptTermsCheckbox();
     await registerPage.clickOnCreateAccountSecondBtn();
     await registerPage.isRegisterEmailCorrect(email);
-    await page.waitForTimeout(30000);
-    invite = await getRegisterMessage(email);
+    invite = await waitMessage(page, email, 40);
     console.log(invite.inviteUrl);
   });
 
@@ -139,7 +138,7 @@ test.describe(() => {
     await page.goto(invite.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
     await profilePage.changeEmail(newEmail);
-    await page.waitForTimeout(30000);
+    await waitSecondMessage(page, email, 40);
     const changeEmail = await getRegisterMessage(email);
     console.log(changeEmail.inviteUrl);
     await checkNewEmailText(changeEmail.inviteText, randomName, newEmail);

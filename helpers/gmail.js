@@ -47,7 +47,7 @@ async function listMessages(auth, email) {
   }
 }
 
-async function messagesCount(auth, email, count) {
+async function messagesCount(auth, email) {
   const gmail = google.gmail({ version: 'v1', auth });
 
   async function searchMessages(label, email) {
@@ -69,9 +69,14 @@ async function messagesCount(auth, email, count) {
 
 async function checkMessagesCount(email, count) {
   return authorize().then(async (auth) => {
-    const actualCount = await messagesCount(auth, email, count);
-    console.log(actualCount)
+    const actualCount = await messagesCount(auth, email);
     expect(actualCount).toEqual(count);
+  }).catch(console.error);
+}
+
+async function getMessagesCount(email) {
+  return authorize().then(async (auth) => {
+    return await messagesCount(auth, email);
   }).catch(console.error);
 }
 
@@ -171,10 +176,30 @@ async function waitMessage(page , email, timeoutSec= 40) {
     await page.waitForTimeout(interval);
   }
 
-  if (!invite.inviteUrl) {
-    throw new Error('Timeout reached: invite.inviteUrl is still undefined');
+  if (!invite) {
+    throw new Error('Timeout reached: invite is still undefined');
   }
 }
 
-module.exports = {checkInviteText, getRegisterMessage, checkRegisterText, checkRecoveryText, checkNewEmailText, checkMessagesCount, waitMessage};
+async function waitSecondMessage(page , email, timeoutSec= 40) {
+  const timeout = timeoutSec*1000;
+  const interval = 4000;
+  const startTime = Date.now();
+  let count;
+
+  await page.waitForTimeout(interval);
+  while (Date.now() - startTime < timeout) {
+    count = await getMessagesCount(email);
+    if (count === 2) {
+      return 1;
+    }
+    await page.waitForTimeout(interval);
+  }
+
+  if (count !== 2) {
+    throw new Error('Timeout reached: second messages is still undefined');
+  }
+}
+
+module.exports = {checkInviteText, getRegisterMessage, checkRegisterText, checkRecoveryText, checkNewEmailText, checkMessagesCount, waitMessage, waitSecondMessage};
 

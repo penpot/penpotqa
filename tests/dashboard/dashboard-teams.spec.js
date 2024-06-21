@@ -7,7 +7,7 @@ const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
-const { getRegisterMessage, checkInviteText, checkMessagesCount } = require('../../helpers/gmail');
+const { getRegisterMessage, checkInviteText, checkMessagesCount, waitMessage, waitSecondMessage } = require('../../helpers/gmail');
 const { LoginPage } = require('../../pages/login-page');
 const { RegisterPage } = require('../../pages/register-page');
 
@@ -508,9 +508,8 @@ test.describe(() => {
         'Editor',
         'Pending'
       );
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
-      const secondInvite = await getRegisterMessage(secondEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const secondInvite = await waitMessage(page, secondEmail, 40);
       const user = process.env.CI ? 'QA Engineer' : 'QA Engineer';//'k8q6byz';
       await checkInviteText(firstInvite.inviteText, team, user);
       await checkInviteText(secondInvite.inviteText, team, user);
@@ -597,8 +596,7 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.enterEmailToInviteMembersPopUp(mainEmail);
       await teamPage.clickSendInvitationButton();
-      await page.waitForTimeout(30000);
-      const mainInvite = await getRegisterMessage(mainEmail);
+      const mainInvite = await waitMessage(page, mainEmail, 40);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
 
@@ -632,9 +630,8 @@ test.describe(() => {
         'Admin',
         'Pending'
       );
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
-      const secondInvite = await getRegisterMessage(secondEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const secondInvite = await waitMessage(page, secondEmail, 40);
       await checkInviteText(firstInvite.inviteText, team, mainAdmin);
       await checkInviteText(secondInvite.inviteText, team, mainAdmin);
       await profilePage.logout();
@@ -702,8 +699,7 @@ test.describe(() => {
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
       await registerPage.isRegisterEmailCorrect(secondEmail);
-      await page.waitForTimeout(30000);
-      const register = await getRegisterMessage(secondEmail);
+      const register = await waitMessage(page, secondEmail, 40);
       await page.goto(register.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
 
@@ -722,7 +718,7 @@ test.describe(() => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await page.waitForTimeout(30000);
+      await waitSecondMessage(page, secondEmail, 40);
       const invite = await getRegisterMessage(secondEmail);
       await loginPage.enterEmail(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -756,8 +752,7 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.enterEmailToInviteMembersPopUp(mainEmail);
       await teamPage.clickSendInvitationButton();
-      await page.waitForTimeout(30000);
-      const mainInvite = await getRegisterMessage(mainEmail);
+      const mainInvite = await waitMessage(page, mainEmail, 40);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
 
@@ -786,11 +781,11 @@ test.describe(() => {
         'Admin',
         'Pending'
       );
-      await page.waitForTimeout(20000);
+      await page.waitForTimeout(5000);
       await teamPage.resendInvitation();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
-      await page.waitForTimeout(30000);
+      await waitSecondMessage(page, secondEmail, 40);
       await checkMessagesCount(secondEmail, 2);
     },
   );
@@ -818,8 +813,7 @@ test.describe(() => {
       await teamPage.enterEmailToInviteMembersPopUp(secondEmail);
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const secondInvite = await getRegisterMessage(secondEmail)
+      const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -891,9 +885,8 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
-      const secondInvite = await getRegisterMessage(secondEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -989,9 +982,8 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
-      const secondInvite = await getRegisterMessage(secondEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1057,8 +1049,7 @@ test.describe(() => {
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
       await teamPage.clickInviteMembersToTeamButton();
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1112,9 +1103,8 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
-      const secondInvite = await getRegisterMessage(secondEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1159,8 +1149,7 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1202,8 +1191,7 @@ test.describe(() => {
       await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1246,8 +1234,7 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1305,9 +1292,8 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
-      const secondInvite = await getRegisterMessage(secondEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1382,9 +1368,8 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
-      const secondInvite = await getRegisterMessage(secondEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1459,8 +1444,7 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1536,8 +1520,7 @@ test.describe(() => {
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
       await registerPage.isRegisterEmailCorrect(secondEmail);
-      await page.waitForTimeout(30000);
-      const register = await getRegisterMessage(secondEmail);
+      const register = await waitMessage(page, secondEmail, 40);
       await page.goto(register.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
 
@@ -1556,7 +1539,7 @@ test.describe(() => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await page.waitForTimeout(30000);
+      await waitSecondMessage(page, secondEmail, 40);
       const invite = await getRegisterMessage(secondEmail);
       await loginPage.enterEmail(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1617,8 +1600,7 @@ test.describe(() => {
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
       await registerPage.isRegisterEmailCorrect(secondEmail);
-      await page.waitForTimeout(30000);
-      const register = await getRegisterMessage(secondEmail);
+      const register = await waitMessage(page, secondEmail, 40);
       await page.goto(register.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
 
@@ -1636,7 +1618,7 @@ test.describe(() => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await page.waitForTimeout(30000);
+      await waitSecondMessage(page, secondEmail, 40);
       const invite = await getRegisterMessage(secondEmail);
       await loginPage.enterEmail(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1694,8 +1676,7 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
-      const firstInvite = await getRegisterMessage(firstEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1751,10 +1732,9 @@ test.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await page.waitForTimeout(30000);
       await teamPage.deleteInvitation();
       await teamPage.isInvitationRecordRemoved();
-      const firstInvite = await getRegisterMessage(firstEmail);
+      const firstInvite = await waitMessage(page, firstEmail, 40);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
 
