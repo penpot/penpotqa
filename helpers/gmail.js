@@ -38,11 +38,13 @@ async function listMessages(auth, email) {
   const spamMessages = await searchMessages('SPAM', email);
   const messages = [...inboxMessages, ...spamMessages];
 
-  const msg = await gmail.users.messages.get({
-    userId: 'me',
-    id: messages[0].id,
-  });
-  return Buffer.from(msg.data.payload.parts[0].parts[0].body.data, 'base64').toString('utf-8');
+  if(messages.length > 0) {
+    const msg = await gmail.users.messages.get({
+      userId: 'me',
+      id: messages[0].id,
+    });
+    return Buffer.from(msg.data.payload.parts[0].parts[0].body.data, 'base64').toString('utf-8');
+  }
 }
 
 async function messagesCount(auth, email, count) {
@@ -76,18 +78,20 @@ async function checkMessagesCount(email, count) {
 async function getRegisterMessage(email) {
   return authorize().then(async (auth) => {
     const body = await listMessages(auth, email);
-    const urlRegex = /(https?:\/\/[^\s]+)/;
-    const match = body.match(urlRegex);
-    if (match) {
-      const url = match[0];
-      const remainingText = body.replace(url, '').trim();
-      return {
-        inviteUrl: url,
-        inviteText: remainingText
-      };
-    } else {
-      console.log('No URL found in the text.');
-      return null;
+    if (body) {
+      const urlRegex = /(https?:\/\/[^\s]+)/;
+      const match = body.match(urlRegex);
+      if (match) {
+        const url = match[0];
+        const remainingText = body.replace(url, '').trim();
+        return {
+          inviteUrl: url,
+          inviteText: remainingText,
+        };
+      } else {
+        console.log('No URL found in the text.');
+        return null;
+      }
     }
   }).catch(console.error);
 }
@@ -152,5 +156,25 @@ async function checkNewEmailText(text, name, newEmail) {
   await expect(text).toBe(messageText);
 }
 
-module.exports = {checkInviteText, getRegisterMessage, checkRegisterText, checkRecoveryText, checkNewEmailText, checkMessagesCount};
+async function waitMessage(page , email, timeoutSec= 40) {
+  const timeout = timeoutSec*1000;
+  const interval = 4000;
+  const startTime = Date.now();
+  let invite;
+
+  await page.waitForTimeout(interval);
+  while (Date.now() - startTime < timeout) {
+    invite = await getRegisterMessage(email);
+    if (invite) {
+      return invite;
+    }
+    await page.waitForTimeout(interval);
+  }
+
+  if (!invite.inviteUrl) {
+    throw new Error('Timeout reached: invite.inviteUrl is still undefined');
+  }
+}
+
+module.exports = {checkInviteText, getRegisterMessage, checkRegisterText, checkRecoveryText, checkNewEmailText, checkMessagesCount, waitMessage};
 
