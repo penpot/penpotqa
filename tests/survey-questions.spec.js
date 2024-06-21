@@ -92,6 +92,36 @@ test.describe(() => {
     await dashboardPage.checkDropdownValue('Testing before self-hosting');
   });
 
+  test(qase([1812,1814],'Deselect chosen option, Change chosen option'), async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.selectRadioButton('Work');
+    await dashboardPage.selectRadioButton('Work');
+    await dashboardPage.checkRadioButtonLabel('Work');
+
+    await dashboardPage.selectDropdownOptions('Testing before self-hosting');
+    await dashboardPage.clickOnNextButton();
+    await dashboardPage.selectFigmaTool();
+    await dashboardPage.clickOnNextButton();
+    await dashboardPage.selectKindOfWork('Development');
+    await dashboardPage.selectRole('Team member');
+    await dashboardPage.selectTeamSize('11-30');
+    await dashboardPage.clickOnNextButton();
+    await dashboardPage.selectGetStartedQuestion('Wireframing');
+    await dashboardPage.checkRadioImageLabel('Wireframing');
+    await dashboardPage.selectGetStartedQuestion('Prototyping');
+    await dashboardPage.checkRadioImageLabel('Prototyping');
+  });
+
+  test(qase([1801],'Close and reopen penpot page while questions survey is opened'), async ({ page , context}) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.isOnboardingFirstQuestionsVisible();
+    await page.close();
+    const newPage = await context.newPage();
+    await newPage.goto(invite.inviteUrl);
+    const dashboardPage2 = new DashboardPage(newPage);
+    await dashboardPage2.isOnboardingFirstQuestionsVisible();
+  });
+
 });
 test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)

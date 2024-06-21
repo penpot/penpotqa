@@ -71,8 +71,7 @@ test.describe(() => {
     await registerPage.clickOnAcceptTermsCheckbox();
     await registerPage.clickOnCreateAccountSecondBtn();
     await registerPage.isRegisterEmailCorrect(email);
-    await page.waitForTimeout(30000);
-    invite = await getRegisterMessage(email);
+    invite = await waitMessage(page, email, 40);
   });
 
   test(qase(28,'ON-1 Sign up with an email address'), async ({ page }) => {

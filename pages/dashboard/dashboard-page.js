@@ -159,6 +159,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingInviteInput = page.locator('input[class*="components_forms__inside-input"]');
     this.onboardingCreateTeamButton = page.locator('button[class*="main_ui_onboarding_team_choice__accept-button"]');
     this.selectedRadioButtonLabel = page.locator('label[class*="components_forms__radio-label checked"]').first();
+    this.selectedRadioImageLabel = page.locator('label[class*="checked"] span[class*="text"]').first();
     this.onboardingPaginator = page.locator('div[class*="onboarding_questions__paginator"]');
 
     this.onboardingFirstHeader = page.locator('*[class*="onboarding_questions__modal-title"]');
@@ -768,6 +769,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async checkRadioButtonLabel(value) {
     await expect(this.selectedRadioButtonLabel).toHaveText(value);
+  }
+
+  async checkRadioImageLabel(value) {
+    await expect(this.selectedRadioImageLabel).toHaveText(value);
   }
 
   async selectKindOfWork(option) {
