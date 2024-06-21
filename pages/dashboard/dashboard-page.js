@@ -136,9 +136,18 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingContinueBtn = page.locator('button[class="main_ui_onboarding_newsletter__accept-btn"]');
     this.onboardingHeader = page.locator('h1[data-test="onboarding-welcome"]');
     this.planingToUsingDropdown = page.locator('div[class*="custom-select"]');
+    this.planingToUsingDropdownLabel = page.locator('div[class*="custom-select"] span').first();
+    this.planingOtherInput = page.locator('#planning-other');
+    this.toolOtherInput = page.locator('#experience-design-tool-other[type="text"]');
+    this.responsabilityOtherInput = page.locator('#role-other');
+    this.roleOtherInput = page.locator('#responsability-other');
+    this.startWithOtherInput = page.locator('#start-with-other[type="text"]');
+    this.refererOtherInput = page.locator('#referer-other[type="text"]');
     this.nextButton = page.locator('button[label="Next"]');
+    this.previousButton = page.locator('button[class*="prev-button"]');
     this.startButton = page.locator('button[label="Start"]');
     this.figmaTool = page.locator('//input[@id="experience-design-tool-figma"]/..');
+    this.toolsButton = page.locator('label[class*="components_forms__radio-label-image"]');
     this.otherRole = page.locator('label[for="role-other"]').first();
     this.otherRoleInput = page.locator('input[id="role-other"][type="text"]');
     this.onboardingNewsHeader = page.locator('*[data-test="onboarding-newsletter-title"]');
@@ -149,6 +158,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingContinueWithoutTeamBtn = page.locator('button[class*="onboarding_team_choice__accept-button"]').nth(1);
     this.onboardingInviteInput = page.locator('input[class*="components_forms__inside-input"]');
     this.onboardingCreateTeamButton = page.locator('button[class*="main_ui_onboarding_team_choice__accept-button"]');
+    this.selectedRadioButtonLabel = page.locator('label[class*="components_forms__radio-label checked"]').first();
+    this.onboardingPaginator = page.locator('div[class*="onboarding_questions__paginator"]');
 
     this.onboardingFirstHeader = page.locator('*[class*="onboarding_questions__modal-title"]');
   }
@@ -629,6 +640,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.nextButton.click();
   }
 
+  async clickOnPrevButton() {
+    await this.previousButton.click();
+  }
+
   async clickOnStartButton() {
     await this.startButton.click();
   }
@@ -719,6 +734,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.clickOnStartButton();
   }
 
+  async isOnboardingFirstQuestionsVisible() {
+    await expect(this.onboardingFirstHeader).toHaveText('Help us get to know you');
+  }
+
   async selectRadioButton(name) {
     await this.page.locator(`label[class*="radio-label"]:has-text("${name}") span`).first().click();
   }
@@ -731,6 +750,24 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.planingToUsingDropdown.click();
     const optionSelector = await this.page.locator(`li span:has-text("${option}")`);
     await optionSelector.click();
+  }
+
+  async selectLastDropdownOptions() {
+    await this.planingToUsingDropdown.click();
+    const optionSelector = await this.page.locator(`li span[class*="select__label"]`).last();
+    await optionSelector.click();
+  }
+
+  async selectLastTool() {
+    await this.toolsButton.last().click();
+  }
+
+  async checkDropdownValue(value) {
+    await expect(this.planingToUsingDropdownLabel).toHaveText(value);
+  }
+
+  async checkRadioButtonLabel(value) {
+    await expect(this.selectedRadioButtonLabel).toHaveText(value);
   }
 
   async selectKindOfWork(option) {
@@ -749,5 +786,85 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.onboardingContinueWithoutTeamBtn.isVisible()
       ? await this.onboardingContinueWithoutTeamBtn.click()
       : null;
+  }
+
+  async isPlaningOtherInputVisible() {
+    await expect(this.planingOtherInput).toBeVisible();
+  }
+
+  async enterPlaningOther(value) {
+    await this.planingOtherInput.fill(value);
+  }
+
+  async isToolOtherInputVisible() {
+    await expect(this.toolOtherInput).toBeVisible();
+  }
+
+  async enterOtherToolName(value) {
+    await this.toolOtherInput.fill(value);
+  }
+
+  async isRoleOtherInputVisible() {
+    await expect(this.roleOtherInput).toBeVisible();
+  }
+
+  async enterOtherRoleName(value) {
+    await this.roleOtherInput.fill(value);
+  }
+
+  async isStartWithOtherInputVisible() {
+    await expect(this.startWithOtherInput).toBeVisible();
+  }
+
+  async enterOtherStartWith(value) {
+    await this.startWithOtherInput.fill(value);
+  }
+
+  async isKindOfWorkOtherInputVisible() {
+    await expect(this.responsabilityOtherInput).toBeVisible();
+  }
+
+  async enterOtherKindOfWork(value) {
+    await this.responsabilityOtherInput.fill(value);
+  }
+
+  async isReferOtherInputVisible() {
+    await expect(this.refererOtherInput).toBeVisible();
+  }
+
+  async enterOtherRefer(value) {
+    await this.refererOtherInput.fill(value);
+  }
+
+  async isNextBtnDisabled() {
+    await expect(this.nextButton).toBeDisabled();
+  }
+
+  async isStartBtnDisabled() {
+    await expect(this.startButton).toBeDisabled();
+  }
+
+  async selectLastKindOfWork() {
+    await this.planingToUsingDropdown.first().click();
+    const optionSelector = await this.page.locator(`li span[class*="select__label"]`).last();
+    await optionSelector.click();
+  }
+
+  async selectLastRole() {
+    await this.planingToUsingDropdown.nth(1).click();
+    const optionSelector = await this.page.locator(`li span[class*="select__label"]`).last();
+    await optionSelector.click();
+  }
+
+  async selectLastGetStartedQuestion() {
+    await this.page.locator(`span[class*="forms__image-text"]`).last().click();
+  }
+
+  async selectLastRadioButton() {
+    await this.page.locator(`label[class*="radio-label"] span`).last().click();
+  }
+
+  async checkPageNumber(number) {
+    await expect(this.onboardingPaginator).toHaveText(`${number}/5`);
   }
 };

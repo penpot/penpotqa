@@ -198,6 +198,10 @@ exports.BasePage = class BasePage {
     await this.page.keyboard.press('Enter');
   }
 
+  async clickOnESC() {
+    await this.page.keyboard.press('Escape');
+  }
+
   async isHeaderDisplayed(title) {
     await expect(this.header).toHaveText(title);
   }

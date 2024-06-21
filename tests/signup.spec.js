@@ -4,7 +4,7 @@ const { RegisterPage } = require('../pages/register-page');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { random } = require('../helpers/string-generator');
-const { getRegisterMessage, checkRegisterText, checkRecoveryText } = require('../helpers/gmail');
+const { getRegisterMessage, checkRegisterText, waitMessage } = require('../helpers/gmail');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 const { TeamPage } = require('../pages/dashboard/team-page');
 const { ProfilePage } = require('../pages/profile-page');
@@ -73,7 +73,6 @@ test.describe(() => {
     await registerPage.isRegisterEmailCorrect(email);
     await page.waitForTimeout(30000);
     invite = await getRegisterMessage(email);
-    console.log(invite.inviteUrl);
   });
 
   test(qase(28,'ON-1 Sign up with an email address'), async ({ page }) => {
@@ -87,18 +86,6 @@ test.describe(() => {
     const dashboardPage = new DashboardPage(page);
     const teamPage = new TeamPage(page);
     await page.goto(invite.inviteUrl);
-    // await dashboardPage.isOnboardingNextBtnDisplayed();
-    // await dashboardPage.clickOnOnboardingNextBtn();
-    // await dashboardPage.checkOnboardingWelcomeHeader('Before you start');
-    // await dashboardPage.clickOnOnboardingNextBtn();
-    // await dashboardPage.selectPlaningToUsing('Start to work on my project');
-    // await dashboardPage.clickOnNextButton();
-    // await dashboardPage.fillSecondOnboardPage('none', 'some', 'a-lot');
-    // await dashboardPage.selectFigmaTool();
-    // await dashboardPage.clickOnNextButton();
-    // await dashboardPage.selectOnboardingOtherRole('QA');
-    // await dashboardPage.selectTeamSize('11-30');
-    // await dashboardPage.clickOnStartButton();
     await dashboardPage.fillOnboardingFirstQuestions();
     await dashboardPage.isOnboardingNewsHeaderDisplayed();
     await dashboardPage.isOnboardingNewsUpdatesCheckboxDisplayed();
