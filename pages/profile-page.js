@@ -11,24 +11,24 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.profileSection = page.locator('.main_ui_settings__dashboard-content');
 
     //Account
-    this.profileMenuButton = page.locator('button[data-test="profile-btn"]');
-    this.yourAccountMenuItem = page.locator('li[data-test="profile-profile-opt"]');
-    this.logoutMenuItem = page.locator('li[data-test="logout-profile-opt"]');
-    this.giveFeedbackMenuItem = page.locator('li[data-test="feedback-profile-opt"]');
+    this.profileMenuButton = page.locator('button[data-testid="profile-btn"]');
+    this.yourAccountMenuItem = page.locator('li[data-testid="profile-profile-opt"]');
+    this.logoutMenuItem = page.locator('li[data-testid="logout-profile-opt"]');
+    this.giveFeedbackMenuItem = page.locator('li[data-testid="feedback-profile-opt"]');
     this.backToDashboardBtn = page.locator('button[class*="back-to-dashboard"]');
 
     //Profile
     this.profileNameInput = page.locator('#fullname');
     this.profileEmailInput = page.locator('#email');
     this.saveSettingsButton = page.locator('button:has-text("Save settings")');
-    this.profileImageInput = page.locator('input[data-test="profile-image-input"]');
+    this.profileImageInput = page.locator('input[data-testid="profile-image-input"]');
     this.profileAvatarBlock = page.locator(
       'div.main_ui_settings_profile__form-container',
     );
     this.changeEmailBtn = page.locator('div[class="change-email"]');
     this.newEmailInput = page.locator('#email-1');
     this.confirmNewEmailInput = page.locator('#email-2');
-    this.confirmChangeEmailBtn = page.locator('div[data-test="change-email-submit"] button');
+    this.confirmChangeEmailBtn = page.locator('div[data-testid="change-email-submit"] button');
 
     //Feedback
     this.feedbackSubjectInput = page.locator('#subject');
@@ -44,14 +44,14 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.passwordNewInput = page.locator('input[placeholder="New password"]');
     this.passwordConfirmInput = page.locator('input[placeholder="Confirm password"]');
     this.updateSettingsBtn = page.locator('button[name="submit"]');
-    this.passwordInputError = page.locator('div[data-test="-error"]');
+    this.passwordInputError = page.locator('div[data-testid="-error"]');
 
     //Settings
-    this.settingsMenuButton = page.locator('li[data-test="settings-profile"]');
+    this.settingsMenuButton = page.locator('li[data-testid="settings-profile"]');
     this.darkThemeOption = page.locator('li span:text-is("Penpot Dark (default)")');
     this.lightThemeOption = page.locator('li span:text-is("Penpot Light")');
     this.uiThemeDropdown = page.locator('[class*="select-wrapper"] >>nth=1');
-    this.giveFeedbackMenuItem = page.locator('li[data-test="feedback-profile-opt"]');
+    this.giveFeedbackMenuItem = page.locator('li[data-testid="feedback-profile-opt"]');
   }
 
   async openYourAccountPage() {

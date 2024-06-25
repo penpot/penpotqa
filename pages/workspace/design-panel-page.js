@@ -229,8 +229,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeOpacityInput = page.locator(
       'div[class*="stroke-data"] input[class*="opacity-input"]',
     );
-    this.strokeAlignmentField = page.locator('div[data-test="stroke.alignment"]');
-    this.strokeTypeField = page.locator('div[data-test="stroke.style"]');
+    this.strokeAlignmentField = page.locator('div[data-testid="stroke.alignment"]');
+    this.strokeTypeField = page.locator('div[data-testid="stroke.style"]');
     this.strokeFirstCapDropdown = page.locator('div[class*="stroke_row__cap-select"]').first();
     this.strokeSecondCapDropdown = page.locator('div[class*="stroke_row__cap-select"]').last();
 
