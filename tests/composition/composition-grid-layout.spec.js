@@ -421,6 +421,7 @@ test.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await inspectPanelPage.openInspectTab();
     await inspectPanelPage.openCodeTab();
+    await page.waitForTimeout(200);
     await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
       'right-sidebar-inspect-code-section-image.png',
       {
