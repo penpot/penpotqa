@@ -73,9 +73,30 @@ test.describe(() => {
 test.describe(() => {
   const team = random().concat('autotest');
 
-  mainTest(
+  test(
     qase(1165,'DA-79 Team Invitations - open the form via Team Hero'),
     async ({ page }) => {
+      const randomName = random().concat('autotest');
+      const email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
+      const loginPage = new LoginPage(page);
+      const registerPage = new RegisterPage(page);
+      const dashboardPage = new DashboardPage(page);
+      await loginPage.goto();
+      await loginPage.acceptCookie();
+      await loginPage.clickOnCreateAccount();
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(email);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+
+      await registerPage.enterFullName(randomName);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.isRegisterEmailCorrect(email);
+      const invite = await waitMessage(page, email, 40);
+      await page.goto(invite.inviteUrl);
+      await dashboardPage.fillOnboardingQuestions();
+
       const teamPage = new TeamPage(page);
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
