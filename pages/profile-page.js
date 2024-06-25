@@ -60,7 +60,8 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   }
 
   async goToAccountPage() {
-    await this.page.goto('https://design.penpot.dev/#/settings/profile');
+    const baseUrl = process.env.BASE_URL;
+    await this.page.goto(baseUrl.concat('#/settings/profile'));
   }
 
   async openGiveFeedbackPage() {
