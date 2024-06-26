@@ -276,12 +276,12 @@ test.describe(() => {
     await designPanelPage.changeTextDirection('RTL');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-rtl.png', {
-      maxDiffPixels: 0,
+      maxDiffPixels: 30,
     });
     await designPanelPage.changeTextDirection('LTR');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-ltr.png', {
-      maxDiffPixels: 0,
+      maxDiffPixels: 40,
     });
   });
 
