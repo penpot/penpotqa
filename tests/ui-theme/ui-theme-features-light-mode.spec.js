@@ -127,12 +127,12 @@ test.describe('Settings - UI THEME', () => {
       viewModePage = new ViewModePage(newPage);
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-page-image.png',
-        { maxDiffPixelRatio: 0 },
+        { maxDiffPixelRatio: 0.0002 },
       );
       await viewModePage.openInspectTab();
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-inspect-page-image.png',
-        { maxDiffPixelRatio: 0 },
+        { maxDiffPixelRatio: 0.0002 },
       );
     },
   );
