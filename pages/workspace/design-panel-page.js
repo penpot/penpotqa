@@ -1140,7 +1140,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async isAnnotationOptionNotVisibleRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    const layerSel = this.page.locator('div[class="viewport"] [class*="viewport-selrect"]');
     await layerSel.last().click({ button: 'right', force: true });
     await expect(this.createAnnotationOption).not.toBeVisible();
   }
