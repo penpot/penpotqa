@@ -101,6 +101,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     );
     this.teamSettingsSection = page.locator('.main_ui_dashboard__dashboard-content');
     this.teamIcon = page.locator(`div[class*='team-icon'] img`);
+    this.inviteMessage = page.locator('div[class*="main-message"]');
   }
 
   async createTeam(teamName) {
@@ -410,5 +411,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.page.locator('span[class*="dropdown-button"]').click();
     await this.page.locator(`li span[class*="components_select"]:has-text("${name}")`).click();
     await this.ownerLeaveTeamButton.click();
+  }
+
+  async isInviteMessageDisplayed(message) {
+    await expect(this.inviteMessage).toHaveText(message);
   }
 };
