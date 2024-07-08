@@ -164,11 +164,12 @@ test.describe(() => {
 
   mainTest(
     qase(1445,'PENPOT-1445 Create a component and 2 copies of it, change shadow opacity and color of main'),
-    async () => {
+    async ({ page }) => {
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.clickAddShadowButton();
+      await page.waitForTimeout(200);
+      await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-shadow-default.png',
@@ -184,7 +185,9 @@ test.describe(() => {
       await colorPalettePage.setHex('#09e5ec');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
+      await page.waitForTimeout(200);
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-shadow-updated.png', {
         mask: [mainPage.guides, mainPage.guidesFragment],
         maxDiffPixels: 0,

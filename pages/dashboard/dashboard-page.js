@@ -161,8 +161,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.selectedRadioButtonLabel = page.locator('label[class*="components_forms__radio-label checked"]').first();
     this.selectedRadioImageLabel = page.locator('label[class*="checked"] span[class*="text"]').first();
     this.onboardingPaginator = page.locator('div[class*="onboarding_questions__paginator"]');
+    this.onboardingLetsGoBtn = page.locator('button[class*="main_ui_releases"][class*="next-btn"]');
 
     this.onboardingFirstHeader = page.locator('*[class*="onboarding_questions__modal-title"]');
+    this.whatNewsHeader = page.locator('*[class*="modal-title"]');
   }
 
   async createFileViaPlaceholder() {
@@ -627,6 +629,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.onboardingContinueBtn.click();
   }
 
+  async clickOnLetsGoBtn() {
+    await this.onboardingLetsGoBtn.click();
+  }
+  async skipWhatNewsPopUp() {
+    if (await this.whatNewsHeader.isVisible()) {
+      await this.clickOnLetsGoBtn();
+    }
+  }
+
   async checkOnboardingWelcomeHeader(text) {
     await expect(this.onboardingHeader.first()).toHaveText(text);
   }
@@ -716,6 +727,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.clickOnStartButton();
     await this.clickOnOnboardingContinueBtn();
     await this.clickOnOnboardingContinueWithoutTeamButton();
+    await this.skipWhatNewsPopUp();
   }
 
   async fillOnboardingFirstQuestions() {

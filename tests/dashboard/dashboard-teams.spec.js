@@ -1760,8 +1760,9 @@ test.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await teamPage.isSuccessMessageDisplayed('Something wrong has happened.');
+      await teamPage.isInviteMessageDisplayed('Invite invalid');
 
+      await loginPage.goto();
       await loginPage.enterEmail(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
