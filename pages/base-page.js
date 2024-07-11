@@ -29,8 +29,8 @@ exports.BasePage = class BasePage {
       'ul[class*="workspace_context_menu"] li:has-text("Show")',
     );
     this.focusOnLayerMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Focus on")',
-    );
+      'ul[class*="workspace_context_menu"] *:has-text("Focus on")',
+    ).last();
     this.transformToPathMenuItem = page.locator(
       'ul[class*="workspace_context_menu"] li:has-text("Transform to path")',
     );
@@ -95,8 +95,12 @@ exports.BasePage = class BasePage {
     this.duplicateOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Duplicate")',
     );
-    this.copyOption = page.getByRole('listitem').filter({ hasText: 'Copy'});
-    this.pasteOption = page.getByRole('listitem').filter({ hasText: 'Paste'});
+    this.copyOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Copy")',
+    );
+    this.pasteOption = page.locator(
+      'ul[class*="workspace_context_menu"] span:has-text("Paste")',
+    );
     this.groupOption = page.locator(
       'ul[class*="workspace_context_menu"] span:has-text("Group")',
     );
