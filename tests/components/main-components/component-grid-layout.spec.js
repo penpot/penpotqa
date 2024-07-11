@@ -79,7 +79,6 @@ test.describe(() => {
   });
 
   mainTest(qase(1729,'PENPOT-1729 Move a component between pages'), async ({page, context}) => {
-    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportOnce();
@@ -96,7 +95,6 @@ test.describe(() => {
   });
 
   mainTest(qase(1730,'PENPOT-1730 Restore main component'), async ({browserName, context}) => {
-    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     await mainPage.createComponentViaRightClick();
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -170,7 +168,7 @@ test.describe(() => {
     await mainPage.showMainComponentViaRightClick();
     const newPage = await popupPromise;
     await mainPage.isCreatedLayerVisible();
-    await newPage.waitForTimeout(200);
+    await newPage.waitForTimeout(500);
     await expect(newPage).toHaveScreenshot('board-component-on-first-file.png', {
       mask: [mainPage.usersSection],
     });
@@ -203,7 +201,6 @@ test.describe(() => {
   });
 
   mainTest(qase(1718,'PENPOT-1718 Copy-paste component, that was created from grid board'), async ({browserName, context}) => {
-    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.pressCopyShortcut();
