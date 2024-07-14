@@ -841,11 +841,14 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayer() {
+  async createDefaultTextLayer(browserName) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(200, 300);
     const platform = getPlatformName()
     if (platform === 'darwin') {
+      await this.typeTextFromKeyboard();
+    } else if(browserName === 'webkit') {
+      await this.page.waitForTimeout(400);
       await this.typeTextFromKeyboard();
     } else {
       await this.typeText('Hello World!');
