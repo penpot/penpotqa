@@ -95,8 +95,8 @@ mainTest(
 
 mainTest(
   qase(1351,'PENPOT-1351 Check actual library view after adding / updating / removing assets'),
-  async () => {
-    await mainPage.createDefaultTextLayer(200, 300);
+  async ({ browserName }) => {
+    await mainPage.createDefaultTextLayer(browserName);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickPencilBoxButton();

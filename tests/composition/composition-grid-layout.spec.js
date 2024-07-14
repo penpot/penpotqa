@@ -448,8 +448,8 @@ test.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
   });
 
-  mainTest(qase(1715,'PENPOT-1715 Add grid lines, check edit mode and add the text'), async ({ page }) => {
-    await mainPage.createDefaultTextLayer();
+  mainTest(qase(1715,'PENPOT-1715 Add grid lines, check edit mode and add the text'), async ({ page, browserName }) => {
+    await mainPage.createDefaultTextLayer(browserName);
     await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
     await mainPage.waitForChangeIsSaved();
 
