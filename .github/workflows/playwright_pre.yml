@@ -42,7 +42,7 @@ jobs:
         run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Firefox')"
   tests_webkit:
     if: ${{ always() }}
-    needs: [tests_chromium, tests_firefox]
+    needs: [tests_firefox]
     environment: PRE
     runs-on: windows-latest
     steps:
