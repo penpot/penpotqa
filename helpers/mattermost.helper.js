@@ -53,7 +53,7 @@ const channel_id = `${process.env.CHANNEL_ID}`;
 //   }
 // }
 
-async function sendMessage() {
+async function sendMessage(browserName) {
     const url = `${baseUrl}/posts`;
     const token = await getToken();
 
@@ -67,7 +67,8 @@ async function sendMessage() {
        :white_check_mark: Success: ${results.Passed}
        :x: Failure: ${results.Failed}
        :ballot_box_with_check: Flaky: ${results.Flaky}
-       :cat2: GitRun: https://github.com/penpot/penpotqa/actions/runs/${process.env.GITHUB_RUN_ID}`;
+       :cat2: GitRun: https://github.com/penpot/penpotqa/actions/runs/${process.env.GITHUB_RUN_ID}
+       :computer: Browser: ${browserName}`;
     const requestBody = { channel_id: channel_id, message: messageWithLink };
 
     try {
