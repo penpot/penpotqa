@@ -841,14 +841,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayer(browserName) {
+  async createDefaultTextLayer() {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(200, 300);
     const platform = getPlatformName()
     if (platform === 'darwin') {
-      await this.typeTextFromKeyboard();
-    } else if(browserName === 'webkit') {
-      await this.page.waitForTimeout(400);
       await this.typeTextFromKeyboard();
     } else {
       await this.typeText('Hello World!');
@@ -890,7 +887,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async copyLayerViaRightClick() {
-    const layerSel = this.page.locator('.viewport-selrect');
+    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.copyOption.click();
   }
