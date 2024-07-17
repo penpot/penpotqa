@@ -238,9 +238,9 @@ test.describe(() => {
 });
 
 test.describe("Text", () => {
-  test.beforeEach(async ({page}, testInfo) => {
+  test.beforeEach(async ({ page, browserName }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
-    await mainPage.createDefaultTextLayer(200, 300);
+    await mainPage.createDefaultTextLayer(browserName);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.duplicateLayerViaRightClick();

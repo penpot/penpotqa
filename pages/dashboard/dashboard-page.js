@@ -633,7 +633,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.onboardingLetsGoBtn.click();
   }
   async skipWhatNewsPopUp() {
-    if (await this.whatNewsHeader.isVisible()) {
+    if (await this.onboardingLetsGoBtn.isVisible()) {
       await this.clickOnLetsGoBtn();
     }
   }
