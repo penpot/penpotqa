@@ -31,11 +31,17 @@ async function updateTestResults(result, retryCount) {
   }
 
   if (result === 'passed') {
+    console.log(1)
     testResults.Passed++;
+    console.log(3)
   } else if (result === 'failed' && retryCount === 2) {
+    console.log(2)
     testResults.Failed++;
+    console.log(3)
   } else if (result === 'flaky') {
+    console.log(3)
     testResults.Flaky++;
+    console.log(3)
   }
 
   const totalTests = testResults.Passed + testResults.Failed
