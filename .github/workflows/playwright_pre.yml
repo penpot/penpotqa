@@ -18,14 +18,14 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run regression tests for firefox
         env:
-          BASE_URL: ${{ secrets.BASE_URL }}
+          BASE_URL: ${{ secrets.TEST_BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
-        run: npx playwright test --project=firefox -gv 'PERF'
+        run: npx playwright test --project=firefox -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         if: always()
@@ -56,14 +56,14 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run regression tests for webkit
         env:
-          BASE_URL: ${{ secrets.BASE_URL }}
+          BASE_URL: ${{ secrets.TEST_BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
-        run: npx playwright test --project=webkit -gv 'PERF'
+        run: npx playwright test --project=webkit -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         if: always()
