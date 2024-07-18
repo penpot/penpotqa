@@ -887,7 +887,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async copyLayerViaRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    const layerSel = this.page.locator('.viewport-selrect');
     await layerSel.last().click({ button: 'right', force: true });
     await this.copyOption.click();
   }
