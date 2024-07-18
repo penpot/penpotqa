@@ -17,7 +17,7 @@ jobs:
       - name: Run regression tests for chromium
         env:
           BASE_URL: "https://design.penpot.app/"
-          LOGIN_EMAIL: "cstanislav@qawerk.com"
+          LOGIN_EMAIL: "cstanislav@redwerk.com"
           LOGIN_PWD: "23QwertyStas"
         run: npx playwright test --project=chrome -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js
       - name: Upload Playwright Report
