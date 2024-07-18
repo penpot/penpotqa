@@ -33,7 +33,7 @@ const config = {
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 3 : 3,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter:  process.env.CI && process.env.QASE_REPORT
+  reporter:  process.env.CI
     ? [
       ['html'],
       ['playwright-qase-reporter',
