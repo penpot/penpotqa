@@ -3,8 +3,9 @@ on:
   schedule: ## run tests each Thursday at 8:00pm UTC
     - cron: '00 20 * * 4'
   workflow_dispatch:
+
 jobs:
-  tests_firefox:
+  tests_chromium:
     environment: PRE
     timeout-minutes: 180
     runs-on: windows-latest
@@ -17,7 +18,7 @@ jobs:
         run: npm ci
       - name: Install Playwright
         run: npx playwright install --with-deps
-      - name: Run regression tests for Firefox
+      - name: Run Playwright tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
@@ -32,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: playwright-report-firefox
+          name: playwright-report-chromium
           path: playwright-report/
           retention-days: 30
       - name: Send mattermost Message
@@ -41,4 +42,4 @@ jobs:
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
         if: always()
-        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Firefox')"
+        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Chrome')"
