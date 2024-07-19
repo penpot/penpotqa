@@ -42,4 +42,4 @@ jobs:
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
         if: always()
-        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Chrome')"
+        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('WKit')"
