@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  tests_webkit:
+  tests_chromium:
     environment: PRE
     timeout-minutes: 180
     runs-on: windows-latest
