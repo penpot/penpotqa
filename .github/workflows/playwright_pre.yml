@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  tests_chromium:
+  tests_webkit:
     environment: PRE
     timeout-minutes: 180
     runs-on: windows-latest
@@ -28,12 +28,12 @@ jobs:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
-        run: npx playwright test --project=firefox -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js
+        run: npx playwright test --project=webkit -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: playwright-report-fox
+          name: playwright-report-kit
           path: playwright-report/
           retention-days: 30
       - name: Send mattermost Message
@@ -42,4 +42,4 @@ jobs:
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
         if: always()
-        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Fox')"
+        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Kit')"
