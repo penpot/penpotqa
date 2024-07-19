@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: playwright-report-chromium
+          name: playwright-report-firefox
           path: playwright-report/
           retention-days: 30
       - name: Send mattermost Message
@@ -42,4 +42,4 @@ jobs:
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
         if: always()
-        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Chrome')"
+        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Firefox')"
