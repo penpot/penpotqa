@@ -1,12 +1,12 @@
-name: Penpot Regression Tests on PRE env (weekly)
+name: Penpot Regression Tests on PRE env (firefox)
 
 on:
   schedule: # run tests each Thursday at 8:00pm UTC
-    - cron: '00 23 * * 4'
+    - cron: '00 20 * * 4'
   workflow_dispatch:
 
 jobs:
-  tests_webkit:
+  tests_firefox:
     environment: PRE
     timeout-minutes: 240
     runs-on: windows-latest
@@ -36,13 +36,13 @@ jobs:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
-        run: npx playwright test --project=webkit -gv 'PERF'
+        run: npx playwright test --project=firefox -gv 'PERF'
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: playwright-report-webkit
+          name: playwright-report-firefox
           path: playwright-report/
           retention-days: 30
 
@@ -52,4 +52,4 @@ jobs:
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
         if: always()
-        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('WKit')"
+        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Firefox')"
