@@ -1,29 +1,43 @@
-name: Penpot Regression Tests on PRE env (webkit)
+name: Penpot Regression Tests on PRE env (weekly)
+
 on:
+  schedule: # run tests each Thursday at 8:00pm UTC
+    - cron: '00 23 * * 4'
   workflow_dispatch:
+
 jobs:
   tests_webkit:
     environment: PRE
+    timeout-minutes: 240
     runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 18
+
       - name: Install dependencies
         run: npm ci
-      - name: Install Playwright Browsers
+
+      - name: Install Playwright
         run: npx playwright install --with-deps
-      - name: Run regression tests for webkit
+
+      - name: Run Playwright tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+          GITHUB_RUN_ID: ${{ github.run.id }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
         run: npx playwright test --project=webkit -gv 'PERF'
+
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         if: always()
@@ -31,10 +45,11 @@ jobs:
           name: playwright-report-webkit
           path: playwright-report/
           retention-days: 30
-      - name: Send mattermost Message
+
+      - name: Send Mattermost message
         env:
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
         if: always()
-        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Webkit')"
+        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('WKit')"
