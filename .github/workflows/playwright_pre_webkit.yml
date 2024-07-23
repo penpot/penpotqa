@@ -1,15 +1,15 @@
-name: Penpot Regression Tests on PRE env (weekly)
+name: Penpot Regression Tests on PRE env (webkit)
 
 on:
   schedule: # run tests each Thursday at 8:00pm UTC
-    - cron: '00 23 * * 4'
+    - cron: '00 20 * * 4'
   workflow_dispatch:
 
 jobs:
   tests_webkit:
     environment: PRE
-    timeout-minutes: 260
-    runs-on: windows-latest
+    timeout-minutes: 240
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
