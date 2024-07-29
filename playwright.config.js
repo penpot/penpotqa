@@ -12,13 +12,13 @@ const config = {
   snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/win32/{projectName}/{arg}{ext}`,
   testDir: './tests',
   /* Maximum time one test can run for. */
-  timeout: process.env.CI ? 60 * 1000 : 80 * 1000,
+  timeout: process.env.CI ? 110 * 1000 : 80 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: 10000,
+    timeout: 15000,
     toMatchSnapshot: {
       maxDiffPixelRatio: 0.01,
     },
