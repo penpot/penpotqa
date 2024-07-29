@@ -34,7 +34,6 @@ test.afterEach(async ({ page }, testInfo) => {
 });
 
 mainTest(qase(1275,'Update main component'), async () => {
-  test.setTimeout(60000);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
