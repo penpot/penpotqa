@@ -206,6 +206,14 @@ exports.BasePage = class BasePage {
     await this.page.keyboard.press('Escape');
   }
 
+  async clickOnSubtract() {
+    await this.page.keyboard.press('NumpadSubtract');
+  }
+
+  async clickOnAdd() {
+    await this.page.keyboard.press('NumpadAdd');
+  }
+
   async isHeaderDisplayed(title) {
     await expect(this.header).toHaveText(title);
   }
