@@ -205,3 +205,43 @@ mainTest(qase([691],'CO-370 Change scale'), async ({ page }) => {
     'full-screen-default-scale-board-view-mode-page-image.png'
   );
 });
+
+mainTest(qase([713],'CO-392 Zoom by pressing + and - keys'), async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await mainPage.waitForChangeIsSaved();
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  await viewModePage.clickOnAdd();
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-page-add-button-image.png'
+  );
+  await viewModePage.clickOnSubtract();
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-page-subtract-button-image.png'
+  );
+});
+
+mainTest(qase([708],'CO-387 Page dropdown'), async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickAddPageButton();
+  await mainPage.waitForChangeIsSaved();
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  await viewModePage.openPageDropdown();
+  await expect(viewModePage.pageDropdownOptions).toHaveScreenshot(
+    'page-list-image.png'
+  );
+  await viewModePage.selectPageByName("Page 2");
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-2page-image.png'
+  );
+  await viewModePage.openPageDropdown();
+  await expect(viewModePage.pageDropdownOptions).toHaveScreenshot(
+    'page-list-image2.png'
+  );
+  await viewModePage.selectPageByName("Page 1");
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-1page-image.png'
+  );
+});

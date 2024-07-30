@@ -35,6 +35,8 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.scaleFillOptions = page.locator('li[class*="zoom-option"]:has-text("Fill - Scale to fill")');
     this.scaleFullScreenOptions = page.locator('li[class*="zoom-option"]:has-text("Full screen")');
     this.scaleDropdownOptions = page.locator('ul[class*="header__dropdown"]');
+    this.pageDropdown = page.locator('span[class*="header__breadcrumb-text"]');
+    this.pageDropdownOptions = page.locator('ul[class*="dropdown-sitemap"]');
   }
 
   async clickViewModeButton() {
@@ -128,5 +130,14 @@ exports.ViewModePage = class ViewModePage extends BasePage {
 
   async selectFullScreenScaleOptions() {
     await this.scaleFullScreenOptions.click();
+  }
+
+  async openPageDropdown() {
+    await this.pageDropdown.click();
+  }
+
+  async selectPageByName(name) {
+    const option = await this.page.locator(`ul[class*="dropdown-sitemap"] span:has-text("${name}")`);
+    await option.first().click();
   }
 };
