@@ -171,7 +171,7 @@ test.describe(() => {
     await newMainPage.isCreatedLayerVisible();
     await newPage.waitForTimeout(500);
     await expect(newPage).toHaveScreenshot('board-component-on-first-file.png', {
-      mask: [mainPage.usersSection],
+      mask: [newMainPage.usersSection],
     });
   });
 
