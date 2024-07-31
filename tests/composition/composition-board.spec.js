@@ -459,7 +459,7 @@ test.describe(() => {
     },
   );
 
-  mainTest.only(
+  mainTest(
     qase(251,'CO-36 Copy and Paste Board'),
     async ({ page, browserName }) => {
       const mainPage = new MainPage(page);
