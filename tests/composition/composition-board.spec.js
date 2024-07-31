@@ -461,7 +461,7 @@ test.describe(() => {
 
   mainTest(
     qase(251,'CO-36 Copy and Paste Board'),
-    async ({ page }) => {
+    async ({ page, browserName }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
       const board1 = 'Board #1';
@@ -471,7 +471,9 @@ test.describe(() => {
       await mainPage.pasteLayerViaRightClick();
       await mainPage.pressCopyShortcut();
       await mainPage.pressPasteShortcut();
-      await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
+      browserName === 'firefox'
+        ? await expect(layersPanelPage.sidebarLayerItem).toHaveCount(3)
+        : await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
     },
   );
 

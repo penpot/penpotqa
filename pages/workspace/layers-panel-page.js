@@ -273,6 +273,11 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     });
     await this.copyOption.click();
   }
+
+  async selectLayerByName(layerName) {
+    const layerSel = this.page.locator('#layers').getByText(layerName).first();
+    await layerSel.last().click();
+  }
 };
 
 
