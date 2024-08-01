@@ -438,6 +438,7 @@ test.describe(() => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await layersPanelPage.restoreMainComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.waitForMainComponentIsSelected();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-component-restore-main.png',
       );
