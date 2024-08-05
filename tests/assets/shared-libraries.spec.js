@@ -32,8 +32,8 @@ test.afterEach(async ({}, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
   });
 
@@ -73,7 +73,7 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async () => {
+  mainTest.afterEach(async () => {
     await mainPage.clickMainMenuButton();
     await mainPage.clickFileMainMenuItem();
     await mainPage.clickRemoveAsSharedLibraryMainMenuSubItem();
@@ -83,7 +83,7 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   mainTest(
     qase(1460,'PENPOT-1460 Canceling publish Shared Library'),
     async () => {
@@ -98,7 +98,7 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async () => {
+  mainTest.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
   });
 });
@@ -138,7 +138,7 @@ mainTest(
   },
 );
 
-test.describe(() => {
+mainTest.describe(() => {
   mainTest(
     qase(1467,'PENPOT-1467 Unpublish Shared Library  which is not linked with any files (from Libraries popup)'),
     async () => {
@@ -167,13 +167,13 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async () => {
+  mainTest.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async () => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -289,13 +289,13 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async () => {
+  mainTest.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async () => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async () => {
     await mainPage.createDefaultEllipseByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -363,7 +363,7 @@ test.describe(() => {
   //   },
   // );
 
-  test.afterEach(async () => {
+  mainTest.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
   });
 });
@@ -618,7 +618,7 @@ mainTest(
   },
 );
 
-test.describe(() => {
+mainTest.describe(() => {
   const team1 = teamName;
   const team2 = random().concat('QA Test team 2');
 
@@ -655,14 +655,14 @@ test.describe(() => {
     // );
   });
 
-  test.afterEach(async () => {
+  mainTest.afterEach(async () => {
     await teamPage.page.waitForTimeout(1000);
     await teamPage.deleteTeam(team2);
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async () => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async () => {
     await mainPage.clickPencilBoxButton();
     await dashboardPage.addFileAsSharedLibraryViaRightclick();
     await dashboardPage.isSharedLibraryIconDisplayed();
@@ -704,7 +704,7 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async () => {
+  mainTest.afterEach(async () => {
     await assetsPanelPage.clickCloseModalButton();
     await mainPage.backToDashboardFromFileEditor();
   });

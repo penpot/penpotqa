@@ -56,8 +56,8 @@ mainTest(qase(948,'AS-38 Typographic styles - add from Assets panel'), async ({ 
   );
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.clickAssetsTab();

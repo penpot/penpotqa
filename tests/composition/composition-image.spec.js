@@ -30,8 +30,8 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }, testInfo) => {
     test.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
     await mainPage.uploadImage('images/images.png');
@@ -143,8 +143,8 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
     await mainPage.uploadImage('images/sample.jpeg');
@@ -315,8 +315,8 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.uploadImage('images/giphy.gif');
     await mainPage.clickViewportTwice();

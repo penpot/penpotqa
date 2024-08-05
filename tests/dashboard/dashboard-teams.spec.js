@@ -12,7 +12,7 @@ const { LoginPage } = require('../../pages/login-page');
 const { RegisterPage } = require('../../pages/register-page');
 
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(qase(1162,'DA-76 Create a team'), async ({ page }) => {
@@ -21,13 +21,13 @@ test.describe(() => {
     await teamPage.isTeamSelected(team);
   });
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team1 = random().concat('QA Test team 1');
   const team2 = random().concat('QA Test team 2');
 
@@ -41,13 +41,13 @@ test.describe(() => {
     await teamPage.switchTeam(team2);
   });
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeams([team1, team2]);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
@@ -64,7 +64,7 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
@@ -113,7 +113,7 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
@@ -191,13 +191,13 @@ test.describe(() => {
   //   },
   // );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
@@ -223,13 +223,13 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
@@ -251,13 +251,13 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
@@ -284,13 +284,13 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
@@ -317,13 +317,13 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
@@ -354,13 +354,13 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
@@ -382,13 +382,13 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(qase(1202,"DA-116 Team. Settings - check 'Team members' info"), async ({ page }) => {
@@ -410,13 +410,13 @@ test.describe(() => {
     await expect(teamPage.teamOwnerSection).toHaveScreenshot('team-owner-block.png');
   });
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
@@ -453,13 +453,13 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
   const teamNew = random().concat('autotest');
 
@@ -471,13 +471,13 @@ test.describe(() => {
     await teamPage.isTeamSelected(teamNew);
   });
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeams([team, teamNew]);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(qase(1208,'DA-122 Delete a team via owner'), async ({ page }) => {
@@ -488,13 +488,13 @@ test.describe(() => {
     await teamPage.isTeamDeleted(team);
   });
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
   const firstEditor = random().concat('autotest');
   const secondEditor = random().concat('autotest');
@@ -574,7 +574,7 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     const dashboardPage = new DashboardPage(page);
     const loginPage = new LoginPage(page);
@@ -590,7 +590,7 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
@@ -695,7 +695,7 @@ test.describe(() => {
     },
   );
 
-  test(
+  mainTest(
     qase(1174,'DA-88 Team. Invitations - send invitation to registered user (but not a team member)'),
     async ({ page }, testInfo) => {
       await testInfo.setTimeout(testInfo.timeout + 60000);
@@ -1497,7 +1497,7 @@ test.describe(() => {
     },
   );
 
-  test.afterEach(async ({ page }) => {
+  mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     const dashboardPage = new DashboardPage(page);
     const loginPage = new LoginPage(page);
@@ -1513,10 +1513,10 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   const team = random().concat('autotest');
 
-  test(
+  mainTest(
     qase(1188,'DA-102 Team. Members - change role via owner (transfer ownerhip to admin)'),
     async ({ page }, testInfo) => {
       await testInfo.setTimeout(testInfo.timeout + 60000);
@@ -1596,7 +1596,7 @@ test.describe(() => {
     },
   );
 
-  test(
+  mainTest(
     qase(1189,'DA-103 Team. Members - change role via owner (transfer ownerhip to editor)'),
     async ({ page }, testInfo) => {
       await testInfo.setTimeout(testInfo.timeout + 60000);
