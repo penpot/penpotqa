@@ -29,9 +29,9 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-test.describe(() => {
+mainTest.describe(() => {
   // All tests in this describe group will get 2 retry attempts.
-  test.describe.configure({ retries: 2 });
+  mainTest.describe.configure({ retries: 2 });
 
   mainTest(qase(483,'CO-268 Create curve line from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);

@@ -39,8 +39,8 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
@@ -177,8 +177,8 @@ test.describe(() => {
 
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
@@ -232,8 +232,8 @@ test.describe(() => {
 
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
@@ -299,8 +299,8 @@ test.describe(() => {
 
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
