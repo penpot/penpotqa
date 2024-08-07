@@ -30,8 +30,8 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
@@ -82,8 +82,8 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.createDefaultClosedPath();
     await mainPage.isCreatedLayerVisible();
@@ -138,8 +138,8 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();

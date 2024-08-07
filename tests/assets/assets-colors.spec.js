@@ -37,8 +37,8 @@ mainTest(qase(932,'AS-22 Filter Colors from All Assets drop-down'), async ({ pag
   await assetsPanelPage.isAssetsSectionNameDisplayed('Colors', '0');
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     const colorPalettePopUp = new ColorPalettePage(page);
@@ -48,7 +48,7 @@ test.describe(() => {
     await colorPalettePopUp.clickSaveColorStyleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-  });
+  }); 
 
   mainTest(qase(933,'AS-23 File library colors - add'), async ({ page }) => {
     const assetsPanelPage = new AssetsPanelPage(page);
