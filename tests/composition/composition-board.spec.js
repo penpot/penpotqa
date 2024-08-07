@@ -41,8 +41,8 @@ mainTest(qase(216,'CO-1 Change color background'), async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot('color-background.png');
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
     await mainPage.clickCreateBoardButton();
@@ -390,8 +390,8 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);

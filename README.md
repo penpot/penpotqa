@@ -10,7 +10,7 @@ Prerequisites for local run:
 
 - Windows OS
 - Screen resolution 1920x1080
-- Installed Node.js
+- Installed Node.js v22.5.1
 - “Clear” Penpot account (without added files, projects, etc., but with a completed onboarding flow).
 - The _.env_ file added to the root of the project with 3 env variables:
   - `LOGIN_EMAIL` (email from your Penpot account)
@@ -19,8 +19,19 @@ Prerequisites for local run:
 
 **2. Test run - main notes.**
 
-Upon cloning the repo and trying to run tests, you may be prompted to install the browsers:
-`npx playwright install`
+Once the repo is cloned you can follow these steps to use the correct node version, install the project dependencies, and Playwright with the latests browsers.
+```
+nvm use
+npm install
+npx playwright install
+```
+
+You can check the versions of Playwright and Node using these commands:
+```
+node --version
+npx playwright --version
+```
+
 By default, `npm test` runs all tests in Chrome browser (the script `"test": "npx playwright test --project=chrome"` in _package.js_).
 To run the specific test/tests, change the test script in _package.js_ in the next ways (or add a separate script):
 
