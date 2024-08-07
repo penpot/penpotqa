@@ -37,6 +37,18 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.scaleDropdownOptions = page.locator('ul[class*="header__dropdown"]');
     this.pageDropdown = page.locator('span[class*="header__breadcrumb-text"]');
     this.pageDropdownOptions = page.locator('ul[class*="dropdown-sitemap"]');
+    this.commentsButton = page.locator('button[data-value="comments"]');
+    this.commentsContainer = page.locator('div[class*="viewer-comments-container"]');
+    this.commentsDropdown = page.locator('div[data-testid="viewer-comments-dropdown"]');
+    this.commentsDropdownOptions = page.locator('ul[class*="viewer_comments__dropdown"]');
+    this.showAllCommentsOption = page.locator('li[class*="comments__dropdown"] span:has-text("Show all comments")');
+    this.showYourCommentsOption = page.locator('li[class*="comments__dropdown"] span:has-text("Show only your comments")');
+    this.hideResolvedCommentsOption = page.locator('li[class*="comments__dropdown"] span:has-text("Hide resolved comments")');
+    this.showCommentsListOption = page.locator('li[class*="comments__dropdown"] span:has-text("Show comments list")');
+    this.commentsRightPanel = page.locator('div[class*="comments__settings-bar-inside"]');
+    this.commentCommentsPanelText = page.locator(
+      'div[class*="comments__settings-bar-inside"] div[class*="comments__content"]',
+    );
   }
 
   async clickViewModeButton() {
@@ -139,5 +151,53 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   async selectPageByName(name) {
     const option = await this.page.locator(`ul[class*="dropdown-sitemap"] span:has-text("${name}")`);
     await option.first().click();
+  }
+
+  async clickCommentsButton() {
+    await this.commentsButton.click();
+  }
+
+  async addComment(second = false) {
+    second
+      ? await this.commentsContainer.click()
+      : await this.commentsContainer.click({
+        position: { x: 10, y: 10 }
+      });
+  }
+
+  async clickOnViewport() {
+    await this.commentsContainer.click();
+  }
+
+  async openCommentsDropdown() {
+    await this.commentsDropdown.click();
+  }
+
+  async selectShowAllCommentsOption() {
+    await this.showAllCommentsOption.click();
+  }
+
+  async selectShowYourCommentsOption() {
+    await this.showYourCommentsOption.click();
+  }
+
+  async selectHideResolvedCommentsOption() {
+    await this.hideResolvedCommentsOption.click();
+  }
+
+  async selectShowCommentsListOption() {
+    await this.showCommentsListOption.click();
+  }
+
+  async isCommentsListVisible(visible = true) {
+    visible
+      ? await expect(this.commentsRightPanel).toBeVisible()
+      : await expect(this.commentsRightPanel).not.toBeVisible();
+  }
+
+  async isCommentInListVisible(visible = true) {
+    visible
+      ? await expect(this.commentCommentsPanelText.last()).toBeVisible()
+      : await expect(this.commentCommentsPanelText.last()).not.toBeVisible();
   }
 };

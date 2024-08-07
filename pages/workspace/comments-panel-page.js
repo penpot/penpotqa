@@ -128,6 +128,10 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await expect(this.commentThreadIcon).not.toBeVisible();
   }
 
+  async isCommentResolvedThreadIconNotDisplayed() {
+    await expect(this.commentResolvedThreadIcon).not.toBeVisible();
+  }
+
   async isCommentsPanelPlaceholderDisplayed(text) {
     await expect(this.commentsPanelPlaceholderText).toHaveText(text);
   }
