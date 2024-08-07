@@ -8,6 +8,7 @@ const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { ViewModePage } = require('../pages/workspace/view-mode-page');
 const { PrototypePanelPage } = require('../pages/workspace/prototype-panel-page');
+const { CommentsPanelPage } = require('../pages/workspace/comments-panel-page');
 
 const teamName = random().concat('autotest');
 
@@ -244,4 +245,156 @@ mainTest(qase([708],'CO-387 Page dropdown'), async ({ page }) => {
   await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
     'view-mode-1page-image.png'
   );
+});
+
+mainTest(qase([701],'CO-380 Create comment'), async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await mainPage.waitForChangeIsSaved();
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  await viewModePage.clickCommentsButton();
+  await viewModePage.addComment();
+
+  const comment = 'Test Comment';
+  const commentsPanelPage = new CommentsPanelPage(newPage);
+  await commentsPanelPage.enterCommentText('Test Comment');
+  await commentsPanelPage.clickPostCommentButton();
+  await commentsPanelPage.isCommentDisplayedInPopUp(comment);
+  await expect(newPage).toHaveScreenshot('comment-opened-pop-up.png', {
+    mask: [commentsPanelPage.commentsAuthorSection],
+  });
+  await viewModePage.clickOnViewport();
+  await commentsPanelPage.isCommentThreadIconDisplayed();
+  await expect(newPage).toHaveScreenshot('comment-closed-pop-up.png', {
+    mask: [commentsPanelPage.commentsAuthorSection],
+  });
+});
+
+mainTest(qase([709],'CO-388 Reply comment'), async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await mainPage.waitForChangeIsSaved();
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  await viewModePage.clickCommentsButton();
+  await viewModePage.addComment();
+
+  const replyComment =
+    'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
+  const commentsPanelPage = new CommentsPanelPage(newPage);
+  await commentsPanelPage.enterCommentText('Test Comment');
+  await commentsPanelPage.clickPostCommentButton();
+
+  await commentsPanelPage.enterReplyText(replyComment);
+  await commentsPanelPage.clickPostCommentButton();
+  await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
+  await expect(newPage).toHaveScreenshot('comment-reply.png', {
+    mask: [commentsPanelPage.commentsAuthorSection],
+  });
+});
+
+mainTest(qase([710],'CO-389 Edit comment'), async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await mainPage.waitForChangeIsSaved();
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  await viewModePage.clickCommentsButton();
+  await viewModePage.addComment();
+
+  const editedComment = 'Edited Test Comment';
+  const commentsPanelPage = new CommentsPanelPage(newPage);
+  await commentsPanelPage.enterCommentText('Test Comment');
+  await commentsPanelPage.clickPostCommentButton();
+
+  await commentsPanelPage.clickCommentOptionsButton();
+  await commentsPanelPage.clickEditCommentOption();
+  await commentsPanelPage.enterCommentText(editedComment, true);
+  await commentsPanelPage.clickPostCommentButton();
+  await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
+  await commentsPanelPage.reloadPage();
+  await commentsPanelPage.clickCommentThreadIcon();
+  await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
+  await expect(newPage).toHaveScreenshot('comment-edited.png', {
+    mask: [commentsPanelPage.commentsAuthorSection],
+  });
+});
+
+mainTest(qase([711],'CO-390 Delete thread'), async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await mainPage.waitForChangeIsSaved();
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  await viewModePage.clickCommentsButton();
+  await viewModePage.addComment();
+
+  const commentsPanelPage = new CommentsPanelPage(newPage);
+  await commentsPanelPage.enterCommentText('Test Comment');
+  await commentsPanelPage.clickPostCommentButton();
+
+  await commentsPanelPage.clickCommentOptionsButton();
+  await commentsPanelPage.clickDeleteCommentOption();
+  await commentsPanelPage.clickDeleteThreadButton();
+  await commentsPanelPage.isCommentThreadIconNotDisplayed();
+  await expect(newPage).toHaveScreenshot('comment-removed.png', {
+    mask: [commentsPanelPage.commentsAuthorSection],
+  });
+});
+
+mainTest(qase([703],'CO-382 Comments dropdown (Hide resolved comments)'), async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await mainPage.waitForChangeIsSaved();
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  const commentsPanelPage = new CommentsPanelPage(newPage);
+  await viewModePage.clickCommentsButton();
+  await viewModePage.addComment();
+  await commentsPanelPage.enterCommentText('Test Comment');
+  await commentsPanelPage.clickPostCommentButton();
+  await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment');
+  await commentsPanelPage.clickResolveCommentCheckbox();
+  await commentsPanelPage.clickResolvedCommentThreadIcon();
+  await viewModePage.addComment(true);
+  await commentsPanelPage.enterCommentText('Test Comment 2');
+  await commentsPanelPage.clickPostCommentButton();
+  await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment 2');
+  await viewModePage.clickCommentsButton();
+
+  await viewModePage.openCommentsDropdown();
+  await viewModePage.selectHideResolvedCommentsOption();
+  await commentsPanelPage.isCommentResolvedThreadIconNotDisplayed();
+  await expect(newPage).toHaveScreenshot('resolved-comments-hidden.png', {
+    mask: [commentsPanelPage.commentsAuthorSection],
+  });
+  await viewModePage.openCommentsDropdown();
+  await viewModePage.selectHideResolvedCommentsOption();
+  await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
+  await expect(newPage).toHaveScreenshot('resolved-comments-show.png', {
+    mask: [commentsPanelPage.commentsAuthorSection],
+  });
+});
+
+mainTest(qase([704],'CO-383 Comments dropdown (Show comments list)'), async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await mainPage.waitForChangeIsSaved();
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  const commentsPanelPage = new CommentsPanelPage(newPage);
+  await viewModePage.clickCommentsButton();
+  await viewModePage.addComment();
+  await commentsPanelPage.enterCommentText('Test Comment');
+  await commentsPanelPage.clickPostCommentButton();
+  await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment');
+  await viewModePage.clickOnViewport();
+
+  await viewModePage.openCommentsDropdown();
+  await viewModePage.selectShowCommentsListOption();
+  await viewModePage.isCommentInListVisible(true);
+  await expect(viewModePage.commentsRightPanel).toHaveScreenshot('comments-list.png', {
+    mask: [commentsPanelPage.commentsAuthorSection],
+  });
+  await viewModePage.openCommentsDropdown();
+  await viewModePage.selectShowCommentsListOption();
+  await viewModePage.isCommentInListVisible(false);
+  await expect(newPage).toHaveScreenshot('comments-list-hidden.png', {
+    mask: [commentsPanelPage.commentsAuthorSection],
+  });
 });
