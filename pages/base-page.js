@@ -239,6 +239,10 @@ exports.BasePage = class BasePage {
     await this.savedChangesIcon.waitFor({ state: 'visible' });
   }
 
+  async waitForViewportVisible() {
+    await this.viewport.waitFor({ state: 'visible' });
+  }
+
   async refreshPage() {
     await this.page.reload();
     await this.page.waitForTimeout(5000)

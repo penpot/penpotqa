@@ -9,16 +9,21 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { ViewModePage } = require('../pages/workspace/view-mode-page');
 const { PrototypePanelPage } = require('../pages/workspace/prototype-panel-page');
 const { CommentsPanelPage } = require('../pages/workspace/comments-panel-page');
+const { DesignPanelPage } = require('../pages/workspace/design-panel-page');
+const { LayersPanelPage } = require('../pages/workspace/layers-panel-page');
+const { InspectPanelPage } = require('../pages/workspace/inspect-panel-page');
 
 const teamName = random().concat('autotest');
 
-let teamPage,dashboardPage,mainPage,viewModePage,prototypePanelPage;
+let teamPage,dashboardPage,mainPage,viewModePage,prototypePanelPage,designPanelPage,layersPanelPage;
 test.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
   viewModePage = new ViewModePage(page);
   prototypePanelPage = new PrototypePanelPage(page);
+  designPanelPage = new DesignPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -26,14 +31,12 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest(qase([685],'CO-364 Click view mode (From right top click) - no boards created'), async ({ page }) => {
+mainTest(qase([685],'CO-364 Click view mode (From right top click) - no boards created'), async () => {
   const newPage = await viewModePage.clickViewModeButton();
   viewModePage = new ViewModePage(newPage);
   await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
@@ -41,7 +44,7 @@ mainTest(qase([685],'CO-364 Click view mode (From right top click) - no boards c
   );
 });
 
-mainTest(qase([688],'CO-367 Click view mode (From shortcut G+V) - board is created'), async ({ page }) => {
+mainTest(qase([688],'CO-367 Click view mode (From shortcut G+V) - board is created'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   const newPage = await viewModePage.clickViewModeShortcut();
@@ -51,7 +54,7 @@ mainTest(qase([688],'CO-367 Click view mode (From shortcut G+V) - board is creat
   );
 });
 
-mainTest(qase([690],'CO-369 Full screen on/off'), async ({ page }) => {
+mainTest(qase([690],'CO-369 Full screen on/off'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   const newPage = await viewModePage.clickViewModeShortcut();
@@ -66,7 +69,7 @@ mainTest(qase([690],'CO-369 Full screen on/off'), async ({ page }) => {
   );
 });
 
-mainTest(qase([698],'CO-377 Click arrows to navigate to other boards'), async ({ page }) => {
+mainTest(qase([698],'CO-377 Click arrows to navigate to other boards'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createDefaultBoardByCoordinates(500, 500, true);
@@ -94,7 +97,7 @@ mainTest(qase([698],'CO-377 Click arrows to navigate to other boards'), async ({
   );
 });
 
-mainTest(qase([700],'CO-379 Click Back icon to reset view'), async ({ page }) => {
+mainTest(qase([700],'CO-379 Click Back icon to reset view'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createDefaultBoardByCoordinates(500, 500, true);
@@ -120,7 +123,7 @@ mainTest(qase([700],'CO-379 Click Back icon to reset view'), async ({ page }) =>
   );
 });
 
-mainTest(qase([699],'CO-378 Click board dropdown to navigate to other boards'), async ({ page }) => {
+mainTest(qase([699],'CO-378 Click board dropdown to navigate to other boards'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   await mainPage.createDefaultBoardByCoordinates(500, 500, true);
@@ -171,7 +174,7 @@ mainTest(qase([699],'CO-378 Click board dropdown to navigate to other boards'), 
 //   );
 // });
 
-mainTest(qase([691],'CO-370 Change scale'), async ({ page }) => {
+mainTest(qase([691],'CO-370 Change scale'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   const newPage = await viewModePage.clickViewModeShortcut();
@@ -207,7 +210,7 @@ mainTest(qase([691],'CO-370 Change scale'), async ({ page }) => {
   );
 });
 
-mainTest(qase([713],'CO-392 Zoom by pressing + and - keys'), async ({ page }) => {
+mainTest(qase([713],'CO-392 Zoom by pressing + and - keys'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   const newPage = await viewModePage.clickViewModeShortcut();
@@ -222,7 +225,7 @@ mainTest(qase([713],'CO-392 Zoom by pressing + and - keys'), async ({ page }) =>
   );
 });
 
-mainTest(qase([708],'CO-387 Page dropdown'), async ({ page }) => {
+mainTest(qase([708],'CO-387 Page dropdown'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddPageButton();
@@ -247,7 +250,7 @@ mainTest(qase([708],'CO-387 Page dropdown'), async ({ page }) => {
   );
 });
 
-mainTest(qase([701],'CO-380 Create comment'), async ({ page }) => {
+mainTest(qase([701],'CO-380 Create comment'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   const newPage = await viewModePage.clickViewModeShortcut();
@@ -270,7 +273,7 @@ mainTest(qase([701],'CO-380 Create comment'), async ({ page }) => {
   });
 });
 
-mainTest(qase([709],'CO-388 Reply comment'), async ({ page }) => {
+mainTest(qase([709],'CO-388 Reply comment'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   const newPage = await viewModePage.clickViewModeShortcut();
@@ -292,7 +295,7 @@ mainTest(qase([709],'CO-388 Reply comment'), async ({ page }) => {
   });
 });
 
-mainTest(qase([710],'CO-389 Edit comment'), async ({ page }) => {
+mainTest(qase([710],'CO-389 Edit comment'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   const newPage = await viewModePage.clickViewModeShortcut();
@@ -318,7 +321,7 @@ mainTest(qase([710],'CO-389 Edit comment'), async ({ page }) => {
   });
 });
 
-mainTest(qase([711],'CO-390 Delete thread'), async ({ page }) => {
+mainTest(qase([711],'CO-390 Delete thread'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   const newPage = await viewModePage.clickViewModeShortcut();
@@ -339,7 +342,7 @@ mainTest(qase([711],'CO-390 Delete thread'), async ({ page }) => {
   });
 });
 
-mainTest(qase([703],'CO-382 Comments dropdown (Hide resolved comments)'), async ({ page }) => {
+mainTest(qase([703],'CO-382 Comments dropdown (Hide resolved comments)'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   const newPage = await viewModePage.clickViewModeShortcut();
@@ -372,7 +375,7 @@ mainTest(qase([703],'CO-382 Comments dropdown (Hide resolved comments)'), async 
   });
 });
 
-mainTest(qase([704],'CO-383 Comments dropdown (Show comments list)'), async ({ page }) => {
+mainTest(qase([704],'CO-383 Comments dropdown (Show comments list)'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
   const newPage = await viewModePage.clickViewModeShortcut();
@@ -397,4 +400,142 @@ mainTest(qase([704],'CO-383 Comments dropdown (Show comments list)'), async ({ p
   await expect(newPage).toHaveScreenshot('comments-list-hidden.png', {
     mask: [commentsPanelPage.commentsAuthorSection],
   });
+});
+
+mainTest(qase([706],'CO-385 Switch to Inspect view'), async () => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await mainPage.waitForChangeIsSaved();
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  await viewModePage.openInspectTab();
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-inspect-page-image.png');
+  await viewModePage.openInteractionsTab();
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-interactions-page-image.png');
+});
+
+mainTest(qase([715],'CO-394 Inspect functionality - Board elements dropdown in the top left'), async () => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createDefaultRectangleByCoordinates(220, 220);
+  await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+  await mainPage.waitForChangeIsSaved();
+
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  layersPanelPage = new LayersPanelPage(newPage);
+  const inspectPanelPage = new InspectPanelPage(newPage);
+  await viewModePage.openInspectTab();
+  await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+  await inspectPanelPage.openCodeTab();
+  await newPage.waitForTimeout(200);
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-code-tab-image.png');
+});
+
+mainTest(qase([717],'CO-396 Inspect functionality- Export'), async () => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createDefaultRectangleByCoordinates(220, 220);
+  await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+  await mainPage.waitForChangeIsSaved();
+
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  designPanelPage = new DesignPanelPage(newPage);
+  await viewModePage.openInspectTab();
+
+  await designPanelPage.clickAddExportButton();
+  await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
+  await expect(viewModePage.rightSidebar).toHaveScreenshot(
+    'view-mode-export-right-sidebar-image.png');
+
+  await designPanelPage.clickExportElementButton(newPage);
+});
+
+mainTest(qase([1785],'CO-387 Switch between layers from left menu'), async ({browserName}) => {
+  await mainPage.createDefaultBoardByCoordinates(200, 200);
+  await designPanelPage.changeHeightAndWidthForLayer('500', '700');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.uploadImage('images/mini_sample.jpg');
+  await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createDefaultRectangleByCoordinates(220, 220);
+  await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createDefaultEllipseByCoordinates(330, 220,true);
+  await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createDefaultTextLayerByCoordinates(220, 330, browserName);
+  await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.createSmallClosedPathByCoordinates(330, 330);
+  await layersPanelPage.dragAndDropComponentToBoard('Path');
+  await mainPage.waitForChangeIsSaved();
+
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  layersPanelPage = new LayersPanelPage(newPage);
+  await viewModePage.openInspectTab();
+  await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-rectangle-selected-image.png');
+  await layersPanelPage.clickLayerOnLayersTab('Ellipse');
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-ellipse-selected-image.png');
+  await layersPanelPage.clickLayerOnLayersTab('Hello World!');
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-test-selected-image.png');
+  await layersPanelPage.clickLayerOnLayersTab('Path');
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-path-selected-image.png');
+  await layersPanelPage.clickLayerOnLayersTab('mini_sample');
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'view-mode-image-selected-image.png');
+});
+
+mainTest(qase([1787],'CO-389 Copy layout and paste'), async ({page, browserName}) => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+  await mainPage.waitForChangeIsSaved();
+
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  layersPanelPage = new LayersPanelPage(newPage);
+  await viewModePage.openInspectTab();
+  await viewModePage.copyWidth();
+  await expect(viewModePage.rightSidebar).toHaveScreenshot(
+    'view-mode-copy-width-image.png');
+  await viewModePage.checkBuffer('width: 200px;', newPage, browserName);
+});
+
+mainTest(qase([705],'CO-384 Edit file'), async ({page, browserName}) => {
+  if(browserName === 'webkit'){
+
+  } else {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+    await mainPage.waitForChangeIsSaved();
+
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    layersPanelPage = new LayersPanelPage(newPage);
+
+    await viewModePage.clickEditButton();
+    await newPage.waitForTimeout(200);
+    await viewModePage.isPageSwitched(newPage);
+
+    await page.close();
+    await viewModePage.clickEditButton();
+    const oldPage = await viewModePage.clickEditButton(false);
+    mainPage = new MainPage(oldPage);
+    teamPage = new TeamPage(oldPage);
+    await mainPage.waitForViewportVisible();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'main-page-opened.png',
+    );
+  }
 });
