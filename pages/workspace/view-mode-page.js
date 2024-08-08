@@ -49,6 +49,9 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.commentCommentsPanelText = page.locator(
       'div[class*="comments__settings-bar-inside"] div[class*="comments__content"]',
     );
+    this.interactionsButton = page.locator('button[data-value="interactions"]');
+    this.widthCopyButton = page.locator('button[class*="copy_button"]').first();
+    this.editButton = page.locator('span[class*="edit-btn"]');
   }
 
   async clickViewModeButton() {
@@ -66,6 +69,10 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   async openInspectTab() {
     await this.inspectButton.click();
     await expect(this.rightSidebar).toBeVisible();
+  }
+
+  async openInteractionsTab() {
+    await this.interactionsButton.click();
   }
 
   async clickFullScreenButton() {
@@ -199,5 +206,39 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     visible
       ? await expect(this.commentCommentsPanelText.last()).toBeVisible()
       : await expect(this.commentCommentsPanelText.last()).not.toBeVisible();
+  }
+
+  async copyWidth() {
+    await this.widthCopyButton.click();
+  }
+
+  async checkBuffer(expectedValue, page, browserName) {
+    if(browserName === 'chrome'){
+      const clipboardText = await page.evaluate(async () => {
+        return await navigator.clipboard.readText();
+      });
+      expect(clipboardText).toBe(expectedValue);
+    }
+  }
+
+  async clickEditButton(first = true) {
+    if(first) {
+      await this.editButton.click();
+    } else {
+      const popupPromise = this.page.waitForEvent('popup');
+      await this.editButton.click();
+      return popupPromise;
+    }
+  }
+
+  async isPageSwitched(newPage) {
+    const pages = await newPage.context().pages();
+    const activePage = await Promise.race(
+      pages.map(async (p) => {
+        const isActive = await p.evaluate(() => document.hasFocus());
+        return isActive ? p : null;
+      })
+    );
+    expect(activePage).not.toBe(newPage);
   }
 };
