@@ -472,7 +472,7 @@ mainTest.describe(() => {
       await mainPage.pressCopyShortcut();
       await mainPage.pressPasteShortcut();
       browserName === 'firefox'
-        ? await expect(layersPanelPage.sidebarLayerItem).toHaveCount(3)
+        ? await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5)
         : await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
     },
   );

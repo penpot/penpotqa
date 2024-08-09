@@ -288,6 +288,7 @@ mainTest.describe(() => {
     await designPanelPage.changeHeightAndWidthForLayer('25', '25');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.detachInstanceCopyComponentViaRightClick();
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-component-with-grid-layout-detach-instance.png', {
       mask: [mainPage.guides],
