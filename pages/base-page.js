@@ -13,6 +13,7 @@ exports.BasePage = class BasePage {
     this.wrapperMessage = page.locator('div[class*="main_ui_messages__wrapper"]');
     this.moveButton = page.locator('button[title="Move (V)"]');
     this.savedChangesIcon = page.locator('div[title="Saved"]');
+    this.unsavedChangesIcon = page.locator('div[title="Unsaved changes"]');
     this.viewport = page.locator('div.viewport');
 
     //Layer right-click menu items
@@ -229,6 +230,10 @@ exports.BasePage = class BasePage {
 
   async waitForChangeIsSaved() {
     await this.savedChangesIcon.waitFor({ state: 'visible' });
+  }
+
+  async waitForChangeIsUnsaved() {
+    await this.unsavedChangesIcon.waitFor({ state: 'visible' });
   }
 
   async refreshPage() {

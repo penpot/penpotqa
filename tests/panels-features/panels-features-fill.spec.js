@@ -134,7 +134,7 @@ mainTest.describe(() => {
     await designPanelPage.clickRemoveFillButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnDesignTab();
-    await expect(mainPage.createdLayer).toHaveScreenshot('path-removed-fill.png');
+    await expect(mainPage.copyLayer).toHaveScreenshot('path-removed-fill.png');
   });
 });
 
