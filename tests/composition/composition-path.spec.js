@@ -55,8 +55,8 @@ mainTest(qase(1755,'PENPOT-1755 Create Path from toolbar with cap'), async ({ pa
   await expect(mainPage.viewport).toHaveScreenshot('path-opened-with-cap.png');
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
     const mainPage = new MainPage(page);
     await mainPage.createDefaultClosedPath();
@@ -207,8 +207,8 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
     const mainPage = new MainPage(page);
     await mainPage.createDefaultOpenPath();

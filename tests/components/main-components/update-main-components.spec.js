@@ -34,7 +34,6 @@ test.afterEach(async ({ page }, testInfo) => {
 });
 
 mainTest(qase(1275,'Update main component'), async () => {
-  test.setTimeout(60000);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -67,8 +66,8 @@ mainTest(qase(1306,'Check copy and main component icons'), async () => {
   );
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
@@ -237,8 +236,8 @@ test.describe(() => {
   );
 });
 
-test.describe("Text", () => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe("Text", () => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
     await mainPage.createDefaultTextLayer(browserName);
     await mainPage.createComponentViaRightClick();
@@ -273,8 +272,8 @@ test.describe("Text", () => {
   );
 });
 
-test.describe(() => {
-  test.beforeEach(async ({}, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({}, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();

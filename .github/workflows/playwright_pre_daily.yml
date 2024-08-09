@@ -1,4 +1,4 @@
-name: Penpot Regression Tests on PRE env
+name: Daily Penpot Regression Tests on PRE
 on:
   schedule: ## run tests at 01:00am UTC on every day-of-week from Monday through Friday
     - cron: '00 1 * * 1-5'
@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 22
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright

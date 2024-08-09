@@ -45,6 +45,9 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     this.layerBoardToggleContentCollapse = page.locator(
       'div[class*="layers__element-list"] button[class*="toggle-content"]',
     );
+    this.mainComponentLayerSelected = page.locator(
+      'div[class*="sidebar_layer_item__selected"] svg[class="icon-component"]',
+    );
   }
 
   async expandGroupOnLayersTab() {
@@ -272,6 +275,15 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
       force: true,
     });
     await this.copyOption.click();
+  }
+
+  async selectLayerByName(layerName) {
+    const layerSel = this.page.locator('#layers').getByText(layerName).first();
+    await layerSel.last().click();
+  }
+
+  async waitForMainComponentIsSelected() {
+    await this.mainComponentLayerSelected.waitFor({ state: 'visible' });
   }
 };
 

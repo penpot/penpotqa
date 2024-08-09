@@ -33,8 +33,8 @@ test.afterEach(async ({}, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
 
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
@@ -92,8 +92,8 @@ test.describe(() => {
   );
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
 
     await mainPage.createDefaultBoardByCoordinates(200, 200);

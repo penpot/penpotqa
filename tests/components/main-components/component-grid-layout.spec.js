@@ -39,8 +39,8 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
@@ -171,14 +171,14 @@ test.describe(() => {
     await newMainPage.isCreatedLayerVisible();
     await newPage.waitForTimeout(500);
     await expect(newPage).toHaveScreenshot('board-component-on-first-file.png', {
-      mask: [mainPage.usersSection],
+      mask: [newMainPage.usersSection],
     });
   });
 
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
@@ -232,8 +232,8 @@ test.describe(() => {
 
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
@@ -288,6 +288,7 @@ test.describe(() => {
     await designPanelPage.changeHeightAndWidthForLayer('25', '25');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.detachInstanceCopyComponentViaRightClick();
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-component-with-grid-layout-detach-instance.png', {
       mask: [mainPage.guides],
@@ -299,8 +300,8 @@ test.describe(() => {
 
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
