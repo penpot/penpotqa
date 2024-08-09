@@ -164,8 +164,8 @@ mainTest(
   },
 );
 
-test.describe(() => {
-  test.beforeEach(async () => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async () => {
     await mainPage.clickPencilBoxButton();
     await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
     await dashboardPage.isSharedLibraryIconDisplayed();

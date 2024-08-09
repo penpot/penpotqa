@@ -29,8 +29,8 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page }) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }) => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(900, 100);

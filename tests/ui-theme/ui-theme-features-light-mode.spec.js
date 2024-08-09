@@ -33,7 +33,7 @@ test.beforeEach(async ({ page }) => {
   await profilePage.selectLightTheme();
 });
 
-test.describe('Settings - UI THEME', () => {
+mainTest.describe('Settings - UI THEME', () => {
   mainTest(
     '1677 Check Projects page' +
       '1678 Check Fonts page' +

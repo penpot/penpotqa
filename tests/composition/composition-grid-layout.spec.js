@@ -63,8 +63,8 @@ mainTest(qase([1689,1696],'PENPOT-1689,1696 Check grid lines, check edit mode in
   );
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
@@ -222,8 +222,8 @@ mainTest(qase(1698,'PENPOT-1698 Upload an image and add it to the table - check 
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
@@ -431,8 +431,8 @@ test.describe(() => {
   });
 });
 
-test.describe(() => {
-  test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
