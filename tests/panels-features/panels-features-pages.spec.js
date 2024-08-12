@@ -178,6 +178,7 @@ mainTest(qase(1527,'PENPOT-1527 Add a component from local library to Page 1 and
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.updateMainComponentViaRightClick();
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnPageOnLayersPanel(true);
     await expect(mainPage.viewport).toHaveScreenshot(
