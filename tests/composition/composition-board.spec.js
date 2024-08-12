@@ -383,6 +383,7 @@ mainTest.describe(() => {
       mask: [mainPage.guides],
     });
     await designPanelPage.changeAxisXandYForLayer('700', '600');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board-moved.png', {
       mask: [mainPage.guides],
