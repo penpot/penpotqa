@@ -387,4 +387,8 @@ exports.BasePage = class BasePage {
     }
     await expect(this.acceptCookieButton).not.toBeVisible();
   }
+
+  async gotoLinc(linc) {
+    await this.page.goto(linc);
+  }
 };

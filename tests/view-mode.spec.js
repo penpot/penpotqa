@@ -12,10 +12,14 @@ const { CommentsPanelPage } = require('../pages/workspace/comments-panel-page');
 const { DesignPanelPage } = require('../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../pages/workspace/layers-panel-page');
 const { InspectPanelPage } = require('../pages/workspace/inspect-panel-page');
+const { ProfilePage } = require('../pages/profile-page');
+const { LoginPage } = require('../pages/login-page');
+const { RegisterPage } = require('../pages/register-page');
+const { waitMessage } = require('../helpers/gmail');
 
 const teamName = random().concat('autotest');
 
-let teamPage,dashboardPage,mainPage,viewModePage,prototypePanelPage,designPanelPage,layersPanelPage;
+let teamPage,dashboardPage,mainPage,viewModePage,prototypePanelPage,designPanelPage,layersPanelPage,profilePage,loginPage,registerPage;
 test.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
@@ -24,6 +28,9 @@ test.beforeEach(async ({ page }) => {
   prototypePanelPage = new PrototypePanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
+  profilePage = new ProfilePage(page);
+  loginPage = new LoginPage(page);
+  registerPage = new RegisterPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -538,4 +545,213 @@ mainTest(qase([705],'CO-384 Edit file'), async ({page, browserName}) => {
       'main-page-opened.png',
     );
   }
+});
+
+mainTest.describe(() => {
+  mainTest(qase([693], 'CO-372 Share prototype - get link (2 pages)'), async ({ page }) => {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickAddPageButton();
+    await mainPage.waitForChangeIsSaved();
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.clickShareButton();
+    await expect(viewModePage.shareLincDialog).toHaveScreenshot(
+      'view-mode-share-window-image.png',
+    );
+    await viewModePage.clickGetLincButton();
+    await viewModePage.clickManagePermissionsButton();
+    await expect(viewModePage.shareLincDialog).toHaveScreenshot(
+      'view-mode-share-window-1page-selected-image.png',
+    );
+    await viewModePage.selectAllPages();
+    await expect(viewModePage.shareLincDialog).toHaveScreenshot(
+      'view-mode-share-window-all-pages-selected-image.png',
+    );
+    await viewModePage.clickGetLincButton();
+    const shareLinc = await viewModePage.clickCopyLincButton();
+    await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+
+    await mainPage.clickPencilBoxButton();
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await profilePage.gotoLinc(shareLinc);
+    const newViewModePage = new ViewModePage(page);
+    await newViewModePage.isViewerSectionVisible();
+    await expect(newViewModePage.viewerLoyautSection).toHaveScreenshot(
+      'view-mode-shared-image.png');
+  });
+
+  mainTest(qase([694], 'CO-373 Share prototype - destroy link'), async ({ page }) => {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.clickShareButton();
+    await viewModePage.clickGetLincButton();
+    const shareLinc = await viewModePage.clickCopyLincButton();
+    await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+
+    await viewModePage.clickDestroyLincButton();
+
+    await mainPage.clickPencilBoxButton();
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await profilePage.gotoLinc(shareLinc);
+    viewModePage = new ViewModePage(page);
+    await viewModePage.isViewerSectionVisible(false);
+    await expect(mainPage.errorScreen).toHaveScreenshot(
+      'shared-error-image.png');
+  });
+
+  mainTest(qase([696], 'CO-375 Share prototype - manage permissions ("Can comment")'), async ({ page }) => {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.clickShareButton();
+    await viewModePage.clickManagePermissionsButton();
+    await viewModePage.selectAllUsersCommentPermission();
+    await viewModePage.clickGetLincButton();
+    const shareLinc = await viewModePage.clickCopyLincButton();
+    await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+    await expect(viewModePage.shareLincDialog).toHaveScreenshot(
+      'view-mode-share-window-all-users-comment-image.png',
+    );
+
+    await mainPage.clickPencilBoxButton();
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.SECOND_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await profilePage.gotoLinc(shareLinc);
+    viewModePage = new ViewModePage(page);
+    await viewModePage.isViewerSectionVisible();
+    await viewModePage.clickCommentsButton();
+    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      'view-mode-shared-comments-image.png');
+    await viewModePage.gotoLinc(process.env.BASE_URL);
+    await mainPage.isHeaderDisplayed('Projects');
+    await profilePage.logout();
+  });
+
+  mainTest(qase([697], 'CO-376 Share prototype - manage permissions ("Can inspect code  ")'), async ({ page }) => {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.clickShareButton();
+    await viewModePage.clickManagePermissionsButton();
+    await viewModePage.selectAllUsersInspectPermission();
+    await viewModePage.clickGetLincButton();
+    const shareLinc = await viewModePage.clickCopyLincButton();
+    await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+    await expect(viewModePage.shareLincDialog).toHaveScreenshot(
+      'view-mode-share-window-all-users-inspect-image.png',
+    );
+
+    await mainPage.clickPencilBoxButton();
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.SECOND_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await profilePage.gotoLinc(shareLinc);
+    viewModePage = new ViewModePage(page);
+    const inspectPanelPage = new InspectPanelPage(page);
+    await viewModePage.isViewerSectionVisible();
+    await viewModePage.openInspectTab();
+    await inspectPanelPage.openCodeTab();
+    await page.waitForTimeout(200);
+    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      'view-mode-shared-code-image.png');
+    await viewModePage.gotoLinc(process.env.BASE_URL);
+    await mainPage.isHeaderDisplayed('Projects');
+    await profilePage.logout();
+  });
+
+  mainTest(qase(702,'CO-381 Comments dropdown (All and Only your comments)'),  async ({ page }, testInfo) => {
+    await testInfo.setTimeout(testInfo.timeout + 60000);
+    const firstAdmin = random().concat('autotest');
+    const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+    const newPage = await viewModePage.clickViewModeShortcut();
+    let viewModePage2 = new ViewModePage(newPage);
+    await viewModePage2.clickCommentsButton();
+    await viewModePage2.addComment();
+
+    const comment = 'Test Comment (main user)';
+    let commentsPanelPage = new CommentsPanelPage(newPage);
+    await commentsPanelPage.enterCommentText(comment);
+    await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.isCommentDisplayedInPopUp(comment);
+    await newPage.close();
+    await mainPage.backToDashboardFromFileEditor();
+
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed(
+      'Invite members to the team',
+    );
+    await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+    await teamPage.selectInvitationRoleInPopUp('Admin');
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+    const firstInvite = await waitMessage(page, firstEmail, 40);
+
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await page.goto(firstInvite.inviteUrl);
+    await registerPage.isRegisterPageOpened();
+    await registerPage.enterEmail(firstEmail);
+    await registerPage.enterPassword(process.env.LOGIN_PWD);
+    await registerPage.clickOnCreateAccountBtn();
+    await registerPage.enterFullName(firstAdmin);
+    await registerPage.clickOnAcceptTermsCheckbox();
+    await registerPage.clickOnCreateAccountSecondBtn();
+    await dashboardPage.fillOnboardingQuestions();
+    await teamPage.isTeamSelected(teamName);
+
+    await dashboardPage.openFile();
+    await mainPage.isMainPageLoaded();
+    const secondPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(secondPage);
+    await viewModePage.clickCommentsButton();
+    await viewModePage.addComment(true);
+    const comment2 = 'Test Comment (main user)';
+    commentsPanelPage = new CommentsPanelPage(secondPage);
+    await commentsPanelPage.enterCommentText(comment2);
+    await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.isCommentDisplayedInPopUp(comment2);
+    await expect(secondPage).toHaveScreenshot('all-users-comments.png', {
+      mask: [commentsPanelPage.commentsAuthorSection],
+    });
+    await viewModePage.openCommentsDropdown();
+    await viewModePage.selectShowYourCommentsOption();
+    await expect(secondPage).toHaveScreenshot('only-your-comments.png', {
+      mask: [commentsPanelPage.commentsAuthorSection],
+    });
+    await secondPage.close();
+
+    await mainPage.backToDashboardFromFileEditor();
+    await profilePage.logout();
+  });
+
+  mainTest.afterEach(async () => {
+    await loginPage.goto();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.switchTeam(teamName);
+    await teamPage.isTeamSelected(teamName);
+    await dashboardPage.openFile();
+    await mainPage.isMainPageLoaded();
+  });
 });
