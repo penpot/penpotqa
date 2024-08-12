@@ -992,6 +992,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.exportElementButton).not.toBeVisible();
   }
 
+  async clickExportElementButton(page) {
+    await this.exportElementButton.click();
+    await page.waitForEvent('download');
+  }
+
   async clickAddGridButton() {
     await this.gridSection.waitFor();
     await this.addGridButton.click();
