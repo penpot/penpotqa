@@ -151,35 +151,37 @@ mainTest(qase([699],'CO-378 Click board dropdown to navigate to other boards'), 
   );
 });
 
-// mainTest(qase([689],'CO-368 Interactions dropdown'), async ({ page }) => {
-//   await mainPage.createDefaultBoardByCoordinates(300, 300);
-//   await mainPage.createDefaultBoardByCoordinates(500, 500, true);
-//   await mainPage.waitForChangeIsSaved();
-//   await prototypePanelPage.clickPrototypeTab();
-//   await prototypePanelPage.dragAndDropPrototypeArrowConnector(300, 300);
-//   const newPage = await viewModePage.clickViewModeShortcut();
-//   viewModePage = new ViewModePage(newPage);
-//   await viewModePage.clickInteractionsDropdown();
-//   await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
-//     'interactions-dont-show-options-image.png'
-//   );
-//   await viewModePage.selectShowInteractionsOptions();
-//   await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-//     'show-interactions-board-view-mode-page-image.png'
-//   );
-//   // await viewModePage.clickInteractionsDropdown();
-//   await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
-//     'interactions-show-options-image.png'
-//   );
-//   await viewModePage.selectShowOnClickInteractionsOptions();
-//   await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-//     'show-on-click-interactions-board-view-mode-page-image.png'
-//   );
-//   await viewModePage.clickOnBoardCounter();
-//   await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-//     'show-on-click-interactions-board-view-mode-page-image2.png'
-//   );
-// });
+mainTest(qase([689],'CO-368 Interactions dropdown'), async ({ page }) => {
+  await mainPage.createDefaultBoardByCoordinates(300, 300);
+  await mainPage.createDefaultBoardByCoordinates(500, 500, true);
+  await mainPage.waitForChangeIsSaved();
+  await prototypePanelPage.clickPrototypeTab();
+  await prototypePanelPage.dragAndDropPrototypeArrowConnector(300, 300);
+  const newPage = await viewModePage.clickViewModeShortcut();
+  viewModePage = new ViewModePage(newPage);
+  await viewModePage.clickInteractionsDropdown();
+  await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
+    'show-on-click-interactions-options-default-image.png'
+  );
+  await newPage.waitForTimeout(2000);
+  await viewModePage.selectShowInteractionsOptions();
+  await viewModePage.clickOnBoardCounter();
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'show-interactions-board-view-mode-page-image.png'
+  );
+  await viewModePage.clickInteractionsDropdown();
+  await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
+    'interactions-show-options-image.png'
+  );
+  await viewModePage.selectShowOnClickInteractionsOptions();
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'show-on-click-interactions-board-view-mode-page-image.png'
+  );
+  await viewModePage.clickOnBoardCounter();
+  await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    'show-on-click-interactions-board-view-mode-page-image2.png'
+  );
+});
 
 mainTest(qase([691],'CO-370 Change scale'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
