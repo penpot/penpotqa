@@ -52,6 +52,18 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.interactionsButton = page.locator('button[data-value="interactions"]');
     this.widthCopyButton = page.locator('button[class*="copy_button"]').first();
     this.editButton = page.locator('span[class*="edit-btn"]');
+    this.shareButton = page.locator('button[class*="share-btn"]');
+    this.shareLincDialog = page.locator('div[class*="share-link-dialog"]');
+    this.getLincButton = page.locator('input[value="Get link"]');
+    this.managePermissionsButton = page.locator('button[class*="share_link__manage-permissions"]');
+    this.selectAllCheckbox = page.locator('label[for="view-all"]');
+    this.copyLincButton = page.locator('button[class*="share_link__copy-button"]');
+    this.copyLincField = page.locator('input[class*="share_link__input-text"]');
+    this.destroyLincButton = page.locator('input[value="Destroy link"]');
+    this.commentPermissionDropdown = page.locator('div[class*="who-comment-select"]');
+    this.inspectPermissionDropdown = page.locator('div[class*="who-inspect-select"]');
+    this.allUsersOption = page.locator('li span:has-text("All Penpot users")');
+    this.homeButton = page.locator('svg[class*="header__logo-icon"]');
   }
 
   async clickViewModeButton() {
@@ -240,5 +252,51 @@ exports.ViewModePage = class ViewModePage extends BasePage {
       })
     );
     expect(activePage).not.toBe(newPage);
+  }
+
+  async clickShareButton() {
+    await this.shareButton.click();
+  }
+
+  async clickGetLincButton() {
+    await this.getLincButton.click();
+  }
+
+  async clickManagePermissionsButton() {
+    await this.managePermissionsButton.click();
+  }
+
+  async selectAllPages() {
+    await this.selectAllCheckbox.click();
+  }
+
+  async clickCopyLincButton() {
+    await this.copyLincButton.click();
+    return await this.copyLincField.inputValue();
+  }
+
+  async isViewerSectionVisible(visible = true) {
+    visible
+      ? await expect(this.viewerLoyautSection).toBeVisible()
+      : await expect(this.viewerLoyautSection).not.toBeVisible();
+  }
+
+  async clickDestroyLincButton() {
+    await this.destroyLincButton.click();
+    await this.destroyLincButton.click();
+  }
+
+  async selectAllUsersCommentPermission() {
+    await this.commentPermissionDropdown.click();
+    await this.allUsersOption.click();
+  }
+
+  async selectAllUsersInspectPermission() {
+    await this.inspectPermissionDropdown.click();
+    await this.allUsersOption.click();
+  }
+
+  async gotoHome() {
+    await this.homeButton.click();
   }
 };
