@@ -207,6 +207,14 @@ exports.BasePage = class BasePage {
     await this.page.keyboard.press('Escape');
   }
 
+  async clickOnSubtract() {
+    await this.page.keyboard.press('NumpadSubtract');
+  }
+
+  async clickOnAdd() {
+    await this.page.keyboard.press('NumpadAdd');
+  }
+
   async isHeaderDisplayed(title) {
     await expect(this.header).toHaveText(title);
   }
@@ -234,6 +242,10 @@ exports.BasePage = class BasePage {
 
   async waitForChangeIsUnsaved() {
     await this.unsavedChangesIcon.waitFor({ state: 'visible' });
+  }
+
+  async waitForViewportVisible() {
+    await this.viewport.waitFor({ state: 'visible' });
   }
 
   async refreshPage() {
@@ -374,5 +386,9 @@ exports.BasePage = class BasePage {
       await this.acceptCookieButton.click();
     }
     await expect(this.acceptCookieButton).not.toBeVisible();
+  }
+
+  async gotoLinc(linc) {
+    await this.page.goto(linc);
   }
 };

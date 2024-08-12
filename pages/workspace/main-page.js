@@ -191,6 +191,8 @@ exports.MainPage = class MainPage extends BasePage {
 
     this.fileLeftSidebarAside = page.locator('#left-sidebar-aside');
     this.fileRightSidebarAside = page.locator('#right-sidebar-aside');
+
+    this.errorScreen = page.locator('div[class*="static__exception-content"]');
   }
 
   async clickCreateBoardButton() {
@@ -833,6 +835,16 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
+  async createSmallClosedPathByCoordinates(x, y){
+    await this.clickCreatePathButton();
+    await this.clickViewportByCoordinates(x, y);
+    await this.clickViewportByCoordinates(x+100, y);
+    await this.clickViewportByCoordinates(x, y+100);
+    await this.clickViewportByCoordinates(x, y);
+    await this.clickOnDesignTab();
+    await this.waitForChangeIsSaved();
+  }
+
   async createDefaultCurveLayer() {
     await this.clickCreateCurveButton();
     await this.page.waitForTimeout(700)
@@ -844,6 +856,22 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultTextLayer(browserName) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(200, 300);
+    const platform = getPlatformName()
+    if (platform === 'darwin') {
+      await this.typeTextFromKeyboard();
+    } else if(browserName === 'webkit') {
+      await this.page.waitForTimeout(400);
+      await this.typeTextFromKeyboard();
+    } else {
+      await this.typeText('Hello World!');
+    }
+    await this.clickMoveButton();
+    await this.waitForChangeIsSaved();
+  }
+
+  async createDefaultTextLayerByCoordinates(x, y, browserName) {
+    await this.clickCreateTextButton();
+    await this.clickViewportByCoordinates(x, y);
     const platform = getPlatformName()
     if (platform === 'darwin') {
       await this.typeTextFromKeyboard();
