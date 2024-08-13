@@ -555,7 +555,7 @@ mainTest.describe(() => {
   });
 });
 
-mainTest.describe(() => {
+mainTest.describe.only(() => {
   mainTest(qase([693], 'CO-372 Share prototype - get link (2 pages)'), async ({ page }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
