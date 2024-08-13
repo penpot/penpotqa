@@ -216,6 +216,7 @@ mainTest(qase(1698,'PENPOT-1698 Upload an image and add it to the table - check 
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await designPanelPage.changeHeightAndWidthForLayer('700', '800');
   await designPanelPage.openGridEditModeFromDesignPanel();
+  await mainPage.waitForChangeIsUnsaved();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('resized-board-with-image.png', {
     mask: [mainPage.guides],
