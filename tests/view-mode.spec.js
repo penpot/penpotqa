@@ -433,7 +433,7 @@ mainTest.describe(() => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultRectangleByCoordinates(220, 220);
+    await mainPage.createDefaultRectangleByCoordinates(320, 320);
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
     await mainPage.waitForChangeIsSaved();
 
@@ -453,7 +453,7 @@ mainTest.describe(() => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultRectangleByCoordinates(220, 220);
+    await mainPage.createDefaultRectangleByCoordinates(320, 320);
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
     await mainPage.waitForChangeIsSaved();
 
