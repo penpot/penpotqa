@@ -138,59 +138,6 @@ mainTest.describe(() => {
     },
   );
 
-  // mainTest(
-  //   qase(1166,'DA-80 Team Invitations invite via owner single invitation, editor'),
-  //   async ({ page }) => {
-  //     const email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
-  //     const teamPage = new TeamPage(page);
-  //     const profilePage = new ProfilePage(page);
-  //     const loginPage = new LoginPage(page);
-  //     const dashboardPage = new DashboardPage(page);
-  //     await teamPage.createTeam(team);
-  //     await teamPage.isTeamSelected(team);
-  //     await teamPage.openInvitationsPageViaOptionsMenu();
-  //     await teamPage.clickInviteMembersToTeamButton();
-  //     await teamPage.isInviteMembersPopUpHeaderDisplayed(
-  //       'Invite members to the team',
-  //     );
-  //     await teamPage.enterEmailToInviteMembersPopUp(email);
-  //     await teamPage.clickSendInvitationButton();
-  //     await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-  //     await teamPage.isInvitationRecordDisplayed(
-  //       email,
-  //       'Editor',
-  //       'Pending',
-  //     );
-  //     await page.waitForTimeout(30000);
-  //     const invite = await getRegisterMessage(email);
-  //     await checkInviteText(invite.inviteText, team);
-  //     await profilePage.logout();
-  //     await loginPage.isLoginPageOpened();
-  //
-  //     await page.goto(invite.inviteUrl);
-  //     await registerPage.isRegisterPageOpened();
-  //     await registerPage.enterEmail(email);
-  //     await registerPage.enterPassword(process.env.LOGIN_PWD);
-  //     await registerPage.clickOnCreateAccountBtn();
-  //     await registerPage.enterFullName(team);
-  //     await registerPage.clickOnAcceptTermsCheckbox();
-  //     await registerPage.clickOnCreateAccountSecondBtn();
-  //     await registerPage.isRegisterEmailCorrect(email);
-  //     await page.waitForTimeout(30000);
-  //     const confirm = await getRegisterMessage(email);
-  //     console.log(confirm.inviteUrl);
-  //     await page.goto(confirm.inviteUrl);
-  //     await teamPage.isTeamSelected(team);
-  //
-  //     await profilePage.logout();
-  //     await loginPage.isLoginPageOpened();
-  //     await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-  //     await loginPage.enterPwd(process.env.LOGIN_PWD);
-  //     await loginPage.clickLoginButton();
-  //     await dashboardPage.isDashboardOpenedAfterLogin();
-  //   },
-  // );
-
   mainTest.afterEach(async ({ page }) => {
     const teamPage = new TeamPage(page);
     await teamPage.deleteTeam(team);

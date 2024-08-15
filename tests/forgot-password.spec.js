@@ -18,16 +18,16 @@ test(qase(50,'ON-23 Forgot password flow with invalid email'), async ({ page }) 
   await forgotPasswordPage.isRecoverPasswordButtonDisabled();
 });
 
-// test(qase(51,'ON-24 Forgot password flow with inexisted email'), async ({ page }) => {
-//   const loginPage = new LoginPage(page);
-//   const forgotPasswordPage = new ForgotPasswordPage(page);
-//   await loginPage.goto();
-//   await loginPage.clickOnForgotPassword();
-//   const email = `${process.env.GMAIL_NAME}autotest+${random()}@gmail.com`;
-//   await forgotPasswordPage.enterEmail(email);
-//   await forgotPasswordPage.clickRecoverPasswordButton();
-//   await forgotPasswordPage.isRecoverPasswordButtonDisabled();
-// });
+test(qase(51,'ON-24 Forgot password flow with inexisted email'), async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  const forgotPasswordPage = new ForgotPasswordPage(page);
+  await loginPage.goto();
+  await loginPage.clickOnForgotPassword();
+  const email = `${process.env.GMAIL_NAME}autotest+${random()}@gmail.com`;
+  await forgotPasswordPage.enterEmail(email);
+  await forgotPasswordPage.clickRecoverPasswordButton();
+  await forgotPasswordPage.isRecoverPasswordButtonDisabled();
+});
 
 test.describe(() => {
   let randomName,email,invite;
