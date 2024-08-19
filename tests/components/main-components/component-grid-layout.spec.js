@@ -256,6 +256,7 @@ mainTest.describe(() => {
   mainTest(qase(1720,'PENPOT-1720 Change the copy component and click "Update main component"'), async ({}) => {
     await designPanelPage.changeHeightAndWidthForLayer('25', '25');
     await layersPanelPage.updateMainComponentViaRightClick();
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-component-with-grid-layout-main-updated.png', {
       mask: [mainPage.guides],
