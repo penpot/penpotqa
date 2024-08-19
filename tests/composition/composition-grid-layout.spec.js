@@ -185,6 +185,7 @@ mainTest(qase([1697,1735],'PENPOT-1697,1735 Check if the grid layout is resized 
   await mainPage.clickViewportOnce();
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await designPanelPage.changeHeightAndWidthForLayer('400', '600');
+  await mainPage.waitForChangeIsUnsaved();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('resized-board-with-grid-layout.png', {
     mask: [mainPage.guides],
@@ -197,6 +198,8 @@ mainTest(qase([1697,1735],'PENPOT-1697,1735 Check if the grid layout is resized 
   await mainPage.clickViewportOnce();
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await designPanelPage.changeHeightAndWidthForLayer('200', '300');
+  await mainPage.waitForChangeIsUnsaved();
+  await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('resized-board-with-rectangle.png', {
     mask: [mainPage.guides],
   });
