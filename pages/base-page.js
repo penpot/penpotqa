@@ -10,7 +10,7 @@ exports.BasePage = class BasePage {
     this.header = page.locator('div[class*="dashboard-title"] h1');
     this.successMessage = page.locator('div[class*="main_ui_notifications_toast_notification__text"]');
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
-    this.wrapperMessage = page.locator('div[class*="main_ui_messages__wrapper"]');
+    this.wrapperMessage = page.locator('aside[class*="inline-notification"]');
     this.moveButton = page.locator('button[title="Move (V)"]');
     this.savedChangesIcon = page.locator('div[title="Saved"]');
     this.unsavedChangesIcon = page.locator('div[title="Unsaved changes"]');
@@ -38,12 +38,6 @@ exports.BasePage = class BasePage {
     this.selectionToBoardMenuItem = page.locator(
       'ul[class*="workspace_context_menu"] li:has-text("Selection to board")',
     );
-    // this.createComponentMenuItem = page.locator(
-    //   'ul[class*="workspace_context_menu"] li:has-text("Create component")',
-    // );
-    // this.createMultipleComponentsMenuItem = page.locator(
-    //   'ul[class*="workspace_context_menu"] li:has-text("Create multiple components")',
-    // );
     this.flipVerticalMenuItem = page.locator(
       'ul[class*="workspace_context_menu"] li:has-text("Flip vertical")',
     );

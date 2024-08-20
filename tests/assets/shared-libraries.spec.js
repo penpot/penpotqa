@@ -256,7 +256,6 @@ mainTest.describe(() => {
       await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
       await assetsPanelPage.clickCloseModalButton();
       await assetsPanelPage.clickAssetsTab();
-      // await assetsPanelPage.clickLibraryComponentsTitle();
       await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
       await mainPage.waitForChangeIsSaved();
 
@@ -334,168 +333,137 @@ mainTest.describe(() => {
     },
   );
 
-  // mainTest(
-  //   qase(1475,'PENPOT-1475 Unlink Shared Library file from Libraries popup when assets are used in working file'),
-  //   async () => {
-  //     await dashboardPage.createFileViaTitlePanel();
-  //     await assetsPanelPage.clickAssetsTab();
-  //     await assetsPanelPage.clickLibrariesButton();
-  //     await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
-  //     await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-  //     await assetsPanelPage.clickCloseModalButton();
-  //     await assetsPanelPage.clickAssetsTab();
-  //     await assetsPanelPage.clickLibraryTitle();
-  //     await assetsPanelPage.clickLibraryComponentsTitle();
-  //     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-  //     await mainPage.waitForChangeIsSaved();
-  //     await dashboardPage.reloadPage();
-  //     await assetsPanelPage.clickAssetsTab();
-  //     await assetsPanelPage.clickLibrariesButton();
-  //     await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-  //     await assetsPanelPage.clickCloseModalButton();
-  //     await assetsPanelPage.clickAssetsTab();
-  //     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-  //       'delete-shared-library-file2-with-ellipse.png',
-  //     );
-  //     await expect(mainPage.viewport).toHaveScreenshot(
-  //       'delete-shared-library-component-file2.png',
-  //     );
-  //   },
-  // );
-
   mainTest.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
   });
 });
 
-// test.describe(() => {
-//   test.beforeEach(async () => {
-//     await mainPage.createDefaultRectangleByCoordinates(200, 200);
-//     await mainPage.createComponentViaRightClick();
-//     await mainPage.waitForChangeIsSaved();
-//     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
-//     await mainPage.createComponentViaRightClick();
-//     await mainPage.waitForChangeIsSaved();
-//     await expect(mainPage.viewport).toHaveScreenshot(
-//       'component-publish-update-library-1-file.png',
-//     );
-//     await mainPage.clickPencilBoxButton();
-//     await dashboardPage.addFileAsSharedLibraryViaRightclick();
-//     await dashboardPage.isSharedLibraryIconDisplayed();
-//
-//     await dashboardPage.createFileViaTitlePanel();
-//     await assetsPanelPage.clickAssetsTab();
-//     await assetsPanelPage.clickLibrariesButton();
-//     await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
-//     await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-//     await assetsPanelPage.clickCloseModalButton();
-//     await assetsPanelPage.clickAssetsTab();
-//     await assetsPanelPage.clickLibraryTitle();
-//     await assetsPanelPage.clickLibraryComponentsTitle();
-//     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-//     await mainPage.waitForChangeIsSaved();
-//     await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
-//     await designPanelPage.changeAxisXandYForLayer('300', '400');
-//     await mainPage.waitForChangeIsSaved();
-//     await mainPage.clickPencilBoxButton();
-//     await dashboardPage.isHeaderDisplayed('Projects');
-//     await dashboardPage.checkNumberOfFiles('2 files');
-//
-//     await dashboardPage.openFileWithName('New File 1');
-//     await layersPanelPage.clickMainComponentOnLayersTab();
-//     await designPanelPage.changeHeightAndWidthForLayer('100', '150');
-//     await designPanelPage.clickAddFillButton();
-//     await mainPage.waitForChangeIsSaved();
-//     await designPanelPage.clickFillColorIcon();
-//     await colorPalettePage.setHex('#05143F');
-//     await layersPanelPage.clickMainComponentOnLayersTab();
-//     await mainPage.waitForChangeIsSaved();
-//     await designPanelPage.isFillHexCodeSet('05143F');
-//     await mainPage.waitForChangeIsSaved();
-//
-//     await mainPage.clickPencilBoxButton();
-//     await dashboardPage.isHeaderDisplayed('Projects');
-//     await dashboardPage.checkNumberOfFiles('2 files');
-//   });
-//
-//   mainTest.only(
-//     'PENPOT-1359 Dismiss updates from shared library file (click "Dismiss" button)',
-//     async () => {
-//       await dashboardPage.openFileWithName('New File 2');
-//       await mainPage.isWrapperMessageVisible();
-//       await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(
-//         'wrapper-message.png',
-//       );
-//       await assetsPanelPage.clickDismissButton();
-//       await expect(mainPage.viewport).toHaveScreenshot(
-//         'component-publish-update-file2-1.png',
-//       );
-//     },
-//   );
-//
-//   mainTest(
-//     'PENPOT-1360 Check updates info (click "More info" link in pop-up message)',
-//     async () => {
-//       await dashboardPage.openFileWithName('New File 2');
-//       await mainPage.isWrapperMessageVisible();
-//       await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(
-//         'wrapper-message.png',
-//       );
-//       await assetsPanelPage.clickLibrariesMoreInfoButton();
-//       await assetsPanelPage.isLibrariesUpdateButtonVisible();
-//
-//       await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
-//         'libraries-change-window.png',
-//       );
-//     },
-//   );
-//
-//   mainTest(
-//     'PENPOT-1365 Apply updates from Libraries → Updates (after dismissing at the beginning)',
-//     async () => {
-//       await dashboardPage.openFileWithName('New File 2');
-//       await mainPage.isWrapperMessageVisible();
-//       await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(
-//         'wrapper-message.png',
-//       );
-//       await assetsPanelPage.clickDismissButton();
-//       await expect(mainPage.viewport).toHaveScreenshot(
-//         'component-publish-update-file2-1.png',
-//       );
-//       await assetsPanelPage.clickAssetsTab();
-//       await assetsPanelPage.clickLibrariesButton();
-//       await assetsPanelPage.clickUpdatesTab();
-//       await assetsPanelPage.clickLibrariesUpdateButton();
-//       await mainPage.waitForChangeIsSaved();
-//       await assetsPanelPage.clickCloseModalButton();
-//       await mainPage.waitForChangeIsSaved();
-//       await expect(mainPage.viewport).toHaveScreenshot(
-//         'component-publish-update-file2-2.png',
-//       );
-//     },
-//   );
-//
-//   mainTest(
-//     'PENPOT-1362 Closing Updates pop-up on "More info" stage (changes are not applied)',
-//     async () => {
-//       await dashboardPage.openFileWithName('New File 2');
-//       await mainPage.isWrapperMessageVisible();
-//       await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(
-//         'wrapper-message.png',
-//       );
-//       await assetsPanelPage.clickLibrariesMoreInfoButton();
-//       await assetsPanelPage.isLibrariesUpdateButtonVisible();
-//       await assetsPanelPage.clickCloseModalButton();
-//       await expect(mainPage.viewport).toHaveScreenshot(
-//         'component-publish-update-file2-1.png',
-//       );
-//     },
-//   );
-//
-//   test.afterEach(async () => {
-//     await mainPage.backToDashboardFromFileEditor();
-//   });
-// });
+mainTest.describe(() => {
+  mainTest.beforeEach(async () => {
+    await mainPage.createDefaultRectangleByCoordinates(200, 200);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'component-publish-update-library-1-file.png',
+    );
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.addFileAsSharedLibraryViaRightclick();
+    await dashboardPage.isSharedLibraryIconDisplayed();
+
+    await dashboardPage.createFileViaTitlePanel();
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.clickLibrariesButton();
+    await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
+    await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
+    await assetsPanelPage.clickCloseModalButton();
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.clickLibraryTitle();
+    await assetsPanelPage.clickLibraryComponentsTitle();
+    await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+    await designPanelPage.changeAxisXandYForLayer('100', '100');
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
+    await designPanelPage.changeAxisXandYForLayer('300', '400');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.isHeaderDisplayed('Projects');
+    await dashboardPage.checkNumberOfFiles('2 files');
+
+    await dashboardPage.openFileWithName('New File 1');
+    await layersPanelPage.clickMainComponentOnLayersTab();
+    await designPanelPage.changeHeightAndWidthForLayer('100', '150');
+    await designPanelPage.clickFirstColorIcon();
+    await colorPalettePage.setHex('#05143F');
+    await layersPanelPage.clickMainComponentOnLayersTab();
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.isHeaderDisplayed('Projects');
+    await dashboardPage.checkNumberOfFiles('2 files');
+  });
+
+  mainTest(
+    'PENPOT-1359 Dismiss updates from shared library file (click "Dismiss" button)',
+    async () => {
+      await dashboardPage.openFileWithName('New File 2');
+      await mainPage.isWrapperMessageVisible();
+      await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(
+        'wrapper-message.png',
+      );
+      await assetsPanelPage.clickDismissButton();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'component-publish-update-file2-1.png',
+      );
+    },
+  );
+
+  mainTest(
+    'PENPOT-1360 Check updates info (click "More info" link in pop-up message)',
+    async () => {
+      await dashboardPage.openFileWithName('New File 2');
+      await mainPage.isWrapperMessageVisible();
+      await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(
+        'wrapper-message.png',
+      );
+      await assetsPanelPage.clickLibrariesMoreInfoButton();
+      await assetsPanelPage.isLibrariesUpdateButtonVisible();
+
+      await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
+        'libraries-change-window.png',
+      );
+      await assetsPanelPage.clickCloseModalButton();
+    },
+  );
+
+  mainTest(
+    'PENPOT-1365 Apply updates from Libraries → Updates (after dismissing at the beginning)',
+    async () => {
+      await dashboardPage.openFileWithName('New File 2');
+      await mainPage.isWrapperMessageVisible();
+      await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(
+        'wrapper-message.png',
+      );
+      await assetsPanelPage.clickDismissButton();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'component-publish-update-file2-1.png',
+      );
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.clickLibrariesButton();
+      await assetsPanelPage.clickUpdatesTab();
+      await assetsPanelPage.clickLibrariesUpdateButton();
+      await assetsPanelPage.clickCloseModalButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'component-publish-update-file2-2.png',
+      );
+    },
+  );
+
+  mainTest(
+    'PENPOT-1362 Closing Updates pop-up on "More info" stage (changes are not applied)',
+    async () => {
+      await dashboardPage.openFileWithName('New File 2');
+      await mainPage.isWrapperMessageVisible();
+      await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(
+        'wrapper-message.png',
+      );
+      await assetsPanelPage.clickLibrariesMoreInfoButton();
+      await assetsPanelPage.isLibrariesUpdateButtonVisible();
+      await assetsPanelPage.clickCloseModalButton();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'component-publish-update-file2-3.png',
+      );
+    },
+  );
+
+  mainTest.afterEach(async () => {
+    await mainPage.backToDashboardFromFileEditor();
+  });
+});
 
 test.describe(() => {
   test.beforeEach(async ({ page }, testInfo) => {

@@ -70,25 +70,24 @@ mainTest.describe(() => {
     } else {
       await testInfo.setTimeout(testInfo.timeout + 15000);
     }
-    await mainPage.createDefaultBoardByCoordinates(400, 300);
+    await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('500', '600');
     await mainPage.waitForChangeIsSaved();
     await mainPage.addGridLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.isLayoutRemoveButtonExists();
 
-    await mainPage.createDefaultEllipseByCoordinates(200, 200, true);
+    await mainPage.createDefaultEllipseByCoordinates(210, 210, true);
     await mainPage.createComponentViaRightClick();
-    await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
     await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+    await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
+    await layersPanelPage.clickLayerOnLayersTab('Rectangle');
     await mainPage.createComponentViaRightClick();
-    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
     await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultEllipseByCoordinates(200, 200, true);
-    await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
-    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.createDefaultEllipseByCoordinates(210, 320, true);
+    await layersPanelPage.clickLayerOnLayersTab('Ellipse');
+    await mainPage.createDefaultRectangleByCoordinates(320, 320, true);
+    await layersPanelPage.clickLayerOnLayersTab('Rectangle');
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.waitForChangeIsSaved();
@@ -110,7 +109,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1692,'PENPOT-1692 Change justify - PENPOT-1694 Сhange vertical, horizontal, bottom and left paddings'), async ({ page }) => {
+  mainTest(qase(1692,'PENPOT-1692 Change justify - PENPOT-1694 Сhange vertical, horizontal, bottom and left paddings'), async () => {
     await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.switchToIndependentPaddingOnGridEdit();
@@ -122,6 +121,8 @@ mainTest.describe(() => {
     await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Bottom', '50');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Right', '50');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-paddings.png', {
       mask: [mainPage.guides],
     });
@@ -145,7 +146,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([1693,1716,1744],'PENPOT-1693,1716,1744 Change row gap, Check Gap info on inspect tab'), async ({ page }) => {
+  mainTest(qase([1693,1716,1744],'PENPOT-1693,1716,1744 Change row gap, Check Gap info on inspect tab'), async () => {
     await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeLayoutRowGapOnGridEdit('50');
@@ -175,8 +176,8 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase([1697,1735],'PENPOT-1697,1735 Check if the grid layout is resized automatically'), async ({ page }) => {
-  await mainPage.createDefaultBoardByCoordinates(200, 300);
+mainTest(qase([1697,1735],'PENPOT-1697,1735 Check if the grid layout is resized automatically'), async ({ browserName }) => {
+  await mainPage.createDefaultBoardByCoordinates(200, 200);
   await designPanelPage.changeHeightAndWidthForLayer('300', '400');
   await mainPage.waitForChangeIsSaved();
   await mainPage.addGridLayoutViaRightClick();
@@ -190,22 +191,20 @@ mainTest(qase([1697,1735],'PENPOT-1697,1735 Check if the grid layout is resized 
   await expect(mainPage.viewport).toHaveScreenshot('resized-board-with-grid-layout.png', {
     mask: [mainPage.guides],
   });
-  await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-  await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-  await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-  await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+  await mainPage.createDefaultRectangleByCoordinates(210, 210, true);
+  await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportOnce();
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await designPanelPage.changeHeightAndWidthForLayer('200', '300');
-  await mainPage.waitForChangeIsUnsaved();
+  browserName !== 'webkit' ? await mainPage.waitForChangeIsUnsaved(): null;
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('resized-board-with-rectangle.png', {
     mask: [mainPage.guides],
   });
 });
 
-mainTest(qase(1698,'PENPOT-1698 Upload an image and add it to the table - check the resizing of the image inside the table'), async ({ page }) => {
+mainTest(qase(1698,'PENPOT-1698 Upload an image and add it to the table - check the resizing of the image inside the table'), async ({ browserName }) => {
   await mainPage.createDefaultBoardByCoordinates(200, 300);
   await designPanelPage.changeHeightAndWidthForLayer('600', '600');
   await mainPage.waitForChangeIsSaved();
@@ -219,7 +218,7 @@ mainTest(qase(1698,'PENPOT-1698 Upload an image and add it to the table - check 
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await designPanelPage.changeHeightAndWidthForLayer('700', '800');
   await designPanelPage.openGridEditModeFromDesignPanel();
-  await mainPage.waitForChangeIsUnsaved();
+  browserName !== 'webkit' ? await mainPage.waitForChangeIsUnsaved(): null;
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('resized-board-with-image.png', {
     mask: [mainPage.guides],
@@ -418,8 +417,7 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(1745,'PENPOT-1745 Check code section'), async ({ page }) => {
-    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.createDefaultRectangleByCoordinates(410, 310, true);
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.waitForChangeIsSaved();
@@ -452,8 +450,8 @@ mainTest.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
   });
 
-  mainTest(qase(1715,'PENPOT-1715 Add grid lines, check edit mode and add the text'), async ({ page, browserName }) => {
-    await mainPage.createDefaultTextLayer(browserName);
+  mainTest(qase(1715,'PENPOT-1715 Add grid lines, check edit mode and add the text'), async ({ browserName }) => {
+    await mainPage.createDefaultTextLayerByCoordinates(500, 500, browserName);
     await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
     await mainPage.waitForChangeIsSaved();
 
@@ -562,8 +560,7 @@ mainTest.describe(() => {
   // });
 
   mainTest(qase([1739,1742],'PENPOT-1739,1742 Duplicate vertical and horizontal direction, undo element duplication'), async ({ browserName }) => {
-    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.createDefaultRectangleByCoordinates(410, 410, true);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -592,8 +589,7 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(1743,'PENPOT-1743 Undo element editing'), async ({ browserName }) => {
-    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.createDefaultRectangleByCoordinates(410, 410, true);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickFillColorIcon();
     await colorPalettePage.setHex('#00FF00');
