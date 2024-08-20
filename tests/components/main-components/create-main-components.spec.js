@@ -337,14 +337,11 @@ mainTest(qase(1749,'PENPOT-1749 Change group shadow color'),
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     const colorPalettePage = new ColorPalettePage(page);
-    const layersPanelPage = new LayersPanelPage(page);
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.groupLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    // await mainPage.clickViewportOnce();
-    // await layersPanelPage.clickLayerOnLayersTab('Group');
     await designPanelPage.clickAddGroupShadowButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickFirstColorIcon();
