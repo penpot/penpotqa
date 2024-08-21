@@ -53,13 +53,13 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.widthCopyButton = page.locator('button[class*="copy_button"]').first();
     this.editButton = page.locator('span[class*="edit-btn"]');
     this.shareButton = page.locator('button[class*="share-btn"]');
-    this.shareLincDialog = page.locator('div[class*="share-link-dialog"]');
-    this.getLincButton = page.locator('input[value="Get link"]');
+    this.shareLinkDialog = page.locator('div[class*="share-link-dialog"]');
+    this.getLinkButton = page.locator('input[value="Get link"]');
     this.managePermissionsButton = page.locator('button[class*="share_link__manage-permissions"]');
     this.selectAllCheckbox = page.locator('label[for="view-all"]');
-    this.copyLincButton = page.locator('button[class*="share_link__copy-button"]');
-    this.copyLincField = page.locator('input[class*="share_link__input-text"]');
-    this.destroyLincButton = page.locator('input[value="Destroy link"]');
+    this.copyLinkButton = page.locator('button[class*="share_link__copy-button"]');
+    this.copyLinkField = page.locator('input[class*="share_link__input-text"]');
+    this.destroyLinkButton = page.locator('input[value="Destroy link"]');
     this.commentPermissionDropdown = page.locator('div[class*="who-comment-select"]');
     this.inspectPermissionDropdown = page.locator('div[class*="who-inspect-select"]');
     this.allUsersOption = page.locator('li span:has-text("All Penpot users")');
@@ -258,8 +258,8 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     await this.shareButton.click();
   }
 
-  async clickGetLincButton() {
-    await this.getLincButton.click();
+  async clickGetLinkButton() {
+    await this.getLinkButton.click();
   }
 
   async clickManagePermissionsButton() {
@@ -270,9 +270,9 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     await this.selectAllCheckbox.click();
   }
 
-  async clickCopyLincButton() {
-    await this.copyLincButton.click();
-    return await this.copyLincField.inputValue();
+  async clickCopyLinkButton() {
+    await this.copyLinkButton.click();
+    return await this.copyLinkField.inputValue();
   }
 
   async isViewerSectionVisible(visible = true) {
@@ -285,9 +285,9 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     await this.viewerLoyautSection.waitFor({ state: 'visible' , timeout: timeout});
   }
 
-  async clickDestroyLincButton() {
-    await this.destroyLincButton.click();
-    await this.destroyLincButton.click();
+  async clickDestroyLinkButton() {
+    await this.destroyLinkButton.click();
+    await this.destroyLinkButton.click();
   }
 
   async selectAllUsersCommentPermission() {

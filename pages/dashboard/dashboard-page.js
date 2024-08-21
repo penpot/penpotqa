@@ -16,7 +16,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class*="dashboard-grid"] div[class*="grid-item-th"]',
     );
     this.fileNameTitle = page.locator('div[class*="item-info"] h3');
-    this.deleteFileMenuItem = page.locator('a[data-testid="file-delete"]');
+    this.deleteFileMenuItem = page.getByTestId('file-delete');
     this.deleteFileButton = page.locator(
       'input[value="Delete files"],input[value="Delete file"]',
     );
@@ -24,38 +24,22 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.createFileButtonPlaceholder = page.locator(
       'div[class*="dashboard-grid"] button[class*="create-new"]',
     );
-    this.createFileButtonTitlePanel = page.locator(
-      'button[data-testid="project-new-file"]',
-    );
-    this.renameFileMenuItem = page.locator('a[data-testid="file-rename"]');
-    this.duplicateFileMenuItem = page.locator('a[data-testid="file-duplicate"]');
-    this.addFileAsSharedLibraryMenuItem = page.locator(
-      'a[data-testid="file-add-shared"]',
-    );
-    this.addFileAsSharedLibraryButton = page.locator(
-      'input[value="Add as Shared Library"]',
-    );
+    this.createFileButtonTitlePanel = page.getByTestId('project-new-file');
+    this.renameFileMenuItem = page.getByTestId('file-rename');
+    this.duplicateFileMenuItem = page.getByTestId('file-duplicate');
+    this.addFileAsSharedLibraryMenuItem = page.getByTestId('file-add-shared');
+    this.addFileAsSharedLibraryButton = page.getByRole('button', { name: 'Add as Shared Library' });
     this.sharedLibraryIcon = page.locator('svg[class="icon-library"]');
-    this.delFileAsSharedLibraryMenuItem = page.locator(
-      'a[data-testid="file-del-shared"]',
-    );
-    this.delFileAsSharedLibraryButton = page.locator('input[value="Unpublish"]');
-    this.moveToFileMenuItem = page.locator(
-      'a[data-testid="file-move-to"]',
-    );
-    this.moveToOtherTeamMenuItem = page.locator(
-      'li[id="move-to-other-team"] a',
-    );
+    this.delFileAsSharedLibraryMenuItem = page.getByTestId('file-del-shared');
+    this.delFileAsSharedLibraryButton = page.getByRole('button', { name: 'Unpublish' });
+    this.moveToFileMenuItem = page.getByTestId('file-move-to');
+    this.moveToOtherTeamMenuItem = page.getByRole('menuitem').filter({ hasText: 'Move to other team' });
     this.dashboardLibraryItem = page.locator(`button[title="New File 1"] div[class*="dashboard_grid__library"]`);
-    this.downloadFilePenpotMenuItem = page.locator(
-      'a[data-testid="download-binary-file"]',
-    );
-    this.downloadFileStandardMenuItem = page.locator(
-      'a[data-testid="download-standard-file"]',
-    );
+    this.downloadFilePenpotMenuItem = page.getByTestId('download-binary-file');
+    this.downloadFileStandardMenuItem = page.getByTestId('download-standard-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
-    this.downloadFileCloseButton = page.locator('input[value="Close"]');
+    this.downloadFileCloseButton = page.getByRole('button', { name: 'Close' }).getByText('Close');
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
     this.fileOptionsMenuButton = page.locator(
       'div[class*="project-th-icon"] svg',
@@ -65,36 +49,30 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
 
     //Projects
-    this.addProjectButton = page.locator('button[data-testid="new-project-button"]');
+    this.addProjectButton = page.getByTestId('new-project-button');
     this.projectNameInput = page.locator(
       'div[class*="project-name-wrapper"] div[class*="edit-wrapper"]',
     );
     this.projectNameTitle = page.locator('div[class*="project-name-wrapper"] h2');
-    this.deleteProjectMenuItem = page.locator('a[data-testid="project-delete"]');
+    this.deleteProjectMenuItem = page.getByTestId('project-delete');
     this.deleteProjectButton = page.locator(
       'input[value="Delete files"],input[value="Delete project"]',
     );
-    this.renameProjectMenuItem = page.locator('a[data-testid="project-rename"]');
-    this.duplicateProjectMenuItem = page.locator('a[data-testid="project-duplicate"]');
-    this.pinUnpinProjectButton = page.locator('button[aria-label="Pin/Unpin"]');
-    this.projectOptionsMenuButton = page.locator(
-      'button[data-testid="project-options"]',
-    );
-    this.projectsSidebarItem = page.locator('li:has-text("Projects")');
-    this.draftsSidebarItem = page.locator('li:has-text("Drafts")');
-    this.librariesSidebarItem = page.locator('li:has-text("Libraries")');
-    this.pinnedProjectsSidebarItem = page.locator(
-      'div[data-testid="pinned-projects"]',
-    );
+    this.renameProjectMenuItem = page.getByTestId('project-rename');
+    this.duplicateProjectMenuItem = page.getByTestId('project-duplicate');
+    this.pinUnpinProjectButton = page.getByRole('button', { name: 'Pin/Unpin' });
+    this.projectOptionsMenuButton = page.getByTestId('project-options');
+    this.projectsSidebarItem = page.getByRole('listitem').filter({ hasText: 'Projects' });
+    this.draftsSidebarItem = page.getByTestId('drafts-link-sidebar');
+    this.librariesSidebarItem = page.getByTestId('libs-link-sidebar');
+    this.pinnedProjectsSidebarItem = page.getByTestId('pinned-projects');
     this.searchInput = page.locator('#search-input');
-    this.projectOptions = page.locator('[data-testid="project-options"]');
+    this.projectOptions = page.getByTestId('project-options');
 
     // Import files
-    this.fileImport = page.locator('a[data-testid="file-import"]');
+    this.fileImport = page.getByTestId('file-import');
     this.modalTitle = page.locator('h2[class*="modal-title"]');
-    this.modalCancelButton = page.locator(
-      'div[class*="modal-footer"] input[class*="cancel-button"]',
-    );
+    this.modalCancelButton = page.getByRole('button', { name: 'Cancel' });
     this.modalAcceptButton = page.locator(
       'div[class*="modal-footer"] input[class*="accept-btn"]',
     );
@@ -105,9 +83,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.importErrorMessage = page.locator('div[class*="error-message"]');
 
     //Fonts
-    this.fontsSidebarItem = page.locator('li:has-text("Fonts")');
+    this.fontsSidebarItem = page.getByTestId('fonts');
     this.uploadFontSelector = page.locator('#font-upload');
-    this.uploadFontButton = page.locator('button:text-is("Upload")');
+    this.uploadFontButton = page.getByRole('button', { name: 'Upload', exact: true });
     this.fontNameTableCell = page.locator(
       'div[class*="installed-fonts"] div[class*="table-row"] div[class*="dashboard_fonts__family"]',
     );
@@ -119,20 +97,20 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.editFontMenuItem = page.locator('#font-edit');
     this.deleteFontMenuItem = page.locator('#font-delete');
-    this.deleteFontButton = page.locator('input[value="Delete"]');
+    this.deleteFontButton = page.getByRole('button', { name: 'Delete' });
     this.cancelDeleteFontButton = page.getByRole('button', { name: 'Cancel' });
     this.fontsTablePlaceholder = page.locator(
       'div[class*="fonts-placeholder"] div[class*="label"]',
     );
     this.fontNameInput = page.locator('div[class*="table-row"] input[type="text"]');
-    this.saveFontButton = page.locator('button:text-is("Save")');
-    this.searchFontInput = page.locator('input[placeholder="Search font"]');
+    this.saveFontButton = page.getByRole('button', { name: 'Save' });
+    this.searchFontInput = page.getByPlaceholder('Search font');
     this.fontFormatError = page.locator('.main_ui_notifications_toast_notification__text');
 
     //Libraries & Templates
-    this.noLibrariesPlacelder = page.locator('div[data-testid="empty-placeholder"] p');
+    this.noLibrariesPlacelder = page.getByTestId('empty-placeholder');
 
-    this.onboardingNextBtn = page.locator('button[data-testid="onboarding-next-btn"]');
+    // Onboarding
     this.onboardingContinueBtn = page.locator('button[class="main_ui_onboarding_newsletter__accept-btn"]');
     this.onboardingHeader = page.locator('h1[data-testid="onboarding-welcome"]');
     this.planingToUsingDropdown = page.locator('div[class*="custom-select"]');
@@ -148,8 +126,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.startButton = page.locator('button[label="Start"]');
     this.figmaTool = page.locator('//input[@id="experience-design-tool-figma"]/..');
     this.toolsButton = page.locator('label[class*="components_forms__radio-label-image"]');
-    this.otherRole = page.locator('label[for="role-other"]').first();
-    this.otherRoleInput = page.locator('input[id="role-other"][type="text"]');
     this.onboardingNewsHeader = page.locator('*[data-testid="onboarding-newsletter-title"]');
     this.onboardingNewsUpdatesCheckbox = page.locator('label[for="newsletter-updates"]');
     this.onboardingNewsCheckbox = page.locator('label[for="newsletter-news"]');
@@ -162,7 +138,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.selectedRadioImageLabel = page.locator('label[class*="checked"] span[class*="text"]').first();
     this.onboardingPaginator = page.locator('div[class*="onboarding_questions__paginator"]');
     this.onboardingLetsGoBtn = page.locator('button[class*="main_ui_releases"][class*="next-btn"]');
-
     this.onboardingFirstHeader = page.locator('*[class*="onboarding_questions__modal-title"]');
     this.whatNewsHeader = page.locator('*[class*="modal-title"]');
   }
@@ -617,14 +592,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.isFilePresentWithName(newFileName);
   }
 
-  async isOnboardingNextBtnDisplayed() {
-    await expect(this.onboardingNextBtn).toBeVisible();
-  }
-
-  async clickOnOnboardingNextBtn() {
-    await this.onboardingNextBtn.click();
-  }
-
   async clickOnOnboardingContinueBtn() {
     await this.onboardingContinueBtn.click();
   }
@@ -669,11 +636,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async selectFigmaTool() {
     await this.figmaTool.click();
-  }
-
-  async selectOnboardingOtherRole(otherRole) {
-    await this.otherRole.click();
-    await this.otherRoleInput.fill(otherRole);
   }
 
   async selectTeamSize(option) {

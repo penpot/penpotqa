@@ -581,7 +581,7 @@ mainTest.describe(() => {
   const team1 = teamName;
   const team2 = random().concat('QA Test team 2');
 
-  mainTest(qase(1540,'PENDOT-1540 Move library to a different team'), async () => {
+  mainTest(qase(1540,'PENPOT-1540 Move library to a different team'), async () => {
     await mainPage.createDefaultEllipseByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();

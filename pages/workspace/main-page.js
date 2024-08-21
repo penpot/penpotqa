@@ -983,13 +983,13 @@ exports.MainPage = class MainPage extends BasePage {
   async addGridRowBelow() {
     await this.gridEditorLabel.last().hover();
     await this.gridEditorButton.click();
-    await this.AddRowBelowMenuItem.click();
+    await this.addRowBelowMenuItem.click();
   }
 
   async addGridColumnRight() {
     await this.gridEditorLabel.first().hover();
     await this.gridEditorButton.click();
-    await this.AddColumnRightMenuItem.click();
+    await this.addColumnRightMenuItem.click();
   }
 
   async selectGridCellMultiple(startCell, endCell) {

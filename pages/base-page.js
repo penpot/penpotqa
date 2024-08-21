@@ -11,7 +11,7 @@ exports.BasePage = class BasePage {
     this.successMessage = page.locator('div[class*="main_ui_notifications_toast_notification__text"]');
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
     this.wrapperMessage = page.locator('aside[class*="inline-notification"]');
-    this.moveButton = page.locator('button[title="Move (V)"]');
+    this.moveButton = page.getByRole('button', { name: 'Move (V)' });
     this.savedChangesIcon = page.locator('div[title="Saved"]');
     this.unsavedChangesIcon = page.locator('div[title="Unsaved changes"]');
     this.viewport = page.locator('div.viewport');
@@ -20,127 +20,48 @@ exports.BasePage = class BasePage {
     this.createdLayer = page.locator('div[class="viewport"] [id^="shape"] >> nth=0');
     this.copyLayer = page.locator('div[class="viewport"] [class*="viewport-selrect"]').last();
     this.createdBoardTitle = page.locator('g[class="frame-title"] div >> nth=0');
-    this.deleteLayerMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Delete")',
-    );
-    this.hideLayerMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Hide")',
-    );
-    this.showLayerMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Show")',
-    );
-    this.focusOnLayerMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] *:has-text("Focus on")',
-    ).last();
-    this.transformToPathMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Transform to path")',
-    );
-    this.selectionToBoardMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Selection to board")',
-    );
-    this.flipVerticalMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Flip vertical")',
-    );
-    this.flipHorizontalMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Flip horizontal")',
-    );
-    this.editPathMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Edit")',
-    );
-    this.addFlexLayout = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Add flex layout")',
-    );
-    this.removeFlexLayout = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Remove flex layout")',
-    );
-    this.addGridLayout = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Add grid layout")',
-    );
-    this.removeGridLayout = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Remove grid layout")',
-    );
+    this.deleteLayerMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete' });
+    this.hideLayerMenuItem = page.getByRole('listitem').filter({ hasText: 'Hide' });
+    this.showLayerMenuItem = page.getByRole('listitem').filter({ hasText: 'Show' });
+    this.focusOnLayerMenuItem = page.getByRole('listitem').filter({ hasText: 'Focus on' });
+    this.transformToPathMenuItem = page.getByRole('listitem').filter({ hasText: 'Transform to path' });
+    this.selectionToBoardMenuItem = page.getByRole('listitem').filter({ hasText: 'Selection to board' });
+    this.flipVerticalMenuItem = page.getByRole('listitem').filter({ hasText: 'Flip vertical' });
+    this.flipHorizontalMenuItem = page.getByRole('listitem').filter({ hasText: 'Flip horizontal' });
+    this.editPathMenuItem = page.getByRole('listitem').filter({ hasText: 'Edit' });
+    this.addFlexLayout = page.getByRole('listitem').filter({ hasText: 'Add flex layout' });
+    this.removeFlexLayout = page.getByRole('listitem').filter({ hasText: 'Remove flex layout' });
+    this.addGridLayout = page.getByRole('listitem').filter({ hasText: 'Add grid layout' });
+    this.removeGridLayout = page.getByRole('listitem').filter({ hasText: 'Remove grid layout' });
     this.addRowGridLayoutBtn = page.locator('g[class*="grid-plus-button"]',
     ).first();
     this.addColumnGridLayoutBtn = page.locator('g[class*="grid-plus-button"]',
     ).last();
-    this.removeGridLayout = page.locator(
-      'ul[class*="workspace_context_menu"] li:has-text("Remove grid layout")',
-    );
-    this.deleteLayerMenuOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Delete")',
-    );
-    this.createComponentMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Create component")',
-    );
-    this.updateMainComponentMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Update main component")',
-    );
-    this.restoreMainComponentMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Restore main component")',
-    );
-    this.createMultipleComponentsMenuItem = page.locator(
-      'li[class*="context-menu-item"] span:has-text("Create multiple components")',
-    );
-    this.showInAssetsPanelOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Show in assets panel")',
-    );
-    this.createAnnotationOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Create annotation")',
-    );
-    this.duplicateOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Duplicate")',
-    );
-    this.copyOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Copy")',
-    );
-    this.pasteOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Paste")',
-    );
-    this.groupOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Group")',
-    );
-    this.showMainComponentOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Show main component")',
-    );
-    this.resetOverridesOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Reset overrides")',
-    );
-    this.detachInstanceOption = page.locator(
-      'ul[class*="workspace_context_menu"] span:has-text("Detach instance")',
-    );
-    this.duplicateRowMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Duplicate row")',
-    );
-    this.addRowAboveMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Add 1 row above")',
-    );
-    this.AddRowBelowMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Add 1 row below")',
-    );
-    this.deleteRowMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Delete row")',
-    ).first();
-    this.deleteAndShapesRowMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Delete row and shapes")',
-    );
-    this.duplicateColumnMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Duplicate column")',
-    );
-    this.addColumnLeftMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Add 1 column to the left")',
-    );
-    this.AddColumnRightMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Add 1 column to the right")',
-    );
-    this.deleteColumnMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Delete column")',
-    ).first();
-    this.deleteAndShapesColumnMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Delete column and shapes")',
-    );
-    this.mergeGridCellMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Merge cells")',
-    );
+    this.deleteLayerMenuOption = page.getByRole('listitem').filter({ hasText: 'Delete' });
+    this.createComponentMenuItem = page.getByRole('listitem').filter({ hasText: 'Create component' });
+    this.updateMainComponentMenuItem = page.getByRole('listitem').filter({ hasText: 'Update main component' });
+    this.restoreMainComponentMenuItem = page.getByRole('listitem').filter({ hasText: 'Restore main component' });
+    this.createMultipleComponentsMenuItem = page.getByRole('listitem').filter({ hasText: 'Create multiple components' });
+    this.showInAssetsPanelOption = page.getByRole('listitem').filter({ hasText: 'Show in assets panel' });
+    this.createAnnotationOption = page.getByRole('listitem').filter({ hasText: 'Create annotation' });
+    this.duplicateOption = page.getByRole('listitem').filter({ hasText: 'Duplicate' });
+    this.copyOption = page.getByRole('listitem').filter({ hasText: 'Copy' });
+    this.pasteOption = page.getByRole('listitem').filter({ hasText: 'Paste' });
+    this.groupOption = page.getByRole('listitem').filter({ hasText: 'Group' });
+    this.showMainComponentOption = page.getByRole('listitem').filter({ hasText: 'Show main component' });
+    this.resetOverridesOption = page.getByRole('listitem').filter({ hasText: 'Reset overrides' });
+    this.detachInstanceOption = page.getByRole('listitem').filter({ hasText: 'Detach instance' });
+    this.duplicateRowMenuItem = page.getByRole('listitem').filter({ hasText: 'Duplicate row' });
+    this.addRowAboveMenuItem = page.getByRole('listitem').filter({ hasText: 'Add 1 row above' });
+    this.addRowBelowMenuItem = page.getByRole('listitem').filter({ hasText: 'Add 1 row below' });
+    this.deleteRowMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete row' }).first();
+    this.deleteAndShapesRowMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete row and shapes' });
+    this.duplicateColumnMenuItem = page.getByRole('listitem').filter({ hasText: 'Duplicate column' });
+    this.addColumnLeftMenuItem = page.getByRole('listitem').filter({ hasText: 'Add 1 column to the left' });
+    this.addColumnRightMenuItem = page.getByRole('listitem').filter({ hasText: 'Add 1 column to the right' });
+    this.deleteColumnMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete column' }).first();
+    this.deleteAndShapesColumnMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete column and shapes' });
+    this.mergeGridCellMenuItem = page.getByRole('listitem').filter({ hasText: 'Merge cells' });
     this.acceptCookieButton = page.locator(
       'button[class*="CookieConsent_accept"]',
     );
@@ -382,7 +303,7 @@ exports.BasePage = class BasePage {
     await expect(this.acceptCookieButton).not.toBeVisible();
   }
 
-  async gotoLinc(linc) {
-    await this.page.goto(linc);
+  async gotoLink(link) {
+    await this.page.goto(link);
   }
 };
