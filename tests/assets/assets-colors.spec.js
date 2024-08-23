@@ -12,13 +12,16 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page, browserName }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
+  browserName === 'webkit' && !( await mainPage.isMainPageVisible())
+    ? await dashboardPage.createFileViaPlaceholder()
+    : null;
   await mainPage.isMainPageLoaded();
 });
 
@@ -48,7 +51,7 @@ mainTest.describe(() => {
     await colorPalettePopUp.clickSaveColorStyleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-  }); 
+  });
 
   mainTest(qase(933,'AS-23 File library colors - add'), async ({ page }) => {
     const assetsPanelPage = new AssetsPanelPage(page);
