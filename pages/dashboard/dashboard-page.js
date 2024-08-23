@@ -884,4 +884,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async checkPageNumber(number) {
     await expect(this.onboardingPaginator).toHaveText(`${number}/5`);
   }
+
+  async waitForCreateFilePlaceholderVisible() {
+    await this.createFileButtonPlaceholder.first().waitFor({ state: 'visible' });
+  }
 };

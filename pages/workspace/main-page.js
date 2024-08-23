@@ -338,6 +338,16 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.viewport).toBeVisible();
   }
 
+  async isMainPageVisible() {
+    try {
+      await this.viewport.waitFor({ state: 'visible' , timeout: 8000});
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
   async isProjectAndFileNameExistInFile(projectName, fileName) {
     await expect(this.projectNameSpan).toContainText(projectName);
     await expect(this.fileNameSpan.last()).toHaveText(fileName);

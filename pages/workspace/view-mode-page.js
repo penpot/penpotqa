@@ -281,6 +281,10 @@ exports.ViewModePage = class ViewModePage extends BasePage {
       : await expect(this.viewerLoyautSection).not.toBeVisible();
   }
 
+  async waitForViewerSection(timeout = 10000) {
+    await this.viewerLoyautSection.waitFor({ state: 'visible' , timeout: timeout});
+  }
+
   async clickDestroyLincButton() {
     await this.destroyLincButton.click();
     await this.destroyLincButton.click();
