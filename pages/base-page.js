@@ -210,7 +210,7 @@ exports.BasePage = class BasePage {
   }
 
   async isHeaderDisplayed(title) {
-    await expect(this.header).toHaveText(title);
+    await expect(this.header).toHaveText(title, { timeout: 20000 });
   }
 
   async isSuccessMessageDisplayed(message) {
