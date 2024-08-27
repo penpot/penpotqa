@@ -686,8 +686,10 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.firstPageListItem).toHaveText(name);
   }
 
-  async isSecondPageAddedToAssetsPanel() {
-    await expect(this.secondPageListItem).toBeVisible();
+  async isSecondPageAddedToAssetsPanel(added = true) {
+    added
+      ? await expect(this.secondPageListItem).toBeVisible()
+      : await expect(this.secondPageListItem).not.toBeVisible();
   }
 
   async isSecondPageNameDisplayed(name) {
@@ -826,9 +828,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(1200, 700);
     await this.clickViewportByCoordinates(1000, 400);
     await this.clickViewportByCoordinates(500, 200);
-    await this.clickOnDesignTab(); // todo: need to remove after issue fix
-    // await this.clickOnMainToolBar(); //todo bug 6171 > need to uncomment after fix these 2 rows
-    // await this.clickMoveButton();
+    await this.clickOnDesignTab();
     await this.waitForChangeIsSaved();
   }
 
@@ -839,9 +839,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(1000, 400);
     await this.clickMoveNodesButtonOnNodePanel();
     await this.clickDrawNodesButtonOnNodePanel();
-    // await this.clickOnDesignTab();  // todo: need to remove after issue fix
-    // await this.clickOnMainToolBar(); //todo bug 6171 > need to uncomment after fix these 2 rows
-    // await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
 
