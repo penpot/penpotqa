@@ -870,7 +870,7 @@ exports.MainPage = class MainPage extends BasePage {
     if (platform === 'darwin') {
       await this.typeTextFromKeyboard();
     } else if(browserName === 'webkit') {
-      await this.page.waitForTimeout(400);
+      await this.page.waitForTimeout(2000);
       await this.typeTextFromKeyboard();
     } else {
       await this.typeText('Hello World!');

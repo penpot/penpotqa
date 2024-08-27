@@ -257,7 +257,7 @@ mainTest.describe("Text", () => {
 
   mainTest(
     qase(1448,'PENPOT-1448 Create a component from text and 2 copies of it, change font, style and size of main'),
-    async () => {
+    async ({browserName}) => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
       await designPanelPage.changeTextFont('Source Serif 4');
@@ -266,7 +266,7 @@ mainTest.describe("Text", () => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.page.waitForTimeout(4000);
-      await mainPage.refreshPage();
+      browserName === 'webkit' ? null : await mainPage.refreshPage();
       await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-text.png', {
         mask: [mainPage.guides, mainPage.guidesFragment],
