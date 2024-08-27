@@ -35,6 +35,7 @@ mainTest.describe(() => {
   mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
+    browserName === 'webkit' ? await mainPage.waitForViewportVisible(): null;
     await mainPage.createDefaultTextLayer(browserName);
   });
 
