@@ -120,8 +120,7 @@ mainTest(qase(820,'PF-102 Hide/show board names'), async ({ page }) => {
   await expect(mainPage.viewport).toHaveScreenshot('board-show-name.png');
 });
 
-mainTest.skip(qase(821,'PF-103-1 Hide/show pixel grid via main menu'), async ({ page }) => {
-  // todo bug 6365 > need to check after fix
+mainTest(qase(821,'PF-103-1 Hide/show pixel grid via main menu'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickViewportTwice();
   await mainPage.increaseZoom(10);

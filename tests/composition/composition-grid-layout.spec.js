@@ -548,17 +548,6 @@ mainTest.describe(() => {
     });
   });
 
-  // mainTest.only('PENPOT-1738 Move element inside grid board', async ({ page }) => {
-  //   await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-  //   await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-  //   await mainPage.waitForChangeIsSaved();
-  //   await mainPage.dragAndDropComponentToAnotherFraction(2, page);
-  //   await mainPage.waitForChangeIsSaved();
-  //   await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-move-element.png', {
-  //     mask: [mainPage.guides],
-  //   });
-  // });
-
   mainTest(qase([1739,1742],'PENPOT-1739,1742 Duplicate vertical and horizontal direction, undo element duplication'), async ({ browserName }) => {
     await mainPage.createDefaultRectangleByCoordinates(410, 410, true);
     await mainPage.waitForChangeIsSaved();
