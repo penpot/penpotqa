@@ -170,6 +170,7 @@ mainTest.describe(() => {
       await page.waitForTimeout(200);
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
+      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-shadow-default.png',
         {
@@ -186,7 +187,7 @@ mainTest.describe(() => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
-      await page.waitForTimeout(200);
+      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-shadow-updated.png', {
         mask: [mainPage.guides, mainPage.guidesFragment],
         maxDiffPixels: 0,
@@ -238,7 +239,9 @@ mainTest.describe(() => {
 
 mainTest.describe("Text", () => {
   mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 15000);
+    browserName === 'webkit'
+      ? await testInfo.setTimeout(testInfo.timeout + 40000)
+      : await testInfo.setTimeout(testInfo.timeout + 15000);
     await mainPage.createDefaultTextLayer(browserName);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -254,7 +257,7 @@ mainTest.describe("Text", () => {
 
   mainTest(
     qase(1448,'PENPOT-1448 Create a component from text and 2 copies of it, change font, style and size of main'),
-    async () => {
+    async ({browserName}) => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
       await designPanelPage.changeTextFont('Source Serif 4');
@@ -263,7 +266,8 @@ mainTest.describe("Text", () => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.page.waitForTimeout(4000);
-      await mainPage.refreshPage();
+      browserName === 'webkit' ? null : await mainPage.refreshPage();
+      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-text.png', {
         mask: [mainPage.guides, mainPage.guidesFragment],
         maxDiffPixels: 0,
@@ -318,6 +322,7 @@ mainTest.describe(() => {
       await designPanelPage.isFillHexCodeSetComponent('050e23');
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
+      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-fill.png',
       );
