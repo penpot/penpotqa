@@ -38,7 +38,6 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
       'span[class*="element-name"] >> nth=1',
     );
     this.layoutIcon = page.locator('svg.icon-flex-vertical');
-    // this.focusModeDiv = page.locator('div.focus-mode:text-is("Focus mode")');
     this.layerItemToggleExpand = page.locator(
       'div[class*="layers__element-list"] button[class*="sidebar_layer_item__inverse"]',
     );

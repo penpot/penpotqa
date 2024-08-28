@@ -117,7 +117,7 @@ mainTest.describe('Settings - UI THEME', () => {
 
   mainTest(
     'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
-    async () => {
+    async ({browserName}) => {
       await profilePage.backToDashboardFromAccount();
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.isMainPageLoaded();
@@ -125,6 +125,7 @@ mainTest.describe('Settings - UI THEME', () => {
       await mainPage.waitForChangeIsSaved();
       const newPage = await viewModePage.clickViewModeButton();
       viewModePage = new ViewModePage(newPage);
+      browserName === 'webkit' ? await viewModePage.waitForViewerSection(15000) : null;
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-page-image.png',
         { maxDiffPixelRatio: 0.0002 },

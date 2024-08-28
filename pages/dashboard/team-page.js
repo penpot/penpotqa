@@ -10,6 +10,7 @@ exports.TeamPage = class TeamPage extends BasePage {
 
     // Teams
     this.teamCurrentBtn = page.locator('button[class*="current-team"]');
+    this.teamCurrentBtnWebkit = page.locator('button[class*="current-team"] div span').first();
     this.teamList = page.locator('ul[class*="teams-dropdown"]');
     this.createNewTeamMenuItem = page.locator('#teams-selector-create-team');
     this.teamNameInput = page.locator('#name');
@@ -111,8 +112,14 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.createNewTeamButton.click();
   }
 
-  async isTeamSelected(teamName) {
-    await expect(this.teamCurrentBtn).toHaveText(teamName);
+  async isTeamSelected(teamName, browserName = 'chrome') {
+    browserName === 'webkit'
+      ? await expect(this.teamCurrentBtnWebkit).toHaveText(teamName)
+      : await expect(this.teamCurrentBtn).toHaveText(teamName);
+  }
+
+  async waitForTeamBtn(timeout = 10000) {
+    await this.teamCurrentBtnWebkit.waitFor({ state: 'visible' , timeout: timeout});
   }
 
   async openTeamsListIfClosed() {

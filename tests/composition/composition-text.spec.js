@@ -35,6 +35,7 @@ mainTest.describe(() => {
   mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 20000);
     const mainPage = new MainPage(page);
+    browserName === 'webkit' ? await mainPage.waitForViewportVisible(): null;
     await mainPage.createDefaultTextLayer(browserName);
   });
 
@@ -106,7 +107,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(382,'CO-167 Add and edit Shadow to text'), async ({ page }) => {
+  mainTest(qase(382,'CO-167 Add and edit Shadow to text'), async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -116,6 +117,7 @@ mainTest.describe(() => {
     await designPanelPage.clickShadowColorIcon();
     await colorPalettePage.setHex('#304d6a');
     await mainPage.clickMoveButton();
+    browserName === 'webkit' ? await mainPage.waitForChangeIsUnsaved() : null;
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png');
     await designPanelPage.selectTypeForShadow('Inner shadow');

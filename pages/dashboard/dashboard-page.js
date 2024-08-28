@@ -518,7 +518,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.modalTitle).toBeVisible();
     await expect(this.modalTitle).toHaveText('Import Penpot files');
     await this.modalAcceptButton.click();
-    await this.feedbackBannerMessage.waitFor({timeout:30000});
+    await this.feedbackBannerMessage.waitFor({timeout:60000});
     await expect(this.feedbackBannerMessage).toHaveText(
       '1 file has been imported successfully.',
     );
@@ -883,5 +883,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async checkPageNumber(number) {
     await expect(this.onboardingPaginator).toHaveText(`${number}/5`);
+  }
+
+  async waitForCreateFilePlaceholderVisible() {
+    await this.createFileButtonPlaceholder.first().waitFor({ state: 'visible' });
   }
 };

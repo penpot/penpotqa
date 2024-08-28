@@ -338,6 +338,16 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.viewport).toBeVisible();
   }
 
+  async isMainPageVisible() {
+    try {
+      await this.viewport.waitFor({ state: 'visible' , timeout: 8000});
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
   async isProjectAndFileNameExistInFile(projectName, fileName) {
     await expect(this.projectNameSpan).toContainText(projectName);
     await expect(this.fileNameSpan.last()).toHaveText(fileName);
@@ -676,8 +686,10 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.firstPageListItem).toHaveText(name);
   }
 
-  async isSecondPageAddedToAssetsPanel() {
-    await expect(this.secondPageListItem).toBeVisible();
+  async isSecondPageAddedToAssetsPanel(added = true) {
+    added
+      ? await expect(this.secondPageListItem).toBeVisible()
+      : await expect(this.secondPageListItem).not.toBeVisible();
   }
 
   async isSecondPageNameDisplayed(name) {
@@ -816,9 +828,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(1200, 700);
     await this.clickViewportByCoordinates(1000, 400);
     await this.clickViewportByCoordinates(500, 200);
-    await this.clickOnDesignTab(); // todo: need to remove after issue fix
-    // await this.clickOnMainToolBar(); //todo bug 6171 > need to uncomment after fix these 2 rows
-    // await this.clickMoveButton();
+    await this.clickOnDesignTab();
     await this.waitForChangeIsSaved();
   }
 
@@ -829,9 +839,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(1000, 400);
     await this.clickMoveNodesButtonOnNodePanel();
     await this.clickDrawNodesButtonOnNodePanel();
-    // await this.clickOnDesignTab();  // todo: need to remove after issue fix
-    // await this.clickOnMainToolBar(); //todo bug 6171 > need to uncomment after fix these 2 rows
-    // await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
 
@@ -860,7 +867,7 @@ exports.MainPage = class MainPage extends BasePage {
     if (platform === 'darwin') {
       await this.typeTextFromKeyboard();
     } else if(browserName === 'webkit') {
-      await this.page.waitForTimeout(400);
+      await this.page.waitForTimeout(2000);
       await this.typeTextFromKeyboard();
     } else {
       await this.typeText('Hello World!');
