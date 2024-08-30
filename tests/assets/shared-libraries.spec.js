@@ -492,9 +492,9 @@ mainTest.describe(() => {
     await assetsPanelPage.clickLibraryTitle();
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+    await designPanelPage.changeAxisXandYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
-    await designPanelPage.changeAxisXandYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickPencilBoxButton();
     await dashboardPage.isHeaderDisplayed('Projects');
@@ -512,9 +512,9 @@ mainTest.describe(() => {
     await assetsPanelPage.clickLibraryTitle();
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+    await designPanelPage.changeAxisXandYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
-    await designPanelPage.changeAxisXandYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickPencilBoxButton();
     await dashboardPage.isHeaderDisplayed('Projects');
@@ -548,7 +548,7 @@ mainTest.describe(() => {
         'library-without-library-layers.png',
       );
       await expect(mainPage.viewport).toHaveScreenshot(
-        'library-without-library-viewport.png',
+        'library-without-library-viewport2.png',
       );
     },
   );
