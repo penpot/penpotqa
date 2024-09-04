@@ -14,11 +14,11 @@ exports.BasePage = class BasePage {
     this.moveButton = page.locator('button[title="Move (V)"]');
     this.savedChangesIcon = page.locator('div[title="Saved"]');
     this.unsavedChangesIcon = page.locator('div[title="Unsaved changes"]');
-    this.viewport = page.locator('div.viewport');
+    this.viewport = page.locator('div[class*="viewport"] >> nth=0');
 
     //Layer right-click menu items
-    this.createdLayer = page.locator('div[class="viewport"] [id^="shape"] >> nth=0');
-    this.copyLayer = page.locator('div[class="viewport"] [class*="viewport-selrect"]').last();
+    this.createdLayer = page.locator('div[class*="viewport"] [id^="shape"] >> nth=0');
+    this.copyLayer = page.locator('div[class*="viewport"] [class*="viewport-selrect"]').last();
     this.createdBoardTitle = page.locator('g[class="frame-title"] div >> nth=0');
     this.deleteLayerMenuItem = page.locator(
       'ul[class*="workspace_context_menu"] li:has-text("Delete")',
@@ -308,7 +308,7 @@ exports.BasePage = class BasePage {
   }
 
   async createComponentViaRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [class*="viewport-selrect"]');
+    const layerSel = this.page.locator('div[class*="viewport"] [class*="viewport-selrect"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.createComponentMenuItem.click();
   }
