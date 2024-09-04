@@ -8,7 +8,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.layersTab = page.locator('div[data-id="layers"]');
+    this.layersTab = page.locator('button[data-id="layers"]');
     this.layersSidebar = page.locator('#layers');
     this.sidebarLayerItem = page.locator(
       'div[class*="workspace_sidebar_layer_item__layer-row"]',

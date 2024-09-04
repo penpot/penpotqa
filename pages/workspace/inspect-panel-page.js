@@ -8,7 +8,7 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.inspectTab = page.locator('div[data-id="inspect"]');
+    this.inspectTab = page.locator('button[data-id="inspect"]');
     this.annotationBlockOnInspect = page.locator(
       'div.main_ui_viewer_inspect_annotation__attributes-block',
     );
