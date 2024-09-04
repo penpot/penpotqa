@@ -9,7 +9,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     super(page);
 
     //Assets panel
-    this.assetsTab = page.locator('div[data-id="assets"]');
+    this.assetsTab = page.locator('button[data-id="assets"]');
     this.assetComponentLabel = page.locator(
       'div[class*="assets_components__grid-cell"]',
     );
@@ -34,7 +34,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.editFileLibraryMenuItem = page.locator('li:has-text("Edit")');
     this.createGroupFileLibraryMenuItem = page.locator('li:has-text("Group")');
     this.ungroupFileLibraryMenuItem = page.locator('li:has-text("Ungroup")');
-    this.groupNameInput = page.locator('#asset-name');
+    this.groupNameInput = page.locator('#name');
     this.createGroupButton = page.locator('input[value="Create"]');
     this.renameGroupButton = page.locator('input[value="Rename"]');
     this.fileLibraryGroupTitle = page.locator('div[class*="group-title"]');
