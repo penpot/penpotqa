@@ -901,7 +901,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async createComponentsMultipleShapesRightClick(singleComponent = true) {
-    const layerSel = this.page.locator('div.viewport .main.viewport-selrect');
+    const layerSel = this.page.locator('div[class*="viewport"] .main.viewport-selrect');
     await layerSel.last().click({ button: 'right', force: true });
     if (singleComponent) {
       await this.createComponentMenuItem.click();
