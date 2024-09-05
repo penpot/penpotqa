@@ -58,7 +58,7 @@ mainTest.describe(() => {
   mainTest(qase([685], 'CO-364 Click view mode (From right top click) - no boards created'), async ({browserName}) => {
     const newPage = await viewModePage.clickViewModeButton();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'no-board-view-mode-page-image.png',
     );
@@ -69,7 +69,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'view-mode-page-image.png',
     );
@@ -80,7 +80,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickFullScreenButton();
     await expect(viewModePage.fullScreenSection).toHaveScreenshot(
       'view-mode-full-screen-image.png',
@@ -98,7 +98,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'first-board-view-mode-page-image.png',
     );
@@ -133,7 +133,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'first-board-view-mode-page-image.png',
     );
@@ -158,7 +158,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickSelectBoardDropdown();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
@@ -184,7 +184,7 @@ mainTest.describe(() => {
     await prototypePanelPage.dragAndDropPrototypeArrowConnector(300, 300);
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickInteractionsDropdown();
     await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
       'show-on-click-interactions-options-default-image.png',
@@ -214,7 +214,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.openScaleDropdown();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.scaleDropdownOptions).toHaveScreenshot(
@@ -258,7 +258,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickOnAdd();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
@@ -278,7 +278,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.openPageDropdown();
     await expect(viewModePage.pageDropdownOptions).toHaveScreenshot(
       'page-list-image.png',
@@ -302,7 +302,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickCommentsButton();
     await viewModePage.addComment();
 
@@ -326,7 +326,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickCommentsButton();
     await viewModePage.addComment();
 
@@ -349,7 +349,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickCommentsButton();
     await viewModePage.addComment();
 
@@ -377,7 +377,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickCommentsButton();
     await viewModePage.addComment();
 
@@ -400,7 +400,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     const commentsPanelPage = new CommentsPanelPage(newPage);
     await viewModePage.clickCommentsButton();
     await viewModePage.addComment();
@@ -436,7 +436,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     const commentsPanelPage = new CommentsPanelPage(newPage);
     await viewModePage.clickCommentsButton();
     await viewModePage.addComment();
@@ -464,7 +464,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.openInspectTab();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
@@ -485,7 +485,7 @@ mainTest.describe(() => {
 
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     layersPanelPage = new LayersPanelPage(newPage);
     const inspectPanelPage = new InspectPanelPage(newPage);
     await viewModePage.openInspectTab();
@@ -506,7 +506,7 @@ mainTest.describe(() => {
 
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     designPanelPage = new DesignPanelPage(newPage);
     await viewModePage.openInspectTab();
 
@@ -540,7 +540,7 @@ mainTest.describe(() => {
 
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     layersPanelPage = new LayersPanelPage(newPage);
     await viewModePage.openInspectTab();
     await layersPanelPage.clickLayerOnLayersTab('Rectangle');
@@ -567,7 +567,7 @@ mainTest.describe(() => {
 
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     layersPanelPage = new LayersPanelPage(newPage);
     await viewModePage.openInspectTab();
     await viewModePage.copyWidth();
@@ -586,7 +586,7 @@ mainTest.describe(() => {
 
       const newPage = await viewModePage.clickViewModeShortcut();
       viewModePage = new ViewModePage(newPage);
-      browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+      await viewModePage.waitForViewerSection(45000);
       layersPanelPage = new LayersPanelPage(newPage);
 
       await viewModePage.clickEditButton();
@@ -614,7 +614,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickShareButton();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.shareLincDialog).toHaveScreenshot(
@@ -649,7 +649,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickShareButton();
     await viewModePage.clickGetLincButton();
     const shareLinc = await viewModePage.clickCopyLincButton();
@@ -673,7 +673,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickShareButton();
     await viewModePage.clickManagePermissionsButton();
     await viewModePage.selectAllUsersCommentPermission();
@@ -708,7 +708,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
-    browserName === 'webkit' ? await viewModePage.waitForViewerSection(45000) : null;
+    await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickShareButton();
     await viewModePage.clickManagePermissionsButton();
     await viewModePage.selectAllUsersInspectPermission();
