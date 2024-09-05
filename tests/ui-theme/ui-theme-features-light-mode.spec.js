@@ -99,6 +99,8 @@ mainTest.describe('Settings - UI THEME', () => {
           mask: [mainPage.fileNameSpan],
         },
       );
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
         'assets-file-right-sidebar-image.png',
         {
@@ -106,6 +108,7 @@ mainTest.describe('Settings - UI THEME', () => {
         },
       );
       await inspectPanelPage.openInspectTab();
+      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
         'inspect-file-right-sidebar-image.png',
         {

@@ -126,6 +126,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-paddings.png', {
       mask: [mainPage.guides],
     });
+    await mainPage.waitForChangeIsSaved();
     await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
       'grid-edit-right-sidebar-paddings-image.png',
       {
@@ -138,6 +139,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-justify-space-between.png', {
       mask: [mainPage.guides],
     });
+    await mainPage.waitForChangeIsSaved();
     await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
       'right-sidebar-justify-image.png',
       {
@@ -358,6 +360,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('board-with-flex-layout.png', {
       mask: [mainPage.guides],
     });
+    await mainPage.waitForChangeIsSaved();
     await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
       'flex-layout-right-sidebar-image.png',
       {
