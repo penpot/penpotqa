@@ -44,7 +44,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.passwordNewInput = page.locator('input[placeholder="New password"]');
     this.passwordConfirmInput = page.locator('input[placeholder="Confirm password"]');
     this.updateSettingsBtn = page.locator('button[name="submit"]');
-    this.passwordInputError = page.locator('div[data-testid="-error"]');
+    this.passwordInputError = page.locator('div[data-testid="-error"]').first();
 
     //Settings
     this.settingsMenuButton = page.locator('li[data-testid="settings-profile"]');
