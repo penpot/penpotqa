@@ -22,7 +22,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.mainToolBar = page.locator(
       '[class*="main-toolbar"] button[class*="toolbar-handler"]',
     );
-    this.designTab = page.locator('button[data-id="design"]');
+    this.designTab = page.getByRole("tab", { name: "design" });
 
     //Viewport
     this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');

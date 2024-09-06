@@ -9,7 +9,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     super(page);
 
     //Assets panel
-    this.assetsTab = page.locator('button[data-id="assets"]');
+    this.assetsTab = page.getByRole("tab", { name: "assets" });
     this.assetComponentLabel = page.locator(
       'div[class*="assets_components__grid-cell"]',
     );
