@@ -9,7 +9,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     super(page);
 
     //Assets panel
-    this.assetsTab = page.locator('div[data-id="assets"]');
+    this.assetsTab = page.getByRole("tab", { name: "assets" });
     this.assetComponentLabel = page.locator(
       'div[class*="assets_components__grid-cell"]',
     );
@@ -34,7 +34,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.editFileLibraryMenuItem = page.locator('li:has-text("Edit")');
     this.createGroupFileLibraryMenuItem = page.locator('li:has-text("Group")');
     this.ungroupFileLibraryMenuItem = page.locator('li:has-text("Ungroup")');
-    this.groupNameInput = page.locator('#asset-name');
+    this.groupNameInput = page.locator('#name');
     this.createGroupButton = page.locator('input[value="Create"]');
     this.renameGroupButton = page.locator('input[value="Rename"]');
     this.fileLibraryGroupTitle = page.locator('div[class*="group-title"]');
@@ -107,7 +107,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     );
     this.dismissButton = page.locator('button:text-is("Dismiss")');
     this.librariesUpdatesTab = page.locator('div[data-id="updates"]');
-    this.librariesUpdateButton = page.locator('button[class*="item-update"]');
+    this.librariesUpdateButton = page.locator('button:has-text("Update")');
     this.librariesMoreInfoButton = page.locator('input[value="More info"]');
     this.closeModalButton = page.locator('svg[class*="close-icon"]');
     this.librariesModal = page.locator('div[class*="libraries__modal-dialog"]');

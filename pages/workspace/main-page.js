@@ -22,7 +22,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.mainToolBar = page.locator(
       '[class*="main-toolbar"] button[class*="toolbar-handler"]',
     );
-    this.designTab = page.locator('div[data-id="design"]');
+    this.designTab = page.getByRole("tab", { name: "design" });
 
     //Viewport
     this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
@@ -901,7 +901,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async createComponentsMultipleShapesRightClick(singleComponent = true) {
-    const layerSel = this.page.locator('div.viewport .main.viewport-selrect');
+    const layerSel = this.page.locator('div[class*="viewport"] .main.viewport-selrect');
     await layerSel.last().click({ button: 'right', force: true });
     if (singleComponent) {
       await this.createComponentMenuItem.click();
@@ -931,7 +931,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pasteLayerViaRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"]');
+    const layerSel = this.page.locator('div[class*="viewport"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.pasteOption.click();
   }
@@ -951,13 +951,13 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async groupLayerViaRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    const layerSel = this.page.locator('div[class*="viewport"] [id^="shape"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.groupOption.click();
   }
 
   async showInAssetsPanelRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    const layerSel = this.page.locator('div[class*="viewport"] [id^="shape"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.showInAssetsPanelOption.click();
   }

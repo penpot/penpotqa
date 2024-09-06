@@ -531,6 +531,7 @@ mainTest.describe(() => {
       await dashboardPage.clickDeleteFileButton();
 
       await dashboardPage.openFileWithName('New File 2');
+      await mainPage.waitForViewportVisible();
       await mainPage.isSecondPageAddedToAssetsPanel(false);
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'library-without-library-layers.png',
@@ -543,6 +544,7 @@ mainTest.describe(() => {
       await dashboardPage.isHeaderDisplayed('Projects');
 
       await dashboardPage.openFileWithName('New File 3');
+      await mainPage.waitForViewportVisible();
       await mainPage.isSecondPageAddedToAssetsPanel(false);
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'library-without-library-layers.png',
