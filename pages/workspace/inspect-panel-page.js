@@ -18,7 +18,7 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     this.rowGapOnInspect = page.locator(
       'div[class*="layout-row"] div[title="Row gap"]',
     );
-    this.codeTabButton = page.locator('button[data-id="code"]');
+    this.codeTabButton = page.getByRole("tab", { name: "code" });
   }
 
   async openInspectTab() {
