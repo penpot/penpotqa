@@ -169,7 +169,7 @@ mainTest.describe(() => {
     const newPage = await popupPromise;
     const newMainPage = new MainPage(newPage);
     await newMainPage.isCreatedLayerVisible();
-    await newPage.waitForTimeout(500);
+    await newMainPage.waitForViewportVisible();
     await expect(newPage).toHaveScreenshot('board-component-on-first-file.png', {
       mask: [newMainPage.usersSection],
     });

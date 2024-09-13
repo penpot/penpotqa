@@ -1209,7 +1209,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async enterGridCellValue(cellNumber, value) {
-    const inputLocator = await this.page.locator(`div[class*="track-info-value"] input[class="input-text"] >>nth=${cellNumber-1}`);
+    const inputLocator = await this.page.locator(`div[class*="track-info-value"] input >>nth=${cellNumber-1}`);
     await inputLocator.click();
     await inputLocator.fill(value);
     await this.clickOnEnter();
