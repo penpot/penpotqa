@@ -106,8 +106,8 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       '//*[@class="icon-component"]/../../../../../button/div/span'
     );
     this.dismissButton = page.locator('button:text-is("Dismiss")');
-    this.librariesUpdatesTab = page.locator('div[data-id="updates"]');
-    this.librariesUpdateButton = page.locator('button:has-text("Update")');
+    this.librariesUpdatesTab = page.getByRole('tab', { name: 'UPDATES' });
+    this.librariesUpdateButton = page.getByRole('button', { name: 'Update' });
     this.librariesMoreInfoButton = page.locator('input[value="More info"]');
     this.closeModalButton = page.locator('svg[class*="close-icon"]');
     this.librariesModal = page.locator('div[class*="libraries__modal-dialog"]');
