@@ -217,8 +217,9 @@ mainTest.describe(() => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.clickAddGridButton();
       await designPanelPage.selectGridType('Rows');
-      await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-grid-default.png', {
         mask: [mainPage.guides, mainPage.guidesFragment],
         maxDiffPixels: 0,
