@@ -158,6 +158,7 @@ mainTest.describe(() => {
     });
     await inspectPanelPage.openInspectTab();
     await inspectPanelPage.isRowGapExistOnInspectTab();
+    await mainPage.waitForChangeIsSaved();
     await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
       'right-sidebar-inspect-row-gap-image.png',
       {
