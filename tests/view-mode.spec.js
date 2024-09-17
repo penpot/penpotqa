@@ -176,7 +176,10 @@ mainTest.describe(() => {
   //   );
   // });
 
-  mainTest(qase([689], 'CO-368 Interactions dropdown'), async ({ browserName }) => {
+  mainTest(qase([689], 'CO-368 Interactions dropdown'), async ({ page }) => {
+    const userAgent = await page.evaluate(() => navigator.userAgent);
+
+    console.log('User-Agent:', userAgent);
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.createDefaultBoardByCoordinates(500, 500, true);
     await mainPage.waitForChangeIsSaved();
