@@ -9,7 +9,7 @@ jobs:
   tests_webkit:
     environment: PRE
     timeout-minutes: 240
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -24,7 +24,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright
-        run: npx playwright install --with-deps
+        run: npm install playwright@1.30.0
 
       - name: Run Playwright tests
         env:
@@ -37,7 +37,9 @@ jobs:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
-        run: npx playwright test --project=webkit -gv 'PERF' ./tests/view-mode.spec.js
+        run: |
+          Xvfb :99 -screen 0 1280x1024x24 &
+          npx playwright test --project=webkit --headed --disable-gpu --no-sandbox --disable-dev-shm-usage -gv 'PERF' ./tests/view-mode.spec.js
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
