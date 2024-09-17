@@ -9,7 +9,7 @@ jobs:
   tests_webkit:
     environment: PRE
     timeout-minutes: 240
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
@@ -24,7 +24,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright
-        run: npx install playwright --with-deps
+        run: npx playwright install --with-deps
 
       - name: Run Playwright tests
         env:
