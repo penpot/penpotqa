@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test --project=chrome -gv 'PERF'",
-    "testLogin": "npx playwright test --project=chrome -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js",
+    "testLogin": "npx playwright test --project=webkit -gv 'PERF' ./tests/view-mode.spec.js",
     "updateSnapshots": "npx playwright test --update-snapshots",
     "firefox": "npx playwright test --project=firefox -gv 'PERF'",
     "webkit": "npx playwright test --project=webkit -gv 'PERF'",
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/penpot/penpotqa#readme",
   "devDependencies": {
-    "@playwright/test": "^1.45.3",
+    "@playwright/test": "^1.47.1",
     "dotenv": "^16.3.1"
   },
   "dependencies": {
