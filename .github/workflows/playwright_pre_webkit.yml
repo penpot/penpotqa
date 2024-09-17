@@ -24,7 +24,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright
-        run: npx install playwright@1.35.0
+        run: npx install playwright
 
       - name: Run Playwright tests
         env:
