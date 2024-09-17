@@ -39,7 +39,7 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
         run: |
           Xvfb :99 -screen 0 1280x1024x24 &
-          npx playwright test --project=webkit --headed --disable-gpu --no-sandbox --disable-dev-shm-usage -gv 'PERF' ./tests/view-mode.spec.js
+          npx playwright test --project=webkit --headed --no-sandbox --disable-dev-shm-usage -gv 'PERF' ./tests/view-mode.spec.js
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
