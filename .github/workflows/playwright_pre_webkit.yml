@@ -23,10 +23,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright and Test
-        run: |
-          npm install playwright@1.30.0
-          npm install -D @playwright/test
+      - name: Install Playwright
+        run: npx install playwright@1.35.0
 
       - name: Run Playwright tests
         env:
