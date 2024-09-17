@@ -178,7 +178,9 @@ mainTest.describe(() => {
 
   mainTest(qase([689], 'CO-368 Interactions dropdown'), async ({ page }) => {
     const userAgent = await page.evaluate(() => navigator.userAgent);
+    const playwrightVersion = require('@playwright/test/package.json').version;
 
+    console.log('Playwright version:', playwrightVersion);
     console.log('User-Agent:', userAgent);
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.createDefaultBoardByCoordinates(500, 500, true);
