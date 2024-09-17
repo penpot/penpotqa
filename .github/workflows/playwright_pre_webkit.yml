@@ -21,7 +21,7 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm i
+        run: npm install
 
       - name: Install Playwright
         run: npx playwright install
