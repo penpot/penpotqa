@@ -17,6 +17,13 @@ const annotation = 'Test annotation for automation';
 
 let teamPage,dashboardPage,mainPage,designPanelPage,layersPanelPage,inspectPanelPage,assetsPanelPage,colorPalettePage;
 test.beforeEach(async ({ page }) => {
+  const playwrightVersion = require('@playwright/test/package.json').version;
+  const browserVersion = await browser.version();
+  const userAgent = await page.evaluate(() => navigator.userAgent);
+
+  console.log('User-Agent:', userAgent);
+  console.log('WebKit version:', browserVersion);
+  console.log('Playwright version:', playwrightVersion);
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -41,13 +48,7 @@ test.afterEach(async ({ page }, testInfo) => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
-    const playwrightVersion = require('@playwright/test/package.json').version;
-    const browserVersion = await browser.version();
-    const userAgent = await page.evaluate(() => navigator.userAgent);
 
-    console.log('User-Agent:', userAgent);
-    console.log('WebKit version:', browserVersion);
-    console.log('Playwright version:', playwrightVersion);
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
