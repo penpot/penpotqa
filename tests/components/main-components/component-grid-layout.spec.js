@@ -18,7 +18,7 @@ const annotation = 'Test annotation for automation';
 let teamPage,dashboardPage,mainPage,designPanelPage,layersPanelPage,inspectPanelPage,assetsPanelPage,colorPalettePage;
 test.beforeEach(async ({ page }) => {
   const playwrightVersion = require('@playwright/test/package.json').version;
-  const browserVersion = await browser.version();
+  const browserVersion = page.context().browser().version();
   const userAgent = await page.evaluate(() => navigator.userAgent);
 
   console.log('User-Agent:', userAgent);
