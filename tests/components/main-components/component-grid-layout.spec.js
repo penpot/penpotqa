@@ -41,6 +41,13 @@ test.afterEach(async ({ page }, testInfo) => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
+    const playwrightVersion = require('@playwright/test/package.json').version;
+    const browserVersion = await browser.version();
+    const userAgent = await page.evaluate(() => navigator.userAgent);
+
+    console.log('User-Agent:', userAgent);
+    console.log('WebKit version:', browserVersion);
+    console.log('Playwright version:', playwrightVersion);
     if (browserName === 'webkit') {
       await testInfo.setTimeout(testInfo.timeout + 20000);
     } else {
@@ -79,13 +86,7 @@ mainTest.describe(() => {
   // });
 
   mainTest(qase(1729,'PENPOT-1729 Move a component between pages'), async ({page, context}) => {
-    const playwrightVersion = require('@playwright/test/package.json').version;
-    const browserVersion = await browser.version();
-    const userAgent = await page.evaluate(() => navigator.userAgent);
 
-    console.log('User-Agent:', userAgent);
-    console.log('WebKit version:', browserVersion);
-    console.log('Playwright version:', playwrightVersion);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportOnce();
