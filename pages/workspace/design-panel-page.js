@@ -370,11 +370,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     switch (type) {
       case 'Vertical':
         await this.flexElementMarginVertInput.clear();
-        await this.flexElementMarginVertInput.pressSequentially(value);
+        await this.flexElementMarginVertInput.fill(value);
         break;
       case 'Horizontal':
         await this.flexElementMarginHorizontInput.clear();
-        await this.flexElementMarginHorizontInput.pressSequentially(value);
+        await this.flexElementMarginHorizontInput.fill(value);
         break;
     }
     await this.clickOnEnter();
@@ -382,7 +382,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async setComponentColor(color) {
     await this.componentColorInput.clear();
-    await this.componentColorInput.pressSequentially(color);
+    await this.componentColorInput.fill(color);
   }
 
   async setFlexElementPositionAbsolute() {
@@ -404,7 +404,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async setStrokeColor(value) {
     await this.strokeColorInput.clear();
-    await this.strokeColorInput.pressSequentially(value);
+    await this.strokeColorInput.fill(value);
     await this.clickOnEnter();
   }
 
@@ -422,13 +422,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async setStrokeWidth(value) {
     await this.strokeWidthInput.clear();
-    await this.strokeWidthInput.pressSequentially(value);
+    await this.strokeWidthInput.fill(value);
     await this.clickOnEnter();
   }
 
   async setStrokeOpacity(value) {
     await this.strokeOpacityInput.clear();
-    await this.strokeOpacityInput.pressSequentially(value);
+    await this.strokeOpacityInput.fill(value);
     await this.clickOnEnter();
   }
 
@@ -451,7 +451,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeOpacityForFill(value) {
     await this.fillOpacityInput.clear();
-    await this.fillOpacityInput.pressSequentially(value);
+    await this.fillOpacityInput.fill(value);
   }
 
   async isFillHexCodeSet(value) {
@@ -484,7 +484,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeRotationForLayer(value) {
     await this.layerRotationInput.clear();
-    await this.layerRotationInput.pressSequentially(value);
+    await this.layerRotationInput.fill(value);
     await this.clickOnEnter();
   }
 
@@ -501,44 +501,44 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeGeneralCornerRadiusForLayer(value) {
     await this.generalCornerRadiusInput.clear();
-    await this.generalCornerRadiusInput.pressSequentially(value);
+    await this.generalCornerRadiusInput.fill(value);
     await this.clickOnEnter();
   }
 
   async changeTopLeftCornerRadiusForLayer(value) {
     await this.topLeftCornerRadiusInput.clear();
-    await this.topLeftCornerRadiusInput.pressSequentially(value);
+    await this.topLeftCornerRadiusInput.fill(value);
     await this.clickOnEnter();
   }
 
   async changeTopRightCornerRadiusForLayer(value) {
     await this.topRightCornerRadiusInput.clear();
-    await this.topRightCornerRadiusInput.pressSequentially(value);
+    await this.topRightCornerRadiusInput.fill(value);
     await this.clickOnEnter();
   }
 
   async changeBottomLeftCornerRadiusForLayer(value) {
     await this.bottomLeftCornerRadiusInput.clear();
-    await this.bottomLeftCornerRadiusInput.pressSequentially(value);
+    await this.bottomLeftCornerRadiusInput.fill(value);
     await this.clickOnEnter();
   }
 
   async changeBottomRightCornerRadiusForLayer(value) {
     await this.bottomRightCornerRadiusInput.clear();
-    await this.bottomRightCornerRadiusInput.pressSequentially(value);
+    await this.bottomRightCornerRadiusInput.fill(value);
     await this.clickOnEnter();
   }
 
   async changeWidthForLayer(width) {
     await this.sizeWidthInput.clear();
-    await this.sizeWidthInput.pressSequentially(width);
+    await this.sizeWidthInput.fill(width);
     await this.clickOnEnter();
     await this.waitForChangeIsSaved();
   }
 
   async changeHeightForLayer(height) {
     await this.sizeHeightInput.clear();
-    await this.sizeHeightInput.pressSequentially(height);
+    await this.sizeHeightInput.fill(height);
     await this.clickOnEnter();
     await this.waitForChangeIsSaved();
   }
@@ -572,27 +572,27 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeXForShadow(value) {
     await this.shadowXInput.clear();
-    await this.shadowXInput.pressSequentially(value);
+    await this.shadowXInput.fill(value);
   }
 
   async changeYForShadow(value) {
     await this.shadowYInput.clear();
-    await this.shadowYInput.pressSequentially(value);
+    await this.shadowYInput.fill(value);
   }
 
   async changeBlurForShadow(value) {
     await this.shadowBlurInput.clear();
-    await this.shadowBlurInput.pressSequentially(value);
+    await this.shadowBlurInput.fill(value);
   }
 
   async changeSpreadForShadow(value) {
     await this.shadowSpreadInput.clear();
-    await this.shadowSpreadInput.pressSequentially(value);
+    await this.shadowSpreadInput.fill(value);
   }
 
   async changeOpacityForShadow(value) {
     await this.shadowOpacityInput.clear();
-    await this.shadowOpacityInput.pressSequentially(value);
+    await this.shadowOpacityInput.fill(value);
   }
 
   async clickShadowColorIcon() {
@@ -625,7 +625,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeValueForBlur(value) {
     await this.blurMoreOptions.click();
     await this.blurValueInput.clear();
-    await this.blurValueInput.pressSequentially(value);
+    await this.blurValueInput.fill(value);
   }
 
   async hideBlur() {
@@ -863,7 +863,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       ? await this.expandFlexLayoutMenu()
       : await this.expandGridLayoutMenu();
     await this.layoutColumnGapInput.clear();
-    await this.layoutColumnGapInput.pressSequentially(value);
+    await this.layoutColumnGapInput.fill(value);
     await this.clickOnEnter();
   }
 
@@ -873,7 +873,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeLayoutColumnGapOnGridEdit(value) {
     await this.layoutColumnGapInput.clear();
-    await this.layoutColumnGapInput.pressSequentially(value);
+    await this.layoutColumnGapInput.fill(value);
     await this.clickOnEnter();
   }
 
@@ -882,13 +882,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       ? await this.expandFlexLayoutMenu()
       : await this.expandGridLayoutMenu();
     await this.layoutRowGapInput.clear();
-    await this.layoutRowGapInput.pressSequentially(value);
+    await this.layoutRowGapInput.fill(value);
     await this.clickOnEnter();
   }
 
   async changeLayoutRowGapOnGridEdit(value) {
     await this.layoutRowGapInput.clear();
-    await this.layoutRowGapInput.pressSequentially(value);
+    await this.layoutRowGapInput.fill(value);
     await this.clickOnEnter();
   }
 
@@ -899,11 +899,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     switch (type) {
       case 'Vertical':
         await this.layoutVerticalPaddingInput.clear();
-        await this.layoutVerticalPaddingInput.pressSequentially(value);
+        await this.layoutVerticalPaddingInput.fill(value);
         break;
       case 'Horizontal':
         await this.layoutHorizontPaddingInput.clear();
-        await this.layoutHorizontPaddingInput.pressSequentially(value);
+        await this.layoutHorizontPaddingInput.fill(value);
         break;
     }
     await this.clickOnEnter();
@@ -935,19 +935,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     switch (type) {
       case 'Bottom':
         await this.layoutPaddingBottomInput.clear();
-        await this.layoutPaddingBottomInput.pressSequentially(value);
+        await this.layoutPaddingBottomInput.fill(value);
         break;
       case 'Right':
         await this.layoutPaddingRightInput.clear();
-        await this.layoutPaddingRightInput.pressSequentially(value);
+        await this.layoutPaddingRightInput.fill(value);
         break;
       case 'Left':
         await this.layoutPaddingLeftInput.clear();
-        await this.layoutPaddingLeftInput.pressSequentially(value);
+        await this.layoutPaddingLeftInput.fill(value);
         break;
       case 'Top':
         await this.layoutPaddingTopInput.clear();
-        await this.layoutPaddingTopInput.pressSequentially(value);
+        await this.layoutPaddingTopInput.fill(value);
         break;
     }
     await this.clickOnEnter();
@@ -957,19 +957,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     switch (type) {
       case 'Bottom':
         await this.layoutPaddingBottomInput.clear();
-        await this.layoutPaddingBottomInput.pressSequentially(value);
+        await this.layoutPaddingBottomInput.fill(value);
         break;
       case 'Right':
         await this.layoutPaddingRightInput.clear();
-        await this.layoutPaddingRightInput.pressSequentially(value);
+        await this.layoutPaddingRightInput.fill(value);
         break;
       case 'Left':
         await this.layoutPaddingLeftInput.clear();
-        await this.layoutPaddingLeftInput.pressSequentially(value);
+        await this.layoutPaddingLeftInput.fill(value);
         break;
       case 'Top':
         await this.layoutPaddingTopInput.clear();
-        await this.layoutPaddingTopInput.pressSequentially(value);
+        await this.layoutPaddingTopInput.fill(value);
         break;
     }
     await this.clickOnEnter();
@@ -1016,7 +1016,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeSizeForGrid(value) {
     await this.gridSizeInput.clear();
-    await this.gridSizeInput.pressSequentially(value);
+    await this.gridSizeInput.fill(value);
   }
 
   async clickGridActionsButton() {
@@ -1025,7 +1025,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeOpacityForGrid(value) {
     await this.gridOpacityInput.clear();
-    await this.gridOpacityInput.pressSequentially(value);
+    await this.gridOpacityInput.fill(value);
   }
 
   async clickUseDefaultGridButton() {
@@ -1050,17 +1050,17 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeColumnsOrRowsNumberForGrid(value) {
     await this.gridColumnsRowsInput.clear();
-    await this.gridColumnsRowsInput.pressSequentially(value);
+    await this.gridColumnsRowsInput.fill(value);
   }
 
   async changeWidthForGrid(value) {
     await this.gridWidthInput.clear();
-    await this.gridWidthInput.pressSequentially(value);
+    await this.gridWidthInput.fill(value);
   }
 
   async changeHeightForGrid(value) {
     await this.gridHeightInput.clear();
-    await this.gridHeightInput.pressSequentially(value);
+    await this.gridHeightInput.fill(value);
   }
 
   async clickOnComponentMenuButton() {
@@ -1093,7 +1093,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async enterTextIntoAnnotationField(value) {
     await this.annotationTextArea.clear();
-    await this.annotationTextArea.pressSequentially(value);
+    await this.annotationTextArea.fill(value);
   }
 
   async submitAnnotationCreation() {
@@ -1156,11 +1156,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeAxisXandYForLayer(x, y) {
     await this.xAxisInput.clear();
-    await this.xAxisInput.pressSequentially(x);
+    await this.xAxisInput.fill(x);
     await this.clickOnEnter();
     await this.waitForChangeIsSaved();
     await this.yAxisInput.clear();
-    await this.yAxisInput.pressSequentially(y);
+    await this.yAxisInput.fill(y);
     await this.clickOnEnter();
     await this.waitForChangeIsSaved();
   }
