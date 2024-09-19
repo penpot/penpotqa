@@ -175,44 +175,44 @@ mainTest.describe(() => {
   //     'first-board-selected-view-mode-page-image.png',
   //   );
   // });
-
-  mainTest(qase([689], 'CO-368 Interactions dropdown'), async ({ page }) => {
-    const userAgent = await page.evaluate(() => navigator.userAgent);
-    const playwrightVersion = require('@playwright/test/package.json').version;
-
-    console.log('Playwright version:', playwrightVersion);
-    console.log('User-Agent:', userAgent);
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.createDefaultBoardByCoordinates(500, 500, true);
-    await mainPage.waitForChangeIsSaved();
-    await prototypePanelPage.clickPrototypeTab();
-    await prototypePanelPage.dragAndDropPrototypeArrowConnector(300, 300);
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await viewModePage.clickInteractionsDropdown();
-    await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
-      'show-on-click-interactions-options-default-image.png',
-    );
-    await newPage.waitForTimeout(2000);
-    await viewModePage.selectShowInteractionsOptions();
-    await viewModePage.clickOnBoardCounter();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'show-interactions-board-view-mode-page-image.png',
-    );
-    await viewModePage.clickInteractionsDropdown();
-    await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
-      'interactions-show-options-image.png',
-    );
-    await viewModePage.selectShowOnClickInteractionsOptions();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'show-on-click-interactions-board-view-mode-page-image.png',
-    );
-    await viewModePage.clickOnBoardCounter();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'show-on-click-interactions-board-view-mode-page-image2.png',
-    );
-  });
+  //
+  // mainTest(qase([689], 'CO-368 Interactions dropdown'), async ({ page }) => {
+  //   const userAgent = await page.evaluate(() => navigator.userAgent);
+  //   const playwrightVersion = require('@playwright/test/package.json').version;
+  //
+  //   console.log('Playwright version:', playwrightVersion);
+  //   console.log('User-Agent:', userAgent);
+  //   await mainPage.createDefaultBoardByCoordinates(300, 300);
+  //   await mainPage.createDefaultBoardByCoordinates(500, 500, true);
+  //   await mainPage.waitForChangeIsSaved();
+  //   await prototypePanelPage.clickPrototypeTab();
+  //   await prototypePanelPage.dragAndDropPrototypeArrowConnector(300, 300);
+  //   const newPage = await viewModePage.clickViewModeShortcut();
+  //   viewModePage = new ViewModePage(newPage);
+  //   await viewModePage.waitForViewerSection(45000);
+  //   await viewModePage.clickInteractionsDropdown();
+  //   await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
+  //     'show-on-click-interactions-options-default-image.png',
+  //   );
+  //   await newPage.waitForTimeout(2000);
+  //   await viewModePage.selectShowInteractionsOptions();
+  //   await viewModePage.clickOnBoardCounter();
+  //   await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+  //     'show-interactions-board-view-mode-page-image.png',
+  //   );
+  //   await viewModePage.clickInteractionsDropdown();
+  //   await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
+  //     'interactions-show-options-image.png',
+  //   );
+  //   await viewModePage.selectShowOnClickInteractionsOptions();
+  //   await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+  //     'show-on-click-interactions-board-view-mode-page-image.png',
+  //   );
+  //   await viewModePage.clickOnBoardCounter();
+  //   await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+  //     'show-on-click-interactions-board-view-mode-page-image2.png',
+  //   );
+  // });
 //
 //   mainTest(qase([691], 'CO-370 Change scale'), async ({browserName}) => {
 //     await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -479,28 +479,28 @@ mainTest.describe(() => {
 //     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
 //       'view-mode-interactions-page-image.png');
 //   });
-//
-//   mainTest(qase([715], 'CO-394 Inspect functionality - Board elements dropdown in the top left'), async ({browserName}) => {
-//     await mainPage.createDefaultBoardByCoordinates(300, 300);
-//     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
-//     await mainPage.waitForChangeIsSaved();
-//     await mainPage.createDefaultRectangleByCoordinates(320, 320);
-//     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-//     await mainPage.waitForChangeIsSaved();
-//
-//     const newPage = await viewModePage.clickViewModeShortcut();
-//     viewModePage = new ViewModePage(newPage);
-//     await viewModePage.waitForViewerSection(45000);
-//     layersPanelPage = new LayersPanelPage(newPage);
-//     const inspectPanelPage = new InspectPanelPage(newPage);
-//     await viewModePage.openInspectTab();
-//     await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-//     await inspectPanelPage.openCodeTab();
-//     await newPage.waitForTimeout(200);
-//     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-//       'view-mode-code-tab-image.png');
-//   });
-//
+
+  mainTest(qase([715], 'CO-394 Inspect functionality - Board elements dropdown in the top left'), async ({browserName}) => {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultRectangleByCoordinates(320, 320);
+    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.waitForChangeIsSaved();
+
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.waitForViewerSection(45000);
+    layersPanelPage = new LayersPanelPage(newPage);
+    const inspectPanelPage = new InspectPanelPage(newPage);
+    await viewModePage.openInspectTab();
+    await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+    await inspectPanelPage.openCodeTab();
+    await newPage.waitForTimeout(200);
+    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      'view-mode-code-tab-image.png');
+  });
+
 //   mainTest(qase([717], 'CO-396 Inspect functionality- Export'), async ({browserName}) => {
 //     await mainPage.createDefaultBoardByCoordinates(300, 300);
 //     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
