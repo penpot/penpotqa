@@ -501,7 +501,7 @@ mainTest.describe(() => {
   //     'view-mode-code-tab-image.png');
   // });
 
-  mainTest.only(qase([717], 'CO-396 Inspect functionality- Export'), async ({browserName}) => {
+  mainTest(qase([717], 'CO-396 Inspect functionality- Export'), async ({browserName}) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await mainPage.waitForChangeIsSaved();
