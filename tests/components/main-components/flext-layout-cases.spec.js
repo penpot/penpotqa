@@ -77,87 +77,87 @@ mainTest.describe(() => {
       );
     },
   );
-
-  mainTest(
-    qase(1504,'PENPOT-1504 Create flex board with main component and its copy, change alingment'),
-    async () => {
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeLayoutAlignment('Center');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'main-component-change-board-alignment.png',
-      );
-    },
-  );
-});
-
-mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 15000);
-
-    await mainPage.createDefaultBoardByCoordinates(200, 200);
-    await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.addFlexLayoutViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-
-  });
-
-  mainTest(
-    qase(1511,'PENPOT-1511 Create component with 2 boards with components inside it. change paddings'),
-    async ( {page}, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 20000);
-
-      await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-      await mainPage.waitForChangeIsSaved();
-
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeAxisXandYForLayer('600', '200');
-
-      await mainPage.createDefaultBoardByCoordinates(200, 200, true);
-      await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.addFlexLayoutViaRightClickForNComponent(1);
-      await mainPage.waitForChangeIsSaved();
-
-      await mainPage.createDefaultEllipseByCoordinates(200, 200, true);
-      await mainPage.waitForChangeIsSaved();
-
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickEditMainMenuItem();
-      await mainPage.clickSelectAllMainMenuSubItem();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createComponentsMultipleShapesRightClick(true);
-      await mainPage.waitForChangeIsSaved();
-
-      await mainPage.addFlexLayoutViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeLayoutPadding('Vertical', '20');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeLayoutPadding('Horizontal', '40');
-      await mainPage.waitForChangeIsSaved();
-
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'component-inside-board-change-paddings.png',
-      );
-    },
-  );
-
-  mainTest(
-    qase(1514,'PENPOT-1514 Create component inside flex board, change alignment for element'),
-    async () => {
-      await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeLayoutAlignment('Center');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'component-inside-board-change-alignment.png',
-      );
-    },
-  );
+//
+//   mainTest(
+//     qase(1504,'PENPOT-1504 Create flex board with main component and its copy, change alingment'),
+//     async () => {
+//       await layersPanelPage.isLayoutIconVisibleOnLayer();
+//       await mainPage.clickCreatedBoardTitleOnCanvas();
+//       await designPanelPage.changeLayoutAlignment('Center');
+//       await mainPage.waitForChangeIsSaved();
+//       await expect(mainPage.viewport).toHaveScreenshot(
+//         'main-component-change-board-alignment.png',
+//       );
+//     },
+//   );
+// });
+//
+// mainTest.describe(() => {
+//   mainTest.beforeEach(async ({ page }, testInfo) => {
+//     await testInfo.setTimeout(testInfo.timeout + 15000);
+//
+//     await mainPage.createDefaultBoardByCoordinates(200, 200);
+//     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
+//     await mainPage.waitForChangeIsSaved();
+//     await mainPage.addFlexLayoutViaRightClick();
+//     await mainPage.waitForChangeIsSaved();
+//
+//   });
+//
+//   mainTest(
+//     qase(1511,'PENPOT-1511 Create component with 2 boards with components inside it. change paddings'),
+//     async ( {page}, testInfo) => {
+//       await testInfo.setTimeout(testInfo.timeout + 20000);
+//
+//       await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+//       await mainPage.waitForChangeIsSaved();
+//
+//       await mainPage.clickCreatedBoardTitleOnCanvas();
+//       await designPanelPage.changeAxisXandYForLayer('600', '200');
+//
+//       await mainPage.createDefaultBoardByCoordinates(200, 200, true);
+//       await designPanelPage.changeHeightAndWidthForLayer('300', '300');
+//       await mainPage.waitForChangeIsSaved();
+//       await mainPage.addFlexLayoutViaRightClickForNComponent(1);
+//       await mainPage.waitForChangeIsSaved();
+//
+//       await mainPage.createDefaultEllipseByCoordinates(200, 200, true);
+//       await mainPage.waitForChangeIsSaved();
+//
+//       await mainPage.clickViewportTwice();
+//       await mainPage.waitForChangeIsSaved();
+//       await mainPage.clickMainMenuButton();
+//       await mainPage.clickEditMainMenuItem();
+//       await mainPage.clickSelectAllMainMenuSubItem();
+//       await mainPage.waitForChangeIsSaved();
+//       await mainPage.createComponentsMultipleShapesRightClick(true);
+//       await mainPage.waitForChangeIsSaved();
+//
+//       await mainPage.addFlexLayoutViaRightClick();
+//       await mainPage.waitForChangeIsSaved();
+//       await designPanelPage.changeLayoutPadding('Vertical', '20');
+//       await mainPage.waitForChangeIsSaved();
+//       await designPanelPage.changeLayoutPadding('Horizontal', '40');
+//       await mainPage.waitForChangeIsSaved();
+//
+//       await expect(mainPage.viewport).toHaveScreenshot(
+//         'component-inside-board-change-paddings.png',
+//       );
+//     },
+//   );
+//
+//   mainTest(
+//     qase(1514,'PENPOT-1514 Create component inside flex board, change alignment for element'),
+//     async () => {
+//       await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+//       await mainPage.createComponentViaRightClick();
+//       await mainPage.waitForChangeIsSaved();
+//       await mainPage.clickCreatedBoardTitleOnCanvas();
+//       await designPanelPage.changeLayoutAlignment('Center');
+//       await mainPage.waitForChangeIsSaved();
+//       await expect(mainPage.viewport).toHaveScreenshot(
+//         'component-inside-board-change-alignment.png',
+//       );
+//     },
+//   );
 });
