@@ -334,7 +334,7 @@ exports.BasePage = class BasePage {
   }
 
   async addFlexLayoutViaRightClickForNComponent(n) {
-    const board = this.page.locator(`g[class="frame-title"] >> nth=${n}`);
+    const board = this.page.locator(`g[class="frame-title"] div >> nth=${n}`);
     await board.click({ button: 'right', force: true });
     await this.addFlexLayout.click();
   }
