@@ -193,6 +193,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.fileRightSidebarAside = page.locator('#right-sidebar-aside');
 
     this.errorScreen = page.locator('div[class*="static__exception-content"]');
+    this.loginDialog = page.locator('div[class*="dialog-login"]');
   }
 
   async clickCreateBoardButton() {
