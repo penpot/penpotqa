@@ -663,7 +663,7 @@ mainTest.describe(() => {
     await profilePage.gotoLinc(shareLinc);
     viewModePage = new ViewModePage(page);
     await viewModePage.isViewerSectionVisible(false);
-    await expect(mainPage.errorScreen).toHaveScreenshot(
+    await expect(mainPage.loginDialog).toHaveScreenshot(
       'shared-error-image.png');
     await loginPage.goto();
   });
