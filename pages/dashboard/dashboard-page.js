@@ -657,6 +657,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickOnStartButton() {
+    await expect(this.startButton).not.toHaveAttribute('disabled');
     await this.startButton.click();
   }
 
