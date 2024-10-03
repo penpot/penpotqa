@@ -385,4 +385,16 @@ exports.BasePage = class BasePage {
   async gotoLinc(linc) {
     await this.page.goto(linc);
   }
+
+  async getUrl() {
+    return this.page.url();
+  }
+
+  async makeBadUrl(url) {
+    return url.replace(/.(?=\?)/, '5');
+  }
+
+  async makeBadDashboardUrl(url) {
+    return url.replace(/.(?=\/projects)/, '5');
+  }
 };
