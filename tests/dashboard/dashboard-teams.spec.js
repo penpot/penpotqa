@@ -2010,7 +2010,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       const requestMessage = await waitRequestMessage(page, email, 40);
-      await checkConfirmAccessText(requestMessage.inviteText, 'QA Engineer', process.env.SECOND_EMAIL, team );
+      await checkConfirmAccessText(requestMessage.inviteText, '9z0700h', process.env.SECOND_EMAIL, team );
 
       await page.goto(requestMessage.inviteUrl[1]);
 
@@ -2060,7 +2060,7 @@ test.describe(() => {
 
       const requestMessage = await waitRequestMessage(page, email, 40);
 
-      await checkDashboardConfirmAccessText(requestMessage.inviteText, 'QA Engineer', process.env.SECOND_EMAIL, team );
+      await checkDashboardConfirmAccessText(requestMessage.inviteText, '9z0700h', process.env.SECOND_EMAIL, team );
     },
   );
 
@@ -2100,7 +2100,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       const requestMessage = await waitRequestMessage(page, email, 40);
-      await checkYourPenpotConfirmAccessText(requestMessage.inviteText, 'QA Engineer', process.env.SECOND_EMAIL, team );
+      await checkYourPenpotConfirmAccessText(requestMessage.inviteText, '9z0700h', process.env.SECOND_EMAIL, team );
     },
   );
 
@@ -2145,7 +2145,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       const requestMessage = await waitRequestMessage(page, email, 40);
-      await checkYourPenpotViewModeConfirmAccessText(requestMessage.inviteText, 'QA Engineer', process.env.SECOND_EMAIL, team );
+      await checkYourPenpotViewModeConfirmAccessText(requestMessage.inviteText, '9z0700h', process.env.SECOND_EMAIL, team );
     },
   );
 
