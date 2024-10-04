@@ -190,7 +190,7 @@ async function checkConfirmAccessText(text, name, email, teamName) {
     '\r\n' +
     'Hello!\r\n' +
     '\r\n' +
-    `${name} (${email}) has requested access to the file named “New File 1”.\r\n` +
+    `${name} (${email.toLowerCase()}) has requested access to the file named “New File 1”.\r\n` +
     '\r\n' +
     'To provide this access, you have the following options:\r\n' +
     '\r\n' +
@@ -206,7 +206,7 @@ async function checkConfirmAccessText(text, name, email, teamName) {
     '\r\n' +
     '- Send a View-Only Link:\r\n' +
     '\r\n' +
-    `Alternatively, you can create and share a view-only link to the file. This will allow QA Engineer to view the content without making any changes.\r\n` +
+    `Alternatively, you can create and share a view-only link to the file. This will allow ${name} to view the content without making any changes.\r\n` +
     '\r\n' +
     'Click the link below to generate and send the link:\r\n' +
     '\r\n' +
@@ -225,7 +225,7 @@ async function checkConfirmAccessText(text, name, email, teamName) {
 async function checkDashboardConfirmAccessText(text, name, email, teamName) {
   const messageText = 'Hello!\r\n' +
     '\r\n' +
-    `${name} (${email}) wants to have access to the “${teamName}” Team.\r\n` +
+    `${name} (${email.toLowerCase()}) wants to have access to the “${teamName}” Team.\r\n` +
     '\r\n' +
     'To provide access, please click the link below:\r\n' +
     '\r\n' +
@@ -240,13 +240,13 @@ async function checkDashboardConfirmAccessText(text, name, email, teamName) {
   await expect(text).toBe(messageText);
 }
 
-async function checkYourPenpotConfirmAccessText(text, name, email, teamName) {
+async function checkYourPenpotConfirmAccessText(text, name, email) {
   const messageText = 'Hello!\r\n' +
     '\r\n' +
     '\r\n' +
     'Hello!\r\n' +
     '\r\n' +
-    `${name} (${email}) has requested access to the file named “New File 1”.\r\n` +
+    `${name} (${email.toLowerCase()}) has requested access to the file named “New File 1”.\r\n` +
     '\r\n' +
     'Please note that the file is currently in Your Penpot \'s team, so direct access cannot be granted. However, you have two options to provide the requested access:\r\n' +
     '\r\n' +
@@ -258,7 +258,7 @@ async function checkYourPenpotConfirmAccessText(text, name, email, teamName) {
     '\r\n' +
     '- Send a View-Only Link:\r\n' +
     '\r\n' +
-    `Alternatively, you can create and share a view-only link to the file. This will allow QA Engineer to view the content without making any changes.\r\n` +
+    `Alternatively, you can create and share a view-only link to the file. This will allow ${name} to view the content without making any changes.\r\n` +
     '\r\n' +
     'Click the link below to generate and send the link:\r\n' +
     '\r\n' +
@@ -277,9 +277,9 @@ async function checkYourPenpotConfirmAccessText(text, name, email, teamName) {
 async function checkYourPenpotViewModeConfirmAccessText(text, name, email, teamName) {
   const messageText = 'Hello!\r\n' +
     '\r\n' +
-    `${name} (${email}) wants to have view-only access to the file named “New File 1”.\r\n` +
+    `${name} (${email.toLowerCase()}) wants to have view-only access to the file named “New File 1”.\r\n` +
     '\r\n' +
-    `Since this file is in your Penpot team, you can provide access by sending a view-only link. This will allow QA Engineer to view the content without making any changes.\r\n` +
+    `Since this file is in your Penpot team, you can provide access by sending a view-only link. This will allow ${name} to view the content without making any changes.\r\n` +
     '\r\n' +
     'To proceed, please click the link below to generate and send the view-only link:\r\n' +
     '\r\n' +
