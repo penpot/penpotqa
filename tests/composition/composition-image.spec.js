@@ -267,33 +267,61 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeGeneralCornerRadiusForLayer('30');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-corners-30.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-corners-30.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        maxDiffPixels: 0,
+    });
     await designPanelPage.changeGeneralCornerRadiusForLayer('90');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-corners-90.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-corners-90.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      maxDiffPixels: 0,
+    });
     await designPanelPage.changeGeneralCornerRadiusForLayer('180');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-corners-180.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-corners-180.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      maxDiffPixels: 0,
+    });
     await designPanelPage.changeGeneralCornerRadiusForLayer('0');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-corners-0.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-corners-0.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      maxDiffPixels: 0,
+    });
   });
 
   mainTest(qase(1270,'CO-412 Add rotation to image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-rotated-90.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-rotated-90.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      maxDiffPixels: 0,
+    });
     await designPanelPage.changeRotationForLayer('120');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-rotated-120.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-rotated-120.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      maxDiffPixels: 0,
+    });
     await designPanelPage.changeRotationForLayer('45');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-rotated-45.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-rotated-45.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      maxDiffPixels: 0,
+    });
     await designPanelPage.changeRotationForLayer('360');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-rotated-359.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-rotated-359.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      maxDiffPixels: 0,
+    });
   });
 
   mainTest(qase(474,'CO-259 Flip Vertical and Flip Horizontal image'), async ({ page }) => {

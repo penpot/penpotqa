@@ -22,6 +22,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.mainToolBar = page.locator(
       '[class*="main-toolbar"] button[class*="toolbar-handler"]',
     );
+    this.toolBarWindow = page.locator(
+      'aside[class*="main-toolbar"]',
+    ).first();
     this.designTab = page.getByRole("tab", { name: "design" });
 
     //Viewport
