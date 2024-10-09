@@ -252,7 +252,7 @@ async function checkYourPenpotConfirmAccessText(text, name, email) {
     '\r\n' +
     `- Move the File to Another Team:\r\n` +
     '\r\n' +
-    `You can move the file to another team and then give access to that team, inviting QA Engineer.\r\n` +
+    `You can move the file to another team and then give access to that team, inviting ${name}.\r\n` +
     '\r\n' +
     '\r\n' +
     '\r\n' +
