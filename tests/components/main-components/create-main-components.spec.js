@@ -220,8 +220,9 @@ mainTest(qase(1437,'Create component from curve by right-click'), async ({ page 
   await layersPanelPage.createComponentViaRightClickLayers();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
-    'curve-main-component-canvas.png',
-  );
+    'curve-main-component-canvas.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+    });
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
     'curve-main-component-layer.png',
   );

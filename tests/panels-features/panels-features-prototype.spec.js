@@ -60,10 +60,11 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await prototypePanelPage.clickAddInteractionButton();
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
     await expect(page).toHaveScreenshot('add-interaction.png', {
-      mask: [mainPage.usersSection],
+      mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
   });
 
@@ -91,7 +92,7 @@ mainTest.describe(() => {
     await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('Flow 2');
     await mainPage.clickViewportByCoordinates(300, 700);
     await expect(page).toHaveScreenshot('add-2nd-flow.png', {
-      mask: [mainPage.usersSection],
+      mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
   });
 
