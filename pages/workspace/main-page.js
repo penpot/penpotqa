@@ -280,6 +280,10 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.createdLayer).toBeVisible();
   }
 
+  async isCopyLayerVisible() {
+    await expect(this.copyLayer).toBeVisible();
+  }
+
   async doubleClickCreatedBoardTitleOnCanvas() {
     await this.createdBoardTitle.dblclick();
   }
