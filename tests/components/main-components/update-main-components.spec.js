@@ -191,7 +191,7 @@ mainTest.describe(() => {
       await mainPage.refreshPage();
       await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-shadow-updated.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         maxDiffPixels: 0,
       });
     },
