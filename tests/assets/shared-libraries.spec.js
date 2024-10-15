@@ -492,9 +492,9 @@ mainTest.describe(() => {
     await assetsPanelPage.clickLibraryTitle();
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+    await designPanelPage.changeAxisXandYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
-    await designPanelPage.changeAxisXandYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickPencilBoxButton();
     await dashboardPage.isHeaderDisplayed('Projects');
@@ -512,9 +512,9 @@ mainTest.describe(() => {
     await assetsPanelPage.clickLibraryTitle();
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+    await designPanelPage.changeAxisXandYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
-    await designPanelPage.changeAxisXandYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickPencilBoxButton();
     await dashboardPage.isHeaderDisplayed('Projects');
@@ -531,6 +531,7 @@ mainTest.describe(() => {
       await dashboardPage.clickDeleteFileButton();
 
       await dashboardPage.openFileWithName('New File 2');
+      await mainPage.waitForViewportVisible();
       await mainPage.isSecondPageAddedToAssetsPanel(false);
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'library-without-library-layers.png',
@@ -543,12 +544,13 @@ mainTest.describe(() => {
       await dashboardPage.isHeaderDisplayed('Projects');
 
       await dashboardPage.openFileWithName('New File 3');
+      await mainPage.waitForViewportVisible();
       await mainPage.isSecondPageAddedToAssetsPanel(false);
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'library-without-library-layers.png',
       );
       await expect(mainPage.viewport).toHaveScreenshot(
-        'library-without-library-viewport.png',
+        'library-without-library-viewport2.png',
       );
     },
   );

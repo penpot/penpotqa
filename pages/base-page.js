@@ -14,11 +14,11 @@ exports.BasePage = class BasePage {
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });
     this.savedChangesIcon = page.locator('div[title="Saved"]');
     this.unsavedChangesIcon = page.locator('div[title="Unsaved changes"]');
-    this.viewport = page.locator('div.viewport');
+    this.viewport = page.locator('div[class*="viewport"] >> nth=0');
 
     //Layer right-click menu items
-    this.createdLayer = page.locator('div[class="viewport"] [id^="shape"] >> nth=0');
-    this.copyLayer = page.locator('div[class="viewport"] [class*="viewport-selrect"]').last();
+    this.createdLayer = page.locator('div[class*="viewport"] [id^="shape"] >> nth=0');
+    this.copyLayer = page.locator('div[class*="viewport"] [class*="viewport-selrect"]').last();
     this.createdBoardTitle = page.locator('g[class="frame-title"] div >> nth=0');
     this.deleteLayerMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete' });
     this.hideLayerMenuItem = page.getByRole('listitem').filter({ hasText: 'Hide' });
@@ -229,7 +229,7 @@ exports.BasePage = class BasePage {
   }
 
   async createComponentViaRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [class*="viewport-selrect"]');
+    const layerSel = this.page.locator('div[class*="viewport"] [class*="viewport-selrect"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.createComponentMenuItem.click();
   }
@@ -255,7 +255,7 @@ exports.BasePage = class BasePage {
   }
 
   async addFlexLayoutViaRightClickForNComponent(n) {
-    const board = this.page.locator(`g[class="frame-title"] >> nth=${n}`);
+    const board = this.page.locator(`g[class="frame-title"] div >> nth=${n}`);
     await board.click({ button: 'right', force: true });
     await this.addFlexLayout.click();
   }
@@ -305,5 +305,17 @@ exports.BasePage = class BasePage {
 
   async gotoLink(link) {
     await this.page.goto(link);
+  }
+
+  async getUrl() {
+    return this.page.url();
+  }
+
+  async makeBadUrl(url) {
+    return url.replace(/.(?=\?)/, '5');
+  }
+
+  async makeBadDashboardUrl(url) {
+    return url.replace(/.(?=\/projects)/, '5');
   }
 };

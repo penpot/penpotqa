@@ -99,6 +99,8 @@ mainTest.describe('Settings - UI THEME', () => {
           mask: [mainPage.fileNameSpan],
         },
       );
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
         'assets-file-right-sidebar-image.png',
         {
@@ -106,6 +108,7 @@ mainTest.describe('Settings - UI THEME', () => {
         },
       );
       await inspectPanelPage.openInspectTab();
+      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
         'inspect-file-right-sidebar-image.png',
         {
@@ -125,7 +128,7 @@ mainTest.describe('Settings - UI THEME', () => {
       await mainPage.waitForChangeIsSaved();
       const newPage = await viewModePage.clickViewModeButton();
       viewModePage = new ViewModePage(newPage);
-      browserName === 'webkit' ? await viewModePage.waitForViewerSection(15000) : null;
+      await viewModePage.waitForViewerSection(15000);
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-page-image.png',
         { maxDiffPixelRatio: 0.0002 },

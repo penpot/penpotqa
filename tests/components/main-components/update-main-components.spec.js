@@ -136,7 +136,10 @@ mainTest.describe(() => {
       await mainPage.clickViewportByCoordinates(400, 400);
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-add-stroke.png',
+        'main-copies-component-add-stroke.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          maxDiffPixels: 0,
+        }
       );
     },
   );
@@ -172,9 +175,8 @@ mainTest.describe(() => {
       await mainPage.refreshPage();
       await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-shadow-default.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment],
+        'main-copies-component-shadow-default.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
           maxDiffPixels: 0,
         },
       );
@@ -189,7 +191,7 @@ mainTest.describe(() => {
       await mainPage.refreshPage();
       await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-shadow-updated.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         maxDiffPixels: 0,
       });
     },
@@ -205,7 +207,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-blur.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         maxDiffPixels: 0,
       });
     },
@@ -217,10 +219,11 @@ mainTest.describe(() => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.clickAddGridButton();
       await designPanelPage.selectGridType('Rows');
-      await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-grid-default.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         maxDiffPixels: 0,
       });
       await designPanelPage.changeSizeForGrid('4');
@@ -229,7 +232,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-grid-updated.png', {
-          mask: [mainPage.guides, mainPage.guidesFragment],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
           maxDiffPixels: 0,
         }
       );
@@ -269,7 +272,7 @@ mainTest.describe("Text", () => {
       browserName === 'webkit' ? null : await mainPage.refreshPage();
       await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-text.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         maxDiffPixels: 0,
       });
     },
@@ -359,7 +362,7 @@ mainTest.describe(() => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-change-grid.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         maxDiffPixels: 0,
       });
     },

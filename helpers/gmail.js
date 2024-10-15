@@ -101,6 +101,29 @@ async function getRegisterMessage(email) {
   }).catch(console.error);
 }
 
+async function getRequestAccessMessage(email) {
+  return authorize().then(async (auth) => {
+    const body = await listMessages(auth, email);
+    if (body) {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      const matches = Array.from(body.matchAll(urlRegex));
+      if (matches) {
+        const urls = matches.map(match => match[0]);
+        const remainingText = urls.reduce((acc, item) => {
+          return acc.replace(item, '').trim();
+        }, body);
+        return {
+          inviteUrl: urls,
+          inviteText: remainingText,
+        };
+      } else {
+        console.log('No URL found in the text.');
+        return null;
+      }
+    }
+  }).catch(console.error);
+}
+
 async function checkInviteText(text, team, user='k8q6byz') {
   const messageText = 'Hello!\r\n' +
     '\r\n' +
@@ -161,6 +184,131 @@ async function checkNewEmailText(text, name, newEmail) {
   await expect(text).toBe(messageText);
 }
 
+async function checkConfirmAccessText(text, name, email, teamName) {
+  const messageText = 'Hello!\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'Hello!\r\n' +
+    '\r\n' +
+    `${name} (${email.toLowerCase()}) has requested access to the file named “New File 1”.\r\n` +
+    '\r\n' +
+    'To provide this access, you have the following options:\r\n' +
+    '\r\n' +
+    `- Give Access to the “${teamName}” Team:\r\n` +
+    '\r\n' +
+    `This will automatically include ${name} in the team, so the user can see all the projects and files in it.\r\n` +
+    '\r\n' +
+    'Click the link below to provide team access:\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '- Send a View-Only Link:\r\n' +
+    '\r\n' +
+    `Alternatively, you can create and share a view-only link to the file. This will allow ${name} to view the content without making any changes.\r\n` +
+    '\r\n' +
+    'Click the link below to generate and send the link:\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'If you do not wish to grant access at this time, you can simply disregard this email.\r\n' +
+    'Thank you\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'The Penpot team.';
+  await expect(text).toBe(messageText);
+}
+
+async function checkDashboardConfirmAccessText(text, name, email, teamName) {
+  const messageText = 'Hello!\r\n' +
+    '\r\n' +
+    `${name} (${email.toLowerCase()}) wants to have access to the “${teamName}” Team.\r\n` +
+    '\r\n' +
+    'To provide access, please click the link below:\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'If you do not wish to grant access at this time, you can simply disregard this email.\r\n' +
+    'Thank you\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'The Penpot team.';
+  await expect(text).toBe(messageText);
+}
+
+async function checkYourPenpotConfirmAccessText(text, name, email) {
+  const messageText = 'Hello!\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'Hello!\r\n' +
+    '\r\n' +
+    `${name} (${email.toLowerCase()}) has requested access to the file named “New File 1”.\r\n` +
+    '\r\n' +
+    'Please note that the file is currently in Your Penpot \'s team, so direct access cannot be granted. However, you have two options to provide the requested access:\r\n' +
+    '\r\n' +
+    `- Move the File to Another Team:\r\n` +
+    '\r\n' +
+    `You can move the file to another team and then give access to that team, inviting ${name}.\r\n` +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '- Send a View-Only Link:\r\n' +
+    '\r\n' +
+    `Alternatively, you can create and share a view-only link to the file. This will allow ${name} to view the content without making any changes.\r\n` +
+    '\r\n' +
+    'Click the link below to generate and send the link:\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'If you do not wish to grant access at this time, you can simply disregard this email.\r\n' +
+    'Thank you\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'The Penpot team.';
+  await expect(text).toBe(messageText);
+}
+
+async function checkYourPenpotViewModeConfirmAccessText(text, name, email, teamName) {
+  const messageText = 'Hello!\r\n' +
+    '\r\n' +
+    `${name} (${email.toLowerCase()}) wants to have view-only access to the file named “New File 1”.\r\n` +
+    '\r\n' +
+    `Since this file is in your Penpot team, you can provide access by sending a view-only link. This will allow ${name} to view the content without making any changes.\r\n` +
+    '\r\n' +
+    'To proceed, please click the link below to generate and send the view-only link:\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'If you do not wish to grant access at this time, you can simply disregard this email.\r\n' +
+    'Thank you\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'The Penpot team.';
+  await expect(text).toBe(messageText);
+}
+
+async function checkSigningText(text, name, teamName) {
+  const messageText = 'Hello!\r\n' +
+    '\r\n' +
+    `As you requested, ${name} has added you to the team “${teamName}”.\r\n` +
+    '\r\n' +
+    `Go to the team with this link:\r\n` +
+    '\r\n' +
+    '\r\n' +
+    '\r\n' +
+    'Enjoy!\r\n' +
+    'The Penpot team.';
+  await expect(text).toBe(messageText);
+}
+
 async function waitMessage(page , email, timeoutSec= 40) {
   const timeout = timeoutSec*1000;
   const interval = 4000;
@@ -201,5 +349,40 @@ async function waitSecondMessage(page , email, timeoutSec= 40) {
   }
 }
 
-module.exports = {checkInviteText, getRegisterMessage, checkRegisterText, checkRecoveryText, checkNewEmailText, checkMessagesCount, waitMessage, waitSecondMessage};
+async function waitRequestMessage(page , email, timeoutSec= 40) {
+  const timeout = timeoutSec*1000;
+  const interval = 4000;
+  const startTime = Date.now();
+  let invite;
+
+  await page.waitForTimeout(interval);
+  while (Date.now() - startTime < timeout) {
+    invite = await getRequestAccessMessage(email);
+    if (invite) {
+      return invite;
+    }
+    await page.waitForTimeout(interval);
+  }
+
+  if (!invite) {
+    throw new Error('Timeout reached: invite is still undefined');
+  }
+}
+
+module.exports = {
+  checkInviteText,
+  getRegisterMessage,
+  checkRegisterText,
+  checkRecoveryText,
+  checkNewEmailText,
+  checkMessagesCount,
+  checkConfirmAccessText,
+  checkDashboardConfirmAccessText,
+  checkYourPenpotConfirmAccessText,
+  checkYourPenpotViewModeConfirmAccessText,
+  checkSigningText,
+  waitMessage,
+  waitSecondMessage,
+  waitRequestMessage
+};
 

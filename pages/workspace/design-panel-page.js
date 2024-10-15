@@ -1127,7 +1127,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async createAnnotationRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [id^="shape"]');
+    const layerSel = this.page.locator('div[class*="viewport"] [id^="shape"]');
     await layerSel.last().click({ button: 'right', force: true });
     await this.createAnnotationOption.click();
     await expect(this.annotationTextArea).toBeVisible();
@@ -1145,7 +1145,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async isAnnotationOptionNotVisibleRightClick() {
-    const layerSel = this.page.locator('div[class="viewport"] [class*="viewport-selrect"]');
+    const layerSel = this.page.locator('div[class*="viewport"] [class*="viewport-selrect"]');
     await layerSel.last().click({ button: 'right', force: true });
     await expect(this.createAnnotationOption).not.toBeVisible();
   }
@@ -1209,7 +1209,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async enterGridCellValue(cellNumber, value) {
-    const inputLocator = await this.page.locator(`div[class*="track-info-value"] input[class="input-text"] >>nth=${cellNumber-1}`);
+    const inputLocator = await this.page.locator(`div[class*="track-info-value"] input >>nth=${cellNumber-1}`);
     await inputLocator.click();
     await inputLocator.fill(value);
     await this.clickOnEnter();

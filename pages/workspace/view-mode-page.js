@@ -303,4 +303,8 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   async gotoHome() {
     await this.homeButton.click();
   }
+
+  async isShareButtonVisible() {
+    await expect(this.shareButton).toBeVisible();
+  }
 };

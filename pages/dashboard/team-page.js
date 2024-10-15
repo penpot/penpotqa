@@ -101,6 +101,11 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamSettingsSection = page.locator('.main_ui_dashboard__dashboard-content');
     this.teamIcon = page.locator(`div[class*='team-icon'] img`);
     this.inviteMessage = page.locator('div[class*="main-message"]');
+    this.errorMessage = page.locator('div[class*="desc-message"]').last();
+    this.goToYourPenpotButton = page.locator('button:has-text("< Go to your Penpot")');
+    this.requestAccessButton = page.locator('button:has-text("REQUEST ACCESS")');
+    this.returnHomeButton = page.locator('button:has-text("GO TO YOUR PENPOT")');
+    this.accessDialog = page.locator('div[class*="dialog"]').first();
   }
 
   async createTeam(teamName) {
@@ -420,5 +425,32 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async isInviteMessageDisplayed(message) {
     await expect(this.inviteMessage).toHaveText(message);
+  }
+
+  async isErrorMessageDisplayed(message) {
+    await expect(this.errorMessage).toHaveText(message);
+  }
+
+  async isGoToPenpotButtonVisible() {
+    await expect(this.goToYourPenpotButton).toBeVisible();
+  }
+
+  async clickGoToPenpotButton() {
+    await this.goToYourPenpotButton.click();
+  }
+
+  async clickOnRequestAccessButton() {
+    await this.requestAccessButton.click();
+  }
+
+  async isRequestAccessButtonVisible(visible = true) {
+    visible
+      ? await expect(this.requestAccessButton).toBeVisible()
+      : await expect(this.requestAccessButton).not.toBeVisible();
+
+  }
+
+  async clickReturnHomeButton() {
+    await this.returnHomeButton.click();
   }
 };

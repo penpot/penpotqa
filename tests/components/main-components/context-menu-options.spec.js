@@ -583,7 +583,9 @@ mainTest.describe(() => {
       await designPanelPage.isFillHexCodeSet('0B33A9');
 
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-change-color.png',
+        'main-copies-component-change-color.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+        },
       );
     },
   );

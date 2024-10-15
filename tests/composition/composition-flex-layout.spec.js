@@ -504,9 +504,10 @@ mainTest.describe(() => {
       await layersPanelPage.selectBoardChildLayer('Ellipse');
       await designPanelPage.isFlexElementSectionOpened();
       await designPanelPage.setFlexElementPositionAbsolute();
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('flex-element-position-absolute.png', {
-        mask: [mainPage.guides, mainPage.usersSection],
+        mask: [mainPage.guides, mainPage.usersSection, mainPage.toolBarWindow],
       });
     },
   );

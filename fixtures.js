@@ -13,6 +13,7 @@ const mainTest = base.test.extend({
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
     await dashboardPage.isHeaderDisplayed('Projects');
+    await dashboardPage.skipWhatNewsPopUp();
     await use(page);
   },
 });
