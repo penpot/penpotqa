@@ -115,6 +115,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.createNewTeamMenuItem.click();
     await this.teamNameInput.fill(teamName);
     await this.createNewTeamButton.click();
+    await this.waitForCreateNewTeamButtonToBeHidden(30000);
   }
 
   async isTeamSelected(teamName, browserName = 'chrome') {
@@ -125,6 +126,10 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async waitForTeamBtn(timeout = 10000) {
     await this.teamCurrentBtnWebkit.waitFor({ state: 'visible' , timeout: timeout});
+  }
+
+  async waitForCreateNewTeamButtonToBeHidden(timeout = 10000) {
+    await this.createNewTeamButton.waitFor({ state: 'hidden', timeout: timeout});
   }
 
   async openTeamsListIfClosed() {
