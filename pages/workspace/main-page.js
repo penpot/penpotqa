@@ -343,6 +343,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async isMainPageLoaded() {
+    await this.waitForViewportVisible();
     await expect(this.viewport).toBeVisible();
   }
 
