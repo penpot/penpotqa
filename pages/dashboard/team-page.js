@@ -102,9 +102,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamIcon = page.locator(`div[class*='team-icon'] img`);
     this.inviteMessage = page.locator('div[class*="main-message"]');
     this.errorMessage = page.locator('div[class*="desc-message"]').last();
-    this.goToYourPenpotButton = page.locator('button:has-text("< Go to your Penpot")');
-    this.requestAccessButton = page.locator('button:has-text("REQUEST ACCESS")');
-    this.returnHomeButton = page.locator('button:has-text("GO TO YOUR PENPOT")');
+    this.goToYourPenpotButton = page.getByRole('button', { name: 'Go to your Penpot' });
+    this.requestAccessButton = page.getByRole('button', { name: 'REQUEST ACCESS' });
+    this.returnHomeButton = page.getByRole('button', { name: 'GO TO YOUR PENPOT' });
     this.accessDialog = page.locator('div[class*="dialog"]').first();
   }
 
@@ -113,6 +113,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.createNewTeamMenuItem.click();
     await this.teamNameInput.fill(teamName);
     await this.createNewTeamButton.click();
+    await this.waitForCreateNewTeamButtonToBeHidden(30000);
   }
 
   async isTeamSelected(teamName, browserName = 'chrome') {
@@ -123,6 +124,10 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async waitForTeamBtn(timeout = 10000) {
     await this.teamCurrentBtnWebkit.waitFor({ state: 'visible' , timeout: timeout});
+  }
+
+  async waitForCreateNewTeamButtonToBeHidden(timeout = 10000) {
+    await this.createNewTeamButton.waitFor({ state: 'hidden', timeout: timeout});
   }
 
   async openTeamsListIfClosed() {
