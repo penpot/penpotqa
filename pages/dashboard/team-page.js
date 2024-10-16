@@ -104,9 +104,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamIcon = page.locator(`div[class*='team-icon'] img`);
     this.inviteMessage = page.locator('div[class*="main-message"]');
     this.errorMessage = page.locator('div[class*="desc-message"]').last();
-    this.goToYourPenpotButton = page.locator('button:has-text("< Go to your Penpot")');
-    this.requestAccessButton = page.locator('button:has-text("REQUEST ACCESS")');
-    this.returnHomeButton = page.locator('button:has-text("GO TO YOUR PENPOT")');
+    this.goToYourPenpotButton = page.getByRole('button', { name: 'Go to your Penpot' });
+    this.requestAccessButton = page.getByRole('button', { name: 'REQUEST ACCESS' });
+    this.returnHomeButton = page.getByRole('button', { name: 'GO TO YOUR PENPOT' });
     this.accessDialog = page.locator('div[class*="dialog"]').first();
   }
 
