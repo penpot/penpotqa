@@ -140,6 +140,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingLetsGoBtn = page.locator('button[class*="main_ui_releases"][class*="next-btn"]');
     this.onboardingFirstHeader = page.locator('*[class*="onboarding_questions__modal-title"]');
     this.whatNewsHeader = page.locator('*[class*="modal-title"]');
+    this.pluginModalHeader = page.getByText('Build Plugins and enhance your workflow');
+    this.pluginModalContinueBtn = page.getByRole('button', { name: 'Continue'} );
+    this.pluginModalGoBtn = page.getByRole('button', { name: 'Let\'s go'} );
   }
 
   async createFileViaPlaceholder() {
@@ -605,6 +608,21 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     }
   }
 
+  async skipPluginsPopUp() {
+    if (await this.pluginModalHeader.isVisible() && await this.pluginModalContinueBtn.isVisible()) {
+      await this.clickOnPluginContinueBtn();
+      await this.clickOnPluginGoBtn();
+    }
+  }
+
+  async clickOnPluginContinueBtn() {
+    await this.pluginModalContinueBtn.click();
+  }
+
+  async clickOnPluginGoBtn() {
+    await this.pluginModalGoBtn.click();
+  }
+
   async checkOnboardingWelcomeHeader(text) {
     await expect(this.onboardingHeader.first()).toHaveText(text);
   }
@@ -691,6 +709,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.clickOnOnboardingContinueBtn();
     await this.clickOnOnboardingContinueWithoutTeamButton();
     await this.skipWhatNewsPopUp();
+    await this.skipPluginsPopUp();
   }
 
   async fillOnboardingFirstQuestions() {

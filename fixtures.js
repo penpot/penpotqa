@@ -14,6 +14,7 @@ const mainTest = base.test.extend({
     await dashboardPage.isDashboardOpenedAfterLogin();
     await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.skipWhatNewsPopUp();
+    await dashboardPage.skipPluginsPopUp();
     await use(page);
   },
 });
