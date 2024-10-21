@@ -19,7 +19,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     this.searchLayersIcon = page.locator('svg[class="icon-search"]');
     this.searchLayersInput = page.getByPlaceholder('Search layers');
     this.searchedLayerOnLayersPanelNameText = page.locator(
-      'span[class="element-name"] >> nth=1',
+      'span[class*="element-name"] >> nth=1',
     );
     this.layoutIcon = page.locator('svg[class="icon-flex-vertical"]');
     this.focusModeDiv = page.getByText('Focus mode', { exact: true });

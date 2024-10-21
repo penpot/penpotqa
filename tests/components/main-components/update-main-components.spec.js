@@ -109,9 +109,12 @@ mainTest.describe(() => {
       await designPanelPage.changeTopRightCornerRadiusForLayer(cornerValue);
       await designPanelPage.changeBottomLeftCornerRadiusForLayer(cornerValue);
       await designPanelPage.changeBottomRightCornerRadiusForLayer(cornerValue);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-add-corners.png',
+        'main-copies-component-add-corners.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+        }
       );
     },
   );

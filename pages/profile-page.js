@@ -28,7 +28,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.changeEmailBtn = page.locator('div[class="change-email"]');
     this.newEmailInput = page.locator('#email-1');
     this.confirmNewEmailInput = page.locator('#email-2');
-    this.confirmChangeEmailBtn = page.getByTestId('change-email-submit');
+    this.confirmChangeEmailBtn = page.getByRole('button').filter({hasText: 'Change email'});
 
     //Feedback
     this.feedbackSubjectInput = page.locator('#subject');
