@@ -257,7 +257,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('text-lower-case.png');
   });
 
-  mainTest.only(qase(425,'CO-210 Change alignment'), async ({ page }) => {
+  mainTest(qase(425,'CO-210 Change alignment'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
