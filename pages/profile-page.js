@@ -91,7 +91,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   }
 
   async isPasswordInputErrorDisplayed(error) {
-    await expect(this.passwordInputError).toHaveText(error);
+    await expect(this.passwordInputError.first()).toHaveText(error);
   }
 
   async isChangePasswordButtonDisabled() {

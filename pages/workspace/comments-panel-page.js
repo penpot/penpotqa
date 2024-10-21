@@ -8,8 +8,8 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.commentsButton = page.locator('button[title="Comments (C)"]');
-    this.commentInput = page.locator('textarea[placeholder="Write new comment"]');
+    this.commentsButton = page.getByRole('button', { name: 'Comments (C)' });
+    this.commentInput = page.getByPlaceholder('Write new comment');
     this.commentEditInput = page.locator(
       'div[class*="comments__edit-form"] textarea',
     );
@@ -22,27 +22,21 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentReplyText = page.locator(
       'div[class*="thread-content"] span[class*="comments__text"] >> nth=1',
     );
-    this.commentReplyCommentsPanelText = page.locator(
-      'div[class*="comments__replies"] span:has-text("1 reply")',
-    );
-    this.postCommentButton = page.locator('input[value="Post"]');
+    this.commentReplyCommentsPanelText = page.getByText('1 reply');
+    this.postCommentButton = page.getByRole('button', { name: 'Post' });
     this.commentThreadIcon = page.locator(
       'div[class*="comments-container"] div[class*="thread-bubble"]',
     );
     this.commentResolvedThreadIcon = page.locator(
       'div[class*="comments-container"] div.main_ui_comments__resolved',
     );
-    this.commentReplyInput = page.locator('textarea[placeholder="Reply"]');
+    this.commentReplyInput = page.getByPlaceholder('Reply');
     this.commentOptionsButton = page.locator(
       'div[class*="comments__options"] svg[class="icon-menu"]',
     );
-    this.commentEditOptionMenuItem = page.locator(
-      'ul[class*="comment-options-dropdown"] li:has-text("Edit")',
-    );
-    this.commentDeleteOptionMenuItem = page.locator(
-      'ul[class*="comment-options-dropdown"] li:has-text("Delete thread")',
-    );
-    this.deleteThreadButton = page.locator('input[value="Delete conversation"]');
+    this.commentEditOptionMenuItem = page.getByRole('listitem').filter({ hasText: 'Edit' });
+    this.commentDeleteOptionMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete thread' });
+    this.deleteThreadButton = page.getByRole('button', { name: 'Delete conversation' });
     this.resolveCommentCheckbox = page.locator(
       'div[class*="comments__options-resolve-wrapper"] span',
     );

@@ -50,13 +50,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.componentColorInput = page.locator(`input[class*='rows_color_row__color-input']`)
 
     //Design panel - Shadow section
-    this.shadowSection = page.locator(
-      'div[class*="shadow__element-title"]:has-text("Shadow")',
-    );
-    this.groupShadowSection = page.locator(
-      'div[class*="shadow__element-title"]:has-text("Group shadow")',
-    );
-    this.addShadowButton = page.locator('button[class*="shadow__add-shadow"]');
+    this.shadowSection = page.getByText('Shadow');
+    this.groupShadowSection = page.getByText('Group shadow');
+    this.addShadowButton = page.getByTestId('add-shadow');
     this.shadowActionsButton = page.locator('button[class*="shadow__more-options"]');
     this.shadowXInput = page.locator(
       'div[class*="shadow-advanced-options"] div[title="X"] input',
@@ -105,59 +101,41 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
-    this.flexAddLayoutButton = page.locator('button[data-type="flex"]');
-    this.gridAddLayoutButton = page.locator('button[data-type="grid"]');
-    this.gridEditButton = page.locator(
-      'button[alt="Grid edit mode"]',
-    );
-    this.gridDoneButton = page.locator('button[class*="done-btn"]');
-    this.gridLocateButton = page.locator('button[class*="locate-btn"]');
+    this.flexAddLayoutButton = page.getByRole('button', { name: 'Flex layout' });
+    this.gridAddLayoutButton = page.getByRole('button', { name: 'Grid layout' });
+    this.gridEditButton = page.getByRole('button', { name: 'Edit grid' });
+    this.gridDoneButton = page.getByRole('button', { name: 'Done' });
+    this.gridLocateButton = page.getByRole('button', { name: 'Locate', exact: true });
     this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]').first();
-    this.manualButton = page.locator('label[for=":manual"]');
-    this.areaButton = page.locator('label[for=":area"]');
-    this.areaNameInput = page.locator('input[aria-label="grid-area-name"]');
+    this.manualButton = page.getByText('manual');
+    this.areaButton = page.getByText('area');
+    this.areaNameInput = page.getByPlaceholder('Area name' );
     this.gridExpandGridColumnLengthButton = page.locator('div[class*="grid-track-header"] button[class*="expand-icon"]').first();
     this.gridExpandGridRowLengthButton = page.locator('div[class*="grid-track-header"] button[class*="expand-icon"]').last();
     this.gridFirstColumnSelectButton = page.locator('div[class*="track-info-dir-icon"] svg[class*="icon-flex-vertical"]').first();
-    this.flexMenuItem = page.locator('li[data-value=":flex"]');
-    this.autoMenuItem = page.locator('li[data-value=":auto"]');
-    this.fixedMenuItem = page.locator('li[data-value=":fixed"]');
-    this.percentMenuItem = page.locator('li[data-value=":percent"]');
+    this.flexMenuItem = page.getByRole('listitem').filter({ hasText: 'FR' });
+    this.autoMenuItem = page.getByRole('listitem').filter({ hasText: 'AUTO' });
+    this.fixedMenuItem = page.getByRole('listitem').filter({ hasText: 'PX' });
+    this.percentMenuItem = page.getByRole('listitem').filter({ hasText: '%' });
     this.layoutRemoveButton = page.locator(
       'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
     );
     this.layoutAddButton = page.locator(
       'div[class*="layout_container__element-title"] button[class*="add-layout"]',
     );
-    this.layoutDirectRowBtn = page.locator('label[title="Row"] span');
-    this.layoutDirectRowReverseBtn = page.locator('label[title="Row reverse"] span');
-    this.layoutDirectColumnBtn = page.locator('label[title="Column"] span');
-    this.layoutDirectColumnReverseBtn = page.locator(
-      'label[title="Column reverse"] span',
-    );
-    this.layoutAlignStartBtn = page.locator('label[title="Align items start"] span');
-    this.layoutAlignCenterBtn = page.locator(
-      'label[title="Align items center"] span',
-    );
-    this.layoutAlignEndBtn = page.locator('label[title="Align items end"] span');
-    this.layoutJustifyStartBtn = page.locator(
-      'label[title="Justify content start"] span',
-    );
-    this.layoutJustifyCenterBtn = page.locator(
-      'label[title="Justify content center"] span',
-    );
-    this.layoutJustifyEndBtn = page.locator(
-      'label[title="Justify content end"] span',
-    );
-    this.layoutJustifySpaceBetweenBtn = page.locator(
-      'label[title="Justify content space-between"] span',
-    );
-    this.layoutJustifySpaceAroundBtn = page.locator(
-      'label[title="Justify content space-around"] span',
-    );
-    this.layoutJustifySpaceEvenlyBtn = page.locator(
-      'label[title="Justify content space-evenly"] span',
-    );
+    this.layoutDirectRowBtn = page.getByTitle('Row', { exact: true });
+    this.layoutDirectRowReverseBtn = page.getByTitle('Row reverse', { exact: true });
+    this.layoutDirectColumnBtn = page.getByTitle('Column', { exact: true });
+    this.layoutDirectColumnReverseBtn = page.getByTitle('Column reverse', { exact: true });
+    this.layoutAlignStartBtn = page.getByTitle('Align items start', { exact: true });
+    this.layoutAlignCenterBtn = page.getByTitle('Align items center', { exact: true });
+    this.layoutAlignEndBtn = page.getByTitle('Align items end', { exact: true });
+    this.layoutJustifyStartBtn = page.getByTitle('Justify content start', { exact: true });
+    this.layoutJustifyCenterBtn = page.getByTitle('Justify content center', { exact: true });
+    this.layoutJustifyEndBtn = page.getByTitle('Justify content end', { exact: true });
+    this.layoutJustifySpaceBetweenBtn = page.getByTitle('Justify content space-between', { exact: true });
+    this.layoutJustifySpaceAroundBtn = page.getByTitle('Justify content space-around', { exact: true });
+    this.layoutJustifySpaceEvenlyBtn = page.getByTitle('Justify content space-evenly', { exact: true });
     this.layoutColumnGapInput = page.locator('div[title="Column gap"] input');
     this.layoutRowGapInput = page.locator('div[title="Row gap"] input');
     this.layoutVerticalPaddingInput = page.locator(
@@ -173,30 +151,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[title="Bottom padding"] input',
     );
     this.layoutPaddingLeftInput = page.locator('div[title="Left padding"] input');
-    this.layoutGridJustifyStartBtn = page.locator(
-      'label[title="Justify items start"] span',
-    );
-    this.layoutGridJustifyCenterBtn = page.locator(
-      'label[title="Justify items center"] span',
-    );
-    this.layoutGridJustifyEndBtn = page.locator(
-      'label[title="Justify items end"] span',
-    );
-    this.layoutGridJustifySpaceBetweenBtn = page.locator(
-      'label[title="Justify items space-between"] span',
-    );
-    this.layoutGridJustifySpaceAroundBtn = page.locator(
-      'label[title="Justify items space-around"] span',
-    );
-    this.layoutGridJustifySpaceEvenlyBtn = page.locator(
-      'label[title="Justify items space-evenly"] span',
-    );
+    this.layoutGridJustifyStartBtn = page.getByTitle('Justify items start');
+    this.layoutGridJustifyCenterBtn = page.getByTitle('Justify items center');
+    this.layoutGridJustifyEndBtn = page.getByTitle('Justify items end');
+    this.layoutGridJustifySpaceBetweenBtn = page.getByTitle('Justify items space-between');
+    this.layoutGridJustifySpaceAroundBtn = page.getByTitle('Justify items space-around');
+    this.layoutGridJustifySpaceEvenlyBtn = page.getByTitle('Justify items space-evenly');
 
     //Design panel - Blur section
-    this.blurSection = page.locator(
-      'div[class*="blur__element-title"]:has-text("Blur")',
-    );
-    this.addBlurButton = page.locator('button[class*="blur__add-blur"]');
+    this.blurSection = page.getByText('Blur');
+    this.addBlurButton = page.getByTestId('add-blur');
     this.blurMoreOptions = page.locator('button[class*="blur__show-more"]');
     this.blurValueInput = page.locator('#blur-input-sidebar');
     this.blurHideIcon = page.locator(
@@ -210,10 +174,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
 
     //Design panel - Stroke section
-    this.addStrokeButton = page.locator('button[class*="add-stroke"]');
-    this.strokeSection = page.locator(
-      'div[class*="stroke__element-title"]:has-text("Stroke")',
-    );
+    this.addStrokeButton = page.getByTestId('add-stroke');
+    this.strokeSection = page.getByText('Stroke');
     this.strokeColorBullet = page.locator(
       'div[class*="bullet-wrapper"] div[class*="color_bullet__is-not-library-color"]',
     );
@@ -229,8 +191,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeOpacityInput = page.locator(
       'div[class*="stroke-data"] input[class*="opacity-input"]',
     );
-    this.strokeAlignmentField = page.locator('div[data-testid="stroke.alignment"]');
-    this.strokeTypeField = page.locator('div[data-testid="stroke.style"]');
+    this.strokeAlignmentField = page.getByTestId('stroke.alignment');
+    this.strokeTypeField = page.getByTestId('stroke.style');
     this.strokeFirstCapDropdown = page.locator('div[class*="stroke_row__cap-select"]').first();
     this.strokeSecondCapDropdown = page.locator('div[class*="stroke_row__cap-select"]').last();
 
@@ -248,22 +210,20 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textIconLTR = page.locator('svg.icon-text-ltr');
     this.textIconRTL = page.locator('svg.icon-text-rtl');
     this.textFontSelector = page.locator('div[class*="typography__font-option"]');
-    this.textFontSelectorSearchInput = page.locator('input[placeholder="Search font"]');
+    this.textFontSelectorSearchInput = page.getByPlaceholder('Search font');
     this.textFontStyleSelector = page.locator('div[class*="typography__font-variant-options"]');
     this.textFontSizeInput = page.locator('div[class*="font-size-select"] input');
 
     //Design panel - Export section
-    this.exportSection = page.locator(
-      'div[class*="exports__element-title"]:has-text("Export")',
-    );
+    this.exportSection = page.getByText('Export');
     this.addExportButton = page.locator('button[class*="exports__add-export"]');
     this.removeExportButton = page.locator(
       'button[class*="exports__action-btn"] svg[class="icon-remove"]',
     );
-    this.exportElementButton = page.locator('button[class*="exports__export-btn"]');
+    this.exportElementButton = this.moveButton = page.getByRole('button', { name: /Export \d+ element/ });
 
     //Design panel - Grid section
-    this.gridSection = page.locator('div[class*=element-set]:has-text("Guides")');
+    this.gridSection = page.getByText('Guides');
     this.addGridButton = page.locator('button[class*="grid__add-grid"]');
     this.removeGridButton = page.locator(
       'div[class*="grid__actions"] svg[class="icon-remove"]',
@@ -277,9 +237,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridTypeField = page.locator(
       'div[class*="grid__option-row"] div[class*="type-select-wrapper"]',
     );
-    this.gridTypeSelectorSquareOption = page.locator('span:has-text("Square")');
-    this.gridTypeSelectorColumnsOption = page.locator('span:has-text("Columns")');
-    this.gridTypeSelectorRowsOption = page.locator('span:has-text("Rows")');
+    this.gridTypeSelectorSquareOption = page.getByText('Square');
+    this.gridTypeSelectorColumnsOption = page.getByText('Columns');
+    this.gridTypeSelectorRowsOption = page.getByText('Rows');
     this.gridSizeInput = page.locator(`input[class*='grid__numeric-input']`);
     this.gridColumnsRowsInput = page.locator(
       'div[class*="grid__column-select"] input',
@@ -291,7 +251,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridMoreOptionsButton = page.locator(
       'div[class*="grid__advanced-row"] button[class*="show-more-options"]',
     );
-    this.useDefaultGridButton = page.locator('button:has-text("Use default")');
+    this.useDefaultGridButton = page.getByRole('button').filter({ hasText: 'Use default' });
     this.gridWidthInput = page.locator(
       'div[title="Width"] input[class*="grid__numeric-input"]',
     );
@@ -303,15 +263,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.componentMenuButton = page.locator(
       'div[class*="component__element-content"] div[class*="component-actions"]',
     );
-    this.showInAssetsPanelOptionDesign = page.locator(
-      'ul[class*="component__custom-select-dropdown"] span:text-is("Show in assets panel")',
-    );
+    this.showInAssetsPanelOptionDesign = page.getByRole('listitem').filter({ hasText: 'Show in assets panel' });
     this.componentBlockOnDesignTab = page.locator(
       'div[class*="component__element-set"]',
     );
-    this.createAnnotationOptionDesign = page.locator(
-      'ul[class*="component__custom-select-dropdown"] span:text-is("Create annotation")',
-    );
+    this.createAnnotationOptionDesign = page.getByRole('listitem').filter({ hasText: 'Create annotation' });
     this.annotationTextArea = page.locator('#annotation-textarea');
     this.annotationCreateTitle = page.locator(
       'div[class*="component-annotation"] div[class*=title]',

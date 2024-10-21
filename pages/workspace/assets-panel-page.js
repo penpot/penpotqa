@@ -23,23 +23,21 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       'div[class*="components_title_bar"] span:text-is("Components")',
     );
     this.assetsPanel = page.locator('article[class*="assets-bar"]');
-    this.assetsSectionName = page.locator(
-      'span[class*="assets_common__section-name"]',
-    );
+    this.assetsSectionName = page.getByTestId('left-sidebar');
     this.assetsSectionNumbers = page.locator(
       'span[class*="assets_common__num-assets"]',
     );
-    this.renameFileLibraryMenuItem = page.locator('li:has-text("Rename")');
-    this.deleteFileLibraryMenuItem = page.locator('li:has-text("Delete")');
-    this.editFileLibraryMenuItem = page.locator('li:has-text("Edit")');
-    this.createGroupFileLibraryMenuItem = page.locator('li:has-text("Group")');
-    this.ungroupFileLibraryMenuItem = page.locator('li:has-text("Ungroup")');
-    this.groupNameInput = page.locator('#name');
-    this.createGroupButton = page.locator('input[value="Create"]');
-    this.renameGroupButton = page.locator('input[value="Rename"]');
+    this.renameFileLibraryMenuItem = page.getByRole('menuitem').filter({ hasText: 'Rename' });
+    this.deleteFileLibraryMenuItem = page.getByRole('menuitem').filter({ hasText: 'Delete' });
+    this.editFileLibraryMenuItem = page.getByRole('menuitem').filter({ hasText: 'Edit' });
+    this.createGroupFileLibraryMenuItem = page.getByRole('menuitem').filter({ hasText: 'Group' });
+    this.ungroupFileLibraryMenuItem = page.getByRole('menuitem').filter({ hasText: 'Ungroup' });
+    this.groupNameInput = page.getByRole('textbox', { name: 'Group name' });
+    this.createGroupButton = page.getByRole('button', { name: 'Create' });
+    this.renameGroupButton = page.getByRole('button', { name: 'Rename' });
     this.fileLibraryGroupTitle = page.locator('div[class*="group-title"]');
-    this.fileLibraryListViewButton = page.locator('label[for="opt-list"] span');
-    this.fileLibraryGridViewButton = page.locator('label[for="opt-grid"] span');
+    this.fileLibraryListViewButton = page.getByTitle('List view');
+    this.fileLibraryGridViewButton = page.getByTitle('Grid view');
     this.addFileLibraryColorButton = page.locator(
       'button[class*="assets_colors__assets-btn"]',
     );
@@ -63,26 +61,20 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       'div[class*="typography-entry"]',
     );
     this.fontSelector = page.locator('div[class*="typography__font-option"]');
-    this.fontSelectorSearchInput = page.locator('input[placeholder="Search font"]');
+    this.fontSelectorSearchInput = page.getByRole('textbox', { name: 'Search font' });
     this.fontSizeInput = page.locator('div[class*="font-size-select"] input');
     this.typographyNameInput = page.locator('input[class*="adv-typography-name"]');
     this.assetsTitleText = page.locator(
       'div[class*="asset-section"] span[class*="title-name"]',
     );
-    this.assetsTypeButton = page.locator(
-      'div[class*="assets-header"] button[class*="section-button"]',
-    );
+    this.assetsTypeButton = page.getByRole('button', { name: 'Filter' });
     this.assetsTypeDropdown = page.locator('ul[class*="context-menu-items"]');
     this.assetsTypeAll = page.locator('#section-all');
     this.assetsTypeComponents = page.locator('#section-components');
     this.assetsTypeColors = page.locator('#section-color');
     this.assetsTypeTypographies = page.locator('#section-typography');
-    this.duplicateMainComponentMenuItem = page.locator(
-      'li:has-text("Duplicate main")',
-    );
-    this.showMainComponentMenuItem = page.locator(
-      'li:has-text("Show main component")',
-    );
+    this.duplicateMainComponentMenuItem = page.getByRole('menuitem').filter({ hasText: 'Duplicate main' });
+    this.showMainComponentMenuItem = page.getByRole('menuitem').filter({ hasText: 'Show main component' });
     this.fileLibraryComponentNameInput = page.locator(
       'div[class*="assets_components__editing"] input',
     );
@@ -91,24 +83,22 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     );
 
     //Assets panel - Libraries
-    this.addAsSharedLibraryButton = page.locator(
-      'input[value="Add as Shared Library"]',
-    );
-    this.removeAsSharedLibraryButton = page.locator('input[value="Unpublish"]');
+    this.addAsSharedLibraryButton = page.getByRole('button', { name: 'Add as Shared Library' });
+    this.removeAsSharedLibraryButton = page.getByRole('button', { name: 'Unpublish' });
     this.sharedLibraryBadge = page.locator('span[class*="shared-badge"]');
-    this.librariesOpenModalButton = page.locator('button[class*="libraries-button"]');
-    this.addSharedLibraryButton = page.locator('input[value="Publish"]');
-    this.cancelSharedLibraryButton = page.locator('input[value="Cancel"]');
-    this.searchSharedLibrariesInput = page.locator('input[placeholder="Search shared libraries"]');
+    this.librariesOpenModalButton = page.getByRole('button', { name: 'Libraries' });
+    this.addSharedLibraryButton = page.getByRole('button', { name: 'Publish' });
+    this.cancelSharedLibraryButton = page.getByRole('button', { name: 'Cancel' });
+    this.searchSharedLibrariesInput = page.getByRole('textbox', { name: 'Search shared libraries' });
     this.searchSharedLibrariesClearButton = page.locator('button[class*="search_bar__clear"]');
     this.libraryTitle = page.locator('div[class*="special-title"]');
     this.libraryComponentsTitle = page.locator(
       '//*[@class="icon-component"]/../../../../../button/div/span'
     );
-    this.dismissButton = page.locator('button:text-is("Dismiss")');
+    this.dismissButton = page.getByRole('button', { name: 'Dismiss' });
     this.librariesUpdatesTab = page.getByRole('tab', { name: 'UPDATES' });
     this.librariesUpdateButton = page.getByRole('button', { name: 'Update' });
-    this.librariesMoreInfoButton = page.locator('input[value="More info"]');
+    this.librariesMoreInfoButton = page.getByRole('button', { name: 'More info' });
     this.closeModalButton = page.locator('svg[class*="close-icon"]');
     this.librariesModal = page.locator('div[class*="libraries__modal-dialog"]');
   }
@@ -131,7 +121,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async isAssetsSectionNameDisplayed(name, amount) {
-    await expect(this.assetsSectionName).toHaveText(name);
+    await expect(this.assetsSectionName.getByText(name)).toHaveText(name);
     await expect(this.assetsSectionNumbers).toHaveText(amount);
   }
 

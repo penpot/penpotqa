@@ -19,13 +19,13 @@ exports.TeamPage = class TeamPage extends BasePage {
       'button[class*="current-team"] div[class*="team-name"]',
     );
     this.teamNameLabel = page.locator('//div[text()="Team info"]/following-sibling::div[1]');
-    this.teamOptionsMenuButton = page.locator('button[class*="switch-options"]');
-    this.deleteTeamMenuItem = page.locator('#teams-options-delete-team');
-    this.deleteTeamButton = page.locator('input[value="Delete team"]');
-    this.teamSettingsMenuItem = page.locator('li[data-testid="team-settings"]');
-    this.renameTeamMenuItem = page.locator('li[data-testid="rename-team"]');
-    this.uploadTeamImageButton = page.locator('input[type="file"]');
-    this.updateTeamButton = page.locator('button:has-text("Update team")');
+    this.teamOptionsMenuButton = page.getByRole('button', { name: 'team-management' });
+    this.deleteTeamMenuItem = page.getByRole('menuitem', { name: 'Delete team' });
+    this.deleteTeamButton = page.getByRole('button', { name: 'Delete team' });
+    this.teamSettingsMenuItem = page.getByRole('menuitem', { name: 'Settings' });
+    this.renameTeamMenuItem = page.getByRole('menuitem', { name: 'Rename' });
+    this.uploadTeamImageButton = page.getByLabel('uploader');
+    this.updateTeamButton = page.getByRole('button', { name: 'Update team' });
     this.teamOwnerSpan = page.locator(
       `//*[contains(@class,'owner-icon')]/../span`,
     );
@@ -42,31 +42,27 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamOwnerSection = page.locator('//div[text()="Team members"]/..');
     this.teamStatsSection = page.locator('//div[text()="Team projects"]/..');
 
-    this.membersMenuItem = page.locator('li[data-testid="team-members"]');
+    this.membersMenuItem = page.getByRole('menuitem', { name: 'Members' });
 
     //Invitations
-    this.invitationsMenuItem = page.locator('li[data-testid="team-invitations"]');
-    this.inviteMembersToTeamButton = page.locator('a[data-testid="invite-member"]');
+    this.invitationsMenuItem = page.getByRole('menuitem', { name: 'Invitations' });
+    this.inviteMembersToTeamButton = page.getByTestId('invite-member');
     this.inviteMembersPopUpHeader = page.locator(
       'div[class*="modal-team-container"] div[class*="title"]',
     );
-    this.inviteMembersTeamHeroButton = page.locator(
-      'button:has-text("Invite members")',
-    );
+    this.inviteMembersTeamHeroButton = page.getByRole('button', { name: 'Invite members' });
     this.inviteMembersToTeamRoleSelectorButton = page.locator(
       'div[class*="custom-select"]',
     );
-    this.adminRoleSelector = page.locator('li:has-text("Admin")');
-    this.editorRoleSelector = page.locator('li:has-text("Editor")');
-    this.ownerRoleSelector = page.locator('li:has-text("Owner")');
-    this.transferOwnershipButton = page.locator('input[value="Transfer ownership"]');
-    this.leaveTeamButton = page.locator('input[value="Leave team"]');
-    this.ownerLeaveTeamButton = page.locator('input[value="Promote and leave"]');
-    this.deleteMemberButton = page.locator('input[value="Delete member"]');
-    this.inviteMembersToTeamEmailInput = page.locator(
-      'input[placeholder="Emails, comma separated"]',
-    );
-    this.sendInvitationButton = page.locator('button:has-text("Send invitation")');
+    this.adminRoleSelector = page.getByRole('listitem').filter({ hasText: 'Admin' });
+    this.editorRoleSelector = page.getByRole('listitem').filter({ hasText: 'Editor' });
+    this.ownerRoleSelector = page.getByRole('listitem').filter({ hasText: 'Owner' });
+    this.transferOwnershipButton = page.getByRole('button', { name: 'Transfer ownership' });
+    this.leaveTeamButton = page.getByRole('button', { name: 'Leave team' });
+    this.ownerLeaveTeamButton = page.getByRole('button', { name: 'Promote and leave' });
+    this.deleteMemberButton = page.getByRole('button', { name: 'Delete member' });
+    this.inviteMembersToTeamEmailInput = page.getByPlaceholder('Emails, comma separated');
+    this.sendInvitationButton = page.getByRole('button', { name: 'Send invitation' });
     this.invitationRecord = page.locator(
       'div[class*="table-rows"] div[class*="table-row"]',
     );
@@ -83,18 +79,10 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.invitationRecordOptionsMenuButton = page.locator(
       'div[class*="main_ui_dashboard_team__table-field"] button',
     );
-    this.invitationRecordResendInvititationMenuItem = page.locator(
-      'li:has-text("Resend invitation")',
-    );
-    this.invitationRecordDeleteInvititationMenuItem = page.locator(
-      'li:has-text("Delete invitation")',
-    );
-    this.memberRecordleaveTeamMenuItem = page.locator(
-      'li:has-text("Leave team")',
-    );
-    this.memberRecordDeleteMemberMenuItem = page.locator(
-      'li:has-text("Remove member")',
-    );
+    this.invitationRecordResendInvititationMenuItem = page.getByRole('listitem').filter({ hasText: 'Resend invitation' });
+    this.invitationRecordDeleteInvititationMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete invitation' });
+    this.memberRecordleaveTeamMenuItem = page.getByRole('listitem').filter({ hasText: 'Leave team' });
+    this.memberRecordDeleteMemberMenuItem = page.getByRole('listitem').filter({ hasText: 'Remove member' });
     this.invitationWarningSpan = page.locator(
       'aside[class*="warning"] div[class*="context_notification"]',
     );
@@ -139,18 +127,14 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async switchTeam(teamName) {
     await this.openTeamsListIfClosed();
-    const teamOption = this.page.locator(
-      `li[class*="team-dropdown-item"] span[class*="team-text"]:text-is("${teamName}")`,
-    );
+    const teamOption = this.page.getByRole('menuitem').filter({ hasText: teamName });
     await teamOption.click();
     await this.isTeamSelected(teamName);
   }
 
   async deleteTeam(teamName) {
     await this.openTeamsListIfClosed();
-    const teamSel = this.page.locator(
-      `ul[class*="teams-dropdown"] li[role="menuitem"] span[title="${teamName}"]`,
-    );
+    const teamSel = this.page.getByRole('menuitem').filter({ hasText: teamName });
     if (await teamSel.isVisible()) {
       await teamSel.click();
       await this.isTeamSelected(teamName);

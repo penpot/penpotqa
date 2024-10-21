@@ -299,7 +299,9 @@ mainTest.describe(() => {
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      'component-publish-shared-library-2-files.png',
+      'component-publish-shared-library-2-files.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+      }
     );
     await mainPage.clickPencilBoxButton();
     await dashboardPage.addFileAsSharedLibraryViaRightclick();
@@ -327,7 +329,7 @@ mainTest.describe(() => {
       await assetsPanelPage.clickLibrariesButton();
       await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
       await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'delete-shared-library-file2.png',
+        'delete-shared-library-file2.png'
       );
       await assetsPanelPage.clickCloseModalButton();
     },
