@@ -9,7 +9,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     super(page);
 
     //Assets panel
-    this.viewModeButton = page.getByRole('link', { name: 'View mode' });
+    this.viewModeButton = page.getByTitle('View mode (G V)');
     this.viewerLoyautSection = page.locator('#viewer-layout');
     this.inspectButton = page.getByRole('button', { name: 'Inspect' });
     this.rightSidebar = page.locator(`aside[class*='inspect_right_sidebar']`);

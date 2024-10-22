@@ -41,6 +41,7 @@ test.beforeEach(async ({ page, browserName }, testInfo) => {
   browserName === 'webkit' && !( await mainPage.isMainPageVisible())
     ? await dashboardPage.createFileViaPlaceholder()
     : null;
+  await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();
 });
 
