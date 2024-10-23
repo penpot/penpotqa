@@ -137,7 +137,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.selectedRadioButtonLabel = page.locator('label[class*="components_forms__radio-label checked"]').first();
     this.selectedRadioImageLabel = page.locator('label[class*="checked"] span[class*="text"]').first();
     this.onboardingPaginator = page.locator('div[class*="onboarding_questions__paginator"]');
-    this.onboardingLetsGoBtn = page.getByRole('button', { name: 'Continue' });
+    this.onboardingLetsGoBtn = page.getByRole('button', { name: 'Continue', exact: true });
     this.onboardingFirstHeader = page.locator('*[class*="onboarding_questions__modal-title"]');
     this.whatNewsHeader = page.getByText('What’s new in Penpot?', { exact: true });
     this.pluginModalHeader = page.getByText('Build Plugins and enhance your workflow', { exact: true });
