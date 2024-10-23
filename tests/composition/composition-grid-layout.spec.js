@@ -43,17 +43,18 @@ mainTest(qase([1689,1696],'PENPOT-1689,1696 Check grid lines, check edit mode in
   await designPanelPage.changeHeightAndWidthForLayer('300', '400');
   await mainPage.waitForChangeIsSaved();
   await mainPage.addGridLayoutViaRightClick();
+  await mainPage.waitForChangeIsUnsaved();
   await mainPage.waitForChangeIsSaved();
   await designPanelPage.isLayoutRemoveButtonExists();
   await mainPage.clickViewportOnce();
   await mainPage.clickCreatedBoardTitleOnCanvas();
   await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-layout.png', {
-    mask: [mainPage.guides],
+    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
   });
   await designPanelPage.openGridEditModeFromDesignPanel();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-edit-mode.png', {
-    mask: [mainPage.guides],
+    mask: [mainPage.guides, mainPage.guidesFragment]
   });
   await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
     'grid-edit-right-sidebar-image.png',
@@ -124,7 +125,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-paddings.png', {
-      mask: [mainPage.guides],
+      mask: [mainPage.guides, mainPage.guidesFragment],
     });
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
@@ -522,7 +523,7 @@ mainTest.describe(() => {
     await designPanelPage.clickOnAreaButton();
     await designPanelPage.enterAreaName('Test Area  Name');
     await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-4cell-area.png', {
-      mask: [mainPage.guides],
+      mask: [mainPage.guides, mainPage.guidesFragment],
     });
   });
 
@@ -542,13 +543,14 @@ mainTest.describe(() => {
     await designPanelPage.changeAxisXandYForLayer('400', '2000');
     await designPanelPage.addLayoutFromDesignPanel('grid');
     await designPanelPage.openGridEditModeFromDesignPanel();
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-not-visible.png', {
-      mask: [mainPage.guides],
+      mask: [mainPage.guides, mainPage.guidesFragment],
     });
     await designPanelPage.clickGridLocateButton();
     await expect(mainPage.viewport).toHaveScreenshot('board-visible.png', {
-      mask: [mainPage.guides],
+      mask: [mainPage.guides, mainPage.guidesFragment],
     });
   });
 

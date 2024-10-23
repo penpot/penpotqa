@@ -8,12 +8,11 @@ exports.ForgotPasswordPage = class ForgotPasswordPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.emailInput = page.locator('#email');
-    this.recoverPasswordButton = page.locator('data-testid=recovery-resquest-submit');
-
+    this.emailInput = page.getByRole('textbox', { name: 'Work email' });
+    this.recoverPasswordButton = page.getByTestId('recovery-resquest-submit');
     this.recoveryPwdInput = page.locator('#password-1');
     this.recoveryPwdConfirmInput = page.locator('#password-2');
-    this.changePwdButton = page.locator('button[class*="auth_recovery__submit-btn"]');
+    this.changePwdButton = page.getByRole('button', { name: 'Change your password' });
   }
 
   async enterEmail(loginEmail) {

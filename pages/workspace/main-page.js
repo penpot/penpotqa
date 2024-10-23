@@ -11,13 +11,13 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Main Toolbar
     this.pencilBoxButton = page.locator('a[class*="header__main-icon"]');
-    this.createBoardButton = page.locator('button[data-testid="artboard-btn"]');
-    this.createRectangleButton = page.locator('button[data-testid="rect-btn"]');
-    this.createEllipseButton = page.locator('button[data-testid="ellipse-btn"]');
-    this.createTextButton = page.locator('button[title="Text (T)"]');
+    this.createBoardButton = page.getByTestId('artboard-btn');
+    this.createRectangleButton = page.getByTestId('rect-btn');
+    this.createEllipseButton = page.getByTestId('ellipse-btn');
+    this.createTextButton = page.getByRole('button', { name: 'Text (T)' });
     this.uploadImageSelector = page.locator('#image-upload');
-    this.createCurveButton = page.locator('button[data-testid="curve-btn"]');
-    this.createPathButton = page.locator('button[data-testid="path-btn"]');
+    this.createCurveButton = page.getByTestId('curve-btn');
+    this.createPathButton = page.getByTestId('path-btn');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
     this.mainToolBar = page.locator(
       '[class*="main-toolbar"] button[class*="toolbar-handler"]',
@@ -70,67 +70,43 @@ exports.MainPage = class MainPage extends BasePage {
     // Main menu - first level
     this.mainMenuButton = page.locator('#left-sidebar-aside svg.icon-menu');
     this.mainMenuList = page.locator('ul[class*="main_ui_workspace_main_menu__menu"]');
-    this.viewMainMenuItem = page.locator('#file-menu-view');
-    this.fileMainMenuItem = page.locator('#file-menu-file');
-    this.editMainMenuItem = page.locator('#file-menu-edit');
-    this.helpInfoMenuItem = page.locator('#file-menu-help-info');
+    this.viewMainMenuItem = page.getByRole('menuitem').filter({ hasText: 'View' });
+    this.fileMainMenuItem = page.getByRole('menuitem').filter({ hasText: 'File' });
+    this.editMainMenuItem = page.getByRole('menuitem').filter({ hasText: 'Edit' });
+    this.helpInfoMenuItem = page.getByRole('menuitem').filter({ hasText: 'Help & info' });
 
     // Main menu - second level
-    this.showRulersMainMenuSubItem = page.locator(
-      '#file-menu-rulers span:text-is("Show rulers")',
-    );
-    this.hideRulersMainMenuSubItem = page.locator(
-      '#file-menu-rulers span:text-is("Hide rulers")',
-    );
-    this.hideGridsMainMenuSubItem = page.locator(
-      '#file-menu-pixel-grid span:text-is("Hide pixel grid")',
-    );
-    this.showGridsMainMenuSubItem = page.locator(
-      '#file-menu-pixel-grid span:text-is("Show pixel grid")',
-    );
-    this.selectAllMainMenuSubItem = page.locator('#file-menu-select-all');
-    this.showColorPaletteMainMenuSubItem = page.locator(
-      '#file-menu-color-palette span:text-is("Show color palette")',
-    );
-    this.hideColorPaletteMainMenuSubItem = page.locator(
-      '#file-menu-color-palette span:text-is("Hide color palette")',
-    );
-    this.showBoardNamesMainMenuSubItem = page.locator(
-      'li[data-testid="display-artboard-names"] span:text-is("Show boards names")',
-    );
-    this.hideBoardNamesMainMenuSubItem = page.locator(
-      'li[data-testid="display-artboard-names"] span:text-is("Hide board names")',
-    );
-    this.showPixelGridMainMenuSubItem = page.locator(
-      '#file-menu-pixel-grid span:text-is("Show pixel grid")',
-    );
-    this.hidePixelGridMainMenuSubItem = page.locator(
-      '#file-menu-pixel-grid span:text-is("Hide pixel grid")',
-    );
-    this.showHideUIMainMenuSubItem = page.locator(
-      'li[data-testid="hide-ui"] span:text-is("Show / Hide UI")',
-    );
-    this.dowloadPenpotFileMenuSubItem = page.locator('#file-menu-binary-file');
-    this.dowloadStandartFileMenuSubItem = page.locator('#file-menu-standard-file');
-    this.addAsSharedLibraryFileMenuSubItem = page.locator('#file-menu-add-shared');
-    this.removeAsSharedLibraryFileMenuSubItem = page.locator(
-      '#file-menu-remove-shared',
-    );
-    this.shortcutsMenuSubItem = page.locator('#file-menu-shortcuts');
+    this.showRulersMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show rulers' });
+    this.hideRulersMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Hide rulers' });
+    this.hideGridsMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Hide pixel grid' });
+    this.showGridsMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show pixel grid' });
+    this.selectAllMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Select all' });
+    this.showColorPaletteMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show color palette' });
+    this.hideColorPaletteMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Hide color palette' });
+    this.showBoardNamesMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show boards names' });
+    this.hideBoardNamesMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Hide board names' });
+    this.showPixelGridMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show pixel grid' });
+    this.hidePixelGridMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Hide pixel grid' });
+    this.showHideUIMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show / Hide UI' });
+    this.dowloadPenpotFileMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Download Penpot file (.penpot)' });
+    this.dowloadStandartFileMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Download standard file (.svg + .json)' });
+    this.addAsSharedLibraryFileMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Add as Shared Library' });
+    this.removeAsSharedLibraryFileMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Unpublish Library' });
+    this.shortcutsMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Shortcuts' });
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
     //Zoom
-    this.zoomButton = page.locator('div[title="Zoom"]');
+    this.zoomButton = page.getByTitle('Zoom', { exact: true });
     this.zoomPlusButton = page.locator(
       'button[class*="header__zoom-btn"] svg[class="icon-add"]',
     );
     this.zoomMinusButton = page.locator(
       'button[class*="header__zoom-btn"] svg[class="icon-remove"]',
     );
-    this.zoomResetButton = page.locator('button:has-text("Reset")');
-    this.zoomToFitAllMenuItem = page.locator('li:has-text("Zoom to fit all")');
-    this.zoomSelectedMenuItem = page.locator('li:has-text("Zoom to selected")');
+    this.zoomResetButton = page.getByRole('button', { name: 'Reset' });
+    this.zoomToFitAllMenuItem = page.getByRole('listitem').filter({ hasText: 'Zoom to fit all' });
+    this.zoomSelectedMenuItem = page.getByRole('listitem').filter({ hasText: 'Zoom to selected' });
 
     //Pages
     this.addPageButton = page.locator('button[class*="add-page"]');
@@ -144,22 +120,16 @@ exports.MainPage = class MainPage extends BasePage {
     this.pageNameInput = page.locator(
       'ul[class*="page-list"] div[class*="element-list-body"] input',
     );
-    this.renamePageMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Rename")',
-    );
-    this.duplicatePageMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Duplicate")',
-    );
-    this.deletePageMenuItem = page.locator(
-      'ul[class*="workspace_context_menu"] li span:has-text("Delete")',
-    );
+    this.renamePageMenuItem = page.getByRole('listitem').filter({ hasText: 'Rename' });
+    this.duplicatePageMenuItem = page.getByRole('listitem').filter({ hasText: 'Duplicate' });
+    this.deletePageMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete' });
     this.collapseExpandPagesButton = page.locator(
       'span[class*="collapsabled-icon"]',
     );
     this.pageTrashIcon = page.locator(
       'div[class*="selected"] svg[class="icon-delete"]',
     );
-    this.deletePageOkButton = page.locator('input[value="Ok"]');
+    this.deletePageOkButton = page.getByRole('button', { name: 'Ok' });
 
     // Bottom palette
     this.bottomPaletteContentBlock = page.locator(
@@ -173,13 +143,13 @@ exports.MainPage = class MainPage extends BasePage {
     );
 
     //Header
-    this.unSavedChangesIcon = page.locator('div[title="Unsaved changes"]');
+    this.unSavedChangesIcon = page.getByTitle('Unsaved changes', { exact: true });
     this.usersSection = page.locator('div[class*="users-section"]');
     this.projectNameSpan = page.locator('div[class*="project-name"]');
     this.fileNameSpan = page.locator('div[class*="file-name"]');
 
     //History panel
-    this.historyPanelButton = page.locator('button[title^="History"]');
+    this.historyPanelButton = page.getByRole('button', { name: /History/ });
     this.historyPanelActionRecord = page.locator(
       'div[class*="history-entry-summary-text"]',
     );
@@ -192,8 +162,8 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class*="shortcuts-close-button"]',
     );
 
-    this.fileLeftSidebarAside = page.locator('#left-sidebar-aside');
-    this.fileRightSidebarAside = page.locator('#right-sidebar-aside');
+    this.fileLeftSidebarAside = page.getByTestId('left-sidebar');
+    this.fileRightSidebarAside = page.getByTestId('right-sidebar');
 
     this.errorScreen = page.locator('div[class*="static__exception-content"]');
     this.loginDialog = page.locator('div[class*="dialog-login"]');
@@ -992,13 +962,13 @@ exports.MainPage = class MainPage extends BasePage {
   async addGridRowBelow() {
     await this.gridEditorLabel.last().hover();
     await this.gridEditorButton.click();
-    await this.AddRowBelowMenuItem.click();
+    await this.addRowBelowMenuItem.click();
   }
 
   async addGridColumnRight() {
     await this.gridEditorLabel.first().hover();
     await this.gridEditorButton.click();
-    await this.AddColumnRightMenuItem.click();
+    await this.addColumnRightMenuItem.click();
   }
 
   async selectGridCellMultiple(startCell, endCell) {

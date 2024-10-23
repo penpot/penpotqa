@@ -89,8 +89,12 @@ mainTest.describe(() => {
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.changeRotationForLayer('20');
+      await designPanelPage.waitForChangeIsUnsaved();
+      await designPanelPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-change-rotation.png',
+        'main-copies-component-change-rotation.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+        }
       );
     },
   );
@@ -105,9 +109,12 @@ mainTest.describe(() => {
       await designPanelPage.changeTopRightCornerRadiusForLayer(cornerValue);
       await designPanelPage.changeBottomLeftCornerRadiusForLayer(cornerValue);
       await designPanelPage.changeBottomRightCornerRadiusForLayer(cornerValue);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-add-corners.png',
+        'main-copies-component-add-corners.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+        }
       );
     },
   );
@@ -118,9 +125,12 @@ mainTest.describe(() => {
       const cornerValue = '45';
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.changeGeneralCornerRadiusForLayer(cornerValue);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-add-corners.png',
+        'main-copies-component-add-corners.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+        }
       );
     },
   );
@@ -327,7 +337,9 @@ mainTest.describe(() => {
       await mainPage.refreshPage();
       await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-change-fill.png',
+        'main-copies-component-change-fill.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+        }
       );
     },
   );

@@ -8,16 +8,16 @@ exports.LoginPage = class LoginPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.pageTitle = page.locator('h1[data-testid="login-title"]');
+    this.pageTitle = page.getByTestId('login-title');
     this.emailInput = page.locator('#email');
     this.pwdInput = page.locator('#password');
-    this.loginButton = page.locator('button[data-testid="login-submit"]');
-    this.emailInputError = page.locator('div[data-testid="-error"]');
+    this.loginButton = page.getByTestId('login-submit');
+    this.emailInputError = page.getByTestId('-error');
     this.section = page.locator('section[class="auth-content"]');
     this.loginErrorBanner = page.locator('aside[class*="context_notification__warning"] div:nth-of-type(2)');
-    this.createAccountLink = page.locator('a:has-text("Create an account")');
-    this.forgotPasswordLink = page.locator('a[data-testid="forgot-password"]');
-    this.loginHereButton = page.locator('*[data-testid="login-here-link"]');
+    this.createAccountLink = page.getByTestId('register-submit');
+    this.forgotPasswordLink = page.getByTestId('forgot-password');
+    this.loginHereButton = page.getByTestId('login-here-link');
   }
 
   async checkLoginError(text) {
@@ -67,7 +67,7 @@ exports.LoginPage = class LoginPage extends BasePage {
   async clickOnCreateAccount() {
     await this.createAccountLink.click();
   }
-  async clickOnLoginHereLinc() {
+  async clickOnLoginHereLink() {
     await this.loginHereButton.click();
   }
 

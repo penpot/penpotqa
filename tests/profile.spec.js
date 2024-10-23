@@ -50,7 +50,7 @@ mainTest(qase(198,'PR-12 Change password to invalid'), async ({ page }) => {
   await profilePage.enterCurrentPassword(process.env.LOGIN_PWD);
   await profilePage.enterNewPassword(newPassword);
   await profilePage.enterConfirmPassword(newPassword);
-  await profilePage.isUpdateSettingsBtnDisabled();
+  await profilePage.isChangePasswordButtonDisabled();
   await profilePage.isPasswordInputErrorDisplayed(
     'Password should at least be 8 characters',
   );
@@ -66,7 +66,7 @@ mainTest(
     await profilePage.enterCurrentPassword(process.env.LOGIN_PWD);
     await profilePage.enterNewPassword('test12345');
     await profilePage.enterConfirmPassword('test54321');
-    await profilePage.isUpdateSettingsBtnDisabled();
+    await profilePage.isChangePasswordButtonDisabled();
     await profilePage.isPasswordInputErrorDisplayed(
       'Confirmation password must match',
     );

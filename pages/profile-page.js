@@ -11,47 +11,47 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.profileSection = page.locator('.main_ui_settings__dashboard-content');
 
     //Account
-    this.profileMenuButton = page.locator('button[data-testid="profile-btn"]');
-    this.yourAccountMenuItem = page.locator('li[data-testid="profile-profile-opt"]');
-    this.logoutMenuItem = page.locator('li[data-testid="logout-profile-opt"]');
-    this.giveFeedbackMenuItem = page.locator('li[data-testid="feedback-profile-opt"]');
-    this.backToDashboardBtn = page.locator('button[class*="back-to-dashboard"]');
+    this.profileMenuButton = page.getByTestId('profile-btn');
+    this.yourAccountMenuItem = page.getByTestId('profile-profile-opt');
+    this.logoutMenuItem = page.getByTestId('logout-profile-opt');
+    this.giveFeedbackMenuItem = page.getByTestId('feedback-profile-opt');
+    this.backToDashboardBtn = page.getByRole('button', { name: 'Dashboard' });
 
     //Profile
     this.profileNameInput = page.locator('#fullname');
     this.profileEmailInput = page.locator('#email');
-    this.saveSettingsButton = page.locator('button:has-text("Save settings")');
-    this.profileImageInput = page.locator('input[data-testid="profile-image-input"]');
+    this.saveSettingsButton = page.getByRole('button', { name: 'Save settings' });
+    this.profileImageInput = page.getByTestId('profile-image-input');
     this.profileAvatarBlock = page.locator(
       'div.main_ui_settings_profile__form-container',
     );
     this.changeEmailBtn = page.locator('div[class="change-email"]');
     this.newEmailInput = page.locator('#email-1');
     this.confirmNewEmailInput = page.locator('#email-2');
-    this.confirmChangeEmailBtn = page.locator('div[data-testid="change-email-submit"] button');
+    this.confirmChangeEmailBtn = page.getByRole('button').filter({hasText: 'Change email'});
 
     //Feedback
     this.feedbackSubjectInput = page.locator('#subject');
     this.feedbackDescriptionInput = page.locator('textarea');
-    this.sendFeedbackButton = page.locator('button[name="submit"]');
+    this.sendFeedbackButton = page.getByRole('button', { name: 'Send' });
 
     //Password
-    this.passwordSidebarOption = page.locator('li span:text-is("Password")');
+    this.passwordSidebarOption = page.getByRole('listitem').filter({ hasText: 'Password' });
     this.passwordFormHeader = page.locator(
       'div[class*="password__form-container"] h2',
     );
     this.passwordOldInput = page.locator('#password-old');
-    this.passwordNewInput = page.locator('input[placeholder="New password"]');
-    this.passwordConfirmInput = page.locator('input[placeholder="Confirm password"]');
-    this.updateSettingsBtn = page.locator('button[name="submit"]');
-    this.passwordInputError = page.locator('div[data-testid="-error"]').first();
+    this.passwordNewInput = page.getByPlaceholder('New password');
+    this.passwordConfirmInput = page.getByPlaceholder('Confirm password');
+    this.changePasswordButton = page.getByTestId('submit-password');
+    this.passwordInputError = page.getByTestId('-error');
 
     //Settings
-    this.settingsMenuButton = page.locator('li[data-testid="settings-profile"]');
-    this.darkThemeOption = page.locator('li span:text-is("Penpot Dark (default)")');
-    this.lightThemeOption = page.locator('li span:text-is("Penpot Light")');
+    this.settingsMenuButton = page.getByTestId('settings-profile');
+    this.darkThemeOption = page.getByRole('listitem').filter({ hasText: 'Penpot Dark (default)' });
+    this.lightThemeOption = page.getByRole('listitem').filter({ hasText: 'Penpot Light' });
     this.uiThemeDropdown = page.locator('[class*="select-wrapper"] >>nth=1');
-    this.giveFeedbackMenuItem = page.locator('li[data-testid="feedback-profile-opt"]');
+    this.updateSettingsButton = page.getByTestId('submit-lang-change');
   }
 
   async openYourAccountPage() {
@@ -91,11 +91,11 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   }
 
   async isPasswordInputErrorDisplayed(error) {
-    await expect(this.passwordInputError).toHaveText(error);
+    await expect(this.passwordInputError.first()).toHaveText(error);
   }
 
-  async isUpdateSettingsBtnDisabled() {
-    await expect(this.updateSettingsBtn).toBeDisabled();
+  async isChangePasswordButtonDisabled() {
+    await expect(this.changePasswordButton).toBeDisabled();
   }
 
   async logout() {
@@ -154,14 +154,14 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   async selectLightTheme() {
     await this.uiThemeDropdown.click();
     await this.lightThemeOption.click();
-    await this.updateSettingsBtn.click();
+    await this.updateSettingsButton.click();
     await this.isSuccessMessageDisplayed('Profile saved successfully!');
   }
 
   async selectDarkTheme() {
     await this.uiThemeDropdown.click();
     await this.darkThemeOption.click();
-    await this.updateSettingsBtn.click();
+    await this.updateSettingsButton.click();
     await this.isSuccessMessageDisplayed('Profile saved successfully!');
   }
 

@@ -262,14 +262,23 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await designPanelPage.changeTextAlignment('Middle');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-align-middle.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-middle.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.changeTextAlignment('Bottom');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-align-bottom.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-bottom.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.changeTextAlignment('Top');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-align-top.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-top.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(qase(427,'CO-212 Change RTL/LTR'), async ({ page }) => {
