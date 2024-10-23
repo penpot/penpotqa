@@ -39,7 +39,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.downloadFileStandardMenuItem = page.getByTestId('download-standard-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
-    this.downloadFileCloseButton = page.getByRole('button', { name: 'Close' }).getByText('Close');
+    this.downloadFileCloseButton = page.getByRole('button', { name: 'Close' }).getByText('Close', { exact: true });
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
     this.fileOptionsMenuButton = page.locator(
       'div[class*="project-th-icon"] svg',
@@ -139,8 +139,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingPaginator = page.locator('div[class*="onboarding_questions__paginator"]');
     this.onboardingLetsGoBtn = page.getByRole('button', { name: 'Continue' });
     this.onboardingFirstHeader = page.locator('*[class*="onboarding_questions__modal-title"]');
-    this.whatNewsHeader = page.getByText('What’s new in Penpot?');
-    this.pluginModalHeader = page.getByText('Build Plugins and enhance your workflow');
+    this.whatNewsHeader = page.getByText('What’s new in Penpot?', { exact: true });
+    this.pluginModalHeader = page.getByText('Build Plugins and enhance your workflow', { exact: true });
     this.pluginModalContinueBtn = page.getByRole('button', { name: 'Continue'} );
     this.pluginModalGoBtn = page.getByRole('button', { name: 'Let\'s go'} );
   }

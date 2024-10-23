@@ -22,7 +22,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentReplyText = page.locator(
       'div[class*="thread-content"] span[class*="comments__text"] >> nth=1',
     );
-    this.commentReplyCommentsPanelText = page.getByText('1 reply');
+    this.commentReplyCommentsPanelText = page.getByText('1 reply', { exact: true });
     this.postCommentButton = page.getByRole('button', { name: 'Post' });
     this.commentThreadIcon = page.locator(
       'div[class*="comments-container"] div[class*="thread-bubble"]',

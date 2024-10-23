@@ -14,7 +14,7 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.colorsLibrariesSelect = page.locator(
       'div[class*="colorpicker_libraries__select-wrapper"]',
     );
-    this.colorsFileLibraryOptions = page.getByText('File library');
+    this.colorsFileLibraryOptions = page.getByText('File library', { exact: true });
     this.colorPaletteActionsBtn = page.locator('button[class*="palette-actions"]');
     this.colorPaletteMenu = page.locator('ul[class*="palette-menu"]');
     this.colorPaletteFileLibraryOpt = page.getByRole('listitem').filter({ hasText: 'File library' });

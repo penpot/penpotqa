@@ -97,7 +97,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
     //Zoom
-    this.zoomButton = page.getByTitle('Zoom');
+    this.zoomButton = page.getByTitle('Zoom', { exact: true });
     this.zoomPlusButton = page.locator(
       'button[class*="header__zoom-btn"] svg[class="icon-add"]',
     );
@@ -143,7 +143,7 @@ exports.MainPage = class MainPage extends BasePage {
     );
 
     //Header
-    this.unSavedChangesIcon = page.getByTitle('Unsaved changes');
+    this.unSavedChangesIcon = page.getByTitle('Unsaved changes', { exact: true });
     this.usersSection = page.locator('div[class*="users-section"]');
     this.projectNameSpan = page.locator('div[class*="project-name"]');
     this.fileNameSpan = page.locator('div[class*="file-name"]');

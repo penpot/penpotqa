@@ -50,8 +50,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.componentColorInput = page.locator(`input[class*='rows_color_row__color-input']`)
 
     //Design panel - Shadow section
-    this.shadowSection = page.getByText('Shadow');
-    this.groupShadowSection = page.getByText('Group shadow');
+    this.shadowSection = page.getByText('Shadow', { exact: true });
+    this.groupShadowSection = page.getByText('Group shadow', { exact: true });
     this.addShadowButton = page.getByTestId('add-shadow');
     this.shadowActionsButton = page.locator('button[class*="shadow__more-options"]');
     this.shadowXInput = page.locator(
@@ -151,15 +151,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[title="Bottom padding"] input',
     );
     this.layoutPaddingLeftInput = page.locator('div[title="Left padding"] input');
-    this.layoutGridJustifyStartBtn = page.getByTitle('Justify items start');
-    this.layoutGridJustifyCenterBtn = page.getByTitle('Justify items center');
-    this.layoutGridJustifyEndBtn = page.getByTitle('Justify items end');
-    this.layoutGridJustifySpaceBetweenBtn = page.getByTitle('Justify items space-between');
-    this.layoutGridJustifySpaceAroundBtn = page.getByTitle('Justify items space-around');
-    this.layoutGridJustifySpaceEvenlyBtn = page.getByTitle('Justify items space-evenly');
+    this.layoutGridJustifyStartBtn = page.getByTitle('Justify items start', { exact: true });
+    this.layoutGridJustifyCenterBtn = page.getByTitle('Justify items center', { exact: true });
+    this.layoutGridJustifyEndBtn = page.getByTitle('Justify items end', { exact: true });
+    this.layoutGridJustifySpaceBetweenBtn = page.getByTitle('Justify items space-between', { exact: true });
+    this.layoutGridJustifySpaceAroundBtn = page.getByTitle('Justify items space-around', { exact: true });
+    this.layoutGridJustifySpaceEvenlyBtn = page.getByTitle('Justify items space-evenly', { exact: true });
 
     //Design panel - Blur section
-    this.blurSection = page.getByText('Blur');
+    this.blurSection = page.getByText('Blur', { exact: true });
     this.addBlurButton = page.getByTestId('add-blur');
     this.blurMoreOptions = page.locator('button[class*="blur__show-more"]');
     this.blurValueInput = page.locator('#blur-input-sidebar');
@@ -175,7 +175,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel - Stroke section
     this.addStrokeButton = page.getByTestId('add-stroke');
-    this.strokeSection = page.getByText('Stroke');
+    this.strokeSection = page.getByText('Stroke', { exact: true });
     this.strokeColorBullet = page.locator(
       'div[class*="bullet-wrapper"] div[class*="color_bullet__is-not-library-color"]',
     );
@@ -215,15 +215,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textFontSizeInput = page.locator('div[class*="font-size-select"] input');
 
     //Design panel - Export section
-    this.exportSection = page.getByText('Export');
+    this.exportSection = page.getByText('Export', { exact: true });
     this.addExportButton = page.locator('button[class*="exports__add-export"]');
     this.removeExportButton = page.locator(
       'button[class*="exports__action-btn"] svg[class="icon-remove"]',
     );
-    this.exportElementButton = this.moveButton = page.getByRole('button', { name: /Export \d+ element/ });
+    this.exportElementButton = page.getByRole('button', { name: /Export \d+ element/ });
 
     //Design panel - Grid section
-    this.gridSection = page.getByText('Guides');
+    this.gridSection = page.getByText('Guides', { exact: true });
     this.addGridButton = page.locator('button[class*="grid__add-grid"]');
     this.removeGridButton = page.locator(
       'div[class*="grid__actions"] svg[class="icon-remove"]',
@@ -237,9 +237,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridTypeField = page.locator(
       'div[class*="grid__option-row"] div[class*="type-select-wrapper"]',
     );
-    this.gridTypeSelectorSquareOption = page.getByText('Square');
-    this.gridTypeSelectorColumnsOption = page.getByText('Columns');
-    this.gridTypeSelectorRowsOption = page.getByText('Rows');
+    this.gridTypeSelectorSquareOption = page.getByText('Square', { exact: true });
+    this.gridTypeSelectorColumnsOption = page.getByText('Columns', { exact: true });
+    this.gridTypeSelectorRowsOption = page.getByText('Rows', { exact: true });
     this.gridSizeInput = page.locator(`input[class*='grid__numeric-input']`);
     this.gridColumnsRowsInput = page.locator(
       'div[class*="grid__column-select"] input',

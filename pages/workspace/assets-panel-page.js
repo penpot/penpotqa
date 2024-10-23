@@ -36,8 +36,8 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.createGroupButton = page.getByRole('button', { name: 'Create' });
     this.renameGroupButton = page.getByRole('button', { name: 'Rename' });
     this.fileLibraryGroupTitle = page.locator('div[class*="group-title"]');
-    this.fileLibraryListViewButton = page.getByTitle('List view');
-    this.fileLibraryGridViewButton = page.getByTitle('Grid view');
+    this.fileLibraryListViewButton = page.getByTitle('List view', { exact: true });
+    this.fileLibraryGridViewButton = page.getByTitle('Grid view', { exact: true });
     this.addFileLibraryColorButton = page.locator(
       'button[class*="assets_colors__assets-btn"]',
     );

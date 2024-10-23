@@ -13,7 +13,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.viewerLoyautSection = page.locator('#viewer-layout');
     this.inspectButton = page.getByRole('button', { name: 'Inspect' });
     this.rightSidebar = page.locator(`aside[class*='inspect_right_sidebar']`);
-    this.fullScreenButton = page.getByTitle('Full Screen');
+    this.fullScreenButton = page.getByTitle('Full Screen', { exact: true });
     this.fullScreenSection = page.locator(`section[class*="main_ui_viewer__fulscreen"]`);
     this.prevBoardButton = page.locator(`button[class*="viewer-go-prev"]`);
     this.nextBoardButton = page.locator(`button[class*="viewer-go-next"]`);
@@ -30,7 +30,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.scaleDropdown = page.locator('div[class*="header__zoom-widget"]');
     this.upscaleButton = page.locator('button[class*="zoom-btn"] .icon-remove');
     this.downscaleButton = page.locator('button[class*="zoom-btn"] .icon-add');
-    this.scaleResetButton =  page.getByRole('button', { name: 'Reset' });
+    this.scaleResetButton = page.getByRole('button', { name: 'Reset' });
     this.scaleFitOptions = page.getByRole('listitem').filter({ hasText: 'Fit - Scale down to fit' });
     this.scaleFillOptions = page.getByRole('listitem').filter({ hasText: 'Fill - Scale to fill' });
     this.scaleFullScreenOptions = page.getByRole('listitem').filter({ hasText: 'Full screen' });
@@ -56,7 +56,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.shareLinkDialog = page.locator('div[class*="share-link-dialog"]');
     this.getLinkButton = page.getByRole('button', { name: 'Get link' });
     this.managePermissionsButton = page.getByRole('button', { name: 'Manage permissions' });
-    this.selectAllCheckbox = page.getByText('Select All');
+    this.selectAllCheckbox = page.getByText('Select All', { exact: true });
     this.copyLinkButton = page.getByRole('button', { name: 'Copy link' });
     this.copyLinkField = page.getByPlaceholder('Shareable link will appear here');
     this.destroyLinkButton = page.getByRole('button', { name: 'Destroy link' });
