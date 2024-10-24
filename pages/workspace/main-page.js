@@ -19,6 +19,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.createCurveButton = page.locator('button[data-testid="curve-btn"]');
     this.createPathButton = page.locator('button[data-testid="path-btn"]');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
+    this.pluginsButton = page.getByRole('button', { name: /plugins/i });
     this.mainToolBar = page.locator(
       '[class*="main-toolbar"] button[class*="toolbar-handler"]',
     );
@@ -66,6 +67,11 @@ exports.MainPage = class MainPage extends BasePage {
     );
     this.nodePanelToCornerButton = page.locator('button[title^="To corner"]');
     this.nodePanelToCurveButton = page.locator('button[title^="To curve"]');
+
+
+    // Plugin Manager panel
+    this.pluginManagerPanel = page.locator('div[class$="workspace_plugins__plugin-management"]');
+    this.closeButtonPluginManagerPanel = page.locator('button[class$="plugins__close-btn"]');
 
     // Main menu - first level
     this.mainMenuButton = page.locator('#left-sidebar-aside svg.icon-menu');
@@ -246,7 +252,17 @@ exports.MainPage = class MainPage extends BasePage {
     await this.createPathButton.click({ delay: 500 });
     await expect(this.pathActionsBlock).toBeVisible();
   }
+  
+  async clickPluginsButton() {
+    await this.pluginsButton.click({ delay: 500 });
+    await expect(this.pluginManagerPanel).toBeVisible();
+  }
 
+  async clickClosePluginManagerPanelButton() {
+    await this.closeButtonPluginManagerPanel.click({ delay: 500 });
+    await expect(this.pluginManagerPanel).not.toBeVisible();
+  }
+  
   async clickViewportOnce() {
     await this.viewport.click();
   }
