@@ -50,7 +50,7 @@ mainTest.describe(() => {
       await expect(page).toHaveScreenshot(
         'connector-between-board2-and-board1.png',
         {
-          mask: [mainPage.usersSection],
+          mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -75,10 +75,11 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
     await prototypePanelPage.clickRemoveSecondInteractionButton();
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await prototypePanelPage.isPrototypeArrowSecondConnectorNotDisplayed();
     await expect(page).toHaveScreenshot('connector-between-board2-and-board1.png', {
-      mask: [mainPage.usersSection],
+      mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
   });
 
@@ -100,10 +101,11 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await prototypePanelPage.renameFlow('qa');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('qa');
     await expect(page).toHaveScreenshot('rename-flow.png', {
-      mask: [mainPage.usersSection],
+      mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
   });
 

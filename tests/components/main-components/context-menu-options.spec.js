@@ -387,7 +387,9 @@ mainTest.describe(() => {
       await basePage.resetOverridesViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-reset-overrides.png',
+        'main-copies-component-reset-overrides.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+        }
       );
     },
   );
@@ -495,7 +497,9 @@ mainTest.describe(() => {
       await basePage.resetOverridesViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-reset-overrides.png',
+        'main-copies-component-reset-overrides.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+        }
       );
     },
   );

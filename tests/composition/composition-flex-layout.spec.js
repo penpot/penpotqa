@@ -51,6 +51,7 @@ mainTest.describe(() => {
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await mainPage.addFlexLayoutViaRightClick();
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayoutIconVisibleOnLayer();
     await designPanelPage.isLayoutRemoveButtonExists();

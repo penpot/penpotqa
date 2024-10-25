@@ -16,6 +16,10 @@ Prerequisites for local run:
   - `LOGIN_EMAIL` (email from your Penpot account)
   - `LOGIN_PWD` (password from your Penpot account)
   - `BASE_URL` (Penpot url - e.g. http://localhost:9001/ if deployed locally)
+  - `GMAIL_NAME` (Gmail account name for email verification)
+  - `REFRESH_TOKEN` (Token for email access)
+  - `CLIENT_ID` (for email access)
+  - `CLIENT_SECRET` (for email access)
 
 **2. Test run - main notes.**
 
@@ -56,16 +60,15 @@ Some settings from _playwright.config.js_ may be useful:
 
 - All tests should be independent for running them in parallel mode
 - For run tests in parallel mode need to update key `workers` in `playwright.config.js` file
-- `workers`: `process.env.CI ? 2 : 2` - by default 2 workers are used for local run and run on CI/CD.
+- `workers`: `process.env.CI ? 3 : 3` - by default 3 workers are used for local run and run on CI/CD.
 - For disabling parallelism set `workers` to 1.
 
 **5. Tests amount and execution time.**
 
-- For now there are 327 tests in current repository
-- If parallel execution is enabled with default amount of workers (2) the average time for each browser is the following:
-- Chrome: 43 mins
-- Firefox: 45 mins
-- Webkit: 55 mins
+- For now there are 531 tests in current repository
+- If parallel execution is enabled with default amount of workers (3) the average time for each browser is the following:
+- Chrome: 72 mins
+- Firefox: 81 mins
 
 **6. Snapshots comparison.**
 
@@ -97,7 +100,6 @@ To exclude performance tests from the periodical regression test run the followi
 
 - for Chrome: `"npx playwright test --project=chrome -gv 'PERF'"`
 - for Firefox: `"npx playwright test --project=firefox -gv 'PERF'"`
-- for Webkit: `"npx playwright test --project=webkit -gv 'PERF'"`
 
 Note: The above scripts should be executed via the command line. Do not run them directly from the _package.json_,
 because in such way performance tests are not ignored.
@@ -110,6 +112,10 @@ For each environment the appropriate secrets were added:
 - _LOGIN_EMAIL_ (email from your Penpot account, which is used for tests)
 - _LOGIN_PWD_ (password from your Penpot account, which is used for tests)
 - _BASE_URL_ (Penpot url)
+- _GMAIL_NAME_ (Gmail account name for email verification)
+- _REFRESH_TOKEN_ (Token for email access)
+- _CLIENT_ID_ (for email access)
+- _CLIENT_SECRET_ (for email access)
 
 2 _.yml_ files were added into _.github/workflows_ directory with settings for environments:
 
