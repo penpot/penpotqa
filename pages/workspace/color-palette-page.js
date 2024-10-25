@@ -10,15 +10,15 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.popUp = page.locator('div[class*="colorpicker-tooltip"]');
     this.hexInput = page.locator('#hex-value');
     this.modalHexInput = page.locator('div[class*="selected-color-group"] span[class*="color-input-wrapper"] input');
-    this.saveColorStyleButton = page.locator('button:has-text("Save color style")');
+    this.saveColorStyleButton = page.getByRole('button', { name: 'Save color style' });
     this.colorsLibrariesSelect = page.locator(
       'div[class*="colorpicker_libraries__select-wrapper"]',
     );
-    this.colorsFileLibraryOptions = page.locator('span:has-text("File library")');
+    this.colorsFileLibraryOptions = page.getByText('File library', { exact: true });
     this.colorPaletteActionsBtn = page.locator('button[class*="palette-actions"]');
     this.colorPaletteMenu = page.locator('ul[class*="palette-menu"]');
-    this.colorPaletteFileLibraryOpt = page.locator('li:has-text("File library")');
-    this.colorPaletteRecentColorsOpt = page.locator('li:has-text("Recent colors")');
+    this.colorPaletteFileLibraryOpt = page.getByRole('listitem').filter({ hasText: 'File library' });
+    this.colorPaletteRecentColorsOpt = page.getByRole('listitem').filter({ hasText: 'Recent colors' });
   }
 
   async setHex(value) {
@@ -69,7 +69,7 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   }
 
   async selectColorPaletteMenuOption(value) {
-    const menuSel = this.page.locator(`li:has-text("${value}")`);
+    const menuSel = this.page.getByRole('listitem').filter({ hasText: value });
     await menuSel.click();
     await expect(this.colorPaletteMenu).not.toBeVisible();
   }

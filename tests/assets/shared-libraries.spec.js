@@ -299,7 +299,9 @@ mainTest.describe(() => {
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      'component-publish-shared-library-2-files.png',
+      'component-publish-shared-library-2-files.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+      }
     );
     await mainPage.clickPencilBoxButton();
     await dashboardPage.addFileAsSharedLibraryViaRightclick();
@@ -327,7 +329,7 @@ mainTest.describe(() => {
       await assetsPanelPage.clickLibrariesButton();
       await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
       await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'delete-shared-library-file2.png',
+        'delete-shared-library-file2.png'
       );
       await assetsPanelPage.clickCloseModalButton();
     },
@@ -583,7 +585,7 @@ mainTest.describe(() => {
   const team1 = teamName;
   const team2 = random().concat('QA Test team 2');
 
-  mainTest(qase(1540,'PENDOT-1540 Move library to a different team'), async () => {
+  mainTest(qase(1540,'PENPOT-1540 Move library to a different team'), async () => {
     await mainPage.createDefaultEllipseByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();

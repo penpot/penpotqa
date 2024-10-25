@@ -41,6 +41,7 @@ test.beforeEach(async ({ page, browserName }, testInfo) => {
   browserName === 'webkit' && !( await mainPage.isMainPageVisible())
     ? await dashboardPage.createFileViaPlaceholder()
     : null;
+  await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();
 });
 
@@ -617,26 +618,26 @@ mainTest.describe(() => {
     await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickShareButton();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.shareLincDialog).toHaveScreenshot(
+    await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
       'view-mode-share-window-image.png',
     );
-    await viewModePage.clickGetLincButton();
+    await viewModePage.clickGetLinkButton();
     await viewModePage.clickManagePermissionsButton();
-    await expect(viewModePage.shareLincDialog).toHaveScreenshot(
+    await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
       'view-mode-share-window-1page-selected-image.png',
     );
     await viewModePage.selectAllPages();
-    await expect(viewModePage.shareLincDialog).toHaveScreenshot(
+    await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
       'view-mode-share-window-all-pages-selected-image.png',
     );
-    await viewModePage.clickGetLincButton();
-    const shareLinc = await viewModePage.clickCopyLincButton();
+    await viewModePage.clickGetLinkButton();
+    const shareLink = await viewModePage.clickCopyLinkButton();
     await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
 
     await mainPage.clickPencilBoxButton();
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
-    await profilePage.gotoLinc(shareLinc);
+    await profilePage.gotoLink(shareLink);
     const newViewModePage = new ViewModePage(page);
     await newViewModePage.isViewerSectionVisible();
     await expect(newViewModePage.viewerLoyautSection).toHaveScreenshot(
@@ -651,16 +652,16 @@ mainTest.describe(() => {
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickShareButton();
-    await viewModePage.clickGetLincButton();
-    const shareLinc = await viewModePage.clickCopyLincButton();
+    await viewModePage.clickGetLinkButton();
+    const shareLink = await viewModePage.clickCopyLinkButton();
     await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
 
-    await viewModePage.clickDestroyLincButton();
+    await viewModePage.clickDestroyLinkButton();
 
     await mainPage.clickPencilBoxButton();
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
-    await profilePage.gotoLinc(shareLinc);
+    await profilePage.gotoLink(shareLink);
     viewModePage = new ViewModePage(page);
     await viewModePage.isViewerSectionVisible(false);
     await expect(mainPage.loginDialog).toHaveScreenshot(
@@ -677,10 +678,10 @@ mainTest.describe(() => {
     await viewModePage.clickShareButton();
     await viewModePage.clickManagePermissionsButton();
     await viewModePage.selectAllUsersCommentPermission();
-    await viewModePage.clickGetLincButton();
-    const shareLinc = await viewModePage.clickCopyLincButton();
+    await viewModePage.clickGetLinkButton();
+    const shareLink = await viewModePage.clickCopyLinkButton();
     await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
-    await expect(viewModePage.shareLincDialog).toHaveScreenshot(
+    await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
       'view-mode-share-window-all-users-comment-image.png',
     );
     await newPage.close();
@@ -692,13 +693,13 @@ mainTest.describe(() => {
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
-    await profilePage.gotoLinc(shareLinc);
+    await profilePage.gotoLink(shareLink);
     viewModePage = new ViewModePage(page);
     await viewModePage.isViewerSectionVisible();
     await viewModePage.clickCommentsButton();
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'view-mode-shared-comments-image.png');
-    await viewModePage.gotoLinc(process.env.BASE_URL);
+    await viewModePage.gotoLink(process.env.BASE_URL);
     await mainPage.isHeaderDisplayed('Projects');
     await profilePage.logout();
   });
@@ -712,10 +713,10 @@ mainTest.describe(() => {
     await viewModePage.clickShareButton();
     await viewModePage.clickManagePermissionsButton();
     await viewModePage.selectAllUsersInspectPermission();
-    await viewModePage.clickGetLincButton();
-    const shareLinc = await viewModePage.clickCopyLincButton();
+    await viewModePage.clickGetLinkButton();
+    const shareLink = await viewModePage.clickCopyLinkButton();
     await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
-    await expect(viewModePage.shareLincDialog).toHaveScreenshot(
+    await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
       'view-mode-share-window-all-users-inspect-image.png',
     );
     await newPage.close();
@@ -727,7 +728,7 @@ mainTest.describe(() => {
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
-    await profilePage.gotoLinc(shareLinc);
+    await profilePage.gotoLink(shareLink);
     viewModePage = new ViewModePage(page);
     const inspectPanelPage = new InspectPanelPage(page);
     await viewModePage.isViewerSectionVisible();
@@ -736,7 +737,7 @@ mainTest.describe(() => {
     await page.waitForTimeout(200);
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'view-mode-shared-code-image.png');
-    await viewModePage.gotoLinc(process.env.BASE_URL);
+    await viewModePage.gotoLink(process.env.BASE_URL);
     await mainPage.isHeaderDisplayed('Projects');
     await profilePage.logout();
   });

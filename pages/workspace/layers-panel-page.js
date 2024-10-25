@@ -17,12 +17,12 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
       'div[class*="element-list-body"] input[class*="element-name"]',
     );
     this.searchLayersIcon = page.locator('svg[class="icon-search"]');
-    this.searchLayersInput = page.locator('input[placeholder="Search layers"]');
+    this.searchLayersInput = page.getByPlaceholder('Search layers');
     this.searchedLayerOnLayersPanelNameText = page.locator(
-      'span[class="element-name"] >> nth=1',
+      'span[class*="element-name"] >> nth=1',
     );
-    this.layoutIcon = page.locator('svg[class="icon-layout-rows"]');
-    this.focusModeDiv = page.locator('aside:text-is("Focus mode")');
+    this.layoutIcon = page.locator('svg[class="icon-flex-vertical"]');
+    this.focusModeDiv = page.getByText('Focus mode', { exact: true });
     this.mainComponentLayer = page.locator(
       '//*[@class="icon-component"]//parent::div',
     );
@@ -32,12 +32,6 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     this.createdLayerOnLayersPanelSpan = page.locator(
       'div[class*="element-list-body"] span[class*="element-name"]',
     );
-    this.searchLayersIcon = page.locator('svg[class="icon-search"]');
-    this.searchLayersInput = page.locator('input[placeholder="Search layers"]');
-    this.searchedLayerOnLayersPanelNameText = page.locator(
-      'span[class*="element-name"] >> nth=1',
-    );
-    this.layoutIcon = page.locator('svg.icon-flex-vertical');
     this.layerItemToggleExpand = page.locator(
       'div[class*="layers__element-list"] button[class*="sidebar_layer_item__inverse"]',
     );
