@@ -30,15 +30,19 @@ async function updateTestResults(result, retryCount) {
     return;
   }
 
-  if (result === 'passed') {
+  if (result === 'passed' && retryCount === 0) {
     testResults.Passed++;
   } else if (result === 'failed' && retryCount === 2) {
     testResults.Failed++;
+  } else if (result === 'timedOut' && retryCount === 2) {
+      testResults.Failed++;
   } else if (result === 'flaky') {
+    testResults.Flaky++;
+  } else if (result === 'passed' && retryCount > 0 ) {
     testResults.Flaky++;
   }
 
-  const totalTests = testResults.Passed + testResults.Failed
+  const totalTests = testResults.Passed + testResults.Failed + testResults.Flaky
   testResults.PercentPassed = (testResults.Passed / totalTests) * 100;
 
 
