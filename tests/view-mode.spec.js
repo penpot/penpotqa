@@ -190,7 +190,6 @@ mainTest.describe(() => {
     await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
       'show-on-click-interactions-options-default-image.png',
     );
-    await newPage.waitForTimeout(2000);
     await viewModePage.selectShowInteractionsOptions();
     await viewModePage.clickOnBoardCounter();
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
@@ -481,7 +480,10 @@ mainTest.describe(() => {
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultRectangleByCoordinates(320, 320);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
 
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -502,7 +504,10 @@ mainTest.describe(() => {
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultRectangleByCoordinates(320, 320);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
 
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -524,19 +529,34 @@ mainTest.describe(() => {
     await designPanelPage.changeHeightAndWidthForLayer('500', '700');
     await mainPage.waitForChangeIsSaved();
     await mainPage.uploadImage('images/mini_sample.jpg');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultRectangleByCoordinates(220, 220);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultEllipseByCoordinates(330, 220, true);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultTextLayerByCoordinates(220, 330, browserName);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.createSmallClosedPathByCoordinates(330, 330);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Path');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
 
     const newPage = await viewModePage.clickViewModeShortcut();

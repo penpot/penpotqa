@@ -216,7 +216,10 @@ mainTest(qase(1698,'PENPOT-1698 Upload an image and add it to the table - check 
   await mainPage.waitForChangeIsSaved();
   await designPanelPage.isLayoutRemoveButtonExists();
   await mainPage.uploadImage('images/sample.jpeg');
+  await mainPage.waitForChangeIsUnsaved();
+  await mainPage.waitForChangeIsSaved();
   await layersPanelPage.dragAndDropComponentToBoard('sample');
+  await mainPage.waitForChangeIsUnsaved();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickViewportOnce();
   await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -244,7 +247,10 @@ mainTest.describe(() => {
     await designPanelPage.isLayoutRemoveButtonExists();
 
     await mainPage.uploadImage('images/mini_sample.jpg');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
 
     await mainPage.clickViewportOnce();
@@ -254,13 +260,22 @@ mainTest.describe(() => {
 
   mainTest(qase(1699,'PENPOT-1699 Image and change -  alignment and change vertical, horizontal margin'), async ({ page }) => {
     await mainPage.uploadImage('images/mini_sample.jpg');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.uploadImage('images/mini_sample.jpg');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.uploadImage('images/mini_sample.jpg');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
 
     await mainPage.clickViewportOnce();
@@ -399,13 +414,22 @@ mainTest.describe(() => {
 
   mainTest(qase(1713,'PENPOT-1713  Add 4 pictures of different sizes and change the color for the back'), async ({ page }) => {
     await mainPage.uploadImage('images/horizontal_sample.jpg');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('horizontal_sample');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.uploadImage('images/vertical_sample.jpg');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('vertical_sample');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.uploadImage('images/mini_sample2.jpg');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('mini_sample2');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
 
     await mainPage.clickViewportOnce();
@@ -457,7 +481,10 @@ mainTest.describe(() => {
 
   mainTest(qase(1715,'PENPOT-1715 Add grid lines, check edit mode and add the text'), async ({ browserName }) => {
     await mainPage.createDefaultTextLayerByCoordinates(500, 500, browserName);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
 
     await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-text.png', {
@@ -637,7 +664,10 @@ mainTest(qase([1707,1741],'PENPOT-1707,1741 Add grid lines, and upload the image
   await designPanelPage.isLayoutRemoveButtonExists();
 
   await mainPage.uploadImage('images/mini_sample.jpg');
+  await mainPage.waitForChangeIsUnsaved();
+  await mainPage.waitForChangeIsSaved();
   await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+  await mainPage.waitForChangeIsUnsaved();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickShortcutCtrlZ(browserName);
   await mainPage.waitForChangeIsSaved();

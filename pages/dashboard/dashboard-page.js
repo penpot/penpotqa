@@ -561,7 +561,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async moveFileToOtherTeamViaRightClick(fileName, otherTeamName) {
     const elem = this.page.locator(`button[title="${fileName}"]`).first();
     await elem.click({ button: 'right' });
-    await this.page.waitForTimeout(500);
+    await this.moveToFileMenuItem.waitFor({ state: 'visible' });
     await this.moveToFileMenuItem.click();
     await this.moveToOtherTeamMenuItem.click();
     await this.page.locator(`//li[@role="menuitem"]/a[text()="${otherTeamName}"]`).click();

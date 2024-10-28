@@ -192,7 +192,10 @@ mainTest.describe(() => {
     await designPanelPage.isLayoutRemoveButtonExists();
     await mainPage.clickViewportOnce();
     await mainPage.createDefaultRectangleByCoordinates(180, 200, true);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.duplicateLayerViaLayersTab('Rectangle');
     await mainPage.clickViewportOnce();
@@ -320,6 +323,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.createAnnotationRightClick();
     await designPanelPage.addAnnotationForComponent(annotation);
+    await designPanelPage.waitForChangeIsUnsaved();
     await designPanelPage.waitForChangeIsSaved();
 
   });

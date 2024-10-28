@@ -228,7 +228,6 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   }
 
   async dragAndDropComponentToBoard(name) {
-    await this.page.waitForTimeout(200);
     const component = this.page.locator(
       `div[class*="element-list-body"] span[class*="element-name"]:text-is("${name}") >>nth=0`,
     );
@@ -240,7 +239,6 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   }
 
   async dragAndDropElementToElement(name, dragToName) {
-    await this.page.waitForTimeout(200);
     const component = this.page.locator(
       `div[class*="element-list-body"] span[class*="element-name"]:text-is("${name}") >>nth=0`,
     );

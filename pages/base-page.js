@@ -144,7 +144,6 @@ exports.BasePage = class BasePage {
 
   async waitInfoMessageHidden() {
     await this.infoMessage.waitFor({ state: 'hidden' });
-    await this.page.waitForTimeout(400);
   }
 
   async clickMoveButton() {
@@ -165,7 +164,6 @@ exports.BasePage = class BasePage {
 
   async refreshPage() {
     await this.page.reload();
-    await this.page.waitForTimeout(5000)
   }
 
   async deleteLayerViaRightClick() {

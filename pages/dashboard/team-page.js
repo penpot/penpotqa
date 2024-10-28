@@ -153,7 +153,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isTeamDeleted(teamName) {
-    await this.page.waitForTimeout(5000)
+    await this.page.getByText('Your Penpot').waitFor({ state: 'visible' , timeout: 8000});
     await this.openTeamsListIfClosed();
     for (const el of await this.teamCurrentNameDiv.elementHandles()) {
       const text = (await el.innerText()).valueOf();
