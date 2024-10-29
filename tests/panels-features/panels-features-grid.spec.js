@@ -340,4 +340,17 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.createdLayer).toHaveScreenshot('board-without-grid.png');
   });
+
+  mainTest(qase(1864,'Duplicate board with guide'), async ({ page, browserName }) => {
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await designPanelPage.clickAddGridButton();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickShortcutCtrlD(browserName);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('two-board-with-guide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+    });
+  });
 });

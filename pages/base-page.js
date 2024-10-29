@@ -37,6 +37,7 @@ exports.BasePage = class BasePage {
     ).first();
     this.addColumnGridLayoutBtn = page.locator('g[class*="grid-plus-button"]',
     ).last();
+    this.columnsRowsOnDesignPanel = page.getByTestId('inspect-layout-rows').locator('..');
     this.deleteLayerMenuOption = page.getByRole('listitem').filter({ hasText: 'Delete' });
     this.createComponentMenuItem = page.getByRole('listitem').filter({ hasText: 'Create component' });
     this.updateMainComponentMenuItem = page.getByRole('listitem').filter({ hasText: 'Update main component' });
@@ -280,6 +281,12 @@ exports.BasePage = class BasePage {
 
   async addColumnGridLayoutBtnClick() {
     await this.addColumnGridLayoutBtn.click();
+  }
+
+  async addColumnsGridLayout(count) {
+    for(let i= 0; i < count; i++) {
+      await this.addRowGridLayoutBtn.click();
+    }
   }
 
   async showMainComponentViaRightClick() {
