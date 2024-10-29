@@ -442,4 +442,8 @@ exports.TeamPage = class TeamPage extends BasePage {
   async clickReturnHomeButton() {
     await this.returnHomeButton.click();
   }
+
+  async waitForTeamButton(timeout = 20000) {
+    await this.teamCurrentBtn.waitFor({ state: 'visible', timeout: timeout });
+  }
 };

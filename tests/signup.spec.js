@@ -128,6 +128,45 @@ test(qase(54,'ON-27 Sign up with email of existing user'), async ({ page }) => {
   await registerPage.isFullNameFieldDisplayed();
 });
 
+test(
+  qase(1903,'ON-28 Sign up without logging out of the previous account'),
+  async ({ page }, testInfo) => {
+    await testInfo.setTimeout(testInfo.timeout + 60000);
+    const dashboardPage = new DashboardPage(page);
+    const loginPage = new LoginPage(page);
+    const registerPage = new RegisterPage(page);
+    const teamPage = new TeamPage(page);
+
+    const secondAdmin = random().concat('autotest');
+    const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
+
+    await loginPage.goto();
+    await loginPage.acceptCookie();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.waitForTeamButton();
+
+    await loginPage.goto();
+    await loginPage.clickOnCreateAccount();
+    await registerPage.isRegisterPageOpened();
+    await registerPage.enterEmail(secondEmail);
+    await registerPage.enterPassword(process.env.LOGIN_PWD);
+    await registerPage.clickOnCreateAccountBtn();
+
+    await registerPage.enterFullName(secondAdmin);
+    await registerPage.clickOnAcceptTermsCheckbox();
+    await registerPage.clickOnCreateAccountSecondBtn();
+    await registerPage.isRegisterEmailCorrect(secondEmail);
+    const register = await waitMessage(page, secondEmail, 40);
+    await page.goto(register.inviteUrl);
+    await dashboardPage.fillOnboardingQuestions();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+  }
+);
+
 test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });

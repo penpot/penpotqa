@@ -65,7 +65,7 @@ Some settings from _playwright.config.js_ may be useful:
 
 **5. Tests amount and execution time.**
 
-- For now there are 531 tests in current repository
+- For now there are 532 tests in current repository
 - If parallel execution is enabled with default amount of workers (3) the average time for each browser is the following:
 - Chrome: 72 mins
 - Firefox: 81 mins
