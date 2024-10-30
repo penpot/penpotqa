@@ -481,7 +481,6 @@ mainTest.describe(() => {
 
   mainTest(qase(1715,'PENPOT-1715 Add grid lines, check edit mode and add the text'), async ({ browserName }) => {
     await mainPage.createDefaultTextLayerByCoordinates(500, 500, browserName);
-    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
     await mainPage.waitForChangeIsUnsaved();

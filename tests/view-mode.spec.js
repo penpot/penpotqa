@@ -524,7 +524,7 @@ mainTest.describe(() => {
     await designPanelPage.clickExportElementButton(newPage);
   });
 
-  mainTest(qase([1785], 'CO-387 Switch between layers from left menu'), async ({ browserName }) => {
+  mainTest(qase(1785, 'CO-387 Switch between layers from left menu'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('500', '700');
     await mainPage.waitForChangeIsSaved();
@@ -547,7 +547,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultTextLayerByCoordinates(220, 330, browserName);
-    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
     await mainPage.waitForChangeIsUnsaved();
