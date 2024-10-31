@@ -180,7 +180,7 @@ mainTest.describe(() => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickAddShadowButton();
-      await page.waitForTimeout(200);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
       await mainPage.waitForViewportVisible();
@@ -216,6 +216,7 @@ mainTest.describe(() => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
+      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-blur.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         maxDiffPixels: 0,
@@ -276,9 +277,9 @@ mainTest.describe("Text", () => {
       await designPanelPage.changeTextFont('Source Serif 4');
       await designPanelPage.changeTextFontStyle('300 (italic)');
       await designPanelPage.changeTextFontSize('18');
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await mainPage.page.waitForTimeout(4000);
+      await mainPage.clickViewportOnce();
       browserName === 'webkit' ? null : await mainPage.refreshPage();
       await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot('main-copies-component-text.png', {
@@ -314,6 +315,7 @@ mainTest.describe(() => {
       await designPanelPage.isFillHexCodeSetComponent('0538d1');
       await mainPage.waitForChangeIsSaved();
       await mainPage.refreshPage();
+      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-shadow.png',
       );
@@ -354,10 +356,13 @@ mainTest.describe(() => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.setComponentColor('#0538D1');
       await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.refreshPage();
+      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-change-blur.png',
+        'main-copies-component-change-blur.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+        }
       );
     },
   );

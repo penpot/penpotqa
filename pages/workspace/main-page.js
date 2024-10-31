@@ -494,7 +494,6 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickSelectAllMainMenuSubItem() {
-    await this.page.waitForTimeout(300)
     await this.selectAllMainMenuSubItem.click();
   }
 
@@ -885,7 +884,6 @@ exports.MainPage = class MainPage extends BasePage {
     if (singleComponent) {
       await this.createComponentMenuItem.click();
     } else {
-      await this.page.waitForTimeout(200);
       await this.createMultipleComponentsMenuItem.click();
     }
   }
@@ -989,8 +987,7 @@ exports.MainPage = class MainPage extends BasePage {
     await cellLocator.click();
   }
 
-  async dragAndDropComponentToAnotherFraction(cellNumber, page) {
-    await this.page.waitForTimeout(200);
+  async dragAndDropComponentToAnotherFraction(cellNumber) {
     const selectedElement = this.page.locator(
       `rect[class*="main viewport-selrect"]`,
     );
@@ -998,7 +995,6 @@ exports.MainPage = class MainPage extends BasePage {
       `rect[class*="grid-cell-outline"] >>nth=${cellNumber-1}`,
     );
     await selectedElement.hover();
-    await page.waitForTimeout(500);
     await selectedElement.dragTo(board);
   }
 };

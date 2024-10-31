@@ -29,7 +29,6 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   async modalSetHex(value) {
     await this.modalHexInput.clear();
     await this.modalHexInput.fill(value);
-    await this.page.waitForTimeout(400)
   }
 
   async clickSaveColorStyleButton() {
