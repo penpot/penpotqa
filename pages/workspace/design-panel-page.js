@@ -1090,7 +1090,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async isAnnotationAddedToComponent(value) {
-    await this.annotationCreateTitle.waitFor({ state : 'visible' });
+    await expect(this.annotationCreateTitle).toBeVisible();
     await this.annotationCreateTitle.hover();
 
     const selector = this.page.locator(
