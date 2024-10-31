@@ -38,30 +38,47 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry)
 });
 
-mainTest(qase([1689,1696],'PENPOT-1689,1696 Check grid lines, check edit mode in the right panel'), async ({ page }) => {
-  await mainPage.createDefaultBoardByCoordinates(200, 300);
-  await designPanelPage.changeHeightAndWidthForLayer('300', '400');
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.addGridLayoutViaRightClick();
-  await mainPage.waitForChangeIsUnsaved();
-  await mainPage.waitForChangeIsSaved();
-  await designPanelPage.isLayoutRemoveButtonExists();
-  await mainPage.clickViewportOnce();
-  await mainPage.clickCreatedBoardTitleOnCanvas();
-  await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-layout.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
+    await mainPage.createDefaultBoardByCoordinates(200, 300);
+    await designPanelPage.changeHeightAndWidthForLayer('300', '400');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.addGridLayoutViaRightClick();
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.isLayoutRemoveButtonExists();
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
   });
-  await designPanelPage.openGridEditModeFromDesignPanel();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-edit-mode.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment]
+
+  mainTest(qase([1689,1696],'PENPOT-1689,1696 Check grid lines, check edit mode in the right panel'), async () => {
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-layout.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+    });
+    await designPanelPage.openGridEditModeFromDesignPanel();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-edit-mode.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment]
+    });
+    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+      'grid-edit-right-sidebar-image.png',
+      {
+        mask: [mainPage.usersSection],
+      },
+    );
   });
-  await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-    'grid-edit-right-sidebar-image.png',
-    {
-      mask: [mainPage.usersSection],
-    },
-  );
+
+  mainTest(qase(1863,'Add a lot of columns and check "Columns" panel'), async () => {
+    await designPanelPage.openGridEditModeFromDesignPanel();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.addColumnsGridLayout(30);
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-3-30.png', {
+      mask: [mainPage.guides],
+    });
+    await expect(mainPage.columnsRowsOnDesignPanel).toHaveScreenshot('lot-1fr-columns.png');
+
+  });
 });
 
 mainTest.describe(() => {
@@ -94,7 +111,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(1690,'PENPOT-1690 Change direction'), async ({ page }) => {
+  mainTest(qase(1690,'PENPOT-1690 Change direction'), async () => {
     await designPanelPage.changeLayoutDirection('Column', false);
     await mainPage.waitForChangeIsSaved();
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
@@ -102,7 +119,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1691,'PENPOT-1691 Change alignment'), async ({ page }) => {
+  mainTest(qase(1691,'PENPOT-1691 Change alignment'), async () => {
     await designPanelPage.changeLayoutAlignment('Center', false);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-alignment-center.png', {
@@ -168,7 +185,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1695,'PENPOT-1695 Change columns and rows'), async ({ page }) => {
+  mainTest(qase(1695,'PENPOT-1695 Change columns and rows'), async () => {
     await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsSaved();
     await mainPage.addRowGridLayoutBtnClick();
@@ -252,7 +269,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(1699,'PENPOT-1699 Image and change -  alignment and change vertical, horizontal margin'), async ({ page }) => {
+  mainTest(qase(1699,'PENPOT-1699 Image and change -  alignment and change vertical, horizontal margin'), async () => {
     await mainPage.uploadImage('images/mini_sample.jpg');
     await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
     await mainPage.waitForChangeIsSaved();
@@ -293,7 +310,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1700,'PENPOT-1700 Create a board with Grid Layout with a image and create duplicate this image in next column (change vertical direction)'), async ({ page }) => {
+  mainTest(qase(1700,'PENPOT-1700 Create a board with Grid Layout with a image and create duplicate this image in next column (change vertical direction)'), async () => {
     await designPanelPage.changeLayoutDirection('Column', false);
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickLayerOnLayersTab('mini_sample');
@@ -304,7 +321,7 @@ mainTest.describe(() => {
       });
   });
 
-  mainTest(qase(1701,'PENPOT-1701 Create a board with Grid Layout with a image and create duplicate this image in next column (change horizontal direction)'), async ({ page }) => {
+  mainTest(qase(1701,'PENPOT-1701 Create a board with Grid Layout with a image and create duplicate this image in next column (change horizontal direction)'), async () => {
     await designPanelPage.changeLayoutDirection('Row', false);
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickLayerOnLayersTab('mini_sample');
@@ -315,7 +332,7 @@ mainTest.describe(() => {
       });
   });
 
-  mainTest(qase(1704,'PENPOT-1704 Change position and alignment within the Board'), async ({ page }) => {
+  mainTest(qase(1704,'PENPOT-1704 Change position and alignment within the Board'), async () => {
     await mainPage.clickBoardOnCanvas();
     await mainPage.doubleClickBoardOnCanvas();
     await designPanelPage.changeLayoutAlignment('Center', false);
@@ -332,7 +349,7 @@ mainTest.describe(() => {
       });
   });
 
-  mainTest(qase(1705,'PENPOT-1705 Change margin and padding within the Board'), async ({ page }) => {
+  mainTest(qase(1705,'PENPOT-1705 Change margin and padding within the Board'), async () => {
     await mainPage.clickBoardOnCanvas();
     await mainPage.doubleClickBoardOnCanvas();
     await designPanelPage.switchToIndependentPaddingOnGridEdit();
@@ -355,7 +372,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1706,'PENPOT-1706 Adding Flex Board'), async ({ page }) => {
+  mainTest(qase(1706,'PENPOT-1706 Adding Flex Board'), async () => {
     await designPanelPage.addLayoutFromDesignPanel('flex');
     await designPanelPage.isFlexElementSectionOpened();
     await mainPage.waitForChangeIsSaved();
@@ -371,7 +388,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1711,'PENPOT-1711 add grid lines as a dashboard - table - change duplicate, add row, delete row, change column numbers'), async ({ page }) => {
+  mainTest(qase(1711,'PENPOT-1711 add grid lines as a dashboard - table - change duplicate, add row, delete row, change column numbers'), async () => {
     await designPanelPage.changeHeightAndWidthForLayer('600', '400');
     await mainPage.clickBoardOnCanvas();
     await mainPage.doubleClickBoardOnCanvas();
@@ -397,7 +414,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1713,'PENPOT-1713  Add 4 pictures of different sizes and change the color for the back'), async ({ page }) => {
+  mainTest(qase(1713,'PENPOT-1713  Add 4 pictures of different sizes and change the color for the back'), async () => {
     await mainPage.uploadImage('images/horizontal_sample.jpg');
     await layersPanelPage.dragAndDropComponentToBoard('horizontal_sample');
     await mainPage.waitForChangeIsSaved();
@@ -465,7 +482,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1702,'PENPOT-1702 Check fraction units, three dots and check duplicate, add row, delete row'), async ({ page }) => {
+  mainTest(qase(1702,'PENPOT-1702 Check fraction units, three dots and check duplicate, add row, delete row'), async () => {
     await designPanelPage.changeHeightAndWidthForLayer('600', '400');
     await mainPage.clickBoardOnCanvas();
     await mainPage.doubleClickBoardOnCanvas();
@@ -486,7 +503,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1703,'PENPOT-1703 Check fraction units, change px column manual'), async ({ page }) => {
+  mainTest(qase(1703,'PENPOT-1703 Check fraction units, change px column manual'), async () => {
     await mainPage.clickBoardOnCanvas();
     await mainPage.doubleClickBoardOnCanvas();
     await mainPage.changeGridRowLabel('100 PX');
@@ -496,7 +513,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1708,'PENPOT-1708 Check occupy two cells (button Area) - vertical and horizontal'), async ({ page }) => {
+  mainTest(qase(1708,'PENPOT-1708 Check occupy two cells (button Area) - vertical and horizontal'), async () => {
     await mainPage.clickBoardOnCanvas();
     await mainPage.doubleClickBoardOnCanvas();
     await mainPage.waitForChangeIsSaved();
@@ -515,7 +532,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1709,'PENPOT-1709 Check occupy four cells (button Area) - Create Area name'), async ({ page }) => {
+  mainTest(qase(1709,'PENPOT-1709 Check occupy four cells (button Area) - Create Area name'), async () => {
     await mainPage.clickBoardOnCanvas();
     await mainPage.doubleClickBoardOnCanvas();
     await mainPage.waitForChangeIsSaved();
@@ -527,7 +544,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1736,'PENPOT-1736 Check row numbers in right menu'), async ({ page }) => {
+  mainTest(qase(1736,'PENPOT-1736 Check row numbers in right menu'), async () => {
     await mainPage.clickBoardOnCanvas();
     await mainPage.doubleClickBoardOnCanvas();
     await mainPage.waitForChangeIsSaved();
@@ -538,7 +555,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1737,'PENPOT-1737 Locate button'), async ({ page }) => {
+  mainTest(qase(1737,'PENPOT-1737 Locate button'), async () => {
     await mainPage.clickBoardOnCanvas();
     await designPanelPage.changeAxisXandYForLayer('400', '2000');
     await designPanelPage.addLayoutFromDesignPanel('grid');
@@ -601,7 +618,7 @@ mainTest.describe(() => {
       });
   });
 
-  mainTest(qase(1746,'PENPOT-1746 Check to add area - manually'), async ({ page }) => {
+  mainTest(qase(1746,'PENPOT-1746 Check to add area - manually'), async () => {
     await mainPage.clickBoardOnCanvas();
     await mainPage.doubleClickBoardOnCanvas();
     await mainPage.waitForChangeIsSaved();
@@ -628,7 +645,7 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase([1707,1741],'PENPOT-1707,1741 Add grid lines, and upload the images, check removed some image'), async ({ page, browserName }) => {
+mainTest(qase([1707,1741],'PENPOT-1707,1741 Add grid lines, and upload the images, check removed some image'), async ({ browserName }) => {
   await mainPage.createDefaultBoardByCoordinates(400, 300);
   await designPanelPage.changeHeightAndWidthForLayer('500', '600');
   await mainPage.waitForChangeIsSaved();
@@ -648,7 +665,7 @@ mainTest(qase([1707,1741],'PENPOT-1707,1741 Add grid lines, and upload the image
   });
 });
 
-mainTest(qase(1710,'PENPOT-1710 Add grid lines as a dashboard - table'), async ({ page }) => {
+mainTest(qase(1710,'PENPOT-1710 Add grid lines as a dashboard - table'), async () => {
   await mainPage.createDefaultBoardByCoordinates(200, 300);
   await designPanelPage.changeHeightAndWidthForLayer('300', '400');
   await mainPage.waitForChangeIsSaved();
@@ -664,7 +681,7 @@ mainTest(qase(1710,'PENPOT-1710 Add grid lines as a dashboard - table'), async (
   });
 });
 
-mainTest(qase(1712,'PENPOT-1712 Add grid lines, change px for all column'), async ({ page, browserName }) => {
+mainTest(qase(1712,'PENPOT-1712 Add grid lines, change px for all column'), async () => {
   await mainPage.createDefaultBoardByCoordinates(400, 300);
   await designPanelPage.changeHeightAndWidthForLayer('500', '600');
   await mainPage.waitForChangeIsSaved();
