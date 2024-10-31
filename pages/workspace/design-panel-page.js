@@ -1090,9 +1090,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async isAnnotationAddedToComponent(value) {
-    await this.page.waitForTimeout(500);
+    await expect(this.annotationCreateTitle).toBeVisible();
     await this.annotationCreateTitle.hover();
-    await this.page.waitForTimeout(500);
 
     const selector = this.page.locator(
       `div[class*="component-annotation"] div[data-replicated-value="${value}"]`,
