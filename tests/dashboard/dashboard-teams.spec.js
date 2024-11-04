@@ -1958,7 +1958,7 @@ test.describe(() => {
     teamPage = new TeamPage(page);
     mainPage = new MainPage(page);
     viewModePage = new ViewModePage(page);
-
+    await page.context().clearCookies();
     await loginPage.goto();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();
@@ -1998,7 +1998,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await page.goto(currentURL);
-      await expect(teamPage.accessDialog).toHaveScreenshot('request-access-dialog-image.png');
+      await expect(teamPage.accessDialog).toHaveScreenshot('request-file-access-dialog-image.png');
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
       await expect(teamPage.accessDialog).toHaveScreenshot('request-sent-dialog-image.png');
@@ -2047,7 +2047,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await page.goto(currentURL);
-      await expect(teamPage.accessDialog).toHaveScreenshot('request-access-dialog-image.png');
+      await expect(teamPage.accessDialog).toHaveScreenshot('request-project-access-dialog-image.png');
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
       await expect(teamPage.accessDialog).toHaveScreenshot('request-sent-dialog-image.png');
@@ -2088,7 +2088,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await page.goto(currentURL);
-      await expect(teamPage.accessDialog).toHaveScreenshot('request-access-dialog-image.png');
+      await expect(teamPage.accessDialog).toHaveScreenshot('request-file-access-dialog-image.png');
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
       await expect(teamPage.accessDialog).toHaveScreenshot('request-sent-dialog-image.png');
@@ -2133,7 +2133,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await page.goto(currentURL);
-      await expect(teamPage.accessDialog).toHaveScreenshot('request-access-dialog-image.png');
+      await expect(teamPage.accessDialog).toHaveScreenshot('request-file-access-dialog-image.png');
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
       await expect(teamPage.accessDialog).toHaveScreenshot('request-sent-dialog-image.png');
@@ -2186,7 +2186,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await page.goto(currentURL);
-      await expect(teamPage.accessDialog).toHaveScreenshot('request-access-dialog-image.png');
+      await expect(teamPage.accessDialog).toHaveScreenshot('request-file-access-dialog-image.png');
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
       await expect(teamPage.accessDialog).toHaveScreenshot('request-sent-dialog-image.png');
