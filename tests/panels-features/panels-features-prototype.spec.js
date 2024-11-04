@@ -27,7 +27,7 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -42,7 +42,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(857,'PF-139 Add connector between 2 boards via mouse drag'),
+    qase(857, 'PF-139 Add connector between 2 boards via mouse drag'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const prototypePanelPage = new PrototypePanelPage(page);
@@ -50,40 +50,64 @@ mainTest.describe(() => {
       await expect(page).toHaveScreenshot(
         'connector-between-board2-and-board1.png',
         {
-          mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: [
+            mainPage.usersSection,
+            mainPage.guides,
+            mainPage.guidesFragment,
+            mainPage.toolBarWindow,
+          ],
         },
       );
     },
   );
 
-  mainTest(qase(861,'PF-143 Add Interaction via Prototype panel'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const prototypePanelPage = new PrototypePanelPage(page);
-    await prototypePanelPage.clickAddInteractionButton();
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
-    await expect(page).toHaveScreenshot('add-interaction.png', {
-      mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  });
+  mainTest(
+    qase(861, 'PF-143 Add Interaction via Prototype panel'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const prototypePanelPage = new PrototypePanelPage(page);
+      await prototypePanelPage.clickAddInteractionButton();
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
+      await expect(page).toHaveScreenshot('add-interaction.png', {
+        mask: [
+          mainPage.usersSection,
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+        ],
+      });
+    },
+  );
 
-  mainTest(qase(862,'PF-144 Remove Interaction via Prototype panel'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const prototypePanelPage = new PrototypePanelPage(page);
-    await prototypePanelPage.clickAddInteractionButton();
-    await mainPage.waitForChangeIsSaved();
-    await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
-    await prototypePanelPage.clickRemoveSecondInteractionButton();
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await prototypePanelPage.isPrototypeArrowSecondConnectorNotDisplayed();
-    await expect(page).toHaveScreenshot('connector-between-board2-and-board1.png', {
-      mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  });
+  mainTest(
+    qase(862, 'PF-144 Remove Interaction via Prototype panel'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const prototypePanelPage = new PrototypePanelPage(page);
+      await prototypePanelPage.clickAddInteractionButton();
+      await mainPage.waitForChangeIsSaved();
+      await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
+      await prototypePanelPage.clickRemoveSecondInteractionButton();
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await prototypePanelPage.isPrototypeArrowSecondConnectorNotDisplayed();
+      await expect(page).toHaveScreenshot(
+        'connector-between-board2-and-board1.png',
+        {
+          mask: [
+            mainPage.usersSection,
+            mainPage.guides,
+            mainPage.guidesFragment,
+            mainPage.toolBarWindow,
+          ],
+        },
+      );
+    },
+  );
 
-  mainTest(qase(870,'PF-152 Add 2nd Flow'), async ({ page }) => {
+  mainTest(qase(870, 'PF-152 Add 2nd Flow'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(200, 600);
@@ -93,11 +117,16 @@ mainTest.describe(() => {
     await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('Flow 2');
     await mainPage.clickViewportByCoordinates(300, 700);
     await expect(page).toHaveScreenshot('add-2nd-flow.png', {
-      mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: [
+        mainPage.usersSection,
+        mainPage.guides,
+        mainPage.guidesFragment,
+        mainPage.toolBarWindow,
+      ],
     });
   });
 
-  mainTest(qase(872,'PF-154 Rename flow'), async ({ page }) => {
+  mainTest(qase(872, 'PF-154 Rename flow'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await prototypePanelPage.renameFlow('qa');
@@ -105,11 +134,16 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('qa');
     await expect(page).toHaveScreenshot('rename-flow.png', {
-      mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: [
+        mainPage.usersSection,
+        mainPage.guides,
+        mainPage.guidesFragment,
+        mainPage.toolBarWindow,
+      ],
     });
   });
 
-  mainTest(qase(873,'PF-155 Delete flow'), async ({ page }) => {
+  mainTest(qase(873, 'PF-155 Delete flow'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const prototypePanelPage = new PrototypePanelPage(page);
     await prototypePanelPage.clickRemoveFlowButton();
@@ -121,27 +155,30 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase(865,'PF-147 Change destination via Prototype panel'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const prototypePanelPage = new PrototypePanelPage(page);
-  const layersPanelPage = new LayersPanelPage(page);
-  await mainPage.createDefaultBoardByCoordinates(900, 100);
-  await layersPanelPage.doubleClickLayerOnLayersTab('Board');
-  await layersPanelPage.renameCreatedLayer('Board #1');
-  await mainPage.createDefaultBoardByCoordinates(500, 200);
-  await layersPanelPage.doubleClickLayerOnLayersTab('Board');
-  await layersPanelPage.renameCreatedLayer('Board #2');
-  await prototypePanelPage.clickPrototypeTab();
-  await prototypePanelPage.dragAndDropPrototypeArrowConnector(900, 100);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.createDefaultBoardByCoordinates(200, 600);
-  await layersPanelPage.doubleClickLayerOnLayersTab('Board');
-  await layersPanelPage.renameCreatedLayer('Board #3');
-  await mainPage.clickViewportByCoordinates(500, 200);
-  await prototypePanelPage.clickFirstInteractionRecord();
-  await prototypePanelPage.selectInteractionDestination('Board #3');
-  await mainPage.waitForChangeIsSaved();
-  await expect(page).toHaveScreenshot('connector-between-board2-and-board3.png', {
-    mask: [mainPage.usersSection],
-  });
-});
+mainTest(
+  qase(865, 'PF-147 Change destination via Prototype panel'),
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const prototypePanelPage = new PrototypePanelPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    await mainPage.createDefaultBoardByCoordinates(900, 100);
+    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
+    await layersPanelPage.renameCreatedLayer('Board #1');
+    await mainPage.createDefaultBoardByCoordinates(500, 200);
+    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
+    await layersPanelPage.renameCreatedLayer('Board #2');
+    await prototypePanelPage.clickPrototypeTab();
+    await prototypePanelPage.dragAndDropPrototypeArrowConnector(900, 100);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultBoardByCoordinates(200, 600);
+    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
+    await layersPanelPage.renameCreatedLayer('Board #3');
+    await mainPage.clickViewportByCoordinates(500, 200);
+    await prototypePanelPage.clickFirstInteractionRecord();
+    await prototypePanelPage.selectInteractionDestination('Board #3');
+    await mainPage.waitForChangeIsSaved();
+    await expect(page).toHaveScreenshot('connector-between-board2-and-board3.png', {
+      mask: [mainPage.usersSection],
+    });
+  },
+);

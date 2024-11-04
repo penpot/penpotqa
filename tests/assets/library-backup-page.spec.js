@@ -13,7 +13,13 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
-let dashboardPage, teamPage, mainPage, assetsPanelPage, designPanelPage, layersPanelPage, colorPalettePage;
+let dashboardPage,
+  teamPage,
+  mainPage,
+  assetsPanelPage,
+  designPanelPage,
+  layersPanelPage,
+  colorPalettePage;
 test.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   teamPage = new TeamPage(page);
@@ -58,5 +64,5 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({}, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });

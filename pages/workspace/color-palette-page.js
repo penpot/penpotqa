@@ -9,16 +9,24 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     super(page);
     this.popUp = page.locator('div[class*="colorpicker-tooltip"]');
     this.hexInput = page.locator('#hex-value');
-    this.modalHexInput = page.locator('div[class*="selected-color-group"] span[class*="color-input-wrapper"] input');
-    this.saveColorStyleButton = page.getByRole('button', { name: 'Save color style' });
+    this.modalHexInput = page.locator(
+      'div[class*="selected-color-group"] span[class*="color-input-wrapper"] input',
+    );
+    this.saveColorStyleButton = page.getByRole('button', {
+      name: 'Save color style',
+    });
     this.colorsLibrariesSelect = page.locator(
       'div[class*="colorpicker_libraries__select-wrapper"]',
     );
     this.colorsFileLibraryOptions = page.getByText('File library', { exact: true });
     this.colorPaletteActionsBtn = page.locator('button[class*="palette-actions"]');
     this.colorPaletteMenu = page.locator('ul[class*="palette-menu"]');
-    this.colorPaletteFileLibraryOpt = page.getByRole('listitem').filter({ hasText: 'File library' });
-    this.colorPaletteRecentColorsOpt = page.getByRole('listitem').filter({ hasText: 'Recent colors' });
+    this.colorPaletteFileLibraryOpt = page
+      .getByRole('listitem')
+      .filter({ hasText: 'File library' });
+    this.colorPaletteRecentColorsOpt = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Recent colors' });
   }
 
   async setHex(value) {

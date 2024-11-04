@@ -8,7 +8,7 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.prototypeTab = page.getByRole("tab", { name: "prototype" });
+    this.prototypeTab = page.getByRole('tab', { name: 'prototype' });
     this.prototypeArrowConnector = page.locator(
       'g[class="interactions"] path[fill="var(--color-accent-tertiary)"] >>nth=0',
     );

@@ -27,7 +27,7 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -39,14 +39,14 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(274,'CO-59 Create a rectangle from toolbar'), async ({ page }) => {
+  mainTest(qase(274, 'CO-59 Create a rectangle from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle.png');
   });
 
   mainTest(
-    qase(283,"CO-68 Click 'Focus off' rectangle from shortcut F"),
+    qase(283, "CO-68 Click 'Focus off' rectangle from shortcut F"),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -68,7 +68,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(284,'CO-69 Add, hide, unhide, change type and delete Shadow to rectangle'),
+    qase(284, 'CO-69 Add, hide, unhide, change type and delete Shadow to rectangle'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
@@ -116,7 +116,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(287,'CO-72 Add, hide, unhide and delete Blur to rectangle'),
+    qase(287, 'CO-72 Add, hide, unhide and delete Blur to rectangle'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const colorPalettePage = new ColorPalettePage(page);
@@ -150,86 +150,92 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(289,'CO-74 Add, edit and delete Stroke to rectangle'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await designPanelPage.clickAddStrokeButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'rectangle-stroke-default.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await mainPage.clickOnLayerOnCanvas();
-    await designPanelPage.changeStrokeSettings(
-      '#43E50B',
-      '60',
-      '10',
-      'Inside',
-      'Dotted',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'rectangle-stroke-inside-dotted.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await mainPage.clickOnLayerOnCanvas();
-    await designPanelPage.changeStrokeSettings(
-      '#F5358F',
-      '80',
-      '5',
-      'Outside',
-      'Dashed',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'rectangle-stroke-outside-dashed.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await mainPage.clickOnLayerOnCanvas();
-    await designPanelPage.changeStrokeSettings(
-      '#F5358F',
-      '100',
-      '3',
-      'Center',
-      'Solid',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'rectangle-stroke-center-solid.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await mainPage.clickOnLayerOnCanvas();
-    await designPanelPage.changeStrokeSettings(
-      '#F5358F',
-      '40',
-      '4',
-      'Center',
-      'Mixed',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'rectangle-stroke-center-mixed.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await mainPage.clickOnLayerOnCanvas();
-    await designPanelPage.removeStroke();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rectangle-stroke-remove.png', {
-      mask: [mainPage.guides],
-    });
-  });
+  mainTest(
+    qase(289, 'CO-74 Add, edit and delete Stroke to rectangle'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await designPanelPage.clickAddStrokeButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'rectangle-stroke-default.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickOnLayerOnCanvas();
+      await designPanelPage.changeStrokeSettings(
+        '#43E50B',
+        '60',
+        '10',
+        'Inside',
+        'Dotted',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'rectangle-stroke-inside-dotted.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickOnLayerOnCanvas();
+      await designPanelPage.changeStrokeSettings(
+        '#F5358F',
+        '80',
+        '5',
+        'Outside',
+        'Dashed',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'rectangle-stroke-outside-dashed.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickOnLayerOnCanvas();
+      await designPanelPage.changeStrokeSettings(
+        '#F5358F',
+        '100',
+        '3',
+        'Center',
+        'Solid',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'rectangle-stroke-center-solid.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickOnLayerOnCanvas();
+      await designPanelPage.changeStrokeSettings(
+        '#F5358F',
+        '40',
+        '4',
+        'Center',
+        'Mixed',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'rectangle-stroke-center-mixed.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickOnLayerOnCanvas();
+      await designPanelPage.removeStroke();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'rectangle-stroke-remove.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+    },
+  );
 
-  mainTest(qase(295,'CO-80 Rename rectangle with valid name'), async ({ page }) => {
+  mainTest(qase(295, 'CO-80 Rename rectangle with valid name'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('Rectangle');
@@ -238,7 +244,7 @@ mainTest.describe(() => {
     await layersPanelPage.isLayerNameDisplayed('renamed rectangle');
   });
 
-  mainTest(qase(285,'CO-70 Add and edit Shadow to rectangle'), async ({ page }) => {
+  mainTest(qase(285, 'CO-70 Add and edit Shadow to rectangle'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -259,7 +265,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-inner-shadow.png');
   });
 
-  mainTest(qase(288,'CO-73 Add and edit Blur to rectangle'), async ({ page }) => {
+  mainTest(qase(288, 'CO-73 Add and edit Blur to rectangle'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddBlurButton();
@@ -268,23 +274,29 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-blur.png');
   });
 
-  mainTest(qase(291,'CO-76-1 Delete rectangle via rightclick'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    await mainPage.isCreatedLayerVisible();
-    await mainPage.deleteLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
-  });
+  mainTest(
+    qase(291, 'CO-76-1 Delete rectangle via rightclick'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      await mainPage.isCreatedLayerVisible();
+      await mainPage.deleteLayerViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+    },
+  );
 
-  mainTest(qase(291,'CO-76-2 Delete rectangle via shortcut Del'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    await mainPage.isCreatedLayerVisible();
-    await mainPage.deleteLayerViaShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
-  });
+  mainTest(
+    qase(291, 'CO-76-2 Delete rectangle via shortcut Del'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      await mainPage.isCreatedLayerVisible();
+      await mainPage.deleteLayerViaShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+    },
+  );
 
-  mainTest(qase(277,'CO-62 Add rotation to rectangle'), async ({ page }) => {
+  mainTest(qase(277, 'CO-62 Add rotation to rectangle'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
@@ -301,31 +313,39 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-359.png');
   });
 
-  mainTest(qase(278,'CO-63 Change border radius multiple values'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await designPanelPage.clickIndividualCornersRadiusButton();
-    await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'rectangle-changed-corners.png',
-    );
-    await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rectangle.png');
-  });
+  mainTest(
+    qase(278, 'CO-63 Change border radius multiple values'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await designPanelPage.clickIndividualCornersRadiusButton();
+      await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'rectangle-changed-corners.png',
+      );
+      await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('rectangle.png');
+    },
+  );
 
-  mainTest(qase(319,'CO-104 Transform rectangle to path'), async ({ page }) => {
+  mainTest(qase(319, 'CO-104 Transform rectangle to path'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.transformToPathViaRightClick();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(page).toHaveScreenshot('rectangle-to-path.png', {
-      mask: [mainPage.usersSection, mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: [
+        mainPage.usersSection,
+        mainPage.guides,
+        mainPage.guidesFragment,
+        mainPage.toolBarWindow,
+      ],
     });
   });
 
-  mainTest(qase(326,'CO-111 Selection to board'), async ({ page }) => {
+  mainTest(qase(326, 'CO-111 Selection to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();

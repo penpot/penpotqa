@@ -16,7 +16,7 @@ test.beforeEach(async ({ page, browserName }) => {
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !( await mainPage.isMainPageVisible())
+  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
     ? await dashboardPage.createFileViaPlaceholder()
     : null;
   await mainPage.isMainPageLoaded();
@@ -27,10 +27,10 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(1020,'AS-110 Open panel main menu - help&info'), async ({ page }) => {
+mainTest(qase(1020, 'AS-110 Open panel main menu - help&info'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickMainMenuButton();
   await mainPage.clickHelpInfoMainMenuItem();
@@ -44,7 +44,7 @@ mainTest(qase(1020,'AS-110 Open panel main menu - help&info'), async ({ page }) 
   await mainPage.isShortcutsPanelNotDisplayed();
 });
 
-mainTest(qase(1025,'AS-115 Show/hide panel'), async ({ page }) => {
+mainTest(qase(1025, 'AS-115 Show/hide panel'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.pressShortcutsPanelShortcut();
   await mainPage.isShortcutsPanelDisplayed();

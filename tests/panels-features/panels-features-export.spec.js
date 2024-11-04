@@ -25,27 +25,33 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(897,'PF-179 Add export setting via design panel'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const designPanelPage = new DesignPanelPage(page);
-  await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await designPanelPage.clickAddExportButton();
-  await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
-});
+mainTest(
+  qase(897, 'PF-179 Add export setting via design panel'),
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await mainPage.clickCreateRectangleButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickAddExportButton();
+    await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
+  },
+);
 
-mainTest(qase(899,'PF-181 Remove export setting via design panel'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const designPanelPage = new DesignPanelPage(page);
-  await mainPage.clickCreateRectangleButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await designPanelPage.clickAddExportButton();
-  await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
-  await designPanelPage.clickRemoveExportButton();
-  await designPanelPage.isExportElementButtonNotDisplayed();
-});
+mainTest(
+  qase(899, 'PF-181 Remove export setting via design panel'),
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await mainPage.clickCreateRectangleButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickAddExportButton();
+    await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
+    await designPanelPage.clickRemoveExportButton();
+    await designPanelPage.isExportElementButtonNotDisplayed();
+  },
+);
