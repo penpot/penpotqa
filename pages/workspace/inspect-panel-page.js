@@ -8,7 +8,7 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.inspectTab = page.getByRole("tab", { name: "inspect" });
+    this.inspectTab = page.getByRole('tab', { name: 'inspect' });
     this.annotationBlockOnInspect = page.locator(
       'div.main_ui_viewer_inspect_annotation__attributes-block',
     );
@@ -18,7 +18,7 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     this.rowGapOnInspect = page.locator(
       'div[class*="layout-row"] div[title="Row gap"]',
     );
-    this.codeTabButton = page.getByRole("tab", { name: "code" });
+    this.codeTabButton = page.getByRole('tab', { name: 'code' });
   }
 
   async openInspectTab() {

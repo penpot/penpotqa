@@ -9,7 +9,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     super(page);
 
     //Assets panel
-    this.assetsTab = page.getByRole("tab", { name: "assets" });
+    this.assetsTab = page.getByRole('tab', { name: 'assets' });
     this.assetComponentLabel = page.locator(
       'div[class*="assets_components__grid-cell"]',
     );
@@ -27,11 +27,21 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.assetsSectionNumbers = page.locator(
       'span[class*="assets_common__num-assets"]',
     );
-    this.renameFileLibraryMenuItem = page.getByRole('menuitem').filter({ hasText: 'Rename' });
-    this.deleteFileLibraryMenuItem = page.getByRole('menuitem').filter({ hasText: 'Delete' });
-    this.editFileLibraryMenuItem = page.getByRole('menuitem').filter({ hasText: 'Edit' });
-    this.createGroupFileLibraryMenuItem = page.getByRole('menuitem').filter({ hasText: 'Group' });
-    this.ungroupFileLibraryMenuItem = page.getByRole('menuitem').filter({ hasText: 'Ungroup' });
+    this.renameFileLibraryMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Rename' });
+    this.deleteFileLibraryMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Delete' });
+    this.editFileLibraryMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Edit' });
+    this.createGroupFileLibraryMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Group' });
+    this.ungroupFileLibraryMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Ungroup' });
     this.groupNameInput = page.getByRole('textbox', { name: 'Group name' });
     this.createGroupButton = page.getByRole('button', { name: 'Create' });
     this.renameGroupButton = page.getByRole('button', { name: 'Rename' });
@@ -61,7 +71,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       'div[class*="typography-entry"]',
     );
     this.fontSelector = page.locator('div[class*="typography__font-option"]');
-    this.fontSelectorSearchInput = page.getByRole('textbox', { name: 'Search font' });
+    this.fontSelectorSearchInput = page.getByRole('textbox', {
+      name: 'Search font',
+    });
     this.fontSizeInput = page.locator('div[class*="font-size-select"] input');
     this.typographyNameInput = page.locator('input[class*="adv-typography-name"]');
     this.assetsTitleText = page.locator(
@@ -73,8 +85,12 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.assetsTypeComponents = page.locator('#section-components');
     this.assetsTypeColors = page.locator('#section-color');
     this.assetsTypeTypographies = page.locator('#section-typography');
-    this.duplicateMainComponentMenuItem = page.getByRole('menuitem').filter({ hasText: 'Duplicate main' });
-    this.showMainComponentMenuItem = page.getByRole('menuitem').filter({ hasText: 'Show main component' });
+    this.duplicateMainComponentMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Duplicate main' });
+    this.showMainComponentMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Show main component' });
     this.fileLibraryComponentNameInput = page.locator(
       'div[class*="assets_components__editing"] input',
     );
@@ -83,17 +99,25 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     );
 
     //Assets panel - Libraries
-    this.addAsSharedLibraryButton = page.getByRole('button', { name: 'Add as Shared Library' });
-    this.removeAsSharedLibraryButton = page.getByRole('button', { name: 'Unpublish' });
+    this.addAsSharedLibraryButton = page.getByRole('button', {
+      name: 'Add as Shared Library',
+    });
+    this.removeAsSharedLibraryButton = page.getByRole('button', {
+      name: 'Unpublish',
+    });
     this.sharedLibraryBadge = page.locator('span[class*="shared-badge"]');
     this.librariesOpenModalButton = page.getByRole('button', { name: 'Libraries' });
     this.addSharedLibraryButton = page.getByRole('button', { name: 'Publish' });
     this.cancelSharedLibraryButton = page.getByRole('button', { name: 'Cancel' });
-    this.searchSharedLibrariesInput = page.getByRole('textbox', { name: 'Search shared libraries' });
-    this.searchSharedLibrariesClearButton = page.locator('button[class*="search_bar__clear"]');
+    this.searchSharedLibrariesInput = page.getByRole('textbox', {
+      name: 'Search shared libraries',
+    });
+    this.searchSharedLibrariesClearButton = page.locator(
+      'button[class*="search_bar__clear"]',
+    );
     this.libraryTitle = page.locator('div[class*="special-title"]');
     this.libraryComponentsTitle = page.locator(
-      '//*[@class="icon-component"]/../../../../../button/div/span'
+      '//*[@class="icon-component"]/../../../../../button/div/span',
     );
     this.dismissButton = page.getByRole('button', { name: 'Dismiss' });
     this.librariesUpdatesTab = page.getByRole('tab', { name: 'UPDATES' });
@@ -366,9 +390,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async dragAndDropComponentToViewport(name) {
     await this.page.waitForTimeout(200);
-    const component = this.page.locator(
-      `//span[@title="${name}"]/..`,
-    ).last();
+    const component = this.page.locator(`//span[@title="${name}"]/..`).last();
     await component.hover();
     await component.dragTo(this.viewport);
   }
@@ -383,7 +405,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async clickLibraryTitleWithName(libraryName) {
-    const libTitle = this.page.locator(`div[class*="special-title"]:has-text("${libraryName}")`);
+    const libTitle = this.page.locator(
+      `div[class*="special-title"]:has-text("${libraryName}")`,
+    );
     await libTitle.last().click();
   }
 

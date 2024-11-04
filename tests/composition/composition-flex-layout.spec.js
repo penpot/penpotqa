@@ -26,7 +26,7 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -46,35 +46,41 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(607,'FL-1 Add flex layout to board from rightclick'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await mainPage.addFlexLayoutViaRightClick();
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
-    await designPanelPage.isLayoutRemoveButtonExists();
-    await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
-      mask: [mainPage.guides],
-    });
-  });
-
-  mainTest(qase(608,'FL-2 Add flex layout to board from shortcut'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await mainPage.pressFlexLayoutShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
-    await designPanelPage.isLayoutRemoveButtonExists();
-    await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
-      mask: [mainPage.guides],
-    });
-  });
+  mainTest(
+    qase(607, 'FL-1 Add flex layout to board from rightclick'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await mainPage.addFlexLayoutViaRightClick();
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await designPanelPage.isLayoutRemoveButtonExists();
+      await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
+        mask: [mainPage.guides],
+      });
+    },
+  );
 
   mainTest(
-    qase(610,'FL-4 Remove flex layout from board from rightclick'),
+    qase(608, 'FL-2 Add flex layout to board from shortcut'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await mainPage.pressFlexLayoutShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await designPanelPage.isLayoutRemoveButtonExists();
+      await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
+        mask: [mainPage.guides],
+      });
+    },
+  );
+
+  mainTest(
+    qase(610, 'FL-4 Remove flex layout from board from rightclick'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -91,23 +97,26 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(611,'FL-5 Remove flex layout from board from shortcut'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await mainPage.pressFlexLayoutShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
-    await designPanelPage.isLayoutRemoveButtonExists();
-    await mainPage.clickCreatedBoardTitleOnCanvas();
-    await mainPage.pressFlexLayoutShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer(false);
-    await designPanelPage.isLayoutRemoveButtonExists(false);
-  });
+  mainTest(
+    qase(611, 'FL-5 Remove flex layout from board from shortcut'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await mainPage.pressFlexLayoutShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await designPanelPage.isLayoutRemoveButtonExists();
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+      await mainPage.pressFlexLayoutShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isLayoutIconVisibleOnLayer(false);
+      await designPanelPage.isLayoutRemoveButtonExists(false);
+    },
+  );
 
   mainTest(
-    qase(612,'FL-6 Remove flex layout from board from Design panel'),
+    qase(612, 'FL-6 Remove flex layout from board from Design panel'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -124,7 +133,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(613,'FL-7 Change direction'), async ({ page }) => {
+  mainTest(qase(613, 'FL-7 Change direction'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -160,7 +169,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(615,'FL-9 Change alignment'), async ({ page }) => {
+  mainTest(qase(615, 'FL-9 Change alignment'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -185,7 +194,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(616,'FL-10 Change justification'), async ({ page }) => {
+  mainTest(qase(616, 'FL-10 Change justification'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -234,7 +243,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(618,'FL-12 Change column gap'), async ({ page }) => {
+  mainTest(qase(618, 'FL-12 Change column gap'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -259,7 +268,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(619,'FL-13 Change row gap'), async ({ page }) => {
+  mainTest(qase(619, 'FL-13 Change row gap'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -286,7 +295,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(620,'FL-14 Change single padding'), async ({ page }) => {
+  mainTest(qase(620, 'FL-14 Change single padding'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -319,7 +328,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(621,'FL-15 Change multiple padding'), async ({ page }) => {
+  mainTest(qase(621, 'FL-15 Change multiple padding'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -367,7 +376,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(627,'FL-21 Flex elements change - alignment'), async ({ page }) => {
+  mainTest(qase(627, 'FL-21 Flex elements change - alignment'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -399,42 +408,45 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(628,'FL-22 Flex elements - change margin single'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await mainPage.addFlexLayoutViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
-    await layersPanelPage.selectBoardChildLayer('Rectangle');
-    await designPanelPage.isFlexElementSectionOpened();
-    await designPanelPage.changeFlexElementMargin('Vertical', '10');
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeFlexElementMargin('Horizontal', '25');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'flex-element-margin-10-25.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await designPanelPage.changeFlexElementMargin('Vertical', '0');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'flex-element-margin-vert-0.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await designPanelPage.changeFlexElementMargin('Horizontal', '0');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'flex-element-margin-horizont-0.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-  });
+  mainTest(
+    qase(628, 'FL-22 Flex elements - change margin single'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await mainPage.addFlexLayoutViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await layersPanelPage.selectBoardChildLayer('Rectangle');
+      await designPanelPage.isFlexElementSectionOpened();
+      await designPanelPage.changeFlexElementMargin('Vertical', '10');
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.changeFlexElementMargin('Horizontal', '25');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'flex-element-margin-10-25.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await designPanelPage.changeFlexElementMargin('Vertical', '0');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'flex-element-margin-vert-0.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await designPanelPage.changeFlexElementMargin('Horizontal', '0');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'flex-element-margin-horizont-0.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+    },
+  );
 });
 
 mainTest.describe(() => {
@@ -456,7 +468,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(643,'FL-37 Set margins and padding to 0'), async ({ page }) => {
+  mainTest(qase(643, 'FL-37 Set margins and padding to 0'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeLayoutPadding('Vertical', '0');
@@ -482,7 +494,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(645,'FL-39 Gap click highlight'), async ({ page }) => {
+  mainTest(qase(645, 'FL-39 Gap click highlight'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeLayoutColumnGap('20');
@@ -497,7 +509,10 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(647,'FL-42 Use absolute position and look if element still inside a board'),
+    qase(
+      647,
+      'FL-42 Use absolute position and look if element still inside a board',
+    ),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);

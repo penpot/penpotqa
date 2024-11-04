@@ -14,38 +14,68 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.inspectButton = page.getByRole('button', { name: 'Inspect' });
     this.rightSidebar = page.locator(`aside[class*='inspect_right_sidebar']`);
     this.fullScreenButton = page.getByTitle('Full Screen', { exact: true });
-    this.fullScreenSection = page.locator(`section[class*="main_ui_viewer__fulscreen"]`);
+    this.fullScreenSection = page.locator(
+      `section[class*="main_ui_viewer__fulscreen"]`,
+    );
     this.prevBoardButton = page.locator(`button[class*="viewer-go-prev"]`);
     this.nextBoardButton = page.locator(`button[class*="viewer-go-next"]`);
     this.resetBoardButton = page.locator(`button[class*="reset-button"]`);
     this.selectBoardDropdown = page.locator('#current-frame');
     this.boardTitle = page.locator('div[class*="thumbnail-info"]');
     this.interactionsArrow = page.locator('.interactions .selected');
-    this.interactionsDropdown = page.locator('span[class*="interactions__dropdown-title"]:has-text("Interactions")');
-    this.interactionsDropdownOptions = page.locator('ul[class*="interactions__dropdown"]');
-    this.dontShowInterOptions = page.getByRole('listitem').filter({ hasText: 'Don\'t show interactions' });
-    this.showInterOptions = page.getByRole('listitem').filter({ hasText: /^Show interactions$/});
-    this.showOnClickInterOptions = page.getByRole('listitem').filter({ hasText: 'Show interactions on click' });
+    this.interactionsDropdown = page.locator(
+      'span[class*="interactions__dropdown-title"]:has-text("Interactions")',
+    );
+    this.interactionsDropdownOptions = page.locator(
+      'ul[class*="interactions__dropdown"]',
+    );
+    this.dontShowInterOptions = page
+      .getByRole('listitem')
+      .filter({ hasText: "Don't show interactions" });
+    this.showInterOptions = page
+      .getByRole('listitem')
+      .filter({ hasText: /^Show interactions$/ });
+    this.showOnClickInterOptions = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Show interactions on click' });
     this.boardCounter = page.locator('.main_ui_viewer__counter');
     this.scaleDropdown = page.locator('div[class*="header__zoom-widget"]');
     this.upscaleButton = page.locator('button[class*="zoom-btn"] .icon-remove');
     this.downscaleButton = page.locator('button[class*="zoom-btn"] .icon-add');
     this.scaleResetButton = page.getByRole('button', { name: 'Reset' });
-    this.scaleFitOptions = page.getByRole('listitem').filter({ hasText: 'Fit - Scale down to fit' });
-    this.scaleFillOptions = page.getByRole('listitem').filter({ hasText: 'Fill - Scale to fill' });
-    this.scaleFullScreenOptions = page.getByRole('listitem').filter({ hasText: 'Full screen' });
+    this.scaleFitOptions = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Fit - Scale down to fit' });
+    this.scaleFillOptions = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Fill - Scale to fill' });
+    this.scaleFullScreenOptions = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Full screen' });
     this.scaleDropdownOptions = page.locator('ul[class*="header__dropdown"]');
     this.pageDropdown = page.locator('span[class*="header__breadcrumb-text"]');
     this.pageDropdownOptions = page.locator('ul[class*="dropdown-sitemap"]');
     this.commentsButton = page.getByRole('button', { name: 'Comments' });
     this.commentsContainer = page.locator('div[class*="viewer-comments-container"]');
     this.commentsDropdown = page.getByTestId('viewer-comments-dropdown');
-    this.commentsDropdownOptions = page.locator('ul[class*="viewer_comments__dropdown"]');
-    this.showAllCommentsOption = page.getByRole('listitem').filter({ hasText: 'Show all comments' });
-    this.showYourCommentsOption = page.getByRole('listitem').filter({ hasText: 'Show only your comments' });
-    this.hideResolvedCommentsOption = page.getByRole('listitem').filter({ hasText: 'Hide resolved comments' });
-    this.showCommentsListOption = page.getByRole('listitem').filter({ hasText: 'Show comments list' });
-    this.commentsRightPanel = page.locator('div[class*="comments__settings-bar-inside"]');
+    this.commentsDropdownOptions = page.locator(
+      'ul[class*="viewer_comments__dropdown"]',
+    );
+    this.showAllCommentsOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Show all comments' });
+    this.showYourCommentsOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Show only your comments' });
+    this.hideResolvedCommentsOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Hide resolved comments' });
+    this.showCommentsListOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Show comments list' });
+    this.commentsRightPanel = page.locator(
+      'div[class*="comments__settings-bar-inside"]',
+    );
     this.commentCommentsPanelText = page.locator(
       'div[class*="comments__settings-bar-inside"] div[class*="comments__content"]',
     );
@@ -55,14 +85,22 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.shareButton = page.getByRole('button', { name: 'Share' });
     this.shareLinkDialog = page.locator('div[class*="share-link-dialog"]');
     this.getLinkButton = page.getByRole('button', { name: 'Get link' });
-    this.managePermissionsButton = page.getByRole('button', { name: 'Manage permissions' });
+    this.managePermissionsButton = page.getByRole('button', {
+      name: 'Manage permissions',
+    });
     this.selectAllCheckbox = page.getByText('Select All', { exact: true });
     this.copyLinkButton = page.getByRole('button', { name: 'Copy link' });
     this.copyLinkField = page.getByPlaceholder('Shareable link will appear here');
     this.destroyLinkButton = page.getByRole('button', { name: 'Destroy link' });
-    this.commentPermissionDropdown = page.locator('div[class*="who-comment-select"]');
-    this.inspectPermissionDropdown = page.locator('div[class*="who-inspect-select"]');
-    this.allUsersOption = page.getByRole('listitem').filter({ hasText: 'All Penpot users' });
+    this.commentPermissionDropdown = page.locator(
+      'div[class*="who-comment-select"]',
+    );
+    this.inspectPermissionDropdown = page.locator(
+      'div[class*="who-inspect-select"]',
+    );
+    this.allUsersOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'All Penpot users' });
     this.homeButton = page.locator('svg[class*="header__logo-icon"]');
   }
 
@@ -180,8 +218,8 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     second
       ? await this.commentsContainer.click()
       : await this.commentsContainer.click({
-        position: { x: 10, y: 10 }
-      });
+          position: { x: 10, y: 10 },
+        });
   }
 
   async clickOnViewport() {
@@ -225,7 +263,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   }
 
   async checkBuffer(expectedValue, page, browserName) {
-    if(browserName === 'chrome'){
+    if (browserName === 'chrome') {
       const clipboardText = await page.evaluate(async () => {
         return await navigator.clipboard.readText();
       });
@@ -234,7 +272,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   }
 
   async clickEditButton(first = true) {
-    if(first) {
+    if (first) {
       await this.editButton.click();
     } else {
       const popupPromise = this.page.waitForEvent('popup');
@@ -249,7 +287,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
       pages.map(async (p) => {
         const isActive = await p.evaluate(() => document.hasFocus());
         return isActive ? p : null;
-      })
+      }),
     );
     expect(activePage).not.toBe(newPage);
   }
@@ -282,7 +320,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   }
 
   async waitForViewerSection(timeout = 10000) {
-    await this.viewerLoyautSection.waitFor({ state: 'visible' , timeout: timeout});
+    await this.viewerLoyautSection.waitFor({ state: 'visible', timeout: timeout });
   }
 
   async clickDestroyLinkButton() {

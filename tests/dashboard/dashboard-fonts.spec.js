@@ -17,23 +17,26 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({ page }, testInfo) => {
   const teamPage = new TeamPage(page);
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(1152,'DA-66 Upload single font'), async ({ page }) => {
+mainTest(qase(1152, 'DA-66 Upload single font'), async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem('Fonts');
   await dashboardPage.uploadFont('fonts/Pacifico.ttf');
   await dashboardPage.isFontExists('Pacifico', 'Regular');
 });
 
-mainTest(qase(1154,'DA-68 Fonts - upload fail invalid file format'), async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-  await dashboardPage.openSidebarItem('Fonts');
-  await dashboardPage.uploadFontWithInvalidFormat('images/images.png');
-});
+mainTest(
+  qase(1154, 'DA-68 Fonts - upload fail invalid file format'),
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.openSidebarItem('Fonts');
+    await dashboardPage.uploadFontWithInvalidFormat('images/images.png');
+  },
+);
 
-mainTest(qase(1155,'DA-69 Search font'), async ({ page }) => {
+mainTest(qase(1155, 'DA-69 Search font'), async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem('Fonts');
   await dashboardPage.uploadFont('fonts/ArialTh.ttf');
@@ -43,7 +46,7 @@ mainTest(qase(1155,'DA-69 Search font'), async ({ page }) => {
   await dashboardPage.isFontNotExist('Allura-Regular');
 });
 
-mainTest(qase(1157,'DA-71 Edit font BUG'), async ({ page }) => {
+mainTest(qase(1157, 'DA-71 Edit font BUG'), async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem('Fonts');
   await dashboardPage.uploadFont('fonts/Allura-Regular.otf');
@@ -52,7 +55,7 @@ mainTest(qase(1157,'DA-71 Edit font BUG'), async ({ page }) => {
   await dashboardPage.isFontExists('New Test Font', 'Regular');
 });
 
-mainTest(qase(1158,'DA-72 Delete font'), async ({ page }) => {
+mainTest(qase(1158, 'DA-72 Delete font'), async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem('Fonts');
   await dashboardPage.uploadFont('fonts/Pacifico.ttf');
@@ -63,7 +66,7 @@ mainTest(qase(1158,'DA-72 Delete font'), async ({ page }) => {
   );
 });
 
-mainTest(qase(1159,'DA-73 Delete font - Cancel button check'), async ({ page }) => {
+mainTest(qase(1159, 'DA-73 Delete font - Cancel button check'), async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.openSidebarItem('Fonts');
   await dashboardPage.uploadFont('fonts/Pacifico.ttf');

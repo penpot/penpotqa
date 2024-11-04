@@ -16,7 +16,14 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 const teamName = random().concat('autotest');
 const annotation = 'Test annotation for automation';
 
-let mainPage, basePage, dashboardPage, teamPage, layersPanelPage, designPanelPage, colorPalettePage, assetsPanelPage;
+let mainPage,
+  basePage,
+  dashboardPage,
+  teamPage,
+  layersPanelPage,
+  designPanelPage,
+  colorPalettePage,
+  assetsPanelPage;
 test.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   teamPage = new TeamPage(page);
@@ -36,7 +43,7 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -48,18 +55,21 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(1452,'Show in assets panel option from Design tab'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await designPanelPage.clickOnComponentMenuButton();
-    await designPanelPage.clickOnShowInAssetsPanel();
-    await expect(page).toHaveScreenshot('component-show-in-assets-panel.png', {
-      mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-    });
-  });
+  mainTest(
+    qase(1452, 'Show in assets panel option from Design tab'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await designPanelPage.clickOnComponentMenuButton();
+      await designPanelPage.clickOnShowInAssetsPanel();
+      await expect(page).toHaveScreenshot('component-show-in-assets-panel.png', {
+        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+      });
+    },
+  );
 
   mainTest(
-    qase(0,'Show in assets panel option from component context menu'),
+    qase(0, 'Show in assets panel option from component context menu'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.showInAssetsPanelRightClick();
@@ -69,7 +79,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(1419,'Create annotation with valid text'), async ({ page }) => {
+  mainTest(qase(1419, 'Create annotation with valid text'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -84,7 +94,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1423,'Create annotation from context menu'), async ({ page }) => {
+  mainTest(qase(1423, 'Create annotation from context menu'), async ({ page }) => {
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.createAnnotationRightClick();
     await designPanelPage.addAnnotationForComponent(annotation);
@@ -95,7 +105,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1424,'Cancel annotation creation and accept'), async ({ page }) => {
+  mainTest(qase(1424, 'Cancel annotation creation and accept'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -108,7 +118,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1425,'Edit annotation with valid text'), async ({ page }) => {
+  mainTest(qase(1425, 'Edit annotation with valid text'), async ({ page }) => {
     const newAnnotation = 'Edit annotation';
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.createAnnotationRightClick();
@@ -124,7 +134,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1427,'Delete annotation'), async ({ page }) => {
+  mainTest(qase(1427, 'Delete annotation'), async ({ page }) => {
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.createAnnotationRightClick();
     await designPanelPage.addAnnotationForComponent(annotation);
@@ -138,7 +148,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1618,'Annotation on Inspect tab'), async ({ page }) => {
+  mainTest(qase(1618, 'Annotation on Inspect tab'), async ({ page }) => {
     const designPanelPage = new DesignPanelPage(page);
     const inspectPanelPage = new InspectPanelPage(page);
     await designPanelPage.createAnnotationRightClick();
@@ -151,7 +161,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1454,'Duplicate main component'), async ({ page }) => {
+  mainTest(qase(1454, 'Duplicate main component'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
@@ -169,7 +179,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1455,'Check Show main component option'), async ({ page }) => {
+  mainTest(qase(1455, 'Check Show main component option'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.clickAssetsTab();
@@ -179,7 +189,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(1428,'Check annotation applies for copies and inspect tab'),
+    qase(1428, 'Check annotation applies for copies and inspect tab'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -204,7 +214,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(1285,'Components - rename group'), async ({ page }) => {
+  mainTest(qase(1285, 'Components - rename group'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.clickAssetsTab();
@@ -219,7 +229,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1286,'Components - ungroup'), async ({ page }) => {
+  mainTest(qase(1286, 'Components - ungroup'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.clickAssetsTab();
@@ -234,7 +244,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1676,'Components - change view (list/tile)'), async ({ page }) => {
+  mainTest(qase(1676, 'Components - change view (list/tile)'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultEllipseByCoordinates(100, 200, true);
@@ -264,7 +274,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(1399,'PENPOT-1399 Impossible to create annotation for copy component'),
+    qase(1399, 'PENPOT-1399 Impossible to create annotation for copy component'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -286,11 +296,10 @@ mainTest.describe(() => {
       );
     },
   );
-
 });
 
 mainTest(
-  qase(1274,'Check created component (group of shapes) on Assets tab'),
+  qase(1274, 'Check created component (group of shapes) on Assets tab'),
   async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -317,23 +326,26 @@ mainTest(
   },
 );
 
-mainTest(qase(1621,'Create a group with component and check its name'), async () => {
-  const groupName = 'Test Group';
-  await mainPage.createDefaultBoardByCoordinates(200, 300);
-  await mainPage.createComponentViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await assetsPanelPage.createGroupFileLibraryAssets('Components', groupName);
-  await assetsPanelPage.isFileLibraryGroupCreated(groupName);
-  await layersPanelPage.openLayersTab();
-  await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-    'component-group-layer.png',
-  );
-  await expect(mainPage.viewport).toHaveScreenshot('component-group-canvas.png');
-});
+mainTest(
+  qase(1621, 'Create a group with component and check its name'),
+  async () => {
+    const groupName = 'Test Group';
+    await mainPage.createDefaultBoardByCoordinates(200, 300);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.createGroupFileLibraryAssets('Components', groupName);
+    await assetsPanelPage.isFileLibraryGroupCreated(groupName);
+    await layersPanelPage.openLayersTab();
+    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
+      'component-group-layer.png',
+    );
+    await expect(mainPage.viewport).toHaveScreenshot('component-group-canvas.png');
+  },
+);
 
-mainTest(qase(1453,'Rename component with valid name'), async () => {
+mainTest(qase(1453, 'Rename component with valid name'), async () => {
   const newName = 'Renamed ellipse name';
   await mainPage.createDefaultEllipseByCoordinates(400, 600);
   await mainPage.createComponentViaRightClick();
@@ -349,7 +361,7 @@ mainTest(qase(1453,'Rename component with valid name'), async () => {
   );
 });
 
-mainTest(qase(966,'Filter Components from All Assets drop-down'), async () => {
+mainTest(qase(966, 'Filter Components from All Assets drop-down'), async () => {
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.selectTypeFromAllAssetsDropdown('Components');
   await assetsPanelPage.isAssetsSectionNameDisplayed('Components', '0');
@@ -367,35 +379,36 @@ mainTest.describe(() => {
     await designPanelPage.changeAxisXandYForLayer('400', '300');
   });
 
-  mainTest(
-    qase(1411,'PENPOT-1411 Click Show main component on copy'),
-    async () => {
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await basePage.showMainComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-show-main.png',
-      );
-    },
-  );
+  mainTest(qase(1411, 'PENPOT-1411 Click Show main component on copy'), async () => {
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await basePage.showMainComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'main-copies-component-show-main.png',
+    );
+  });
 
   mainTest(
-    qase(1412,'PENPOT-1412 Change copy and click Reset overrides'),
+    qase(1412, 'PENPOT-1412 Change copy and click Reset overrides'),
     async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.changeHeightAndWidthForLayer('100', '150');
       await basePage.resetOverridesViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-reset-overrides.png', {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
-        }
+        'main-copies-component-reset-overrides.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );
 
   mainTest(
-    qase(1413,'PENPOT-1413 Change copy color, change main color, right-click copy and click Reset overrides'),
+    qase(
+      1413,
+      'PENPOT-1413 Change copy color, change main color, right-click copy and click Reset overrides',
+    ),
     async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddFillButton();
@@ -431,7 +444,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1300,'PENPOT-1300 Restore main component via context menu'),
+    qase(1300, 'PENPOT-1300 Restore main component via context menu'),
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.deleteMainComponentViaRightClick();
@@ -446,64 +459,55 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(1296,'PENPOT-1296 Detach instance from context menu'),
-    async () => {
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await layersPanelPage.detachInstanceCopyComponentViaRightClick();
-      await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-      await designPanelPage.changeAxisXandYForLayer('400', '300');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-detach-instance-right-click.png',
-      );
-    },
-  );
+  mainTest(qase(1296, 'PENPOT-1296 Detach instance from context menu'), async () => {
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await layersPanelPage.detachInstanceCopyComponentViaRightClick();
+    await designPanelPage.changeHeightAndWidthForLayer('300', '300');
+    await designPanelPage.changeAxisXandYForLayer('400', '300');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'main-copies-component-detach-instance-right-click.png',
+    );
+  });
 
-  mainTest(
-    qase(1297,'PENPOT-1297 Detach instance from "Design" tab'),
-    async () => {
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.clickOnComponentMenuButton();
-      await designPanelPage.clickOnDetachInstanceOption();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-      await designPanelPage.changeAxisXandYForLayer('400', '300');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-detach-instance-right-click.png',
-      );
-    },
-  );
+  mainTest(qase(1297, 'PENPOT-1297 Detach instance from "Design" tab'), async () => {
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.clickOnComponentMenuButton();
+    await designPanelPage.clickOnDetachInstanceOption();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeHeightAndWidthForLayer('300', '300');
+    await designPanelPage.changeAxisXandYForLayer('400', '300');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'main-copies-component-detach-instance-right-click.png',
+    );
+  });
 
-  mainTest(
-    qase(1298,'PENPOT-1298 Reset overrides via context menu'),
-    async () => {
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.changeHeightAndWidthForLayer('100', '150');
-      await designPanelPage.clickAddFillButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#460EA2');
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isFillHexCodeSet('460EA2');
+  mainTest(qase(1298, 'PENPOT-1298 Reset overrides via context menu'), async () => {
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.changeHeightAndWidthForLayer('100', '150');
+    await designPanelPage.clickAddFillButton();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#460EA2');
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.isFillHexCodeSet('460EA2');
 
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.clickAddBlurButton();
-      await designPanelPage.changeValueForBlur('2');
-      await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.clickAddBlurButton();
+    await designPanelPage.changeValueForBlur('2');
+    await mainPage.waitForChangeIsSaved();
 
-      await basePage.resetOverridesViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-reset-overrides.png', {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
-        }
-      );
-    },
-  );
-
+    await basePage.resetOverridesViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'main-copies-component-reset-overrides.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
+    );
+  });
 });
 
 mainTest.describe(() => {
@@ -532,7 +536,10 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(1416,'PENPOT-1416 Create 2 copies of main component. Change color of copy 1, change color of copy 2, right-click copy 2 and click "Update main component"'),
+    qase(
+      1416,
+      'PENPOT-1416 Create 2 copies of main component. Change color of copy 1, change color of copy 2, right-click copy 2 and click "Update main component"',
+    ),
     async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddFillButton();
@@ -562,7 +569,10 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1417,'PENPOT-1417 Create a copy from main, change color of copy, create a copy from copy, change color of main'),
+    qase(
+      1417,
+      'PENPOT-1417 Create a copy from main, change color of copy, create a copy from copy, change color of main',
+    ),
     async () => {
       await mainPage.duplicateLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -587,8 +597,9 @@ mainTest.describe(() => {
       await designPanelPage.isFillHexCodeSet('0B33A9');
 
       await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-change-color.png', {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
+        'main-copies-component-change-color.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },

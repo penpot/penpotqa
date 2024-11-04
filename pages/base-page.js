@@ -8,7 +8,9 @@ exports.BasePage = class BasePage {
   constructor(page) {
     this.page = page;
     this.header = page.locator('div[class*="dashboard-title"] h1');
-    this.successMessage = page.locator('div[class*="main_ui_notifications_toast_notification__text"]');
+    this.successMessage = page.locator(
+      'div[class*="main_ui_notifications_toast_notification__text"]',
+    );
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
     this.wrapperMessage = page.locator('aside[class*="inline-notification"]');
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });
@@ -17,55 +19,125 @@ exports.BasePage = class BasePage {
     this.viewport = page.locator('div[class*="viewport"] >> nth=0');
 
     //Layer right-click menu items
-    this.createdLayer = page.locator('div[class*="viewport"] [id^="shape"] >> nth=0');
-    this.copyLayer = page.locator('div[class*="viewport"] [class*="viewport-selrect"]').last();
+    this.createdLayer = page.locator(
+      'div[class*="viewport"] [id^="shape"] >> nth=0',
+    );
+    this.copyLayer = page
+      .locator('div[class*="viewport"] [class*="viewport-selrect"]')
+      .last();
     this.createdBoardTitle = page.locator('g[class="frame-title"] div >> nth=0');
-    this.deleteLayerMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete' });
+    this.deleteLayerMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete' });
     this.hideLayerMenuItem = page.getByRole('listitem').filter({ hasText: 'Hide' });
     this.showLayerMenuItem = page.getByRole('listitem').filter({ hasText: 'Show' });
-    this.focusOnLayerMenuItem = page.getByRole('listitem').filter({ hasText: 'Focus on' });
-    this.transformToPathMenuItem = page.getByRole('listitem').filter({ hasText: 'Transform to path' });
-    this.selectionToBoardMenuItem = page.getByRole('listitem').filter({ hasText: 'Selection to board' });
-    this.flipVerticalMenuItem = page.getByRole('listitem').filter({ hasText: 'Flip vertical' });
-    this.flipHorizontalMenuItem = page.getByRole('listitem').filter({ hasText: 'Flip horizontal' });
+    this.focusOnLayerMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Focus on' });
+    this.transformToPathMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Transform to path' });
+    this.selectionToBoardMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Selection to board' });
+    this.flipVerticalMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Flip vertical' });
+    this.flipHorizontalMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Flip horizontal' });
     this.editPathMenuItem = page.getByRole('listitem').filter({ hasText: 'Edit' });
-    this.addFlexLayout = page.getByRole('listitem').filter({ hasText: 'Add flex layout' });
-    this.removeFlexLayout = page.getByRole('listitem').filter({ hasText: 'Remove flex layout' });
-    this.addGridLayout = page.getByRole('listitem').filter({ hasText: 'Add grid layout' });
-    this.removeGridLayout = page.getByRole('listitem').filter({ hasText: 'Remove grid layout' });
-    this.addRowGridLayoutBtn = page.locator('g[class*="grid-plus-button"]',
-    ).first();
-    this.addColumnGridLayoutBtn = page.locator('g[class*="grid-plus-button"]',
-    ).last();
-    this.columnsRowsOnDesignPanel = page.getByTestId('inspect-layout-rows').locator('..');
-    this.deleteLayerMenuOption = page.getByRole('listitem').filter({ hasText: 'Delete' });
-    this.createComponentMenuItem = page.getByRole('listitem').filter({ hasText: 'Create component' });
-    this.updateMainComponentMenuItem = page.getByRole('listitem').filter({ hasText: 'Update main component' });
-    this.restoreMainComponentMenuItem = page.getByRole('listitem').filter({ hasText: 'Restore main component' });
-    this.createMultipleComponentsMenuItem = page.getByRole('listitem').filter({ hasText: 'Create multiple components' });
-    this.showInAssetsPanelOption = page.getByRole('listitem').filter({ hasText: 'Show in assets panel' });
-    this.createAnnotationOption = page.getByRole('listitem').filter({ hasText: 'Create annotation' });
-    this.duplicateOption = page.getByRole('listitem').filter({ hasText: 'Duplicate' });
+    this.addFlexLayout = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Add flex layout' });
+    this.removeFlexLayout = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Remove flex layout' });
+    this.addGridLayout = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Add grid layout' });
+    this.removeGridLayout = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Remove grid layout' });
+    this.addRowGridLayoutBtn = page.locator('g[class*="grid-plus-button"]').first();
+    this.addColumnGridLayoutBtn = page
+      .locator('g[class*="grid-plus-button"]')
+      .last();
+    this.columnsRowsOnDesignPanel = page
+      .getByTestId('inspect-layout-rows')
+      .locator('..');
+    this.deleteLayerMenuOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete' });
+    this.createComponentMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Create component' });
+    this.updateMainComponentMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Update main component' });
+    this.restoreMainComponentMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Restore main component' });
+    this.createMultipleComponentsMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Create multiple components' });
+    this.showInAssetsPanelOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Show in assets panel' });
+    this.createAnnotationOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Create annotation' });
+    this.duplicateOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Duplicate' });
     this.copyOption = page.getByRole('listitem').filter({ hasText: 'Copy' });
     this.pasteOption = page.getByRole('listitem').filter({ hasText: 'Paste' });
     this.groupOption = page.getByRole('listitem').filter({ hasText: 'Group' });
-    this.showMainComponentOption = page.getByRole('listitem').filter({ hasText: 'Show main component' });
-    this.resetOverridesOption = page.getByRole('listitem').filter({ hasText: 'Reset overrides' });
-    this.detachInstanceOption = page.getByRole('listitem').filter({ hasText: 'Detach instance' });
-    this.duplicateRowMenuItem = page.getByRole('listitem').filter({ hasText: 'Duplicate row' });
-    this.addRowAboveMenuItem = page.getByRole('listitem').filter({ hasText: 'Add 1 row above' });
-    this.addRowBelowMenuItem = page.getByRole('listitem').filter({ hasText: 'Add 1 row below' });
-    this.deleteRowMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete row' }).first();
-    this.deleteAndShapesRowMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete row and shapes' });
-    this.duplicateColumnMenuItem = page.getByRole('listitem').filter({ hasText: 'Duplicate column' });
-    this.addColumnLeftMenuItem = page.getByRole('listitem').filter({ hasText: 'Add 1 column to the left' });
-    this.addColumnRightMenuItem = page.getByRole('listitem').filter({ hasText: 'Add 1 column to the right' });
-    this.deleteColumnMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete column' }).first();
-    this.deleteAndShapesColumnMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete column and shapes' });
-    this.mergeGridCellMenuItem = page.getByRole('listitem').filter({ hasText: 'Merge cells' });
-    this.acceptCookieButton = page.locator(
-      'button[class*="CookieConsent_accept"]',
-    );
+    this.showMainComponentOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Show main component' });
+    this.resetOverridesOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Reset overrides' });
+    this.detachInstanceOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Detach instance' });
+    this.duplicateRowMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Duplicate row' });
+    this.addRowAboveMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Add 1 row above' });
+    this.addRowBelowMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Add 1 row below' });
+    this.deleteRowMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete row' })
+      .first();
+    this.deleteAndShapesRowMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete row and shapes' });
+    this.duplicateColumnMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Duplicate column' });
+    this.addColumnLeftMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Add 1 column to the left' });
+    this.addColumnRightMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Add 1 column to the right' });
+    this.deleteColumnMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete column' })
+      .first();
+    this.deleteAndShapesColumnMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete column and shapes' });
+    this.mergeGridCellMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Merge cells' });
+    this.acceptCookieButton = page.locator('button[class*="CookieConsent_accept"]');
   }
 
   async clearInput(input, browserName) {
@@ -228,7 +300,9 @@ exports.BasePage = class BasePage {
   }
 
   async createComponentViaRightClick() {
-    const layerSel = this.page.locator('div[class*="viewport"] [class*="viewport-selrect"]');
+    const layerSel = this.page.locator(
+      'div[class*="viewport"] [class*="viewport-selrect"]',
+    );
     await layerSel.last().click({ button: 'right', force: true });
     await this.createComponentMenuItem.click();
   }
@@ -282,7 +356,7 @@ exports.BasePage = class BasePage {
   }
 
   async addColumnsGridLayout(count) {
-    for(let i= 0; i < count; i++) {
+    for (let i = 0; i < count; i++) {
       await this.addRowGridLayoutBtn.click();
     }
   }
@@ -298,7 +372,7 @@ exports.BasePage = class BasePage {
   }
 
   async isWrapperMessageVisible() {
-    await expect(this.wrapperMessage).toBeVisible({timeout: 10000});
+    await expect(this.wrapperMessage).toBeVisible({ timeout: 10000 });
   }
 
   async acceptCookie() {

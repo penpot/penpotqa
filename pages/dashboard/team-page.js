@@ -10,7 +10,9 @@ exports.TeamPage = class TeamPage extends BasePage {
 
     // Teams
     this.teamCurrentBtn = page.locator('button[class*="current-team"]');
-    this.teamCurrentBtnWebkit = page.locator('button[class*="current-team"] div span').first();
+    this.teamCurrentBtnWebkit = page
+      .locator('button[class*="current-team"] div span')
+      .first();
     this.teamList = page.locator('ul[class*="teams-dropdown"]');
     this.createNewTeamMenuItem = page.locator('#teams-selector-create-team');
     this.teamNameInput = page.locator('#name');
@@ -18,17 +20,19 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamCurrentNameDiv = page.locator(
       'button[class*="current-team"] div[class*="team-name"]',
     );
-    this.teamNameLabel = page.locator('//div[text()="Team info"]/following-sibling::div[1]');
-    this.teamOptionsMenuButton = page.getByRole('button', { name: 'team-management' });
+    this.teamNameLabel = page.locator(
+      '//div[text()="Team info"]/following-sibling::div[1]',
+    );
+    this.teamOptionsMenuButton = page.getByRole('button', {
+      name: 'team-management',
+    });
     this.deleteTeamMenuItem = page.getByRole('menuitem', { name: 'Delete team' });
     this.deleteTeamButton = page.getByRole('button', { name: 'Delete team' });
     this.teamSettingsMenuItem = page.getByRole('menuitem', { name: 'Settings' });
     this.renameTeamMenuItem = page.getByRole('menuitem', { name: 'Rename' });
     this.uploadTeamImageButton = page.getByLabel('uploader');
     this.updateTeamButton = page.getByRole('button', { name: 'Update team' });
-    this.teamOwnerSpan = page.locator(
-      `//*[contains(@class,'owner-icon')]/../span`,
-    );
+    this.teamOwnerSpan = page.locator(`//*[contains(@class,'owner-icon')]/../span`);
     this.teamMembersSpan = page.locator(
       `//*[contains(@class,'team__user-icon')]/../span`,
     );
@@ -50,19 +54,31 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.inviteMembersPopUpHeader = page.locator(
       'div[class*="modal-team-container"] div[class*="title"]',
     );
-    this.inviteMembersTeamHeroButton = page.getByRole('button', { name: 'Invite members' });
+    this.inviteMembersTeamHeroButton = page.getByRole('button', {
+      name: 'Invite members',
+    });
     this.inviteMembersToTeamRoleSelectorButton = page.locator(
       'div[class*="custom-select"]',
     );
     this.adminRoleSelector = page.getByRole('listitem').filter({ hasText: 'Admin' });
-    this.editorRoleSelector = page.getByRole('listitem').filter({ hasText: 'Editor' });
+    this.editorRoleSelector = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Editor' });
     this.ownerRoleSelector = page.getByRole('listitem').filter({ hasText: 'Owner' });
-    this.transferOwnershipButton = page.getByRole('button', { name: 'Transfer ownership' });
+    this.transferOwnershipButton = page.getByRole('button', {
+      name: 'Transfer ownership',
+    });
     this.leaveTeamButton = page.getByRole('button', { name: 'Leave team' });
-    this.ownerLeaveTeamButton = page.getByRole('button', { name: 'Promote and leave' });
+    this.ownerLeaveTeamButton = page.getByRole('button', {
+      name: 'Promote and leave',
+    });
     this.deleteMemberButton = page.getByRole('button', { name: 'Delete member' });
-    this.inviteMembersToTeamEmailInput = page.getByPlaceholder('Emails, comma separated');
-    this.sendInvitationButton = page.getByRole('button', { name: 'Send invitation' });
+    this.inviteMembersToTeamEmailInput = page.getByPlaceholder(
+      'Emails, comma separated',
+    );
+    this.sendInvitationButton = page.getByRole('button', {
+      name: 'Send invitation',
+    });
     this.invitationRecord = page.locator(
       'div[class*="table-rows"] div[class*="table-row"]',
     );
@@ -79,10 +95,18 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.invitationRecordOptionsMenuButton = page.locator(
       'div[class*="main_ui_dashboard_team__table-field"] button',
     );
-    this.invitationRecordResendInvititationMenuItem = page.getByRole('listitem').filter({ hasText: 'Resend invitation' });
-    this.invitationRecordDeleteInvititationMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete invitation' });
-    this.memberRecordleaveTeamMenuItem = page.getByRole('listitem').filter({ hasText: 'Leave team' });
-    this.memberRecordDeleteMemberMenuItem = page.getByRole('listitem').filter({ hasText: 'Remove member' });
+    this.invitationRecordResendInvititationMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Resend invitation' });
+    this.invitationRecordDeleteInvititationMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete invitation' });
+    this.memberRecordleaveTeamMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Leave team' });
+    this.memberRecordDeleteMemberMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Remove member' });
     this.invitationWarningSpan = page.locator(
       'aside[class*="warning"] div[class*="context_notification"]',
     );
@@ -90,7 +114,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamIcon = page.locator(`div[class*='team-icon'] img`);
     this.inviteMessage = page.locator('div[class*="main-message"]');
     this.errorMessage = page.locator('div[class*="desc-message"]').last();
-    this.goToYourPenpotButton = page.getByRole('button', { name: 'Go to your Penpot' });
+    this.goToYourPenpotButton = page.getByRole('button', {
+      name: 'Go to your Penpot',
+    });
     this.requestAccessButton = page.getByRole('button', { name: 'REQUEST ACCESS' });
     this.returnHomeButton = page.getByRole('button', { name: 'GO TO YOUR PENPOT' });
     this.accessDialog = page.locator('div[class*="dialog"]').first();
@@ -111,11 +137,11 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async waitForTeamBtn(timeout = 10000) {
-    await this.teamCurrentBtnWebkit.waitFor({ state: 'visible' , timeout: timeout});
+    await this.teamCurrentBtnWebkit.waitFor({ state: 'visible', timeout: timeout });
   }
 
   async waitForCreateNewTeamButtonToBeHidden(timeout = 10000) {
-    await this.createNewTeamButton.waitFor({ state: 'hidden', timeout: timeout});
+    await this.createNewTeamButton.waitFor({ state: 'hidden', timeout: timeout });
   }
 
   async openTeamsListIfClosed() {
@@ -153,7 +179,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isTeamDeleted(teamName) {
-    await expect(this.page.getByText('Your Penpot')).toBeVisible({timeout: 8000});
+    await expect(this.page.getByText('Your Penpot')).toBeVisible({ timeout: 8000 });
     await this.openTeamsListIfClosed();
     for (const el of await this.teamCurrentNameDiv.elementHandles()) {
       const text = (await el.innerText()).valueOf();
@@ -212,10 +238,14 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isMultipleInvitationRecordDisplayed(email, role, status) {
-    const emailSelector = `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]`
+    const emailSelector = `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]`;
     const emailLocator = await this.page.locator(emailSelector);
-    const roleLocator = await this.page.locator(`${emailSelector}/following-sibling::div//span`);
-    const statusLocator = await this.page.locator(`${emailSelector}/following-sibling::div//aside`);
+    const roleLocator = await this.page.locator(
+      `${emailSelector}/following-sibling::div//span`,
+    );
+    const statusLocator = await this.page.locator(
+      `${emailSelector}/following-sibling::div//aside`,
+    );
     await expect(emailLocator).toHaveText(email);
     await expect(roleLocator).toHaveText(role);
     await expect(statusLocator).toHaveText(status);
@@ -223,8 +253,12 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async isMultipleMemberRecordDisplayed(name, email, role) {
     const nameSelector = `//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]`;
-    const emailLocator = await this.page.locator(`${nameSelector}/following-sibling::div`);
-    const roleLocator = await this.page.locator(`${nameSelector}/../../following-sibling::div//span`);
+    const emailLocator = await this.page.locator(
+      `${nameSelector}/following-sibling::div`,
+    );
+    const roleLocator = await this.page.locator(
+      `${nameSelector}/../../following-sibling::div//span`,
+    );
     const nameLocator = await this.page.locator(nameSelector);
     await expect(nameLocator).toContainText(name);
     await expect(emailLocator.first()).toHaveText(email);
@@ -232,7 +266,11 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async changeInvitationRole(email, role) {
-    await this.page.locator(`//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div//span`).click();
+    await this.page
+      .locator(
+        `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div//span`,
+      )
+      .click();
     switch (role) {
       case 'Admin':
         await this.adminRoleSelector.click();
@@ -261,7 +299,9 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async selectMemberRoleInPopUp(name, role) {
-    const locator = this.page.locator(`//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div//span`);
+    const locator = this.page.locator(
+      `//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div//span`,
+    );
     await locator.click();
     switch (role) {
       case 'Admin':
@@ -277,7 +317,9 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isMemberRoleInPopUpNotDisplayed(name, role) {
-    const locator = this.page.locator(`//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div//span`);
+    const locator = this.page.locator(
+      `//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div//span`,
+    );
     await locator.click();
     let roleLoc;
     switch (role) {
@@ -295,7 +337,9 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isInvitationRoleInPopUpNotDisplayed(email, role) {
-    const locator = this.page.locator(`//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div//span`);
+    const locator = this.page.locator(
+      `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div//span`,
+    );
     await locator.click();
     let roleLoc;
     switch (role) {
@@ -389,7 +433,9 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async deleteTeamMember(name) {
-    const locator = await this.page.locator(`//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div/button`);
+    const locator = await this.page.locator(
+      `//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div/button`,
+    );
     await locator.click();
     await this.memberRecordDeleteMemberMenuItem.click();
     await this.clickOnDeleteMemberButton();
@@ -397,18 +443,24 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isDeleteTeamMemberDisabled(name) {
-    const locator = await this.page.locator(`//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div/button`);
+    const locator = await this.page.locator(
+      `//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div/button`,
+    );
     await expect(locator).not.toBeVisible();
   }
 
   async isInvitationRecordOptionsDisabled(email) {
-    const locator = await this.page.locator(`//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div/button`);
+    const locator = await this.page.locator(
+      `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div/button`,
+    );
     await expect(locator).not.toBeVisible();
   }
 
   async selectMember(name) {
     await this.page.locator('span[class*="dropdown-button"]').click();
-    await this.page.locator(`li span[class*="components_select"]:has-text("${name}")`).click();
+    await this.page
+      .locator(`li span[class*="components_select"]:has-text("${name}")`)
+      .click();
     await this.ownerLeaveTeamButton.click();
   }
 
@@ -436,7 +488,6 @@ exports.TeamPage = class TeamPage extends BasePage {
     visible
       ? await expect(this.requestAccessButton).toBeVisible()
       : await expect(this.requestAccessButton).not.toBeVisible();
-
   }
 
   async clickReturnHomeButton() {
