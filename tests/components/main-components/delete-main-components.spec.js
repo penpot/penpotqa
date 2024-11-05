@@ -25,10 +25,10 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(1295,'Undo deleted component'), async ({ page, browserName }) => {
+mainTest(qase(1295, 'Undo deleted component'), async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
@@ -41,7 +41,7 @@ mainTest(qase(1295,'Undo deleted component'), async ({ page, browserName }) => {
   );
 });
 
-mainTest(qase(1456,'Delete component Assets tab'), async ({ page }) => {
+mainTest(qase(1456, 'Delete component Assets tab'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -58,25 +58,28 @@ mainTest(qase(1456,'Delete component Assets tab'), async ({ page }) => {
   );
 });
 
-mainTest(qase(1345,'Restore main component from context menu'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const layersPanelPage = new LayersPanelPage(page);
-  const assetsPanelPage = new AssetsPanelPage(page);
-  await mainPage.createDefaultRectangleByCoordinates(200, 300);
-  await mainPage.createComponentViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.duplicateLayerViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await assetsPanelPage.deleteFileLibraryComponents();
-  await mainPage.waitForChangeIsSaved();
-  await layersPanelPage.openLayersTab();
-  await layersPanelPage.restoreMainComponentViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-    'rectangle-component-asset.png',
-  );
-});
+mainTest(
+  qase(1345, 'Restore main component from context menu'),
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
+    await mainPage.createDefaultRectangleByCoordinates(200, 300);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.duplicateLayerViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.deleteFileLibraryComponents();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.openLayersTab();
+    await layersPanelPage.restoreMainComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+      'rectangle-component-asset.png',
+    );
+  },
+);

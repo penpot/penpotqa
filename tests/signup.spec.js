@@ -4,12 +4,16 @@ const { RegisterPage } = require('../pages/register-page');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { random } = require('../helpers/string-generator');
-const { getRegisterMessage, checkRegisterText, waitMessage } = require('../helpers/gmail');
+const {
+  getRegisterMessage,
+  checkRegisterText,
+  waitMessage,
+} = require('../helpers/gmail');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 const { TeamPage } = require('../pages/dashboard/team-page');
 const { ProfilePage } = require('../pages/profile-page');
 
-test(qase(32,'ON-5 Sign up with invalid email address'), async ({ page }) => {
+test(qase(32, 'ON-5 Sign up with invalid email address'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   await loginPage.goto();
@@ -22,7 +26,7 @@ test(qase(32,'ON-5 Sign up with invalid email address'), async ({ page }) => {
   await registerPage.isCreateAccountBtnDisabled();
 });
 
-test(qase(33,'ON-6 Sign up with no password'), async ({ page }) => {
+test(qase(33, 'ON-6 Sign up with no password'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   await loginPage.goto();
@@ -36,7 +40,7 @@ test(qase(33,'ON-6 Sign up with no password'), async ({ page }) => {
   await registerPage.isCreateAccountBtnDisabled();
 });
 
-test(qase(34,'ON-7 Sign up with incorrect password'), async ({ page }) => {
+test(qase(34, 'ON-7 Sign up with incorrect password'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   await loginPage.goto();
@@ -52,7 +56,7 @@ test(qase(34,'ON-7 Sign up with incorrect password'), async ({ page }) => {
 });
 
 test.describe(() => {
-  let randomName,email,invite;
+  let randomName, email, invite;
   test.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 30000);
     randomName = random().concat('autotest');
@@ -74,14 +78,14 @@ test.describe(() => {
     invite = await waitMessage(page, email, 40);
   });
 
-  test(qase(28,'ON-1 Sign up with an email address'), async ({ page }) => {
+  test(qase(28, 'ON-1 Sign up with an email address'), async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     await checkRegisterText(invite.inviteText, randomName);
     await page.goto(invite.inviteUrl);
     await dashboardPage.fillOnboardingFirstQuestions();
   });
 
-  test(qase([43,44],'ON-16,17 Onboarding questions flow'), async ({ page }) => {
+  test(qase([43, 44], 'ON-16,17 Onboarding questions flow'), async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     const teamPage = new TeamPage(page);
     await page.goto(invite.inviteUrl);
@@ -103,7 +107,7 @@ test.describe(() => {
   });
 });
 
-test(qase(36,'ON-9 Create demo account'), async ({ page }) => {
+test(qase(36, 'ON-9 Create demo account'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   const dashboardPage = new DashboardPage(page);
@@ -116,7 +120,7 @@ test(qase(36,'ON-9 Create demo account'), async ({ page }) => {
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
-test(qase(54,'ON-27 Sign up with email of existing user'), async ({ page }) => {
+test(qase(54, 'ON-27 Sign up with email of existing user'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   await loginPage.goto();
@@ -129,5 +133,5 @@ test(qase(54,'ON-27 Sign up with email of existing user'), async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });

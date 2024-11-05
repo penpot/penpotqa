@@ -20,7 +20,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.deleteFileButton = page.locator(
       'input[value="Delete files"],input[value="Delete file"]',
     );
-    this.deleteFileModalWindow = page.locator('div[class*="delete_shared__modal-container"]');
+    this.deleteFileModalWindow = page.locator(
+      'div[class*="delete_shared__modal-container"]',
+    );
     this.createFileButtonPlaceholder = page.locator(
       'div[class*="dashboard-grid"] button[class*="create-new"]',
     );
@@ -28,22 +30,30 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.renameFileMenuItem = page.getByTestId('file-rename');
     this.duplicateFileMenuItem = page.getByTestId('file-duplicate');
     this.addFileAsSharedLibraryMenuItem = page.getByTestId('file-add-shared');
-    this.addFileAsSharedLibraryButton = page.getByRole('button', { name: 'Add as Shared Library' });
+    this.addFileAsSharedLibraryButton = page.getByRole('button', {
+      name: 'Add as Shared Library',
+    });
     this.sharedLibraryIcon = page.locator('svg[class="icon-library"]');
     this.delFileAsSharedLibraryMenuItem = page.getByTestId('file-del-shared');
-    this.delFileAsSharedLibraryButton = page.getByRole('button', { name: 'Unpublish' });
+    this.delFileAsSharedLibraryButton = page.getByRole('button', {
+      name: 'Unpublish',
+    });
     this.moveToFileMenuItem = page.getByTestId('file-move-to');
-    this.moveToOtherTeamMenuItem = page.getByRole('menuitem').filter({ hasText: 'Move to other team' });
-    this.dashboardLibraryItem = page.locator(`button[title="New File 1"] div[class*="dashboard_grid__library"]`);
+    this.moveToOtherTeamMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Move to other team' });
+    this.dashboardLibraryItem = page.locator(
+      `button[title="New File 1"] div[class*="dashboard_grid__library"]`,
+    );
     this.downloadFilePenpotMenuItem = page.getByTestId('download-binary-file');
     this.downloadFileStandardMenuItem = page.getByTestId('download-standard-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
-    this.downloadFileCloseButton = page.getByRole('button', { name: 'Close' }).getByText('Close', { exact: true });
+    this.downloadFileCloseButton = page
+      .getByRole('button', { name: 'Close' })
+      .getByText('Close', { exact: true });
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
-    this.fileOptionsMenuButton = page.locator(
-      'div[class*="project-th-icon"] svg',
-    );
+    this.fileOptionsMenuButton = page.locator('div[class*="project-th-icon"] svg');
     this.headerOptionsMenuButton = page.locator(
       'div[title="Options"] svg[class*="files__menu-icon"]',
     );
@@ -62,9 +72,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.duplicateProjectMenuItem = page.getByTestId('project-duplicate');
     this.pinUnpinProjectButton = page.getByRole('button', { name: 'Pin/Unpin' });
     this.projectOptionsMenuButton = page.getByTestId('project-options');
-    this.projectsSidebarItem = page.getByRole('listitem').filter({ hasText: 'Projects' });
-    this.draftsSidebarItem = page.getByRole('listitem').filter({ hasText: 'Drafts' });
-    this.librariesSidebarItem = page.getByRole('listitem').filter({ hasText: 'Libraries' });
+    this.projectsSidebarItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Projects' });
+    this.draftsSidebarItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Drafts' });
+    this.librariesSidebarItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Libraries' });
     this.pinnedProjectsSidebarItem = page.getByTestId('pinned-projects');
     this.searchInput = page.locator('#search-input');
     this.projectOptions = page.getByTestId('project-options');
@@ -85,7 +101,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     //Fonts
     this.fontsSidebarItem = page.getByTestId('fonts');
     this.uploadFontSelector = page.locator('#font-upload');
-    this.uploadFontButton = page.getByRole('button', { name: 'Upload', exact: true });
+    this.uploadFontButton = page.getByRole('button', {
+      name: 'Upload',
+      exact: true,
+    });
     this.fontNameTableCell = page.locator(
       'div[class*="installed-fonts"] div[class*="table-row"] div[class*="dashboard_fonts__family"]',
     );
@@ -105,16 +124,22 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontNameInput = page.locator('div[class*="table-row"] input[type="text"]');
     this.saveFontButton = page.getByRole('button', { name: 'Save' });
     this.searchFontInput = page.getByPlaceholder('Search font');
-    this.fontFormatError = page.locator('.main_ui_notifications_toast_notification__text');
+    this.fontFormatError = page.locator(
+      '.main_ui_notifications_toast_notification__text',
+    );
 
     //Libraries & Templates
     this.noLibrariesPlacelder = page.getByTestId('empty-placeholder');
 
     // Onboarding
-    this.onboardingContinueBtn = page.locator('button[class="main_ui_onboarding_newsletter__accept-btn"]');
+    this.onboardingContinueBtn = page.locator(
+      'button[class="main_ui_onboarding_newsletter__accept-btn"]',
+    );
     this.onboardingHeader = page.locator('h1[data-testid="onboarding-welcome"]');
     this.planingToUsingDropdown = page.locator('div[class*="custom-select"]');
-    this.planingToUsingDropdownLabel = page.locator('div[class*="custom-select"] span').first();
+    this.planingToUsingDropdownLabel = page
+      .locator('div[class*="custom-select"] span')
+      .first();
     this.planingOtherInput = page.locator('#planning-other');
     this.toolOtherInput = page.locator('#experience-design-tool-other[type="text"]');
     this.responsabilityOtherInput = page.locator('#role-other');
@@ -125,24 +150,52 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.previousButton = page.locator('button[class*="prev-button"]');
     this.startButton = page.locator('button[label="Start"]');
     this.figmaTool = page.locator('//input[@id="experience-design-tool-figma"]/..');
-    this.toolsButton = page.locator('label[class*="components_forms__radio-label-image"]');
-    this.onboardingNewsHeader = page.locator('*[data-testid="onboarding-newsletter-title"]');
-    this.onboardingNewsUpdatesCheckbox = page.locator('label[for="newsletter-updates"]');
+    this.toolsButton = page.locator(
+      'label[class*="components_forms__radio-label-image"]',
+    );
+    this.onboardingNewsHeader = page.locator(
+      '*[data-testid="onboarding-newsletter-title"]',
+    );
+    this.onboardingNewsUpdatesCheckbox = page.locator(
+      'label[for="newsletter-updates"]',
+    );
     this.onboardingNewsCheckbox = page.locator('label[for="newsletter-news"]');
     this.onboardingCreateTeamInput = page.locator('input[class*="team-name-input"]');
-    this.onboardingContinueCreateTeamBtn = page.locator('button[label="Continue creating team"]');
-    this.onboardingContinueWithoutTeamBtn = page.locator('button[class*="onboarding_team_choice__accept-button"]').nth(1);
-    this.onboardingInviteInput = page.locator('input[class*="components_forms__inside-input"]');
-    this.onboardingCreateTeamButton = page.locator('button[class*="main_ui_onboarding_team_choice__accept-button"]');
-    this.selectedRadioButtonLabel = page.locator('label[class*="components_forms__radio-label checked"]').first();
-    this.selectedRadioImageLabel = page.locator('label[class*="checked"] span[class*="text"]').first();
-    this.onboardingPaginator = page.locator('div[class*="onboarding_questions__paginator"]');
-    this.onboardingLetsGoBtn = page.getByRole('button', { name: 'Continue', exact: true });
-    this.onboardingFirstHeader = page.locator('*[class*="onboarding_questions__modal-title"]');
+    this.onboardingContinueCreateTeamBtn = page.locator(
+      'button[label="Continue creating team"]',
+    );
+    this.onboardingContinueWithoutTeamBtn = page
+      .locator('button[class*="onboarding_team_choice__accept-button"]')
+      .nth(1);
+    this.onboardingInviteInput = page.locator(
+      'input[class*="components_forms__inside-input"]',
+    );
+    this.onboardingCreateTeamButton = page.locator(
+      'button[class*="main_ui_onboarding_team_choice__accept-button"]',
+    );
+    this.selectedRadioButtonLabel = page
+      .locator('label[class*="components_forms__radio-label checked"]')
+      .first();
+    this.selectedRadioImageLabel = page
+      .locator('label[class*="checked"] span[class*="text"]')
+      .first();
+    this.onboardingPaginator = page.locator(
+      'div[class*="onboarding_questions__paginator"]',
+    );
+    this.onboardingLetsGoBtn = page.getByRole('button', {
+      name: 'Continue',
+      exact: true,
+    });
+    this.onboardingFirstHeader = page.locator(
+      '*[class*="onboarding_questions__modal-title"]',
+    );
     this.whatNewsHeader = page.getByText('What’s new in Penpot?', { exact: true });
-    this.pluginModalHeader = page.getByText('Build Plugins and enhance your workflow', { exact: true });
-    this.pluginModalContinueBtn = page.getByRole('button', { name: 'Continue'} );
-    this.pluginModalGoBtn = page.getByRole('button', { name: 'Let\'s go'} );
+    this.pluginModalHeader = page.getByText(
+      'Build Plugins and enhance your workflow',
+      { exact: true },
+    );
+    this.pluginModalContinueBtn = page.getByRole('button', { name: 'Continue' });
+    this.pluginModalGoBtn = page.getByRole('button', { name: "Let's go" });
   }
 
   async createFileViaPlaceholder() {
@@ -335,7 +388,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.isProjectTitleDisplayed(name);
   }
 
-  async renameProjectViaRightclick(newProjectName) {
+  async renameProjectViaRightClick(newProjectName) {
     let text = await this.projectNameTitle.first().textContent();
     await this.projectNameTitle.first().click({ button: 'right' });
     await this.renameProjectMenuItem.click();
@@ -414,16 +467,24 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickUnpinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button main_ui_dashboard_pin_button__button-active');
+    await expect(this.pinUnpinProjectButton).toHaveClass(
+      'main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button main_ui_dashboard_pin_button__button-active',
+    );
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button ');
+    await expect(this.pinUnpinProjectButton).toHaveClass(
+      'main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button ',
+    );
   }
 
   async clickPinProjectButton() {
     await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button ');
+    await expect(this.pinUnpinProjectButton).toHaveClass(
+      'main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button ',
+    );
     await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass('main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button main_ui_dashboard_pin_button__button-active');
+    await expect(this.pinUnpinProjectButton).toHaveClass(
+      'main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button main_ui_dashboard_pin_button__button-active',
+    );
   }
 
   async checkPinnedProjectsSidebarItem(text) {
@@ -496,7 +557,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.modalTitle).toBeVisible();
     await expect(this.modalTitle).toHaveText('Import Penpot files');
     await this.modalAcceptButton.click();
-    await this.feedbackBannerMessage.waitFor({timeout:60000});
+    await this.feedbackBannerMessage.waitFor({ timeout: 60000 });
     await expect(this.feedbackBannerMessage).toHaveText(
       '1 file has been imported successfully.',
     );
@@ -564,7 +625,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.moveToFileMenuItem).toBeVisible();
     await this.moveToFileMenuItem.click();
     await this.moveToOtherTeamMenuItem.click();
-    await this.page.locator(`//li[@role="menuitem"]/a[text()="${otherTeamName}"]`).click();
+    await this.page
+      .locator(`//li[@role="menuitem"]/a[text()="${otherTeamName}"]`)
+      .click();
     await this.page.locator(`//li[@role="menuitem"]/a[text()="Drafts"]`).click();
     await this.page.locator(`input[value="Move"]`).click();
   }
@@ -577,11 +640,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async isFilePresentWithName(fileName) {
-    const fileNameTitle = this.page.locator(`button[title="${fileName}"] div[class*="item-info"] h3`);
+    const fileNameTitle = this.page.locator(
+      `button[title="${fileName}"] div[class*="item-info"] h3`,
+    );
     await expect(fileNameTitle).toHaveText(fileName);
   }
 
-  async renameFileWithNameViaRightClick(oldFileName ,newFileName) {
+  async renameFileWithNameViaRightClick(oldFileName, newFileName) {
     const fileTitle = this.page.locator(`button[title="${oldFileName}"]`).first();
     let text = await fileTitle.textContent();
     await fileTitle.click({ button: 'right' });
@@ -603,13 +668,19 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.onboardingLetsGoBtn.click();
   }
   async skipWhatNewsPopUp() {
-    if (await this.whatNewsHeader.isVisible() && await this.onboardingLetsGoBtn.isVisible()) {
+    if (
+      (await this.whatNewsHeader.isVisible()) &&
+      (await this.onboardingLetsGoBtn.isVisible())
+    ) {
       await this.clickOnLetsGoBtn();
     }
   }
 
   async skipPluginsPopUp() {
-    if (await this.pluginModalHeader.isVisible() && await this.pluginModalContinueBtn.isVisible()) {
+    if (
+      (await this.pluginModalHeader.isVisible()) &&
+      (await this.pluginModalContinueBtn.isVisible())
+    ) {
       await this.clickOnPluginContinueBtn();
       await this.clickOnPluginGoBtn();
     }
@@ -647,9 +718,21 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async fillSecondOnboardPage(branding, visual, wireframes) {
-    await this.page.locator(`//input[@id="experience-branding-illustrations-marketing-pieces-${branding}"]/..`).click();
-    await this.page.locator(`//input[@id="experience-interface-design-visual-assets-design-systems-${visual}"]/..`).click();
-    await this.page.locator(`//input[@id="experience-interface-wireframes-user-journeys-flows-navigation-trees-${wireframes}"]/..`).click();
+    await this.page
+      .locator(
+        `//input[@id="experience-branding-illustrations-marketing-pieces-${branding}"]/..`,
+      )
+      .click();
+    await this.page
+      .locator(
+        `//input[@id="experience-interface-design-visual-assets-design-systems-${visual}"]/..`,
+      )
+      .click();
+    await this.page
+      .locator(
+        `//input[@id="experience-interface-wireframes-user-journeys-flows-navigation-trees-${wireframes}"]/..`,
+      )
+      .click();
     await this.nextButton.click();
   }
 
@@ -734,11 +817,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async selectRadioButton(name) {
-    await this.page.locator(`label[class*="radio-label"]:has-text("${name}") span`).first().click();
+    await this.page
+      .locator(`label[class*="radio-label"]:has-text("${name}") span`)
+      .first()
+      .click();
   }
 
   async selectGetStartedQuestion(name) {
-    await this.page.locator(`span[class*="forms__image-text"]:has-text("${name}")`).click();
+    await this.page
+      .locator(`span[class*="forms__image-text"]:has-text("${name}")`)
+      .click();
   }
 
   async selectDropdownOptions(option) {
@@ -749,7 +837,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async selectLastDropdownOptions() {
     await this.planingToUsingDropdown.click();
-    const optionSelector = await this.page.locator(`li span[class*="select__label"]`).last();
+    const optionSelector = await this.page
+      .locator(`li span[class*="select__label"]`)
+      .last();
     await optionSelector.click();
   }
 
@@ -782,7 +872,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickOnOnboardingContinueWithoutTeamButton() {
-    await this.onboardingContinueWithoutTeamBtn.isVisible()
+    (await this.onboardingContinueWithoutTeamBtn.isVisible())
       ? await this.onboardingContinueWithoutTeamBtn.click()
       : null;
   }
@@ -845,13 +935,17 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async selectLastKindOfWork() {
     await this.planingToUsingDropdown.first().click();
-    const optionSelector = await this.page.locator(`li span[class*="select__label"]`).last();
+    const optionSelector = await this.page
+      .locator(`li span[class*="select__label"]`)
+      .last();
     await optionSelector.click();
   }
 
   async selectLastRole() {
     await this.planingToUsingDropdown.nth(1).click();
-    const optionSelector = await this.page.locator(`li span[class*="select__label"]`).last();
+    const optionSelector = await this.page
+      .locator(`li span[class*="select__label"]`)
+      .last();
     await optionSelector.click();
   }
 

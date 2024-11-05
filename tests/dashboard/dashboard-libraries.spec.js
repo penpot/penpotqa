@@ -13,7 +13,14 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
-let dashboardPage, teamPage, mainPage, assetsPanelPage, designPanelPage, layersPanelPage, colorPalettePage, colorPalettePopUp;
+let dashboardPage,
+  teamPage,
+  mainPage,
+  assetsPanelPage,
+  designPanelPage,
+  layersPanelPage,
+  colorPalettePage,
+  colorPalettePopUp;
 test.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   teamPage = new TeamPage(page);
@@ -30,25 +37,22 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(async ({ page }, testInfo) => {
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
+});
+
+mainTest(qase(1084, 'PENPOT-1084 Check view for empty library'), async () => {
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
+  await dashboardPage.isSharedLibraryIconDisplayed();
+  await dashboardPage.openSidebarItem('Libraries');
+  await dashboardPage.isFilePresent('New File 1');
+  await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
+    'empty-library.png',
+  );
 });
 
 mainTest(
-  qase(1084,'PENPOT-1084 Check view for empty library'),
-  async () => {
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
-    await dashboardPage.isSharedLibraryIconDisplayed();
-    await dashboardPage.openSidebarItem('Libraries');
-    await dashboardPage.isFilePresent('New File 1');
-    await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
-      'empty-library.png',
-    );
-  },
-);
-
-mainTest(
-  qase(1541,'PENPOT-1541 Create 2 rectangles and look library view'),
+  qase(1541, 'PENPOT-1541 Create 2 rectangles and look library view'),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
@@ -68,7 +72,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1542,'PENPOT-1542 Create 4 ellipses and look at library view'),
+  qase(1542, 'PENPOT-1542 Create 4 ellipses and look at library view'),
   async () => {
     await mainPage.createDefaultEllipseByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
@@ -94,7 +98,10 @@ mainTest(
 );
 
 mainTest(
-  qase(1351,'PENPOT-1351 Check actual library view after adding / updating / removing assets'),
+  qase(
+    1351,
+    'PENPOT-1351 Check actual library view after adding / updating / removing assets',
+  ),
   async ({ browserName }) => {
     await mainPage.createDefaultTextLayer(browserName);
     await mainPage.createComponentViaRightClick();
@@ -140,7 +147,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1476,'PENPOT-1476 Check view for library with one type of assets'),
+  qase(1476, 'PENPOT-1476 Check view for library with one type of assets'),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
@@ -173,20 +180,14 @@ mainTest.describe(() => {
     await dashboardPage.isFilePresent('New File 1');
   });
 
-  mainTest(
-    qase(1057,'PENPOT-1057 Rename file from Libraries tab'),
-    async () => {
-      await dashboardPage.renameFile('Renamed Test File');
-      await dashboardPage.isFilePresent('Renamed Test File');
-    },
-  );
+  mainTest(qase(1057, 'PENPOT-1057 Rename file from Libraries tab'), async () => {
+    await dashboardPage.renameFile('Renamed Test File');
+    await dashboardPage.isFilePresent('Renamed Test File');
+  });
 
-  mainTest(
-    qase(1058,'PENPOT-1058 Duplicate file from Libraries tab'),
-    async () => {
-      await dashboardPage.duplicateFileViaRightclick();
-      await dashboardPage.openSidebarItem('Projects');
-      await dashboardPage.checkNumberOfFiles('2 files');
-    },
-  );
+  mainTest(qase(1058, 'PENPOT-1058 Duplicate file from Libraries tab'), async () => {
+    await dashboardPage.duplicateFileViaRightclick();
+    await dashboardPage.openSidebarItem('Projects');
+    await dashboardPage.checkNumberOfFiles('2 files');
+  });
 });

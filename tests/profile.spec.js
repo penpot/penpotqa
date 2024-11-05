@@ -6,10 +6,15 @@ const { expect, test } = require('@playwright/test');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { RegisterPage } = require('../pages/register-page');
-const { getRegisterMessage, checkNewEmailText, waitMessage, waitSecondMessage } = require('../helpers/gmail');
+const {
+  getRegisterMessage,
+  checkNewEmailText,
+  waitMessage,
+  waitSecondMessage,
+} = require('../helpers/gmail');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 
-mainTest(qase(187,'PR-1 Edit profile name'), async ({ page }) => {
+mainTest(qase(187, 'PR-1 Edit profile name'), async ({ page }) => {
   const newName = random();
   const profilePage = new ProfilePage(page);
   await profilePage.openYourAccountPage();
@@ -19,7 +24,7 @@ mainTest(qase(187,'PR-1 Edit profile name'), async ({ page }) => {
   await profilePage.isAccountNameDisplayed(newName);
 });
 
-mainTest(qase(195,'PR-9 Add profile picture jpeg'), async ({ page }) => {
+mainTest(qase(195, 'PR-9 Add profile picture jpeg'), async ({ page }) => {
   const profilePage = new ProfilePage(page);
   await profilePage.openYourAccountPage();
   await profilePage.isHeaderDisplayed('Your account');
@@ -41,7 +46,7 @@ mainTest(qase(195,'PR-9 Add profile picture jpeg'), async ({ page }) => {
   );
 });
 
-mainTest(qase(198,'PR-12 Change password to invalid'), async ({ page }) => {
+mainTest(qase(198, 'PR-12 Change password to invalid'), async ({ page }) => {
   const newPassword = '1234567';
   const profilePage = new ProfilePage(page);
   await profilePage.openYourAccountPage();
@@ -57,7 +62,7 @@ mainTest(qase(198,'PR-12 Change password to invalid'), async ({ page }) => {
 });
 
 mainTest(
-  qase(202,'PR-16 Fail to change password confirmation does not match'),
+  qase(202, 'PR-16 Fail to change password confirmation does not match'),
   async ({ page }) => {
     const profilePage = new ProfilePage(page);
     await profilePage.openYourAccountPage();
@@ -73,41 +78,47 @@ mainTest(
   },
 );
 
-mainTest(qase(205,'PR-19 Logout from Account'), async ({ page }) => {
+mainTest(qase(205, 'PR-19 Logout from Account'), async ({ page }) => {
   const profilePage = new ProfilePage(page);
   const loginPage = new LoginPage(page);
   await profilePage.logout();
   await loginPage.isLoginPageOpened();
 });
 
-mainTest(qase(207,'PR-21 Send feedback email with empty fields'), async ({ page }) => {
-  const profilePage = new ProfilePage(page);
-  await profilePage.openGiveFeedbackPage();
-  await profilePage.isHeaderDisplayed('Your account');
-  await profilePage.isSendFeedbackButtonDisabled();
-  await profilePage.enterSubjectToGiveFeedbackForm('QA Test');
-  await profilePage.isSendFeedbackButtonDisabled();
-  await profilePage.clearSubjectInputInGiveFeedbackForm();
-  await profilePage.enterDescriptionToGiveFeedbackForm(
-    'This is a test feedback triggered by QA team',
-  );
-  await profilePage.isSendFeedbackButtonDisabled();
-});
+mainTest(
+  qase(207, 'PR-21 Send feedback email with empty fields'),
+  async ({ page }) => {
+    const profilePage = new ProfilePage(page);
+    await profilePage.openGiveFeedbackPage();
+    await profilePage.isHeaderDisplayed('Your account');
+    await profilePage.isSendFeedbackButtonDisabled();
+    await profilePage.enterSubjectToGiveFeedbackForm('QA Test');
+    await profilePage.isSendFeedbackButtonDisabled();
+    await profilePage.clearSubjectInputInGiveFeedbackForm();
+    await profilePage.enterDescriptionToGiveFeedbackForm(
+      'This is a test feedback triggered by QA team',
+    );
+    await profilePage.isSendFeedbackButtonDisabled();
+  },
+);
 
-mainTest(qase(208,'PR-22 Send feedback email with valid data'), async ({ page }) => {
-  const profilePage = new ProfilePage(page);
-  await profilePage.openGiveFeedbackPage();
-  await profilePage.isHeaderDisplayed('Your account');
-  await profilePage.enterSubjectToGiveFeedbackForm('QA Test');
-  await profilePage.enterDescriptionToGiveFeedbackForm(
-    'This is a test feedback triggered by QA team',
-  );
-  await profilePage.clickSendFeedbackButton();
-  await profilePage.isSuccessMessageDisplayed('Feedback sent');
-});
+mainTest(
+  qase(208, 'PR-22 Send feedback email with valid data'),
+  async ({ page }) => {
+    const profilePage = new ProfilePage(page);
+    await profilePage.openGiveFeedbackPage();
+    await profilePage.isHeaderDisplayed('Your account');
+    await profilePage.enterSubjectToGiveFeedbackForm('QA Test');
+    await profilePage.enterDescriptionToGiveFeedbackForm(
+      'This is a test feedback triggered by QA team',
+    );
+    await profilePage.clickSendFeedbackButton();
+    await profilePage.isSuccessMessageDisplayed('Feedback sent');
+  },
+);
 
 test.describe(() => {
-  let randomName,email,invite;
+  let randomName, email, invite;
   test.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 30000);
     randomName = random().concat('autotest');
@@ -130,8 +141,10 @@ test.describe(() => {
     console.log(invite.inviteUrl);
   });
 
-  test(qase(190,'PR-4 Change email to valid'), async ({ page }) => {
-    const newEmail = `${process.env.GMAIL_NAME}+${random().concat('autotest')}@gmail.com`;
+  test(qase(190, 'PR-4 Change email to valid'), async ({ page }) => {
+    const newEmail = `${process.env.GMAIL_NAME}+${random().concat(
+      'autotest',
+    )}@gmail.com`;
     const dashboardPage = new DashboardPage(page);
     const loginPage = new LoginPage(page);
     const profilePage = new ProfilePage(page);
@@ -150,9 +163,8 @@ test.describe(() => {
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
   });
-
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });

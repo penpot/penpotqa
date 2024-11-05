@@ -27,7 +27,7 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -39,13 +39,13 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(436,'CO-221 Import PNG image'), async ({ page }) => {
+  mainTest(qase(436, 'CO-221 Import PNG image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('image-png.png');
   });
 
-  mainTest(qase(440,'CO-225 Rename image with valid name'), async ({ page }) => {
+  mainTest(qase(440, 'CO-225 Rename image with valid name'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('images');
@@ -55,7 +55,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(442,'CO-227 Add, hide, unhide, change type and delete Shadow to image'),
+    qase(442, 'CO-227 Add, hide, unhide, change type and delete Shadow to image'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
@@ -102,7 +102,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(443,'CO-228 Add and edit Shadow to image'), async ({ page }) => {
+  mainTest(qase(443, 'CO-228 Add and edit Shadow to image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -123,19 +123,22 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('image-inner-shadow.png');
   });
 
-  mainTest(qase(459,'CO-244 Change border radius multiple values'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await designPanelPage.clickIndividualCornersRadiusButton();
-    await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-changed-corners.png');
-    await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-png.png');
-  });
+  mainTest(
+    qase(459, 'CO-244 Change border radius multiple values'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await designPanelPage.clickIndividualCornersRadiusButton();
+      await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-changed-corners.png');
+      await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-png.png');
+    },
+  );
 
-  mainTest(qase(482,'CO-267 Selection to board'), async ({ page }) => {
+  mainTest(qase(482, 'CO-267 Selection to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -152,109 +155,115 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(435,'CO-220 Import JPEG image'), async ({ page }) => {
+  mainTest(qase(435, 'CO-220 Import JPEG image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('image-jpeg.png');
   });
 
-  mainTest(qase(444,'CO-229 Add, hide, unhide and delete Blur to image'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await designPanelPage.clickAddBlurButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-blur-default.png', {
-      mask: [mainPage.guides],
-    });
-    await designPanelPage.hideBlur();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-blur-hide.png', {
-      mask: [mainPage.guides],
-    });
-    await designPanelPage.unhideBlur();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-blur-unhide.png', {
-      mask: [mainPage.guides],
-    });
-    await designPanelPage.removeBlur();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-blur-remove.png', {
-      mask: [mainPage.guides],
-    });
-  });
+  mainTest(
+    qase(444, 'CO-229 Add, hide, unhide and delete Blur to image'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await designPanelPage.clickAddBlurButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-blur-default.png', {
+        mask: [mainPage.guides],
+      });
+      await designPanelPage.hideBlur();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-blur-hide.png', {
+        mask: [mainPage.guides],
+      });
+      await designPanelPage.unhideBlur();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-blur-unhide.png', {
+        mask: [mainPage.guides],
+      });
+      await designPanelPage.removeBlur();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-blur-remove.png', {
+        mask: [mainPage.guides],
+      });
+    },
+  );
 
-  mainTest(qase(446,'CO-231 Add, edit and delete Stroke to image'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await designPanelPage.clickAddStrokeButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-stroke-default.png', {
-      mask: [mainPage.guides],
-    });
-    await designPanelPage.changeStrokeSettings(
-      '#43E50B',
-      '60',
-      '10',
-      'Inside',
-      'Dotted',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'image-stroke-inside-dotted.png',
-      {
+  mainTest(
+    qase(446, 'CO-231 Add, edit and delete Stroke to image'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await designPanelPage.clickAddStrokeButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-stroke-default.png', {
         mask: [mainPage.guides],
-      },
-    );
-    await designPanelPage.changeStrokeSettings(
-      '#F5358F',
-      '80',
-      '5',
-      'Outside',
-      'Dashed',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'image-stroke-outside-dashed.png',
-      {
+      });
+      await designPanelPage.changeStrokeSettings(
+        '#43E50B',
+        '60',
+        '10',
+        'Inside',
+        'Dotted',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'image-stroke-inside-dotted.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await designPanelPage.changeStrokeSettings(
+        '#F5358F',
+        '80',
+        '5',
+        'Outside',
+        'Dashed',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'image-stroke-outside-dashed.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await designPanelPage.changeStrokeSettings(
+        '#F5358F',
+        '100',
+        '3',
+        'Center',
+        'Solid',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'image-stroke-center-solid.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await designPanelPage.changeStrokeSettings(
+        '#F5358F',
+        '40',
+        '4',
+        'Center',
+        'Mixed',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'image-stroke-center-mixed.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await designPanelPage.removeStroke();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-stroke-remove.png', {
         mask: [mainPage.guides],
-      },
-    );
-    await designPanelPage.changeStrokeSettings(
-      '#F5358F',
-      '100',
-      '3',
-      'Center',
-      'Solid',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'image-stroke-center-solid.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await designPanelPage.changeStrokeSettings(
-      '#F5358F',
-      '40',
-      '4',
-      'Center',
-      'Mixed',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'image-stroke-center-mixed.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await designPanelPage.removeStroke();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-stroke-remove.png', {
-      mask: [mainPage.guides],
-    });
-  });
+      });
+    },
+  );
 
-  mainTest(qase(457,'CO-242-1 Delete image via rightclick'), async ({ page }) => {
+  mainTest(qase(457, 'CO-242-1 Delete image via rightclick'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
@@ -262,14 +271,14 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest(qase(460,'CO-245 Change border radius one value'), async ({ page }) => {
+  mainTest(qase(460, 'CO-245 Change border radius one value'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeGeneralCornerRadiusForLayer('30');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('image-corners-30.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        maxDiffPixels: 0,
+      maxDiffPixels: 0,
     });
     await designPanelPage.changeGeneralCornerRadiusForLayer('90');
     await mainPage.waitForChangeIsSaved();
@@ -291,7 +300,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1270,'CO-412 Add rotation to image'), async ({ page }) => {
+  mainTest(qase(1270, 'CO-412 Add rotation to image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
@@ -324,23 +333,28 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(474,'CO-259 Flip Vertical and Flip Horizontal image'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    await mainPage.flipVerticalViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-flipped-vertical.png');
-    await mainPage.flipHorizontalViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'image-flipped-vertical-horizontal.png',
-    );
-    await mainPage.flipVerticalViaShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-flipped-horizontal.png');
-    await mainPage.flipHorizontalViaShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-non-flipped-jpeg.png');
-  });
+  mainTest(
+    qase(474, 'CO-259 Flip Vertical and Flip Horizontal image'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      await mainPage.flipVerticalViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-flipped-vertical.png');
+      await mainPage.flipHorizontalViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'image-flipped-vertical-horizontal.png',
+      );
+      await mainPage.flipVerticalViaShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'image-flipped-horizontal.png',
+      );
+      await mainPage.flipHorizontalViaShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-non-flipped-jpeg.png');
+    },
+  );
 });
 
 mainTest.describe(() => {
@@ -351,12 +365,12 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(437,'CO-222 Import GIF image'), async ({ page }) => {
+  mainTest(qase(437, 'CO-222 Import GIF image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase(457,'CO-242-2 Delete image via shortcut Del'), async ({ page }) => {
+  mainTest(qase(457, 'CO-242-2 Delete image via shortcut Del'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();

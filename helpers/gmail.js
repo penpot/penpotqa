@@ -6,7 +6,11 @@ const client_secret = process.env.CLIENT_SECRET;
 const rToken = process.env.REFRESH_TOKEN;
 
 async function authorize() {
-  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, "http://localhost");
+  const oAuth2Client = new google.auth.OAuth2(
+    client_id,
+    client_secret,
+    'http://localhost',
+  );
   return await refreshToken(oAuth2Client);
 }
 
@@ -38,12 +42,15 @@ async function listMessages(auth, email) {
   const spamMessages = await searchMessages('SPAM', email);
   const messages = [...inboxMessages, ...spamMessages];
 
-  if(messages.length > 0) {
+  if (messages.length > 0) {
     const msg = await gmail.users.messages.get({
       userId: 'me',
       id: messages[0].id,
     });
-    return Buffer.from(msg.data.payload.parts[0].parts[0].body.data, 'base64').toString('utf-8');
+    return Buffer.from(
+      msg.data.payload.parts[0].parts[0].body.data,
+      'base64',
+    ).toString('utf-8');
   }
 }
 
@@ -68,64 +75,73 @@ async function messagesCount(auth, email) {
 }
 
 async function checkMessagesCount(email, count) {
-  return authorize().then(async (auth) => {
-    const actualCount = await messagesCount(auth, email);
-    expect(actualCount).toEqual(count);
-  }).catch(console.error);
+  return authorize()
+    .then(async (auth) => {
+      const actualCount = await messagesCount(auth, email);
+      expect(actualCount).toEqual(count);
+    })
+    .catch(console.error);
 }
 
 async function getMessagesCount(email) {
-  return authorize().then(async (auth) => {
-    return await messagesCount(auth, email);
-  }).catch(console.error);
+  return authorize()
+    .then(async (auth) => {
+      return await messagesCount(auth, email);
+    })
+    .catch(console.error);
 }
 
 async function getRegisterMessage(email) {
-  return authorize().then(async (auth) => {
-    const body = await listMessages(auth, email);
-    if (body) {
-      const urlRegex = /(https?:\/\/[^\s]+)/;
-      const match = body.match(urlRegex);
-      if (match) {
-        const url = match[0];
-        const remainingText = body.replace(url, '').trim();
-        return {
-          inviteUrl: url,
-          inviteText: remainingText,
-        };
-      } else {
-        console.log('No URL found in the text.');
-        return null;
+  return authorize()
+    .then(async (auth) => {
+      const body = await listMessages(auth, email);
+      if (body) {
+        const urlRegex = /(https?:\/\/[^\s]+)/;
+        const match = body.match(urlRegex);
+        if (match) {
+          const url = match[0];
+          const remainingText = body.replace(url, '').trim();
+          return {
+            inviteUrl: url,
+            inviteText: remainingText,
+          };
+        } else {
+          console.log('No URL found in the text.');
+          return null;
+        }
       }
-    }
-  }).catch(console.error);
+    })
+    .catch(console.error);
 }
 
 async function getRequestAccessMessage(email) {
-  return authorize().then(async (auth) => {
-    const body = await listMessages(auth, email);
-    if (body) {
-      const urlRegex = /(https?:\/\/[^\s]+)/g;
-      const matches = Array.from(body.matchAll(urlRegex));
-      if (matches) {
-        const urls = matches.map(match => match[0]);
-        const remainingText = urls.reduce((acc, item) => {
-          return acc.replace(item, '').trim();
-        }, body);
-        return {
-          inviteUrl: urls,
-          inviteText: remainingText,
-        };
-      } else {
-        console.log('No URL found in the text.');
-        return null;
+  return authorize()
+    .then(async (auth) => {
+      const body = await listMessages(auth, email);
+      if (body) {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const matches = Array.from(body.matchAll(urlRegex));
+        if (matches) {
+          const urls = matches.map((match) => match[0]);
+          const remainingText = urls.reduce((acc, item) => {
+            return acc.replace(item, '').trim();
+          }, body);
+          return {
+            inviteUrl: urls,
+            inviteText: remainingText,
+          };
+        } else {
+          console.log('No URL found in the text.');
+          return null;
+        }
       }
-    }
-  }).catch(console.error);
+    })
+    .catch(console.error);
 }
 
-async function checkInviteText(text, team, user='k8q6byz') {
-  const messageText = 'Hello!\r\n' +
+async function checkInviteText(text, team, user = 'k8q6byz') {
+  const messageText =
+    'Hello!\r\n' +
     '\r\n' +
     `${user} has invited you to join the team “${team}”.\r\n` +
     '\r\n' +
@@ -139,7 +155,8 @@ async function checkInviteText(text, team, user='k8q6byz') {
 }
 
 async function checkRegisterText(text, name) {
-  const messageText = `Hello ${name}!\r\n` +
+  const messageText =
+    `Hello ${name}!\r\n` +
     '\r\n' +
     'Thanks for signing up for your Penpot account! Please verify your email using the\r\n' +
     'link below and get started building mockups and prototypes today!\r\n' +
@@ -152,7 +169,8 @@ async function checkRegisterText(text, name) {
 }
 
 async function checkRecoveryText(text, name) {
-  const messageText = `Hello ${name}!\r\n` +
+  const messageText =
+    `Hello ${name}!\r\n` +
     '\r\n' +
     'We received a request to reset your password. Click the link below to choose a\r\n' +
     'new one:\r\n' +
@@ -168,7 +186,8 @@ async function checkRecoveryText(text, name) {
 }
 
 async function checkNewEmailText(text, name, newEmail) {
-  const messageText = `Hello ${name}!\r\n` +
+  const messageText =
+    `Hello ${name}!\r\n` +
     '\r\n' +
     `We received a request to change your current email to ${newEmail}.\r\n` +
     '\r\n' +
@@ -185,7 +204,8 @@ async function checkNewEmailText(text, name, newEmail) {
 }
 
 async function checkConfirmAccessText(text, name, email, teamName) {
-  const messageText = 'Hello!\r\n' +
+  const messageText =
+    'Hello!\r\n' +
     '\r\n' +
     '\r\n' +
     'Hello!\r\n' +
@@ -223,7 +243,8 @@ async function checkConfirmAccessText(text, name, email, teamName) {
 }
 
 async function checkDashboardConfirmAccessText(text, name, email, teamName) {
-  const messageText = 'Hello!\r\n' +
+  const messageText =
+    'Hello!\r\n' +
     '\r\n' +
     `${name} (${email.toLowerCase()}) wants to have access to the “${teamName}” Team.\r\n` +
     '\r\n' +
@@ -241,14 +262,15 @@ async function checkDashboardConfirmAccessText(text, name, email, teamName) {
 }
 
 async function checkYourPenpotConfirmAccessText(text, name, email) {
-  const messageText = 'Hello!\r\n' +
+  const messageText =
+    'Hello!\r\n' +
     '\r\n' +
     '\r\n' +
     'Hello!\r\n' +
     '\r\n' +
     `${name} (${email.toLowerCase()}) has requested access to the file named “New File 1”.\r\n` +
     '\r\n' +
-    'Please note that the file is currently in Your Penpot \'s team, so direct access cannot be granted. However, you have two options to provide the requested access:\r\n' +
+    "Please note that the file is currently in Your Penpot 's team, so direct access cannot be granted. However, you have two options to provide the requested access:\r\n" +
     '\r\n' +
     `- Move the File to Another Team:\r\n` +
     '\r\n' +
@@ -274,8 +296,14 @@ async function checkYourPenpotConfirmAccessText(text, name, email) {
   await expect(text).toBe(messageText);
 }
 
-async function checkYourPenpotViewModeConfirmAccessText(text, name, email, teamName) {
-  const messageText = 'Hello!\r\n' +
+async function checkYourPenpotViewModeConfirmAccessText(
+  text,
+  name,
+  email,
+  teamName,
+) {
+  const messageText =
+    'Hello!\r\n' +
     '\r\n' +
     `${name} (${email.toLowerCase()}) wants to have view-only access to the file named “New File 1”.\r\n` +
     '\r\n' +
@@ -296,7 +324,8 @@ async function checkYourPenpotViewModeConfirmAccessText(text, name, email, teamN
 }
 
 async function checkSigningText(text, name, teamName) {
-  const messageText = 'Hello!\r\n' +
+  const messageText =
+    'Hello!\r\n' +
     '\r\n' +
     `As you requested, ${name} has added you to the team “${teamName}”.\r\n` +
     '\r\n' +
@@ -309,8 +338,8 @@ async function checkSigningText(text, name, teamName) {
   await expect(text).toBe(messageText);
 }
 
-async function waitMessage(page , email, timeoutSec= 40) {
-  const timeout = timeoutSec*1000;
+async function waitMessage(page, email, timeoutSec = 40) {
+  const timeout = timeoutSec * 1000;
   const interval = 4000;
   const startTime = Date.now();
   let invite;
@@ -329,8 +358,8 @@ async function waitMessage(page , email, timeoutSec= 40) {
   }
 }
 
-async function waitSecondMessage(page , email, timeoutSec= 40) {
-  const timeout = timeoutSec*1000;
+async function waitSecondMessage(page, email, timeoutSec = 40) {
+  const timeout = timeoutSec * 1000;
   const interval = 4000;
   const startTime = Date.now();
   let count;
@@ -349,8 +378,8 @@ async function waitSecondMessage(page , email, timeoutSec= 40) {
   }
 }
 
-async function waitRequestMessage(page , email, timeoutSec= 40) {
-  const timeout = timeoutSec*1000;
+async function waitRequestMessage(page, email, timeoutSec = 40) {
+  const timeout = timeoutSec * 1000;
   const interval = 4000;
   const startTime = Date.now();
   let invite;
@@ -383,6 +412,5 @@ module.exports = {
   checkSigningText,
   waitMessage,
   waitSecondMessage,
-  waitRequestMessage
+  waitRequestMessage,
 };
-

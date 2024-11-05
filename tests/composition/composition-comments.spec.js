@@ -25,7 +25,7 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -38,24 +38,27 @@ mainTest.describe(() => {
     await commentsPanelPage.clickPostCommentButton();
   });
 
-  mainTest(qase([554,1219],'CO-339 Create comment from toolbar'), async ({ page }) => {
-    const comment = 'Test Comment';
-    const mainPage = new MainPage(page);
-    const commentsPanelPage = new CommentsPanelPage(page);
-    await commentsPanelPage.isCommentDisplayedInPopUp(comment);
-    await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
-    await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
-      mask: [commentsPanelPage.commentsAuthorSection, mainPage.usersSection],
-    });
-    await mainPage.clickViewportOnce();
-    await commentsPanelPage.isCommentThreadIconDisplayed();
-    await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
-      mask: [commentsPanelPage.commentsAuthorSection, mainPage.usersSection],
-    });
-  });
+  mainTest(
+    qase([554, 1219], 'CO-339 Create comment from toolbar'),
+    async ({ page }) => {
+      const comment = 'Test Comment';
+      const mainPage = new MainPage(page);
+      const commentsPanelPage = new CommentsPanelPage(page);
+      await commentsPanelPage.isCommentDisplayedInPopUp(comment);
+      await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
+      await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
+        mask: [commentsPanelPage.commentsAuthorSection, mainPage.usersSection],
+      });
+      await mainPage.clickViewportOnce();
+      await commentsPanelPage.isCommentThreadIconDisplayed();
+      await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
+        mask: [commentsPanelPage.commentsAuthorSection, mainPage.usersSection],
+      });
+    },
+  );
 
   mainTest(
-    qase([561,1226],'CO-346 Reply comment with valid text using Latin alphabet'),
+    qase([561, 1226], 'CO-346 Reply comment with valid text using Latin alphabet'),
     async ({ page }) => {
       const replyComment =
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
@@ -72,7 +75,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase([566,1231],'CO-351 Edit comment with valid text using Latin alphabet'),
+    qase([566, 1231], 'CO-351 Edit comment with valid text using Latin alphabet'),
     async ({ page }) => {
       const editedComment = 'Edited Test Comment';
       const mainPage = new MainPage(page);
@@ -93,7 +96,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([571,1236],'CO-356 Delete thread'), async ({ page }) => {
+  mainTest(qase([571, 1236], 'CO-356 Delete thread'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const commentsPanelPage = new CommentsPanelPage(page);
     await commentsPanelPage.clickCommentOptionsButton();
@@ -108,7 +111,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([575,1240],'CO-360 Resolve comment'), async ({ page }) => {
+  mainTest(qase([575, 1240], 'CO-360 Resolve comment'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const commentsPanelPage = new CommentsPanelPage(page);
     await commentsPanelPage.clickResolveCommentCheckbox();
@@ -126,7 +129,7 @@ mainTest.describe(() => {
 });
 
 mainTest(
-  qase([556,1221],'CO-341 Post comment with valid text using Latin alphabet'),
+  qase([556, 1221], 'CO-341 Post comment with valid text using Latin alphabet'),
   async ({ page }) => {
     const comment =
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.';
