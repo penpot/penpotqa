@@ -24,22 +24,28 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(874,'PF-156 Perform a change and check the status'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickCreateEllipseButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.isUnSavedChangesDisplayed();
-  await mainPage.waitForChangeIsSaved();
-});
+mainTest(
+  qase(874, 'PF-156 Perform a change and check the status'),
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.clickCreateEllipseButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.isUnSavedChangesDisplayed();
+    await mainPage.waitForChangeIsSaved();
+  },
+);
 
-mainTest(qase(890,'PF-172 Open history panel with recent changes'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.clickHistoryPanelButton();
-  await mainPage.isActionDisplayedOnHistoryPanel('New board');
-});
+mainTest(
+  qase(890, 'PF-172 Open history panel with recent changes'),
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickHistoryPanelButton();
+    await mainPage.isActionDisplayedOnHistoryPanel('New board');
+  },
+);

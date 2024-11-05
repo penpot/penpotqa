@@ -34,9 +34,15 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentOptionsButton = page.locator(
       'div[class*="comments__options"] svg[class="icon-menu"]',
     );
-    this.commentEditOptionMenuItem = page.getByRole('listitem').filter({ hasText: 'Edit' });
-    this.commentDeleteOptionMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete thread' });
-    this.deleteThreadButton = page.getByRole('button', { name: 'Delete conversation' });
+    this.commentEditOptionMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Edit' });
+    this.commentDeleteOptionMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete thread' });
+    this.deleteThreadButton = page.getByRole('button', {
+      name: 'Delete conversation',
+    });
     this.resolveCommentCheckbox = page.locator(
       'div[class*="comments__options-resolve-wrapper"] span',
     );

@@ -28,7 +28,9 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.changeEmailBtn = page.locator('div[class="change-email"]');
     this.newEmailInput = page.locator('#email-1');
     this.confirmNewEmailInput = page.locator('#email-2');
-    this.confirmChangeEmailBtn = page.getByRole('button').filter({hasText: 'Change email'});
+    this.confirmChangeEmailBtn = page
+      .getByRole('button')
+      .filter({ hasText: 'Change email' });
 
     //Feedback
     this.feedbackSubjectInput = page.locator('#subject');
@@ -36,7 +38,9 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.sendFeedbackButton = page.getByRole('button', { name: 'Send' });
 
     //Password
-    this.passwordSidebarOption = page.getByRole('listitem').filter({ hasText: 'Password' });
+    this.passwordSidebarOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Password' });
     this.passwordFormHeader = page.locator(
       'div[class*="password__form-container"] h2',
     );
@@ -48,8 +52,12 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
     //Settings
     this.settingsMenuButton = page.getByTestId('settings-profile');
-    this.darkThemeOption = page.getByRole('listitem').filter({ hasText: 'Penpot Dark (default)' });
-    this.lightThemeOption = page.getByRole('listitem').filter({ hasText: 'Penpot Light' });
+    this.darkThemeOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Penpot Dark (default)' });
+    this.lightThemeOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Penpot Light' });
     this.uiThemeDropdown = page.locator('[class*="select-wrapper"] >>nth=1');
     this.updateSettingsButton = page.getByTestId('submit-lang-change');
   }

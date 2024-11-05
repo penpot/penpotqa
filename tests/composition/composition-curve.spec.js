@@ -26,14 +26,14 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
   // All tests in this describe group will get 2 retry attempts.
   mainTest.describe.configure({ retries: 2 });
 
-  mainTest(qase(483,'CO-268 Create curve line from toolbar'), async ({ page }) => {
+  mainTest(qase(483, 'CO-268 Create curve line from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateCurveButton();
     await mainPage.drawCurve(900, 300, 600, 200);
@@ -43,7 +43,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(485,'CO-270 Rename path, that was created with curve with valid name'),
+    qase(485, 'CO-270 Rename path, that was created with curve with valid name'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);

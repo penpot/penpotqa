@@ -35,16 +35,15 @@ async function updateTestResults(result, retryCount) {
   } else if (result === 'failed' && retryCount === 2) {
     testResults.Failed++;
   } else if (result === 'timedOut' && retryCount === 2) {
-      testResults.Failed++;
+    testResults.Failed++;
   } else if (result === 'flaky') {
     testResults.Flaky++;
-  } else if (result === 'passed' && retryCount > 0 ) {
+  } else if (result === 'passed' && retryCount > 0) {
     testResults.Flaky++;
   }
 
-  const totalTests = testResults.Passed + testResults.Failed + testResults.Flaky
+  const totalTests = testResults.Passed + testResults.Failed + testResults.Flaky;
   testResults.PercentPassed = (testResults.Passed / totalTests) * 100;
-
 
   try {
     fs.writeFileSync('testResults.json', JSON.stringify(testResults, null, 2));
@@ -54,6 +53,4 @@ async function updateTestResults(result, retryCount) {
   }
 }
 
-module.exports = { readResultsFromFile,  updateTestResults};
-
-
+module.exports = { readResultsFromFile, updateTestResults };

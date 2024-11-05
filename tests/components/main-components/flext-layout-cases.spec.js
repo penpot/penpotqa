@@ -13,7 +13,13 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
-let dashboardPage, teamPage, mainPage, layersPanelPage, designPanelPage, colorPalettePage, assetsPanelPage
+let dashboardPage,
+  teamPage,
+  mainPage,
+  layersPanelPage,
+  designPanelPage,
+  colorPalettePage,
+  assetsPanelPage;
 test.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   teamPage = new TeamPage(page);
@@ -30,7 +36,7 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({}, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -70,7 +76,10 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(1503,'PENPOT-1503 Create flex board with main component and its copy, change direction'),
+    qase(
+      1503,
+      'PENPOT-1503 Create flex board with main component and its copy, change direction',
+    ),
     async () => {
       await layersPanelPage.isLayoutIconVisibleOnLayer();
       await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -82,7 +91,10 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1504,'PENPOT-1504 Create flex board with main component and its copy, change alingment'),
+    qase(
+      1504,
+      'PENPOT-1504 Create flex board with main component and its copy, change alingment',
+    ),
     async () => {
       await layersPanelPage.isLayoutIconVisibleOnLayer();
       await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -104,12 +116,14 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
-
   });
 
   mainTest(
-    qase(1511,'PENPOT-1511 Create component with 2 boards with components inside it. change paddings'),
-    async ( {page}, testInfo) => {
+    qase(
+      1511,
+      'PENPOT-1511 Create component with 2 boards with components inside it. change paddings',
+    ),
+    async ({ page }, testInfo) => {
       await testInfo.setTimeout(testInfo.timeout + 20000);
 
       await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
@@ -150,7 +164,10 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1514,'PENPOT-1514 Create component inside flex board, change alignment for element'),
+    qase(
+      1514,
+      'PENPOT-1514 Create component inside flex board, change alignment for element',
+    ),
     async () => {
       await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
       await mainPage.createComponentViaRightClick();

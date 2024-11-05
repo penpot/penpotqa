@@ -12,7 +12,9 @@ exports.ForgotPasswordPage = class ForgotPasswordPage extends BasePage {
     this.recoverPasswordButton = page.getByTestId('recovery-resquest-submit');
     this.recoveryPwdInput = page.locator('#password-1');
     this.recoveryPwdConfirmInput = page.locator('#password-2');
-    this.changePwdButton = page.getByRole('button', { name: 'Change your password' });
+    this.changePwdButton = page.getByRole('button', {
+      name: 'Change your password',
+    });
   }
 
   async enterEmail(loginEmail) {

@@ -27,7 +27,7 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -39,13 +39,13 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(327,'CO-112 Create an ellipse from toolbar'), async ({ page }) => {
+  mainTest(qase(327, 'CO-112 Create an ellipse from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('ellipse.png');
   });
 
-  mainTest(qase(329,'CO-114 Rename ellipse with valid name'), async ({ page }) => {
+  mainTest(qase(329, 'CO-114 Rename ellipse with valid name'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('Ellipse');
@@ -55,7 +55,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(332,'CO-117 Add, hide, unhide, change type and delete Shadow to ellipse'),
+    qase(332, 'CO-117 Add, hide, unhide, change type and delete Shadow to ellipse'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
@@ -102,7 +102,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(333,'CO-118 Add and edit Shadow to ellipse'), async ({ page }) => {
+  mainTest(qase(333, 'CO-118 Add and edit Shadow to ellipse'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const colorPalettePage = new ColorPalettePage(page);
     const designPanelPage = new DesignPanelPage(page);
@@ -125,7 +125,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(334,'CO-119 Add, hide, unhide and delete Blur to ellipse'),
+    qase(334, 'CO-119 Add, hide, unhide and delete Blur to ellipse'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const colorPalettePage = new ColorPalettePage(page);
@@ -156,7 +156,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(335,'CO-120 Add and edit Blur to ellipse'), async ({ page }) => {
+  mainTest(qase(335, 'CO-120 Add and edit Blur to ellipse'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.clickAddBlurButton();
@@ -165,89 +165,95 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur.png');
   });
 
-  mainTest(qase(336,'CO-121 Add, edit and delete Stroke to ellipse'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    await designPanelPage.clickAddStrokeButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-default.png', {
-      mask: [mainPage.guides],
-    });
-    await mainPage.clickOnLayerOnCanvas();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeStrokeSettings(
-      '#43E50B',
-      '70',
-      '13',
-      'Inside',
-      'Dotted',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'ellipse-stroke-inside-dotted.png',
-      {
+  mainTest(
+    qase(336, 'CO-121 Add, edit and delete Stroke to ellipse'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await designPanelPage.clickAddStrokeButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'ellipse-stroke-default.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickOnLayerOnCanvas();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.changeStrokeSettings(
+        '#43E50B',
+        '70',
+        '13',
+        'Inside',
+        'Dotted',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'ellipse-stroke-inside-dotted.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickOnLayerOnCanvas();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.changeStrokeSettings(
+        '#F5358F',
+        '80',
+        '5',
+        'Outside',
+        'Dashed',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'ellipse-stroke-outside-dashed.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickOnLayerOnCanvas();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.changeStrokeSettings(
+        '#F5358F',
+        '100',
+        '3',
+        'Center',
+        'Solid',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'ellipse-stroke-center-solid.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickOnLayerOnCanvas();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.changeStrokeSettings(
+        '#F5358F',
+        '40',
+        '4',
+        'Center',
+        'Mixed',
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'ellipse-stroke-center-mixed.png',
+        {
+          mask: [mainPage.guides],
+        },
+      );
+      await mainPage.clickOnLayerOnCanvas();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.removeStroke();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-remove.png', {
         mask: [mainPage.guides],
-      },
-    );
-    await mainPage.clickOnLayerOnCanvas();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeStrokeSettings(
-      '#F5358F',
-      '80',
-      '5',
-      'Outside',
-      'Dashed',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'ellipse-stroke-outside-dashed.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await mainPage.clickOnLayerOnCanvas();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeStrokeSettings(
-      '#F5358F',
-      '100',
-      '3',
-      'Center',
-      'Solid',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'ellipse-stroke-center-solid.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await mainPage.clickOnLayerOnCanvas();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeStrokeSettings(
-      '#F5358F',
-      '40',
-      '4',
-      'Center',
-      'Mixed',
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'ellipse-stroke-center-mixed.png',
-      {
-        mask: [mainPage.guides],
-      },
-    );
-    await mainPage.clickOnLayerOnCanvas();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.removeStroke();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-remove.png', {
-      mask: [mainPage.guides],
-    });
-  });
+      });
+    },
+  );
 
   mainTest(
-    qase(341,"CO-126 Click 'Focus off' ellipse from shortcut F"),
+    qase(341, "CO-126 Click 'Focus off' ellipse from shortcut F"),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
@@ -268,7 +274,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(351,'CO-136-1 Delete ellipse via rightclick'), async ({ page }) => {
+  mainTest(qase(351, 'CO-136-1 Delete ellipse via rightclick'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
@@ -276,15 +282,18 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
   });
 
-  mainTest(qase(351,'CO-136-2 Delete ellipse via shortcut Del'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    await mainPage.isCreatedLayerVisible();
-    await mainPage.deleteLayerViaShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
-  });
+  mainTest(
+    qase(351, 'CO-136-2 Delete ellipse via shortcut Del'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      await mainPage.isCreatedLayerVisible();
+      await mainPage.deleteLayerViaShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+    },
+  );
 
-  mainTest(qase(353,'CO-138 Add rotation to ellipse'), async ({ page }) => {
+  mainTest(qase(353, 'CO-138 Add rotation to ellipse'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
@@ -313,7 +322,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(369,'CO-154 Transform ellipse to path'), async ({ page }) => {
+  mainTest(qase(369, 'CO-154 Transform ellipse to path'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.transformToPathViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -322,7 +331,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(376,'CO-161 Selection to board'), async ({ page }) => {
+  mainTest(qase(376, 'CO-161 Selection to board'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();

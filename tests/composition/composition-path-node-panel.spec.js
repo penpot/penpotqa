@@ -24,7 +24,7 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -39,7 +39,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(544,'CO-329 Add nodes via Node panel and SHIFT PLUS shortcut'),
+    qase(544, 'CO-329 Add nodes via Node panel and SHIFT PLUS shortcut'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.holdShiftKeyboardButton();
@@ -60,7 +60,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(545,'CO-330 Delete node via Node panel and Del shortcut'),
+    qase(545, 'CO-330 Delete node via Node panel and Del shortcut'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.clickFirstNode();
@@ -75,7 +75,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(547,'CO-332 Merge nodes via Node panel and CTRL J shortcut'),
+    qase(547, 'CO-332 Merge nodes via Node panel and CTRL J shortcut'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.holdShiftKeyboardButton();
@@ -97,32 +97,37 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(548,'CO-333 Join nodes via Node panel and J shortcut'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    await mainPage.clickDrawNodesButtonOnNodePanel();
-    await mainPage.clickViewportByCoordinates(600, 200, 2);
-    await mainPage.clickViewportByCoordinates(750, 300, 2);
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickMoveNodesButtonOnNodePanel();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.holdShiftKeyboardButton();
-    await mainPage.clickSixthNode();
-    await mainPage.clickThirdNode();
-    await mainPage.releaseShiftKeyboardButton();
-    await mainPage.clickJoinNodesButtonOnNodePanel();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-joined-nodes-once.png');
-    await mainPage.holdShiftKeyboardButton();
-    await mainPage.clickFifthNode();
-    await mainPage.clickSecondNode();
-    await mainPage.releaseShiftKeyboardButton();
-    await mainPage.pressJKeyboardShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-joined-nodes-twice.png');
-  });
+  mainTest(
+    qase(548, 'CO-333 Join nodes via Node panel and J shortcut'),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      await mainPage.clickDrawNodesButtonOnNodePanel();
+      await mainPage.clickViewportByCoordinates(600, 200, 2);
+      await mainPage.clickViewportByCoordinates(750, 300, 2);
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickMoveNodesButtonOnNodePanel();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.holdShiftKeyboardButton();
+      await mainPage.clickSixthNode();
+      await mainPage.clickThirdNode();
+      await mainPage.releaseShiftKeyboardButton();
+      await mainPage.clickJoinNodesButtonOnNodePanel();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('path-joined-nodes-once.png');
+      await mainPage.holdShiftKeyboardButton();
+      await mainPage.clickFifthNode();
+      await mainPage.clickSecondNode();
+      await mainPage.releaseShiftKeyboardButton();
+      await mainPage.pressJKeyboardShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'path-joined-nodes-twice.png',
+      );
+    },
+  );
 
   mainTest(
-    qase(549,'CO-334 Separate nodes via Node panel and K shortcut'),
+    qase(549, 'CO-334 Separate nodes via Node panel and K shortcut'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.holdShiftKeyboardButton();
@@ -147,7 +152,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(550,'CO-335 To corner via Node panel and X shortcut - single node'),
+    qase(550, 'CO-335 To corner via Node panel and X shortcut - single node'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.clickFirstNode();
@@ -167,7 +172,7 @@ mainTest.describe(() => {
 });
 
 mainTest(
-  qase(552,'CO-337 To curve via Node panel and C shortcut - single node'),
+  qase(552, 'CO-337 To curve via Node panel and C shortcut - single node'),
   async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.clickCreateRectangleButton();

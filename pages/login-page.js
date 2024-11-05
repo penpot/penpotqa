@@ -14,14 +14,20 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.loginButton = page.getByTestId('login-submit');
     this.emailInputError = page.getByTestId('-error');
     this.section = page.locator('section[class="auth-content"]');
-    this.loginErrorBanner = page.locator('aside[class*="context_notification__warning"] div:nth-of-type(2)');
+    this.loginErrorBanner = page.locator(
+      'aside[class*="context_notification__warning"] div:nth-of-type(2)',
+    );
     this.createAccountLink = page.getByTestId('register-submit');
     this.forgotPasswordLink = page.getByTestId('forgot-password');
     this.loginHereButton = page.getByTestId('login-here-link');
   }
 
   async checkLoginError(text) {
-    return this.page.locator(`//aside[contains(@class,"context_notification__warning")]/div[text()='${text}']`).isVisible()
+    return this.page
+      .locator(
+        `//aside[contains(@class,"context_notification__warning")]/div[text()='${text}']`,
+      )
+      .isVisible();
   }
 
   async goto() {
