@@ -5,32 +5,40 @@ const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { random } = require('../helpers/string-generator');
 const { RegisterPage } = require('../pages/register-page');
-const { getRegisterMessage, checkRecoveryText, waitMessage, waitSecondMessage } = require('../helpers/gmail');
+const {
+  getRegisterMessage,
+  checkRecoveryText,
+  waitMessage,
+  waitSecondMessage,
+} = require('../helpers/gmail');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 const { ProfilePage } = require('../pages/profile-page');
 
-test(qase(50,'ON-23 Forgot password flow with invalid email'), async ({ page }) => {
+test(qase(50, 'ON-23 Forgot password flow with invalid email'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const forgotPasswordPage = new ForgotPasswordPage(page);
   await loginPage.goto();
   await loginPage.clickOnForgotPassword();
-  await forgotPasswordPage.enterEmail("xxx");
+  await forgotPasswordPage.enterEmail('xxx');
   await forgotPasswordPage.isRecoverPasswordButtonDisabled();
 });
 
-test(qase(51,'ON-24 Forgot password flow with inexisted email'), async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const forgotPasswordPage = new ForgotPasswordPage(page);
-  await loginPage.goto();
-  await loginPage.clickOnForgotPassword();
-  const email = `${process.env.GMAIL_NAME}autotest+${random()}@gmail.com`;
-  await forgotPasswordPage.enterEmail(email);
-  await forgotPasswordPage.clickRecoverPasswordButton();
-  await forgotPasswordPage.isRecoverPasswordButtonDisabled();
-});
+test(
+  qase(51, 'ON-24 Forgot password flow with inexisted email'),
+  async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    const forgotPasswordPage = new ForgotPasswordPage(page);
+    await loginPage.goto();
+    await loginPage.clickOnForgotPassword();
+    const email = `${process.env.GMAIL_NAME}autotest+${random()}@gmail.com`;
+    await forgotPasswordPage.enterEmail(email);
+    await forgotPasswordPage.clickRecoverPasswordButton();
+    await forgotPasswordPage.isRecoverPasswordButtonDisabled();
+  },
+);
 
 test.describe(() => {
-  let randomName,email,invite;
+  let randomName, email, invite;
   test.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 30000);
     randomName = random().concat('autotest');
@@ -57,7 +65,7 @@ test.describe(() => {
     await dashboardPage.fillOnboardingQuestions();
   });
 
-  test(qase(49,'ON-22 Forgot password flow'), async ({ page }) => {
+  test(qase(49, 'ON-22 Forgot password flow'), async ({ page }) => {
     const newPwd = 'TestForgotPassword123';
     const dashboardPage = new DashboardPage(page);
     const loginPage = new LoginPage(page);
@@ -82,7 +90,7 @@ test.describe(() => {
     await dashboardPage.isDashboardOpenedAfterLogin();
   });
 
-  test(qase(52,'ON-25 Login with old password'), async ({ page }) => {
+  test(qase(52, 'ON-25 Login with old password'), async ({ page }) => {
     const newPwd = 'TestForgotPassword123';
     const dashboardPage = new DashboardPage(page);
     const loginPage = new LoginPage(page);
@@ -110,5 +118,5 @@ test.describe(() => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });

@@ -19,7 +19,7 @@ test.beforeEach(async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !( await mainPage.isMainPageVisible())
+  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
     ? await dashboardPage.createFileViaPlaceholder()
     : null;
   await mainPage.isMainPageLoaded();
@@ -30,10 +30,10 @@ test.afterEach(async ({ page }, testInfo) => {
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(1273,'Create component shape'), async ({ page }) => {
+mainTest(qase(1273, 'Create component shape'), async ({ page }) => {
   const mainPage = new MainPage(page);
   const assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -51,7 +51,7 @@ mainTest(qase(1273,'Create component shape'), async ({ page }) => {
 });
 
 mainTest(
-  qase(1312,'Drag a component from assets tab and drop into workspace'),
+  qase(1312, 'Drag a component from assets tab and drop into workspace'),
   async ({ page, browserName }) => {
     if (browserName !== 'webkit') {
       const mainPage = new MainPage(page);
@@ -75,7 +75,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1431,'Create component from rectangle by clicking CTRL K'),
+  qase(1431, 'Create component from rectangle by clicking CTRL K'),
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -99,7 +99,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1432,'Create component from ellipse by clicking CTRL K'),
+  qase(1432, 'Create component from ellipse by clicking CTRL K'),
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -123,7 +123,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1433,'Create component from board by clicking CTRL K'),
+  qase(1433, 'Create component from board by clicking CTRL K'),
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -147,7 +147,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1434,'Create component from text by right-click'),
+  qase(1434, 'Create component from text by right-click'),
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -170,71 +170,84 @@ mainTest(
   },
 );
 
-mainTest(qase(1435,'Create component from image by right-click'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const layersPanelPage = new LayersPanelPage(page);
-  const assetsPanelPage = new AssetsPanelPage(page);
-  await mainPage.uploadImage('images/sample.jpeg');
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.createComponentViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    'image-main-component-canvas.png',
-  );
-  await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-    'image-main-component-layer.png',
-  );
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-    'image-component-asset.png',
-  );
-});
+mainTest(
+  qase(1435, 'Create component from image by right-click'),
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
+    await mainPage.uploadImage('images/sample.jpeg');
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'image-main-component-canvas.png',
+    );
+    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
+      'image-main-component-layer.png',
+    );
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+      'image-component-asset.png',
+    );
+  },
+);
 
-mainTest(qase(1436,'Create component from path by right-click'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const layersPanelPage = new LayersPanelPage(page);
-  const assetsPanelPage = new AssetsPanelPage(page);
-  await mainPage.createDefaultClosedPath();
-  await mainPage.createComponentViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot('path-main-component-canvas.png');
-  await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-    'path-main-component-layer.png',
-  );
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-    'path-component-asset.png',
-  );
-});
+mainTest(
+  qase(1436, 'Create component from path by right-click'),
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
+    await mainPage.createDefaultClosedPath();
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'path-main-component-canvas.png',
+    );
+    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
+      'path-main-component-layer.png',
+    );
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+      'path-component-asset.png',
+    );
+  },
+);
 
-mainTest(qase(1437,'Create component from curve by right-click'), async ({ page, browserName }) => {
-  const mainPage = new MainPage(page);
-  const layersPanelPage = new LayersPanelPage(page);
-  const assetsPanelPage = new AssetsPanelPage(page);
-  await mainPage.createDefaultCurveLayer();
-  await layersPanelPage.createComponentViaRightClickLayers(browserName);
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    'curve-main-component-canvas.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow]
-    });
-  await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-    'curve-main-component-layer.png',
-  );
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-    'curve-component-asset.png',
-  );
-});
+mainTest(
+  qase(1437, 'Create component from curve by right-click'),
+  async ({ page, browserName }) => {
+    const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
+    await mainPage.createDefaultCurveLayer();
+    await layersPanelPage.createComponentViaRightClickLayers(browserName);
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'curve-main-component-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
+    );
+    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
+      'curve-main-component-layer.png',
+    );
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+      'curve-component-asset.png',
+    );
+  },
+);
 
-mainTest(qase(1291,'Undo component'), async ({ page, browserName }) => {
+mainTest(qase(1291, 'Undo component'), async ({ page, browserName }) => {
   const mainPage = new MainPage(page);
   const designPanelPage = new DesignPanelPage(page);
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -250,7 +263,7 @@ mainTest(qase(1291,'Undo component'), async ({ page, browserName }) => {
 });
 
 mainTest(
-  qase(1530,'Create multiple components from rectangle and ellipse'),
+  qase(1530, 'Create multiple components from rectangle and ellipse'),
   async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -277,7 +290,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1531,'Create multiple components from text, board and image'),
+  qase(1531, 'Create multiple components from text, board and image'),
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
@@ -306,8 +319,9 @@ mainTest(
   },
 );
 
-mainTest(qase(1751,'PENPOT-1751 Grouping component copies'),
-  async ( {page}, testInfo) => {
+mainTest(
+  qase(1751, 'PENPOT-1751 Grouping component copies'),
+  async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 20000);
 
     const mainPage = new MainPage(page);
@@ -334,8 +348,9 @@ mainTest(qase(1751,'PENPOT-1751 Grouping component copies'),
   },
 );
 
-mainTest(qase(1749,'PENPOT-1749 Change group shadow color'),
-  async ( {page}, testInfo) => {
+mainTest(
+  qase(1749, 'PENPOT-1749 Change group shadow color'),
+  async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 20000);
 
     const mainPage = new MainPage(page);

@@ -19,7 +19,16 @@ const { waitMessage } = require('../helpers/gmail');
 
 const teamName = random().concat('autotest');
 
-let teamPage,dashboardPage,mainPage,viewModePage,prototypePanelPage,designPanelPage,layersPanelPage,profilePage,loginPage,registerPage;
+let teamPage,
+  dashboardPage,
+  mainPage,
+  viewModePage,
+  prototypePanelPage,
+  designPanelPage,
+  layersPanelPage,
+  profilePage,
+  loginPage,
+  registerPage;
 test.beforeEach(async ({ page, browserName }, testInfo) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
@@ -38,7 +47,7 @@ test.beforeEach(async ({ page, browserName }, testInfo) => {
   browserName === 'webkit' ? await teamPage.waitForTeamBtn(15000) : null;
   await teamPage.isTeamSelected(teamName, browserName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !( await mainPage.isMainPageVisible())
+  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
     ? await dashboardPage.createFileViaPlaceholder()
     : null;
   await mainPage.waitForViewportVisible();
@@ -51,32 +60,37 @@ test.afterEach(async ({ page }, testInfo) => {
 });
 
 mainTest.describe(() => {
-
   mainTest.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
   });
 
-  mainTest(qase([685], 'CO-364 Click view mode (From right top click) - no boards created'), async ({browserName}) => {
-    const newPage = await viewModePage.clickViewModeButton();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'no-board-view-mode-page-image.png',
-    );
-  });
+  mainTest(
+    qase([685], 'CO-364 Click view mode (From right top click) - no boards created'),
+    async ({ browserName }) => {
+      const newPage = await viewModePage.clickViewModeButton();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'no-board-view-mode-page-image.png',
+      );
+    },
+  );
 
-  mainTest(qase([688], 'CO-367 Click view mode (From shortcut G+V) - board is created'), async ({browserName}) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-page-image.png',
-    );
-  });
+  mainTest(
+    qase([688], 'CO-367 Click view mode (From shortcut G+V) - board is created'),
+    async ({ browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-page-image.png',
+      );
+    },
+  );
 
-  mainTest(qase([690], 'CO-369 Full screen on/off'), async ({browserName}) => {
+  mainTest(qase([690], 'CO-369 Full screen on/off'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -92,90 +106,99 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([698], 'CO-377 Click arrows to navigate to other boards'), async ({browserName}) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultBoardByCoordinates(500, 500, true);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'first-board-view-mode-page-image.png',
-    );
-    await viewModePage.clickNextButton();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'second-board-view-mode-page-image.png',
-    );
-    await viewModePage.clickPrevButton();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'first-board-view-mode-page-image.png',
-    );
-    await viewModePage.clickNextButton();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'second-board-view-mode-page-image.png',
-    );
-    await viewModePage.clickPrevButton();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'first-board-view-mode-page-image.png',
-    );
-  });
+  mainTest(
+    qase([698], 'CO-377 Click arrows to navigate to other boards'),
+    async ({ browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultBoardByCoordinates(500, 500, true);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'first-board-view-mode-page-image.png',
+      );
+      await viewModePage.clickNextButton();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'second-board-view-mode-page-image.png',
+      );
+      await viewModePage.clickPrevButton();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'first-board-view-mode-page-image.png',
+      );
+      await viewModePage.clickNextButton();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'second-board-view-mode-page-image.png',
+      );
+      await viewModePage.clickPrevButton();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'first-board-view-mode-page-image.png',
+      );
+    },
+  );
 
-  mainTest(qase([700], 'CO-379 Click Back icon to reset view'), async ({browserName}) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultBoardByCoordinates(500, 500, true);
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultBoardByCoordinates(100, 100, true);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'first-board-view-mode-page-image.png',
-    );
-    await viewModePage.clickNextButton();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'second-board-view-mode-page-image.png',
-    );
-    await viewModePage.clickNextButton();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'third-board-view-mode-page-image.png',
-    );
-    await viewModePage.clickResetButton();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'first-board-view-mode-page-image.png',
-    );
-  });
+  mainTest(
+    qase([700], 'CO-379 Click Back icon to reset view'),
+    async ({ browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultBoardByCoordinates(500, 500, true);
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultBoardByCoordinates(100, 100, true);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'first-board-view-mode-page-image.png',
+      );
+      await viewModePage.clickNextButton();
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'second-board-view-mode-page-image.png',
+      );
+      await viewModePage.clickNextButton();
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'third-board-view-mode-page-image.png',
+      );
+      await viewModePage.clickResetButton();
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'first-board-view-mode-page-image.png',
+      );
+    },
+  );
 
-  mainTest(qase([699], 'CO-378 Click board dropdown to navigate to other boards'), async ({browserName}) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultBoardByCoordinates(500, 500, true);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await viewModePage.clickSelectBoardDropdown();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'board-dropdown-view-mode-page-image.png',
-    );
-    await viewModePage.selectSecondBoard();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'second-board-selected-view-mode-page-image.png',
-    );
-    await viewModePage.selectFirstBoard();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'first-board-selected-view-mode-page-image.png',
-    );
-  });
+  mainTest(
+    qase([699], 'CO-378 Click board dropdown to navigate to other boards'),
+    async ({ browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultBoardByCoordinates(500, 500, true);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      await viewModePage.clickSelectBoardDropdown();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'board-dropdown-view-mode-page-image.png',
+      );
+      await viewModePage.selectSecondBoard();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'second-board-selected-view-mode-page-image.png',
+      );
+      await viewModePage.selectFirstBoard();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'first-board-selected-view-mode-page-image.png',
+      );
+    },
+  );
 
   mainTest(qase([689], 'CO-368 Interactions dropdown'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -209,7 +232,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([691], 'CO-370 Change scale'), async ({browserName}) => {
+  mainTest(qase([691], 'CO-370 Change scale'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -253,25 +276,28 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([713], 'CO-392 Zoom by pressing + and - keys'), async ({browserName}) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await viewModePage.clickOnAdd();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-page-add-button-image.png',
-    );
-    await viewModePage.clickOnSubtract();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-page-subtract-button-image.png',
-    );
-  });
+  mainTest(
+    qase([713], 'CO-392 Zoom by pressing + and - keys'),
+    async ({ browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      await viewModePage.clickOnAdd();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-page-add-button-image.png',
+      );
+      await viewModePage.clickOnSubtract();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-page-subtract-button-image.png',
+      );
+    },
+  );
 
-  mainTest(qase([708], 'CO-387 Page dropdown'), async ({browserName}) => {
+  mainTest(qase([708], 'CO-387 Page dropdown'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickAddPageButton();
@@ -297,7 +323,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([701], 'CO-380 Create comment'), async ({browserName}) => {
+  mainTest(qase([701], 'CO-380 Create comment'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -321,7 +347,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([709], 'CO-388 Reply comment'), async ({browserName}) => {
+  mainTest(qase([709], 'CO-388 Reply comment'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -344,7 +370,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([710], 'CO-389 Edit comment'), async ({browserName}) => {
+  mainTest(qase([710], 'CO-389 Edit comment'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -372,7 +398,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([711], 'CO-390 Delete thread'), async ({browserName}) => {
+  mainTest(qase([711], 'CO-390 Delete thread'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -395,71 +421,80 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([703], 'CO-382 Comments dropdown (Hide resolved comments)'), async ({browserName}) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    const commentsPanelPage = new CommentsPanelPage(newPage);
-    await viewModePage.clickCommentsButton();
-    await viewModePage.addComment();
-    await commentsPanelPage.enterCommentText('Test Comment');
-    await commentsPanelPage.clickPostCommentButton();
-    await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment');
-    await commentsPanelPage.clickResolveCommentCheckbox();
-    await commentsPanelPage.clickResolvedCommentThreadIcon();
-    await viewModePage.addComment(true);
-    await commentsPanelPage.enterCommentText('Test Comment 2');
-    await commentsPanelPage.clickPostCommentButton();
-    await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment 2');
-    await viewModePage.clickCommentsButton();
+  mainTest(
+    qase([703], 'CO-382 Comments dropdown (Hide resolved comments)'),
+    async ({ browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      const commentsPanelPage = new CommentsPanelPage(newPage);
+      await viewModePage.clickCommentsButton();
+      await viewModePage.addComment();
+      await commentsPanelPage.enterCommentText('Test Comment');
+      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment');
+      await commentsPanelPage.clickResolveCommentCheckbox();
+      await commentsPanelPage.clickResolvedCommentThreadIcon();
+      await viewModePage.addComment(true);
+      await commentsPanelPage.enterCommentText('Test Comment 2');
+      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment 2');
+      await viewModePage.clickCommentsButton();
 
-    await viewModePage.openCommentsDropdown();
-    await viewModePage.selectHideResolvedCommentsOption();
-    await commentsPanelPage.isCommentResolvedThreadIconNotDisplayed();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(newPage).toHaveScreenshot('resolved-comments-hidden.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
-    });
-    await viewModePage.openCommentsDropdown();
-    await viewModePage.selectHideResolvedCommentsOption();
-    await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(newPage).toHaveScreenshot('resolved-comments-show.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
-    });
-  });
+      await viewModePage.openCommentsDropdown();
+      await viewModePage.selectHideResolvedCommentsOption();
+      await commentsPanelPage.isCommentResolvedThreadIconNotDisplayed();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(newPage).toHaveScreenshot('resolved-comments-hidden.png', {
+        mask: [commentsPanelPage.commentsAuthorSection],
+      });
+      await viewModePage.openCommentsDropdown();
+      await viewModePage.selectHideResolvedCommentsOption();
+      await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(newPage).toHaveScreenshot('resolved-comments-show.png', {
+        mask: [commentsPanelPage.commentsAuthorSection],
+      });
+    },
+  );
 
-  mainTest(qase([704], 'CO-383 Comments dropdown (Show comments list)'), async ({browserName}) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    const commentsPanelPage = new CommentsPanelPage(newPage);
-    await viewModePage.clickCommentsButton();
-    await viewModePage.addComment();
-    await commentsPanelPage.enterCommentText('Test Comment');
-    await commentsPanelPage.clickPostCommentButton();
-    await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment');
-    await viewModePage.clickOnViewport();
+  mainTest(
+    qase([704], 'CO-383 Comments dropdown (Show comments list)'),
+    async ({ browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      const commentsPanelPage = new CommentsPanelPage(newPage);
+      await viewModePage.clickCommentsButton();
+      await viewModePage.addComment();
+      await commentsPanelPage.enterCommentText('Test Comment');
+      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment');
+      await viewModePage.clickOnViewport();
 
-    await viewModePage.openCommentsDropdown();
-    await viewModePage.selectShowCommentsListOption();
-    await viewModePage.isCommentInListVisible(true);
-    await expect(viewModePage.commentsRightPanel).toHaveScreenshot('comments-list.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
-    });
-    await viewModePage.openCommentsDropdown();
-    await viewModePage.selectShowCommentsListOption();
-    await viewModePage.isCommentInListVisible(false);
-    await expect(newPage).toHaveScreenshot('comments-list-hidden.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
-    });
-  });
+      await viewModePage.openCommentsDropdown();
+      await viewModePage.selectShowCommentsListOption();
+      await viewModePage.isCommentInListVisible(true);
+      await expect(viewModePage.commentsRightPanel).toHaveScreenshot(
+        'comments-list.png',
+        {
+          mask: [commentsPanelPage.commentsAuthorSection],
+        },
+      );
+      await viewModePage.openCommentsDropdown();
+      await viewModePage.selectShowCommentsListOption();
+      await viewModePage.isCommentInListVisible(false);
+      await expect(newPage).toHaveScreenshot('comments-list-hidden.png', {
+        mask: [commentsPanelPage.commentsAuthorSection],
+      });
+    },
+  );
 
-  mainTest(qase([706], 'CO-385 Switch to Inspect view'), async ({browserName}) => {
+  mainTest(qase([706], 'CO-385 Switch to Inspect view'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -468,115 +503,136 @@ mainTest.describe(() => {
     await viewModePage.openInspectTab();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-inspect-page-image.png');
+      'view-mode-inspect-page-image.png',
+    );
     await viewModePage.openInteractionsTab();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-interactions-page-image.png');
+      'view-mode-interactions-page-image.png',
+    );
   });
 
-  mainTest(qase([715], 'CO-394 Inspect functionality - Board elements dropdown in the top left'), async ({browserName}) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await designPanelPage.changeHeightAndWidthForLayer('200', '200');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultRectangleByCoordinates(320, 320);
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
+  mainTest(
+    qase(
+      [715],
+      'CO-394 Inspect functionality - Board elements dropdown in the top left',
+    ),
+    async ({ browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultRectangleByCoordinates(320, 320);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
 
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    layersPanelPage = new LayersPanelPage(newPage);
-    const inspectPanelPage = new InspectPanelPage(newPage);
-    await viewModePage.openInspectTab();
-    await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-    await inspectPanelPage.openCodeTab();
-    await newPage.waitForTimeout(200);
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-code-tab-image.png');
-  });
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      layersPanelPage = new LayersPanelPage(newPage);
+      const inspectPanelPage = new InspectPanelPage(newPage);
+      await viewModePage.openInspectTab();
+      await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+      await inspectPanelPage.openCodeTab();
+      await newPage.waitForTimeout(200);
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-code-tab-image.png',
+      );
+    },
+  );
 
-  mainTest(qase([717], 'CO-396 Inspect functionality- Export'), async ({browserName}) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await designPanelPage.changeHeightAndWidthForLayer('200', '200');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultRectangleByCoordinates(320, 320);
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
+  mainTest(
+    qase([717], 'CO-396 Inspect functionality- Export'),
+    async ({ browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultRectangleByCoordinates(320, 320);
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
 
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    designPanelPage = new DesignPanelPage(newPage);
-    await viewModePage.openInspectTab();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      designPanelPage = new DesignPanelPage(newPage);
+      await viewModePage.openInspectTab();
 
-    await designPanelPage.clickAddExportButton();
-    await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
-    await expect(viewModePage.rightSidebar).toHaveScreenshot(
-      'view-mode-export-right-sidebar-image.png');
+      await designPanelPage.clickAddExportButton();
+      await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
+      await expect(viewModePage.rightSidebar).toHaveScreenshot(
+        'view-mode-export-right-sidebar-image.png',
+      );
 
-    await designPanelPage.clickExportElementButton(newPage);
-  });
+      await designPanelPage.clickExportElementButton(newPage);
+    },
+  );
 
-  mainTest(qase(1785, 'CO-387 Switch between layers from left menu'), async ({ browserName }) => {
-    await mainPage.createDefaultBoardByCoordinates(200, 200);
-    await designPanelPage.changeHeightAndWidthForLayer('500', '700');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.uploadImage('images/mini_sample.jpg');
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultRectangleByCoordinates(220, 220);
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultEllipseByCoordinates(330, 220, true);
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultTextLayerByCoordinates(220, 330, browserName);
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createSmallClosedPathByCoordinates(330, 330);
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.dragAndDropComponentToBoard('Path');
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
+  mainTest(
+    qase(1785, 'CO-387 Switch between layers from left menu'),
+    async ({ browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(200, 200);
+      await designPanelPage.changeHeightAndWidthForLayer('500', '700');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.uploadImage('images/mini_sample.jpg');
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultRectangleByCoordinates(220, 220);
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultEllipseByCoordinates(330, 220, true);
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultTextLayerByCoordinates(220, 330, browserName);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createSmallClosedPathByCoordinates(330, 330);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.dragAndDropComponentToBoard('Path');
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
 
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    layersPanelPage = new LayersPanelPage(newPage);
-    await viewModePage.openInspectTab();
-    await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-rectangle-selected-image.png');
-    await layersPanelPage.clickLayerOnLayersTab('Ellipse');
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-ellipse-selected-image.png');
-    await layersPanelPage.clickLayerOnLayersTab('Hello World!');
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-test-selected-image.png');
-    await layersPanelPage.clickLayerOnLayersTab('Path');
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-path-selected-image.png');
-    await layersPanelPage.clickLayerOnLayersTab('mini_sample');
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-image-selected-image.png');
-  });
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      layersPanelPage = new LayersPanelPage(newPage);
+      await viewModePage.openInspectTab();
+      await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-rectangle-selected-image.png',
+      );
+      await layersPanelPage.clickLayerOnLayersTab('Ellipse');
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-ellipse-selected-image.png',
+      );
+      await layersPanelPage.clickLayerOnLayersTab('Hello World!');
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-test-selected-image.png',
+      );
+      await layersPanelPage.clickLayerOnLayersTab('Path');
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-path-selected-image.png',
+      );
+      await layersPanelPage.clickLayerOnLayersTab('mini_sample');
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-image-selected-image.png',
+      );
+    },
+  );
 
   mainTest(qase([1787], 'CO-389 Copy layout and paste'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -590,13 +646,13 @@ mainTest.describe(() => {
     await viewModePage.openInspectTab();
     await viewModePage.copyWidth();
     await expect(viewModePage.rightSidebar).toHaveScreenshot(
-      'view-mode-copy-width-image.png');
+      'view-mode-copy-width-image.png',
+    );
     await viewModePage.checkBuffer('width: 200px;', newPage, browserName);
   });
 
   mainTest(qase([705], 'CO-384 Edit file'), async ({ page, browserName }) => {
     if (browserName === 'webkit') {
-
     } else {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await designPanelPage.changeHeightAndWidthForLayer('200', '200');
@@ -617,216 +673,234 @@ mainTest.describe(() => {
       mainPage = new MainPage(oldPage);
       teamPage = new TeamPage(oldPage);
       await mainPage.waitForViewportVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'main-page-opened.png',
-      );
+      await expect(mainPage.viewport).toHaveScreenshot('main-page-opened.png');
     }
   });
 });
 
 mainTest.describe(() => {
-  mainTest(qase([693], 'CO-372 Share prototype - get link (2 pages)'), async ({ page, browserName }) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickAddPageButton();
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await viewModePage.clickShareButton();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
-      'view-mode-share-window-image.png',
-    );
-    await viewModePage.clickGetLinkButton();
-    await viewModePage.clickManagePermissionsButton();
-    await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
-      'view-mode-share-window-1page-selected-image.png',
-    );
-    await viewModePage.selectAllPages();
-    await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
-      'view-mode-share-window-all-pages-selected-image.png',
-    );
-    await viewModePage.clickGetLinkButton();
-    const shareLink = await viewModePage.clickCopyLinkButton();
-    await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+  mainTest(
+    qase([693], 'CO-372 Share prototype - get link (2 pages)'),
+    async ({ page, browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickAddPageButton();
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      await viewModePage.clickShareButton();
+      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
+      await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
+        'view-mode-share-window-image.png',
+      );
+      await viewModePage.clickGetLinkButton();
+      await viewModePage.clickManagePermissionsButton();
+      await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
+        'view-mode-share-window-1page-selected-image.png',
+      );
+      await viewModePage.selectAllPages();
+      await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
+        'view-mode-share-window-all-pages-selected-image.png',
+      );
+      await viewModePage.clickGetLinkButton();
+      const shareLink = await viewModePage.clickCopyLinkButton();
+      await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
 
-    await mainPage.clickPencilBoxButton();
-    await profilePage.logout();
-    await loginPage.isLoginPageOpened();
-    await profilePage.gotoLink(shareLink);
-    const newViewModePage = new ViewModePage(page);
-    await newViewModePage.isViewerSectionVisible();
-    await expect(newViewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-shared-image.png');
-    await loginPage.goto();
-  });
+      await mainPage.clickPencilBoxButton();
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await profilePage.gotoLink(shareLink);
+      const newViewModePage = new ViewModePage(page);
+      await newViewModePage.isViewerSectionVisible();
+      await expect(newViewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-shared-image.png',
+      );
+      await loginPage.goto();
+    },
+  );
 
-  mainTest(qase([694], 'CO-373 Share prototype - destroy link'), async ({ page, browserName }) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await viewModePage.clickShareButton();
-    await viewModePage.clickGetLinkButton();
-    const shareLink = await viewModePage.clickCopyLinkButton();
-    await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+  mainTest(
+    qase([694], 'CO-373 Share prototype - destroy link'),
+    async ({ page, browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      await viewModePage.clickShareButton();
+      await viewModePage.clickGetLinkButton();
+      const shareLink = await viewModePage.clickCopyLinkButton();
+      await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
 
-    await viewModePage.clickDestroyLinkButton();
+      await viewModePage.clickDestroyLinkButton();
 
-    await mainPage.clickPencilBoxButton();
-    await profilePage.logout();
-    await loginPage.isLoginPageOpened();
-    await profilePage.gotoLink(shareLink);
-    viewModePage = new ViewModePage(page);
-    await viewModePage.isViewerSectionVisible(false);
-    await expect(mainPage.loginDialog).toHaveScreenshot(
-      'shared-error-image.png');
-    await loginPage.goto();
-  });
+      await mainPage.clickPencilBoxButton();
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await profilePage.gotoLink(shareLink);
+      viewModePage = new ViewModePage(page);
+      await viewModePage.isViewerSectionVisible(false);
+      await expect(mainPage.loginDialog).toHaveScreenshot('shared-error-image.png');
+      await loginPage.goto();
+    },
+  );
 
-  mainTest(qase([696], 'CO-375 Share prototype - manage permissions ("Can comment")'), async ({ page, browserName }) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await viewModePage.clickShareButton();
-    await viewModePage.clickManagePermissionsButton();
-    await viewModePage.selectAllUsersCommentPermission();
-    await viewModePage.clickGetLinkButton();
-    const shareLink = await viewModePage.clickCopyLinkButton();
-    await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
-    await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
-      'view-mode-share-window-all-users-comment-image.png',
-    );
-    await newPage.close();
+  mainTest(
+    qase([696], 'CO-375 Share prototype - manage permissions ("Can comment")'),
+    async ({ page, browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      await viewModePage.clickShareButton();
+      await viewModePage.clickManagePermissionsButton();
+      await viewModePage.selectAllUsersCommentPermission();
+      await viewModePage.clickGetLinkButton();
+      const shareLink = await viewModePage.clickCopyLinkButton();
+      await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+      await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
+        'view-mode-share-window-all-users-comment-image.png',
+      );
+      await newPage.close();
 
-    await mainPage.clickPencilBoxButton();
-    await profilePage.logout();
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.SECOND_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await profilePage.gotoLink(shareLink);
-    viewModePage = new ViewModePage(page);
-    await viewModePage.isViewerSectionVisible();
-    await viewModePage.clickCommentsButton();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-shared-comments-image.png');
-    await viewModePage.gotoLink(process.env.BASE_URL);
-    await mainPage.isHeaderDisplayed('Projects');
-    await profilePage.logout();
-  });
+      await mainPage.clickPencilBoxButton();
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.SECOND_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await profilePage.gotoLink(shareLink);
+      viewModePage = new ViewModePage(page);
+      await viewModePage.isViewerSectionVisible();
+      await viewModePage.clickCommentsButton();
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-shared-comments-image.png',
+      );
+      await viewModePage.gotoLink(process.env.BASE_URL);
+      await mainPage.isHeaderDisplayed('Projects');
+      await profilePage.logout();
+    },
+  );
 
-  mainTest(qase([697], 'CO-376 Share prototype - manage permissions ("Can inspect code  ")'), async ({ page, browserName }) => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    await viewModePage.clickShareButton();
-    await viewModePage.clickManagePermissionsButton();
-    await viewModePage.selectAllUsersInspectPermission();
-    await viewModePage.clickGetLinkButton();
-    const shareLink = await viewModePage.clickCopyLinkButton();
-    await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
-    await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
-      'view-mode-share-window-all-users-inspect-image.png',
-    );
-    await newPage.close();
+  mainTest(
+    qase(
+      [697],
+      'CO-376 Share prototype - manage permissions ("Can inspect code  ")',
+    ),
+    async ({ page, browserName }) => {
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      await viewModePage.clickShareButton();
+      await viewModePage.clickManagePermissionsButton();
+      await viewModePage.selectAllUsersInspectPermission();
+      await viewModePage.clickGetLinkButton();
+      const shareLink = await viewModePage.clickCopyLinkButton();
+      await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+      await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
+        'view-mode-share-window-all-users-inspect-image.png',
+      );
+      await newPage.close();
 
-    await mainPage.clickPencilBoxButton();
-    await profilePage.logout();
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.SECOND_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await profilePage.gotoLink(shareLink);
-    viewModePage = new ViewModePage(page);
-    const inspectPanelPage = new InspectPanelPage(page);
-    await viewModePage.isViewerSectionVisible();
-    await viewModePage.openInspectTab();
-    await inspectPanelPage.openCodeTab();
-    await page.waitForTimeout(200);
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-      'view-mode-shared-code-image.png');
-    await viewModePage.gotoLink(process.env.BASE_URL);
-    await mainPage.isHeaderDisplayed('Projects');
-    await profilePage.logout();
-  });
+      await mainPage.clickPencilBoxButton();
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.SECOND_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await profilePage.gotoLink(shareLink);
+      viewModePage = new ViewModePage(page);
+      const inspectPanelPage = new InspectPanelPage(page);
+      await viewModePage.isViewerSectionVisible();
+      await viewModePage.openInspectTab();
+      await inspectPanelPage.openCodeTab();
+      await page.waitForTimeout(200);
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-shared-code-image.png',
+      );
+      await viewModePage.gotoLink(process.env.BASE_URL);
+      await mainPage.isHeaderDisplayed('Projects');
+      await profilePage.logout();
+    },
+  );
 
-  mainTest(qase(702,'CO-381 Comments dropdown (All and Only your comments)'),  async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 60000);
-    const firstAdmin = random().concat('autotest');
-    const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+  mainTest(
+    qase(702, 'CO-381 Comments dropdown (All and Only your comments)'),
+    async ({ page }, testInfo) => {
+      await testInfo.setTimeout(testInfo.timeout + 60000);
+      const firstAdmin = random().concat('autotest');
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
 
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    let viewModePage2 = new ViewModePage(newPage);
-    await viewModePage2.clickCommentsButton();
-    await viewModePage2.addComment();
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      let viewModePage2 = new ViewModePage(newPage);
+      await viewModePage2.clickCommentsButton();
+      await viewModePage2.addComment();
 
-    const comment = 'Test Comment (main user)';
-    let commentsPanelPage = new CommentsPanelPage(newPage);
-    await commentsPanelPage.enterCommentText(comment);
-    await commentsPanelPage.clickPostCommentButton();
-    await commentsPanelPage.isCommentDisplayedInPopUp(comment);
-    await newPage.close();
-    await mainPage.backToDashboardFromFileEditor();
+      const comment = 'Test Comment (main user)';
+      let commentsPanelPage = new CommentsPanelPage(newPage);
+      await commentsPanelPage.enterCommentText(comment);
+      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.isCommentDisplayedInPopUp(comment);
+      await newPage.close();
+      await mainPage.backToDashboardFromFileEditor();
 
-    await teamPage.openInvitationsPageViaOptionsMenu();
-    await teamPage.clickInviteMembersToTeamButton();
-    await teamPage.isInviteMembersPopUpHeaderDisplayed(
-      'Invite members to the team',
-    );
-    await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
-    await teamPage.selectInvitationRoleInPopUp('Admin');
-    await teamPage.clickSendInvitationButton();
-    await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-    const firstInvite = await waitMessage(page, firstEmail, 40);
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderDisplayed(
+        'Invite members to the team',
+      );
+      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+      await teamPage.selectInvitationRoleInPopUp('Admin');
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      const firstInvite = await waitMessage(page, firstEmail, 40);
 
-    await profilePage.logout();
-    await loginPage.isLoginPageOpened();
-    await page.goto(firstInvite.inviteUrl);
-    await registerPage.isRegisterPageOpened();
-    await registerPage.enterEmail(firstEmail);
-    await registerPage.enterPassword(process.env.LOGIN_PWD);
-    await registerPage.clickOnCreateAccountBtn();
-    await registerPage.enterFullName(firstAdmin);
-    await registerPage.clickOnAcceptTermsCheckbox();
-    await registerPage.clickOnCreateAccountSecondBtn();
-    await dashboardPage.fillOnboardingQuestions();
-    await teamPage.isTeamSelected(teamName);
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await page.goto(firstInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(firstEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(firstAdmin);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.fillOnboardingQuestions();
+      await teamPage.isTeamSelected(teamName);
 
-    await dashboardPage.openFile();
-    await mainPage.isMainPageLoaded();
-    const secondPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(secondPage);
-    await viewModePage.clickCommentsButton();
-    await viewModePage.addComment(true);
-    const comment2 = 'Test Comment (main user)';
-    commentsPanelPage = new CommentsPanelPage(secondPage);
-    await commentsPanelPage.enterCommentText(comment2);
-    await commentsPanelPage.clickPostCommentButton();
-    await commentsPanelPage.isCommentDisplayedInPopUp(comment2);
-    await expect(secondPage).toHaveScreenshot('all-users-comments.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
-    });
-    await viewModePage.openCommentsDropdown();
-    await viewModePage.selectShowYourCommentsOption();
-    await expect(secondPage).toHaveScreenshot('only-your-comments.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
-    });
-    await secondPage.close();
+      await dashboardPage.openFile();
+      await mainPage.isMainPageLoaded();
+      const secondPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(secondPage);
+      await viewModePage.clickCommentsButton();
+      await viewModePage.addComment(true);
+      const comment2 = 'Test Comment (main user)';
+      commentsPanelPage = new CommentsPanelPage(secondPage);
+      await commentsPanelPage.enterCommentText(comment2);
+      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.isCommentDisplayedInPopUp(comment2);
+      await expect(secondPage).toHaveScreenshot('all-users-comments.png', {
+        mask: [commentsPanelPage.commentsAuthorSection],
+      });
+      await viewModePage.openCommentsDropdown();
+      await viewModePage.selectShowYourCommentsOption();
+      await expect(secondPage).toHaveScreenshot('only-your-comments.png', {
+        mask: [commentsPanelPage.commentsAuthorSection],
+      });
+      await secondPage.close();
 
-    await mainPage.backToDashboardFromFileEditor();
-    await profilePage.logout();
-  });
+      await mainPage.backToDashboardFromFileEditor();
+      await profilePage.logout();
+    },
+  );
 
   mainTest.afterEach(async () => {
     await loginPage.isLoginPageOpened();

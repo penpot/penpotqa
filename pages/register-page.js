@@ -12,14 +12,22 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     this.emailInput = page.locator('#email');
     this.passwordInput = page.locator('#password');
     this.createAccountBtn = page.getByTestId('register-form-submit');
-    this.createAccountSecondBtn = page.getByRole('button', { name: 'Create an account' });
+    this.createAccountSecondBtn = page.getByRole('button', {
+      name: 'Create an account',
+    });
     this.emailInputError = page.getByTestId('email-input-error');
     this.passwordInputHint = page.locator('div.main_ui_components_forms__hint');
     this.passwordInputError = page.getByTestId('-error');
     this.fullnameInput = page.getByPlaceholder('Full Name');
-    this.acceptTermsCheckbox = page.locator('label[for="accept-terms-and-privacy"] span');
-    this.regEmailNotification = page.locator('div[class*="notification-text-email"]');
-    this.createDemoAccountBtn = page.locator('div[class*="auth_register__demo-account"]');
+    this.acceptTermsCheckbox = page.locator(
+      'label[for="accept-terms-and-privacy"] span',
+    );
+    this.regEmailNotification = page.locator(
+      'div[class*="notification-text-email"]',
+    );
+    this.createDemoAccountBtn = page.locator(
+      'div[class*="auth_register__demo-account"]',
+    );
   }
 
   async isRegisterPageOpened() {

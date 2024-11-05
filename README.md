@@ -24,6 +24,7 @@ Prerequisites for local run:
 **2. Test run - main notes.**
 
 Once the repo is cloned you can follow these steps to use the correct node version, install the project dependencies, and Playwright with the latests browsers.
+
 ```
 nvm use
 npm install
@@ -31,6 +32,7 @@ npx playwright install
 ```
 
 You can check the versions of Playwright and Node using these commands:
+
 ```
 node --version
 npx playwright --version

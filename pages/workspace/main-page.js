@@ -22,10 +22,8 @@ exports.MainPage = class MainPage extends BasePage {
     this.mainToolBar = page.locator(
       '[class*="main-toolbar"] button[class*="toolbar-handler"]',
     );
-    this.toolBarWindow = page.locator(
-      'aside[class*="main-toolbar"]',
-    ).first();
-    this.designTab = page.getByRole("tab", { name: "design" });
+    this.toolBarWindow = page.locator('aside[class*="main-toolbar"]').first();
+    this.designTab = page.getByRole('tab', { name: 'design' });
 
     //Viewport
     this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
@@ -69,30 +67,68 @@ exports.MainPage = class MainPage extends BasePage {
 
     // Main menu - first level
     this.mainMenuButton = page.locator('#left-sidebar-aside svg.icon-menu');
-    this.mainMenuList = page.locator('ul[class*="main_ui_workspace_main_menu__menu"]');
+    this.mainMenuList = page.locator(
+      'ul[class*="main_ui_workspace_main_menu__menu"]',
+    );
     this.viewMainMenuItem = page.getByRole('menuitem').filter({ hasText: 'View' });
     this.fileMainMenuItem = page.getByRole('menuitem').filter({ hasText: 'File' });
     this.editMainMenuItem = page.getByRole('menuitem').filter({ hasText: 'Edit' });
-    this.helpInfoMenuItem = page.getByRole('menuitem').filter({ hasText: 'Help & info' });
+    this.helpInfoMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Help & info' });
 
     // Main menu - second level
-    this.showRulersMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show rulers' });
-    this.hideRulersMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Hide rulers' });
-    this.hideGridsMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Hide pixel grid' });
-    this.showGridsMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show pixel grid' });
-    this.selectAllMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Select all' });
-    this.showColorPaletteMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show color palette' });
-    this.hideColorPaletteMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Hide color palette' });
-    this.showBoardNamesMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show boards names' });
-    this.hideBoardNamesMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Hide board names' });
-    this.showPixelGridMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show pixel grid' });
-    this.hidePixelGridMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Hide pixel grid' });
-    this.showHideUIMainMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Show / Hide UI' });
-    this.dowloadPenpotFileMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Download Penpot file (.penpot)' });
-    this.dowloadStandartFileMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Download standard file (.svg + .json)' });
-    this.addAsSharedLibraryFileMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Add as Shared Library' });
-    this.removeAsSharedLibraryFileMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Unpublish Library' });
-    this.shortcutsMenuSubItem = page.getByRole('menuitem').filter({ hasText: 'Shortcuts' });
+    this.showRulersMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Show rulers' });
+    this.hideRulersMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Hide rulers' });
+    this.hideGridsMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Hide pixel grid' });
+    this.showGridsMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Show pixel grid' });
+    this.selectAllMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Select all' });
+    this.showColorPaletteMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Show color palette' });
+    this.hideColorPaletteMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Hide color palette' });
+    this.showBoardNamesMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Show boards names' });
+    this.hideBoardNamesMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Hide board names' });
+    this.showPixelGridMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Show pixel grid' });
+    this.hidePixelGridMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Hide pixel grid' });
+    this.showHideUIMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Show / Hide UI' });
+    this.dowloadPenpotFileMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Download Penpot file (.penpot)' });
+    this.dowloadStandartFileMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Download standard file (.svg + .json)' });
+    this.addAsSharedLibraryFileMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Add as Shared Library' });
+    this.removeAsSharedLibraryFileMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Unpublish Library' });
+    this.shortcutsMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Shortcuts' });
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
@@ -105,8 +141,12 @@ exports.MainPage = class MainPage extends BasePage {
       'button[class*="header__zoom-btn"] svg[class="icon-remove"]',
     );
     this.zoomResetButton = page.getByRole('button', { name: 'Reset' });
-    this.zoomToFitAllMenuItem = page.getByRole('listitem').filter({ hasText: 'Zoom to fit all' });
-    this.zoomSelectedMenuItem = page.getByRole('listitem').filter({ hasText: 'Zoom to selected' });
+    this.zoomToFitAllMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Zoom to fit all' });
+    this.zoomSelectedMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Zoom to selected' });
 
     //Pages
     this.addPageButton = page.locator('button[class*="add-page"]');
@@ -120,9 +160,15 @@ exports.MainPage = class MainPage extends BasePage {
     this.pageNameInput = page.locator(
       'ul[class*="page-list"] div[class*="element-list-body"] input',
     );
-    this.renamePageMenuItem = page.getByRole('listitem').filter({ hasText: 'Rename' });
-    this.duplicatePageMenuItem = page.getByRole('listitem').filter({ hasText: 'Duplicate' });
-    this.deletePageMenuItem = page.getByRole('listitem').filter({ hasText: 'Delete' });
+    this.renamePageMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Rename' });
+    this.duplicatePageMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Duplicate' });
+    this.deletePageMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete' });
     this.collapseExpandPagesButton = page.locator(
       'span[class*="collapsabled-icon"]',
     );
@@ -275,23 +321,17 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickBoardOnCanvas() {
-    const boardSel = this.page.locator(
-      `rect[class="main viewport-selrect"]`,
-    );
+    const boardSel = this.page.locator(`rect[class="main viewport-selrect"]`);
     await boardSel.click();
   }
 
   async doubleClickBoardOnCanvas() {
-    const boardSel = this.page.locator(
-      `rect[class="main viewport-selrect"]`,
-    );
+    const boardSel = this.page.locator(`rect[class="main viewport-selrect"]`);
     await boardSel.dblclick();
   }
 
   async hoverBoardOnCanvas() {
-    const boardSel = this.page.locator(
-      `rect[class="main viewport-selrect"]`,
-    );
+    const boardSel = this.page.locator(`rect[class="main viewport-selrect"]`);
     await boardSel.hover();
   }
 
@@ -319,7 +359,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isMainPageVisible() {
     try {
-      await this.viewport.waitFor({ state: 'visible' , timeout: 8000});
+      await this.viewport.waitFor({ state: 'visible', timeout: 8000 });
       return true;
     } catch (error) {
       console.log(error);
@@ -820,11 +860,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async createSmallClosedPathByCoordinates(x, y){
+  async createSmallClosedPathByCoordinates(x, y) {
     await this.clickCreatePathButton();
     await this.clickViewportByCoordinates(x, y);
-    await this.clickViewportByCoordinates(x+100, y);
-    await this.clickViewportByCoordinates(x, y+100);
+    await this.clickViewportByCoordinates(x + 100, y);
+    await this.clickViewportByCoordinates(x, y + 100);
     await this.clickViewportByCoordinates(x, y);
     await this.clickOnDesignTab();
     await this.waitForChangeIsSaved();
@@ -832,7 +872,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async createDefaultCurveLayer() {
     await this.clickCreateCurveButton();
-    await this.page.waitForTimeout(700)
+    await this.page.waitForTimeout(700);
     await this.drawCurve(900, 300, 600, 200);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
@@ -841,10 +881,10 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultTextLayer(browserName) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(200, 300);
-    const platform = getPlatformName()
+    const platform = getPlatformName();
     if (platform === 'darwin') {
       await this.typeTextFromKeyboard();
-    } else if(browserName === 'webkit') {
+    } else if (browserName === 'webkit') {
       await this.page.waitForTimeout(2000);
       await this.typeTextFromKeyboard();
     } else {
@@ -857,10 +897,10 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultTextLayerByCoordinates(x, y, browserName) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
-    const platform = getPlatformName()
+    const platform = getPlatformName();
     if (platform === 'darwin') {
       await this.typeTextFromKeyboard();
-    } else if(browserName === 'webkit') {
+    } else if (browserName === 'webkit') {
       await this.page.waitForTimeout(400);
       await this.typeTextFromKeyboard();
     } else {
@@ -879,7 +919,9 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async createComponentsMultipleShapesRightClick(singleComponent = true) {
-    const layerSel = this.page.locator('div[class*="viewport"] .main.viewport-selrect');
+    const layerSel = this.page.locator(
+      'div[class*="viewport"] .main.viewport-selrect',
+    );
     await layerSel.last().click({ button: 'right', force: true });
     if (singleComponent) {
       await this.createComponentMenuItem.click();
@@ -970,20 +1012,28 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async selectGridCellMultiple(startCell, endCell) {
-    const startCellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${startCell-1}`);
-    const endCellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${endCell-1}`);
+    const startCellLocator = await this.page.locator(
+      `rect[class*="grid-cell-outline"] >>nth=${startCell - 1}`,
+    );
+    const endCellLocator = await this.page.locator(
+      `rect[class*="grid-cell-outline"] >>nth=${endCell - 1}`,
+    );
     await startCellLocator.click();
     await endCellLocator.click({ modifiers: ['Shift'] });
   }
 
   async mergeGridCellViaRightClick(cell) {
-    const cellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${cell-1}`);
+    const cellLocator = await this.page.locator(
+      `rect[class*="grid-cell-outline"] >>nth=${cell - 1}`,
+    );
     await cellLocator.click({ button: 'right', force: true });
     await this.mergeGridCellMenuItem.click();
   }
 
   async clickOnGridCell(cell) {
-    const cellLocator = await this.page.locator(`rect[class*="grid-cell-outline"] >>nth=${cell-1}`);
+    const cellLocator = await this.page.locator(
+      `rect[class*="grid-cell-outline"] >>nth=${cell - 1}`,
+    );
     await cellLocator.click();
   }
 
@@ -992,7 +1042,7 @@ exports.MainPage = class MainPage extends BasePage {
       `rect[class*="main viewport-selrect"]`,
     );
     const board = this.page.locator(
-      `rect[class*="grid-cell-outline"] >>nth=${cellNumber-1}`,
+      `rect[class*="grid-cell-outline"] >>nth=${cellNumber - 1}`,
     );
     await selectedElement.hover();
     await selectedElement.dragTo(board);

@@ -8,7 +8,7 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.layersTab = page.getByRole("tab", { name: "layers" });
+    this.layersTab = page.getByRole('tab', { name: 'layers' });
     this.layersSidebar = page.locator('div#layers');
     this.sidebarLayerItem = page.locator(
       'div[class*="workspace_sidebar_layer_item__layer-row"]',
@@ -183,16 +183,16 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
   }
 
   async doubleClickCopyComponentOnLayersTab() {
-    const layer = this.page.locator(
-      `div[class*="element-list-body"] span[class*="element-name"]`,
-    ).first();
+    const layer = this.page
+      .locator(`div[class*="element-list-body"] span[class*="element-name"]`)
+      .first();
     await layer.dblclick();
   }
 
   async doubleClickMainComponentOnLayersTab() {
-    const layer = this.page.locator(
-      `div[class*="element-list-body"] span[class*="element-name"]`,
-    ).last();
+    const layer = this.page
+      .locator(`div[class*="element-list-body"] span[class*="element-name"]`)
+      .last();
     await layer.dblclick();
   }
 
@@ -281,5 +281,3 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await this.mainComponentLayerSelected.waitFor({ state: 'visible' });
   }
 };
-
-

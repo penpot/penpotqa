@@ -120,7 +120,7 @@ mainTest.describe('Settings - UI THEME', () => {
 
   mainTest(
     'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
-    async ({browserName}) => {
+    async ({ browserName }) => {
       await profilePage.backToDashboardFromAccount();
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.isMainPageLoaded();
@@ -148,5 +148,5 @@ test.afterEach(async ({}, testInfo) => {
   await profilePage.selectDarkTheme();
   await profilePage.backToDashboardFromAccount();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry)
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
