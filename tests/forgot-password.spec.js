@@ -46,6 +46,8 @@ test.describe(() => {
     const loginPage = new LoginPage(page);
     const registerPage = new RegisterPage(page);
     const dashboardPage = new DashboardPage(page);
+    await page.context().clearCookies();
+
     await loginPage.goto();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();

@@ -522,7 +522,6 @@ mainTest.describe(() => {
       await designPanelPage.changeHeightAndWidthForLayer('200', '200');
       await mainPage.waitForChangeIsSaved();
       await mainPage.createDefaultRectangleByCoordinates(320, 320);
-      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
       await mainPage.waitForChangeIsUnsaved();
@@ -602,7 +601,6 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await mainPage.createSmallClosedPathByCoordinates(330, 330);
-      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.dragAndDropComponentToBoard('Path');
       await mainPage.waitForChangeIsUnsaved();

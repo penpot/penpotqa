@@ -252,12 +252,14 @@ exports.BasePage = class BasePage {
     await this.hideLayerMenuItem.click();
   }
 
-  async focusBoardViaRightClickOnCanvas(title) {
+  async focusBoardViaRightClickOnCanvas(title, browserName = 'chrome') {
     const boardSel = this.page.locator(
       `span[class*="workspace_sidebar_layer_name"]:has-text("${title}")`,
     );
     await boardSel.click({ button: 'right', force: true });
-    await this.focusOnLayerMenuItem.click();
+    browserName === 'chrome'
+      ? await this.focusOnLayerMenuItem.click()
+      : await this.focusOnLayerMenuItem.locator('span').first().click();
   }
 
   async focusLayerViaRightClickOnCanvas() {

@@ -222,12 +222,12 @@ mainTest(
 
 mainTest(
   qase(1437, 'Create component from curve by right-click'),
-  async ({ page }) => {
+  async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultCurveLayer();
-    await layersPanelPage.createComponentViaRightClickLayers();
+    await layersPanelPage.createComponentViaRightClickLayers(browserName);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'curve-main-component-canvas.png',

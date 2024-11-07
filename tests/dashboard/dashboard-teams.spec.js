@@ -1997,7 +1997,7 @@ test.describe(() => {
     teamPage = new TeamPage(page);
     mainPage = new MainPage(page);
     viewModePage = new ViewModePage(page);
-
+    await page.context().clearCookies();
     await loginPage.goto();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();
@@ -2038,7 +2038,7 @@ test.describe(() => {
 
       await page.goto(currentURL);
       await expect(teamPage.accessDialog).toHaveScreenshot(
-        'request-access-dialog-image.png',
+        'request-file-access-dialog-image.png',
       );
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
@@ -2095,7 +2095,7 @@ test.describe(() => {
 
       await page.goto(currentURL);
       await expect(teamPage.accessDialog).toHaveScreenshot(
-        'request-access-dialog-image.png',
+        'request-project-access-dialog-image.png',
       );
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
@@ -2145,7 +2145,7 @@ test.describe(() => {
 
       await page.goto(currentURL);
       await expect(teamPage.accessDialog).toHaveScreenshot(
-        'request-access-dialog-image.png',
+        'request-file-access-dialog-image.png',
       );
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
@@ -2199,7 +2199,7 @@ test.describe(() => {
 
       await page.goto(currentURL);
       await expect(teamPage.accessDialog).toHaveScreenshot(
-        'request-access-dialog-image.png',
+        'request-file-access-dialog-image.png',
       );
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
@@ -2259,7 +2259,7 @@ test.describe(() => {
 
     await page.goto(currentURL);
     await expect(teamPage.accessDialog).toHaveScreenshot(
-      'request-access-dialog-image.png',
+      'request-file-access-dialog-image.png',
     );
     await teamPage.clickOnRequestAccessButton();
     await teamPage.isRequestAccessButtonVisible(false);

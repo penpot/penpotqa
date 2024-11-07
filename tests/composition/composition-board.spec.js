@@ -338,10 +338,10 @@ mainTest.describe(() => {
 
   mainTest(
     qase(271, "CO-56 Click 'Focus off' board from shortcut F"),
-    async ({ page }) => {
+    async ({ page, browserName }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
-      await mainPage.focusBoardViaRightClickOnCanvas('Board');
+      await mainPage.focusBoardViaRightClickOnCanvas('Board', browserName);
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab('Board', true);
       await layersPanelPage.isFocusModeOn();
@@ -485,7 +485,7 @@ mainTest.describe(() => {
       const board1 = 'Board #1';
       await mainPage.copyLayerViaRightClick();
       await mainPage.pasteLayerViaRightClick();
-      await layersPanelPage.copyLayerViaRightClick(board1);
+      await layersPanelPage.copyLayerViaRightClick(board1, browserName);
       await mainPage.pasteLayerViaRightClick();
       await mainPage.pressCopyShortcut();
       await mainPage.pressPasteShortcut();
@@ -497,12 +497,12 @@ mainTest.describe(() => {
 
   mainTest(
     qase(268, "CO-53 Click 'Focus on' board from right click"),
-    async ({ page }) => {
+    async ({ page, browserName }) => {
       const mainPage = new MainPage(page);
       const layersPanelPage = new LayersPanelPage(page);
       const board1 = 'Board #1';
       const board2 = 'Board #2';
-      await mainPage.focusBoardViaRightClickOnCanvas(board2);
+      await mainPage.focusBoardViaRightClickOnCanvas(board2, browserName);
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab(board1, false);
       await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
