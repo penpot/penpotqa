@@ -321,8 +321,8 @@ mainTest.describe('Text', () => {
       await designPanelPage.changeTextFontSize('18');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.clickViewportOnce();
-      browserName === 'webkit' ? null : await mainPage.refreshPage();
+      await mainPage.clickViewportTwice();
+      await mainPage.isSelectLayerHidden();
       await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-text.png',
