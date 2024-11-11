@@ -403,6 +403,10 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async uploadTeamImage(filePath) {
     await this.uploadTeamImageButton.setInputFiles(filePath);
+    await this.page.waitForResponse(response =>
+      response.url() === `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
+      response.status() === 200
+    );
   }
 
   async isTeamOwnerInfoDisplayed(name) {
