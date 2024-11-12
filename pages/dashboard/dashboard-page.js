@@ -775,7 +775,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async fillOnboardingQuestions() {
-    await expect(this.onboardingFirstHeader).toHaveText('Help us get to know you');
+    await this.isOnboardingFirstQuestionsVisible();
     await this.selectRadioButton('Work');
     await this.selectDropdownOptions('Testing before self-hosting');
     await this.clickOnNextButton();
@@ -788,15 +788,20 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.selectGetStartedQuestion('Prototyping');
     await this.clickOnNextButton();
     await this.selectRadioButton('YouTube');
+    await this.page.waitForTimeout(1000);
     await this.clickOnStartButton();
+    await this.page.waitForTimeout(1000);
     await this.clickOnOnboardingContinueBtn();
+    await this.page.waitForTimeout(1000);
     await this.clickOnOnboardingContinueWithoutTeamButton();
+    await this.page.waitForTimeout(3000);
     await this.skipWhatNewsPopUp();
+    await this.page.waitForTimeout(3000);
     await this.skipPluginsPopUp();
   }
 
   async fillOnboardingFirstQuestions() {
-    await expect(this.onboardingFirstHeader).toHaveText('Help us get to know you');
+    await this.isOnboardingFirstQuestionsVisible();
     await this.selectRadioButton('Work');
     await this.selectDropdownOptions('Testing before self-hosting');
     await this.clickOnNextButton();
