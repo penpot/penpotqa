@@ -147,8 +147,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.startWithOtherInput = page.locator('#start-with-other[type="text"]');
     this.refererOtherInput = page.locator('#referer-other[type="text"]');
     this.nextButton = page.locator('button[label="Next"]');
-    this.previousButton = page.locator('button[class*="prev-button"]');
-    this.startButton = page.locator('button[label="Start"]');
+    this.previousButton = page.getByRole('button', { name: 'Previous' });
+    this.startButton = page.getByRole('button', { name: 'Start' });
     this.figmaTool = page.locator('//input[@id="experience-design-tool-figma"]/..');
     this.toolsButton = page.locator(
       'label[class*="components_forms__radio-label-image"]',
@@ -164,9 +164,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingContinueCreateTeamBtn = page.locator(
       'button[label="Continue creating team"]',
     );
-    this.onboardingContinueWithoutTeamBtn = page
-      .locator('button[class*="onboarding_team_choice__accept-button"]')
-      .nth(1);
+    this.onboardingContinueWithoutTeamBtn = page.getByRole('button').filter({hasText: 'Continue without team'});
     this.onboardingInviteInput = page.locator(
       'input[class*="components_forms__inside-input"]',
     );
@@ -662,6 +660,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickOnOnboardingContinueBtn() {
     await this.onboardingContinueBtn.click();
+    await this.page.waitForResponse(response =>
+      response.url() === `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
+      response.status() === 200
+    );
   }
 
   async clickOnLetsGoBtn() {
@@ -715,6 +717,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async clickOnStartButton() {
     await expect(this.startButton).not.toHaveAttribute('disabled');
     await this.startButton.click();
+    await expect(this.startButton).toBeHidden();
   }
 
   async fillSecondOnboardPage(branding, visual, wireframes) {
@@ -788,15 +791,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.selectGetStartedQuestion('Prototyping');
     await this.clickOnNextButton();
     await this.selectRadioButton('YouTube');
-    await this.page.waitForTimeout(1000);
     await this.clickOnStartButton();
-    await this.page.waitForTimeout(1000);
     await this.clickOnOnboardingContinueBtn();
-    await this.page.waitForTimeout(1000);
     await this.clickOnOnboardingContinueWithoutTeamButton();
-    await this.page.waitForTimeout(3000);
     await this.skipWhatNewsPopUp();
-    await this.page.waitForTimeout(3000);
     await this.skipPluginsPopUp();
   }
 
@@ -877,9 +875,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickOnOnboardingContinueWithoutTeamButton() {
-    (await this.onboardingContinueWithoutTeamBtn.isVisible())
-      ? await this.onboardingContinueWithoutTeamBtn.click()
-      : null;
+    if(await this.onboardingContinueWithoutTeamBtn.isVisible()) {
+      await this.onboardingContinueWithoutTeamBtn.click()
+      await this.page.waitForResponse(response =>
+        response.url() === `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
+        response.status() === 200
+      );
+    }
   }
 
   async isPlaningOtherInputVisible() {

@@ -2056,6 +2056,7 @@ test.describe(() => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
+      await waitSecondMessage(page, email, 40);
       const requestMessage = await waitRequestMessage(page, email, 40);
       await checkConfirmAccessText(
         requestMessage.inviteText,
@@ -2113,6 +2114,7 @@ test.describe(() => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
+      await waitSecondMessage(page, email, 40);
       const requestMessage = await waitRequestMessage(page, email, 40);
 
       await checkDashboardConfirmAccessText(
@@ -2163,6 +2165,7 @@ test.describe(() => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
+      await waitSecondMessage(page, email, 40);
       const requestMessage = await waitRequestMessage(page, email, 40);
       await checkYourPenpotConfirmAccessText(
         requestMessage.inviteText,
@@ -2217,6 +2220,7 @@ test.describe(() => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
+      await waitSecondMessage(page, email, 40);
       const requestMessage = await waitRequestMessage(page, email, 40);
       await checkYourPenpotViewModeConfirmAccessText(
         requestMessage.inviteText,
@@ -2277,6 +2281,7 @@ test.describe(() => {
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
 
+    await waitSecondMessage(page, email, 40);
     const requestMessage = await waitRequestMessage(page, email, 40);
     await page.goto(requestMessage.inviteUrl[0]);
     await teamPage.clickSendInvitationButton();
