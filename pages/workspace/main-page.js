@@ -66,7 +66,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.nodePanelToCurveButton = page.locator('button[title^="To curve"]');
 
     // Main menu - first level
-    this.mainMenuButton = page.locator('#left-sidebar-aside svg.icon-menu');
+    this.mainMenuButton = page.getByRole('button', { name: 'Main menu' });
     this.mainMenuList = page.locator(
       'ul[class*="main_ui_workspace_main_menu__menu"]',
     );
