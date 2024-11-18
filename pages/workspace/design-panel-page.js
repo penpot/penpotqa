@@ -48,7 +48,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="fill__element-content"] div[class*="opacity-element-wrapper"] input',
     );
     this.addFillButton = page.getByRole('button', { name: 'Add fill color' });
-    this.removeFillButton = page.getByRole('button', { name: 'Remove color' });
+    this.removeFillButton = page
+      .locator('div[class*="fill__element-content"]')
+      .getByRole('button', { name: 'Remove color' });
     this.componentColorInput = page.locator(
       `input[class*='rows_color_row__color-input']`,
     );
@@ -72,15 +74,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowOpacityInput = page.locator(
       'div[class*="shadow-advanced-options"] div[class*="color_row__opacity"] input',
     );
-    this.shadowShowIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-shown"]',
-    );
-    this.shadowUnhideIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-hide"]',
-    );
-    this.shadowRemoveIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-remove"]',
-    );
+    this.shadowShowIcon = page.getByRole('button', { name: 'Toggle shadow' });
+    this.shadowUnhideIcon = page.getByRole('button', { name: 'Toggle shadow' });
+    this.shadowRemoveIcon = page.getByRole('button', { name: 'Remove shadow' });
     this.shadowTypeField = page.locator('div[class*="shadow-type-select"]');
 
     //Design panel - Flex Layout section
@@ -203,28 +199,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel - Blur section
     this.blurSection = page.getByText('Blur', { exact: true });
-    this.addBlurButton = page.getByTestId('add-blur');
+    this.addBlurButton = page.getByRole('button', { name: 'Add blur' });
     this.blurMoreOptions = page.locator('button[class*="blur__show-more"]');
     this.blurValueInput = page.locator('#blur-input-sidebar');
-    this.blurHideIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-shown"]',
-    );
-    this.blurUnhideIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-hide"]',
-    );
-    this.blurRemoveIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-remove"]',
-    );
+    this.blurHideIcon = page.getByRole('button', { name: 'Toggle blur' });
+    this.blurUnhideIcon = page.getByRole('button', { name: 'Toggle blur' });
+    this.blurRemoveIcon = page.getByRole('button', { name: 'Remove blur' });
 
     //Design panel - Stroke section
-    this.addStrokeButton = page.getByTestId('add-stroke');
+    this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
     this.strokeColorBullet = page.locator(
       'div[class*="bullet-wrapper"] div[class*="color_bullet__is-not-library-color"]',
     );
-    this.strokeRemoveIcon = page.locator(
-      'div[class*="stroke-data"] button[class*="remove-btn"]',
-    );
+    this.strokeRemoveIcon = page
+      .locator('div[class*="stroke__element-content"]')
+      .getByRole('button', { name: 'Remove color' });
     this.strokeColorInput = page.locator(
       'div[class*="stroke-data"] input[class*="color-input"]',
     );
@@ -247,7 +237,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase');
     this.textLowerCaseIcon = page.locator('svg.icon-text-lowercase');
     this.textTitleCaseIcon = page.locator('svg.icon-text-mixed');
-    this.textMoreOptionsIcon = page.locator('button[class*="text__more-options"]');
+    this.textMoreOptionsIcon = page
+      .locator('div[class*="text__element-content"]')
+      .getByRole('button', { name: 'Options' });
     this.textVerticalOptionsBlock = page.locator(
       'div[class*="vertical-align-options"]',
     );
@@ -265,10 +257,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel - Export section
     this.exportSection = page.getByText('Export', { exact: true });
-    this.addExportButton = page.locator('button[class*="exports__add-export"]');
-    this.removeExportButton = page.locator(
-      'button[class*="exports__action-btn"] svg[class="icon-remove"]',
-    );
+    this.addExportButton = page.getByRole('button', { name: 'Add export' });
+    this.removeExportButton = page.getByRole('button', { name: 'Remove export' });
     this.exportElementButton = page.getByRole('button', {
       name: /Export \d+ element/,
     });

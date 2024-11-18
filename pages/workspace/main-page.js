@@ -134,12 +134,8 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Zoom
     this.zoomButton = page.getByTitle('Zoom', { exact: true });
-    this.zoomPlusButton = page.locator(
-      'button[class*="header__zoom-btn"] svg[class="icon-add"]',
-    );
-    this.zoomMinusButton = page.locator(
-      'button[class*="header__zoom-btn"] svg[class="icon-remove"]',
-    );
+    this.zoomPlusButton = page.getByRole('button', { name: 'Zoom in' });
+    this.zoomMinusButton = page.getByRole('button', { name: 'Zoom out' });
     this.zoomResetButton = page.getByRole('button', { name: 'Reset' });
     this.zoomToFitAllMenuItem = page
       .getByRole('listitem')
