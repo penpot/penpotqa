@@ -108,7 +108,7 @@ mainTest.describe('Settings - UI THEME', () => {
         },
       );
       await inspectPanelPage.openInspectTab();
-      await mainPage.waitForChangeIsSaved();
+      await inspectPanelPage.waitForCodeButtonVisible();
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
         'inspect-file-right-sidebar-image.png',
         {

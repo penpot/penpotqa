@@ -48,9 +48,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.fileLibraryGroupTitle = page.locator('div[class*="group-title"]');
     this.fileLibraryListViewButton = page.getByTitle('List view', { exact: true });
     this.fileLibraryGridViewButton = page.getByTitle('Grid view', { exact: true });
-    this.addFileLibraryColorButton = page.locator(
-      'button[class*="assets_colors__assets-btn"]',
-    );
+    this.addFileLibraryColorButton = page.getByRole('button', { name: 'Add color' });
     this.fileLibraryColorsColorBullet = page.locator(
       'div[class*="assets_colors__bullet-block"]',
     );
@@ -58,9 +56,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.fileLibraryColorsColorNameInput = page.locator(
       'input[class*="element-name"]',
     );
-    this.addFileLibraryTypographyButton = page.locator(
-      'button[class*="typographies__assets-btn"]',
-    );
+    this.addFileLibraryTypographyButton = page.getByRole('button', {
+      name: 'Add typography',
+    });
     this.minimizeFileLibraryTypographyButton = page.locator(
       'div[class*="typography__action-btn"]',
     );
@@ -83,8 +81,8 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.assetsTypeDropdown = page.locator('ul[class*="context-menu-items"]');
     this.assetsTypeAll = page.locator('#section-all');
     this.assetsTypeComponents = page.locator('#section-components');
-    this.assetsTypeColors = page.locator('#section-color');
-    this.assetsTypeTypographies = page.locator('#section-typography');
+    this.assetsTypeColors = page.locator('#section-colors');
+    this.assetsTypeTypographies = page.locator('#section-typographies');
     this.duplicateMainComponentMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Duplicate main' });

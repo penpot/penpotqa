@@ -47,10 +47,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.fillOpacityInput = page.locator(
       'div[class*="fill__element-content"] div[class*="opacity-element-wrapper"] input',
     );
-    this.addFillButton = page.locator('button[class*="fill__add-fill"]');
-    this.removeFillButton = page.locator(
-      'div[class*="fill__element-content"] svg[class="icon-remove"]',
-    );
+    this.addFillButton = page.getByRole('button', { name: 'Add fill color' });
+    this.removeFillButton = page
+      .locator('div[class*="fill__element-content"]')
+      .getByRole('button', { name: 'Remove color' });
     this.componentColorInput = page.locator(
       `input[class*='rows_color_row__color-input']`,
     );
@@ -58,7 +58,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Shadow section
     this.shadowSection = page.getByText('Shadow', { exact: true });
     this.groupShadowSection = page.getByText('Group shadow', { exact: true });
-    this.addShadowButton = page.getByTestId('add-shadow');
+    this.addShadowButton = page.getByRole('button', { name: 'Add shadow' });
     this.shadowActionsButton = page.locator('button[class*="shadow__more-options"]');
     this.shadowXInput = page.locator(
       'div[class*="shadow-advanced-options"] div[title="X"] input',
@@ -74,15 +74,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowOpacityInput = page.locator(
       'div[class*="shadow-advanced-options"] div[class*="color_row__opacity"] input',
     );
-    this.shadowShowIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-shown"]',
-    );
-    this.shadowUnhideIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-hide"]',
-    );
-    this.shadowRemoveIcon = page.locator(
-      'div[class*="shadow__actions"] svg[class="icon-remove"]',
-    );
+    this.shadowShowIcon = page.getByRole('button', { name: 'Toggle shadow' });
+    this.shadowUnhideIcon = page.getByRole('button', { name: 'Toggle shadow' });
+    this.shadowRemoveIcon = page.getByRole('button', { name: 'Remove shadow' });
     this.shadowTypeField = page.locator('div[class*="shadow-type-select"]');
 
     //Design panel - Flex Layout section
@@ -132,12 +126,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.autoMenuItem = page.getByRole('listitem').filter({ hasText: 'AUTO' });
     this.fixedMenuItem = page.getByRole('listitem').filter({ hasText: 'PX' });
     this.percentMenuItem = page.getByRole('listitem').filter({ hasText: '%' });
-    this.layoutRemoveButton = page.locator(
-      'div[class*="layout_container__element-title"] button[class*="remove-layout"]',
-    );
-    this.layoutAddButton = page.locator(
-      'div[class*="layout_container__element-title"] button[class*="add-layout"]',
-    );
+    this.layoutRemoveButton = page.getByRole('button', { name: 'Remove layout' });
+    this.layoutAddButton = page.getByRole('button', { name: 'Add layout' });
     this.layoutDirectRowBtn = page.getByTitle('Row', { exact: true });
     this.layoutDirectRowReverseBtn = page.getByTitle('Row reverse', { exact: true });
     this.layoutDirectColumnBtn = page.getByTitle('Column', { exact: true });
@@ -209,28 +199,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel - Blur section
     this.blurSection = page.getByText('Blur', { exact: true });
-    this.addBlurButton = page.getByTestId('add-blur');
+    this.addBlurButton = page.getByRole('button', { name: 'Add blur' });
     this.blurMoreOptions = page.locator('button[class*="blur__show-more"]');
     this.blurValueInput = page.locator('#blur-input-sidebar');
-    this.blurHideIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-shown"]',
-    );
-    this.blurUnhideIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-hide"]',
-    );
-    this.blurRemoveIcon = page.locator(
-      'div[class*="blur__actions"] svg[class="icon-remove"]',
-    );
+    this.blurHideIcon = page.getByRole('button', { name: 'Toggle blur' });
+    this.blurUnhideIcon = page.getByRole('button', { name: 'Toggle blur' });
+    this.blurRemoveIcon = page.getByRole('button', { name: 'Remove blur' });
 
     //Design panel - Stroke section
-    this.addStrokeButton = page.getByTestId('add-stroke');
+    this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
     this.strokeColorBullet = page.locator(
       'div[class*="bullet-wrapper"] div[class*="color_bullet__is-not-library-color"]',
     );
-    this.strokeRemoveIcon = page.locator(
-      'div[class*="stroke-data"] button[class*="remove-btn"]',
-    );
+    this.strokeRemoveIcon = page
+      .locator('div[class*="stroke__element-content"]')
+      .getByRole('button', { name: 'Remove color' });
     this.strokeColorInput = page.locator(
       'div[class*="stroke-data"] input[class*="color-input"]',
     );
@@ -253,7 +237,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase');
     this.textLowerCaseIcon = page.locator('svg.icon-text-lowercase');
     this.textTitleCaseIcon = page.locator('svg.icon-text-mixed');
-    this.textMoreOptionsIcon = page.locator('button[class*="text__more-options"]');
+    this.textMoreOptionsIcon = page
+      .locator('div[class*="text__element-content"]')
+      .getByRole('button', { name: 'Options' });
     this.textVerticalOptionsBlock = page.locator(
       'div[class*="vertical-align-options"]',
     );
@@ -271,26 +257,21 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel - Export section
     this.exportSection = page.getByText('Export', { exact: true });
-    this.addExportButton = page.locator('button[class*="exports__add-export"]');
-    this.removeExportButton = page.locator(
-      'button[class*="exports__action-btn"] svg[class="icon-remove"]',
+    this.addExportButton = page.getByRole('button', { name: 'Add export' });
+    this.addExportVieverButton = page.locator(
+      'button[class*="exports__add-export"]',
     );
+    this.removeExportButton = page.getByRole('button', { name: 'Remove export' });
     this.exportElementButton = page.getByRole('button', {
       name: /Export \d+ element/,
     });
 
     //Design panel - Grid section
     this.gridSection = page.getByText('Guides', { exact: true });
-    this.addGridButton = page.locator('button[class*="grid__add-grid"]');
-    this.removeGridButton = page.locator(
-      'div[class*="grid__actions"] svg[class="icon-remove"]',
-    );
-    this.hideGridButton = page.locator(
-      'div[class*="grid__actions"] svg[class="icon-shown"]',
-    );
-    this.unhideGridButton = page.locator(
-      'div[class*="grid__actions"] svg[class="icon-hide"]',
-    );
+    this.addGridButton = page.getByRole('button', { name: 'Add guide' });
+    this.removeGridButton = page.getByRole('button', { name: 'Remove guide' });
+    this.hideGridButton = page.getByRole('button', { name: 'Toggle guide' });
+    this.unhideGridButton = page.getByRole('button', { name: 'Toggle guide' });
     this.gridTypeField = page.locator(
       'div[class*="grid__option-row"] div[class*="type-select-wrapper"]',
     );
@@ -985,6 +966,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async clickAddExportButton() {
     await this.exportSection.waitFor();
     await this.addExportButton.click();
+  }
+
+  async clickAddExportButtonForViewMode() {
+    await this.exportSection.waitFor();
+    await this.addExportVieverButton.click();
   }
 
   async clickRemoveExportButton() {

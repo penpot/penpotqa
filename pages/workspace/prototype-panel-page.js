@@ -17,7 +17,9 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
     );
     this.prototypePanelFlowNameText = page.locator('span[class*="flow-name-label"]');
     this.prototypePanelFlowNameInput = page.locator('input[class*="interactions"]');
-    this.addInteractionButton = page.locator('button[class*="add-interaction-btn"]');
+    this.addInteractionButton = page.getByRole('button', {
+      name: 'Add interaction',
+    });
     this.removeSecondInteractionButton = page.locator(
       'button[class*="interactions__remove-btn"] >>nth=1',
     );
@@ -27,7 +29,7 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
     this.interactionDestinationField = page.locator(
       '//*[text()="Destination"]//parent::div//div[contains(@class, "custom-select")]',
     );
-    this.removeFlowButton = page.locator('button[class*="remove-flow-btn"]');
+    this.removeFlowButton = page.getByRole('button', { name: 'Remove flow' });
   }
 
   async clickPrototypeTab() {
