@@ -129,7 +129,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
 
     //Libraries & Templates
-    this.noLibrariesPlacelder = page.getByTestId('empty-placeholder');
+    this.noLibrariesPlacelder = page.getByText('No libraries yet.');
 
     // Onboarding
     this.onboardingContinueBtn = page.locator(
@@ -460,9 +460,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async checkNoLibrariesExist() {
-    await expect(this.noLibrariesPlacelder).toContainText(
-      'Files added to Libraries will appear here.',
-    );
+    await expect(this.noLibrariesPlacelder).toContainText('No libraries yet.');
   }
 
   async clickUnpinProjectButton() {
@@ -640,16 +638,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async isFilePresentWithName(fileName) {
-    const fileNameTitle = this.page.this.page
+    const fileNameTitle = this.page
       .getByRole('button', { name: fileName })
       .locator(`div[class*="item-info"] h3`);
     await expect(fileNameTitle).toHaveText(fileName);
   }
 
   async renameFileWithNameViaRightClick(oldFileName, newFileName) {
-    const fileTitle = this.page.this.page
-      .getByRole('button', { name: oldFileName })
-      .first();
+    const fileTitle = this.page.getByRole('button', { name: oldFileName }).first();
     let text = await fileTitle.textContent();
     await fileTitle.click({ button: 'right' });
     await this.renameFileMenuItem.click();

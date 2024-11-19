@@ -192,6 +192,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //History panel
     this.historyPanelButton = page.getByRole('button', { name: /History/ });
+    this.historyActionsTab = page.getByRole('tab', { name: 'Actions' });
     this.historyPanelActionRecord = page.locator(
       'div[class*="history-entry-summary-text"]',
     );
@@ -760,6 +761,10 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickHistoryPanelButton() {
     await this.historyPanelButton.click();
+  }
+
+  async clickHistoryActionsButton() {
+    await this.historyActionsTab.click();
   }
 
   async isActionDisplayedOnHistoryPanel(actionName) {

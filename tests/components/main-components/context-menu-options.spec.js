@@ -287,6 +287,9 @@ mainTest.describe(() => {
       await designPanelPage.isAnnotationOptionNotVisibleRightClick();
       await expect(mainPage.viewport).toHaveScreenshot(
         'copy-component-right-click-annotation-disabled.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickOnComponentMenuButton();
