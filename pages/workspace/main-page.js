@@ -66,7 +66,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.nodePanelToCurveButton = page.locator('button[title^="To curve"]');
 
     // Main menu - first level
-    this.mainMenuButton = page.locator('#left-sidebar-aside svg.icon-menu');
+    this.mainMenuButton = page.getByRole('button', { name: 'Main menu' });
     this.mainMenuList = page.locator(
       'ul[class*="main_ui_workspace_main_menu__menu"]',
     );
@@ -134,12 +134,8 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Zoom
     this.zoomButton = page.getByTitle('Zoom', { exact: true });
-    this.zoomPlusButton = page.locator(
-      'button[class*="header__zoom-btn"] svg[class="icon-add"]',
-    );
-    this.zoomMinusButton = page.locator(
-      'button[class*="header__zoom-btn"] svg[class="icon-remove"]',
-    );
+    this.zoomPlusButton = page.getByRole('button', { name: 'Zoom in' });
+    this.zoomMinusButton = page.getByRole('button', { name: 'Zoom out' });
     this.zoomResetButton = page.getByRole('button', { name: 'Reset' });
     this.zoomToFitAllMenuItem = page
       .getByRole('listitem')
@@ -198,6 +194,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //History panel
     this.historyPanelButton = page.getByRole('button', { name: /History/ });
+    this.historyActionsTab = page.getByRole('tab', { name: 'Actions' });
     this.historyPanelActionRecord = page.locator(
       'div[class*="history-entry-summary-text"]',
     );
@@ -766,6 +763,10 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickHistoryPanelButton() {
     await this.historyPanelButton.click();
+  }
+
+  async clickHistoryActionsButton() {
+    await this.historyActionsTab.click();
   }
 
   async isActionDisplayedOnHistoryPanel(actionName) {

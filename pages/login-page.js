@@ -84,4 +84,8 @@ exports.LoginPage = class LoginPage extends BasePage {
   async isLoginPageOpened() {
     await expect(this.pageTitle).toHaveText('Log into my account');
   }
+
+  async waitLoginPage(timeout = 30) {
+    await this.emailInput.waitFor({state: 'visible', timeout: timeout*1000});
+  }
 };

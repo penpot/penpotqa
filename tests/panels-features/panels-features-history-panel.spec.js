@@ -46,6 +46,7 @@ mainTest(
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickHistoryPanelButton();
+    await mainPage.clickHistoryActionsButton();
     await mainPage.isActionDisplayedOnHistoryPanel('New board');
   },
 );

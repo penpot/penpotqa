@@ -549,7 +549,6 @@ mainTest.describe(() => {
       await designPanelPage.changeHeightAndWidthForLayer('200', '200');
       await mainPage.waitForChangeIsSaved();
       await mainPage.createDefaultRectangleByCoordinates(320, 320);
-      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
       await mainPage.waitForChangeIsUnsaved();
@@ -561,7 +560,7 @@ mainTest.describe(() => {
       designPanelPage = new DesignPanelPage(newPage);
       await viewModePage.openInspectTab();
 
-      await designPanelPage.clickAddExportButton();
+      await designPanelPage.clickAddExportButtonForViewMode();
       await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
       await expect(viewModePage.rightSidebar).toHaveScreenshot(
         'view-mode-export-right-sidebar-image.png',

@@ -36,4 +36,8 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
   async openCodeTab() {
     await this.codeTabButton.click();
   }
+
+  async waitForCodeButtonVisible() {
+    await this.codeTabButton.waitFor({ state: 'visible', timeout: 10000 });
+  }
 };

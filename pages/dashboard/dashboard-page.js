@@ -43,9 +43,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.moveToOtherTeamMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Move to other team' });
-    this.dashboardLibraryItem = page.locator(
-      `button[title="New File 1"] div[class*="dashboard_grid__library"]`,
-    );
+    this.dashboardLibraryItem = page
+      .getByRole('button', { name: 'New File 1' })
+      .locator(`div[class*="dashboard_grid__library"]`);
     this.downloadFilePenpotMenuItem = page.getByTestId('download-binary-file');
     this.downloadFileStandardMenuItem = page.getByTestId('download-standard-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
@@ -134,7 +134,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
 
     //Libraries & Templates
-    this.noLibrariesPlacelder = page.getByTestId('empty-placeholder');
+    this.noLibrariesPlacelder = page.getByText('No libraries yet.');
 
     // Onboarding
     this.onboardingContinueBtn = page.locator(
@@ -152,8 +152,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.startWithOtherInput = page.locator('#start-with-other[type="text"]');
     this.refererOtherInput = page.locator('#referer-other[type="text"]');
     this.nextButton = page.locator('button[label="Next"]');
-    this.previousButton = page.locator('button[class*="prev-button"]');
-    this.startButton = page.locator('button[label="Start"]');
+    this.previousButton = page.getByRole('button', { name: 'Previous' });
+    this.startButton = page.getByRole('button', { name: 'Start' });
     this.figmaTool = page.locator('//input[@id="experience-design-tool-figma"]/..');
     this.toolsButton = page.locator(
       'label[class*="components_forms__radio-label-image"]',
@@ -170,8 +170,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'button[label="Continue creating team"]',
     );
     this.onboardingContinueWithoutTeamBtn = page
-      .locator('button[class*="onboarding_team_choice__accept-button"]')
-      .nth(1);
+      .getByRole('button')
+      .filter({ hasText: 'Continue without team' });
     this.onboardingInviteInput = page.locator(
       'input[class*="components_forms__inside-input"]',
     );
@@ -465,9 +465,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async checkNoLibrariesExist() {
-    await expect(this.noLibrariesPlacelder).toContainText(
-      'Files added to Libraries will appear here.',
-    );
+    await expect(this.noLibrariesPlacelder).toContainText('No libraries yet.');
   }
 
   async clickUnpinProjectButton() {
@@ -605,17 +603,17 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.openFile();
   }
   async openFileWithName(name) {
-    const fileTitle = this.page.locator(`button[title="${name}"]`);
+    const fileTitle = this.page.getByRole('button', { name: name });
     await fileTitle.first().dblclick();
   }
 
   async isFileVisibleByName(name) {
-    const elem = this.page.locator(`button[title="${name}"]`);
+    const elem = this.page.getByRole('button', { name: name });
     await expect(elem.first()).toBeVisible();
   }
 
   async deleteFileWithNameViaRightClick(name) {
-    const elem = this.page.locator(`button[title="${name}"]`).first();
+    const elem = this.page.getByRole('button', { name: name }).first();
     await elem.click({ button: 'right' });
     await this.deleteFileMenuItem.click();
   }
@@ -625,7 +623,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async moveFileToOtherTeamViaRightClick(fileName, otherTeamName) {
-    const elem = this.page.locator(`button[title="${fileName}"]`).first();
+    const elem = this.page.getByRole('button', { name: fileName }).first();
     await elem.click({ button: 'right' });
     await expect(this.moveToFileMenuItem).toBeVisible();
     await this.moveToFileMenuItem.click();
@@ -638,21 +636,21 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async addFileWithNameAsSharedLibraryViaRightClick(fileName) {
-    const elem = this.page.locator(`button[title="${fileName}"]`).first();
+    const elem = this.page.getByRole('button', { name: fileName }).first();
     await elem.click({ button: 'right' });
     await this.addFileAsSharedLibraryMenuItem.click();
     await this.addFileAsSharedLibraryButton.click();
   }
 
   async isFilePresentWithName(fileName) {
-    const fileNameTitle = this.page.locator(
-      `button[title="${fileName}"] div[class*="item-info"] h3`,
-    );
+    const fileNameTitle = this.page
+      .getByRole('button', { name: fileName })
+      .locator(`div[class*="item-info"] h3`);
     await expect(fileNameTitle).toHaveText(fileName);
   }
 
   async renameFileWithNameViaRightClick(oldFileName, newFileName) {
-    const fileTitle = this.page.locator(`button[title="${oldFileName}"]`).first();
+    const fileTitle = this.page.getByRole('button', { name: oldFileName }).first();
     let text = await fileTitle.textContent();
     await fileTitle.click({ button: 'right' });
     await this.renameFileMenuItem.click();
@@ -667,6 +665,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickOnOnboardingContinueBtn() {
     await this.onboardingContinueBtn.click();
+    await this.page.waitForResponse(
+      (response) =>
+        response.url() ===
+          `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
+        response.status() === 200,
+    );
   }
 
   async clickOnLetsGoBtn() {
@@ -720,6 +724,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async clickOnStartButton() {
     await expect(this.startButton).not.toHaveAttribute('disabled');
     await this.startButton.click();
+    await expect(this.startButton).toBeHidden();
   }
 
   async fillSecondOnboardPage(branding, visual, wireframes) {
@@ -780,7 +785,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async fillOnboardingQuestions() {
-    await expect(this.onboardingFirstHeader).toHaveText('Help us get to know you');
+    await this.isOnboardingFirstQuestionsVisible();
     await this.selectRadioButton('Work');
     await this.selectDropdownOptions('Testing before self-hosting');
     await this.clickOnNextButton();
@@ -801,7 +806,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async fillOnboardingFirstQuestions() {
-    await expect(this.onboardingFirstHeader).toHaveText('Help us get to know you');
+    await this.isOnboardingFirstQuestionsVisible();
     await this.selectRadioButton('Work');
     await this.selectDropdownOptions('Testing before self-hosting');
     await this.clickOnNextButton();
@@ -877,9 +882,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickOnOnboardingContinueWithoutTeamButton() {
-    (await this.onboardingContinueWithoutTeamBtn.isVisible())
-      ? await this.onboardingContinueWithoutTeamBtn.click()
-      : null;
+    if (await this.onboardingContinueWithoutTeamBtn.isVisible()) {
+      await this.onboardingContinueWithoutTeamBtn.click();
+      await this.page.waitForResponse(
+        (response) =>
+          response.url() ===
+            `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
+          response.status() === 200,
+      );
+    }
   }
 
   async isPlaningOtherInputVisible() {

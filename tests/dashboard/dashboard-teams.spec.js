@@ -1855,8 +1855,8 @@ mainTest.describe(() => {
       await mainPage.clickPencilBoxButton();
 
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -1869,8 +1869,8 @@ mainTest.describe(() => {
 
       await teamPage.clickGoToPenpotButton();
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -1905,8 +1905,8 @@ mainTest.describe(() => {
 
       await mainPage.clickPencilBoxButton();
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -1919,8 +1919,8 @@ mainTest.describe(() => {
 
       await teamPage.clickGoToPenpotButton();
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -1948,8 +1948,8 @@ mainTest.describe(() => {
       const badURL = await mainPage.makeBadDashboardUrl(currentURL);
 
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -1962,8 +1962,8 @@ mainTest.describe(() => {
 
       await teamPage.clickGoToPenpotButton();
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -2030,8 +2030,8 @@ test.describe(() => {
       await mainPage.clickPencilBoxButton();
 
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -2050,17 +2050,18 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
+      await waitSecondMessage(page, email, 40);
       const requestMessage = await waitRequestMessage(page, email, 40);
       await checkConfirmAccessText(
         requestMessage.inviteText,
-        '9z0700h',
+        'QA Engineer',
         process.env.SECOND_EMAIL,
         team,
       );
@@ -2087,8 +2088,8 @@ test.describe(() => {
       const currentURL = await mainPage.getUrl();
 
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -2107,18 +2108,19 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
+      await waitSecondMessage(page, email, 40);
       const requestMessage = await waitRequestMessage(page, email, 40);
 
       await checkDashboardConfirmAccessText(
         requestMessage.inviteText,
-        '9z0700h',
+        'QA Engineer',
         process.env.SECOND_EMAIL,
         team,
       );
@@ -2137,8 +2139,8 @@ test.describe(() => {
       await mainPage.clickPencilBoxButton();
 
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -2157,17 +2159,18 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
+      await waitSecondMessage(page, email, 40);
       const requestMessage = await waitRequestMessage(page, email, 40);
       await checkYourPenpotConfirmAccessText(
         requestMessage.inviteText,
-        '9z0700h',
+        'QA Engineer',
         process.env.SECOND_EMAIL,
         team,
       );
@@ -2191,8 +2194,8 @@ test.describe(() => {
       await mainPage.clickPencilBoxButton();
 
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -2211,17 +2214,18 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await profilePage.logout();
+      await loginPage.waitLoginPage();
       await loginPage.isLoginPageOpened();
-      await loginPage.goto();
       await loginPage.enterEmail(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
+      await waitSecondMessage(page, email, 40);
       const requestMessage = await waitRequestMessage(page, email, 40);
       await checkYourPenpotViewModeConfirmAccessText(
         requestMessage.inviteText,
-        '9z0700h',
+        'QA Engineer',
         process.env.SECOND_EMAIL,
         team,
       );
@@ -2240,8 +2244,8 @@ test.describe(() => {
     await mainPage.clickPencilBoxButton();
 
     await profilePage.logout();
+    await loginPage.waitLoginPage();
     await loginPage.isLoginPageOpened();
-    await loginPage.goto();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();
     await registerPage.isRegisterPageOpened();
@@ -2271,13 +2275,14 @@ test.describe(() => {
     await dashboardPage.isDashboardOpenedAfterLogin();
 
     await profilePage.logout();
+    await loginPage.waitLoginPage();
     await loginPage.isLoginPageOpened();
-    await loginPage.goto();
     await loginPage.enterEmail(email);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
 
+    await waitSecondMessage(page, email, 40);
     const requestMessage = await waitRequestMessage(page, email, 40);
     await page.goto(requestMessage.inviteUrl[0]);
     await teamPage.clickSendInvitationButton();
