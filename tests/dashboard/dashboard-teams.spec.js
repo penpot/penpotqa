@@ -2297,7 +2297,13 @@ mainTest.describe(() => {
   const team = random().concat('autotest');
   const firstAdmin = random().concat('autotest');
   const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-  let profilePage, dashboardPage, loginPage, teamPage, registerPage, mainPage, layersPanelPage;
+  let profilePage,
+    dashboardPage,
+    loginPage,
+    teamPage,
+    registerPage,
+    mainPage,
+    layersPanelPage;
 
   mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 30000);
@@ -2319,9 +2325,7 @@ mainTest.describe(() => {
 
     await teamPage.openInvitationsPageViaOptionsMenu();
     await teamPage.clickInviteMembersToTeamButton();
-    await teamPage.isInviteMembersPopUpHeaderDisplayed(
-      'Invite members to the team',
-    );
+    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
     await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
     await teamPage.selectInvitationRoleInPopUp('Viewer');
     await teamPage.clickSendInvitationButton();
@@ -2344,7 +2348,7 @@ mainTest.describe(() => {
     await teamPage.isTeamSelected(team);
   });
 
-  mainTest.only(
+  mainTest(
     qase(1870, 'As a viewer user try to edit any layer'),
     async ({ page }, testInfo) => {
       await dashboardPage.openFileWithName('New File 1');
@@ -2361,7 +2365,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.only(
+  mainTest(
     qase(1873, 'As a viewer user import file to Drafts'),
     async ({ page }, testInfo) => {
       await dashboardPage.openSidebarItem('Drafts');
@@ -2370,7 +2374,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.only(
+  mainTest(
     qase(1877, 'As a viewer user Add font on  Dashboard > Fonts page'),
     async ({ page }, testInfo) => {
       await dashboardPage.openSidebarItem('Fonts');
@@ -2378,8 +2382,11 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.only(
-    qase(1880, 'As a viewer user check the "Create" buttons of Project and draft pages'),
+  mainTest(
+    qase(
+      1880,
+      'As a viewer user check the "Create" buttons of Project and draft pages',
+    ),
     async ({ page }, testInfo) => {
       await dashboardPage.openSidebarItem('Projects');
       await dashboardPage.isAddProjectButtonVisible(false);
@@ -2388,7 +2395,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.only(
+  mainTest(
     qase(1889, 'As a viewer user try to use a toolbar'),
     async ({ page }, testInfo) => {
       await dashboardPage.openFileWithName('New File 1');
@@ -2398,7 +2405,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.only(
+  mainTest(
     qase(1891, 'As a viewer user try to create, duplicate and delete page'),
     async ({ page }, testInfo) => {
       await dashboardPage.openFileWithName('New File 1');
@@ -2408,17 +2415,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.only(
-    qase(1891, 'As a viewer user try to create, duplicate and delete page'),
-    async ({ page }, testInfo) => {
-      await dashboardPage.openFileWithName('New File 1');
-      await mainPage.waitForViewportVisible();
-      await mainPage.isPageRightClickMenuVisible(false);
-      await mainPage.backToDashboardFromFileEditor();
-    },
-  );
-
-  mainTest.only(
+  mainTest(
     qase(1894, 'As a viewer user right-click created layer'),
     async ({ page }, testInfo) => {
       await dashboardPage.openFileWithName('New File 1');
@@ -2429,7 +2426,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.only(
+  mainTest(
     qase(1898, 'As a viewer user try to open color palette'),
     async ({ page }, testInfo) => {
       await dashboardPage.openFileWithName('New File 1');
@@ -2439,7 +2436,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.only(
+  mainTest(
     qase(1906, 'As a viewer user try to open typographies'),
     async ({ page }, testInfo) => {
       await dashboardPage.openFileWithName('New File 1');
@@ -2449,8 +2446,11 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.only(
-    qase(1867, 'Change a role of viewer user to editor and admin after accepting an invitation'),
+  mainTest(
+    qase(
+      1867,
+      'Change a role of viewer user to editor and admin after accepting an invitation',
+    ),
     async ({ page }, testInfo) => {
       await dashboardPage.openFileWithName('New File 1');
       await mainPage.waitForViewportVisible();
@@ -2465,6 +2465,7 @@ mainTest.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
       await teamPage.switchTeam(team);
       await teamPage.isTeamSelected(team);
+      await teamPage.openMembersPageViaOptionsMenu();
       await teamPage.selectMemberRoleInPopUp(firstAdmin, 'Editor');
       await teamPage.isMultipleMemberRecordDisplayed(
         firstAdmin,
@@ -2509,7 +2510,7 @@ mainTest.describe(() => {
   const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
   let profilePage, dashboardPage, loginPage, teamPage, registerPage, mainPage;
 
-  mainTest.only(
+  mainTest(
     qase(1869, 'Change a role of admin to viewer after accepting an invitation'),
     async ({ page }, testInfo) => {
       await testInfo.setTimeout(testInfo.timeout + 30000);
@@ -2567,6 +2568,7 @@ mainTest.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
       await teamPage.switchTeam(team);
       await teamPage.isTeamSelected(team);
+      await teamPage.openMembersPageViaOptionsMenu();
       await teamPage.selectMemberRoleInPopUp(firstAdmin, 'Viewer');
       await teamPage.isMultipleMemberRecordDisplayed(
         firstAdmin,
