@@ -31,9 +31,10 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       'div[class*="comments-container"] div.main_ui_comments__resolved',
     );
     this.commentReplyInput = page.getByPlaceholder('Reply');
-    this.commentOptionsButton = page.locator(
-      'div[class*="comments__options"] svg[class="icon-menu"]',
-    );
+    this.commentOptionsButton = page
+      .locator('div[class*="comments__threads"]')
+      .first()
+      .getByRole('button', { name: 'Options' });
     this.commentEditOptionMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Edit' });
