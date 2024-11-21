@@ -27,7 +27,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class*="dashboard-grid"] button[class*="create-new"]',
     );
     this.createFileButtonTitlePanel = page.getByTestId('project-new-file');
-    this.createFileButtonDraftsTab = page.getByTestId('project-new-file');
+    this.createFileButtonDraftsTab = page.getByTestId('new-file');
     this.renameFileMenuItem = page.getByTestId('file-rename');
     this.duplicateFileMenuItem = page.getByTestId('file-duplicate');
     this.addFileAsSharedLibraryMenuItem = page.getByTestId('file-add-shared');
