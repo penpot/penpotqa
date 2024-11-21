@@ -64,6 +64,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.editorRoleSelector = page
       .getByRole('listitem')
       .filter({ hasText: 'Editor' });
+    this.viewerRoleSelector = page.getByRole('listitem').filter({ hasText: 'Viewer' });
     this.ownerRoleSelector = page.getByRole('listitem').filter({ hasText: 'Owner' });
     this.transferOwnershipButton = page.getByRole('button', {
       name: 'Transfer ownership',
@@ -278,6 +279,9 @@ exports.TeamPage = class TeamPage extends BasePage {
       case 'Editor':
         await this.editorRoleSelector.click();
         break;
+      case 'Viewer':
+        await this.viewerRoleSelector.click();
+        break;
     }
   }
 
@@ -289,6 +293,9 @@ exports.TeamPage = class TeamPage extends BasePage {
         break;
       case 'Editor':
         await this.editorRoleSelector.click();
+        break;
+      case 'Viewer':
+        await this.viewerRoleSelector.click();
         break;
     }
   }
@@ -313,6 +320,9 @@ exports.TeamPage = class TeamPage extends BasePage {
       case 'Owner':
         await this.ownerRoleSelector.click();
         break;
+      case 'Viewer':
+        await this.viewerRoleSelector.click();
+        break;
     }
   }
 
@@ -331,6 +341,9 @@ exports.TeamPage = class TeamPage extends BasePage {
         break;
       case 'Owner':
         roleLoc = await this.ownerRoleSelector;
+        break;
+      case 'Viewer':
+        roleLoc = await this.viewerRoleSelector;
         break;
     }
     await expect(roleLoc).not.toBeVisible();
@@ -351,6 +364,9 @@ exports.TeamPage = class TeamPage extends BasePage {
         break;
       case 'Owner':
         roleLoc = await this.ownerRoleSelector;
+        break;
+      case 'Viewer':
+        roleLoc = await this.viewerRoleSelector;
         break;
     }
     await expect(roleLoc).not.toBeVisible();
