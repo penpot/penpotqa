@@ -174,6 +174,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.deletePageOkButton = page.getByRole('button', { name: 'Ok' });
 
     // Bottom palette
+    this.typographyButton = page.getByRole('button', { name: 'Typographies' });
     this.bottomPaletteContentBlock = page.locator(
       'div[class="main_ui_workspace_palette__palette"]',
     );
@@ -183,6 +184,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.typographiesColorsBottomPanel = page.locator(
       'div.main_ui_workspace_palette__wide',
     );
+    this.workspaceMenu = page.locator('*[class*="workspace-context-menu"]');
 
     //Header
     this.unSavedChangesIcon = page.getByTitle('Unsaved changes', { exact: true });
@@ -923,6 +925,12 @@ exports.MainPage = class MainPage extends BasePage {
     await this.designTab.click();
   }
 
+  async isDesignTabVisible(visible = true) {
+    visible
+      ? await expect(this.designTab).toBeVisible()
+      : await expect(this.designTab).not.toBeVisible();
+  }
+
   async createComponentsMultipleShapesRightClick(singleComponent = true) {
     const layerSel = this.page.locator(
       'div[class*="viewport"] .main.viewport-selrect',
@@ -1051,5 +1059,37 @@ exports.MainPage = class MainPage extends BasePage {
     );
     await selectedElement.hover();
     await selectedElement.dragTo(board);
+  }
+
+  async isToolBarVisible(visible = true) {
+    visible
+      ? await expect(this.toolBarWindow).toBeVisible()
+      : await expect(this.toolBarWindow).not.toBeVisible();
+  }
+
+  async isPageRightClickMenuVisible(visible = true) {
+    await this.firstPageListItem.click({ button: 'right' });
+    visible
+      ? await expect(this.renamePageMenuItem).toBeVisible()
+      : await expect(this.renamePageMenuItem).not.toBeVisible();
+  }
+
+  async checkViewerRightClickMenu() {
+    const layerSel = this.page.locator('.viewport-selrect');
+    await layerSel.last().click({ button: 'right', force: true });
+    await expect(this.copyOption).not.toBeVisible();
+    await expect(this.workspaceMenu).not.toBeVisible();
+  }
+
+  async isColorsPaletteButtonVisible(visible = true){
+    visible
+      ? await expect(this.colorsPaletteButton).toBeVisible()
+      : await expect(this.colorsPaletteButton).not.toBeVisible();
+  }
+
+  async isTypographyButtonVisible(visible = true){
+    visible
+      ? await expect(this.typographyButton).toBeVisible()
+      : await expect(this.typographyButton).not.toBeVisible();
   }
 };

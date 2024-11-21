@@ -27,6 +27,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class*="dashboard-grid"] button[class*="create-new"]',
     );
     this.createFileButtonTitlePanel = page.getByTestId('project-new-file');
+    this.createFileButtonDraftsTab = page.getByTestId('new-file');
     this.renameFileMenuItem = page.getByTestId('file-rename');
     this.duplicateFileMenuItem = page.getByTestId('file-duplicate');
     this.addFileAsSharedLibraryMenuItem = page.getByTestId('file-add-shared');
@@ -101,6 +102,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     //Fonts
     this.fontsSidebarItem = page.getByTestId('fonts');
     this.uploadFontSelector = page.locator('#font-upload');
+    this.addCustomFontButton = page.getByRole('button', {
+      name: 'Add custom font',
+      exact: true,
+    });
     this.uploadFontButton = page.getByRole('button', {
       name: 'Upload',
       exact: true,
@@ -974,5 +979,29 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async waitForCreateFilePlaceholderVisible() {
     await this.createFileButtonPlaceholder.first().waitFor({ state: 'visible' });
+  }
+
+  async isOptionButtonFromDraftPageVisible(visible = true) {
+    visible
+      ? await expect(this.headerOptionsMenuButton).toBeVisible()
+      : await expect(this.headerOptionsMenuButton).not.toBeVisible();
+  }
+
+  async isCreateFileOnDraftsTabButtonVisible(visible = true) {
+    visible
+      ? await expect(this.createFileButtonDraftsTab.first()).toBeVisible()
+      : await expect(this.createFileButtonDraftsTab.first()).not.toBeVisible();
+  }
+
+  async isAddCustomFontButtonVisible(visible = true) {
+    visible
+      ? await expect(this.addCustomFontButton).toBeVisible()
+      : await expect(this.addCustomFontButton).not.toBeVisible();
+  }
+
+  async isAddProjectButtonVisible(visible = true) {
+    visible
+      ? await expect(this.addProjectButton).toBeVisible()
+      : await expect(this.addProjectButton).not.toBeVisible();
   }
 };

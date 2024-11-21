@@ -23,6 +23,7 @@ const {
 const { LoginPage } = require('../../pages/login-page');
 const { RegisterPage } = require('../../pages/register-page');
 const { ViewModePage } = require('../../pages/workspace/view-mode-page');
+const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 
 mainTest.describe(() => {
   const team = random().concat('autotest');
@@ -2292,6 +2293,312 @@ test.describe(() => {
   });
 });
 
+mainTest.describe(() => {
+  const team = random().concat('autotest');
+  const firstAdmin = random().concat('autotest');
+  const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+  let profilePage,
+    dashboardPage,
+    loginPage,
+    teamPage,
+    registerPage,
+    mainPage,
+    layersPanelPage;
+
+  mainTest.beforeEach(async ({ page }, testInfo) => {
+    await testInfo.setTimeout(testInfo.timeout + 30000);
+    profilePage = new ProfilePage(page);
+    dashboardPage = new DashboardPage(page);
+    loginPage = new LoginPage(page);
+    teamPage = new TeamPage(page);
+    registerPage = new RegisterPage(page);
+    mainPage = new MainPage(page);
+    layersPanelPage = new LayersPanelPage(page);
+    await teamPage.createTeam(team);
+    await teamPage.isTeamSelected(team);
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.waitForViewportVisible();
+    await mainPage.createDefaultRectangleByCoordinates(200, 300);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.backToDashboardFromFileEditor();
+
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+    await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+    await teamPage.selectInvitationRoleInPopUp('Viewer');
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+
+    const firstInvite = await waitMessage(page, firstEmail, 40);
+
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+
+    await page.goto(firstInvite.inviteUrl);
+    await registerPage.isRegisterPageOpened();
+    await registerPage.enterEmail(firstEmail);
+    await registerPage.enterPassword(process.env.LOGIN_PWD);
+    await registerPage.clickOnCreateAccountBtn();
+    await registerPage.enterFullName(firstAdmin);
+    await registerPage.clickOnAcceptTermsCheckbox();
+    await registerPage.clickOnCreateAccountSecondBtn();
+    await dashboardPage.fillOnboardingQuestions();
+    await teamPage.isTeamSelected(team);
+  });
+
+  mainTest(
+    qase(1870, 'As a viewer user try to edit any layer'),
+    async ({ page }, testInfo) => {
+      await dashboardPage.openFileWithName('New File 1');
+      await mainPage.waitForViewportVisible();
+      await mainPage.isDesignTabVisible(false);
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+        'right-sidebar-image.png',
+        {
+          mask: [mainPage.usersSection],
+        },
+      );
+      await mainPage.backToDashboardFromFileEditor();
+    },
+  );
+
+  mainTest(
+    qase(1873, 'As a viewer user import file to Drafts'),
+    async ({ page }, testInfo) => {
+      await dashboardPage.openSidebarItem('Drafts');
+      await dashboardPage.isCreateFileOnDraftsTabButtonVisible(false);
+      await dashboardPage.isOptionButtonFromDraftPageVisible(false);
+    },
+  );
+
+  mainTest(
+    qase(1877, 'As a viewer user Add font on  Dashboard > Fonts page'),
+    async ({ page }, testInfo) => {
+      await dashboardPage.openSidebarItem('Fonts');
+      await dashboardPage.isAddCustomFontButtonVisible(false);
+    },
+  );
+
+  mainTest(
+    qase(
+      1880,
+      'As a viewer user check the "Create" buttons of Project and draft pages',
+    ),
+    async ({ page }, testInfo) => {
+      await dashboardPage.openSidebarItem('Projects');
+      await dashboardPage.isAddProjectButtonVisible(false);
+      await dashboardPage.openSidebarItem('Drafts');
+      await dashboardPage.isCreateFileOnDraftsTabButtonVisible(false);
+    },
+  );
+
+  mainTest(
+    qase(1889, 'As a viewer user try to use a toolbar'),
+    async ({ page }, testInfo) => {
+      await dashboardPage.openFileWithName('New File 1');
+      await mainPage.waitForViewportVisible();
+      await mainPage.isToolBarVisible(false);
+      await mainPage.backToDashboardFromFileEditor();
+    },
+  );
+
+  mainTest(
+    qase(1891, 'As a viewer user try to create, duplicate and delete page'),
+    async ({ page }, testInfo) => {
+      await dashboardPage.openFileWithName('New File 1');
+      await mainPage.waitForViewportVisible();
+      await mainPage.isPageRightClickMenuVisible(false);
+      await mainPage.backToDashboardFromFileEditor();
+    },
+  );
+
+  mainTest(
+    qase(1894, 'As a viewer user right-click created layer'),
+    async ({ page }, testInfo) => {
+      await dashboardPage.openFileWithName('New File 1');
+      await mainPage.waitForViewportVisible();
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.checkViewerRightClickMenu();
+      await mainPage.backToDashboardFromFileEditor();
+    },
+  );
+
+  mainTest(
+    qase(1898, 'As a viewer user try to open color palette'),
+    async ({ page }, testInfo) => {
+      await dashboardPage.openFileWithName('New File 1');
+      await mainPage.waitForViewportVisible();
+      await mainPage.isColorsPaletteButtonVisible(false);
+      await mainPage.backToDashboardFromFileEditor();
+    },
+  );
+
+  mainTest(
+    qase(1906, 'As a viewer user try to open typographies'),
+    async ({ page }, testInfo) => {
+      await dashboardPage.openFileWithName('New File 1');
+      await mainPage.waitForViewportVisible();
+      await mainPage.isTypographyButtonVisible(false);
+      await mainPage.backToDashboardFromFileEditor();
+    },
+  );
+
+  mainTest(
+    qase(
+      1867,
+      'Change a role of viewer user to editor and admin after accepting an invitation',
+    ),
+    async ({ page }, testInfo) => {
+      await dashboardPage.openFileWithName('New File 1');
+      await mainPage.waitForViewportVisible();
+      await mainPage.isDesignTabVisible(false);
+
+      await mainPage.backToDashboardFromFileEditor();
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await teamPage.switchTeam(team);
+      await teamPage.isTeamSelected(team);
+      await teamPage.openMembersPageViaOptionsMenu();
+      await teamPage.selectMemberRoleInPopUp(firstAdmin, 'Editor');
+      await teamPage.isMultipleMemberRecordDisplayed(
+        firstAdmin,
+        firstEmail,
+        'Editor',
+      );
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(firstEmail);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await teamPage.switchTeam(team);
+      await teamPage.isTeamSelected(team);
+      await dashboardPage.openFileWithName('New File 1');
+      await mainPage.waitForViewportVisible();
+      await mainPage.isDesignTabVisible(true);
+      await mainPage.backToDashboardFromFileEditor();
+    },
+  );
+
+  mainTest.afterEach(async ({ page }) => {
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.switchTeam(team);
+    await teamPage.isTeamSelected(team);
+    await teamPage.deleteTeam(team);
+  });
+});
+
 test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
+});
+
+mainTest.describe(() => {
+  const team = random().concat('autotest');
+  const firstAdmin = random().concat('autotest');
+  const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+  let profilePage, dashboardPage, loginPage, teamPage, registerPage, mainPage;
+
+  mainTest(
+    qase(1869, 'Change a role of admin to viewer after accepting an invitation'),
+    async ({ page }, testInfo) => {
+      await testInfo.setTimeout(testInfo.timeout + 30000);
+      profilePage = new ProfilePage(page);
+      dashboardPage = new DashboardPage(page);
+      loginPage = new LoginPage(page);
+      teamPage = new TeamPage(page);
+      registerPage = new RegisterPage(page);
+      mainPage = new MainPage(page);
+      await teamPage.createTeam(team);
+      await teamPage.isTeamSelected(team);
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.waitForViewportVisible();
+      await mainPage.createDefaultRectangleByCoordinates(200, 300);
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.backToDashboardFromFileEditor();
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderDisplayed(
+        'Invite members to the team',
+      );
+      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+      await teamPage.selectInvitationRoleInPopUp('Admin');
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+
+      await page.goto(firstInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(firstEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(firstAdmin);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.fillOnboardingQuestions();
+      await teamPage.isTeamSelected(team);
+
+      await dashboardPage.openFileWithName('New File 1');
+      await mainPage.waitForViewportVisible();
+      await mainPage.isDesignTabVisible(true);
+
+      await mainPage.backToDashboardFromFileEditor();
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await teamPage.switchTeam(team);
+      await teamPage.isTeamSelected(team);
+      await teamPage.openMembersPageViaOptionsMenu();
+      await teamPage.selectMemberRoleInPopUp(firstAdmin, 'Viewer');
+      await teamPage.isMultipleMemberRecordDisplayed(
+        firstAdmin,
+        firstEmail,
+        'Viewer',
+      );
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(firstEmail);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await teamPage.switchTeam(team);
+      await teamPage.isTeamSelected(team);
+      await dashboardPage.openFileWithName('New File 1');
+      await mainPage.waitForViewportVisible();
+      await mainPage.isDesignTabVisible(false);
+    },
+  );
+
+  mainTest.afterEach(async ({ page }) => {
+    await mainPage.backToDashboardFromFileEditor();
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.switchTeam(team);
+    await teamPage.isTeamSelected(team);
+    await teamPage.deleteTeam(team);
+  });
 });
