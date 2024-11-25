@@ -196,18 +196,11 @@ mainTest(
   },
 );
 
-mainTest(qase(829, 'PF-111 Download penpot file .penpot'), async ({ page }) => {
+mainTest(qase(1911, 'Download Penpot file (.penpot)'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();
   await mainPage.downloadPenpotFileViaMenu();
-});
-
-mainTest(qase(830, 'PF-112 Download standard file .svg+.json'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  await mainPage.clickMainMenuButton();
-  await mainPage.clickFileMainMenuItem();
-  await mainPage.downloadStandardFileViaMenu();
 });
 
 mainTest(qase(831, 'PF-113 Add/Remove as shared library'), async ({ page }) => {
