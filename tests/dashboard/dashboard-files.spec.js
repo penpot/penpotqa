@@ -142,18 +142,7 @@ mainTest(
 );
 
 mainTest(
-  qase(67, 'DA-13 Download Penpot file in Drafts via right click'),
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.downloadFileViaRightClick(false);
-  },
-);
-
-mainTest(
-  qase(69, 'DA-15 Download standard file in Drafts via right click'),
+  qase(1913, 'Download Penpot file (.penpot) (in Drafts) via right click'),
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     const mainPage = new MainPage(page);
@@ -330,35 +319,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1121, 'DA-35-1 Download Penpot file in Project via right click'),
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await dashboardPage.clickAddProjectButton();
-    await dashboardPage.setProjectName('Test Project');
-    await dashboardPage.isProjectTitleDisplayed('Test Project');
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.downloadFileViaRightClick(false);
-  },
-);
-
-mainTest(
-  qase(1121, 'DA-35-2 Download Penpot file in Project via Options icon'),
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
-    await dashboardPage.clickAddProjectButton();
-    await dashboardPage.setProjectName('Test Project');
-    await dashboardPage.isProjectTitleDisplayed('Test Project');
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.downloadFileViaOptionsIcon(false);
-  },
-);
-
-mainTest(
-  qase(1122, 'DA-36-1 Download standard file in Project via right click'),
+  qase(1121, 'Download Penpot file (.penpot) (in project) via right click'),
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     const mainPage = new MainPage(page);
@@ -372,7 +333,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1122, 'DA-36-2 Download standard file in Project via Options icon'),
+  qase(1121, 'Download Penpot file (.penpot) (in project) via Options icon'),
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
     const mainPage = new MainPage(page);
@@ -381,7 +342,7 @@ mainTest(
     await dashboardPage.isProjectTitleDisplayed('Test Project');
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.clickPencilBoxButton();
-    await dashboardPage.downloadFileViaOptionsIcon();
+    await dashboardPage.downloadFileViaOptionsIcon(false);
   },
 );
 
