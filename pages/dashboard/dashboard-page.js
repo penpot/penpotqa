@@ -47,7 +47,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .getByRole('button', { name: 'New File 1' })
       .locator(`div[class*="dashboard_grid__library"]`);
     this.downloadFilePenpotMenuItem = page.getByTestId('download-binary-file');
-    this.downloadFileStandardMenuItem = page.getByTestId('download-standard-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page
@@ -350,25 +349,19 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.sharedLibraryIcon).not.toBeVisible();
   }
 
-  async downloadFileViaRightClick(isStandardFile = true) {
+  async downloadFileViaRightClick() {
     await this.fileTile.click({ button: 'right' });
-    if (isStandardFile) {
-      await this.downloadFileStandardMenuItem.click();
-    } else {
-      await this.downloadFilePenpotMenuItem.click();
-    }
+    await this.downloadFilePenpotMenuItem.click();
+
     await this.page.waitForEvent('download');
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
 
-  async downloadFileViaOptionsIcon(isStandardFile = true) {
+  async downloadFileViaOptionsIcon() {
     await this.clickOnFileOptions();
-    if (isStandardFile) {
-      await this.downloadFileStandardMenuItem.click();
-    } else {
-      await this.downloadFilePenpotMenuItem.click();
-    }
+    await this.downloadFilePenpotMenuItem.click();
+
     await this.page.waitForEvent('download');
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
