@@ -51,7 +51,7 @@ mainTest.describe(() => {
       await mainPage.drawCurve(900, 300, 600, 200);
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.doubleClickLayerOnLayersTab('Path');
-      await layersPanelPage.renameCreatedLayer('renamed curve');
+      await layersPanelPage.typeNameCreatedLayerAndEnter('renamed curve');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerNameDisplayed('renamed curve');
     },

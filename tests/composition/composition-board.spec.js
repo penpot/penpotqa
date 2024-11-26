@@ -58,21 +58,81 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(219, 'CO-4 Rename board with valid name'), async ({ page }) => {
-    const newName = 'New test board';
-    const renamedName = 'renamed board';
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
-    await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-    await layersPanelPage.renameCreatedLayer(newName);
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isBoardNameDisplayed(newName);
+  mainTest(
+    qase(219, 'Rename board (by double clicking) with valid name'),
+    async ({ page }) => {
+      const newName = 'New test board';
+      const renamedName = 'renamed board';
+      const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      // Rename board by double clicking on the board
+      await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+      await layersPanelPage.typeNameCreatedLayerAndEnter(newName);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isBoardNameDisplayed(newName);
+      // Rename board by double clicking on the board layer
+      await layersPanelPage.doubleClickLayerOnLayersTab(newName);
+      await layersPanelPage.typeNameCreatedLayerAndClickOnViewport(
+        renamedName,
+        900,
+        100,
+      );
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isBoardNameDisplayed(renamedName);
+    },
+  );
 
-    await layersPanelPage.doubleClickLayerOnLayersTab(newName);
-    await layersPanelPage.renameCreatedLayer(renamedName);
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isBoardNameDisplayed(renamedName);
-  });
+  mainTest(
+    qase(1923, 'Rename board (by shortcut) with valid name'),
+    async ({ page }) => {
+      const newName = 'New test board';
+      const renamedName = 'renamed board';
+      const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      // rename by shortcut while the board is selected
+      await layersPanelPage.clickShortcutAltN();
+      await layersPanelPage.typeNameCreatedLayerAndClickOnViewport(
+        newName,
+        900,
+        100,
+      );
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isBoardNameDisplayed(newName);
+      // try to rename by shortcut while nothing is selected
+      await layersPanelPage.clickShortcutAltN();
+      await layersPanelPage.isNotRenameLayerInputDisplayed();
+      // rename by shortcut while the board layer is selected
+      await layersPanelPage.selectLayerByName(newName);
+      await layersPanelPage.clickShortcutAltN();
+      await layersPanelPage.typeNameCreatedLayerAndEnter(renamedName);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isBoardNameDisplayed(renamedName);
+    },
+  );
+
+  mainTest(
+    qase(1924, 'Rename board (by context menu) with valid name'),
+    async ({ page }) => {
+      const newName = 'New test board';
+      const renamedName = 'renamed board';
+      const mainPage = new MainPage(page);
+      const layersPanelPage = new LayersPanelPage(page);
+      // rename by RMB context menu while the board is selected
+      await mainPage.renameCreatedBoardViaRightClick();
+      await layersPanelPage.typeNameCreatedLayerAndClickOnViewport(
+        newName,
+        900,
+        100,
+      );
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isBoardNameDisplayed(newName);
+      // rename by RMB context menu while the board layer is selected
+      await layersPanelPage.renameLayerViaRightClick(newName);
+      await layersPanelPage.typeNameCreatedLayerAndEnter(renamedName);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isBoardNameDisplayed(renamedName);
+    },
+  );
 
   mainTest(qase(220, 'CO-5 Rename board with empty field'), async ({ page }) => {
     const defaultBoardName = 'Board';
@@ -362,7 +422,7 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-    await layersPanelPage.renameCreatedLayer('Test');
+    await layersPanelPage.typeNameForCreatedLayer('Test');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isBoardNameDisplayed('Test');
     await layersPanelPage.searchLayer('test');
@@ -379,7 +439,7 @@ mainTest.describe(() => {
       await mainPage.pressFlexLayoutShortcut();
       await mainPage.waitForChangeIsSaved();
       await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-      await layersPanelPage.renameCreatedLayer('Main Board');
+      await layersPanelPage.typeNameForCreatedLayer('Main Board');
       await mainPage.waitForChangeIsSaved();
       await mainPage.createDefaultBoardByCoordinates(200, 200);
       await designPanelPage.changeHeightAndWidthForLayer('200', '200');
@@ -419,13 +479,13 @@ mainTest.describe(() => {
     await mainPage.clickViewportByCoordinates(100, 150);
     await mainPage.waitForChangeIsSaved();
     await mainPage.doubleClickBoardTitleOnCanvas('Board');
-    await layersPanelPage.renameCreatedLayer(board1);
+    await layersPanelPage.typeNameForCreatedLayer(board1);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportByCoordinates(250, 300);
     await mainPage.waitForChangeIsSaved();
     await mainPage.doubleClickBoardTitleOnCanvas('Board');
-    await layersPanelPage.renameCreatedLayer(board2);
+    await layersPanelPage.typeNameForCreatedLayer(board2);
     await mainPage.waitForChangeIsSaved();
   });
 
