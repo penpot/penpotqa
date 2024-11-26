@@ -25,7 +25,8 @@ exports.BasePage = class BasePage {
     this.copyLayer = page
       .locator('div[class*="viewport"] [class*="viewport-selrect"]')
       .last();
-    this.createdBoardTitle = page.locator('g[class="frame-title"] div >> nth=0');
+    this.createdBoardTitle = page.getByTestId('viewport').getByText('Board').first();
+
     this.deleteLayerMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Delete' });
@@ -138,6 +139,7 @@ exports.BasePage = class BasePage {
       .getByRole('listitem')
       .filter({ hasText: 'Merge cells' });
     this.acceptCookieButton = page.locator('button[class*="CookieConsent_accept"]');
+    this.renameOption = page.getByRole('listitem').filter({ hasText: 'Rename' });
   }
 
   async clearInput(input, browserName) {
@@ -176,6 +178,10 @@ exports.BasePage = class BasePage {
         await this.page.keyboard.press('Meta+D');
       }
     }
+  }
+
+  async clickShortcutAltN(browserName) {
+    await this.page.keyboard.press('Alt+N');
   }
 
   async reloadPage() {
@@ -375,6 +381,11 @@ exports.BasePage = class BasePage {
 
   async isWrapperMessageVisible() {
     await expect(this.wrapperMessage).toBeVisible({ timeout: 10000 });
+  }
+
+  async renameCreatedBoardViaRightClick() {
+    await this.createdBoardTitle.click({ button: 'right', force: true });
+    await this.renameOption.click();
   }
 
   async acceptCookie() {
