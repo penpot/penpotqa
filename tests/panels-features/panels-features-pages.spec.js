@@ -194,6 +194,9 @@ mainTest(
     await mainPage.clickOnPageOnLayersPanel(true);
     await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-update-main.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   },
 );
