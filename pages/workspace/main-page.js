@@ -26,7 +26,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.designTab = page.getByRole('tab', { name: 'design' });
 
     //Viewport
-    this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
+    this.textbox = page.getByTestId('text-editor-content');
     this.guides = page.locator('.guides .new-guides');
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
@@ -895,7 +895,8 @@ exports.MainPage = class MainPage extends BasePage {
       await this.page.waitForTimeout(2000);
       await this.typeTextFromKeyboard();
     } else {
-      await this.typeText('Hello World!');
+      await expect(this.textbox).toBeVisible();
+      await this.typeTextFromKeyboard();
     }
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
@@ -911,7 +912,8 @@ exports.MainPage = class MainPage extends BasePage {
       await this.page.waitForTimeout(400);
       await this.typeTextFromKeyboard();
     } else {
-      await this.typeText('Hello World!');
+      await expect(this.textbox).toBeVisible();
+      await this.typeTextFromKeyboard();
     }
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
@@ -1081,13 +1083,13 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.workspaceMenu).not.toBeVisible();
   }
 
-  async isColorsPaletteButtonVisible(visible = true){
+  async isColorsPaletteButtonVisible(visible = true) {
     visible
       ? await expect(this.colorsPaletteButton).toBeVisible()
       : await expect(this.colorsPaletteButton).not.toBeVisible();
   }
 
-  async isTypographyButtonVisible(visible = true){
+  async isTypographyButtonVisible(visible = true) {
     visible
       ? await expect(this.typographyButton).toBeVisible()
       : await expect(this.typographyButton).not.toBeVisible();
