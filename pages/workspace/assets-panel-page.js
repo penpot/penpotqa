@@ -79,10 +79,16 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     );
     this.assetsTypeButton = page.getByRole('button', { name: 'Filter' });
     this.assetsTypeDropdown = page.locator('ul[class*="context-menu-items"]');
-    this.assetsTypeAll = page.locator('#section-all');
-    this.assetsTypeComponents = page.locator('#section-components');
-    this.assetsTypeColors = page.locator('#section-colors');
-    this.assetsTypeTypographies = page.locator('#section-typographies');
+    this.assetsTypeAll = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'All assets' });
+    this.assetsTypeComponents = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Components' });
+    this.assetsTypeColors = page.getByRole('menuitem').filter({ hasText: 'Colors' });
+    this.assetsTypeTypographies = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Typographies' });
     this.duplicateMainComponentMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Duplicate main' });
