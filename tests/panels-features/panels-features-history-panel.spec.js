@@ -69,6 +69,15 @@ mainTest(
   },
 );
 
+mainTest(
+  qase(1930, 'Open history version panel (shortcut Alt+H)'),
+  async ({ page }) => {
+    const historyPage = new HistoryPanelPage(page);
+    await historyPage.clickShortcutAltH();
+    await historyPage.isVersionListEmpty();
+  },
+);
+
 mainTest.describe(() => {
   const versionName = 'test version';
 
@@ -127,6 +136,8 @@ mainTest.describe(() => {
         const layersPanelPage = new LayersPanelPage(page);
         await historyPage.clickRestoreVersionButton();
         await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
+        await historyPage.isHistoryPanelVisible(false);
+        await historyPage.clickHistoryPanelButton();
         await historyPage.checkAutosaveVersionsCount('1');
       },
     );
@@ -138,6 +149,7 @@ mainTest.describe(() => {
         const layersPanelPage = new LayersPanelPage(page);
         await historyPage.clickCancelRestoreVersionButton();
         await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
+        await historyPage.isHistoryPanelVisible(true);
       },
     );
 
@@ -147,6 +159,8 @@ mainTest.describe(() => {
         const layersPanelPage = new LayersPanelPage(page);
         await historyPage.clickRestoreVersionButton();
         await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
+        await historyPage.isHistoryPanelVisible(false);
+        await historyPage.clickHistoryPanelButton();
         await historyPage.clickOnAutosaveVersionsButton();
       });
 
@@ -158,6 +172,8 @@ mainTest.describe(() => {
           await historyPage.selectSnapshotOption('Restore version');
           await historyPage.clickRestoreVersionButton();
           await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
+          await historyPage.isHistoryPanelVisible(false);
+          await historyPage.clickHistoryPanelButton();
           await historyPage.checkAutosaveVersionsCount('2');
         },
       );
@@ -282,6 +298,8 @@ mainTest.describe(() => {
       await historyPage.selectVersionOption('Restore');
       await historyPage.clickRestoreVersionButton();
       await layersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
+      await historyPage.isHistoryPanelVisible(false);
+      await historyPage.clickHistoryPanelButton();
 
       await historyPage.isOtherUserVersionVisible(true);
       await historyPage.changeVersionFilter('My versions');

@@ -50,6 +50,12 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
       : await expect(this.emptyVersionMessage).toBeHidden();
   }
 
+  async isHistoryPanelVisible(empty = true) {
+    empty
+      ? await expect(this.historyPanel).toBeVisible()
+      : await expect(this.historyPanel).toBeHidden();
+  }
+
   async clickSaveVersionButton() {
     await this.saveVersionButton.click();
   }
@@ -156,5 +162,9 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
         await this.allVersionsOption.click();
         break;
     }
+  }
+
+  async clickShortcutAltH() {
+    await this.page.keyboard.press('Alt+Z');
   }
 };
