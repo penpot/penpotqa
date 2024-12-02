@@ -26,7 +26,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.designTab = page.getByRole('tab', { name: 'design' });
 
     //Viewport
-    this.textbox = page.getByTestId('text-editor-content');
+    this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
     this.guides = page.locator('.guides .new-guides');
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
@@ -896,7 +896,7 @@ exports.MainPage = class MainPage extends BasePage {
       await this.typeTextFromKeyboard();
     } else {
       await expect(this.textbox).toBeVisible();
-      await this.typeTextFromKeyboard();
+      await this.typeText('Hello World!');
     }
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
@@ -913,7 +913,7 @@ exports.MainPage = class MainPage extends BasePage {
       await this.typeTextFromKeyboard();
     } else {
       await expect(this.textbox).toBeVisible();
-      await this.typeTextFromKeyboard();
+      await this.typeText('Hello World!');
     }
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();

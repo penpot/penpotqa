@@ -178,16 +178,18 @@ mainTest.describe(() => {
       await assetsPanelPage.editFileLibraryTypography();
       await assetsPanelPage.selectFont('Bad Script');
       await assetsPanelPage.selectFontSize('36');
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await assetsPanelPage.minimizeFileLibraryTypography();
       await mainPage.createDefaultTextLayer(browserName);
       await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickViewportTwice();
       await expect(mainPage.viewport).toHaveScreenshot(
         'apply-typography-to-text_from_assets.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
