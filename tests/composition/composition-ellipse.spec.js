@@ -49,7 +49,7 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('Ellipse');
-    await layersPanelPage.renameCreatedLayer('renamed ellipse');
+    await layersPanelPage.typeNameCreatedLayerAndEnter('renamed ellipse');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerNameDisplayed('renamed ellipse');
   });

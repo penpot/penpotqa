@@ -239,7 +239,7 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('Rectangle');
-    await layersPanelPage.renameCreatedLayer('renamed rectangle');
+    await layersPanelPage.typeNameCreatedLayerAndEnter('renamed rectangle');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerNameDisplayed('renamed rectangle');
   });

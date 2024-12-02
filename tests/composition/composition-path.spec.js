@@ -72,7 +72,7 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('Path');
-    await layersPanelPage.renameCreatedLayer('renamed path');
+    await layersPanelPage.typeNameCreatedLayerAndEnter('renamed path');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerNameDisplayed('renamed path');
   });
@@ -161,7 +161,7 @@ mainTest.describe(() => {
       const path1 = 'Path #1';
       const path2 = 'Path #2';
       await layersPanelPage.doubleClickLayerOnLayersTab('Path');
-      await layersPanelPage.renameCreatedLayer(path1);
+      await layersPanelPage.typeNameCreatedLayerAndEnter(path1);
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickCreatePathButton();
       await mainPage.clickViewportByCoordinates(200, 300);
@@ -171,7 +171,7 @@ mainTest.describe(() => {
       await mainPage.clickOnDesignTab();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.doubleClickLayerOnLayersTab('Path');
-      await layersPanelPage.renameCreatedLayer(path2);
+      await layersPanelPage.typeNameCreatedLayerAndEnter(path2);
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickViewportOnce();
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(path1);
