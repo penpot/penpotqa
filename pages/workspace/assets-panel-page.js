@@ -282,7 +282,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async selectFontSize(value) {
+    await this.fontSizeInput.clear();
     await this.fontSizeInput.fill(value);
+    await this.page.keyboard.press('Enter');
   }
 
   async clickAddAsSharedLibraryButton() {

@@ -42,7 +42,9 @@ mainTest.describe(() => {
   mainTest(qase(377, 'CO-162 Create a text from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('text.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(qase(380, 'CO-165 Add rotation to text'), async ({ page }) => {
@@ -50,16 +52,24 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-90.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-90.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-120.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-120.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-45.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-45.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-359.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-359.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(
@@ -72,20 +82,20 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-drop-shadow-default.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.hideShadow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow-hide.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideShadow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-drop-shadow-unhide.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
@@ -93,7 +103,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-inner-shadow-default.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.removeShadow();
@@ -101,7 +111,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-inner-shadow-remove.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -121,14 +131,18 @@ mainTest.describe(() => {
       await mainPage.clickMoveButton();
       browserName === 'webkit' ? await mainPage.waitForChangeIsUnsaved() : null;
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png');
+      await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
       await designPanelPage.selectTypeForShadow('Inner shadow');
       await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
       await designPanelPage.clickShadowColorIcon();
       await colorPalettePage.setHex('#96e637');
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png');
+      await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
     },
   );
 
@@ -144,22 +158,22 @@ mainTest.describe(() => {
       await designPanelPage.clickAddBlurButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-blur-default.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.hideBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-blur-hide.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-blur-unhide.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.removeBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
     },
   );
@@ -170,7 +184,9 @@ mainTest.describe(() => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-blur.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-blur.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(
@@ -182,7 +198,7 @@ mainTest.describe(() => {
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-stroke-default.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await mainPage.clickOnLayerOnCanvas();
       await designPanelPage.changeStrokeSettings('#43E50B', '60', '10', 'Inside');
@@ -190,7 +206,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-stroke-inside-dotted.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickOnLayerOnCanvas();
@@ -199,7 +215,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-stroke-outside-dashed.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickOnLayerOnCanvas();
@@ -208,7 +224,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-stroke-center-solid.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickOnLayerOnCanvas();
@@ -217,14 +233,14 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-stroke-center-mixed.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickOnLayerOnCanvas();
       await designPanelPage.removeStroke();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-stroke-remove.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
     },
   );
@@ -233,14 +249,18 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(qase(388, 'CO-173-2 Delete text via shortcut Del'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(qase(392, 'CO-177 Rename text with valid name'), async ({ page }) => {
@@ -259,13 +279,19 @@ mainTest.describe(() => {
       const designPanelPage = new DesignPanelPage(page);
       await designPanelPage.changeTextCase('Upper');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-upper-case.png');
+      await expect(mainPage.viewport).toHaveScreenshot('text-upper-case.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
       await designPanelPage.changeTextCase('Title');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-title-case.png');
+      await expect(mainPage.viewport).toHaveScreenshot('text-title-case.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
       await designPanelPage.changeTextCase('Lower');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-lower-case.png');
+      await expect(mainPage.viewport).toHaveScreenshot('text-lower-case.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
     },
   );
 
@@ -325,10 +351,15 @@ mainTest.describe(() => {
       await designPanelPage.changeOpacityForFill('50');
       await mainPage.clickMoveButton();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-fill-opacity.png');
+      await expect(mainPage.viewport).toHaveScreenshot('text-fill-opacity.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
       await inspectPanelPage.openInspectTab();
       await expect(inspectPanelPage.textBlockOnInspect).toHaveScreenshot(
         'inspect-text-block-color.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );
@@ -338,7 +369,7 @@ mainTest.describe(() => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-to-board.png', {
-      mask: [mainPage.guides],
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
   });
 });

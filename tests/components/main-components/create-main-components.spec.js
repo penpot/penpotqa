@@ -157,6 +157,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'text-main-component-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       'text-main-component-layer.png',
@@ -307,6 +310,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'multiple-components-canvas-3-layers.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       'multiple-components-layer-3-layers.png',
