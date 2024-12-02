@@ -267,7 +267,7 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('Hello World!');
-    await layersPanelPage.renameCreatedLayer('renamed text');
+    await layersPanelPage.typeNameCreatedLayerAndEnter('renamed text');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerNameDisplayed('renamed text');
   });

@@ -453,12 +453,12 @@ mainTest.describe(() => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
 
       await layersPanelPage.doubleClickCopyComponentOnLayersTab();
-      await layersPanelPage.renameCreatedLayer('test');
+      await layersPanelPage.typeNameCreatedLayerAndEnter('test');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isCopyComponentNameDisplayed('test');
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.doubleClickMainComponentOnLayersTab();
-      await layersPanelPage.renameCreatedLayer('dfsfs');
+      await layersPanelPage.typeNameCreatedLayerAndEnter('dfsfs');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isCopyComponentNameDisplayed('test');
       await layersPanelPage.clickMainComponentOnLayersTab();
