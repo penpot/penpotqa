@@ -422,7 +422,7 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-    await layersPanelPage.typeNameForCreatedLayer('Test');
+    await layersPanelPage.typeNameCreatedLayerAndEnter('Test');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isBoardNameDisplayed('Test');
     await layersPanelPage.searchLayer('test');
@@ -479,13 +479,13 @@ mainTest.describe(() => {
     await mainPage.clickViewportByCoordinates(100, 150);
     await mainPage.waitForChangeIsSaved();
     await mainPage.doubleClickBoardTitleOnCanvas('Board');
-    await layersPanelPage.typeNameForCreatedLayer(board1);
+    await layersPanelPage.typeNameCreatedLayerAndEnter(board1);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportByCoordinates(250, 300);
     await mainPage.waitForChangeIsSaved();
     await mainPage.doubleClickBoardTitleOnCanvas('Board');
-    await layersPanelPage.typeNameForCreatedLayer(board2);
+    await layersPanelPage.typeNameCreatedLayerAndEnter(board2);
     await mainPage.waitForChangeIsSaved();
   });
 
