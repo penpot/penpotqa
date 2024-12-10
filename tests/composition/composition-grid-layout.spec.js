@@ -304,8 +304,8 @@ mainTest(
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeHeightAndWidthForLayer('700', '800');
-    await designPanelPage.openGridEditModeFromDesignPanel();
     browserName !== 'webkit' ? await mainPage.waitForChangeIsUnsaved() : null;
+    await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'resized-board-with-image.png',
