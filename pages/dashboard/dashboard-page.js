@@ -195,7 +195,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.whatNewsHeader = page.getByText('What’s new in Penpot?', { exact: true });
     this.pluginModalHeader = page.getByText(
-      'Build Plugins and enhance your workflow',
+      'Viewer role, designed to enhance collaboration',
       { exact: true },
     );
     this.pluginModalContinueBtn = page.getByRole('button', { name: 'Continue' });
@@ -666,6 +666,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async clickOnLetsGoBtn() {
     await this.onboardingLetsGoBtn.click();
   }
+
   async skipWhatNewsPopUp() {
     if (
       (await this.whatNewsHeader.isVisible()) &&
@@ -680,6 +681,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       (await this.pluginModalHeader.isVisible()) &&
       (await this.pluginModalContinueBtn.isVisible())
     ) {
+      await this.clickOnPluginContinueBtn();
       await this.clickOnPluginContinueBtn();
       await this.clickOnPluginGoBtn();
     }

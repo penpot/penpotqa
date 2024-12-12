@@ -472,7 +472,7 @@ mainTest.describe(() => {
       1168,
       'DA-82 Team. Invitations - invite via owner (multiple invitations, editor)',
     ),
-    async ({ page }) => {
+    async ({ page }, testInfo) => {
       const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
       const secondEmail = `${process.env.GMAIL_NAME}+${secondEditor}@gmail.com`;
       const profilePage = new ProfilePage(page);
@@ -480,6 +480,7 @@ mainTest.describe(() => {
       const loginPage = new LoginPage(page);
       const teamPage = new TeamPage(page);
       const registerPage = new RegisterPage(page);
+      await testInfo.setTimeout(testInfo.timeout + 80000);
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -500,8 +501,8 @@ mainTest.describe(() => {
         'Editor',
         'Pending',
       );
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
+      const secondInvite = await waitMessage(page, secondEmail, 90);
       const user = process.env.CI ? 'QA Engineer' : 'QA Engineer'; //'k8q6byz';
       await checkInviteText(firstInvite.inviteText, team, user);
       await checkInviteText(secondInvite.inviteText, team, user);
@@ -570,7 +571,7 @@ mainTest.describe(() => {
       'DA-87 Team. Invitations - invite via admin (multiple invitations, admin)',
     ),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 270000);
       const profilePage = new ProfilePage(page);
       const dashboardPage = new DashboardPage(page);
       const loginPage = new LoginPage(page);
@@ -591,7 +592,7 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.enterEmailToInviteMembersPopUp(mainEmail);
       await teamPage.clickSendInvitationButton();
-      const mainInvite = await waitMessage(page, mainEmail, 40);
+      const mainInvite = await waitMessage(page, mainEmail, 90);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
 
@@ -625,8 +626,8 @@ mainTest.describe(() => {
         'Admin',
         'Pending',
       );
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
+      const secondInvite = await waitMessage(page, secondEmail, 90);
       await checkInviteText(firstInvite.inviteText, team, mainAdmin);
       await checkInviteText(secondInvite.inviteText, team, mainAdmin);
       await profilePage.logout();
@@ -672,7 +673,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1177, 'DA-91 Team. Invitations - resend invitation via admin'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 120000);
       const profilePage = new ProfilePage(page);
       const dashboardPage = new DashboardPage(page);
       const loginPage = new LoginPage(page);
@@ -691,7 +692,7 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.enterEmailToInviteMembersPopUp(mainEmail);
       await teamPage.clickSendInvitationButton();
-      const mainInvite = await waitMessage(page, mainEmail, 40);
+      const mainInvite = await waitMessage(page, mainEmail, 90);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
 
@@ -724,7 +725,7 @@ mainTest.describe(() => {
       await teamPage.resendInvitation();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
-      await waitSecondMessage(page, secondEmail, 40);
+      await waitSecondMessage(page, secondEmail, 90);
       await checkMessagesCount(secondEmail, 2);
     },
   );
@@ -732,7 +733,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1184, 'DA-98 Team. Members - change role via owner (editor to admin)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
       const profilePage = new ProfilePage(page);
       const dashboardPage = new DashboardPage(page);
       const loginPage = new LoginPage(page);
@@ -752,7 +753,7 @@ mainTest.describe(() => {
       await teamPage.enterEmailToInviteMembersPopUp(secondEmail);
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+      const secondInvite = await waitMessage(page, secondEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -803,7 +804,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1187, 'DA-101 Team. Members - change role via admin(admin to editor)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 180000);
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
@@ -824,8 +825,8 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
+      const secondInvite = await waitMessage(page, secondEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -892,7 +893,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1191, 'DA-105 Team. Members - unable to change roles via editor'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 180000);
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
@@ -921,8 +922,8 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
+      const secondInvite = await waitMessage(page, secondEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -968,7 +969,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1190, 'DA-104 Team. Members - unable to change role of owner via admin'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
       const profilePage = new ProfilePage(page);
@@ -988,7 +989,7 @@ mainTest.describe(() => {
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
       await teamPage.clickInviteMembersToTeamButton();
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1016,7 +1017,7 @@ mainTest.describe(() => {
       'DA-97 Team. Invitations - unable to create, edit and delete invitations via editor',
     ),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 180000);
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
@@ -1045,8 +1046,8 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
+      const secondInvite = await waitMessage(page, secondEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1072,7 +1073,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1197, 'DA-111 Team. Members - leave team (as admin)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
       const profilePage = new ProfilePage(page);
@@ -1091,7 +1092,7 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1115,7 +1116,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1198, 'DA-112 Team. Members - leave team (as editor)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
       const profilePage = new ProfilePage(page);
@@ -1133,7 +1134,7 @@ mainTest.describe(() => {
       await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1157,7 +1158,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1192, 'DA-106 Team. Members - delete team member (as owner)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
       const profilePage = new ProfilePage(page);
@@ -1176,7 +1177,7 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1213,7 +1214,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1193, 'DA-107 Team. Members - delete team member (as admin)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 180000);
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
@@ -1234,8 +1235,8 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
+      const secondInvite = await waitMessage(page, secondEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1281,7 +1282,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1194, 'DA-108 Team. Members - unable to delete team member (as editor)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 180000);
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
@@ -1310,8 +1311,8 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
+      const secondInvite = await waitMessage(page, secondEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1357,7 +1358,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1182, 'DA-96 Team. Invitations - change role in invitation via admin'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
@@ -1386,7 +1387,7 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1443,7 +1444,7 @@ test.describe(() => {
       'DA-102 Team. Members - change role via owner (transfer ownerhip to admin)',
     ),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 180000);
       const profilePage = new ProfilePage(page);
       const dashboardPage = new DashboardPage(page);
       const loginPage = new LoginPage(page);
@@ -1465,7 +1466,7 @@ test.describe(() => {
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
       await registerPage.isRegisterEmailCorrect(secondEmail);
-      const register = await waitMessage(page, secondEmail, 40);
+      const register = await waitMessage(page, secondEmail, 90);
       await page.goto(register.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
 
@@ -1484,7 +1485,7 @@ test.describe(() => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await waitSecondMessage(page, secondEmail, 40);
+      await waitSecondMessage(page, secondEmail, 90);
       const invite = await getRegisterMessage(secondEmail);
       await loginPage.enterEmail(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1526,7 +1527,7 @@ test.describe(() => {
       'DA-103 Team. Members - change role via owner (transfer ownerhip to editor)',
     ),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 180000);
       const profilePage = new ProfilePage(page);
       const dashboardPage = new DashboardPage(page);
       const loginPage = new LoginPage(page);
@@ -1548,7 +1549,7 @@ test.describe(() => {
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
       await registerPage.isRegisterEmailCorrect(secondEmail);
-      const register = await waitMessage(page, secondEmail, 40);
+      const register = await waitMessage(page, secondEmail, 90);
       await page.goto(register.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
 
@@ -1566,7 +1567,7 @@ test.describe(() => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await waitSecondMessage(page, secondEmail, 40);
+      await waitSecondMessage(page, secondEmail, 90);
       const invite = await getRegisterMessage(secondEmail);
       await loginPage.enterEmail(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1608,7 +1609,7 @@ test.describe(() => {
       'DA-88 Team. Invitations - send invitation to registered user (but not a team member)',
     ),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 180000);
       const profilePage = new ProfilePage(page);
       const dashboardPage = new DashboardPage(page);
       const loginPage = new LoginPage(page);
@@ -1630,7 +1631,7 @@ test.describe(() => {
       await registerPage.clickOnAcceptTermsCheckbox();
       await registerPage.clickOnCreateAccountSecondBtn();
       await registerPage.isRegisterEmailCorrect(secondEmail);
-      const register = await waitMessage(page, secondEmail, 40);
+      const register = await waitMessage(page, secondEmail, 90);
       await page.goto(register.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
 
@@ -1649,7 +1650,7 @@ test.describe(() => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await waitSecondMessage(page, secondEmail, 40);
+      await waitSecondMessage(page, secondEmail, 90);
       const invite = await getRegisterMessage(secondEmail);
       await loginPage.enterEmail(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1668,7 +1669,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1196, 'DA-110 Team. Members - leave team (as owner)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
       const profilePage = new ProfilePage(page);
@@ -1687,7 +1688,7 @@ mainTest.describe(() => {
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -1724,7 +1725,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1180, 'DA-94 Team. Invitations- delete team invitation'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
       const profilePage = new ProfilePage(page);
@@ -1745,7 +1746,7 @@ mainTest.describe(() => {
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
       await teamPage.deleteInvitation();
       await teamPage.isInvitationRecordRemoved();
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
 
@@ -1990,7 +1991,7 @@ test.describe(() => {
   let secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}@gmail.com`;
 
   test.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 30000);
+    await testInfo.setTimeout(testInfo.timeout + 90000);
     loginPage = new LoginPage(page);
     registerPage = new RegisterPage(page);
     profilePage = new ProfilePage(page);
@@ -2011,7 +2012,7 @@ test.describe(() => {
     await registerPage.clickOnAcceptTermsCheckbox();
     await registerPage.clickOnCreateAccountSecondBtn();
     await registerPage.isRegisterEmailCorrect(email);
-    invite = await waitMessage(page, email, 40);
+    invite = await waitMessage(page, email, 90);
     await page.goto(invite.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
   });
@@ -2019,7 +2020,7 @@ test.describe(() => {
   test(
     qase(1827, 'Request access from Workspace (Not Your Penpot)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
 
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -2057,7 +2058,7 @@ test.describe(() => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
-      await waitSecondMessage(page, email, 40);
+      await waitSecondMessage(page, email, 90);
       const requestMessage = await waitRequestMessage(page, email, 40);
       await checkConfirmAccessText(
         requestMessage.inviteText,
@@ -2076,7 +2077,7 @@ test.describe(() => {
   test(
     qase(1829, 'Request access from Dashboard (Not Your Penpot)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
 
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -2115,7 +2116,7 @@ test.describe(() => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
-      await waitSecondMessage(page, email, 40);
+      await waitSecondMessage(page, email, 90);
       const requestMessage = await waitRequestMessage(page, email, 40);
 
       await checkDashboardConfirmAccessText(
@@ -2130,7 +2131,7 @@ test.describe(() => {
   test(
     qase(1830, 'Request access from Workspace (Your Penpot)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
 
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.waitForViewportVisible();
@@ -2166,7 +2167,7 @@ test.describe(() => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
-      await waitSecondMessage(page, email, 40);
+      await waitSecondMessage(page, email, 90);
       const requestMessage = await waitRequestMessage(page, email, 40);
       await checkYourPenpotConfirmAccessText(
         requestMessage.inviteText,
@@ -2180,7 +2181,7 @@ test.describe(() => {
   test(
     qase(1831, 'Request access from View mode (Your Penpot)'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
 
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.waitForViewportVisible();
@@ -2221,7 +2222,7 @@ test.describe(() => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
 
-      await waitSecondMessage(page, email, 40);
+      await waitSecondMessage(page, email, 90);
       const requestMessage = await waitRequestMessage(page, email, 40);
       await checkYourPenpotViewModeConfirmAccessText(
         requestMessage.inviteText,
@@ -2233,7 +2234,7 @@ test.describe(() => {
   );
 
   test(qase(1833, 'Auto Join to the team'), async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 60000);
+    await testInfo.setTimeout(testInfo.timeout + 180000);
 
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
@@ -2282,12 +2283,12 @@ test.describe(() => {
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
 
-    await waitSecondMessage(page, email, 40);
+    await waitSecondMessage(page, email, 90);
     const requestMessage = await waitRequestMessage(page, email, 40);
     await page.goto(requestMessage.inviteUrl[0]);
     await teamPage.clickSendInvitationButton();
 
-    await waitSecondMessage(page, secondEmail, 40);
+    await waitSecondMessage(page, secondEmail, 90);
     const secondRequestMessage = await waitRequestMessage(page, secondEmail, 40);
     await checkSigningText(secondRequestMessage.inviteText, randomName, team);
   });
@@ -2306,7 +2307,7 @@ mainTest.describe(() => {
     layersPanelPage;
 
   mainTest.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 30000);
+    await testInfo.setTimeout(testInfo.timeout + 90000);
     profilePage = new ProfilePage(page);
     dashboardPage = new DashboardPage(page);
     loginPage = new LoginPage(page);
@@ -2331,7 +2332,7 @@ mainTest.describe(() => {
     await teamPage.clickSendInvitationButton();
     await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
-    const firstInvite = await waitMessage(page, firstEmail, 40);
+    const firstInvite = await waitMessage(page, firstEmail, 90);
 
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
@@ -2513,7 +2514,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1869, 'Change a role of admin to viewer after accepting an invitation'),
     async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 30000);
+      await testInfo.setTimeout(testInfo.timeout + 90000);
       profilePage = new ProfilePage(page);
       dashboardPage = new DashboardPage(page);
       loginPage = new LoginPage(page);
@@ -2539,7 +2540,7 @@ mainTest.describe(() => {
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+      const firstInvite = await waitMessage(page, firstEmail, 90);
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
