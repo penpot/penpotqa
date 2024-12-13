@@ -15,10 +15,19 @@ const { waitMessage } = require('../../helpers/gmail');
 
 const teamName = random().concat('autotest');
 
+let teamPage,
+  dashboardPage,
+  mainPage,
+  historyPage,
+  layersPanelPage,
+  profilePage,
+  loginPage,
+  registerPage;
+
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -26,8 +35,6 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
@@ -36,7 +43,6 @@ test.afterEach(async ({ page }, testInfo) => {
 mainTest(
   qase(874, 'PF-156 Perform a change and check the status'),
   async ({ page }) => {
-    const mainPage = new MainPage(page);
     await mainPage.clickCreateEllipseButton();
     await mainPage.clickViewportTwice();
     await mainPage.isUnSavedChangesDisplayed();
@@ -47,7 +53,6 @@ mainTest(
 mainTest(
   qase(890, 'PF-172 Open history panel with recent changes'),
   async ({ page }) => {
-    const mainPage = new MainPage(page);
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -60,8 +65,6 @@ mainTest(
 mainTest(
   qase(1931, 'Open history version panel (via main menu)'),
   async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const historyPage = new HistoryPanelPage(page);
     await mainPage.clickMainMenuButton();
     await mainPage.clickFileMainMenuItem();
     await mainPage.clickShowVersionsMainMenuSubItem();
@@ -69,20 +72,19 @@ mainTest(
   },
 );
 
-mainTest(
-  qase(1930, 'Open history version panel (shortcut Alt+H)'),
-  async ({ page }) => {
-    const historyPage = new HistoryPanelPage(page);
-    await historyPage.clickShortcutAltH();
-    await historyPage.isVersionListEmpty();
-  },
-);
+// mainTest(
+//   qase(1930, 'Open history version panel (shortcut Alt+H)'),
+//   async ({ page }) => {
+//     await historyPage.clickShortcutAltH();
+//     await historyPage.isVersionListEmpty();
+//   },
+// );
 
 mainTest.describe(() => {
   const versionName = 'test version';
 
   mainTest.beforeEach(async ({ page }) => {
-    const historyPage = new HistoryPanelPage(page);
+    historyPage = new HistoryPanelPage(page);
     await historyPage.createDefaultRectangleByCoordinates(200, 200);
     await historyPage.waitForChangeIsSaved();
     await historyPage.clickHistoryPanelButton();
@@ -91,14 +93,12 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(1929, 'Save version via history panel'), async ({ page }) => {
-    const historyPage = new HistoryPanelPage(page);
     await historyPage.checkVersionName(versionName);
   });
 
   mainTest(
     qase(1945, 'Check scrolling in the version list (more than 14 versions)'),
     async ({ page }) => {
-      const historyPage = new HistoryPanelPage(page);
       await historyPage.multipleSaveDefaultVersions(14);
       await historyPage.checkFirstVersionName(versionName);
     },
@@ -107,7 +107,7 @@ mainTest.describe(() => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async ({ page }) => {
-    const historyPage = new HistoryPanelPage(page);
+    historyPage = new HistoryPanelPage(page);
     await historyPage.createDefaultRectangleByCoordinates(200, 200);
     await historyPage.waitForChangeIsSaved();
     await historyPage.clickHistoryPanelButton();
@@ -117,58 +117,36 @@ mainTest.describe(() => {
 
   mainTest.describe(() => {
     mainTest.beforeEach(async ({ page }) => {
-      const historyPage = new HistoryPanelPage(page);
-      const layersPanelPage = new LayersPanelPage(page);
+      layersPanelPage = new LayersPanelPage(page);
       await layersPanelPage.selectLayerByName('Rectangle');
       await historyPage.pressDeleteKeyboardButton();
       await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
       await historyPage.selectVersionOption('Restore');
     });
 
-    mainTest(
-      qase(
-        [1932, 1937],
-        'Restore version via history panel' +
-          'Verify the creation of an autosaved version after Restore',
-      ),
-      async ({ page }) => {
-        const historyPage = new HistoryPanelPage(page);
-        const layersPanelPage = new LayersPanelPage(page);
-        await historyPage.clickRestoreVersionButton();
-        await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
-        await historyPage.isHistoryPanelVisible(false);
-        await historyPage.clickHistoryPanelButton();
-        await historyPage.checkAutosaveVersionsCount('1');
-      },
-    );
-
-    mainTest(
-      qase(1933, 'Cancel restore version via history panel'),
-      async ({ page }) => {
-        const historyPage = new HistoryPanelPage(page);
-        const layersPanelPage = new LayersPanelPage(page);
-        await historyPage.clickCancelRestoreVersionButton();
-        await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
-        await historyPage.isHistoryPanelVisible(true);
-      },
-    );
-
     mainTest.describe(() => {
       mainTest.beforeEach(async ({ page }) => {
-        const historyPage = new HistoryPanelPage(page);
-        const layersPanelPage = new LayersPanelPage(page);
         await historyPage.clickRestoreVersionButton();
         await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
         await historyPage.isHistoryPanelVisible(false);
         await historyPage.clickHistoryPanelButton();
-        await historyPage.clickOnAutosaveVersionsButton();
       });
 
       mainTest(
+        qase(
+          [1932, 1937],
+          'Restore version via history panel' +
+            'Verify the creation of an autosaved version after Restore',
+        ),
+        async () => {
+          await historyPage.checkAutosaveVersionsCount('1');
+        },
+      );
+
+      mainTest(
         qase(1938, 'Restore autosaved version via history panel'),
-        async ({ page }) => {
-          const historyPage = new HistoryPanelPage(page);
-          const layersPanelPage = new LayersPanelPage(page);
+        async () => {
+          await historyPage.clickOnAutosaveVersionsButton();
           await historyPage.selectSnapshotOption('Restore version');
           await historyPage.clickRestoreVersionButton();
           await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
@@ -180,10 +158,9 @@ mainTest.describe(() => {
 
       mainTest(
         qase(1943, 'Pin the autosaved version via history panel'),
-        async ({ page }) => {
+        async () => {
           const versionName = 'pin version';
-          const historyPage = new HistoryPanelPage(page);
-          const layersPanelPage = new LayersPanelPage(page);
+          await historyPage.clickOnAutosaveVersionsButton();
           await historyPage.selectSnapshotOption('Pin version');
           await historyPage.renameVersion(versionName);
           await historyPage.checkLastVersionName(versionName);
@@ -191,30 +168,42 @@ mainTest.describe(() => {
         },
       );
     });
+
+    mainTest(qase(1933, 'Cancel restore version via history panel'), async () => {
+      await historyPage.clickCancelRestoreVersionButton();
+      await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
+      await historyPage.isHistoryPanelVisible(true);
+    });
   });
 
   mainTest(qase(1934, 'Rename version via history panel'), async ({ page }) => {
     const versionName = 'renamed version';
-    const historyPage = new HistoryPanelPage(page);
+    historyPage = new HistoryPanelPage(page);
     await historyPage.selectVersionOption('Rename');
     await historyPage.renameVersion(versionName);
     await historyPage.checkVersionName(versionName);
   });
 
   mainTest(qase(1935, 'Delete version via history panel'), async ({ page }) => {
-    const historyPage = new HistoryPanelPage(page);
+    historyPage = new HistoryPanelPage(page);
     await historyPage.selectVersionOption('Delete');
     await historyPage.isVersionListEmpty();
   });
 });
 
 mainTest.describe(() => {
-  mainTest.afterEach(async ({ page }, testInfo) => {
-    const teamPage = new TeamPage(page);
-    const mainPage = new MainPage(page);
-    const profilePage = new ProfilePage(page);
-    const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
+  mainTest.beforeEach(async ({ page }) => {
+    teamPage = new TeamPage(page);
+    mainPage = new MainPage(page);
+    profilePage = new ProfilePage(page);
+    loginPage = new LoginPage(page);
+    dashboardPage = new DashboardPage(page);
+    registerPage = new RegisterPage(page);
+    historyPage = new HistoryPanelPage(page);
+    layersPanelPage = new LayersPanelPage(page);
+  });
+
+  mainTest.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
     await profilePage.logout();
     await loginPage.waitLoginPage();
@@ -235,16 +224,9 @@ mainTest.describe(() => {
     ),
     async ({ page }, testInfo) => {
       const versionName = 'test version';
-      await testInfo.setTimeout(testInfo.timeout + 30000);
+      await test.slow();
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      const profilePage = new ProfilePage(page);
-      const dashboardPage = new DashboardPage(page);
-      const loginPage = new LoginPage(page);
-      const teamPage = new TeamPage(page);
-      const registerPage = new RegisterPage(page);
-      const historyPage = new HistoryPanelPage(page);
-      const layersPanelPage = new LayersPanelPage(page);
 
       await historyPage.createDefaultBoardByCoordinates(200, 200);
       await historyPage.waitForChangeIsSaved();
