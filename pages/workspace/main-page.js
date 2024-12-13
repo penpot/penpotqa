@@ -78,6 +78,9 @@ exports.MainPage = class MainPage extends BasePage {
       .filter({ hasText: 'Help & info' });
 
     // Main menu - second level
+    this.historyVersionMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Version history' });
     this.showRulersMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Show rulers' });
@@ -518,6 +521,10 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickHelpInfoMainMenuItem() {
     await this.helpInfoMenuItem.click();
+  }
+
+  async clickShowVersionsMainMenuSubItem() {
+    await this.historyVersionMenuSubItem.click();
   }
 
   async clickShowRulersMainMenuSubItem() {
