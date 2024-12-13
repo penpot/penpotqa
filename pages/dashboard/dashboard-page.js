@@ -194,12 +194,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       '*[class*="onboarding_questions__modal-title"]',
     );
     this.whatNewsHeader = page.getByText('What’s new in Penpot?', { exact: true });
-    this.pluginModalHeader = page.getByText(
-      'Build Plugins and enhance your workflow',
-      { exact: true },
-    );
-    this.pluginModalContinueBtn = page.getByRole('button', { name: 'Continue' });
-    this.pluginModalGoBtn = page.getByRole('button', { name: "Let's go" });
+    this.newFeaturesModalContinueBtn = page.getByRole('button', {
+      name: 'Continue',
+    });
+    this.newFeaturesModalGoBtn = page.getByRole('button', { name: "Let's go" });
   }
 
   async createFileViaPlaceholder() {
@@ -675,22 +673,21 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     }
   }
 
-  async skipPluginsPopUp() {
-    if (
-      (await this.pluginModalHeader.isVisible()) &&
-      (await this.pluginModalContinueBtn.isVisible())
-    ) {
-      await this.clickOnPluginContinueBtn();
+  async skipNewFeaturesPopUp() {
+    if (await this.newFeaturesModalContinueBtn.isVisible()) {
+      while (await this.newFeaturesModalContinueBtn.isVisible()) {
+        await this.clickOnPluginContinueBtn();
+      }
       await this.clickOnPluginGoBtn();
     }
   }
 
   async clickOnPluginContinueBtn() {
-    await this.pluginModalContinueBtn.click();
+    await this.newFeaturesModalContinueBtn.click();
   }
 
   async clickOnPluginGoBtn() {
-    await this.pluginModalGoBtn.click();
+    await this.newFeaturesModalGoBtn.click();
   }
 
   async checkOnboardingWelcomeHeader(text) {
@@ -792,7 +789,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.clickOnOnboardingContinueBtn();
     await this.clickOnOnboardingContinueWithoutTeamButton();
     await this.skipWhatNewsPopUp();
-    await this.skipPluginsPopUp();
+    await this.skipNewFeaturesPopUp();
   }
 
   async fillOnboardingFirstQuestions() {
