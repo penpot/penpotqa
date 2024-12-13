@@ -49,7 +49,7 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
     await layersPanelPage.doubleClickLayerOnLayersTab('images');
-    await layersPanelPage.renameCreatedLayer('renamed image');
+    await layersPanelPage.typeNameCreatedLayerAndEnter('renamed image');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerNameDisplayed('renamed image');
   });

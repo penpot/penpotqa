@@ -150,7 +150,7 @@ mainTest.describe(() => {
       await mainPage.createComponentsMultipleShapesRightClick(true);
       await mainPage.waitForChangeIsSaved();
 
-      await mainPage.addFlexLayoutViaRightClick();
+      await mainPage.addFlexLayoutViaRightClickForNComponent('0');
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.changeLayoutPadding('Vertical', '20');
       await mainPage.waitForChangeIsSaved();

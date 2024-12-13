@@ -1,7 +1,7 @@
 const { expect } = require('@playwright/test');
-const { BasePage } = require('../base-page');
+const { MainPage } = require('../workspace/main-page');
 
-exports.LayersPanelPage = class LayersPanelPage extends BasePage {
+exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   /**
    * @param {import('@playwright/test').Page} page
    */
@@ -9,13 +9,12 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     super(page);
 
     this.layersTab = page.getByRole('tab', { name: 'layers' });
-    this.layersSidebar = page.locator('div#layers');
+    this.layersSidebar = page.getByTestId('layer-tree');
+    this.layersRows = page.getByTestId('layer-row');
     this.sidebarLayerItem = page.locator(
       'div[class*="workspace_sidebar_layer_item__layer-row"]',
     );
-    this.createdLayerOnLayersPanelNameInput = page.locator(
-      'div[class*="element-list-body"] input[class*="element-name"]',
-    );
+    this.createdLayerOnLayersPanelNameInput = this.layersRows.getByRole('textbox');
     this.searchLayersIcon = page.locator('svg[class="icon-search"]');
     this.searchLayersInput = page.getByPlaceholder('Search layers');
     this.searchedLayerOnLayersPanelNameText = page.locator(
@@ -62,9 +61,32 @@ exports.LayersPanelPage = class LayersPanelPage extends BasePage {
     await this.clickLayerOnLayersTab(name);
   }
 
-  async renameCreatedLayer(newName) {
+  async typeNameForCreatedLayer(newName) {
     await this.createdLayerOnLayersPanelNameInput.fill(newName);
+  }
+
+  async typeNameCreatedLayerAndEnter(newName) {
+    await this.typeNameForCreatedLayer(newName);
     await this.clickOnEnter();
+  }
+
+  async typeNameCreatedLayerAndClickOnViewport(newName, x, y) {
+    await this.typeNameForCreatedLayer(newName);
+    await this.clickViewportByCoordinates(x, y, 3);
+  }
+
+  async isNotRenameLayerInputDisplayed(newName) {
+    await expect(this.createdLayerOnLayersPanelNameInput).toHaveCount(0);
+    await this.clickOnEnter();
+  }
+
+  async renameLayerViaRightClick(layerName, browserName = 'chrome') {
+    const layerSel = this.layersRows.getByText(layerName);
+    await layerSel.last().click({
+      button: 'right',
+      force: true,
+    });
+    await this.renameOption.locator('span').first().click();
   }
 
   async isLayerNameDisplayed(name) {
