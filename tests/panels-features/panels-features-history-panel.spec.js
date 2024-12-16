@@ -28,6 +28,7 @@ test.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
+  historyPage = new HistoryPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -40,37 +41,28 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(
-  qase(874, 'PF-156 Perform a change and check the status'),
-  async ({ page }) => {
-    await mainPage.clickCreateEllipseButton();
-    await mainPage.clickViewportTwice();
-    await mainPage.isUnSavedChangesDisplayed();
-    await mainPage.waitForChangeIsSaved();
-  },
-);
+mainTest(qase(874, 'PF-156 Perform a change and check the status'), async () => {
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewportTwice();
+  await mainPage.isUnSavedChangesDisplayed();
+  await mainPage.waitForChangeIsSaved();
+});
 
-mainTest(
-  qase(890, 'PF-172 Open history panel with recent changes'),
-  async ({ page }) => {
-    await mainPage.clickCreateBoardButton();
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickHistoryPanelButton();
-    await mainPage.clickHistoryActionsButton();
-    await mainPage.isActionDisplayedOnHistoryPanel('New board');
-  },
-);
+mainTest(qase(890, 'PF-172 Open history panel with recent changes'), async () => {
+  await mainPage.clickCreateBoardButton();
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.clickHistoryPanelButton();
+  await mainPage.clickHistoryActionsButton();
+  await mainPage.isActionDisplayedOnHistoryPanel('New board');
+});
 
-mainTest(
-  qase(1931, 'Open history version panel (via main menu)'),
-  async ({ page }) => {
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickFileMainMenuItem();
-    await mainPage.clickShowVersionsMainMenuSubItem();
-    await historyPage.isVersionListEmpty();
-  },
-);
+mainTest(qase(1931, 'Open history version panel (via main menu)'), async () => {
+  await mainPage.clickMainMenuButton();
+  await mainPage.clickFileMainMenuItem();
+  await mainPage.clickShowVersionsMainMenuSubItem();
+  await historyPage.isVersionListEmpty();
+});
 
 // mainTest(
 //   qase(1930, 'Open history version panel (shortcut Alt+H)'),
@@ -283,13 +275,14 @@ mainTest.describe(() => {
       await historyPage.isHistoryPanelVisible(false);
       await historyPage.clickHistoryPanelButton();
 
+      await historyPage.isAutosaveVersionsVisible(true);
       await historyPage.isOtherUserVersionVisible(true);
       await historyPage.changeVersionFilter('My versions');
-      await historyPage.isOtherUserVersionVisible(false);
       await historyPage.isAutosaveVersionsVisible(false);
+      await historyPage.isOtherUserVersionVisible(false);
       await historyPage.changeVersionFilter('All versions');
-      await historyPage.isOtherUserVersionVisible(true);
       await historyPage.isAutosaveVersionsVisible(true);
+      await historyPage.isOtherUserVersionVisible(true);
     },
   );
 });
