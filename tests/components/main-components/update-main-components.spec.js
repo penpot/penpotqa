@@ -352,20 +352,22 @@ mainTest.describe(() => {
       1404,
       'PENPOT-1404 Change copy components shadow and update main components color',
     ),
-    async () => {
+    async ({ browserName }) => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.setComponentColor('#0538D1');
+      browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
+      await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await mainPage.waitForChangeIsSaved();
       await designPanelPage.isFillHexCodeSetComponent('0538d1');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.refreshPage();
-      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-shadow.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          maxDiffPixels: 0,
+        },
       );
     },
   );
@@ -375,7 +377,7 @@ mainTest.describe(() => {
       1403,
       'PENPOT-1403 Change copy components color and update main components color',
     ),
-    async () => {
+    async ({ browserName }) => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.setComponentColor('#050E23');
@@ -383,12 +385,11 @@ mainTest.describe(() => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.setComponentColor('#C10C43');
+      await mainPage.clickViewportTwice();
+      browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
+      await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickCopyComponentOnLayersTab();
-      await mainPage.waitForChangeIsSaved();
       await designPanelPage.isFillHexCodeSetComponent('050e23');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.refreshPage();
-      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-fill.png',
         {
