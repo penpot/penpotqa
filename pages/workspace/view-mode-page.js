@@ -263,7 +263,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   }
 
   async checkBuffer(expectedValue, page, browserName) {
-    if (browserName === 'chrome') {
+    if (browserName === 'chromium') {
       const clipboardText = await page.evaluate(async () => {
         return await navigator.clipboard.readText();
       });
