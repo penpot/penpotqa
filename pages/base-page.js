@@ -263,7 +263,7 @@ exports.BasePage = class BasePage {
       `span[class*="workspace_sidebar_layer_name"]:has-text("${title}")`,
     );
     await boardSel.click({ button: 'right', force: true });
-    browserName === 'chrome'
+    browserName === 'chromium'
       ? await this.focusOnLayerMenuItem.click()
       : await this.focusOnLayerMenuItem.locator('span').first().click();
   }
