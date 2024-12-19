@@ -179,7 +179,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       button: 'right',
       force: true,
     });
-    browserName === 'chrome'
+    browserName === 'chromium'
       ? await this.createComponentMenuItem.click()
       : await this.createComponentMenuItem.locator('span').first().click();
   }
@@ -289,7 +289,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       button: 'right',
       force: true,
     });
-    browserName === 'chrome'
+    browserName === 'chromium'
       ? await this.copyOption.click()
       : await this.copyOption.locator('span').first().click();
   }

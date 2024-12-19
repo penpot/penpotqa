@@ -380,7 +380,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async setComponentColor(color) {
     await this.componentColorInput.clear();
-    await this.componentColorInput.pressSequentially(color);
+    await this.componentColorInput.fill(color);
   }
 
   async setFlexElementPositionAbsolute() {

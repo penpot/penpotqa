@@ -251,6 +251,7 @@ mainTest(
   async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('300', '400');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.addGridLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -263,7 +264,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'resized-board-with-grid-layout.png',
       {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
     await mainPage.createDefaultRectangleByCoordinates(210, 210, true);
@@ -277,7 +278,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'resized-board-with-rectangle.png',
       {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
   },
