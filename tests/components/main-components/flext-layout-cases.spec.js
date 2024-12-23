@@ -84,8 +84,12 @@ mainTest.describe(() => {
       await layersPanelPage.isLayoutIconVisibleOnLayer();
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeLayoutDirection('Column');
+      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-component-change-board-direction.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );
