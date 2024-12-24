@@ -44,7 +44,7 @@ async function updateTestResults(result, retryCount) {
 
   const totalTests = testResults.Passed + testResults.Failed + testResults.Flaky;
   testResults.PercentPassed =
-    (testResults.Passed + testResults.Flaky / totalTests) * 100;
+    ((testResults.Passed + testResults.Flaky) / totalTests) * 100;
 
   try {
     fs.writeFileSync('testResults.json', JSON.stringify(testResults, null, 2));
