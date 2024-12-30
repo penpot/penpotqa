@@ -64,7 +64,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.editorRoleSelector = page
       .getByRole('listitem')
       .filter({ hasText: 'Editor' });
-    this.viewerRoleSelector = page.getByRole('listitem').filter({ hasText: 'Viewer' });
+    this.viewerRoleSelector = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Viewer' });
     this.ownerRoleSelector = page.getByRole('listitem').filter({ hasText: 'Owner' });
     this.transferOwnershipButton = page.getByRole('button', {
       name: 'Transfer ownership',
@@ -121,6 +123,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.requestAccessButton = page.getByRole('button', { name: 'REQUEST ACCESS' });
     this.returnHomeButton = page.getByRole('button', { name: 'GO TO YOUR PENPOT' });
     this.accessDialog = page.locator('div[class*="dialog"]').first();
+    this.firstInvitedEmail = page.locator('span[class*="forms__text"]').first();
   }
 
   async createTeam(teamName) {
@@ -419,9 +422,11 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async uploadTeamImage(filePath) {
     await this.uploadTeamImageButton.setInputFiles(filePath);
-    await this.page.waitForResponse(response =>
-      response.url() === `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
-      response.status() === 200
+    await this.page.waitForResponse(
+      (response) =>
+        response.url() ===
+          `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
+        response.status() === 200,
     );
   }
 
@@ -512,5 +517,9 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async clickReturnHomeButton() {
     await this.returnHomeButton.click();
+  }
+
+  async checkFirstInvitedEmail(email) {
+    await expect(this.firstInvitedEmail).toHaveText(email);
   }
 };
