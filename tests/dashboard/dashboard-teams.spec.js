@@ -2245,6 +2245,8 @@ test.describe(() => {
 
     await profilePage.logout();
     await loginPage.waitLoginPage();
+    await page.context().clearCookies();
+    await mainPage.reloadPage();
     await loginPage.isLoginPageOpened();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();
@@ -2276,7 +2278,10 @@ test.describe(() => {
 
     await profilePage.logout();
     await loginPage.waitLoginPage();
+    await page.context().clearCookies();
+    await mainPage.reloadPage();
     await loginPage.isLoginPageOpened();
+    await loginPage.acceptCookie();
     await loginPage.enterEmail(email);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
@@ -2285,6 +2290,8 @@ test.describe(() => {
     await waitSecondMessage(page, email, 40);
     const requestMessage = await waitRequestMessage(page, email, 40);
     await page.goto(requestMessage.inviteUrl[0]);
+    await teamPage.checkFirstInvitedEmail(secondEmail);
+    await page.waitForTimeout(1000);
     await teamPage.clickSendInvitationButton();
 
     await waitSecondMessage(page, secondEmail, 40);
