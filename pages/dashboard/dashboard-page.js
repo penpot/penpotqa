@@ -26,6 +26,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.createFileButtonPlaceholder = page.locator(
       'div[class*="dashboard-grid"] button[class*="create-new"]',
     );
+    this.moveButton = page.getByRole('button', {
+      name: 'Move',
+    });
     this.createFileButtonTitlePanel = page.getByTestId('project-new-file');
     this.createFileButtonDraftsTab = page.getByTestId('new-file');
     this.renameFileMenuItem = page.getByTestId('file-rename');
@@ -622,7 +625,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .locator(`//li[@role="menuitem"]/a[text()="${otherTeamName}"]`)
       .click();
     await this.page.locator(`//li[@role="menuitem"]/a[text()="Drafts"]`).click();
-    await this.page.locator(`input[value="Move"]`).click();
+  }
+
+  async clickOnMoveButton() {
+    await this.moveButton.click();
   }
 
   async addFileWithNameAsSharedLibraryViaRightClick(fileName) {
