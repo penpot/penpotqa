@@ -622,29 +622,30 @@ mainTest.describe(() => {
     await dashboardPage.addFileAsSharedLibraryViaRightclick();
     await dashboardPage.isSharedLibraryIconDisplayed();
 
-    await teamPage.createTeam(team2);
-    await teamPage.isTeamSelected(team2);
-    await teamPage.switchTeam(team1);
-
     await dashboardPage.createFileViaTitlePanel();
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickLibrariesButton();
     await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
     await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
     await assetsPanelPage.clickCloseModalButton();
-    await dashboardPage.reloadPage();
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickLibraryTitle();
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
     await mainPage.waitForChangeIsSaved();
-
     await mainPage.clickPencilBoxButton();
+
+    await teamPage.createTeam(team2);
+    await teamPage.isTeamSelected(team2);
+    await teamPage.switchTeam(team1);
+
     await dashboardPage.moveFileToOtherTeamViaRightClick('New File 1', team2);
-    // Warning message not displays
-    // await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
-    //   'library-move-to-other-team-warning.png',
-    // );
+    await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
+      'library-move-to-other-team-warning.png',
+    );
+    await dashboardPage.clickOnMoveButton();
+    await teamPage.isTeamSelected(team2);
+    await dashboardPage.isSharedLibraryIconDisplayed();
   });
 
   mainTest.afterEach(async () => {
