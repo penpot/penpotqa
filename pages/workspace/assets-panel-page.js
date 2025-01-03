@@ -389,9 +389,11 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await elem.first().click();
   }
 
-  async isSharedLibraryVisibleByName(name) {
+  async isSharedLibraryVisibleByName(name, visible = true) {
     const elem = this.page.locator(`//div[text()="${name}"]/../../button`);
-    await expect(elem.first()).toBeVisible();
+    visible
+      ? await expect(elem.first()).toBeVisible()
+      : await expect(elem.first()).not.toBeVisible();
   }
 
   async dragAndDropComponentToViewport(name) {
