@@ -53,7 +53,9 @@ mainTest(qase(1275, 'Update main component'), async () => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.updateMainComponentViaRightClick();
-  await expect(mainPage.viewport).toHaveScreenshot('component-update-canvas.png');
+  await expect(mainPage.viewport).toHaveScreenshot('component-update-canvas.png', {
+    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+  });
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
@@ -189,6 +191,9 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-component-change-fill-color.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );
@@ -198,7 +203,7 @@ mainTest.describe(() => {
       1445,
       'PENPOT-1445 Create a component and 2 copies of it, change shadow opacity and color of main',
     ),
-    async ({ page }) => {
+    async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickAddShadowButton();
@@ -466,6 +471,9 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-name.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );
@@ -486,6 +494,9 @@ mainTest(qase(1478, 'PENPOT-1478 Changed direct, not overriden'), async () => {
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     '1478-component-update-canvas.png',
+    {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    },
   );
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
@@ -515,6 +526,9 @@ mainTest(qase(1479, 'PENPOT-1479 Changed remote, not overriden'), async () => {
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     '1479-component-update-canvas.png',
+    {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    },
   );
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
@@ -541,6 +555,9 @@ mainTest(qase(1480, 'PENPOT-1480 Changed direct, overriden in copy'), async () =
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     '1480-component-update-canvas.png',
+    {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    },
   );
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
@@ -573,6 +590,9 @@ mainTest(qase(1482, 'PENPOT-1482 Changed remote, overriden in copy'), async () =
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
     '1482-component-update-canvas.png',
+    {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    },
   );
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
@@ -611,6 +631,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       '1483-component-update-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
