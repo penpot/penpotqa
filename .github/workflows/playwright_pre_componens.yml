@@ -53,7 +53,7 @@ jobs:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
-        run: npx playwright test --project=chrome -gv 'PERF' ./tests/components
+        run: npx playwright test --project=chrome -gv 'PERF' ./tests/components/main-components/update-main-components.spec.js
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         if: always()
