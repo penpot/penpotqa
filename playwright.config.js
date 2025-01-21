@@ -20,7 +20,7 @@ const config = {
      */
     timeout: 15000,
     toMatchSnapshot: {
-      maxDiffPixelRatio: 0.01,
+      maxDiffPixelRatio: 0.001,
     },
     maxDiffPixels: 30,
   },
@@ -60,7 +60,7 @@ const config = {
       name: 'chrome',
       expect: {
         toHaveScreenshot: {
-          maxDiffPixelRatio: 0.01,
+          maxDiffPixel: 30,
         },
       },
       use: {
@@ -83,7 +83,7 @@ const config = {
       name: 'firefox',
       expect: {
         toHaveScreenshot: {
-          maxDiffPixelRatio: 0.01,
+          maxDiffPixel: 30,
         },
       },
       use: {
