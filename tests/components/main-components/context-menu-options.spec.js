@@ -176,6 +176,9 @@ mainTest.describe(() => {
     await layersPanelPage.openLayersTab();
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-rectangle-duplicated-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   });
 
@@ -185,7 +188,9 @@ mainTest.describe(() => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.showFileLibraryMainComponent();
-    await expect(mainPage.viewport).toHaveScreenshot('component-show-main.png');
+    await expect(mainPage.viewport).toHaveScreenshot('component-show-main.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(
@@ -316,6 +321,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'ellipse-complex-component-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       'ellipse-complex-component-layer.png',
@@ -344,7 +352,9 @@ mainTest(
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       'component-group-layer.png',
     );
-    await expect(mainPage.viewport).toHaveScreenshot('component-group-canvas.png');
+    await expect(mainPage.viewport).toHaveScreenshot('component-group-canvas.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   },
 );
 
@@ -358,7 +368,9 @@ mainTest(qase(1453, 'Rename component with valid name'), async () => {
   await assetsPanelPage.renameFileLibraryComponent(newName);
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.openLayersTab();
-  await expect(mainPage.viewport).toHaveScreenshot('component-new-name-canvas.png');
+  await expect(mainPage.viewport).toHaveScreenshot('component-new-name-canvas.png', {
+    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+  });
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
     'component-new-name-layer.png',
   );
@@ -388,6 +400,9 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-show-main.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   });
 
@@ -442,6 +457,9 @@ mainTest.describe(() => {
 
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-color-reset-overrides.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );
@@ -458,6 +476,9 @@ mainTest.describe(() => {
       await layersPanelPage.waitForMainComponentIsSelected();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-component-restore-main.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );
@@ -470,6 +491,9 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-detach-instance-right-click.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   });
 
@@ -483,6 +507,9 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-detach-instance-right-click.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   });
 
@@ -567,6 +594,9 @@ mainTest.describe(() => {
 
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-color-update-component.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );

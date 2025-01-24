@@ -138,7 +138,6 @@ test.describe(() => {
     await registerPage.clickOnCreateAccountSecondBtn();
     await registerPage.isRegisterEmailCorrect(email);
     invite = await waitMessage(page, email, 40);
-    console.log(invite.inviteUrl);
   });
 
   test(qase(190, 'PR-4 Change email to valid'), async ({ page }) => {

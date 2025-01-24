@@ -46,10 +46,16 @@ mainTest(
     await mainPage.pressDeleteKeyboardButton();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-copy-component-delete.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await mainPage.clickShortcutCtrlZ(browserName);
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-copy-component-delete-undo.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   },
 );
@@ -68,6 +74,9 @@ mainTest(
     await mainPage.pressDeleteKeyboardButton();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-component-delete.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   },
 );

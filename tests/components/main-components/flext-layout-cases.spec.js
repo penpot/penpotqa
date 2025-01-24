@@ -106,6 +106,9 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-component-change-board-alignment.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );
@@ -163,6 +166,9 @@ mainTest.describe(() => {
 
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-inside-board-change-paddings.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );
@@ -181,6 +187,9 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-inside-board-change-alignment.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );

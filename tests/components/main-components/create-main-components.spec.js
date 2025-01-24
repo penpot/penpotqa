@@ -66,6 +66,9 @@ mainTest(
       await layersPanelPage.openLayersTab();
       await expect(mainPage.viewport).toHaveScreenshot(
         'copy-main-components-on-canvas.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'copy-main-components-layers.png',
@@ -85,6 +88,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-main-component-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       'rectangle-main-component-layer.png',
@@ -109,6 +115,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'ellipse-main-component-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       'ellipse-main-component-layer.png',
@@ -133,6 +142,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-main-component-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       'board-main-component-layer.png',
@@ -186,6 +198,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'image-main-component-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       'image-main-component-layer.png',
@@ -210,6 +225,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'path-main-component-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       'path-main-component-layer.png',
@@ -258,10 +276,15 @@ mainTest(qase(1291, 'Undo component'), async ({ page, browserName }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickOnLayerOnCanvas();
   await designPanelPage.changeRotationForLayer('200');
-  await expect(mainPage.viewport).toHaveScreenshot('component-change_rotation.png');
+  await expect(mainPage.viewport).toHaveScreenshot('component-change_rotation.png', {
+    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+  });
   await mainPage.clickShortcutCtrlZ(browserName);
   await expect(mainPage.viewport).toHaveScreenshot(
     'component-change_rotation_undo.png',
+    {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    },
   );
 });
 
@@ -280,6 +303,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'multiple-components-canvas.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
     await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
       'multiple-components-layer.png',
@@ -376,6 +402,9 @@ mainTest(
 
     await expect(mainPage.viewport).toHaveScreenshot(
       'components-change-group-shadow-color.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   },
 );

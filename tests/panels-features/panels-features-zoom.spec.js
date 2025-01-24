@@ -32,12 +32,22 @@ mainTest(qase(850, 'PF-132 Zoom via top right menu'), async ({ page }) => {
   await mainPage.increaseZoom(1);
   await mainPage.clickViewportOnce();
   await expect(page).toHaveScreenshot('canvas-zoom-in.png', {
-    mask: [mainPage.usersSection],
+    mask: [
+      mainPage.usersSection,
+      mainPage.guides,
+      mainPage.guidesFragment,
+      mainPage.toolBarWindow,
+    ],
   });
   await mainPage.decreaseZoom(2);
   await mainPage.clickViewportOnce();
   await expect(page).toHaveScreenshot('canvas-zoom-out.png', {
-    mask: [mainPage.usersSection],
+    mask: [
+      mainPage.usersSection,
+      mainPage.guides,
+      mainPage.guidesFragment,
+      mainPage.toolBarWindow,
+    ],
   });
 });
 
@@ -46,11 +56,21 @@ mainTest(qase(852, 'PF-134 Reset zoom via top right menu'), async ({ page }) => 
   await mainPage.increaseZoom(1);
   await mainPage.clickViewportOnce();
   await expect(page).toHaveScreenshot('canvas-zoom-in.png', {
-    mask: [mainPage.usersSection],
+    mask: [
+      mainPage.usersSection,
+      mainPage.guides,
+      mainPage.guidesFragment,
+      mainPage.toolBarWindow,
+    ],
   });
   await mainPage.resetZoom();
   await expect(page).toHaveScreenshot('canvas-zoom-default.png', {
-    mask: [mainPage.usersSection],
+    mask: [
+      mainPage.usersSection,
+      mainPage.guides,
+      mainPage.guidesFragment,
+      mainPage.toolBarWindow,
+    ],
   });
 });
 
@@ -68,7 +88,12 @@ mainTest(
     await mainPage.zoomToFitAll();
     await mainPage.clickViewportTwice();
     await expect(page).toHaveScreenshot('canvas-zoom-to-fit-all.png', {
-      mask: [mainPage.usersSection],
+      mask: [
+        mainPage.usersSection,
+        mainPage.guides,
+        mainPage.guidesFragment,
+        mainPage.toolBarWindow,
+      ],
     });
   },
 );
