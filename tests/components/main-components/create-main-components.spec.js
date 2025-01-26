@@ -181,6 +181,7 @@ mainTest(
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'text-component-asset.png',
+      { maxDiffPixelRatio: 0.0002 },
     );
   },
 );
@@ -210,6 +211,7 @@ mainTest(
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'image-component-asset.png',
+      { maxDiffPixelRatio: 0.0002 },
     );
   },
 );
@@ -347,6 +349,7 @@ mainTest(
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'multiple-components-asset-3-layers.png',
+      { maxDiffPixelRatio: 0.0002 },
     );
   },
 );

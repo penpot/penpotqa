@@ -605,6 +605,7 @@ mainTest.describe(() => {
       await layersPanelPage.isLayerPresentOnLayersTab(board1, false);
       await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
       await layersPanelPage.isFocusModeOn();
+      await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-second-focus-on.png', {
         mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
       });
