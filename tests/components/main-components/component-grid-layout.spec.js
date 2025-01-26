@@ -228,14 +228,12 @@ mainTest.describe(() => {
       await newMainPage.waitForViewportVisible();
       await newMainPage.isCopyLayerVisible();
       await newPage.waitForTimeout(2000);
-      await expect(newPage).toHaveScreenshot('board-component-on-first-file.png', {
-        mask: [
-          mainPage.guides,
-          mainPage.guidesFragment,
-          mainPage.toolBarWindow,
-          mainPage.usersSection,
-        ],
-      });
+      await expect(newMainPage.viewport).toHaveScreenshot(
+        'board-component-on-first-file.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
+      );
     },
   );
 });

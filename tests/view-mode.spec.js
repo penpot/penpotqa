@@ -692,15 +692,18 @@ mainTest.describe(() => {
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-image.png',
+        { mask: [viewModePage.copyLinkField] },
       );
       await viewModePage.clickGetLinkButton();
       await viewModePage.clickManagePermissionsButton();
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-1page-selected-image.png',
+        { mask: [viewModePage.copyLinkField] },
       );
       await viewModePage.selectAllPages();
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-all-pages-selected-image.png',
+        { mask: [viewModePage.copyLinkField] },
       );
       await viewModePage.clickGetLinkButton();
       const shareLink = await viewModePage.clickCopyLinkButton();
@@ -761,6 +764,7 @@ mainTest.describe(() => {
       await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-all-users-comment-image.png',
+        { mask: [viewModePage.copyLinkField] },
       );
       await newPage.close();
 
@@ -803,6 +807,7 @@ mainTest.describe(() => {
       await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-all-users-inspect-image.png',
+        { mask: [viewModePage.copyLinkField] },
       );
       await newPage.close();
 

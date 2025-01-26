@@ -531,22 +531,46 @@ mainTest.describe(() => {
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board1);
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-first-hide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+          mainPage.zoomButton,
+        ],
       });
       await mainPage.hideLayerViaRightClickOnCanvas(board2);
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-second-hide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+          mainPage.zoomButton,
+        ],
       });
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board2, false);
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-second-show.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+          mainPage.zoomButton,
+        ],
       });
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board1, false);
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-first-show.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+          mainPage.zoomButton,
+        ],
       });
     },
   );

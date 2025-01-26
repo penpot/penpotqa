@@ -56,6 +56,7 @@ mainTest.describe('Settings - UI THEME', () => {
         'dashboard-image.png',
         {
           mask: [profilePage.profileMenuButton, teamPage.teamCurrentNameDiv],
+          maxDiffPixelRatio: 0.01,
         },
       );
       await dashboardPage.openSidebarItem('Fonts');

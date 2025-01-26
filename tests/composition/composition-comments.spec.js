@@ -50,8 +50,6 @@ mainTest.describe(() => {
         mask: [
           commentsPanelPage.commentsAuthorSection,
           mainPage.usersSection,
-          mainPage.guides,
-          mainPage.guidesFragment,
           mainPage.toolBarWindow,
         ],
       });
@@ -61,8 +59,6 @@ mainTest.describe(() => {
         mask: [
           commentsPanelPage.commentsAuthorSection,
           mainPage.usersSection,
-          mainPage.guides,
-          mainPage.guidesFragment,
           mainPage.toolBarWindow,
         ],
       });
@@ -84,8 +80,6 @@ mainTest.describe(() => {
         mask: [
           commentsPanelPage.commentsAuthorSection,
           mainPage.usersSection,
-          mainPage.guides,
-          mainPage.guidesFragment,
           mainPage.toolBarWindow,
         ],
       });
@@ -112,8 +106,6 @@ mainTest.describe(() => {
         mask: [
           commentsPanelPage.commentsAuthorSection,
           mainPage.usersSection,
-          mainPage.guides,
-          mainPage.guidesFragment,
           mainPage.toolBarWindow,
         ],
       });
@@ -134,8 +126,6 @@ mainTest.describe(() => {
       mask: [
         commentsPanelPage.commentsAuthorSection,
         mainPage.usersSection,
-        mainPage.guides,
-        mainPage.guidesFragment,
         mainPage.toolBarWindow,
       ],
     });
@@ -151,8 +141,6 @@ mainTest.describe(() => {
       mask: [
         commentsPanelPage.commentsAuthorSection,
         mainPage.usersSection,
-        mainPage.guides,
-        mainPage.guidesFragment,
         mainPage.toolBarWindow,
       ],
     });
@@ -162,8 +150,6 @@ mainTest.describe(() => {
       mask: [
         commentsPanelPage.commentsAuthorSection,
         mainPage.usersSection,
-        mainPage.guides,
-        mainPage.guidesFragment,
         mainPage.toolBarWindow,
       ],
     });
@@ -187,8 +173,6 @@ mainTest(
       mask: [
         commentsPanelPage.commentsAuthorSection,
         mainPage.usersSection,
-        mainPage.guides,
-        mainPage.guidesFragment,
         mainPage.toolBarWindow,
       ],
     });
@@ -198,8 +182,6 @@ mainTest(
       mask: [
         commentsPanelPage.commentsAuthorSection,
         mainPage.usersSection,
-        mainPage.guides,
-        mainPage.guidesFragment,
         mainPage.toolBarWindow,
       ],
     });

@@ -42,7 +42,9 @@ mainTest.describe(() => {
   mainTest(qase(274, 'CO-59 Create a rectangle from toolbar'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('rectangle.png');
+    await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(

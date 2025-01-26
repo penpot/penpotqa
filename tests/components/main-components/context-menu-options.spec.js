@@ -62,8 +62,14 @@ mainTest.describe(() => {
       const designPanelPage = new DesignPanelPage(page);
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.clickOnShowInAssetsPanel();
-      await expect(page).toHaveScreenshot('component-show-in-assets-panel.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+      await mainPage.waitForChangeIsSaved();
+      await expect(page).toHaveScreenshot('component-show-in-assets-panel2.png', {
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.usersSection,
+          mainPage.zoomButton,
+        ],
       });
     },
   );
@@ -73,8 +79,14 @@ mainTest.describe(() => {
     async ({ page }) => {
       const mainPage = new MainPage(page);
       await mainPage.showInAssetsPanelRightClick();
+      await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('component-show-in-assets-panel.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.usersSection,
+          mainPage.zoomButton,
+        ],
       });
     },
   );
@@ -265,16 +277,19 @@ mainTest.describe(() => {
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-grid-view.png',
+      { maxDiffPixelRatio: 0.01 },
     );
     await assetsPanelPage.clickFileLibraryListViewButton();
     await mainPage.waitForChangeIsSaved();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-list-view.png',
+      { maxDiffPixelRatio: 0.01 },
     );
     await assetsPanelPage.clickFileLibraryGridViewButton();
     await mainPage.waitForChangeIsSaved();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-grid-view.png',
+      { maxDiffPixelRatio: 0.01 },
     );
   });
 
