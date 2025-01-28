@@ -71,7 +71,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'empty-board-component-with-grid-layout.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -94,7 +94,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-px-row.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment],
         },
       );
     },
@@ -114,7 +114,12 @@ mainTest.describe(() => {
       await mainPage.pressPasteShortcut();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-component-on-page2.png', {
-        mask: [mainPage.usersSection],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+        ],
       });
     },
   );
@@ -136,11 +141,11 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-main-restore.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-        'copy-paste-layer.png',
+        'board-main-component-restored.png',
       );
     },
   );
@@ -156,7 +161,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-blue-color.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickViewportOnce();
@@ -164,14 +169,14 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-undo-color.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await layersPanelPage.deleteMainComponentViaRightClick();
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-deleted.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickShortcutCtrlZ(browserName);
@@ -179,7 +184,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-restored.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -211,6 +216,9 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-from-library-file.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
 
       const popupPromise = page.waitForEvent('popup');
@@ -219,9 +227,13 @@ mainTest.describe(() => {
       const newMainPage = new MainPage(newPage);
       await newMainPage.waitForViewportVisible();
       await newMainPage.isCopyLayerVisible();
-      await expect(newPage).toHaveScreenshot('board-component-on-first-file.png', {
-        mask: [newMainPage.usersSection],
-      });
+      await newPage.waitForTimeout(2000);
+      await expect(newMainPage.viewport).toHaveScreenshot(
+        'board-component-on-first-file.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
+      );
     },
   );
 });
@@ -263,7 +275,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-copy-paste.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
@@ -281,7 +293,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-with-rectangle.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -294,7 +306,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-duplicated.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
@@ -338,7 +350,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-main-updated.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -358,7 +370,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-main-show.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -375,7 +387,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-reset-overrides.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -392,7 +404,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-detach-instance.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
@@ -439,6 +451,9 @@ mainTest.describe(() => {
       await designPanelPage.isAnnotationOptionNotVisibleRightClick();
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-right-click-annotation-disabled.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.isAnnotationOptionNotVisible();

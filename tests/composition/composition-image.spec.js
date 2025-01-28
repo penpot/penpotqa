@@ -42,7 +42,9 @@ mainTest.describe(() => {
   mainTest(qase(436, 'CO-221 Import PNG image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('image-png.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-png.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(qase(440, 'CO-225 Rename image with valid name'), async ({ page }) => {
@@ -64,7 +66,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-drop-shadow-default.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.hideShadow();
@@ -72,7 +74,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-drop-shadow-hide.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.unhideShadow();
@@ -80,7 +82,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-drop-shadow-unhide.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
@@ -88,7 +90,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-inner-shadow-default.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.removeShadow();
@@ -96,7 +98,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-inner-shadow-remove.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -113,14 +115,18 @@ mainTest.describe(() => {
     await colorPalettePage.setHex('#304d6a');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-drop-shadow.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-drop-shadow.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.selectTypeForShadow('Inner shadow');
     await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
     await designPanelPage.clickShadowColorIcon();
     await colorPalettePage.setHex('#96e637');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-inner-shadow.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-inner-shadow.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(
@@ -131,10 +137,14 @@ mainTest.describe(() => {
       await designPanelPage.clickIndividualCornersRadiusButton();
       await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('image-changed-corners.png');
+      await expect(mainPage.viewport).toHaveScreenshot('image-changed-corners.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
       await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('image-png.png');
+      await expect(mainPage.viewport).toHaveScreenshot('image-png.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
     },
   );
 
@@ -142,7 +152,9 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-to-board.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-to-board.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 });
 
@@ -158,7 +170,9 @@ mainTest.describe(() => {
   mainTest(qase(435, 'CO-220 Import JPEG image'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('image-jpeg.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-jpeg.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(
@@ -169,22 +183,22 @@ mainTest.describe(() => {
       await designPanelPage.clickAddBlurButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('image-blur-default.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.hideBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('image-blur-hide.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('image-blur-unhide.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.removeBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('image-blur-remove.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
     },
   );
@@ -197,7 +211,7 @@ mainTest.describe(() => {
       await designPanelPage.clickAddStrokeButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('image-stroke-default.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.changeStrokeSettings(
         '#43E50B',
@@ -210,7 +224,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-stroke-inside-dotted.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.changeStrokeSettings(
@@ -224,7 +238,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-stroke-outside-dashed.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.changeStrokeSettings(
@@ -238,7 +252,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-stroke-center-solid.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.changeStrokeSettings(
@@ -252,13 +266,13 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-stroke-center-mixed.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.removeStroke();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('image-stroke-remove.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
     },
   );
@@ -268,7 +282,9 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(qase(460, 'CO-245 Change border radius one value'), async ({ page }) => {
@@ -344,15 +360,26 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-flipped-vertical-horizontal.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
       await mainPage.flipVerticalViaShortcut();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'image-flipped-horizontal.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
       await mainPage.flipHorizontalViaShortcut();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('image-non-flipped-jpeg.png');
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'image-non-flipped-jpeg.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
+      );
     },
   );
 });
@@ -375,6 +402,8 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 });

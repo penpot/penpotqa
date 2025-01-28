@@ -216,7 +216,12 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'apply-typography-to-text.png',
         {
-          mask: [mainPage.guides, mainPage.typographiesColorsBottomPanel],
+          mask: [
+            mainPage.guides,
+            mainPage.guidesFragment,
+            mainPage.toolBarWindow,
+            mainPage.typographiesColorsBottomPanel,
+          ],
         },
       );
     },

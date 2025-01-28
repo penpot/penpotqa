@@ -150,7 +150,12 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await prototypePanelPage.isFlowNameNotDisplayedOnPrototypePanel();
     await expect(page).toHaveScreenshot('delete-flow.png', {
-      mask: [mainPage.usersSection],
+      mask: [
+        mainPage.usersSection,
+        mainPage.guides,
+        mainPage.guidesFragment,
+        mainPage.toolBarWindow,
+      ],
     });
   });
 });
@@ -178,7 +183,12 @@ mainTest(
     await prototypePanelPage.selectInteractionDestination('Board #3');
     await mainPage.waitForChangeIsSaved();
     await expect(page).toHaveScreenshot('connector-between-board2-and-board3.png', {
-      mask: [mainPage.usersSection],
+      mask: [
+        mainPage.usersSection,
+        mainPage.guides,
+        mainPage.guidesFragment,
+        mainPage.toolBarWindow,
+      ],
     });
   },
 );
