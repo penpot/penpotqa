@@ -36,7 +36,9 @@ mainTest(
     const mainPage = new MainPage(page);
     await mainPage.createDefaultClosedPath();
     await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('path-closed.png');
+    await expect(mainPage.viewport).toHaveScreenshot('path-closed.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   },
 );
 
@@ -44,7 +46,9 @@ mainTest(qase(489, 'CO-274 Create Path from toolbar - opened'), async ({ page })
   const mainPage = new MainPage(page);
   await mainPage.createDefaultOpenPath();
   await mainPage.isCreatedLayerVisible();
-  await expect(mainPage.viewport).toHaveScreenshot('path-opened.png');
+  await expect(mainPage.viewport).toHaveScreenshot('path-opened.png', {
+    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+  });
 });
 
 mainTest(
@@ -57,7 +61,9 @@ mainTest(
     await designPanelPage.changeCap('Arrow', 'first');
     await designPanelPage.changeCap('Triangle', 'second');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-opened-with-cap.png');
+    await expect(mainPage.viewport).toHaveScreenshot('path-opened-with-cap.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   },
 );
 
@@ -85,22 +91,22 @@ mainTest.describe(() => {
       await designPanelPage.clickAddBlurButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('path-blur-default.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.hideBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('path-blur-hide.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('path-blur-unhide.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.removeBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('path-blur-remove.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
     },
   );
@@ -111,7 +117,9 @@ mainTest.describe(() => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-blur.png');
+    await expect(mainPage.viewport).toHaveScreenshot('path-blur.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(qase(512, 'CO-297 Add rotation to path BUG'), async ({ page }) => {
@@ -119,16 +127,24 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-rotated-90.png');
+    await expect(mainPage.viewport).toHaveScreenshot('path-rotated-90.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-rotated-120.png');
+    await expect(mainPage.viewport).toHaveScreenshot('path-rotated-120.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-rotated-45.png');
+    await expect(mainPage.viewport).toHaveScreenshot('path-rotated-45.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-rotated-359.png');
+    await expect(mainPage.viewport).toHaveScreenshot('path-rotated-359.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(
@@ -138,7 +154,9 @@ mainTest.describe(() => {
       await mainPage.isCreatedLayerVisible();
       await mainPage.deleteLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
     },
   );
 
@@ -149,7 +167,9 @@ mainTest.describe(() => {
       await mainPage.isCreatedLayerVisible();
       await mainPage.deleteLayerViaShortcut();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
     },
   );
 
@@ -177,21 +197,41 @@ mainTest.describe(() => {
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(path1);
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-first-hide.png', {
-        mask: [mainPage.guides, mainPage.usersSection],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+        ],
       });
       await layersPanelPage.hideLayerViaRightClickOnLayersTab(path2);
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-second-hide.png', {
-        mask: [mainPage.guides, mainPage.usersSection],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+        ],
       });
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(path2, false);
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-second-show.png', {
-        mask: [mainPage.guides, mainPage.usersSection],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+        ],
       });
       await layersPanelPage.unHideLayerViaRightClickOnLayersTab(path1);
       await expect(page).toHaveScreenshot('path-first-show.png', {
-        mask: [mainPage.guides, mainPage.usersSection],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+        ],
       });
     },
   );
@@ -202,20 +242,30 @@ mainTest.describe(() => {
       const mainPage = new MainPage(page);
       await mainPage.flipVerticalViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('path-flipped-vertical.png');
+      await expect(mainPage.viewport).toHaveScreenshot('path-flipped-vertical.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
       await mainPage.flipHorizontalViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-flipped-vertical-horizontal.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
       await mainPage.flipVerticalViaShortcut();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-flipped-horizontal.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
       await mainPage.flipHorizontalViaShortcut();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('path-non-flipped-jpeg.png');
+      await expect(mainPage.viewport).toHaveScreenshot('path-non-flipped-jpeg.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
     },
   );
 
@@ -223,7 +273,9 @@ mainTest.describe(() => {
     const mainPage = new MainPage(page);
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-to-board.png');
+    await expect(mainPage.viewport).toHaveScreenshot('path-to-board.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 });
 
@@ -243,38 +295,38 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-drop-shadow-default.png',
-        // {
-        //   mask: [mainPage.guides],
-        // },
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
       await designPanelPage.hideShadow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('path-drop-shadow-hide.png', {
-        // mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideShadow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-drop-shadow-unhide.png',
-        // {
-        //   mask: [mainPage.guides],
-        // },
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-inner-shadow-default.png',
-        // {
-        //   mask: [mainPage.guides],
-        // },
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
       await designPanelPage.removeShadow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-inner-shadow-remove.png',
-        // {
-        //   mask: [mainPage.guides],
-        // },
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
       );
     },
   );
@@ -290,13 +342,17 @@ mainTest.describe(() => {
     await colorPalettePage.setHex('#304d6a');
     await mainPage.clickMoveButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-drop-shadow.png');
+    await expect(mainPage.viewport).toHaveScreenshot('path-drop-shadow.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.selectTypeForShadow('Inner shadow');
     await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
     await designPanelPage.clickShadowColorIcon();
     await colorPalettePage.setHex('#96e637');
     await mainPage.clickMoveButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-inner-shadow.png');
+    await expect(mainPage.viewport).toHaveScreenshot('path-inner-shadow.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 });

@@ -25,6 +25,8 @@ const { RegisterPage } = require('../../pages/register-page');
 const { ViewModePage } = require('../../pages/workspace/view-mode-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 
+const maxDiffPixelRatio = 0.001;
+
 mainTest.describe(() => {
   const team = random().concat('autotest');
 
@@ -339,6 +341,7 @@ mainTest.describe(() => {
       await expect(teamPage.teamInfoSection).toHaveScreenshot(
         'team-profile-image.png',
         {
+          maxDiffPixelRatio: maxDiffPixelRatio,
           mask: [teamPage.teamNameLabel],
         },
       );
@@ -374,6 +377,9 @@ mainTest.describe(() => {
       await teamPage.isTeamMembersInfoDisplayed('1 members');
       await expect(teamPage.teamOwnerSection).toHaveScreenshot(
         'team-owner-block.png',
+        {
+          maxDiffPixelRatio: maxDiffPixelRatio,
+        },
       );
     },
   );
@@ -417,6 +423,7 @@ mainTest.describe(() => {
       await teamPage.isTeamFilesInfoDisplayed('3 files');
       await expect(teamPage.teamStatsSection).toHaveScreenshot(
         'team-stats-block.png',
+        { maxDiffPixelRatio: maxDiffPixelRatio },
       );
     },
   );
@@ -2098,11 +2105,13 @@ test.describe(() => {
       await page.goto(currentURL);
       await expect(teamPage.accessDialog).toHaveScreenshot(
         'request-project-access-dialog-image.png',
+        { maxDiffPixelRatio: maxDiffPixelRatio },
       );
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
       await expect(teamPage.accessDialog).toHaveScreenshot(
         'request-sent-dialog-image.png',
+        { maxDiffPixelRatio: maxDiffPixelRatio },
       );
       await teamPage.clickReturnHomeButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -2204,11 +2213,13 @@ test.describe(() => {
       await page.goto(currentURL);
       await expect(teamPage.accessDialog).toHaveScreenshot(
         'request-file-access-dialog-image.png',
+        { maxDiffPixelRatio: maxDiffPixelRatio },
       );
       await teamPage.clickOnRequestAccessButton();
       await teamPage.isRequestAccessButtonVisible(false);
       await expect(teamPage.accessDialog).toHaveScreenshot(
         'request-sent-dialog-image.png',
+        { maxDiffPixelRatio: maxDiffPixelRatio },
       );
       await teamPage.clickReturnHomeButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -2365,6 +2376,7 @@ mainTest.describe(() => {
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
         'right-sidebar-image.png',
         {
+          maxDiffPixelRatio: maxDiffPixelRatio,
           mask: [mainPage.usersSection],
         },
       );

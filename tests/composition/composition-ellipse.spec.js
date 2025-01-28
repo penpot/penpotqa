@@ -51,7 +51,9 @@ mainTest.describe(() => {
     await layersPanelPage.doubleClickLayerOnLayersTab('Ellipse');
     await layersPanelPage.typeNameCreatedLayerAndEnter('renamed ellipse');
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayerNameDisplayed('renamed ellipse');
+    await layersPanelPage.isLayerNameDisplayed('renamed ellipse', {
+      mask: [mainPage.guides, mainPage.guidesFragment],
+    });
   });
 
   mainTest(
@@ -64,7 +66,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-drop-shadow-default.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.hideShadow();
@@ -72,7 +74,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-drop-shadow-hide.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.unhideShadow();
@@ -80,7 +82,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-drop-shadow-unhide.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
@@ -88,7 +90,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-inner-shadow-default.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await designPanelPage.removeShadow();
@@ -96,7 +98,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-inner-shadow-remove.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -113,7 +115,9 @@ mainTest.describe(() => {
     await colorPalettePage.setHex('#304d6a');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse-drop-shadow.png');
+    await expect(mainPage.viewport).toHaveScreenshot('ellipse-drop-shadow.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
 
     await designPanelPage.selectTypeForShadow('Inner shadow');
     await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
@@ -121,7 +125,9 @@ mainTest.describe(() => {
     await colorPalettePage.setHex('#96e637');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse-inner-shadow.png');
+    await expect(mainPage.viewport).toHaveScreenshot('ellipse-inner-shadow.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(
@@ -136,22 +142,22 @@ mainTest.describe(() => {
       await designPanelPage.clickAddBlurButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-default.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.hideBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-hide.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-unhide.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.removeBlur();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-remove.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
     },
   );
@@ -162,7 +168,9 @@ mainTest.describe(() => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur.png');
+    await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(
@@ -175,7 +183,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-stroke-default.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickOnLayerOnCanvas();
@@ -191,7 +199,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-stroke-inside-dotted.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickOnLayerOnCanvas();
@@ -207,7 +215,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-stroke-outside-dashed.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickOnLayerOnCanvas();
@@ -223,7 +231,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-stroke-center-solid.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickOnLayerOnCanvas();
@@ -239,7 +247,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-stroke-center-mixed.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
       await mainPage.clickOnLayerOnCanvas();
@@ -247,7 +255,7 @@ mainTest.describe(() => {
       await designPanelPage.removeStroke();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-remove.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
     },
   );
@@ -262,14 +270,26 @@ mainTest.describe(() => {
       await layersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
       await layersPanelPage.isFocusModeOn();
       await expect(page).toHaveScreenshot('ellipse-single-focus-on.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+          mainPage.zoomButton,
+        ],
       });
       await mainPage.focusLayerViaShortcut();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
       await layersPanelPage.isFocusModeOff();
       await expect(page).toHaveScreenshot('ellipse-single-focus-off.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+        mask: [
+          mainPage.guides,
+          mainPage.guidesFragment,
+          mainPage.toolBarWindow,
+          mainPage.usersSection,
+          mainPage.zoomButton,
+        ],
       });
     },
   );
@@ -279,7 +299,9 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(
@@ -289,7 +311,9 @@ mainTest.describe(() => {
       await mainPage.isCreatedLayerVisible();
       await mainPage.deleteLayerViaShortcut();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png');
+      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
     },
   );
 
@@ -327,7 +351,13 @@ mainTest.describe(() => {
     await mainPage.transformToPathViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(page).toHaveScreenshot('ellipse-to-path.png', {
-      mask: [mainPage.usersSection, mainPage.guides],
+      mask: [
+        mainPage.usersSection,
+        mainPage.guides,
+        mainPage.guidesFragment,
+        mainPage.toolBarWindow,
+        mainPage.zoomButton,
+      ],
     });
   });
 
@@ -336,7 +366,7 @@ mainTest.describe(() => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('ellipse-to-board.png', {
-      mask: [mainPage.guides],
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
   });
 });

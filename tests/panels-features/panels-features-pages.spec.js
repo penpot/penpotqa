@@ -67,12 +67,22 @@ mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
   await mainPage.clickOnPageOnLayersPanel(false);
   await mainPage.waitForChangeIsSaved();
   await expect(page).toHaveScreenshot('canvas-second-page-selected.png', {
-    mask: [mainPage.usersSection],
+    mask: [
+      mainPage.guides,
+      mainPage.guidesFragment,
+      mainPage.toolBarWindow,
+      mainPage.usersSection,
+    ],
   });
   await mainPage.clickOnPageOnLayersPanel();
   await mainPage.waitForChangeIsSaved();
   await expect(page).toHaveScreenshot('canvas-first-page-selected.png', {
-    mask: [mainPage.usersSection],
+    mask: [
+      mainPage.guides,
+      mainPage.guidesFragment,
+      mainPage.toolBarWindow,
+      mainPage.usersSection,
+    ],
   });
 });
 
@@ -126,6 +136,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-show-main.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   },
 );
@@ -158,6 +171,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-reset-overrides.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   },
 );

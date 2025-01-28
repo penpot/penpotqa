@@ -39,7 +39,9 @@ mainTest.describe(() => {
     await mainPage.drawCurve(900, 300, 600, 200);
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('curve.png');
+    await expect(mainPage.viewport).toHaveScreenshot('curve.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(

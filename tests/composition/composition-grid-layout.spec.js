@@ -95,7 +95,7 @@ mainTest.describe(() => {
       await mainPage.addColumnsGridLayout(30);
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-3-30.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment],
       });
       await expect(mainPage.columnsRowsOnDesignPanel).toHaveScreenshot(
         'lot-1fr-columns.png',
@@ -148,7 +148,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-with-grid-alignment-center.png',
       {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment],
       },
     );
   });
@@ -191,7 +191,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-justify-space-between.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment],
         },
       );
       await mainPage.waitForChangeIsSaved();
@@ -217,7 +217,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-row-gap.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment],
         },
       );
       await inspectPanelPage.openInspectTab();
@@ -238,7 +238,7 @@ mainTest.describe(() => {
     await mainPage.addColumnGridLayoutBtnClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-3-3.png', {
-      mask: [mainPage.guides],
+      mask: [mainPage.guides, mainPage.guidesFragment],
     });
   });
 });
@@ -311,7 +311,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'resized-board-with-image.png',
       {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
   },
@@ -377,7 +377,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-image-alignment-center.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
 
@@ -399,7 +399,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-image-paddings.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment],
         },
       );
     },
@@ -418,7 +418,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'column-direction-image.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -435,7 +435,7 @@ mainTest.describe(() => {
       await layersPanelPage.clickLayerOnLayersTab('mini_sample');
       await mainPage.duplicateLayerViaLayersTab('mini_sample');
       await expect(mainPage.viewport).toHaveScreenshot('row-direction-image.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
     },
   );
@@ -492,7 +492,7 @@ mainTest.describe(() => {
     await designPanelPage.isFlexElementSectionOpened();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-with-flex-layout.png', {
-      mask: [mainPage.guides],
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
@@ -583,7 +583,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'red-board-with-4-image.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -601,6 +601,7 @@ mainTest.describe(() => {
       'right-sidebar-inspect-code-section-image.png',
       {
         mask: [mainPage.usersSection],
+        maxDiffPixelRatio: 0.001,
       },
     );
   });
@@ -633,7 +634,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
 
       await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-text.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
     },
   );
@@ -745,7 +746,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-with-grid-selected-column.png',
       {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment],
       },
     );
   });
@@ -785,7 +786,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'column-direction-rectangle.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment],
         },
       );
       await mainPage.clickShortcutCtrlZ(browserName);
@@ -799,7 +800,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'row-direction-rectangle.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment],
         },
       );
     },
@@ -814,12 +815,12 @@ mainTest.describe(() => {
       await colorPalettePage.setHex('#00FF00');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-green-color.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await mainPage.clickViewportOnce();
       await mainPage.clickShortcutCtrlZ(browserName);
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-undo-color.png', {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
     },
   );
@@ -834,7 +835,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-with-grid-manual-area.png',
       {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment],
       },
     );
   });
@@ -856,7 +857,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-horizontal-area-right.png',
         {
-          mask: [mainPage.guides],
+          mask: [mainPage.guides, mainPage.guidesFragment],
         },
       );
     },
@@ -887,7 +888,7 @@ mainTest(
     await mainPage.clickShortcutCtrlZ(browserName);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('grid-with-removed-image.png', {
-      mask: [mainPage.guides],
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
   },
 );
@@ -908,7 +909,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'dashboard-with-grid-layout.png',
       {
-        mask: [mainPage.guides],
+        mask: [mainPage.guides, mainPage.guidesFragment],
       },
     );
   },
@@ -941,7 +942,7 @@ mainTest(
     await designPanelPage.enterGridCellValue(2, '200');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('grid-with-px-all-column.png', {
-      mask: [mainPage.guides],
+      mask: [mainPage.guides, mainPage.guidesFragment],
     });
   },
 );

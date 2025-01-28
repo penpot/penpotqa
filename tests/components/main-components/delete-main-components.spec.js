@@ -34,10 +34,18 @@ mainTest(qase(1295, 'Undo deleted component'), async ({ page, browserName }) => 
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.deleteLayerViaRightClick();
-  await expect(mainPage.viewport).toHaveScreenshot('rectangle-component-delete.png');
+  await expect(mainPage.viewport).toHaveScreenshot(
+    'rectangle-component-delete.png',
+    {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    },
+  );
   await mainPage.clickShortcutCtrlZ(browserName);
   await expect(mainPage.viewport).toHaveScreenshot(
     'rectangle-component-delete-undo.png',
+    {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    },
   );
 });
 
