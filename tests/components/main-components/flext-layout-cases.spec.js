@@ -45,13 +45,12 @@ mainTest.describe(() => {
 
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
 
     await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
     await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
 
-    await mainPage.createDefaultBoardByCoordinates(400, 200);
+    await mainPage.createDefaultBoardByCoordinates(400, 200, true);
+    await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
 
     await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
