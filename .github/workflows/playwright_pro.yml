@@ -21,7 +21,7 @@ jobs:
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
         run: npx playwright test --project=chrome -gv 'PERF'
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-chromium
@@ -48,7 +48,7 @@ jobs:
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
         run: npx playwright test --project=firefox -gv 'PERF'
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-firefox
@@ -75,7 +75,7 @@ jobs:
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
         run: npx playwright test --project=webkit -gv 'PERF'
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-webkit
