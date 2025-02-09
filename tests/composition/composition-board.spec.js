@@ -435,7 +435,7 @@ mainTest.describe(() => {
   mainTest(qase(604, 'CO-411 Search board - ignore case'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
-    await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
     await layersPanelPage.typeNameCreatedLayerAndEnter('Test');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isBoardNameDisplayed('Test');
@@ -452,8 +452,8 @@ mainTest.describe(() => {
       await designPanelPage.changeHeightAndWidthForLayer('400', '500');
       await mainPage.pressFlexLayoutShortcut();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-      await layersPanelPage.typeNameForCreatedLayer('Main Board');
+      await layersPanelPage.doubleClickLayerOnLayersTab('Board');
+      await layersPanelPage.typeNameCreatedLayerAndEnter('Main Board');
       await mainPage.waitForChangeIsSaved();
       await mainPage.createDefaultBoardByCoordinates(200, 200);
       await designPanelPage.changeHeightAndWidthForLayer('200', '200');
