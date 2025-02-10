@@ -11,8 +11,9 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.hexInput = page.locator('#hex-value');
     this.modalHexInput = page
       .locator(
-        'div[class*="selected-color-group"] span[class*="color-input-wrapper"] input',
+        'div[class*="selected-color-group"] span[class*="color-input-wrapper"]',
       )
+      .getByRole('textbox')
       .last();
     this.saveColorStyleButton = page.getByRole('button', {
       name: 'Save color style',
