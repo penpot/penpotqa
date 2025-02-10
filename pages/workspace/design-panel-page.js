@@ -14,9 +14,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="page__element-set"] div[class*="color-bullet-right"]',
     );
     this.layerRotationInput = page.locator('div[title="Rotation"] input');
-    this.individualCornersRadiusButton = page.locator(
-      'button[title="Show independent radius"]',
-    );
+    this.individualCornersRadiusButton = page.getByRole('button', {
+      name: 'Show independent radius',
+    });
     this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
     this.topLeftCornerRadiusInput = page.getByRole('textbox', { name: 'Top left' });
     this.topRightCornerRadiusInput = page.getByRole('textbox', {
