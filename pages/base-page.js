@@ -26,6 +26,10 @@ exports.BasePage = class BasePage {
       .locator('div[class*="viewport"] [class*="viewport-selrect"]')
       .last();
     this.createdBoardTitle = page.getByTestId('viewport').getByText('Board').first();
+    this.shapeLabelNameInput = page
+      .getByTestId('viewport')
+      .getByRole('textbox')
+      .last();
 
     this.deleteLayerMenuItem = page
       .getByRole('listitem')
@@ -193,6 +197,10 @@ exports.BasePage = class BasePage {
   }
 
   async clickOnBackspaceAndEnter() {
+    await this.page.keyboard.press('Backspace');
+    await this.page.keyboard.press('Backspace');
+    await this.page.keyboard.press('Backspace');
+    await this.page.keyboard.press('Backspace');
     await this.page.keyboard.press('Backspace');
     await this.page.keyboard.press('Enter');
   }
@@ -409,5 +417,14 @@ exports.BasePage = class BasePage {
 
   async makeBadDashboardUrl(url) {
     return url.replace(/(\?team-id=).../, '$1555');
+  }
+
+  async typeNameForShapeLabel(newName) {
+    await this.shapeLabelNameInput.fill(newName);
+  }
+
+  async typeNameShapeLabelAndEnter(newName) {
+    await this.typeNameForShapeLabel(newName);
+    await this.clickOnEnter();
   }
 };

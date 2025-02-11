@@ -78,7 +78,7 @@ mainTest(qase(1035, 'CP-7 Use Recent colors'), async ({ page }) => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await designPanelPage.clickFillColorIcon();
-  await colorPalettePage.clickColorBullet(false, 1);
+  await colorPalettePage.clickColorBullet(false, 0);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.createdLayer).toHaveScreenshot('board-recent-color.png');

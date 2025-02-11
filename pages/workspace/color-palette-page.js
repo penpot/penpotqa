@@ -85,9 +85,9 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   }
 
   async selectColorBulletFromPalette(value) {
-    const colorSel = this.page.locator(
-      `div[class*="color-palette-inside"] div[title="${value}"] span`,
-    );
+    const colorSel = this.page
+      .locator(`div[class*="color-palette-inside"]`)
+      .getByRole('button', { name: value });
     await colorSel.click();
   }
 };
