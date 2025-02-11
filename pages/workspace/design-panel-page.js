@@ -14,18 +14,20 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="page__element-set"] div[class*="color-bullet-right"]',
     );
     this.layerRotationInput = page.locator('div[title="Rotation"] input');
-    this.individualCornersRadiusButton = page.locator(
-      'button[title="Independent corners"]',
-    );
+    this.individualCornersRadiusButton = page.getByRole('button', {
+      name: 'Show independent radius',
+    });
     this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
-    this.topLeftCornerRadiusInput = page.locator('div[title="Top left"] input');
-    this.topRightCornerRadiusInput = page.locator('div[title="Top right"] input');
-    this.bottomLeftCornerRadiusInput = page.locator(
-      'div[title="Bottom left"] input',
-    );
-    this.bottomRightCornerRadiusInput = page.locator(
-      'div[title="Bottom right"] input',
-    );
+    this.topLeftCornerRadiusInput = page.getByRole('textbox', { name: 'Top left' });
+    this.topRightCornerRadiusInput = page.getByRole('textbox', {
+      name: 'Top right',
+    });
+    this.bottomLeftCornerRadiusInput = page.getByRole('textbox', {
+      name: 'Bottom left',
+    });
+    this.bottomRightCornerRadiusInput = page.getByRole('textbox', {
+      name: 'Bottom right',
+    });
     this.sizeWidthInput = page.locator('div[title="Width"] input');
     this.sizeHeightInput = page.locator('div[title="Height"] input');
     this.xAxisInput = page.locator('div[title="X axis"] input');
@@ -33,27 +35,35 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel - Fill section
     this.firstColorIcon = page
-      .locator('div[class*="color_bullet__color-bullet-wrapper"]')
+      .locator(
+        '//div[contains(@class, "color-data")][not(contains(@class, "color_row__hidden"))]//div[contains(@class, "color_bullet__color-bullet-wrapper")]',
+      )
       .first();
-    this.fillColorIcon = page.locator(
-      'div[class*="fill__element-set"] div[class*="color_bullet__color-bullet-wrapper"]',
-    );
-    this.fillColorComponentIcon = page.locator(
-      'div[class*="selected-color-group"] span[class*="color-input-wrapper"]',
-    );
-    this.fillColorInput = page.locator(
-      'div[class*="fill__element-content"] input[class*="color-input"]',
-    );
-    this.fillOpacityInput = page.locator(
-      'div[class*="fill__element-content"] div[class*="opacity-element-wrapper"] input',
-    );
+    this.fillColorIcon = page
+      .locator(
+        'div[class*="fill__element-set"] div[class*="color_bullet__color-bullet-wrapper"]',
+      )
+      .last();
+    this.fillColorComponentIcon = page
+      .locator(
+        'div[class*="selected-color-group"] span[class*="color-input-wrapper"]',
+      )
+      .last();
+    this.fillColorInput = page
+      .locator('div[class*="fill__element-content"] input[class*="color-input"]')
+      .last();
+    this.fillOpacityInput = page
+      .locator(
+        'div[class*="fill__element-content"] div[class*="opacity-element-wrapper"] input',
+      )
+      .last();
     this.addFillButton = page.getByRole('button', { name: 'Add fill color' });
     this.removeFillButton = page
       .locator('div[class*="fill__element-content"]')
       .getByRole('button', { name: 'Remove color' });
-    this.componentColorInput = page.locator(
-      `input[class*='rows_color_row__color-input']`,
-    );
+    this.componentColorInput = page
+      .locator(`input[class*='rows_color_row__color-input']`)
+      .last();
 
     //Design panel - Shadow section
     this.shadowSection = page.getByText('Shadow', { exact: true });
