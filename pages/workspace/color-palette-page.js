@@ -9,9 +9,12 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     super(page);
     this.popUp = page.locator('div[class*="colorpicker-tooltip"]');
     this.hexInput = page.locator('#hex-value');
-    this.modalHexInput = page.locator(
-      'div[class*="selected-color-group"] span[class*="color-input-wrapper"] input',
-    );
+    this.modalHexInput = page
+      .locator(
+        'div[class*="selected-color-group"] span[class*="color-input-wrapper"]',
+      )
+      .getByRole('textbox')
+      .last();
     this.saveColorStyleButton = page.getByRole('button', {
       name: 'Save color style',
     });

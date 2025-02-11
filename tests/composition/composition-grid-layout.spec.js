@@ -900,6 +900,7 @@ mainTest(
     await designPanelPage.changeHeightAndWidthForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
     await layersPanelPage.typeNameCreatedLayerAndEnter('Dashboard');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isBoardNameDisplayed('Dashboard');

@@ -15,7 +15,7 @@ exports.BasePage = class BasePage {
     this.wrapperMessage = page.locator('aside[class*="inline-notification"]');
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });
     this.savedChangesIcon = page.locator('div[title="Saved"]');
-    this.unsavedChangesIcon = page.locator('div[title="Unsaved changes"]');
+    this.unsavedChangesIcon = page.locator('div[title="Saving"]');
     this.viewport = page.locator('div[class*="viewport"] >> nth=0');
 
     //Layer right-click menu items
@@ -408,6 +408,6 @@ exports.BasePage = class BasePage {
   }
 
   async makeBadDashboardUrl(url) {
-    return url.replace(/.(?=\/projects)/, '5');
+    return url.replace(/(\?team-id=).../, '$1555');
   }
 };
