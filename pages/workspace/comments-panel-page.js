@@ -9,12 +9,14 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     super(page);
 
     this.commentsButton = page.getByRole('button', { name: 'Comments (C)' });
-    this.commentInput = page.getByPlaceholder('Write new comment');
+    this.commentInput = page
+      .locator('[class*="comments__form"]')
+      .getByRole('textbox');
     this.commentEditInput = page.locator(
       'div[class*="comments__edit-form"] textarea',
     );
     this.commentText = page.locator(
-      'div[class*="comments__content"] span[class*="comments__text"]',
+      'div[class*="comments__item"] span[class*="comments__text"]',
     );
     this.commentCommentsPanelText = page.locator(
       'div[class*="sidebar"] div[class*="comments__threads"] div[class*="comments__content"]',
@@ -61,7 +63,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     if (isEdit) {
       await this.commentEditInput.fill(text);
     } else {
-      await this.commentInput.fill(text);
+      await this.commentInput.pressSequentially(text, { delay: 10 });
     }
   }
 

@@ -69,7 +69,7 @@ mainTest.describe(() => {
       const layersPanelPage = new LayersPanelPage(page);
       // Rename board by double clicking on the board
       await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-      await layersPanelPage.typeNameCreatedLayerAndEnter(newName);
+      await mainPage.typeNameShapeLabelAndEnter(newName);
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isBoardNameDisplayed(newName);
       // Rename board by double clicking on the board layer
@@ -493,13 +493,13 @@ mainTest.describe(() => {
     await mainPage.clickViewportByCoordinates(100, 150);
     await mainPage.waitForChangeIsSaved();
     await mainPage.doubleClickBoardTitleOnCanvas('Board');
-    await layersPanelPage.typeNameCreatedLayerAndEnter(board1);
+    await mainPage.typeNameShapeLabelAndEnter(board1);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportByCoordinates(250, 300);
     await mainPage.waitForChangeIsSaved();
     await mainPage.doubleClickBoardTitleOnCanvas('Board');
-    await layersPanelPage.typeNameCreatedLayerAndEnter(board2);
+    await mainPage.typeNameShapeLabelAndEnter(board2);
     await mainPage.waitForChangeIsSaved();
   });
 
