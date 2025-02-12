@@ -113,6 +113,7 @@ mainTest.describe(() => {
       await layersPanelPage.selectLayerByName('Rectangle');
       await historyPage.pressDeleteKeyboardButton();
       await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
+      await historyPage.clickHistoryPanelButton();
       await historyPage.selectVersionOption('Restore');
     });
 
@@ -227,6 +228,7 @@ mainTest.describe(() => {
       await historyPage.renameVersion(versionName);
       await layersPanelPage.selectLayerByName('Board');
       await historyPage.pressDeleteKeyboardButton();
+      await historyPage.clickHistoryPanelButton();
       await layersPanelPage.isLayerPresentOnLayersTab('Board', false);
       await historyPage.selectVersionOption('Restore');
       await historyPage.clickRestoreVersionButton();
@@ -268,6 +270,7 @@ mainTest.describe(() => {
       await historyPage.renameVersion(versionName);
       await layersPanelPage.selectLayerByName('Ellipse');
       await historyPage.pressDeleteKeyboardButton();
+      await historyPage.clickHistoryPanelButton();
       await layersPanelPage.isLayerPresentOnLayersTab('Ellipse', false);
       await historyPage.selectVersionOption('Restore');
       await historyPage.clickRestoreVersionButton();

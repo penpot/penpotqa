@@ -10,8 +10,10 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
 
     this.emptyVersionMessage = page.getByText('There are no versions yet');
     this.saveVersionButton = page.getByRole('button', { name: 'Save version' });
-    this.versionNameInput = page.locator('input[class*="version-entry-name-edit"]');
-    this.versionName = page.locator('p[class*="version-entry-name"]');
+    this.versionNameInput = page.locator('input[class*="controls_input"]');
+    this.versionName = page.locator(
+      'span[class*="product_user"][class*="body-small-typography"]',
+    );
     this.optionsVersionButton = page.getByRole('button', {
       name: 'Open version menu',
     });
@@ -23,15 +25,17 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
       name: 'Expand snapshots',
     });
 
-    this.snapshotElement = page.locator('div[class*="version-snapshot-entry"]');
-    this.optionsSnapshotButton = page.getByRole('button', {
-      name: 'Open snapshot menu',
-    });
+    this.snapshotElement = page.locator(
+      'div[class*="product_autosaved"][class*="version-entry"]',
+    );
+    this.optionsSnapshotButton = page.locator(
+      'div[class*="product_autosaved"][class*="version-entry"] [title="Open version menu"]',
+    );
     this.pinSnapshotButton = page.getByRole('button', { name: 'Pin version' });
     this.restoreSnapshotButton = page.getByRole('button', {
       name: 'Restore version',
     });
-    this.versionCreatorAvatars = page.locator('img[class*="version-entry-avatar"]');
+    this.versionCreatorAvatars = page.locator('[class*="avatar-image"] img');
     this.historyPanel = page.getByRole('tabpanel', { name: 'history' });
     this.filterVersionDropdown = this.historyPanel.locator(
       'div[class*="custom-select"]',
