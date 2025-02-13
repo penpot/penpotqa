@@ -70,6 +70,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await designPanelPage.changeAxisXandYForLayer('400', '300');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.pressDeleteKeyboardButton();
     await expect(mainPage.viewport).toHaveScreenshot(
