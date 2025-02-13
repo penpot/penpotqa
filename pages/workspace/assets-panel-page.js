@@ -121,7 +121,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     );
     this.libraryTitle = page.locator('div[class*="special-title"]');
     this.libraryComponentsTitle = page.locator(
-      '//*[@class="icon-component"]/../../../../../button/div/span',
+      '//span[text()="Components"]/../../../span',
     );
     this.dismissButton = page.getByRole('button', { name: 'Dismiss' });
     this.librariesUpdatesTab = page.getByRole('tab', { name: 'UPDATES' });

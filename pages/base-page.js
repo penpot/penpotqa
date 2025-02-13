@@ -12,7 +12,7 @@ exports.BasePage = class BasePage {
       'div[class*="main_ui_notifications_toast_notification__text"]',
     );
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
-    this.wrapperMessage = page.locator('aside[class*="inline-notification"]');
+    this.wrapperMessage = page.getByTestId('actionable');
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });
     this.savedChangesIcon = page.locator('div[title="Saved"]');
     this.unsavedChangesIcon = page.locator('div[title="Saving"]');
@@ -95,8 +95,11 @@ exports.BasePage = class BasePage {
     this.duplicateOption = page
       .getByRole('listitem')
       .filter({ hasText: 'Duplicate' });
-    this.copyOption = page.getByRole('listitem').filter({ hasText: 'Copy' });
-    this.pasteOption = page.getByRole('listitem').filter({ hasText: 'Paste' });
+    this.copyOption = page.getByRole('listitem').filter({ hasText: 'Copy' }).first();
+    this.pasteOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Paste' })
+      .first();
     this.groupOption = page.getByRole('listitem').filter({ hasText: 'Group' });
     this.showMainComponentOption = page
       .getByRole('listitem')
