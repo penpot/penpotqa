@@ -277,7 +277,7 @@ mainTest.describe(() => {
       await assetsPanelPage.clickCloseModalButton();
       await dashboardPage.reloadPage();
       await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.clickLibraryTitle();
+      await assetsPanelPage.clickLibraryTitleWithName('New File 1');
       await assetsPanelPage.clickLibraryComponentsTitle();
       await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
       await mainPage.waitForChangeIsSaved();
@@ -410,7 +410,7 @@ mainTest.describe(() => {
     await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
     await assetsPanelPage.clickCloseModalButton();
     await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibraryTitle();
+    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
     await designPanelPage.changeAxisXandYForLayer('100', '100');
@@ -554,7 +554,7 @@ mainTest.describe(() => {
     await assetsPanelPage.clickCloseModalButton();
     await dashboardPage.reloadPage();
     await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibraryTitle();
+    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
     await designPanelPage.changeAxisXandYForLayer('300', '400');
@@ -574,7 +574,7 @@ mainTest.describe(() => {
     await assetsPanelPage.clickCloseModalButton();
     await dashboardPage.reloadPage();
     await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibraryTitle();
+    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
     await designPanelPage.changeAxisXandYForLayer('300', '400');
@@ -676,7 +676,7 @@ mainTest.describe(() => {
     await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
     await assetsPanelPage.clickCloseModalButton();
     await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibraryTitle();
+    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
     await mainPage.waitForChangeIsSaved();
