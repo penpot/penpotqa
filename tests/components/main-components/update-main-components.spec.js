@@ -209,8 +209,8 @@ mainTest.describe(() => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.refreshPage();
-      await mainPage.waitForViewportVisible();
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.clickViewportByCoordinates(1000, 200, 2);
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-shadow-default.png',
         {
@@ -225,9 +225,7 @@ mainTest.describe(() => {
       await colorPalettePage.setHex('#09e5ec');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.refreshPage();
-      await mainPage.waitForViewportVisible();
+      await mainPage.clickViewportByCoordinates(1000, 200, 2);
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-shadow-updated.png',
         {
@@ -248,9 +246,7 @@ mainTest.describe(() => {
       await designPanelPage.clickAddBlurButton();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.refreshPage();
-      await mainPage.waitForViewportVisible();
+      await mainPage.clickViewportByCoordinates(1000, 200, 2);
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-blur.png',
         {
