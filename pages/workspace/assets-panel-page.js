@@ -110,7 +110,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       name: 'Unpublish',
     });
     this.sharedLibraryBadge = page.locator('span[class*="shared-badge"]');
-    this.librariesOpenModalButton = page.getByRole('button', { name: 'Libraries' });
+    this.librariesOpenModalButton = page.getByTestId('libraries');
     this.addSharedLibraryButton = page.getByRole('button', { name: 'Publish' });
     this.cancelSharedLibraryButton = page.getByRole('button', { name: 'Cancel' });
     this.searchSharedLibrariesInput = page.getByRole('textbox', {

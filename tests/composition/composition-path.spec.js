@@ -192,7 +192,6 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.doubleClickLayerOnLayersTab('Path');
       await layersPanelPage.typeNameCreatedLayerAndEnter(path2);
-      await mainPage.waitForChangeIsSaved();
       await mainPage.clickViewportOnce();
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(path1);
       await mainPage.waitForChangeIsSaved();
@@ -225,6 +224,7 @@ mainTest.describe(() => {
         ],
       });
       await layersPanelPage.unHideLayerViaRightClickOnLayersTab(path1);
+      await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-first-show.png', {
         mask: [
           mainPage.guides,

@@ -12,7 +12,7 @@ exports.LoginPage = class LoginPage extends BasePage {
     this.emailInput = page.locator('#email');
     this.pwdInput = page.locator('#password');
     this.loginButton = page.getByTestId('login-submit');
-    this.emailInputError = page.getByTestId('-error');
+    this.emailInputError = page.getByTestId(':email-error');
     this.section = page.locator('section[class="auth-content"]');
     this.loginErrorBanner = page.locator(
       'aside[class*="context_notification__warning"] div:nth-of-type(2)',
@@ -86,6 +86,6 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async waitLoginPage(timeout = 30) {
-    await this.emailInput.waitFor({state: 'visible', timeout: timeout*1000});
+    await this.emailInput.waitFor({ state: 'visible', timeout: timeout * 1000 });
   }
 };
