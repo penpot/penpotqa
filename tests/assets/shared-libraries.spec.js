@@ -242,6 +242,7 @@ mainTest.describe(() => {
       await dashboardPage.openFileWithName('New File 1');
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.clickLibrariesButton();
+      await assetsPanelPage.isRemoveAsSharedLibraryButtonVisible();
       await assetsPanelPage.clickRemoveAsSharedLibraryButton();
       await assetsPanelPage.isRemoveAsSharedLibraryButtonVisible();
       await assetsPanelPage.clickRemoveAsSharedLibraryButton();
@@ -445,6 +446,8 @@ mainTest.describe(() => {
         'wrapper-message.png',
       );
       await assetsPanelPage.clickDismissButton();
+      await mainPage.reloadPage();
+      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-1.png',
         {
@@ -481,6 +484,8 @@ mainTest.describe(() => {
         'wrapper-message.png',
       );
       await assetsPanelPage.clickDismissButton();
+      await mainPage.reloadPage();
+      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-1.png',
         {
@@ -516,7 +521,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-3.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: [mainPage.toolBarWindow, mainPage.guides],
         },
       );
     },

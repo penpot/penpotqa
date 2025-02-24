@@ -30,12 +30,14 @@ test.afterEach(async ({ page }, testInfo) => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async ({ page }) => {
+    const commentText = 'Test Comment';
     const mainPage = new MainPage(page);
     const commentsPanelPage = new CommentsPanelPage(page);
     await commentsPanelPage.clickCreateCommentButton();
     await mainPage.clickViewportTwice();
-    await commentsPanelPage.enterCommentText('Test Comment');
+    await commentsPanelPage.enterCommentText(commentText);
     await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.isCommentDisplayedInPopUp(commentText);
   });
 
   mainTest(
@@ -115,7 +117,7 @@ mainTest.describe(() => {
   mainTest(qase([571, 1236], 'CO-356 Delete thread'), async ({ page }) => {
     const mainPage = new MainPage(page);
     const commentsPanelPage = new CommentsPanelPage(page);
-    await commentsPanelPage.clickCommentOptionsButton();
+    await commentsPanelPage.clickCommentHeaderOptionsButton();
     await commentsPanelPage.clickDeleteCommentOption();
     await commentsPanelPage.clickDeleteThreadButton();
     await commentsPanelPage.isCommentThreadIconNotDisplayed();

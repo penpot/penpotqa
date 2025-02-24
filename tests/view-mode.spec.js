@@ -411,7 +411,7 @@ mainTest.describe(() => {
     await commentsPanelPage.enterCommentText('Test Comment');
     await commentsPanelPage.clickPostCommentButton();
 
-    await commentsPanelPage.clickCommentOptionsButton();
+    await commentsPanelPage.clickCommentHeaderOptionsButton();
     await commentsPanelPage.clickDeleteCommentOption();
     await commentsPanelPage.clickDeleteThreadButton();
     await commentsPanelPage.isCommentThreadIconNotDisplayed();
