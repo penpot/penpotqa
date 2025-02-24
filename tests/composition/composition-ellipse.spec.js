@@ -349,6 +349,7 @@ mainTest.describe(() => {
   mainTest(qase(369, 'CO-154 Transform ellipse to path'), async ({ page }) => {
     const mainPage = new MainPage(page);
     await mainPage.transformToPathViaRightClick();
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(page).toHaveScreenshot('ellipse-to-path.png', {
       mask: [

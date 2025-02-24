@@ -210,7 +210,7 @@ mainTest.describe(() => {
       await assetsPanelPage.clickCloseModalButton();
       await dashboardPage.reloadPage();
       await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.clickLibraryTitle();
+      await assetsPanelPage.clickLibraryTitleWithName('New File 1');
       await assetsPanelPage.clickLibraryComponentsTitle();
       await assetsPanelPage.dragAndDropComponentToViewport('Board');
       await mainPage.waitForChangeIsSaved();
