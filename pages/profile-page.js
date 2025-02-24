@@ -48,7 +48,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.passwordNewInput = page.getByPlaceholder('New password');
     this.passwordConfirmInput = page.getByPlaceholder('Confirm password');
     this.changePasswordButton = page.getByTestId('submit-password');
-    this.passwordInputError = page.getByTestId('-error');
+    this.passwordInputError = page.locator('[id*=":password"]');
 
     //Settings
     this.settingsMenuButton = page.getByTestId('settings-profile');
@@ -154,10 +154,14 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     const profileImage = await this.profileImageInput.locator('../img');
     const oldSrc = await profileImage.getAttribute('src');
     await this.profileImageInput.setInputFiles(filePath);
-    await expect(this.profileImageInput.locator(`../img[src="${oldSrc}"]`)).toBeHidden();
-    await this.page.waitForResponse(response =>
-      response.url() === `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
-      response.status() === 200
+    await expect(
+      this.profileImageInput.locator(`../img[src="${oldSrc}"]`),
+    ).toBeHidden();
+    await this.page.waitForResponse(
+      (response) =>
+        response.url() ===
+          `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
+        response.status() === 200,
     );
   }
 
