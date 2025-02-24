@@ -17,7 +17,7 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     });
     this.emailInputError = page.getByTestId('email-input-error');
     this.passwordInputHint = page.locator('div.main_ui_components_forms__hint');
-    this.passwordInputError = page.getByTestId('-error');
+    this.passwordInputError = page.getByTestId(':password-error');
     this.fullnameInput = page.getByPlaceholder('Full Name');
     this.acceptTermsCheckbox = page.locator(
       'label[for="accept-terms-and-privacy"] span',
