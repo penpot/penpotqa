@@ -45,7 +45,7 @@ mainTest(qase(1273, 'Create component shape'), async ({ page }) => {
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     'rectangle-component-asset.png',
     {
-      mask: [mainPage.guides],
+      mask: [assetsPanelPage.librariesOpenModalButton],
     },
   );
 });
@@ -100,6 +100,9 @@ mainTest(
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'rectangle-component-asset.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   },
 );
@@ -127,6 +130,9 @@ mainTest(
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'ellipse-component-asset.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   },
 );
@@ -154,6 +160,9 @@ mainTest(
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'board-component-asset.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   },
 );
@@ -181,7 +190,10 @@ mainTest(
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'text-component-asset.png',
-      { maxDiffPixelRatio: 0.002 },
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+        maxDiffPixelRatio: 0.002,
+      },
     );
   },
 );
@@ -211,7 +223,10 @@ mainTest(
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'image-component-asset.png',
-      { maxDiffPixelRatio: 0.002 },
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+        maxDiffPixelRatio: 0.002,
+      },
     );
   },
 );
@@ -239,6 +254,9 @@ mainTest(
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'path-component-asset.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   },
 );
@@ -266,6 +284,9 @@ mainTest(
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'curve-component-asset.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   },
 );
@@ -316,6 +337,9 @@ mainTest(
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'multiple-components-asset.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   },
 );
@@ -349,7 +373,10 @@ mainTest(
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'multiple-components-asset-3-layers.png',
-      { maxDiffPixelRatio: 0.002 },
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+        maxDiffPixelRatio: 0.002,
+      },
     );
   },
 );

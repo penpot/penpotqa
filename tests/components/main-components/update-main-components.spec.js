@@ -60,6 +60,9 @@ mainTest(qase(1275, 'Update main component'), async () => {
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     'component-update-asset.png',
+    {
+      mask: [assetsPanelPage.librariesOpenModalButton],
+    },
   );
 });
 
@@ -499,6 +502,9 @@ mainTest(qase(1478, 'PENPOT-1478 Changed direct, not overriden'), async () => {
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     '1478-component-update-asset.png',
+    {
+      mask: [assetsPanelPage.librariesOpenModalButton],
+    },
   );
 });
 
@@ -531,6 +537,9 @@ mainTest(qase(1479, 'PENPOT-1479 Changed remote, not overriden'), async () => {
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     '1479-component-update-asset.png',
+    {
+      mask: [assetsPanelPage.librariesOpenModalButton],
+    },
   );
 });
 
@@ -560,6 +569,9 @@ mainTest(qase(1480, 'PENPOT-1480 Changed direct, overriden in copy'), async () =
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     '1480-component-update-asset.png',
+    {
+      mask: [assetsPanelPage.librariesOpenModalButton],
+    },
   );
 });
 
@@ -595,6 +607,9 @@ mainTest(qase(1482, 'PENPOT-1482 Changed remote, overriden in copy'), async () =
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     '1482-component-update-asset.png',
+    {
+      mask: [assetsPanelPage.librariesOpenModalButton],
+    },
   );
 });
 
@@ -636,6 +651,9 @@ mainTest(
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       '1483-component-update-asset.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   },
 );
