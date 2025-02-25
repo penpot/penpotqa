@@ -77,7 +77,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
       'div[class*="comments__settings-bar-inside"]',
     );
     this.commentCommentsPanelText = page.locator(
-      'div[class*="comments__settings-bar-inside"] div[class*="comments__content"]',
+      'div[class*="comments__settings-bar-inside"] div[class*="comments__item"]',
     );
     this.interactionsButton = page.getByRole('button', { name: 'Interactions' });
     this.widthCopyButton = page.locator('button[class*="copy_button"]').first();
