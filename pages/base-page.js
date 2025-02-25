@@ -415,7 +415,7 @@ exports.BasePage = class BasePage {
   }
 
   async makeBadUrl(url) {
-    return url.replace(/.(?=\?)/, '5');
+    return url.replace(/(file-id=).../, '$1555');
   }
 
   async makeBadDashboardUrl(url) {

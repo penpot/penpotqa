@@ -454,12 +454,11 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.doubleClickLayerOnLayersTab('Board');
       await layersPanelPage.typeNameCreatedLayerAndEnter('Main Board');
-      await mainPage.waitForChangeIsSaved();
       await mainPage.createDefaultBoardByCoordinates(200, 200);
+      await mainPage.waitForChangeIsSaved();
       await designPanelPage.changeHeightAndWidthForLayer('200', '200');
       await mainPage.waitForChangeIsSaved();
       await mainPage.createDefaultEllipseByCoordinates(220, 220);
-      await mainPage.waitForChangeIsSaved();
       await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
@@ -469,7 +468,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
-      await designPanelPage.changeAxisXandYForLayer('700', '600');
+      await designPanelPage.changeAxisXandYForLayer('100', '100');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(

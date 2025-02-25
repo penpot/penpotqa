@@ -88,6 +88,9 @@ mainTest(
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'rectangle-component-asset.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   },
 );
