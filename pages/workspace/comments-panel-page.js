@@ -19,22 +19,23 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       'div[class*="comments__item"] span[class*="comments__text"]',
     );
     this.commentCommentsPanelText = page.locator(
-      'div[class*="sidebar"] div[class*="comments__threads"] div[class*="comments__content"]',
+      '[class*="sidebar"] div[class*="comments__cover"] div[class*="comments__item"]',
     );
-    this.commentReplyText = page.locator(
-      'div[class*="thread-content"] span[class*="comments__text"] >> nth=1',
-    );
+    this.commentReplyText = this.commentText.nth(1);
     this.commentReplyCommentsPanelText = page.getByText('1 reply', { exact: true });
     this.postCommentButton = page.getByRole('button', { name: 'Post' });
     this.commentThreadIcon = page.locator(
-      'div[class*="comments-container"] div[class*="thread-bubble"]',
+      'div[class*="comments-container"] div[data-testid*="floating-thread-bubble"]',
     );
     this.commentResolvedThreadIcon = page.locator(
-      'div[class*="comments-container"] div.main_ui_comments__resolved',
+      'div[class*="comments-container"] div.main_ui_comments__avatar-solved',
     );
-    this.commentReplyInput = page.getByPlaceholder('Reply');
+    this.commentHeaderOptionsButton = page
+      .locator('div[class*="thread-header"]')
+      .first()
+      .getByRole('button', { name: 'Options' });
     this.commentOptionsButton = page
-      .locator('div[class*="comments__threads"]')
+      .locator('div[class*="thread-item-wrapper"]')
       .first()
       .getByRole('button', { name: 'Options' });
     this.commentEditOptionMenuItem = page
@@ -47,7 +48,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       name: 'Delete conversation',
     });
     this.resolveCommentCheckbox = page.locator(
-      'div[class*="comments__options-resolve-wrapper"] span',
+      'div[class*="thread-header"] span[class*="comments__checkbox"]',
     );
     this.commentsPanelPlaceholderText = page.locator(
       'div[class*="thread-group-placeholder"] span[class*="placeholder-label"]',
@@ -61,7 +62,8 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
 
   async enterCommentText(text, isEdit = false) {
     if (isEdit) {
-      await this.commentEditInput.fill(text);
+      await this.commentInput.first().clear();
+      await this.commentInput.first().pressSequentially(text, { delay: 10 });
     } else {
       await this.commentInput.pressSequentially(text, { delay: 10 });
     }
@@ -80,7 +82,11 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   }
 
   async enterReplyText(text) {
-    await this.commentReplyInput.fill(text);
+    await this.commentInput.pressSequentially(text, { delay: 10 });
+  }
+
+  async clickCommentHeaderOptionsButton() {
+    await this.commentHeaderOptionsButton.click();
   }
 
   async clickCommentOptionsButton() {
@@ -141,7 +147,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
 
   async isResolveCommentCheckboxSelected() {
     await expect(this.resolveCommentCheckbox).toHaveClass(
-      'main_ui_comments__options-resolve checked',
+      'main_ui_comments__checkbox checked',
     );
   }
 };

@@ -363,6 +363,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.isFillHexCodeSetComponent('0538d1');
+      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-shadow.png',
         {
