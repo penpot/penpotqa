@@ -60,6 +60,7 @@ mainTest.describe(() => {
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const designPanelPage = new DesignPanelPage(page);
+      const assetsPanelPage = new AssetsPanelPage(page);
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.clickOnShowInAssetsPanel();
       await mainPage.waitForChangeIsSaved();
@@ -69,6 +70,7 @@ mainTest.describe(() => {
           mainPage.guidesFragment,
           mainPage.usersSection,
           mainPage.zoomButton,
+          assetsPanelPage.librariesOpenModalButton,
         ],
       });
     },
@@ -78,6 +80,7 @@ mainTest.describe(() => {
     qase(0, 'Show in assets panel option from component context menu'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
+      const assetsPanelPage = new AssetsPanelPage(page);
       await mainPage.showInAssetsPanelRightClick();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('component-show-in-assets-panel.png', {
@@ -86,6 +89,7 @@ mainTest.describe(() => {
           mainPage.guidesFragment,
           mainPage.usersSection,
           mainPage.zoomButton,
+          assetsPanelPage.librariesOpenModalButton,
         ],
       });
     },
@@ -184,6 +188,9 @@ mainTest.describe(() => {
     await assetsPanelPage.isSecondComponentAddedToFileLibrary();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-rectangle-duplicated-asset.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
     await layersPanelPage.openLayersTab();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -243,6 +250,9 @@ mainTest.describe(() => {
     await assetsPanelPage.isFileLibraryGroupCreated('New Group');
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'group-components-renamed.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   });
 
@@ -258,6 +268,9 @@ mainTest.describe(() => {
     await assetsPanelPage.isFileLibraryGroupRemoved();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-rectangle.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   });
 
@@ -277,19 +290,28 @@ mainTest.describe(() => {
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-grid-view.png',
-      { maxDiffPixelRatio: 0.01 },
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+        maxDiffPixelRatio: 0.01,
+      },
     );
     await assetsPanelPage.clickFileLibraryListViewButton();
     await mainPage.waitForChangeIsSaved();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-list-view.png',
-      { maxDiffPixelRatio: 0.01 },
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+        maxDiffPixelRatio: 0.01,
+      },
     );
     await assetsPanelPage.clickFileLibraryGridViewButton();
     await mainPage.waitForChangeIsSaved();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-grid-view.png',
-      { maxDiffPixelRatio: 0.01 },
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+        maxDiffPixelRatio: 0.01,
+      },
     );
   });
 
@@ -348,6 +370,9 @@ mainTest(
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'ellipse-complex-component-asset.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      },
     );
   },
 );
