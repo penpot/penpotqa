@@ -233,7 +233,6 @@ async function checkConfirmAccessText(text, name, email, teamName) {
     '\r\n' +
     '\r\n' +
     '\r\n' +
-    '\r\n' +
     'If you do not wish to grant access at this time, you can simply disregard this email.\r\n' +
     'Thank you\r\n' +
     '\r\n' +

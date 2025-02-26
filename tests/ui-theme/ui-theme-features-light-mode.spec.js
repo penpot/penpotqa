@@ -97,7 +97,7 @@ mainTest.describe('Settings - UI THEME', () => {
       await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
         'assets-file-left-sidebar-image.png',
         {
-          mask: [mainPage.fileNameSpan],
+          mask: [mainPage.fileNameSpan, assetsPanelPage.librariesOpenModalButton],
         },
       );
       await mainPage.waitForChangeIsUnsaved();
