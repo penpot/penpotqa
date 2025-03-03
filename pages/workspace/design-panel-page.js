@@ -32,6 +32,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.sizeHeightInput = page.locator('div[title="Height"] input');
     this.xAxisInput = page.locator('div[title="X axis"] input');
     this.yAxisInput = page.locator('div[title="Y axis"] input');
+    this.resizeBoardToFitButton = page.getByRole('button', {
+      name: 'Resize board to fit content',
+    });
 
     //Design panel - Fill section
     this.firstColorIcon = page
@@ -1254,5 +1257,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.page
       .locator(`ul[class*="stroke-cap-dropdown"] span:has-text('${capName}')`)
       .click();
+  }
+
+  async clickOnResizeBoardToFitButton() {
+    await this.resizeBoardToFitButton.click();
   }
 };

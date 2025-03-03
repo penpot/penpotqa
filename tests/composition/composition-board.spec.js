@@ -635,3 +635,54 @@ mainTest.describe(() => {
     },
   );
 });
+
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+
+    await mainPage.createDefaultBoardByCoordinates(200, 200);
+    await designPanelPage.changeHeightAndWidthForLayer('600', '600');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultEllipseByCoordinates(210, 210, true);
+  });
+
+  mainTest(qase(2040, 'Resize board to fit 2 elements'), async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await designPanelPage.clickOnResizeBoardToFitButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'resize-board-to-fit-2-elements.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
+    );
+  });
+
+  mainTest(
+    qase(
+      2050,
+      'Resize board to fit content that goes partially outside of the board',
+    ),
+    async ({ page }) => {
+      const mainPage = new MainPage(page);
+      const designPanelPage = new DesignPanelPage(page);
+      await mainPage.createDefaultRectangleByCoordinates(180, 350, true);
+      await mainPage.clickViewportOnce();
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+      await designPanelPage.clickOnResizeBoardToFitButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'resize-board-to-fit-partially-outside.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        },
+      );
+    },
+  );
+});

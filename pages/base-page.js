@@ -145,6 +145,25 @@ exports.BasePage = class BasePage {
     this.mergeGridCellMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Merge cells' });
+    this.copyPasteAsMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Copy/Paste as ...' });
+    this.copyAsCssMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: /^Copy as CSS$/ });
+    this.copyAsCssNLayersMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Copy as CSS (nested layers)' });
+    this.copyAsTextMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Copy as text' });
+    this.copyPropertiesMenuItem = page.getByText('Copy propertiesCtrlAltc');
+    this.pastePropertiesMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Paste properties' });
+    this.copyLinkMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Copy link' });
     this.acceptCookieButton = page.locator('button[class*="CookieConsent_accept"]');
     this.renameOption = page.getByRole('listitem').filter({ hasText: 'Rename' });
   }
@@ -429,5 +448,17 @@ exports.BasePage = class BasePage {
   async typeNameShapeLabelAndEnter(newName) {
     await this.typeNameForShapeLabel(newName);
     await this.clickOnEnter();
+  }
+
+  async clickShortcutCtrlAltC() {
+    await this.page.keyboard.press('Control+Alt+C');
+  }
+
+  async clickShortcutCtrlAltV() {
+    await this.page.keyboard.press('Control+Alt+V');
+  }
+
+  async clickShortcutShiftAltC() {
+    await this.page.keyboard.press('ShiftLeft+Alt+C');
   }
 };

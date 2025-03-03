@@ -54,6 +54,25 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       'div[class*="thread-group-placeholder"] span[class*="placeholder-label"]',
     );
     this.commentsAuthorSection = page.locator('div[class*="comments__author"]');
+    this.commentMentionButton = page.getByRole('button', { name: 'Mention' });
+    this.mentionMenuItem = page.locator('[class*="comments-mentions-name"]');
+    this.commentMentionText = page.locator('span[class*="comment-mention"]');
+
+    this.commentsDropdown = page.locator(
+      '[class*="comments__mode-dropdown-wrapper"]',
+    );
+    this.showAllCommentsOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Show all comments' });
+    this.showYourCommentsOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Show only your comments' });
+    this.hideResolvedCommentsOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Hide resolved comments' });
+    this.showYourMentionsOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Show only your mentions' });
   }
 
   async clickCreateCommentButton() {
@@ -149,5 +168,18 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await expect(this.resolveCommentCheckbox).toHaveClass(
       'main_ui_comments__checkbox checked',
     );
+  }
+
+  async clickCommentMentionButton() {
+    await this.commentMentionButton.click();
+  }
+
+  async clickFirstMentionMenuItem() {
+    await this.mentionMenuItem.first().click();
+  }
+
+  async selectShowYourMentionsOption() {
+    await this.commentsDropdown.click();
+    await this.showYourMentionsOption.click();
   }
 };

@@ -290,6 +290,17 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
+  async rightClickViewportByCoordinates(x, y) {
+    await this.viewport.hover();
+    await this.page.waitForTimeout(100);
+    await this.viewport.click({
+      button: 'right',
+      position: { x: x, y: y },
+      force: true,
+      delay: 200,
+    });
+  }
+
   async isUnSavedChangesDisplayed() {
     await expect(this.unSavedChangesIcon).toBeVisible();
   }
@@ -1100,5 +1111,26 @@ exports.MainPage = class MainPage extends BasePage {
     visible
       ? await expect(this.typographyButton).toBeVisible()
       : await expect(this.typographyButton).not.toBeVisible();
+  }
+
+  async copyLayerPropertyViaRightClick() {
+    const layerSel = this.page.locator('.viewport-selrect');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.copyPasteAsMenuItem.hover();
+    await this.copyPropertiesMenuItem.click();
+  }
+
+  async copyLayerCSSViaRightClick() {
+    const layerSel = this.page.locator('.viewport-selrect');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.copyPasteAsMenuItem.hover();
+    await this.copyAsCssMenuItem.click();
+    return await this.page.evaluate(() => navigator.clipboard.readText());
+  }
+
+  async copyLayerLinkViaRightClick() {
+    const layerSel = this.page.locator('.viewport-selrect');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.copyLinkMenuItem.click();
   }
 };
