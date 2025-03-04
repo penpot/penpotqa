@@ -27,6 +27,9 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentThreadIcon = page.locator(
       'div[class*="comments-container"] div[data-testid*="floating-thread-bubble"]',
     );
+    this.commentThreadPreview = page.locator(
+      'div[class*="comments-container"] [class*="floating-thread-item-wrapper"]',
+    );
     this.commentResolvedThreadIcon = page.locator(
       'div[class*="comments-container"] div.main_ui_comments__avatar-solved',
     );
@@ -92,8 +95,13 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.postCommentButton.click();
   }
 
-  async clickCommentThreadIcon() {
-    await this.commentThreadIcon.click();
+  async clickCommentThreadIcon(browserName) {
+    if (browserName === 'chromium') {
+      await this.commentThreadIcon.click();
+    } else {
+      await this.commentThreadIcon.hover();
+      await this.commentThreadPreview.click();
+    }
   }
 
   async clickResolvedCommentThreadIcon() {

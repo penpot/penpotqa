@@ -94,7 +94,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase([566, 1231], 'CO-351 Edit comment with valid text using Latin alphabet'),
-    async ({ page }) => {
+    async ({ page, browserName }) => {
       const editedComment = 'Edited Test Comment';
       const mainPage = new MainPage(page);
       const commentsPanelPage = new CommentsPanelPage(page);
@@ -106,7 +106,7 @@ mainTest.describe(() => {
       await mainPage.reloadPage();
       await commentsPanelPage.clickCreateCommentButton();
       await commentsPanelPage.isCommentDisplayedInCommentsPanel(editedComment);
-      await commentsPanelPage.clickCommentThreadIcon();
+      await commentsPanelPage.clickCommentThreadIcon(browserName);
       await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
       await expect(page).toHaveScreenshot('comment-edited.png', {
         mask: [
