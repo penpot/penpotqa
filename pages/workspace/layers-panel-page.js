@@ -50,9 +50,9 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async expandBoardOnLayersTab() {
-    if (!(await this.layerItemToggleExpand.isVisible())) {
-      await this.layerBoardToggleContentCollapse.click();
-      await expect(this.layerItemToggleExpand).toBeVisible();
+    if (!(await this.layerItemToggleExpand.first().isVisible())) {
+      await this.layerBoardToggleContentCollapse.first().click();
+      await expect(this.layerItemToggleExpand.first()).toBeVisible();
     }
   }
 

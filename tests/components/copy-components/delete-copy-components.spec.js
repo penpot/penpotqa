@@ -37,13 +37,12 @@ mainTest(
   async ({ browserName }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
     await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await designPanelPage.changeAxisXandYForLayer('400', '300');
-    await mainPage.waitForChangeIsSaved();
     await mainPage.pressDeleteKeyboardButton();
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-copy-component-delete.png',
       {
@@ -51,6 +50,8 @@ mainTest(
       },
     );
     await mainPage.clickShortcutCtrlZ(browserName);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-copy-component-delete-undo.png',
       {
