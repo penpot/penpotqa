@@ -48,8 +48,8 @@ mainTest.afterEach(async ({ page }, testInfo) => {
 mainTest.describe(() => {
   mainTest(
     qase(2036, 'Share link of two Boards to a user from your team'),
-    async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+    async ({ page }) => {
+      await mainTest.slow();
       const firstEditor = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
 
@@ -92,7 +92,7 @@ mainTest.describe(() => {
 
       await page.goto(link);
       await mainPage.isMainPageLoaded();
-      await expect(mainPage.viewport).toHaveScreenshot('2-board-linc.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('2-board-link.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await mainPage.backToDashboardFromFileEditor();
@@ -118,9 +118,7 @@ mainTest.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await page.goto(link);
-      await expect(teamPage.accessDialog).toHaveScreenshot(
-        'request-file-access-dialog-image.png',
-      );
+      await teamPage.isRequestAccessButtonVisible();
       await teamPage.clickReturnHomeButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
     },

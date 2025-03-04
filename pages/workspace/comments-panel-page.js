@@ -182,4 +182,12 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.commentsDropdown.click();
     await this.showYourMentionsOption.click();
   }
+
+  async checkCommentCount(count) {
+    await expect(this.commentThreadIcon).toHaveCount(count);
+  }
+
+  async checkCommentCountInList(count) {
+    await expect(this.commentCommentsPanelText).toHaveCount(count);
+  }
 };

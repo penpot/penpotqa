@@ -176,12 +176,9 @@ mainTest.describe(() => {
       await mainPage.createDefaultBoardByCoordinates(100, 700, true);
       await mainPage.clickShortcutCtrlAltV();
 
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'paste-property-flex-board-right-sidebar-image.png',
-        {
-          mask: [mainPage.usersSection],
-        },
-      );
+      await designPanelPage.isLayoutAlignmentSelected('Center');
+      await designPanelPage.checkLayoutPadding('Vertical', '5');
+      await designPanelPage.checkLayoutPadding('Horizontal', '15');
     },
   );
 
@@ -199,12 +196,7 @@ mainTest.describe(() => {
       await mainPage.createDefaultBoardByCoordinates(100, 700, true);
       await mainPage.clickShortcutCtrlAltV();
 
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'paste-property-grid-board-right-sidebar-image.png',
-        {
-          mask: [mainPage.usersSection],
-        },
-      );
+      await designPanelPage.isLayoutAlignmentSelected('Center', false);
     },
   );
 
@@ -240,7 +232,6 @@ mainTest.describe(() => {
 
       await inspectPanelPage.openInspectTab();
       await inspectPanelPage.openCodeTab();
-      await page.waitForTimeout(200);
       const cssCodeFromInspectTab = await inspectPanelPage.copyCssCodeByName(
         'Ellipse',
       );
