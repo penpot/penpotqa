@@ -30,6 +30,14 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.colorPaletteRecentColorsOpt = page
       .getByRole('listitem')
       .filter({ hasText: 'Recent colors' });
+    this.colorPaletteSolidDropdown = page.getByText('Solid', { exact: true });
+    this.colorPaletteGradientOpt = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Gradient' });
+    this.colorPaletteAddStopButton = page.getByRole('button', { name: 'Add stop' });
+    this.colorPaletteRemoveStopButton = page
+      .locator('[class*="gradient-stops-list"]')
+      .getByRole('button', { name: 'Remove color' });
   }
 
   async setHex(value) {
@@ -89,5 +97,22 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
       .locator(`div[class*="color-palette-inside"]`)
       .getByRole('button', { name: value });
     await colorSel.click();
+  }
+
+  async selectColorGradient() {
+    await this.colorPaletteSolidDropdown.click();
+    await this.colorPaletteGradientOpt.click();
+  }
+
+  async colorPaletteAddStop() {
+    await this.colorPaletteAddStopButton.click();
+  }
+
+  async colorPaletteRemoveStop(index = 0) {
+    await this.colorPaletteRemoveStopButton.nth(index).click();
+  }
+
+  async checkGradientStops(index = 2) {
+    await expect(this.colorPaletteRemoveStopButton).toHaveCount(index);
   }
 };

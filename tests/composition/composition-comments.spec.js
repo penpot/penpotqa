@@ -7,6 +7,10 @@ const { random } = require('../../helpers/string-generator');
 const { CommentsPanelPage } = require('../../pages/workspace/comments-panel-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { waitMessage } = require('../../helpers/gmail');
+const { ProfilePage } = require('../../pages/profile-page');
+const { LoginPage } = require('../../pages/login-page');
+const { RegisterPage } = require('../../pages/register-page');
 
 const teamName = random().concat('autotest');
 
@@ -189,3 +193,256 @@ mainTest(
     });
   },
 );
+
+mainTest.describe(() => {
+  mainTest(
+    qase(2052, 'Notification icon after mention in the comments'),
+    async ({ page }) => {
+      await mainTest.slow();
+      const firstViewer = random().concat('autotest');
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstViewer}@gmail.com`;
+      const comment = 'Test Comment (main user)';
+
+      const mainPage = new MainPage(page);
+      const teamPage = new TeamPage(page);
+      const profilePage = new ProfilePage(page);
+      const loginPage = new LoginPage(page);
+      const registerPage = new RegisterPage(page);
+      const dashboardPage = new DashboardPage(page);
+      const commentsPanelPage = new CommentsPanelPage(page);
+
+      await mainPage.backToDashboardFromFileEditor();
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderDisplayed(
+        'Invite members to the team',
+      );
+      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+      await teamPage.selectInvitationRoleInPopUp('Viewer');
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await page.goto(firstInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(firstEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(firstViewer);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.fillOnboardingQuestions();
+      await teamPage.isTeamSelected(teamName);
+
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.openFile();
+      await mainPage.isMainPageLoaded();
+
+      await commentsPanelPage.clickCreateCommentButton();
+      await mainPage.clickViewportTwice();
+
+      await commentsPanelPage.enterCommentText(comment);
+      await commentsPanelPage.clickCommentMentionButton();
+      await commentsPanelPage.clickFirstMentionMenuItem();
+      await commentsPanelPage.clickPostCommentButton();
+
+      await mainPage.backToDashboardFromFileEditor();
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(firstEmail);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isUnreadNotificationVisible();
+    },
+  );
+
+  mainTest(
+    qase(2057, 'Click Notification in the pop-up'),
+    async ({ page, browserName }) => {
+      await mainTest.slow();
+      const firstEditor = random().concat('autotest');
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
+      const comment = 'Test Comment (main user)';
+      const replyComment = 'Lorem Ipsum (editor user)';
+      const mainProfile = 'QA Engineer';
+
+      const mainPage = new MainPage(page);
+      const teamPage = new TeamPage(page);
+      const profilePage = new ProfilePage(page);
+      const loginPage = new LoginPage(page);
+      const registerPage = new RegisterPage(page);
+      const dashboardPage = new DashboardPage(page);
+      const commentsPanelPage = new CommentsPanelPage(page);
+
+      await commentsPanelPage.clickCreateCommentButton();
+      await mainPage.clickViewportTwice();
+      await commentsPanelPage.enterCommentText(comment);
+      await commentsPanelPage.clickPostCommentButton();
+
+      await mainPage.backToDashboardFromFileEditor();
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderDisplayed(
+        'Invite members to the team',
+      );
+      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+      await teamPage.selectInvitationRoleInPopUp('Editor');
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await page.goto(firstInvite.inviteUrl);
+      await registerPage.isRegisterPageOpened();
+      await registerPage.enterEmail(firstEmail);
+      await registerPage.enterPassword(process.env.LOGIN_PWD);
+      await registerPage.clickOnCreateAccountBtn();
+      await registerPage.enterFullName(firstEditor);
+      await registerPage.clickOnAcceptTermsCheckbox();
+      await registerPage.clickOnCreateAccountSecondBtn();
+      await dashboardPage.fillOnboardingQuestions();
+      await teamPage.isTeamSelected(teamName);
+
+      await dashboardPage.openFile();
+      await mainPage.isMainPageLoaded();
+
+      await commentsPanelPage.clickCreateCommentButton();
+      await commentsPanelPage.clickCommentThreadIcon(browserName);
+      await commentsPanelPage.enterReplyText(replyComment);
+      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
+
+      await mainPage.backToDashboardFromFileEditor();
+
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+
+      await dashboardPage.isUnreadNotificationVisible();
+      await dashboardPage.clickOnNotificationButton();
+
+      await dashboardPage.checkNotificationReplyUserName(mainProfile);
+      await dashboardPage.checkNotificationReplyText(comment);
+      await dashboardPage.checkNotificationUnreadReplyCount('1 new reply');
+
+      await dashboardPage.clickFirstNotificationMessage();
+      await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
+
+      await mainPage.backToDashboardFromFileEditor();
+    },
+  );
+
+  mainTest(qase(2086, 'Only your mentions filter'), async ({ page }) => {
+    await mainTest.slow();
+    const firstEditor = random().concat('autotest');
+    const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
+    const comment = 'Test Comment (main user)';
+
+    const mainPage = new MainPage(page);
+    const teamPage = new TeamPage(page);
+    const profilePage = new ProfilePage(page);
+    const loginPage = new LoginPage(page);
+    const registerPage = new RegisterPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const commentsPanelPage = new CommentsPanelPage(page);
+
+    await mainPage.backToDashboardFromFileEditor();
+
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+    await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+    await teamPage.selectInvitationRoleInPopUp('Editor');
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+    const firstInvite = await waitMessage(page, firstEmail, 40);
+
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await page.goto(firstInvite.inviteUrl);
+    await registerPage.isRegisterPageOpened();
+    await registerPage.enterEmail(firstEmail);
+    await registerPage.enterPassword(process.env.LOGIN_PWD);
+    await registerPage.clickOnCreateAccountBtn();
+    await registerPage.enterFullName(firstEditor);
+    await registerPage.clickOnAcceptTermsCheckbox();
+    await registerPage.clickOnCreateAccountSecondBtn();
+    await dashboardPage.fillOnboardingQuestions();
+    await teamPage.isTeamSelected(teamName);
+
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.openFile();
+    await mainPage.isMainPageLoaded();
+
+    await commentsPanelPage.clickCreateCommentButton();
+    await mainPage.clickViewportTwice();
+
+    await commentsPanelPage.enterCommentText(comment);
+    await commentsPanelPage.clickCommentMentionButton();
+    await commentsPanelPage.clickFirstMentionMenuItem();
+    await commentsPanelPage.clickPostCommentButton();
+
+    await mainPage.clickViewportByCoordinates(100, 100, 2);
+    await commentsPanelPage.enterCommentText(comment);
+    await commentsPanelPage.clickPostCommentButton();
+
+    await mainPage.clickViewportByCoordinates(600, 100, 2);
+    await commentsPanelPage.enterCommentText(comment);
+    await commentsPanelPage.clickPostCommentButton();
+
+    await mainPage.clickViewportByCoordinates(100, 800, 2);
+    await commentsPanelPage.enterCommentText(comment);
+    await commentsPanelPage.clickPostCommentButton();
+
+    await mainPage.backToDashboardFromFileEditor();
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(firstEmail);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.openFile();
+    await mainPage.isMainPageLoaded();
+
+    await commentsPanelPage.clickCreateCommentButton();
+    await commentsPanelPage.selectShowYourMentionsOption();
+
+    await commentsPanelPage.checkCommentCount(1);
+    await commentsPanelPage.checkCommentCountInList(1);
+    await commentsPanelPage.isCommentDisplayedInCommentsPanel(
+      comment + ` ${firstEditor}`,
+    );
+    await mainPage.backToDashboardFromFileEditor();
+  });
+
+  mainTest.afterEach(async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const profilePage = new ProfilePage(page);
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+
+    await dashboardPage.openFile();
+    await mainPage.isMainPageLoaded();
+  });
+});

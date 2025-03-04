@@ -19,6 +19,7 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
       'div[class*="layout-row"] div[title="Row gap"]',
     );
     this.codeTabButton = page.getByRole('tab', { name: 'code' });
+    this.copyCssCodeButton = page.locator('button[class*="css-copy-btn"]');
   }
 
   async openInspectTab() {
@@ -39,5 +40,13 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
 
   async waitForCodeButtonVisible() {
     await this.codeTabButton.waitFor({ state: 'visible', timeout: 10000 });
+  }
+
+  async copyCssCodeByName(name) {
+    await this.copyCssCodeButton.click();
+    const cssCode = await this.page.evaluate(() => navigator.clipboard.readText());
+    const regex = new RegExp(`/\\* ${name} \\*/.*`, 's');
+    const match = cssCode.match(regex);
+    return match ? match[0] : null;
   }
 };

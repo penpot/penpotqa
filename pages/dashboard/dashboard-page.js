@@ -86,7 +86,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .filter({ hasText: 'Libraries' });
     this.pinnedProjectsSidebarItem = page.getByTestId('pinned-projects');
     this.searchInput = page.locator('#search-input');
-    this.projectOptions = page.getByTestId('project-options');
+    this.projectOptions = page.getByTestId('project-options').first();
 
     // Import files
     this.fileImport = page.getByTestId('file-import');
@@ -203,6 +203,19 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.pluginModalContinueBtn = page.getByRole('button', { name: 'Continue' });
     this.pluginModalGoBtn = page.getByRole('button', { name: "Let's go" });
+
+    this.notificationButton = page.getByTestId('open-comments');
+    this.unreadNotification = this.notificationButton.locator(
+      'div[class*="comments__unread"]',
+    );
+
+    this.notificationReplyUserName = page.locator(
+      'div[class*="comments__author-fullname"]',
+    );
+    this.notificationReplyText = page.locator('[class*="comments__comment-text"]');
+    this.notificationUnreadReplyCount = page.locator(
+      '[class*="comments__replies-unread"]',
+    );
   }
 
   async createFileViaPlaceholder() {
@@ -1001,5 +1014,31 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     visible
       ? await expect(this.addProjectButton).toBeVisible()
       : await expect(this.addProjectButton).not.toBeVisible();
+  }
+
+  async isUnreadNotificationVisible(visible = true) {
+    visible
+      ? await expect(this.unreadNotification).toBeVisible()
+      : await expect(this.unreadNotification).not.toBeVisible();
+  }
+
+  async clickOnNotificationButton() {
+    await this.notificationButton.click();
+  }
+
+  async checkNotificationReplyUserName(text) {
+    await expect(this.notificationReplyUserName).toHaveText(text);
+  }
+
+  async checkNotificationReplyText(text) {
+    await expect(this.notificationReplyText).toHaveText(text);
+  }
+
+  async checkNotificationUnreadReplyCount(text) {
+    await expect(this.notificationUnreadReplyCount).toHaveText(text);
+  }
+
+  async clickFirstNotificationMessage() {
+    await this.notificationUnreadReplyCount.first().click();
   }
 };

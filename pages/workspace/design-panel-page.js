@@ -32,6 +32,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.sizeHeightInput = page.locator('div[title="Height"] input');
     this.xAxisInput = page.locator('div[title="X axis"] input');
     this.yAxisInput = page.locator('div[title="Y axis"] input');
+    this.resizeBoardToFitButton = page.getByRole('button', {
+      name: 'Resize board to fit content',
+    });
 
     //Design panel - Fill section
     this.firstColorIcon = page
@@ -1254,5 +1257,54 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.page
       .locator(`ul[class*="stroke-cap-dropdown"] span:has-text('${capName}')`)
       .click();
+  }
+
+  async clickOnResizeBoardToFitButton() {
+    await this.resizeBoardToFitButton.click();
+  }
+
+  async isLayoutAlignmentSelected(alignment, flex = true) {
+    if (flex) {
+      await this.expandFlexLayoutMenu();
+      switch (alignment) {
+        case 'Start':
+          await expect(this.layoutAlignStartBtn).toBeChecked();
+          break;
+        case 'Center':
+          await expect(this.layoutAlignCenterBtn).toBeChecked();
+          break;
+        case 'End':
+          await expect(this.layoutAlignEndBtn).toBeChecked();
+          break;
+      }
+    } else {
+      await this.expandGridLayoutMenu();
+      switch (alignment) {
+        case 'Start':
+          await expect(this.layoutAlignStartBtn.first()).toBeChecked();
+          await expect(this.layoutAlignStartBtn.last()).toBeChecked();
+          break;
+        case 'Center':
+          await expect(this.layoutAlignCenterBtn.first()).toBeChecked();
+          await expect(this.layoutAlignCenterBtn.last()).toBeChecked();
+          break;
+        case 'End':
+          await expect(this.layoutAlignEndBtn.first()).toBeChecked();
+          await expect(this.layoutAlignEndBtn.last()).toBeChecked();
+          break;
+      }
+    }
+  }
+
+  async checkLayoutPadding(type, value, flex = true) {
+    flex ? await this.expandFlexLayoutMenu() : await this.expandGridLayoutMenu();
+    switch (type) {
+      case 'Vertical':
+        await expect(this.layoutVerticalPaddingInput).toHaveValue(value);
+        break;
+      case 'Horizontal':
+        await expect(this.layoutHorizontPaddingInput).toHaveValue(value);
+        break;
+    }
   }
 };

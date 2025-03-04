@@ -278,6 +278,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.fontSelectorSearchInput.fill(fontName);
     await this.page
       .locator(`div[class*="font-item"] span:has-text('${fontName}')`)
+      .first()
       .click();
   }
 
