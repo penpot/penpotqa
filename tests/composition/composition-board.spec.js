@@ -468,6 +468,8 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
+      await mainPage.clickViewportByCoordinates(300, 100, 2);
+      await layersPanelPage.selectBoardChildLayer('Board');
       await designPanelPage.changeAxisXandYForLayer('100', '100');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
