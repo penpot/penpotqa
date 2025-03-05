@@ -212,12 +212,8 @@ mainTest.describe(() => {
       await mainPage.createDefaultTextLayerByCoordinates(500, 500, browserName);
       await mainPage.clickShortcutCtrlAltV();
 
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'paste-property-typography.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
+      await assetsPanelPage.checkFont('Sofia');
+      await assetsPanelPage.checkFontSize('20');
     },
   );
 

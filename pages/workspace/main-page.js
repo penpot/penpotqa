@@ -290,17 +290,6 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
-  async rightClickViewportByCoordinates(x, y) {
-    await this.viewport.hover();
-    await this.page.waitForTimeout(100);
-    await this.viewport.click({
-      button: 'right',
-      position: { x: x, y: y },
-      force: true,
-      delay: 200,
-    });
-  }
-
   async isUnSavedChangesDisplayed() {
     await expect(this.unSavedChangesIcon).toBeVisible();
   }
