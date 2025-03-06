@@ -228,3 +228,22 @@ mainTest(
     await colorPalettePage.isColorPalettePopUpOpened();
   },
 );
+
+mainTest(
+  qase(1996, 'Delete linear gradient stop (from color picker stops list)'),
+  async ({ page }) => {
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    const colorPalettePage = new ColorPalettePage(page);
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.isColorPalettePopUpOpened();
+    await colorPalettePage.selectColorGradient();
+    await colorPalettePage.colorPaletteAddStop();
+    await mainPage.waitForChangeIsSaved();
+    await colorPalettePage.colorPaletteRemoveStop(1);
+    await colorPalettePage.checkGradientStops(2);
+  },
+);
