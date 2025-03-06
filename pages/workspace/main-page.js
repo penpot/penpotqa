@@ -1101,4 +1101,25 @@ exports.MainPage = class MainPage extends BasePage {
       ? await expect(this.typographyButton).toBeVisible()
       : await expect(this.typographyButton).not.toBeVisible();
   }
+
+  async copyLayerPropertyViaRightClick() {
+    const layerSel = this.page.locator('.viewport-selrect');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.copyPasteAsMenuItem.hover();
+    await this.copyPropertiesMenuItem.click();
+  }
+
+  async copyLayerCSSViaRightClick() {
+    const layerSel = this.page.locator('.viewport-selrect');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.copyPasteAsMenuItem.hover();
+    await this.copyAsCssMenuItem.click();
+    return await this.page.evaluate(() => navigator.clipboard.readText());
+  }
+
+  async copyLayerLinkViaRightClick() {
+    const layerSel = this.page.locator('.viewport-selrect');
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.copyLinkMenuItem.click();
+  }
 };

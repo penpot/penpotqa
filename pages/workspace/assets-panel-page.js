@@ -277,7 +277,8 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.fontSelector.click();
     await this.fontSelectorSearchInput.fill(fontName);
     await this.page
-      .locator(`div[class*="font-item"] span:has-text('${fontName}')`)
+      .locator(`div[class*="font-item"] span:text-is('${fontName}')`)
+      .first()
       .click();
   }
 
@@ -285,6 +286,14 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.fontSizeInput.clear();
     await this.fontSizeInput.fill(value);
     await this.page.keyboard.press('Enter');
+  }
+
+  async checkFont(fontName) {
+    await expect(this.fontSelector).toHaveText(fontName);
+  }
+
+  async checkFontSize(value) {
+    await expect(this.fontSizeInput).toHaveValue(value);
   }
 
   async clickAddAsSharedLibraryButton() {

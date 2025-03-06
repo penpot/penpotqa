@@ -511,3 +511,15 @@ mainTest(qase(1149, 'DA-63 Search file from Projects'), async ({ page }) => {
   await dashboardPage.isHeaderDisplayed('Search results');
   await dashboardPage.isFilePresent('qaz');
 });
+
+mainTest(
+  qase(1919, 'DA-59 Import file to project - new .penpot format'),
+  async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName('Test Project');
+    await dashboardPage.isProjectTitleDisplayed('Test Project');
+    await dashboardPage.importFile('documents/QA new test file.penpot');
+    await dashboardPage.isFilePresent('QA new test file');
+  },
+);
