@@ -11,6 +11,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Main Toolbar
     this.pencilBoxButton = page.locator('a[class*="header__main-icon"]');
+    this.moveButton = page.getByRole('button', { name: 'Move (V)' });
     this.createBoardButton = page.getByTestId('artboard-btn');
     this.createRectangleButton = page.getByTestId('rect-btn');
     this.createEllipseButton = page.getByTestId('ellipse-btn');
@@ -215,6 +216,10 @@ exports.MainPage = class MainPage extends BasePage {
 
     this.errorScreen = page.locator('div[class*="static__exception-content"]');
     this.loginDialog = page.locator('div[class*="dialog-login"]');
+  }
+
+  async clickMoveButton() {
+    await this.moveButton.click({ delay: 500 });
   }
 
   async clickCreateBoardButton() {

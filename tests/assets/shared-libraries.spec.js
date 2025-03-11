@@ -410,6 +410,7 @@ mainTest.describe(() => {
     await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
     await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
     await assetsPanelPage.clickCloseModalButton();
+    await mainPage.clickMoveButton();
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickLibraryTitleWithName('New File 1');
     await assetsPanelPage.clickLibraryComponentsTitle();
@@ -559,6 +560,7 @@ mainTest.describe(() => {
     await assetsPanelPage.clickCloseModalButton();
     await dashboardPage.reloadPage();
     await assetsPanelPage.clickAssetsTab();
+    await mainPage.clickMoveButton();
     await assetsPanelPage.clickLibraryTitleWithName('New File 1');
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
@@ -579,6 +581,7 @@ mainTest.describe(() => {
     await assetsPanelPage.clickCloseModalButton();
     await dashboardPage.reloadPage();
     await assetsPanelPage.clickAssetsTab();
+    await mainPage.clickMoveButton();
     await assetsPanelPage.clickLibraryTitleWithName('New File 1');
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
