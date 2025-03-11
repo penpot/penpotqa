@@ -20,6 +20,7 @@ test.beforeEach(async ({ page }) => {
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
 });
 
 test.afterEach(async ({ page }, testInfo) => {
@@ -487,7 +488,6 @@ mainTest.describe(() => {
   mainTest.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 15000);
     const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
     const board1 = 'Board #1';
     const board2 = 'Board #2';
     await mainPage.clickCreateBoardButton();
@@ -641,7 +641,6 @@ mainTest.describe(() => {
 mainTest.describe(() => {
   mainTest.beforeEach(async ({ page }) => {
     const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
 
     await mainPage.createDefaultBoardByCoordinates(200, 200);

@@ -17,6 +17,7 @@ test.beforeEach(async ({ page }) => {
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
 });
 
 test.afterEach(async ({ page }, testInfo) => {
