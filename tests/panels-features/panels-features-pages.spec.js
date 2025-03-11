@@ -45,6 +45,7 @@ mainTest(qase(833, 'PF-115 Rename page'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
+  await mainPage.clickMoveButton();
   await mainPage.renamePageViaRightClick('NewFirstPage');
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('NewFirstPage');
@@ -65,6 +66,8 @@ mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
   const mainPage = new MainPage(page);
   await mainPage.clickAddPageButton();
   await mainPage.clickOnPageOnLayersPanel(false);
+  await mainPage.clickMoveButton();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(page).toHaveScreenshot('canvas-second-page-selected.png', {
     mask: [
@@ -75,6 +78,8 @@ mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
     ],
   });
   await mainPage.clickOnPageOnLayersPanel();
+  await mainPage.clickMoveButton();
+  await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(page).toHaveScreenshot('canvas-first-page-selected.png', {
     mask: [

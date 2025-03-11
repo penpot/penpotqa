@@ -110,6 +110,7 @@ mainTest.describe(() => {
       await mainPage.pressCopyShortcut();
       await mainPage.clickAddPageButton();
       await mainPage.clickOnPageOnLayersPanel(false);
+      await mainPage.clickMoveButton();
       await mainPage.waitForChangeIsSaved();
       await mainPage.pressPasteShortcut();
       await mainPage.waitForChangeIsSaved();
@@ -210,6 +211,7 @@ mainTest.describe(() => {
       await assetsPanelPage.clickCloseModalButton();
       await dashboardPage.reloadPage();
       await assetsPanelPage.clickAssetsTab();
+      await mainPage.clickMoveButton();
       await assetsPanelPage.clickLibraryTitleWithName('New File 1');
       await assetsPanelPage.clickLibraryComponentsTitle();
       await assetsPanelPage.dragAndDropComponentToViewport('Board');

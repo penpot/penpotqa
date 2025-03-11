@@ -23,6 +23,7 @@ test.beforeEach(async ({ page, browserName }) => {
     ? await dashboardPage.createFileViaPlaceholder()
     : null;
   await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
 });
 
 test.afterEach(async ({ page }, testInfo) => {
