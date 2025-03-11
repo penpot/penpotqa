@@ -52,6 +52,7 @@ mainTest.describe(() => {
     await mainPage.createDefaultBoardByCoordinates(400, 200, true);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
+    await mainPage.clickViewportTwice();
 
     await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
     await mainPage.waitForChangeIsUnsaved();

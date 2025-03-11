@@ -164,7 +164,7 @@ exports.BasePage = class BasePage {
     this.copyLinkMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Copy link' });
-    this.acceptCookieButton = page.locator('button[class*="CookieConsent_accept"]');
+    this.acceptCookieButton = page.getByRole('button', { name: 'Accept all' });
     this.renameOption = page.getByRole('listitem').filter({ hasText: 'Rename' });
   }
 
@@ -267,8 +267,8 @@ exports.BasePage = class BasePage {
     await this.unsavedChangesIcon.waitFor({ state: 'visible' });
   }
 
-  async waitForViewportVisible() {
-    await this.viewport.waitFor({ state: 'visible' });
+  async waitForViewportVisible(timeout = 30) {
+    await this.viewport.waitFor({ state: 'visible', timeout: timeout * 1000 });
   }
 
   async refreshPage() {
