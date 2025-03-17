@@ -187,4 +187,8 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   async openSettingsTab() {
     await this.settingsMenuButton.click();
   }
+
+  async getUserName() {
+    return await this.profileMenuButton.textContent();
+  }
 };

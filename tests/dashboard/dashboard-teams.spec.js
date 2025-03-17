@@ -2244,7 +2244,7 @@ test.describe(() => {
   );
 
   test(qase(1833, 'Auto Join to the team'), async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 60000);
+    await test.slow();
 
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
@@ -2297,12 +2297,13 @@ test.describe(() => {
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.switchTeam(team);
 
     await waitSecondMessage(page, email, 40);
     const requestMessage = await waitRequestMessage(page, email, 40);
     await page.goto(requestMessage.inviteUrl[0]);
     await teamPage.checkFirstInvitedEmail(secondEmail);
-    await page.waitForTimeout(1000);
+    await teamPage.waitForInvitationButtonEnabled(10000);
     await teamPage.clickSendInvitationButton();
 
     await waitSecondMessage(page, secondEmail, 40);
@@ -2349,10 +2350,14 @@ mainTest.describe(() => {
     await teamPage.clickSendInvitationButton();
     await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
-    const firstInvite = await waitMessage(page, firstEmail, 40);
-
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
+
+    const firstInvite = await waitMessage(page, firstEmail, 40);
+
+    await page.context().clearCookies();
+    await loginPage.reloadPage();
+    await loginPage.acceptCookie();
 
     await page.goto(firstInvite.inviteUrl);
     await registerPage.isRegisterPageOpened();
@@ -2362,40 +2367,35 @@ mainTest.describe(() => {
     await registerPage.enterFullName(firstAdmin);
     await registerPage.clickOnAcceptTermsCheckbox();
     await registerPage.clickOnCreateAccountSecondBtn();
+    await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.fillOnboardingQuestions();
     await teamPage.isTeamSelected(team);
   });
 
-  mainTest(
-    qase(1870, 'As a viewer user try to edit any layer'),
-    async ({ page }, testInfo) => {
-      await dashboardPage.openFileWithName('New File 1');
-      await mainPage.waitForViewportVisible();
-      await mainPage.isDesignTabVisible(false);
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'right-sidebar-image.png',
-        {
-          maxDiffPixelRatio: maxDiffPixelRatio,
-          mask: [mainPage.usersSection],
-        },
-      );
-      await mainPage.backToDashboardFromFileEditor();
-    },
-  );
+  mainTest(qase(1870, 'As a viewer user try to edit any layer'), async () => {
+    await dashboardPage.openFileWithName('New File 1');
+    await mainPage.waitForViewportVisible();
+    await mainPage.isDesignTabVisible(false);
+    await layersPanelPage.clickMainComponentOnLayersTab();
+    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+      'right-sidebar-image.png',
+      {
+        maxDiffPixelRatio: maxDiffPixelRatio,
+        mask: [mainPage.usersSection],
+      },
+    );
+    await mainPage.backToDashboardFromFileEditor();
+  });
 
-  mainTest(
-    qase(1873, 'As a viewer user import file to Drafts'),
-    async ({ page }, testInfo) => {
-      await dashboardPage.openSidebarItem('Drafts');
-      await dashboardPage.isCreateFileOnDraftsTabButtonVisible(false);
-      await dashboardPage.isOptionButtonFromDraftPageVisible(false);
-    },
-  );
+  mainTest(qase(1873, 'As a viewer user import file to Drafts'), async () => {
+    await dashboardPage.openSidebarItem('Drafts');
+    await dashboardPage.isCreateFileOnDraftsTabButtonVisible(false);
+    await dashboardPage.isOptionButtonFromDraftPageVisible(false);
+  });
 
   mainTest(
     qase(1877, 'As a viewer user Add font on  Dashboard > Fonts page'),
-    async ({ page }, testInfo) => {
+    async () => {
       await dashboardPage.openSidebarItem('Fonts');
       await dashboardPage.isAddCustomFontButtonVisible(false);
     },
@@ -2406,7 +2406,7 @@ mainTest.describe(() => {
       1880,
       'As a viewer user check the "Create" buttons of Project and draft pages',
     ),
-    async ({ page }, testInfo) => {
+    async () => {
       await dashboardPage.openSidebarItem('Projects');
       await dashboardPage.isAddProjectButtonVisible(false);
       await dashboardPage.openSidebarItem('Drafts');
@@ -2414,19 +2414,16 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(1889, 'As a viewer user try to use a toolbar'),
-    async ({ page }, testInfo) => {
-      await dashboardPage.openFileWithName('New File 1');
-      await mainPage.waitForViewportVisible();
-      await mainPage.isToolBarVisible(false);
-      await mainPage.backToDashboardFromFileEditor();
-    },
-  );
+  mainTest(qase(1889, 'As a viewer user try to use a toolbar'), async () => {
+    await dashboardPage.openFileWithName('New File 1');
+    await mainPage.waitForViewportVisible();
+    await mainPage.isToolBarVisible(false);
+    await mainPage.backToDashboardFromFileEditor();
+  });
 
   mainTest(
     qase(1891, 'As a viewer user try to create, duplicate and delete page'),
-    async ({ page }, testInfo) => {
+    async () => {
       await dashboardPage.openFileWithName('New File 1');
       await mainPage.waitForViewportVisible();
       await mainPage.isPageRightClickMenuVisible(false);
@@ -2434,43 +2431,34 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(1894, 'As a viewer user right-click created layer'),
-    async ({ page }, testInfo) => {
-      await dashboardPage.openFileWithName('New File 1');
-      await mainPage.waitForViewportVisible();
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await mainPage.checkViewerRightClickMenu();
-      await mainPage.backToDashboardFromFileEditor();
-    },
-  );
+  mainTest(qase(1894, 'As a viewer user right-click created layer'), async () => {
+    await dashboardPage.openFileWithName('New File 1');
+    await mainPage.waitForViewportVisible();
+    await layersPanelPage.clickMainComponentOnLayersTab();
+    await mainPage.checkViewerRightClickMenu();
+    await mainPage.backToDashboardFromFileEditor();
+  });
 
-  mainTest(
-    qase(1898, 'As a viewer user try to open color palette'),
-    async ({ page }, testInfo) => {
-      await dashboardPage.openFileWithName('New File 1');
-      await mainPage.waitForViewportVisible();
-      await mainPage.isColorsPaletteButtonVisible(false);
-      await mainPage.backToDashboardFromFileEditor();
-    },
-  );
+  mainTest(qase(1898, 'As a viewer user try to open color palette'), async () => {
+    await dashboardPage.openFileWithName('New File 1');
+    await mainPage.waitForViewportVisible();
+    await mainPage.isColorsPaletteButtonVisible(false);
+    await mainPage.backToDashboardFromFileEditor();
+  });
 
-  mainTest(
-    qase(1906, 'As a viewer user try to open typographies'),
-    async ({ page }, testInfo) => {
-      await dashboardPage.openFileWithName('New File 1');
-      await mainPage.waitForViewportVisible();
-      await mainPage.isTypographyButtonVisible(false);
-      await mainPage.backToDashboardFromFileEditor();
-    },
-  );
+  mainTest(qase(1906, 'As a viewer user try to open typographies'), async () => {
+    await dashboardPage.openFileWithName('New File 1');
+    await mainPage.waitForViewportVisible();
+    await mainPage.isTypographyButtonVisible(false);
+    await mainPage.backToDashboardFromFileEditor();
+  });
 
   mainTest(
     qase(
       1867,
       'Change a role of viewer user to editor and admin after accepting an invitation',
     ),
-    async ({ page }, testInfo) => {
+    async () => {
       await dashboardPage.openFileWithName('New File 1');
       await mainPage.waitForViewportVisible();
       await mainPage.isDesignTabVisible(false);
@@ -2506,7 +2494,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.afterEach(async ({ page }) => {
+  mainTest.afterEach(async () => {
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
     await loginPage.enterEmail(process.env.LOGIN_EMAIL);
@@ -2608,7 +2596,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.afterEach(async ({ page }) => {
+  mainTest.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
