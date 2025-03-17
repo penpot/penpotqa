@@ -522,4 +522,10 @@ exports.TeamPage = class TeamPage extends BasePage {
   async checkFirstInvitedEmail(email) {
     await expect(this.firstInvitedEmail).toHaveText(email);
   }
+
+  async waitForInvitationButtonEnabled(timeout) {
+    await expect(this.sendInvitationButton).not.toHaveAttribute('disabled', '', {
+      timeout: timeout,
+    });
+  }
 };
