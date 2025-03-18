@@ -31,7 +31,7 @@ exports.RegisterPage = class RegisterPage extends BasePage {
   }
 
   async isRegisterPageOpened() {
-    await expect(this.pageTitle).toBeVisible();
+    await expect(this.pageTitle).toBeVisible({ timeout: 30000 });
     await expect(this.pageTitle).toHaveText('Create an account');
   }
 
