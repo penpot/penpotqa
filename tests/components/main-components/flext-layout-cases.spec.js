@@ -61,6 +61,7 @@ mainTest.describe(() => {
     await designPanelPage.changeAxisXandYForLayer('300', '400');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportTwice();
 
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
     await mainPage.waitForChangeIsUnsaved();

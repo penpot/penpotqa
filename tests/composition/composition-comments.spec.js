@@ -13,30 +13,41 @@ const { LoginPage } = require('../../pages/login-page');
 const { RegisterPage } = require('../../pages/register-page');
 
 const teamName = random().concat('autotest');
+let mainProfileName = '';
+
+let teamPage,
+  dashboardPage,
+  profilePage,
+  mainPage,
+  commentsPanelPage,
+  loginPage,
+  registerPage;
 
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  profilePage = new ProfilePage(page);
+  mainPage = new MainPage(page);
+  commentsPanelPage = new CommentsPanelPage(page);
+  loginPage = new LoginPage(page);
+  registerPage = new RegisterPage(page);
+
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
+  mainProfileName = await profilePage.getUserName();
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }) => {
+  mainTest.beforeEach(async () => {
     const commentText = 'Test Comment';
-    const mainPage = new MainPage(page);
-    const commentsPanelPage = new CommentsPanelPage(page);
     await commentsPanelPage.clickCreateCommentButton();
     await mainPage.clickViewportTwice();
     await commentsPanelPage.enterCommentText(commentText);
@@ -48,8 +59,6 @@ mainTest.describe(() => {
     qase([554, 1219], 'CO-339 Create comment from toolbar'),
     async ({ page }) => {
       const comment = 'Test Comment';
-      const mainPage = new MainPage(page);
-      const commentsPanelPage = new CommentsPanelPage(page);
       await commentsPanelPage.isCommentDisplayedInPopUp(comment);
       await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
       await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
@@ -76,8 +85,6 @@ mainTest.describe(() => {
     async ({ page }) => {
       const replyComment =
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
-      const mainPage = new MainPage(page);
-      const commentsPanelPage = new CommentsPanelPage(page);
       await commentsPanelPage.enterReplyText(replyComment);
       await commentsPanelPage.clickPostCommentButton();
       await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
@@ -96,8 +103,6 @@ mainTest.describe(() => {
     qase([566, 1231], 'CO-351 Edit comment with valid text using Latin alphabet'),
     async ({ page, browserName }) => {
       const editedComment = 'Edited Test Comment';
-      const mainPage = new MainPage(page);
-      const commentsPanelPage = new CommentsPanelPage(page);
       await commentsPanelPage.clickCommentOptionsButton();
       await commentsPanelPage.clickEditCommentOption();
       await commentsPanelPage.enterCommentText(editedComment, true);
@@ -119,8 +124,6 @@ mainTest.describe(() => {
   );
 
   mainTest(qase([571, 1236], 'CO-356 Delete thread'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const commentsPanelPage = new CommentsPanelPage(page);
     await commentsPanelPage.clickCommentHeaderOptionsButton();
     await commentsPanelPage.clickDeleteCommentOption();
     await commentsPanelPage.clickDeleteThreadButton();
@@ -138,8 +141,6 @@ mainTest.describe(() => {
   });
 
   mainTest(qase([575, 1240], 'CO-360 Resolve comment'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const commentsPanelPage = new CommentsPanelPage(page);
     await commentsPanelPage.clickResolveCommentCheckbox();
     await mainPage.clickViewportOnce();
     await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
@@ -167,8 +168,6 @@ mainTest(
   async ({ page }) => {
     const comment =
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.';
-    const mainPage = new MainPage(page);
-    const commentsPanelPage = new CommentsPanelPage(page);
     await commentsPanelPage.clickCreateCommentButton();
     await mainPage.clickViewportTwice();
     await commentsPanelPage.enterCommentText(comment);
@@ -203,14 +202,6 @@ mainTest.describe(() => {
       const firstEmail = `${process.env.GMAIL_NAME}+${firstViewer}@gmail.com`;
       const comment = 'Test Comment (main user)';
 
-      const mainPage = new MainPage(page);
-      const teamPage = new TeamPage(page);
-      const profilePage = new ProfilePage(page);
-      const loginPage = new LoginPage(page);
-      const registerPage = new RegisterPage(page);
-      const dashboardPage = new DashboardPage(page);
-      const commentsPanelPage = new CommentsPanelPage(page);
-
       await mainPage.backToDashboardFromFileEditor();
 
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -242,6 +233,7 @@ mainTest.describe(() => {
       await loginPage.enterEmail(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
+      await teamPage.switchTeam(teamName);
       await dashboardPage.openFile();
       await mainPage.isMainPageLoaded();
 
@@ -259,6 +251,7 @@ mainTest.describe(() => {
       await loginPage.enterEmail(firstEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
+      await teamPage.switchTeam(teamName);
       await dashboardPage.isUnreadNotificationVisible();
     },
   );
@@ -271,15 +264,6 @@ mainTest.describe(() => {
       const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
       const comment = 'Test Comment (main user)';
       const replyComment = 'Lorem Ipsum (editor user)';
-      const mainProfile = 'QA Engineer';
-
-      const mainPage = new MainPage(page);
-      const teamPage = new TeamPage(page);
-      const profilePage = new ProfilePage(page);
-      const loginPage = new LoginPage(page);
-      const registerPage = new RegisterPage(page);
-      const dashboardPage = new DashboardPage(page);
-      const commentsPanelPage = new CommentsPanelPage(page);
 
       await commentsPanelPage.clickCreateCommentButton();
       await mainPage.clickViewportTwice();
@@ -328,11 +312,12 @@ mainTest.describe(() => {
       await loginPage.enterEmail(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
+      await teamPage.switchTeam(teamName);
 
       await dashboardPage.isUnreadNotificationVisible();
       await dashboardPage.clickOnNotificationButton();
 
-      await dashboardPage.checkNotificationReplyUserName(mainProfile);
+      await dashboardPage.checkNotificationReplyUserName(mainProfileName);
       await dashboardPage.checkNotificationReplyText(comment);
       await dashboardPage.checkNotificationUnreadReplyCount('1 new reply');
 
@@ -348,14 +333,6 @@ mainTest.describe(() => {
     const firstEditor = random().concat('autotest');
     const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
     const comment = 'Test Comment (main user)';
-
-    const mainPage = new MainPage(page);
-    const teamPage = new TeamPage(page);
-    const profilePage = new ProfilePage(page);
-    const loginPage = new LoginPage(page);
-    const registerPage = new RegisterPage(page);
-    const dashboardPage = new DashboardPage(page);
-    const commentsPanelPage = new CommentsPanelPage(page);
 
     await mainPage.backToDashboardFromFileEditor();
 
@@ -386,6 +363,7 @@ mainTest.describe(() => {
     await loginPage.enterEmail(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
+    await teamPage.switchTeam(teamName);
     await dashboardPage.openFile();
     await mainPage.isMainPageLoaded();
 
@@ -415,6 +393,7 @@ mainTest.describe(() => {
     await loginPage.enterEmail(firstEmail);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
+    await teamPage.switchTeam(teamName);
     await dashboardPage.openFile();
     await mainPage.isMainPageLoaded();
 
@@ -430,17 +409,13 @@ mainTest.describe(() => {
   });
 
   mainTest.afterEach(async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const profilePage = new ProfilePage(page);
-    const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
-
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
     await loginPage.enterEmail(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.switchTeam(teamName);
 
     await dashboardPage.openFile();
     await mainPage.isMainPageLoaded();
