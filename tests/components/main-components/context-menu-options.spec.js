@@ -82,6 +82,7 @@ mainTest.describe(() => {
       const mainPage = new MainPage(page);
       const assetsPanelPage = new AssetsPanelPage(page);
       await mainPage.showInAssetsPanelRightClick();
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('component-show-in-assets-panel.png', {
         mask: [

@@ -530,6 +530,7 @@ mainTest.describe(() => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board1);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-first-hide.png', {
         mask: [

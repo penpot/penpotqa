@@ -32,7 +32,7 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
       .filter({ hasText: 'Recent colors' });
     this.colorPaletteSolidDropdown = page.getByText('Solid', { exact: true });
     this.colorPaletteGradientOpt = page
-      .getByRole('listitem')
+      .getByRole('option')
       .filter({ hasText: 'Gradient' });
     this.colorPaletteAddStopButton = page.getByRole('button', { name: 'Add stop' });
     this.colorPaletteRemoveStopButton = page
