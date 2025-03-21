@@ -111,8 +111,8 @@ mainTest.describe(() => {
       await mainPage.clickAddPageButton();
       await mainPage.clickOnPageOnLayersPanel(false);
       await mainPage.clickMoveButton();
-      await mainPage.waitForChangeIsSaved();
       await mainPage.pressPasteShortcut();
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-component-on-page2.png', {
         mask: [
