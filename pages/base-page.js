@@ -9,7 +9,7 @@ exports.BasePage = class BasePage {
     this.page = page;
     this.header = page.locator('div[class*="dashboard-title"] h1');
     this.successMessage = page.locator(
-      'div[class*="main_ui_notifications_toast_notification__text"]',
+      'div[class*="shared_notification_pill__type-toast"]',
     );
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
     this.wrapperMessage = page.getByTestId('actionable');

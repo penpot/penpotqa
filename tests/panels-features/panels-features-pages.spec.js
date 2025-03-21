@@ -59,7 +59,7 @@ mainTest(qase(834, 'PF-116 Duplicate page'), async ({ page }) => {
   await mainPage.duplicatePageViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('Page 1');
-  await mainPage.isSecondPageNameDisplayed('Page 2');
+  await mainPage.isSecondPageNameDisplayed('Page 1 (copy)');
 });
 
 mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
