@@ -60,13 +60,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.inviteMembersToTeamRoleSelectorButton = page.locator(
       'div[class*="custom-select"]',
     );
-    this.adminRoleSelector = page.getByRole('listitem').filter({ hasText: 'Admin' });
-    this.editorRoleSelector = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Editor' });
-    this.viewerRoleSelector = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Viewer' });
+    this.adminRoleSelector = page.locator('li').filter({ hasText: 'Admin' });
+    this.editorRoleSelector = page.locator('li').filter({ hasText: 'Editor' });
+    this.viewerRoleSelector = page.locator('li').filter({ hasText: 'Viewer' });
     this.ownerRoleSelector = page.getByRole('listitem').filter({ hasText: 'Owner' });
     this.transferOwnershipButton = page.getByRole('button', {
       name: 'Transfer ownership',

@@ -135,10 +135,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridFirstColumnSelectButton = page
       .locator('div[class*="track-info-dir-icon"] svg[class*="icon-flex-vertical"]')
       .first();
-    this.flexMenuItem = page.getByRole('listitem').filter({ hasText: 'FR' });
-    this.autoMenuItem = page.getByRole('listitem').filter({ hasText: 'AUTO' });
-    this.fixedMenuItem = page.getByRole('listitem').filter({ hasText: 'PX' });
-    this.percentMenuItem = page.getByRole('listitem').filter({ hasText: '%' });
+    this.flexMenuItem = page.getByRole('option').filter({ hasText: 'FR' });
+    this.autoMenuItem = page.getByRole('option').filter({ hasText: 'AUTO' });
+    this.fixedMenuItem = page.getByRole('option').filter({ hasText: 'PX' });
+    this.percentMenuItem = page.getByRole('option').filter({ hasText: '%' });
     this.layoutRemoveButton = page.getByRole('button', { name: 'Remove layout' });
     this.layoutAddButton = page.getByRole('button', { name: 'Add layout' });
     this.layoutDirectRowBtn = page.getByTitle('Row', { exact: true });

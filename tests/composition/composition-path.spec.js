@@ -194,6 +194,7 @@ mainTest.describe(() => {
       await layersPanelPage.typeNameCreatedLayerAndEnter(path2);
       await mainPage.clickViewportOnce();
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(path1);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-first-hide.png', {
         mask: [
@@ -204,6 +205,7 @@ mainTest.describe(() => {
         ],
       });
       await layersPanelPage.hideLayerViaRightClickOnLayersTab(path2);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-second-hide.png', {
         mask: [
@@ -214,6 +216,7 @@ mainTest.describe(() => {
         ],
       });
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(path2, false);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-second-show.png', {
         mask: [
@@ -224,6 +227,7 @@ mainTest.describe(() => {
         ],
       });
       await layersPanelPage.unHideLayerViaRightClickOnLayersTab(path1);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-first-show.png', {
         mask: [
