@@ -15,7 +15,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.rightSidebar = page.locator(`aside[class*='inspect_right_sidebar']`);
     this.fullScreenButton = page.getByTitle('Full Screen', { exact: true });
     this.fullScreenSection = page.locator(
-      `section[class*="main_ui_viewer__fulscreen"]`,
+      `section[class*="main_ui_viewer__fullscreen"]`,
     );
     this.prevBoardButton = page.locator(`button[class*="viewer-go-prev"]`);
     this.nextBoardButton = page.locator(`button[class*="viewer-go-next"]`);
@@ -99,7 +99,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
       'div[class*="who-inspect-select"]',
     );
     this.allUsersOption = page
-      .getByRole('listitem')
+      .getByRole('option')
       .filter({ hasText: 'All Penpot users' });
     this.homeButton = page.locator('svg[class*="header__logo-icon"]');
   }
