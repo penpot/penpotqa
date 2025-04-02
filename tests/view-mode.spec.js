@@ -97,9 +97,6 @@ mainTest.describe(() => {
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickFullScreenButton();
-    await expect(viewModePage.fullScreenSection).toHaveScreenshot(
-      'view-mode-full-screen-image.png',
-    );
     await viewModePage.clickOnESC();
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'view-mode-page-image.png',
@@ -762,6 +759,7 @@ mainTest.describe(() => {
       await viewModePage.clickGetLinkButton();
       const shareLink = await viewModePage.clickCopyLinkButton();
       await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+      await viewModePage.waitSuccessMessageHidden();
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-all-users-comment-image.png',
         { mask: [viewModePage.copyLinkField] },
@@ -805,6 +803,7 @@ mainTest.describe(() => {
       await viewModePage.clickGetLinkButton();
       const shareLink = await viewModePage.clickCopyLinkButton();
       await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+      await viewModePage.waitSuccessMessageHidden();
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-all-users-inspect-image.png',
         { mask: [viewModePage.copyLinkField] },

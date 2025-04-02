@@ -53,10 +53,10 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     //Settings
     this.settingsMenuButton = page.getByTestId('settings-profile');
     this.darkThemeOption = page
-      .getByRole('listitem')
+      .getByRole('option')
       .filter({ hasText: 'Penpot Dark (default)' });
     this.lightThemeOption = page
-      .getByRole('listitem')
+      .getByRole('option')
       .filter({ hasText: 'Penpot Light' });
     this.uiThemeDropdown = page.locator('[class*="select-wrapper"] >>nth=1');
     this.updateSettingsButton = page.getByTestId('submit-lang-change');
