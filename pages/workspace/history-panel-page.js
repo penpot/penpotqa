@@ -41,10 +41,10 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
       'div[class*="custom-select"]',
     );
     this.allVersionsOption = page
-      .getByRole('listitem')
+      .getByRole('option')
       .filter({ hasText: 'All versions' });
     this.myVersionsOption = page
-      .getByRole('listitem')
+      .getByRole('option')
       .filter({ hasText: 'My versions' });
   }
 

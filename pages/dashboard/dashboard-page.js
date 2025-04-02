@@ -131,9 +131,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontNameInput = page.locator('div[class*="table-row"] input[type="text"]');
     this.saveFontButton = page.getByRole('button', { name: 'Save' });
     this.searchFontInput = page.getByPlaceholder('Search font');
-    this.fontFormatError = page.locator(
-      '.main_ui_notifications_toast_notification__text',
-    );
+    this.fontFormatError = this.successMessage;
 
     //Libraries & Templates
     this.noLibrariesPlacelder = page.getByText('No libraries yet.');
