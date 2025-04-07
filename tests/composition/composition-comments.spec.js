@@ -193,14 +193,39 @@ mainTest(
   },
 );
 
+mainTest(qase(2148, 'Zoom out and check comment bubbles'), async ({ page }) => {
+  const comment = 'Test Comment';
+  const xAxisCommentsCoordinates = [100, 50, 700];
+  const yAxisCommentsCoordinates = [100, 50, 700];
+
+  await mainPage.pressCKeyboardShortcut();
+  for (let i = 0; i < xAxisCommentsCoordinates.length; i++) {
+    await mainPage.clickViewportByCoordinates(
+      xAxisCommentsCoordinates[i],
+      yAxisCommentsCoordinates[i],
+      2,
+    );
+    await commentsPanelPage.enterCommentText(comment);
+    await commentsPanelPage.clickPostCommentButton();
+  }
+  await commentsPanelPage.areCommentBubblesVisible(['1', '2', '3']);
+  await mainPage.zoom(100, 100, 3);
+  await commentsPanelPage.areCommentBubblesVisible(['1-2', '3']);
+  await mainPage.zoom(100, 100, 5);
+  await commentsPanelPage.areCommentBubblesVisible(['1-2-3']);
+});
+
 mainTest.describe(() => {
   mainTest(
-    qase(2052, 'Notification icon after mention in the comments'),
+    qase(
+      [2052, 2097],
+      'Click "Mark All as Read" icon in notifications section if there are 10 unread notifications',
+    ),
     async ({ page }) => {
       await mainTest.slow();
       const firstViewer = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstViewer}@gmail.com`;
-      const comment = 'Test Comment (main user)';
+      const numberOfComments = 10;
 
       await mainPage.backToDashboardFromFileEditor();
 
@@ -238,21 +263,30 @@ mainTest.describe(() => {
       await mainPage.isMainPageLoaded();
 
       await commentsPanelPage.clickCreateCommentButton();
-      await mainPage.clickViewportTwice();
-
-      await commentsPanelPage.enterCommentText(comment);
-      await commentsPanelPage.clickCommentMentionButton();
-      await commentsPanelPage.clickFirstMentionMenuItem();
-      await commentsPanelPage.clickPostCommentButton();
-
+      for (let i = 0; i < numberOfComments; i++) {
+        await mainPage.zoom(10, 10, 3);
+        await mainPage.clickViewportByCoordinates(600, 300, 2);
+        await commentsPanelPage.clickCommentMentionButton();
+        await commentsPanelPage.clickFirstMentionMenuItem();
+        await commentsPanelPage.clickPostCommentButton();
+      }
       await mainPage.backToDashboardFromFileEditor();
       await profilePage.logout();
+
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(firstEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await teamPage.switchTeam(teamName);
+      // PENPOT-2052
       await dashboardPage.isUnreadNotificationVisible();
+      // PENPOT-2097
+      await dashboardPage.clickOnNotificationButton();
+      await dashboardPage.clickOnNotificationMarkAsReadButton();
+      await dashboardPage.isUnreadNotificationVisible(false);
+      await dashboardPage.isMarkedAllNotifsAsReadMessage();
+      await dashboardPage.clickOnNotificationButton();
+      await dashboardPage.isNoNotificationsMessagePresent();
     },
   );
 
