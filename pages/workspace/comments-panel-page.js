@@ -33,6 +33,13 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentResolvedThreadIcon = page.locator(
       'div[class*="comments-container"] div.main_ui_comments__avatar-solved',
     );
+    /**
+     * Get the comment thread bubble by the comment index
+     * @param {string} index ("1", "2", "1-2", "1-2-3")
+     * @returns Locator
+     */
+    this.commentThreadBubbleByIndex = (index) =>
+      page.getByTestId('floating-thread-bubble-' + index);
     this.commentHeaderOptionsButton = page
       .locator('div[class*="thread-header"]')
       .first()
@@ -197,5 +204,11 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
 
   async checkCommentCountInList(count) {
     await expect(this.commentCommentsPanelText).toHaveCount(count);
+  }
+
+  async areCommentBubblesVisible(bubblesIndexes) {
+    for (const [i, bubbleIndex] of bubblesIndexes.entries()) {
+      await expect(this.commentThreadBubbleByIndex(bubbleIndex)).toBeVisible();
+    }
   }
 };
