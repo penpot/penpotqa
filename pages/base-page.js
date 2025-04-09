@@ -18,6 +18,10 @@ exports.BasePage = class BasePage {
     this.unsavedChangesIcon = page.locator('div[title="Saving"]');
     this.viewport = page.locator('div[class*="viewport"] >> nth=0');
 
+    this.modalCancelButton = page.getByRole('button', { name: 'Cancel' });
+    this.modalSaveButton = page.getByRole('button', { name: 'Save' });
+    this.modalCloseButton = page.getByRole('button', { name: 'Close' });
+
     //Layer right-click menu items
     this.createdLayer = page.locator(
       'div[class*="viewport"] [id^="shape"] >> nth=0',
@@ -460,5 +464,9 @@ exports.BasePage = class BasePage {
 
   async clickShortcutShiftAltC() {
     await this.page.keyboard.press('ShiftLeft+Alt+C');
+  }
+
+  async closeModalWindow() {
+    await this.modalCloseButton.last().click();
   }
 };
