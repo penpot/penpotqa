@@ -91,7 +91,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     // Import files
     this.fileImport = page.getByTestId('file-import');
     this.modalTitle = page.locator('h2[class*="modal-title"]');
-    this.modalCancelButton = page.getByRole('button', { name: 'Cancel' });
     this.modalAcceptButton = page.locator(
       'div[class*="modal-footer"] input[class*="accept-btn"]',
     );
