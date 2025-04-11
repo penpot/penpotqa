@@ -195,12 +195,16 @@ mainTest(
 
 mainTest.describe(() => {
   mainTest(
-    qase(2052, 'Notification icon after mention in the comments'),
+    qase(
+      [2052, 2097],
+      'Click "Mark All as Read" icon in notifications section if there are 10 unread notifications',
+    ),
     async ({ page }) => {
       await mainTest.slow();
       const firstViewer = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstViewer}@gmail.com`;
       const comment = 'Test Comment (main user)';
+      const numberOfComments = 10;
 
       await mainPage.backToDashboardFromFileEditor();
 
@@ -238,21 +242,30 @@ mainTest.describe(() => {
       await mainPage.isMainPageLoaded();
 
       await commentsPanelPage.clickCreateCommentButton();
-      await mainPage.clickViewportTwice();
-
-      await commentsPanelPage.enterCommentText(comment);
-      await commentsPanelPage.clickCommentMentionButton();
-      await commentsPanelPage.clickFirstMentionMenuItem();
-      await commentsPanelPage.clickPostCommentButton();
-
+      for (let i = 0; i < numberOfComments; i++) {
+        await mainPage.zoom(30, 30, 1);
+        await mainPage.clickViewportByCoordinates(600, 300, 2);
+        await commentsPanelPage.clickCommentMentionButton();
+        await commentsPanelPage.clickFirstMentionMenuItem();
+        await commentsPanelPage.clickPostCommentButton();
+      }
       await mainPage.backToDashboardFromFileEditor();
       await profilePage.logout();
+
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(firstEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await teamPage.switchTeam(teamName);
+      // PENPOT-2052
       await dashboardPage.isUnreadNotificationVisible();
+      // PENPOT-2097
+      await dashboardPage.clickOnNotificationButton();
+      await dashboardPage.clickOnNotificationMarkAsReadButton();
+      await dashboardPage.isUnreadNotificationVisible(false);
+      await dashboardPage.isMarkedAllNotifsAsReadMessage();
+      await dashboardPage.clickOnNotificationButton();
+      await dashboardPage.isNoNotificationsMessagePresent();
     },
   );
 

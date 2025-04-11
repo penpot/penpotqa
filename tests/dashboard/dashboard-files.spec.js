@@ -8,6 +8,8 @@ const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
+const penpotFilesURL = 'https://penpot.github.io/penpot-files/';
+const useLibraryInPenpotURL = 'https://design.penpot.dev/#?template=';
 
 test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
@@ -166,6 +168,15 @@ mainTest(qase(72, 'DA-18 Import file to Drafts svg json'), async ({ page }) => {
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage('documents/QA test zip file.zip');
   await dashboardPage.isFilePresent('Wireframing kit');
+});
+
+mainTest(qase(2091, 'Import library from the web (by URL)'), async ({ page }) => {
+  const libraryFileName = 'tutorial-for-beginners v.2.0.penpot';
+
+  const dashboardPage = new DashboardPage(page);
+  dashboardPage.gotoLink(useLibraryInPenpotURL + penpotFilesURL + libraryFileName);
+  await dashboardPage.confirmFileImport();
+  await dashboardPage.isFilePresent('tutorial-for-beginners v.2.0');
 });
 
 mainTest(
