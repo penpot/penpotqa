@@ -202,6 +202,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.pluginModalContinueBtn = page.getByRole('button', { name: 'Continue' });
     this.pluginModalGoBtn = page.getByRole('button', { name: "Let's go" });
 
+    // Comment notifications
     this.notificationButton = page.getByTestId('open-comments');
     this.unreadNotification = this.notificationButton.locator(
       'div[class*="comments__unread"]',
@@ -213,6 +214,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.notificationReplyText = page.locator('[class*="comments__comment-text"]');
     this.notificationUnreadReplyCount = page.locator(
       '[class*="comments__replies-unread"]',
+    );
+
+    this.notificationMarkAllAsReadButton = page.getByRole('button', {
+      name: 'Mark all as read',
+    });
+    this.noNotificationsMessage = page.getByText("You're all caught up!");
+    this.markedAllNotifsAsReadMessage = page.getByText(
+      'Marked all notifications as read',
+      { exact: true },
     );
   }
 
@@ -566,6 +576,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fileImport.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
+    await this.confirmFileImport();
+  }
+
+  async confirmFileImport() {
     await expect(this.modalTitle).toBeVisible();
     await expect(this.modalTitle).toHaveText('Import Penpot files');
     await this.modalAcceptButton.click();
@@ -1038,5 +1052,17 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickFirstNotificationMessage() {
     await this.notificationUnreadReplyCount.first().click();
+  }
+
+  async clickOnNotificationMarkAsReadButton() {
+    await this.notificationMarkAllAsReadButton.click();
+  }
+
+  async isNoNotificationsMessagePresent() {
+    await expect(this.noNotificationsMessage).toBeVisible();
+  }
+
+  async isMarkedAllNotifsAsReadMessage() {
+    await expect(this.markedAllNotifsAsReadMessage).toBeVisible();
   }
 };

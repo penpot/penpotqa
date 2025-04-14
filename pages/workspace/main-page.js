@@ -216,6 +216,9 @@ exports.MainPage = class MainPage extends BasePage {
 
     this.errorScreen = page.locator('div[class*="static__exception-content"]');
     this.loginDialog = page.locator('div[class*="dialog-login"]');
+
+    this.viewportControls = page.locator('.viewport-controls');
+    // Comments
   }
 
   async clickMoveButton() {
@@ -293,6 +296,32 @@ exports.MainPage = class MainPage extends BasePage {
         delay: 200,
       });
     }
+  }
+
+  /**
+   * Wait for the viewport controls to be visible.
+   *
+   * @returns {Promise<void>}
+   */
+  async waitForViewportControls() {
+    await this.viewportControls.click();
+  }
+
+  /**
+   * Performs zoom operations on the document.
+   *
+   * @param {number} deltaX, pixels to scroll vertically.
+   * @param {number} deltaY, pixels to scroll vertically.
+   * @param {number} steps - number of steps to zoom in or out.
+   *    * @returns {Promise<void>}
+   */
+  async zoom(deltaX, deltaY, steps) {
+    await this.waitForViewportControls();
+    await this.page.keyboard.down('Control');
+    for (let index = 0; index < steps; index++) {
+      await this.page.mouse.wheel(deltaX, deltaY);
+    }
+    await this.page.keyboard.up('Control');
   }
 
   async isUnSavedChangesDisplayed() {
