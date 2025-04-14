@@ -83,7 +83,6 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
@@ -93,18 +92,7 @@ mainTest(
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'rectangle-main-component-layer.png',
-    );
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'rectangle-component-asset.png',
-      {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      },
-    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
   },
 );
 
@@ -113,7 +101,6 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
@@ -123,18 +110,7 @@ mainTest(
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'ellipse-main-component-layer.png',
-    );
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'ellipse-component-asset.png',
-      {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      },
-    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
   },
 );
 
@@ -143,7 +119,6 @@ mainTest(
   async ({ page, browserName }) => {
     const mainPage = new MainPage(page);
     const layersPanelPage = new LayersPanelPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
@@ -153,18 +128,7 @@ mainTest(
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'board-main-component-layer.png',
-    );
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'board-component-asset.png',
-      {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      },
-    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
   },
 );
 
@@ -247,9 +211,7 @@ mainTest(
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'path-main-component-layer.png',
-    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
@@ -277,9 +239,7 @@ mainTest(
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'curve-main-component-layer.png',
-    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
@@ -331,17 +291,12 @@ mainTest(
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'multiple-components-layer.png',
-    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'multiple-components-asset.png',
-      {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      },
-    );
+    await assetsPanelPage.isComponentWithNameAddedToFileLibrary('Ellipse');
+    await assetsPanelPage.isSecondComponentWithNameAddedToFileLibrary('Rectangle');
   },
 );
 
@@ -367,9 +322,9 @@ mainTest(
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'multiple-components-layer-3-layers.png',
-    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('sample');
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Hello World!');
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(

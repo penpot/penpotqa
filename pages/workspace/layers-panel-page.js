@@ -28,6 +28,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.copyComponentLayer = page.locator(
       '//*[@class="icon-component-copy"]//parent::div',
     );
+    this.pathComponentLayer = page.locator('//*[@class="icon-path"]//parent::div');
     this.createdLayerOnLayersPanelSpan = page.locator(
       'div[class*="element-list-body"] span[class*="element-name"]',
     );
@@ -301,5 +302,21 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
 
   async waitForMainComponentIsSelected() {
     await this.mainComponentLayerSelected.waitFor({ state: 'visible' });
+  }
+
+  async isMainComponentOnLayersTabVisibleWithName(name) {
+    await expect(
+      this.mainComponentLayer.locator('//../..').getByText(name),
+    ).toBeVisible();
+  }
+
+  async isCopyComponentOnLayersTabVisibleWithName(name) {
+    await expect(
+      this.copyComponentLayer.locator('//../..').getByText(name),
+    ).toBeVisible();
+  }
+
+  async isPathComponentOnLayersTabVisible() {
+    await expect(this.pathComponentLayer).toBeVisible();
   }
 };

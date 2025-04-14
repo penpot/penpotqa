@@ -68,6 +68,7 @@ exports.BasePage = class BasePage {
     this.addColumnGridLayoutBtn = page
       .locator('g[class*="grid-plus-button"]')
       .last();
+    this.gridLayoutEditor = page.locator('g[class*="grid-layout-editor"]').last();
     this.columnsRowsOnDesignPanel = page
       .getByTestId('inspect-layout-rows')
       .locator('..');
