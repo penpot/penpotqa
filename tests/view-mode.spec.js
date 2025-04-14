@@ -78,7 +78,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase([688], 'CO-367 Click view mode (From shortcut G+V) - board is created'),
-    async ({ browserName }) => {
+    async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
       const newPage = await viewModePage.clickViewModeShortcut();
@@ -90,7 +90,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([690], 'CO-369 Full screen on/off'), async ({ browserName }) => {
+  mainTest(qase([690], 'CO-369 Full screen on/off'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -139,35 +139,32 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase([700], 'CO-379 Click Back icon to reset view'),
-    async ({ browserName }) => {
-      await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createDefaultBoardByCoordinates(500, 500, true);
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createDefaultBoardByCoordinates(100, 100, true);
-      await mainPage.waitForChangeIsSaved();
-      const newPage = await viewModePage.clickViewModeShortcut();
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(45000);
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-        'first-board-view-mode-page-image.png',
-      );
-      await viewModePage.clickNextButton();
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-        'second-board-view-mode-page-image.png',
-      );
-      await viewModePage.clickNextButton();
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-        'third-board-view-mode-page-image.png',
-      );
-      await viewModePage.clickResetButton();
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-        'first-board-view-mode-page-image.png',
-      );
-    },
-  );
+  mainTest(qase([700], 'CO-379 Click Back icon to reset view'), async () => {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultBoardByCoordinates(500, 500, true);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultBoardByCoordinates(100, 100, true);
+    await mainPage.waitForChangeIsSaved();
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.waitForViewerSection(45000);
+    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      'first-board-view-mode-page-image.png',
+    );
+    await viewModePage.clickNextButton();
+    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      'second-board-view-mode-page-image.png',
+    );
+    await viewModePage.clickNextButton();
+    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      'third-board-view-mode-page-image.png',
+    );
+    await viewModePage.clickResetButton();
+    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      'first-board-view-mode-page-image.png',
+    );
+  });
 
   mainTest(
     qase([699], 'CO-378 Click board dropdown to navigate to other boards'),
@@ -197,7 +194,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([689], 'CO-368 Interactions dropdown'), async ({ browserName }) => {
+  mainTest(qase([689], 'CO-368 Interactions dropdown'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.createDefaultBoardByCoordinates(500, 500, true);
     await mainPage.waitForChangeIsSaved();
@@ -294,7 +291,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([708], 'CO-387 Page dropdown'), async ({ browserName }) => {
+  mainTest(qase([708], 'CO-387 Page dropdown'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickAddPageButton();
@@ -320,7 +317,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([701], 'CO-380 Create comment'), async ({ browserName }) => {
+  mainTest(qase([701], 'CO-380 Create comment'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -459,7 +456,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase([704], 'CO-383 Comments dropdown (Show comments list)'),
-    async ({ browserName }) => {
+    async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
       const newPage = await viewModePage.clickViewModeShortcut();
@@ -514,7 +511,7 @@ mainTest.describe(() => {
       [715],
       'CO-394 Inspect functionality - Board elements dropdown in the top left',
     ),
-    async ({ browserName }) => {
+    async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await designPanelPage.changeHeightAndWidthForLayer('200', '200');
       await mainPage.waitForChangeIsSaved();
@@ -539,33 +536,30 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase([717], 'CO-396 Inspect functionality- Export'),
-    async ({ browserName }) => {
-      await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await designPanelPage.changeHeightAndWidthForLayer('200', '200');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createDefaultRectangleByCoordinates(320, 320);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
+  mainTest(qase([717], 'CO-396 Inspect functionality- Export'), async () => {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultRectangleByCoordinates(320, 320);
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
 
-      const newPage = await viewModePage.clickViewModeShortcut();
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(45000);
-      designPanelPage = new DesignPanelPage(newPage);
-      await viewModePage.openInspectTab();
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.waitForViewerSection(45000);
+    designPanelPage = new DesignPanelPage(newPage);
+    await viewModePage.openInspectTab();
 
-      await designPanelPage.clickAddExportButtonForViewMode();
-      await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
-      await expect(viewModePage.rightSidebar).toHaveScreenshot(
-        'view-mode-export-right-sidebar-image.png',
-      );
+    await designPanelPage.clickAddExportButtonForViewMode();
+    await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
+    await expect(viewModePage.rightSidebar).toHaveScreenshot(
+      'view-mode-export-right-sidebar-image.png',
+    );
 
-      await designPanelPage.clickExportElementButton(newPage);
-    },
-  );
+    await designPanelPage.clickExportElementButton(newPage);
+  });
 
   mainTest(
     qase(1785, 'CO-387 Switch between layers from left menu'),
@@ -721,7 +715,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase([694], 'CO-373 Share prototype - destroy link'),
-    async ({ page, browserName }) => {
+    async ({ page }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
       const newPage = await viewModePage.clickViewModeShortcut();
@@ -747,7 +741,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase([696], 'CO-375 Share prototype - manage permissions ("Can comment")'),
-    async ({ page, browserName }) => {
+    async ({ page }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
       const newPage = await viewModePage.clickViewModeShortcut();
@@ -791,7 +785,7 @@ mainTest.describe(() => {
       [697],
       'CO-376 Share prototype - manage permissions ("Can inspect code  ")',
     ),
-    async ({ page, browserName }) => {
+    async ({ page }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
       const newPage = await viewModePage.clickViewModeShortcut();
