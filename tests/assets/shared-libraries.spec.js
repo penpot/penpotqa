@@ -252,15 +252,11 @@ mainTest.describe(() => {
 
       await dashboardPage.openFileWithName('New File 2');
       await assetsPanelPage.clickAssetsTab();
-      await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'unpublich-shared-library-file2.png',
-      );
+      await assetsPanelPage.isSharedLibraryVisibleByName('New File 1', false);
       await mainPage.clickPencilBoxButton();
       await dashboardPage.openFileWithName('New File 3');
       await assetsPanelPage.clickAssetsTab();
-      await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'unpublich-shared-library-file3.png',
-      );
+      await assetsPanelPage.isSharedLibraryVisibleByName('New File 1', false);
     },
   );
 

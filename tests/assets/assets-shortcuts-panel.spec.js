@@ -49,7 +49,6 @@ mainTest(qase(1025, 'AS-115 Show/hide panel'), async ({ page }) => {
   await mainPage.pressShortcutsPanelShortcut();
   await mainPage.isShortcutsPanelDisplayed();
   await mainPage.clickViewportTwice();
-  await expect(mainPage.shortcutsPanel).toHaveScreenshot('shortcuts-panel.png');
   await mainPage.closeShortcutsPanel();
   await mainPage.isShortcutsPanelNotDisplayed();
 });

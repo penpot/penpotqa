@@ -157,6 +157,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.secondPageListItem = page.locator(
       'ul[class*="page-list"] div[class*="element-list-body"] >>nth=1',
     );
+    this.selectedPage = page.locator(
+      'ul[class*="page-list"] li[class*="sitemap__selected"] div[class*="element-list-body"]',
+    );
     this.pageNameInput = page.locator(
       'ul[class*="page-list"] div[class*="element-list-body"] input',
     );
@@ -1126,5 +1129,11 @@ exports.MainPage = class MainPage extends BasePage {
     const layerSel = this.page.locator('.viewport-selrect');
     await layerSel.last().click({ button: 'right', force: true });
     await this.copyLinkMenuItem.click();
+  }
+
+  async isPageNameSelected(name, selected = true) {
+    selected
+      ? await expect(this.selectedPage.getByTitle(name)).toBeVisible()
+      : await expect(this.selectedPage.getByTitle(name)).not.toBeVisible();
   }
 };

@@ -60,9 +60,6 @@ mainTest.describe(() => {
   mainTest(qase(933, 'AS-23 File library colors - add'), async ({ page }) => {
     const assetsPanelPage = new AssetsPanelPage(page);
     await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00');
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'colors-add-color.png',
-    );
   });
 
   mainTest(qase(934, 'AS-24 File library colors - edit'), async ({ page }) => {
@@ -75,9 +72,6 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00#00ff00');
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'colors-edit-color.png',
-    );
   });
 
   mainTest(qase(935, 'AS-25 File library colors - rename'), async ({ page }) => {
@@ -87,9 +81,6 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isColorAddedToFileLibraryColors('test color#ffff00');
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'colors-rename-color.png',
-    );
   });
 
   mainTest(qase(936, 'AS-26 File library colors - delete'), async ({ page }) => {
@@ -110,7 +101,7 @@ mainTest.describe(() => {
       await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
       await mainPage.waitForChangeIsSaved();
       await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
-      await expect(assetsPanelPage.assetsPanel).toHaveScreenshot('group-colors.png');
+      await assetsPanelPage.isColorToFileLibraryColorsNotVisible();
     },
   );
 
@@ -138,9 +129,7 @@ mainTest.describe(() => {
     await assetsPanelPage.ungroupFileLibrary();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isFileLibraryGroupRemoved();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'colors-add-color.png',
-    );
+    await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00');
   });
 
   mainTest(

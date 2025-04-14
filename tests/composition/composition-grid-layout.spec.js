@@ -289,7 +289,7 @@ mainTest(
     1698,
     'PENPOT-1698 Upload an image and add it to the table - check the resizing of the image inside the table',
   ),
-  async ({ browserName }) => {
+  async () => {
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('600', '600');
     await mainPage.waitForChangeIsSaved();
@@ -307,11 +307,8 @@ mainTest(
     await designPanelPage.changeHeightAndWidthForLayer('700', '800');
     await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.gridLayoutEditor).toHaveScreenshot(
       'resized-board-with-image.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
   },
 );

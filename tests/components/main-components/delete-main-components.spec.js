@@ -83,14 +83,10 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.openLayersTab();
     await layersPanelPage.restoreMainComponentViaRightClick();
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'rectangle-component-asset.png',
-      {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      },
-    );
+    await assetsPanelPage.isComponentWithNameAddedToFileLibrary('Rectangle');
   },
 );

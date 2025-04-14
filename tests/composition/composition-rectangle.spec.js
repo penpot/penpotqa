@@ -369,17 +369,11 @@ mainTest.describe(() => {
 
   mainTest(qase(319, 'CO-104 Transform rectangle to path'), async ({ page }) => {
     const mainPage = new MainPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
     await mainPage.transformToPathViaRightClick();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(page).toHaveScreenshot('rectangle-to-path.png', {
-      mask: [
-        mainPage.usersSection,
-        mainPage.guides,
-        mainPage.guidesFragment,
-        mainPage.toolBarWindow,
-      ],
-    });
+    await layersPanelPage.isPathComponentOnLayersTabVisible();
   });
 
   mainTest(qase(326, 'CO-111 Selection to board'), async ({ page }) => {
