@@ -34,7 +34,7 @@ test.afterEach(async ({ page }, testInfo) => {
 
 mainTest(qase(2167, 'Create theme via "create one" link'), async () => {
   await tokensPage.clickTokensTab();
-  await tokensPage.createThemeViaLinc('Desktop');
+  await tokensPage.createThemeViaLink('Desktop');
   await tokensPage.checkSelectedTheme('No theme active');
 });
 
@@ -78,7 +78,7 @@ mainTest(qase(2206, 'Enable themes in different groups'), async () => {
   await tokensPage.waitForChangeIsSaved();
   await designPanelPage.checkGeneralCornerRadius('30');
 
-  await tokensPage.createThemeViaLincWithGroup('App', 'Web');
+  await tokensPage.createThemeViaLinkWithGroup('App', 'Web');
   await tokensPage.addNewThemeWithGroup('App', 'Mobile');
 
   await tokensPage.openEditThemeModalByThemeName('Web');

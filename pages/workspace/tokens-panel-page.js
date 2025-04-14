@@ -76,7 +76,7 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await this.tokensTab.click();
   }
 
-  async createSetViaLinc(name) {
+  async createSetViaLink(name) {
     await this.createOneSetButton.click();
     await this.setsNameInput.fill(name);
     await this.clickOnEnter();
@@ -110,14 +110,14 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     ).toBeChecked();
   }
 
-  async createThemeViaLinc(name) {
+  async createThemeViaLink(name) {
     await this.createOneThemeButton.click();
     await this.themeNameInput.fill(name);
     await this.modalSaveButton.click();
     await this.modalCloseButton.last().click();
   }
 
-  async createThemeViaLincWithGroup(groupName, themeName) {
+  async createThemeViaLinkWithGroup(groupName, themeName) {
     await this.createOneThemeButton.click();
     await this.groupThemeNameInput.fill(groupName);
     await this.themeNameInput.fill(themeName);

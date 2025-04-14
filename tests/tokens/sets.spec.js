@@ -35,7 +35,7 @@ test.afterEach(async ({ page }, testInfo) => {
 mainTest(qase(2102, 'Create a set via "create one" link'), async () => {
   const name = 'Mobile';
   await tokensPage.clickTokensTab();
-  await tokensPage.createSetViaLinc(name);
+  await tokensPage.createSetViaLink(name);
   await tokensPage.checkFirstSetName(name);
 });
 
