@@ -49,4 +49,10 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     const match = cssCode.match(regex);
     return match ? match[0] : null;
   }
+
+  async isAnnotationTextExistOnInspectTab(text) {
+    await expect(
+      this.annotationBlockOnInspect.locator('[class*="annotation-content"]'),
+    ).toHaveText(text);
+  }
 };

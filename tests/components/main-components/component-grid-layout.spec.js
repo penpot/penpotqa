@@ -114,14 +114,12 @@ mainTest.describe(() => {
       await mainPage.pressPasteShortcut();
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
-      await expect(page).toHaveScreenshot('board-component-on-page2.png', {
-        mask: [
-          mainPage.guides,
-          mainPage.guidesFragment,
-          mainPage.toolBarWindow,
-          mainPage.usersSection,
-        ],
-      });
+      await mainPage.isPageNameSelected('Page 1', false);
+      await mainPage.isPageNameSelected('Page 2', true);
+      await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Board');
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'board-component-on-page2.png',
+      );
     },
   );
 

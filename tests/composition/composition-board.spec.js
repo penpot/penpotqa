@@ -542,6 +542,7 @@ mainTest.describe(() => {
         ],
       });
       await mainPage.hideLayerViaRightClickOnCanvas(board2);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-second-hide.png', {
         mask: [
@@ -553,6 +554,7 @@ mainTest.describe(() => {
         ],
       });
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board2, false);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-second-show.png', {
         mask: [
@@ -564,6 +566,7 @@ mainTest.describe(() => {
         ],
       });
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board1, false);
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('board-first-show.png', {
         mask: [

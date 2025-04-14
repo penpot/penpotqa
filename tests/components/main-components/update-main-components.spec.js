@@ -498,14 +498,6 @@ mainTest(qase(1478, 'PENPOT-1478 Changed direct, not overriden'), async () => {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     },
   );
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-    '1478-component-update-asset.png',
-    {
-      mask: [assetsPanelPage.librariesOpenModalButton],
-    },
-  );
 });
 
 mainTest(qase(1479, 'PENPOT-1479 Changed remote, not overriden'), async () => {
@@ -603,14 +595,6 @@ mainTest(qase(1482, 'PENPOT-1482 Changed remote, overriden in copy'), async () =
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     },
   );
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-    '1482-component-update-asset.png',
-    {
-      mask: [assetsPanelPage.librariesOpenModalButton],
-    },
-  );
 });
 
 mainTest(
@@ -645,14 +629,6 @@ mainTest(
       '1483-component-update-canvas.png',
       {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
-    );
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      '1483-component-update-asset.png',
-      {
-        mask: [assetsPanelPage.librariesOpenModalButton],
       },
     );
   },

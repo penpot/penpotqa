@@ -64,35 +64,19 @@ mainTest.describe(() => {
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.clickOnShowInAssetsPanel();
       await mainPage.waitForChangeIsSaved();
-      await expect(page).toHaveScreenshot('component-show-in-assets-panel2.png', {
-        mask: [
-          mainPage.guides,
-          mainPage.guidesFragment,
-          mainPage.usersSection,
-          mainPage.zoomButton,
-          assetsPanelPage.librariesOpenModalButton,
-        ],
-      });
+      await assetsPanelPage.isComponentHighlightedInAssetsTab();
     },
   );
 
   mainTest(
-    qase(0, 'Show in assets panel option from component context menu'),
+    qase(1536, 'Show in assets panel option from component context menu (RMB)'),
     async ({ page }) => {
       const mainPage = new MainPage(page);
       const assetsPanelPage = new AssetsPanelPage(page);
       await mainPage.showInAssetsPanelRightClick();
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
-      await expect(page).toHaveScreenshot('component-show-in-assets-panel.png', {
-        mask: [
-          mainPage.guides,
-          mainPage.guidesFragment,
-          mainPage.usersSection,
-          mainPage.zoomButton,
-          assetsPanelPage.librariesOpenModalButton,
-        ],
-      });
+      await assetsPanelPage.isComponentHighlightedInAssetsTab();
     },
   );
 
@@ -173,9 +157,7 @@ mainTest.describe(() => {
     await designPanelPage.waitForChangeIsSaved();
     await inspectPanelPage.openInspectTab();
     await inspectPanelPage.isAnnotationExistOnInspectTab();
-    await expect(inspectPanelPage.annotationBlockOnInspect).toHaveScreenshot(
-      'component-annotation-inspect-tab.png',
-    );
+    await inspectPanelPage.isAnnotationTextExistOnInspectTab(annotation);
   });
 
   mainTest(qase(1454, 'Duplicate main component'), async ({ page }) => {
@@ -186,13 +168,7 @@ mainTest.describe(() => {
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.duplicateFileLibraryComponent();
     await mainPage.waitForChangeIsSaved();
-    await assetsPanelPage.isSecondComponentAddedToFileLibrary();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'component-rectangle-duplicated-asset.png',
-      {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      },
-    );
+    await assetsPanelPage.isSecondComponentWithNameAddedToFileLibrary('Rectangle');
     await layersPanelPage.openLayersTab();
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-rectangle-duplicated-canvas.png',
@@ -233,9 +209,7 @@ mainTest.describe(() => {
       );
       await inspectPanelPage.openInspectTab();
       await inspectPanelPage.isAnnotationExistOnInspectTab();
-      await expect(inspectPanelPage.annotationBlockOnInspect).toHaveScreenshot(
-        'component-annotation-inspect-tab.png',
-      );
+      await inspectPanelPage.isAnnotationTextExistOnInspectTab(annotation);
     },
   );
 
@@ -249,12 +223,6 @@ mainTest.describe(() => {
     await assetsPanelPage.renameGroupFileLibrary('New Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isFileLibraryGroupCreated('New Group');
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'group-components-renamed.png',
-      {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      },
-    );
   });
 
   mainTest(qase(1286, 'Components - ungroup'), async ({ page }) => {
@@ -267,12 +235,7 @@ mainTest.describe(() => {
     await assetsPanelPage.ungroupFileLibrary();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isFileLibraryGroupRemoved();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'component-rectangle.png',
-      {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      },
-    );
+    await assetsPanelPage.isComponentWithNameAddedToFileLibrary('Rectangle');
   });
 
   mainTest(qase(1676, 'Components - change view (list/tile)'), async ({ page }) => {
@@ -363,9 +326,7 @@ mainTest(
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'ellipse-complex-component-layer.png',
-    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Component 1');
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();

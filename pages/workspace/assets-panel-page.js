@@ -22,6 +22,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.componentsTitleBarOnAssetsTab = page.locator(
       'div[class*="components_title_bar"] span:text-is("Components")',
     );
+    this.assetComponentSelected = page.locator(
+      'div[class*="sidebar_assets_components__selected"]',
+    );
     this.assetsPanel = page.locator('article[class*="assets-bar"]');
     this.assetsSectionName = page.getByTestId('left-sidebar');
     this.assetsSectionNumbers = page.locator(
@@ -188,6 +191,10 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   async isColorAddedToFileLibraryColors(colorName) {
     await expect(this.fileLibraryColorsColorBullet).toBeVisible();
     await expect(this.fileLibraryColorsColorTitle).toHaveText(colorName);
+  }
+
+  async isColorToFileLibraryColorsNotVisible() {
+    await expect(this.fileLibraryColorsColorBullet).not.toBeVisible();
   }
 
   async isColorNotAddedToFileLibraryColors() {
@@ -460,5 +467,19 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async clearSearchSharedLibraries() {
     await this.searchSharedLibrariesClearButton.click();
+  }
+
+  async isComponentWithNameAddedToFileLibrary(name) {
+    await this.assetComponentLabel.first().hover();
+    await expect(this.assetComponentLabel.first().getByTitle(name)).toBeVisible();
+  }
+
+  async isSecondComponentWithNameAddedToFileLibrary(name) {
+    await this.assetsSecondComponentLabel.hover();
+    await expect(this.assetsSecondComponentLabel.getByTitle(name)).toBeVisible();
+  }
+
+  async isComponentHighlightedInAssetsTab() {
+    await expect(this.assetComponentSelected).toBeVisible();
   }
 };

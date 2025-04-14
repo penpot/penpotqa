@@ -345,4 +345,8 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   async isShareButtonVisible() {
     await expect(this.shareButton).toBeVisible();
   }
+
+  async isBoardCounterVisible() {
+    await expect(this.boardCounter).toBeVisible();
+  }
 };
