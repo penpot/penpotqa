@@ -1,0 +1,1515 @@
+{
+  "components / section-message": {
+    "xx": {
+      "component": {
+        "sectionMessage": {
+          "warning": {
+            "icon": {
+              "$value": "{xx.alias.color.purpose.onWarning}",
+              "$type": "color",
+              "$description": "icon color for warning section messages"
+            },
+            "background": {
+              "$value": "{xx.alias.color.purpose.warningHighEmphasis}",
+              "$type": "color",
+              "$description": "background color for warning section messages"
+            },
+            "text": {
+              "$value": "{xx.alias.color.purpose.onWarning}",
+              "$type": "color",
+              "$description": "text color for warning section messages"
+            }
+          },
+          "borderRadius": {
+            "$value": "{xx.alias.border.radius.md}",
+            "$type": "borderRadius",
+            "$description": "border radius for section messages"
+          },
+          "spacing": {
+            "innerY": {
+              "$value": "{xx.alias.spacing.md}",
+              "$type": "spacing",
+              "$description": "top and bottom inner spacing for section messages"
+            },
+            "innerX": {
+              "$value": "{xx.alias.spacing.sm}",
+              "$type": "spacing",
+              "$description": "left and right inner spacing for section messages"
+            },
+            "gap": {
+              "$value": "{xx.alias.spacing.xs}",
+              "$type": "spacing",
+              "$description": "gap for separating elements in section message"
+            }
+          },
+          "height": {
+            "min": {
+              "$value": "{xx.alias.size.md}",
+              "$type": "sizing",
+              "$description": "min height of section messages"
+            }
+          },
+          "success": {
+            "background": {
+              "$value": "{xx.alias.color.purpose.successHighEmphasis}",
+              "$type": "color",
+              "$description": "background color for success section messages "
+            },
+            "icon": {
+              "$value": "{xx.alias.color.purpose.onSuccess}",
+              "$type": "color",
+              "$description": "icon color for success section messages"
+            },
+            "text": {
+              "$value": "{xx.alias.color.purpose.onSuccess}",
+              "$type": "color",
+              "$description": "text color for success section messages"
+            }
+          }
+        }
+      }
+    }
+  },
+  "alias / color-dark": {
+    "xx": {
+      "alias": {
+        "color": {
+          "purpose": {
+            "infoLowEmphasis": {
+              "$value": "{xx.global.color.blue.400}",
+              "$type": "color",
+              "$description": "color for elements with informational purpose of low emphasis"
+            },
+            "onCritical": {
+              "$value": "{xx.global.color.red.900}",
+              "$type": "color",
+              "$description": "color for elements placed on critical purpose background"
+            },
+            "criticalHighEmphasis": {
+              "$value": "{xx.global.color.red.200}",
+              "$type": "color",
+              "$description": "color for elements with critical purpose of high emphasis"
+            },
+            "successHighEmphasis": {
+              "$value": "{xx.global.color.green.100}",
+              "$type": "color",
+              "$description": "color for elements with success purpose of high emphasis"
+            },
+            "successLowEmphasis": {
+              "$value": "{xx.global.color.green.400}",
+              "$type": "color",
+              "$description": "color for elements with success purpose of low emphasis"
+            },
+            "onInfo": {
+              "$value": "{xx.global.color.blue.800}",
+              "$type": "color",
+              "$description": "color for elements placed on informational purpose background"
+            },
+            "criticalLowEmphasis": {
+              "$value": "{xx.global.color.red.400}",
+              "$type": "color",
+              "$description": "color for elements with critical purpose of low emphasis"
+            },
+            "onWarning": {
+              "$value": "{xx.global.color.yellow.800}",
+              "$type": "color",
+              "$description": "color for elements placed on warning purpose background"
+            },
+            "onSuccess": {
+              "$value": "{xx.global.color.green.800}",
+              "$type": "color",
+              "$description": "color for elements placed on success purpose background"
+            },
+            "warningLowEmphasis": {
+              "$value": "{xx.global.color.yellow.400}",
+              "$type": "color",
+              "$description": "color for elements with warning purpose of low emphasis"
+            },
+            "warningHighEmphasis": {
+              "$value": "{xx.global.color.yellow.100}",
+              "$type": "color",
+              "$description": "color for elements with warning purpose of high emphasis"
+            },
+            "infoHighEmphasis": {
+              "$value": "{xx.global.color.blue.200}",
+              "$type": "color",
+              "$description": "color for elements with informational purpose of high emphasis"
+            }
+          },
+          "border": {
+            "heavy": {
+              "$value": "{xx.global.color.neutral.200}",
+              "$type": "color",
+              "$description": "heavy border color"
+            },
+            "focusOutline": {
+              "$value": "rgba({xx.global.color.blue.400},0.5)",
+              "$type": "color",
+              "$description": "color for default focus outline"
+            },
+            "medium": {
+              "$value": "{xx.global.color.neutral.500}",
+              "$type": "color",
+              "$description": "medium border color"
+            },
+            "subtle": {
+              "$value": "{xx.global.color.neutral.700}",
+              "$type": "color",
+              "$description": "subtle border color"
+            }
+          },
+          "state": {
+            "onSelectInverted": {
+              "$value": "{xx.global.color.mint.100}",
+              "$type": "color",
+              "$description": "inverted color for elements on selected backgrounds"
+            },
+            "focus": {
+              "$value": "rgba({xx.global.color.neutral.100},0.16)",
+              "$type": "color",
+              "$description": "Background color for state overlay of a focused element"
+            },
+            "onDisable": {
+              "$value": "{xx.global.color.neutral.700}",
+              "$type": "color",
+              "$description": "color for elements that are palced on disabled background color"
+            },
+            "press": {
+              "$value": "rgba({xx.global.color.neutral.100},0.8)",
+              "$type": "color",
+              "$description": "Background color for state overlay of a pressed element"
+            },
+            "select": {
+              "$value": "{xx.global.color.mint.100}",
+              "$type": "color",
+              "$description": "background color for selected elements"
+            },
+            "disable": {
+              "$value": "{xx.global.color.neutral.300}",
+              "$type": "color",
+              "$description": "background color for disabled elements"
+            },
+            "selectInverted": {
+              "$value": "{xx.global.color.mint.600}",
+              "$type": "color",
+              "$description": "Inverted background color for selected elements"
+            },
+            "hover": {
+              "$value": "rgba({xx.global.color.neutral.100},0.16)",
+              "$type": "color",
+              "$description": "Background color for state overlay of a hovered element"
+            },
+            "onSelect": {
+              "$value": "{xx.global.color.mint.600}",
+              "$type": "color",
+              "$description": "Foreground color for selected elements"
+            }
+          },
+          "primary": {
+            "onBrand": {
+              "$value": "{xx.global.color.violet.800}",
+              "$type": "color",
+              "$description": "color for elements that are placed on brand background color"
+            },
+            "interaction": {
+              "$value": "{xx.global.color.violet.600}",
+              "$type": "color",
+              "$description": "Color that indicates interactions"
+            },
+            "brand": {
+              "$value": "{xx.global.color.violet.400}",
+              "$type": "color",
+              "$description": "background color for primary brand elements "
+            },
+            "onInteraction": {
+              "$value": "{xx.global.color.violet.900}",
+              "$type": "color",
+              "$description": "color for elements that are placed on interactive background colors"
+            },
+            "highEmphasis": {
+              "$value": "{xx.global.color.violet.800}",
+              "$type": "color",
+              "$description": ""
+            }
+          },
+          "text": {
+            "default": {
+              "$value": "{xx.global.color.neutral.50}",
+              "$type": "color",
+              "$description": "Default text color "
+            },
+            "inverted": {
+              "$value": "{xx.global.color.neutral.900}",
+              "$type": "color",
+              "$description": "Inverted text color"
+            },
+            "subtle": {
+              "$value": "{xx.global.color.neutral.400}",
+              "$type": "color",
+              "$description": "Text color in subtle weight"
+            },
+            "emphasis": {
+              "$value": "{xx.global.color.white}",
+              "$type": "color",
+              "$description": "Default text color "
+            },
+            "medium": {
+              "$value": "{xx.global.color.neutral.600}",
+              "$type": "color",
+              "$description": "Text color in subtle weight"
+            }
+          },
+          "background": {
+            "mediumEmphasis": {
+              "$value": "{xx.global.color.neutral.800}",
+              "$type": "color",
+              "$description": "Background Color for components with medium emphasis"
+            },
+            "highEmphasis": {
+              "$value": "{xx.global.color.neutral.700}",
+              "$type": "color",
+              "$description": "Background Color for components with high emphasis"
+            },
+            "body": {
+              "$value": "{xx.global.color.neutral.950}",
+              "$type": "color",
+              "$description": "Body background color"
+            },
+            "lowEmphasis": {
+              "$value": "{xx.global.color.neutral.900}",
+              "$type": "color",
+              "$description": "background color for elements with a low emphasis"
+            }
+          }
+        }
+      }
+    }
+  },
+  "alias/media-queries": {
+    "xx": {
+      "media": {
+        "xs": {
+          "$value": "576px",
+          "$type": "dimension",
+          "$description": "(min-width: 576px)"
+        },
+        "sm": {
+          "$value": "768px",
+          "$type": "dimension",
+          "$description": "(min-width: 768px)"
+        },
+        "md": {
+          "$value": "992px",
+          "$type": "dimension",
+          "$description": "min-width: 992px - Tablet portrait"
+        },
+        "lg": {
+          "$value": "1200px",
+          "$type": "dimension",
+          "$description": " (min-width: 1200px)  - Tablet landscape"
+        },
+        "xl": {
+          "$value": "1440px",
+          "$type": "dimension",
+          "$description": " (min-width: 1440px) - Desktop small"
+        },
+        "2xl": {
+          "$value": "1680px",
+          "$type": "dimension",
+          "$description": " (min-width: 1680px) - Desktop Large"
+        }
+      }
+    }
+  },
+  "alias / border": {
+    "xx": {
+      "alias": {
+        "border": {
+          "radius": {
+            "sm": {
+              "$value": "{xx.global.dimensions.2}",
+              "$type": "borderRadius",
+              "$description": "small border radius"
+            },
+            "md": {
+              "$value": "{xx.global.dimensions.3}",
+              "$type": "borderRadius",
+              "$description": "medium border radius"
+            },
+            "lg": {
+              "$value": "{xx.global.dimensions.5}",
+              "$type": "borderRadius",
+              "$description": "large border radius"
+            },
+            "round": { "$value": "100%", "$type": "borderRadius" }
+          }
+        }
+      }
+    },
+    "stroke": {
+      "outline": { "$value": "{xx.global.dimensions.1}", "$type": "strokeWidth" },
+      "medium": { "$value": "3", "$type": "strokeWidth" },
+      "small": { "$value": "1", "$type": "strokeWidth" }
+    }
+  },
+  "global / color": {
+    "xx": {
+      "global": {
+        "color": {
+          "blue": {
+            "50": {
+              "$value": "#F6FBFD",
+              "$type": "color",
+              "$description": "global color blue of weight 50"
+            },
+            "100": {
+              "$value": "#E0F0F9",
+              "$type": "color",
+              "$description": "global color blue of weight 100"
+            },
+            "200": {
+              "$value": "#B1DBEF",
+              "$type": "color",
+              "$description": "global color blue of weight 200"
+            },
+            "300": {
+              "$value": "#84C5E6",
+              "$type": "color",
+              "$description": "global color blue of weight 300"
+            },
+            "400": {
+              "$value": "#53AFDC",
+              "$type": "color",
+              "$description": "global color blue of weight 400"
+            },
+            "500": {
+              "$value": "#1993D0",
+              "$type": "color",
+              "$description": "global color blue of weight 500"
+            },
+            "600": {
+              "$value": "#0077B2",
+              "$type": "color",
+              "$description": "global color blue of weight 600"
+            },
+            "700": {
+              "$value": "#006596",
+              "$type": "color",
+              "$description": "global color blue of weight 700"
+            },
+            "800": {
+              "$value": "#005179",
+              "$type": "color",
+              "$description": "global color blue of weight 800"
+            },
+            "900": {
+              "$value": "#003C5A",
+              "$type": "color",
+              "$description": "global color blue of weight 900"
+            }
+          },
+          "neutral": {
+            "50": {
+              "$value": "#FCFCFC",
+              "$type": "color",
+              "$description": "global color neutral of weight 50"
+            },
+            "100": {
+              "$value": "#FAFAFB",
+              "$type": "color",
+              "$description": "global color neutral of weight 100"
+            },
+            "200": {
+              "$value": "#F3F3F4",
+              "$type": "color",
+              "$description": "global color neutral of weight 200"
+            },
+            "300": {
+              "$value": "#DCDCDD",
+              "$type": "color",
+              "$description": "global color neutral of weight 300"
+            },
+            "400": {
+              "$value": "#AEADB1",
+              "$type": "color",
+              "$description": "global color neutral of weight 400"
+            },
+            "500": {
+              "$value": "#8B898F",
+              "$type": "color",
+              "$description": "global color neutral of weight 500"
+            },
+            "600": {
+              "$value": "#747279",
+              "$type": "color",
+              "$description": "global color neutral of weight 600"
+            },
+            "700": {
+              "$value": "#49454E",
+              "$type": "color",
+              "$description": "global color neutral of weight 700"
+            },
+            "800": {
+              "$value": "#3B3741",
+              "$type": "color",
+              "$description": "global color neutral of weight 800"
+            },
+            "900": {
+              "$value": "#2F2C35",
+              "$type": "color",
+              "$description": "global color neutral of weight 900"
+            },
+            "950": {
+              "$value": "#1C1C1E",
+              "$type": "color",
+              "$description": "global color neutral of weight 950"
+            }
+          },
+          "white": { "$value": "#ffffff", "$type": "color" },
+          "mint": {
+            "50": {
+              "$value": "#F6FEFB",
+              "$type": "color",
+              "$description": "global color mint of weight 50"
+            },
+            "100": {
+              "$value": "#C5F8EA",
+              "$type": "color",
+              "$description": "global color mint of weight 100"
+            },
+            "200": {
+              "$value": "#55EBCE",
+              "$type": "color",
+              "$description": "global color mint of weight 200"
+            },
+            "300": {
+              "$value": "#00D4B6",
+              "$type": "color",
+              "$description": "global color mint of weight 300"
+            },
+            "400": {
+              "$value": "#0AB29A",
+              "$type": "color",
+              "$description": "global color mint of weight 400"
+            },
+            "500": {
+              "$value": "#188675",
+              "$type": "color",
+              "$description": "global color mint of weight 500"
+            },
+            "600": {
+              "$value": "#1A6A5D",
+              "$type": "color",
+              "$description": "global color mint of weight 600"
+            },
+            "700": {
+              "$value": "#19544B",
+              "$type": "color",
+              "$description": "global color mint of weight 700"
+            },
+            "800": {
+              "$value": "#174039",
+              "$type": "color",
+              "$description": "global color mint of weight 800"
+            },
+            "900": {
+              "$value": "#142C28",
+              "$type": "color",
+              "$description": "global color mint of weight 900"
+            }
+          },
+          "orange": {
+            "50": {
+              "$value": "#FEF9F5",
+              "$type": "color",
+              "$description": "global color orange of weight 50"
+            },
+            "100": {
+              "$value": "#FCEBDC",
+              "$type": "color",
+              "$description": "global color orange of weight 100"
+            },
+            "200": {
+              "$value": "#F9CCA9",
+              "$type": "color",
+              "$description": "global color orange of weight 200"
+            },
+            "300": {
+              "$value": "#F6AD76",
+              "$type": "color",
+              "$description": "global color orange of weight 300"
+            },
+            "400": {
+              "$value": "#E39258",
+              "$type": "color",
+              "$description": "global color orange of weight 400"
+            },
+            "500": {
+              "$value": "#C07B4B",
+              "$type": "color",
+              "$description": "global color orange of weight 500"
+            },
+            "600": {
+              "$value": "#9D633E",
+              "$type": "color",
+              "$description": "global color orange of weight 600"
+            },
+            "700": {
+              "$value": "#855435",
+              "$type": "color",
+              "$description": "global color orange of weight 700"
+            },
+            "800": {
+              "$value": "#6B432B",
+              "$type": "color",
+              "$description": "global color orange of weight 800"
+            },
+            "900": {
+              "$value": "#4F3120",
+              "$type": "color",
+              "$description": "global color orange of weight 900"
+            }
+          },
+          "violet": {
+            "50": {
+              "$value": "#FCFCFE",
+              "$type": "color",
+              "$description": "global color violet of weight 50"
+            },
+            "100": {
+              "$value": "#ECEDFA",
+              "$type": "color",
+              "$description": "global color violet of weight 100"
+            },
+            "200": {
+              "$value": "#D0D2F3",
+              "$type": "color",
+              "$description": "global color violet of weight 200"
+            },
+            "300": {
+              "$value": "#B6B8EB",
+              "$type": "color",
+              "$description": "global color violet of weight 300"
+            },
+            "400": {
+              "$value": "#9598E0",
+              "$type": "color",
+              "$description": "global color violet of weight 400"
+            },
+            "500": {
+              "$value": "#686FC8",
+              "$type": "color",
+              "$description": "global color violet of weight 500"
+            },
+            "600": {
+              "$value": "#57579C",
+              "$type": "color",
+              "$description": "global color violet of weight 600"
+            },
+            "700": {
+              "$value": "#49457A",
+              "$type": "color",
+              "$description": "global color violet of weight 700"
+            },
+            "800": {
+              "$value": "#39345A",
+              "$type": "color",
+              "$description": "global color violet of weight 800"
+            },
+            "900": {
+              "$value": "#29253C",
+              "$type": "color",
+              "$description": "global color violet of weight 900"
+            }
+          },
+          "yellow": {
+            "50": {
+              "$value": "#FFFCF5",
+              "$type": "color",
+              "$description": "global color yellow of weight 50"
+            },
+            "100": {
+              "$value": "#FDECC3",
+              "$type": "color",
+              "$description": "global color yellow of weight 100"
+            },
+            "200": {
+              "$value": "#F0D36B",
+              "$type": "color",
+              "$description": "global color yellow of weight 200"
+            },
+            "300": {
+              "$value": "#D4BB5F",
+              "$type": "color",
+              "$description": "global color yellow of weight 300"
+            },
+            "400": {
+              "$value": "#B19D51",
+              "$type": "color",
+              "$description": "global color yellow of weight 400"
+            },
+            "500": {
+              "$value": "#84773F",
+              "$type": "color",
+              "$description": "global color yellow of weight 500"
+            },
+            "600": {
+              "$value": "#685E34",
+              "$type": "color",
+              "$description": "global color yellow of weight 600"
+            },
+            "700": {
+              "$value": "#534B2B",
+              "$type": "color",
+              "$description": "global color yellow of weight 700"
+            },
+            "800": {
+              "$value": "#3E3922",
+              "$type": "color",
+              "$description": "global color yellow of weight 800"
+            },
+            "900": {
+              "$value": "#2B2819",
+              "$type": "color",
+              "$description": "global color yellow of weight 900"
+            }
+          },
+          "green": {
+            "50": {
+              "$value": "#f7fbeb",
+              "$type": "color",
+              "$description": "global color green of weight 50"
+            },
+            "100": {
+              "$value": "#DFF3DC",
+              "$type": "color",
+              "$description": "global color green of weight 100"
+            },
+            "200": {
+              "$value": "#B0E1AA",
+              "$type": "color",
+              "$description": "global color green of weight 200"
+            },
+            "300": {
+              "$value": "#7FCE7A",
+              "$type": "color",
+              "$description": "global color green of weight 300"
+            },
+            "400": {
+              "$value": "#69AD65",
+              "$type": "color",
+              "$description": "global color green of weight 400"
+            },
+            "500": {
+              "$value": "#51834E",
+              "$type": "color",
+              "$description": "global color green of weight 500"
+            },
+            "600": {
+              "$value": "#42673F",
+              "$type": "color",
+              "$description": "global color green of weight 600"
+            },
+            "700": {
+              "$value": "#365233",
+              "$type": "color",
+              "$description": "global color green of weight 700"
+            },
+            "800": {
+              "$value": "#2A3E28",
+              "$type": "color",
+              "$description": "global color green of weight 800"
+            },
+            "900": {
+              "$value": "#1E2B1D",
+              "$type": "color",
+              "$description": "global color green of weight 900"
+            }
+          },
+          "red": {
+            "50": {
+              "$value": "#FFFBFB",
+              "$type": "color",
+              "$description": "global color red of weight 50"
+            },
+            "100": {
+              "$value": "#FFE9E5",
+              "$type": "color",
+              "$description": "global color red of weight 100"
+            },
+            "200": {
+              "$value": "#FFC7BF",
+              "$type": "color",
+              "$description": "global color red of weight 200"
+            },
+            "300": {
+              "$value": "#FCA69C",
+              "$type": "color",
+              "$description": "global color red of weight 300"
+            },
+            "400": {
+              "$value": "#F37A73",
+              "$type": "color",
+              "$description": "global color red of weight 400"
+            },
+            "500": {
+              "$value": "#BA5A56",
+              "$type": "color",
+              "$description": "global color red of weight 500"
+            },
+            "600": {
+              "$value": "#934846",
+              "$type": "color",
+              "$description": "global color red of weight 600"
+            },
+            "700": {
+              "$value": "#743A3A",
+              "$type": "color",
+              "$description": "global color red of weight 700"
+            },
+            "800": {
+              "$value": "#572D2D",
+              "$type": "color",
+              "$description": "global color red of weight 800"
+            },
+            "900": {
+              "$value": "#3B2020",
+              "$type": "color",
+              "$description": "global color red of weight 900"
+            }
+          },
+          "black": { "$value": "#000000", "$type": "color", "$description": "" }
+        }
+      }
+    }
+  },
+  "$themes": [
+    {
+      "name": "Brand",
+      "group": "Global",
+      "description": "",
+      "is-source": false,
+      "id": "e2a3266a-c517-80f7-8005-dc49a408a813",
+      "modified-at": "2025-03-11T08:23:20.483+01:00",
+      "selectedTokenSets": {
+        "global / font": "enabled",
+        "global / color": "enabled",
+        "global / dimension": "enabled",
+        "alias/color-dark": "enabled",
+        "global/Opacity": "enabled"
+      }
+    },
+    {
+      "name": "Light Mode",
+      "group": "Alias",
+      "description": "",
+      "is-source": false,
+      "id": "e2a3266a-c517-80f7-8005-dc49a408c44f",
+      "modified-at": "2025-03-11T08:23:20.483+01:00",
+      "selectedTokenSets": {
+        "global / font": "enabled",
+        "alias/media-queries": "enabled",
+        "alias / border": "enabled",
+        "alias / dimension": "enabled",
+        "alias / font-screen-lg": "enabled",
+        "alias/color-light": "enabled",
+        "alias / color-light": "enabled",
+        "alias/dimension": "enabled"
+      }
+    },
+    {
+      "name": "Dark Mode",
+      "group": "Alias",
+      "description": "",
+      "is-source": false,
+      "id": "e2a3266a-c517-80f7-8005-dc49a408c451",
+      "modified-at": "2025-03-11T08:23:20.483+01:00",
+      "selectedTokenSets": {
+        "alias / color-dark": "enabled",
+        "alias / border": "enabled",
+        "alias / dimension": "enabled",
+        "alias / font-screen-lg": "enabled",
+        "alias/dimension": "enabled"
+      }
+    },
+    {
+      "name": "Section Message",
+      "group": "Components",
+      "description": "",
+      "is-source": false,
+      "id": "e2a3266a-c517-80f7-8005-dc49a408c453",
+      "modified-at": "2025-03-11T08:23:20.483+01:00",
+      "selectedTokenSets": { "components / section-message": "enabled" }
+    },
+    {
+      "name": "Client Theme Template",
+      "group": "White Label",
+      "description": "",
+      "is-source": false,
+      "id": "e2a3266a-c517-80f7-8005-dc49a408c455",
+      "modified-at": "2025-03-11T08:23:20.483+01:00",
+      "selectedTokenSets": { "wl-themes / client_theme_template": "enabled" }
+    }
+  ],
+  "$metadata": {
+    "tokenSetOrder": [
+      "global / color",
+      "global / dimension",
+      "global/Opacity",
+      "alias / border",
+      "alias/dimension",
+      "alias/color-light",
+      "alias / color-dark",
+      "alias/media-queries",
+      "components / section-message",
+      "wl-themes / client_theme_template"
+    ],
+    "activeThemes": ["Global/Brand", "Alias/Dark Mode"],
+    "activeSets": [
+      "alias / color-dark",
+      "global / font",
+      "alias / border",
+      "global / color",
+      "alias / dimension",
+      "alias / font-screen-lg",
+      "global / dimension",
+      "alias/color-dark",
+      "global/Opacity",
+      "alias/dimension"
+    ]
+  },
+  "global / dimension": {
+    "xx": {
+      "global": {
+        "dimensions": {
+          "1": {
+            "$value": "2px",
+            "$type": "dimension",
+            "$description": "1st step of global dimensions sequence"
+          },
+          "2": {
+            "$value": "4px",
+            "$type": "dimension",
+            "$description": "2nd step of global dimensions sequence"
+          },
+          "3": {
+            "$value": "8px",
+            "$type": "dimension",
+            "$description": "3rd step of global dimensions sequence"
+          },
+          "4": {
+            "$value": "12px",
+            "$type": "dimension",
+            "$description": "4th step of global dimensions sequence"
+          },
+          "5": {
+            "$value": "16px",
+            "$type": "dimension",
+            "$description": "5th step of global dimensions sequence"
+          },
+          "6": {
+            "$value": "20px",
+            "$type": "dimension",
+            "$description": "6th step of global dimensions sequence"
+          },
+          "7": {
+            "$value": "24px",
+            "$type": "dimension",
+            "$description": "7th step of global dimensions sequence"
+          },
+          "8": {
+            "$value": "32px",
+            "$type": "dimension",
+            "$description": "8th step of global dimensions sequence"
+          },
+          "9": {
+            "$value": "44px",
+            "$type": "dimension",
+            "$description": "9th step of global dimensions sequence"
+          },
+          "10": {
+            "$value": "48px",
+            "$type": "dimension",
+            "$description": "10th step of global dimensions sequence"
+          },
+          "11": {
+            "$value": "52px",
+            "$type": "dimension",
+            "$description": "11th step of global dimensions sequence"
+          },
+          "12": {
+            "$value": "60px",
+            "$type": "dimension",
+            "$description": "12th step of global dimensions sequence"
+          },
+          "13": {
+            "$value": "64px",
+            "$type": "dimension",
+            "$description": "13th step of global dimensions sequence"
+          },
+          "14": {
+            "$value": "72px",
+            "$type": "dimension",
+            "$description": "14th step of global dimensions sequence"
+          },
+          "15": {
+            "$value": "80px",
+            "$type": "dimension",
+            "$description": "15th step of global dimensions sequence"
+          }
+        }
+      }
+    }
+  },
+  "alias/color-light": {
+    "xx": {
+      "alias": {
+        "color": {
+          "purpose": {
+            "infoLowEmphasis": {
+              "$value": "{xx.global.color.blue.400}",
+              "$type": "color",
+              "$description": "color for elements with informational purpose of low emphasis"
+            },
+            "onCritical": {
+              "$value": "{xx.global.color.red.200}",
+              "$type": "color",
+              "$description": "color for elements placed on critical purpose background"
+            },
+            "criticalHighEmphasis": {
+              "$value": "{xx.global.color.red.600}",
+              "$type": "color",
+              "$description": "color for elements with critical purpose of high emphasis"
+            },
+            "successHighEmphasis": {
+              "$value": "{xx.global.color.green.500}",
+              "$type": "color",
+              "$description": "color for elements with success purpose of high emphasis"
+            },
+            "successLowEmphasis": {
+              "$value": "{xx.global.color.green.400}",
+              "$type": "color",
+              "$description": "color for elements with success purpose of low emphasis"
+            },
+            "onInfo": {
+              "$value": "{xx.global.color.blue.100}",
+              "$type": "color",
+              "$description": "color for elements placed on informational purpose background"
+            },
+            "criticalLowEmphasis": {
+              "$value": "{xx.global.color.red.500}",
+              "$type": "color",
+              "$description": "color for elements with critical purpose of low emphasis"
+            },
+            "onWarning": {
+              "$value": "{xx.global.color.yellow.100}",
+              "$type": "color",
+              "$description": "color for elements placed on warning purpose background"
+            },
+            "onSuccess": {
+              "$value": "{xx.global.color.green.100}",
+              "$type": "color",
+              "$description": "color for elements placed on success purpose background"
+            },
+            "warningLowEmphasis": {
+              "$value": "{xx.global.color.yellow.400}",
+              "$type": "color",
+              "$description": "color for elements with warning purpose of low emphasis"
+            },
+            "warningHighEmphasis": {
+              "$value": "{xx.global.color.yellow.500}",
+              "$type": "color",
+              "$description": "color for elements with warning purpose of high emphasis"
+            },
+            "infoHighEmphasis": {
+              "$value": "{xx.global.color.blue.500}",
+              "$type": "color",
+              "$description": "color for elements with informational purpose of high emphasis"
+            }
+          },
+          "border": {
+            "heavy": {
+              "$value": "{xx.global.color.neutral.700}",
+              "$type": "color",
+              "$description": "heavy border color"
+            },
+            "focusOutline": {
+              "$value": "rgba({xx.global.color.blue.500},0.8)",
+              "$type": "color",
+              "$description": "color for default focus outline"
+            },
+            "medium": {
+              "$value": "{xx.global.color.neutral.500}",
+              "$type": "color",
+              "$description": "medium border color"
+            },
+            "subtle": {
+              "$value": "{xx.global.color.neutral.300}",
+              "$type": "color",
+              "$description": "subtle border color"
+            }
+          },
+          "state": {
+            "onSelectInverted": {
+              "$value": "{xx.global.color.mint.100}",
+              "$type": "color",
+              "$description": "inverted color for elements on selected backgrounds"
+            },
+            "focus": {
+              "$value": "{xx.global.color.neutral.100}",
+              "$type": "color",
+              "$description": "Background color for state overlay of a focused element"
+            },
+            "onDisable": {
+              "$value": "{xx.global.color.neutral.700}",
+              "$type": "color",
+              "$description": "color for elements that are palced on disabled background color"
+            },
+            "press": {
+              "$value": "{xx.global.color.neutral.100}",
+              "$type": "color",
+              "$description": "Background color for state overlay of a pressed element"
+            },
+            "select": {
+              "$value": "{xx.global.color.mint.100}",
+              "$type": "color",
+              "$description": "background color for selected elements"
+            },
+            "disable": {
+              "$value": "{xx.global.color.neutral.300}",
+              "$type": "color",
+              "$description": "background color for disabled elements"
+            },
+            "selectInverted": {
+              "$value": "{xx.global.color.mint.600}",
+              "$type": "color",
+              "$description": "Inverted background color for selected elements"
+            },
+            "hover": {
+              "$value": "{xx.global.color.neutral.100}",
+              "$type": "color",
+              "$description": "Background color for state overlay of a hovered element"
+            },
+            "onSelect": {
+              "$value": "{xx.global.color.mint.600}",
+              "$type": "color",
+              "$description": "Foreground color for selected elements"
+            }
+          },
+          "primary": {
+            "onBrand": {
+              "$value": "{xx.global.color.violet.200}",
+              "$type": "color",
+              "$description": "color for elements that are placed on brand background color"
+            },
+            "interaction": {
+              "$value": "{xx.global.color.violet.600}",
+              "$type": "color",
+              "$description": "Color that indicates interactions"
+            },
+            "brand": {
+              "$value": "{xx.global.color.violet.500}",
+              "$type": "color",
+              "$description": "background color for primary brand elements "
+            },
+            "onInteraction": {
+              "$value": "{xx.global.color.violet.300}",
+              "$type": "color",
+              "$description": "color for elements that are placed on interactive background colors"
+            },
+            "highEmphasis": {
+              "$value": "{xx.global.color.violet.200}",
+              "$type": "color",
+              "$description": "background color for primary brand elements "
+            }
+          },
+          "text": {
+            "default": {
+              "$value": "{xx.global.color.neutral.900}",
+              "$type": "color",
+              "$description": "Default text color "
+            },
+            "inverted": {
+              "$value": "{xx.global.color.neutral.50}",
+              "$type": "color",
+              "$description": "Inverted text color"
+            },
+            "subtle": {
+              "$value": "{xx.global.color.neutral.600}",
+              "$type": "color",
+              "$description": "Text color in subtle weight"
+            },
+            "emphasis": {
+              "$value": "{xx.global.color.black}",
+              "$type": "color",
+              "$description": "Default text color "
+            },
+            "medium": {
+              "$value": "{xx.global.color.neutral.400}",
+              "$type": "color",
+              "$description": "Text color in subtle weight"
+            }
+          },
+          "background": {
+            "mediumEmphasis": {
+              "$value": "{xx.global.color.neutral.100}",
+              "$type": "color",
+              "$description": "background Color for components with medium emphasis"
+            },
+            "highEmphasis": {
+              "$value": "{xx.global.color.neutral.50}",
+              "$type": "color",
+              "$description": "background Color for components with high emphasis"
+            },
+            "body": {
+              "$value": "{xx.global.color.neutral.200}",
+              "$type": "color",
+              "$description": "body background color"
+            },
+            "lowEmphasis": {
+              "$value": "{xx.global.color.neutral.300}",
+              "$type": "color",
+              "$description": "background color for elements with a low emphasis"
+            }
+          }
+        }
+      }
+    }
+  },
+  "global/Opacity": {
+    "opacity": {
+      "0": { "$value": "0", "$type": "opacity" },
+      "10": { "$value": "0.1", "$type": "opacity" },
+      "50": { "$value": "0.5", "$type": "opacity", "$description": "" },
+      "0-copy": { "$value": "0", "$type": "opacity", "$description": "" },
+      "0-copy-copy": { "$value": "0", "$type": "opacity", "$description": "" },
+      "0-copy-2": { "$value": "0", "$type": "opacity", "$description": "" }
+    }
+  },
+  "alias/dimension": {
+    "xx": {
+      "alias": {
+        "size": {
+          "xs": {
+            "$value": "{xx.global.dimensions.6}",
+            "$type": "sizing",
+            "$description": "extra small size unit"
+          },
+          "md": {
+            "$value": "{xx.global.dimensions.8}",
+            "$type": "sizing",
+            "$description": "medium size unit"
+          },
+          "xxxxxs": {
+            "$value": "{xx.global.dimensions.2}",
+            "$type": "sizing",
+            "$description": "extra extra extra small size unit"
+          },
+          "xxxxl": {
+            "$value": "{xx.global.dimensions.15}",
+            "$type": "sizing",
+            "$description": "extra extra extra large size unit"
+          },
+          "lg": {
+            "$value": "{xx.global.dimensions.10}",
+            "$type": "sizing",
+            "$description": "large size unit"
+          },
+          "xxs": {
+            "$value": "{xx.global.dimensions.5}",
+            "$type": "sizing",
+            "$description": "extra extra small size unit"
+          },
+          "xxxs": {
+            "$value": "{xx.global.dimensions.4}",
+            "$type": "sizing",
+            "$description": "extra extra extra small size unit"
+          },
+          "xxxxs": {
+            "$value": "{xx.global.dimensions.3}",
+            "$type": "sizing",
+            "$description": "extra extra extra small size unit"
+          },
+          "xl": {
+            "$value": "{xx.global.dimensions.11}",
+            "$type": "sizing",
+            "$description": "extra large size unit"
+          },
+          "xxxl": {
+            "$value": "{xx.global.dimensions.14}",
+            "$type": "sizing",
+            "$description": "extra extra extra large size unit"
+          },
+          "xxl": {
+            "$value": "{xx.global.dimensions.13}",
+            "$type": "sizing",
+            "$description": "extra extra large size unit"
+          },
+          "sm": {
+            "$value": "{xx.global.dimensions.7}",
+            "$type": "sizing",
+            "$description": "small size unit"
+          }
+        },
+        "spacing": {
+          "xs": {
+            "$value": "{xx.global.dimensions.3}",
+            "$type": "spacing",
+            "$description": "extra small spacing unit"
+          },
+          "md": {
+            "$value": "{xx.global.dimensions.5}",
+            "$type": "spacing",
+            "$description": "medium spacing unit"
+          },
+          "lg": {
+            "$value": "{xx.global.dimensions.7}",
+            "$type": "spacing",
+            "$description": "large spacing unit"
+          },
+          "xxs": {
+            "$value": "{xx.global.dimensions.2}",
+            "$type": "spacing",
+            "$description": "extra extra small spacing unit"
+          },
+          "xxxs": {
+            "$value": "{xx.global.dimensions.1}",
+            "$type": "spacing",
+            "$description": "extra extra extra small spacing unit"
+          },
+          "xl": {
+            "$value": "{xx.global.dimensions.8}",
+            "$type": "spacing",
+            "$description": "extra large spacing unit"
+          },
+          "xxxl": {
+            "$value": "{xx.global.dimensions.13}",
+            "$type": "spacing",
+            "$description": "extra extra extra small spacing unit"
+          },
+          "xxl": {
+            "$value": "{xx.global.dimensions.10}",
+            "$type": "spacing",
+            "$description": "extra extra small spacing unit"
+          },
+          "sm": {
+            "$value": "{xx.global.dimensions.4}",
+            "$type": "spacing",
+            "$description": "small spacing unit"
+          }
+        }
+      }
+    },
+    "rotation": {
+      "45": { "$value": "45", "$type": "rotation", "$description": "" }
+    },
+    "dimension": {
+      "top": {
+        "position": {
+          "$value": "{xx.global.dimensions.7}",
+          "$type": "dimension",
+          "$description": ""
+        }
+      }
+    }
+  },
+  "wl-themes / client_theme_template": {
+    "xx": {
+      "alias": {
+        "color": {
+          "purpose": {
+            "infoLowEmphasis": {
+              "$value": "#2980b9",
+              "$type": "color",
+              "$description": "color for elements with informational purpose of low emphasis"
+            },
+            "onCritical": {
+              "$value": "#ffffff",
+              "$type": "color",
+              "$description": "color for elements placed on critical purpose background"
+            },
+            "criticalHighEmphasis": {
+              "$value": "#e74c3c",
+              "$type": "color",
+              "$description": "color for elements with critical purpose of high emphasis"
+            },
+            "successHighEmphasis": {
+              "$value": "#2ecc71",
+              "$type": "color",
+              "$description": "color for elements with success purpose of high emphasis"
+            },
+            "successLowEmphasis": {
+              "$value": "#2ecc71",
+              "$type": "color",
+              "$description": "color for elements with success purpose of low emphasis"
+            },
+            "onInfo": {
+              "$value": "#ffffff",
+              "$type": "color",
+              "$description": "color for elements placed on informational purpose background"
+            },
+            "criticalLowEmphasis": {
+              "$value": "#e74c3c",
+              "$type": "color",
+              "$description": "color for elements with critical purpose of low emphasis"
+            },
+            "onWarning": {
+              "$value": "#ffffff",
+              "$type": "color",
+              "$description": "color for elements placed on warning purpose background"
+            },
+            "onSuccess": {
+              "$value": "#ffffff",
+              "$type": "color",
+              "$description": "color for elements placed on success purpose background"
+            },
+            "warningLowEmphasis": {
+              "$value": "#f1c40f",
+              "$type": "color",
+              "$description": "color for elements with warning purpose of low emphasis"
+            },
+            "warningHighEmphasis": {
+              "$value": "#f1c40f",
+              "$type": "color",
+              "$description": "color for elements with warning purpose of high emphasis"
+            },
+            "infoHighEmphasis": {
+              "$value": "#2980b9",
+              "$type": "color",
+              "$description": "color for elements with informational purpose of high emphasis"
+            }
+          },
+          "border": {
+            "heavy": {
+              "$value": "#728090",
+              "$type": "color",
+              "$description": "heavy border color"
+            },
+            "focusOutline": {
+              "$value": "#0505A3",
+              "$type": "color",
+              "$description": "color for default focus outline"
+            },
+            "medium": {
+              "$value": "#9AA5B1",
+              "$type": "color",
+              "$description": "medium border color"
+            },
+            "subtle": {
+              "$value": "#C3C9D0",
+              "$type": "color",
+              "$description": "subtle border color"
+            }
+          },
+          "state": {
+            "select": {
+              "$value": "#B4B4F2",
+              "$type": "color",
+              "$description": "background color for selected elements"
+            },
+            "onSelect": {
+              "$value": "#0707D3",
+              "$type": "color",
+              "$description": "Foreground color for selected elements"
+            },
+            "disable": {
+              "$value": "#bdc3c7",
+              "$type": "color",
+              "$description": "background color for disabled elements"
+            },
+            "onDisable": {
+              "$value": "#7f8c8d",
+              "$type": "color",
+              "$description": "color for elements that are palced on disabled background color"
+            },
+            "selectInverted": {
+              "$value": "#0707D3",
+              "$type": "color",
+              "$description": "Inverted background color for selected elements"
+            },
+            "onSelectInverted": {
+              "$value": "#B4B4F2",
+              "$type": "color",
+              "$description": "inverted color for elements on selected backgrounds"
+            }
+          },
+          "primary": {
+            "onBrand": {
+              "$value": "#f5f5fa",
+              "$type": "color",
+              "$description": "color for elements that are placed on brand background color"
+            },
+            "interaction": {
+              "$value": "#DC7258",
+              "$type": "color",
+              "$description": "Color that indicates interactions"
+            },
+            "brand": {
+              "$value": "#3333C2",
+              "$type": "color",
+              "$description": "background color for primary brand elements "
+            },
+            "onInteraction": {
+              "$value": "#f5f5fa",
+              "$type": "color",
+              "$description": "color for elements that are placed on interactive background colors"
+            }
+          },
+          "text": {
+            "default": {
+              "$value": "#353535",
+              "$type": "color",
+              "$description": "Default text color "
+            },
+            "inverted": {
+              "$value": "#f5f5fa",
+              "$type": "color",
+              "$description": "Inverted text color"
+            },
+            "subtle": {
+              "$value": "#9E9E9E",
+              "$type": "color",
+              "$description": "Text color in subtle weight"
+            }
+          },
+          "background": {
+            "highEmphasis": {
+              "$value": "#ffffff",
+              "$type": "color",
+              "$description": "background Color for components with high emphasis"
+            },
+            "body": {
+              "$value": "#E3E6E9",
+              "$type": "color",
+              "$description": "body background color"
+            },
+            "lowEmphasis": {
+              "$value": "#F6F7F8",
+              "$type": "color",
+              "$description": "background color for elements with a low emphasis"
+            }
+          }
+        },
+        "border": {
+          "radius": {
+            "md": {
+              "$value": "4px",
+              "$type": "borderRadius",
+              "$description": "medium border radius"
+            },
+            "lg": {
+              "$value": "8px",
+              "$type": "borderRadius",
+              "$description": "large border radius"
+            },
+            "sm": {
+              "$value": "0",
+              "$type": "borderRadius",
+              "$description": "small border radius"
+            }
+          }
+        }
+      }
+    }
+  }
+}

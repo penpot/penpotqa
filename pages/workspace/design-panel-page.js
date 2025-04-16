@@ -114,6 +114,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
+    this.flexElementWidth100Btn = page.getByTitle('Width 100%');
+    this.flexElementHeight100Btn = page.getByTitle('Height 100%');
+    this.flexElementFixWidthBtn = page.getByTitle('Fix width');
+    this.flexElementFixHeightBtn = page.getByTitle('Fix height');
+    this.flexElementMinWidthInput = page.locator('div[title="Min.Width"] input');
+    this.flexElementMaxWidthInput = page.locator('div[title="Max.Width"] input');
+    this.flexElementMinHeightInput = page.locator('div[title="Min.Height"] input');
+    this.flexElementMaxHeightInput = page.locator('div[title="Max.Height"] input');
     this.flexAddLayoutButton = page.getByRole('button', { name: 'Flex layout' });
     this.gridAddLayoutButton = page.getByRole('button', { name: 'Grid layout' });
     this.gridEditButton = page.getByRole('button', { name: 'Edit grid' });
@@ -1304,6 +1312,65 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         break;
       case 'Horizontal':
         await expect(this.layoutHorizontPaddingInput).toHaveValue(value);
+        break;
+    }
+  }
+
+  async checkGeneralCornerRadius(value) {
+    await expect(this.generalCornerRadiusInput).toHaveValue(value);
+  }
+
+  async checkRotationForLayer(value) {
+    await expect(this.layerRotationInput).toHaveValue(value);
+  }
+
+  async checkStrokeWidth(value) {
+    await expect(this.strokeWidthInput).toHaveValue(value);
+  }
+
+  async checkRowGap(value) {
+    await expect(this.layoutRowGapInput).toHaveValue(value);
+  }
+
+  async checkColumnGap(value) {
+    await expect(this.layoutColumnGapInput).toHaveValue(value);
+  }
+
+  async checkXAxis(value) {
+    await expect(this.xAxisInput).toHaveValue(value);
+  }
+
+  async checkYAxis(value) {
+    await expect(this.yAxisInput).toHaveValue(value);
+  }
+
+  async checkSizeWidth(value) {
+    await expect(this.sizeWidthInput).toHaveValue(value);
+  }
+
+  async checkSizeHeight(value) {
+    await expect(this.sizeHeightInput).toHaveValue(value);
+  }
+
+  async clickOnFlexElementWidth100Btn() {
+    await this.flexElementWidth100Btn.click();
+  }
+
+  async clickOnFlexElementHeight100Btn() {
+    await this.flexElementHeight100Btn.click();
+  }
+
+  async checkFlexElementMinMax(type, min = true, value) {
+    switch (type) {
+      case 'Width':
+        min
+          ? await expect(this.flexElementMinWidthInput).toHaveValue(value)
+          : await expect(this.flexElementMaxWidthInput).toHaveValue(value);
+        break;
+      case 'Height':
+        min
+          ? await expect(this.flexElementMinHeightInput).toHaveValue(value)
+          : await expect(this.flexElementMaxHeightInput).toHaveValue(value);
         break;
     }
   }
