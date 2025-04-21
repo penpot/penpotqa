@@ -164,7 +164,7 @@ mainTest.describe(() => {
     async () => {
       await mainPage.createDefaultBoardByCoordinates(100, 100);
       await mainPage.addFlexLayoutViaRightClick();
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeLayoutAlignment('Center');
       await designPanelPage.changeLayoutPadding('Vertical', '5');

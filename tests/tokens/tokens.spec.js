@@ -166,6 +166,8 @@ mainTest(
     await tokensPage.waitForChangeIsSaved();
     await tokensPage.isTokenAppliedWithName(tokenName);
     await designPanelPage.checkRotationForLayer(tokenResolvedValue);
+    browserName === 'chromium' ? await tokensPage.waitForChangeIsUnsaved() : null;
+    await tokensPage.waitForChangeIsSaved();
     await expect(tokensPage.createdLayer).toHaveScreenshot('text-rotated-315.png');
     await tokensPage.isMenuItemWithNameSelected(tokenName, 'Rotation');
   },
