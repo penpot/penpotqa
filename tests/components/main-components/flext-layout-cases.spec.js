@@ -58,7 +58,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickLayerOnLayersTab('Ellipse');
-    await designPanelPage.changeAxisXandYForLayer('300', '400');
+    await designPanelPage.changeAxisXandYForLayer('-50', '350');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
@@ -67,13 +67,16 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-    await designPanelPage.changeAxisXandYForLayer('300', '400');
+    await designPanelPage.changeAxisXandYForLayer('-50', '250');
     await mainPage.waitForChangeIsSaved();
 
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.waitForChangeIsSaved();
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportTwice();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await layersPanelPage.isHorizontalFlexIconVisibleOnLayer();
   });
 
   mainTest(
@@ -82,8 +85,6 @@ mainTest.describe(() => {
       'PENPOT-1503 Create flex board with main component and its copy, change direction',
     ),
     async () => {
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeLayoutDirection('Column');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -101,8 +102,6 @@ mainTest.describe(() => {
       'PENPOT-1504 Create flex board with main component and its copy, change alingment',
     ),
     async () => {
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.changeLayoutAlignment('Center');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
