@@ -20,7 +20,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.searchedLayerOnLayersPanelNameText = page.locator(
       'span[class*="element-name"] >> nth=1',
     );
-    this.layoutIcon = page.locator('svg[class="icon-flex-vertical"]');
+    this.verticalFlexlayoutIcon = page.locator('svg[class="icon-flex-vertical"]');
+    this.horizontalFlexlayoutIcon = page.locator(
+      'svg[class="icon-flex-horizontal"]',
+    );
     this.focusModeDiv = page.getByText('Focus mode', { exact: true });
     this.mainComponentLayer = page.locator(
       '//*[@class="icon-component"]//parent::div',
@@ -128,11 +131,19 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await expect(this.searchedLayerOnLayersPanelNameText).toHaveText(name);
   }
 
-  async isLayoutIconVisibleOnLayer(condition = true) {
+  async isVerticalFlexIconVisibleOnLayer(condition = true) {
     if (condition === true) {
-      await expect(this.layoutIcon).toBeVisible();
+      await expect(this.verticalFlexlayoutIcon).toBeVisible();
     } else {
-      await expect(this.layoutIcon).toBeHidden();
+      await expect(this.verticalFlexlayoutIcon).toBeHidden();
+    }
+  }
+
+  async isHorizontalFlexIconVisibleOnLayer(condition = true) {
+    if (condition === true) {
+      await expect(this.horizontalFlexlayoutIcon).toBeVisible();
+    } else {
+      await expect(this.horizontalFlexlayoutIcon).toBeHidden();
     }
   }
 

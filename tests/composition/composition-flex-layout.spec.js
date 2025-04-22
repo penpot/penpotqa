@@ -55,7 +55,7 @@ mainTest.describe(() => {
       await mainPage.addFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
       await designPanelPage.isLayoutRemoveButtonExists();
       await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
@@ -71,7 +71,7 @@ mainTest.describe(() => {
       const designPanelPage = new DesignPanelPage(page);
       await mainPage.pressFlexLayoutShortcut();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
       await designPanelPage.isLayoutRemoveButtonExists();
       await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
@@ -87,12 +87,12 @@ mainTest.describe(() => {
       const designPanelPage = new DesignPanelPage(page);
       await mainPage.addFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
       await designPanelPage.isLayoutRemoveButtonExists();
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await mainPage.removeFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer(false);
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer(false);
       await designPanelPage.isLayoutRemoveButtonExists(false);
     },
   );
@@ -105,12 +105,12 @@ mainTest.describe(() => {
       const designPanelPage = new DesignPanelPage(page);
       await mainPage.pressFlexLayoutShortcut();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
       await designPanelPage.isLayoutRemoveButtonExists();
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await mainPage.pressFlexLayoutShortcut();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer(false);
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer(false);
       await designPanelPage.isLayoutRemoveButtonExists(false);
     },
   );
@@ -123,12 +123,12 @@ mainTest.describe(() => {
       const designPanelPage = new DesignPanelPage(page);
       await mainPage.addFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
       await designPanelPage.isLayoutRemoveButtonExists();
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await designPanelPage.removeLayoutFromDesignPanel();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer(false);
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer(false);
       await designPanelPage.isLayoutRemoveButtonExists(false);
     },
   );
@@ -139,7 +139,7 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
+    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeLayoutDirection('Row reverse');
     await mainPage.waitForChangeIsSaved();
@@ -175,7 +175,7 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
+    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeLayoutAlignment('Center');
     await mainPage.waitForChangeIsSaved();
@@ -200,7 +200,7 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
+    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeLayoutJustification('Center');
     await mainPage.waitForChangeIsSaved();
@@ -249,7 +249,7 @@ mainTest.describe(() => {
     const layersPanelPage = new LayersPanelPage(page);
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
+    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeLayoutColumnGap('5');
     await mainPage.waitForChangeIsSaved();
@@ -274,7 +274,7 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
+    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeLayoutDirection('Column');
     await mainPage.waitForChangeIsSaved();
@@ -301,7 +301,7 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
+    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeLayoutPadding('Vertical', '5');
     await mainPage.waitForChangeIsSaved();
@@ -334,7 +334,7 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
+    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.switchToIndependentPadding();
     await mainPage.waitForChangeIsSaved();
@@ -382,7 +382,7 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayoutIconVisibleOnLayer();
+    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
     await layersPanelPage.selectBoardChildLayer('Rectangle');
     await designPanelPage.isFlexElementSectionOpened();
     await designPanelPage.changeFlexElementAlignment('Center');
@@ -416,7 +416,7 @@ mainTest.describe(() => {
       const designPanelPage = new DesignPanelPage(page);
       await mainPage.addFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayoutIconVisibleOnLayer();
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
       await layersPanelPage.selectBoardChildLayer('Rectangle');
       await designPanelPage.isFlexElementSectionOpened();
       await designPanelPage.changeFlexElementMargin('Vertical', '10');
