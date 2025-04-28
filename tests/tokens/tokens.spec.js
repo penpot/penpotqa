@@ -163,7 +163,6 @@ mainTest(
     await tokensPage.createRotationToken(tokenName, tokenValue);
     await tokensPage.isTokenVisibleWithName(tokenName);
     await tokensPage.clickOnTokenWithName(tokenName);
-    await tokensPage.waitForChangeIsSaved();
     await tokensPage.isTokenAppliedWithName(tokenName);
     await designPanelPage.checkRotationForLayer(tokenResolvedValue);
     browserName === 'chromium' ? await tokensPage.waitForChangeIsUnsaved() : null;
