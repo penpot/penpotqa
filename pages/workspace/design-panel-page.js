@@ -35,6 +35,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
+    this.sizePresetsDropdown = page.getByText('Size presets', { exact: true });
+    this.sizePresetsOptions = this.sizePresetsDropdown.locator(
+      '//following::ul[1]/li',
+    );
+    this.verticalOrientationButton = page.locator('label[for="size-vertical"]');
+    this.horizontalOrientationButton = page.locator('label[for="size-horizontal"]');
 
     //Design panel - Fill section
     this.firstColorIcon = page
@@ -1373,5 +1379,42 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
           : await expect(this.flexElementMaxHeightInput).toHaveValue(value);
         break;
     }
+  }
+
+  async openSizePresetsDropdown() {
+    await this.sizePresetsDropdown.click();
+  }
+
+  async checkSizePresetsOptions(options) {
+    await this.openSizePresetsDropdown();
+    await expect(this.sizePresetsOptions).toHaveText(options);
+    await this.openSizePresetsDropdown();
+  }
+
+  async selectSizePresetsOption(option) {
+    await this.openSizePresetsDropdown();
+    await this.sizePresetsOptions.getByText(option, { exact: true }).click();
+  }
+
+  async clickOnHorizontalOrientationButton() {
+    await this.horizontalOrientationButton.click();
+  }
+
+  async isHorizontalOrientationButtonChecked(checked = true) {
+    const buttonClass = await this.horizontalOrientationButton.getAttribute('class');
+    checked
+      ? await expect(buttonClass).toContain('radio_buttons__checked')
+      : await expect(buttonClass).not.toContain('radio_buttons__checked');
+  }
+
+  async clickOnVerticalOrientationButton() {
+    await this.verticalOrientationButton.click();
+  }
+
+  async isVerticalOrientationButtonChecked(checked = true) {
+    const buttonClass = await this.verticalOrientationButton.getAttribute('class');
+    checked
+      ? await expect(buttonClass).toContain('radio_buttons__checked')
+      : await expect(buttonClass).not.toContain('radio_buttons__checked');
   }
 };
