@@ -757,8 +757,10 @@ exports.MainPage = class MainPage extends BasePage {
       : await expect(this.secondPageListItem).not.toBeVisible();
   }
 
-  async isSecondPageNameDisplayed(name) {
-    await expect(this.secondPageListItem).toHaveText(name);
+  async isSecondPageNameDisplayed(name, displayed = true) {
+    displayed
+      ? await expect(this.secondPageListItem).toHaveText(name)
+      : await expect(this.secondPageListItem).not.toHaveText(name);
   }
 
   async renamePageViaRightClick(newName, isFirstPage = true) {

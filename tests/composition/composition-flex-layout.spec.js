@@ -522,14 +522,10 @@ mainTest.describe(() => {
       await designPanelPage.setFlexElementPositionAbsolute();
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
-      await expect(page).toHaveScreenshot('flex-element-position-absolute.png', {
-        mask: [
-          mainPage.guides,
-          mainPage.guidesFragment,
-          mainPage.usersSection,
-          mainPage.toolBarWindow,
-        ],
-      });
+      await designPanelPage.isFlexElementPositionAbsoluteChecked();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'flex-element-position-absolute.png',
+      );
     },
   );
 });

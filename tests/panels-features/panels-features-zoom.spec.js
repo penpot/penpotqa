@@ -108,13 +108,8 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.zoomToFitSelected();
     await mainPage.clickViewportTwice();
-    await expect(page).toHaveScreenshot('canvas-zoom-to-selected.png', {
-      mask: [
-        mainPage.usersSection,
-        mainPage.guides,
-        mainPage.guidesFragment,
-        mainPage.toolBarWindow,
-      ],
+    await expect(mainPage.viewport).toHaveScreenshot('canvas-zoom-to-selected.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
   },
 );

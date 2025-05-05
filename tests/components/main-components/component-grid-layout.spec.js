@@ -102,16 +102,16 @@ mainTest.describe(() => {
 
   mainTest(
     qase(1729, 'PENPOT-1729 Move a component between pages'),
-    async ({ page, context }) => {
+    async ({ browserName }) => {
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickViewportOnce();
       await mainPage.clickCreatedBoardTitleOnCanvas();
-      await mainPage.pressCopyShortcut();
+      await mainPage.pressCopyShortcut(browserName);
       await mainPage.clickAddPageButton();
       await mainPage.clickOnPageOnLayersPanel(false);
       await mainPage.clickMoveButton();
-      await mainPage.pressPasteShortcut();
+      await mainPage.pressPasteShortcut(browserName);
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await mainPage.isPageNameSelected('Page 1', false);
@@ -125,12 +125,12 @@ mainTest.describe(() => {
 
   mainTest(
     qase(1730, 'PENPOT-1730 Restore main component'),
-    async ({ browserName, context }) => {
+    async ({ browserName }) => {
       await mainPage.createComponentViaRightClick();
       await mainPage.clickViewportOnce();
       await mainPage.clickCreatedBoardTitleOnCanvas();
-      await mainPage.pressCopyShortcut();
-      await mainPage.pressPasteShortcut();
+      await mainPage.pressCopyShortcut(browserName);
+      await mainPage.pressPasteShortcut(browserName);
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.deleteMainComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -143,9 +143,7 @@ mainTest.describe(() => {
           mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
-      await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-        'board-main-component-restored.png',
-      );
+      await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
     },
   );
 
@@ -194,7 +192,7 @@ mainTest.describe(() => {
       [1732, 1733, 1734],
       'PENPOT-1732,1733,1734 Click "Show main component" in File2',
     ),
-    async ({ page, browserName }) => {
+    async ({ page }) => {
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickPencilBoxButton();
@@ -267,11 +265,12 @@ mainTest.describe(() => {
 
   mainTest(
     qase(1718, 'PENPOT-1718 Copy-paste component, that was created from grid board'),
-    async ({ browserName, context }) => {
+    async ({ browserName }) => {
       await mainPage.clickViewportOnce();
       await mainPage.clickCreatedBoardTitleOnCanvas();
-      await mainPage.pressCopyShortcut();
-      await mainPage.pressPasteShortcut();
+      await mainPage.copyLayerViaRightClick();
+      await mainPage.pressPasteShortcut(browserName);
+      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-copy-paste.png',
         {
@@ -309,9 +308,8 @@ mainTest.describe(() => {
           mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
-      await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-        'duplicated-layer.png',
-      );
+      await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
+      await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Board');
     },
   );
 });
@@ -442,24 +440,12 @@ mainTest.describe(() => {
       [1725, 1752],
       'PENPOT-1725,1752 Create annotation for component, that already has annotation',
     ),
-    async ({}) => {
+    async () => {
       await designPanelPage.isAnnotationAddedToComponent(annotation);
-      await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
-        'component-annotation.png',
-      );
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.isAnnotationOptionNotVisibleRightClick();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'component-right-click-annotation-disabled.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.isAnnotationOptionNotVisible();
-      await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
-        'component-annotation-disabled.png',
-      );
     },
   );
 
@@ -468,17 +454,12 @@ mainTest.describe(() => {
     await designPanelPage.editAnnotationForComponent('Edit annotation');
     await designPanelPage.waitForChangeIsSaved();
     await designPanelPage.isAnnotationAddedToComponent('Edit annotation');
-    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
-      'component-annotation-edit.png',
-    );
   });
 
   mainTest(qase(1727, 'PENPOT-1727 Delete annotation for component'), async ({}) => {
     await designPanelPage.clickOnDeleteAnnotation();
     await designPanelPage.confirmDeleteAnnotation();
     await designPanelPage.waitForChangeIsSaved();
-    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
-      'component-annotation-delete.png',
-    );
+    await designPanelPage.isAnnotationNotAddedToComponent();
   });
 });

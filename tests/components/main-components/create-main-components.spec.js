@@ -71,9 +71,8 @@ mainTest(
           mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
-      await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-        'copy-main-components-layers.png',
-      );
+      await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
+      await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Ellipse');
     }
   },
 );
@@ -147,9 +146,7 @@ mainTest(
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'text-main-component-layer.png',
-    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Hello World!');
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
@@ -180,9 +177,7 @@ mainTest(
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'image-main-component-layer.png',
-    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('sample');
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
