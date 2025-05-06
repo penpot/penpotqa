@@ -120,6 +120,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
+    this.flexElementPositionAbsoluteChecked = page.locator(
+      'label[for=":absolute-position"][class*="buttons__checked"]',
+    );
     this.flexElementWidth100Btn = page.getByTitle('Width 100%');
     this.flexElementHeight100Btn = page.getByTitle('Height 100%');
     this.flexElementFixWidthBtn = page.getByTitle('Fix width');
@@ -364,6 +367,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.deleteAnnotationOkBtn = page.locator(
       'div[class*="modal-container"] input[value="Ok"]',
     );
+    this.componentTypeOnDesignPanel = page.locator(
+      'div[class*="component__title"] span',
+    );
     this.resetOverridesOptionDesign = page.locator(
       'ul[class*="component__custom-select-dropdown"] span:text-is("Reset overrides")',
     );
@@ -412,6 +418,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async setFlexElementPositionAbsolute() {
     await this.flexElementPositionAbsolute.click();
+  }
+
+  async isFlexElementPositionAbsoluteChecked(checked = true) {
+    checked
+      ? await expect(this.flexElementPositionAbsoluteChecked).toBeVisible()
+      : await expect(this.flexElementPositionAbsoluteChecked).not.toBeVisible();
   }
 
   async clickAddStrokeButton() {
@@ -883,6 +895,60 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  async checkLayoutJustification(justify, flex = true) {
+    if (flex) {
+      await this.expandFlexLayoutMenu();
+      switch (justify) {
+        case 'Start':
+          await expect(this.layoutJustifyStartBtn).toBeChecked();
+          break;
+        case 'Center':
+          await expect(this.layoutJustifyCenterBtn).toBeChecked();
+          break;
+        case 'End':
+          await expect(this.layoutJustifyEndBtn).toBeChecked();
+          break;
+        case 'Space between':
+          await expect(this.layoutJustifySpaceBetweenBtn).toBeChecked();
+          break;
+        case 'Space around':
+          await expect(this.layoutJustifySpaceAroundBtn).toBeChecked();
+          break;
+        case 'Space evenly':
+          await expect(this.layoutJustifySpaceEvenlyBtn).toBeChecked();
+          break;
+      }
+    } else {
+      await this.expandGridLayoutMenu();
+      switch (justify) {
+        case 'Start':
+          await expect(this.layoutGridJustifyStartBtn.first()).toBeChecked();
+          await expect(this.layoutGridJustifyStartBtn.last()).toBeChecked();
+          break;
+        case 'Center':
+          await expect(this.layoutGridJustifyCenterBtn.first()).toBeChecked();
+          await expect(this.layoutGridJustifyCenterBtn.last()).toBeChecked();
+          break;
+        case 'End':
+          await expect(this.layoutGridJustifyEndBtn.first()).toBeChecked();
+          await expect(this.layoutGridJustifyEndBtn.last()).toBeChecked();
+          break;
+        case 'Space between':
+          await expect(this.layoutGridJustifySpaceBetweenBtn.first()).toBeChecked();
+          await expect(this.layoutGridJustifySpaceBetweenBtn.last()).toBeChecked();
+          break;
+        case 'Space around':
+          await expect(this.layoutGridJustifySpaceAroundBtn.first()).toBeChecked();
+          await expect(this.layoutGridJustifySpaceAroundBtn.last()).toBeChecked();
+          break;
+        case 'Space evenly':
+          await expect(this.layoutGridJustifySpaceEvenlyBtn.first()).toBeChecked();
+          await expect(this.layoutGridJustifySpaceEvenlyBtn.last()).toBeChecked();
+          break;
+      }
+    }
+  }
+
   async changeLayoutColumnGap(value, flex = true) {
     flex ? await this.expandFlexLayoutMenu() : await this.expandGridLayoutMenu();
     await this.layoutColumnGapInput.clear();
@@ -988,6 +1054,23 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         break;
     }
     await this.clickOnEnter();
+  }
+
+  async checkLayoutIndependentPaddingOnGridEdit(type, value) {
+    switch (type) {
+      case 'Bottom':
+        await expect(this.layoutPaddingBottomInput).toHaveValue(value);
+        break;
+      case 'Right':
+        await expect(this.layoutPaddingRightInput).toHaveValue(value);
+        break;
+      case 'Left':
+        await expect(this.layoutPaddingLeftInput).toHaveValue(value);
+        break;
+      case 'Top':
+        await expect(this.layoutPaddingTopInput).toHaveValue(value);
+        break;
+    }
   }
 
   async clickAddExportButton() {
@@ -1161,6 +1244,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       `div[class*="component-annotation"] div[data-replicated-value="${value}"]`,
     );
     await expect(selector).toBeVisible();
+  }
+
+  async isAnnotationNotAddedToComponent() {
+    await expect(this.annotationCreateTitle).not.toBeVisible();
+  }
+
+  async isComponentTypeCopy(copy = true) {
+    copy
+      ? await expect(this.componentTypeOnDesignPanel).toHaveText('Copy')
+      : await expect(this.componentTypeOnDesignPanel).toHaveText('Main');
   }
 
   async isAnnotationOptionNotVisibleRightClick() {
