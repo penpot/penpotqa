@@ -72,9 +72,8 @@ mainTest(qase(1306, 'Check copy and main component icons'), async () => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.duplicateLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-    'copy-main-components-layers.png',
-  );
+  await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
+  await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Rectangle');
 });
 
 mainTest.describe(() => {
@@ -321,7 +320,7 @@ mainTest.describe('Text', () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
       await designPanelPage.changeTextFont('Source Serif 4');
-      await designPanelPage.changeTextFontStyle('300 (italic)');
+      await designPanelPage.changeTextFontStyle('300italic');
       await designPanelPage.changeTextFontSize('18');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();

@@ -179,12 +179,10 @@ mainTest.describe(() => {
         },
       );
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'grid-edit-right-sidebar-paddings-image.png',
-        {
-          mask: [mainPage.usersSection],
-        },
-      );
+      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Top', '50');
+      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Left', '50');
+      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Bottom', '50');
+      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Right', '50');
       await designPanelPage.clickGridDoneButton();
       await designPanelPage.changeLayoutJustification('Space between', false);
       await mainPage.waitForChangeIsSaved();
@@ -195,12 +193,7 @@ mainTest.describe(() => {
         },
       );
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'right-sidebar-justify-image.png',
-        {
-          mask: [mainPage.usersSection],
-        },
-      );
+      await designPanelPage.checkLayoutJustification('Space between', false);
     },
   );
 
@@ -474,12 +467,10 @@ mainTest.describe(() => {
           mask: [mainPage.guides],
         },
       );
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'grid-edit-right-sidebar-paddings-image2.png',
-        {
-          mask: [mainPage.usersSection],
-        },
-      );
+      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Top', '50');
+      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Left', '50');
+      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Bottom', '50');
+      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Right', '50');
     },
   );
 
@@ -750,7 +741,6 @@ mainTest.describe(() => {
   mainTest(qase(1737, 'PENPOT-1737 Locate button'), async () => {
     await mainPage.clickBoardOnCanvas();
     await designPanelPage.changeAxisXandYForLayer('400', '2000');
-    await designPanelPage.addLayoutFromDesignPanel('grid');
     await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();

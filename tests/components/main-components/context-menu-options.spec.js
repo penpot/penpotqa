@@ -101,9 +101,6 @@ mainTest.describe(() => {
     await designPanelPage.addAnnotationForComponent(annotation);
     await designPanelPage.waitForChangeIsSaved();
     await designPanelPage.isAnnotationAddedToComponent(annotation);
-    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
-      'component-annotation.png',
-    );
   });
 
   mainTest(qase(1424, 'Cancel annotation creation and accept'), async ({ page }) => {
@@ -114,9 +111,7 @@ mainTest.describe(() => {
     await designPanelPage.clickOnComponentMenuButton();
     await designPanelPage.clickOnCreateAnnotationOption();
     await designPanelPage.cancelAddAnnotationForComponent(annotation);
-    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
-      'component-annotation-discard.png',
-    );
+    await designPanelPage.isAnnotationNotAddedToComponent();
   });
 
   mainTest(qase(1425, 'Edit annotation with valid text'), async ({ page }) => {
@@ -130,9 +125,6 @@ mainTest.describe(() => {
     await designPanelPage.editAnnotationForComponent(newAnnotation);
     await designPanelPage.waitForChangeIsSaved();
     await designPanelPage.isAnnotationAddedToComponent(newAnnotation);
-    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
-      'component-annotation-edit.png',
-    );
   });
 
   mainTest(qase(1427, 'Delete annotation'), async ({ page }) => {
@@ -144,9 +136,7 @@ mainTest.describe(() => {
     await designPanelPage.clickOnDeleteAnnotation();
     await designPanelPage.confirmDeleteAnnotation();
     await designPanelPage.waitForChangeIsSaved();
-    await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
-      'component-annotation-delete.png',
-    );
+    await designPanelPage.isAnnotationNotAddedToComponent();
   });
 
   mainTest(qase(1618, 'Annotation on Inspect tab'), async ({ page }) => {
@@ -204,9 +194,8 @@ mainTest.describe(() => {
       await designPanelPage.addAnnotationForComponent(annotation);
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickCopyComponentOnLayersTab();
-      await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
-        'copy-component-annotation.png',
-      );
+      await designPanelPage.isComponentTypeCopy(true);
+      await designPanelPage.isAnnotationAddedToComponent(annotation);
       await inspectPanelPage.openInspectTab();
       await inspectPanelPage.isAnnotationExistOnInspectTab();
       await inspectPanelPage.isAnnotationTextExistOnInspectTab(annotation);
@@ -291,18 +280,13 @@ mainTest.describe(() => {
       await designPanelPage.changeAxisXandYForLayer('200', '0');
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.isAnnotationOptionNotVisibleRightClick();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'copy-component-right-click-annotation-disabled.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
+      await designPanelPage.isComponentTypeCopy(true);
+      await designPanelPage.isAnnotationNotAddedToComponent();
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.isAnnotationOptionNotVisible();
-      await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
-        'copy-component-annotation-disabled.png',
-      );
+      await designPanelPage.isComponentTypeCopy(true);
+      await designPanelPage.isAnnotationNotAddedToComponent();
     },
   );
 });
@@ -351,9 +335,7 @@ mainTest(
     await assetsPanelPage.createGroupFileLibraryAssets('Components', groupName);
     await assetsPanelPage.isFileLibraryGroupCreated(groupName);
     await layersPanelPage.openLayersTab();
-    await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      'component-group-layer.png',
-    );
+    await layersPanelPage.isLayerNameDisplayed(groupName + ' / Board');
     await expect(mainPage.viewport).toHaveScreenshot('component-group-canvas.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
@@ -373,6 +355,7 @@ mainTest(qase(1453, 'Rename component with valid name'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot('component-new-name-canvas.png', {
     mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
   });
+  await layersPanelPage.isLayerNameDisplayed(newName);
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
     'component-new-name-layer.png',
   );

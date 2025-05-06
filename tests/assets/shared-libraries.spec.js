@@ -604,11 +604,6 @@ mainTest.describe(() => {
 
       await dashboardPage.openFileWithName('New File 2');
       await mainPage.waitForViewportVisible();
-      // The Main Components page might be unexpectedly created before the test
-      // await mainPage.isSecondPageAddedToAssetsPanel(false);
-      // await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      //   'library-without-library-layers.png',
-      // );
       await expect(mainPage.viewport).toHaveScreenshot(
         'library-without-library-viewport.png',
         {
@@ -621,10 +616,6 @@ mainTest.describe(() => {
 
       await dashboardPage.openFileWithName('New File 3');
       await mainPage.waitForViewportVisible();
-      // await mainPage.isSecondPageAddedToAssetsPanel(false);
-      // await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-      //   'library-without-library-layers.png',
-      // );
       await expect(mainPage.viewport).toHaveScreenshot(
         'library-without-library-viewport2.png',
         {

@@ -98,11 +98,13 @@ mainTest(qase(836, 'PF-118 Collapse/expand pages list'), async ({ page }) => {
   await mainPage.clickCollapseExpandPagesButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
-  await expect(mainPage.pagesBlock).toHaveScreenshot('hidden-pages.png');
+  await mainPage.isFirstPageAddedToAssetsPanel(false);
+  await mainPage.isSecondPageAddedToAssetsPanel(false);
   await mainPage.clickCollapseExpandPagesButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
-  await expect(mainPage.pagesBlock).toHaveScreenshot('page-1-and-page-2.png');
+  await mainPage.isFirstPageNameDisplayed('Page 1');
+  await mainPage.isSecondPageNameDisplayed('Page 2');
 });
 
 mainTest(qase(837, 'PF-119 Delete page'), async ({ page }) => {
@@ -115,11 +117,10 @@ mainTest(qase(837, 'PF-119 Delete page'), async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('Page 1');
   await mainPage.isSecondPageNameDisplayed('Page 3');
-  await expect(mainPage.pagesBlock).toHaveScreenshot('page-1-and-page-3.png');
   await mainPage.deleteSecondPageViaTrashIcon();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('Page 1');
-  await expect(mainPage.pagesBlock).toHaveScreenshot('page-1.png');
+  await mainPage.isSecondPageAddedToAssetsPanel(false);
 });
 
 mainTest(
