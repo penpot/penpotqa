@@ -409,13 +409,13 @@ mainTest.describe(() => {
       await dashboardPage.createProject(projectSecond);
       await dashboardPage.pinProjectByName(projectSecond);
       await dashboardPage.openSidebarItem('Drafts');
-      await dashboardPage.createFileViaPlaceholder();
+      await dashboardPage.createFileViaProjectPlaceholder();
       await mainPage.backToDashboardFromFileEditor();
       await dashboardPage.openProjectFromLeftSidebar(projectFirst);
-      await dashboardPage.createFileViaPlaceholder();
+      await dashboardPage.createFileViaProjectPlaceholder();
       await mainPage.backToDashboardFromFileEditor();
       await dashboardPage.openProjectFromLeftSidebar(projectSecond);
-      await dashboardPage.createFileViaPlaceholder();
+      await dashboardPage.createFileViaProjectPlaceholder();
       await mainPage.backToDashboardFromFileEditor();
 
       await teamPage.openTeamSettingsPageViaOptionsMenu();
