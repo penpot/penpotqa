@@ -26,6 +26,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.createFileButtonPlaceholder = page
       .locator('[class*="empty-project-container"]')
       .getByTitle('Add file');
+    this.createFileButtonOldPlaceholder = page.locator(
+      'div[class*="dashboard-grid"] button[class*="create-new"]',
+    );
     this.moveButton = page.getByRole('button', {
       name: 'Move',
     });
@@ -227,6 +230,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async createFileViaPlaceholder() {
     await this.createFileButtonPlaceholder.first().click();
+  }
+
+  async createFileViaProjectPlaceholder() {
+    await this.createFileButtonOldPlaceholder.first().click();
   }
 
   async createFileViaTitlePanel() {

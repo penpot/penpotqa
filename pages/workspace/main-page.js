@@ -743,8 +743,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.addPageButton.click();
   }
 
-  async isFirstPageAddedToAssetsPanel() {
-    await expect(this.firstPageListItem).toBeVisible();
+  async isFirstPageAddedToAssetsPanel(added = true) {
+    added
+      ? await expect(this.firstPageListItem).toBeVisible()
+      : await expect(this.firstPageListItem).not.toBeVisible();
   }
 
   async isFirstPageNameDisplayed(name) {
