@@ -98,11 +98,11 @@ mainTest(qase(836, 'PF-118 Collapse/expand pages list'), async ({ page }) => {
   await mainPage.clickCollapseExpandPagesButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
-  await mainPage.isFirstPageAddedToAssetsPanel(false);
-  await mainPage.isSecondPageAddedToAssetsPanel(false);
+  await expect(mainPage.pagesBlock).toHaveScreenshot('hidden-pages.png');
   await mainPage.clickCollapseExpandPagesButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
+  await expect(mainPage.pagesBlock).toHaveScreenshot('page-1-and-page-2.png');
   await mainPage.isFirstPageNameDisplayed('Page 1');
   await mainPage.isSecondPageNameDisplayed('Page 2');
 });
