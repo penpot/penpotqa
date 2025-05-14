@@ -208,7 +208,7 @@ mainTest.describe(() => {
       'show-on-click-interactions-options-default-image.png',
     );
     await viewModePage.selectShowInteractionsOptions();
-    await viewModePage.clickOnBoardCounter();
+    await viewModePage.clickInteractionsDropdown();
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'show-interactions-board-view-mode-page-image.png',
     );
@@ -220,7 +220,7 @@ mainTest.describe(() => {
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'show-on-click-interactions-board-view-mode-page-image.png',
     );
-    await viewModePage.clickOnBoardCounter();
+    await viewModePage.clickInteractionsDropdown();
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'show-on-click-interactions-board-view-mode-page-image2.png',
     );
