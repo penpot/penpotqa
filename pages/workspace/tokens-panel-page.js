@@ -104,10 +104,22 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await this.setName.filter({ hasText: setName }).getByRole('checkbox').click();
   }
 
+  async rightClickOnSetByName(setName) {
+    await this.setName.filter({ hasText: setName }).click({ button: 'right' });
+  }
+
   async isSetCheckedByName(setName) {
     await expect(
       this.setName.filter({ hasText: setName }).getByRole('checkbox'),
     ).toBeChecked();
+  }
+
+  async createThemeViaLinkWithSet(name, setName) {
+    await this.createOneThemeButton.click();
+    await this.themeNameInput.fill(name);
+    await this.activateSetInTheme(setName);
+    await this.modalSaveButton.click();
+    await this.modalCloseButton.last().click();
   }
 
   async createThemeViaLink(name) {
@@ -366,5 +378,52 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await this.importButton.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
+  }
+
+  async checkImportTokenDetailErrorMessage() {
+    await expect(this.importErrorDetailMessage).toHaveText(
+      '\n' +
+        '\n' +
+        '{dark.theme.accent.subtle} tries to reference {colors.blue.950}, which is not defined.\n' +
+        '\n' +
+        '{dark.theme.accent.default} tries to reference {colors.red.500}, which is not defined.\n' +
+        '\n' +
+        '{dark.theme.bg.muted} tries to reference {colors.grey.600}, which is not defined.\n' +
+        '\n' +
+        '{dark.theme.bg.default} tries to reference {colors.red.800}, which is not defined.\n' +
+        '\n' +
+        '{dark.theme.bg.subtle} tries to reference {colors.grey.900}, which is not defined.\n' +
+        '\n' +
+        '{dark.theme.fg.muted} tries to reference {colors.red.200}, which is not defined.\n' +
+        '\n' +
+        '{dark.theme.fg.subtle} tries to reference {colors.grey.500}, which is not defined.\n' +
+        '\n' +
+        '{dark.theme.fg.default} tries to reference {colors.white}, which is not defined.\n' +
+        '\n' +
+        '{dark.theme.fg.onAccent} tries to reference {colors.white}, which is not defined.\n' +
+        '\n' +
+        '{light.theme.accent.default} tries to reference {colors.red.500}, which is not defined.\n' +
+        '\n' +
+        '{light.theme.accent.subtle} tries to reference {colors.blue.50}, which is not defined.\n' +
+        '\n' +
+        '{light.theme.fg.subtle} tries to reference {colors.grey.500}, which is not defined.\n' +
+        '\n' +
+        '{light.theme.fg.muted} tries to reference {colors.grey.700}, which is not defined.\n' +
+        '\n' +
+        '{light.theme.fg.onAccent} tries to reference {colors.white}, which is not defined.\n' +
+        '\n' +
+        '{light.theme.fg.default} tries to reference {colors.black}, which is not defined.\n' +
+        '\n' +
+        '{light.theme.bg.default} tries to reference {colors.white}, which is not defined.\n' +
+        '\n' +
+        '{light.theme.bg.subtle} tries to reference {colors.grey.100}, which is not defined.\n' +
+        '\n' +
+        '{light.theme.bg.muted} tries to reference {colors.grey.300}, which is not defined.',
+    );
+  }
+
+  async duplicateSetByName(setName) {
+    await this.rightClickOnSetByName(setName);
+    await this.duplicateOption.click();
   }
 };

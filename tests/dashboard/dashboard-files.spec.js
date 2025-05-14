@@ -388,3 +388,12 @@ mainTest(
     await dashboardPage.isFilePresent('QA new test file');
   },
 );
+
+mainTest(qase(2239, 'Import file to project - file upload error'), async () => {
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName('Test Project');
+  await dashboardPage.isProjectTitleDisplayed('Test Project');
+  await dashboardPage.importFileWithInvalidFile(
+    'documents/hand-made-icons-by-cocomaterial.penpot',
+  );
+});

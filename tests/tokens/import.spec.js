@@ -28,8 +28,7 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(2213, 'Import tokens'), async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
+mainTest(qase(2213, 'Import tokens'), async () => {
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
@@ -40,8 +39,7 @@ mainTest(qase(2213, 'Import tokens'), async ({ page }) => {
   await tokensPage.isSetNameVisible('client_theme_template');
 });
 
-mainTest(qase(2221, 'Import .penpot file with tokens'), async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
+mainTest(qase(2221, 'Import .penpot file with tokens'), async () => {
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage(
     'documents/penpot-file-with-tokens.penpot',
@@ -51,4 +49,20 @@ mainTest(qase(2221, 'Import .penpot file with tokens'), async ({ page }) => {
   await tokensPage.clickTokensTab();
   await tokensPage.checkSelectedTheme('2 active themes');
   await tokensPage.isSetNameVisible('client_theme_template');
+});
+
+mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
+  await tokensPage.clickTokensTab();
+  await tokensPage.clickOnTokenToolsButton();
+  await tokensPage.importTokens('documents/stitches-tokens.json');
+  await tokensPage.checkImportErrorMessage(
+    'Import Error: Some token references (18) could not be found.',
+  );
+  await tokensPage.expandDetailMessage();
+  await tokensPage.checkImportTokenDetailErrorMessage();
+  await tokensPage.closeModalWindow();
+  await tokensPage.isImportErrorMessageVisible(false);
 });

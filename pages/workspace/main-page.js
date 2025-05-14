@@ -1169,4 +1169,18 @@ exports.MainPage = class MainPage extends BasePage {
       ? await expect(this.selectedPage.getByTitle(name)).toBeVisible()
       : await expect(this.selectedPage.getByTitle(name)).not.toBeVisible();
   }
+
+  async checkImportErrorMessage(message) {
+    await expect(this.importErrorMessage).toHaveText(message);
+  }
+
+  async isImportErrorMessageVisible(visible = true) {
+    visible
+      ? await expect(this.importErrorMessage).toBeVisible()
+      : await expect(this.importErrorMessage).not.toBeVisible();
+  }
+
+  async expandDetailMessage() {
+    await this.detailsButton.click();
+  }
 };
