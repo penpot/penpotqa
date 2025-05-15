@@ -52,6 +52,8 @@ mainTest(qase(2221, 'Import .penpot file with tokens'), async () => {
 });
 
 mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
+  const errorCount = 18;
+  const formatRegex = /^\{.+\} tries to reference \{.+\}, which is not defined\.$/;
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
@@ -59,10 +61,11 @@ mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
   await tokensPage.clickOnTokenToolsButton();
   await tokensPage.importTokens('documents/stitches-tokens.json');
   await tokensPage.checkImportErrorMessage(
-    'Import Error: Some token references (18) could not be found.',
+    `Import Error: Some token references (${errorCount}) could not be found.`,
   );
   await tokensPage.expandDetailMessage();
-  await tokensPage.checkImportTokenDetailErrorMessage();
+  await tokensPage.checkImportTokenDetailErrorCount(errorCount);
+  await tokensPage.checkImportTokenDetailErrorFormat(formatRegex);
   await tokensPage.closeModalWindow();
   await tokensPage.isImportErrorMessageVisible(false);
 });

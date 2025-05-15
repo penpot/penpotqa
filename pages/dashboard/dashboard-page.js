@@ -93,6 +93,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     // Import files
     this.fileImport = page.getByTestId('file-import');
+    this.importModal = page.locator('div[class*="import__modal-container"]');
     this.modalTitle = page.locator('h2[class*="modal-title"]');
     this.modalAcceptButton = page.locator(
       'div[class*="modal-footer"] input[class*="accept-btn"]',
@@ -620,7 +621,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.feedbackBannerMessage).toHaveText(
       'Not all files have been imported',
     );
-    await this.modalAcceptButton.click();
   }
 
   async importFile(file) {
@@ -1089,5 +1089,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isMarkedAllNotifsAsReadMessage() {
     await expect(this.markedAllNotifsAsReadMessage).toBeVisible();
+  }
+
+  async clickOnModalAcceptButton() {
+    await this.modalAcceptButton.click();
   }
 };
