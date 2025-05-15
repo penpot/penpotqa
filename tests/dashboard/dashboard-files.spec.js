@@ -129,8 +129,8 @@ mainTest(
 
 mainTest(qase(71, 'DA-17 Import file to Drafts .penpot'), async () => {
   await dashboardPage.openSidebarItem('Drafts');
-  await dashboardPage.importFileFromProjectPage('documents/QA test file.penpot');
-  await dashboardPage.isFilePresent('QA test file');
+  await dashboardPage.importFileFromProjectPage('documents/QA test file v1.penpot');
+  await dashboardPage.isFilePresent('QA test file v1');
 });
 
 mainTest(qase(72, 'DA-18 Import file to Drafts svg json'), async () => {
