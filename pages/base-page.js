@@ -171,6 +171,11 @@ exports.BasePage = class BasePage {
       .filter({ hasText: 'Copy link' });
     this.acceptCookieButton = page.getByRole('button', { name: 'Accept all' });
     this.renameOption = page.getByRole('listitem').filter({ hasText: 'Rename' });
+    this.importErrorMessage = page.locator('div[class*="error-message"]');
+    this.importErrorDetailMessage = page.locator(
+      'div[class*="error-detail-content"]',
+    );
+    this.detailsButton = page.getByRole('button', { name: 'Details' });
   }
 
   async clearInput(input, browserName) {

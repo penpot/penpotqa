@@ -104,10 +104,22 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await this.setName.filter({ hasText: setName }).getByRole('checkbox').click();
   }
 
+  async rightClickOnSetByName(setName) {
+    await this.setName.filter({ hasText: setName }).click({ button: 'right' });
+  }
+
   async isSetCheckedByName(setName) {
     await expect(
       this.setName.filter({ hasText: setName }).getByRole('checkbox'),
     ).toBeChecked();
+  }
+
+  async createThemeViaLinkWithSet(name, setName) {
+    await this.createOneThemeButton.click();
+    await this.themeNameInput.fill(name);
+    await this.activateSetInTheme(setName);
+    await this.modalSaveButton.click();
+    await this.modalCloseButton.last().click();
   }
 
   async createThemeViaLink(name) {
@@ -366,5 +378,30 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await this.importButton.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
+  }
+
+  async getTokenErrorDetailText() {
+    const text = await this.importErrorDetailMessage.textContent();
+    return text
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+  }
+
+  async checkImportTokenDetailErrorCount(count) {
+    const text = await this.getTokenErrorDetailText();
+    expect(text.length).toBe(count);
+  }
+
+  async checkImportTokenDetailErrorFormat(regex) {
+    const text = await this.getTokenErrorDetailText();
+    for (const [index, line] of text.entries()) {
+      expect(line).toMatch(regex);
+    }
+  }
+
+  async duplicateSetByName(setName) {
+    await this.rightClickOnSetByName(setName);
+    await this.duplicateOption.click();
   }
 };
