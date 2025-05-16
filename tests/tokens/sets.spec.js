@@ -90,3 +90,20 @@ mainTest(qase(2139, 'Enable and Disable sets'), async () => {
   await tokensPage.clickOnSetCheckboxByName('Mobile');
   await designPanelPage.checkGeneralCornerRadius('30');
 });
+
+mainTest(qase(2231, 'Duplicate set'), async () => {
+  const name = 'Mobile';
+  await tokensPage.clickTokensTab();
+  await tokensPage.createSetViaButton(name);
+  await tokensPage.checkFirstSetName(name);
+  await tokensPage.duplicateSetByName(name);
+  const firstSetName = name + '-copy';
+  await tokensPage.isSetNameVisible(firstSetName);
+  await tokensPage.duplicateSetByName(firstSetName);
+  const secondSetName = firstSetName + '-copy';
+  await tokensPage.isSetNameVisible(secondSetName);
+  await tokensPage.duplicateSetByName(secondSetName);
+  const thirdSetName = secondSetName + '-copy';
+  await tokensPage.isSetNameVisible(thirdSetName);
+  await tokensPage.duplicateSetByName(thirdSetName);
+});

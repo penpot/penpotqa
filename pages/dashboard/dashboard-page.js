@@ -93,6 +93,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     // Import files
     this.fileImport = page.getByTestId('file-import');
+    this.importModal = page.locator('div[class*="import__modal-container"]');
     this.modalTitle = page.locator('h2[class*="modal-title"]');
     this.modalAcceptButton = page.locator(
       'div[class*="modal-footer"] input[class*="accept-btn"]',
@@ -101,7 +102,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.feedbackBannerMessage = page.locator(
       'div[class*="main_ui_notifications_context_notification__context-text"]',
     );
-    this.importErrorMessage = page.locator('div[class*="error-message"]');
 
     //Fonts
     this.fontsSidebarItem = page.getByTestId('fonts');
@@ -609,6 +609,20 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.modalCancelButton.click();
   }
 
+  async importFileUploadError(file) {
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    await this.fileImport.click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(file);
+    await expect(this.modalTitle).toBeVisible();
+    await expect(this.modalTitle).toHaveText('Import Penpot files');
+    await this.modalAcceptButton.click();
+    await this.feedbackBannerMessage.waitFor({ timeout: 60000 });
+    await expect(this.feedbackBannerMessage).toHaveText(
+      'Not all files have been imported',
+    );
+  }
+
   async importFile(file) {
     await this.projectOptions.click();
     await this.importFileProcessingSuccess(file);
@@ -622,6 +636,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async importFileWithInvalidFormat(file) {
     await this.headerOptionsMenuButton.click();
     await this.importFileProcessingError(file);
+  }
+
+  async importFileWithInvalidFile(file) {
+    await this.projectOptions.click();
+    await this.importFileUploadError(file);
   }
 
   async importAndOpenFile(file) {
@@ -1070,5 +1089,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isMarkedAllNotifsAsReadMessage() {
     await expect(this.markedAllNotifsAsReadMessage).toBeVisible();
+  }
+
+  async clickOnModalAcceptButton() {
+    await this.modalAcceptButton.click();
   }
 };

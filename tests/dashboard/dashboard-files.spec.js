@@ -2,7 +2,7 @@ const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { random } = require('../../helpers/string-generator');
-const { test } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
@@ -388,3 +388,16 @@ mainTest(
     await dashboardPage.isFilePresent('QA new test file');
   },
 );
+
+mainTest(qase(2239, 'Import file to project - file upload error'), async () => {
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName('Test Project');
+  await dashboardPage.isProjectTitleDisplayed('Test Project');
+  await dashboardPage.importFileWithInvalidFile(
+    'documents/hand-made-icons-by-cocomaterial.penpot',
+  );
+  await expect(dashboardPage.importModal).toHaveScreenshot(
+    'import-upload-error.png',
+  );
+  await dashboardPage.clickOnModalAcceptButton();
+});
