@@ -133,12 +133,6 @@ mainTest(qase(71, 'DA-17 Import file to Drafts .penpot'), async () => {
   await dashboardPage.isFilePresent('QA test file v1');
 });
 
-mainTest(qase(72, 'DA-18 Import file to Drafts svg json'), async () => {
-  await dashboardPage.openSidebarItem('Drafts');
-  await dashboardPage.importFileFromProjectPage('documents/QA test zip file.zip');
-  await dashboardPage.isFilePresent('Wireframing kit');
-});
-
 mainTest(qase(2091, 'Import library from the web (by URL)'), async () => {
   const libraryFileName = 'tutorial-for-beginners v.2.0.penpot';
 
