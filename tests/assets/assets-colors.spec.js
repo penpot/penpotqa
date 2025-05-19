@@ -12,10 +12,20 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
+let mainPage,
+  dashboardPage,
+  teamPage,
+  assetsPanelPage,
+  colorPalettePopUp,
+  designPanelPage;
+
 test.beforeEach(async ({ page, browserName }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  assetsPanelPage = new AssetsPanelPage(page);
+  colorPalettePopUp = new ColorPalettePage(page);
+  designPanelPage = new DesignPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -27,28 +37,19 @@ test.beforeEach(async ({ page, browserName }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(
-  qase(932, 'AS-22 Filter Colors from All Assets drop-down'),
-  async ({ page }) => {
-    const assetsPanelPage = new AssetsPanelPage(page);
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.selectTypeFromAllAssetsDropdown('Colors');
-    await assetsPanelPage.isAssetsSectionNameDisplayed('Colors', '0');
-  },
-);
+mainTest(qase(932, 'AS-22 Filter Colors from All Assets drop-down'), async () => {
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.selectTypeFromAllAssetsDropdown('Colors');
+  await assetsPanelPage.isAssetsSectionNameDisplayed('Colors', '0');
+});
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
-    const colorPalettePopUp = new ColorPalettePage(page);
+  mainTest.beforeEach(async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickAddFileLibraryColorButton();
     await colorPalettePopUp.setHex('#ffff00');
@@ -57,35 +58,41 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(933, 'AS-23 File library colors - add'), async ({ page }) => {
-    const assetsPanelPage = new AssetsPanelPage(page);
+  mainTest(qase(933, 'AS-23 File library colors - add'), async () => {
     await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00');
   });
 
-  mainTest(qase(934, 'AS-24 File library colors - edit'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
-    const colorPalettePopUp = new ColorPalettePage(page);
+  mainTest(qase(934, 'Edit Color Asset After Applying to Element'), async () => {
+    await mainPage.createDefaultBoardByCoordinates(500, 200);
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.clickFileLibraryColorsColorBullet();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.clickFileLibraryColorsColorBullet();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.createdLayer).toHaveScreenshot(
+      'apply-color-to-shapes.png',
+    );
     await assetsPanelPage.editFileLibraryColor();
     await colorPalettePopUp.setHex('#00ff00');
     await colorPalettePopUp.clickSaveColorStyleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00#00ff00');
+    await expect(mainPage.createdLayer).toHaveScreenshot(
+      'edited-color-to-shapes.png',
+    );
   });
 
-  mainTest(qase(935, 'AS-25 File library colors - rename'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
+  mainTest(qase(935, 'AS-25 File library colors - rename'), async () => {
     await assetsPanelPage.renameFileLibraryColor('test color');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isColorAddedToFileLibraryColors('test color#ffff00');
   });
 
-  mainTest(qase(936, 'AS-26 File library colors - delete'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
+  mainTest(qase(936, 'AS-26 File library colors - delete'), async () => {
     await assetsPanelPage.deleteFileLibraryColor();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isColorNotAddedToFileLibraryColors();
@@ -93,37 +100,25 @@ mainTest.describe(() => {
     await assetsPanelPage.isAssetsSectionNameDisplayed('Colors', '0');
   });
 
-  mainTest(
-    qase(937, 'AS-27 File library colors - create group'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const assetsPanelPage = new AssetsPanelPage(page);
-      await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
-      await mainPage.waitForChangeIsSaved();
-      await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
-      await assetsPanelPage.isColorToFileLibraryColorsNotVisible();
-    },
-  );
+  mainTest(qase(937, 'AS-27 File library colors - create group'), async () => {
+    await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
+    await assetsPanelPage.isColorToFileLibraryColorsNotVisible();
+  });
 
-  mainTest(
-    qase(939, 'AS-29 File library colors - rename group'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const assetsPanelPage = new AssetsPanelPage(page);
-      await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
-      await mainPage.waitForChangeIsSaved();
-      await assetsPanelPage.renameGroupFileLibrary('New Group');
-      await mainPage.waitForChangeIsSaved();
-      await assetsPanelPage.isFileLibraryGroupCreated('New Group');
-      await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'group-colors-renamed.png',
-      );
-    },
-  );
+  mainTest(qase(939, 'AS-29 File library colors - rename group'), async () => {
+    await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.renameGroupFileLibrary('New Group');
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.isFileLibraryGroupCreated('New Group');
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+      'group-colors-renamed.png',
+    );
+  });
 
-  mainTest(qase(942, 'AS-32 File library colors- ungroup'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
+  mainTest(qase(942, 'AS-32 File library colors- ungroup'), async () => {
     await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.ungroupFileLibrary();
@@ -132,38 +127,16 @@ mainTest.describe(() => {
     await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00');
   });
 
-  mainTest(
-    qase(944, 'AS-34 File library colors - apply to element'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const assetsPanelPage = new AssetsPanelPage(page);
-      await mainPage.clickCreateBoardButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await assetsPanelPage.clickFileLibraryColorsColorBullet();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
-        'apply-color-to-board.png',
-      );
-    },
-  );
-
-  mainTest(
-    qase(1027, 'AS-117 File library colors - apply to stroke'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const assetsPanelPage = new AssetsPanelPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await mainPage.clickCreateBoardButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickAddStrokeButton();
-      await assetsPanelPage.clickAndPressAltFileLibraryColorsColorBullet();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickViewportByCoordinates(900, 100, 3);
-      await expect(mainPage.createdLayer).toHaveScreenshot(
-        'apply-color-to-stroke-board.png',
-      );
-    },
-  );
+  mainTest(qase(1027, 'AS-117 File library colors - apply to stroke'), async () => {
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickAddStrokeButton();
+    await assetsPanelPage.clickAndPressAltFileLibraryColorsColorBullet();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportByCoordinates(900, 100, 3);
+    await expect(mainPage.createdLayer).toHaveScreenshot(
+      'apply-color-to-stroke-board.png',
+    );
+  });
 });
