@@ -120,6 +120,19 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.returnHomeButton = page.getByRole('button', { name: 'GO TO YOUR PENPOT' });
     this.accessDialog = page.locator('div[class*="dialog"]').first();
     this.firstInvitedEmail = page.locator('span[class*="forms__text"]').first();
+    this.requestSentCorrectlyText = this.accessDialog.getByText(
+      'Your request has been sent correctly!',
+    );
+    this.requestSentCorrectlyDescribe = this.accessDialog.getByText(
+      "Remember that, if the owner allows it, you're going to be invited to the team.",
+    );
+    this.closeModalButton = page.locator('svg[class*="icon-close"]');
+    this.requestFileAccessText = this.accessDialog.getByText(
+      "You don't have access to this file.",
+    );
+    this.requestFileAccessDescribe = this.accessDialog.getByText(
+      'To access this file, you can ask the team owner.',
+    );
   }
 
   async createTeam(teamName) {
@@ -523,5 +536,20 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.sendInvitationButton).not.toHaveAttribute('disabled', '', {
       timeout: timeout,
     });
+  }
+
+  async checkRequestSentCorrectlyDialog() {
+    await expect(this.requestSentCorrectlyText).toBeVisible();
+    await expect(this.requestSentCorrectlyDescribe).toBeVisible();
+    await expect(this.goToYourPenpotButton).toBeVisible();
+    await expect(this.closeModalButton).toBeVisible();
+  }
+
+  async checkRequestFileAccessDialog() {
+    await expect(this.requestFileAccessText).toBeVisible();
+    await expect(this.requestFileAccessDescribe).toBeVisible();
+    await expect(this.goToYourPenpotButton).toBeVisible();
+    await expect(this.requestAccessButton).toBeVisible();
+    await expect(this.closeModalButton).toBeVisible();
   }
 };
