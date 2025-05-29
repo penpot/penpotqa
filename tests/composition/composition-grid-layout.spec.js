@@ -244,8 +244,6 @@ mainTest(
   async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('300', '400');
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
     await mainPage.addGridLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.isLayoutRemoveButtonExists();
