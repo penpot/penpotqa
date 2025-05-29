@@ -321,10 +321,14 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     ).toBeVisible();
   }
 
-  async isCopyComponentOnLayersTabVisibleWithName(name) {
-    await expect(
-      this.copyComponentLayer.locator('//../..').getByText(name),
-    ).toBeVisible();
+  async isCopyComponentOnLayersTabVisibleWithName(name, visible = true) {
+    visible
+      ? await expect(
+          this.copyComponentLayer.locator('//../..').getByText(name),
+        ).toBeVisible()
+      : await expect(
+          this.copyComponentLayer.locator('//../..').getByText(name),
+        ).not.toBeVisible();
   }
 
   async isPathComponentOnLayersTabVisible() {
