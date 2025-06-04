@@ -358,8 +358,8 @@ mainTest.describe(() => {
     async ({ browserName }) => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddShadowButton();
-      await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
+      await mainPage.waitForChangeIsSaved();
       await designPanelPage.setComponentColor('#0538D1');
       browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
       await mainPage.waitForChangeIsSaved();
