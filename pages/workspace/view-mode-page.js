@@ -134,7 +134,6 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   async exitFullScreenMode() {
     await this.fullScreenSection.hover();
     await this.fullScreenSection.click({ position: { x: 100, y: 100 } });
-    // await this.page.keyboard.press('Escape');
     await this.fullScreenButton.click();
     await expect(this.fullScreenSection).not.toBeVisible();
   }
