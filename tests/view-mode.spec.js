@@ -97,7 +97,7 @@ mainTest.describe(() => {
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickFullScreenButton();
-    await viewModePage.clickOnESC();
+    await viewModePage.exitFullScreenMode();
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'view-mode-page-image.png',
     );
