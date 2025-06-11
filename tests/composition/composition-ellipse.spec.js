@@ -12,10 +12,20 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
+let mainPage,
+  teamPage,
+  dashboardPage,
+  colorPalettePage,
+  layersPanelPage,
+  designPanelPage;
+
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  layersPanelPage = new LayersPanelPage(page);
+  colorPalettePage = new ColorPalettePage(page);
+  designPanelPage = new DesignPanelPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -23,8 +33,6 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
@@ -33,21 +41,17 @@ test.afterEach(async ({ page }, testInfo) => {
 mainTest.describe(() => {
   mainTest.beforeEach(async ({ page }, testInfo) => {
     test.setTimeout(testInfo.timeout + 20000);
-    const mainPage = new MainPage(page);
     await mainPage.clickCreateEllipseButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(327, 'CO-112 Create an ellipse from toolbar'), async ({ page }) => {
-    const mainPage = new MainPage(page);
+  mainTest(qase(327, 'CO-112 Create an ellipse from toolbar'), async () => {
     await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse.png');
+    await expect(mainPage.createdLayer).toHaveScreenshot('ellipse.png');
   });
 
-  mainTest(qase(329, 'CO-114 Rename ellipse with valid name'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
+  mainTest(qase(329, 'CO-114 Rename ellipse with valid name'), async () => {
     await layersPanelPage.doubleClickLayerOnLayersTab('Ellipse');
     await layersPanelPage.typeNameCreatedLayerAndEnter('renamed ellipse');
     await mainPage.waitForChangeIsSaved();
@@ -58,9 +62,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(332, 'CO-117 Add, hide, unhide, change type and delete Shadow to ellipse'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const designPanelPage = new DesignPanelPage(page);
+    async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -104,10 +106,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(333, 'CO-118 Add and edit Shadow to ellipse'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const colorPalettePage = new ColorPalettePage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  mainTest(qase(333, 'CO-118 Add and edit Shadow to ellipse'), async () => {
     await designPanelPage.clickAddShadowButton();
     await designPanelPage.clickShadowActionsButton();
     await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
@@ -132,10 +131,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(334, 'CO-119 Add, hide, unhide and delete Blur to ellipse'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const colorPalettePage = new ColorPalettePage(page);
-      const designPanelPage = new DesignPanelPage(page);
+    async () => {
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#304d6a');
       await mainPage.waitForChangeIsSaved();
@@ -162,9 +158,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(335, 'CO-120 Add and edit Blur to ellipse'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  mainTest(qase(335, 'CO-120 Add and edit Blur to ellipse'), async () => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
     await mainPage.waitForChangeIsSaved();
@@ -173,98 +167,88 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(
-    qase(336, 'CO-121 Add, edit and delete Stroke to ellipse'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await designPanelPage.clickAddStrokeButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-default.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeStrokeSettings(
-        '#43E50B',
-        '70',
-        '13',
-        'Inside',
-        'Dotted',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-inside-dotted.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '80',
-        '5',
-        'Outside',
-        'Dashed',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-outside-dashed.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '100',
-        '3',
-        'Center',
-        'Solid',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-center-solid.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '40',
-        '4',
-        'Center',
-        'Mixed',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'ellipse-stroke-center-mixed.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.removeStroke();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-remove.png', {
+  mainTest(qase(336, 'CO-121 Add, edit and delete Stroke to ellipse'), async () => {
+    await designPanelPage.clickAddStrokeButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-default.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await mainPage.clickOnLayerOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeStrokeSettings(
+      '#43E50B',
+      '70',
+      '13',
+      'Inside',
+      'Dotted',
+    );
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'ellipse-stroke-inside-dotted.png',
+      {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    },
-  );
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeStrokeSettings(
+      '#F5358F',
+      '80',
+      '5',
+      'Outside',
+      'Dashed',
+    );
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'ellipse-stroke-outside-dashed.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeStrokeSettings(
+      '#F5358F',
+      '100',
+      '3',
+      'Center',
+      'Solid',
+    );
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'ellipse-stroke-center-solid.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.changeStrokeSettings(
+      '#F5358F',
+      '40',
+      '4',
+      'Center',
+      'Mixed',
+    );
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'ellipse-stroke-center-mixed.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.removeStroke();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-remove.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+  });
 
   mainTest(
     qase(341, "CO-126 Click 'Focus off' ellipse from shortcut F"),
     async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const layersPanelPage = new LayersPanelPage(page);
       await mainPage.focusLayerViaRightClickOnCanvas();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
@@ -294,73 +278,49 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(351, 'CO-136-1 Delete ellipse via rightclick'), async ({ page }) => {
-    const mainPage = new MainPage(page);
+  mainTest(qase(351, 'CO-136-1 Delete ellipse via rightclick'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await mainPage.isCreatedLayerVisible(false);
   });
 
-  mainTest(
-    qase(351, 'CO-136-2 Delete ellipse via shortcut Del'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      await mainPage.isCreatedLayerVisible();
-      await mainPage.deleteLayerViaShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    },
-  );
+  mainTest(qase(351, 'CO-136-2 Delete ellipse via shortcut Del'), async () => {
+    await mainPage.isCreatedLayerVisible();
+    await mainPage.deleteLayerViaShortcut();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.isCreatedLayerVisible(false);
+  });
 
-  mainTest(qase(353, 'CO-138 Add rotation to ellipse'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  mainTest(qase(353, 'CO-138 Add rotation to ellipse'), async () => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse-rotated-90.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('ellipse-rotated-90.png');
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse-rotated-120.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('ellipse-rotated-120.png');
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse-rotated-45.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('ellipse-rotated-45.png');
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse-rotated-359.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('ellipse-rotated-359.png');
   });
 
-  mainTest(qase(369, 'CO-154 Transform ellipse to path'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
+  mainTest(qase(369, 'CO-154 Transform ellipse to path'), async () => {
     await mainPage.transformToPathViaRightClick();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isPathComponentOnLayersTabVisible();
   });
 
-  mainTest(qase(376, 'CO-161 Selection to board'), async ({ page }) => {
-    const mainPage = new MainPage(page);
+  mainTest(qase(376, 'CO-161 Selection to board'), async () => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('ellipse-to-board.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('ellipse-to-board.png');
   });
 });

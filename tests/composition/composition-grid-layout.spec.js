@@ -22,6 +22,7 @@ let teamPage,
   inspectPanelPage,
   assetsPanelPage,
   colorPalettePage;
+
 test.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
@@ -46,7 +47,7 @@ test.afterEach(async ({ page }, testInfo) => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
+  mainTest.beforeEach(async () => {
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
@@ -145,11 +146,8 @@ mainTest.describe(() => {
   mainTest(qase(1691, 'PENPOT-1691 Change alignment'), async () => {
     await designPanelPage.changeLayoutAlignment('Center', false);
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'board-with-grid-alignment-center.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment],
-      },
     );
   });
 
@@ -186,11 +184,8 @@ mainTest.describe(() => {
       await designPanelPage.clickGridDoneButton();
       await designPanelPage.changeLayoutJustification('Space between', false);
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'board-with-grid-justify-space-between.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment],
-        },
       );
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.checkLayoutJustification('Space between', false);
@@ -207,11 +202,8 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.changeLayoutRowGapOnGridEdit('50');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'board-with-grid-row-gap.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment],
-        },
       );
       await inspectPanelPage.openInspectTab();
       await inspectPanelPage.isRowGapExistOnInspectTab();
@@ -266,11 +258,8 @@ mainTest(
     await designPanelPage.changeHeightAndWidthForLayer('200', '300');
     browserName !== 'webkit' ? await mainPage.waitForChangeIsUnsaved() : null;
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'resized-board-with-rectangle.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
   },
 );
@@ -361,11 +350,8 @@ mainTest.describe(() => {
 
       await designPanelPage.changeLayoutAlignment('Center', false);
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'board-with-grid-image-alignment-center.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
       );
 
       await mainPage.clickViewportOnce();
@@ -402,11 +388,8 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickLayerOnLayersTab('mini_sample');
       await mainPage.duplicateLayerViaLayersTab('mini_sample');
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'column-direction-image.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
       );
     },
   );
@@ -421,9 +404,9 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickLayerOnLayersTab('mini_sample');
       await mainPage.duplicateLayerViaLayersTab('mini_sample');
-      await expect(mainPage.viewport).toHaveScreenshot('row-direction-image.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'row-direction-image.png',
+      );
     },
   );
 
@@ -476,9 +459,9 @@ mainTest.describe(() => {
     await designPanelPage.addLayoutFromDesignPanel('flex');
     await designPanelPage.isFlexElementSectionOpened();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-with-flex-layout.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot(
+      'board-with-flex-layout.png',
+    );
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
       'flex-layout-right-sidebar-image.png',
@@ -767,11 +750,8 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickLayerOnLayersTab('Rectangle');
       await mainPage.duplicateLayerViaLayersTab('Rectangle');
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'column-direction-rectangle.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment],
-        },
       );
       await mainPage.clickShortcutCtrlZ(browserName);
       await mainPage.clickViewportOnce();
@@ -781,11 +761,8 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickLayerOnLayersTab('Rectangle');
       await mainPage.duplicateLayerViaLayersTab('Rectangle');
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'row-direction-rectangle.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment],
-        },
       );
     },
   );
@@ -803,9 +780,9 @@ mainTest.describe(() => {
       });
       await mainPage.clickViewportOnce();
       await mainPage.clickShortcutCtrlZ(browserName);
-      await expect(mainPage.viewport).toHaveScreenshot('rectangle-undo-color.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'rectangle-undo-color.png',
+      );
     },
   );
 
@@ -829,7 +806,7 @@ mainTest.describe(() => {
       1748,
       'PENPOT-1748 Check to add area - When you select cells and then “right click” merge cells',
     ),
-    async ({ page }) => {
+    async () => {
       await mainPage.clickBoardOnCanvas();
       await mainPage.doubleClickBoardOnCanvas();
       await mainPage.waitForChangeIsSaved();
@@ -891,11 +868,8 @@ mainTest(
     await layersPanelPage.clickLayerOnLayersTab('Dashboard');
     await designPanelPage.addLayoutFromDesignPanel('grid');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'dashboard-with-grid-layout.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment],
-      },
     );
   },
 );
