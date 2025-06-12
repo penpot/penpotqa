@@ -4,14 +4,9 @@ const { RegisterPage } = require('../pages/register-page');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 const { random } = require('../helpers/string-generator');
-const {
-  getRegisterMessage,
-  checkRegisterText,
-  waitMessage,
-} = require('../helpers/gmail');
+const { checkRegisterText, waitMessage } = require('../helpers/gmail');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 const { TeamPage } = require('../pages/dashboard/team-page');
-const { ProfilePage } = require('../pages/profile-page');
 
 test(qase(32, 'ON-5 Sign up with invalid email address'), async ({ page }) => {
   const loginPage = new LoginPage(page);
@@ -66,14 +61,7 @@ test.describe(() => {
     await loginPage.goto();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();
-    await registerPage.isRegisterPageOpened();
-    await registerPage.enterEmail(email);
-    await registerPage.enterPassword(process.env.LOGIN_PWD);
-    await registerPage.clickOnCreateAccountBtn();
-
-    await registerPage.enterFullName(randomName);
-    await registerPage.clickOnAcceptTermsCheckbox();
-    await registerPage.clickOnCreateAccountSecondBtn();
+    await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
     await registerPage.isRegisterEmailCorrect(email);
     invite = await waitMessage(page, email, 40);
   });

@@ -108,14 +108,7 @@ test.describe(() => {
       await loginPage.goto();
       await loginPage.acceptCookie();
       await loginPage.clickOnCreateAccount();
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(email);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-
-      await registerPage.enterFullName(randomName);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
       await registerPage.isRegisterEmailCorrect(email);
       const invite = await waitMessage(page, email, 40);
       await page.goto(invite.inviteUrl);
@@ -494,25 +487,21 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstEditor);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstEditor,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
       await page.goto(secondInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(secondEditor);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondEditor,
+        secondEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -571,13 +560,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(mainInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(mainEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(mainAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        mainAdmin,
+        mainEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -608,25 +595,21 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
       await page.goto(secondInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(secondAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondAdmin,
+        secondEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -665,13 +648,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(mainInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(mainEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(mainAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        mainAdmin,
+        mainEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -720,13 +701,11 @@ mainTest.describe(() => {
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
       await page.goto(secondInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(secondUser);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondUser,
+        secondEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -789,25 +768,21 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
       await page.goto(secondInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(secondAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondAdmin,
+        secondEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -881,25 +856,21 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
       await page.goto(secondInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(secondAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondAdmin,
+        secondEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -942,13 +913,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -995,13 +964,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(secondInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(secondAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -1035,13 +1002,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -1073,13 +1038,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -1111,13 +1074,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -1165,25 +1126,20 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
-      await dashboardPage.fillOnboardingQuestions();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
       await page.goto(secondInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(secondAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -1236,25 +1192,21 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
       await page.goto(secondInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(secondAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -1306,13 +1258,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -1361,14 +1311,11 @@ test.describe(() => {
       await loginPage.goto();
       await loginPage.acceptCookie();
       await loginPage.clickOnCreateAccount();
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-
-      await registerPage.enterFullName(secondAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondAdmin,
+        secondEmail,
+        process.env.LOGIN_PWD,
+      );
       await registerPage.isRegisterEmailCorrect(secondEmail);
       const register = await waitMessage(page, secondEmail, 40);
       await page.goto(register.inviteUrl);
@@ -1438,14 +1385,11 @@ test.describe(() => {
       await loginPage.goto();
       await loginPage.acceptCookie();
       await loginPage.clickOnCreateAccount();
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-
-      await registerPage.enterFullName(secondAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondAdmin,
+        secondEmail,
+        process.env.LOGIN_PWD,
+      );
       await registerPage.isRegisterEmailCorrect(secondEmail);
       const register = await waitMessage(page, secondEmail, 40);
       await page.goto(register.inviteUrl);
@@ -1514,14 +1458,11 @@ test.describe(() => {
       await loginPage.goto();
       await loginPage.acceptCookie();
       await loginPage.clickOnCreateAccount();
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(secondEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-
-      await registerPage.enterFullName(secondAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        secondAdmin,
+        secondEmail,
+        process.env.LOGIN_PWD,
+      );
       await registerPage.isRegisterEmailCorrect(secondEmail);
       const register = await waitMessage(page, secondEmail, 40);
       await page.goto(register.inviteUrl);
@@ -1581,13 +1522,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 
@@ -1833,14 +1772,7 @@ test.describe(() => {
     await loginPage.goto();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();
-    await registerPage.isRegisterPageOpened();
-    await registerPage.enterEmail(email);
-    await registerPage.enterPassword(process.env.LOGIN_PWD);
-    await registerPage.clickOnCreateAccountBtn();
-
-    await registerPage.enterFullName(randomName);
-    await registerPage.clickOnAcceptTermsCheckbox();
-    await registerPage.clickOnCreateAccountSecondBtn();
+    await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
     await registerPage.isRegisterEmailCorrect(email);
     invite = await waitMessage(page, email, 40);
     await page.goto(invite.inviteUrl);
@@ -2065,14 +1997,11 @@ test.describe(() => {
     await loginPage.isLoginPageOpened();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();
-    await registerPage.isRegisterPageOpened();
-    await registerPage.enterEmail(secondEmail);
-    await registerPage.enterPassword(process.env.LOGIN_PWD);
-    await registerPage.clickOnCreateAccountBtn();
-
-    await registerPage.enterFullName(secondRandomName);
-    await registerPage.clickOnAcceptTermsCheckbox();
-    await registerPage.clickOnCreateAccountSecondBtn();
+    await registerPage.registerAccount(
+      secondRandomName,
+      secondEmail,
+      process.env.LOGIN_PWD,
+    );
     await registerPage.isRegisterEmailCorrect(secondEmail);
     invite = await waitMessage(page, secondEmail, 40);
     await page.goto(invite.inviteUrl);
@@ -2146,13 +2075,11 @@ mainTest.describe(() => {
     await loginPage.acceptCookie();
 
     await page.goto(firstInvite.inviteUrl);
-    await registerPage.isRegisterPageOpened();
-    await registerPage.enterEmail(firstEmail);
-    await registerPage.enterPassword(process.env.LOGIN_PWD);
-    await registerPage.clickOnCreateAccountBtn();
-    await registerPage.enterFullName(firstAdmin);
-    await registerPage.clickOnAcceptTermsCheckbox();
-    await registerPage.clickOnCreateAccountSecondBtn();
+    await registerPage.registerAccount(
+      firstAdmin,
+      firstEmail,
+      process.env.LOGIN_PWD,
+    );
     await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.fillOnboardingQuestions();
     await teamPage.isTeamSelected(team);
@@ -2338,13 +2265,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
 

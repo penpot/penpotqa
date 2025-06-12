@@ -99,4 +99,13 @@ exports.RegisterPage = class RegisterPage extends BasePage {
   async clickOnCreateDemoAccountBtn() {
     await this.createDemoAccountBtn.click();
   }
+
+  async registerAccount(fullName, email, password) {
+    await this.isRegisterPageOpened();
+    await this.enterFullName(fullName);
+    await this.enterEmail(email);
+    await this.enterPassword(password);
+    await this.clickOnAcceptTermsCheckbox();
+    await this.clickOnCreateAccountBtn();
+  }
 };

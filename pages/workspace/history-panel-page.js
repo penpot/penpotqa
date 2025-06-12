@@ -10,7 +10,7 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
 
     this.emptyVersionMessage = page.getByText('There are no versions yet');
     this.saveVersionButton = page.getByRole('button', { name: 'Save version' });
-    this.versionNameInput = page.locator('input[class*="controls_input"]');
+    this.versionNameInput = page.locator('input[class*="controls_utilities_input"]');
     this.versionName = page.locator(
       'span[class*="product_user"][class*="body-small-typography"]',
     );
@@ -29,7 +29,7 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
       'div[class*="product_autosaved"][class*="version-entry"]',
     );
     this.optionsSnapshotButton = page.locator(
-      'div[class*="product_autosaved"][class*="version-entry"] [title="Open version menu"]',
+      'div[class*="product_autosaved"][class*="version-entry"] button',
     );
     this.pinSnapshotButton = page.getByRole('button', { name: 'Pin version' });
     this.restoreSnapshotButton = page.getByRole('button', {

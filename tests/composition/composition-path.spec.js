@@ -19,7 +19,7 @@ let mainPage,
   layersPanelPage,
   designPanelPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   colorPalettePage = new ColorPalettePage(page);
   layersPanelPage = new LayersPanelPage(page);
@@ -32,7 +32,7 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async ({ page }, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
