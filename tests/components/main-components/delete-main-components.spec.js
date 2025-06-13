@@ -34,19 +34,9 @@ mainTest(qase(1295, 'Undo deleted component'), async ({ page, browserName }) => 
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.deleteLayerViaRightClick();
-  await expect(mainPage.viewport).toHaveScreenshot(
-    'rectangle-component-delete.png',
-    {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    },
-  );
+  await mainPage.isCreatedLayerVisible(false);
   await mainPage.clickShortcutCtrlZ(browserName);
-  await expect(mainPage.viewport).toHaveScreenshot(
-    'rectangle-component-delete-undo.png',
-    {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    },
-  );
+  await mainPage.isCreatedLayerVisible(true);
 });
 
 mainTest(qase(1456, 'Delete component Assets tab'), async ({ page }) => {

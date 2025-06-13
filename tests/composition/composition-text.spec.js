@@ -13,10 +13,22 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
+let mainPage,
+  colorPalettePage,
+  teamPage,
+  dashboardPage,
+  designPanelPage,
+  layersPanelPage,
+  inspectPanelPage;
+
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  colorPalettePage = new ColorPalettePage(page);
+  designPanelPage = new DesignPanelPage(page);
+  inspectPanelPage = new InspectPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -24,8 +36,6 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
@@ -34,53 +44,39 @@ test.afterEach(async ({ page }, testInfo) => {
 mainTest.describe(() => {
   mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 20000);
-    const mainPage = new MainPage(page);
     browserName === 'webkit' ? await mainPage.waitForViewportVisible() : null;
     await mainPage.createDefaultTextLayer(browserName);
   });
 
-  mainTest(qase(377, 'CO-162 Create a text from toolbar'), async ({ page }) => {
-    const mainPage = new MainPage(page);
+  mainTest(qase(377, 'CO-162 Create a text from toolbar'), async () => {
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
   });
 
-  mainTest(qase(380, 'CO-165 Add rotation to text'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  mainTest(qase(380, 'CO-165 Add rotation to text'), async () => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-90.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('text-rotated-90.png');
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-120.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('text-rotated-120.png');
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-45.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('text-rotated-45.png');
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-359.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('text-rotated-359.png');
   });
 
   mainTest(
     qase(381, 'CO-166 Add, hide, unhide, change type and delete Shadow to Text'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const designPanelPage = new DesignPanelPage(page);
+    async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -123,10 +119,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(382, 'CO-167 Add and edit Shadow to text'),
-    async ({ page, browserName }) => {
-      const mainPage = new MainPage(page);
-      const colorPalettePage = new ColorPalettePage(page);
-      const designPanelPage = new DesignPanelPage(page);
+    async ({ browserName }) => {
       await designPanelPage.clickAddShadowButton();
       await designPanelPage.clickShadowActionsButton();
       await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
@@ -152,10 +145,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(384, 'CO-169 Add, hide, unhide and delete Blur to text'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const colorPalettePage = new ColorPalettePage(page);
-      const designPanelPage = new DesignPanelPage(page);
+    async () => {
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#304d6a');
       await mainPage.waitForChangeIsSaved();
@@ -182,9 +172,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(385, 'CO-170 Add and edit Blur to text'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  mainTest(qase(385, 'CO-170 Add and edit Blur to text'), async () => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
     await mainPage.waitForChangeIsSaved();
@@ -193,115 +181,89 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(
-    qase(386, 'CO-171 Add, edit and delete Stroke to Text'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await designPanelPage.clickAddStrokeButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-stroke-default.png', {
+  mainTest(qase(386, 'CO-171 Add, edit and delete Stroke to Text'), async () => {
+    await designPanelPage.clickAddStrokeButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-stroke-default.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await mainPage.clickOnLayerOnCanvas();
+    await designPanelPage.changeStrokeSettings('#43E50B', '60', '10', 'Inside');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'text-stroke-inside-dotted.png',
+      {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await mainPage.clickOnLayerOnCanvas();
-      await designPanelPage.changeStrokeSettings('#43E50B', '60', '10', 'Inside');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'text-stroke-inside-dotted.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await designPanelPage.changeStrokeSettings('#F5358F', '80', '5', 'Outside');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'text-stroke-outside-dashed.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await designPanelPage.changeStrokeSettings('#F5358F', '100', '3', 'Center');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'text-stroke-center-solid.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await designPanelPage.changeStrokeSettings('#F5358F', '40', '4', 'Center');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'text-stroke-center-mixed.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-      await mainPage.clickOnLayerOnCanvas();
-      await designPanelPage.removeStroke();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-stroke-remove.png', {
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await designPanelPage.changeStrokeSettings('#F5358F', '80', '5', 'Outside');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'text-stroke-outside-dashed.png',
+      {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    },
-  );
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await designPanelPage.changeStrokeSettings('#F5358F', '100', '3', 'Center');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'text-stroke-center-solid.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await designPanelPage.changeStrokeSettings('#F5358F', '40', '4', 'Center');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'text-stroke-center-mixed.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
+    );
+    await mainPage.clickOnLayerOnCanvas();
+    await designPanelPage.removeStroke();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-stroke-remove.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+  });
 
-  mainTest(qase(388, 'CO-173-1 Delete text via rightclick'), async ({ page }) => {
-    const mainPage = new MainPage(page);
+  mainTest(qase(388, 'CO-173-1 Delete text via rightclick'), async () => {
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await mainPage.isCreatedLayerVisible(false);
   });
 
-  mainTest(qase(388, 'CO-173-2 Delete text via shortcut Del'), async ({ page }) => {
-    const mainPage = new MainPage(page);
+  mainTest(qase(388, 'CO-173-2 Delete text via shortcut Del'), async () => {
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await mainPage.isCreatedLayerVisible(false);
   });
 
-  mainTest(qase(392, 'CO-177 Rename text with valid name'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
+  mainTest(qase(392, 'CO-177 Rename text with valid name'), async () => {
     await layersPanelPage.doubleClickLayerOnLayersTab('Hello World!');
     await layersPanelPage.typeNameCreatedLayerAndEnter('renamed text');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerNameDisplayed('renamed text');
   });
 
-  mainTest(
-    qase(424, 'CO-209 Change text uppercase, lowercase'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await designPanelPage.changeTextCase('Upper');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-upper-case.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.changeTextCase('Title');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-title-case.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.changeTextCase('Lower');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-lower-case.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    },
-  );
+  mainTest(qase(424, 'CO-209 Change text uppercase, lowercase'), async () => {
+    await designPanelPage.changeTextCase('Upper');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.createdLayer).toHaveScreenshot('text-upper-case.png');
+    await designPanelPage.changeTextCase('Title');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.createdLayer).toHaveScreenshot('text-title-case.png');
+    await designPanelPage.changeTextCase('Lower');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.createdLayer).toHaveScreenshot('text-lower-case.png');
+  });
 
-  mainTest(qase(425, 'CO-210 Change alignment'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  mainTest(qase(425, 'CO-210 Change alignment'), async () => {
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await designPanelPage.changeTextAlignment('Middle');
     await mainPage.waitForChangeIsUnsaved();
@@ -323,9 +285,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(427, 'CO-212 Change RTL/LTR'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  mainTest(qase(427, 'CO-212 Change RTL/LTR'), async () => {
     await designPanelPage.changeTextDirection('RTL');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-rtl.png', {
@@ -345,11 +305,7 @@ mainTest.describe(() => {
       431,
       'CO-216 Change text color and opacity by typing color code, PENPOT-1753 Check text color in inspect mode',
     ),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const colorPalettePage = new ColorPalettePage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      const inspectPanelPage = new InspectPanelPage(page);
+    async () => {
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#304d6a');
       await designPanelPage.changeOpacityForFill('50');
@@ -368,8 +324,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(434, 'CO-219 Selection to board'), async ({ page }) => {
-    const mainPage = new MainPage(page);
+  mainTest(qase(434, 'CO-219 Selection to board'), async () => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-to-board.png', {

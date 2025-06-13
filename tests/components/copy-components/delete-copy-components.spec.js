@@ -43,20 +43,14 @@ mainTest(
     await mainPage.pressDeleteKeyboardButton();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'rectangle-copy-component-delete.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
     await mainPage.clickShortcutCtrlZ(browserName);
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'rectangle-copy-component-delete-undo.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
   },
 );

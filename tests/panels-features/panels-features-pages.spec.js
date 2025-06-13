@@ -13,10 +13,22 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
+let mainPage,
+  teamPage,
+  dashboardPage,
+  basePage,
+  layersPanelPage,
+  assetsPanelPage,
+  designPanelPage;
+
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  basePage = new BasePage(page);
+  layersPanelPage = new LayersPanelPage(page);
+  assetsPanelPage = new AssetsPanelPage(page);
+  designPanelPage = new DesignPanelPage(page);
+  mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -24,15 +36,12 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(832, 'PF-114 Create new page'), async ({ page }) => {
-  const mainPage = new MainPage(page);
+mainTest(qase(832, 'PF-114 Create new page'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
@@ -41,8 +50,7 @@ mainTest(qase(832, 'PF-114 Create new page'), async ({ page }) => {
   await expect(mainPage.pagesBlock).toHaveScreenshot('page-1-and-page-2.png');
 });
 
-mainTest(qase(833, 'PF-115 Rename page'), async ({ page }) => {
-  const mainPage = new MainPage(page);
+mainTest(qase(833, 'PF-115 Rename page'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
@@ -54,8 +62,7 @@ mainTest(qase(833, 'PF-115 Rename page'), async ({ page }) => {
   await mainPage.isSecondPageNameDisplayed('NewSecondPage');
 });
 
-mainTest(qase(834, 'PF-116 Duplicate page'), async ({ page }) => {
-  const mainPage = new MainPage(page);
+mainTest(qase(834, 'PF-116 Duplicate page'), async () => {
   await mainPage.duplicatePageViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('Page 1');
@@ -63,7 +70,6 @@ mainTest(qase(834, 'PF-116 Duplicate page'), async ({ page }) => {
 });
 
 mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
-  const mainPage = new MainPage(page);
   await mainPage.clickAddPageButton();
   await mainPage.clickOnPageOnLayersPanel(false);
   await mainPage.clickMoveButton();
@@ -91,8 +97,7 @@ mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
   });
 });
 
-mainTest(qase(836, 'PF-118 Collapse/expand pages list'), async ({ page }) => {
-  const mainPage = new MainPage(page);
+mainTest(qase(836, 'PF-118 Collapse/expand pages list'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCollapseExpandPagesButton();
@@ -107,8 +112,7 @@ mainTest(qase(836, 'PF-118 Collapse/expand pages list'), async ({ page }) => {
   await mainPage.isSecondPageNameDisplayed('Page 2');
 });
 
-mainTest(qase(837, 'PF-119 Delete page'), async ({ page }) => {
-  const mainPage = new MainPage(page);
+mainTest(qase(837, 'PF-119 Delete page'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddPageButton();
@@ -125,10 +129,7 @@ mainTest(qase(837, 'PF-119 Delete page'), async ({ page }) => {
 
 mainTest(
   'PENPOT-1519 Copy and paste components from Page 1 to Page 2, on Page 2 right-click component and select "Show main component"',
-  async ({ page, browserName }) => {
-    const mainPage = new MainPage(page);
-    const basePage = new BasePage(page);
-    const layersPanelPage = new LayersPanelPage(page);
+  async ({ browserName }) => {
     await mainPage.createDefaultRectangleByCoordinates(300, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -154,12 +155,7 @@ mainTest(
     1526,
     'PENPOT-1526 Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Reset overrides"',
   ),
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const basePage = new BasePage(page);
-    const layersPanelPage = new LayersPanelPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  async () => {
     await mainPage.createDefaultRectangleByCoordinates(300, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -175,11 +171,8 @@ mainTest(
     await designPanelPage.changeHeightAndWidthForLayer('100', '150');
     await basePage.resetOverridesViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'page-copies-component-reset-overrides.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
   },
 );
@@ -189,11 +182,7 @@ mainTest(
     1527,
     'PENPOT-1527 Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Update main component"',
   ),
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -214,11 +203,8 @@ mainTest(
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnPageOnLayersPanel(true);
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'page-copies-component-update-main.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
   },
 );

@@ -85,11 +85,8 @@ mainTest(
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'rectangle-main-component-canvas.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
   },
@@ -103,11 +100,8 @@ mainTest(
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'ellipse-main-component-canvas.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
   },
@@ -121,11 +115,8 @@ mainTest(
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'board-main-component-canvas.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
   },
@@ -171,11 +162,8 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'image-main-component-canvas.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('sample');
     await assetsPanelPage.clickAssetsTab();
@@ -200,11 +188,8 @@ mainTest(
     await mainPage.createDefaultClosedPath();
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'path-main-component-canvas.png',
-      {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
     await assetsPanelPage.clickAssetsTab();
@@ -255,15 +240,12 @@ mainTest(qase(1291, 'Undo component'), async ({ page, browserName }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickOnLayerOnCanvas();
   await designPanelPage.changeRotationForLayer('200');
-  await expect(mainPage.viewport).toHaveScreenshot('component-change_rotation.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-  });
+  await expect(mainPage.createdLayer).toHaveScreenshot(
+    'component-change_rotation.png',
+  );
   await mainPage.clickShortcutCtrlZ(browserName);
-  await expect(mainPage.viewport).toHaveScreenshot(
+  await expect(mainPage.createdLayer).toHaveScreenshot(
     'component-change_rotation_undo.png',
-    {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    },
   );
 });
 

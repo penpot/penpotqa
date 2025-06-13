@@ -833,20 +833,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async fillOnboardingQuestions() {
-    await this.isOnboardingFirstQuestionsVisible();
-    await this.selectRadioButton('Work');
-    await this.selectDropdownOptions('Testing before self-hosting');
-    await this.clickOnNextButton();
-    await this.selectFigmaTool();
-    await this.clickOnNextButton();
-    await this.selectKindOfWork('Development');
-    await this.selectRole('Team member');
-    await this.selectTeamSize('11-30');
-    await this.clickOnNextButton();
-    await this.selectGetStartedQuestion('Prototyping');
-    await this.clickOnNextButton();
-    await this.selectRadioButton('YouTube');
-    await this.clickOnStartButton();
+    await this.fillOnboardingFirstQuestions();
     await this.clickOnOnboardingContinueBtn();
     await this.clickOnOnboardingContinueWithoutTeamButton();
     await this.skipWhatNewsPopUp();
@@ -856,17 +843,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async fillOnboardingFirstQuestions() {
     await this.isOnboardingFirstQuestionsVisible();
     await this.selectRadioButton('Work');
-    await this.selectDropdownOptions('Testing before self-hosting');
+    await this.selectKindOfWork('Development');
     await this.clickOnNextButton();
     await this.selectFigmaTool();
     await this.clickOnNextButton();
-    await this.selectKindOfWork('Development');
-    await this.selectRole('Team member');
+    await this.selectDropdownOptions('Testing before self-hosting');
     await this.selectTeamSize('11-30');
     await this.clickOnNextButton();
     await this.selectGetStartedQuestion('Prototyping');
-    await this.clickOnNextButton();
-    await this.selectRadioButton('YouTube');
     await this.clickOnStartButton();
   }
 
@@ -888,8 +872,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async selectDropdownOptions(option) {
-    await this.planingToUsingDropdown.click();
-    const optionSelector = await this.page.locator(`li span:has-text("${option}")`);
+    await this.planingToUsingDropdown.first().click();
+    const optionSelector = await this.page
+      .locator(`li span:has-text("${option}")`)
+      .first();
     await optionSelector.click();
   }
 

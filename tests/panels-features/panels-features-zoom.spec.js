@@ -1,18 +1,20 @@
 const { mainTest } = require('../../fixtures');
-const { MainPage } = require('../../pages/workspace/main-page');
 const { expect, test } = require('@playwright/test');
-const { random } = require('../../helpers/string-generator');
+const { MainPage } = require('../../pages/workspace/main-page');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
+const { random } = require('../../helpers/string-generator');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
+let teamPage, dashboardPage, mainPage;
+
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -21,15 +23,12 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest(qase(850, 'PF-132 Zoom via top right menu'), async ({ page }) => {
-  const mainPage = new MainPage(page);
   await mainPage.increaseZoom(1);
   await mainPage.clickViewportOnce();
   await expect(page).toHaveScreenshot('canvas-zoom-in.png', {
@@ -53,7 +52,6 @@ mainTest(qase(850, 'PF-132 Zoom via top right menu'), async ({ page }) => {
 });
 
 mainTest(qase(852, 'PF-134 Reset zoom via top right menu'), async ({ page }) => {
-  const mainPage = new MainPage(page);
   await mainPage.increaseZoom(1);
   await mainPage.clickViewportOnce();
   await expect(page).toHaveScreenshot('canvas-zoom-in.png', {
@@ -78,7 +76,6 @@ mainTest(qase(852, 'PF-134 Reset zoom via top right menu'), async ({ page }) => 
 mainTest(
   qase(854, 'PF-136 Zoom to fit all via top right menu'),
   async ({ page }) => {
-    const mainPage = new MainPage(page);
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -99,17 +96,13 @@ mainTest(
   },
 );
 
-mainTest(
-  qase(856, 'PF-138 Zoom to selected via top right menu'),
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
-    await mainPage.clickCreateBoardButton();
-    await mainPage.clickViewportByCoordinates(900, 100);
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.zoomToFitSelected();
-    await mainPage.clickViewportTwice();
-    await expect(mainPage.viewport).toHaveScreenshot('canvas-zoom-to-selected.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  },
-);
+mainTest(qase(856, 'PF-138 Zoom to selected via top right menu'), async () => {
+  await mainPage.clickCreateBoardButton();
+  await mainPage.clickViewportByCoordinates(900, 100);
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.zoomToFitSelected();
+  await mainPage.clickViewportTwice();
+  await expect(mainPage.viewport).toHaveScreenshot('canvas-zoom-to-selected.png', {
+    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+  });
+});

@@ -11,10 +11,13 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
+let teamPage, dashboardPage, mainPage, layersPanelPage;
+
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -22,19 +25,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
-  // All tests in this describe group will get 2 retry attempts.
-  mainTest.describe.configure({ retries: 2 });
-
-  mainTest(qase(483, 'CO-268 Create curve line from toolbar'), async ({ page }) => {
-    const mainPage = new MainPage(page);
+  mainTest(qase(483, 'CO-268 Create curve line from toolbar'), async () => {
     await mainPage.clickCreateCurveButton();
     await mainPage.drawCurve(900, 300, 600, 200);
     await mainPage.waitForChangeIsSaved();
@@ -46,9 +43,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(485, 'CO-270 Rename path, that was created with curve with valid name'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const layersPanelPage = new LayersPanelPage(page);
+    async () => {
       await mainPage.clickCreateCurveButton();
       await mainPage.drawCurve(900, 300, 600, 200);
       await mainPage.waitForChangeIsSaved();

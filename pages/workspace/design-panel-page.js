@@ -66,7 +66,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         'div[class*="fill__element-content"] div[class*="opacity-element-wrapper"] input',
       )
       .last();
-    this.addFillButton = page.getByRole('button', { name: 'Add fill color' });
+    this.addFillButton = page.getByTestId('add-fill');
     this.removeFillButton = page
       .locator('div[class*="fill__element-content"]')
       .getByRole('button', { name: 'Remove color' });

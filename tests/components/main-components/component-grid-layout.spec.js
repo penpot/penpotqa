@@ -68,11 +68,8 @@ mainTest.describe(() => {
     async ({}) => {
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'empty-board-component-with-grid-layout.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
       );
     },
   );
@@ -163,26 +160,15 @@ mainTest.describe(() => {
       );
       await mainPage.clickViewportOnce();
       await mainPage.clickShortcutCtrlZ(browserName);
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'board-component-undo-color.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
       );
       await layersPanelPage.deleteMainComponentViaRightClick();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-component-deleted.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
+      await mainPage.isCreatedLayerVisible(false);
       await mainPage.clickShortcutCtrlZ(browserName);
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'board-component-restored.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
       );
     },
   );
@@ -212,11 +198,8 @@ mainTest.describe(() => {
       await assetsPanelPage.clickLibraryComponentsTitle();
       await assetsPanelPage.dragAndDropComponentToViewport('Board');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'board-from-library-file.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
       );
 
       const popupPromise = page.waitForEvent('popup');
@@ -271,11 +254,8 @@ mainTest.describe(() => {
       await mainPage.copyLayerViaRightClick();
       await mainPage.pressPasteShortcut(browserName);
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'board-component-with-grid-layout-copy-paste.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'copy-paste-layer.png',
@@ -289,11 +269,8 @@ mainTest.describe(() => {
       'PENPOT-1719 Create a component from grid board with some element inside',
     ),
     async ({}) => {
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'board-component-with-grid-layout-with-rectangle.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
       );
     },
   );

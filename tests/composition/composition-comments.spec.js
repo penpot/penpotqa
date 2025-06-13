@@ -243,13 +243,11 @@ mainTest.describe(() => {
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstViewer);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstViewer,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(teamName);
 
@@ -320,13 +318,11 @@ mainTest.describe(() => {
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstEditor);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstEditor,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(teamName);
 
@@ -382,13 +378,11 @@ mainTest.describe(() => {
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
     await page.goto(firstInvite.inviteUrl);
-    await registerPage.isRegisterPageOpened();
-    await registerPage.enterEmail(firstEmail);
-    await registerPage.enterPassword(process.env.LOGIN_PWD);
-    await registerPage.clickOnCreateAccountBtn();
-    await registerPage.enterFullName(firstEditor);
-    await registerPage.clickOnAcceptTermsCheckbox();
-    await registerPage.clickOnCreateAccountSecondBtn();
+    await registerPage.registerAccount(
+      firstEditor,
+      firstEmail,
+      process.env.LOGIN_PWD,
+    );
     await dashboardPage.fillOnboardingQuestions();
     await teamPage.isTeamSelected(teamName);
 
