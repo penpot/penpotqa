@@ -55,7 +55,7 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     });
 
     this.tokenNameInput = page.locator('#token-name');
-    this.tokenValueInput = page.locator('#token-value');
+    this.tokenValueInput = page.locator('div[class*="input_tokens_value"] input');
     this.tokenDescriptionInput = page.locator('#token-description');
 
     this.editTokenMenuItem = page

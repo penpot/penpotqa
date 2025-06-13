@@ -308,20 +308,14 @@ mainTest.describe(() => {
 
       await dashboardPage.openFileWithName('New File 2');
       await assetsPanelPage.clickAssetsTab();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'unpublich-shared-library-component-file2.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'unpublish-shared-library-component-file2.png',
       );
       await mainPage.clickPencilBoxButton();
       await dashboardPage.openFileWithName('New File 3');
       await assetsPanelPage.clickAssetsTab();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'unpublich-shared-library-component-file3.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'unpublish-shared-library-component-file3.png',
       );
     },
   );

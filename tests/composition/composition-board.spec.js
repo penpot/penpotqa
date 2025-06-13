@@ -341,33 +341,25 @@ mainTest.describe(() => {
   mainTest(qase(243, 'CO-28 Add rotation to board'), async () => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-rotated-90.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('board-rotated-90.png');
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-rotated-120.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('board-rotated-120.png');
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-rotated-45.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('board-rotated-45.png');
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-rotated-359.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('board-rotated-359.png');
   });
 
   mainTest(qase(244, 'CO-29 Change border radius multiple values'), async () => {
     await designPanelPage.clickIndividualCornersRadiusButton();
     await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-changed-corners.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot(
+      'board-changed-corners.png',
+    );
     await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board.png', {

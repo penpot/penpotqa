@@ -271,7 +271,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       `div[class*="element-list-body"] span[class*="element-name"]:text-is("Board") >>nth=0`,
     );
     await component.hover();
-    await component.dragTo(board);
+    await component.dragTo(board, {
+      sourcePosition: { x: 10, y: 10 },
+      targetPosition: { x: 10, y: 10 },
+    });
   }
 
   async dragAndDropElementToElement(name, dragToName) {
@@ -282,7 +285,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       `div[class*="element-list-body"] span[class*="element-name"]:text-is("${dragToName}") >>nth=0`,
     );
     await component.hover();
-    await component.dragTo(board);
+    await component.dragTo(board, {
+      sourcePosition: { x: 10, y: 10 },
+      targetPosition: { x: 10, y: 10 },
+    });
   }
 
   async deleteMainComponentViaRightClick() {

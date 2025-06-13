@@ -128,14 +128,7 @@ test.describe(() => {
     await loginPage.goto();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();
-    await registerPage.isRegisterPageOpened();
-    await registerPage.enterEmail(email);
-    await registerPage.enterPassword(process.env.LOGIN_PWD);
-    await registerPage.clickOnCreateAccountBtn();
-
-    await registerPage.enterFullName(randomName);
-    await registerPage.clickOnAcceptTermsCheckbox();
-    await registerPage.clickOnCreateAccountSecondBtn();
+    await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
     await registerPage.isRegisterEmailCorrect(email);
     invite = await waitMessage(page, email, 40);
   });

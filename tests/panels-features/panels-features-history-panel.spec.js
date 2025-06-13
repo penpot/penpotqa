@@ -29,6 +29,7 @@ test.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
   historyPage = new HistoryPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -75,8 +76,7 @@ mainTest(qase(1931, 'Open history version panel (via main menu)'), async () => {
 mainTest.describe(() => {
   const versionName = 'test version';
 
-  mainTest.beforeEach(async ({ page }) => {
-    historyPage = new HistoryPanelPage(page);
+  mainTest.beforeEach(async () => {
     await historyPage.createDefaultRectangleByCoordinates(200, 200);
     await historyPage.waitForChangeIsSaved();
     await historyPage.clickHistoryPanelButton();
@@ -84,13 +84,13 @@ mainTest.describe(() => {
     await historyPage.renameVersion(versionName);
   });
 
-  mainTest(qase(1929, 'Save version via history panel'), async ({ page }) => {
+  mainTest(qase(1929, 'Save version via history panel'), async () => {
     await historyPage.checkVersionName(versionName);
   });
 
   mainTest(
     qase(1945, 'Check scrolling in the version list (more than 14 versions)'),
-    async ({ page }) => {
+    async () => {
       await historyPage.multipleSaveDefaultVersions(14);
       await historyPage.checkFirstVersionName(versionName);
     },
@@ -98,8 +98,7 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }) => {
-    historyPage = new HistoryPanelPage(page);
+  mainTest.beforeEach(async () => {
     await historyPage.createDefaultRectangleByCoordinates(200, 200);
     await historyPage.waitForChangeIsSaved();
     await historyPage.clickHistoryPanelButton();
@@ -108,8 +107,7 @@ mainTest.describe(() => {
   });
 
   mainTest.describe(() => {
-    mainTest.beforeEach(async ({ page }) => {
-      layersPanelPage = new LayersPanelPage(page);
+    mainTest.beforeEach(async () => {
       await layersPanelPage.selectLayerByName('Rectangle');
       await historyPage.pressDeleteKeyboardButton();
       await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
@@ -118,7 +116,7 @@ mainTest.describe(() => {
     });
 
     mainTest.describe(() => {
-      mainTest.beforeEach(async ({ page }) => {
+      mainTest.beforeEach(async () => {
         await historyPage.clickRestoreVersionButton();
         await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
         await historyPage.isHistoryPanelVisible(false);
@@ -169,16 +167,14 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1934, 'Rename version via history panel'), async ({ page }) => {
+  mainTest(qase(1934, 'Rename version via history panel'), async () => {
     const versionName = 'renamed version';
-    historyPage = new HistoryPanelPage(page);
     await historyPage.selectVersionOption('Rename');
     await historyPage.renameVersion(versionName);
     await historyPage.checkVersionName(versionName);
   });
 
-  mainTest(qase(1935, 'Delete version via history panel'), async ({ page }) => {
-    historyPage = new HistoryPanelPage(page);
+  mainTest(qase(1935, 'Delete version via history panel'), async () => {
     await historyPage.selectVersionOption('Delete');
     await historyPage.isVersionListEmpty();
   });
@@ -215,7 +211,7 @@ mainTest.describe(() => {
       "Verification of displaying other users' versions in the version list" +
         'Setting "My Versions/ All Versions" filters in the version list',
     ),
-    async ({ page }, testInfo) => {
+    async ({ page }) => {
       const versionName = 'test version';
       await test.slow();
       const firstAdmin = random().concat('autotest');
@@ -250,13 +246,11 @@ mainTest.describe(() => {
       await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
-      await registerPage.isRegisterPageOpened();
-      await registerPage.enterEmail(firstEmail);
-      await registerPage.enterPassword(process.env.LOGIN_PWD);
-      await registerPage.clickOnCreateAccountBtn();
-      await registerPage.enterFullName(firstAdmin);
-      await registerPage.clickOnAcceptTermsCheckbox();
-      await registerPage.clickOnCreateAccountSecondBtn();
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(teamName);
 

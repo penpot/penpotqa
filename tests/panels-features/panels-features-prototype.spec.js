@@ -11,10 +11,14 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
+let mainPage, teamPage, dashboardPage, prototypePanelPage, layersPanelPage;
+
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  prototypePanelPage = new PrototypePanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -23,17 +27,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const prototypePanelPage = new PrototypePanelPage(page);
+  mainTest.beforeEach(async () => {
     await mainPage.createDefaultBoardByCoordinates(900, 100);
     await mainPage.createDefaultBoardByCoordinates(500, 200, true);
     await prototypePanelPage.clickPrototypeTab();
@@ -44,8 +44,6 @@ mainTest.describe(() => {
   mainTest(
     qase(857, 'PF-139 Add connector between 2 boards via mouse drag'),
     async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const prototypePanelPage = new PrototypePanelPage(page);
       await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('Flow 1');
       await expect(page).toHaveScreenshot(
         'connector-between-board2-and-board1.png',
@@ -64,8 +62,6 @@ mainTest.describe(() => {
   mainTest(
     qase(861, 'PF-143 Add Interaction via Prototype panel'),
     async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const prototypePanelPage = new PrototypePanelPage(page);
       await prototypePanelPage.clickAddInteractionButton();
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
@@ -84,8 +80,6 @@ mainTest.describe(() => {
   mainTest(
     qase(862, 'PF-144 Remove Interaction via Prototype panel'),
     async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const prototypePanelPage = new PrototypePanelPage(page);
       await prototypePanelPage.clickAddInteractionButton();
       await mainPage.waitForChangeIsSaved();
       await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
@@ -108,8 +102,6 @@ mainTest.describe(() => {
   );
 
   mainTest(qase(870, 'PF-152 Add 2nd Flow'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const prototypePanelPage = new PrototypePanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(200, 600);
     await mainPage.clickViewportByCoordinates(200, 600);
     await prototypePanelPage.dragAndDropPrototypeArrowConnector(900, 100);
@@ -127,8 +119,6 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(872, 'PF-154 Rename flow'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const prototypePanelPage = new PrototypePanelPage(page);
     await prototypePanelPage.renameFlow('qa');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
@@ -144,8 +134,6 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(873, 'PF-155 Delete flow'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const prototypePanelPage = new PrototypePanelPage(page);
     await prototypePanelPage.clickRemoveFlowButton();
     await mainPage.waitForChangeIsSaved();
     await prototypePanelPage.isFlowNameNotDisplayedOnPrototypePanel();
@@ -163,9 +151,6 @@ mainTest.describe(() => {
 mainTest(
   qase(865, 'PF-147 Change destination via Prototype panel'),
   async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const prototypePanelPage = new PrototypePanelPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
     await mainPage.createDefaultBoardByCoordinates(900, 100);
     await layersPanelPage.doubleClickLayerOnLayersTab('Board');
     await layersPanelPage.typeNameCreatedLayerAndEnter('Board #1');

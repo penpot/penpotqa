@@ -12,10 +12,20 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
+let mainPage,
+  colorPalettePage,
+  teamPage,
+  dashboardPage,
+  designPanelPage,
+  assetsPanelPage;
+
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  colorPalettePage = new ColorPalettePage(page);
+  designPanelPage = new DesignPanelPage(page);
+  assetsPanelPage = new AssetsPanelPage(page);
+  mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -24,8 +34,6 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
@@ -33,9 +41,7 @@ test.afterEach(async ({ page }, testInfo) => {
 
 mainTest(
   qase(817, "PF-99 Hide/show grids via shortcut CTRL '"),
-  async ({ page, browserName }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  async ({ browserName }) => {
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -53,8 +59,7 @@ mainTest(
   },
 );
 
-mainTest(qase(816, 'PF-98-1 Hide/show rulers via main menu'), async ({ page }) => {
-  const mainPage = new MainPage(page);
+mainTest(qase(816, 'PF-98-1 Hide/show rulers via main menu'), async () => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickHideRulersMainMenuSubItem();
@@ -73,8 +78,7 @@ mainTest(qase(816, 'PF-98-1 Hide/show rulers via main menu'), async ({ page }) =
 
 mainTest(
   qase(816, 'PF-98-2 Hide/show rulers via shortcut CTRL SHIFT R'),
-  async ({ page, browserName }) => {
-    const mainPage = new MainPage(page);
+  async ({ browserName }) => {
     await mainPage.clickViewportTwice();
     await mainPage.pressHideShowRulersShortcut(browserName);
     await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
@@ -89,10 +93,7 @@ mainTest(
 
 mainTest(
   qase(819, 'PF-101 Hide/show color palette - file library check'),
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const colorPalettePage = new ColorPalettePage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
+  async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickAddFileLibraryColorButton();
     await colorPalettePage.setHex('#ffff00');
@@ -116,8 +117,7 @@ mainTest(
   },
 );
 
-mainTest(qase(820, 'PF-102 Hide/show board names'), async ({ page }) => {
-  const mainPage = new MainPage(page);
+mainTest(qase(820, 'PF-102 Hide/show board names'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -136,34 +136,29 @@ mainTest(qase(820, 'PF-102 Hide/show board names'), async ({ page }) => {
   });
 });
 
-mainTest(
-  qase(821, 'PF-103-1 Hide/show pixel grid via main menu'),
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
-    await mainPage.clickViewportTwice();
-    await mainPage.increaseZoom(10);
-    await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickViewMainMenuItem();
-    await mainPage.clickHidePixelGridMainMenuSubItem();
-    await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-pixel-grid.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickViewMainMenuItem();
-    await mainPage.clickShowPixelGridMainMenuSubItem();
-    await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  },
-);
+mainTest(qase(821, 'PF-103-1 Hide/show pixel grid via main menu'), async () => {
+  await mainPage.clickViewportTwice();
+  await mainPage.increaseZoom(10);
+  await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
+    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+  });
+  await mainPage.clickMainMenuButton();
+  await mainPage.clickViewMainMenuItem();
+  await mainPage.clickHidePixelGridMainMenuSubItem();
+  await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-pixel-grid.png', {
+    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+  });
+  await mainPage.clickMainMenuButton();
+  await mainPage.clickViewMainMenuItem();
+  await mainPage.clickShowPixelGridMainMenuSubItem();
+  await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
+    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+  });
+});
 
 mainTest(
   qase(821, 'PF-103-2 Hide/show pixel grid via shortcut SHIFT ,'),
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
+  async () => {
     await mainPage.clickViewportTwice();
     await mainPage.increaseZoom(10);
     await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
@@ -182,8 +177,7 @@ mainTest(
 
 mainTest(
   qase(822, 'PF-104 Hide/show UI via main menu and shortcut "/"'),
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
+  async () => {
     await expect(mainPage.viewport).toHaveScreenshot('canvas-show-ui.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
@@ -202,8 +196,7 @@ mainTest(
 
 mainTest(
   qase(827, 'PF-109 Select all via main menu and shortcut CTRL A'),
-  async ({ page, browserName }) => {
-    const mainPage = new MainPage(page);
+  async ({ browserName }) => {
     await mainPage.createDefaultRectangleByCoordinates(250, 350);
     await mainPage.createDefaultEllipseByCoordinates(100, 600);
     await mainPage.clickViewportTwice();
@@ -227,16 +220,13 @@ mainTest(
   },
 );
 
-mainTest(qase(1911, 'Download Penpot file (.penpot)'), async ({ page }) => {
-  const mainPage = new MainPage(page);
+mainTest(qase(1911, 'Download Penpot file (.penpot)'), async () => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();
   await mainPage.downloadPenpotFileViaMenu();
 });
 
-mainTest(qase(831, 'PF-113 Add/Remove as shared library'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const assetsPanelPage = new AssetsPanelPage(page);
+mainTest(qase(831, 'PF-113 Add/Remove as shared library'), async () => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();
   await mainPage.clickAddAsSharedLibraryMainMenuSubItem();

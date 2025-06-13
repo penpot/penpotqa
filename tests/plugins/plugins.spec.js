@@ -9,10 +9,12 @@ const { updateTestResults } = require('../../helpers/saveTestResults');
 
 const teamName = random().concat('autotest');
 
+let pluginsPage, teamPage, dashboardPage;
+
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const pluginsPage = new PluginsPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  pluginsPage = new PluginsPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -20,8 +22,6 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const pluginsPage = new PluginsPage(page);
   await pluginsPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
@@ -31,9 +31,7 @@ mainTest.slow();
 
 mainTest(
   qase([1837, 1838, 1839, 1842, 1844], 'Install, open and delete a plugin'),
-  async ({ page }) => {
-    const pluginsPage = new PluginsPage(page);
-
+  async () => {
     // 1837, Install a plugin by URL (via plugin icon in toolbar)
     await pluginsPage.clickPluginsButton();
     await expect(pluginsPage.pluginPanel).toBeVisible();

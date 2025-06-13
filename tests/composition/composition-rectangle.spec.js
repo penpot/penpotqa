@@ -1,21 +1,21 @@
 const { mainTest } = require('../../fixtures');
-const { MainPage } = require('../../pages/workspace/main-page');
-const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
+const { updateTestResults } = require('./../../helpers/saveTestResults.js');
+const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { MainPage } = require('../../pages/workspace/main-page');
+const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
-const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
 test.beforeEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
+  const dashboardPage = new DashboardPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -301,9 +301,7 @@ mainTest.describe(() => {
       await mainPage.isCreatedLayerVisible();
       await mainPage.deleteLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
+      await mainPage.isCreatedLayerVisible(false);
     },
   );
 
@@ -314,9 +312,7 @@ mainTest.describe(() => {
       await mainPage.isCreatedLayerVisible();
       await mainPage.deleteLayerViaShortcut();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
+      await mainPage.isCreatedLayerVisible(false);
     },
   );
 
@@ -325,24 +321,20 @@ mainTest.describe(() => {
     const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-90.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('rectangle-rotated-90.png');
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-120.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot(
+      'rectangle-rotated-120.png',
+    );
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-45.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot('rectangle-rotated-45.png');
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-359.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
+    await expect(mainPage.createdLayer).toHaveScreenshot(
+      'rectangle-rotated-359.png',
+    );
   });
 
   mainTest(
@@ -353,11 +345,8 @@ mainTest.describe(() => {
       await designPanelPage.clickIndividualCornersRadiusButton();
       await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
+      await expect(mainPage.createdLayer).toHaveScreenshot(
         'rectangle-changed-corners.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
       );
       await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
       await mainPage.waitForChangeIsSaved();
