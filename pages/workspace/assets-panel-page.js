@@ -230,6 +230,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async clickAddFileLibraryTypographyButton() {
     await this.addFileLibraryTypographyButton.click();
+    await this.viewport.hover();
   }
 
   async minimizeFileLibraryTypography() {

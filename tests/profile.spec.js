@@ -145,7 +145,6 @@ test.describe(() => {
     await profilePage.changeEmail(newEmail);
     await waitSecondMessage(page, email, 40);
     const changeEmail = await getRegisterMessage(email);
-    console.log(changeEmail.inviteUrl);
     await checkNewEmailText(changeEmail.inviteText, randomName, newEmail);
     await page.goto(changeEmail.inviteUrl);
     await profilePage.logout();

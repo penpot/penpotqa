@@ -12,10 +12,20 @@ const { qase } = require('playwright-qase-reporter/dist/playwright');
 
 const teamName = random().concat('autotest');
 
+let mainPage,
+  colorPalettePage,
+  teamPage,
+  dashboardPage,
+  designPanelPage,
+  assetsPanelPage;
+
 test.beforeEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  assetsPanelPage = new AssetsPanelPage(page);
+  designPanelPage = new DesignPanelPage(page);
+  colorPalettePage = new ColorPalettePage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -24,26 +34,18 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(1029, 'CP-1 Open color picker from Stroke menu'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const colorPalettePage = new ColorPalettePage(page);
-  const designPanelPage = new DesignPanelPage(page);
+mainTest(qase(1029, 'CP-1 Open color picker from Stroke menu'), async () => {
   await mainPage.createDefaultClosedPath();
   await designPanelPage.clickStrokeColorBullet();
   await colorPalettePage.isColorPalettePopUpOpened();
 });
 
-mainTest(qase(1030, 'CP-2 Open color picker from Fill menu'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const designPanelPage = new DesignPanelPage(page);
-  const colorPalettePage = new ColorPalettePage(page);
+mainTest(qase(1030, 'CP-2 Open color picker from Fill menu'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -53,20 +55,16 @@ mainTest(qase(1030, 'CP-2 Open color picker from Fill menu'), async ({ page }) =
 
 mainTest(
   qase(1031, 'CP-3 Open color picker from Canvas background menu'),
-  async ({ page }) => {
-    const designPanelPage = new DesignPanelPage(page);
-    const colorPalettePage = new ColorPalettePage(page);
+  async () => {
     await designPanelPage.clickCanvasBackgroundColorIcon();
     await colorPalettePage.isColorPalettePopUpOpened();
   },
 );
 
-mainTest(qase(1035, 'CP-7 Use Recent colors'), async ({ page }) => {
+mainTest(qase(1035, 'CP-7 Use Recent colors'), async () => {
   const color1 = '#FF0000';
   const color2 = '#B1B2B5';
-  const mainPage = new MainPage(page);
-  const colorPalettePage = new ColorPalettePage(page);
-  const designPanelPage = new DesignPanelPage(page);
+
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -85,11 +83,7 @@ mainTest(qase(1035, 'CP-7 Use Recent colors'), async ({ page }) => {
   await expect(mainPage.createdLayer).toHaveScreenshot('board-recent-color.png');
 });
 
-mainTest(qase(1036, 'CP-8 Use colors from File library'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const colorPalettePage = new ColorPalettePage(page);
-  const designPanelPage = new DesignPanelPage(page);
-  const assetsPanelPage = new AssetsPanelPage(page);
+mainTest(qase(1036, 'CP-8 Use colors from File library'), async () => {
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.clickAddFileLibraryColorButton();
   await colorPalettePage.setHex('#ffff00');
@@ -107,10 +101,7 @@ mainTest(qase(1036, 'CP-8 Use colors from File library'), async ({ page }) => {
   );
 });
 
-mainTest(qase(1045, 'CP-17 Open Color palette from shortcut'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const colorPalettePage = new ColorPalettePage(page);
-  const designPanelPage = new DesignPanelPage(page);
+mainTest(qase(1045, 'CP-17 Open Color palette from shortcut'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -132,10 +123,7 @@ mainTest(qase(1045, 'CP-17 Open Color palette from shortcut'), async ({ page }) 
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest(qase(1046, 'CP-18 Open Color palette from toolbar'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const colorPalettePage = new ColorPalettePage(page);
-  const designPanelPage = new DesignPanelPage(page);
+mainTest(qase(1046, 'CP-18 Open Color palette from toolbar'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -156,10 +144,7 @@ mainTest(qase(1046, 'CP-18 Open Color palette from toolbar'), async ({ page }) =
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest(qase(1048, 'CP-20 Choose file library colors'), async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const colorPalettePage = new ColorPalettePage(page);
-  const assetsPanelPage = new AssetsPanelPage(page);
+mainTest(qase(1048, 'CP-20 Choose file library colors'), async () => {
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.clickAddFileLibraryColorButton();
   await colorPalettePage.setHex('#ffff00');
@@ -187,10 +172,7 @@ mainTest(qase(1048, 'CP-20 Choose file library colors'), async ({ page }) => {
 
 mainTest(
   qase(1049, 'CP-21 Click any layer and change Fill color from palette'),
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const colorPalettePage = new ColorPalettePage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  async () => {
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -221,9 +203,7 @@ mainTest(
 
 mainTest(
   qase(1054, 'CP-26 Open color picker from add or edit color in assets'),
-  async ({ page }) => {
-    const assetsPanelPage = new AssetsPanelPage(page);
-    const colorPalettePage = new ColorPalettePage(page);
+  async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickAddFileLibraryColorButton();
     await colorPalettePage.isColorPalettePopUpOpened();
@@ -232,10 +212,7 @@ mainTest(
 
 mainTest(
   qase(1996, 'Delete linear gradient stop (from color picker stops list)'),
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    const colorPalettePage = new ColorPalettePage(page);
+  async () => {
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();

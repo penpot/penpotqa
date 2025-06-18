@@ -20,6 +20,7 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     );
     this.codeTabButton = page.getByRole('tab', { name: 'code' });
     this.copyCssCodeButton = page.locator('button[class*="css-copy-btn"]');
+    this.codeHtmlStrings = page.locator('span[class="hljs-string"]');
   }
 
   async openInspectTab() {
