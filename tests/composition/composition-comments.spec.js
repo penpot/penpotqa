@@ -101,7 +101,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase([566, 1231], 'CO-351 Edit comment with valid text using Latin alphabet'),
-    async ({ page, browserName }) => {
+    async ({ page }) => {
       const editedComment = 'Edited Test Comment';
       await commentsPanelPage.clickCommentOptionsButton();
       await commentsPanelPage.clickEditCommentOption();
@@ -111,7 +111,7 @@ mainTest.describe(() => {
       await mainPage.reloadPage();
       await commentsPanelPage.clickCreateCommentButton();
       await commentsPanelPage.isCommentDisplayedInCommentsPanel(editedComment);
-      await commentsPanelPage.clickCommentThreadIcon(browserName);
+      await commentsPanelPage.clickCommentThreadIcon();
       await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
       await expect(page).toHaveScreenshot('comment-edited.png', {
         mask: [
@@ -288,75 +288,70 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(2057, 'Click Notification in the pop-up'),
-    async ({ page, browserName }) => {
-      await mainTest.slow();
-      const firstEditor = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
-      const comment = 'Test Comment (main user)';
-      const replyComment = 'Lorem Ipsum (editor user)';
+  mainTest(qase(2057, 'Click Notification in the pop-up'), async ({ page }) => {
+    await mainTest.slow();
+    const firstEditor = random().concat('autotest');
+    const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
+    const comment = 'Test Comment (main user)';
+    const replyComment = 'Lorem Ipsum (editor user)';
 
-      await commentsPanelPage.clickCreateCommentButton();
-      await mainPage.clickViewportTwice();
-      await commentsPanelPage.enterCommentText(comment);
-      await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.clickCreateCommentButton();
+    await mainPage.clickViewportTwice();
+    await commentsPanelPage.enterCommentText(comment);
+    await commentsPanelPage.clickPostCommentButton();
 
-      await mainPage.backToDashboardFromFileEditor();
+    await mainPage.backToDashboardFromFileEditor();
 
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
-      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
-      await teamPage.selectInvitationRoleInPopUp('Editor');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+    await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+    await teamPage.selectInvitationRoleInPopUp('Editor');
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+    const firstInvite = await waitMessage(page, firstEmail, 40);
 
-      await profilePage.logout();
-      await loginPage.isLoginPageOpened();
-      await page.goto(firstInvite.inviteUrl);
-      await registerPage.registerAccount(
-        firstEditor,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(teamName);
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await page.goto(firstInvite.inviteUrl);
+    await registerPage.registerAccount(
+      firstEditor,
+      firstEmail,
+      process.env.LOGIN_PWD,
+    );
+    await dashboardPage.fillOnboardingQuestions();
+    await teamPage.isTeamSelected(teamName);
 
-      await dashboardPage.openFile();
-      await mainPage.isMainPageLoaded();
+    await dashboardPage.openFile();
+    await mainPage.isMainPageLoaded();
 
-      await commentsPanelPage.clickCreateCommentButton();
-      await commentsPanelPage.clickCommentThreadIcon(browserName);
-      await commentsPanelPage.enterReplyText(replyComment);
-      await commentsPanelPage.clickPostCommentButton();
-      await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
+    await commentsPanelPage.clickCreateCommentButton();
+    await commentsPanelPage.clickCommentThreadIcon();
+    await commentsPanelPage.enterReplyText(replyComment);
+    await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
 
-      await mainPage.backToDashboardFromFileEditor();
+    await mainPage.backToDashboardFromFileEditor();
 
-      await profilePage.logout();
-      await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-      await loginPage.enterPwd(process.env.LOGIN_PWD);
-      await loginPage.clickLoginButton();
-      await teamPage.switchTeam(teamName);
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await teamPage.switchTeam(teamName);
 
-      await dashboardPage.isUnreadNotificationVisible();
-      await dashboardPage.clickOnNotificationButton();
+    await dashboardPage.isUnreadNotificationVisible();
+    await dashboardPage.clickOnNotificationButton();
 
-      await dashboardPage.checkNotificationReplyUserName(mainProfileName);
-      await dashboardPage.checkNotificationReplyText(comment);
-      await dashboardPage.checkNotificationUnreadReplyCount('1 new reply');
+    await dashboardPage.checkNotificationReplyUserName(mainProfileName);
+    await dashboardPage.checkNotificationReplyText(comment);
+    await dashboardPage.checkNotificationUnreadReplyCount('1 new reply');
 
-      await dashboardPage.clickFirstNotificationMessage();
-      await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
+    await dashboardPage.clickFirstNotificationMessage();
+    await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
 
-      await mainPage.backToDashboardFromFileEditor();
-    },
-  );
+    await mainPage.backToDashboardFromFileEditor();
+  });
 
   mainTest(qase(2086, 'Only your mentions filter'), async ({ page }) => {
     await mainTest.slow();

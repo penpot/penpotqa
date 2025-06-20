@@ -102,13 +102,9 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.postCommentButton.click();
   }
 
-  async clickCommentThreadIcon(browserName) {
-    if (browserName === 'chromium') {
-      await this.commentThreadIcon.click();
-    } else {
-      await this.commentThreadIcon.hover();
-      await this.commentThreadPreview.click();
-    }
+  async clickCommentThreadIcon() {
+    await this.commentThreadIcon.hover();
+    await this.commentThreadPreview.click();
   }
 
   async clickResolvedCommentThreadIcon() {

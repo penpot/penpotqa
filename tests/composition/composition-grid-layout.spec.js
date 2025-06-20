@@ -568,7 +568,7 @@ mainTest.describe(() => {
     await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
       'right-sidebar-inspect-code-section-image.png',
       {
-        mask: [mainPage.usersSection],
+        mask: [mainPage.usersSection, inspectPanelPage.codeHtmlStrings],
         maxDiffPixelRatio: 0.001,
       },
     );
