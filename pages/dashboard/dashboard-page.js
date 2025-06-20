@@ -834,7 +834,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async fillOnboardingQuestions() {
     await this.fillOnboardingFirstQuestions();
-    await this.clickOnOnboardingContinueBtn();
     await this.clickOnOnboardingContinueWithoutTeamButton();
     await this.skipWhatNewsPopUp();
     await this.skipPluginsPopUp();

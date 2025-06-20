@@ -1,4 +1,4 @@
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { mainTest } = require('../fixtures');
 const { MainPage } = require('../pages/workspace/main-page');
 const { random } = require('../helpers/string-generator');
@@ -29,7 +29,7 @@ let teamPage,
   profilePage,
   loginPage,
   registerPage;
-test.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.beforeEach(async ({ page, browserName }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -40,9 +40,7 @@ test.beforeEach(async ({ page, browserName }, testInfo) => {
   profilePage = new ProfilePage(page);
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
-  browserName === 'webkit'
-    ? await testInfo.setTimeout(testInfo.timeout + 40000)
-    : await testInfo.setTimeout(testInfo.timeout + 10000);
+  await mainTest.slow();
   await teamPage.createTeam(teamName);
   browserName === 'webkit' ? await teamPage.waitForTeamBtn(15000) : null;
   await teamPage.isTeamSelected(teamName, browserName);
@@ -54,7 +52,7 @@ test.beforeEach(async ({ page, browserName }, testInfo) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async ({ page }, testInfo) => {
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
@@ -66,7 +64,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase([685], 'CO-364 Click view mode (From right top click) - no boards created'),
-    async ({ browserName }) => {
+    async () => {
       const newPage = await viewModePage.clickViewModeButton();
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
@@ -341,7 +339,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([709], 'CO-388 Reply comment'), async ({ browserName }) => {
+  mainTest(qase([709], 'CO-388 Reply comment'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -384,7 +382,7 @@ mainTest.describe(() => {
     await commentsPanelPage.clickPostCommentButton();
     await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
     await commentsPanelPage.reloadPage();
-    await commentsPanelPage.clickCommentThreadIcon(browserName);
+    await commentsPanelPage.clickCommentThreadIcon();
     await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(newPage).toHaveScreenshot('comment-edited.png', {

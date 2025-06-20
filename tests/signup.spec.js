@@ -111,13 +111,11 @@ test(qase(36, 'ON-9 Create demo account'), async ({ page }) => {
 test(qase(54, 'ON-27 Sign up with email of existing user'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
+  const email = process.env.LOGIN_EMAIL;
   await loginPage.goto();
   await loginPage.clickOnCreateAccount();
-  await registerPage.isRegisterPageOpened();
-  await registerPage.enterEmail(process.env.LOGIN_EMAIL);
-  await registerPage.enterPassword(process.env.LOGIN_PWD);
-  await registerPage.clickOnCreateAccountBtn();
-  await registerPage.isFullNameFieldDisplayed();
+  await registerPage.registerAccount('test', email, process.env.LOGIN_PWD);
+  await registerPage.isRegisterEmailCorrect(email);
 });
 
 test.afterEach(async ({ page }, testInfo) => {
