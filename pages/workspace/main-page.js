@@ -25,6 +25,9 @@ exports.MainPage = class MainPage extends BasePage {
     );
     this.toolBarWindow = page.locator('aside[class*="main-toolbar"]').first();
     this.designTab = page.getByRole('tab', { name: 'design' });
+    this.createPathPointer = page
+      .getByTestId('viewport')
+      .locator('[class*="viewport-controls cursor-pen drawing"]');
 
     //Viewport
     this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
@@ -274,7 +277,7 @@ exports.MainPage = class MainPage extends BasePage {
   async clickCreatePathButton() {
     await this.viewport.click();
     await this.createPathButton.click({ delay: 500 });
-    await expect(this.pathActionsBlock).toBeVisible();
+    await expect(this.createPathPointer).toBeVisible();
   }
 
   async clickViewportOnce() {
@@ -904,6 +907,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(1200, 700);
     await this.clickViewportByCoordinates(1000, 400);
     await this.clickViewportByCoordinates(500, 200);
+    await expect(this.pathActionsBlock).toBeVisible();
     await this.clickOnDesignTab();
     await this.waitForChangeIsSaved();
   }
@@ -913,8 +917,9 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(500, 200);
     await this.clickViewportByCoordinates(1200, 700);
     await this.clickViewportByCoordinates(1000, 400);
-    await this.clickMoveNodesButtonOnNodePanel();
-    await this.clickDrawNodesButtonOnNodePanel();
+    await this.page.keyboard.press('Enter');
+    // await this.clickMoveNodesButtonOnNodePanel();
+    // await this.clickDrawNodesButtonOnNodePanel();
     await this.waitForChangeIsSaved();
   }
 
@@ -924,6 +929,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(x + 100, y);
     await this.clickViewportByCoordinates(x, y + 100);
     await this.clickViewportByCoordinates(x, y);
+    await expect(this.pathActionsBlock).toBeVisible();
     await this.clickOnDesignTab();
     await this.waitForChangeIsSaved();
   }
