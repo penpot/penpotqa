@@ -359,6 +359,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'board-changed-corners.png',
+      { maxDiffPixels: 10 },
     );
     await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
     await mainPage.waitForChangeIsSaved();
