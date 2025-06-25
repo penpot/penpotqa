@@ -70,6 +70,7 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
 
     this.tokenToolsButton = page.getByRole('button', { name: 'Tools' });
     this.importButton = page.getByRole('menuitem', { name: 'Import' });
+    this.chooseFileButton = page.getByRole('button', { name: 'Choose file' });
   }
 
   async clickTokensTab() {
@@ -374,8 +375,9 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
   }
 
   async importTokens(file) {
-    const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.importButton.click();
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    await this.chooseFileButton.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
   }

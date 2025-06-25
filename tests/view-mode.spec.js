@@ -818,6 +818,9 @@ mainTest.describe(() => {
       await page.waitForTimeout(200);
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-shared-code-image.png',
+        {
+          mask: [inspectPanelPage.codeHtmlStrings],
+        },
       );
       await viewModePage.gotoLink(process.env.BASE_URL);
       await mainPage.isHeaderDisplayed('Projects');

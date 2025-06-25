@@ -7,14 +7,17 @@ const { random } = require('../helpers/string-generator');
 const { waitMessage } = require('../helpers/gmail');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 
+let loginPage, registerPage, dashboardPage;
+
 test.describe(() => {
   let randomName, email, invite;
   test.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 30000);
     randomName = random().concat('autotest');
     email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
-    const loginPage = new LoginPage(page);
-    const registerPage = new RegisterPage(page);
+    loginPage = new LoginPage(page);
+    registerPage = new RegisterPage(page);
+    dashboardPage = new DashboardPage(page);
     await loginPage.goto();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();
@@ -29,45 +32,36 @@ test.describe(() => {
       [1803, 1804, 1806, 1807, 1808, 1809, 1810, 1811, 1815],
       'Question - "Other" option at final place, Click "Next" button with empty "Other" text field',
     ),
-    async ({ page }) => {
-      const dashboardPage = new DashboardPage(page);
-      await dashboardPage.checkPageNumber(1);
+    async () => {
+      await dashboardPage.checkPageNumber(1, 3);
       await dashboardPage.selectRadioButton('Work');
       await dashboardPage.selectLastDropdownOptions();
       await dashboardPage.checkDropdownValue('Other');
-      await dashboardPage.isPlaningOtherInputVisible();
+      await dashboardPage.isKindOfWorkOtherInputVisible();
       await dashboardPage.isNextBtnDisabled();
-      await dashboardPage.enterPlaningOther('test');
+      await dashboardPage.enterOtherKindOfWork('test');
       await dashboardPage.clickOnNextButton();
-      await dashboardPage.checkPageNumber(2);
+      await dashboardPage.checkPageNumber(2, 4);
       await dashboardPage.isNextBtnDisabled();
       await dashboardPage.selectLastTool();
       await dashboardPage.isToolOtherInputVisible();
       await dashboardPage.isNextBtnDisabled();
       await dashboardPage.enterOtherToolName('test tool');
       await dashboardPage.clickOnNextButton();
-      await dashboardPage.checkPageNumber(3);
+      await dashboardPage.checkPageNumber(3, 4);
       await dashboardPage.selectLastKindOfWork();
-      await dashboardPage.isKindOfWorkOtherInputVisible();
-      await dashboardPage.selectLastRole();
-      await dashboardPage.isRoleOtherInputVisible();
-      await dashboardPage.enterOtherKindOfWork('test');
-      await dashboardPage.enterOtherRoleName('test role');
+      await dashboardPage.isPlaningOtherInputVisible();
+      await dashboardPage.isNextBtnDisabled();
+      await dashboardPage.enterPlaningOther('test');
       await dashboardPage.selectTeamSize('11-30');
       await dashboardPage.clickOnNextButton();
-      await dashboardPage.checkPageNumber(4);
+      await dashboardPage.checkPageNumber(4, 4);
       await dashboardPage.selectLastGetStartedQuestion();
       await dashboardPage.isStartWithOtherInputVisible();
-      await dashboardPage.isNextBtnDisabled();
-      await dashboardPage.enterOtherStartWith('test');
-      await dashboardPage.clickOnNextButton();
-      await dashboardPage.checkPageNumber(5);
-      await dashboardPage.selectLastRadioButton();
-      await dashboardPage.isReferOtherInputVisible();
       await dashboardPage.isStartBtnDisabled();
-      await dashboardPage.enterOtherRefer('test');
+      await dashboardPage.enterOtherStartWith('test');
       await dashboardPage.clickOnStartButton();
-      await dashboardPage.isOnboardingNewsHeaderDisplayed();
+      await dashboardPage.clickOnOnboardingContinueWithoutTeamButton();
     },
   );
 
@@ -76,8 +70,7 @@ test.describe(() => {
       [1802, 1813],
       'Reload the page while questions survey is opened, Press "ESC" button to close question slides',
     ),
-    async ({ page }) => {
-      const dashboardPage = new DashboardPage(page);
+    async () => {
       await dashboardPage.selectRadioButton('Work');
       await dashboardPage.selectLastDropdownOptions();
       await dashboardPage.reloadPage();
@@ -92,31 +85,27 @@ test.describe(() => {
       [1805],
       'Select any option, click "Next" button and comebacks to previous question',
     ),
-    async ({ page }) => {
-      const dashboardPage = new DashboardPage(page);
+    async () => {
       await dashboardPage.selectRadioButton('Work');
-      await dashboardPage.selectDropdownOptions('Testing before self-hosting');
+      await dashboardPage.selectKindOfWork('Development');
       await dashboardPage.clickOnNextButton();
       await dashboardPage.clickOnPrevButton();
       await dashboardPage.checkRadioButtonLabel('Work');
-      await dashboardPage.checkDropdownValue('Testing before self-hosting');
+      await dashboardPage.checkDropdownValue('Development');
     },
   );
 
   test(
     qase([1812, 1814], 'Deselect chosen option, Change chosen option'),
-    async ({ page }) => {
-      const dashboardPage = new DashboardPage(page);
+    async () => {
       await dashboardPage.selectRadioButton('Work');
       await dashboardPage.selectRadioButton('Work');
       await dashboardPage.checkRadioButtonLabel('Work');
-
-      await dashboardPage.selectDropdownOptions('Testing before self-hosting');
+      await dashboardPage.selectKindOfWork('Development');
       await dashboardPage.clickOnNextButton();
       await dashboardPage.selectFigmaTool();
       await dashboardPage.clickOnNextButton();
-      await dashboardPage.selectKindOfWork('Development');
-      await dashboardPage.selectRole('Team member');
+      await dashboardPage.selectDropdownOptions('Testing before self-hosting');
       await dashboardPage.selectTeamSize('11-30');
       await dashboardPage.clickOnNextButton();
       await dashboardPage.selectGetStartedQuestion('Wireframing');
@@ -129,7 +118,6 @@ test.describe(() => {
   test(
     qase([1801], 'Close and reopen penpot page while questions survey is opened'),
     async ({ page, context }) => {
-      const dashboardPage = new DashboardPage(page);
       await dashboardPage.isOnboardingFirstQuestionsVisible();
       await page.close();
       const newPage = await context.newPage();
