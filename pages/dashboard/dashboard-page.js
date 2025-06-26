@@ -177,9 +177,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingInviteInput = page.locator(
       'input[class*="components_forms__inside-input"]',
     );
-    this.onboardingCreateTeamButton = page.locator(
-      'button[class*="main_ui_onboarding_team_choice__accept-button"]',
-    );
+    this.onboardingCreateTeamButton = page
+      .getByRole('button')
+      .filter({ hasText: 'Create team & invite' });
     this.selectedRadioButtonLabel = page
       .locator('label[class*="components_forms__radio-label checked"]')
       .first();
@@ -1006,8 +1006,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.page.locator(`label[class*="radio-label"] span`).last().click();
   }
 
-  async checkPageNumber(number) {
-    await expect(this.onboardingPaginator).toHaveText(`${number}/5`);
+  async checkPageNumber(number, allPages = 3) {
+    await expect(this.onboardingPaginator).toHaveText(`${number}/${allPages}`);
   }
 
   async waitForCreateFilePlaceholderVisible() {
