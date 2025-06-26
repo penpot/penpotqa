@@ -78,12 +78,8 @@ test.describe(() => {
     const teamPage = new TeamPage(page);
     await page.goto(invite.inviteUrl);
     await dashboardPage.fillOnboardingFirstQuestions();
-    await dashboardPage.isOnboardingNewsHeaderDisplayed();
-    await dashboardPage.isOnboardingNewsUpdatesCheckboxDisplayed();
-    await dashboardPage.isOnboardingNewsCheckboxDisplayed();
-    await dashboardPage.clickOnOnboardingContinueBtn();
+    await dashboardPage.skipWhatNewsPopUp();
     await dashboardPage.enterOnboardingTeamName(randomName);
-    await dashboardPage.clickOnOnboardingContinueCreateTeamButton();
     const rand1 = random().concat('autotest');
     const firstEmail = `${process.env.GMAIL_NAME}+${rand1}@gmail.com`;
     const rand2 = random().concat('autotest');

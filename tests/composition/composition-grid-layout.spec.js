@@ -722,6 +722,7 @@ mainTest.describe(() => {
   mainTest(qase(1737, 'PENPOT-1737 Locate button'), async () => {
     await mainPage.clickBoardOnCanvas();
     await designPanelPage.changeAxisXandYForLayer('400', '2000');
+    await designPanelPage.expandGridLayoutMenu();
     await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();

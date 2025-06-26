@@ -12,7 +12,7 @@ let mainPage, teamPage, dashboardPage, tokensPage;
 
 const teamName = random().concat('autotest');
 
-test.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page, browserName }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -22,7 +22,7 @@ test.beforeEach(async ({ page, browserName }) => {
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async ({ page }, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
