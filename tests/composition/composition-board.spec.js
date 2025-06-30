@@ -357,10 +357,9 @@ mainTest.describe(() => {
     await designPanelPage.clickIndividualCornersRadiusButton();
     await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'board-changed-corners.png',
-      { maxDiffPixels: 10 },
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('board-changed-corners.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board.png', {

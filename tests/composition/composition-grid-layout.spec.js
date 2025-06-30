@@ -271,7 +271,7 @@ mainTest(
   ),
   async () => {
     await mainPage.createDefaultBoardByCoordinates(200, 300);
-    await designPanelPage.changeHeightAndWidthForLayer('600', '600');
+    await designPanelPage.changeHeightAndWidthForLayer('900', '900');
     await mainPage.waitForChangeIsSaved();
     await mainPage.addGridLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -282,12 +282,10 @@ mainTest(
     await layersPanelPage.dragAndDropComponentToBoard('sample');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickViewportOnce();
-    await mainPage.clickCreatedBoardTitleOnCanvas();
-    await designPanelPage.changeHeightAndWidthForLayer('700', '800');
-    await designPanelPage.openGridEditModeFromDesignPanel();
+    await designPanelPage.changeWidthForLayer('800');
+    await mainPage.hoverBoardOnCanvas();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.gridLayoutEditor).toHaveScreenshot(
+    await expect(mainPage.createdLayer).toHaveScreenshot(
       'resized-board-with-image.png',
     );
   },

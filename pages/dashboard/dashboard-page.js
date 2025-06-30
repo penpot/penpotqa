@@ -603,8 +603,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await fileChooser.setFiles(file);
     await expect(this.modalTitle).toBeVisible();
     await expect(this.modalTitle).toHaveText('Import Penpot files');
-    await expect(this.importErrorMessage).toHaveText(
-      "Oops! We couldn't import this file",
+    await expect(this.warningMessageText).toHaveText(
+      'Some files containted invalid objects that have been removed.',
     );
     await this.modalCancelButton.click();
   }

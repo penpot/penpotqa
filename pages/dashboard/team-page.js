@@ -106,9 +106,6 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.memberRecordDeleteMemberMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Remove member' });
-    this.invitationWarningSpan = page.locator(
-      'aside[class*="warning"] div[class*="context_notification"]',
-    );
     this.teamSettingsSection = page.locator('.main_ui_dashboard__dashboard-content');
     this.teamIcon = page.locator(`div[class*='team-icon'] img`);
     this.inviteMessage = page.locator('div[class*="main-message"]');
@@ -241,7 +238,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isSendInvitationWarningExist(text) {
-    await expect(this.invitationWarningSpan).toHaveText(text);
+    await expect(this.warningMessageText).toHaveText(text);
   }
 
   async isInvitationRecordDisplayed(email, role, status) {
