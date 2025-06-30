@@ -64,7 +64,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       'div[class*="thread-group-placeholder"] span[class*="placeholder-label"]',
     );
     this.commentsAuthorSection = page.locator('div[class*="comments__author"]');
-    this.commentMentionButton = page.getByRole('button', { name: 'Mention' });
+    this.commentMentionButton = page.locator('[class*="open-mentions-button"]');
     this.mentionMenuItem = page.locator('[class*="comments-mentions-name"]');
     this.commentMentionText = page.locator('span[class*="comment-mention"]');
 
