@@ -11,6 +11,9 @@ exports.BasePage = class BasePage {
     this.successMessage = page.locator(
       'div[class*="shared_notification_pill__type-toast"]',
     );
+    this.warningMessageText = page.locator(
+      'aside[class*="warning"] div[class*="context_notification"]',
+    );
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
     this.wrapperMessage = page.getByTestId('actionable');
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });

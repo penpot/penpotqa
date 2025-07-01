@@ -366,7 +366,7 @@ async function waitSecondMessage(page, email, timeoutSec = 40) {
   await page.waitForTimeout(interval);
   while (Date.now() - startTime < timeout) {
     count = await getMessagesCount(email);
-    if (count === 2) {
+    if (count >= 2) {
       return 1;
     }
     await page.waitForTimeout(interval);

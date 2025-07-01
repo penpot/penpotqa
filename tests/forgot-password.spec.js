@@ -38,14 +38,18 @@ test(
 );
 
 test.describe(() => {
-  let randomName, email, invite;
+  let randomName, email, invite, newPwd;
+  let loginPage, registerPage, forgotPasswordPage, profilePage, dashboardPage;
   test.beforeEach(async ({ page }, testInfo) => {
     await testInfo.setTimeout(testInfo.timeout + 30000);
     randomName = random().concat('autotest');
     email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
-    const loginPage = new LoginPage(page);
-    const registerPage = new RegisterPage(page);
-    const dashboardPage = new DashboardPage(page);
+    newPwd = 'TestForgotPassword123';
+    loginPage = new LoginPage(page);
+    registerPage = new RegisterPage(page);
+    dashboardPage = new DashboardPage(page);
+    profilePage = new ProfilePage(page);
+    forgotPasswordPage = new ForgotPasswordPage(page);
     await page.context().clearCookies();
 
     await loginPage.goto();
@@ -56,14 +60,7 @@ test.describe(() => {
     invite = await waitMessage(page, email, 40);
     await page.goto(invite.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
-  });
 
-  test(qase(49, 'ON-22 Forgot password flow'), async ({ page }) => {
-    const newPwd = 'TestForgotPassword123';
-    const dashboardPage = new DashboardPage(page);
-    const loginPage = new LoginPage(page);
-    const profilePage = new ProfilePage(page);
-    const forgotPasswordPage = new ForgotPasswordPage(page);
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
     await loginPage.clickOnForgotPassword();
@@ -77,6 +74,9 @@ test.describe(() => {
     await forgotPasswordPage.enterConfirmPwd(newPwd);
     await forgotPasswordPage.clickOnChangePwdButton();
     await loginPage.isLoginPageOpened();
+  });
+
+  test(qase(49, 'ON-22 Forgot password flow'), async ({ page }) => {
     await loginPage.enterEmail(email);
     await loginPage.enterPwd(newPwd);
     await loginPage.clickLoginButton();
@@ -84,25 +84,6 @@ test.describe(() => {
   });
 
   test(qase(52, 'ON-25 Login with old password'), async ({ page }) => {
-    const newPwd = 'TestForgotPassword123';
-    const dashboardPage = new DashboardPage(page);
-    const loginPage = new LoginPage(page);
-    const profilePage = new ProfilePage(page);
-    const forgotPasswordPage = new ForgotPasswordPage(page);
-
-    await profilePage.logout();
-    await loginPage.isLoginPageOpened();
-    await loginPage.clickOnForgotPassword();
-    await forgotPasswordPage.enterEmail(email);
-    await forgotPasswordPage.clickRecoverPasswordButton();
-    await waitSecondMessage(page, email, 40);
-    const forgotPass = await getRegisterMessage(email);
-    await checkRecoveryText(forgotPass.inviteText, randomName);
-    await page.goto(forgotPass.inviteUrl);
-    await forgotPasswordPage.enterNewPwd(newPwd);
-    await forgotPasswordPage.enterConfirmPwd(newPwd);
-    await forgotPasswordPage.clickOnChangePwdButton();
-    await loginPage.isLoginPageOpened();
     await loginPage.enterEmail(email);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
