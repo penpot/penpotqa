@@ -12,7 +12,7 @@ let mainPage, teamPage, dashboardPage, tokensPage;
 
 const teamName = random().concat('autotest');
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -68,4 +68,16 @@ mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
   await tokensPage.checkImportTokenDetailErrorFormat(formatRegex);
   await tokensPage.closeModalWindow();
   await tokensPage.isImportErrorMessageVisible(false);
+});
+
+mainTest(qase(2252, 'Import tokens multifile folder'), async () => {
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
+  await tokensPage.clickTokensTab();
+  await tokensPage.clickOnTokenToolsButton();
+  await tokensPage.importTokensFolder('documents/tokens-folder-example');
+  await tokensPage.checkSelectedTheme('Mode / Light');
+  await tokensPage.isSetNameVisible('light');
+  await tokensPage.isSetNameVisible('dark');
 });
