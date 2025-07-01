@@ -1012,6 +1012,7 @@ mainTest.describe(() => {
 
       await teamPage.openMembersPageViaOptionsMenu();
       await teamPage.leaveTeam(team);
+      await dashboardPage.clickOnOnboardingContinueWithoutTeamButton();
     },
   );
 
@@ -1048,6 +1049,7 @@ mainTest.describe(() => {
 
       await teamPage.openMembersPageViaOptionsMenu();
       await teamPage.leaveTeam(team);
+      await dashboardPage.clickOnOnboardingContinueWithoutTeamButton();
     },
   );
 
@@ -1131,13 +1133,14 @@ mainTest.describe(() => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
       await page.goto(secondInvite.inviteUrl);
       await registerPage.registerAccount(
         secondAdmin,
-        firstEmail,
+        secondEmail,
         process.env.LOGIN_PWD,
       );
       await dashboardPage.fillOnboardingQuestions();
@@ -1204,7 +1207,7 @@ mainTest.describe(() => {
       await page.goto(secondInvite.inviteUrl);
       await registerPage.registerAccount(
         secondAdmin,
-        firstEmail,
+        secondEmail,
         process.env.LOGIN_PWD,
       );
       await dashboardPage.fillOnboardingQuestions();
