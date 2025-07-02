@@ -12,7 +12,7 @@ let mainPage, teamPage, dashboardPage, tokensPage;
 
 const teamName = random().concat('autotest');
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -52,20 +52,42 @@ mainTest(qase(2221, 'Import .penpot file with tokens'), async () => {
 });
 
 mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
-  const errorCount = 18;
-  const formatRegex = /^\{.+\} tries to reference \{.+\}, which is not defined\.$/;
+  const errorCount = 2;
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
   await tokensPage.clickTokensTab();
   await tokensPage.clickOnTokenToolsButton();
-  await tokensPage.importTokens('documents/stitches-tokens.json');
+  await tokensPage.importTokens('documents/import-tokens-error-format.json');
+  await tokensPage.checkImportErrorMessage(`Import Error: Could not parse JSON.`);
+  await tokensPage.closeModalWindow();
+  await tokensPage.closeModalWindow();
+  await tokensPage.isImportErrorMessageVisible(false);
+
+  await tokensPage.clickOnTokenToolsButton();
+  await tokensPage.importTokens('documents/import-tokens-error-naming.json');
   await tokensPage.checkImportErrorMessage(
-    `Import Error: Some token references (${errorCount}) could not be found.`,
+    `Import Error: Invalid token name in JSON.`,
   );
   await tokensPage.expandDetailMessage();
   await tokensPage.checkImportTokenDetailErrorCount(errorCount);
-  await tokensPage.checkImportTokenDetailErrorFormat(formatRegex);
   await tokensPage.closeModalWindow();
   await tokensPage.isImportErrorMessageVisible(false);
 });
+
+mainTest(
+  qase(2293, 'Successful import of tokens file with validation errors'),
+  async () => {
+    const firstBadTokenName = 'dark.theme.accent.default';
+    const errorCount = 18;
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.isMainPageLoaded();
+    await mainPage.clickMoveButton();
+    await tokensPage.clickTokensTab();
+    await tokensPage.clickOnTokenToolsButton();
+    await tokensPage.importTokens('documents/stitches-tokens.json');
+    await tokensPage.expandSectionByName('Color');
+    await tokensPage.isTokenVisibleWithName(firstBadTokenName);
+    await tokensPage.checkInvalidTokenCount(errorCount);
+  },
+);

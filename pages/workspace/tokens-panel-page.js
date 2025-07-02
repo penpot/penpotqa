@@ -28,6 +28,10 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     this.backToThemeListButton = page.getByRole('button', {
       name: 'Back to theme list',
     });
+    this.tokenSections = page
+      .getByTestId('tokens-sidebar')
+      .locator('[class*="section-name"]');
+    this.invalidToken = page.locator('button[class*="token-pill-invalid-applied"]');
 
     this.addRadiusTokenButton = page.getByRole('button', {
       name: 'Add token: Border Radius',
@@ -405,5 +409,13 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
   async duplicateSetByName(setName) {
     await this.rightClickOnSetByName(setName);
     await this.duplicateOption.click();
+  }
+
+  async expandSectionByName(name) {
+    await this.tokenSections.filter({ hasText: name }).click();
+  }
+
+  async checkInvalidTokenCount(count) {
+    await expect(this.invalidToken).toHaveCount(count);
   }
 };
