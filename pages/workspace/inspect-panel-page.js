@@ -21,6 +21,8 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     this.codeTabButton = page.getByRole('tab', { name: 'code' });
     this.copyCssCodeButton = page.locator('button[class*="css-copy-btn"]');
     this.codeHtmlStrings = page.locator('span[class="hljs-string"]');
+    this.svgCodeButton = page.locator('label[for=":svg"]');
+    this.copyHtmlCodeButton = page.locator('button[class*="html-copy-btn"]');
   }
 
   async openInspectTab() {
@@ -51,9 +53,19 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     return match ? match[0] : null;
   }
 
+  async copySvgCode() {
+    await this.copyHtmlCodeButton.click();
+    const svgCode = await this.page.evaluate(() => navigator.clipboard.readText());
+    return svgCode.replace(/\s+/g, '').replace(/[\r\n]+/g, '');
+  }
+
   async isAnnotationTextExistOnInspectTab(text) {
     await expect(
       this.annotationBlockOnInspect.locator('[class*="annotation-content"]'),
     ).toHaveText(text);
+  }
+
+  async clickOnSVGCodeButton() {
+    await this.svgCodeButton.click();
   }
 };

@@ -165,6 +165,9 @@ exports.BasePage = class BasePage {
     this.copyAsTextMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Copy as text' });
+    this.copyAsSVGMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: /^Copy as SVG$/ });
     this.copyPropertiesMenuItem = page.getByText('Copy propertiesCtrlAltc');
     this.pastePropertiesMenuItem = page
       .getByRole('listitem')
@@ -477,5 +480,9 @@ exports.BasePage = class BasePage {
 
   async closeModalWindow() {
     await this.modalCloseButton.last().click();
+  }
+
+  async clickOnCancelButton() {
+    await this.modalCancelButton.click();
   }
 };

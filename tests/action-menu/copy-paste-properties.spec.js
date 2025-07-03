@@ -1,4 +1,4 @@
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
@@ -32,7 +32,7 @@ let teamPage,
   colorPalettePage,
   assetsPanelPage,
   inspectPanelPage;
-mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.beforeEach(async ({ page, browserName }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -222,7 +222,7 @@ mainTest.describe(() => {
       [2020],
       'Compare copied CSS properties with CSS properties in "Inspect" tab',
     ),
-    async ({ page }) => {
+    async () => {
       await mainPage.createDefaultEllipseByCoordinates(100, 100);
       const cssCode = await mainPage.copyLayerCSSViaRightClick();
 
@@ -233,6 +233,36 @@ mainTest.describe(() => {
       );
 
       await expect(cssCode).toEqual(cssCodeFromInspectTab);
+    },
+  );
+
+  mainTest(
+    qase(
+      [2256],
+      'Compare "Copy as SVG" code with the SVG code on the "Inspect" panel',
+    ),
+    async () => {
+      await mainPage.createDefaultEllipseByCoordinates(100, 100);
+      const svgCode = await mainPage.copyLayerSVGViaRightClick();
+      await inspectPanelPage.openInspectTab();
+      await inspectPanelPage.openCodeTab();
+      await inspectPanelPage.clickOnSVGCodeButton();
+      const svgCodeFromInspectTab = await inspectPanelPage.copySvgCode();
+
+      await expect(svgCode).toEqual(svgCodeFromInspectTab);
+    },
+  );
+
+  mainTest(
+    qase([2257], '"Copy as SVG" a simple path, pasting the code on Penpot'),
+    async () => {
+      await mainPage.createDefaultOpenPath();
+      await mainPage.copyLayerSVGViaRightClick();
+      await mainPage.pasteLayerViaRightClick();
+
+      await expect(mainPage.viewport).toHaveScreenshot('copies-path.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
     },
   );
 });

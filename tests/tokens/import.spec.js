@@ -91,3 +91,15 @@ mainTest(
     await tokensPage.checkInvalidTokenCount(errorCount);
   },
 );
+
+mainTest(qase(2252, 'Import tokens multifile folder'), async () => {
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
+  await tokensPage.clickTokensTab();
+  await tokensPage.clickOnTokenToolsButton();
+  await tokensPage.importTokensFolder('documents/tokens-folder-example');
+  await tokensPage.checkSelectedTheme('Mode / Light');
+  await tokensPage.isSetNameVisible('light');
+  await tokensPage.isSetNameVisible('dark');
+});

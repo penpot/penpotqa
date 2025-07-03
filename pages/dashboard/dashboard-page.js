@@ -167,10 +167,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'label[for="newsletter-updates"]',
     );
     this.onboardingNewsCheckbox = page.locator('label[for="newsletter-news"]');
-    this.onboardingCreateTeamInput = page.locator('input[class*="team-name-input"]');
-    this.onboardingContinueCreateTeamBtn = page.locator(
-      'button[label="Continue creating team"]',
-    );
+    this.onboardingCreateTeamInput = page.getByPlaceholder('Team name');
+    this.onboardingContinueCreateTeamBtn = page
+      .getByRole('button')
+      .filter({ hasText: 'Create team' });
     this.onboardingContinueWithoutTeamBtn = page
       .getByRole('button')
       .filter({ hasText: 'Continue without team' });
@@ -816,7 +816,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.onboardingNewsCheckbox).toBeVisible();
   }
 
-  async clickOnOnboardingContinueCreateTeamButton() {
+  async clickOnOnboardingCreateEmptyTeamButton() {
     await this.onboardingContinueCreateTeamBtn.click();
   }
 
