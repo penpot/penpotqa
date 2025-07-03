@@ -1,0 +1,13 @@
+{
+  "global": {
+    "colors": {
+      "black/color": {
+        "value": "#171717",
+        "type": "color"
+      },
+      "white/colorZ": {
+        "value": "#ffffff",
+        "type": "color"
+      }
+    }
+  }
