@@ -1,0 +1,5 @@
+{
+  "tokenSetOrder": ["mode/light", "mode/dark"],
+  "activeThemes": ["Mode/Light"],
+  "activeSets": ["mode/light"]
+}

@@ -71,6 +71,14 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     this.tokenToolsButton = page.getByRole('button', { name: 'Tools' });
     this.importButton = page.getByRole('menuitem', { name: 'Import' });
     this.chooseFileButton = page.getByRole('button', { name: 'Choose file' });
+    this.chooseFolderButton = page.getByRole('button', { name: 'Choose folder' });
+    this.exportButton = page.getByRole('menuitem', { name: 'Export' });
+    this.multipleFilesButton = page.getByRole('tab', { name: 'Multiple files' });
+    this.exportTokensMessage = page.locator(
+      '[class*="tokens_modals_export__disabled-message"]',
+    );
+    this.confirmExportButton = page.getByRole('button', { name: 'Export' });
+    this.exportFileItem = page.locator('[class*="export__file-name"]');
   }
 
   async clickTokensTab() {
@@ -382,6 +390,14 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await fileChooser.setFiles(file);
   }
 
+  async importTokensFolder(file) {
+    await this.importButton.click();
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    await this.chooseFolderButton.click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(file);
+  }
+
   async getTokenErrorDetailText() {
     const text = await this.importErrorDetailMessage.textContent();
     return text
@@ -405,5 +421,38 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
   async duplicateSetByName(setName) {
     await this.rightClickOnSetByName(setName);
     await this.duplicateOption.click();
+  }
+
+  async clickOnExportButton() {
+    await this.exportButton.click();
+  }
+
+  async clickOnMultipleFilesButton() {
+    await this.multipleFilesButton.click();
+  }
+
+  async checkEmptyExportTabMessage() {
+    await expect(this.exportTokensMessage).toContainText(
+      'There are no tokens, themes or sets to export.',
+    );
+  }
+
+  async isExportWindowClosed(closed = true) {
+    closed
+      ? await expect(this.multipleFilesButton).not.toBeVisible()
+      : await expect(this.multipleFilesButton).toBeVisible();
+  }
+
+  async exportToken() {
+    await this.confirmExportButton.click();
+    await this.page.waitForEvent('download');
+  }
+
+  async checkExportFileItemCount(expectedCount) {
+    await expect(this.exportFileItem).toHaveCount(expectedCount);
+  }
+
+  async ifExportFileExists(name) {
+    await expect(this.exportFileItem.filter({ hasText: name })).toBeVisible();
   }
 };

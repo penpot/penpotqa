@@ -383,6 +383,14 @@ mainTest(
   },
 );
 
+mainTest(qase(2264, 'Import (.penpot) file with new path format'), async () => {
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName('Test Project');
+  await dashboardPage.isProjectTitleDisplayed('Test Project');
+  await dashboardPage.importFile('documents/QA new path file.penpot');
+  await dashboardPage.isFilePresent('New File 1');
+});
+
 mainTest(qase(2239, 'Import file to project - file upload error'), async () => {
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName('Test Project');
