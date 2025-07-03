@@ -1184,13 +1184,13 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async checkImportErrorMessage(message) {
-    await expect(this.importErrorMessage).toHaveText(message);
+    await expect(this.importErrorMessage.first()).toHaveText(message);
   }
 
   async isImportErrorMessageVisible(visible = true) {
     visible
-      ? await expect(this.importErrorMessage).toBeVisible()
-      : await expect(this.importErrorMessage).not.toBeVisible();
+      ? await expect(this.importErrorMessage.first()).toBeVisible()
+      : await expect(this.importErrorMessage.first()).not.toBeVisible();
   }
 
   async expandDetailMessage() {
