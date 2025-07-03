@@ -918,6 +918,8 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickViewportByCoordinates(1200, 700);
     await this.clickViewportByCoordinates(1000, 400);
     await this.page.keyboard.press('Enter');
+    await expect(this.pathActionsBlock).toBeVisible();
+    await this.page.keyboard.press('Enter');
     // await this.clickMoveNodesButtonOnNodePanel();
     // await this.clickDrawNodesButtonOnNodePanel();
     await this.waitForChangeIsSaved();
@@ -1016,20 +1018,18 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async copyLayerViaRightClick() {
-    const layerSel = this.page.locator('.viewport-selrect');
-    await layerSel.last().click({ button: 'right', force: true });
+    await this.rightClickOnElement();
     await this.copyOption.click();
   }
 
   async pasteLayerViaRightClick() {
-    const layerSel = this.page.locator('div[class*="viewport"]');
+    const layerSel = this.viewport;
     await layerSel.last().click({ button: 'right', force: true });
     await this.pasteOption.click();
   }
 
   async duplicateLayerViaRightClick() {
-    const layerSel = this.page.locator('.viewport-selrect');
-    await layerSel.last().click({ button: 'right', force: true });
+    await this.rightClickOnElement();
     await this.duplicateOption.click();
   }
 
@@ -1134,8 +1134,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async checkViewerRightClickMenu() {
-    const layerSel = this.page.locator('.viewport-selrect');
-    await layerSel.last().click({ button: 'right', force: true });
+    await this.rightClickOnElement();
     await expect(this.copyOption).not.toBeVisible();
     await expect(this.workspaceMenu).not.toBeVisible();
   }
@@ -1153,23 +1152,28 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async copyLayerPropertyViaRightClick() {
-    const layerSel = this.page.locator('.viewport-selrect');
-    await layerSel.last().click({ button: 'right', force: true });
+    await this.rightClickOnElement();
     await this.copyPasteAsMenuItem.hover();
     await this.copyPropertiesMenuItem.click();
   }
 
   async copyLayerCSSViaRightClick() {
-    const layerSel = this.page.locator('.viewport-selrect');
-    await layerSel.last().click({ button: 'right', force: true });
+    await this.rightClickOnElement();
     await this.copyPasteAsMenuItem.hover();
     await this.copyAsCssMenuItem.click();
     return await this.page.evaluate(() => navigator.clipboard.readText());
   }
 
+  async copyLayerSVGViaRightClick() {
+    await this.rightClickOnElement();
+    await this.copyPasteAsMenuItem.hover();
+    await this.copyAsSVGMenuItem.click();
+    const svgString = await this.page.evaluate(() => navigator.clipboard.readText());
+    return svgString.replace(/\s+/g, '').replace(/[\r\n]+/g, '');
+  }
+
   async copyLayerLinkViaRightClick() {
-    const layerSel = this.page.locator('.viewport-selrect');
-    await layerSel.last().click({ button: 'right', force: true });
+    await this.rightClickOnElement();
     await this.copyLinkMenuItem.click();
   }
 
@@ -1191,5 +1195,18 @@ exports.MainPage = class MainPage extends BasePage {
 
   async expandDetailMessage() {
     await this.detailsButton.click();
+  }
+
+  async deselectElement(index = 0) {
+    const element = this.viewport.locator(`[class*="outlines"] rect`).nth(index);
+
+    await element.hover({ force: true });
+    await element.click({ modifiers: ['Shift', 'Control'], force: true });
+    await this.viewport.hover();
+  }
+
+  async rightClickOnElement() {
+    const layerSel = this.page.locator('.viewport-selrect');
+    await layerSel.last().click({ button: 'right', force: true });
   }
 };
