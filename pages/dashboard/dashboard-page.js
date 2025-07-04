@@ -23,9 +23,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.deleteFileModalWindow = page.locator(
       'div[class*="delete_shared__modal-container"]',
     );
-    this.createFileButtonPlaceholder = page
-      .locator('[class*="empty-project-container"]')
-      .getByTitle('Add file');
+    // this.createFileButtonPlaceholder = page
+    //   .locator('[class*="empty-project-container"]')
+    //   .getByTitle('Add file');
+    this.createFileButtonPlaceholder = page.getByRole('button', {
+      name: '+ New File',
+    });
     this.createFileButtonOldPlaceholder = page.locator(
       'div[class*="dashboard-grid"] button[class*="create-new"]',
     );
@@ -226,6 +229,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'Marked all notifications as read',
       { exact: true },
     );
+  }
+
+  async goToBetaTeam() {
+    // await this.page.goto('/#/dashboard/recent?team-id=7e08604d-b403-8003-8006-05b573da471b');
+    // await this.page.goto('/#/dashboard/recent?team-id=9f1205bd-430c-81b5-8006-6b4166f15df4');
   }
 
   async createFileViaPlaceholder() {

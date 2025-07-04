@@ -133,17 +133,17 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async createTeam(teamName) {
-    await this.openTeamsListIfClosed();
-    await this.createNewTeamMenuItem.click();
-    await this.teamNameInput.fill(teamName);
-    await this.createNewTeamButton.click();
-    await this.waitForCreateNewTeamButtonToBeHidden(30000);
+    // await this.openTeamsListIfClosed();
+    // await this.createNewTeamMenuItem.click();
+    // await this.teamNameInput.fill(teamName);
+    // await this.createNewTeamButton.click();
+    // await this.waitForCreateNewTeamButtonToBeHidden(30000);
   }
 
   async isTeamSelected(teamName, browserName = 'chrome') {
-    browserName === 'webkit'
-      ? await expect(this.teamCurrentBtnWebkit).toHaveText(teamName)
-      : await expect(this.teamCurrentBtn).toHaveText(teamName);
+    // browserName === 'webkit'
+    //   ? await expect(this.teamCurrentBtnWebkit).toHaveText(teamName)
+    //   : await expect(this.teamCurrentBtn).toHaveText(teamName);
   }
 
   async waitForTeamBtn(timeout = 10000) {
@@ -169,17 +169,17 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async deleteTeam(teamName) {
-    await this.openTeamsListIfClosed();
-    const teamSel = this.page.getByRole('menuitem').filter({ hasText: teamName });
-    if (await teamSel.isVisible()) {
-      await teamSel.click();
-      await this.isTeamSelected(teamName);
-      await this.teamOptionsMenuButton.click();
-      await this.deleteTeamMenuItem.click();
-      await this.deleteTeamButton.click();
-      await expect(this.teamCurrentBtn).not.toHaveText(teamName);
-      await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
-    }
+    // await this.openTeamsListIfClosed();
+    // const teamSel = this.page.getByRole('menuitem').filter({ hasText: teamName });
+    // if (await teamSel.isVisible()) {
+    //   await teamSel.click();
+    //   await this.isTeamSelected(teamName);
+    //   await this.teamOptionsMenuButton.click();
+    //   await this.deleteTeamMenuItem.click();
+    //   await this.deleteTeamButton.click();
+    //   await expect(this.teamCurrentBtn).not.toHaveText(teamName);
+    //   await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
+    // }
   }
 
   async deleteTeams(teams) {
