@@ -9,7 +9,7 @@ require('dotenv').config();
  * @type {import('@playwright/test').PlaywrightTestConfig}
  */
 const config = {
-  snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/win32/{projectName}/{arg}{ext}`,
+  snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/linux/{projectName}/{arg}{ext}`,
   testDir: './tests',
   /* Maximum time one test can run for. */
   timeout: process.env.CI ? 120 * 1000 : 80 * 1000,
@@ -29,9 +29,9 @@ const config = {
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 0 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 3 : 3,
+  workers: process.env.CI ? 15 : 15,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [
@@ -65,7 +65,7 @@ const config = {
       },
       use: {
         browserName: 'chromium',
-        channel: 'chrome',
+        // channel: 'chrome',
         viewport: {
           height: 969,
           width: 1920,

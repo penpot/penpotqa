@@ -15,6 +15,7 @@ const mainTest = base.test.extend({
     await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.skipWhatNewsPopUp();
     await dashboardPage.skipPluginsPopUp();
+    // await dashboardPage.goToBetaTeam();
     await use(page);
   },
 });
