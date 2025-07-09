@@ -20,7 +20,9 @@ test.beforeEach(async ({ page }) => {
   assetsPanelPage = new AssetsPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
-  await teamPage.createTeam(teamName);
+  const projectFirst = 'QA Project';
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });
@@ -28,7 +30,6 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({ page }, testInfo) => {
   const teamPage = new TeamPage(page);
   await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
