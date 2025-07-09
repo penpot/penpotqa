@@ -15,6 +15,7 @@ test.beforeEach(async ({ page }) => {
   const dashboardPage = new DashboardPage(page);
   const teamPage = new TeamPage(page);
   const mainPage = new MainPage(page);
+  const projectFirst = 'QA Project';
   await teamPage.goToTeam();
   await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();

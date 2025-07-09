@@ -29,6 +29,7 @@ test.beforeEach(async ({ page, browserName }) => {
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
+  const projectFirst = 'QA Project';
   await teamPage.goToTeam();
   await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();
