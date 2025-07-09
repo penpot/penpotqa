@@ -31,9 +31,11 @@ test.beforeEach(async ({ page }) => {
   commentsPanelPage = new CommentsPanelPage(page);
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
+  const projectFirst = 'QA Project';
 
-  await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
+
   mainProfileName = await profilePage.getUserName();
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
@@ -41,7 +43,7 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(async ({ page }, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
+  // await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 

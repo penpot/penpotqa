@@ -29,7 +29,8 @@ test.beforeEach(async ({ page, browserName }) => {
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
-  await teamPage.createTeam(teamName);
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();
   browserName === 'webkit' && !(await mainPage.isMainPageVisible())
     ? await dashboardPage.createFileViaPlaceholder()
@@ -40,7 +41,6 @@ test.beforeEach(async ({ page, browserName }) => {
 
 test.afterEach(async ({ page }, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
