@@ -157,6 +157,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.firstPageListItem = page.locator(
       'ul[class*="page-list"] div[class*="element-list-body"] >>nth=0',
     );
+    this.lastPageListItem = page.getByTestId('page-name').last();
     this.secondPageListItem = page.locator(
       'ul[class*="page-list"] div[class*="element-list-body"] >>nth=1',
     );
@@ -789,6 +790,10 @@ exports.MainPage = class MainPage extends BasePage {
       await this.secondPageListItem.click({ button: 'right' });
     }
     await this.duplicatePageMenuItem.click();
+  }
+
+  async clickOnLastPage() {
+    this.lastPageListItem.click();
   }
 
   async clickOnPageOnLayersPanel(firstPage = true) {

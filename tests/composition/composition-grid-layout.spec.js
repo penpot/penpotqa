@@ -32,8 +32,10 @@ test.beforeEach(async ({ page }) => {
   inspectPanelPage = new InspectPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
-  await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
+  const projectFirst = 'QA Project';
+
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });
@@ -42,7 +44,7 @@ test.afterEach(async ({ page }, testInfo) => {
   const teamPage = new TeamPage(page);
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
+  // await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 

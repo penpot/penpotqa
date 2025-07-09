@@ -1,12 +1,20 @@
 const { BasePage } = require('../base-page');
 const { expect } = require('@playwright/test');
 
+const localTeamName =
+  '/#/dashboard/files?team-id=258d0a66-73bb-80c5-8006-76c7ea556918';
+const betaTeamName =
+  '/#/dashboard/recent?team-id=9f1205bd-430c-81b5-8006-6b4166f15df4';
+
 exports.TeamPage = class TeamPage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
    */
   constructor(page) {
     super(page);
+
+    // Team to use for the tests
+    this.goToTeamUrl = localTeamName;
 
     // Teams
     this.teamCurrentBtn = page.locator('button[class*="current-team"]');
@@ -132,18 +140,22 @@ exports.TeamPage = class TeamPage extends BasePage {
     );
   }
 
+  async goToTeam() {
+    await this.page.goto(this.goToTeamUrl);
+  }
+
   async createTeam(teamName) {
-    // await this.openTeamsListIfClosed();
-    // await this.createNewTeamMenuItem.click();
-    // await this.teamNameInput.fill(teamName);
-    // await this.createNewTeamButton.click();
-    // await this.waitForCreateNewTeamButtonToBeHidden(30000);
+    await this.openTeamsListIfClosed();
+    await this.createNewTeamMenuItem.click();
+    await this.teamNameInput.fill(teamName);
+    await this.createNewTeamButton.click();
+    await this.waitForCreateNewTeamButtonToBeHidden(30000);
   }
 
   async isTeamSelected(teamName, browserName = 'chrome') {
-    // browserName === 'webkit'
-    //   ? await expect(this.teamCurrentBtnWebkit).toHaveText(teamName)
-    //   : await expect(this.teamCurrentBtn).toHaveText(teamName);
+    browserName === 'webkit'
+      ? await expect(this.teamCurrentBtnWebkit).toHaveText(teamName)
+      : await expect(this.teamCurrentBtn).toHaveText(teamName);
   }
 
   async waitForTeamBtn(timeout = 10000) {
