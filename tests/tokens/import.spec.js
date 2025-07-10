@@ -17,14 +17,15 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
   tokensPage = new TokensPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
+  const projectFirst = 'QA Project';
+
   await dashboardPage.isHeaderDisplayed('Projects');
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
 });
 
 mainTest.afterEach(async ({ page }, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 

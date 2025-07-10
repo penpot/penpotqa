@@ -12,9 +12,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.numberOfFilesText = page.locator(
       'div[class*="project-name-wrapper"] span[class*="projects__info"]',
     );
-    this.fileTile = page.locator(
-      'div[class*="dashboard-grid"] div[class*="grid-item-th"]',
-    );
+    this.fileTile = page
+      .locator('div[class*="dashboard-grid"] div[class*="grid-item-th"]')
+      .first();
     this.fileNameTitle = page.locator('div[class*="item-info"] h3');
     this.deleteFileMenuItem = page.getByTestId('file-delete');
     this.deleteFileButton = page.locator(
@@ -41,7 +41,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.addFileAsSharedLibraryButton = page.getByRole('button', {
       name: 'Add as Shared Library',
     });
-    this.sharedLibraryIcon = page.locator('svg[class="icon-library"]');
+    this.sharedLibraryIcon = page.locator('svg[class="icon-library"]').last();
     this.delFileAsSharedLibraryMenuItem = page.getByTestId('file-del-shared');
     this.delFileAsSharedLibraryButton = page.getByRole('button', {
       name: 'Unpublish',

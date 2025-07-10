@@ -13,8 +13,9 @@ test.beforeEach(async ({ page, browserName }) => {
   const teamPage = new TeamPage(page);
   const dashboardPage = new DashboardPage(page);
   const mainPage = new MainPage(page);
-  await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
+  const projectFirst = 'QA Project';
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();
   browserName === 'webkit' && !(await mainPage.isMainPageVisible())
     ? await dashboardPage.createFileViaPlaceholder()
@@ -26,7 +27,6 @@ test.afterEach(async ({ page }, testInfo) => {
   const teamPage = new TeamPage(page);
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
