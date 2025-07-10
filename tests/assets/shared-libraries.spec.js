@@ -28,13 +28,14 @@ mainTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
-  await teamPage.createTeam(teamName);
+  const projectFirst = 'QA Project';
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });
 
 mainTest.afterEach(async ({}, testInfo) => {
-  await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 

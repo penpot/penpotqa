@@ -28,7 +28,9 @@ test.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
-  await teamPage.createTeam(teamName);
+  const projectFirst = 'QA Project';
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.createDefaultRectangleByCoordinates(300, 300);

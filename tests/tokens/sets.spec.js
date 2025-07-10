@@ -19,16 +19,16 @@ test.beforeEach(async ({ page, browserName }) => {
   mainPage = new MainPage(page);
   tokensPage = new TokensPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
-  await dashboardPage.createFileViaPlaceholder();
+  const projectFirst = 'QA Project';
+
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
 test.afterEach(async ({ page }, testInfo) => {
   await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 

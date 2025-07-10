@@ -15,15 +15,16 @@ test.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   pluginsPage = new PluginsPage(page);
-  await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
+  const projectFirst = 'QA Project';
+
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();
   await pluginsPage.isMainPageLoaded();
 });
 
 test.afterEach(async ({ page }, testInfo) => {
   await pluginsPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
