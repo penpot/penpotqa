@@ -29,19 +29,17 @@ mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
   registerPage = new RegisterPage(page);
   dashboardPage = new DashboardPage(page);
   commentsPanelPage = new CommentsPanelPage(page);
-  await teamPage.createTeam(teamName);
-  browserName === 'webkit' ? await teamPage.waitForTeamBtn(15000) : null;
-  await teamPage.isTeamSelected(teamName, browserName);
+  const projectFirst = 'QA Project';
+
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
   await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();
 });
 
 mainTest.afterEach(async ({ page }, testInfo) => {
-  await teamPage.deleteTeam(teamName);
+  // await teamPage.deleteTeam(teamName);
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
@@ -86,7 +84,7 @@ mainTest.describe(() => {
         process.env.LOGIN_PWD,
       );
       await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(teamName);
+      // await teamPage.isTeamSelected(teamName);
 
       await page.goto(link);
       await mainPage.isMainPageLoaded();
