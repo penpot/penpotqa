@@ -46,13 +46,11 @@ mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
   colorPalettePage = new ColorPalettePage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
-  await teamPage.createTeam(teamName);
-  browserName === 'webkit' ? await teamPage.waitForTeamBtn(15000) : null;
-  await teamPage.isTeamSelected(teamName, browserName);
+  const projectFirst = 'QA Project';
+
+  await teamPage.goToTeam();
+  await dashboardPage.openProjectFromLeftSidebar(projectFirst);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
   await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();
 });
