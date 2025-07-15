@@ -966,7 +966,7 @@ mainTest.describe(() => {
       await page.goto(secondInvite.inviteUrl);
       await registerPage.registerAccount(
         secondAdmin,
-        firstEmail,
+        secondEmail,
         process.env.LOGIN_PWD,
       );
       await dashboardPage.fillOnboardingQuestions();
