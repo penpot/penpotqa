@@ -652,7 +652,7 @@ mainTest.describe(() => {
       layersPanelPage = new LayersPanelPage(newPage);
 
       await viewModePage.clickEditButton();
-      await newPage.waitForTimeout(1000);
+      await newPage.waitForTimeout(2000);
       await viewModePage.isPageSwitched(newPage);
 
       await page.close();
