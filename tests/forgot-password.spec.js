@@ -40,8 +40,8 @@ test(
 test.describe(() => {
   let randomName, email, invite, newPwd;
   let loginPage, registerPage, forgotPasswordPage, profilePage, dashboardPage;
-  test.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 30000);
+  test.beforeEach(async ({ page }) => {
+    await test.slow();
     randomName = random().concat('autotest');
     email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
     newPwd = 'TestForgotPassword123';
@@ -66,7 +66,7 @@ test.describe(() => {
     await loginPage.clickOnForgotPassword();
     await forgotPasswordPage.enterEmail(email);
     await forgotPasswordPage.clickRecoverPasswordButton();
-    await waitSecondMessage(page, email, 40);
+    await waitSecondMessage(page, email, 60);
     const forgotPass = await getRegisterMessage(email);
     await checkRecoveryText(forgotPass.inviteText, randomName);
     await page.goto(forgotPass.inviteUrl);
@@ -76,14 +76,14 @@ test.describe(() => {
     await loginPage.isLoginPageOpened();
   });
 
-  test(qase(49, 'ON-22 Forgot password flow'), async ({ page }) => {
+  test(qase(49, 'ON-22 Forgot password flow'), async () => {
     await loginPage.enterEmail(email);
     await loginPage.enterPwd(newPwd);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
   });
 
-  test(qase(52, 'ON-25 Login with old password'), async ({ page }) => {
+  test(qase(52, 'ON-25 Login with old password'), async () => {
     await loginPage.enterEmail(email);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
