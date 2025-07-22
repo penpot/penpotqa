@@ -90,6 +90,7 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-drop-shadow-default.png',
         {
@@ -98,6 +99,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.hideShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-drop-shadow-hide.png',
         {
@@ -106,6 +108,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.unhideShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-drop-shadow-unhide.png',
         {
@@ -114,6 +117,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-inner-shadow-default.png',
         {
@@ -122,6 +126,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.removeShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-inner-shadow-remove.png',
         {
@@ -139,6 +144,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickAddBlurButton();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-blur-default.png',
         {
@@ -147,16 +153,19 @@ mainTest.describe(() => {
       );
       await designPanelPage.hideBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-blur-hide.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-blur-unhide.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.removeBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-blur-remove.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
@@ -166,6 +175,7 @@ mainTest.describe(() => {
   mainTest(qase(289, 'CO-74 Add, edit and delete Stroke to rectangle'), async () => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-stroke-default.png',
       {
@@ -181,6 +191,7 @@ mainTest.describe(() => {
       'Dotted',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-stroke-inside-dotted.png',
       {
@@ -196,6 +207,7 @@ mainTest.describe(() => {
       'Dashed',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-stroke-outside-dashed.png',
       {
@@ -211,6 +223,7 @@ mainTest.describe(() => {
       'Solid',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-stroke-center-solid.png',
       {
@@ -226,6 +239,7 @@ mainTest.describe(() => {
       'Mixed',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-stroke-center-mixed.png',
       {
@@ -235,6 +249,7 @@ mainTest.describe(() => {
     await mainPage.clickOnLayerOnCanvas();
     await designPanelPage.removeStroke();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-stroke-remove.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
@@ -299,17 +314,21 @@ mainTest.describe(() => {
   mainTest(qase(277, 'CO-62 Add rotation to rectangle'), async () => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot('rectangle-rotated-90.png');
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'rectangle-rotated-120.png',
     );
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot('rectangle-rotated-45.png');
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'rectangle-rotated-359.png',
     );

@@ -84,6 +84,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.isFillHexCodeSet('B1B2B5');
     await designPanelPage.isFillOpacitySet('100');
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot('path-fill.png');
   });
 
@@ -138,6 +139,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await designPanelPage.isFillHexCodeSet('B1B2B5');
     await designPanelPage.isFillOpacitySet('70');
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'rectangle-changed-opacity.png',
     );

@@ -20,6 +20,7 @@ exports.BasePage = class BasePage {
     this.savedChangesIcon = page.locator('div[title="Saved"]');
     this.unsavedChangesIcon = page.locator('div[title="Saving"]');
     this.viewport = page.locator('div[class*="viewport"] >> nth=0');
+    this.resizeHandler = page.locator('[class="resize-handler"]');
 
     this.modalCancelButton = page.getByRole('button', { name: 'Cancel' });
     this.modalSaveButton = page.getByRole('button', { name: 'Save' });
@@ -281,6 +282,10 @@ exports.BasePage = class BasePage {
 
   async waitForChangeIsUnsaved() {
     await this.unsavedChangesIcon.waitFor({ state: 'visible' });
+  }
+
+  async waitForResizeHandlerVisible() {
+    await this.resizeHandler.first().waitFor({ state: 'visible' });
   }
 
   async waitForViewportVisible(timeout = 30) {
