@@ -84,7 +84,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.clickOnEnter();
   }
 
-  async renameLayerViaRightClick(layerName, browserName = 'chrome') {
+  async renameLayerViaRightClick(layerName) {
     const layerSel = this.layersRows.getByText(layerName);
     await layerSel.last().click({
       button: 'right',

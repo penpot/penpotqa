@@ -139,6 +139,7 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-drop-shadow-default.png',
         {
@@ -147,6 +148,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.hideShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-drop-shadow-hide.png',
         {
@@ -155,6 +157,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.unhideShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-drop-shadow-unhide.png',
         {
@@ -163,6 +166,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-inner-shadow-default.png',
         {
@@ -171,6 +175,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.removeShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-inner-shadow-remove.png',
         {
@@ -210,21 +215,25 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickAddBlurButton();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('board-blur-default.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.hideBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('board-blur-hide.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('board-blur-unhide.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.removeBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('board-blur-remove.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });

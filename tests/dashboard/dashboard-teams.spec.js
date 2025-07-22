@@ -207,7 +207,7 @@ mainTest.describe(() => {
       await teamPage.enterEmailToInviteMembersPopUp(process.env.LOGIN_EMAIL);
       await teamPage.isSendInvitationBtnDisabled();
       await teamPage.isSendInvitationWarningExist(
-        'Some emails are from current team members. Their invitations will not be sent.',
+        "Some members are already on the team. We'll invite the rest.",
       );
     },
   );

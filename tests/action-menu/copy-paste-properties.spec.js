@@ -86,6 +86,9 @@ mainTest.describe(() => {
       await designPanelPage.clickAddBlurButton();
       await designPanelPage.changeValueForBlur('7');
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
+      await mainPage.clickViewportTwice();
+      await layersPanelPage.selectLayerByName('Rectangle');
     });
 
     mainTest(
