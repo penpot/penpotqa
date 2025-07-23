@@ -17,7 +17,7 @@ _How did you solve the problem?_
 
 - [ ] Check the code
 - [ ] It complies with the tests conventions
-- [ ] There's no missing snapshots for win32 (x3 browsers)
+- [ ] There are no missing snapshots for win32 (x3 browsers)
 - [ ] The tests runs OK
 
 ## Screenshots 📸 (optional)
