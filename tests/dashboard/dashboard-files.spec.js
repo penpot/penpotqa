@@ -325,6 +325,7 @@ mainTest(qase(1140, 'DA-54 Unpin project'), async () => {
   await dashboardPage.clickUnpinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem(
     'Pinned projects will appear here',
+    true,
   );
 });
 
@@ -336,6 +337,7 @@ mainTest(qase(1141, 'DA-55 Pin project'), async () => {
   await dashboardPage.clickUnpinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem(
     'Pinned projects will appear here',
+    true,
   );
   await dashboardPage.clickPinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem('Test Project');

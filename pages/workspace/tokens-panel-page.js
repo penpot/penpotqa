@@ -9,9 +9,8 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     super(page);
 
     this.tokensTab = page.getByRole('tab', { name: 'tokens' });
-    this.setsList = page.locator('[class*="tokens_sets__sets-list"]');
     this.createOneSetButton = page
-      .locator('[class*="tokens_sets__empty-sets"]')
+      .locator('[class*="empty-sets-wrapper"]')
       .getByText('Create one.');
     this.createSetButton = page.getByRole('button', { name: 'Add set' });
     this.setsNameInput = page.getByPlaceholder("Enter name (use '/' for groups)");
@@ -74,15 +73,24 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
 
     this.tokenToolsButton = page.getByRole('button', { name: 'Tools' });
     this.importButton = page.getByRole('menuitem', { name: 'Import' });
-    this.chooseFileButton = page.getByRole('button', { name: 'Choose file' });
-    this.chooseFolderButton = page.getByRole('button', { name: 'Choose folder' });
+    this.chooseFileButton = page.getByRole('button', {
+      name: 'Import Single JSON file',
+    });
+    this.chooseFolderButton = page.getByRole('button', { name: 'Import folder' });
+    this.chooseZipButton = page.getByRole('button', { name: 'Import ZIP file' });
     this.exportButton = page.getByRole('menuitem', { name: 'Export' });
     this.multipleFilesButton = page.getByRole('tab', { name: 'Multiple files' });
+    this.showOptionsButton = page.getByRole('button', { name: 'Show options' });
     this.exportTokensMessage = page.locator(
-      '[class*="tokens_modals_export__disabled-message"]',
+      '[class*="tokens_export_modal__disabled-message"]',
     );
     this.confirmExportButton = page.getByRole('button', { name: 'Export' });
-    this.exportFileItem = page.locator('[class*="export__file-name"]');
+    this.exportFileItem = page.locator('[class*="export_modal__file-name"]');
+    this.jsonOption = page
+      .getByRole('option')
+      .filter({ hasText: 'Single JSON file' });
+    this.folderOption = page.getByRole('option').filter({ hasText: 'Folder' });
+    this.zipOption = page.getByRole('option').filter({ hasText: 'ZIP file' });
   }
 
   async clickTokensTab() {
@@ -388,6 +396,8 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
 
   async importTokens(file) {
     await this.importButton.click();
+    await this.showOptionsButton.click();
+    await this.jsonOption.click();
     const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.chooseFileButton.click();
     const fileChooser = await fileChooserPromise;
@@ -396,6 +406,8 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
 
   async importTokensFolder(file) {
     await this.importButton.click();
+    await this.showOptionsButton.click();
+    await this.folderOption.click();
     const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.chooseFolderButton.click();
     const fileChooser = await fileChooserPromise;

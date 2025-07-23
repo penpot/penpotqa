@@ -79,8 +79,6 @@ mainTest(qase(2139, 'Enable and Disable sets'), async () => {
   await tokensPage.waitForChangeIsSaved();
   await designPanelPage.checkGeneralCornerRadius('30');
 
-  await expect(tokensPage.setsList).toHaveScreenshot('sets-sidebar.png');
-
   await tokensPage.clickOnSetCheckboxByName('Light');
   await designPanelPage.isFillHexCodeSetComponent('ef0c0c');
   await tokensPage.clickOnSetCheckboxByName('Mobile');

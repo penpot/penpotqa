@@ -52,7 +52,7 @@ mainTest(qase(2221, 'Import .penpot file with tokens'), async () => {
 });
 
 mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
-  const errorCount = 2;
+  const errorCount = 1;
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();

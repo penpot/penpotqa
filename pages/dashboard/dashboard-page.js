@@ -87,7 +87,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.librariesSidebarItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Libraries' });
-    this.pinnedProjectsSidebarItem = page.getByTestId('pinned-projects');
+    this.pinnedProjectsSidebar = page.getByTestId('pinned-projects');
+    this.pinnedProjectsSidebarItem =
+      this.pinnedProjectsSidebar.getByRole('listitem');
+    this.pinnedProjectsSidebarEmpty = this.pinnedProjectsSidebar.locator(
+      '[class*="empty-text"]',
+    );
     this.searchInput = page.locator('#search-input');
     this.projectOptions = page.getByTestId('project-options').first();
 
@@ -515,8 +520,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
   }
 
-  async checkPinnedProjectsSidebarItem(text) {
-    await expect(this.pinnedProjectsSidebarItem).toHaveText(text);
+  async checkPinnedProjectsSidebarItem(text, empty = false) {
+    empty
+      ? await expect(this.pinnedProjectsSidebarEmpty).toHaveText(text)
+      : await expect(this.pinnedProjectsSidebarItem).toHaveText(text);
   }
 
   async search(text) {

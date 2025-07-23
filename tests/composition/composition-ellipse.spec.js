@@ -65,6 +65,7 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-drop-shadow-default.png',
         {
@@ -73,6 +74,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.hideShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-drop-shadow-hide.png',
         {
@@ -81,6 +83,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.unhideShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-drop-shadow-unhide.png',
         {
@@ -89,6 +92,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-inner-shadow-default.png',
         {
@@ -97,6 +101,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.removeShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'ellipse-inner-shadow-remove.png',
         {
@@ -137,21 +142,25 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickAddBlurButton();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-default.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.hideBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-hide.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-unhide.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.removeBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('ellipse-blur-remove.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
@@ -170,6 +179,7 @@ mainTest.describe(() => {
   mainTest(qase(336, 'CO-121 Add, edit and delete Stroke to ellipse'), async () => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-default.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
@@ -183,6 +193,7 @@ mainTest.describe(() => {
       'Dotted',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'ellipse-stroke-inside-dotted.png',
       {
@@ -199,6 +210,7 @@ mainTest.describe(() => {
       'Dashed',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'ellipse-stroke-outside-dashed.png',
       {
@@ -215,6 +227,7 @@ mainTest.describe(() => {
       'Solid',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'ellipse-stroke-center-solid.png',
       {
@@ -231,6 +244,7 @@ mainTest.describe(() => {
       'Mixed',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'ellipse-stroke-center-mixed.png',
       {
@@ -241,6 +255,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.removeStroke();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('ellipse-stroke-remove.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
