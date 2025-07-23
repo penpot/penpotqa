@@ -3,6 +3,7 @@
 ## Description
 
 This PR resolves ...
+
 _What problem are you trying to solve?_
 
 ... explain What? Why? and How?
@@ -23,4 +24,4 @@ _How did you solve the problem?_
 
 _If relevant, include screenshots_
 
-## [Anything Else?] (optional)
+## Anything Else? (optional)
