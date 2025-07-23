@@ -545,6 +545,7 @@ mainTest.describe(() => {
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#FF0000');
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
 
       await expect(mainPage.viewport).toHaveScreenshot(
         'red-board-with-4-image.png',
@@ -774,11 +775,13 @@ mainTest.describe(() => {
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#00FF00');
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-green-color.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await mainPage.clickViewportOnce();
       await mainPage.clickShortcutCtrlZ(browserName);
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.createdLayer).toHaveScreenshot(
         'rectangle-undo-color.png',
       );

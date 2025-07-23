@@ -267,6 +267,7 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-drop-shadow-default.png',
         {
@@ -275,11 +276,13 @@ mainTest.describe(() => {
       );
       await designPanelPage.hideShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('path-drop-shadow-hide.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-drop-shadow-unhide.png',
         {
@@ -288,6 +291,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-inner-shadow-default.png',
         {
@@ -296,6 +300,7 @@ mainTest.describe(() => {
       );
       await designPanelPage.removeShadow();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-inner-shadow-remove.png',
         {

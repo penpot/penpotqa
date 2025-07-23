@@ -191,12 +191,11 @@ async function checkNewEmailText(text, name, newEmail) {
     '\r\n' +
     `We received a request to change your current email to ${newEmail}.\r\n` +
     '\r\n' +
-    'Click to the link below to confirm the change:\r\n' +
+    'Click the link below to confirm the change.\r\n' +
     '\r\n' +
     '\r\n' +
     '\r\n' +
-    'If you received this email by mistake, please consider changing your password\r\n' +
-    'for security reasons.\r\n' +
+    'If you did not request this change, consider changing your password for security reasons.\r\n' +
     '\r\n' +
     'Enjoy!\r\n' +
     'The Penpot team.';

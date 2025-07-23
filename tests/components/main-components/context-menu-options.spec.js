@@ -514,6 +514,7 @@ mainTest.describe(() => {
     await designPanelPage.changeValueForBlur('2');
     await mainPage.waitForChangeIsSaved();
 
+    await layersPanelPage.clickCopyComponentOnLayersTab();
     await basePage.resetOverridesViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
