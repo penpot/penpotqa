@@ -251,8 +251,8 @@ mainTest.describe(() => {
 
   mainTest(qase(229, 'CO-14 Add, edit and delete Stroke to board'), async () => {
     await designPanelPage.clickAddStrokeButton();
-    await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-stroke-default.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
@@ -264,8 +264,8 @@ mainTest.describe(() => {
       'Inside',
       'Dotted',
     );
-    await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-stroke-inside-dotted.png',
       {
@@ -280,8 +280,8 @@ mainTest.describe(() => {
       'Outside',
       'Dashed',
     );
-    await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-stroke-outside-dashed.png',
       {
@@ -296,8 +296,8 @@ mainTest.describe(() => {
       'Center',
       'Solid',
     );
-    await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-stroke-center-solid.png',
       {
@@ -312,8 +312,8 @@ mainTest.describe(() => {
       'Center',
       'Mixed',
     );
-    await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-stroke-center-mixed.png',
       {
@@ -322,8 +322,8 @@ mainTest.describe(() => {
     );
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.removeStroke();
-    await mainPage.clickViewportOnce();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-stroke-remove.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
