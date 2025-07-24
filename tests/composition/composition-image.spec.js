@@ -206,6 +206,7 @@ mainTest.describe(() => {
   mainTest(qase(446, 'CO-231 Add, edit and delete Stroke to image'), async () => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('image-stroke-default.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
@@ -217,6 +218,7 @@ mainTest.describe(() => {
       'Dotted',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'image-stroke-inside-dotted.png',
       {
@@ -231,6 +233,7 @@ mainTest.describe(() => {
       'Dashed',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'image-stroke-outside-dashed.png',
       {
@@ -245,6 +248,7 @@ mainTest.describe(() => {
       'Solid',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'image-stroke-center-solid.png',
       {
@@ -259,6 +263,7 @@ mainTest.describe(() => {
       'Mixed',
     );
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'image-stroke-center-mixed.png',
       {
@@ -267,6 +272,7 @@ mainTest.describe(() => {
     );
     await designPanelPage.removeStroke();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('image-stroke-remove.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });

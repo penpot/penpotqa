@@ -83,21 +83,25 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.clickAddBlurButton();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('path-blur-default.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.hideBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('path-blur-hide.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.unhideBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('path-blur-unhide.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await designPanelPage.removeBlur();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('path-blur-remove.png', {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
