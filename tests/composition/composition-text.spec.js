@@ -200,6 +200,7 @@ mainTest.describe(() => {
     await mainPage.clickOnLayerOnCanvas();
     await designPanelPage.changeStrokeSettings('#43E50B', '60', '10', 'Inside');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'text-stroke-inside-dotted.png',
       {
@@ -209,6 +210,7 @@ mainTest.describe(() => {
     await mainPage.clickOnLayerOnCanvas();
     await designPanelPage.changeStrokeSettings('#F5358F', '80', '5', 'Outside');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'text-stroke-outside-dashed.png',
       {
@@ -218,6 +220,7 @@ mainTest.describe(() => {
     await mainPage.clickOnLayerOnCanvas();
     await designPanelPage.changeStrokeSettings('#F5358F', '100', '3', 'Center');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'text-stroke-center-solid.png',
       {
@@ -227,6 +230,7 @@ mainTest.describe(() => {
     await mainPage.clickOnLayerOnCanvas();
     await designPanelPage.changeStrokeSettings('#F5358F', '40', '4', 'Center');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'text-stroke-center-mixed.png',
       {
@@ -236,6 +240,7 @@ mainTest.describe(() => {
     await mainPage.clickOnLayerOnCanvas();
     await designPanelPage.removeStroke();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text-stroke-remove.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
