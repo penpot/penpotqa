@@ -474,6 +474,7 @@ mainTest.describe(() => {
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
     await designPanelPage.changeAxisXandYForLayer('400', '300');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-detach-instance-right-click.png',
       {

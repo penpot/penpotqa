@@ -126,6 +126,7 @@ mainTest.describe(() => {
       await designPanelPage.setStrokeWidth('10');
       await tokensPage.selectMenuItem(tokenName, 'Stroke');
       await tokensPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await tokensPage.isTokenAppliedWithName(tokenName);
       await expect(tokensPage.createdLayer).toHaveScreenshot('board-red-stroke.png');
       await tokensPage.isMenuItemWithNameSelected(tokenName, 'Stroke');
