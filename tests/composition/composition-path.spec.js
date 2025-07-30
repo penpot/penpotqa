@@ -60,6 +60,7 @@ mainTest(qase(1755, 'PENPOT-1755 Create Path from toolbar with cap'), async () =
   await designPanelPage.changeCap('Arrow', 'first');
   await designPanelPage.changeCap('Triangle', 'second');
   await mainPage.waitForChangeIsSaved();
+  await mainPage.waitForResizeHandlerVisible();
   await expect(mainPage.viewport).toHaveScreenshot('path-opened-with-cap.png', {
     mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
   });
