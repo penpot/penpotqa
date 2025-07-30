@@ -152,6 +152,7 @@ mainTest.describe(() => {
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#0000FF');
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-blue-color.png',
         {
