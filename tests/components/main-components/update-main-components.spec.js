@@ -191,6 +191,7 @@ mainTest.describe(() => {
       await colorPalettePage.setHex('#0538D1');
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-component-change-fill-color.png',
         {
