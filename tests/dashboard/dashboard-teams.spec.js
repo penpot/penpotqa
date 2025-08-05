@@ -1551,32 +1551,84 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(1180, 'DA-94 Team. Invitations- delete team invitation'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
-      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await teamPage.deleteInvitation();
-      await teamPage.isInvitationRecordRemoved();
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      await profilePage.logout();
-      await loginPage.isLoginPageOpened();
+  mainTest.describe(() => {
+    mainTest(
+      qase(1180, 'DA-94 Team. Invitations- delete team invitation'),
+      async ({ page }) => {
+        await mainTest.slow();
+        const firstAdmin = random().concat('autotest');
+        const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+        await teamPage.createTeam(team);
+        await teamPage.isTeamSelected(team);
+        await teamPage.openInvitationsPageViaOptionsMenu();
+        await teamPage.clickInviteMembersToTeamButton();
+        await teamPage.isInviteMembersPopUpHeaderDisplayed(
+          'Invite members to the team',
+        );
+        await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
+        await teamPage.selectInvitationRoleInPopUp('Admin');
+        await teamPage.clickSendInvitationButton();
+        await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+        await teamPage.deleteInvitation();
+        await teamPage.isInvitationRecordRemoved();
+        const firstInvite = await waitMessage(page, firstEmail, 40);
+        await profilePage.logout();
+        await loginPage.isLoginPageOpened();
 
-      await page.goto(firstInvite.inviteUrl);
-      await teamPage.isInviteMessageDisplayed('Invite invalid');
+        await page.goto(firstInvite.inviteUrl);
+        await teamPage.isInviteMessageDisplayed('Invite invalid');
+      },
+    );
 
+    mainTest(
+      qase(1821, 'Workspace bad URL check without login'),
+      async ({ page }) => {
+        await mainTest.slow();
+        await teamPage.createTeam(team);
+        await teamPage.isTeamSelected(team);
+        await dashboardPage.createFileViaPlaceholder();
+        await mainPage.isMainPageLoaded();
+        const currentURL = await mainPage.getUrl();
+        const badURL = await mainPage.makeBadUrl(currentURL);
+        await mainPage.clickPencilBoxButton();
+
+        await profilePage.logout();
+        await loginPage.isLoginPageOpened();
+
+        await page.goto(badURL);
+        await loginPage.waitLoginPage();
+      },
+    );
+
+    mainTest(
+      qase(1823, 'View mode bad URL check without login'),
+      async ({ page }) => {
+        await mainTest.slow();
+        let viewModePage = new ViewModePage(page);
+        await teamPage.createTeam(team);
+        await teamPage.isTeamSelected(team);
+        await dashboardPage.createFileViaPlaceholder();
+        await mainPage.isMainPageLoaded();
+
+        await mainPage.createDefaultBoardByCoordinates(300, 300);
+        await mainPage.waitForChangeIsSaved();
+        const newPage = await viewModePage.clickViewModeShortcut();
+        viewModePage = new ViewModePage(newPage);
+        await viewModePage.waitForViewerSection(45000);
+        const currentURL = await viewModePage.getUrl();
+        const badURL = await viewModePage.makeBadUrl(currentURL);
+
+        await mainPage.clickPencilBoxButton();
+        await profilePage.logout();
+        await loginPage.isLoginPageOpened();
+
+        await page.goto(badURL);
+        await teamPage.isInviteMessageDisplayed('Oops!');
+        await teamPage.isErrorMessageDisplayed("This page doesn't exist");
+      },
+    );
+
+    mainTest.afterEach(async () => {
       await loginPage.goto();
       await loginPage.enterEmail(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1584,178 +1636,93 @@ mainTest.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
       await teamPage.switchTeam(team);
       await teamPage.deleteTeam(team);
-    },
-  );
-
-  mainTest(qase(1821, 'Workspace bad URL check without login'), async ({ page }) => {
-    await mainTest.slow();
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-    const currentURL = await mainPage.getUrl();
-    const badURL = await mainPage.makeBadUrl(currentURL);
-    await mainPage.clickPencilBoxButton();
-
-    await profilePage.logout();
-    await loginPage.isLoginPageOpened();
-
-    await page.goto(badURL);
-    await teamPage.isInviteMessageDisplayed('Oops!');
-    await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-
-    await loginPage.goto();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await teamPage.switchTeam(team);
-    await teamPage.deleteTeam(team);
+    });
   });
 
-  mainTest(qase(1823, 'View mode bad URL check without login'), async ({ page }) => {
-    await mainTest.slow();
-    let viewModePage = new ViewModePage(page);
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
+  mainTest.describe(() => {
+    mainTest.beforeEach(async () => {
+      await mainTest.slow();
+      await teamPage.createTeam(team);
+      await teamPage.isTeamSelected(team);
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+    });
 
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    const currentURL = await viewModePage.getUrl();
-    const badURL = await viewModePage.makeBadUrl(currentURL);
+    mainTest(qase(1822, 'Workspace bad URL check with login'), async ({ page }) => {
+      const currentURL = await mainPage.getUrl();
+      const badURL = await mainPage.makeBadUrl(currentURL);
+      await mainPage.clickPencilBoxButton();
 
-    await mainPage.clickPencilBoxButton();
-    await profilePage.logout();
-    await loginPage.isLoginPageOpened();
+      await profilePage.logout();
+      await loginPage.waitLoginPage();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.SECOND_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
 
-    await page.goto(badURL);
-    await teamPage.isInviteMessageDisplayed('Oops!');
-    await teamPage.isErrorMessageDisplayed("This page doesn't exist");
+      await page.goto(badURL);
+      await teamPage.isInviteMessageDisplayed('Oops!');
+      await teamPage.isErrorMessageDisplayed("This page doesn't exist");
+      await teamPage.isGoToPenpotButtonVisible();
+    });
 
-    await loginPage.goto();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await teamPage.switchTeam(team);
-    await teamPage.deleteTeam(team);
-  });
+    mainTest(qase(1824, 'View mode bad URL check with login'), async ({ page }) => {
+      let viewModePage = new ViewModePage(page);
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeShortcut();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(45000);
+      const currentURL = await viewModePage.getUrl();
+      const badURL = await viewModePage.makeBadUrl(currentURL);
 
-  mainTest(qase(1822, 'Workspace bad URL check with login'), async ({ page }) => {
-    await mainTest.slow();
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-    const currentURL = await mainPage.getUrl();
-    const badURL = await mainPage.makeBadUrl(currentURL);
-    await mainPage.clickPencilBoxButton();
+      await mainPage.clickPencilBoxButton();
+      await profilePage.logout();
+      await loginPage.waitLoginPage();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.SECOND_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
 
-    await profilePage.logout();
-    await loginPage.waitLoginPage();
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.SECOND_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
+      await page.goto(badURL);
+      await teamPage.isInviteMessageDisplayed('Oops!');
+      await teamPage.isErrorMessageDisplayed("This page doesn't exist");
+      await teamPage.isGoToPenpotButtonVisible();
+    });
 
-    await page.goto(badURL);
-    await teamPage.isInviteMessageDisplayed('Oops!');
-    await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-    await teamPage.isGoToPenpotButtonVisible();
+    mainTest(qase(1826, 'Dashboard bad URL check with login'), async ({ page }) => {
+      await mainPage.clickPencilBoxButton();
+      const currentURL = await mainPage.getUrl();
+      const badURL = await mainPage.makeBadDashboardUrl(currentURL);
 
-    await teamPage.clickGoToPenpotButton();
-    await profilePage.logout();
-    await loginPage.waitLoginPage();
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await teamPage.switchTeam(team);
-    await teamPage.deleteTeam(team);
-  });
+      await profilePage.logout();
+      await loginPage.waitLoginPage();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.SECOND_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
 
-  mainTest(qase(1824, 'View mode bad URL check with login'), async ({ page }) => {
-    await mainTest.slow();
-    let viewModePage = new ViewModePage(page);
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
+      await page.goto(badURL);
+      await teamPage.isInviteMessageDisplayed('Oops!');
+      await teamPage.isErrorMessageDisplayed("This page doesn't exist");
+      await teamPage.isGoToPenpotButtonVisible();
+    });
 
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-    const currentURL = await viewModePage.getUrl();
-    const badURL = await viewModePage.makeBadUrl(currentURL);
-
-    await mainPage.clickPencilBoxButton();
-    await profilePage.logout();
-    await loginPage.waitLoginPage();
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.SECOND_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-
-    await page.goto(badURL);
-    await teamPage.isInviteMessageDisplayed('Oops!');
-    await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-    await teamPage.isGoToPenpotButtonVisible();
-
-    await teamPage.clickGoToPenpotButton();
-    await profilePage.logout();
-    await loginPage.waitLoginPage();
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await teamPage.switchTeam(team);
-    await teamPage.deleteTeam(team);
-  });
-
-  mainTest(qase(1826, 'Dashboard bad URL check with login'), async ({ page }) => {
-    await mainTest.slow();
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-    await mainPage.clickPencilBoxButton();
-    const currentURL = await mainPage.getUrl();
-    const badURL = await mainPage.makeBadDashboardUrl(currentURL);
-
-    await profilePage.logout();
-    await loginPage.waitLoginPage();
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.SECOND_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-
-    await page.goto(badURL);
-    await teamPage.isInviteMessageDisplayed('Oops!');
-    await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-    await teamPage.isGoToPenpotButtonVisible();
-
-    await teamPage.clickGoToPenpotButton();
-    await profilePage.logout();
-    await loginPage.waitLoginPage();
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await teamPage.switchTeam(team);
-    await teamPage.deleteTeam(team);
+    mainTest.afterEach(async () => {
+      await teamPage.clickGoToPenpotButton();
+      await profilePage.logout();
+      await loginPage.waitLoginPage();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await teamPage.switchTeam(team);
+      await teamPage.deleteTeam(team);
+    });
   });
 });
 
