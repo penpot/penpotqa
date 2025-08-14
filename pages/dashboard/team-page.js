@@ -197,6 +197,10 @@ exports.TeamPage = class TeamPage extends BasePage {
     }
   }
 
+  async openTeamOptionsMenu() {
+    await this.teamOptionsMenuButton.click();
+  }
+
   async openMembersPageViaOptionsMenu() {
     await this.teamOptionsMenuButton.click();
     await this.membersMenuItem.click();
@@ -548,5 +552,12 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.goToYourPenpotButton).toBeVisible();
     await expect(this.requestAccessButton).toBeVisible();
     await expect(this.closeModalButton).toBeVisible();
+  }
+
+  async assertRenameItemNotVisible() {
+    await expect(
+      this.renameTeamMenuItem,
+      'Rename team button should not be visible',
+    ).not.toBeVisible();
   }
 };

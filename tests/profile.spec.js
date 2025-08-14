@@ -61,6 +61,34 @@ mainTest(qase(198, 'PR-12 Change password to invalid'), async ({ page }) => {
   );
 });
 
+mainTest(qase(200, 'Show/hide password'), async ({ page }) => {
+  const newPassword = '1234567890';
+  const profilePage = new ProfilePage(page);
+  await profilePage.openYourAccountPage();
+  await profilePage.isHeaderDisplayed('Your account');
+  await profilePage.openPasswordPageInAccount();
+  await profilePage.enterCurrentPassword(process.env.LOGIN_PWD);
+  await profilePage.enterNewPassword(newPassword);
+  await profilePage.enterConfirmPassword(newPassword);
+
+  await profilePage.clickOnShowPasswordIcon(profilePage.oldPasswordContainer);
+  await profilePage.isPasswordShown(
+    profilePage.passwordOldInput,
+    process.env.LOGIN_PWD,
+  );
+  await profilePage.clickOnShowPasswordIcon(profilePage.newPasswordContainer);
+  await profilePage.isPasswordShown(profilePage.passwordNewInput, newPassword);
+  await profilePage.clickOnShowPasswordIcon(profilePage.confirmPasswordContainer);
+  await profilePage.isPasswordShown(profilePage.passwordConfirmInput, newPassword);
+
+  await profilePage.clickOnHidePasswordIcon(profilePage.oldPasswordContainer);
+  await profilePage.isPasswordHidden(profilePage.passwordOldInput);
+  await profilePage.clickOnHidePasswordIcon(profilePage.newPasswordContainer);
+  await profilePage.isPasswordHidden(profilePage.passwordNewInput);
+  await profilePage.clickOnHidePasswordIcon(profilePage.confirmPasswordContainer);
+  await profilePage.isPasswordHidden(profilePage.passwordConfirmInput);
+});
+
 mainTest(
   qase(202, 'PR-16 Fail to change password confirmation does not match'),
   async ({ page }) => {
