@@ -35,17 +35,25 @@ jobs:
         shell: bash
         run: |
           echo "Debug info:"
+          echo "run_all_tests input: ${{ github.event.inputs.run_all_tests }}"
           echo "any_changed: ${{ steps.changed-files.outputs.any_changed }}"
           echo "all_changed_files: ${{ steps.changed-files.outputs.all_changed_files }}"
           echo "added_files: ${{ steps.changed-files.outputs.added_files }}"
           echo "modified_files: ${{ steps.changed-files.outputs.modified_files }}"
 
-          if [ "${{ steps.changed-files.outputs.any_changed }}" == "true" ]; then
+          # Check if user wants to run all tests or if there are changed files
+          if [ "${{ github.event.inputs.run_all_tests }}" == "true" ]; then
+            echo "Running ALL tests (forced by user input)"
+            echo "run_tests=true" >> $GITHUB_OUTPUT
+            echo "test_mode=all" >> $GITHUB_OUTPUT
+          elif [ "${{ steps.changed-files.outputs.any_changed }}" == "true" ]; then
             echo "Tests found to run: ${{ steps.changed-files.outputs.all_changed_files }}"
             echo "run_tests=true" >> $GITHUB_OUTPUT
+            echo "test_mode=changed" >> $GITHUB_OUTPUT
           else
             echo "No test files changed, skipping test execution"
             echo "run_tests=false" >> $GITHUB_OUTPUT
+            echo "test_mode=none" >> $GITHUB_OUTPUT
           fi
       - name: Run Playwright tests
         if: steps.should-run-tests.outputs.run_tests == 'true'
@@ -61,8 +69,13 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
         shell: bash
         run: |
-          echo "Running tests for changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
-          npx playwright test --project=chrome -gv 'PERF' ${{ steps.changed-files.outputs.all_changed_files }}
+          if [ "${{ steps.should-run-tests.outputs.test_mode }}" == "all" ]; then
+            echo "Running ALL tests"
+            npx playwright test --project=chrome -gv 'PERF'
+          else
+            echo "Running tests for changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+            npx playwright test --project=chrome -gv 'PERF' ${{ steps.changed-files.outputs.all_changed_files }}
+          fi
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
         if: always() && steps.should-run-tests.outputs.run_tests == 'true'
