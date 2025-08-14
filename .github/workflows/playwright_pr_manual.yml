@@ -1,8 +1,12 @@
 name: Manual Penpot Tests on PR
 on:
   workflow_dispatch:
-#   pull_request:
-#     types: [opened, synchronize, reopened]
+    inputs:
+      run_all_tests:
+        description: 'Run all tests (ignore changed files detection)'
+        required: false
+        default: 'false'
+        type: boolean
 
 jobs:
   tests_chromium:
@@ -22,6 +26,7 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
+          base_sha: ${{ github.event.before || 'main' }}
           files: |
             tests/**/*.spec.js
             tests/**/*.spec.ts
@@ -29,6 +34,12 @@ jobs:
         id: should-run-tests
         shell: bash
         run: |
+          echo "Debug info:"
+          echo "any_changed: ${{ steps.changed-files.outputs.any_changed }}"
+          echo "all_changed_files: ${{ steps.changed-files.outputs.all_changed_files }}"
+          echo "added_files: ${{ steps.changed-files.outputs.added_files }}"
+          echo "modified_files: ${{ steps.changed-files.outputs.modified_files }}"
+
           if [ "${{ steps.changed-files.outputs.any_changed }}" == "true" ]; then
             echo "Tests found to run: ${{ steps.changed-files.outputs.all_changed_files }}"
             echo "run_tests=true" >> $GITHUB_OUTPUT
