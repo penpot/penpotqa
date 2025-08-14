@@ -15,6 +15,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
           node-version: 22
@@ -22,41 +24,7 @@ jobs:
         run: npm ci
       - name: Install Playwright
         run: npx playwright install --with-deps
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v44
-        with:
-          base_sha: ${{ github.event.before || 'main' }}
-          files: |
-            tests/**/*.spec.js
-            tests/**/*.spec.ts
-      - name: Check if tests should run
-        id: should-run-tests
-        shell: bash
-        run: |
-          echo "Debug info:"
-          echo "run_all_tests input: ${{ github.event.inputs.run_all_tests }}"
-          echo "any_changed: ${{ steps.changed-files.outputs.any_changed }}"
-          echo "all_changed_files: ${{ steps.changed-files.outputs.all_changed_files }}"
-          echo "added_files: ${{ steps.changed-files.outputs.added_files }}"
-          echo "modified_files: ${{ steps.changed-files.outputs.modified_files }}"
-
-          # Check if user wants to run all tests or if there are changed files
-          if [ "${{ github.event.inputs.run_all_tests }}" == "true" ]; then
-            echo "Running ALL tests (forced by user input)"
-            echo "run_tests=true" >> $GITHUB_OUTPUT
-            echo "test_mode=all" >> $GITHUB_OUTPUT
-          elif [ "${{ steps.changed-files.outputs.any_changed }}" == "true" ]; then
-            echo "Tests found to run: ${{ steps.changed-files.outputs.all_changed_files }}"
-            echo "run_tests=true" >> $GITHUB_OUTPUT
-            echo "test_mode=changed" >> $GITHUB_OUTPUT
-          else
-            echo "No test files changed, skipping test execution"
-            echo "run_tests=false" >> $GITHUB_OUTPUT
-            echo "test_mode=none" >> $GITHUB_OUTPUT
-          fi
       - name: Run Playwright tests
-        if: steps.should-run-tests.outputs.run_tests == 'true'
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
@@ -69,16 +37,16 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
         shell: bash
         run: |
-          if [ "${{ steps.should-run-tests.outputs.test_mode }}" == "all" ]; then
-            echo "Running ALL tests"
+          if [ "${{ github.event.inputs.run_all_tests }}" == "true" ]; then
+            echo "Running ALL tests (forced by user input)"
             npx playwright test --project=chrome -gv 'PERF'
           else
-            echo "Running tests for changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
-            npx playwright test --project=chrome -gv 'PERF' ${{ steps.changed-files.outputs.all_changed_files }}
+            echo "Running only changed tests"
+            npx playwright test --project=chrome -gv 'PERF' --only-changed=origin/main
           fi
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
-        if: always() && steps.should-run-tests.outputs.run_tests == 'true'
+        if: always()
         with:
           name: playwright-report-chromium-pr
           path: playwright-report/
@@ -88,5 +56,5 @@ jobs:
           CHANNEL_ID: ${{ secrets.PR_CHANNEL_ID }}
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
-        if: always() && steps.should-run-tests.outputs.run_tests == 'true'
+        if: always()
         run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('PR Auto Tests Reports Chrome')"
