@@ -44,7 +44,18 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.passwordFormHeader = page.locator(
       'div[class*="password__form-container"] h2',
     );
-    this.passwordOldInput = page.locator('#password-old');
+
+    this.oldPasswordContainer = this.page
+      .locator('.main_ui_components_forms__input-wrapper')
+      .getByText('Old password', { exact: true });
+    this.newPasswordContainer = this.page
+      .locator('.main_ui_components_forms__input-wrapper')
+      .getByText('New password', { exact: true });
+    this.confirmPasswordContainer = this.page
+      .locator('.main_ui_components_forms__input-wrapper')
+      .getByText('Confirm password', { exact: true });
+
+    this.passwordOldInput = page.getByPlaceholder('Old password');
     this.passwordNewInput = page.getByPlaceholder('New password');
     this.passwordConfirmInput = page.getByPlaceholder('Confirm password');
     this.changePasswordButton = page.getByTestId('submit-password');
@@ -96,6 +107,26 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
   async enterConfirmPassword(value) {
     await this.passwordConfirmInput.fill(value);
+  }
+
+  async clickOnShowPasswordIcon(passwordContainer) {
+    await passwordContainer.locator('.icon-shown').click();
+  }
+
+  async clickOnHidePasswordIcon(passwordContainer) {
+    await passwordContainer.locator('.icon-hide').click();
+  }
+
+  async isPasswordShown(passwordInput, passwordValue) {
+    await expect(passwordInput, 'Password is shown').toHaveValue(passwordValue);
+  }
+
+  async isPasswordHidden(passwordInput) {
+    // The type 'password' is the *** displayed on the password when is hidden.
+    await expect(passwordInput, 'Password is hidden').toHaveAttribute(
+      'type',
+      'password',
+    );
   }
 
   async isPasswordInputErrorDisplayed(error) {
