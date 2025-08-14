@@ -25,7 +25,19 @@ jobs:
           files: |
             tests/**/*.spec.js
             tests/**/*.spec.ts
+      - name: Check if tests should run
+        id: should-run-tests
+        shell: bash
+        run: |
+          if [ "${{ steps.changed-files.outputs.any_changed }}" == "true" ]; then
+            echo "Tests found to run: ${{ steps.changed-files.outputs.all_changed_files }}"
+            echo "run_tests=true" >> $GITHUB_OUTPUT
+          else
+            echo "No test files changed, skipping test execution"
+            echo "run_tests=false" >> $GITHUB_OUTPUT
+          fi
       - name: Run Playwright tests
+        if: steps.should-run-tests.outputs.run_tests == 'true'
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
@@ -36,17 +48,13 @@ jobs:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
+        shell: bash
         run: |
-          if [ "${{ steps.changed-files.outputs.any_changed }}" == "true" ]; then
-            echo "Running tests for changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
-            npx playwright test --project=chrome -gv 'PERF' ${{ steps.changed-files.outputs.all_changed_files }}
-          else
-            echo "No test files changed, running all tests"
-            npx playwright test --project=chrome -gv 'PERF'
-          fi
+          echo "Running tests for changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+          npx playwright test --project=chrome -gv 'PERF' ${{ steps.changed-files.outputs.all_changed_files }}
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.should-run-tests.outputs.run_tests == 'true'
         with:
           name: playwright-report-chromium-pr
           path: playwright-report/
@@ -56,5 +64,5 @@ jobs:
           CHANNEL_ID: ${{ secrets.PR_CHANNEL_ID }}
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
-        if: always()
+        if: always() && steps.should-run-tests.outputs.run_tests == 'true'
         run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('PR Auto Tests Reports Chrome')"
