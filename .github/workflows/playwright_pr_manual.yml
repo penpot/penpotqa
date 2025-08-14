@@ -1,0 +1,60 @@
+name: Manual Penpot Tests on PR
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  tests_chromium:
+    environment: PRE
+    timeout-minutes: 180
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            tests/**/*.spec.js
+            tests/**/*.spec.ts
+      - name: Run Playwright tests
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
+          SECOND_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+          GITHUB_RUN_ID: ${{ github.run.id }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
+        run: |
+          if [ "${{ steps.changed-files.outputs.any_changed }}" == "true" ]; then
+            echo "Running tests for changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+            npx playwright test --project=chrome -gv 'PERF' ${{ steps.changed-files.outputs.all_changed_files }}
+          else
+            echo "No test files changed, running all tests"
+            npx playwright test --project=chrome -gv 'PERF'
+          fi
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-chromium-pr
+          path: playwright-report/
+          retention-days: 30
+      - name: Send mattermost Message
+        env:
+          CHANNEL_ID: ${{ secrets.PR_CHANNEL_ID }}
+          LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
+          PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
+        if: always()
+        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('PR Auto Tests Reports Chrome')"
