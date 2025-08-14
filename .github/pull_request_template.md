@@ -16,9 +16,10 @@ _How did you solve the problem?_
 ## How to test
 
 - [ ] Check the code
-- [ ] It complies with the tests conventions
+- [ ] Update the Automation Status field in Qase
+- [ ] It complies with the test conventions
 - [ ] There are no missing snapshots for win32 (x3 browsers)
-- [ ] The tests runs OK
+- [ ] The tests run OK
 
 ## Screenshots 📸 (optional)
 
