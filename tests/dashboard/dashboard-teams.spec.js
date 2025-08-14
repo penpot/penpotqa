@@ -423,11 +423,42 @@ mainTest.describe(() => {
     await teamPage.isTeamSelected(team);
     await teamPage.renameTeam(teamNew);
     await teamPage.isTeamSelected(teamNew);
-  });
-
-  mainTest.afterEach(async () => {
     await teamPage.deleteTeams([team, teamNew]);
   });
+
+  mainTest(
+    qase(1207, 'Team. Unable to rename team (as editor)'),
+    async ({ page }) => {
+      const firstAdmin = random().concat('autotest');
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+
+      await teamPage.createTeam(team);
+      await teamPage.isTeamSelected(team);
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderDisplayed(
+        'Invite members to the team',
+      );
+      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+
+      await page.goto(firstInvite.inviteUrl);
+      await registerPage.registerAccount(
+        firstAdmin,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
+      await dashboardPage.fillOnboardingQuestions();
+      await teamPage.isTeamSelected(team);
+      await teamPage.openTeamOptionsMenu();
+      await teamPage.assertRenameItemNotVisible();
+    },
+  );
 });
 
 mainTest.describe(() => {
