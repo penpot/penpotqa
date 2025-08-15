@@ -44,6 +44,18 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.mainComponentLayerSelected = page.locator(
       'div[class*="sidebar_layer_item__selected"] svg[class="icon-component"]',
     );
+    this.mainComponentLayerToggleExpand = this.mainComponentLayer.locator(
+      'xpath=./../button[contains(@class, "sidebar_layer_item__inverse")]',
+    );
+    this.copyComponentLayerToggleExpand = this.copyComponentLayer.locator(
+      'xpath=./../button[contains(@class, "sidebar_layer_item__inverse")]',
+    );
+    this.mainComponentLayerToggleCollapse = this.mainComponentLayer.locator(
+      'xpath=./../button[contains(@class, "toggle-content")]',
+    );
+    this.copyComponentLayerToggleCollapse = this.copyComponentLayer.locator(
+      'xpath=./../button[contains(@class, "toggle-content")]',
+    );
   }
 
   async expandGroupOnLayersTab() {
@@ -241,9 +253,16 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async expandMainComponentOnLayersTab() {
-    if (!(await this.layerItemToggleExpand.last().isVisible())) {
-      await this.layerBoardToggleContentCollapse.last().click();
-      await expect(this.layerItemToggleExpand.last()).toBeVisible();
+    if (!(await this.mainComponentLayerToggleExpand.first().isVisible())) {
+      await this.mainComponentLayerToggleCollapse.first().click();
+      await expect(this.mainComponentLayerToggleExpand.first()).toBeVisible();
+    }
+  }
+
+  async expandCopyComponentOnLayersTab() {
+    if (!(await this.copyComponentLayerToggleExpand.first().isVisible())) {
+      await this.copyComponentLayerToggleCollapse.first().click();
+      await expect(this.copyComponentLayerToggleExpand.first()).toBeVisible();
     }
   }
 
@@ -253,9 +272,25 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async clickMainComponentChildLayerOnLayersTab() {
-    const layer = this.page.locator(
-      '//*[@class="icon-component"]/../../../../following-sibling::div//span[text()]',
-    );
+    const layer = this.page
+      .locator(
+        '//*[@class="icon-component"]/../../../../following-sibling::div//span[text()]',
+      )
+      .first();
+    await layer.click();
+  }
+
+  async selectCopyComponentChildLayer() {
+    await this.expandCopyComponentOnLayersTab();
+    await this.clickCopyComponentChildLayerOnLayersTab();
+  }
+
+  async clickCopyComponentChildLayerOnLayersTab() {
+    const layer = this.page
+      .locator(
+        '//*[@class="icon-component-copy"]/../../../../following-sibling::div//span[text()]',
+      )
+      .first();
     await layer.click();
   }
 

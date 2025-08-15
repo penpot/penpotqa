@@ -1004,8 +1004,10 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
-  async createComponentViaShortcut(browserName) {
-    await this.createdLayer.click({ force: true });
+  async createComponentViaShortcut(browserName, isBoard = false) {
+    isBoard
+      ? await this.clickCreatedBoardTitleOnCanvas()
+      : await this.createdLayer.click({ force: true });
     if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
       await this.page.keyboard.press('Meta+K');
     } else {
@@ -1208,5 +1210,21 @@ exports.MainPage = class MainPage extends BasePage {
   async rightClickOnElement() {
     const layerSel = this.page.locator('.viewport-selrect');
     await layerSel.last().click({ button: 'right', force: true });
+  }
+
+  async doubleClickTextOnCanvas(browserName) {
+    const textSel = this.page.locator(`rect[class="main viewport-selrect"]`);
+    await textSel.dblclick();
+    if (browserName === 'chromium') {
+      await textSel.dblclick();
+    }
+  }
+
+  async editTextLayer(text, browserName = 'chromium') {
+    await this.doubleClickTextOnCanvas(browserName);
+    await expect(this.textbox).toBeVisible();
+    await this.typeText(text);
+    await this.clickMoveButton();
+    await this.waitForChangeIsSaved();
   }
 };

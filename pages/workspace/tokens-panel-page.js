@@ -56,6 +56,9 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     this.addStrokeWidthTokenButton = page.getByRole('button', {
       name: 'Add token: Stroke Width',
     });
+    this.addFontSizeTokenButton = page.getByRole('button', {
+      name: 'Add token: Font Size',
+    });
 
     this.tokenNameInput = page.locator('#token-name');
     this.tokenValueInput = page.locator('div[class*="input_tokens_value"] input');
@@ -70,6 +73,9 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     this.deleteTokenMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Delete token' });
+    this.addSetToGroupOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Add set to this group' });
 
     this.tokenToolsButton = page.getByRole('button', { name: 'Tools' });
     this.importButton = page.getByRole('menuitem', { name: 'Import' });
@@ -91,6 +97,9 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
       .filter({ hasText: 'Single JSON file' });
     this.folderOption = page.getByRole('option').filter({ hasText: 'Folder' });
     this.zipOption = page.getByRole('option').filter({ hasText: 'ZIP file' });
+    this.expandTokensButton = page
+      .getByTestId('tokens-sidebar')
+      .locator('[class*="title_bar__collapsed"]');
   }
 
   async clickTokensTab() {
@@ -113,12 +122,16 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await expect(this.setName.first()).toHaveText(text);
   }
 
-  async isSetNameVisible(text) {
-    await expect(this.setName.filter({ hasText: text })).toHaveCount(1);
+  async isSetNameVisible(text, visible = true) {
+    visible
+      ? await expect(this.setName.filter({ hasText: text })).toHaveCount(1)
+      : await expect(this.setName.filter({ hasText: text })).toHaveCount(0);
   }
 
-  async isGroupSetNameVisible(text) {
-    await expect(this.groupSetName.filter({ hasText: text })).toHaveCount(1);
+  async isGroupSetNameVisible(text, visible = true) {
+    visible
+      ? await expect(this.groupSetName.filter({ hasText: text })).toHaveCount(1)
+      : await expect(this.groupSetName.filter({ hasText: text })).toHaveCount(0);
   }
 
   async clickOnSetCheckboxByName(setName) {
@@ -127,6 +140,10 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
 
   async rightClickOnSetByName(setName) {
     await this.setName.filter({ hasText: setName }).click({ button: 'right' });
+  }
+
+  async rightClickOnSetsGroupByName(setName) {
+    await this.groupSetName.filter({ hasText: setName }).click({ button: 'right' });
   }
 
   async isSetCheckedByName(setName) {
@@ -234,6 +251,13 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await this.modalSaveButton.click();
   }
 
+  async createFontSizeToken(name = 'global.font', value = '25') {
+    await this.addFontSizeTokenButton.click();
+    await this.tokenNameInput.fill(name);
+    await this.tokenValueInput.fill(value);
+    await this.modalSaveButton.click();
+  }
+
   async isTokenVisibleWithName(name, visible = true) {
     visible
       ? await expect(
@@ -268,6 +292,20 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
       : await expect(
           this.page.locator(
             `button[class*="token-pill-applied"] span[aria-label="${name}"]`,
+          ),
+        ).not.toBeVisible();
+  }
+
+  async isTokenDisabledWithName(name, disabled = true) {
+    disabled
+      ? await expect(
+          this.page.locator(
+            `button[class*="token-pill-disabled"] span[aria-label="${name}"]`,
+          ),
+        ).toBeVisible()
+      : await expect(
+          this.page.locator(
+            `button[class*="token-pill-disabled"] span[aria-label="${name}"]`,
           ),
         ).not.toBeVisible();
   }
@@ -310,6 +348,18 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
         hasText: sectionName,
       }),
     ).toBeVisible();
+  }
+
+  async isMenuItemVisible(tokenName, itemName, visible = true) {
+    await this.rightClickOnTokenWithName(tokenName);
+    const item = await this.page
+      .getByTestId('tokens-context-menu-for-token')
+      .getByRole('listitem')
+      .locator(`[class*="item-text"]`)
+      .filter({ hasText: new RegExp(`^${itemName}$`) });
+    visible
+      ? await expect(item).toBeVisible()
+      : await expect(item).not.toBeVisible();
   }
 
   async openEditTokenWindow(tokenName) {
@@ -414,6 +464,14 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await fileChooser.setFiles(file);
   }
 
+  async importTokensZip(file) {
+    await this.importButton.click();
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    await this.chooseZipButton.click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(file);
+  }
+
   async getTokenErrorDetailText() {
     const text = await this.importErrorDetailMessage.textContent();
     return text
@@ -437,6 +495,18 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
   async duplicateSetByName(setName) {
     await this.rightClickOnSetByName(setName);
     await this.duplicateOption.click();
+  }
+
+  async addSetToGroupByName(groupName, setName) {
+    await this.rightClickOnSetsGroupByName(groupName);
+    await this.addSetToGroupOption.click();
+    await this.setsNameInput.fill(setName);
+    await this.clickOnEnter();
+  }
+
+  async deleteSetsGroupByName(groupName) {
+    await this.rightClickOnSetsGroupByName(groupName);
+    await this.deleteOption.click();
   }
 
   async clickOnExportButton() {
@@ -478,5 +548,12 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
 
   async checkInvalidTokenCount(count) {
     await expect(this.invalidToken).toHaveCount(count);
+  }
+
+  async expandAllTokens() {
+    const count = await this.expandTokensButton.count();
+    for (let i = 0; i < count; i++) {
+      await this.expandTokensButton.nth(count - 1 - i).click();
+    }
   }
 };
