@@ -284,6 +284,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[class*="typography__font-variant-options"]',
     );
     this.textFontSizeInput = page.locator('div[class*="font-size-select"] input');
+    this.textLineHeightInput = page.getByTitle('Line Height').locator('input');
+    this.textLetterSpacingInput = page.getByTitle('Letter Spacing').locator('input');
+    this.textAlignOptionsButton = page.getByTestId('text-align-options-button');
+    this.textStrikethrough = page.getByTitle('Strikethrough (Alt+Shift+Ctrl+5)');
 
     //Design panel - Export section
     this.exportSection = page.getByText('Export', { exact: true });
@@ -744,6 +748,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeTextFontSize(value) {
     await this.textFontSizeInput.fill(value);
+  }
+
+  async changeTextLineHeight(value) {
+    await this.textLineHeightInput.fill(value);
+  }
+
+  async changeTextLetterSpacing(value) {
+    await this.textLetterSpacingInput.fill(value);
+  }
+
+  async clickOnTextAlignOptionsButton() {
+    await this.textAlignOptionsButton.click();
+  }
+
+  async clickOnTextStrikethroughButton() {
+    await this.textStrikethrough.click();
   }
 
   async isLayoutRemoveButtonExists(condition = true) {
