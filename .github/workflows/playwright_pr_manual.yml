@@ -7,8 +7,8 @@ on:
         required: false
         default: false
         type: boolean
-  pull_request:
-    branches: [main]
+  push:
+    branches: [estefafdez/feature/new-pr-action]
 
 jobs:
   tests_chromium:
@@ -38,20 +38,14 @@ jobs:
             exit 0
           fi
 
-          # For pull requests, compare with base branch (main)
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE_SHA="${{ github.event.pull_request.base.sha }}"
-            echo "Pull request detected - comparing with base branch"
+          # For pushes, compare with the previous commit in the same branch
+          if [ -n "${{ github.event.before }}" ]; then
+            BASE_SHA="${{ github.event.before }}"
           else
-            # For pushes, try to get the previous commit
-            # If github.event.before is not available, use HEAD~1
-            if [ -n "${{ github.event.before }}" ]; then
-              BASE_SHA="${{ github.event.before }}"
-            else
-              BASE_SHA="HEAD~1"
-            fi
-            echo "Push detected - comparing with previous commit"
+            # Fallback: get the previous commit in the current branch
+            BASE_SHA="HEAD~1"
           fi
+          echo "Push detected - comparing with previous commit: $BASE_SHA"
 
           echo "Base SHA: $BASE_SHA"
 
@@ -91,21 +85,15 @@ jobs:
             echo "Running all tests..."
             npx playwright test --project=chrome
           else
-            # For pull requests, compare with base branch (main)
-            if [ "${{ github.event_name }}" = "pull_request" ]; then
-              BASE_SHA="${{ github.event.pull_request.base.sha }}"
-              echo "Running tests for changed files in entire PR (comparing with main branch)"
+            # For pushes, compare with the previous commit in the same branch
+            if [ -n "${{ github.event.before }}" ]; then
+              BASE_SHA="${{ github.event.before }}"
             else
-              # For pushes, try to get the previous commit
-              if [ -n "${{ github.event.before }}" ]; then
-                BASE_SHA="${{ github.event.before }}"
-              else
-                BASE_SHA="HEAD~1"
-              fi
-              echo "Running tests for changed files in this push"
+              BASE_SHA="HEAD~1"
             fi
+            echo "Running tests for changed files in this push (comparing with previous commit)"
             echo "Base SHA: $BASE_SHA"
-            # Run tests for changed files in entire PR/push
+            # Run tests for changed files in this push
             npx playwright test --project=chrome --only-changed=$BASE_SHA
           fi
 
