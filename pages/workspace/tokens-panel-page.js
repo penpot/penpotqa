@@ -9,6 +9,8 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     super(page);
 
     this.tokensTab = page.getByRole('tab', { name: 'tokens' });
+
+    // Sets locators
     this.createOneSetButton = page
       .locator('[class*="empty-sets-wrapper"]')
       .getByText('Create one.');
@@ -16,7 +18,11 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     this.setsNameInput = page.getByPlaceholder("Enter name (use '/' for groups)");
     this.setName = page.getByTestId('tokens-set-item');
     this.groupSetName = page.getByTestId('tokens-set-group-item');
+    this.renameContextMenuOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Rename' });
 
+    // Themes locators
     this.createOneThemeButton = page
       .locator('[class*="empty-theme-wrapper"]')
       .getByText('Create one.');
@@ -27,6 +33,8 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     this.backToThemeListButton = page.getByRole('button', {
       name: 'Back to theme list',
     });
+
+    // Tokens locators
     this.tokenSections = page
       .getByTestId('tokens-sidebar')
       .locator('[class*="section-name"]');
@@ -119,7 +127,7 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
   }
 
   async checkFirstSetName(text) {
-    await expect(this.setName.first()).toHaveText(text);
+    await expect(this.setName.first(), `First Set Name is ${text}`).toHaveText(text);
   }
 
   async isSetNameVisible(text, visible = true) {
@@ -555,5 +563,18 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     for (let i = 0; i < count; i++) {
       await this.expandTokensButton.nth(count - 1 - i).click();
     }
+  }
+
+  async renameSetByDoubleClick(newSetName) {
+    await this.setName.first().dblclick();
+    await this.setsNameInput.fill(newSetName);
+    await this.clickOnEnter();
+  }
+
+  async renameSetViaContextMenu(oldSetName, newSetName) {
+    await this.rightClickOnSetByName(oldSetName);
+    await this.renameContextMenuOption.click();
+    await this.setsNameInput.fill(newSetName);
+    await this.clickOnEnter();
   }
 };

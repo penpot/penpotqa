@@ -39,6 +39,32 @@ mainTest(qase(2102, 'Create a set via "create one" link'), async () => {
   await tokensPage.checkFirstSetName(name);
 });
 
+mainTest(qase(2127, 'Rename a set'), async () => {
+  const name = 'Mobile';
+  const newName1 = 'Mobile-Updated-Double-Click';
+  const newName2 = 'Mobile-Updated-Context-Menu';
+
+  await mainTest.step('Create a set', async () => {
+    await tokensPage.clickTokensTab();
+    await tokensPage.createSetViaButton(name);
+    await tokensPage.checkFirstSetName(name);
+  });
+
+  await mainTest.step('Create a color token', async () => {
+    await tokensPage.createColorToken('red', '#ef0c0c');
+  });
+
+  await mainTest.step('Rename set double click and assert name', async () => {
+    await tokensPage.renameSetByDoubleClick(newName1);
+    await tokensPage.checkFirstSetName(newName1);
+  });
+
+  await mainTest.step('Rename set via context menu and assert name', async () => {
+    await tokensPage.renameSetViaContextMenu(newName1, newName2);
+    await tokensPage.checkFirstSetName(newName2);
+  });
+});
+
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
     await tokensPage.createDefaultRectangleByCoordinates(100, 200);
