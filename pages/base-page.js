@@ -104,6 +104,7 @@ exports.BasePage = class BasePage {
     this.duplicateOption = page
       .getByRole('listitem')
       .filter({ hasText: 'Duplicate' });
+    this.deleteOption = page.getByRole('listitem').filter({ hasText: 'Delete' });
     this.copyOption = page.getByRole('listitem').filter({ hasText: 'Copy' }).first();
     this.pasteOption = page
       .getByRole('listitem')
@@ -309,7 +310,7 @@ exports.BasePage = class BasePage {
     await this.hideLayerMenuItem.click();
   }
 
-  async focusBoardViaRightClickOnCanvas(title, browserName = 'chrome') {
+  async focusBoardViaRightClickOnCanvas(title, browserName = 'chromium') {
     const boardSel = this.page.locator(
       `span[class*="workspace_sidebar_layer_name"]:has-text("${title}")`,
     );
