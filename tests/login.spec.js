@@ -1,3 +1,4 @@
+// Login tests for Penpot application
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 const { LoginPage } = require('../pages/login-page');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
