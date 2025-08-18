@@ -50,7 +50,7 @@ const config = {
     actionTimeout: 15 * 1000,
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.BASE_URL,
-    headless: true,
+    headless: 'new',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: process.env.CI ? 'on-first-retry' : 'on',
     video: process.env.CI ? 'on-first-retry' : 'on',

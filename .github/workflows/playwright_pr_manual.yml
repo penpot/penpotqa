@@ -89,7 +89,7 @@ jobs:
         run: |
           if [ "${{ steps.changed-files.outputs.run-all-tests }}" = "true" ]; then
             echo "Running all tests..."
-            npx playwright test --project=chrome --reporter=html
+            npx playwright test --project=chrome
           else
             # For pull requests, compare with base branch
             if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -104,7 +104,7 @@ jobs:
             fi
             echo "Base SHA: $BASE_SHA"
             # Run tests for changed files
-            npx playwright test --project=chrome --only-changed=$BASE_SHA --reporter=html
+            npx playwright test --project=chrome --only-changed=$BASE_SHA
           fi
 
       - name: No tests to run
