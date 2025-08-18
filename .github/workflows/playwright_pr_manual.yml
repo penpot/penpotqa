@@ -5,7 +5,7 @@ on:
       run_all_tests:
         description: 'Run all tests regardless of changes'
         required: false
-        default: 'false'
+        default: false
         type: boolean
   push:
     branches: [estefafdez/feature/new-pr-action]
@@ -75,6 +75,7 @@ jobs:
 
       - name: Run Playwright tests
         if: steps.changed-files.outputs.has-test-changes == 'true'
+        shell: bash
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
