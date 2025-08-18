@@ -24,6 +24,7 @@ jobs:
         run: npx playwright install --with-deps
       - name: Get changed files
         id: changed-files
+        shell: bash
         run: |
           # For pull requests, compare with base branch
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -82,7 +83,7 @@ jobs:
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
-        if: always()
+        if: steps.changed-files.outputs.has-test-changes == 'true'
         with:
           name: playwright-report-chromium-pr
           path: playwright-report/
@@ -93,5 +94,5 @@ jobs:
           CHANNEL_ID: ${{ secrets.PR_CHANNEL_ID }}
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
-        if: always()
+        if: steps.changed-files.outputs.has-test-changes == 'true'
         run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('PR Auto Tests Reports Chrome')"
