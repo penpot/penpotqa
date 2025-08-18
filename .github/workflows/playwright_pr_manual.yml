@@ -7,10 +7,8 @@ on:
         required: false
         default: false
         type: boolean
-  push:
-    branches: [estefafdez/feature/new-pr-action]
   pull_request:
-    branches: [estefafdez/feature/new-pr-action]
+    branches: [main]
 
 jobs:
   tests_chromium:
