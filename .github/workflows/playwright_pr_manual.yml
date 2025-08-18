@@ -29,7 +29,12 @@ jobs:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
-        run: npx playwright test --project=chrome --only-changed=origin/main
+        run: |
+          # Get the base SHA for comparison
+          BASE_SHA=$(git merge-base HEAD origin/main)
+          echo "Base SHA: $BASE_SHA"
+          # Run tests for changed files
+          npx playwright test --project=chrome --only-changed=$BASE_SHA
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
         if: always()
