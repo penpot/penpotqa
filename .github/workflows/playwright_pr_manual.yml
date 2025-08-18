@@ -40,9 +40,10 @@ jobs:
             exit 0
           fi
 
-          # For pull requests, compare with base branch
+          # For pull requests, compare with base branch (main)
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            echo "Pull request detected - comparing with base branch"
           else
             # For pushes, try to get the previous commit
             # If github.event.before is not available, use HEAD~1
@@ -51,24 +52,25 @@ jobs:
             else
               BASE_SHA="HEAD~1"
             fi
+            echo "Push detected - comparing with previous commit"
           fi
 
           echo "Base SHA: $BASE_SHA"
 
-          # Get list of changed files
+          # Get list of changed files in the entire PR/push
           CHANGED_FILES=$(git diff --name-only $BASE_SHA HEAD)
-          echo "Changed files:"
+          echo "Changed files in entire PR/push:"
           echo "$CHANGED_FILES"
 
           # Check if test files have changed
           TEST_FILES_CHANGED=$(echo "$CHANGED_FILES" | grep -E "\.spec\.js$" || true)
           if [ -n "$TEST_FILES_CHANGED" ]; then
-            echo "Test files changed:"
+            echo "Test files changed in entire PR/push:"
             echo "$TEST_FILES_CHANGED"
             echo "has-test-changes=true" >> $GITHUB_OUTPUT
             echo "run-all-tests=false" >> $GITHUB_OUTPUT
           else
-            echo "No test files changed"
+            echo "No test files changed in entire PR/push"
             echo "has-test-changes=false" >> $GITHUB_OUTPUT
             echo "run-all-tests=false" >> $GITHUB_OUTPUT
           fi
@@ -91,9 +93,10 @@ jobs:
             echo "Running all tests..."
             npx playwright test --project=chrome
           else
-            # For pull requests, compare with base branch
+            # For pull requests, compare with base branch (main)
             if [ "${{ github.event_name }}" = "pull_request" ]; then
               BASE_SHA="${{ github.event.pull_request.base.sha }}"
+              echo "Running tests for changed files in entire PR (comparing with main branch)"
             else
               # For pushes, try to get the previous commit
               if [ -n "${{ github.event.before }}" ]; then
@@ -101,9 +104,10 @@ jobs:
               else
                 BASE_SHA="HEAD~1"
               fi
+              echo "Running tests for changed files in this push"
             fi
             echo "Base SHA: $BASE_SHA"
-            # Run tests for changed files
+            # Run tests for changed files in entire PR/push
             npx playwright test --project=chrome --only-changed=$BASE_SHA
           fi
 
