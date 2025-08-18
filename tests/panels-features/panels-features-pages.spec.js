@@ -128,7 +128,7 @@ mainTest(qase(837, 'PF-119 Delete page'), async () => {
 });
 
 mainTest(
-  qase(839, 'Create 3 page, delete 2nd page, undo delete (CTRL Z)'),
+  qase(839, 'Create 3 pages, delete 2nd page, undo delete (CTRL Z)'),
   async ({ browserName }) => {
     await mainPage.clickAddPageButton();
     await mainPage.clickAddPageButton();
