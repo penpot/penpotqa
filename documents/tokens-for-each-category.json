@@ -1,0 +1,192 @@
+{
+  "Global": {
+    "COLOR-2": {
+      "$value": "rgb(0, 239, 255)",
+      "$type": "color",
+      "$description": ""
+    },
+    "SIZING-2": {
+      "$value": "2",
+      "$type": "sizing",
+      "$description": ""
+    },
+    "DIMENSIONS-1": {
+      "$value": "10",
+      "$type": "dimension",
+      "$description": ""
+    },
+    "ROTATION-60": {
+      "$value": "60",
+      "$type": "rotation",
+      "$description": ""
+    },
+    "LETTER-SPACING-10": {
+      "$value": "10",
+      "$type": "letterSpacing",
+      "$description": ""
+    },
+    "OPACITY-40": {
+      "$value": "40%",
+      "$type": "opacity",
+      "$description": ""
+    },
+    "OPACITY-20": {
+      "$value": "20%",
+      "$type": "opacity",
+      "$description": ""
+    },
+    "SIZING-0": {
+      "5": {
+        "$value": "0.5",
+        "$type": "sizing",
+        "$description": ""
+      }
+    },
+    "SPACING-20": {
+      "$value": "20",
+      "$type": "spacing",
+      "$description": ""
+    },
+    "STROKE-WIDTH-10": {
+      "$value": "10",
+      "$type": "strokeWidth",
+      "$description": ""
+    },
+    "BORDER-RADIUS-3": {
+      "$value": "30",
+      "$type": "borderRadius",
+      "$description": ""
+    },
+    "SPACING-10": {
+      "$value": "10",
+      "$type": "spacing",
+      "$description": ""
+    },
+    "font-family-3": {
+      "$value": ["Alexandria"],
+      "$type": "fontFamilies",
+      "$description": ""
+    },
+    "FONT-SIZE-150": {
+      "$value": "150",
+      "$type": "fontSizes",
+      "$description": ""
+    },
+    "NUMBER-16": {
+      "$value": "16",
+      "$type": "number",
+      "$description": ""
+    },
+    "OPACITY-60": {
+      "$value": "0.6",
+      "$type": "opacity",
+      "$description": ""
+    },
+    "NUMBER-4": {
+      "$value": "4",
+      "$type": "number",
+      "$description": ""
+    },
+    "font-family-2": {
+      "$value": ["Abel"],
+      "$type": "fontFamilies",
+      "$description": ""
+    },
+    "STROKE-WIDTH-20": {
+      "$value": "20",
+      "$type": "strokeWidth",
+      "$description": ""
+    },
+    "SIZING-4": {
+      "$value": "4",
+      "$type": "sizing",
+      "$description": ""
+    },
+    "COLOR-1": {
+      "$value": "rgb(255, 0, 0)",
+      "$type": "color",
+      "$description": ""
+    },
+    "BORDER-RADIUS-2": {
+      "$value": "20",
+      "$type": "borderRadius",
+      "$description": ""
+    },
+    "BORDER-RADIUS-1": {
+      "$value": "10",
+      "$type": "borderRadius",
+      "$description": ""
+    },
+    "NUMBER-8": {
+      "$value": "8",
+      "$type": "number",
+      "$description": ""
+    },
+    "LETTER-SPACING-30": {
+      "$value": "30",
+      "$type": "letterSpacing",
+      "$description": ""
+    },
+    "SPACING-5": {
+      "$value": "5",
+      "$type": "spacing",
+      "$description": ""
+    },
+    "STROKE-WIDTH-5": {
+      "$value": "5",
+      "$type": "strokeWidth",
+      "$description": ""
+    },
+    "font-family-1": {
+      "$value": ["ABeeZee"],
+      "$type": "fontFamilies",
+      "$description": ""
+    },
+    "LETTER-SPACING-20": {
+      "$value": "20",
+      "$type": "letterSpacing",
+      "$description": ""
+    },
+    "FONT-SIZE-100": {
+      "$value": "100",
+      "$type": "fontSizes",
+      "$description": ""
+    },
+    "FONT-SIZE-40": {
+      "$value": "40",
+      "$type": "fontSizes",
+      "$description": ""
+    },
+    "ROTATION-30": {
+      "$value": "30",
+      "$type": "rotation",
+      "$description": ""
+    },
+    "ROTATION-15": {
+      "$value": "15",
+      "$type": "rotation",
+      "$description": ""
+    },
+    "COLOR-3": {
+      "$value": "rgb(0, 255, 4)",
+      "$type": "color",
+      "$description": ""
+    },
+    "DIMENSIONS-3": {
+      "$value": "30",
+      "$type": "dimension",
+      "$description": ""
+    },
+    "DIMENSIONS-2": {
+      "$value": "20",
+      "$type": "dimension",
+      "$description": ""
+    }
+  },
+  "$themes": [],
+  "$metadata": {
+    "tokenSetOrder": ["Global"],
+    "activeThemes": [],
+    "activeSets": ["Global"]
+  }
+}

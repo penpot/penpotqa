@@ -33,6 +33,12 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentResolvedThreadIcon = page.locator(
       'div[class*="comments-container"] div.main_ui_comments__avatar-solved',
     );
+    this.commentUnreadThreadIcon = page.locator(
+      'div[class*="comments-container"] div.main_ui_comments__avatar-unread',
+    );
+    this.commentReadThreadIcon = page.locator(
+      'div[class*="comments-container"] div.main_ui_comments__avatar-read',
+    );
     /**
      * Get the comment thread bubble by the comment index
      * @param {string} index ("1", "2", "1-2", "1-2-3")
@@ -67,6 +73,9 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentMentionButton = page.locator('[class*="open-mentions-button"]');
     this.mentionMenuItem = page.locator('[class*="comments-mentions-name"]');
     this.commentMentionText = page.locator('span[class*="comment-mention"]');
+    this.unreadCommentIcon = this.commentsButton.locator(
+      '[class*="header__unread"]',
+    );
 
     this.commentsDropdown = page.locator(
       '[class*="comments__mode-dropdown-wrapper"]',
@@ -144,7 +153,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   }
 
   async isCommentDisplayedInCommentsPanel(text) {
-    await expect(this.commentCommentsPanelText).toHaveText(text);
+    await expect(this.commentCommentsPanelText.first()).toHaveText(text);
   }
 
   async isCommentReplyDisplayedInPopUp(text) {
@@ -171,6 +180,18 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await expect(this.commentResolvedThreadIcon).not.toBeVisible();
   }
 
+  async isCommentUnreadThreadIconVisible(visible = true) {
+    visible
+      ? await expect(this.commentUnreadThreadIcon.first()).toBeVisible()
+      : await expect(this.commentUnreadThreadIcon.first()).not.toBeVisible();
+  }
+
+  async isCommentReadThreadIconVisible(visible = true) {
+    visible
+      ? await expect(this.commentReadThreadIcon.first()).toBeVisible()
+      : await expect(this.commentReadThreadIcon.first()).not.toBeVisible();
+  }
+
   async isCommentsPanelPlaceholderDisplayed(text) {
     await expect(this.commentsPanelPlaceholderText).toHaveText(text);
   }
@@ -179,6 +200,10 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await expect(this.resolveCommentCheckbox).toHaveClass(
       'main_ui_comments__checkbox checked',
     );
+  }
+
+  async clickOnUnreadThreadIcon() {
+    await this.commentUnreadThreadIcon.first().click();
   }
 
   async clickCommentMentionButton() {
@@ -206,5 +231,11 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     for (const [i, bubbleIndex] of bubblesIndexes.entries()) {
       await expect(this.commentThreadBubbleByIndex(bubbleIndex)).toBeVisible();
     }
+  }
+
+  async isUnreadCommentIconVisible(visible = true) {
+    visible
+      ? await expect(this.unreadCommentIcon).toBeVisible()
+      : await expect(this.unreadCommentIcon).not.toBeVisible();
   }
 };

@@ -405,3 +405,33 @@ mainTest(qase(2239, 'Import file to project - file upload error'), async () => {
   );
   await dashboardPage.clickOnModalAcceptButton();
 });
+
+mainTest(qase(2276, 'Long project names and font/library names'), async () => {
+  const longProjectName =
+    'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check Overflow';
+  const projectName250 =
+    'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check OverflowQTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Project With An Excessively Exces';
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName(longProjectName);
+  await dashboardPage.clickPinProjectButton();
+  await dashboardPage.isProjectTitleDisplayed(longProjectName);
+  await dashboardPage.checkPinnedProjectsSidebarItem(longProjectName);
+  await expect(dashboardPage.pinnedProjectsSidebar).toHaveScreenshot(
+    'pinned-project-truncated.png',
+  );
+  await dashboardPage.clickAddProjectButton();
+  await dashboardPage.setProjectName(projectName250 + '123');
+  await dashboardPage.isProjectTitleDisplayed(projectName250);
+
+  await dashboardPage.createFileViaProjectPlaceholder();
+  await mainPage.isMainPageLoaded();
+  await mainPage.clickPencilBoxButton();
+  await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
+  await dashboardPage.isSharedLibraryIconDisplayed();
+  await dashboardPage.openSidebarItem('Libraries');
+  await dashboardPage.isFilePresent('New File 1');
+  await dashboardPage.renameFile(projectName250);
+  await expect(dashboardPage.fileNameTitle).toHaveScreenshot(
+    'library-name-truncated.png',
+  );
+});

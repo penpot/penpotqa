@@ -13,7 +13,7 @@ let mainPage, teamPage, dashboardPage, tokensPage, designPanelPage;
 
 const teamName = random().concat('autotest');
 
-test.beforeEach(async ({ page, browserName }) => {
+test.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -65,54 +65,70 @@ mainTest(qase(2127, 'Rename a set'), async () => {
   });
 });
 
-mainTest(qase(2139, 'Enable and Disable sets'), async () => {
-  await tokensPage.createDefaultRectangleByCoordinates(100, 200);
+mainTest.describe(() => {
+  mainTest.beforeEach(async () => {
+    await tokensPage.createDefaultRectangleByCoordinates(100, 200);
 
-  await tokensPage.clickTokensTab();
-  await tokensPage.createSetViaButton('Mode/Dark');
-  await tokensPage.isSetNameVisible('Dark');
-  await tokensPage.isGroupSetNameVisible('Mode');
-  await tokensPage.clickOnSetCheckboxByName('Dark');
-  await tokensPage.isSetCheckedByName('Dark');
-  await tokensPage.createColorToken('red', '#ef0c0c');
-  await tokensPage.clickOnTokenWithName('red');
-  await tokensPage.waitForChangeIsSaved();
-  await designPanelPage.isFillHexCodeSetComponent('ef0c0c');
+    await tokensPage.clickTokensTab();
+    await tokensPage.createSetViaButton('Mode/Dark');
+    await tokensPage.isSetNameVisible('Dark');
+    await tokensPage.isGroupSetNameVisible('Mode');
+    await tokensPage.clickOnSetCheckboxByName('Dark');
+    await tokensPage.isSetCheckedByName('Dark');
+    await tokensPage.createColorToken('red', '#ef0c0c');
+    await tokensPage.clickOnTokenWithName('red');
+    await tokensPage.waitForChangeIsSaved();
+    await designPanelPage.isFillHexCodeSetComponent('ef0c0c');
 
-  await tokensPage.createSetViaButton('Mode/Light');
-  await tokensPage.isSetNameVisible('Light');
-  await tokensPage.clickOnSetCheckboxByName('Light');
-  await tokensPage.isSetCheckedByName('Light');
-  await tokensPage.createColorToken('red', '#ec9090');
-  await tokensPage.waitForChangeIsSaved();
-  await designPanelPage.isFillHexCodeSetComponent('ec9090');
+    await tokensPage.createSetViaButton('Mode/Light');
+    await tokensPage.isSetNameVisible('Light');
+    await tokensPage.clickOnSetCheckboxByName('Light');
+    await tokensPage.isSetCheckedByName('Light');
+    await tokensPage.createColorToken('red', '#ec9090');
+    await tokensPage.waitForChangeIsSaved();
+    await designPanelPage.isFillHexCodeSetComponent('ec9090');
 
-  await tokensPage.createSetViaButton('Device/Desktop');
-  await tokensPage.isSetNameVisible('Desktop');
-  await tokensPage.isGroupSetNameVisible('Device');
-  await tokensPage.clickOnSetCheckboxByName('Desktop');
-  await tokensPage.isSetCheckedByName('Desktop');
-  await tokensPage.createRadiusToken('border-radius', '50');
-  await tokensPage.clickOnTokenWithName('border-radius');
-  await tokensPage.waitForChangeIsSaved();
-  await designPanelPage.checkGeneralCornerRadius('50');
+    await tokensPage.createSetViaButton('Device/Desktop');
+    await tokensPage.isSetNameVisible('Desktop');
+    await tokensPage.isGroupSetNameVisible('Device');
+    await tokensPage.clickOnSetCheckboxByName('Desktop');
+    await tokensPage.isSetCheckedByName('Desktop');
+    await tokensPage.createRadiusToken('border-radius', '50');
+    await tokensPage.clickOnTokenWithName('border-radius');
+    await tokensPage.waitForChangeIsSaved();
+    await designPanelPage.checkGeneralCornerRadius('50');
 
-  await tokensPage.createSetViaButton('Device/Mobile');
-  await tokensPage.isSetNameVisible('Mobile');
-  await tokensPage.clickOnSetCheckboxByName('Mobile');
-  await tokensPage.isSetCheckedByName('Mobile');
-  await tokensPage.createRadiusToken('border-radius', '30');
-  await tokensPage.waitForChangeIsSaved();
-  await designPanelPage.checkGeneralCornerRadius('30');
+    await tokensPage.createSetViaButton('Device/Mobile');
+    await tokensPage.isSetNameVisible('Mobile');
+    await tokensPage.clickOnSetCheckboxByName('Mobile');
+    await tokensPage.isSetCheckedByName('Mobile');
+    await tokensPage.createRadiusToken('border-radius', '30');
+    await tokensPage.waitForChangeIsSaved();
+    await designPanelPage.checkGeneralCornerRadius('30');
+  });
 
-  await tokensPage.clickOnSetCheckboxByName('Light');
-  await designPanelPage.isFillHexCodeSetComponent('ef0c0c');
-  await tokensPage.clickOnSetCheckboxByName('Mobile');
-  await designPanelPage.checkGeneralCornerRadius('50');
-  await tokensPage.clickOnSetCheckboxByName('Light');
-  await designPanelPage.isFillHexCodeSetComponent('ec9090');
-  await tokensPage.clickOnSetCheckboxByName('Mobile');
-  await designPanelPage.checkGeneralCornerRadius('30');
+  mainTest(qase(2139, 'Enable and Disable sets'), async () => {
+    await tokensPage.clickOnSetCheckboxByName('Light');
+    await designPanelPage.isFillHexCodeSetComponent('ef0c0c');
+    await tokensPage.clickOnSetCheckboxByName('Mobile');
+    await designPanelPage.checkGeneralCornerRadius('50');
+    await tokensPage.clickOnSetCheckboxByName('Light');
+    await designPanelPage.isFillHexCodeSetComponent('ec9090');
+    await tokensPage.clickOnSetCheckboxByName('Mobile');
+    await designPanelPage.checkGeneralCornerRadius('30');
+  });
+
+  mainTest(qase(2141, 'Add set to this group'), async () => {
+    await tokensPage.addSetToGroupByName('Device', 'Tablet');
+    await tokensPage.isSetNameVisible('Tablet', true);
+  });
+
+  mainTest(qase(2146, 'Delete a set group'), async () => {
+    await tokensPage.deleteSetsGroupByName('Device');
+    await tokensPage.isGroupSetNameVisible('Device', false);
+    await tokensPage.isSetNameVisible('Desktop', false);
+    await tokensPage.isSetNameVisible('Mobile', false);
+  });
 });
 
 mainTest(qase(2231, 'Duplicate set'), async () => {
