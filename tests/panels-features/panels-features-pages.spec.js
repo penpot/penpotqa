@@ -128,6 +128,18 @@ mainTest(qase(837, 'PF-119 Delete page'), async () => {
 });
 
 mainTest(
+  qase(839, 'Create 3 pages, delete 2nd page, undo delete (CTRL Z)'),
+  async ({ browserName }) => {
+    await mainPage.clickAddPageButton();
+    await mainPage.clickAddPageButton();
+    await mainPage.deleteSecondPageViaRightClick();
+    await mainPage.isSecondPageNameDisplayed('Page 2', false);
+    await mainPage.clickShortcutCtrlZ(browserName);
+    await mainPage.isSecondPageNameDisplayed('Page 2', true);
+  },
+);
+
+mainTest(
   'PENPOT-1519 Copy and paste components from Page 1 to Page 2, on Page 2 right-click component and select "Show main component"',
   async ({ browserName }) => {
     await mainPage.createDefaultRectangleByCoordinates(300, 300);

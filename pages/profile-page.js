@@ -122,7 +122,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   }
 
   async isPasswordHidden(passwordInput) {
-    // The type 'password' is the *** displayed on the password when is hidden.
+    // The type 'password' attribute indicates the password field is hidden (displayed as asterisks).
     await expect(passwordInput, 'Password is hidden').toHaveAttribute(
       'type',
       'password',
