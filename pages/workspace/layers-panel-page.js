@@ -274,7 +274,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   async clickMainComponentChildLayerOnLayersTab() {
     const layer = this.page
       .locator(
-        '//*[@class="icon-component"]/../../../../following-sibling::div//span[text()]',
+        '*[data-testid="layer-row"]:has(.icon-component) + div[data-testid*="children"]',
       )
       .first();
     await layer.click();
@@ -288,7 +288,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   async clickCopyComponentChildLayerOnLayersTab() {
     const layer = this.page
       .locator(
-        '//*[@class="icon-component-copy"]/../../../../following-sibling::div//span[text()]',
+        '*[data-testid="layer-row"]:has(.icon-component-copy) + div[data-testid*="children"]',
       )
       .first();
     await layer.click();
