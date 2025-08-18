@@ -18,7 +18,31 @@ jobs:
         run: npm ci
       - name: Install Playwright
         run: npx playwright install --with-deps
+      - name: Get changed files
+        id: changed-files
+        run: |
+          # Get the base SHA for comparison
+          BASE_SHA=$(git merge-base HEAD origin/main)
+          echo "Base SHA: $BASE_SHA"
+
+          # Get list of changed files
+          CHANGED_FILES=$(git diff --name-only $BASE_SHA HEAD)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          # Check if test files have changed
+          TEST_FILES_CHANGED=$(echo "$CHANGED_FILES" | grep -E "\.spec\.js$" || true)
+          if [ -n "$TEST_FILES_CHANGED" ]; then
+            echo "Test files changed:"
+            echo "$TEST_FILES_CHANGED"
+            echo "has-test-changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No test files changed"
+            echo "has-test-changes=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Run Playwright tests
+        if: steps.changed-files.outputs.has-test-changes == 'true'
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
@@ -35,6 +59,11 @@ jobs:
           echo "Base SHA: $BASE_SHA"
           # Run tests for changed files
           npx playwright test --project=chrome --only-changed=$BASE_SHA
+
+      - name: No tests to run
+        if: steps.changed-files.outputs.has-test-changes == 'false'
+        run: |
+          echo "No test files have changed. Skipping test execution."
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
         if: always()
