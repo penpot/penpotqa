@@ -1,6 +1,12 @@
 name: Auto Penpot Tests on Commit
 on:
   workflow_dispatch:
+    inputs:
+      run_all_tests:
+        description: 'Run all tests regardless of changes'
+        required: false
+        default: 'false'
+        type: boolean
   push:
     branches: [estefafdez/feature/new-pr-action]
   pull_request:
@@ -26,12 +32,25 @@ jobs:
         id: changed-files
         shell: bash
         run: |
+          # Check if this is a manual trigger with run_all_tests
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.run_all_tests }}" = "true" ]; then
+            echo "Manual trigger with run_all_tests=true"
+            echo "has-test-changes=true" >> $GITHUB_OUTPUT
+            echo "run-all-tests=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
           # For pull requests, compare with base branch
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             BASE_SHA="${{ github.event.pull_request.base.sha }}"
           else
-            # For pushes, compare with previous commit
-            BASE_SHA="${{ github.event.before }}"
+            # For pushes, try to get the previous commit
+            # If github.event.before is not available, use HEAD~1
+            if [ -n "${{ github.event.before }}" ]; then
+              BASE_SHA="${{ github.event.before }}"
+            else
+              BASE_SHA="HEAD~1"
+            fi
           fi
 
           echo "Base SHA: $BASE_SHA"
@@ -47,9 +66,11 @@ jobs:
             echo "Test files changed:"
             echo "$TEST_FILES_CHANGED"
             echo "has-test-changes=true" >> $GITHUB_OUTPUT
+            echo "run-all-tests=false" >> $GITHUB_OUTPUT
           else
             echo "No test files changed"
             echo "has-test-changes=false" >> $GITHUB_OUTPUT
+            echo "run-all-tests=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Run Playwright tests
@@ -65,16 +86,25 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
         run: |
-          # For pull requests, compare with base branch
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          if [ "${{ steps.changed-files.outputs.run-all-tests }}" = "true" ]; then
+            echo "Running all tests..."
+            npx playwright test --project=chrome
           else
-            # For pushes, compare with previous commit
-            BASE_SHA="${{ github.event.before }}"
+            # For pull requests, compare with base branch
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            else
+              # For pushes, try to get the previous commit
+              if [ -n "${{ github.event.before }}" ]; then
+                BASE_SHA="${{ github.event.before }}"
+              else
+                BASE_SHA="HEAD~1"
+              fi
+            fi
+            echo "Base SHA: $BASE_SHA"
+            # Run tests for changed files
+            npx playwright test --project=chrome --only-changed=$BASE_SHA
           fi
-          echo "Base SHA: $BASE_SHA"
-          # Run tests for changed files
-          npx playwright test --project=chrome --only-changed=$BASE_SHA
 
       - name: No tests to run
         if: steps.changed-files.outputs.has-test-changes == 'false'
