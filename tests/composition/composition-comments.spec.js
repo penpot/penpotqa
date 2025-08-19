@@ -193,7 +193,7 @@ mainTest(
   },
 );
 
-mainTest(qase(2148, 'Zoom out and check comment bubbles'), async ({ page }) => {
+mainTest(qase(2148, 'Zoom out and check comment bubbles'), async () => {
   const comment = 'Test Comment';
   const xAxisCommentsCoordinates = [100, 50, 700];
   const yAxisCommentsCoordinates = [100, 50, 700];
@@ -431,7 +431,94 @@ mainTest.describe(() => {
     await mainPage.backToDashboardFromFileEditor();
   });
 
-  mainTest.afterEach(async ({ page }) => {
+  mainTest(
+    qase(2268, 'Notification icon after mention in the comments in the workspace'),
+    async ({ page }) => {
+      await mainTest.slow();
+      const firstEditor = random().concat('autotest');
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
+      const comment = 'Test Comment (main user)';
+
+      await mainPage.backToDashboardFromFileEditor();
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderDisplayed(
+        'Invite members to the team',
+      );
+      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+      await teamPage.selectInvitationRoleInPopUp('Editor');
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      const firstInvite = await waitMessage(page, firstEmail, 40);
+
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await page.goto(firstInvite.inviteUrl);
+      await registerPage.registerAccount(
+        firstEditor,
+        firstEmail,
+        process.env.LOGIN_PWD,
+      );
+      await dashboardPage.fillOnboardingQuestions();
+      await teamPage.isTeamSelected(teamName);
+
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await teamPage.switchTeam(teamName);
+      await dashboardPage.openFile();
+      await mainPage.isMainPageLoaded();
+
+      await commentsPanelPage.clickCreateCommentButton();
+      await mainPage.clickViewportTwice();
+
+      await commentsPanelPage.enterCommentText(comment);
+      await commentsPanelPage.clickCommentMentionButton();
+      await commentsPanelPage.clickFirstMentionMenuItem();
+      await commentsPanelPage.clickPostCommentButton();
+
+      await mainPage.clickViewportByCoordinates(100, 100, 2);
+      await commentsPanelPage.enterCommentText(comment);
+      await commentsPanelPage.clickCommentMentionButton();
+      await commentsPanelPage.clickFirstMentionMenuItem();
+      await commentsPanelPage.clickPostCommentButton();
+
+      await mainPage.backToDashboardFromFileEditor();
+      await profilePage.logout();
+      await loginPage.isLoginPageOpened();
+      await loginPage.enterEmail(firstEmail);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+      await teamPage.switchTeam(teamName);
+      await dashboardPage.openFile();
+      await mainPage.isMainPageLoaded();
+
+      await commentsPanelPage.isUnreadCommentIconVisible(true);
+      await commentsPanelPage.clickCreateCommentButton();
+      await commentsPanelPage.isCommentUnreadThreadIconVisible(true);
+      await commentsPanelPage.isUnreadCommentIconVisible(true);
+      await commentsPanelPage.clickOnUnreadThreadIcon();
+      await commentsPanelPage.clickOnUnreadThreadIcon();
+      await commentsPanelPage.isCommentReadThreadIconVisible(true);
+      await commentsPanelPage.isUnreadCommentIconVisible(true);
+      await commentsPanelPage.clickOnUnreadThreadIcon();
+      await commentsPanelPage.clickOnUnreadThreadIcon();
+      await commentsPanelPage.isCommentUnreadThreadIconVisible(false);
+      await commentsPanelPage.isUnreadCommentIconVisible(false);
+
+      await commentsPanelPage.checkCommentCount(2);
+      await commentsPanelPage.checkCommentCountInList(2);
+      await commentsPanelPage.isCommentDisplayedInCommentsPanel(
+        comment + ` ${firstEditor}`,
+      );
+      await mainPage.backToDashboardFromFileEditor();
+    },
+  );
+
+  mainTest.afterEach(async () => {
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
     await loginPage.enterEmail(process.env.LOGIN_EMAIL);

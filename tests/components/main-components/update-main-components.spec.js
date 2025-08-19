@@ -295,41 +295,77 @@ mainTest.describe(() => {
 });
 
 mainTest.describe('Text', () => {
-  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
-    browserName === 'webkit'
-      ? await testInfo.setTimeout(testInfo.timeout + 40000)
-      : await testInfo.setTimeout(testInfo.timeout + 15000);
-    await mainPage.createDefaultTextLayer(browserName);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXandYForLayer('400', '500');
-    await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXandYForLayer('50', '400');
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
+    await mainPage.backToDashboardFromFileEditor();
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName('Test Project');
+    await dashboardPage.isProjectTitleDisplayed('Test Project');
+    await dashboardPage.importFile('documents/text-components-propagation.penpot');
+    await dashboardPage.openFileWithName('Propagation of text components I');
   });
 
   mainTest(
     qase(
-      1448,
-      'PENPOT-1448 Create a component from text and 2 copies of it, change font, style and size of main',
+      2261,
+      'Propagation of (style and content) changes from a text component to copies (overriding style or content)',
     ),
     async ({ browserName }) => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
       await designPanelPage.changeTextFont('Source Serif 4');
       await designPanelPage.changeTextFontStyle('300italic');
-      await designPanelPage.changeTextFontSize('18');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.changeTextFontSize('9');
+      await designPanelPage.changeTextLetterSpacing('4');
+      await designPanelPage.clickOnTextAlignOptionsButton();
+      await designPanelPage.clickOnTextStrikethroughButton();
+      await designPanelPage.clickFillColorIcon();
+      await colorPalettePage.setHex('#ff0000');
       await mainPage.clickViewportTwice();
-      await mainPage.isSelectLayerHidden();
-      await mainPage.waitForViewportVisible();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await layersPanelPage.selectMainComponentChildLayer();
+      await mainPage.editTextLayer('Testing Penpot !!', browserName);
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-text.png',
+        {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          maxDiffPixels: 0,
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase(
+      2263,
+      'Propagation of (independent) changes from a text component to (all) copies',
+    ),
+    async () => {
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await layersPanelPage.selectMainComponentChildLayer();
+
+      await designPanelPage.clickAddStrokeButton();
+      await designPanelPage.changeStrokeSettings('#ff0000', '60', '10', 'Inside');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
+      await designPanelPage.clickAddShadowButton();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
+      await designPanelPage.clickAddBlurButton();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
+      await designPanelPage.changeRotationForLayer('40');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
+      await designPanelPage.changeWidthForLayer('40');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
+
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'main-copies-component-text-independent-changes.png',
         {
           mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
           maxDiffPixels: 0,
