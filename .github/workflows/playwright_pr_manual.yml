@@ -12,16 +12,11 @@ on:
       - main
     types: [opened, synchronize, reopened]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
   tests_chromium:
     environment: PRE
     timeout-minutes: 180
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,69 +24,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 22
-
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        id: node-modules-cache
-        with:
-          path: |
-            node_modules
-          key: modules-${{ hashFiles('package-lock.json') }}
-
       - name: Install dependencies
-        if: steps.node-modules-cache.outputs.cache-hit != 'true'
-        run: npm ci --ignore-scripts
-
-      - name: Get installed Playwright version
-        id: playwright-version
-        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_OUTPUT
-
-      - name: Cache playwright binaries
-        uses: actions/cache@v3
-        id: playwright-cache
-        with:
-          path: |
-            ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}
-
+        run: npm ci
       - name: Install Playwright
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
-      - name: Install Playwright deps
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install-deps
-
-      - name: Run lint
-        run: npm run lint
-
-      - name: Run prettier
-        run: npm run prettier
-      - name: Get changed files
-        id: changed-files
-        shell: bash
-        run: |
-          # Check if this is a manual trigger
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            if [ "${{ github.event.inputs.run_all_tests }}" = "true" ]; then
-              echo "Manual trigger with run_all_tests=true"
-              echo "has-test-changes=true" >> $GITHUB_OUTPUT
-              echo "run-all-tests=true" >> $GITHUB_OUTPUT
-            else
-              echo "Manual trigger to run only changed tests"
-              echo "has-test-changes=true" >> $GITHUB_OUTPUT
-              echo "run-all-tests=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            # This is a PR trigger - always run changed tests
-            echo "PR trigger - running changed tests"
-            echo "has-test-changes=true" >> $GITHUB_OUTPUT
-            echo "run-all-tests=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Run Playwright tests
-        if: steps.changed-files.outputs.has-test-changes == 'true'
-        shell: bash
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
@@ -103,15 +41,12 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
         run: |
-          if [ "${{ steps.changed-files.outputs.run-all-tests }}" = "true" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.run_all_tests }}" = "true" ]; then
             echo "Running all tests..."
             npx playwright test --project=chrome -gv 'PERF'
           else
             echo "Running tests for changed files using Playwright's --only-changed"
-            echo "Base branch: origin/${{ github.base_ref }}"
-            # Use Playwright's built-in --only-changed feature which handles dependencies correctly
-            # This includes test files, page objects, helpers, fixtures, and any related files
-            npx playwright test --project=chrome --only-changed=origin/${{ github.base_ref }} -gv 'PERF' --reporter=github
+            npx playwright test --project=chrome --only-changed=origin/${{ github.base_ref }} -gv 'PERF'
           fi
 
       - name: Upload Playwright Report

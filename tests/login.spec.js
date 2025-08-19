@@ -49,5 +49,3 @@ test(qase(42, 'Login with incorrect password'), async ({ page }) => {
 test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
-
-// Test change to trigger pipeline - Added on Aug 19, 2025
