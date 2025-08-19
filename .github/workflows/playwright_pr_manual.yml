@@ -1,4 +1,4 @@
-name: Auto Penpot Tests on Commit
+name: Manual Penpot Tests for PR
 on:
   workflow_dispatch:
     inputs:
@@ -7,14 +7,21 @@ on:
         required: false
         default: false
         type: boolean
-  push:
-    branches: [estefafdez/feature/new-pr-action]
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   tests_chromium:
     environment: PRE
     timeout-minutes: 180
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -22,48 +29,63 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 22
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        id: node-modules-cache
+        with:
+          path: |
+            node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies
-        run: npm ci
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: npm ci --ignore-scripts
+
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_OUTPUT
+
+      - name: Cache playwright binaries
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}
+
       - name: Install Playwright
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
+
+      - name: Install Playwright deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install-deps
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run prettier
+        run: npm run prettier
       - name: Get changed files
         id: changed-files
         shell: bash
         run: |
-          # Check if this is a manual trigger with run_all_tests
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.run_all_tests }}" = "true" ]; then
-            echo "Manual trigger with run_all_tests=true"
-            echo "has-test-changes=true" >> $GITHUB_OUTPUT
-            echo "run-all-tests=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # For pushes, compare with the previous commit in the same branch
-          if [ -n "${{ github.event.before }}" ]; then
-            BASE_SHA="${{ github.event.before }}"
+          # Check if this is a manual trigger
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "${{ github.event.inputs.run_all_tests }}" = "true" ]; then
+              echo "Manual trigger with run_all_tests=true"
+              echo "has-test-changes=true" >> $GITHUB_OUTPUT
+              echo "run-all-tests=true" >> $GITHUB_OUTPUT
+            else
+              echo "Manual trigger to run only changed tests"
+              echo "has-test-changes=true" >> $GITHUB_OUTPUT
+              echo "run-all-tests=false" >> $GITHUB_OUTPUT
+            fi
           else
-            # Fallback: get the previous commit in the current branch
-            BASE_SHA="HEAD~1"
-          fi
-          echo "Push detected - comparing with previous commit: $BASE_SHA"
-
-          echo "Base SHA: $BASE_SHA"
-
-          # Get list of changed files in the entire PR/push
-          CHANGED_FILES=$(git diff --name-only $BASE_SHA HEAD)
-          echo "Changed files in entire PR/push:"
-          echo "$CHANGED_FILES"
-
-          # Check if test files have changed
-          TEST_FILES_CHANGED=$(echo "$CHANGED_FILES" | grep -E "\.spec\.js$" || true)
-          if [ -n "$TEST_FILES_CHANGED" ]; then
-            echo "Test files changed in entire PR/push:"
-            echo "$TEST_FILES_CHANGED"
+            # This is a PR trigger - always run changed tests
+            echo "PR trigger - running changed tests"
             echo "has-test-changes=true" >> $GITHUB_OUTPUT
-            echo "run-all-tests=false" >> $GITHUB_OUTPUT
-          else
-            echo "No test files changed in entire PR/push"
-            echo "has-test-changes=false" >> $GITHUB_OUTPUT
             echo "run-all-tests=false" >> $GITHUB_OUTPUT
           fi
 
@@ -75,7 +97,7 @@ jobs:
           LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
           SECOND_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-          GITHUB_RUN_ID: ${{ github.run.id }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
@@ -85,26 +107,16 @@ jobs:
             echo "Running all tests..."
             npx playwright test --project=chrome -gv 'PERF'
           else
-            # For pushes, compare with the previous commit in the same branch
-            if [ -n "${{ github.event.before }}" ]; then
-            BASE_SHA="${{ github.event.before }}"
-            else
-              BASE_SHA="HEAD~1"
-            fi
-            echo "Running tests for changed files in this push (comparing with previous commit)"
-          echo "Base SHA: $BASE_SHA"
-                        # Run tests for changed files in this push
-            npx playwright test --project=chrome --only-changed=$BASE_SHA -gv 'PERF'
+            echo "Running tests for changed files using Playwright's --only-changed"
+            echo "Base branch: origin/${{ github.base_ref }}"
+            # Use Playwright's built-in --only-changed feature which handles dependencies correctly
+            # This includes test files, page objects, helpers, fixtures, and any related files
+            npx playwright test --project=chrome --only-changed=origin/${{ github.base_ref }} -gv 'PERF' --reporter=github
           fi
-
-      - name: No tests to run
-        if: steps.changed-files.outputs.has-test-changes == 'false'
-        run: |
-          echo "No test files have changed. Skipping test execution."
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
-        if: steps.changed-files.outputs.has-test-changes == 'true'
+        if: always()
         with:
           name: playwright-report-chromium-pr
           path: playwright-report/
@@ -115,5 +127,5 @@ jobs:
           CHANNEL_ID: ${{ secrets.PR_CHANNEL_ID }}
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
-        if: steps.changed-files.outputs.has-test-changes == 'true'
+        if: always()
         run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('PR Auto Tests Reports Chrome')"
