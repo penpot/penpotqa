@@ -195,7 +195,7 @@ mainTest.describe(() => {
   mainTest.afterEach(async () => {
     await mainPage.backToDashboardFromFileEditor();
     await profilePage.logout();
-    await loginPage.waitLoginPage();
+    await loginPage.isEmailInputVisible();
     await loginPage.isLoginPageOpened();
     await loginPage.enterEmail(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
