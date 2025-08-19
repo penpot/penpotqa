@@ -270,6 +270,13 @@ exports.MainPage = class MainPage extends BasePage {
     await this.uploadImageSelector.setInputFiles(filePath);
   }
 
+  async uploadImageViaShortcut(filePath) {
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    await this.pressUploadImageShortcut();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(filePath);
+  }
+
   async clickCreateCurveButton() {
     await this.createCurveButton.click({ delay: 500 });
   }
@@ -729,6 +736,10 @@ exports.MainPage = class MainPage extends BasePage {
 
   async pressHideShowUIShortcut() {
     await this.page.keyboard.press('Backslash');
+  }
+
+  async pressUploadImageShortcut() {
+    await this.page.keyboard.press('Shift+K');
   }
 
   async downloadPenpotFileViaMenu() {
