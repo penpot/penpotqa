@@ -1627,7 +1627,7 @@ mainTest.describe(() => {
         await loginPage.isLoginPageOpened();
 
         await page.goto(badURL);
-        await loginPage.waitLoginPage();
+        await loginPage.isEmailInputVisible();
       },
     );
 
@@ -1685,7 +1685,7 @@ mainTest.describe(() => {
       await mainPage.clickPencilBoxButton();
 
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1710,7 +1710,7 @@ mainTest.describe(() => {
 
       await mainPage.clickPencilBoxButton();
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1729,7 +1729,7 @@ mainTest.describe(() => {
       const badURL = await mainPage.makeBadDashboardUrl(currentURL);
 
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1745,7 +1745,7 @@ mainTest.describe(() => {
     mainTest.afterEach(async () => {
       await teamPage.clickGoToPenpotButton();
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1793,7 +1793,7 @@ test.describe(() => {
       await mainPage.clickPencilBoxButton();
 
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1811,7 +1811,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1848,7 +1848,7 @@ test.describe(() => {
       const currentURL = await mainPage.getUrl();
 
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1867,7 +1867,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1897,7 +1897,7 @@ test.describe(() => {
       await mainPage.clickPencilBoxButton();
 
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1913,7 +1913,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1947,7 +1947,7 @@ test.describe(() => {
       await mainPage.clickPencilBoxButton();
 
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1963,7 +1963,7 @@ test.describe(() => {
       await dashboardPage.isDashboardOpenedAfterLogin();
 
       await profilePage.logout();
-      await loginPage.waitLoginPage();
+      await loginPage.isEmailInputVisible();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmail(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -1992,7 +1992,7 @@ test.describe(() => {
     await mainPage.clickPencilBoxButton();
 
     await profilePage.logout();
-    await loginPage.waitLoginPage();
+    await loginPage.isEmailInputVisible();
     await page.context().clearCookies();
     await mainPage.reloadPage();
     await loginPage.isLoginPageOpened();
@@ -2018,7 +2018,7 @@ test.describe(() => {
     await dashboardPage.isDashboardOpenedAfterLogin();
 
     await profilePage.logout();
-    await loginPage.waitLoginPage();
+    await loginPage.isEmailInputVisible();
     await page.context().clearCookies();
     await mainPage.reloadPage();
     await loginPage.isLoginPageOpened();
