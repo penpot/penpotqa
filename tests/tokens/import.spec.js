@@ -162,7 +162,7 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase(2213, 'Apply imported font size tokens'), async ({ browserName }) => {
+mainTest(qase(2361, 'Apply imported font size tokens'), async ({ browserName }) => {
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
