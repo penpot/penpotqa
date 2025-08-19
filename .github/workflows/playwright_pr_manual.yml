@@ -83,18 +83,18 @@ jobs:
         run: |
           if [ "${{ steps.changed-files.outputs.run-all-tests }}" = "true" ]; then
             echo "Running all tests..."
-            npx playwright test --project=chrome
+            npx playwright test --project=chrome -gv 'PERF'
           else
             # For pushes, compare with the previous commit in the same branch
             if [ -n "${{ github.event.before }}" ]; then
-              BASE_SHA="${{ github.event.before }}"
+            BASE_SHA="${{ github.event.before }}"
             else
               BASE_SHA="HEAD~1"
             fi
             echo "Running tests for changed files in this push (comparing with previous commit)"
-            echo "Base SHA: $BASE_SHA"
-            # Run tests for changed files in this push
-            npx playwright test --project=chrome --only-changed=$BASE_SHA
+          echo "Base SHA: $BASE_SHA"
+                        # Run tests for changed files in this push
+            npx playwright test --project=chrome --only-changed=$BASE_SHA -gv 'PERF'
           fi
 
       - name: No tests to run
