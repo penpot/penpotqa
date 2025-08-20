@@ -56,16 +56,16 @@ jobs:
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
-        if: success()
+        if: always()
         with:
           name: playwright-report-chromium-pr
           path: playwright-report/
           retention-days: 30
 
       - name: Send mattermost Message
-        if: steps.run-tests.outcome == 'success'
         env:
           CHANNEL_ID: ${{ secrets.PR_CHANNEL_ID }}
           LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
           PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
-        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('PR Auto Tests Reports Chrome')"
+        if: always()
+        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Chrome')"
