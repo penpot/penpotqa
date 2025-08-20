@@ -57,7 +57,7 @@ jobs:
             npx playwright test --project=chrome -gv 'PERF'
           else
             echo "Running tests for changed files using Playwright's --only-changed"
-            npx playwright test --project=chrome --only-changed=origin/${{ github.base_ref }} -gv 'PERF'
+            npx playwright test --project=chrome --only-changed=origin/main -gv 'PERF'
           fi
 
       - name: Upload Playwright Report
