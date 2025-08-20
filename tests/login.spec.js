@@ -49,3 +49,5 @@ test(qase(42, 'Login with incorrect password'), async ({ page }) => {
 test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
+
+// Small change to trigger workflow - August 20, 2025
