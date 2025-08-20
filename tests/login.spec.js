@@ -1,4 +1,3 @@
-// Login tests for Penpot application
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 const { LoginPage } = require('../pages/login-page');
 const { qase } = require('playwright-qase-reporter/dist/playwright');
@@ -49,5 +48,3 @@ test(qase(42, 'Login with incorrect password'), async ({ page }) => {
 test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
-
-// Small change to trigger workflow - August 20, 2025
