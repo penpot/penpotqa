@@ -7,11 +7,6 @@ on:
         required: false
         default: false
         type: boolean
-  pull_request:
-    branches:
-      - main
-    types: [opened, synchronize, reopened]
-
 jobs:
   tests_chromium:
     defaults:
