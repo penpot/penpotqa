@@ -62,14 +62,6 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-      - name: Debug environment variables
-        run: |
-          echo "PR_CHANNEL_ID is: ${{ secrets.PR_CHANNEL_ID }}"
-          echo "LOGIN_ID_MATTERMOST is: ${{ secrets.LOGIN_ID_MATTERMOST }}"
-          echo "Channel ID env var: $CHANNEL_ID"
-        env:
-          CHANNEL_ID: ${{ secrets.PR_CHANNEL_ID }}
-
       - name: Send mattermost Message
         env:
           CHANNEL_ID: ${{ secrets.PR_CHANNEL_ID }}

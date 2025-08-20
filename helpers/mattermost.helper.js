@@ -13,17 +13,13 @@ async function getToken() {
     password: `${process.env.PASSWORD_MATTERMOST}`,
   };
 
-  console.log('Attempting login with:', { url, login_id: requestBody.login_id });
-
   try {
     const response = await axios.post(url, requestBody, {
       headers: { 'Content-Type': 'application/json' },
     });
-    const token = response.headers['token'];
-    console.log('Login successful, token received:', token ? 'YES' : 'NO');
-    return token;
+    return response.headers['token'];
   } catch (error) {
-    console.error('Login failed:', error.response?.status, error.response?.data);
+    console.error('Error:', error);
     return null;
   }
 }
@@ -61,16 +57,7 @@ async function getToken() {
 
 async function sendMessage(browserName) {
   const url = `${baseUrl}/posts`;
-
-  console.log('Channel ID from env:', process.env.CHANNEL_ID);
-  console.log('Using channel_id:', channel_id);
-
   const token = await getToken();
-
-  if (!token) {
-    console.error('No token received, cannot send message');
-    return null;
-  }
 
   // await uploadFile()
   function roundNumber(num) {
@@ -91,8 +78,6 @@ async function sendMessage(browserName) {
        :computer: Browser: ${browserName}`;
   const requestBody = { channel_id: channel_id, message: messageWithLink };
 
-  console.log('Sending message to:', url, 'with channel_id:', channel_id);
-
   try {
     const response = await axios.post(url, requestBody, {
       headers: {
@@ -101,19 +86,9 @@ async function sendMessage(browserName) {
       },
     });
 
-    console.log('Message sent successfully!');
     return response.data;
   } catch (error) {
-    console.error(
-      'Failed to send message:',
-      error.response?.status,
-      error.response?.data,
-    );
-    console.error('Request details:', {
-      url,
-      channel_id,
-      token: token ? 'EXISTS' : 'MISSING',
-    });
+    console.error('Error:', error);
     return null;
   }
 }
