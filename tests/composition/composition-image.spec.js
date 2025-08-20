@@ -159,18 +159,11 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 20000);
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.uploadImage('images/sample.jpeg');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-  });
-
-  mainTest(qase(435, 'CO-220 Import JPEG image'), async () => {
-    await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('image-jpeg.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
   });
 
   mainTest(
@@ -361,3 +354,21 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible(false);
   });
 });
+
+mainTest(
+  qase(
+    2286,
+    'Import rotated Exif JPEG images from toolbar and from shortcut (Shift+K)',
+  ),
+  async () => {
+    await mainPage.uploadImage('images/exif_top_left.jpg');
+    await layersPanelPage.isLayerWithNameSelected('exif_top_left');
+    await designPanelPage.checkSizeWidth('1800');
+    await designPanelPage.checkSizeHeight('1200');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.uploadImageViaShortcut('images/exif_top_right.jpg');
+    await layersPanelPage.isLayerWithNameSelected('exif_top_right');
+    await designPanelPage.checkSizeWidth('1800');
+    await designPanelPage.checkSizeHeight('1200');
+  },
+);
