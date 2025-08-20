@@ -65,13 +65,10 @@ mainTest(qase(1931, 'Open history version panel (via main menu)'), async () => {
   await historyPage.isVersionListEmpty();
 });
 
-// mainTest(
-//   qase(1930, 'Open history version panel (shortcut Alt+H)'),
-//   async ({ page }) => {
-//     await historyPage.clickShortcutAltH();
-//     await historyPage.isVersionListEmpty();
-//   },
-// );
+mainTest(qase(1930, 'Open history version panel (shortcut Alt+H)'), async () => {
+  await historyPage.clickShortcutCtrlAltH();
+  await historyPage.isVersionListEmpty();
+});
 
 mainTest.describe(() => {
   const versionName = 'test version';
