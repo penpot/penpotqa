@@ -375,4 +375,13 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   async isPathComponentOnLayersTabVisible() {
     await expect(this.pathComponentLayer).toBeVisible();
   }
+
+  async isLayerWithNameSelected(name, selected = true) {
+    const layerSel = await this.page.locator(
+      'div[class*="sidebar_layer_item__selected"] [class*="element-name"]',
+    );
+    selected
+      ? await expect(layerSel).toHaveText(name)
+      : await expect(layerSel).not.toHaveText(name);
+  }
 };
