@@ -42,14 +42,14 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(874, 'PF-156 Perform a change and check the status'), async () => {
+mainTest(qase(874, 'Perform a change and check the status'), async () => {
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
   await mainPage.isUnSavedChangesDisplayed();
   await mainPage.waitForChangeIsSaved();
 });
 
-mainTest(qase(890, 'PF-172 Open history panel with recent changes'), async () => {
+mainTest(qase(890, 'Open history panel with recent changes'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
