@@ -197,7 +197,6 @@ exports.MainPage = class MainPage extends BasePage {
     this.workspaceMenu = page.locator('*[class*="workspace-context-menu"]');
 
     //Header
-    this.unSavedChangesIcon = page.getByTitle('Unsaved changes', { exact: true });
     this.usersSection = page.locator('div[class*="users-section"]');
     this.projectNameSpan = page.locator('div[class*="project-name"]');
     this.fileNameSpan = page.locator('div[class*="file-name"]');

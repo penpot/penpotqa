@@ -168,7 +168,7 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
     }
   }
 
-  async clickShortcutAltH() {
-    await this.page.keyboard.press('Alt+Z');
+  async clickShortcutCtrlAltH() {
+    await this.page.keyboard.press('Control+Alt+H');
   }
 };
