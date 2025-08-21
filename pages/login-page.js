@@ -8,42 +8,46 @@ exports.LoginPage = class LoginPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.pageTitle = page.getByTestId('login-title');
-    this.emailInput = page.locator('#email');
-    this.pwdInput = page.locator('#password');
-    this.loginButton = page.getByTestId('login-submit');
-    this.emailInputError = page.getByTestId(':email-error');
-    this.section = page.locator('section[class="auth-content"]');
-    this.loginErrorBanner = page.locator(
-      'aside[class*="context_notification__warning"] div:nth-of-type(2)',
-    );
-    this.createAccountLink = page.getByTestId('register-submit');
-    this.forgotPasswordLink = page.getByTestId('forgot-password');
-    this.loginHereButton = page.getByTestId('login-here-link');
+    this.pageTitle = page
+      .getByRole('heading', { name: 'Log into my account', exact: true });
+    this.emailInput = page
+      .getByPlaceholder('Work email', { exact: true });
+    this.pwdInput = page
+      .getByPlaceholder('Password', { exact: true });
+    this.loginButton = page
+      .getByRole('button', { name: 'Login', exact: true });
+    this.emailInputError = page
+      .getByTestId(':email-error');
+    this.createAccountLink = page
+      .getByText('Create an account', { exact: true });
+    this.forgotPasswordLink = page
+      .getByText('Forgot password?', { exact: true });
   }
 
-  async checkLoginError(text) {
+  async getLoginError(text) {
     return this.page
-      .locator(
-        `//aside[contains(@class,"context_notification__warning")]/div[text()='${text}']`,
-      )
-      .isVisible();
+      .getByRole('alert')
+      .filter({ hasText: text });
   }
 
   async goto() {
-    await this.page.goto('/#/auth/login');
+    await this.page
+      .goto('/#/auth/login');
   }
 
   async enterEmail(loginEmail) {
-    await this.emailInput.fill(loginEmail);
+    await this.emailInput
+      .fill(loginEmail);
   }
 
   async enterPwd(loginPwd) {
-    await this.pwdInput.fill(loginPwd);
+    await this.pwdInput
+      .fill(loginPwd);
   }
 
   async clickLoginButton() {
-    await this.loginButton.click();
+    await this.loginButton
+      .click();
   }
 
   async clickPwdInput() {
@@ -51,41 +55,51 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async isEmailInputErrorDisplayed(error) {
-    await expect(this.emailInputError).toHaveText(error);
+    await expect(
+      this.emailInputError,
+      `Email input error is displayed: ${error}`,
+    ).toHaveText(error);
   }
 
   async isLoginButtonDisplayed() {
-    await expect(this.loginButton).toBeVisible();
+    await expect(this.loginButton, 'Login button is displayed')
+      .toBeVisible();
   }
 
   async isLoginButtonDisabled() {
-    await expect(this.loginButton).toBeDisabled();
+    await expect(this.loginButton, 'Login button is disabled')
+      .toBeDisabled();
   }
 
   async clickHeader() {
-    await this.pageTitle.click();
+    await this.pageTitle
+      .click();
   }
 
   async isLoginErrorMessageDisplayed(message) {
-    await expect(await this.checkLoginError(message)).toBeTruthy;
+    await expect(
+      await this.getLoginError(message),
+      `Login error message is visible: ${message}`,
+    ).toBeVisible();
   }
 
   async clickOnCreateAccount() {
-    await this.createAccountLink.click();
-  }
-  async clickOnLoginHereLink() {
-    await this.loginHereButton.click();
+    await this.createAccountLink
+      .click();
   }
 
   async clickOnForgotPassword() {
-    await this.forgotPasswordLink.click();
+    await this.forgotPasswordLink
+      .click();
   }
 
   async isLoginPageOpened() {
-    await expect(this.pageTitle).toHaveText('Log into my account');
+    await expect(this.pageTitle, 'Login page is opened')
+      .toBeVisible();
   }
 
-  async waitLoginPage(timeout = 30) {
-    await this.emailInput.waitFor({ state: 'visible', timeout: timeout * 1000 });
+  async isEmailInputVisible() {
+    await expect(this.emailInput, 'Email input is visible')
+      .toBeVisible();
   }
 };
