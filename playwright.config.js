@@ -72,6 +72,7 @@ const config = {
         },
         launchOptions: {
           ignoreDefaultArgs: ['--hide-scrollbars'],
+          args: ['--headless=new'], // Use new headless mode
         },
         contextOptions: {
           // chromium-specific permissions
