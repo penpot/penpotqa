@@ -17,8 +17,8 @@ exports.BasePage = class BasePage {
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
     this.wrapperMessage = page.getByTestId('actionable');
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });
-    this.savedChangesIcon = page.locator('div[title="Saved"]');
-    this.unsavedChangesIcon = page.locator('div[title="Saving"]');
+    this.savedChangesIcon = page.getByTitle('Saved', { exact: true });
+    this.unSavedChangesIcon = page.getByTitle('Saving', { exact: true });
     this.viewport = page.locator('div[class*="viewport"] >> nth=0');
     this.resizeHandler = page.locator('[class="resize-handler"]');
 
@@ -282,7 +282,7 @@ exports.BasePage = class BasePage {
   }
 
   async waitForChangeIsUnsaved() {
-    await this.unsavedChangesIcon.waitFor({ state: 'visible' });
+    await this.unSavedChangesIcon.waitFor({ state: 'visible' });
   }
 
   async waitForResizeHandlerVisible() {
