@@ -4,7 +4,7 @@ const { random } = require('../helpers/string-generator');
 const { LoginPage } = require('../pages/login-page');
 const { expect, test } = require('@playwright/test');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
-const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { qase } = require('playwright-qase-reporter/playwright');
 const { RegisterPage } = require('../pages/register-page');
 const {
   getRegisterMessage,
