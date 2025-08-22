@@ -4,7 +4,7 @@ const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { PluginsPage } = require('../../pages/workspace/plugins-page');
-const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { qase } = require('playwright-qase-reporter/playwright');
 const { updateTestResults } = require('../../helpers/saveTestResults');
 
 const teamName = random().concat('autotest');

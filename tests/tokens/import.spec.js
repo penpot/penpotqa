@@ -5,7 +5,7 @@ const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
-const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { qase } = require('playwright-qase-reporter/playwright');
 const { TokensPanelPage } = require('../../pages/workspace/tokens-panel-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 
