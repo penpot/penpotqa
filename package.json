@@ -38,6 +38,7 @@
     "googleapis": "^137.1.0",
     "playwright-qase-reporter": "^1.2.2",
     "prettier": "^3.0.1",
+    "qaseio": "^2.4.3",
     "ts-node": "^10.9.2"
   }
 }
