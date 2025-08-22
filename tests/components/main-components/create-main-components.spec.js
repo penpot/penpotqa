@@ -9,7 +9,7 @@ const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page'
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
 const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
-const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
 

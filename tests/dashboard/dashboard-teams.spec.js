@@ -6,7 +6,7 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
 const { updateTestResults } = require('./../../helpers/saveTestResults.js');
-const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { qase } = require('playwright-qase-reporter/playwright');
 const {
   getRegisterMessage,
   checkInviteText,

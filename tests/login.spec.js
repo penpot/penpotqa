@@ -1,6 +1,6 @@
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
 const { LoginPage } = require('../pages/login-page');
-const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { qase } = require('playwright-qase-reporter/playwright');
 const { test } = require('@playwright/test');
 const { updateTestResults } = require('./../helpers/saveTestResults.js');
 

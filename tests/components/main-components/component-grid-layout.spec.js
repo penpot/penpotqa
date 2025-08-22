@@ -10,7 +10,7 @@ const { updateTestResults } = require('../../../helpers/saveTestResults.js');
 const { InspectPanelPage } = require('../../../pages/workspace/inspect-panel-page');
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
-const { qase } = require('playwright-qase-reporter/dist/playwright');
+const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
 const annotation = 'Test annotation for automation';
