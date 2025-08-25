@@ -48,7 +48,7 @@ mainTest.beforeEach(async ({ page }) => {
 mainTest.describe(() => {
   const team = random().concat('autotest');
 
-  mainTest(qase(1162, 'DA-76 Create a team'), async () => {
+  mainTest(qase(1162, 'Create a team'), async () => {
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
   });
@@ -62,7 +62,7 @@ mainTest.describe(() => {
   const team1 = random().concat('QA Test team 1');
   const team2 = random().concat('QA Test team 2');
 
-  mainTest(qase(1163, 'DA-77 Team.Switch between teams'), async () => {
+  mainTest(qase(1163, 'Team.Switch between teams'), async () => {
     await teamPage.createTeam(team1);
     await teamPage.isTeamSelected(team1);
     await teamPage.createTeam(team2);
@@ -80,7 +80,7 @@ mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
-    qase(1164, 'DA-78 Team Invitations - open the form via Invitations tab'),
+    qase(1164, 'Team Invitations - open the form via Invitations tab'),
     async () => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -101,7 +101,7 @@ test.describe(() => {
   const team = random().concat('autotest');
 
   test(
-    qase(1165, 'DA-79 Team Invitations - open the form via Team Hero'),
+    qase(1165, 'Team Invitations - open the form via Team Hero'),
     async ({ page }) => {
       const randomName = random().concat('autotest');
       const email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
@@ -133,7 +133,7 @@ mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
-    qase(1166, 'DA-80 Team Invitations invite via owner single invitation, editor'),
+    qase(1166, 'Team Invitations invite via owner single invitation, editor'),
     async () => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -162,7 +162,7 @@ mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
-    qase(1167, 'DA-81 Team Invitations - invite via owner single invitation, admin'),
+    qase(1167, 'Team Invitations - invite via owner single invitation, admin'),
     async () => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -192,10 +192,7 @@ mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
-    qase(
-      1175,
-      'DA-89 Team.Invitations-fail to send invitation to existing team member',
-    ),
+    qase(1175, 'Team.Invitations-fail to send invitation to existing team member'),
     async () => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -221,7 +218,7 @@ mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
-    qase(1176, 'DA-90 Team Invitations - resend invitation via owner'),
+    qase(1176, 'Team Invitations - resend invitation via owner'),
     async () => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -252,7 +249,7 @@ mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
-    qase(1178, 'DA-92 Team Invitations - delete invitation via owner'),
+    qase(1178, 'Team Invitations - delete invitation via owner'),
     async () => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -283,7 +280,7 @@ mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
-    qase(1181, 'DA-95 Team Invitations - change role in invitation via owner'),
+    qase(1181, 'Team Invitations - change role in invitation via owner'),
     async () => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -317,24 +314,21 @@ mainTest.describe(() => {
 mainTest.describe(() => {
   const team = random().concat('autotest');
 
-  mainTest(
-    qase(1200, 'DA-114 Team Settings - upload team profile picture'),
-    async () => {
-      await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openTeamSettingsPageViaOptionsMenu();
-      await teamPage.uploadTeamImage('images/images.png');
-      await teamPage.waitInfoMessageHidden();
-      await teamPage.hoverOnTeamName();
-      await expect(teamPage.teamInfoSection).toHaveScreenshot(
-        'team-profile-image.png',
-        {
-          maxDiffPixelRatio: maxDiffPixelRatio,
-          mask: [teamPage.teamNameLabel],
-        },
-      );
-    },
-  );
+  mainTest(qase(1200, 'Team Settings - upload team profile picture'), async () => {
+    await teamPage.createTeam(team);
+    await teamPage.isTeamSelected(team);
+    await teamPage.openTeamSettingsPageViaOptionsMenu();
+    await teamPage.uploadTeamImage('images/images.png');
+    await teamPage.waitInfoMessageHidden();
+    await teamPage.hoverOnTeamName();
+    await expect(teamPage.teamInfoSection).toHaveScreenshot(
+      'team-profile-image.png',
+      {
+        maxDiffPixelRatio: maxDiffPixelRatio,
+        mask: [teamPage.teamNameLabel],
+      },
+    );
+  });
 
   mainTest.afterEach(async () => {
     await teamPage.deleteTeam(team);
@@ -344,30 +338,27 @@ mainTest.describe(() => {
 mainTest.describe(() => {
   const team = random().concat('autotest');
 
-  mainTest(
-    qase(1202, "DA-116 Team. Settings - check 'Team members' info"),
-    async () => {
-      await profilePage.openYourAccountPage();
-      await profilePage.isHeaderDisplayed('Your account');
-      await profilePage.changeProfileName('QA Engineer');
-      await profilePage.uploadProfileImage('images/sample.jpeg');
-      await profilePage.waitInfoMessageHidden();
-      await profilePage.backToDashboardFromAccount();
-      await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openTeamSettingsPageViaOptionsMenu();
+  mainTest(qase(1202, "Team. Settings - check 'Team members' info"), async () => {
+    await profilePage.openYourAccountPage();
+    await profilePage.isHeaderDisplayed('Your account');
+    await profilePage.changeProfileName('QA Engineer');
+    await profilePage.uploadProfileImage('images/sample.jpeg');
+    await profilePage.waitInfoMessageHidden();
+    await profilePage.backToDashboardFromAccount();
+    await teamPage.createTeam(team);
+    await teamPage.isTeamSelected(team);
+    await teamPage.openTeamSettingsPageViaOptionsMenu();
 
-      const teamOwner = 'QA Engineer (Owner)';
-      await teamPage.isTeamOwnerInfoDisplayed(teamOwner);
-      await teamPage.isTeamMembersInfoDisplayed('1 members');
-      await expect(teamPage.teamOwnerSection).toHaveScreenshot(
-        'team-owner-block.png',
-        {
-          maxDiffPixelRatio: maxDiffPixelRatio,
-        },
-      );
-    },
-  );
+    const teamOwner = 'QA Engineer (Owner)';
+    await teamPage.isTeamOwnerInfoDisplayed(teamOwner);
+    await teamPage.isTeamMembersInfoDisplayed('1 members');
+    await expect(teamPage.teamOwnerSection).toHaveScreenshot(
+      'team-owner-block.png',
+      {
+        maxDiffPixelRatio: maxDiffPixelRatio,
+      },
+    );
+  });
 
   mainTest.afterEach(async () => {
     await teamPage.deleteTeam(team);
@@ -377,37 +368,34 @@ mainTest.describe(() => {
 mainTest.describe(() => {
   const team = random().concat('autotest');
 
-  mainTest(
-    qase(1203, "DA-117 Team. Settings - check 'Team projects' info"),
-    async () => {
-      const projectFirst = 'QA Project 1';
-      const projectSecond = 'QA Project 2';
+  mainTest(qase(1203, "Team. Settings - check 'Team projects' info"), async () => {
+    const projectFirst = 'QA Project 1';
+    const projectSecond = 'QA Project 2';
 
-      await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
-      await dashboardPage.createProject(projectFirst);
-      await dashboardPage.pinProjectByName(projectFirst);
-      await dashboardPage.createProject(projectSecond);
-      await dashboardPage.pinProjectByName(projectSecond);
-      await dashboardPage.openSidebarItem('Drafts');
-      await dashboardPage.createFileViaProjectPlaceholder();
-      await mainPage.backToDashboardFromFileEditor();
-      await dashboardPage.openProjectFromLeftSidebar(projectFirst);
-      await dashboardPage.createFileViaProjectPlaceholder();
-      await mainPage.backToDashboardFromFileEditor();
-      await dashboardPage.openProjectFromLeftSidebar(projectSecond);
-      await dashboardPage.createFileViaProjectPlaceholder();
-      await mainPage.backToDashboardFromFileEditor();
+    await teamPage.createTeam(team);
+    await teamPage.isTeamSelected(team);
+    await dashboardPage.createProject(projectFirst);
+    await dashboardPage.pinProjectByName(projectFirst);
+    await dashboardPage.createProject(projectSecond);
+    await dashboardPage.pinProjectByName(projectSecond);
+    await dashboardPage.openSidebarItem('Drafts');
+    await dashboardPage.createFileViaProjectPlaceholder();
+    await mainPage.backToDashboardFromFileEditor();
+    await dashboardPage.openProjectFromLeftSidebar(projectFirst);
+    await dashboardPage.createFileViaProjectPlaceholder();
+    await mainPage.backToDashboardFromFileEditor();
+    await dashboardPage.openProjectFromLeftSidebar(projectSecond);
+    await dashboardPage.createFileViaProjectPlaceholder();
+    await mainPage.backToDashboardFromFileEditor();
 
-      await teamPage.openTeamSettingsPageViaOptionsMenu();
-      await teamPage.isTeamProjectsInfoDisplayed('2 projects');
-      await teamPage.isTeamFilesInfoDisplayed('3 files');
-      await expect(teamPage.teamStatsSection).toHaveScreenshot(
-        'team-stats-block.png',
-        { maxDiffPixelRatio: maxDiffPixelRatio },
-      );
-    },
-  );
+    await teamPage.openTeamSettingsPageViaOptionsMenu();
+    await teamPage.isTeamProjectsInfoDisplayed('2 projects');
+    await teamPage.isTeamFilesInfoDisplayed('3 files');
+    await expect(teamPage.teamStatsSection).toHaveScreenshot(
+      'team-stats-block.png',
+      { maxDiffPixelRatio: maxDiffPixelRatio },
+    );
+  });
 
   mainTest.afterEach(async () => {
     await teamPage.deleteTeam(team);
@@ -418,7 +406,7 @@ mainTest.describe(() => {
   const team = random().concat('autotest');
   const teamNew = random().concat('autotest');
 
-  mainTest(qase(1205, 'DA-119 Rename a team via owner'), async () => {
+  mainTest(qase(1205, 'Rename a team via owner'), async () => {
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
     await teamPage.renameTeam(teamNew);
@@ -464,7 +452,7 @@ mainTest.describe(() => {
 mainTest.describe(() => {
   const team = random().concat('autotest');
 
-  mainTest(qase(1208, 'DA-122 Delete a team via owner'), async () => {
+  mainTest(qase(1208, 'Delete a team via owner'), async () => {
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
     await teamPage.deleteTeam(team);
@@ -484,7 +472,7 @@ mainTest.describe(() => {
   mainTest(
     qase(
       1168,
-      'DA-82 Team. Invitations - invite via owner (multiple invitations, editor)',
+      'Team. Invitations - invite via owner (multiple invitations, editor)',
     ),
     async ({ page }) => {
       const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
@@ -566,10 +554,7 @@ mainTest.describe(() => {
   const team = random().concat('autotest');
 
   mainTest(
-    qase(
-      1173,
-      'DA-87 Team. Invitations - invite via admin (multiple invitations, admin)',
-    ),
+    qase(1173, 'Team. Invitations - invite via admin (multiple invitations, admin)'),
     async ({ page }) => {
       await mainTest.slow();
       const mainAdmin = random().concat('autotest');
@@ -659,7 +644,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1177, 'DA-91 Team. Invitations - resend invitation via admin'),
+    qase(1177, 'Team. Invitations - resend invitation via admin'),
     async ({ page }) => {
       await mainTest.slow();
       const mainAdmin = random().concat('autotest');
@@ -711,7 +696,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1184, 'DA-98 Team. Members - change role via owner (editor to admin)'),
+    qase(1184, 'Team. Members - change role via owner (editor to admin)'),
     async ({ page }) => {
       await mainTest.slow();
       const secondUser = random().concat('autotest');
@@ -774,7 +759,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1187, 'DA-101 Team. Members - change role via admin(admin to editor)'),
+    qase(1187, 'Team. Members - change role via admin(admin to editor)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -854,7 +839,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1191, 'DA-105 Team. Members - unable to change roles via editor'),
+    qase(1191, 'Team. Members - unable to change roles via editor'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -921,7 +906,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1190, 'DA-104 Team. Members - unable to change role of owner via admin'),
+    qase(1190, 'Team. Members - unable to change role of owner via admin'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -961,7 +946,7 @@ mainTest.describe(() => {
   mainTest(
     qase(
       1183,
-      'DA-97 Team. Invitations - unable to create, edit and delete invitations via editor',
+      'Team. Invitations - unable to create, edit and delete invitations via editor',
     ),
     async ({ page }) => {
       await mainTest.slow();
@@ -1010,45 +995,40 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(1197, 'DA-111 Team. Members - leave team (as admin)'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
-      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+  mainTest(qase(1197, 'Team. Members - leave team (as admin)'), async ({ page }) => {
+    await mainTest.slow();
+    const firstAdmin = random().concat('autotest');
+    const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+    await teamPage.createTeam(team);
+    await teamPage.isTeamSelected(team);
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+    await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+    await teamPage.selectInvitationRoleInPopUp('Admin');
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+    const firstInvite = await waitMessage(page, firstEmail, 40);
 
-      await profilePage.logout();
-      await loginPage.isLoginPageOpened();
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
 
-      await page.goto(firstInvite.inviteUrl);
-      await registerPage.registerAccount(
-        firstAdmin,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
+    await page.goto(firstInvite.inviteUrl);
+    await registerPage.registerAccount(
+      firstAdmin,
+      firstEmail,
+      process.env.LOGIN_PWD,
+    );
+    await dashboardPage.fillOnboardingQuestions();
+    await teamPage.isTeamSelected(team);
 
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.leaveTeam(team);
-      await dashboardPage.clickOnOnboardingContinueWithoutTeamButton();
-    },
-  );
+    await teamPage.openMembersPageViaOptionsMenu();
+    await teamPage.leaveTeam(team);
+    await dashboardPage.clickOnOnboardingContinueWithoutTeamButton();
+  });
 
   mainTest(
-    qase(1198, 'DA-112 Team. Members - leave team (as editor)'),
+    qase(1198, 'Team. Members - leave team (as editor)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -1085,7 +1065,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1192, 'DA-106 Team. Members - delete team member (as owner)'),
+    qase(1192, 'Team. Members - delete team member (as owner)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -1134,7 +1114,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1193, 'DA-107 Team. Members - delete team member (as admin)'),
+    qase(1193, 'Team. Members - delete team member (as admin)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -1193,7 +1173,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1194, 'DA-108 Team. Members - unable to delete team member (as editor)'),
+    qase(1194, 'Team. Members - unable to delete team member (as editor)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -1260,7 +1240,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1182, 'DA-96 Team. Invitations - change role in invitation via admin'),
+    qase(1182, 'Team. Invitations - change role in invitation via admin'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -1334,7 +1314,7 @@ test.describe(() => {
   test(
     qase(
       1188,
-      'DA-102 Team. Members - change role via owner (transfer ownership to admin)',
+      'Team. Members - change role via owner (transfer ownership to admin)',
     ),
     async ({ page }) => {
       await mainTest.slow();
@@ -1370,12 +1350,12 @@ test.describe(() => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await waitSecondMessage(page, secondEmail, 40);
-      const invite = await getRegisterMessage(secondEmail);
       await loginPage.enterEmail(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
+      await waitSecondMessage(page, secondEmail, 40);
+      const invite = await getRegisterMessage(secondEmail);
       await page.goto(invite.inviteUrl);
       await teamPage.switchTeam(team);
       await teamPage.isTeamSelected(team);
@@ -1409,7 +1389,7 @@ test.describe(() => {
   test(
     qase(
       1189,
-      'DA-103 Team. Members - change role via owner (transfer ownership to editor)',
+      'Team. Members - change role via owner (transfer ownership to editor)',
     ),
     async ({ page }) => {
       await mainTest.slow();
@@ -1443,12 +1423,12 @@ test.describe(() => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await waitSecondMessage(page, secondEmail, 40);
-      const invite = await getRegisterMessage(secondEmail);
       await loginPage.enterEmail(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
+      await waitSecondMessage(page, secondEmail, 40);
+      const invite = await getRegisterMessage(secondEmail);
       await page.goto(invite.inviteUrl);
       await teamPage.switchTeam(team);
       await teamPage.isTeamSelected(team);
@@ -1482,7 +1462,7 @@ test.describe(() => {
   test(
     qase(
       1174,
-      'DA-88 Team. Invitations - send invitation to registered user (but not a team member)',
+      'Team. Invitations - send invitation to registered user (but not a team member)',
     ),
     async ({ page }) => {
       await mainTest.slow();
@@ -1517,12 +1497,12 @@ test.describe(() => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await waitSecondMessage(page, secondEmail, 40);
-      const invite = await getRegisterMessage(secondEmail);
       await loginPage.enterEmail(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
+      await waitSecondMessage(page, secondEmail, 40);
+      const invite = await getRegisterMessage(secondEmail);
       await page.goto(invite.inviteUrl);
       await teamPage.switchTeam(team);
       await teamPage.isTeamSelected(team);
@@ -1533,58 +1513,49 @@ test.describe(() => {
 mainTest.describe(() => {
   const team = random().concat('autotest');
 
-  mainTest(
-    qase(1196, 'DA-110 Team. Members - leave team (as owner)'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
-      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+  mainTest(qase(1196, 'Team. Members - leave team (as owner)'), async ({ page }) => {
+    await mainTest.slow();
+    const firstAdmin = random().concat('autotest');
+    const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+    await teamPage.createTeam(team);
+    await teamPage.isTeamSelected(team);
+    await teamPage.openInvitationsPageViaOptionsMenu();
+    await teamPage.clickInviteMembersToTeamButton();
+    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+    await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+    await teamPage.selectInvitationRoleInPopUp('Admin');
+    await teamPage.clickSendInvitationButton();
+    await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+    const firstInvite = await waitMessage(page, firstEmail, 40);
 
-      await profilePage.logout();
-      await loginPage.isLoginPageOpened();
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
 
-      await page.goto(firstInvite.inviteUrl);
-      await registerPage.registerAccount(
-        firstAdmin,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
+    await page.goto(firstInvite.inviteUrl);
+    await registerPage.registerAccount(
+      firstAdmin,
+      firstEmail,
+      process.env.LOGIN_PWD,
+    );
+    await dashboardPage.fillOnboardingQuestions();
+    await teamPage.isTeamSelected(team);
 
-      await profilePage.logout();
-      await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-      await loginPage.enterPwd(process.env.LOGIN_PWD);
-      await loginPage.clickLoginButton();
-      await dashboardPage.isDashboardOpenedAfterLogin();
-      await teamPage.switchTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.isMultipleMemberRecordDisplayed(
-        firstAdmin,
-        firstEmail,
-        'Admin',
-      );
-      await teamPage.leaveTeam(team, 'Owner', firstAdmin);
-    },
-  );
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.switchTeam(team);
+    await teamPage.isTeamSelected(team);
+    await teamPage.openMembersPageViaOptionsMenu();
+    await teamPage.isMultipleMemberRecordDisplayed(firstAdmin, firstEmail, 'Admin');
+    await teamPage.leaveTeam(team, 'Owner', firstAdmin);
+  });
 
   mainTest.describe(() => {
     mainTest(
-      qase(1180, 'DA-94 Team. Invitations- delete team invitation'),
+      qase(1180, 'Team. Invitations- delete team invitation'),
       async ({ page }) => {
         await mainTest.slow();
         const firstAdmin = random().concat('autotest');

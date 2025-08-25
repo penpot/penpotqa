@@ -42,7 +42,7 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(874, 'Perform a change and check the status'), async () => {
+mainTest(qase(874, 'Check if the status at header is "Saved"'), async () => {
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
   await mainPage.isUnSavedChangesDisplayed();
