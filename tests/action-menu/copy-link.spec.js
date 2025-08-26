@@ -47,7 +47,7 @@ mainTest.afterEach(async ({ page }, testInfo) => {
 
 mainTest.describe(() => {
   mainTest(
-    qase(2036, 'Share link of two Boards to a user from your team'),
+    qase([2036], 'Share link of two Boards to a user from your team'),
     async ({ page }) => {
       await mainTest.slow();
       const firstEditor = random().concat('autotest');
@@ -98,7 +98,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(2035, 'Share link of Component with a user without team permission'),
+    qase([2035], 'Share link of Component with a user without team permission'),
     async ({ page }) => {
       await mainPage.createDefaultRectangleByCoordinates(100, 100);
       await mainPage.createComponentViaRightClick();
