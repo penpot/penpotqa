@@ -29,16 +29,13 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(
-  qase(947, 'AS-37 Filter Typographies from All Assets drop-down'),
-  async () => {
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.selectTypeFromAllAssetsDropdown('Typographies');
-    await assetsPanelPage.isAssetsSectionNameDisplayed('Typographies', '0');
-  },
-);
+mainTest(qase([947], 'Filter Typographies from All Assets drop-down'), async () => {
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.selectTypeFromAllAssetsDropdown('Typographies');
+  await assetsPanelPage.isAssetsSectionNameDisplayed('Typographies', '0');
+});
 
-mainTest(qase(948, 'AS-38 Typographic styles - add from Assets panel'), async () => {
+mainTest(qase([948], 'Typographic styles - add from Assets panel'), async () => {
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.clickAddFileLibraryTypographyButton();
   await mainPage.waitForChangeIsSaved();
@@ -67,7 +64,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(950, 'Edit Typography Asset After Applying to Element'),
+    qase([950], 'Edit Typography Asset After Applying to Element'),
     async ({ browserName }) => {
       await mainPage.createDefaultTextLayerByCoordinates(200, 200, browserName);
       await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
@@ -103,7 +100,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(951, 'AS-41 Typographic styles - rename'), async () => {
+  mainTest(qase([951], 'Typographic styles - rename'), async () => {
     await assetsPanelPage.renameFileLibraryTypography('Test Font');
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
@@ -117,7 +114,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(952, 'AS-42 Typographic styles - delete'), async () => {
+  mainTest(qase([952], 'Typographic styles - delete'), async () => {
     await assetsPanelPage.deleteFileLibraryTypography();
     await mainPage.waitForChangeIsSaved();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
@@ -125,7 +122,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(953, 'AS-43 Typographic styles - create group'), async () => {
+  mainTest(qase([953], 'Typographic styles - create group'), async () => {
     await assetsPanelPage.createGroupFileLibraryAssets('Typographies', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
@@ -134,7 +131,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(955, 'AS-45 Typographic styles - rename group'), async () => {
+  mainTest(qase([955], 'Typographic styles - rename group'), async () => {
     await assetsPanelPage.createGroupFileLibraryAssets('Typographies', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.renameGroupFileLibrary('New Group');
@@ -145,7 +142,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(958, 'AS-48 Typographic styles - ungroup'), async () => {
+  mainTest(qase([958], 'Typographic styles - ungroup'), async () => {
     await assetsPanelPage.createGroupFileLibraryAssets('Typographies', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.ungroupFileLibrary();
@@ -157,10 +154,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(
-      964,
-      'AS-54 Typographic styles - apply style to text from Typographies panel',
-    ),
+    qase([964], 'Typographic styles - apply style to text from Typographies panel'),
     async ({ browserName }) => {
       await assetsPanelPage.editFileLibraryTypography();
       await assetsPanelPage.selectFont('Bad Script');
