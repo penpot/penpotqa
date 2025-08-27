@@ -44,7 +44,7 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(1273, 'Create component shape'), async () => {
+mainTest(qase([1273], 'Create component shape'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -60,7 +60,7 @@ mainTest(qase(1273, 'Create component shape'), async () => {
 });
 
 mainTest(
-  qase(1312, 'Drag a component from assets tab and drop into workspace'),
+  qase([1312], 'Drag a component from assets tab and drop into workspace'),
   async ({ browserName }) => {
     if (browserName !== 'webkit') {
       await mainPage.createDefaultEllipseByCoordinates(200, 300);
@@ -83,7 +83,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1431, 'Create component from rectangle by clicking CTRL K'),
+  qase([1431], 'Create component from rectangle by clicking CTRL K'),
   async ({ browserName }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
@@ -96,7 +96,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1432, 'Create component from ellipse by clicking CTRL K'),
+  qase([1432], 'Create component from ellipse by clicking CTRL K'),
   async ({ browserName }) => {
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
@@ -109,7 +109,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1433, 'Create component from board by clicking CTRL K'),
+  qase([1433], 'Create component from board by clicking CTRL K'),
   async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
@@ -122,7 +122,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1434, 'Create component from text by right-click'),
+  qase([1434], 'Create component from text by right-click'),
   async ({ browserName }) => {
     await mainPage.createDefaultTextLayer(browserName);
     await mainPage.createComponentViaRightClick();
@@ -147,7 +147,7 @@ mainTest(
   },
 );
 
-mainTest(qase(1435, 'Create component from image by right-click'), async () => {
+mainTest(qase([1435], 'Create component from image by right-click'), async () => {
   await mainPage.uploadImage('images/sample.jpeg');
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -169,7 +169,7 @@ mainTest(qase(1435, 'Create component from image by right-click'), async () => {
   );
 });
 
-mainTest(qase(1436, 'Create component from path by right-click'), async () => {
+mainTest(qase([1436], 'Create component from path by right-click'), async () => {
   await mainPage.createDefaultClosedPath();
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -189,7 +189,7 @@ mainTest(qase(1436, 'Create component from path by right-click'), async () => {
 });
 
 mainTest(
-  qase(1437, 'Create component from curve by right-click'),
+  qase([1437], 'Create component from curve by right-click'),
   async ({ browserName }) => {
     await mainPage.createDefaultCurveLayer();
     await layersPanelPage.createComponentViaRightClickLayers(browserName);
@@ -213,7 +213,7 @@ mainTest(
   },
 );
 
-mainTest(qase(1291, 'Undo component'), async ({ browserName }) => {
+mainTest(qase([1291], 'Undo component'), async ({ browserName }) => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -229,7 +229,7 @@ mainTest(qase(1291, 'Undo component'), async ({ browserName }) => {
 });
 
 mainTest(
-  qase(1530, 'Create multiple components from rectangle and ellipse'),
+  qase([1530], 'Create multiple components from rectangle and ellipse'),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createDefaultEllipseByCoordinates(400, 600, true);
@@ -254,7 +254,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1531, 'Create multiple components from text, board and image'),
+  qase([1531], 'Create multiple components from text, board and image'),
   async ({ browserName }) => {
     await mainPage.createDefaultTextLayer(browserName);
     await mainPage.createDefaultBoardByCoordinates(200, 400);
@@ -287,7 +287,7 @@ mainTest(
   },
 );
 
-mainTest(qase(1751, 'PENPOT-1751 Grouping component copies'), async () => {
+mainTest(qase([1751], 'Grouping component copies'), async () => {
   await mainTest.slow();
   await mainPage.createDefaultEllipseByCoordinates(200, 200);
   await mainPage.createComponentViaRightClick();
@@ -310,7 +310,7 @@ mainTest(qase(1751, 'PENPOT-1751 Grouping component copies'), async () => {
   );
 });
 
-mainTest(qase(1749, 'PENPOT-1749 Change group shadow color'), async () => {
+mainTest(qase([1749], 'Change group shadow color'), async () => {
   await mainTest.slow();
   await mainPage.createDefaultRectangleByCoordinates(200, 200);
   await mainPage.createComponentViaRightClick();
