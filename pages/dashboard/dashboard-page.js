@@ -231,6 +231,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'Marked all notifications as read',
       { exact: true },
     );
+    this.subscriptionName = page.getByTestId('subscription-name');
   }
 
   async createFileViaPlaceholder() {
@@ -1085,5 +1086,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickOnModalAcceptButton() {
     await this.modalAcceptButton.click();
+  }
+
+  async checkSubscriptionName(name) {
+    await expect(this.subscriptionName).toHaveText(name);
   }
 };
