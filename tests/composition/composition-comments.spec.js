@@ -55,33 +55,30 @@ mainTest.describe(() => {
     await commentsPanelPage.isCommentDisplayedInPopUp(commentText);
   });
 
-  mainTest(
-    qase([554, 1219], 'CO-339 Create comment from toolbar'),
-    async ({ page }) => {
-      const comment = 'Test Comment';
-      await commentsPanelPage.isCommentDisplayedInPopUp(comment);
-      await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
-      await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
-        mask: [
-          commentsPanelPage.commentsAuthorSection,
-          mainPage.usersSection,
-          mainPage.toolBarWindow,
-        ],
-      });
-      await mainPage.clickViewportOnce();
-      await commentsPanelPage.isCommentThreadIconDisplayed();
-      await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
-        mask: [
-          commentsPanelPage.commentsAuthorSection,
-          mainPage.usersSection,
-          mainPage.toolBarWindow,
-        ],
-      });
-    },
-  );
+  mainTest(qase([1219], 'Create comment (Toolbar)'), async ({ page }) => {
+    const comment = 'Test Comment';
+    await commentsPanelPage.isCommentDisplayedInPopUp(comment);
+    await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
+    await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
+      mask: [
+        commentsPanelPage.commentsAuthorSection,
+        mainPage.usersSection,
+        mainPage.toolBarWindow,
+      ],
+    });
+    await mainPage.clickViewportOnce();
+    await commentsPanelPage.isCommentThreadIconDisplayed();
+    await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
+      mask: [
+        commentsPanelPage.commentsAuthorSection,
+        mainPage.usersSection,
+        mainPage.toolBarWindow,
+      ],
+    });
+  });
 
   mainTest(
-    qase([561, 1226], 'CO-346 Reply comment with valid text using Latin alphabet'),
+    qase([1226], 'Reply comment with valid text using Latin alphabet'),
     async ({ page }) => {
       const replyComment =
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
@@ -100,7 +97,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase([566, 1231], 'CO-351 Edit comment with valid text using Latin alphabet'),
+    qase([1231], 'Edit comment with valid text using Latin alphabet'),
     async ({ page }) => {
       const editedComment = 'Edited Test Comment';
       await commentsPanelPage.clickCommentOptionsButton();
@@ -123,7 +120,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([571, 1236], 'CO-356 Delete thread'), async ({ page }) => {
+  mainTest(qase([1236], 'Delete thread'), async ({ page }) => {
     await commentsPanelPage.clickCommentHeaderOptionsButton();
     await commentsPanelPage.clickDeleteCommentOption();
     await commentsPanelPage.clickDeleteThreadButton();
@@ -140,7 +137,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([575, 1240], 'CO-360 Resolve comment'), async ({ page }) => {
+  mainTest(qase([1240], 'Resolve comment'), async ({ page }) => {
     await commentsPanelPage.clickResolveCommentCheckbox();
     await mainPage.clickViewportOnce();
     await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
@@ -164,7 +161,7 @@ mainTest.describe(() => {
 });
 
 mainTest(
-  qase([556, 1221], 'CO-341 Post comment with valid text using Latin alphabet'),
+  qase([1221], 'Post comment with valid text using Latin alphabet'),
   async ({ page }) => {
     const comment =
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.';
@@ -193,7 +190,7 @@ mainTest(
   },
 );
 
-mainTest(qase(2148, 'Zoom out and check comment bubbles'), async () => {
+mainTest(qase([2148], 'Zoom out and check comment bubbles'), async () => {
   const comment = 'Test Comment';
   const xAxisCommentsCoordinates = [100, 50, 700];
   const yAxisCommentsCoordinates = [100, 50, 700];
@@ -288,7 +285,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(2057, 'Click Notification in the pop-up'), async ({ page }) => {
+  mainTest(qase([2057], 'Click Notification in the pop-up'), async ({ page }) => {
     await mainTest.slow();
     const firstEditor = random().concat('autotest');
     const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
@@ -353,7 +350,7 @@ mainTest.describe(() => {
     await mainPage.backToDashboardFromFileEditor();
   });
 
-  mainTest(qase(2086, 'Only your mentions filter'), async ({ page }) => {
+  mainTest(qase([2086], '"Only your mentions" filter'), async ({ page }) => {
     await mainTest.slow();
     const firstEditor = random().concat('autotest');
     const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
@@ -432,7 +429,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(2268, 'Notification icon after mention in the comments in the workspace'),
+    qase([2268], 'Notification icon after mention in the comments in the workspace'),
     async ({ page }) => {
       await mainTest.slow();
       const firstEditor = random().concat('autotest');
