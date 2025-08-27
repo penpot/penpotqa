@@ -20,6 +20,7 @@ Prerequisites for local run:
   - `REFRESH_TOKEN` (Token for email access)
   - `CLIENT_ID` (for email access)
   - `CLIENT_SECRET` (for email access)
+  - `STRIPE_SK` (for Stripe API access)
 
 **2. Test run - main notes.**
 

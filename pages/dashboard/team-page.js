@@ -130,6 +130,18 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.requestFileAccessDescribe = this.accessDialog.getByText(
       'To access this file, you can ask the team owner.',
     );
+    this.subscriptionIcon = page.getByTestId('subscription-icon').first();
+    this.subscriptionIconInTeamDropdown = page
+      .getByRole('menuitem')
+      .getByTestId('subscription-icon')
+      .first();
+    this.enterpriseIcon = this.subscriptionIcon.locator(
+      'svg[class*="icon-character-e"]',
+    );
+    this.unlimitedIcon = this.subscriptionIcon.locator(
+      'svg[class*="icon-character-u"]',
+    );
+    this.teamPlanName = page.locator('[class*="subscription__team-text"]');
   }
 
   async createTeam(teamName) {
@@ -559,5 +571,27 @@ exports.TeamPage = class TeamPage extends BasePage {
       this.renameTeamMenuItem,
       'Rename team button should not be visible',
     ).not.toBeVisible();
+  }
+
+  async isSubscriptionIconVisible(visible = true, subscription = 'Unlimited') {
+    const icon =
+      subscription.toLowerCase() === 'unlimited'
+        ? this.unlimitedIcon
+        : this.enterpriseIcon;
+
+    visible
+      ? await expect(icon).toBeVisible()
+      : await expect(icon).not.toBeVisible();
+  }
+
+  async isSubscriptionIconVisibleInTeamDropdown(visible = true) {
+    await this.openTeamsListIfClosed();
+    visible
+      ? await expect(this.subscriptionIconInTeamDropdown).toBeVisible()
+      : await expect(this.subscriptionIconInTeamDropdown).not.toBeVisible();
+  }
+
+  async checkSubscriptionName(name) {
+    await expect(this.teamPlanName).toHaveText(name);
   }
 };
