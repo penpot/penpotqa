@@ -39,6 +39,7 @@
     "playwright-qase-reporter": "^2.1.5",
     "prettier": "^3.0.1",
     "qaseio": "^2.4.3",
+    "stripe": "^18.3.0",
     "ts-node": "^10.9.2"
   }
 }
