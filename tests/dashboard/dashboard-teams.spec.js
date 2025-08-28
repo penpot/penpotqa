@@ -1625,8 +1625,7 @@ mainTest.describe(() => {
         await loginPage.isLoginPageOpened();
 
         await page.goto(badURL);
-        await teamPage.isInviteMessageDisplayed('Oops!');
-        await teamPage.isErrorMessageDisplayed("This page doesn't exist");
+        await loginPage.isEmailInputVisible();
       },
     );
 
