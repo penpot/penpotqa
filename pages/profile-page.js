@@ -71,6 +71,25 @@ exports.ProfilePage = class ProfilePage extends BasePage {
       .filter({ hasText: 'Penpot Light' });
     this.uiThemeDropdown = page.locator('[class*="select-wrapper"] >>nth=1');
     this.updateSettingsButton = page.getByTestId('submit-lang-change');
+
+    //Subscription
+    this.subscriptionMenuButton = page.getByTestId('settings-subscription');
+    this.currentPlanLabel = page
+      .locator('h4[class*="subscription__plan-card-title"]')
+      .first();
+    this.startFreeTrialButton = page.getByRole('button', {
+      name: 'Start free trial',
+    });
+    this.changeSubscriptionModalHeader = page.locator(
+      '[class*="subscription__modal-title"]',
+    );
+    this.addPaymentMethodButton = page.getByRole('button', {
+      name: 'Add a payment method to continue after your trial',
+    });
+    this.membersInput = page.locator('input[name="min-members"]');
+    this.manageSubscriptionButton = page.getByRole('button', {
+      name: 'Manage your subscription',
+    });
   }
 
   async openYourAccountPage() {
@@ -219,7 +238,62 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await this.settingsMenuButton.click();
   }
 
+  async openSubscriptionTab() {
+    await this.subscriptionMenuButton.click();
+  }
+
+  async checkSubscriptionName(name) {
+    await expect(this.currentPlanLabel).toHaveText(name);
+  }
+
+  async isSubscriptionNameVisible() {
+    await expect(this.currentPlanLabel).toBeVisible();
+  }
+
   async getUserName() {
     return await this.profileMenuButton.textContent();
+  }
+
+  async clickOnTrialButton(plan = 'Unlimited') {
+    const planCardLocator = this.page.locator(
+      `//*[contains(@class, "subscription__plan-card-title")][text()="${plan}"]/../../..`,
+    );
+    await planCardLocator
+      .getByRole('button', { name: 'Try it free for 14 days' })
+      .click();
+  }
+
+  async clickOnStartTrialButton() {
+    await this.startFreeTrialButton.click();
+  }
+
+  async checkSubscriptionModalHeader(name) {
+    await expect(this.changeSubscriptionModalHeader).toHaveText(name);
+  }
+
+  async clickOnAddPaymentMethodButton() {
+    await this.addPaymentMethodButton.click();
+  }
+
+  async clickOnManageSubscriptionButton() {
+    await this.manageSubscriptionButton.click();
+  }
+
+  async enterMembers(number) {
+    await this.membersInput.fill(number);
+  }
+
+  async tryTrialForPlan(plan = 'Unlimited', editors) {
+    await this.openYourAccountPage();
+    await this.openSubscriptionTab();
+    await this.clickOnTrialButton(plan);
+    if (plan === 'Unlimited' && editors !== undefined) {
+      await this.enterMembers(editors);
+    }
+    await this.clickOnStartTrialButton();
+    await this.checkSubscriptionModalHeader(`You are ${plan} (trial)!`);
+    await this.closeModalWindow();
+    await this.checkSubscriptionName(`${plan} (trial)`);
+    await this.backToDashboardFromAccount();
   }
 };
