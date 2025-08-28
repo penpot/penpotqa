@@ -1,13 +1,12 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
@@ -19,7 +18,7 @@ let mainPage,
   designPanelPage,
   assetsPanelPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   colorPalettePage = new ColorPalettePage(page);
@@ -33,10 +32,9 @@ test.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest(

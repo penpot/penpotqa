@@ -1,17 +1,16 @@
 const { mainTest } = require('../../fixtures');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { PluginsPage } = require('../../pages/workspace/plugins-page');
 const { qase } = require('playwright-qase-reporter/playwright');
-const { updateTestResults } = require('../../helpers/saveTestResults');
 
 const teamName = random().concat('autotest');
 
 let pluginsPage, teamPage, dashboardPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   pluginsPage = new PluginsPage(page);
@@ -21,10 +20,9 @@ test.beforeEach(async ({ page }) => {
   await pluginsPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await pluginsPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.slow();

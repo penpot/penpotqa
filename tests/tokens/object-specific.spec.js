@@ -1,10 +1,8 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { TokensPanelPage } = require('../../pages/workspace/tokens-panel-page');
 
@@ -22,10 +20,9 @@ mainTest.beforeEach(async ({ page }) => {
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
-mainTest.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
