@@ -53,6 +53,7 @@ jobs:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
+          STRIPE_SK: ${{ secrets.STRIPE_SK }}
         run: npx playwright test --project=chrome -gv 'PERF' ./tests/panels-features/panels-features-history-panel.spec.js
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
