@@ -45,15 +45,18 @@ mainTest.describe(() => {
     await mainPage.uploadImage('images/images.png');
   });
 
-  mainTest(qase(436, 'CO-221 Import PNG image'), async () => {
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('image-png.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  });
+  mainTest(
+    qase([436], 'Import PNG image from toolbar and from shortcut (Shift+K)'),
+    async () => {
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isCreatedLayerVisible();
+      await expect(mainPage.viewport).toHaveScreenshot('image-png.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
+    },
+  );
 
-  mainTest(qase(440, 'CO-225 Rename image with valid name'), async () => {
+  mainTest(qase([440], 'Rename image with valid name'), async () => {
     await layersPanelPage.doubleClickLayerOnLayersTab('images');
     await layersPanelPage.typeNameCreatedLayerAndEnter('renamed image');
     await mainPage.waitForChangeIsSaved();
@@ -61,7 +64,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(442, 'CO-227 Add, hide, unhide, change type and delete Shadow to image'),
+    qase([442], 'Add, hide, unhide, change type and delete Shadow to image'),
     async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
@@ -111,7 +114,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(443, 'CO-228 Add and edit Shadow to image'), async () => {
+  mainTest(qase([443], 'Add and edit Shadow to image'), async () => {
     await designPanelPage.clickAddShadowButton();
     await designPanelPage.clickShadowActionsButton();
     await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
@@ -133,21 +136,24 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(459, 'CO-244 Change border radius multiple values'), async () => {
-    await designPanelPage.clickIndividualCornersRadiusButton();
-    await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-changed-corners.png',
-    );
-    await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-png.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  });
+  mainTest(
+    qase([459], 'Change border radius multiple values (Design page in the right)'),
+    async () => {
+      await designPanelPage.clickIndividualCornersRadiusButton();
+      await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'image-changed-corners.png',
+      );
+      await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-png.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
+    },
+  );
 
-  mainTest(qase(482, 'CO-267 Selection to board'), async () => {
+  mainTest(qase([482], 'Selection to board'), async () => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.selectionToBoardViaRightClick();
@@ -166,37 +172,34 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
-    qase(444, 'CO-229 Add, hide, unhide and delete Blur to image'),
-    async () => {
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('image-blur-default.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.hideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('image-blur-hide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.unhideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('image-blur-unhide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.removeBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('image-blur-remove.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    },
-  );
+  mainTest(qase([444], 'Add, hide, unhide and delete Blur to image'), async () => {
+    await designPanelPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-default.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-hide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-unhide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-remove.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+  });
 
-  mainTest(qase(446, 'CO-231 Add, edit and delete Stroke to image'), async () => {
+  mainTest(qase([446], 'Add, edit and delete Stroke to image'), async () => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
