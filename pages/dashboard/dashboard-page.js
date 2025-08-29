@@ -8,7 +8,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   constructor(page) {
     super(page);
 
-    //Files
+    // Dashboard Header
+    this.addProjectButton = page.getByRole('button', { name: 'New project' });
+
+    // Files Grid
     this.numberOfFilesText = page.locator(
       'div[class*="project-name-wrapper"] span[class*="projects__info"]',
     );
@@ -29,9 +32,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.createFileButtonOldPlaceholder = page.locator(
       'div[class*="dashboard-grid"] button[class*="create-new"]',
     );
-    this.moveButton = page.getByRole('button', {
-      name: 'Move',
-    });
+    this.moveButton = page.getByRole('button', { name: 'Move' });
     this.createFileButtonTitlePanel = page.getByTestId('project-new-file');
     this.createFileButtonDraftsTab = page.getByTestId('new-file');
     this.renameFileMenuItem = page.getByTestId('file-rename');
@@ -64,20 +65,55 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[title="Options"] svg[class*="files__menu-icon"]',
     );
 
-    //Projects
-    this.addProjectButton = page.getByTestId('new-project-button');
-    this.projectNameInput = page.locator(
-      'div[class*="project-name-wrapper"] div[class*="edit-wrapper"]',
+    // Projects Section
+    this.projectsContainer = page.locator(
+      '.main_ui_dashboard_projects__dashboard-container',
     );
-    this.projectNameTitle = page.locator('div[class*="project-name-wrapper"] h2');
-    this.deleteProjectMenuItem = page.getByTestId('project-delete');
-    this.deleteProjectButton = page.locator(
-      'input[value="Delete files"],input[value="Delete project"]',
+    this.projectNameInput = this.projectsContainer.getByRole('textbox');
+    this.projectNameTitle = this.projectsContainer.getByRole('heading');
+    this.projectOptionsMenuButton =
+      this.projectsContainer.getByTestId('project-options');
+    this.projectOptions = page.getByRole('button', { name: 'Options' }).first();
+
+    // Projects > Options Context Menu
+    this.deleteProjectMenuItem =
+      this.projectsContainer.getByTestId('project-delete');
+    this.renameProjectMenuItem =
+      this.projectsContainer.getByTestId('project-rename');
+    this.duplicateProjectMenuItem =
+      this.projectsContainer.getByTestId('project-duplicate');
+    this.pinUnpinProjectButton = this.projectsContainer.getByRole('button', {
+      name: 'Pin/Unpin',
+    });
+    this.fileImport = page.getByTestId('file-import');
+
+    // Import Penpot Files Modal
+    this.importModal = page.locator('.main_ui_dashboard_import__modal-container');
+    this.modalTitle = this.importModal.getByRole('heading', {
+      name: 'Import Penpot files',
+    });
+    this.modalContinueButton = this.importModal.getByRole('button', {
+      name: 'Continue',
+    });
+    this.feedbackBanner = this.importModal.locator(
+      'aside[class*="main_ui_notifications"]',
     );
-    this.renameProjectMenuItem = page.getByTestId('project-rename');
-    this.duplicateProjectMenuItem = page.getByTestId('project-duplicate');
-    this.pinUnpinProjectButton = page.getByRole('button', { name: 'Pin/Unpin' });
-    this.projectOptionsMenuButton = page.getByTestId('project-options');
+    this.feedbackBannerMessage = this.importModal.locator(
+      'div[class*="main_ui_notifications_context_notification__context-text"]',
+    );
+    this.feedbackBannerDisclaimer = this.importModal.locator(
+      '.main_ui_dashboard_import__import-error-disclaimer',
+    );
+    this.feedbackBannerAcceptButton = this.importModal.getByRole('button', {
+      name: 'Accept',
+    });
+
+    // Delete Project > Modal
+    this.deleteProjectButton = this.page.getByRole('button', {
+      name: 'Delete project',
+    });
+
+    // Sidebar Menu Items
     this.projectsSidebarItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Projects' });
@@ -87,28 +123,19 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.librariesSidebarItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Libraries' });
+
+    // Sidebar Section > Pinned Projects
     this.pinnedProjectsSidebar = page.getByTestId('pinned-projects');
     this.pinnedProjectsSidebarItem =
       this.pinnedProjectsSidebar.getByRole('listitem');
     this.pinnedProjectsSidebarEmpty = this.pinnedProjectsSidebar.locator(
-      '[class*="empty-text"]',
-    );
-    this.searchInput = page.locator('#search-input');
-    this.projectOptions = page.getByTestId('project-options').first();
-
-    // Import files
-    this.fileImport = page.getByTestId('file-import');
-    this.importModal = page.locator('div[class*="import__modal-container"]');
-    this.modalTitle = page.locator('h2[class*="modal-title"]');
-    this.modalAcceptButton = page.locator(
-      'div[class*="modal-footer"] input[class*="accept-btn"]',
-    );
-    this.feedbackBanner = page.locator('aside[class*="main_ui_notifications"]');
-    this.feedbackBannerMessage = page.locator(
-      'div[class*="main_ui_notifications_context_notification__context-text"]',
+      '.main_ui_dashboard_sidebar__empty-text',
     );
 
-    //Fonts
+    // Sidebar section > Search Input
+    this.searchInput = page.getByPlaceholder('Search');
+
+    // Sidebar section > Fonts
     this.fontsSidebarItem = page.getByTestId('fonts');
     this.uploadFontSelector = page.locator('#font-upload');
     this.addCustomFontButton = page.getByRole('button', {
@@ -140,10 +167,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.searchFontInput = page.getByPlaceholder('Search font');
     this.fontFormatError = this.successMessage;
 
-    //Libraries & Templates
-    this.noLibrariesPlacelder = page.getByText('No libraries yet.');
+    // Libraries & Templates Section
+    this.librariesContainer = page.locator(
+      '.main_ui_dashboard_libraries__dashboard-container',
+    );
+    this.libraryItemTitle = this.librariesContainer.getByRole('heading');
+    this.noLibrariesText = page.getByText('No libraries yet.');
 
-    // Onboarding
+    // Onboarding Modal
     this.onboardingContinueBtn = page.locator(
       'button[class="main_ui_onboarding_newsletter__accept-btn"]',
     );
@@ -209,12 +240,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.pluginModalContinueBtn = page.getByRole('button', { name: 'Continue' });
     this.pluginModalGoBtn = page.getByRole('button', { name: "Let's go" });
 
-    // Comment notifications
+    // Comment Notifications
     this.notificationButton = page.getByTestId('open-comments');
     this.unreadNotification = this.notificationButton.locator(
       'div[class*="comments__unread"]',
     );
-
     this.notificationReplyUserName = page.locator(
       'div[class*="comments__author-fullname"]',
     );
@@ -222,7 +252,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.notificationUnreadReplyCount = page.locator(
       '[class*="comments__replies-unread"]',
     );
-
     this.notificationMarkAllAsReadButton = page.getByRole('button', {
       name: 'Mark all as read',
     });
@@ -409,22 +438,32 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.addProjectButton.click();
   }
 
-  async setProjectName(newProjectName) {
-    await this.projectNameInput.pressSequentially(newProjectName);
+  async setProjectName(projectName) {
+    await this.projectNameInput.pressSequentially(projectName);
     await this.page.keyboard.press('Enter');
   }
 
-  async isProjectTitleDisplayed(newProjectName) {
-    await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
+  async isProjectTitleDisplayed(projectName) {
+    await expect(this.projectNameTitle.first()).toHaveText(projectName);
   }
 
-  async createProject(name) {
+  async isProjectTitleNotVisible(projectName) {
+    const deletedProject = this.projectNameTitle.getByText(projectName, {
+      exact: true,
+    });
+
+    await expect(
+      deletedProject,
+      'Project title should not be visible',
+    ).not.toBeVisible();
+  }
+
+  async createProject(projectName) {
     await this.clickAddProjectButton();
-    await this.setProjectName(name);
-    await this.isProjectTitleDisplayed(name);
+    await this.setProjectName(projectName);
   }
 
-  async renameProjectViaRightClick(newProjectName) {
+  async renameProjectViaRightClick(projectName) {
     let text = await this.projectNameTitle.first().textContent();
     await this.projectNameTitle.first().click({ button: 'right' });
     await this.renameProjectMenuItem.click();
@@ -432,12 +471,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     for (let i = 0; i <= text.length; i++) {
       await this.page.keyboard.press('Backspace');
     }
-    await this.projectNameInput.pressSequentially(newProjectName);
+    await this.projectNameInput.pressSequentially(projectName);
     await this.page.keyboard.press('Enter');
-    await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
+    await expect(this.projectNameTitle.first()).toHaveText(projectName);
   }
 
-  async renameProjectViaOptionsIcon(newProjectName) {
+  async renameProjectViaOptionsIcon(projectName) {
     let text = await this.projectNameTitle.first().textContent();
     await this.projectNameTitle.first().hover();
     await this.projectOptionsMenuButton.first().click({ force: true });
@@ -446,9 +485,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     for (let i = 0; i <= text.length; i++) {
       await this.page.keyboard.press('Backspace');
     }
-    await this.projectNameInput.pressSequentially(newProjectName);
+    await this.projectNameInput.pressSequentially(projectName);
     await this.page.keyboard.press('Enter');
-    await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
+    await expect(this.projectNameTitle.first()).toHaveText(projectName);
   }
 
   async duplicateProjectViaRightclick() {
@@ -480,45 +519,114 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.header).toHaveText(item);
   }
 
-  async openProjectFromLeftSidebar(projectName) {
-    const projectSel = await this.page.locator(
-      `div[data-testid="pinned-projects"] span[class*="element-title"]:has-text("${projectName}")`,
-    );
-    await projectSel.click();
+  async getProjectHeadingByName(projectName) {
+    return this.projectNameTitle.getByText(projectName, { exact: true });
+  }
+
+  /**
+   * Check if the project item name is truncated with '...' in the projects list.
+   * @param {string} projectName - The name of the project item.
+   */
+  async isProjectItemNameTruncated(projectName) {
+    const projectItem = await this.getProjectHeadingByName(projectName);
+    const elementHandle = await projectItem.elementHandle();
+
+    const isTruncated = await elementHandle.evaluate((el) => {
+      return el.scrollWidth > el.clientWidth;
+    });
+
+    expect(isTruncated, 'Project item name is truncated').toBe(true);
+  }
+
+  /**
+   * Get a project wrapper element by its name. Useful for locating buttons within the project item.
+   * @param {string} name - The name of the project.
+   * @returns {Locator} - The locator for the project wrapper element.
+   */
+  async getProjectWrapperByName(projectName) {
+    return this.page
+      .locator('.main_ui_dashboard_projects__project-name-wrapper')
+      .filter({ hasText: projectName }, { exact: true });
+  }
+
+  async getPinnedProjectItemFromSidebar(projectName) {
+    return this.pinnedProjectsSidebarItem.getByText(projectName);
+  }
+
+  async openPinnedProjectFromSidebar(projectName) {
+    const pinnedProject = await this.getPinnedProjectItemFromSidebar(projectName);
+    await pinnedProject.click();
     await this.isHeaderDisplayed(projectName);
   }
 
-  async pinProjectByName(projectName) {
-    const projectSel = await this.page.locator(
-      `//*[@title='${projectName}']/../../../div[contains(@class,'projects__grid-container')]/..//button[contains(@class,'main_ui_dashboard_pin_button__button')]`,
-    );
-    await projectSel.click();
+  async getLibraryHeadingByName(name) {
+    return this.libraryItemTitle.getByText(name, { exact: true });
   }
 
   async checkNoLibrariesExist() {
-    await expect(this.noLibrariesPlacelder).toContainText('No libraries yet.');
+    await expect(
+      this.noLibrariesText,
+      'No libraries yet. message is visible',
+    ).toBeVisible();
   }
 
-  async clickUnpinProjectButton() {
-    await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass(
-      'main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button main_ui_dashboard_pin_button__button-active',
-    );
-    await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass(
-      'main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button ',
-    );
+  /**
+   * Check if the library item name is truncated with '...'.
+   * @param name of the library item
+   */
+  async isLibraryItemNameTruncated(name) {
+    const libraryItem = await this.getLibraryHeadingByName(name);
+    const elementHandle = await libraryItem.elementHandle();
+
+    const isTruncated = await elementHandle.evaluate((el) => {
+      return el.scrollWidth > el.clientWidth;
+    });
+
+    expect(isTruncated, 'Library item name is truncated').toBe(true);
   }
 
+  /**
+   * Click the Pin/Unpin button of the first project in the list.
+   */
   async clickPinProjectButton() {
-    await this.projectNameTitle.first().hover();
-    await expect(this.pinUnpinProjectButton).toHaveClass(
-      'main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button ',
+    await this.pinUnpinProjectButton.first().click();
+  }
+
+  async pinProjectByName(projectName) {
+    const projectToPin = (await this.getProjectWrapperByName(projectName)).getByRole(
+      'button',
+      { name: 'Pin/Unpin' },
     );
-    await this.pinUnpinProjectButton.click();
-    await expect(this.pinUnpinProjectButton).toHaveClass(
-      'main_ui_dashboard_projects__pin-button main_ui_dashboard_pin_button__button main_ui_dashboard_pin_button__button-active',
-    );
+    await projectToPin.click();
+  }
+
+  async isPinUnpinButtonActive() {
+    await expect(
+      this.pinUnpinProjectButton,
+      'First Pin button is Active',
+    ).toHaveClass(/active/);
+  }
+
+  async isPinUnpinButtonInactive() {
+    await expect(
+      this.pinUnpinProjectButton,
+      'First Pin button is inactive',
+    ).not.toHaveClass(/active/);
+  }
+
+  /**
+   * Check if the pinned project item name is truncated with '...' in the sidebar.
+   * @param name of the pinned project item
+   */
+  async isPinnedProjectItemNameTruncated(projectName) {
+    const pinnedItem = await this.getPinnedProjectItemFromSidebar(projectName);
+    const elementHandle = await pinnedItem.elementHandle();
+
+    const isTruncated = await elementHandle.evaluate((el) => {
+      return el.scrollWidth > el.clientWidth;
+    });
+
+    expect(isTruncated, 'Pinned project item name is truncated').toBe(true);
   }
 
   async checkPinnedProjectsSidebarItem(text, empty = false) {
@@ -596,12 +704,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async confirmFileImport() {
     await expect(this.modalTitle).toBeVisible();
     await expect(this.modalTitle).toHaveText('Import Penpot files');
-    await this.modalAcceptButton.click();
+    await this.modalContinueButton.click();
     await this.feedbackBannerMessage.waitFor({ timeout: 60000 });
     await expect(this.feedbackBannerMessage).toHaveText(
       '1 file has been imported successfully.',
     );
-    await this.modalAcceptButton.click();
+    await this.clickOnModalAcceptButton();
   }
 
   async importFileProcessingError(file) {
@@ -624,7 +732,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await fileChooser.setFiles(file);
     await expect(this.modalTitle).toBeVisible();
     await expect(this.modalTitle).toHaveText('Import Penpot files');
-    await this.modalAcceptButton.click();
+    await this.modalContinueButton.click();
     await this.feedbackBannerMessage.waitFor({ timeout: 60000 });
     await expect(this.feedbackBannerMessage).toHaveText(
       'Not all files have been imported',
@@ -655,6 +763,18 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.importFile(file);
     await this.openFile();
   }
+
+  async isImportErrorDisplayed(text) {
+    await expect(
+      this.feedbackBannerMessage,
+      'Feedback banner message should indicate import error',
+    ).toHaveText('Not all files have been imported');
+    await expect(
+      this.feedbackBannerDisclaimer,
+      `Feedback banner disclaimer should contain specific error text ${text}`,
+    ).toContainText(text);
+  }
+
   async openFileWithName(name) {
     const fileTitle = this.page.getByRole('button', { name: name });
     await fileTitle.first().dblclick();
@@ -1085,7 +1205,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickOnModalAcceptButton() {
-    await this.modalAcceptButton.click();
+    await this.feedbackBannerAcceptButton.click();
   }
 
   async checkSubscriptionName(name) {

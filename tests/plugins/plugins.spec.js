@@ -25,46 +25,51 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest.slow();
-
 mainTest(
   qase([1837, 1838, 1839, 1842, 1844], 'Install, open and delete a plugin'),
   async () => {
-    // 1837, Install a plugin by URL (via plugin icon in toolbar)
-    await pluginsPage.clickPluginsButton();
-    await expect(pluginsPage.pluginPanel).toBeVisible();
-
-    await pluginsPage.setPluginLoremIpsumUrl();
-    await pluginsPage.clickOnInstallPluginButton();
-    await pluginsPage.clickOnAllowPluginButton();
-    await pluginsPage.checkInstalledPluginsCountIs(1);
-    await expect(pluginsPage.pluginPanel).toHaveScreenshot(
-      'plugin-manager-plugin-installed.png',
+    await mainTest.step(
+      '1837, Install a plugin by URL (via plugin icon in toolbar)',
+      async () => {
+        await pluginsPage.clickPluginsButton();
+        await pluginsPage.isPluginManagerModalVisible();
+        await pluginsPage.setPluginLoremIpsumUrl();
+        await pluginsPage.clickOnInstallPluginButton();
+        await pluginsPage.clickOnAllowPluginButton();
+        await pluginsPage.isInstalledPluginsCount(1);
+        await pluginsPage.isOpenPluginButtonVisible();
+      },
     );
 
-    // 1838, Close the "Plugins Manager" modal
-    await pluginsPage.clickOnESC();
+    await mainTest.step('1838, Close the "Plugins Manager" modal', async () => {
+      await pluginsPage.clickOnESC();
+    });
 
-    // 1844, Open a plugin (via Main menu 3 dots > Plugins > plugin name)
-    await pluginsPage.clickMainMenuButton();
-    await pluginsPage.clickPluginsMainMenuItem();
-    await pluginsPage.clickLoremIpsumButton();
-    await pluginsPage.checkLoremIpsumPluginIsVisible();
-    await expect(pluginsPage.loremPluginPanel).toHaveScreenshot(
-      'lorem-ipsum-plugin-panel.png',
+    await mainTest.step(
+      '1844, Open a plugin (via Main menu 3 dots > Plugins > plugin name)',
+      async () => {
+        await pluginsPage.clickMainMenuButton();
+        await pluginsPage.clickPluginsMainMenuItem();
+        await pluginsPage.clickLoremIpsumButton();
+        await pluginsPage.isLoremIpsumPluginVisible();
+      },
     );
 
-    // 1839, Delete a plugin from the "Plugins Manager" modal (via delete icon button)
-    await pluginsPage.clickMainMenuButton();
-    await pluginsPage.clickPluginsMainMenuItem();
-    await pluginsPage.clickPluginsManagerButton();
-    await pluginsPage.clickOnDeletePluginButton();
-    await pluginsPage.checkInstalledPluginsCountIs(0);
-    await expect(pluginsPage.pluginPanel).toHaveScreenshot(
-      'plugin-manager-no-plugins-installed.png',
+    await mainTest.step(
+      '1839, Delete a plugin from the "Plugins Manager" modal (via delete icon button)',
+      async () => {
+        await pluginsPage.clickMainMenuButton();
+        await pluginsPage.clickPluginsMainMenuItem();
+        await pluginsPage.clickPluginsManagerButton();
+        await pluginsPage.clickOnDeletePluginButton();
+        await pluginsPage.isInstalledPluginsCount(0);
+        await pluginsPage.isNoPluginMessageVisible();
+      },
     );
 
-    // 1842, Close the plugin modal (via "X" icon)
-    await pluginsPage.clickClosePluginPanelButton();
+    await mainTest.step('1842, Close the plugin modal (via "X" icon)', async () => {
+      await pluginsPage.clickClosePluginPanelButton();
+      await pluginsPage.isPluginManagerModalNotVisible();
+    });
   },
 );

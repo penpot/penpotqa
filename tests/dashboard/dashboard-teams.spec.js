@@ -368,10 +368,10 @@ mainTest.describe(() => {
     await dashboardPage.openSidebarItem('Drafts');
     await dashboardPage.createFileViaProjectPlaceholder();
     await mainPage.backToDashboardFromFileEditor();
-    await dashboardPage.openProjectFromLeftSidebar(projectFirst);
+    await dashboardPage.openPinnedProjectFromSidebar(projectFirst);
     await dashboardPage.createFileViaProjectPlaceholder();
     await mainPage.backToDashboardFromFileEditor();
-    await dashboardPage.openProjectFromLeftSidebar(projectSecond);
+    await dashboardPage.openPinnedProjectFromSidebar(projectSecond);
     await dashboardPage.createFileViaProjectPlaceholder();
     await mainPage.backToDashboardFromFileEditor();
 
