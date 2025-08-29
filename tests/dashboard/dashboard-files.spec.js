@@ -307,12 +307,12 @@ mainTest.describe(() => {
 
   mainTest(qase(1146, 'DA-60-1 Delete project via right click'), async () => {
     await dashboardPage.deleteProjectViaRightclick();
-    await dashboardPage.isProjectTitleDisplayed('Drafts');
+    await dashboardPage.isProjectTitleNotVisible('Test Project');
   });
 
   mainTest(qase(1146, 'DA-60-2 Delete project via Options icon'), async () => {
     await dashboardPage.deleteProjectViaOptionsIcon();
-    await dashboardPage.isProjectTitleDisplayed('Drafts');
+    await dashboardPage.isProjectTitleNotVisible('Test Project');
   });
 });
 
@@ -320,9 +320,11 @@ mainTest(qase(1140, 'DA-54 Unpin project'), async () => {
   await dashboardPage.clickAddProjectButton();
   await dashboardPage.setProjectName('Test Project');
   await dashboardPage.clickPinProjectButton();
+  await dashboardPage.isPinUnpinButtonActive();
   await dashboardPage.isProjectTitleDisplayed('Test Project');
   await dashboardPage.checkPinnedProjectsSidebarItem('Test Project');
-  await dashboardPage.clickUnpinProjectButton();
+  await dashboardPage.clickPinProjectButton();
+  await dashboardPage.isPinUnpinButtonInactive();
   await dashboardPage.checkPinnedProjectsSidebarItem(
     'Pinned projects will appear here',
     true,
@@ -334,12 +336,13 @@ mainTest(qase(1141, 'DA-55 Pin project'), async () => {
   await dashboardPage.setProjectName('Test Project');
   await dashboardPage.clickPinProjectButton();
   await dashboardPage.isProjectTitleDisplayed('Test Project');
-  await dashboardPage.clickUnpinProjectButton();
+  await dashboardPage.clickPinProjectButton();
   await dashboardPage.checkPinnedProjectsSidebarItem(
     'Pinned projects will appear here',
     true,
   );
   await dashboardPage.clickPinProjectButton();
+  await dashboardPage.isPinUnpinButtonActive();
   await dashboardPage.checkPinnedProjectsSidebarItem('Test Project');
 });
 
@@ -400,38 +403,63 @@ mainTest(qase(2239, 'Import file to project - file upload error'), async () => {
   await dashboardPage.importFileWithInvalidFile(
     'documents/hand-made-icons-by-cocomaterial.penpot',
   );
-  await expect(dashboardPage.importModal).toHaveScreenshot(
-    'import-upload-error.png',
+  await dashboardPage.isImportErrorDisplayed(
+    'The following files have errors:Hand-Made Icons by cocomaterialFiles with errors will not be uploaded.',
   );
   await dashboardPage.clickOnModalAcceptButton();
 });
 
-mainTest(qase(2276, 'Long project names and font/library names'), async () => {
-  const longProjectName =
-    'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check Overflow';
-  const projectName250 =
-    'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check OverflowQTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Project With An Excessively Exces';
-  await dashboardPage.clickAddProjectButton();
-  await dashboardPage.setProjectName(longProjectName);
-  await dashboardPage.clickPinProjectButton();
-  await dashboardPage.isProjectTitleDisplayed(longProjectName);
-  await dashboardPage.checkPinnedProjectsSidebarItem(longProjectName);
-  await expect(dashboardPage.pinnedProjectsSidebar).toHaveScreenshot(
-    'pinned-project-truncated.png',
-  );
-  await dashboardPage.clickAddProjectButton();
-  await dashboardPage.setProjectName(projectName250 + '123');
-  await dashboardPage.isProjectTitleDisplayed(projectName250);
+mainTest(
+  qase(
+    2276,
+    'Project and Library names with long names limited to 250 characters and truncated in the UI',
+  ),
+  async () => {
+    const longName =
+      'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check Overflow';
+    const longName250 =
+      'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check OverflowQTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Project With An Excessively Exces';
 
-  await dashboardPage.createFileViaProjectPlaceholder();
-  await mainPage.isMainPageLoaded();
-  await mainPage.clickPencilBoxButton();
-  await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
-  await dashboardPage.isSharedLibraryIconDisplayed();
-  await dashboardPage.openSidebarItem('Libraries');
-  await dashboardPage.isFilePresent('New File 1');
-  await dashboardPage.renameFile(projectName250);
-  await expect(dashboardPage.fileNameTitle).toHaveScreenshot(
-    'library-name-truncated.png',
-  );
-});
+    await mainTest.step(
+      'Add new project, set name and assert truncation',
+      async () => {
+        await dashboardPage.clickAddProjectButton();
+        await dashboardPage.setProjectName(longName);
+        await dashboardPage.isProjectItemNameTruncated(longName);
+      },
+    );
+
+    await mainTest.step(
+      'Pin project and assert truncation from Pinned Projects sidebar',
+      async () => {
+        await dashboardPage.clickPinProjectButton();
+        await dashboardPage.checkPinnedProjectsSidebarItem(longName);
+        await dashboardPage.isPinnedProjectItemNameTruncated(longName);
+      },
+    );
+
+    await mainTest.step(
+      'Add second project with > 250 characters and assert name is = 250 characters',
+      async () => {
+        await dashboardPage.clickAddProjectButton();
+        await dashboardPage.setProjectName(longName250 + '123');
+        await dashboardPage.isProjectTitleDisplayed(longName250);
+      },
+    );
+
+    await mainTest.step(
+      'Add a library to the project and assert library name is truncated',
+      async () => {
+        await dashboardPage.createFileViaProjectPlaceholder();
+        await mainPage.isMainPageLoaded();
+        await mainPage.clickPencilBoxButton();
+        await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
+        await dashboardPage.isSharedLibraryIconDisplayed();
+        await dashboardPage.openSidebarItem('Libraries');
+        await dashboardPage.isFilePresent('New File 1');
+        await dashboardPage.renameFile(longName250);
+        await dashboardPage.isLibraryItemNameTruncated(longName250);
+      },
+    );
+  },
+);
