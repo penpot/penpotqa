@@ -463,7 +463,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.setProjectName(projectName);
   }
 
-  async renameProjectViaRightClick(newProjectName) {
+  async renameProjectViaRightClick(projectName) {
     let text = await this.projectNameTitle.first().textContent();
     await this.projectNameTitle.first().click({ button: 'right' });
     await this.renameProjectMenuItem.click();
@@ -471,12 +471,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     for (let i = 0; i <= text.length; i++) {
       await this.page.keyboard.press('Backspace');
     }
-    await this.projectNameInput.pressSequentially(newProjectName);
+    await this.projectNameInput.pressSequentially(projectName);
     await this.page.keyboard.press('Enter');
-    await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
+    await expect(this.projectNameTitle.first()).toHaveText(projectName);
   }
 
-  async renameProjectViaOptionsIcon(newProjectName) {
+  async renameProjectViaOptionsIcon(projectName) {
     let text = await this.projectNameTitle.first().textContent();
     await this.projectNameTitle.first().hover();
     await this.projectOptionsMenuButton.first().click({ force: true });
@@ -485,9 +485,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     for (let i = 0; i <= text.length; i++) {
       await this.page.keyboard.press('Backspace');
     }
-    await this.projectNameInput.pressSequentially(newProjectName);
+    await this.projectNameInput.pressSequentially(projectName);
     await this.page.keyboard.press('Enter');
-    await expect(this.projectNameTitle.first()).toHaveText(newProjectName);
+    await expect(this.projectNameTitle.first()).toHaveText(projectName);
   }
 
   async duplicateProjectViaRightclick() {
@@ -519,8 +519,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.header).toHaveText(item);
   }
 
-  async getProjectHeadingByName(name) {
-    return this.projectNameTitle.getByText(name, { exact: true });
+  async getProjectHeadingByName(projectName) {
+    return this.projectNameTitle.getByText(projectName, { exact: true });
   }
 
   /**
@@ -543,14 +543,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
    * @param {string} name - The name of the project.
    * @returns {Locator} - The locator for the project wrapper element.
    */
-  async getProjectWrapperByName(name) {
+  async getProjectWrapperByName(projectName) {
     return this.page
       .locator('.main_ui_dashboard_projects__project-name-wrapper')
-      .filter({ hasText: name }, { exact: true });
+      .filter({ hasText: projectName }, { exact: true });
   }
 
-  async getPinnedProjectItemFromSidebar(name) {
-    return this.pinnedProjectsSidebarItem.getByText(name);
+  async getPinnedProjectItemFromSidebar(projectName) {
+    return this.pinnedProjectsSidebarItem.getByText(projectName);
   }
 
   async openPinnedProjectFromSidebar(projectName) {
@@ -618,8 +618,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
    * Check if the pinned project item name is truncated with '...' in the sidebar.
    * @param name of the pinned project item
    */
-  async isPinnedProjectItemNameTruncated(name) {
-    const pinnedItem = await this.getPinnedProjectItemFromSidebar(name);
+  async isPinnedProjectItemNameTruncated(projectName) {
+    const pinnedItem = await this.getPinnedProjectItemFromSidebar(projectName);
     const elementHandle = await pinnedItem.elementHandle();
 
     const isTruncated = await elementHandle.evaluate((el) => {
