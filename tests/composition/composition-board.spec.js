@@ -39,7 +39,7 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(216, 'CO-1 Change color background'), async () => {
+mainTest(qase([216], 'Change color background'), async () => {
   await designPanelPage.clickCanvasBackgroundColorIcon();
   await colorPalettePage.setHex('#304d6a');
   await mainPage.clickViewportTwice();
@@ -57,15 +57,21 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(217, 'CO-2 Create a board from toolbar'), async () => {
-    await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('board.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  });
+  mainTest(
+    qase([217], 'Create board without a default size preset (Toolbar)'),
+    async () => {
+      await mainPage.isCreatedLayerVisible();
+      await expect(mainPage.viewport).toHaveScreenshot('board.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
+    },
+  );
 
   mainTest(
-    qase(219, 'Rename board (by double clicking) with valid name'),
+    qase(
+      [219],
+      'Rename board on the Layers Panel (by double clicking) with valid name',
+    ),
     async () => {
       const newName = 'New test board';
       const renamedName = 'renamed board';
@@ -86,7 +92,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(1923, 'Rename board (by shortcut) with valid name'), async () => {
+  mainTest(qase([1923], 'Rename board (by shortcut) with valid name'), async () => {
     const newName = 'New test board';
     const renamedName = 'renamed board';
     // rename by shortcut while the board is selected
@@ -106,7 +112,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(1924, 'Rename board (by context menu) with valid name'),
+    qase([1924], 'Rename board (by context menu) with valid name'),
     async () => {
       const newName = 'New test board';
       const renamedName = 'renamed board';
@@ -127,15 +133,21 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(220, 'CO-5 Rename board with empty field'), async () => {
-    const defaultBoardName = 'Board';
-    await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-    await layersPanelPage.clickOnBackspaceAndEnter();
-    await layersPanelPage.isBoardNameDisplayed(defaultBoardName);
-  });
+  mainTest(
+    qase(
+      [220],
+      'Rename board on the Viewport (by double clicking on name) with an empty field',
+    ),
+    async () => {
+      const defaultBoardName = 'Board';
+      await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+      await layersPanelPage.clickOnBackspaceAndEnter();
+      await layersPanelPage.isBoardNameDisplayed(defaultBoardName);
+    },
+  );
 
   mainTest(
-    qase(224, 'CO-9 Add, hide, unhide, change type and delete Shadow to board'),
+    qase([224], 'Add, hide, unhide, change type and delete Shadow to board'),
     async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
@@ -185,7 +197,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(225, 'CO-10 Add and edit Shadow to board'), async () => {
+  mainTest(qase([225], 'Add and edit Shadow to board'), async () => {
     await designPanelPage.clickAddShadowButton();
     await designPanelPage.clickShadowActionsButton();
     await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
@@ -207,40 +219,37 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(
-    qase(227, 'CO-12 Add, hide, unhide and delete Blur to board'),
-    async () => {
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#304d6a');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('board-blur-default.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.hideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('board-blur-hide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.unhideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('board-blur-unhide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.removeBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('board-blur-remove.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    },
-  );
+  mainTest(qase([227], 'Add, hide, unhide and delete Blur to board'), async () => {
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#304d6a');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('board-blur-default.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('board-blur-hide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('board-blur-unhide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('board-blur-remove.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+  });
 
-  mainTest(qase(228, 'CO-13 Add and edit Blur to board'), async () => {
+  mainTest(qase([228], 'Add and edit Blur to board'), async () => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
     await mainPage.waitForChangeIsSaved();
@@ -250,7 +259,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(229, 'CO-14 Add, edit and delete Stroke to board'), async () => {
+  mainTest(qase([229], 'Add, edit and delete Stroke to board'), async () => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
@@ -330,7 +339,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(240, 'CO-25-1 Delete board via rightclick'), async () => {
+  mainTest(qase([240], 'Delete board (From right click)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -339,7 +348,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(240, 'CO-25-2 Delete board via shortcut Del'), async () => {
+  mainTest(qase([2538], 'Delete board (From Keyboard)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
@@ -348,7 +357,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(243, 'CO-28 Add rotation to board'), async () => {
+  mainTest(qase([243], 'Add rotation to board'), async () => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
@@ -367,22 +376,25 @@ mainTest.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('board-rotated-359.png');
   });
 
-  mainTest(qase(244, 'CO-29 Change border radius multiple values'), async () => {
-    await designPanelPage.clickIndividualCornersRadiusButton();
-    await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-changed-corners.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-    await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  });
+  mainTest(
+    qase([244], 'Change border radius multiple values (Design page in the right)'),
+    async () => {
+      await designPanelPage.clickIndividualCornersRadiusButton();
+      await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('board-changed-corners.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
+      await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('board.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
+    },
+  );
 
   mainTest(
-    qase(271, "CO-56 Click 'Focus off' board from shortcut F"),
+    qase([271], "Click 'Focus off' board from shortcut (F)"),
     async ({ page, browserName }) => {
       await mainPage.focusBoardViaRightClickOnCanvas('Board', browserName);
       await mainPage.waitForChangeIsSaved();
@@ -401,7 +413,8 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(604, 'CO-411 Search board - ignore case'), async () => {
+  // To-Do: the tests is different in Qase, in here we are ignoring case sensitive
+  mainTest(qase([272], 'Search board by name'), async () => {
     await layersPanelPage.doubleClickLayerOnLayersTab('Board');
     await layersPanelPage.typeNameCreatedLayerAndEnter('Test');
     await mainPage.waitForChangeIsSaved();
@@ -410,7 +423,7 @@ mainTest.describe(() => {
     await layersPanelPage.isLayerSearched('Test');
   });
 
-  mainTest(qase(1756, 'PENPOT-1756 Absolute positioned board moving'), async () => {
+  mainTest(qase([1756], 'Absolute positioned board moving'), async () => {
     await designPanelPage.changeHeightAndWidthForLayer('400', '500');
     await mainPage.pressFlexLayoutShortcut();
     await mainPage.waitForChangeIsSaved();
@@ -445,7 +458,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      241,
+      [241],
       'Change board size, preset and orientation (Design page in the right)',
     ),
     async () => {
@@ -687,7 +700,10 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(248, 'CO-33 Zoom to board by double click board icon on the list'),
+    qase(
+      [248],
+      'Zoom to board by double click board icon on the list (Layers panel on the left)',
+    ),
     async () => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
@@ -703,7 +719,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(249, 'CO-34 Hide and show board from rightclick and icons'),
+    qase([249], 'Hide and show board (From rightclick and icons)'),
     async ({ page }) => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
@@ -758,7 +774,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(251, 'CO-36 Copy and Paste Board'), async ({ browserName }) => {
+  mainTest(qase([251], 'Copy and Paste Board'), async ({ browserName }) => {
     const board1 = 'Board #1';
     await mainPage.copyLayerViaRightClick();
     await mainPage.pasteLayerViaRightClick();
@@ -772,7 +788,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(268, "CO-53 Click 'Focus on' board from right click"),
+    qase([268], "Click 'Focus on' board from right click"),
     async ({ page, browserName }) => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
@@ -821,7 +837,7 @@ mainTest.describe(() => {
     await mainPage.createDefaultEllipseByCoordinates(210, 210, true);
   });
 
-  mainTest(qase(2040, 'Resize board to fit 2 elements'), async () => {
+  mainTest(qase([2040], 'Resize board to fit 2 elements'), async () => {
     await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -837,7 +853,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      2050,
+      [2050],
       'Resize board to fit content that goes partially outside of the board',
     ),
     async () => {

@@ -48,14 +48,14 @@ mainTest.describe(() => {
     await mainPage.createDefaultTextLayer(browserName);
   });
 
-  mainTest(qase(377, 'CO-162 Create a text from toolbar'), async () => {
+  mainTest(qase([377], 'Create Text(Toolbar)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
   });
 
-  mainTest(qase(380, 'CO-165 Add rotation to text'), async () => {
+  mainTest(qase([380], 'Change rotation (Design page in the right)'), async () => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
@@ -75,7 +75,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(381, 'CO-166 Add, hide, unhide, change type and delete Shadow to Text'),
+    qase([381], 'Add, hide, unhide, change type and delete Shadow to Text'),
     async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
@@ -122,66 +122,60 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(382, 'CO-167 Add and edit Shadow to text'),
-    async ({ browserName }) => {
-      await designPanelPage.clickAddShadowButton();
-      await designPanelPage.clickShadowActionsButton();
-      await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
-      await designPanelPage.clickShadowColorIcon();
-      await colorPalettePage.setHex('#304d6a');
-      await mainPage.clickMoveButton();
-      browserName === 'webkit' ? await mainPage.waitForChangeIsUnsaved() : null;
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.selectTypeForShadow('Inner shadow');
-      await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
-      await designPanelPage.clickShadowColorIcon();
-      await colorPalettePage.setHex('#96e637');
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    },
-  );
+  mainTest(qase([382], 'Add and edit Shadow to text'), async ({ browserName }) => {
+    await designPanelPage.clickAddShadowButton();
+    await designPanelPage.clickShadowActionsButton();
+    await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
+    await designPanelPage.clickShadowColorIcon();
+    await colorPalettePage.setHex('#304d6a');
+    await mainPage.clickMoveButton();
+    browserName === 'webkit' ? await mainPage.waitForChangeIsUnsaved() : null;
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.selectTypeForShadow('Inner shadow');
+    await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
+    await designPanelPage.clickShadowColorIcon();
+    await colorPalettePage.setHex('#96e637');
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+  });
 
-  mainTest(
-    qase(384, 'CO-169 Add, hide, unhide and delete Blur to text'),
-    async () => {
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#304d6a');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('text-blur-default.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.hideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('text-blur-hide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.unhideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('text-blur-unhide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.removeBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    },
-  );
+  mainTest(qase([384], 'Add, hide, unhide and delete Blur to text'), async () => {
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#304d6a');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('text-blur-default.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('text-blur-hide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('text-blur-unhide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+  });
 
-  mainTest(qase(385, 'CO-170 Add and edit Blur to text'), async () => {
+  mainTest(qase([385], 'Add and edit Blur to text'), async () => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
     await mainPage.waitForChangeIsSaved();
@@ -191,7 +185,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(386, 'CO-171 Add, edit and delete Stroke to Text'), async () => {
+  mainTest(qase([386], 'Add, edit and delete Stroke to Text'), async () => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -247,38 +241,41 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(388, 'CO-173-1 Delete text via rightclick'), async () => {
+  mainTest(qase([388], 'Delete text (From right click)'), async () => {
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible(false);
   });
 
-  mainTest(qase(388, 'CO-173-2 Delete text via shortcut Del'), async () => {
+  mainTest(qase([2545], 'Delete text (From Keyboard)'), async () => {
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible(false);
   });
 
-  mainTest(qase(392, 'CO-177 Rename text with valid name'), async () => {
+  mainTest(qase([392], 'Rename text with valid name'), async () => {
     await layersPanelPage.doubleClickLayerOnLayersTab('Hello World!');
     await layersPanelPage.typeNameCreatedLayerAndEnter('renamed text');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerNameDisplayed('renamed text');
   });
 
-  mainTest(qase(424, 'CO-209 Change text uppercase, lowercase'), async () => {
-    await designPanelPage.changeTextCase('Upper');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('text-upper-case.png');
-    await designPanelPage.changeTextCase('Title');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('text-title-case.png');
-    await designPanelPage.changeTextCase('Lower');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('text-lower-case.png');
-  });
+  mainTest(
+    qase([424], 'Change text uppercase, lowercase (Design section)'),
+    async () => {
+      await designPanelPage.changeTextCase('Upper');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('text-upper-case.png');
+      await designPanelPage.changeTextCase('Title');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('text-title-case.png');
+      await designPanelPage.changeTextCase('Lower');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('text-lower-case.png');
+    },
+  );
 
-  mainTest(qase(425, 'CO-210 Change alignment'), async () => {
+  mainTest(qase([425], 'Change alignment (Design section)'), async () => {
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await designPanelPage.changeTextAlignment('Middle');
     await mainPage.waitForChangeIsUnsaved();
@@ -300,7 +297,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(427, 'CO-212 Change RTL/LTR'), async () => {
+  mainTest(qase([427], 'Change RTL/LTR (Design section)'), async () => {
     await designPanelPage.changeTextDirection('RTL');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-rtl.png', {
@@ -316,10 +313,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(
-      431,
-      'CO-216 Change text color and opacity by typing color code, PENPOT-1753 Check text color in inspect mode',
-    ),
+    qase([431], 'Change text color and opacity by typing color code'),
     async () => {
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#304d6a');
@@ -339,7 +333,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(434, 'CO-219 Selection to board'), async () => {
+  mainTest(qase([434], 'Selection to board'), async () => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-to-board.png', {

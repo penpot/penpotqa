@@ -31,7 +31,7 @@ test.afterEach(async ({ page }, testInfo) => {
 });
 
 mainTest.describe(() => {
-  mainTest(qase(483, 'CO-268 Create curve line from toolbar'), async () => {
+  mainTest(qase([483], 'Create curve line (Toolbar)'), async () => {
     await mainPage.clickCreateCurveButton();
     await mainPage.drawCurve(900, 300, 600, 200);
     await mainPage.waitForChangeIsSaved();
@@ -42,7 +42,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(485, 'CO-270 Rename path, that was created with curve with valid name'),
+    qase([485], 'Rename path, that was created with curve with valid name'),
     async () => {
       await mainPage.clickCreateCurveButton();
       await mainPage.drawCurve(900, 300, 600, 200);

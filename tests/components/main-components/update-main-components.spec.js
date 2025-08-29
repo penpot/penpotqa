@@ -39,7 +39,7 @@ test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase(1275, 'Update main component'), async () => {
+mainTest(qase([1275], 'Update main component'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -66,7 +66,7 @@ mainTest(qase(1275, 'Update main component'), async () => {
   );
 });
 
-mainTest(qase(1306, 'Check copy and main component icons'), async () => {
+mainTest(qase([1306], 'Check copy and main component icons'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -95,7 +95,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(1438, 'Create a component and 2 copies of it, change rotation of main'),
+    qase([1438], 'Create a component and 2 copies of it, change rotation of main'),
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.changeRotationForLayer('20');
@@ -111,7 +111,10 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1440, 'Create a component and 2 copies of it, change all corners of main'),
+    qase(
+      [1440],
+      'Create a component and 2 copies of it, change all corners of main',
+    ),
     async () => {
       const cornerValue = '45';
       await layersPanelPage.clickMainComponentOnLayersTab();
@@ -133,7 +136,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1441,
+      [1441],
       'Create a component and 2 copies of it, change corners of main separate by using "All corners"',
     ),
     async () => {
@@ -153,8 +156,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1408,
-      'PENPOT-1408 Create a component and 2 copies of it, change stroke color of main',
+      [1408],
+      'Create a component and 2 copies of it, change stroke color of main',
     ),
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
@@ -175,10 +178,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(
-      1444,
-      'PENPOT-1444 Create a component and 2 copies of it, change fill of main',
-    ),
+    qase([1444], 'Create a component and 2 copies of it, change fill of main'),
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
@@ -203,8 +203,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1445,
-      'PENPOT-1445 Create a component and 2 copies of it, change shadow opacity and color of main',
+      [1445],
+      'Create a component and 2 copies of it, change shadow opacity and color of main',
     ),
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
@@ -240,10 +240,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(
-      1446,
-      'PENPOT-1446 Create a component and 2 copies of it, change blur of main',
-    ),
+    qase([1446], 'Create a component and 2 copies of it, change blur of main'),
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.clickAddBlurButton();
@@ -262,8 +259,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1447,
-      'PENPOT-1447 Create a component and 2 copies of it, change grid style and size of main',
+      [1447],
+      'Create a component and 2 copies of it, change grid style and size of main',
     ),
     async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
@@ -307,7 +304,7 @@ mainTest.describe('Text', () => {
 
   mainTest(
     qase(
-      2261,
+      [2261],
       'Propagation of (style and content) changes from a text component to copies (overriding style or content)',
     ),
     async ({ browserName }) => {
@@ -340,7 +337,7 @@ mainTest.describe('Text', () => {
 
   mainTest(
     qase(
-      2263,
+      [2263],
       'Propagation of (independent) changes from a text component to (all) copies',
     ),
     async () => {
@@ -388,10 +385,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(
-      1404,
-      'PENPOT-1404 Change copy components shadow and update main components color',
-    ),
+    qase([1404], 'Change copy components shadow and update main components color'),
     async ({ browserName }) => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddShadowButton();
@@ -414,10 +408,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(
-      1403,
-      'PENPOT-1403 Change copy components color and update main components color',
-    ),
+    qase([1403], 'Change copy components color and update main components color'),
     async ({ browserName }) => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
@@ -441,10 +432,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(
-      1405,
-      'PENPOT-1405 Change copy components blur and update main components color',
-    ),
+    qase([1405], 'Change copy components blur and update main components color'),
     async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddBlurButton();
@@ -466,10 +454,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(
-      1406,
-      'PENPOT-1406 Change copy components grid and update main components color',
-    ),
+    qase([1406], 'Change copy components grid and update main components color'),
     async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddGridButton();
@@ -489,33 +474,30 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(1409, 'PENPOT-1409 Change copy name and change component name'),
-    async () => {
-      await layersPanelPage.clickCopyComponentOnLayersTab();
+  mainTest(qase([1409], 'Change copy name and change component name'), async () => {
+    await layersPanelPage.clickCopyComponentOnLayersTab();
 
-      await layersPanelPage.doubleClickCopyComponentOnLayersTab();
-      await layersPanelPage.typeNameCreatedLayerAndEnter('test');
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isCopyComponentNameDisplayed('test');
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await layersPanelPage.doubleClickMainComponentOnLayersTab();
-      await layersPanelPage.typeNameCreatedLayerAndEnter('dfsfs');
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isCopyComponentNameDisplayed('test');
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'main-copies-component-change-name.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-    },
-  );
+    await layersPanelPage.doubleClickCopyComponentOnLayersTab();
+    await layersPanelPage.typeNameCreatedLayerAndEnter('test');
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isCopyComponentNameDisplayed('test');
+    await layersPanelPage.clickMainComponentOnLayersTab();
+    await layersPanelPage.doubleClickMainComponentOnLayersTab();
+    await layersPanelPage.typeNameCreatedLayerAndEnter('dfsfs');
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isCopyComponentNameDisplayed('test');
+    await layersPanelPage.clickMainComponentOnLayersTab();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'main-copies-component-change-name.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
+    );
+  });
 });
 
-mainTest(qase(1478, 'PENPOT-1478 Changed direct, not overriden'), async () => {
+mainTest(qase([1478], 'Changed direct, not overriden'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -536,7 +518,7 @@ mainTest(qase(1478, 'PENPOT-1478 Changed direct, not overriden'), async () => {
   );
 });
 
-mainTest(qase(1479, 'PENPOT-1479 Changed remote, not overriden'), async () => {
+mainTest(qase([1479], 'Changed remote, not overriden'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -571,7 +553,7 @@ mainTest(qase(1479, 'PENPOT-1479 Changed remote, not overriden'), async () => {
   );
 });
 
-mainTest(qase(1480, 'PENPOT-1480 Changed direct, overriden in copy'), async () => {
+mainTest(qase([1480], 'Changed direct, overriden in copy'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -603,7 +585,7 @@ mainTest(qase(1480, 'PENPOT-1480 Changed direct, overriden in copy'), async () =
   );
 });
 
-mainTest(qase(1482, 'PENPOT-1482 Changed remote, overriden in copy'), async () => {
+mainTest(qase([1482], 'Changed remote, overriden in copy'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -634,7 +616,7 @@ mainTest(qase(1482, 'PENPOT-1482 Changed remote, overriden in copy'), async () =
 });
 
 mainTest(
-  qase(1483, 'PENPOT-1483 Changed remote, overriden in near, overriden in copy'),
+  qase([1483], 'Changed remote, overriden in near, overriden in copy'),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();

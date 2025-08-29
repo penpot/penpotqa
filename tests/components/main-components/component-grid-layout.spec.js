@@ -63,21 +63,18 @@ mainTest.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
   });
 
-  mainTest(
-    qase(1717, 'PENPOT-1717 Create a component from empty Grid Board'),
-    async ({}) => {
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
-        'empty-board-component-with-grid-layout.png',
-      );
-    },
-  );
+  mainTest(qase([1717], 'Create a component from empty Grid Board'), async ({}) => {
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.createdLayer).toHaveScreenshot(
+      'empty-board-component-with-grid-layout.png',
+    );
+  });
 
   mainTest(
     qase(
-      1724,
-      'PENPOT-1724 Create a component from grid board with some element inside, edit component in grid layout section',
+      [1724],
+      'Create a component from grid board with some element inside, edit component in grid layout section',
     ),
     async ({}) => {
       await mainPage.createComponentViaRightClick();
@@ -98,7 +95,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1729, 'PENPOT-1729 Move a component between pages'),
+    qase([1729], 'Move a component between pages'),
     async ({ browserName }) => {
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -120,32 +117,29 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(1730, 'PENPOT-1730 Restore main component'),
-    async ({ browserName }) => {
-      await mainPage.createComponentViaRightClick();
-      await mainPage.clickViewportOnce();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await mainPage.pressCopyShortcut(browserName);
-      await mainPage.pressPasteShortcut(browserName);
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await layersPanelPage.deleteMainComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await layersPanelPage.restoreMainComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-component-with-grid-layout-main-restore.png',
-        {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-      await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
-    },
-  );
+  mainTest(qase([1730], 'Restore main component'), async ({ browserName }) => {
+    await mainPage.createComponentViaRightClick();
+    await mainPage.clickViewportOnce();
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await mainPage.pressCopyShortcut(browserName);
+    await mainPage.pressPasteShortcut(browserName);
+    await layersPanelPage.clickMainComponentOnLayersTab();
+    await layersPanelPage.deleteMainComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await layersPanelPage.restoreMainComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'board-component-with-grid-layout-main-restore.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
+    );
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
+  });
 
   mainTest(
-    qase(1731, 'PENPOT-1731 Undo component editing and deleting'),
+    qase([1731], 'Undo component editing and deleting'),
     async ({ browserName }) => {
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -175,10 +169,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(
-      [1732, 1733, 1734],
-      'PENPOT-1732,1733,1734 Click "Show main component" in File2',
-    ),
+    qase([1732, 1733, 1734], 'Click "Show main component" in File2'),
     async ({ page }) => {
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -248,7 +239,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(1718, 'PENPOT-1718 Copy-paste component, that was created from grid board'),
+    qase([1718], 'Copy-paste component, that was created from grid board'),
     async ({ browserName }) => {
       await mainPage.clickViewportOnce();
       await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -265,10 +256,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(
-      1719,
-      'PENPOT-1719 Create a component from grid board with some element inside',
-    ),
+    qase([1719], 'Create a component from grid board with some element inside'),
     async ({}) => {
       await expect(mainPage.createdLayer).toHaveScreenshot(
         'board-component-with-grid-layout-with-rectangle.png',
@@ -277,7 +265,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1728, 'PENPOT-1728 Duplicate component, that was created from grid board'),
+    qase([1728], 'Duplicate component, that was created from grid board'),
     async ({ browserName }) => {
       await mainPage.clickShortcutCtrlD(browserName);
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -314,10 +302,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(
-      1720,
-      'PENPOT-1720 Change the copy component and click "Update main component"',
-    ),
+    qase([1720], 'Change the copy component and click "Update main component"'),
     async ({}) => {
       await designPanelPage.changeHeightAndWidthForLayer('25', '25');
       await layersPanelPage.updateMainComponentViaRightClick();
@@ -333,10 +318,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(
-      1721,
-      'PENPOT-1721 Change the copy component and click "Show main component"',
-    ),
+    qase([1721], 'Change the copy component and click "Show main component"'),
     async ({}) => {
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#000000');
@@ -353,7 +335,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1722, 'PENPOT-1722 Change the copy component and click "Reset overrides"'),
+    qase([1722], 'Change the copy component and click "Reset overrides"'),
     async ({}) => {
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#000000');
@@ -370,7 +352,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(1723, 'PENPOT-1723 Change the copy component and click "Detach instance"'),
+    qase([1723], 'Change the copy component and click "Detach instance"'),
     async ({}) => {
       await designPanelPage.changeHeightAndWidthForLayer('25', '25');
       await mainPage.waitForChangeIsSaved();
@@ -416,7 +398,7 @@ mainTest.describe(() => {
   mainTest(
     qase(
       [1725, 1752],
-      'PENPOT-1725,1752 Create annotation for component, that already has annotation',
+      'Create annotation for component, that already has annotation',
     ),
     async () => {
       await designPanelPage.isAnnotationAddedToComponent(annotation);
@@ -427,14 +409,14 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(1726, 'PENPOT-1726 Edit annotation for component'), async ({}) => {
+  mainTest(qase([1726], 'Edit annotation for component'), async ({}) => {
     await designPanelPage.clickOnEditAnnotation();
     await designPanelPage.editAnnotationForComponent('Edit annotation');
     await designPanelPage.waitForChangeIsSaved();
     await designPanelPage.isAnnotationAddedToComponent('Edit annotation');
   });
 
-  mainTest(qase(1727, 'PENPOT-1727 Delete annotation for component'), async ({}) => {
+  mainTest(qase([1727], 'Delete annotation for component'), async ({}) => {
     await designPanelPage.clickOnDeleteAnnotation();
     await designPanelPage.confirmDeleteAnnotation();
     await designPanelPage.waitForChangeIsSaved();

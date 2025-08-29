@@ -46,7 +46,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(607, 'FL-1 Add flex layout to board from rightclick'), async () => {
+  mainTest(qase([607], 'Add flex layout to board from rightclick'), async () => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
@@ -55,16 +55,19 @@ mainTest.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('board-with-layout.png');
   });
 
-  mainTest(qase(608, 'FL-2 Add flex layout to board from shortcut'), async () => {
-    await mainPage.pressFlexLayoutShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
-    await designPanelPage.isLayoutRemoveButtonExists();
-    await expect(mainPage.createdLayer).toHaveScreenshot('board-with-layout.png');
-  });
+  mainTest(
+    qase([608], 'Add flex layout to board from shortcut (SHIFT+A)'),
+    async () => {
+      await mainPage.pressFlexLayoutShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
+      await designPanelPage.isLayoutRemoveButtonExists();
+      await expect(mainPage.createdLayer).toHaveScreenshot('board-with-layout.png');
+    },
+  );
 
   mainTest(
-    qase(610, 'FL-4 Remove flex layout from board from rightclick'),
+    qase([610], 'Remove flex layout from board from rightclick'),
     async () => {
       await mainPage.addFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -79,7 +82,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(611, 'FL-5 Remove flex layout from board from shortcut'),
+    qase([611], 'Remove flex layout from board from shortcut (SHIFT+A)'),
     async () => {
       await mainPage.pressFlexLayoutShortcut();
       await mainPage.waitForChangeIsSaved();
@@ -94,7 +97,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(612, 'FL-6 Remove flex layout from board from Design panel'),
+    qase([612], 'Remove flex layout from board from Design panel'),
     async () => {
       await mainPage.addFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -108,7 +111,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(613, 'FL-7 Change direction'), async () => {
+  mainTest(qase([613], 'Change direction'), async () => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -133,7 +136,7 @@ mainTest.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('layout-row-direction.png');
   });
 
-  mainTest(qase(615, 'FL-9 Change alignment'), async () => {
+  mainTest(qase([615], 'Change alignment'), async () => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -149,7 +152,7 @@ mainTest.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('layout-align-start.png');
   });
 
-  mainTest(qase(616, 'FL-10 Change justification'), async () => {
+  mainTest(qase([616], 'Change justification'), async () => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -182,7 +185,7 @@ mainTest.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('layout-justify-start.png');
   });
 
-  mainTest(qase(618, 'FL-12 Change column gap'), async () => {
+  mainTest(qase([618], 'Change column gap'), async () => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -198,7 +201,7 @@ mainTest.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('layout-column-gap-0.png');
   });
 
-  mainTest(qase(619, 'FL-13 Change row gap'), async () => {
+  mainTest(qase([619], 'Change row gap'), async () => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -216,7 +219,7 @@ mainTest.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('layout-row-gap-0.png');
   });
 
-  mainTest(qase(620, 'FL-14 Change single padding'), async () => {
+  mainTest(qase([620], 'Change padding (single)'), async () => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -238,7 +241,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(621, 'FL-15 Change multiple padding'), async () => {
+  mainTest(qase([621], 'Change padding (multiple)'), async () => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -271,7 +274,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(627, 'FL-21 Flex elements change - alignment'), async () => {
+  mainTest(qase([627], 'Flex elements change - alignment'), async () => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -294,7 +297,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(628, 'FL-22 Flex elements - change margin single'), async () => {
+  mainTest(qase([628], 'Flex elements - change margin (single)'), async () => {
     await mainPage.addFlexLayoutViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -337,7 +340,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(643, 'FL-37 Set margins and padding to 0'), async () => {
+  mainTest(qase([643], 'Set margins and padding to 0'), async () => {
     await designPanelPage.changeLayoutPadding('Vertical', '0');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeLayoutPadding('Horizontal', '0');
@@ -353,7 +356,7 @@ mainTest.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('layout-padding-gap-0.png');
   });
 
-  mainTest(qase(645, 'FL-39 Gap click highlight'), async () => {
+  mainTest(qase([645], 'Gap click highlight'), async () => {
     await designPanelPage.changeLayoutColumnGap('20');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickLayoutColumnGapField();
@@ -363,10 +366,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(
-      647,
-      'FL-42 Use absolute position and look if element still inside a board',
-    ),
+    qase([647], 'Use absolute position and look if element still inside a board'),
     async () => {
       await layersPanelPage.selectBoardChildLayer('Ellipse');
       await designPanelPage.isFlexElementSectionOpened();

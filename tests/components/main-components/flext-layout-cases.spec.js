@@ -81,8 +81,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1503,
-      'PENPOT-1503 Create flex board with main component and its copy, change direction',
+      [1503],
+      'Create flex board with main component and its copy, change direction',
     ),
     async () => {
       await designPanelPage.changeLayoutDirection('Column');
@@ -98,8 +98,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1504,
-      'PENPOT-1504 Create flex board with main component and its copy, change alingment',
+      [1504],
+      'Create flex board with main component and its copy, change alignment',
     ),
     async () => {
       await designPanelPage.changeLayoutAlignment('Center');
@@ -127,8 +127,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1511,
-      'PENPOT-1511 Create component with 2 boards with components inside it. change paddings',
+      [1511],
+      'Create component with 2 boards with components inside it. change paddings',
     ),
     async ({ page }, testInfo) => {
       await testInfo.setTimeout(testInfo.timeout + 20000);
@@ -174,10 +174,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(
-      1514,
-      'PENPOT-1514 Create component inside flex board, change alignment for element',
-    ),
+    qase([1514], 'Create component inside flex board, change alignment for element'),
     async () => {
       await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
       await mainPage.createComponentViaRightClick();
