@@ -2,9 +2,8 @@ const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { random } = require('../../helpers/string-generator');
-const { test, expect } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { TeamPage } = require('../../pages/dashboard/team-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
@@ -13,7 +12,7 @@ const useLibraryInPenpotURL = 'https://design.penpot.dev/#?template=';
 
 let teamPage, dashboardPage, mainPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -23,9 +22,8 @@ test.beforeEach(async ({ page }) => {
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest(qase(55, 'DA-1 Create new file in Drafts on title panel'), async () => {

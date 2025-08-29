@@ -1,9 +1,13 @@
 const base = require('@playwright/test');
 const { LoginPage } = require('./pages/login-page.js');
 const { DashboardPage } = require('./pages/dashboard/dashboard-page.js');
+const { RegisterPage } = require('./pages/register-page');
+const { updateTestResults } = require('./helpers/saveTestResults');
+const { random } = require('./helpers/string-generator');
+const { waitMessage } = require('./helpers/gmail');
 
 const mainTest = base.test.extend({
-  page: async ({ page }, use) => {
+  page: async ({ page }, use, testInfo) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     await loginPage.goto();
@@ -16,6 +20,34 @@ const mainTest = base.test.extend({
     await dashboardPage.skipWhatNewsPopUp();
     await dashboardPage.skipPluginsPopUp();
     await use(page);
+    await updateTestResults(testInfo.status, testInfo.retry);
+  },
+});
+
+const registerTest = base.test.extend({
+  name: async ({}, use) => {
+    const name = random().concat('autotest');
+    await use(name);
+  },
+  email: async ({ name }, use) => {
+    const email = `${process.env.GMAIL_NAME}+${name}@gmail.com`;
+    await use(email);
+  },
+  page: async ({ page, name, email }, use, testInfo) => {
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const registerPage = new RegisterPage(page);
+
+    await loginPage.goto();
+    await loginPage.acceptCookie();
+    await loginPage.clickOnCreateAccount();
+    await registerPage.registerAccount(name, email, process.env.LOGIN_PWD);
+    await registerPage.isRegisterEmailCorrect(email);
+    const invite = await waitMessage(page, email, 40);
+    await page.goto(invite.inviteUrl);
+    await dashboardPage.fillOnboardingQuestions();
+    await use(page);
+    await updateTestResults(testInfo.status, testInfo.retry);
   },
 });
 
@@ -111,4 +143,5 @@ const performanceTest = base.test.extend({
 });
 
 exports.mainTest = mainTest;
+exports.registerTest = registerTest;
 exports.performanceTest = performanceTest;

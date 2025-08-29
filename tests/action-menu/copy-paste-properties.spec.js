@@ -4,7 +4,6 @@ const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { ViewModePage } = require('../../pages/workspace/view-mode-page');
 const { PrototypePanelPage } = require('../../pages/workspace/prototype-panel-page');
@@ -57,9 +56,8 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {

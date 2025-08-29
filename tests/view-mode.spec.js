@@ -4,7 +4,6 @@ const { MainPage } = require('../pages/workspace/main-page');
 const { random } = require('../helpers/string-generator');
 const { TeamPage } = require('../pages/dashboard/team-page');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
-const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { ViewModePage } = require('../pages/workspace/view-mode-page');
 const { PrototypePanelPage } = require('../pages/workspace/prototype-panel-page');
@@ -29,6 +28,7 @@ let teamPage,
   profilePage,
   loginPage,
   registerPage;
+
 mainTest.beforeEach(async ({ page, browserName }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
@@ -52,9 +52,8 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -830,8 +829,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(702, 'CO-381 Comments dropdown (All and Only your comments)'),
-    async ({ page }, testInfo) => {
-      await testInfo.setTimeout(testInfo.timeout + 60000);
+    async ({ page }) => {
+      await mainTest.slow();
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
 

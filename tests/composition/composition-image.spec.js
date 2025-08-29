@@ -1,7 +1,6 @@
 const { mainTest } = require('../../fixtures');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
@@ -19,7 +18,7 @@ let teamPage,
   designPanelPage,
   layersPanelPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   colorPalettePage = new ColorPalettePage(page);
@@ -33,15 +32,14 @@ test.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
-    test.slow();
+    await mainTest.slow();
     await mainPage.uploadImage('images/images.png');
   });
 

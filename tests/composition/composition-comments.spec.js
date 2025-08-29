@@ -1,11 +1,10 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { random } = require('../../helpers/string-generator');
 const { CommentsPanelPage } = require('../../pages/workspace/comments-panel-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { waitMessage } = require('../../helpers/gmail');
 const { ProfilePage } = require('../../pages/profile-page');
@@ -23,7 +22,7 @@ let teamPage,
   loginPage,
   registerPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
@@ -39,10 +38,9 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {

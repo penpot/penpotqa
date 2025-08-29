@@ -1,9 +1,7 @@
-const { mainTest } = require('../../fixtures');
-const { expect, test } = require('@playwright/test');
+const { registerTest } = require('../../fixtures');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { ProfilePage } = require('../../pages/profile-page');
 const {
@@ -23,8 +21,8 @@ const {
 let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
 const teamName = random().concat('autotest');
 
-test.beforeEach(async ({ page }) => {
-  test.slow();
+registerTest.beforeEach(async ({ page }) => {
+  await registerTest.slow();
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
@@ -33,166 +31,130 @@ test.beforeEach(async ({ page }) => {
   stripePage = new StripePage(page);
 });
 
-test.afterEach(async ({ page }, testInfo) => {
-  await updateTestResults(testInfo.status, testInfo.retry);
+registerTest.afterEach(async () => {
+  await teamPage.deleteTeam(teamName);
 });
 
-test.describe(() => {
-  test.afterEach(async () => {
+registerTest.describe(() => {
+  registerTest.beforeEach(async () => {
+    await teamPage.createTeam(teamName);
+    await teamPage.isTeamSelected(teamName);
+  });
+
+  registerTest.afterEach(async () => {
     await stripePage.clickOnReturnToPenpotButton();
     await profilePage.backToDashboardFromAccount();
-    await teamPage.deleteTeam(teamName);
   });
 
-  test(qase(2346, 'Invoices capped at $7 (Unlimited)'), async ({ page }) => {
-    const currentPlan = 'Unlimited';
-    const name = random().concat('autotest');
-    const email = `${process.env.GMAIL_NAME}+${name}@gmail.com`;
-    let date = new Date();
+  registerTest(
+    qase(2346, 'Invoices capped at $7 (Unlimited)'),
+    async ({ page, name, email }) => {
+      const currentPlan = 'Unlimited';
+      let date = new Date();
 
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.clickOnCreateAccount();
-    await registerPage.registerAccount(name, email, process.env.LOGIN_PWD);
-    await registerPage.isRegisterEmailCorrect(email);
-    const invite = await waitMessage(page, email, 40);
-    await page.goto(invite.inviteUrl);
-    await dashboardPage.fillOnboardingQuestions();
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
+      const testClockId = await createCustomerWithTestClock(page, name, email);
 
-    const testClockId = await createCustomerWithTestClock(page, name, email);
+      await profilePage.tryTrialForPlan(currentPlan);
+      await profilePage.openYourAccountPage();
+      await profilePage.openSubscriptionTab();
+      await profilePage.clickOnAddPaymentMethodButton();
+      await stripePage.addDefaultCard();
+      await stripePage.isVisaCardAdded(true);
+      await skipSubscriptionByDays(email, testClockId, 15, date);
 
-    await profilePage.tryTrialForPlan(currentPlan);
-    await profilePage.openYourAccountPage();
-    await profilePage.openSubscriptionTab();
-    await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
-    await stripePage.isVisaCardAdded(true);
-    await skipSubscriptionByDays(email, testClockId, 15, date);
+      await stripePage.waitTrialEndsDisappear();
+      await profilePage.reloadPage();
+      await stripePage.checkCurrentSubscription(currentPlan);
+      await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
+      await stripePage.checkLastInvoiceAmount(`$7.00`);
 
-    await stripePage.waitTrialEndsDisappear();
-    await profilePage.reloadPage();
-    await stripePage.checkCurrentSubscription(currentPlan);
-    await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
-    await stripePage.checkLastInvoiceAmount(`$7.00`);
+      await skipSubscriptionByMonths(email, testClockId, 1, date);
+      await profilePage.reloadPage();
 
-    await skipSubscriptionByMonths(email, testClockId, 1, date);
-    await profilePage.reloadPage();
+      await skipSubscriptionByMonths(email, testClockId, 1, date);
+      await profilePage.reloadPage();
 
-    await skipSubscriptionByMonths(email, testClockId, 1, date);
-    await profilePage.reloadPage();
+      await stripePage.checkLastInvoiceStatus(`Paid`);
+      await stripePage.waitInvoiceAmountCount(`$7.00`, 3);
+    },
+  );
 
-    await stripePage.checkLastInvoiceStatus(`Paid`);
-    await stripePage.waitInvoiceAmountCount(`$7.00`, 3);
-  });
+  registerTest(
+    qase(2347, 'Invoices capped at  $950 (Enterprise)'),
+    async ({ page, name, email }) => {
+      const currentPlan = 'Enterprise';
+      let date = new Date();
 
-  test(qase(2347, 'Invoices capped at  $950 (Enterprise)'), async ({ page }) => {
-    const currentPlan = 'Enterprise';
-    const name = random().concat('autotest');
-    const email = `${process.env.GMAIL_NAME}+${name}@gmail.com`;
-    let date = new Date();
+      const testClockId = await createCustomerWithTestClock(page, name, email);
 
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.clickOnCreateAccount();
-    await registerPage.registerAccount(name, email, process.env.LOGIN_PWD);
-    await registerPage.isRegisterEmailCorrect(email);
-    const invite = await waitMessage(page, email, 40);
-    await page.goto(invite.inviteUrl);
-    await dashboardPage.fillOnboardingQuestions();
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
+      await profilePage.tryTrialForPlan(currentPlan);
+      await profilePage.openYourAccountPage();
+      await profilePage.openSubscriptionTab();
+      await profilePage.clickOnAddPaymentMethodButton();
+      await stripePage.addDefaultCard();
+      await stripePage.isVisaCardAdded(true);
+      await skipSubscriptionByDays(email, testClockId, 15, date);
 
-    const testClockId = await createCustomerWithTestClock(page, name, email);
+      await stripePage.waitTrialEndsDisappear();
+      await profilePage.reloadPage();
+      await stripePage.checkCurrentSubscription(currentPlan);
+      await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
+      await stripePage.checkLastInvoiceAmount(`$950.00`);
 
-    await profilePage.tryTrialForPlan(currentPlan);
-    await profilePage.openYourAccountPage();
-    await profilePage.openSubscriptionTab();
-    await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
-    await stripePage.isVisaCardAdded(true);
-    await skipSubscriptionByDays(email, testClockId, 15, date);
+      await skipSubscriptionByMonths(email, testClockId, 1, date);
+      await profilePage.reloadPage();
+      await skipSubscriptionByMonths(email, testClockId, 1, date);
+      await profilePage.reloadPage();
 
-    await stripePage.waitTrialEndsDisappear();
-    await profilePage.reloadPage();
-    await stripePage.checkCurrentSubscription(currentPlan);
-    await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
-    await stripePage.checkLastInvoiceAmount(`$950.00`);
+      await stripePage.checkLastInvoiceStatus(`Paid`);
+      await stripePage.waitInvoiceAmountCount(`$950.00`, 3);
+    },
+  );
 
-    await skipSubscriptionByMonths(email, testClockId, 1, date);
-    await profilePage.reloadPage();
-    await skipSubscriptionByMonths(email, testClockId, 1, date);
-    await profilePage.reloadPage();
+  registerTest(
+    qase(2514, 'Maximum billing $175 (Unlimited)'),
+    async ({ page, name, email }) => {
+      const currentPlan = 'Unlimited';
+      let date = new Date();
 
-    await stripePage.checkLastInvoiceStatus(`Paid`);
-    await stripePage.waitInvoiceAmountCount(`$950.00`, 3);
-  });
+      await teamPage.createTeam(teamName);
+      await teamPage.isTeamSelected(teamName);
 
-  test(qase(2514, 'Maximum billing $175 (Unlimited)'), async ({ page }) => {
-    const currentPlan = 'Unlimited';
-    const name = random().concat('autotest');
-    const email = `${process.env.GMAIL_NAME}+${name}@gmail.com`;
-    let date = new Date();
+      const testClockId = await createCustomerWithTestClock(page, name, email);
 
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.clickOnCreateAccount();
-    await registerPage.registerAccount(name, email, process.env.LOGIN_PWD);
-    await registerPage.isRegisterEmailCorrect(email);
-    const invite = await waitMessage(page, email, 40);
-    await page.goto(invite.inviteUrl);
-    await dashboardPage.fillOnboardingQuestions();
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
+      await profilePage.tryTrialForPlan(currentPlan, '100');
+      await profilePage.openYourAccountPage();
+      await profilePage.openSubscriptionTab();
+      await profilePage.clickOnAddPaymentMethodButton();
+      await stripePage.addDefaultCard();
+      await stripePage.isVisaCardAdded(true);
+      await skipSubscriptionByDays(email, testClockId, 15, date);
 
-    const testClockId = await createCustomerWithTestClock(page, name, email);
+      await stripePage.waitTrialEndsDisappear();
+      await profilePage.reloadPage();
+      await stripePage.checkCurrentSubscription(currentPlan);
+      await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
+      await stripePage.checkLastInvoiceAmount(`$175.00`);
 
-    await profilePage.tryTrialForPlan(currentPlan, '100');
-    await profilePage.openYourAccountPage();
-    await profilePage.openSubscriptionTab();
-    await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
-    await stripePage.isVisaCardAdded(true);
-    await skipSubscriptionByDays(email, testClockId, 15, date);
+      await skipSubscriptionByMonths(email, testClockId, 1, date);
+      await profilePage.reloadPage();
+      await skipSubscriptionByMonths(email, testClockId, 1, date);
+      await profilePage.reloadPage();
 
-    await stripePage.waitTrialEndsDisappear();
-    await profilePage.reloadPage();
-    await stripePage.checkCurrentSubscription(currentPlan);
-    await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
-    await stripePage.checkLastInvoiceAmount(`$175.00`);
-
-    await skipSubscriptionByMonths(email, testClockId, 1, date);
-    await profilePage.reloadPage();
-    await skipSubscriptionByMonths(email, testClockId, 1, date);
-    await profilePage.reloadPage();
-
-    await stripePage.checkLastInvoiceStatus(`Paid`);
-    await stripePage.waitInvoiceAmountCount(`$175.00`, 3);
-  });
+      await stripePage.checkLastInvoiceStatus(`Paid`);
+      await stripePage.waitInvoiceAmountCount(`$175.00`, 3);
+    },
+  );
 });
 
-test(
+registerTest(
   qase(2324, 'Owner of team changes Enterprise to Professional'),
-  async ({ page }) => {
+  async ({ page, name, email }) => {
     const currentPlan = 'Enterprise';
     const firstOwner = random().concat('autotest');
     const firstEmail = `${process.env.GMAIL_NAME}+${firstOwner}@gmail.com`;
-    const secondAdmin = random().concat('autotest');
-    const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
-
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.clickOnCreateAccount();
-    await registerPage.registerAccount(
-      secondAdmin,
-      secondEmail,
-      process.env.LOGIN_PWD,
-    );
-    await registerPage.isRegisterEmailCorrect(secondEmail);
-    const register = await waitMessage(page, secondEmail, 40);
-    await page.goto(register.inviteUrl);
-    await dashboardPage.fillOnboardingQuestions();
+    const secondAdmin = name;
+    const secondEmail = email;
 
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
@@ -263,7 +225,5 @@ test(
     await teamPage.switchTeam(teamName);
     await teamPage.isTeamSelected(teamName);
     await teamPage.isSubscriptionIconVisible(false, currentPlan);
-
-    await teamPage.deleteTeam(teamName);
   },
 );

@@ -1,6 +1,6 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { ProfilePage } = require('../../pages/profile-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
@@ -8,7 +8,6 @@ const { TeamPage } = require('../../pages/dashboard/team-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
 const { ViewModePage } = require('../../pages/workspace/view-mode-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 
 let profilePage,
   teamPage,
@@ -18,7 +17,7 @@ let profilePage,
   inspectPanelPage,
   viewModePage;
 const teamName = random().concat('autotest');
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   viewModePage = new ViewModePage(page);
   inspectPanelPage = new InspectPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
@@ -143,11 +142,10 @@ mainTest.describe('Settings - UI THEME', () => {
   );
 });
 
-test.afterEach(async ({}, testInfo) => {
+mainTest.afterEach(async () => {
   await profilePage.goToAccountPage();
   await profilePage.openSettingsTab();
   await profilePage.selectDarkTheme();
   await profilePage.backToDashboardFromAccount();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
