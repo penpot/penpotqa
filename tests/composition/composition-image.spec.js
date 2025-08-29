@@ -274,29 +274,32 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(457, 'CO-242-1 Delete image via rightclick'), async () => {
+  mainTest(qase([457], 'Delete image (From right click)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible(false);
   });
 
-  mainTest(qase(460, 'CO-245 Change border radius one value'), async () => {
-    await designPanelPage.changeGeneralCornerRadiusForLayer('30');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-30.png');
-    await designPanelPage.changeGeneralCornerRadiusForLayer('90');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-90.png');
-    await designPanelPage.changeGeneralCornerRadiusForLayer('180');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-180.png');
-    await designPanelPage.changeGeneralCornerRadiusForLayer('0');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-0.png');
-  });
+  mainTest(
+    qase([460], 'Change border radius one value (Design page in the right)'),
+    async () => {
+      await designPanelPage.changeGeneralCornerRadiusForLayer('30');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-30.png');
+      await designPanelPage.changeGeneralCornerRadiusForLayer('90');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-90.png');
+      await designPanelPage.changeGeneralCornerRadiusForLayer('180');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-180.png');
+      await designPanelPage.changeGeneralCornerRadiusForLayer('0');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-0.png');
+    },
+  );
 
-  mainTest(qase(1270, 'CO-412 Add rotation to image'), async () => {
+  mainTest(qase([1270], 'Change rotation (Design page in the right)'), async () => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
@@ -315,28 +318,34 @@ mainTest.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('image-rotated-359.png');
   });
 
-  mainTest(qase(474, 'CO-259 Flip Vertical and Flip Horizontal image'), async () => {
-    await mainPage.flipVerticalViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-flipped-vertical.png',
-    );
-    await mainPage.flipHorizontalViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-flipped-vertical-horizontal.png',
-    );
-    await mainPage.flipVerticalViaShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-flipped-horizontal.png',
-    );
-    await mainPage.flipHorizontalViaShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-non-flipped-jpeg.png',
-    );
-  });
+  mainTest(
+    qase(
+      [474],
+      'Flip Vertical and Flip Horizontal image (From right click and Shortcut Shift +V Shift + H)',
+    ),
+    async () => {
+      await mainPage.flipVerticalViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'image-flipped-vertical.png',
+      );
+      await mainPage.flipHorizontalViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'image-flipped-vertical-horizontal.png',
+      );
+      await mainPage.flipVerticalViaShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'image-flipped-horizontal.png',
+      );
+      await mainPage.flipHorizontalViaShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'image-non-flipped-jpeg.png',
+      );
+    },
+  );
 });
 
 mainTest.describe(() => {
@@ -346,11 +355,14 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(437, 'CO-222 Import GIF image'), async () => {
-    await mainPage.isCreatedLayerVisible();
-  });
+  mainTest(
+    qase([437], 'Import GIF image from toolbar and from shortcut (Shift+K)'),
+    async () => {
+      await mainPage.isCreatedLayerVisible();
+    },
+  );
 
-  mainTest(qase(457, 'CO-242-2 Delete image via shortcut Del'), async () => {
+  mainTest(qase([2542], 'Delete image (From Keyboard)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
@@ -360,7 +372,7 @@ mainTest.describe(() => {
 
 mainTest(
   qase(
-    2286,
+    [2286],
     'Import rotated Exif JPEG images from toolbar and from shortcut (Shift+K)',
   ),
   async () => {
