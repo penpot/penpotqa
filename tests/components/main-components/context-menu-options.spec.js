@@ -51,9 +51,6 @@ mainTest.describe(() => {
   });
 
   mainTest(qase([1452], 'Show in assets panel option from Design tab'), async () => {
-    const mainPage = new MainPage(page);
-    const designPanelPage = new DesignPanelPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
     await designPanelPage.clickOnComponentMenuButton();
     await designPanelPage.clickOnShowInAssetsPanel();
     await mainPage.waitForChangeIsSaved();
@@ -63,8 +60,6 @@ mainTest.describe(() => {
   mainTest(
     qase([1536], 'Show in assets panel option from component context menu (RMB)'),
     async () => {
-      const mainPage = new MainPage(page);
-      const assetsPanelPage = new AssetsPanelPage(page);
       await mainPage.showInAssetsPanelRightClick();
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();

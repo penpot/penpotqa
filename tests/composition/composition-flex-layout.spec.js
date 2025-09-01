@@ -40,17 +40,14 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
-    qase([607], 'FL-1 Add flex layout to board from right click'),
-    async () => {
-      await mainPage.addFlexLayoutViaRightClick();
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
-      await designPanelPage.isLayoutRemoveButtonExists();
-      await expect(mainPage.createdLayer).toHaveScreenshot('board-with-layout.png');
-    },
-  );
+  mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
+    await mainPage.addFlexLayoutViaRightClick();
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
+    await designPanelPage.isLayoutRemoveButtonExists();
+    await expect(mainPage.createdLayer).toHaveScreenshot('board-with-layout.png');
+  });
 
   mainTest(
     qase([608], 'Add flex layout to board from shortcut (SHIFT+A)'),
