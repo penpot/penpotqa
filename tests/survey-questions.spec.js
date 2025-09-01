@@ -11,8 +11,8 @@ let loginPage, registerPage, dashboardPage;
 
 test.describe(() => {
   let randomName, email, invite;
-  test.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 30000);
+  test.beforeEach(async ({ page }) => {
+    await test.slow();
     randomName = random().concat('autotest');
     email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
     loginPage = new LoginPage(page);
@@ -127,6 +127,7 @@ test.describe(() => {
     },
   );
 });
+
 test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);
 });

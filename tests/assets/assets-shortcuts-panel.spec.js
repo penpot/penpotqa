@@ -1,18 +1,19 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
 
-test.beforeEach(async ({ page, browserName }) => {
-  const teamPage = new TeamPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const mainPage = new MainPage(page);
+let teamPage, dashboardPage, mainPage;
+
+mainTest.beforeEach(async ({ page, browserName }) => {
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -22,15 +23,12 @@ test.beforeEach(async ({ page, browserName }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
-mainTest(qase([1020], 'Open panel main menu - help&info'), async ({ page }) => {
+mainTest(qase([1020], 'Open panel main menu - help&info'), async () => {
   const mainPage = new MainPage(page);
   await mainPage.clickMainMenuButton();
   await mainPage.clickHelpInfoMainMenuItem();
@@ -44,7 +42,7 @@ mainTest(qase([1020], 'Open panel main menu - help&info'), async ({ page }) => {
   await mainPage.isShortcutsPanelNotDisplayed();
 });
 
-mainTest(qase([1025], 'Show/hide panel'), async ({ page }) => {
+mainTest(qase([1025], 'Show/hide panel'), async () => {
   const mainPage = new MainPage(page);
   await mainPage.pressShortcutsPanelShortcut();
   await mainPage.isShortcutsPanelDisplayed();

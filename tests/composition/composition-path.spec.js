@@ -1,13 +1,12 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
@@ -32,10 +31,9 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest(qase([487], 'Create Path (Toolbar) - closed'), async () => {
@@ -67,8 +65,8 @@ mainTest(qase([1755], 'Add a cap for path'), async () => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 15000);
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.createDefaultClosedPath();
   });
 
@@ -262,8 +260,8 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 15000);
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.createDefaultOpenPath();
   });
 

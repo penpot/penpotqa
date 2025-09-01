@@ -1,4 +1,4 @@
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
@@ -6,14 +6,13 @@ const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { random } = require('../../helpers/string-generator');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
 
 let teamPage, mainPage, dashboardPage, layersPanelPage, designPanelPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   designPanelPage = new DesignPanelPage(page);
@@ -25,19 +24,14 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
-    if (browserName === 'webkit') {
-      await testInfo.setTimeout(testInfo.timeout + 20000);
-    } else {
-      await testInfo.setTimeout(testInfo.timeout + 15000);
-    }
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
@@ -46,14 +40,17 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase([607], 'Add flex layout to board from rightclick'), async () => {
-    await mainPage.addFlexLayoutViaRightClick();
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
-    await designPanelPage.isLayoutRemoveButtonExists();
-    await expect(mainPage.createdLayer).toHaveScreenshot('board-with-layout.png');
-  });
+  mainTest(
+    qase([607], 'FL-1 Add flex layout to board from right click'),
+    async () => {
+      await mainPage.addFlexLayoutViaRightClick();
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
+      await designPanelPage.isLayoutRemoveButtonExists();
+      await expect(mainPage.createdLayer).toHaveScreenshot('board-with-layout.png');
+    },
+  );
 
   mainTest(
     qase([608], 'Add flex layout to board from shortcut (SHIFT+A)'),
@@ -324,12 +321,8 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
-    if (browserName === 'webkit') {
-      await testInfo.setTimeout(testInfo.timeout + 20000);
-    } else {
-      await testInfo.setTimeout(testInfo.timeout + 15000);
-    }
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('500', '500');
     await mainPage.createDefaultEllipseByCoordinates(200, 300);

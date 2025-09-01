@@ -1,19 +1,18 @@
 const { mainTest } = require('../../../fixtures');
 const { MainPage } = require('../../../pages/workspace/main-page');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { DashboardPage } = require('../../../pages/dashboard/dashboard-page');
 const { TeamPage } = require('../../../pages/dashboard/team-page');
 const { random } = require('../../../helpers/string-generator');
 const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
-const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
 
 let dashboardPage, mainPage, assetsPanelPage, layersPanelPage, designPanelPage;
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   const teamPage = new TeamPage(page);
   mainPage = new MainPage(page);
@@ -25,11 +24,10 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest(qase([1496], 'Undo deleted component'), async ({ browserName }) => {

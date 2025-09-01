@@ -1,6 +1,6 @@
 const { mainTest } = require('../../../fixtures');
 const { MainPage } = require('../../../pages/workspace/main-page');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { DashboardPage } = require('../../../pages/dashboard/dashboard-page');
 const { TeamPage } = require('../../../pages/dashboard/team-page');
 const { random } = require('../../../helpers/string-generator');
@@ -10,7 +10,6 @@ const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page'
 const { InspectPanelPage } = require('../../../pages/workspace/inspect-panel-page');
 const { BasePage } = require('../../../pages/base-page');
 const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
-const { updateTestResults } = require('./../../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
@@ -24,7 +23,7 @@ let mainPage,
   designPanelPage,
   colorPalettePage,
   assetsPanelPage;
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   teamPage = new TeamPage(page);
   mainPage = new MainPage(page);
@@ -38,39 +37,32 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 10000);
-    const mainPage = new MainPage(page);
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.createDefaultRectangleByCoordinates(400, 500);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
-    qase([1452], 'Show in assets panel option from Design tab'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      const assetsPanelPage = new AssetsPanelPage(page);
-      await designPanelPage.clickOnComponentMenuButton();
-      await designPanelPage.clickOnShowInAssetsPanel();
-      await mainPage.waitForChangeIsSaved();
-      await assetsPanelPage.isComponentHighlightedInAssetsTab();
-    },
-  );
+  mainTest(qase([1452], 'Show in assets panel option from Design tab'), async () => {
+    const mainPage = new MainPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
+    await designPanelPage.clickOnComponentMenuButton();
+    await designPanelPage.clickOnShowInAssetsPanel();
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.isComponentHighlightedInAssetsTab();
+  });
 
   mainTest(
     qase([1536], 'Show in assets panel option from component context menu (RMB)'),
-    async ({ page }) => {
+    async () => {
       const mainPage = new MainPage(page);
       const assetsPanelPage = new AssetsPanelPage(page);
       await mainPage.showInAssetsPanelRightClick();
@@ -80,10 +72,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1419], 'Create annotation with valid text'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
-    const designPanelPage = new DesignPanelPage(page);
+  mainTest(qase([1419], 'Create annotation with valid text'), async () => {
     await layersPanelPage.clickMainComponentOnLayersTab();
     await designPanelPage.clickOnComponentMenuButton();
     await designPanelPage.clickOnCreateAnnotationOption();
@@ -95,31 +84,23 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([1423], 'Create annotation from context menu'), async ({ page }) => {
-    const designPanelPage = new DesignPanelPage(page);
+  mainTest(qase([1423], 'Create annotation from context menu'), async () => {
     await designPanelPage.createAnnotationRightClick();
     await designPanelPage.addAnnotationForComponent(annotation);
     await designPanelPage.waitForChangeIsSaved();
     await designPanelPage.isAnnotationAddedToComponent(annotation);
   });
 
-  mainTest(
-    qase([1424], 'Cancel annotation creation and accept'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const layersPanelPage = new LayersPanelPage(page);
-      const designPanelPage = new DesignPanelPage(page);
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.clickOnComponentMenuButton();
-      await designPanelPage.clickOnCreateAnnotationOption();
-      await designPanelPage.cancelAddAnnotationForComponent(annotation);
-      await designPanelPage.isAnnotationNotAddedToComponent();
-    },
-  );
+  mainTest(qase([1424], 'Cancel annotation creation and accept'), async () => {
+    await layersPanelPage.clickMainComponentOnLayersTab();
+    await designPanelPage.clickOnComponentMenuButton();
+    await designPanelPage.clickOnCreateAnnotationOption();
+    await designPanelPage.cancelAddAnnotationForComponent(annotation);
+    await designPanelPage.isAnnotationNotAddedToComponent();
+  });
 
-  mainTest(qase([1425], 'Edit annotation with valid text'), async ({ page }) => {
+  mainTest(qase([1425], 'Edit annotation with valid text'), async () => {
     const newAnnotation = 'Edit annotation';
-    const designPanelPage = new DesignPanelPage(page);
     await designPanelPage.createAnnotationRightClick();
     await designPanelPage.addAnnotationForComponent(annotation);
     await designPanelPage.waitForChangeIsSaved();
@@ -130,8 +111,7 @@ mainTest.describe(() => {
     await designPanelPage.isAnnotationAddedToComponent(newAnnotation);
   });
 
-  mainTest(qase([1427], 'Delete annotation'), async ({ page }) => {
-    const designPanelPage = new DesignPanelPage(page);
+  mainTest(qase([1427], 'Delete annotation'), async () => {
     await designPanelPage.createAnnotationRightClick();
     await designPanelPage.addAnnotationForComponent(annotation);
     await designPanelPage.waitForChangeIsSaved();
@@ -143,7 +123,6 @@ mainTest.describe(() => {
   });
 
   mainTest(qase([1618], 'Annotation on Inspect tab'), async ({ page }) => {
-    const designPanelPage = new DesignPanelPage(page);
     const inspectPanelPage = new InspectPanelPage(page);
     await designPanelPage.createAnnotationRightClick();
     await designPanelPage.addAnnotationForComponent(annotation);
@@ -153,10 +132,7 @@ mainTest.describe(() => {
     await inspectPanelPage.isAnnotationTextExistOnInspectTab(annotation);
   });
 
-  mainTest(qase([1454], 'Duplicate main component'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
+  mainTest(qase([1454], 'Duplicate main component'), async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.duplicateFileLibraryComponent();
@@ -171,9 +147,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([1455], 'Check Show main component option'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
+  mainTest(qase([1455], 'Check Show main component option'), async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.showFileLibraryMainComponent();
@@ -185,9 +159,6 @@ mainTest.describe(() => {
   mainTest(
     qase([1428], 'Check annotation applies for copies and inspect tab'),
     async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const layersPanelPage = new LayersPanelPage(page);
-      const designPanelPage = new DesignPanelPage(page);
       const inspectPanelPage = new InspectPanelPage(page);
       await mainPage.duplicateLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -205,9 +176,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1285], 'Components - rename group'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
+  mainTest(qase([1285], 'Components - rename group'), async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.createGroupFileLibraryAssets('Components', 'Test Group');
@@ -217,9 +186,7 @@ mainTest.describe(() => {
     await assetsPanelPage.isFileLibraryGroupCreated('New Group');
   });
 
-  mainTest(qase([1286], 'Components - ungroup'), async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
+  mainTest(qase([1286], 'Components - ungroup'), async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.createGroupFileLibraryAssets('Components', 'Test Group');
@@ -230,56 +197,48 @@ mainTest.describe(() => {
     await assetsPanelPage.isComponentWithNameAddedToFileLibrary('Rectangle');
   });
 
-  mainTest(
-    qase([1676], 'Components - change view (list/tile)'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const assetsPanelPage = new AssetsPanelPage(page);
-      await mainPage.createDefaultEllipseByCoordinates(100, 200, true);
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.uploadImage('images/sample.jpeg');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-      await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'component-grid-view.png',
-        {
-          mask: [assetsPanelPage.librariesOpenModalButton],
-          maxDiffPixelRatio: 0.01,
-        },
-      );
-      await assetsPanelPage.clickFileLibraryListViewButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'component-list-view.png',
-        {
-          mask: [assetsPanelPage.librariesOpenModalButton],
-          maxDiffPixelRatio: 0.01,
-        },
-      );
-      await assetsPanelPage.clickFileLibraryGridViewButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-        'component-grid-view.png',
-        {
-          mask: [assetsPanelPage.librariesOpenModalButton],
-          maxDiffPixelRatio: 0.01,
-        },
-      );
-    },
-  );
+  mainTest(qase([1676], 'Components - change view (list/tile)'), async () => {
+    await mainPage.createDefaultEllipseByCoordinates(100, 200, true);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.uploadImage('images/sample.jpeg');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+      'component-grid-view.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+        maxDiffPixelRatio: 0.01,
+      },
+    );
+    await assetsPanelPage.clickFileLibraryListViewButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+      'component-list-view.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+        maxDiffPixelRatio: 0.01,
+      },
+    );
+    await assetsPanelPage.clickFileLibraryGridViewButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+      'component-grid-view.png',
+      {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+        maxDiffPixelRatio: 0.01,
+      },
+    );
+  });
 
   mainTest(
     qase([1399], 'Impossible to create annotation for copy component'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      const layersPanelPage = new LayersPanelPage(page);
-      const designPanelPage = new DesignPanelPage(page);
+    async () => {
       await mainPage.duplicateLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickCopyComponentOnLayersTab();
@@ -299,10 +258,7 @@ mainTest.describe(() => {
 
 mainTest(
   qase([1274], 'Check created component (group of shapes) on Assets tab'),
-  async ({ page }) => {
-    const mainPage = new MainPage(page);
-    const layersPanelPage = new LayersPanelPage(page);
-    const assetsPanelPage = new AssetsPanelPage(page);
+  async () => {
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createDefaultEllipseByCoordinates(400, 600);
     await mainPage.clickMainMenuButton();
@@ -374,8 +330,8 @@ mainTest(qase([966], 'Filter Components from All Assets drop-down'), async () =>
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 15000);
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -528,8 +484,8 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 15000);
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.createDefaultEllipseByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();

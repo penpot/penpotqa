@@ -1,14 +1,13 @@
+const { registerTest } = require('../fixtures');
 const { test } = require('@playwright/test');
 const { LoginPage } = require('../pages/login-page');
 const { ForgotPasswordPage } = require('../pages/forgot-password-page');
-const { updateTestResults } = require('./../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { random } = require('../helpers/string-generator');
 const { RegisterPage } = require('../pages/register-page');
 const {
   getRegisterMessage,
   checkRecoveryText,
-  waitMessage,
   waitSecondMessage,
 } = require('../helpers/gmail');
 const { DashboardPage } = require('../pages/dashboard/dashboard-page');
@@ -37,13 +36,11 @@ test(
   },
 );
 
-test.describe(() => {
-  let randomName, email, invite, newPwd;
+registerTest.describe(() => {
+  let newPwd;
   let loginPage, registerPage, forgotPasswordPage, profilePage, dashboardPage;
-  test.beforeEach(async ({ page }) => {
-    await test.slow();
-    randomName = random().concat('autotest');
-    email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
+  registerTest.beforeEach(async ({ page, name, email }) => {
+    await registerTest.slow();
     newPwd = 'TestForgotPassword123';
     loginPage = new LoginPage(page);
     registerPage = new RegisterPage(page);
@@ -52,15 +49,6 @@ test.describe(() => {
     forgotPasswordPage = new ForgotPasswordPage(page);
     await page.context().clearCookies();
 
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.clickOnCreateAccount();
-    await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
-    await registerPage.isRegisterEmailCorrect(email);
-    invite = await waitMessage(page, email, 40);
-    await page.goto(invite.inviteUrl);
-    await dashboardPage.fillOnboardingQuestions();
-
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
     await loginPage.clickOnForgotPassword();
@@ -68,7 +56,7 @@ test.describe(() => {
     await forgotPasswordPage.clickRecoverPasswordButton();
     await waitSecondMessage(page, email, 60);
     const forgotPass = await getRegisterMessage(email);
-    await checkRecoveryText(forgotPass.inviteText, randomName);
+    await checkRecoveryText(forgotPass.inviteText, name);
     await page.goto(forgotPass.inviteUrl);
     await forgotPasswordPage.enterNewPwd(newPwd);
     await forgotPasswordPage.enterConfirmPwd(newPwd);
@@ -76,21 +64,17 @@ test.describe(() => {
     await loginPage.isLoginPageOpened();
   });
 
-  test(qase(49, 'ON-22 Forgot password flow'), async () => {
+  registerTest(qase(49, 'ON-22 Forgot password flow'), async ({ email }) => {
     await loginPage.enterEmail(email);
     await loginPage.enterPwd(newPwd);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
   });
 
-  test(qase(52, 'ON-25 Login with old password'), async () => {
+  registerTest(qase(52, 'ON-25 Login with old password'), async ({ email }) => {
     await loginPage.enterEmail(email);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await loginPage.isLoginErrorMessageDisplayed('Email or password is incorrect.');
   });
-});
-
-test.afterEach(async ({ page }, testInfo) => {
-  await updateTestResults(testInfo.status, testInfo.retry);
 });

@@ -1,10 +1,8 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
-const { expect, test } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { TokensPanelPage } = require('../../pages/workspace/tokens-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
@@ -13,7 +11,7 @@ let mainPage, teamPage, dashboardPage, tokensPage, designPanelPage;
 
 const teamName = random().concat('autotest');
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -26,10 +24,9 @@ test.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest(qase(2102, 'Create a set via "create one" link'), async () => {

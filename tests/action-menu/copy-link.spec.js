@@ -1,10 +1,9 @@
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { ProfilePage } = require('../../pages/profile-page');
 const { LoginPage } = require('../../pages/login-page');
@@ -21,7 +20,7 @@ let teamPage,
   profilePage,
   loginPage,
   registerPage;
-mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
+mainTest.beforeEach(async ({ page, browserName }) => {
   mainPage = new MainPage(page);
   teamPage = new TeamPage(page);
   profilePage = new ProfilePage(page);
@@ -40,9 +39,8 @@ mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {

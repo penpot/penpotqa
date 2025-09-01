@@ -1,10 +1,8 @@
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
-const { test } = require('@playwright/test');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { HistoryPanelPage } = require('../../pages/workspace/history-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
@@ -24,7 +22,7 @@ let teamPage,
   loginPage,
   registerPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -36,10 +34,9 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest(qase(874, 'Check if the status at header is "Saved"'), async () => {
@@ -210,7 +207,7 @@ mainTest.describe(() => {
     ),
     async ({ page }) => {
       const versionName = 'test version';
-      await test.slow();
+      await mainTest.slow();
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
 

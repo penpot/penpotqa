@@ -1,5 +1,5 @@
 const { mainTest } = require('../../fixtures');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { random } = require('../../helpers/string-generator');
@@ -7,7 +7,6 @@ const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
 const { qase } = require('playwright-qase-reporter/playwright');
 
@@ -21,7 +20,7 @@ let mainPage,
   layersPanelPage,
   inspectPanelPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
@@ -35,15 +34,14 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 20000);
+  mainTest.beforeEach(async ({ browserName }) => {
+    await mainTest.slow();
     browserName === 'webkit' ? await mainPage.waitForViewportVisible() : null;
     await mainPage.createDefaultTextLayer(browserName);
   });
