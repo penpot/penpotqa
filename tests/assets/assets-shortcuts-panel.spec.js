@@ -29,7 +29,6 @@ mainTest.afterEach(async () => {
 });
 
 mainTest(qase([1020], 'Open panel main menu - help&info'), async () => {
-  const mainPage = new MainPage(page);
   await mainPage.clickMainMenuButton();
   await mainPage.clickHelpInfoMainMenuItem();
   await mainPage.clickShortcutsMainMenuSubItem();
@@ -43,7 +42,6 @@ mainTest(qase([1020], 'Open panel main menu - help&info'), async () => {
 });
 
 mainTest(qase([1025], 'Show/hide panel'), async () => {
-  const mainPage = new MainPage(page);
   await mainPage.pressShortcutsPanelShortcut();
   await mainPage.isShortcutsPanelDisplayed();
   await mainPage.clickViewportTwice();
