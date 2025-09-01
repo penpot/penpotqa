@@ -43,15 +43,18 @@ mainTest.describe(() => {
     await mainPage.uploadImage('images/images.png');
   });
 
-  mainTest(qase(436, 'CO-221 Import PNG image'), async () => {
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('image-png.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  });
+  mainTest(
+    qase([436], 'Import PNG image from toolbar and from shortcut (Shift+K)'),
+    async () => {
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isCreatedLayerVisible();
+      await expect(mainPage.viewport).toHaveScreenshot('image-png.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
+    },
+  );
 
-  mainTest(qase(440, 'CO-225 Rename image with valid name'), async () => {
+  mainTest(qase([440], 'Rename image with valid name'), async () => {
     await layersPanelPage.doubleClickLayerOnLayersTab('images');
     await layersPanelPage.typeNameCreatedLayerAndEnter('renamed image');
     await mainPage.waitForChangeIsSaved();
@@ -59,7 +62,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(442, 'CO-227 Add, hide, unhide, change type and delete Shadow to image'),
+    qase([442], 'Add, hide, unhide, change type and delete Shadow to image'),
     async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
@@ -109,7 +112,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(443, 'CO-228 Add and edit Shadow to image'), async () => {
+  mainTest(qase([443], 'Add and edit Shadow to image'), async () => {
     await designPanelPage.clickAddShadowButton();
     await designPanelPage.clickShadowActionsButton();
     await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
@@ -131,21 +134,24 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(459, 'CO-244 Change border radius multiple values'), async () => {
-    await designPanelPage.clickIndividualCornersRadiusButton();
-    await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-changed-corners.png',
-    );
-    await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('image-png.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  });
+  mainTest(
+    qase([459], 'Change border radius multiple values (Design page in the right)'),
+    async () => {
+      await designPanelPage.clickIndividualCornersRadiusButton();
+      await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'image-changed-corners.png',
+      );
+      await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('image-png.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
+    },
+  );
 
-  mainTest(qase(482, 'CO-267 Selection to board'), async () => {
+  mainTest(qase([482], 'Selection to board'), async () => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.selectionToBoardViaRightClick();
@@ -164,37 +170,34 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
-    qase(444, 'CO-229 Add, hide, unhide and delete Blur to image'),
-    async () => {
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('image-blur-default.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.hideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('image-blur-hide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.unhideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('image-blur-unhide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.removeBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('image-blur-remove.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    },
-  );
+  mainTest(qase([444], 'Add, hide, unhide and delete Blur to image'), async () => {
+    await designPanelPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-default.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-hide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-unhide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('image-blur-remove.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+  });
 
-  mainTest(qase(446, 'CO-231 Add, edit and delete Stroke to image'), async () => {
+  mainTest(qase([446], 'Add, edit and delete Stroke to image'), async () => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
@@ -269,29 +272,32 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(457, 'CO-242-1 Delete image via rightclick'), async () => {
+  mainTest(qase([457], 'Delete image (From right click)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible(false);
   });
 
-  mainTest(qase(460, 'CO-245 Change border radius one value'), async () => {
-    await designPanelPage.changeGeneralCornerRadiusForLayer('30');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-30.png');
-    await designPanelPage.changeGeneralCornerRadiusForLayer('90');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-90.png');
-    await designPanelPage.changeGeneralCornerRadiusForLayer('180');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-180.png');
-    await designPanelPage.changeGeneralCornerRadiusForLayer('0');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-0.png');
-  });
+  mainTest(
+    qase([460], 'Change border radius one value (Design page in the right)'),
+    async () => {
+      await designPanelPage.changeGeneralCornerRadiusForLayer('30');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-30.png');
+      await designPanelPage.changeGeneralCornerRadiusForLayer('90');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-90.png');
+      await designPanelPage.changeGeneralCornerRadiusForLayer('180');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-180.png');
+      await designPanelPage.changeGeneralCornerRadiusForLayer('0');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot('image-corners-0.png');
+    },
+  );
 
-  mainTest(qase(1270, 'CO-412 Add rotation to image'), async () => {
+  mainTest(qase([1270], 'Change rotation (Design page in the right)'), async () => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
@@ -310,28 +316,34 @@ mainTest.describe(() => {
     await expect(mainPage.createdLayer).toHaveScreenshot('image-rotated-359.png');
   });
 
-  mainTest(qase(474, 'CO-259 Flip Vertical and Flip Horizontal image'), async () => {
-    await mainPage.flipVerticalViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-flipped-vertical.png',
-    );
-    await mainPage.flipHorizontalViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-flipped-vertical-horizontal.png',
-    );
-    await mainPage.flipVerticalViaShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-flipped-horizontal.png',
-    );
-    await mainPage.flipHorizontalViaShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-non-flipped-jpeg.png',
-    );
-  });
+  mainTest(
+    qase(
+      [474],
+      'Flip Vertical and Flip Horizontal image (From right click and Shortcut Shift +V Shift + H)',
+    ),
+    async () => {
+      await mainPage.flipVerticalViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'image-flipped-vertical.png',
+      );
+      await mainPage.flipHorizontalViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'image-flipped-vertical-horizontal.png',
+      );
+      await mainPage.flipVerticalViaShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'image-flipped-horizontal.png',
+      );
+      await mainPage.flipHorizontalViaShortcut();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'image-non-flipped-jpeg.png',
+      );
+    },
+  );
 });
 
 mainTest.describe(() => {
@@ -341,11 +353,14 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(437, 'CO-222 Import GIF image'), async () => {
-    await mainPage.isCreatedLayerVisible();
-  });
+  mainTest(
+    qase([437], 'Import GIF image from toolbar and from shortcut (Shift+K)'),
+    async () => {
+      await mainPage.isCreatedLayerVisible();
+    },
+  );
 
-  mainTest(qase(457, 'CO-242-2 Delete image via shortcut Del'), async () => {
+  mainTest(qase([2542], 'Delete image (From Keyboard)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
@@ -355,7 +370,7 @@ mainTest.describe(() => {
 
 mainTest(
   qase(
-    2286,
+    [2286],
     'Import rotated Exif JPEG images from toolbar and from shortcut (Shift+K)',
   ),
   async () => {

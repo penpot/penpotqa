@@ -28,7 +28,7 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase(1295, 'Undo deleted component'), async ({ browserName }) => {
+mainTest(qase([1295], 'Undo deleted component'), async ({ browserName }) => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -38,7 +38,7 @@ mainTest(qase(1295, 'Undo deleted component'), async ({ browserName }) => {
   await mainPage.isCreatedLayerVisible(true);
 });
 
-mainTest(qase(1456, 'Delete component Assets tab'), async () => {
+mainTest(qase([1456], 'Delete component Assets tab'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -53,7 +53,7 @@ mainTest(qase(1456, 'Delete component Assets tab'), async () => {
   );
 });
 
-mainTest(qase(1345, 'Restore main component from context menu'), async () => {
+mainTest(qase([1345], 'Restore main component from context menu'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();

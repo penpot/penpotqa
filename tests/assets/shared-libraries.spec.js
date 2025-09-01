@@ -42,10 +42,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(
-      1457,
-      'PENPOT-1457 Publish Shared Library from the Libraries popup (with assets)',
-    ),
+    qase([1457], 'Publish Shared Library from the Libraries popup (with assets)'),
     async () => {
       await mainPage.createDefaultRectangleByCoordinates(200, 200);
       await mainPage.waitForChangeIsSaved();
@@ -70,18 +67,15 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(1459, 'PENPOT-1459 Publish Shared Library without any assets'),
-    async () => {
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.clickLibrariesButton();
-      await assetsPanelPage.isSharedLibraryButtonVisible();
-      await assetsPanelPage.clickSharedLibraryButton();
-      await assetsPanelPage.isSharedLibraryButtonVisible();
-      await assetsPanelPage.clickSharedLibraryButton();
-      await assetsPanelPage.isSharedLibraryBadgeVisible();
-    },
-  );
+  mainTest(qase([1459], 'Publish Shared Library without any assets'), async () => {
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.clickLibrariesButton();
+    await assetsPanelPage.isSharedLibraryButtonVisible();
+    await assetsPanelPage.clickSharedLibraryButton();
+    await assetsPanelPage.isSharedLibraryButtonVisible();
+    await assetsPanelPage.clickSharedLibraryButton();
+    await assetsPanelPage.isSharedLibraryBadgeVisible();
+  });
 
   mainTest.afterEach(async () => {
     await mainPage.clickMainMenuButton();
@@ -94,7 +88,7 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest(qase(1460, 'PENPOT-1460 Canceling publish Shared Library'), async () => {
+  mainTest(qase([1460], 'Canceling publish Shared Library'), async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickLibrariesButton();
     await assetsPanelPage.isSharedLibraryButtonVisible();
@@ -111,10 +105,7 @@ mainTest.describe(() => {
 });
 
 mainTest(
-  qase(
-    1458,
-    'PENPOT-1458 Publish Shared Library from the dashboard (RMB) (with assets)',
-  ),
+  qase([1458], 'Publish Shared Library from the dashboard (RMB) (with assets)'),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.waitForChangeIsSaved();
@@ -135,8 +126,8 @@ mainTest(
 
 mainTest(
   qase(
-    1466,
-    'PENPOT-1466 Unpublish Shared Library  which is not linked with any files (from dashboard)',
+    [1466],
+    'Unpublish Shared Library  which is not linked with any files (from dashboard)',
   ),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
@@ -159,8 +150,8 @@ mainTest(
 mainTest.describe(() => {
   mainTest(
     qase(
-      1467,
-      'PENPOT-1467 Unpublish Shared Library  which is not linked with any files (from Libraries popup)',
+      [1467],
+      'Unpublish Shared Library  which is not linked with any files (from Libraries popup)',
     ),
     async () => {
       await mainPage.createDefaultRectangleByCoordinates(200, 200);
@@ -214,8 +205,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1468,
-      'PENPOT-1468 Unpublish Shared Library which is linked with a few files (but both files do not used any assets yet)',
+      [1468],
+      'Unpublish Shared Library which is linked with a few files (but both files do not used any assets yet)',
     ),
     async () => {
       await dashboardPage.createFileViaTitlePanel();
@@ -260,8 +251,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1469,
-      'PENPOT-1469 Unpublish Shared Library which is linked with a few files (both files use assets )',
+      [1469],
+      'Unpublish Shared Library which is linked with a few files (both files use assets )',
     ),
     async () => {
       await dashboardPage.createFileViaTitlePanel();
@@ -341,8 +332,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1474,
-      'PENPOT-1474 Unlink Shared Library file from Libraries popup when assets are not used in working file',
+      [1474],
+      'Unlink Shared Library file from Libraries popup when assets are not used in working file',
     ),
     async () => {
       await dashboardPage.createFileViaTitlePanel();
@@ -427,7 +418,10 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    'PENPOT-1359 Dismiss updates from shared library file (click "Dismiss" button)',
+    qase(
+      [1359],
+      'Dismiss updates from shared library file (click "Dismiss" button)',
+    ),
     async () => {
       await dashboardPage.openFileWithName('New File 2');
       await mainPage.isWrapperMessageVisible();
@@ -447,7 +441,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    'PENPOT-1360 Check updates info (click "More info" link in pop-up message)',
+    qase([1360], 'Check updates info (click "More info" link in pop-up message)'),
     async () => {
       await dashboardPage.openFileWithName('New File 2');
       await mainPage.isWrapperMessageVisible();
@@ -465,7 +459,10 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    'PENPOT-1365 Apply updates from Libraries → Updates (after dismissing at the beginning)',
+    qase(
+      [1365],
+      'Apply updates from Libraries → Updates (after dismissing at the beginning)',
+    ),
     async () => {
       await dashboardPage.openFileWithName('New File 2');
       await mainPage.isWrapperMessageVisible();
@@ -497,7 +494,10 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    'PENPOT-1362 Closing Updates pop-up on "More info" stage (changes are not applied)',
+    qase(
+      [1362],
+      'Closing Updates pop-up on "More info" stage (changes are not applied)',
+    ),
     async () => {
       await dashboardPage.openFileWithName('New File 2');
       await mainPage.isWrapperMessageVisible();
@@ -584,8 +584,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      1092,
-      'PENPOT-1092 Delete library which is used by a few files ( 1 library in a few files)',
+      [1092],
+      'Delete library which is used by a few files ( 1 library in a few files)',
     ),
     async () => {
       await dashboardPage.deleteFileWithNameViaRightClick('New File 1');
@@ -624,8 +624,8 @@ mainTest.describe(() => {
 
 mainTest(
   qase(
-    1471,
-    'PENPOT-1471 Remove Shared Library file which is not linked with any files (from dashboard)',
+    [1471],
+    'Remove Shared Library file which is not linked with any files (from dashboard)',
   ),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
@@ -648,7 +648,7 @@ mainTest.describe(() => {
   const team1 = teamName;
   const team2 = random().concat('QA Test team 2');
 
-  mainTest(qase(1540, 'PENPOT-1540 Move library to a different team'), async () => {
+  mainTest(qase([1540], 'Move library to a different team'), async () => {
     await mainPage.createDefaultEllipseByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -712,26 +712,23 @@ mainTest.describe(() => {
     await assetsPanelPage.clickLibrariesButton();
   });
 
-  mainTest(
-    qase(1004, 'PENPOT-1004 Search shared library (LIBRARIES pop-up)'),
-    async () => {
-      await assetsPanelPage.searchSharedLibraries('Whiteboarding & mapping kit');
-      await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
-        'libraries-window-search.png',
-      );
-      await assetsPanelPage.clearSearchSharedLibraries();
-      await assetsPanelPage.searchSharedLibraries('Circ');
-      await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
-        'libraries-window-part-search.png',
-      );
-      await assetsPanelPage.clearSearchSharedLibraries();
-      await assetsPanelPage.searchSharedLibraries('qwer');
-      await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
-        'libraries-window-invalid-search.png',
-      );
-      await assetsPanelPage.clearSearchSharedLibraries();
-    },
-  );
+  mainTest(qase([1004], 'Search shared library (LIBRARIES pop-up)'), async () => {
+    await assetsPanelPage.searchSharedLibraries('Whiteboarding & mapping kit');
+    await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
+      'libraries-window-search.png',
+    );
+    await assetsPanelPage.clearSearchSharedLibraries();
+    await assetsPanelPage.searchSharedLibraries('Circ');
+    await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
+      'libraries-window-part-search.png',
+    );
+    await assetsPanelPage.clearSearchSharedLibraries();
+    await assetsPanelPage.searchSharedLibraries('qwer');
+    await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
+      'libraries-window-invalid-search.png',
+    );
+    await assetsPanelPage.clearSearchSharedLibraries();
+  });
 
   mainTest.afterEach(async () => {
     await assetsPanelPage.clickCloseModalButton();
