@@ -1,4 +1,4 @@
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
@@ -6,7 +6,6 @@ const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
@@ -23,7 +22,7 @@ let teamPage,
   assetsPanelPage,
   colorPalettePage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -38,12 +37,11 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async ({ page }) => {
   const teamPage = new TeamPage(page);
   const mainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
@@ -106,12 +104,8 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
-    if (browserName === 'webkit') {
-      await testInfo.setTimeout(testInfo.timeout + 20000);
-    } else {
-      await testInfo.setTimeout(testInfo.timeout + 15000);
-    }
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('500', '600');
     await mainPage.waitForChangeIsSaved();
@@ -292,12 +286,8 @@ mainTest(
 );
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
-    if (browserName === 'webkit') {
-      await testInfo.setTimeout(testInfo.timeout + 20000);
-    } else {
-      await testInfo.setTimeout(testInfo.timeout + 15000);
-    }
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(400, 300);
     await designPanelPage.changeHeightAndWidthForLayer('500', '600');
     await mainPage.waitForChangeIsSaved();
@@ -575,12 +565,8 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
-    if (browserName === 'webkit') {
-      await testInfo.setTimeout(testInfo.timeout + 20000);
-    } else {
-      await testInfo.setTimeout(testInfo.timeout + 15000);
-    }
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(400, 400);
     await designPanelPage.changeHeightAndWidthForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();

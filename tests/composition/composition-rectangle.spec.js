@@ -1,7 +1,6 @@
 const { mainTest } = require('../../fixtures');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
@@ -19,7 +18,7 @@ let mainPage,
   designPanelPage,
   layersPanelPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   mainPage = new MainPage(page);
   dashboardPage = new DashboardPage(page);
@@ -32,15 +31,14 @@ test.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }, testInfo) => {
-    await testInfo.setTimeout(testInfo.timeout + 20000);
+  mainTest.beforeEach(async () => {
+    await mainTest.slow();
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();

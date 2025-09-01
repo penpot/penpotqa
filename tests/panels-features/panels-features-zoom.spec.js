@@ -1,17 +1,16 @@
 const { mainTest } = require('../../fixtures');
-const { expect, test } = require('@playwright/test');
+const { expect } = require('@playwright/test');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { random } = require('../../helpers/string-generator');
-const { updateTestResults } = require('./../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
 
 let teamPage, dashboardPage, mainPage;
 
-test.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   mainPage = new MainPage(page);
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
@@ -22,10 +21,9 @@ test.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
 
 mainTest(qase(850, 'PF-132 Zoom via top right menu'), async ({ page }) => {
