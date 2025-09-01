@@ -28,7 +28,7 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase(1020, 'AS-110 Open panel main menu - help&info'), async () => {
+mainTest(qase([1020], 'Open panel main menu - help&info'), async () => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickHelpInfoMainMenuItem();
   await mainPage.clickShortcutsMainMenuSubItem();
@@ -41,7 +41,7 @@ mainTest(qase(1020, 'AS-110 Open panel main menu - help&info'), async () => {
   await mainPage.isShortcutsPanelNotDisplayed();
 });
 
-mainTest(qase(1025, 'AS-115 Show/hide panel'), async () => {
+mainTest(qase([1025], 'Show/hide panel'), async () => {
   await mainPage.pressShortcutsPanelShortcut();
   await mainPage.isShortcutsPanelDisplayed();
   await mainPage.clickViewportTwice();

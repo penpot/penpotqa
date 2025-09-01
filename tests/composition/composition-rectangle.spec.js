@@ -44,7 +44,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(274, 'CO-59 Create a rectangle from toolbar'), async () => {
+  mainTest(qase([274], 'Create Rectangle (Toolbar)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
@@ -52,7 +52,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(283, "CO-68 Click 'Focus off' rectangle from shortcut F"),
+    qase([283], 'Click "Focus off" rectangle from shortcut (F)'),
     async ({ page }) => {
       await mainPage.focusLayerViaRightClickOnCanvas();
       await mainPage.waitForChangeIsSaved();
@@ -84,7 +84,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(284, 'CO-69 Add, hide, unhide, change type and delete Shadow to rectangle'),
+    qase([284], 'Add, hide, unhide, change type and delete Shadow to rectangle'),
     async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
@@ -135,7 +135,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(287, 'CO-72 Add, hide, unhide and delete Blur to rectangle'),
+    qase([287], 'Add, hide, unhide and delete Blur to rectangle'),
     async () => {
       await designPanelPage.clickFillColorIcon();
       await colorPalettePage.setHex('#304d6a');
@@ -170,7 +170,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(289, 'CO-74 Add, edit and delete Stroke to rectangle'), async () => {
+  mainTest(qase([289], 'Add, edit and delete Stroke to rectangle'), async () => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
@@ -253,14 +253,14 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(295, 'CO-80 Rename rectangle with valid name'), async () => {
+  mainTest(qase([295], 'Rename rectangle with valid name'), async () => {
     await layersPanelPage.doubleClickLayerOnLayersTab('Rectangle');
     await layersPanelPage.typeNameCreatedLayerAndEnter('renamed rectangle');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerNameDisplayed('renamed rectangle');
   });
 
-  mainTest(qase(285, 'CO-70 Add and edit Shadow to rectangle'), async () => {
+  mainTest(qase([285], 'Add and edit Shadow to rectangle'), async () => {
     await designPanelPage.clickAddShadowButton();
     await designPanelPage.clickShadowActionsButton();
     await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
@@ -282,7 +282,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(288, 'CO-73 Add and edit Blur to rectangle'), async () => {
+  mainTest(qase([288], 'Add and edit Blur to rectangle'), async () => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
     await mainPage.waitForChangeIsSaved();
@@ -292,25 +292,22 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(291, 'CO-76-1 Delete rectangle via rightclick'), async () => {
+  mainTest(qase([291], 'Delete Rectangle (From right click)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible(false);
   });
 
-  mainTest(
-    qase(291, 'CO-76-2 Delete rectangle via shortcut Del'),
-    async ({ page }) => {
-      const mainPage = new MainPage(page);
-      await mainPage.isCreatedLayerVisible();
-      await mainPage.deleteLayerViaShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.isCreatedLayerVisible(false);
-    },
-  );
+  mainTest(qase([2544], 'Delete Rectangle (From Keyboard)'), async ({ page }) => {
+    const mainPage = new MainPage(page);
+    await mainPage.isCreatedLayerVisible();
+    await mainPage.deleteLayerViaShortcut();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.isCreatedLayerVisible(false);
+  });
 
-  mainTest(qase(277, 'CO-62 Add rotation to rectangle'), async () => {
+  mainTest(qase([277], 'Change rotation (Design page in the right)'), async () => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
@@ -333,28 +330,31 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(278, 'CO-63 Change border radius multiple values'), async () => {
-    await designPanelPage.clickIndividualCornersRadiusButton();
-    await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'rectangle-changed-corners.png',
-    );
-    await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-    });
-  });
+  mainTest(
+    qase([278], 'Change border radius multiple values (Design page in the right)'),
+    async () => {
+      await designPanelPage.clickIndividualCornersRadiusButton();
+      await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.createdLayer).toHaveScreenshot(
+        'rectangle-changed-corners.png',
+      );
+      await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
+    },
+  );
 
-  mainTest(qase(319, 'CO-104 Transform rectangle to path'), async () => {
+  mainTest(qase([319], 'Transform Rectangle to Path'), async () => {
     await mainPage.transformToPathViaRightClick();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isPathComponentOnLayersTabVisible();
   });
 
-  mainTest(qase(326, 'CO-111 Selection to board'), async () => {
+  mainTest(qase([326], 'Selection to board'), async () => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-to-board.png', {
@@ -363,7 +363,7 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase(2255, 'Select and deselect rectangles'), async ({ browserName }) => {
+mainTest(qase([2255], 'Select and deselect rectangles'), async ({ browserName }) => {
   await mainPage.createDefaultRectangleByCoordinates(400, 800);
   await mainPage.createDefaultRectangleByCoordinates(400, 200, true);
   await mainPage.createDefaultRectangleByCoordinates(100, 600, true);

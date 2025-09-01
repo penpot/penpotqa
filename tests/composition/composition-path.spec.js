@@ -36,7 +36,7 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase(487, 'CO-272 Create Path from toolbar - closed BUG'), async () => {
+mainTest(qase([487], 'Create Path (Toolbar) - closed'), async () => {
   await mainPage.createDefaultClosedPath();
   await mainPage.isCreatedLayerVisible();
   await expect(mainPage.viewport).toHaveScreenshot('path-closed.png', {
@@ -44,7 +44,7 @@ mainTest(qase(487, 'CO-272 Create Path from toolbar - closed BUG'), async () => 
   });
 });
 
-mainTest(qase(489, 'CO-274 Create Path from toolbar - opened'), async () => {
+mainTest(qase([489], 'Create Path (Toolbar) - opened'), async () => {
   await mainPage.createDefaultOpenPath();
   await mainPage.isCreatedLayerVisible();
   await expect(mainPage.viewport).toHaveScreenshot('path-opened.png', {
@@ -52,7 +52,7 @@ mainTest(qase(489, 'CO-274 Create Path from toolbar - opened'), async () => {
   });
 });
 
-mainTest(qase(1755, 'PENPOT-1755 Create Path from toolbar with cap'), async () => {
+mainTest(qase([1755], 'Add a cap for path'), async () => {
   await mainPage.createDefaultOpenPath();
   await mainPage.isCreatedLayerVisible();
   await designPanelPage.changeCap('Arrow', 'first');
@@ -70,44 +70,41 @@ mainTest.describe(() => {
     await mainPage.createDefaultClosedPath();
   });
 
-  mainTest(qase(492, 'CO-277 Rename path with valid name BUG'), async () => {
+  mainTest(qase([492], 'Rename path with valid name'), async () => {
     await layersPanelPage.doubleClickLayerOnLayersTab('Path');
     await layersPanelPage.typeNameCreatedLayerAndEnter('renamed path');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerNameDisplayed('renamed path');
   });
 
-  mainTest(
-    qase(497, 'CO-282 Add, hide, unhide and delete Blur to Path BUG'),
-    async () => {
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('path-blur-default.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.hideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('path-blur-hide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.unhideBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('path-blur-unhide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await designPanelPage.removeBlur();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('path-blur-remove.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    },
-  );
+  mainTest(qase([497], 'Add, hide, unhide and delete Blur to Path'), async () => {
+    await designPanelPage.clickAddBlurButton();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('path-blur-default.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.hideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('path-blur-hide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.unhideBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('path-blur-unhide.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+    await designPanelPage.removeBlur();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('path-blur-remove.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+  });
 
-  mainTest(qase(498, 'CO-283 Add and edit Blur to path BUG'), async () => {
+  mainTest(qase([498], 'Add and edit Blur to Path'), async () => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
     await mainPage.waitForChangeIsSaved();
@@ -116,7 +113,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(512, 'CO-297 Add rotation to path BUG'), async () => {
+  mainTest(qase([512], 'Change rotation (Design page in the right)'), async () => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-rotated-90.png', {
@@ -139,14 +136,14 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(513, 'CO-298-1 Delete path via rightclick BUG'), async () => {
+  mainTest(qase([513], 'Delete Path (From right click)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible(false);
   });
 
-  mainTest(qase(513, 'CO-298-2 Delete path via shortcut Del BUG'), async () => {
+  mainTest(qase([2543], 'Delete Path (From Keyboard)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
@@ -154,7 +151,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(518, 'CO-303 Hide and show path from rightclick and icons BUG'),
+    qase([518], 'Hide and show path (From right click and icons)'),
     async ({ page }) => {
       const path1 = 'Path #1';
       const path2 = 'Path #2';
@@ -219,7 +216,10 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(525, 'CO-310 Flip Vertical and Flip Horizontal path BUG'),
+    qase(
+      [525],
+      'Flip Vertical and Flip Horizontal path (From right click and Shortcut Shift +V Shift + H)',
+    ),
     async () => {
       await mainPage.flipVerticalViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -250,7 +250,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(537, 'CO-322 Selection to board BUG'), async () => {
+  mainTest(qase([537], 'Selection to board'), async () => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-to-board.png', {
@@ -266,7 +266,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(494, 'CO-279 Add, hide, unhide, change type and delete Shadow to Path'),
+    qase([494], 'Add, hide, unhide, change type and delete Shadow to Path'),
     async () => {
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
@@ -313,7 +313,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(495, 'CO-280 Add and edit Shadow to path'), async () => {
+  mainTest(qase([495], 'Add and edit Shadow to Path'), async () => {
     await designPanelPage.clickAddShadowButton();
     await designPanelPage.clickShadowActionsButton();
     await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');

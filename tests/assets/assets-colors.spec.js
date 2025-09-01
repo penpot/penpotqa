@@ -40,7 +40,7 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase(932, 'AS-22 Filter Colors from All Assets drop-down'), async () => {
+mainTest(qase([932], 'Filter Colors from All Assets drop-down'), async () => {
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.selectTypeFromAllAssetsDropdown('Colors');
   await assetsPanelPage.isAssetsSectionNameDisplayed('Colors', '0');
@@ -56,11 +56,11 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(933, 'AS-23 File library colors - add'), async () => {
+  mainTest(qase([933], 'File library colors - add'), async () => {
     await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00');
   });
 
-  mainTest(qase(934, 'Edit Color Asset After Applying to Element'), async () => {
+  mainTest(qase([934], 'Edit Color Asset After Applying to Element'), async () => {
     await mainPage.createDefaultBoardByCoordinates(500, 200);
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.clickFileLibraryColorsColorBullet();
@@ -83,14 +83,14 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(935, 'AS-25 File library colors - rename'), async () => {
+  mainTest(qase([935], 'File library colors - rename'), async () => {
     await assetsPanelPage.renameFileLibraryColor('test color');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isColorAddedToFileLibraryColors('test color#ffff00');
   });
 
-  mainTest(qase(936, 'AS-26 File library colors - delete'), async () => {
+  mainTest(qase([936], 'File library colors - delete'), async () => {
     await assetsPanelPage.deleteFileLibraryColor();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isColorNotAddedToFileLibraryColors();
@@ -98,14 +98,14 @@ mainTest.describe(() => {
     await assetsPanelPage.isAssetsSectionNameDisplayed('Colors', '0');
   });
 
-  mainTest(qase(937, 'AS-27 File library colors - create group'), async () => {
+  mainTest(qase([937], 'File library colors - create group'), async () => {
     await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
     await assetsPanelPage.isColorToFileLibraryColorsNotVisible();
   });
 
-  mainTest(qase(939, 'AS-29 File library colors - rename group'), async () => {
+  mainTest(qase([939], 'File library colors - rename group'), async () => {
     await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.renameGroupFileLibrary('New Group');
@@ -116,7 +116,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(942, 'AS-32 File library colors- ungroup'), async () => {
+  mainTest(qase([942], 'File library colors- ungroup'), async () => {
     await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.ungroupFileLibrary();
@@ -125,7 +125,7 @@ mainTest.describe(() => {
     await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00');
   });
 
-  mainTest(qase(1027, 'AS-117 File library colors - apply to stroke'), async () => {
+  mainTest(qase([1027], 'File library colors - apply to stroke'), async () => {
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();

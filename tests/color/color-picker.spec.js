@@ -37,13 +37,13 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase(1029, 'CP-1 Open color picker from Stroke menu'), async () => {
+mainTest(qase([1029], 'Open color picker from Stroke menu'), async () => {
   await mainPage.createDefaultClosedPath();
   await designPanelPage.clickStrokeColorBullet();
   await colorPalettePage.isColorPalettePopUpOpened();
 });
 
-mainTest(qase(1030, 'CP-2 Open color picker from Fill menu'), async () => {
+mainTest(qase([1030], 'Open color picker from Fill menu'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -51,15 +51,12 @@ mainTest(qase(1030, 'CP-2 Open color picker from Fill menu'), async () => {
   await colorPalettePage.isColorPalettePopUpOpened();
 });
 
-mainTest(
-  qase(1031, 'CP-3 Open color picker from Canvas background menu'),
-  async () => {
-    await designPanelPage.clickCanvasBackgroundColorIcon();
-    await colorPalettePage.isColorPalettePopUpOpened();
-  },
-);
+mainTest(qase([1031], 'Open color picker from Canvas background menu'), async () => {
+  await designPanelPage.clickCanvasBackgroundColorIcon();
+  await colorPalettePage.isColorPalettePopUpOpened();
+});
 
-mainTest(qase(1035, 'CP-7 Use Recent colors'), async () => {
+mainTest(qase([1035], 'Use Recent colors'), async () => {
   const color1 = '#FF0000';
   const color2 = '#B1B2B5';
 
@@ -81,7 +78,7 @@ mainTest(qase(1035, 'CP-7 Use Recent colors'), async () => {
   await expect(mainPage.createdLayer).toHaveScreenshot('board-recent-color.png');
 });
 
-mainTest(qase(1036, 'CP-8 Use colors from File library'), async () => {
+mainTest(qase([1036], 'Use colors from File library'), async () => {
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.clickAddFileLibraryColorButton();
   await colorPalettePage.setHex('#ffff00');
@@ -99,7 +96,7 @@ mainTest(qase(1036, 'CP-8 Use colors from File library'), async () => {
   );
 });
 
-mainTest(qase(1045, 'CP-17 Open Color palette from shortcut'), async () => {
+mainTest(qase([1045], 'Open Color palette from shortcut'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -121,7 +118,7 @@ mainTest(qase(1045, 'CP-17 Open Color palette from shortcut'), async () => {
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest(qase(1046, 'CP-18 Open Color palette from toolbar'), async () => {
+mainTest(qase([1046], 'Open Color palette from toolbar'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -142,7 +139,7 @@ mainTest(qase(1046, 'CP-18 Open Color palette from toolbar'), async () => {
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest(qase(1048, 'CP-20 Choose file library colors'), async () => {
+mainTest(qase([1048], 'Choose file library colors'), async () => {
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.clickAddFileLibraryColorButton();
   await colorPalettePage.setHex('#ffff00');
@@ -169,7 +166,7 @@ mainTest(qase(1048, 'CP-20 Choose file library colors'), async () => {
 });
 
 mainTest(
-  qase(1049, 'CP-21 Click any layer and change Fill color from palette'),
+  qase([1049], 'Click any layer and change Fill color from palette'),
   async () => {
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
@@ -200,7 +197,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1054, 'CP-26 Open color picker from add or edit color in assets'),
+  qase([1054], 'Open color picker from add or edit color in assets'),
   async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickAddFileLibraryColorButton();
@@ -209,7 +206,7 @@ mainTest(
 );
 
 mainTest(
-  qase(1996, 'Delete linear gradient stop (from color picker stops list)'),
+  qase([1996], 'Delete linear gradient stop (from color picker stops list)'),
   async () => {
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
