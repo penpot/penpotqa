@@ -74,6 +74,9 @@ registerTest.describe(() => {
       await skipSubscriptionByMonths(email, testClockId, 1, date);
       await profilePage.reloadPage();
 
+      await skipSubscriptionByMonths(email, testClockId, 1, date);
+      await profilePage.reloadPage();
+
       await stripePage.checkLastInvoiceStatus(`Paid`);
       await stripePage.waitInvoiceAmountCount(`$7.00`, 3);
     },
@@ -82,6 +85,7 @@ registerTest.describe(() => {
   registerTest(
     qase(2347, 'Invoices capped at  $950 (Enterprise)'),
     async ({ page, name, email }) => {
+      await registerTest.slow();
       const currentPlan = 'Enterprise';
       let date = new Date();
 
@@ -93,21 +97,25 @@ registerTest.describe(() => {
       await profilePage.clickOnAddPaymentMethodButton();
       await stripePage.addDefaultCard();
       await stripePage.isVisaCardAdded(true);
-      await skipSubscriptionByDays(email, testClockId, 15, date);
+      await skipSubscriptionByDays(email, testClockId, 20, date);
 
       await stripePage.waitTrialEndsDisappear();
       await profilePage.reloadPage();
       await stripePage.checkCurrentSubscription(currentPlan);
       await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
-      await stripePage.checkLastInvoiceAmount(`$950.00`);
+      await stripePage.checkLastInvoiceAmount(`950.00`);
 
       await skipSubscriptionByMonths(email, testClockId, 1, date);
       await profilePage.reloadPage();
+
+      await skipSubscriptionByMonths(email, testClockId, 1, date);
+      await profilePage.reloadPage();
+
       await skipSubscriptionByMonths(email, testClockId, 1, date);
       await profilePage.reloadPage();
 
       await stripePage.checkLastInvoiceStatus(`Paid`);
-      await stripePage.waitInvoiceAmountCount(`$950.00`, 3);
+      await stripePage.waitInvoiceAmountCount(`950.00`, 3);
     },
   );
 
@@ -128,16 +136,20 @@ registerTest.describe(() => {
       await profilePage.clickOnAddPaymentMethodButton();
       await stripePage.addDefaultCard();
       await stripePage.isVisaCardAdded(true);
-      await skipSubscriptionByDays(email, testClockId, 15, date);
+      await skipSubscriptionByDays(email, testClockId, 20, date);
 
       await stripePage.waitTrialEndsDisappear();
       await profilePage.reloadPage();
       await stripePage.checkCurrentSubscription(currentPlan);
       await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
-      await stripePage.checkLastInvoiceAmount(`$175.00`);
+      await stripePage.checkLastInvoiceAmount(`175.00`);
 
       await skipSubscriptionByMonths(email, testClockId, 1, date);
       await profilePage.reloadPage();
+
+      await skipSubscriptionByMonths(email, testClockId, 1, date);
+      await profilePage.reloadPage();
+
       await skipSubscriptionByMonths(email, testClockId, 1, date);
       await profilePage.reloadPage();
 

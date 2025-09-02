@@ -135,7 +135,7 @@ exports.StripePage = class StripePage extends BasePage {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowFormatted = tomorrow.toLocaleDateString('en-US', {
       month: 'short',
-      day: '2-digit',
+      day: 'numeric',
     });
     await expect(this.trialEndsDate).toHaveText(tomorrowFormatted);
   }

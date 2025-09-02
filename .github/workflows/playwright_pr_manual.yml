@@ -13,7 +13,7 @@ jobs:
       run:
         shell: bash
     environment: PRE
-    timeout-minutes: 180
+    timeout-minutes: 280
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4

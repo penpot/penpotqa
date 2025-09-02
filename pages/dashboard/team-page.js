@@ -14,7 +14,9 @@ exports.TeamPage = class TeamPage extends BasePage {
       .locator('button[class*="current-team"] div span')
       .first();
     this.teamList = page.locator('ul[class*="teams-dropdown"]');
-    this.createNewTeamMenuItem = page.locator('#teams-selector-create-team');
+    this.createNewTeamMenuItem = page.getByRole('menuitem', {
+      name: 'Create new team',
+    });
     this.teamNameInput = page.locator('#name');
     this.createNewTeamButton = page.getByRole('button', { name: 'Create new team' });
     this.teamCurrentNameDiv = page.locator(
@@ -175,14 +177,20 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async switchTeam(teamName) {
     await this.openTeamsListIfClosed();
-    const teamOption = this.page.getByRole('menuitem').filter({ hasText: teamName });
+    const teamOption = this.page
+      .getByRole('menuitem')
+      .filter({ hasText: teamName })
+      .first();
     await teamOption.click();
     await this.isTeamSelected(teamName);
   }
 
   async deleteTeam(teamName) {
     await this.openTeamsListIfClosed();
-    const teamSel = this.page.getByRole('menuitem').filter({ hasText: teamName });
+    const teamSel = this.page
+      .getByRole('menuitem')
+      .filter({ hasText: teamName })
+      .first();
     if (await teamSel.isVisible()) {
       await teamSel.click();
       await this.isTeamSelected(teamName);
