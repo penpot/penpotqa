@@ -19,6 +19,12 @@ exports.StripePage = class StripePage extends BasePage {
       'input[name="expiry"]',
     );
     this.cardCVCImput = this.iframeAddCardModal.locator('input[name="cvc"]');
+    this.cardCountryDropdown = this.iframeAddCardModal.locator(
+      'select[name="country"]',
+    );
+    this.cardZipCodeImput = this.iframeAddCardModal.locator(
+      'input[name="postalCode"]',
+    );
     this.confirmButton = page.getByTestId('confirm');
     this.returnToPenpotButton = page.getByText('Return to Penpot');
     this.updateSubscriptionButton = page.getByText('Update subscription');
@@ -55,6 +61,16 @@ exports.StripePage = class StripePage extends BasePage {
     await this.cardCVCImput.fill(cvc);
   }
 
+  async enterCardZipCode(zip = '12345') {
+    (await this.cardZipCodeImput.isVisible())
+      ? await this.cardZipCodeImput.fill(zip)
+      : null;
+  }
+
+  async selectCardCountry(country = 'US') {
+    await this.cardCountryDropdown.selectOption(country);
+  }
+
   async clickOnAddCardButton() {
     await this.confirmButton.click();
   }
@@ -64,6 +80,8 @@ exports.StripePage = class StripePage extends BasePage {
     await this.enterCardNumber();
     await this.enterCardExpirationDate(await getActualExpirationDate());
     await this.enterCardCVC();
+    await this.selectCardCountry();
+    await this.enterCardZipCode();
     await this.clickOnAddCardButton();
   }
 
