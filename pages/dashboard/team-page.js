@@ -177,14 +177,20 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async switchTeam(teamName) {
     await this.openTeamsListIfClosed();
-    const teamOption = this.page.getByRole('menuitem').filter({ hasText: teamName });
+    const teamOption = this.page
+      .getByRole('menuitem')
+      .filter({ hasText: teamName })
+      .first();
     await teamOption.click();
     await this.isTeamSelected(teamName);
   }
 
   async deleteTeam(teamName) {
     await this.openTeamsListIfClosed();
-    const teamSel = this.page.getByRole('menuitem').filter({ hasText: teamName });
+    const teamSel = this.page
+      .getByRole('menuitem')
+      .filter({ hasText: teamName })
+      .first();
     if (await teamSel.isVisible()) {
       await teamSel.click();
       await this.isTeamSelected(teamName);
