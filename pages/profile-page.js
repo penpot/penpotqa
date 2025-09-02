@@ -75,7 +75,9 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     //Subscription
     this.subscriptionMenuButton = page.getByTestId('settings-subscription');
     this.currentPlanLabel = page
-      .locator('h4[class*="subscription__plan-card-title"]')
+      .locator(
+        'div[class*="plan-card-title-container"] h4[class*="plan-card-title"]',
+      )
       .first();
     this.startFreeTrialButton = page.getByRole('button', {
       name: 'Start free trial',
