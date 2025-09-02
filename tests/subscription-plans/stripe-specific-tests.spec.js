@@ -85,6 +85,7 @@ registerTest.describe(() => {
   registerTest(
     qase(2347, 'Invoices capped at  $950 (Enterprise)'),
     async ({ page, name, email }) => {
+      await registerTest.slow();
       const currentPlan = 'Enterprise';
       let date = new Date();
 
