@@ -74,6 +74,9 @@ registerTest.describe(() => {
       await skipSubscriptionByMonths(email, testClockId, 1, date);
       await profilePage.reloadPage();
 
+      await skipSubscriptionByMonths(email, testClockId, 1, date);
+      await profilePage.reloadPage();
+
       await stripePage.checkLastInvoiceStatus(`Paid`);
       await stripePage.waitInvoiceAmountCount(`$7.00`, 3);
     },
