@@ -71,6 +71,8 @@ registerTest(qase(2303, 'Switch from Enterprise → Unlimited'), async () => {
   const currentPlan = 'Enterprise';
   const newPlan = 'Unlimited';
 
+  await registerTest.slow();
+
   await profilePage.tryTrialForPlan(newPlan);
   await profilePage.openYourAccountPage();
   await profilePage.openSubscriptionTab();
@@ -81,7 +83,6 @@ registerTest(qase(2303, 'Switch from Enterprise → Unlimited'), async () => {
   await stripePage.checkCurrentSubscription(currentPlan);
 
   await stripePage.waitTrialEndsDisappear();
-  await profilePage.reloadPage();
   await stripePage.changeSubscription();
   await stripePage.checkCurrentSubscription(newPlan);
   await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
