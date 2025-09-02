@@ -12,7 +12,7 @@ const { StripePage } = require('../../pages/dashboard/stripe-page');
 let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
 const teamName = random().concat('autotest');
 
-test.beforeEach(async ({ page }) => {
+registerTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
   await teamPage.isTeamSelected(teamName);
 });
 
-test.afterEach(async () => {
+registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
@@ -51,7 +51,7 @@ registerTest(qase(2281, 'Display & Info for Enterprise Plan'), async ({ page }) 
   await teamPage.checkSubscriptionName(currentPlan);
 });
 
-mainTest(qase(2283, 'Display & Info for Professional Plan'), async () => {
+registerTest(qase(2283, 'Display & Info for Professional Plan'), async () => {
   const currentPlan = 'Professional';
   await profilePage.openYourAccountPage();
   await profilePage.openSubscriptionTab();
