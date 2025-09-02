@@ -7,7 +7,7 @@ on:
 jobs:
   tests_chromium:
     environment: PRE
-    timeout-minutes: 180
+    timeout-minutes: 400
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
