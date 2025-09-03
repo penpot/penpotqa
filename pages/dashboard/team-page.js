@@ -47,6 +47,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamInfoSection = page.locator('//div[text()="Team info"]/..');
     this.teamOwnerSection = page.locator('//div[text()="Team members"]/..');
     this.teamStatsSection = page.locator('//div[text()="Team projects"]/..');
+    this.teamInfoHeader = page.getByText('Team info');
 
     this.membersMenuItem = page.getByRole('menuitem', { name: 'Members' });
 
@@ -484,7 +485,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async hoverOnTeamName() {
-    await this.teamInfoSection.hover();
+    await this.teamInfoHeader.hover();
   }
 
   async deleteTeamMember(name) {
