@@ -46,9 +46,12 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       .getByRole('menuitem')
       .filter({ hasText: 'Ungroup' });
     this.groupNameInput = page.getByRole('textbox', { name: 'Group name' });
-    this.createGroupButton = page.getByRole('button', { name: 'Create' });
+    this.createGroupButton = page.getByRole('button', {
+      name: 'Create',
+      exact: true,
+    });
     this.renameGroupButton = page.getByRole('button', { name: 'Rename' });
-    this.fileLibraryGroupTitle = page.locator('div[class*="group-title"]');
+    this.fileLibraryGroupTitle = page.locator('[class*="groups__path"]');
     this.fileLibraryListViewButton = page.getByTitle('List view', { exact: true });
     this.fileLibraryGridViewButton = page.getByTitle('Grid view', { exact: true });
     this.addFileLibraryColorButton = page.getByRole('button', { name: 'Add color' });
@@ -123,9 +126,10 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       'button[class*="search_bar__clear"]',
     );
     this.libraryTitle = page.locator('div[class*="special-title"]');
-    this.libraryComponentsTitle = page.locator(
-      '//span[text()="Components"]/../../../span',
-    );
+    this.libraryComponentsTitle = page
+      .locator('[class*="library__tool-window"]')
+      .last()
+      .getByText('Components');
     this.dismissButton = page.getByRole('button', { name: 'Dismiss' });
     this.librariesUpdatesTab = page.getByRole('tab', { name: 'UPDATES' });
     this.librariesUpdateButton = page.getByRole('button', { name: 'Update' });
@@ -426,7 +430,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async clickLibraryComponentsTitle() {
     await this.page.waitForTimeout(300);
-    await this.libraryComponentsTitle.last().click();
+    await this.libraryComponentsTitle.click();
   }
 
   async clickLibraryTitleWithName(libraryName) {
