@@ -61,37 +61,108 @@ jobs:
           fi
 
       # Save the report
+      - name: Download existing reports
+        if: always()
+        continue-on-error: true
+        run: |
+          # Try to download existing reports from GitHub Pages
+          echo "Attempting to download existing reports..."
+          mkdir -p temp_existing
+          cd temp_existing
+
+          # Download using wget recursively with limits
+          wget --recursive --no-parent --reject="index.html*" --level=3 --no-host-directories \
+               --cut-dirs=1 --timeout=10 --tries=2 \
+               "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/" || true
+
+          # Move existing reports if we found them
+          if [ -d "reports" ]; then
+            echo "Found existing reports, preserving them..."
+            mkdir -p ../history
+            mv reports ../history/
+          fi
+          cd ..
+          rm -rf temp_existing
+
       - name: Prepare history folder
         if: always()
         run: |
+          # Create base structure
           mkdir -p history/reports/run-${{ github.run_id }}
           cp -r playwright-report/* history/reports/run-${{ github.run_id }}/
 
           DATE_TIME=$(date -u +"%Y-%m-%d %H:%M UTC")
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
 
-          # Create index.html if it doesn't exist.
-          if [ ! -f history/index.html ]; then
-            echo "<html><head><title>Playwright Test Reports</title></head><body><h1>Playwright Test Reports</h1>" > history/index.html
-            echo "<table border='1' cellpadding='5' cellspacing='0'>" >> history/index.html
-            echo "<tr><th>Run ID</th><th>Commit</th><th>Date</th></tr>" >> history/index.html
-            echo "</table></body></html>" >> history/index.html
+          # Try to download existing index.html from GitHub Pages
+          if curl -s -f "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html" -o existing_index.html; then
+            echo "Found existing index.html, updating it..."
+            cp existing_index.html history/index.html
+          else
+            echo "No existing index.html found, creating new one..."
+            cat > history/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Playwright Test Reports - Penpot QA</title>
+              <style>
+                  body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
+                  h1 { color: #333; text-align: center; }
+                  .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                  th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+                  th { background-color: #f8f9fa; font-weight: bold; }
+                  tr:hover { background-color: #f5f5f5; }
+                  a { color: #0066cc; text-decoration: none; }
+                  a:hover { text-decoration: underline; }
+                  .run-id { font-weight: bold; }
+                  .commit { font-family: monospace; }
+                  .date { color: #666; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>🎭 Playwright Test Reports - Penpot QA</h1>
+                  <p>📊 Historical test reports from automated test runs</p>
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>🆔 Run ID</th>
+                              <th>📝 Commit</th>
+                              <th>📅 Date</th>
+                              <th>🌿 Branch</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                  </table>
+              </div>
+          </body>
+          </html>
+          EOF
           fi
 
-          # Insert new row right after the table header
-          sed -i "s|<tr><th>Run ID</th><th>Commit</th><th>Date</th></tr>|<tr><th>Run ID</th><th>Commit</th><th>Date</th></tr>\n<tr><td><a href='reports/run-${{ github.run_id }}/index.html'>${{ github.run_id }}</a></td><td><a href='https://github.com/${{ github.repository }}/commit/${{ github.sha }}'>${SHORT_SHA}</a></td><td>${DATE_TIME}</td></tr>|" history/index.html
+          # Add new row at the beginning of tbody
+          BRANCH_NAME="${{ github.ref_name }}"
+          NEW_ROW="<tr><td class=\"run-id\"><a href=\"reports/run-${{ github.run_id }}/index.html\">${{ github.run_id }}</a></td><td class=\"commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">${SHORT_SHA}</a></td><td class=\"date\">${DATE_TIME}</td><td class=\"branch\">${BRANCH_NAME}</td></tr>"
 
-          # Keep only the latest 20 runs (remove old rows)
-          ROW_COUNT=$(grep -c "<tr><td>" history/index.html || true)
-          if [ "$ROW_COUNT" -gt 20 ]; then
-            EXTRA=$((ROW_COUNT - 20))
-            # remove the oldest rows (at the end of the table)
-            tac history/index.html | sed "0,/<tr><td>/s//REMOVEMARK/" | tac | sed "/REMOVEMARK/,+$EXTRA d" > tmp_index.html
+          # Insert new row after <tbody>
+          sed -i "/<tbody>/a\\$NEW_ROW" history/index.html
+
+          # Keep only the latest 50 runs (remove old rows)
+          ROW_COUNT=$(grep -c "<tr><td" history/index.html || echo "0")
+          if [ "$ROW_COUNT" -gt 50 ]; then
+            # Create temporary file and keep only first 50 rows
+            awk '/<tbody>/{print; getline; count=0} /<tr><td/{if(count<50){print; count++}} !/<tr><td/{print}' history/index.html > tmp_index.html
             mv tmp_index.html history/index.html
           fi
 
-          # Remove old run folders (keep latest 20)
-          ls -dt history/reports/run-* | tail -n +21 | xargs -r rm -rf
+          # Remove old run folders (keep latest 50)
+          if [ -d history/reports ]; then
+            ls -dt history/reports/run-* 2>/dev/null | tail -n +51 | xargs -r rm -rf
+          fi
 
       - name: Upload report to GitHub Pages
         uses: actions/upload-pages-artifact@v3
