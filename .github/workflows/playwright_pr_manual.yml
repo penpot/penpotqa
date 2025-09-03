@@ -60,7 +60,6 @@ jobs:
             npx playwright test --project=chrome --only-changed=origin/main --reporter=html -gv 'PERF'
           fi
 
-      # Save the report
       - name: Download existing reports
         if: always()
         continue-on-error: true
@@ -93,71 +92,28 @@ jobs:
 
           DATE_TIME=$(date -u +"%Y-%m-%d %H:%M UTC")
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-
-          # Try to download existing index.html from GitHub Pages
-          if curl -s -f "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html" -o existing_index.html; then
-            echo "Found existing index.html, updating it..."
-            cp existing_index.html history/index.html
-          else
-            echo "No existing index.html found, creating new one..."
-            cat > history/index.html << 'EOF'
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Playwright Test Reports - Penpot QA</title>
-              <style>
-                  body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
-                  h1 { color: #333; text-align: center; }
-                  .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-                  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                  th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-                  th { background-color: #f8f9fa; font-weight: bold; }
-                  tr:hover { background-color: #f5f5f5; }
-                  a { color: #0066cc; text-decoration: none; }
-                  a:hover { text-decoration: underline; }
-                  .run-id { font-weight: bold; }
-                  .commit { font-family: monospace; }
-                  .date { color: #666; }
-              </style>
-          </head>
-          <body>
-              <div class="container">
-                  <h1>🎭 Playwright Test Reports - Penpot QA</h1>
-                  <p>📊 Historical test reports from automated test runs</p>
-                  <table>
-                      <thead>
-                          <tr>
-                              <th>🆔 Run ID</th>
-                              <th>📝 Commit</th>
-                              <th>📅 Date</th>
-                              <th>🌿 Branch</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                      </tbody>
-                  </table>
-              </div>
-          </body>
-          </html>
-          EOF
-          fi
-
-          # Add new row at the beginning of tbody
           BRANCH_NAME="${{ github.ref_name }}"
-          NEW_ROW="<tr><td class=\"run-id\"><a href=\"reports/run-${{ github.run_id }}/index.html\">${{ github.run_id }}</a></td><td class=\"commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">${SHORT_SHA}</a></td><td class=\"date\">${DATE_TIME}</td><td class=\"branch\">${BRANCH_NAME}</td></tr>"
 
-          # Insert new row after <tbody>
-          sed -i "/<tbody>/a\\$NEW_ROW" history/index.html
+          # Copy the HTML template
+          cp .github/html-template.html history/index.html
 
-          # Keep only the latest 50 runs (remove old rows)
-          ROW_COUNT=$(grep -c "<tr><td" history/index.html || echo "0")
-          if [ "$ROW_COUNT" -gt 50 ]; then
-            # Create temporary file and keep only first 50 rows
-            awk '/<tbody>/{print; getline; count=0} /<tr><td/{if(count<50){print; count++}} !/<tr><td/{print}' history/index.html > tmp_index.html
-            mv tmp_index.html history/index.html
+          # Create the new row
+          NEW_ROW="<tr><td class=\"run-id\"><a href=\"reports/run-${{ github.run_id }}/index.html\">${{ github.run_id }}</a></td><td class=\"commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">${SHORT_SHA}</a></td><td class=\"date\">${DATE_TIME}</td><td class=\"branch\">${BRANCH_NAME}</td><td><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td></tr>"
+
+          # Prepare all rows (new one + existing ones)
+          ROWS_CONTENT="$NEW_ROW"
+
+          # Try to get existing runs data from the old HTML if it exists
+          if curl -s -f "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html" -o existing_index.html; then
+            echo "Found existing index.html, extracting existing runs..."
+            # Extract existing runs and add them (limit to 49 to keep 50 total)
+            EXISTING_ROWS=$(grep "<tr><td" existing_index.html | head -49 | tr '\n' ' ' || true)
+            ROWS_CONTENT="$NEW_ROW $EXISTING_ROWS"
           fi
+
+          # Replace placeholder with actual rows
+          sed "s|<!-- ROWS_PLACEHOLDER -->|$ROWS_CONTENT|" history/index.html > temp_index.html
+          mv temp_index.html history/index.html
 
           # Remove old run folders (keep latest 50)
           if [ -d history/reports ]; then

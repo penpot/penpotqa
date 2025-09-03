@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playwright Test Reports - Penpot QA</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
+      .subtitle {
+        text-align: center;
+        color: #7f8c8d;
+        margin-bottom: 30px;
+        font-size: 1.1em;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      th,
+      td {
+        padding: 15px 12px;
+        text-align: left;
+        border-bottom: 1px solid #ecf0f1;
+      }
+      th {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9em;
+        letter-spacing: 0.5px;
+      }
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+      tr:hover {
+        background-color: #e3f2fd;
+        transition: all 0.2s ease;
+      }
+      a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      a:hover {
+        color: #2980b9;
+        text-decoration: underline;
+      }
+      .run-id {
+        font-weight: bold;
+        font-family: monospace;
+      }
+      .commit {
+        font-family: monospace;
+        background: #f1f2f6;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      .date {
+        color: #7f8c8d;
+      }
+      .branch {
+        background: #e74c3c;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: 500;
+      }
+      .stats {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .stats h3 {
+        margin: 0 0 10px 0;
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎭 Playwright Test Reports</h1>
+      <p class="subtitle">
+        📊 Penpot QA - Automated Test Results & Historical Reports
+      </p>
+
+      <div class="stats">
+        <h3>🚀 Latest Test Results</h3>
+        <p>View detailed test reports for each run below</p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>🆔 Run ID</th>
+            <th>📝 Commit</th>
+            <th>📅 Date</th>
+            <th>🌿 Branch</th>
+            <th>📊 Report</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- ROWS_PLACEHOLDER -->
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
