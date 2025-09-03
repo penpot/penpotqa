@@ -75,7 +75,8 @@ async function sendMessage(browserName) {
        :cat2: GitRun: https://github.com/penpot/penpotqa/actions/runs/${
          process.env.GITHUB_RUN_ID
        }
-       :computer: Browser: ${browserName}`;
+       :computer: Browser: ${browserName}
+       :page_facing_up: Check interactive tests results: https://penpot.github.io/penpotqa/`;
   const requestBody = { channel_id: channel_id, message: messageWithLink };
 
   try {
