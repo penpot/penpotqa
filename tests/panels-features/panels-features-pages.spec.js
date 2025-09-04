@@ -138,7 +138,10 @@ mainTest(
 );
 
 mainTest(
-  'PENPOT-1519 Copy and paste components from Page 1 to Page 2, on Page 2 right-click component and select "Show main component"',
+  qase(
+    1519,
+    'Copy and paste components from Page 1 to Page 2, on Page 2 right-click component and select "Show main component"',
+  ),
   async ({ browserName }) => {
     await mainPage.createDefaultRectangleByCoordinates(300, 300);
     await mainPage.createComponentViaRightClick();
@@ -163,7 +166,7 @@ mainTest(
 mainTest(
   qase(
     1526,
-    'PENPOT-1526 Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Reset overrides"',
+    'Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Reset overrides"',
   ),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(300, 300);
@@ -190,7 +193,7 @@ mainTest(
 mainTest(
   qase(
     1527,
-    'PENPOT-1527 Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Update main component"',
+    'Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Update main component"',
   ),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
