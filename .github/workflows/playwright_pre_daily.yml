@@ -132,6 +132,7 @@ jobs:
 
   deploy:
     needs: tests_chromium
+    if: always()
     runs-on: ubuntu-latest
     permissions:
       pages: write
