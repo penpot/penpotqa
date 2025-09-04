@@ -49,7 +49,7 @@ jobs:
 
       - name: Testdino Reporter
         if: always()
-        run: npx --yes tdpw playwright-report/ --token="${TDPW_API_KEY}" --upload-html
+        run: npx --yes tdpw playwright-report/ --token="${TDPW_API_KEY}" --upload-html --json-report playwright-report/results.json
         env:
           TDPW_API_KEY: ${{ secrets.TDPW_API_KEY }}
 
@@ -124,7 +124,7 @@ jobs:
           cp .github/html-template.html history/index.html
 
           # Create the new row with success percentage
-          NEW_ROW="<tr><td class=\"success-rate $SUCCESS_CLASS\">$SUCCESS_PERCENT</td><td class=\"workflow\"><a href=\"reports/run-${{ github.run_id }}/index.html\">PRE_daily</a></td><td class=\"commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">${SHORT_SHA}</a></td><td class=\"date\">${DATE_TIME}</td><td class=\"branch\">${BRANCH_NAME}</td><td class=\"browser\">Chrome</td><td><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td></tr>"
+          NEW_ROW="<tr><td class=\"success-rate $SUCCESS_CLASS\">$SUCCESS_PERCENT</td><td class=\"workflow\">PRE_daily</td><td class=\"commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">${SHORT_SHA}</a></td><td class=\"date\">${DATE_TIME}</td><td class=\"branch\">${BRANCH_NAME}</td><td class=\"browser\">🌐 Chrome</td><td><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td></tr>"
 
           # Prepare all rows (new one + existing ones)
           ROWS_CONTENT="$NEW_ROW"
