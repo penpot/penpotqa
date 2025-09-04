@@ -309,7 +309,7 @@ mainTest.describe('Text', () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
       await designPanelPage.changeTextFont('Source Serif 4');
-      await designPanelPage.changeTextFontStyle('300italic');
+      await designPanelPage.changeTextFontStyle('300 Italic');
       await designPanelPage.changeTextFontSize('9');
       await designPanelPage.changeTextLetterSpacing('4');
       await designPanelPage.clickOnTextAlignOptionsButton();

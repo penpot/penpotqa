@@ -15,22 +15,20 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       'div[class*="workspace_sidebar_layer_item__layer-row"]',
     );
     this.createdLayerOnLayersPanelNameInput = this.layersRows.getByRole('textbox');
-    this.searchLayersIcon = page.locator('svg[class="icon-search"]');
+    this.searchLayersIcon = page.locator('svg [href="#icon-search"]');
     this.searchLayersInput = page.getByPlaceholder('Search layers');
     this.searchedLayerOnLayersPanelNameText = page.locator(
       'span[class*="element-name"] >> nth=1',
     );
-    this.verticalFlexlayoutIcon = page.locator('svg[class="icon-flex-vertical"]');
-    this.horizontalFlexlayoutIcon = page.locator(
-      'svg[class="icon-flex-horizontal"]',
-    );
+    this.verticalFlexlayoutIcon = page.getByTestId('icon-flex-vertical');
+    this.horizontalFlexlayoutIcon = page.getByTestId('icon-flex-horizontal');
     this.focusModeDiv = page.getByText('Focus mode', { exact: true });
-    this.mainComponentLayer = page.locator(
-      '//*[@class="icon-component"]//parent::div',
-    );
-    this.copyComponentLayer = page.locator(
-      '//*[@class="icon-component-copy"]//parent::div',
-    );
+    this.mainComponentLayer = page
+      .getByTestId('icon-component')
+      .locator('//parent::div');
+    this.copyComponentLayer = page
+      .getByTestId('icon-component-copy')
+      .locator('//parent::div');
     this.pathComponentLayer = page.locator('//*[@class="icon-path"]//parent::div');
     this.createdLayerOnLayersPanelSpan = page.locator(
       'div[class*="element-list-body"] span[class*="element-name"]',
@@ -41,9 +39,9 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.layerBoardToggleContentCollapse = page.locator(
       'div[class*="layers__element-list"] button[class*="toggle-content"]',
     );
-    this.mainComponentLayerSelected = page.locator(
-      'div[class*="sidebar_layer_item__selected"] svg[class="icon-component"]',
-    );
+    this.mainComponentLayerSelected = page
+      .locator('div[class*="sidebar_layer_item__selected"]')
+      .getByTestId('icon-component');
     this.mainComponentLayerToggleExpand = this.mainComponentLayer.locator(
       'xpath=./../button[contains(@class, "sidebar_layer_item__inverse")]',
     );
@@ -274,7 +272,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   async clickMainComponentChildLayerOnLayersTab() {
     const layer = this.page
       .locator(
-        '*[data-testid="layer-row"]:has(.icon-component) + div[data-testid*="children"]',
+        '*[data-testid="layer-row"]:has([data-testid="icon-component"]) + div[data-testid*="children"]',
       )
       .first();
     await layer.click();
@@ -288,7 +286,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   async clickCopyComponentChildLayerOnLayersTab() {
     const layer = this.page
       .locator(
-        '*[data-testid="layer-row"]:has(.icon-component-copy) + div[data-testid*="children"]',
+        '*[data-testid="layer-row"]:has([data-testid="icon-component-copy"]) + div[data-testid*="children"]',
       )
       .first();
     await layer.click();

@@ -102,7 +102,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexLayoutMenu = page.locator('div[class*="flex-layout-menu"]');
     this.flexElementMenu = page.locator('div[class*="flex-element-menu"]');
     this.flexLayoutCollapsedIcon = page.locator(
-      'div[class*="layout_container"] button[class*="collapsabled-icon"]',
+      'div[class*="layout_container"] button:has([href="#icon-arrow-right"])',
     );
     this.flexElementAlignStartBtn = page.locator(
       'label[title="Align self start"] span',
