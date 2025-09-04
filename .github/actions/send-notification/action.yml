@@ -1,0 +1,28 @@
+name: 'Send Mattermost Notification'
+description: 'Send test results notification to Mattermost'
+
+inputs:
+  browser-name:
+    description: 'Browser name for the notification'
+    required: true
+  channel-id:
+    description: 'Mattermost channel ID'
+    required: true
+  login-id:
+    description: 'Mattermost login ID'
+    required: true
+  password:
+    description: 'Mattermost password'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Send mattermost Message
+      shell: bash
+      env:
+        CHANNEL_ID: ${{ inputs.channel-id }}
+        LOGIN_ID_MATTERMOST: ${{ inputs.login-id }}
+        PASSWORD_MATTERMOST: ${{ inputs.password }}
+      if: always()
+      run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}')"

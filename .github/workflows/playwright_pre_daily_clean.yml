@@ -1,13 +1,8 @@
-name: Manual Penpot Tests for PR
-
+name: Daily Penpot Regression Tests on PRE
 on:
+  schedule: ## run tests at 01:00am UTC on every day-of-week from Monday through Friday
+    - cron: '00 1 * * 1-5'
   workflow_dispatch:
-    inputs:
-      run_all_tests:
-        description: 'Run all tests regardless of changes'
-        required: false
-        default: false
-        type: boolean
 
 permissions:
   contents: write
@@ -20,7 +15,7 @@ jobs:
       run:
         shell: bash
     environment: PRE
-    timeout-minutes: 280
+    timeout-minutes: 400
     runs-on: windows-latest
     steps:
       - name: Setup Playwright Environment
@@ -41,31 +36,25 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.run_all_tests }}" = "true" ]; then
-            echo "Running all tests..."
-            npx playwright test --project=chrome --reporter=html -gv 'PERF'
-          else
-            echo "Running tests for changed files using Playwright's --only-changed"
-            npx playwright test --project=chrome --only-changed=origin/main --reporter=html -gv 'PERF'
-          fi
+        run: npx playwright test --project=chrome --reporter=html -gv 'PERF'
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
         with:
           browser-name: 'Chrome'
-          artifact-name: 'playwright-report-chromium-pr'
+          artifact-name: 'playwright-report-chromium'
 
       - name: Send Mattermost Notification
         uses: ./.github/actions/send-notification
         with:
           browser-name: 'Chrome'
-          channel-id: ${{ secrets.PR_CHANNEL_ID }}
+          channel-id: ${{ secrets.CHANNEL_ID }}
           login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
           password: ${{ secrets.PASSWORD_MATTERMOST }}
 
   deploy:
     needs: tests_chromium
+    if: always()
     runs-on: ubuntu-latest
     permissions:
       pages: write
