@@ -114,6 +114,7 @@ jobs:
           fi
 
       - name: Upload report to GitHub Pages
+        if: always()
         uses: actions/upload-pages-artifact@v3
         with:
           path: history
