@@ -54,10 +54,10 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.run_all_tests }}" = "true" ]; then
             echo "Running all tests..."
-            npx playwright test tests/test.spec.js --project=chrome --reporter=html -gv 'PERF'
+            npx playwright test tests/test.spec.js --project=chrome --reporter=html,json -gv 'PERF'
           else
             echo "Running tests for changed files using Playwright's --only-changed"
-            npx playwright test --project=chrome --only-changed=origin/main --reporter=html -gv 'PERF'
+            npx playwright test --project=chrome --only-changed=origin/main --reporter=html,json -gv 'PERF'
           fi
 
       - name: Testdino Reporter
