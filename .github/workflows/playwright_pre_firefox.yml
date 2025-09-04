@@ -134,6 +134,7 @@ jobs:
 
   deploy:
     needs: tests_firefox
+    if: always()
     runs-on: ubuntu-latest
     permissions:
       pages: write
