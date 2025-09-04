@@ -175,9 +175,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.deletePageMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Delete' });
-    this.collapseExpandPagesButton = page.locator(
-      'span[class*="collapsabled-icon"]',
-    );
+    this.collapseExpandPagesButton = page.getByRole('button', {
+      name: 'Pages',
+      exact: true,
+    });
     this.pageTrashIcon = page.locator(
       'div[class*="selected"] svg[class="icon-delete"]',
     );
