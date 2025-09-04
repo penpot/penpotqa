@@ -45,7 +45,13 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: npx playwright test --project=chrome --reporter=html -gv 'PERF'
+        run: npx playwright test --project=chrome -gv 'PERF'
+
+      - name: Testdino Reporter
+        if: always()
+        run: npx --yes tdpw playwright-report/ --token="${TDPW_API_KEY}" --upload-html --json-report playwright-report/results.json
+        env:
+          TDPW_API_KEY: ${{ secrets.TDPW_API_KEY }}
 
       - name: Download existing reports
         if: always()
@@ -75,17 +81,50 @@ jobs:
         run: |
           # Create base structure
           mkdir -p history/reports/run-${{ github.run_id }}
-          cp -r playwright-report/* history/reports/run-${{ github.run_id }}/
 
-          DATE_TIME=$(date -u +"%Y-%m-%d %H:%M UTC")
+          # Copy playwright report if it exists, otherwise create empty report
+          if [ -d "playwright-report" ] && [ "$(ls -A playwright-report)" ]; then
+            echo "Copying existing playwright report..."
+            cp -r playwright-report/* history/reports/run-${{ github.run_id }}/
+          else
+            echo "No playwright report found, creating placeholder..."
+            echo "<h1>No test report available</h1><p>Tests may have failed to run or generate report.</p>" > history/reports/run-${{ github.run_id }}/index.html
+          fi
+
+          DATE_TIME=$(TZ='Europe/Madrid' date +"%d/%m/%Y %H:%M")
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           BRANCH_NAME="${{ github.ref_name }}"
+
+          # Get success percentage from testResults.json if it exists
+          SUCCESS_PERCENT="N/A"
+          SUCCESS_CLASS="success-medium"
+          if [ -f "testResults.json" ]; then
+            SUCCESS_PERCENT=$(node -e "
+              try {
+                const results = JSON.parse(require('fs').readFileSync('testResults.json', 'utf8'));
+                console.log(Math.round(results.PercentPassed || 0) + '%');
+              } catch(e) {
+                console.log('N/A');
+              }
+            ")
+            # Set CSS class based on percentage
+            if [ "$SUCCESS_PERCENT" != "N/A" ]; then
+              PERCENT_NUM=$(echo $SUCCESS_PERCENT | sed 's/%//')
+              if [ "$PERCENT_NUM" -ge 90 ]; then
+                SUCCESS_CLASS="success-high"
+              elif [ "$PERCENT_NUM" -ge 30 ]; then
+                SUCCESS_CLASS="success-medium"
+              else
+                SUCCESS_CLASS="success-low"
+              fi
+            fi
+          fi
 
           # Copy the HTML template
           cp .github/html-template.html history/index.html
 
-          # Create the new row
-          NEW_ROW="<tr><td class=\"run-id\"><a href=\"reports/run-${{ github.run_id }}/index.html\">${{ github.run_id }}</a></td><td class=\"commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">${SHORT_SHA}</a></td><td class=\"date\">${DATE_TIME}</td><td class=\"branch\">${BRANCH_NAME}</td><td class=\"browser\">Chrome</td><td><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td></tr>"
+          # Create the new row with success percentage
+          NEW_ROW="<tr><td class=\"success-rate $SUCCESS_CLASS\">$SUCCESS_PERCENT</td><td class=\"workflow\">PRE_daily</td><td class=\"commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">${SHORT_SHA}</a></td><td class=\"date\">${DATE_TIME}</td><td class=\"branch\">${BRANCH_NAME}</td><td class=\"browser\">🌐 Chrome</td><td><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td></tr>"
 
           # Prepare all rows (new one + existing ones)
           ROWS_CONTENT="$NEW_ROW"
@@ -108,6 +147,7 @@ jobs:
           fi
 
       - name: Upload report to GitHub Pages
+        if: always()
         uses: actions/upload-pages-artifact@v3
         with:
           path: history
@@ -129,6 +169,7 @@ jobs:
 
   deploy:
     needs: tests_chromium
+    if: always()
     runs-on: ubuntu-latest
     permissions:
       pages: write
