@@ -73,9 +73,14 @@
         color: #2980b9;
         text-decoration: underline;
       }
-      .run-id {
+      .workflow {
         font-weight: bold;
         font-family: monospace;
+        background: #e8f4f8;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #2c3e50;
       }
       .commit {
         font-family: monospace;
@@ -88,20 +93,28 @@
         color: #7f8c8d;
       }
       .branch {
-        background: #e74c3c;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.8em;
-        font-weight: 500;
+        color: #7f8c8d;
       }
       .browser {
-        background: #27ae60;
-        color: white;
+        color: #7f8c8d;
+      }
+      .success-rate {
+        font-weight: bold;
         padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.8em;
-        font-weight: 500;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      .success-high {
+        background: #d4edda;
+        color: #155724;
+      }
+      .success-medium {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .success-low {
+        background: #f8d7da;
+        color: #721c24;
       }
       .stats {
         background: #f8f9fa;
@@ -131,7 +144,8 @@
       <table>
         <thead>
           <tr>
-            <th>🆔 Run ID</th>
+            <th>📊 Success %</th>
+            <th>🔄 Workflow</th>
             <th>📝 Commit</th>
             <th>📅 Date</th>
             <th>🌿 Branch</th>
