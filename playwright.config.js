@@ -36,6 +36,7 @@ const config = {
   reporter: process.env.CI
     ? [
         ['html'],
+        ['json', { outputFile: 'playwright-report/results.json' }],
         [
           'playwright-qase-reporter',
           {
@@ -43,7 +44,7 @@ const config = {
           },
         ],
       ]
-    : [['html']],
+    : [['html'], ['json', { outputFile: 'playwright-report/results.json' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */

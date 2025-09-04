@@ -47,6 +47,12 @@ jobs:
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
         run: npx playwright test --project=chrome --reporter=html -gv 'PERF'
 
+      - name: Testdino Reporter
+        if: always()
+        run: npx --yes tdpw playwright-report/ --token="${TDPW_API_KEY}" --upload-html
+        env:
+          TDPW_API_KEY: ${{ secrets.TDPW_API_KEY }}
+
       - name: Download existing reports
         if: always()
         continue-on-error: true
