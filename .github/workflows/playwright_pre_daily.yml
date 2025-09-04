@@ -91,7 +91,7 @@ jobs:
             echo "<h1>No test report available</h1><p>Tests may have failed to run or generate report.</p>" > history/reports/run-${{ github.run_id }}/index.html
           fi
 
-          DATE_TIME=$(TZ='Europe/Madrid' date +"%d/%m/%Y %H:%M CET")
+          DATE_TIME=$(TZ='Europe/Madrid' date +"%d/%m/%Y %H:%M %Z")
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           BRANCH_NAME="${{ github.ref_name }}"
 
