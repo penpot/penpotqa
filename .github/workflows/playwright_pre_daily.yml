@@ -18,19 +18,10 @@ jobs:
     timeout-minutes: 400
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Setup Playwright Environment
+        uses: ./.github/actions/setup-playwright
         with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+          node-version: '22'
 
       - name: Run Playwright tests
         id: run-tests
@@ -47,7 +38,19 @@ jobs:
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
         run: npx playwright test --project=chrome --reporter=html -gv 'PERF'
 
-      - name: Download existing reports
+      - name: Generate and Upload Reports
+        uses: ./.github/actions/upload-reports
+        with:
+          browser-name: 'Chrome'
+          artifact-name: 'playwright-report-chromium'
+
+      - name: Send Mattermost Notification
+        uses: ./.github/actions/send-notification
+        with:
+          browser-name: 'Chrome'
+          channel-id: ${{ secrets.CHANNEL_ID }}
+          login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
+          password: ${{ secrets.PASSWORD_MATTERMOST }}
         if: always()
         continue-on-error: true
         run: |
