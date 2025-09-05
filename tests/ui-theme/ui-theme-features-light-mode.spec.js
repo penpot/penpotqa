@@ -1,4 +1,4 @@
-const { mainTest } = require('../../fixtures');
+const { registerTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { expect } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
@@ -17,7 +17,7 @@ let profilePage,
   inspectPanelPage,
   viewModePage;
 const teamName = random().concat('autotest');
-mainTest.beforeEach(async ({ page }) => {
+registerTest.beforeEach(async ({ page }) => {
   viewModePage = new ViewModePage(page);
   inspectPanelPage = new InspectPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
@@ -32,8 +32,8 @@ mainTest.beforeEach(async ({ page }) => {
   await profilePage.selectLightTheme();
 });
 
-mainTest.describe('Settings - UI THEME', () => {
-  mainTest(
+registerTest.describe('Settings - UI THEME', () => {
+  registerTest(
     '1677 Check Projects page' +
       '1678 Check Fonts page' +
       '1679 Check Teams page (Settings tab)' +
@@ -74,7 +74,7 @@ mainTest.describe('Settings - UI THEME', () => {
     },
   );
 
-  mainTest(
+  registerTest(
     'PENPOT-1681 Check Layers tab' +
       'PENPOT-1682 Check Design tab' +
       'PENPOT-1683 Check Assets tab' +
@@ -118,7 +118,7 @@ mainTest.describe('Settings - UI THEME', () => {
     },
   );
 
-  mainTest(
+  registerTest(
     'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
     async () => {
       await profilePage.backToDashboardFromAccount();
@@ -142,7 +142,7 @@ mainTest.describe('Settings - UI THEME', () => {
   );
 });
 
-mainTest.afterEach(async () => {
+registerTest.afterEach(async () => {
   await profilePage.goToAccountPage();
   await profilePage.openSettingsTab();
   await profilePage.selectDarkTheme();
