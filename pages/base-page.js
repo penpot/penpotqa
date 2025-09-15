@@ -49,7 +49,7 @@ exports.BasePage = class BasePage {
       .filter({ hasText: 'Focus on' });
     this.transformToPathMenuItem = page
       .getByRole('listitem')
-      .filter({ hasText: 'Transform to path' });
+      .filter({ hasText: 'Flatten' });
     this.selectionToBoardMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Selection to board' });
