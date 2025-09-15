@@ -29,7 +29,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.copyComponentLayer = page
       .getByTestId('icon-component-copy')
       .locator('//parent::div');
-    this.pathComponentLayer = page.locator('//*[@class="icon-path"]//parent::div');
+    this.pathComponentLayer = page.getByTestId('icon-path');
     this.createdLayerOnLayersPanelSpan = page.locator(
       'div[class*="element-list-body"] span[class*="element-name"]',
     );

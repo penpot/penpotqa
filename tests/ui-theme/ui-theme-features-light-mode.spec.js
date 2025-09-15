@@ -1,6 +1,6 @@
-const { registerTest } = require('../../fixtures');
+const { registerTest, mainTest } = require('../../fixtures');
+const { expect, test } = require('@playwright/test');
 const { MainPage } = require('../../pages/workspace/main-page');
-const { expect } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { ProfilePage } = require('../../pages/profile-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
@@ -17,7 +17,7 @@ let profilePage,
   inspectPanelPage,
   viewModePage;
 const teamName = random().concat('autotest');
-registerTest.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   viewModePage = new ViewModePage(page);
   inspectPanelPage = new InspectPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
@@ -32,48 +32,41 @@ registerTest.beforeEach(async ({ page }) => {
   await profilePage.selectLightTheme();
 });
 
-registerTest.describe('Settings - UI THEME', () => {
-  registerTest(
-    '1677 Check Projects page' +
-      '1678 Check Fonts page' +
-      '1679 Check Teams page (Settings tab)' +
-      '1680 Check "Your Account" page (Profile tab)',
-    async ({}) => {
-      await profilePage.clickOnProfileTab();
-      await expect(profilePage.profileSection).toHaveScreenshot(
-        'profile-image.png',
-        {
-          mask: [
-            profilePage.profileAvatarBlock,
-            profilePage.profileEmailInput,
-            profilePage.profileNameInput,
-          ],
-        },
-      );
-      await profilePage.backToDashboardFromAccount();
-      await expect(dashboardPage.dashboardSection).toHaveScreenshot(
-        'dashboard-image.png',
-        {
-          mask: [profilePage.profileMenuButton, teamPage.teamCurrentNameDiv],
-          maxDiffPixelRatio: 0.01,
-        },
-      );
-      await dashboardPage.openSidebarItem('Fonts');
-      await expect(teamPage.teamSettingsSection).toHaveScreenshot('fonts-image.png');
-      await teamPage.openTeamSettingsPageViaOptionsMenu();
-      await expect(teamPage.teamSettingsSection).toHaveScreenshot(
-        'team-settings-image.png',
-        {
-          mask: [
-            teamPage.teamIcon,
-            teamPage.teamOwnerSection,
-            teamPage.teamNameLabel,
-          ],
-        },
-      );
-    },
-  );
+mainTest(
+  '1677 Check Projects page' +
+    '1678 Check Fonts page' +
+    '1679 Check Teams page (Settings tab)' +
+    '1680 Check "Your Account" page (Profile tab)',
+  async ({}) => {
+    await profilePage.clickOnProfileTab();
+    await expect(profilePage.profileSection).toHaveScreenshot('profile-image.png', {
+      mask: [
+        profilePage.profileAvatarBlock,
+        profilePage.profileEmailInput,
+        profilePage.profileNameInput,
+      ],
+    });
+    await profilePage.backToDashboardFromAccount();
+    await expect(dashboardPage.dashboardSection).toHaveScreenshot(
+      'dashboard-image.png',
+      {
+        mask: [profilePage.profileMenuButton, teamPage.teamCurrentNameDiv],
+        maxDiffPixelRatio: 0.01,
+      },
+    );
+    await dashboardPage.openSidebarItem('Fonts');
+    await expect(teamPage.teamSettingsSection).toHaveScreenshot('fonts-image.png');
+    await teamPage.openTeamSettingsPageViaOptionsMenu();
+    await expect(teamPage.teamSettingsSection).toHaveScreenshot(
+      'team-settings-image.png',
+      {
+        mask: [teamPage.teamIcon, teamPage.teamOwnerSection, teamPage.teamNameLabel],
+      },
+    );
+  },
+);
 
+registerTest.describe('Settings - UI THEME', () => {
   registerTest(
     'PENPOT-1681 Check Layers tab' +
       'PENPOT-1682 Check Design tab' +
@@ -142,7 +135,7 @@ registerTest.describe('Settings - UI THEME', () => {
   );
 });
 
-registerTest.afterEach(async () => {
+test.afterEach(async () => {
   await profilePage.goToAccountPage();
   await profilePage.openSettingsTab();
   await profilePage.selectDarkTheme();
