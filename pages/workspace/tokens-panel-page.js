@@ -107,7 +107,8 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     this.zipOption = page.getByRole('option').filter({ hasText: 'ZIP file' });
     this.expandTokensButton = page
       .getByTestId('tokens-sidebar')
-      .locator('[class*="title_bar__collapsed"]');
+      .locator('[class*="title_bar__title-wrapper"]')
+      .getByRole('button');
   }
 
   async clickTokensTab() {

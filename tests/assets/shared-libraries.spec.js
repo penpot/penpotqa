@@ -464,6 +464,7 @@ mainTest.describe(() => {
       'Apply updates from Libraries → Updates (after dismissing at the beginning)',
     ),
     async () => {
+      await mainTest.slow();
       await dashboardPage.openFileWithName('New File 2');
       await mainPage.isWrapperMessageVisible();
       await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(

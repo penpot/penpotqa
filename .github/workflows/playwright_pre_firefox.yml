@@ -38,7 +38,13 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: npx playwright test --project=firefox --reporter=html -gv 'PERF'
+        run: npx playwright test --project=firefox -gv 'PERF'
+
+      - name: Testdino Reporter
+        if: always()
+        run: npx --yes tdpw playwright-report/ --token="${TDPW_API_KEY}" --upload-html --json-report playwright-report/results.json
+        env:
+          TDPW_API_KEY: ${{ secrets.TDPW_API_KEY }}
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports

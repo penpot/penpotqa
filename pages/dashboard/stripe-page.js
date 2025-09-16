@@ -25,6 +25,9 @@ exports.StripePage = class StripePage extends BasePage {
     this.cardZipCodeImput = this.iframeAddCardModal.locator(
       'input[name="postalCode"]',
     );
+    this.cardSaveInfoCheckout = this.iframeAddCardModal.locator(
+      '[id="Field-linkOptInCheckbox"]',
+    );
     this.confirmButton = page.getByTestId('confirm');
     this.returnToPenpotButton = page.getByText('Return to Penpot');
     this.updateSubscriptionButton = page.getByText('Update subscription');
@@ -82,6 +85,7 @@ exports.StripePage = class StripePage extends BasePage {
     await this.enterCardCVC();
     await this.selectCardCountry();
     await this.enterCardZipCode();
+    await this.clickOnSaveInfoCheckout();
     await this.clickOnAddCardButton();
   }
 
@@ -237,5 +241,11 @@ exports.StripePage = class StripePage extends BasePage {
     }
     const finalElements = this.invoiceRow.getByText(amount);
     await expect(finalElements).toHaveCount(expectedCount);
+  }
+
+  async clickOnSaveInfoCheckout() {
+    (await this.cardSaveInfoCheckout.isVisible())
+      ? await this.cardSaveInfoCheckout.click()
+      : null;
   }
 };
