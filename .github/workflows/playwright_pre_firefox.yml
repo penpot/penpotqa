@@ -20,6 +20,11 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Setup Playwright Environment
         uses: ./.github/actions/setup-playwright
         with:
