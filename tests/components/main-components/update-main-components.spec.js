@@ -384,14 +384,12 @@ mainTest.describe(() => {
 
   mainTest(
     qase([1404], 'Change copy components shadow and update main components color'),
-    async ({ browserName }) => {
+    async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddShadowButton();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.setComponentColor('#0538D1');
-      browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
-      await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.isFillHexCodeSetComponent('0538d1');
       await mainPage.waitForChangeIsSaved();
