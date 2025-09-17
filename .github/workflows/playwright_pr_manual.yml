@@ -68,15 +68,3 @@ jobs:
           channel-id: ${{ secrets.PR_CHANNEL_ID }}
           login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
           password: ${{ secrets.PASSWORD_MATTERMOST }}
-
-  deploy:
-    needs: tests_chromium
-    if: always()
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
