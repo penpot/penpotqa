@@ -49,22 +49,47 @@ runs:
         BRANCH_NAME="${{ github.ref_name }}"
         WORKFLOW_NAME="${{ github.workflow }}"
         SUCCESS_PERCENT="N/A"
+        SUCCESS_CLASS="success-medium"
         # Try to get success percent if testResults.json exists
         if [ -f "testResults.json" ]; then
           SUCCESS_PERCENT=$(node -e "try { const results = JSON.parse(require('fs').readFileSync('testResults.json', 'utf8')); console.log(Math.round(results.PercentPassed || 0) + '%'); } catch(e) { console.log('N/A'); }")
+          if [ "$SUCCESS_PERCENT" != "N/A" ]; then
+            PERCENT_NUM=$(echo $SUCCESS_PERCENT | sed 's/%//')
+            if [ "$PERCENT_NUM" -ge 90 ]; then
+              SUCCESS_CLASS="success-high"
+            elif [ "$PERCENT_NUM" -ge 30 ]; then
+              SUCCESS_CLASS="success-medium"
+            else
+              SUCCESS_CLASS="success-low"
+            fi
+          fi
         fi
 
         # Copy the HTML template
         cp .github/html-template.html history/index.html
 
+        # Detect browser icon and name
+        BROWSER_ICON="🌐"
+        BROWSER_LABEL="Chrome"
+        if [ "${{ inputs.browser-name }}" = "Firefox" ]; then
+          BROWSER_ICON="🦊"
+          BROWSER_LABEL="Firefox"
+        fi
+        # Ajustar nombre de workflow para los jobs
+        if [[ "$WORKFLOW_NAME" =~ firefox|Firefox ]]; then
+          WORKFLOW_LABEL="PRE_daily_firefox"
+        else
+          WORKFLOW_LABEL="PRE_daily"
+        fi
+
         # Create the new row with data-labels for responsive
         NEW_ROW="<tr>"
-        NEW_ROW+="<td class=\"success-rate\" data-label=\"📊 Success %\">$SUCCESS_PERCENT</td>"
-        NEW_ROW+="<td class=\"workflow\" data-label=\"🔄 Workflow\">$WORKFLOW_NAME</td>"
+        NEW_ROW+="<td class=\"success-rate $SUCCESS_CLASS\" data-label=\"📊 Success %\">$SUCCESS_PERCENT</td>"
+        NEW_ROW+="<td class=\"workflow\" data-label=\"🔄 Workflow\">$WORKFLOW_LABEL</td>"
         NEW_ROW+="<td class=\"commit\" data-label=\"📝 Commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">$SHORT_SHA</a></td>"
         NEW_ROW+="<td class=\"date\" data-label=\"📅 Date\">$DATE_TIME</td>"
         NEW_ROW+="<td class=\"branch\" data-label=\"🌿 Branch\">$BRANCH_NAME</td>"
-        NEW_ROW+="<td class=\"browser\" data-label=\"🌐 Browser\">${{ inputs.browser-name }}</td>"
+        NEW_ROW+="<td class=\"browser\" data-label=\"🌐 Browser\"><span title=\"$BROWSER_LABEL\">$BROWSER_ICON $BROWSER_LABEL</span></td>"
         NEW_ROW+="<td data-label=\"📊 Report\"><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
         NEW_ROW+="</tr>"
 
