@@ -47,12 +47,26 @@ runs:
         DATE_TIME=$(date -u +"%Y-%m-%d %H:%M UTC")
         SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
         BRANCH_NAME="${{ github.ref_name }}"
+        WORKFLOW_NAME="${{ github.workflow }}"
+        SUCCESS_PERCENT="N/A"
+        # Try to get success percent if testResults.json exists
+        if [ -f "testResults.json" ]; then
+          SUCCESS_PERCENT=$(node -e "try { const results = JSON.parse(require('fs').readFileSync('testResults.json', 'utf8')); console.log(Math.round(results.PercentPassed || 0) + '%'); } catch(e) { console.log('N/A'); }")
+        fi
 
         # Copy the HTML template
         cp .github/html-template.html history/index.html
 
-        # Create the new row
-        NEW_ROW="<tr><td class=\"run-id\"><a href=\"reports/run-${{ github.run_id }}/index.html\">${{ github.run_id }}</a></td><td class=\"commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">${SHORT_SHA}</a></td><td class=\"date\">${DATE_TIME}</td><td class=\"branch\">${BRANCH_NAME}</td><td class=\"browser\">${{ inputs.browser-name }}</td><td><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td></tr>"
+        # Create the new row with data-labels for responsive
+        NEW_ROW="<tr>"
+        NEW_ROW+="<td class=\"success-rate\" data-label=\"📊 Success %\">$SUCCESS_PERCENT</td>"
+        NEW_ROW+="<td class=\"workflow\" data-label=\"🔄 Workflow\">$WORKFLOW_NAME</td>"
+        NEW_ROW+="<td class=\"commit\" data-label=\"📝 Commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">$SHORT_SHA</a></td>"
+        NEW_ROW+="<td class=\"date\" data-label=\"📅 Date\">$DATE_TIME</td>"
+        NEW_ROW+="<td class=\"branch\" data-label=\"🌿 Branch\">$BRANCH_NAME</td>"
+        NEW_ROW+="<td class=\"browser\" data-label=\"🌐 Browser\">${{ inputs.browser-name }}</td>"
+        NEW_ROW+="<td data-label=\"📊 Report\"><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
+        NEW_ROW+="</tr>"
 
         # Prepare all rows (new one + existing ones)
         ROWS_CONTENT="$NEW_ROW"
@@ -61,7 +75,7 @@ runs:
         if curl -s -f "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html" -o existing_index.html; then
           echo "Found existing index.html, extracting existing runs..."
           # Extract existing runs and add them (limit to 49 to keep 50 total)
-          EXISTING_ROWS=$(grep "<tr><td" existing_index.html | head -49 | tr '\n' ' ' || true)
+          EXISTING_ROWS=$(grep "<tr>" existing_index.html | head -49 | tr '\n' ' ' || true)
           ROWS_CONTENT="$NEW_ROW $EXISTING_ROWS"
         fi
 
