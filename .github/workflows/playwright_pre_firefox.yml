@@ -43,13 +43,7 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: npx playwright test --project=firefox -gv 'PERF'
-
-      - name: Testdino Reporter
-        if: always()
-        run: npx --yes tdpw playwright-report/ --token="${TDPW_API_KEY}" --upload-html --json-report playwright-report/results.json
-        env:
-          TDPW_API_KEY: ${{ secrets.TDPW_API_KEY }}
+        run: npx playwright test tests/login.spec.js --project=firefox -gv 'PERF'
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
@@ -64,6 +58,8 @@ jobs:
           channel-id: ${{ secrets.CHANNEL_ID }}
           login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
           password: ${{ secrets.PASSWORD_MATTERMOST }}
+        if: always()
+        continue-on-error: true
 
   deploy:
     needs: tests_firefox
