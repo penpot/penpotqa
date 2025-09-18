@@ -57,41 +57,56 @@ runs:
           WORKFLOW_LABEL="PRE_daily"
         fi
 
-        # Create new row for this execution
-        NEW_ROW="          <tr>"
-        NEW_ROW+="\n            <td class=\"success-rate $SUCCESS_CLASS\" data-label=\"📊 Success %\">$SUCCESS_PERCENT</td>"
-        NEW_ROW+="\n            <td class=\"workflow\" data-label=\"🔄 Workflow\">$WORKFLOW_LABEL</td>"
-        NEW_ROW+="\n            <td class=\"commit\" data-label=\"📝 Commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">$SHORT_SHA</a></td>"
-        NEW_ROW+="\n            <td class=\"date\" data-label=\"📅 Date\">$DATE_TIME</td>"
-        NEW_ROW+="\n            <td class=\"branch\" data-label=\"🌿 Branch\">$BRANCH_NAME</td>"
-        NEW_ROW+="\n            <td class=\"browser\" data-label=\"🌐 Browser\"><span title=\"$BROWSER_LABEL\">$BROWSER_ICON $BROWSER_LABEL</span></td>"
-        NEW_ROW+="\n            <td data-label=\"📊 Report\"><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
-        NEW_ROW+="\n          </tr>"
+        # Create temporary file for new row
+        cat > /tmp/new_row.html << EOF
+          <tr>
+            <td class="success-rate $SUCCESS_CLASS" data-label="📊 Success %">$SUCCESS_PERCENT</td>
+            <td class="workflow" data-label="🔄 Workflow">$WORKFLOW_LABEL</td>
+            <td class="commit" data-label="📝 Commit"><a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">$SHORT_SHA</a></td>
+            <td class="date" data-label="📅 Date">$DATE_TIME</td>
+            <td class="branch" data-label="🌿 Branch">$BRANCH_NAME</td>
+            <td class="browser" data-label="🌐 Browser"><span title="$BROWSER_LABEL">$BROWSER_ICON $BROWSER_LABEL</span></td>
+            <td data-label="📊 Report"><a href="reports/run-${{ github.run_id }}/index.html">🔍 View Report</a></td>
+          </tr>
+        EOF
 
         # Extract existing rows from current index.html if it exists, excluding header row
-        EXISTING_ROWS=""
         if [ -f gh-pages/index.html ]; then
           echo "Extracting existing rows from gh-pages/index.html..."
           # Extract only data rows (not header), limit to 49 most recent
-          EXISTING_ROWS=$(sed -n '/<tbody>/,/<\/tbody>/p' gh-pages/index.html | \
-                         grep -E '^\s*<tr>' | \
-                         grep -v 'data-label.*📊 Success %.*th>' | \
-                         head -49 || true)
-          echo "Found $(echo "$EXISTING_ROWS" | grep -c '<tr>' || echo 0) existing rows"
+          sed -n '/<tbody>/,/<\/tbody>/p' gh-pages/index.html | \
+            grep -E '^\s*<tr>' | \
+            grep -v 'data-label.*📊 Success %.*th>' | \
+            head -49 > /tmp/existing_rows.html || touch /tmp/existing_rows.html
+          
+          EXISTING_COUNT=$(wc -l < /tmp/existing_rows.html || echo 0)
+          echo "Found $EXISTING_COUNT existing rows"
         else
           echo "No existing index.html found in gh-pages"
+          touch /tmp/existing_rows.html
         fi
 
         # Combine new row with existing rows
-        if [ -n "$EXISTING_ROWS" ]; then
-          ALL_ROWS="$NEW_ROW"$'\n'"$EXISTING_ROWS"
-        else
-          ALL_ROWS="$NEW_ROW"
-        fi
+        cat /tmp/new_row.html /tmp/existing_rows.html > /tmp/all_rows.html
 
-        # Generate new index.html with all rows
+        # Generate new index.html with all rows using a more robust approach
         echo "Generating new index.html with historical data..."
-        sed "s|<!-- ROWS_PLACEHOLDER -->|$ALL_ROWS|" .github/html-template.html > gh-pages/index.html
+        cp .github/html-template.html /tmp/template.html
+
+        # Use awk to replace the placeholder with the content of all_rows.html
+        awk '
+        /<!-- ROWS_PLACEHOLDER -->/ {
+          while ((getline line < "/tmp/all_rows.html") > 0) {
+            print line
+          }
+          close("/tmp/all_rows.html")
+          next
+        }
+        { print }
+        ' /tmp/template.html > gh-pages/index.html
+
+        # Cleanup temp files
+        rm -f /tmp/new_row.html /tmp/existing_rows.html /tmp/all_rows.html /tmp/template.html
 
         # Clean up old report directories (keep only 50 most recent)
         if [ -d gh-pages/reports ]; then
