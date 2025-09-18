@@ -51,7 +51,10 @@ runs:
           BROWSER_ICON="🦊"
           BROWSER_LABEL="Firefox"
         fi
-        if [[ "$WORKFLOW_NAME" =~ firefox|Firefox ]]; then
+        # Determine workflow label based on workflow name
+        if [[ "$WORKFLOW_NAME" == "Manual Penpot Tests for PR" ]]; then
+          WORKFLOW_LABEL="PR_Manual"
+        elif [[ "$WORKFLOW_NAME" =~ firefox|Firefox ]]; then
           WORKFLOW_LABEL="PRE_daily_firefox"
         else
           WORKFLOW_LABEL="PRE_daily"
@@ -122,5 +125,29 @@ runs:
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
         git add .
-        git commit -m "Add report for run ${{ github.run_id }}" || echo "No changes to commit"
-        git push origin gh-pages
+
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+          exit 0
+        fi
+
+        git commit -m "Add report for run ${{ github.run_id }}"
+
+        # Push with retry logic to handle concurrent updates
+        for i in {1..3}; do
+          echo "Push attempt $i/3..."
+          if git push origin gh-pages; then
+            echo "✅ Successfully pushed to gh-pages"
+            break
+          else
+            if [ $i -lt 3 ]; then
+              echo "⚠️ Push failed, pulling latest changes and retrying..."
+              git pull --rebase origin gh-pages
+              sleep $((i * 2))
+            else
+              echo "❌ Failed to push after 3 attempts"
+              exit 1
+            fi
+          fi
+        done

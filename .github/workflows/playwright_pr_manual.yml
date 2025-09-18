@@ -9,6 +9,11 @@ on:
         default: false
         type: boolean
 
+# Prevent concurrent deployments to gh-pages
+concurrency:
+  group: pages-deployment
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pages: write

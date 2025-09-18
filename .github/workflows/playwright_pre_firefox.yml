@@ -5,6 +5,11 @@ on:
     - cron: '00 20 * * 4'
   workflow_dispatch:
 
+# Prevent concurrent deployments to gh-pages
+concurrency:
+  group: pages-deployment
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pages: write
