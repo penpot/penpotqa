@@ -15,6 +15,7 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
       }
+
       .container {
         max-width: 1200px;
         margin: 0 auto;
@@ -23,18 +24,21 @@
         border-radius: 12px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       }
+
       h1 {
         color: #2c3e50;
         text-align: center;
         margin-bottom: 10px;
         font-size: 2.5em;
       }
+
       .subtitle {
         text-align: center;
         color: #7f8c8d;
         margin-bottom: 30px;
         font-size: 1.1em;
       }
+
       table {
         width: 100%;
         border-collapse: collapse;
@@ -44,12 +48,14 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         word-break: break-word;
       }
+
       th,
       td {
         padding: 15px 12px;
         text-align: left;
         border-bottom: 1px solid #ecf0f1;
       }
+
       th {
         background: linear-gradient(135deg, #3498db, #2980b9);
         color: white;
@@ -58,22 +64,27 @@
         font-size: 0.9em;
         letter-spacing: 0.5px;
       }
+
       tr:nth-child(even) {
         background-color: #f8f9fa;
       }
+
       tr:hover {
         background-color: #e3f2fd;
         transition: all 0.2s ease;
       }
+
       a {
         color: #3498db;
         text-decoration: none;
         font-weight: 500;
       }
+
       a:hover {
         color: #2980b9;
         text-decoration: underline;
       }
+
       .workflow {
         font-weight: bold;
         font-family: monospace;
@@ -83,6 +94,7 @@
         font-size: 0.9em;
         color: #2c3e50;
       }
+
       .commit {
         font-family: monospace;
         background: #f1f2f6;
@@ -90,33 +102,41 @@
         border-radius: 4px;
         font-size: 0.9em;
       }
+
       .date {
         color: #7f8c8d;
       }
+
       .branch {
         color: #7f8c8d;
       }
+
       .browser {
         color: #7f8c8d;
       }
+
       .success-rate {
         font-weight: bold;
         padding: 4px 8px;
         border-radius: 4px;
         font-size: 0.9em;
       }
+
       .success-high {
         background: #d4edda;
         color: #155724;
       }
+
       .success-medium {
         background: #fff3cd;
         color: #856404;
       }
+
       .success-low {
         background: #f8d7da;
         color: #721c24;
       }
+
       .stats {
         background: #f8f9fa;
         padding: 20px;
@@ -124,6 +144,7 @@
         margin-bottom: 20px;
         text-align: center;
       }
+
       .stats h3 {
         margin: 0 0 10px 0;
         color: #2c3e50;
@@ -134,32 +155,40 @@
         .container {
           padding: 18px;
         }
+
         h1 {
           font-size: 2em;
         }
+
         th,
         td {
           padding: 10px 6px;
         }
       }
+
       @media (max-width: 600px) {
         body {
           padding: 6px;
         }
+
         .container {
           padding: 8px 2px;
           border-radius: 0;
           box-shadow: none;
         }
+
         h1 {
           font-size: 1.3em;
         }
+
         .subtitle {
           font-size: 1em;
         }
+
         .stats {
           padding: 10px 2px;
         }
+
         table,
         thead,
         tbody,
@@ -169,9 +198,11 @@
           display: block;
           width: 100%;
         }
+
         thead {
           display: none;
         }
+
         tr {
           margin-bottom: 18px;
           background: #fff;
@@ -179,12 +210,14 @@
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
           padding: 8px 0;
         }
+
         td {
           border: none;
           position: relative;
           padding-left: 50%;
           min-height: 36px;
         }
+
         td:before {
           position: absolute;
           top: 10px;
@@ -198,6 +231,7 @@
       }
     </style>
   </head>
+
   <body>
     <div class="container">
       <h1>🎭 Playwright Test Reports</h1>
@@ -224,35 +258,6 @@
         </thead>
         <tbody>
           <!-- ROWS_PLACEHOLDER -->
-          <!--
-          <tr>
-            <td class="success-rate success-high" data-label="📊 Success %">100%</td>
-            <td class="workflow" data-label="🔄 Workflow">PRE_daily</td>
-            <td class="commit" data-label="📝 Commit"><a href="#">3f557a5</a></td>
-            <td class="date" data-label="📅 Date">2025-09-17 11:14 UTC</td>
-            <td class="branch" data-label="🌿 Branch">main</td>
-            <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
-            <td data-label="📊 Report"><a href="#">🔍 View Report</a></td>
-          </tr>
-          <tr>
-            <td class="success-rate success-medium" data-label="📊 Success %">97%</td>
-            <td class="workflow" data-label="🔄 Workflow">PRE_daily</td>
-            <td class="commit" data-label="📝 Commit"><a href="#">36d5797</a></td>
-            <td class="date" data-label="📅 Date">2025-09-17 04:40 UTC</td>
-            <td class="branch" data-label="🌿 Branch">main</td>
-            <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
-            <td data-label="📊 Report"><a href="#">🔍 View Report</a></td>
-          </tr>
-          <tr>
-            <td class="success-rate success-low" data-label="📊 Success %">45%</td>
-            <td class="workflow" data-label="🔄 Workflow">PRE_daily_firefox</td>
-            <td class="commit" data-label="📝 Commit"><a href="#">38fd580</a></td>
-            <td class="date" data-label="📅 Date">2025-09-12 00:20 UTC</td>
-            <td class="branch" data-label="🌿 Branch">main</td>
-            <td class="browser" data-label="🌐 Browser"><span title="Firefox">🦊 Firefox</span></td>
-            <td data-label="📊 Report"><a href="#">🔍 View Report</a></td>
-          </tr>
-          -->
         </tbody>
       </table>
     </div>

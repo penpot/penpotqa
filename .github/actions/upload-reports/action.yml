@@ -45,8 +45,6 @@ runs:
           fi
         fi
 
-        cp .github/html-template.html gh-pages/index.html
-
         BROWSER_ICON="🌐"
         BROWSER_LABEL="Chrome"
         if [ "${{ inputs.browser-name }}" = "Firefox" ]; then
@@ -59,25 +57,47 @@ runs:
           WORKFLOW_LABEL="PRE_daily"
         fi
 
-        NEW_ROW="<tr>"
-        NEW_ROW+="<td class=\"success-rate $SUCCESS_CLASS\" data-label=\"📊 Success %\">$SUCCESS_PERCENT</td>"
-        NEW_ROW+="<td class=\"workflow\" data-label=\"🔄 Workflow\">$WORKFLOW_LABEL</td>"
-        NEW_ROW+="<td class=\"commit\" data-label=\"📝 Commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">$SHORT_SHA</a></td>"
-        NEW_ROW+="<td class=\"date\" data-label=\"📅 Date\">$DATE_TIME</td>"
-        NEW_ROW+="<td class=\"branch\" data-label=\"🌿 Branch\">$BRANCH_NAME</td>"
-        NEW_ROW+="<td class=\"browser\" data-label=\"🌐 Browser\"><span title=\"$BROWSER_LABEL\">$BROWSER_ICON $BROWSER_LABEL</span></td>"
-        NEW_ROW+="<td data-label=\"📊 Report\"><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
-        NEW_ROW+="</tr>"
+        # Create new row for this execution
+        NEW_ROW="          <tr>"
+        NEW_ROW+="\n            <td class=\"success-rate $SUCCESS_CLASS\" data-label=\"📊 Success %\">$SUCCESS_PERCENT</td>"
+        NEW_ROW+="\n            <td class=\"workflow\" data-label=\"🔄 Workflow\">$WORKFLOW_LABEL</td>"
+        NEW_ROW+="\n            <td class=\"commit\" data-label=\"📝 Commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">$SHORT_SHA</a></td>"
+        NEW_ROW+="\n            <td class=\"date\" data-label=\"📅 Date\">$DATE_TIME</td>"
+        NEW_ROW+="\n            <td class=\"branch\" data-label=\"🌿 Branch\">$BRANCH_NAME</td>"
+        NEW_ROW+="\n            <td class=\"browser\" data-label=\"🌐 Browser\"><span title=\"$BROWSER_LABEL\">$BROWSER_ICON $BROWSER_LABEL</span></td>"
+        NEW_ROW+="\n            <td data-label=\"📊 Report\"><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
+        NEW_ROW+="\n          </tr>"
 
-        ROWS_CONTENT="$NEW_ROW"
+        # Extract existing rows from current index.html if it exists, excluding header row
+        EXISTING_ROWS=""
         if [ -f gh-pages/index.html ]; then
-          EXISTING_ROWS=$(grep "<tr>" gh-pages/index.html | head -49 | tr '\n' ' ' || true)
-          ROWS_CONTENT="$NEW_ROW $EXISTING_ROWS"
+          echo "Extracting existing rows from gh-pages/index.html..."
+          # Extract only data rows (not header), limit to 49 most recent
+          EXISTING_ROWS=$(sed -n '/<tbody>/,/<\/tbody>/p' gh-pages/index.html | \
+                         grep -E '^\s*<tr>' | \
+                         grep -v 'data-label.*📊 Success %.*th>' | \
+                         head -49 || true)
+          echo "Found $(echo "$EXISTING_ROWS" | grep -c '<tr>' || echo 0) existing rows"
+        else
+          echo "No existing index.html found in gh-pages"
         fi
-        sed "s|<!-- ROWS_PLACEHOLDER -->|$ROWS_CONTENT|" .github/html-template.html > gh-pages/index.html
 
+        # Combine new row with existing rows
+        if [ -n "$EXISTING_ROWS" ]; then
+          ALL_ROWS="$NEW_ROW"$'\n'"$EXISTING_ROWS"
+        else
+          ALL_ROWS="$NEW_ROW"
+        fi
+
+        # Generate new index.html with all rows
+        echo "Generating new index.html with historical data..."
+        sed "s|<!-- ROWS_PLACEHOLDER -->|$ALL_ROWS|" .github/html-template.html > gh-pages/index.html
+
+        # Clean up old report directories (keep only 50 most recent)
         if [ -d gh-pages/reports ]; then
+          echo "Cleaning up old reports..."
           ls -dt gh-pages/reports/run-* 2>/dev/null | tail -n +51 | xargs -r rm -rf
+          echo "Kept $(ls -1 gh-pages/reports/ 2>/dev/null | wc -l) report directories"
         fi
 
     - name: Commit and push to gh-pages
