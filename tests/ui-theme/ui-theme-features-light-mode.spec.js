@@ -92,7 +92,6 @@ registerTest.describe('Settings - UI THEME', () => {
           mask: [mainPage.fileNameSpan, assetsPanelPage.librariesOpenModalButton],
         },
       );
-      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
         'assets-file-right-sidebar-image.png',
