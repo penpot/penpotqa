@@ -1,0 +1,256 @@
+{
+  "config": {
+    "configFile": "D:\\a\\penpotqa\\penpotqa\\playwright.config.js",
+    "rootDir": "D:/a/penpotqa/penpotqa/tests",
+    "forbidOnly": true,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/results.json"
+        }
+      ],
+      [
+        "D:\\a\\penpotqa\\penpotqa\\node_modules\\playwright-qase-reporter\\dist\\index.js",
+        {
+          "logging": true
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "D:/a/penpotqa/penpotqa/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "chrome",
+        "name": "chrome",
+        "testDir": "D:/a/penpotqa/penpotqa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "D:/a/penpotqa/penpotqa/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "D:/a/penpotqa/penpotqa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "D:/a/penpotqa/penpotqa/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "D:/a/penpotqa/penpotqa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.46.0",
+    "workers": 6,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "login.spec.js",
+      "file": "login.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Login with an email address (Qase ID: 35)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "firefox",
+              "projectName": "firefox",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "status": "passed",
+                  "duration": 27985,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m4\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-18T13:23:21.826Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "badc1754af1944f68b2b-81c6cf5223bc396fcbe7",
+          "file": "login.spec.js",
+          "line": 7,
+          "column": 1
+        },
+        {
+          "title": "Login with invalid email address (Qase ID: 40)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "firefox",
+              "projectName": "firefox",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "status": "passed",
+                  "duration": 20063,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m2\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-18T13:23:21.752Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "badc1754af1944f68b2b-d1aae2789bccb98158af",
+          "file": "login.spec.js",
+          "line": 18,
+          "column": 1
+        },
+        {
+          "title": "Login with no password (Qase ID: 41)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "firefox",
+              "projectName": "firefox",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "status": "passed",
+                  "duration": 20082,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results file created: { Passed: \u001b[33m0\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m0\u001b[39m }\n"
+                    },
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m1\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-18T13:23:21.700Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "badc1754af1944f68b2b-b3b0708a30e580d413a1",
+          "file": "login.spec.js",
+          "line": 29,
+          "column": 1
+        },
+        {
+          "title": "Login with incorrect password (Qase ID: 42)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "firefox",
+              "projectName": "firefox",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "status": "passed",
+                  "duration": 20561,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m3\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-18T13:23:21.718Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "badc1754af1944f68b2b-525903ed598736a7dfa3",
+          "file": "login.spec.js",
+          "line": 39,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-09-18T13:23:19.685Z",
+    "duration": 33915.394,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
