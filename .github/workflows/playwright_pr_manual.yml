@@ -9,6 +9,11 @@ on:
         default: false
         type: boolean
 
+# Prevent concurrent deployments to gh-pages
+concurrency:
+  group: pages-deployment
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pages: write
@@ -22,21 +27,18 @@ jobs:
     environment: PRE
     timeout-minutes: 280
     runs-on: windows-latest
+    env:
+      TZ: Europe/Madrid
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Playwright Environment
+        uses: ./.github/actions/setup-playwright
         with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+          node-version: '22'
 
       - name: Run Playwright tests
         id: run-tests
@@ -60,135 +62,16 @@ jobs:
             npx playwright test --project=chrome --only-changed=origin/main -gv 'PERF'
           fi
 
-      - name: Testdino Reporter
-        if: always()
-        run: npx --yes tdpw playwright-report/ --token="${TDPW_API_KEY}" --upload-html --json-report playwright-report/results.json
-        env:
-          TDPW_API_KEY: ${{ secrets.TDPW_API_KEY }}
-
-      - name: Download existing reports
-        if: always()
-        continue-on-error: true
-        run: |
-          # Try to download existing reports from GitHub Pages
-          echo "Attempting to download existing reports..."
-          mkdir -p temp_existing
-          cd temp_existing
-
-          # Download using wget recursively with limits
-          wget --recursive --no-parent --reject="index.html*" --level=3 --no-host-directories \
-               --cut-dirs=1 --timeout=10 --tries=2 \
-               "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/" || true
-
-          # Move existing reports if we found them
-          if [ -d "reports" ]; then
-            echo "Found existing reports, preserving them..."
-            mkdir -p ../history
-            mv reports ../history/
-          fi
-          cd ..
-          rm -rf temp_existing
-
-      - name: Prepare history folder
-        if: always()
-        run: |
-          # Create base structure
-          mkdir -p history/reports/run-${{ github.run_id }}
-
-          # Copy playwright report if it exists, otherwise create empty report
-          if [ -d "playwright-report" ] && [ "$(ls -A playwright-report)" ]; then
-            echo "Copying existing playwright report..."
-            cp -r playwright-report/* history/reports/run-${{ github.run_id }}/
-          else
-            echo "No playwright report found, creating placeholder..."
-            echo "<h1>No test report available</h1><p>Tests may have failed to run or generate report.</p>" > history/reports/run-${{ github.run_id }}/index.html
-          fi
-
-          DATE_TIME=$(TZ='Europe/Madrid' date +"%d/%m/%Y %H:%M")
-          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          BRANCH_NAME="${{ github.ref_name }}"
-
-          # Get success percentage from testResults.json if it exists
-          SUCCESS_PERCENT="N/A"
-          SUCCESS_CLASS="success-medium"
-          if [ -f "testResults.json" ]; then
-            SUCCESS_PERCENT=$(node -e "
-              try {
-                const results = JSON.parse(require('fs').readFileSync('testResults.json', 'utf8'));
-                console.log(Math.round(results.PercentPassed || 0) + '%');
-              } catch(e) {
-                console.log('N/A');
-              }
-            ")
-            # Set CSS class based on percentage
-            if [ "$SUCCESS_PERCENT" != "N/A" ]; then
-              PERCENT_NUM=$(echo $SUCCESS_PERCENT | sed 's/%//')
-              if [ "$PERCENT_NUM" -ge 90 ]; then
-                SUCCESS_CLASS="success-high"
-              elif [ "$PERCENT_NUM" -ge 30 ]; then
-                SUCCESS_CLASS="success-medium"
-              else
-                SUCCESS_CLASS="success-low"
-              fi
-            fi
-          fi
-
-          # Copy the HTML template
-          cp .github/html-template.html history/index.html
-
-          # Create the new row with success percentage
-          NEW_ROW="<tr><td class=\"success-rate $SUCCESS_CLASS\">$SUCCESS_PERCENT</td><td class=\"workflow\">Manual_PR</td><td class=\"commit\"><a href=\"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\">${SHORT_SHA}</a></td><td class=\"date\">${DATE_TIME}</td><td class=\"branch\">${BRANCH_NAME}</td><td class=\"browser\">🌐 Chrome</td><td><a href=\"reports/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td></tr>"
-
-          # Prepare all rows (new one + existing ones)
-          ROWS_CONTENT="$NEW_ROW"
-
-          # Try to get existing runs data from the old HTML if it exists
-          if curl -s -f "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html" -o existing_index.html; then
-            echo "Found existing index.html, extracting existing runs..."
-            # Extract existing runs and add them (limit to 49 to keep 50 total)
-            EXISTING_ROWS=$(grep "<tr><td" existing_index.html | head -49 | tr '\n' ' ' || true)
-            ROWS_CONTENT="$NEW_ROW $EXISTING_ROWS"
-          fi
-
-          # Replace placeholder with actual rows
-          sed "s|<!-- ROWS_PLACEHOLDER -->|$ROWS_CONTENT|" history/index.html > temp_index.html
-          mv temp_index.html history/index.html
-
-          # Remove old run folders (keep latest 50)
-          if [ -d history/reports ]; then
-            ls -dt history/reports/run-* 2>/dev/null | tail -n +51 | xargs -r rm -rf
-          fi
-
-      - name: Upload report to GitHub Pages
-        if: always()
-        uses: actions/upload-pages-artifact@v3
+      - name: Generate and Upload Reports
+        uses: ./.github/actions/upload-reports
         with:
-          path: history
+          browser-name: 'Chrome'
+          artifact-name: 'playwright-report-chromium-pr'
 
-      - name: Upload Playwright Report
-        uses: actions/upload-artifact@v4
-        if: always()
+      - name: Send Mattermost Notification
+        uses: ./.github/actions/send-notification
         with:
-          name: playwright-report-chromium-pr
-          path: playwright-report/
-          retention-days: 30
-
-      - name: Send mattermost Message
-        env:
-          CHANNEL_ID: ${{ secrets.PR_CHANNEL_ID }}
-          LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
-          PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
-        if: always()
-        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('Chrome')"
-
-  deploy:
-    needs: tests_chromium
-    if: always()
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          browser-name: 'Chrome'
+          channel-id: ${{ secrets.PR_CHANNEL_ID }}
+          login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
+          password: ${{ secrets.PASSWORD_MATTERMOST }}

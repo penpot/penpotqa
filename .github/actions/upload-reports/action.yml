@@ -1,0 +1,163 @@
+name: 'Generate and Upload Reports'
+description: 'Download existing reports, prepare history and upload to GitHub Pages'
+
+inputs:
+  browser-name:
+    description: 'Browser name for the report'
+    required: true
+  artifact-name:
+    description: 'Name for the artifact upload'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout gh-pages branch
+      uses: actions/checkout@v4
+      with:
+        ref: gh-pages
+        path: gh-pages
+        token: ${{ github.token }}
+
+    - name: Prepare new report
+      shell: bash
+      run: |
+        mkdir -p gh-pages/reports/run-${{ github.run_id }}
+        cp -r playwright-report/* gh-pages/reports/run-${{ github.run_id }}/
+
+        # Simple approach: use date command with offset for Madrid time
+        MONTH=$(date -u +%m)
+
+        # Determine timezone offset - September (09) should be CEST
+        if [[ "$MONTH" == "04" ]] || [[ "$MONTH" == "05" ]] || [[ "$MONTH" == "06" ]] || \
+           [[ "$MONTH" == "07" ]] || [[ "$MONTH" == "08" ]] || [[ "$MONTH" == "09" ]] || [[ "$MONTH" == "10" ]]; then
+          # Summer time: UTC+2 (CEST)
+          DATE_TIME=$(date -u -d "+2 hours" +"%Y-%m-%d %H:%M CEST")
+        else
+          # Winter time: UTC+1 (CET)
+          DATE_TIME=$(date -u -d "+1 hour" +"%Y-%m-%d %H:%M CET")
+        fi
+        SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+        BRANCH_NAME="${{ github.ref_name }}"
+        WORKFLOW_NAME="${{ github.workflow }}"
+        SUCCESS_PERCENT="N/A"
+        SUCCESS_CLASS="success-medium"
+        if [ -f "testResults.json" ]; then
+          SUCCESS_PERCENT=$(node -e "try { const results = JSON.parse(require('fs').readFileSync('testResults.json', 'utf8')); console.log(Math.round(results.PercentPassed || 0) + '%'); } catch(e) { console.log('N/A'); }")
+          if [ "$SUCCESS_PERCENT" != "N/A" ]; then
+            PERCENT_NUM=$(echo $SUCCESS_PERCENT | sed 's/%//')
+            if [ "$PERCENT_NUM" -ge 90 ]; then
+              SUCCESS_CLASS="success-high"
+            elif [ "$PERCENT_NUM" -ge 30 ]; then
+              SUCCESS_CLASS="success-medium"
+            else
+              SUCCESS_CLASS="success-low"
+            fi
+          fi
+        fi
+
+        BROWSER_ICON="🌐"
+        BROWSER_LABEL="Chrome"
+        if [ "${{ inputs.browser-name }}" = "Firefox" ]; then
+          BROWSER_ICON="🦊"
+          BROWSER_LABEL="Firefox"
+        fi
+        # Determine workflow label based on workflow name
+        if [[ "$WORKFLOW_NAME" == "Manual Penpot Tests for PR" ]]; then
+          WORKFLOW_LABEL="PR_Manual"
+        elif [[ "$WORKFLOW_NAME" =~ firefox|Firefox ]]; then
+          WORKFLOW_LABEL="PRE_daily_firefox"
+        else
+          WORKFLOW_LABEL="PRE_daily"
+        fi
+
+        # Create temporary file for new row
+        cat > /tmp/new_row.html << EOF
+          <tr>
+            <td class="success-rate $SUCCESS_CLASS" data-label="📊 Success %">$SUCCESS_PERCENT</td>
+            <td class="workflow" data-label="🔄 Workflow">$WORKFLOW_LABEL</td>
+            <td class="commit" data-label="📝 Commit"><a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">$SHORT_SHA</a></td>
+            <td class="date" data-label="📅 Date">$DATE_TIME</td>
+            <td class="branch" data-label="🌿 Branch">$BRANCH_NAME</td>
+            <td class="browser" data-label="🌐 Browser"><span title="$BROWSER_LABEL">$BROWSER_ICON $BROWSER_LABEL</span></td>
+            <td data-label="📊 Report"><a href="reports/run-${{ github.run_id }}/index.html">🔍 View Report</a></td>
+          </tr>
+        EOF
+
+        # Extract existing rows from current index.html if it exists
+        if [ -f gh-pages/index.html ]; then
+          # Create a temporary file to work with the tbody content
+          sed -n '/<tbody>/,/<\/tbody>/p' gh-pages/index.html > /tmp/tbody_content.html
+          
+          # Extract complete rows using sed to get everything from <tr> to </tr>
+          # Remove the tbody tags and placeholder comments, keep only the row content
+          sed '/<tbody>/d; /<\/tbody>/d; /<!-- ROWS_PLACEHOLDER -->/d; /^[[:space:]]*$/d' /tmp/tbody_content.html > /tmp/existing_rows.html
+          
+          # Cleanup temp file
+          rm -f /tmp/tbody_content.html
+        else
+          touch /tmp/existing_rows.html
+        fi
+
+        # Combine new row with existing rows
+        cat /tmp/new_row.html > /tmp/all_rows.html
+        if [ -s /tmp/existing_rows.html ]; then
+          cat /tmp/existing_rows.html >> /tmp/all_rows.html
+        fi
+
+        # Generate new index.html with all rows
+        cp .github/html-template.html /tmp/template.html
+
+        # Use awk to replace the placeholder with the content of all_rows.html
+        awk '
+        /<!-- ROWS_PLACEHOLDER -->/ {
+          while ((getline line < "/tmp/all_rows.html") > 0) {
+            print line
+          }
+          close("/tmp/all_rows.html")
+          next
+        }
+        { print }
+        ' /tmp/template.html > gh-pages/index.html
+
+        # Cleanup temp files
+        rm -f /tmp/new_row.html /tmp/existing_rows.html /tmp/all_rows.html /tmp/template.html
+
+        # Clean up old report directories (keep only 50 most recent)
+        if [ -d gh-pages/reports ]; then
+          ls -dt gh-pages/reports/run-* 2>/dev/null | tail -n +51 | xargs -r rm -rf
+        fi
+
+    - name: Commit and push to gh-pages
+      shell: bash
+      run: |
+        cd gh-pages
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add .
+
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+          exit 0
+        fi
+
+        git commit -m "Add report for run ${{ github.run_id }}"
+
+        # Push with retry logic to handle concurrent updates
+        for i in {1..3}; do
+          echo "Push attempt $i/3..."
+          if git push origin gh-pages; then
+            echo "✅ Successfully pushed to gh-pages"
+            break
+          else
+            if [ $i -lt 3 ]; then
+              echo "⚠️ Push failed, pulling latest changes and retrying..."
+              git pull --rebase origin gh-pages
+              sleep $((i * 2))
+            else
+              echo "❌ Failed to push after 3 attempts"
+              exit 1
+            fi
+          fi
+        done
