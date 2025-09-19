@@ -77,29 +77,33 @@ runs:
         if [ -f gh-pages/index.html ]; then
           echo "=== DEBUGGING: Extracting existing rows from gh-pages/index.html ==="
           
-          # Debug: Show current index.html structure
-          echo "Current index.html structure:"
-          grep -n -A2 -B2 "tbody\|<tr>" gh-pages/index.html | head -20
+          # Create a temporary file to work with the tbody content
+          sed -n '/<tbody>/,/<\/tbody>/p' gh-pages/index.html > /tmp/tbody_content.html
           
-          # More robust extraction: get everything between tbody tags, excluding empty lines
-          sed -n '/<tbody>/,/<\/tbody>/p' gh-pages/index.html | \
-            grep -E '^\s*<tr>' | \
-            grep -v '</tbody>' | \
-            head -49 > /tmp/existing_rows.html
+          # Debug: Show current tbody structure
+          echo "Current tbody content:"
+          head -10 /tmp/tbody_content.html
+          
+          # Extract complete rows using sed to get everything from <tr> to </tr>
+          # Remove the tbody tags and placeholder comments, keep only the row content
+          sed '/<tbody>/d; /<\/tbody>/d; /<!-- ROWS_PLACEHOLDER -->/d; /^[[:space:]]*$/d' /tmp/tbody_content.html > /tmp/existing_rows.html
           
           EXISTING_COUNT=$(grep -c '<tr>' /tmp/existing_rows.html 2>/dev/null || echo 0)
-          echo "Found $EXISTING_COUNT existing rows"
+          echo "Found $EXISTING_COUNT existing complete rows"
           
           # Debug: Show what we extracted
           if [ "$EXISTING_COUNT" -gt 0 ]; then
-            echo "Sample of extracted rows:"
-            head -3 /tmp/existing_rows.html
+            echo "Sample of first extracted row:"
+            sed -n '1,8p' /tmp/existing_rows.html
             echo "..."
           else
             echo "⚠️ No existing rows found - this might be the first run or extraction failed"
-            echo "Checking if tbody exists:"
-            grep -n "tbody" gh-pages/index.html || echo "No tbody found"
+            echo "Checking tbody content:"
+            cat /tmp/tbody_content.html
           fi
+          
+          # Cleanup temp file
+          rm -f /tmp/tbody_content.html
         else
           echo "No existing index.html found in gh-pages - this is the first run"
           touch /tmp/existing_rows.html
