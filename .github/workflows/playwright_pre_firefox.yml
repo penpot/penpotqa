@@ -23,6 +23,8 @@ jobs:
     environment: PRE
     timeout-minutes: 400
     runs-on: windows-latest
+    env:
+      TZ: Europe/Madrid
 
     steps:
       - name: Checkout repository

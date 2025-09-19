@@ -25,7 +25,7 @@ runs:
         mkdir -p gh-pages/reports/run-${{ github.run_id }}
         cp -r playwright-report/* gh-pages/reports/run-${{ github.run_id }}/
 
-        DATE_TIME=$(date -u +"%Y-%m-%d %H:%M UTC")
+        DATE_TIME=$(date +"%Y-%m-%d %H:%M %Z")
         SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
         BRANCH_NAME="${{ github.ref_name }}"
         WORKFLOW_NAME="${{ github.workflow }}"

@@ -27,6 +27,8 @@ jobs:
     environment: PRE
     timeout-minutes: 280
     runs-on: windows-latest
+    env:
+      TZ: Europe/Madrid
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
