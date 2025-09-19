@@ -1,0 +1,256 @@
+{
+  "config": {
+    "configFile": "D:\\a\\penpotqa\\penpotqa\\playwright.config.js",
+    "rootDir": "D:/a/penpotqa/penpotqa/tests",
+    "forbidOnly": true,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/results.json"
+        }
+      ],
+      [
+        "D:\\a\\penpotqa\\penpotqa\\node_modules\\playwright-qase-reporter\\dist\\index.js",
+        {
+          "logging": true
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "D:/a/penpotqa/penpotqa/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "chrome",
+        "name": "chrome",
+        "testDir": "D:/a/penpotqa/penpotqa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "D:/a/penpotqa/penpotqa/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "D:/a/penpotqa/penpotqa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "D:/a/penpotqa/penpotqa/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "D:/a/penpotqa/penpotqa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.46.0",
+    "workers": 6,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "login.spec.js",
+      "file": "login.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Login with an email address (Qase ID: 35)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "status": "passed",
+                  "duration": 26725,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m4\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-19T07:44:39.045Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "badc1754af1944f68b2b-69e1c2c66e2f8446dc33",
+          "file": "login.spec.js",
+          "line": 7,
+          "column": 1
+        },
+        {
+          "title": "Login with invalid email address (Qase ID: 40)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "status": "passed",
+                  "duration": 18753,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m2\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-19T07:44:39.066Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "badc1754af1944f68b2b-f7b04791e32ae0d104f7",
+          "file": "login.spec.js",
+          "line": 18,
+          "column": 1
+        },
+        {
+          "title": "Login with no password (Qase ID: 41)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "status": "passed",
+                  "duration": 18130,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results file created: { Passed: \u001b[33m0\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m0\u001b[39m }\n"
+                    },
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m1\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-19T07:44:39.035Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "badc1754af1944f68b2b-200dc830a0810e3b8f86",
+          "file": "login.spec.js",
+          "line": 29,
+          "column": 1
+        },
+        {
+          "title": "Login with incorrect password (Qase ID: 42)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "status": "passed",
+                  "duration": 19297,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m3\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-19T07:44:39.050Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "badc1754af1944f68b2b-619357af4689deb62519",
+          "file": "login.spec.js",
+          "line": 39,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-09-19T07:44:37.029Z",
+    "duration": 32211.154000000002,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
