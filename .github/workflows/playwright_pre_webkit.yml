@@ -1,38 +1,50 @@
 name: Penpot Regression Tests on PRE env (webkit)
 
 on:
-  #  schedule: # run tests each Thursday at 8:00pm UTC
-  #    - cron: '00 20 * * 4'
+  schedule: # run tests each Thursday at 8:00pm UTC
+    - cron: '00 20 * * 4'
   workflow_dispatch:
+
+# Prevent concurrent deployments to gh-pages
+concurrency:
+  group: pages-deployment
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   tests_webkit:
+    defaults:
+      run:
+        shell: bash
     environment: PRE
-    timeout-minutes: 240
+    timeout-minutes: 400
     runs-on: windows-latest
+    env:
+      TZ: Europe/Madrid
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/checkout@v4
         with:
-          node-version: 22
+          fetch-depth: 0
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright
-        run: npx playwright install --with-deps
+      - name: Setup Playwright Environment
+        uses: ./.github/actions/setup-playwright
+        with:
+          node-version: '22'
 
       - name: Run Playwright tests
+        id: run-tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
-          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
-          SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
+          LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
+          SECOND_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-          GITHUB_RUN_ID: ${{ github.run.id }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
@@ -40,18 +52,18 @@ jobs:
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
         run: npx playwright test --project=webkit -gv 'PERF'
 
-      - name: Upload Playwright Report
-        uses: actions/upload-artifact@v4
-        if: always()
+      - name: Generate and Upload Reports
+        uses: ./.github/actions/upload-reports
         with:
-          name: playwright-report-webkit
-          path: playwright-report/
-          retention-days: 30
+          browser-name: 'Webkit'
+          artifact-name: 'playwright-report-webkit'
 
-      - name: Send Mattermost message
-        env:
-          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
-          LOGIN_ID_MATTERMOST: ${{ secrets.LOGIN_ID_MATTERMOST }}
-          PASSWORD_MATTERMOST: ${{ secrets.PASSWORD_MATTERMOST }}
+      - name: Send Mattermost Notification
+        uses: ./.github/actions/send-notification
+        with:
+          browser-name: 'Webkit'
+          channel-id: ${{ secrets.CHANNEL_ID }}
+          login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
+          password: ${{ secrets.PASSWORD_MATTERMOST }}
         if: always()
-        run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('WKit')"
+        continue-on-error: true
