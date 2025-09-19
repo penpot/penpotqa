@@ -28,12 +28,13 @@ runs:
         # Simple approach: use date command with offset for Madrid time
         MONTH=$(date -u +%m)
 
-        # Determine timezone offset (simplified: April-October = CEST, rest = CET)
-        if [[ "$MONTH" -ge 4 && "$MONTH" -le 10 ]]; then
-          # Summer time: UTC+2
+        # Determine timezone offset - September (09) should be CEST
+        if [[ "$MONTH" == "04" ]] || [[ "$MONTH" == "05" ]] || [[ "$MONTH" == "06" ]] || \
+           [[ "$MONTH" == "07" ]] || [[ "$MONTH" == "08" ]] || [[ "$MONTH" == "09" ]] || [[ "$MONTH" == "10" ]]; then
+          # Summer time: UTC+2 (CEST)
           DATE_TIME=$(date -u -d "+2 hours" +"%Y-%m-%d %H:%M CEST")
         else
-          # Winter time: UTC+1
+          # Winter time: UTC+1 (CET)
           DATE_TIME=$(date -u -d "+1 hour" +"%Y-%m-%d %H:%M CET")
         fi
         SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
