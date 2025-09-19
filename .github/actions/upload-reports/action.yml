@@ -73,30 +73,57 @@ runs:
           </tr>
         EOF
 
-        # Extract existing rows from current index.html if it exists, excluding header row
+        # Extract existing rows from current index.html if it exists
         if [ -f gh-pages/index.html ]; then
-          echo "Extracting existing rows from gh-pages/index.html..."
-          # Extract only data rows (not header), limit to 49 most recent
+          echo "=== DEBUGGING: Extracting existing rows from gh-pages/index.html ==="
+          
+          # Debug: Show current index.html structure
+          echo "Current index.html structure:"
+          grep -n -A2 -B2 "tbody\|<tr>" gh-pages/index.html | head -20
+          
+          # More robust extraction: get everything between tbody tags, excluding empty lines
           sed -n '/<tbody>/,/<\/tbody>/p' gh-pages/index.html | \
             grep -E '^\s*<tr>' | \
-            grep -v 'data-label.*📊 Success %.*th>' | \
-            head -49 > /tmp/existing_rows.html || touch /tmp/existing_rows.html
+            grep -v '</tbody>' | \
+            head -49 > /tmp/existing_rows.html
           
-          EXISTING_COUNT=$(wc -l < /tmp/existing_rows.html || echo 0)
+          EXISTING_COUNT=$(grep -c '<tr>' /tmp/existing_rows.html 2>/dev/null || echo 0)
           echo "Found $EXISTING_COUNT existing rows"
+          
+          # Debug: Show what we extracted
+          if [ "$EXISTING_COUNT" -gt 0 ]; then
+            echo "Sample of extracted rows:"
+            head -3 /tmp/existing_rows.html
+            echo "..."
+          else
+            echo "⚠️ No existing rows found - this might be the first run or extraction failed"
+            echo "Checking if tbody exists:"
+            grep -n "tbody" gh-pages/index.html || echo "No tbody found"
+          fi
         else
-          echo "No existing index.html found in gh-pages"
+          echo "No existing index.html found in gh-pages - this is the first run"
           touch /tmp/existing_rows.html
         fi
 
         # Combine new row with existing rows
-        cat /tmp/new_row.html /tmp/existing_rows.html > /tmp/all_rows.html
+        echo "=== COMBINING ROWS ==="
+        cat /tmp/new_row.html > /tmp/all_rows.html
+        if [ -s /tmp/existing_rows.html ]; then
+          echo "Adding existing rows to the new report"
+          cat /tmp/existing_rows.html >> /tmp/all_rows.html
+        else
+          echo "No existing rows to add"
+        fi
+
+        TOTAL_ROWS=$(grep -c '<tr>' /tmp/all_rows.html 2>/dev/null || echo 0)
+        echo "Total rows in final output: $TOTAL_ROWS"
 
         # Generate new index.html with all rows using a more robust approach
         echo "Generating new index.html with historical data..."
         cp .github/html-template.html /tmp/template.html
 
         # Use awk to replace the placeholder with the content of all_rows.html
+        echo "=== GENERATING FINAL HTML ==="
         awk '
         /<!-- ROWS_PLACEHOLDER -->/ {
           while ((getline line < "/tmp/all_rows.html") > 0) {
@@ -107,6 +134,14 @@ runs:
         }
         { print }
         ' /tmp/template.html > gh-pages/index.html
+
+        # Verify the final result
+        FINAL_ROWS=$(grep -c '<tr>' gh-pages/index.html 2>/dev/null || echo 0)
+        echo "✅ Final index.html contains $FINAL_ROWS rows"
+
+        # Show a preview of the tbody section
+        echo "Preview of tbody section:"
+        sed -n '/<tbody>/,/<\/tbody>/p' gh-pages/index.html | head -10
 
         # Cleanup temp files
         rm -f /tmp/new_row.html /tmp/existing_rows.html /tmp/all_rows.html /tmp/template.html

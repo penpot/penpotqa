@@ -30,15 +30,42 @@ echo "=== Checking current index.html in gh-pages ==="
 git show origin/gh-pages:index.html > /tmp/current-index.html 2>/dev/null || echo "❌ No index.html found in gh-pages"
 
 if [ -f /tmp/current-index.html ]; then
-    ROW_COUNT=$(grep -c '<tr>' /tmp/current-index.html | grep -v 'th>' || echo 0)
-    echo "✅ Found index.html with $ROW_COUNT total rows"
+    TOTAL_ROWS=$(grep -c '<tr>' /tmp/current-index.html || echo 0)
+    echo "✅ Found index.html with $TOTAL_ROWS total <tr> tags"
     
+    # More detailed analysis
+    HEADER_ROWS=$(sed -n '/<thead>/,/<\/thead>/p' /tmp/current-index.html | grep -c '<tr>' || echo 0)
     DATA_ROWS=$(sed -n '/<tbody>/,/<\/tbody>/p' /tmp/current-index.html | grep -c '<tr>' || echo 0)
+    
+    echo "📊 Header rows: $HEADER_ROWS"
     echo "📊 Data rows in tbody: $DATA_ROWS"
     
     echo ""
-    echo "=== Recent entries preview ==="
-    sed -n '/<tbody>/,/<\/tbody>/p' /tmp/current-index.html | grep -A1 -B1 '<tr>' | head -20
+    echo "=== HTML Structure Analysis ==="
+    echo "Looking for tbody section:"
+    grep -n "tbody" /tmp/current-index.html || echo "❌ No tbody tags found"
+    
+    echo ""
+    echo "=== Data rows preview ==="
+    if [ "$DATA_ROWS" -gt 0 ]; then
+        echo "First few data rows:"
+        sed -n '/<tbody>/,/<\/tbody>/p' /tmp/current-index.html | grep '<tr>' | head -3
+        echo ""
+        echo "Last few data rows:"
+        sed -n '/<tbody>/,/<\/tbody>/p' /tmp/current-index.html | grep '<tr>' | tail -3
+    else
+        echo "❌ No data rows found in tbody"
+        echo "Full tbody content:"
+        sed -n '/<tbody>/,/<\/tbody>/p' /tmp/current-index.html
+    fi
+    
+    echo ""
+    echo "=== Placeholder check ==="
+    if grep -q "ROWS_PLACEHOLDER" /tmp/current-index.html; then
+        echo "⚠️ ROWS_PLACEHOLDER still present - replacement might have failed"
+    else
+        echo "✅ ROWS_PLACEHOLDER was replaced"
+    fi
 fi
 
 # Check reports directory
@@ -55,11 +82,17 @@ fi
 echo ""
 echo "=== Recommendations ==="
 if [ "$DATA_ROWS" -eq 0 ]; then
-    echo "⚠️  No data rows found. The history might be corrupted."
-    echo "   Consider running a manual workflow to regenerate the first entry."
+    echo "⚠️  No data rows found. Possible issues:"
+    echo "   1. History extraction is failing"
+    echo "   2. HTML template replacement is not working"
+    echo "   3. This might be the very first run"
 elif [ "$DATA_ROWS" -eq 1 ]; then
-    echo "⚠️  Only one data row found. History might not be accumulating properly."
-    echo "   Check the upload-reports action logic."
+    echo "⚠️  Only one data row found. Possible issues:"
+    echo "   1. History extraction is not finding existing rows"
+    echo "   2. Previous rows are being overwritten instead of preserved"
+elif [ "$DATA_ROWS" -eq 2 ]; then
+    echo "⚠️  Only two data rows found. History accumulation might be working but limited"
+    echo "   Check if this is expected or if older entries are being lost"
 else
     echo "✅ History appears to be working correctly with $DATA_ROWS entries."
 fi
