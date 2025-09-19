@@ -25,24 +25,7 @@ runs:
         mkdir -p gh-pages/reports/run-${{ github.run_id }}
         cp -r playwright-report/* gh-pages/reports/run-${{ github.run_id }}/
 
-        # Calculate Madrid time manually (UTC+1 in winter, UTC+2 in summer)
-        UTC_TIME=$(date -u +"%Y-%m-%d %H:%M")
-
-        # Determine if we're in daylight saving time (last Sunday of March to last Sunday of October)
-        YEAR=$(date +%Y)
-        MONTH=$(date +%m)
-        DAY=$(date +%d)
-
-        # Simple DST check: March 25-31 to October 25-31 (approximate)
-        if [[ "$MONTH" -gt 3 && "$MONTH" -lt 10 ]] || \
-           [[ "$MONTH" -eq 3 && "$DAY" -ge 25 ]] || \
-           [[ "$MONTH" -eq 10 && "$DAY" -le 25 ]]; then
-          # Summer time (CEST = UTC+2)
-          DATE_TIME=$(date -u -d "$UTC_TIME + 2 hours" +"%Y-%m-%d %H:%M CEST")
-        else
-          # Winter time (CET = UTC+1)  
-          DATE_TIME=$(date -u -d "$UTC_TIME + 1 hour" +"%Y-%m-%d %H:%M CET")
-        fi
+        DATE_TIME=$(date -u +"%Y-%m-%d %H:%M UTC")
         SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
         BRANCH_NAME="${{ github.ref_name }}"
         WORKFLOW_NAME="${{ github.workflow }}"
