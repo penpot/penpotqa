@@ -14,6 +14,9 @@ inputs:
   password:
     description: 'Mattermost password'
     required: true
+  folder-path:
+    description: 'Test folder path (optional)'
+    required: false
 
 runs:
   using: 'composite'
@@ -25,4 +28,9 @@ runs:
         LOGIN_ID_MATTERMOST: ${{ inputs.login-id }}
         PASSWORD_MATTERMOST: ${{ inputs.password }}
       if: always()
-      run: npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}')"
+      run: |
+        if [ -n "${{ inputs.folder-path }}" ]; then
+          npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}', '${{ inputs.folder-path }}')"
+        else
+          npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}')"
+        fi
