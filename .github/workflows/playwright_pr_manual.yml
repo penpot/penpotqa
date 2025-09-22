@@ -76,3 +76,4 @@ jobs:
           channel-id: ${{ secrets.PR_CHANNEL_ID }}
           login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
           password: ${{ secrets.PASSWORD_MATTERMOST }}
+        if: always()
