@@ -1,20 +1,20 @@
 const { expect } = require('@playwright/test');
-const { mainTest } = require('../fixtures');
-const { MainPage } = require('../pages/workspace/main-page');
-const { random } = require('../helpers/string-generator');
-const { TeamPage } = require('../pages/dashboard/team-page');
-const { DashboardPage } = require('../pages/dashboard/dashboard-page');
+const { mainTest } = require('../../fixtures');
+const { MainPage } = require('../../pages/workspace/main-page');
+const { random } = require('../../helpers/string-generator');
+const { TeamPage } = require('../../pages/dashboard/team-page');
+const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { qase } = require('playwright-qase-reporter/playwright');
-const { ViewModePage } = require('../pages/workspace/view-mode-page');
-const { PrototypePanelPage } = require('../pages/workspace/prototype-panel-page');
-const { CommentsPanelPage } = require('../pages/workspace/comments-panel-page');
-const { DesignPanelPage } = require('../pages/workspace/design-panel-page');
-const { LayersPanelPage } = require('../pages/workspace/layers-panel-page');
-const { InspectPanelPage } = require('../pages/workspace/inspect-panel-page');
-const { ProfilePage } = require('../pages/profile-page');
-const { LoginPage } = require('../pages/login-page');
-const { RegisterPage } = require('../pages/register-page');
-const { waitMessage } = require('../helpers/gmail');
+const { ViewModePage } = require('../../pages/workspace/view-mode-page');
+const { PrototypePanelPage } = require('../../pages/workspace/prototype-panel-page');
+const { CommentsPanelPage } = require('../../pages/workspace/comments-panel-page');
+const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
+const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
+const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
+const { ProfilePage } = require('../../pages/profile-page');
+const { LoginPage } = require('../../pages/login-page');
+const { RegisterPage } = require('../../pages/register-page');
+const { waitMessage } = require('../../helpers/gmail');
 
 const teamName = random().concat('autotest');
 
