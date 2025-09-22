@@ -22,7 +22,7 @@ jobs:
         shell: bash
     environment: PRE
     timeout-minutes: 400
-    runs-on: windows-latest
+    runs-on: windows-2022
     env:
       TZ: Europe/Madrid
 
