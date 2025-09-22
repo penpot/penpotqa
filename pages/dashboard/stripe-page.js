@@ -144,7 +144,7 @@ exports.StripePage = class StripePage extends BasePage {
     await expect(this.trialEndsDate).toHaveText(tomorrowFormatted);
   }
 
-  async waitTrialEndsDisappear(timeout = 30000, interval = 3000) {
+  async waitTrialEndsDisappear(timeout = 40000, interval = 6000) {
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
       const isVisible = await this.trialEnds.isVisible();
@@ -161,7 +161,7 @@ exports.StripePage = class StripePage extends BasePage {
     ).not.toBeVisible({ timeout: 1000 });
   }
 
-  async waitCancelsEndsDisappear(timeout = 30000, interval = 3000) {
+  async waitCancelsEndsDisappear(timeout = 40000, interval = 6000) {
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
       const isVisible = await this.cancelsEnds.isVisible();

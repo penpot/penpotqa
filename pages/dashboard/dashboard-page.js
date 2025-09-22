@@ -443,6 +443,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.page.keyboard.press('Enter');
   }
 
+  async enterProjectName(projectName) {
+    await this.projectNameInput.fill(projectName);
+    await this.page.keyboard.press('Enter');
+  }
+
   async isProjectTitleDisplayed(projectName) {
     await expect(this.projectNameTitle.first()).toHaveText(projectName);
   }
