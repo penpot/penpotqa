@@ -1,0 +1,508 @@
+{
+  "config": {
+    "configFile": "D:\\a\\penpotqa\\penpotqa\\playwright.config.js",
+    "rootDir": "D:/a/penpotqa/penpotqa/tests",
+    "forbidOnly": true,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 6
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/results.json"
+        }
+      ],
+      [
+        "D:\\a\\penpotqa\\penpotqa\\node_modules\\playwright-qase-reporter\\dist\\index.js",
+        {
+          "logging": true
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "D:/a/penpotqa/penpotqa/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "chrome",
+        "name": "chrome",
+        "testDir": "D:/a/penpotqa/penpotqa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "D:/a/penpotqa/penpotqa/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "D:/a/penpotqa/penpotqa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "D:/a/penpotqa/penpotqa/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "D:/a/penpotqa/penpotqa/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.46.0",
+    "workers": 6,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "color\\color-picker.spec.js",
+      "file": "color/color-picker.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Open color picker from Stroke menu (Qase ID: 1029)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "status": "passed",
+                  "duration": 75922,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m3\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:09:08.968Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-6ee3484f1afa48f6b6e7",
+          "file": "color/color-picker.spec.js",
+          "line": 40,
+          "column": 1
+        },
+        {
+          "title": "Open color picker from Fill menu (Qase ID: 1030)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "status": "passed",
+                  "duration": 74286,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m2\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:09:08.860Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-c6b879f4030ec55069f1",
+          "file": "color/color-picker.spec.js",
+          "line": 46,
+          "column": 1
+        },
+        {
+          "title": "Open color picker from Canvas background menu (Qase ID: 1031)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "status": "passed",
+                  "duration": 64423,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results file created: { Passed: \u001b[33m0\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m0\u001b[39m }\n"
+                    },
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m1\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:09:08.641Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-acdd5864166c6dc1bc6f",
+          "file": "color/color-picker.spec.js",
+          "line": 54,
+          "column": 1
+        },
+        {
+          "title": "Use Recent colors (Qase ID: 1035)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "status": "passed",
+                  "duration": 100377,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m6\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:09:09.215Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-b5b05ecf9e7d493c5761",
+          "file": "color/color-picker.spec.js",
+          "line": 59,
+          "column": 1
+        },
+        {
+          "title": "Use colors from File library (Qase ID: 1036)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "status": "passed",
+                  "duration": 96727,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m5\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:09:09.303Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-81a8e6ff438cc86bbfeb",
+          "file": "color/color-picker.spec.js",
+          "line": 81,
+          "column": 1
+        },
+        {
+          "title": "Open Color palette from shortcut (Qase ID: 1045)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "status": "passed",
+                  "duration": 94870,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m4\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:09:09.301Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-4d46b2eca4151a357769",
+          "file": "color/color-picker.spec.js",
+          "line": 99,
+          "column": 1
+        },
+        {
+          "title": "Open Color palette from toolbar (Qase ID: 1046)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "status": "passed",
+                  "duration": 56570,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m7\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:10:18.592Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-8d47c48ce7c3ceb11d60",
+          "file": "color/color-picker.spec.js",
+          "line": 121,
+          "column": 1
+        },
+        {
+          "title": "Choose file library colors (Qase ID: 1048)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "status": "passed",
+                  "duration": 48654,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m8\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:10:28.520Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-2bc0b4d95ec7ca8cbceb",
+          "file": "color/color-picker.spec.js",
+          "line": 142,
+          "column": 1
+        },
+        {
+          "title": "Click any layer and change Fill color from palette (Qase ID: 1049)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "status": "passed",
+                  "duration": 49726,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m9\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:10:29.984Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-89c7a6a9ef315fc83b5a",
+          "file": "color/color-picker.spec.js",
+          "line": 168,
+          "column": 1
+        },
+        {
+          "title": "Open color picker from add or edit color in assets (Qase ID: 1054)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "status": "passed",
+                  "duration": 34224,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m10\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:10:48.949Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-f09aba71b7db9572f77f",
+          "file": "color/color-picker.spec.js",
+          "line": 199,
+          "column": 1
+        },
+        {
+          "title": "Delete linear gradient stop (from color picker stops list) (Qase ID: 1996)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chrome",
+              "projectName": "chrome",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "status": "passed",
+                  "duration": 35197,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Test results updated: { Passed: \u001b[33m11\u001b[39m, Failed: \u001b[33m0\u001b[39m, Flaky: \u001b[33m0\u001b[39m, PercentPassed: \u001b[33m100\u001b[39m }\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-22T13:10:50.803Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ce3390f5f19f7f5d69a-37ebc7ad8dd89e6b5df3",
+          "file": "color/color-picker.spec.js",
+          "line": 208,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-09-22T13:09:02.189Z",
+    "duration": 144019.371,
+    "expected": 11,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
