@@ -55,6 +55,7 @@ jobs:
         with:
           browser-name: 'Chrome'
           artifact-name: 'playwright-report-chromium'
+        if: always()
 
       - name: Send Mattermost Notification
         uses: ./.github/actions/send-notification

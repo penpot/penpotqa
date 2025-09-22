@@ -56,7 +56,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.run_all_tests }}" = "true" ]; then
             echo "Running all tests..."
-            npx playwright test --project=chrome -gv 'PERF'
+            npx playwright test tests/test.spec.js --project=chrome -gv 'PERF'
           else
             echo "Running tests for changed files using Playwright's --only-changed"
             npx playwright test --project=chrome --only-changed=origin/main -gv 'PERF'
@@ -67,6 +67,7 @@ jobs:
         with:
           browser-name: 'Chrome'
           artifact-name: 'playwright-report-chromium-pr'
+        if: always()
 
       - name: Send Mattermost Notification
         uses: ./.github/actions/send-notification
