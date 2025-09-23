@@ -1,0 +1,101 @@
+name: 'Run Tests by Folder'
+description: 'Execute Playwright tests from a specific folder'
+author: 'Penpot QA Team'
+
+inputs:
+  test-folder:
+    description: 'Test folder to execute (e.g., tests/assets, tests/components)'
+    required: true
+    type: string
+  browser:
+    description: 'Browser to run tests on'
+    required: false
+    default: 'chrome'
+    type: choice
+    options:
+      - chrome
+      - firefox
+      - webkit
+  retries:
+    description: 'Number of retries for failed tests'
+    required: false
+    default: '1'
+    type: string
+  timeout:
+    description: 'Test timeout in milliseconds'
+    required: false
+    default: '30000'
+    type: string
+  grep-pattern:
+    description: 'Grep pattern to filter tests (optional)'
+    required: false
+    default: ''
+    type: string
+  grep-invert:
+    description: 'Invert grep pattern (exclude tests matching pattern)'
+    required: false
+    default: 'PERF'
+    type: string
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Validate test folder
+      shell: bash
+      run: |
+        if [ ! -d "${{ inputs.test-folder }}" ]; then
+          echo "❌ Error: Test folder '${{ inputs.test-folder }}' does not exist"
+          echo "Available test folders:"
+          ls -la tests/
+          exit 1
+        fi
+        echo "✅ Test folder '${{ inputs.test-folder }}' exists"
+        echo "📁 Contents:"
+        ls -la "${{ inputs.test-folder }}"
+
+    - name: Run Playwright tests
+      shell: bash
+      run: |
+        echo "🚀 Running tests from folder: ${{ inputs.test-folder }}"
+        echo "🌐 Browser: ${{ inputs.browser }}"
+        echo "🔄 Retries: ${{ inputs.retries }}"
+        echo "⏱️  Timeout: ${{ inputs.timeout }}"
+
+        # Build the command
+        CMD="npx playwright test --project=${{ inputs.browser }}"
+
+        # Add retries if specified
+        if [ "${{ inputs.retries }}" != "1" ]; then
+          CMD="$CMD --retries=${{ inputs.retries }}"
+        fi
+
+        # Add timeout if specified
+        if [ "${{ inputs.timeout }}" != "30000" ]; then
+          CMD="$CMD --timeout=${{ inputs.timeout }}"
+        fi
+
+        # Add grep pattern if specified
+        if [ -n "${{ inputs.grep-pattern }}" ]; then
+          CMD="$CMD -g '${{ inputs.grep-pattern }}'"
+        fi
+
+        # Add grep invert if specified
+        if [ -n "${{ inputs.grep-invert }}" ]; then
+          CMD="$CMD -gv '${{ inputs.grep-invert }}'"
+        fi
+
+        # Add the test folder
+        CMD="$CMD ${{ inputs.test-folder }}"
+
+        echo "📋 Executing command: $CMD"
+        eval $CMD
+
+    - name: Test Results Summary
+      shell: bash
+      if: always()
+      run: |
+        echo "📊 Test execution completed for folder: ${{ inputs.test-folder }}"
+        echo "🌐 Browser used: ${{ inputs.browser }}"
+        if [ -d "test-results" ]; then
+          echo "📁 Test results available in test-results directory"
+        fi

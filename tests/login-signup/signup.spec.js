@@ -1,12 +1,12 @@
 const { test } = require('@playwright/test');
-const { LoginPage } = require('../pages/login-page');
-const { RegisterPage } = require('../pages/register-page');
-const { updateTestResults } = require('./../helpers/saveTestResults.js');
+const { LoginPage } = require('../../pages/login-page.js');
+const { RegisterPage } = require('../../pages/register-page.js');
+const { updateTestResults } = require('../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
-const { random } = require('../helpers/string-generator');
-const { checkRegisterText, waitMessage } = require('../helpers/gmail');
-const { DashboardPage } = require('../pages/dashboard/dashboard-page');
-const { TeamPage } = require('../pages/dashboard/team-page');
+const { random } = require('../../helpers/string-generator.js');
+const { checkRegisterText, waitMessage } = require('../../helpers/gmail.js');
+const { DashboardPage } = require('../../pages/dashboard/dashboard-page.js');
+const { TeamPage } = require('../../pages/dashboard/team-page.js');
 
 let loginPage, registerPage, dashboardPage, teamPage;
 

@@ -1,17 +1,17 @@
-const { registerTest } = require('../fixtures');
+const { registerTest } = require('../../fixtures');
 const { test } = require('@playwright/test');
-const { LoginPage } = require('../pages/login-page');
-const { ForgotPasswordPage } = require('../pages/forgot-password-page');
+const { LoginPage } = require('../../pages/login-page');
+const { ForgotPasswordPage } = require('../../pages/forgot-password-page');
 const { qase } = require('playwright-qase-reporter/playwright');
-const { random } = require('../helpers/string-generator');
-const { RegisterPage } = require('../pages/register-page');
+const { random } = require('../../helpers/string-generator');
+const { RegisterPage } = require('../../pages/register-page');
 const {
   getRegisterMessage,
   checkRecoveryText,
   waitSecondMessage,
-} = require('../helpers/gmail');
-const { DashboardPage } = require('../pages/dashboard/dashboard-page');
-const { ProfilePage } = require('../pages/profile-page');
+} = require('../../helpers/gmail');
+const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
+const { ProfilePage } = require('../../pages/profile-page');
 
 test(qase(50, 'ON-23 Forgot password flow with invalid email'), async ({ page }) => {
   const loginPage = new LoginPage(page);
