@@ -1,8 +1,8 @@
-const { DashboardPage } = require('../pages/dashboard/dashboard-page');
-const { LoginPage } = require('../pages/login-page');
+const { DashboardPage } = require('../../pages/dashboard/dashboard-page.js');
+const { LoginPage } = require('../../pages/login-page.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { test } = require('@playwright/test');
-const { updateTestResults } = require('./../helpers/saveTestResults.js');
+const { updateTestResults } = require('../../helpers/saveTestResults.js');
 
 test(qase(35, 'Login with an email address'), async ({ page }) => {
   const loginPage = new LoginPage(page);

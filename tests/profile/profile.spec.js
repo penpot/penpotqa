@@ -1,15 +1,15 @@
-const { mainTest, registerTest } = require('../fixtures');
-const { ProfilePage } = require('../pages/profile-page');
-const { random } = require('../helpers/string-generator');
-const { LoginPage } = require('../pages/login-page');
+const { mainTest, registerTest } = require('../../fixtures');
+const { ProfilePage } = require('../../pages/profile-page');
+const { random } = require('../../helpers/string-generator');
+const { LoginPage } = require('../../pages/login-page');
 const { expect } = require('@playwright/test');
 const { qase } = require('playwright-qase-reporter/playwright');
 const {
   getRegisterMessage,
   checkNewEmailText,
   waitSecondMessage,
-} = require('../helpers/gmail');
-const { DashboardPage } = require('../pages/dashboard/dashboard-page');
+} = require('../../helpers/gmail');
+const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 
 mainTest(qase(187, 'PR-1 Edit profile name'), async ({ page }) => {
   const newName = random();
