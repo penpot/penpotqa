@@ -1,5 +1,15 @@
 # Done Definition Checks
 
+## Taiga URL (optional)
+
+_If relevant, include the Taiga URL_
+![Taiga URL](https://tree.taiga.io/project/kaleidos-qa/us/{NUMBER})
+
+## Automation Status (optional)
+
+_If relevant, include the Automation Status_
+![Automation Status](XXXXXXXXXXXXXXXXXX)
+
 ## Description
 
 This PR resolves ...
