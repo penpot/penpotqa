@@ -3,7 +3,7 @@
 ## Taiga URL (optional)
 
 _If relevant, include the Taiga URL_
-![Taiga URL](https://tree.taiga.io/project/kaleidos-qa/us/{NUMBER})
+[Taiga Ticket: NUMBER](https://tree.taiga.io/project/kaleidos-qa/us/NUMBER)
 
 ## Automation Status (optional)
 
