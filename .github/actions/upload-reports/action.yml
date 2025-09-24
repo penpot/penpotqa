@@ -134,6 +134,7 @@ runs:
         name: ${{ inputs.artifact-name }}
         path: playwright-report/
         retention-days: 30
+        if-no-files-found: ignore
 
     - name: Commit and push to gh-pages
       shell: bash
