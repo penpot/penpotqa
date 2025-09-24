@@ -5,11 +5,6 @@
 _If relevant, include the Taiga URL_
 [Taiga Ticket: NUMBER](https://tree.taiga.io/project/kaleidos-qa/us/NUMBER)
 
-## Automation Status (optional)
-
-_If relevant, include the Automation Status_
-![Automation Status](XXXXXXXXXXXXXXXXXX)
-
 ## Description
 
 This PR resolves ...
