@@ -439,7 +439,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async setProjectName(projectName) {
-    await this.projectNameInput.pressSequentially(projectName);
+    await this.projectNameInput.fill(projectName);
     await this.page.keyboard.press('Enter');
   }
 

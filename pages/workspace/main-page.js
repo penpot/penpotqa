@@ -214,7 +214,7 @@ exports.MainPage = class MainPage extends BasePage {
       'div[class="main_ui_workspace_sidebar_shortcuts__shortcuts-list"]',
     );
     this.closeShortcutsPanelIcon = page.locator(
-      'div[class*="shortcuts-close-button"]',
+      'button[class*="shortcuts-close-button"]',
     );
 
     this.fileLeftSidebarAside = page.getByTestId('left-sidebar');
