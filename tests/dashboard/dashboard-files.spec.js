@@ -422,7 +422,7 @@ mainTest(
       'Add new project, set name and assert truncation',
       async () => {
         await dashboardPage.clickAddProjectButton();
-        await dashboardPage.enterProjectName(longName);
+        await dashboardPage.setProjectName(longName);
         await dashboardPage.isProjectItemNameTruncated(longName);
       },
     );
@@ -440,7 +440,7 @@ mainTest(
       'Add second project with > 250 characters and assert name is = 250 characters',
       async () => {
         await dashboardPage.clickAddProjectButton();
-        await dashboardPage.enterProjectName(longName250 + '123');
+        await dashboardPage.setProjectName(longName250 + '123');
         await dashboardPage.isProjectTitleDisplayed(longName250);
       },
     );
