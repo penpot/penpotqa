@@ -55,7 +55,7 @@ async function getToken() {
 //   }
 // }
 
-async function sendMessage(browserName) {
+async function sendMessage(browserName, folderPath = null) {
   const url = `${baseUrl}/posts`;
   const token = await getToken();
 
@@ -64,6 +64,12 @@ async function sendMessage(browserName) {
     return Math.round(num * 100) / 100;
   }
   const results = await readResultsFromFile();
+
+  // Build the folder line if folderPath is provided
+  const folderLine = folderPath
+    ? `\n       :file_folder: Folder: ${folderPath}`
+    : '';
+
   const messageWithLink = `**Total Tests** : **${
     results.Passed + results.Failed + results.Flaky
   }**   :person_doing_cartwheel:   **Success Percentage:** **${roundNumber(
@@ -75,7 +81,7 @@ async function sendMessage(browserName) {
        :cat2: GitRun: https://github.com/penpot/penpotqa/actions/runs/${
          process.env.GITHUB_RUN_ID
        }
-       :computer: Browser: ${browserName}
+       :computer: Browser: ${browserName}${folderLine}
        :page_facing_up: Check interactive tests results: https://penpot.github.io/penpotqa/`;
   const requestBody = { channel_id: channel_id, message: messageWithLink };
 
