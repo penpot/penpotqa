@@ -12,6 +12,9 @@ permissions:
 
 jobs:
   tests_firefox:
+    concurrency:
+      group: pages-deployment
+      cancel-in-progress: false
     defaults:
       run:
         shell: bash
@@ -20,7 +23,6 @@ jobs:
     runs-on: windows-2022
     env:
       TZ: Europe/Madrid
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
