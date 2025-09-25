@@ -55,7 +55,12 @@ async function getToken() {
 //   }
 // }
 
-async function sendMessage(browserName, folderPath = null) {
+async function sendMessage(
+  browserName,
+  folderPath = null,
+  isManualExecution = false,
+  username = null,
+) {
   const url = `${baseUrl}/posts`;
   const token = await getToken();
 
@@ -70,6 +75,12 @@ async function sendMessage(browserName, folderPath = null) {
     ? `\n       :file_folder: Folder: ${folderPath}`
     : '';
 
+  // Build the user mention line if it's a manual execution
+  const userMentionLine =
+    isManualExecution && username
+      ? `\n       :wave: @${username} your manual test execution is complete!`
+      : '';
+
   const messageWithLink = `**Total Tests** : **${
     results.Passed + results.Failed + results.Flaky
   }**   :person_doing_cartwheel:   **Success Percentage:** **${roundNumber(
@@ -81,7 +92,7 @@ async function sendMessage(browserName, folderPath = null) {
        :cat2: GitRun: https://github.com/penpot/penpotqa/actions/runs/${
          process.env.GITHUB_RUN_ID
        }
-       :computer: Browser: ${browserName}${folderLine}
+       :computer: Browser: ${browserName}${folderLine}${userMentionLine}
        :page_facing_up: Check interactive tests results: https://penpot.github.io/penpotqa/`;
   const requestBody = { channel_id: channel_id, message: messageWithLink };
 
