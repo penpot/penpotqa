@@ -17,6 +17,13 @@ inputs:
   folder-path:
     description: 'Test folder path (optional)'
     required: false
+  is-manual-execution:
+    description: 'Whether this is a manual execution (true/false)'
+    required: false
+    default: 'false'
+  username:
+    description: 'Username for manual execution mention'
+    required: false
 
 runs:
   using: 'composite'
@@ -29,8 +36,21 @@ runs:
         PASSWORD_MATTERMOST: ${{ inputs.password }}
       if: always()
       run: |
-        if [ -n "${{ inputs.folder-path }}" ]; then
-          npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}', '${{ inputs.folder-path }}')"
+        FOLDER_PATH="${{ inputs.folder-path }}"
+        IS_MANUAL="${{ inputs.is-manual-execution }}"
+        USERNAME="${{ inputs.username }}"
+
+        # Build the command with all parameters
+        if [ -n "$FOLDER_PATH" ]; then
+          if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
+            npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', true, '$USERNAME')"
+          else
+            npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', false, null)"
+          fi
         else
-          npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}')"
+          if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
+            npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}', null, true, '$USERNAME')"
+          else
+            npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}', null, false, null)"
+          fi
         fi
