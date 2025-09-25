@@ -98,6 +98,7 @@ pids
 # Playwright files
 /playwright-report/
 /playwright/.cache/
+/storageState
 
 # Test results
 /test-results/

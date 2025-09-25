@@ -6,20 +6,38 @@ const { updateTestResults } = require('./helpers/saveTestResults');
 const { random } = require('./helpers/string-generator');
 const { waitMessage } = require('./helpers/gmail');
 
+// const mainTest = base.test.extend({
+//   page: async ({ page }, use, testInfo) => {
+//     const loginPage = new LoginPage(page);
+//     const dashboardPage = new DashboardPage(page);
+//     await loginPage.goto();
+//     await loginPage.acceptCookie();
+//     await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+//     await loginPage.enterPwd(process.env.LOGIN_PWD);
+//     await loginPage.clickLoginButton();
+//     await dashboardPage.isDashboardOpenedAfterLogin();
+//     await dashboardPage.isHeaderDisplayed('Projects');
+//     await dashboardPage.skipWhatNewsPopUp();
+//     await dashboardPage.skipPluginsPopUp();
+//     await use(page);
+//     await updateTestResults(testInfo.status, testInfo.retry);
+//   },
+// });
+
 const mainTest = base.test.extend({
   page: async ({ page }, use, testInfo) => {
-    const loginPage = new LoginPage(page);
+    // Already signed in (storage state), so just open root
+    await page.goto(process.env.BASE_URL);
+
     const dashboardPage = new DashboardPage(page);
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await dashboardPage.isHeaderDisplayed('Projects');
+
+    // await dashboardPage.isDashboardOpenedAfterLogin();
+    // await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.skipWhatNewsPopUp();
     await dashboardPage.skipPluginsPopUp();
+
     await use(page);
+
     await updateTestResults(testInfo.status, testInfo.retry);
   },
 });
