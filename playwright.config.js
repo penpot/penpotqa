@@ -58,7 +58,13 @@ const config = {
   },
   projects: [
     {
+      name: 'setup',
+      testMatch: /auth\.setup\.ts/,
+      workers: 1,
+    },
+    {
       name: 'chrome',
+      testIgnore: /auth\.setup\.ts/,
       expect: {
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.0001,
@@ -66,6 +72,7 @@ const config = {
       },
       use: {
         browserName: 'chromium',
+        storageState: 'storageState/owner.json',
         channel: 'chrome',
         viewport: {
           height: 969,
@@ -80,6 +87,7 @@ const config = {
           permissions: ['clipboard-read', 'clipboard-write'],
         },
       },
+      dependencies: ['setup'],
     },
     {
       name: 'firefox',
@@ -90,6 +98,7 @@ const config = {
       },
       use: {
         browserName: 'firefox',
+        storageState: 'storageState/owner.json',
         viewport: {
           height: 969,
           width: 1920,
@@ -115,11 +124,13 @@ const config = {
       },
       use: {
         browserName: 'webkit',
+        storageState: 'storageState/owner.json',
         viewport: {
           height: 969,
           width: 1920,
         },
       },
+      dependencies: ['setup'],
     },
   ],
 };
