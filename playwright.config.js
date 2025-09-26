@@ -31,7 +31,7 @@ const config = {
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 5 : 3,
+  workers: process.env.CI ? 5 : 5,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [
@@ -72,7 +72,7 @@ const config = {
       },
       use: {
         browserName: 'chromium',
-        storageState: 'storageState/owner.json',
+        storageState: '.auth/ownerUser.json',
         channel: 'chrome',
         viewport: {
           height: 969,
@@ -87,7 +87,7 @@ const config = {
           permissions: ['clipboard-read', 'clipboard-write'],
         },
       },
-      dependencies: ['setup'],
+      // dependencies: ['setup'],
     },
     {
       name: 'firefox',
@@ -98,7 +98,7 @@ const config = {
       },
       use: {
         browserName: 'firefox',
-        storageState: 'storageState/owner.json',
+        storageState: '.auth/ownerUser.json',
         viewport: {
           height: 969,
           width: 1920,
@@ -114,6 +114,7 @@ const config = {
         // chromium-specific permissions
         permissions: ['clipboard-read', 'clipboard-write'],
       },
+      // dependencies: ['setup'],
     },
     {
       name: 'webkit',
@@ -124,13 +125,13 @@ const config = {
       },
       use: {
         browserName: 'webkit',
-        storageState: 'storageState/owner.json',
+        storageState: '.auth/ownerUser.json',
         viewport: {
           height: 969,
           width: 1920,
         },
       },
-      dependencies: ['setup'],
+      // dependencies: ['setup'],
     },
   ],
 };
