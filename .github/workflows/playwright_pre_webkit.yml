@@ -5,6 +5,11 @@ on:
   #   - cron: '00 20 * * 4'
   workflow_dispatch:
 
+# Prevent concurrent deployments to gh-pages
+concurrency:
+  group: pages-deployment
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pages: write
@@ -12,9 +17,6 @@ permissions:
 
 jobs:
   tests_webkit:
-    concurrency:
-      group: pages-deployment
-      cancel-in-progress: false
     defaults:
       run:
         shell: bash
@@ -23,6 +25,7 @@ jobs:
     runs-on: windows-latest
     env:
       TZ: Europe/Madrid
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

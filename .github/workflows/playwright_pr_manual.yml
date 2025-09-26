@@ -41,9 +41,6 @@ permissions:
 
 jobs:
   tests_chromium:
-    concurrency:
-      group: pages-deployment
-      cancel-in-progress: false
     defaults:
       run:
         shell: bash
@@ -113,6 +110,9 @@ jobs:
           artifact-name: 'playwright-report-chromium-pr-${{ github.event.inputs.test_mode }}'
         if: always()
         # Prevent concurrent deployments to gh-pages only for this step
+        concurrency:
+          group: pages-deployment
+          cancel-in-progress: false
 
       - name: Send Mattermost Notification
         uses: ./.github/actions/send-notification
