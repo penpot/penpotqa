@@ -6,12 +6,64 @@ const { updateTestResults } = require('./helpers/saveTestResults');
 const { random } = require('./helpers/string-generator');
 const { waitMessage } = require('./helpers/gmail');
 
+// TO DO - TO REVIEW
+// const mainTest = base.test.extend({
+//   page: async ({ page }, use, testInfo) => {
+//     // Already signed in (storage state), so just open root
+//     await page.goto(process.env.BASE_URL);
+
+//     const loginPage = new LoginPage(page);
+//     await loginPage.acceptCookie();
+
+//     const dashboardPage = new DashboardPage(page);
+//     await dashboardPage.isDashboardOpenedAfterLogin();
+//     await dashboardPage.isHeaderDisplayed('Projects');
+//     await dashboardPage.skipWhatNewsPopUp();
+//     await dashboardPage.skipPluginsPopUp();
+
+//     await use(page);
+
+//     await updateTestResults(testInfo.status, testInfo.retry);
+//   },
+// });
+
 const mainTest = base.test.extend({
-  page: async ({ page }, use, testInfo) => {
+  page: async ({ page, request }, use, testInfo) => {
+    const authFile = '.auth/ownerUser.json';
+    const url = `${process.env.BASE_URL}api/rpc/command/login-with-password`;
+
+    const response = await request.post(url, {
+      data: {
+        email: process.env.LOGIN_EMAIL,
+        password: process.env.LOGIN_PWD,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok()) {
+      throw new Error(
+        `Login failed with status ${response.status()}: ${await response.text()}`,
+      );
+    }
+
+    // Debugging: print body if needed
+    const body = await response.json();
+    console.log('Login response:', body);
+
+    // Save cookies & local storage state
+    await request.storageState({ path: authFile });
+
     // Already signed in (storage state), so just open root
     await page.goto(process.env.BASE_URL);
 
+    const loginPage = new LoginPage(page);
+    await loginPage.acceptCookie();
+
     const dashboardPage = new DashboardPage(page);
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.skipWhatNewsPopUp();
     await dashboardPage.skipPluginsPopUp();
 
