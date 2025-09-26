@@ -75,10 +75,19 @@ async function sendMessage(
     ? `\n       :file_folder: Folder: ${folderPath}`
     : '';
 
-  // Build the user mention line if it's a manual execution
+  // Build the user mention line with workflow name
+  let workflowName = '';
+  if (isManualExecution) {
+    workflowName = 'PR Manual';
+  } else if (browserName && browserName.toLowerCase() === 'firefox') {
+    workflowName = 'PRE_firefox';
+  } else if (browserName && browserName.toLowerCase() === 'chrome') {
+    workflowName = 'PRE_daily';
+  }
+
   const userMentionLine =
-    isManualExecution && username
-      ? `\n       :wave: @${username} your manual test execution is complete!`
+    username && workflowName
+      ? `\n       :wave: @${username} your \"${workflowName}\" automated run has finished!`
       : '';
 
   const messageWithLink = `**Total Tests** : **${
