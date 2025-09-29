@@ -603,4 +603,14 @@ exports.TeamPage = class TeamPage extends BasePage {
   async checkSubscriptionName(name) {
     await expect(this.teamPlanName).toHaveText(name);
   }
+
+  async checkTeamSettingsTabContent() {
+    await expect(this.teamIcon).toBeVisible();
+    await expect(this.teamNameLabel).toBeVisible();
+    await expect(this.teamInfoSection).toBeVisible();
+    await expect(this.teamInfoHeader).toBeVisible();
+    await this.isTeamProjectsInfoDisplayed('0 projects');
+    await this.isTeamFilesInfoDisplayed('0 files');
+    await this.checkSubscriptionName('Professional');
+  }
 };
