@@ -665,6 +665,18 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
+  async pressCutShortcut(browserName) {
+    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
+      await this.page.keyboard.press('Meta+X');
+    } else {
+      if (browserName === 'webkit') {
+        await this.page.keyboard.press('Meta+X');
+      } else {
+        await this.page.keyboard.press('Control+X');
+      }
+    }
+  }
+
   async clickShowBoardNamesMainMenuSubItem() {
     await this.showBoardNamesMainMenuSubItem.click();
   }
@@ -1041,6 +1053,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.pasteOption.click();
   }
 
+  async cutLayerViaRightClick() {
+    await this.rightClickOnElement();
+    await this.cutOption.click();
+  }
+
   async duplicateLayerViaRightClick() {
     await this.rightClickOnElement();
     await this.duplicateOption.click();
@@ -1233,6 +1250,35 @@ exports.MainPage = class MainPage extends BasePage {
 
   async editTextLayer(text, browserName = 'chromium') {
     await this.doubleClickTextOnCanvas(browserName);
+    await expect(this.textbox).toBeVisible();
+    await this.typeText(text);
+    await this.clickMoveButton();
+    await this.waitForChangeIsSaved();
+  }
+
+  async dragAndDropComponentToVariantViaCanvas(x, y) {
+    await expect(this.copyLayer).toBeVisible();
+    await this.copyLayer.hover();
+    await this.copyLayer.dragTo(this.viewport, {
+      force: false,
+      targetPosition: { x: x, y: y },
+    });
+  }
+
+  async copyElementViaAltDragAndDrop(x, y) {
+    await expect(this.copyLayer).toBeVisible();
+    await this.copyLayer.hover();
+    await this.page.keyboard.down('Alt');
+    await this.copyLayer.dragTo(this.viewport, {
+      force: false,
+      targetPosition: { x: x, y: y },
+    });
+    await this.page.keyboard.up('Alt');
+  }
+
+  async createTextLayerByCoordinates(x, y, text) {
+    await this.clickCreateTextButton();
+    await this.clickViewportByCoordinates(x, y);
     await expect(this.textbox).toBeVisible();
     await this.typeText(text);
     await this.clickMoveButton();

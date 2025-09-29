@@ -29,6 +29,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.copyComponentLayer = page
       .getByTestId('icon-component-copy')
       .locator('//parent::div');
+    this.variantLayer = page.getByTestId('icon-variant').locator('//parent::div');
     this.pathComponentLayer = page.getByTestId('icon-path');
     this.createdLayerOnLayersPanelSpan = page.locator(
       'div[class*="element-list-body"] span[class*="element-name"]',
@@ -324,6 +325,18 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     });
   }
 
+  async dragAndDropComponentToVariants(name) {
+    const component = this.page.locator(
+      `div[class*="element-list-body"] span[class*="element-name"]:text-is("${name}") >>nth=0`,
+    );
+    const variant = this.variantLayer.first();
+    await component.hover();
+    await component.dragTo(variant, {
+      sourcePosition: { x: 10, y: 10 },
+      targetPosition: { x: 5, y: 5 },
+    });
+  }
+
   async deleteMainComponentViaRightClick() {
     await this.mainComponentLayer.first().click({ button: 'right', force: true });
     await this.deleteLayerMenuOption.click();
@@ -381,5 +394,24 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     selected
       ? await expect(layerSel).toHaveText(name)
       : await expect(layerSel).not.toHaveText(name);
+  }
+
+  async checkVariantLayerCount(expectedCount) {
+    await expect(this.variantLayer).toHaveCount(expectedCount);
+  }
+
+  async isVariantLayerVisible(visible = true) {
+    visible
+      ? await expect(this.variantLayer).toBeVisible()
+      : await expect(this.variantLayer).not.toBeVisible();
+  }
+
+  async restoreVariantViaRightClick() {
+    await this.copyComponentLayer.click({ button: 'right', force: true });
+    await this.restoreVariantMenuItem.click();
+  }
+
+  async checkLayerNameInputValue(expectedName) {
+    await expect(this.createdLayerOnLayersPanelNameInput).toHaveValue(expectedName);
   }
 };

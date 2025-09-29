@@ -10,6 +10,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     super(page);
 
     //Design panel
+    this.designTabpanel = page.getByRole('tabpanel', { name: 'design' });
     this.canvasBackgroundColorIcon = page.locator(
       'div[class*="page__element-set"] div[class*="color-bullet-right"]',
     );
@@ -287,7 +288,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textLineHeightInput = page.getByTitle('Line Height').locator('input');
     this.textLetterSpacingInput = page.getByTitle('Letter Spacing').locator('input');
     this.textAlignOptionsButton = page.getByTestId('text-align-options-button');
+    this.textUnderline = page.getByTitle('Underline (Ctrl+U)');
     this.textStrikethrough = page.getByTitle('Strikethrough (Alt+Shift+Ctrl+5)');
+    this.textTypographyMenuButton = this.designTabpanel.locator(
+      'button[class*="typography__menu-btn"]',
+    );
+    this.textTransformMenu = page.locator('[class*="typography__text-transform"]');
+    this.textUpperCaseButton = this.textTransformMenu.getByTitle('Upper Case');
+    this.textCapitalizeButton = this.textTransformMenu.getByTitle('Capitalize');
+    this.textLowerCaseButton = this.textTransformMenu.getByTitle('Lower Case');
 
     //Design panel - Export section
     this.exportSection = page.getByText('Export', { exact: true });
@@ -371,6 +380,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.deleteAnnotationOkBtn = page.locator(
       'div[class*="modal-container"] input[value="Ok"]',
     );
+    this.createVariantOptionDesign = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Create variant' });
+    this.variantLabel = page
+      .getByRole('tabpanel')
+      .getByText('Variant', { exact: true });
+    this.addNewPropertyOptionDesign = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Add new property' });
+    this.propertyNameInput = page.locator('[class*="variant-property-name"] input');
     this.componentTypeOnDesignPanel = page.locator(
       'div[class*="component__title"] span',
     );
@@ -381,6 +400,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'ul[class*="component__custom-select-dropdown"] span:text-is("Detach instance")',
     );
     this.clipContentButton = page.locator('//input[@id="clip-content"]/..');
+    this.variantPropertyList = page.locator('[class*="variant-property-list"]');
+    this.firstVariantProperty = this.variantPropertyList
+      .locator('div[class*="variant-property-value-wrapper"]')
+      .first();
+    this.swapComponentButton = page.getByTestId('swap-component-btn');
+    this.swapComponentTab = page.locator('[class*="component-swap"]').first();
+    this.swapGridRadiobutton = page.locator('label[for="swap-opt-grid"]');
+    this.variantWarningWrapper = page.locator('[class*="variant-warning-wrapper"]');
+    this.locateDuplicatedVariantsButton = page.getByRole('button', {
+      name: 'Locate duplicated variants',
+      exact: true,
+    });
   }
 
   async isFlexElementSectionOpened() {
@@ -739,10 +770,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeTextFontStyle(fontStyleName) {
     await this.textFontStyleSelector.click();
-    await this.page
-      .locator(
-        `div[class*="typography__font-variant-options"] span:has-text('${fontStyleName}')`,
-      )
+    await this.textFontStyleSelector
+      .getByRole('list')
+      .getByText(fontStyleName, { exact: true })
       .click();
   }
 
@@ -752,14 +782,20 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeTextLineHeight(value) {
     await this.textLineHeightInput.fill(value);
+    await this.clickOnEnter();
   }
 
   async changeTextLetterSpacing(value) {
     await this.textLetterSpacingInput.fill(value);
+    await this.clickOnEnter();
   }
 
   async clickOnTextAlignOptionsButton() {
     await this.textAlignOptionsButton.click();
+  }
+
+  async clickOnTextUnderlineButton() {
+    await this.textUnderline.click();
   }
 
   async clickOnTextStrikethroughButton() {
@@ -1288,6 +1324,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.createAnnotationOptionDesign).not.toBeVisible();
   }
 
+  async clickOnCreateVariantOption() {
+    await this.createVariantOptionDesign.click();
+    await expect(this.variantLabel).toBeVisible();
+  }
+
+  async clickOnAddNewPropertyOption() {
+    await this.addNewPropertyOptionDesign.click();
+  }
+
   async changeAxisXandYForLayer(x, y) {
     await this.xAxisInput.clear();
     await this.xAxisInput.pressSequentially(x);
@@ -1529,5 +1574,130 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     checked
       ? await expect(buttonClass).toContain('radio_buttons__checked')
       : await expect(buttonClass).not.toContain('radio_buttons__checked');
+  }
+
+  async changeFirstVariantProperty(value) {
+    await this.firstVariantProperty.click();
+    await this.firstVariantProperty.getByRole('listbox').getByText(value).click();
+  }
+
+  async changeVariantPropertyValue(propertyName, propertyValue) {
+    const variantString = await this.page.locator(
+      `[class*="variant-property-container"]:has([title="${propertyName}"])`,
+    );
+    const variantValue = await variantString.locator(
+      'div[class*="variant-property-value-wrapper"]',
+    );
+    await variantValue.click();
+    await variantValue.getByRole('listbox').getByText(propertyValue).click();
+  }
+
+  async enterVariantPropertyValue(propertyName, propertyValue) {
+    const variantString = await this.page.locator(
+      `[class*="variant-property-container"]:has([title="${propertyName}"])`,
+    );
+    await variantString.getByRole('combobox').fill(propertyValue);
+    await this.clickOnEnter();
+  }
+
+  async checkVariantPropertyValue(propertyName, propertyValue) {
+    const variantString = await this.page.locator(
+      `[class*="variant-property-container"]:has([title="${propertyName}"])`,
+    );
+    await expect(await variantString.getByRole('combobox')).toHaveValue(
+      propertyValue,
+    );
+  }
+
+  async checkCopyVariantPropertyValue(propertyName, propertyValue) {
+    const variantString = await this.page.locator(
+      `[class*="variant-property-container"]:has([title="${propertyName}"])`,
+    );
+    await expect(await variantString.getByRole('combobox')).toHaveText(
+      propertyValue,
+    );
+  }
+
+  async clickOnSwapComponentButton() {
+    await this.swapComponentButton.click();
+  }
+
+  async clickOnSwapGridViewButton() {
+    await this.swapGridRadiobutton.click();
+  }
+
+  async checkVariantWarning(text) {
+    await expect(await this.variantWarningWrapper.locator('div').first()).toHaveText(
+      text,
+    );
+  }
+
+  async isVariantWarningVisible(visible = true) {
+    visible
+      ? await expect(await this.variantWarningWrapper).toBeVisible()
+      : await expect(await this.variantWarningWrapper).not.toBeVisible();
+  }
+
+  async isMainComponentPropertyVisible(propertyName, visible = true) {
+    visible
+      ? await expect(await this.page.getByTitle(propertyName)).toBeVisible()
+      : await expect(await this.page.getByTitle(propertyName)).not.toBeVisible();
+  }
+
+  async deleteVariantProperty(propertyName) {
+    const variantRow = await this.page.locator(
+      `[class*="variant-property-row"]:has([title*="${propertyName}:"])`,
+    );
+    await variantRow.getByRole('button').click();
+  }
+
+  async clickOnLocateDuplicatedVariantsButton() {
+    await this.locateDuplicatedVariantsButton.click();
+  }
+
+  async checkFontName(name) {
+    await expect(await this.textFontSelector).toHaveText(name);
+  }
+
+  async checkFontStyle(name) {
+    await expect(await this.textFontStyleSelector).toHaveText(name);
+  }
+
+  async checkLetterSpacing(value) {
+    await expect(await this.textLetterSpacingInput).toHaveValue(value);
+  }
+
+  async checkTextLineHeight(value) {
+    await expect(await this.textLineHeightInput).toHaveValue(value);
+  }
+
+  async clickOnTypographyMenuButton() {
+    await this.textTypographyMenuButton.click({ force: true });
+  }
+
+  async checkTextCase(value) {
+    switch (value) {
+      case 'Upper':
+        await expect(await this.textUpperCaseButton).toBeChecked();
+        break;
+      case 'Lower':
+        await expect(await this.textLowerCaseButton).toBeChecked();
+        break;
+      case 'Capitalize':
+        await expect(await this.textCapitalizeButton).toBeChecked();
+        break;
+    }
+  }
+
+  async isTextUnderlineChecked(checked = true) {
+    checked
+      ? await expect(await this.textUnderline).toBeChecked()
+      : await expect(await this.textUnderline).not.toBeChecked();
+  }
+
+  async isTextStrikethroughChecked(checked = true) {
+    checked
+      ? await expect(await this.textStrikethrough).toBeChecked()
+      : await expect(await this.textStrikethrough).not.toBeChecked();
   }
 };

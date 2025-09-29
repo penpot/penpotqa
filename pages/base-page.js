@@ -95,6 +95,12 @@ exports.BasePage = class BasePage {
     this.createMultipleComponentsMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Create multiple components' });
+    this.createVariantMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Create variant' });
+    this.restoreVariantMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Restore variant' });
     this.showInAssetsPanelOption = page
       .getByRole('listitem')
       .filter({ hasText: 'Show in assets panel' });
@@ -110,6 +116,7 @@ exports.BasePage = class BasePage {
       .getByRole('listitem')
       .filter({ hasText: 'Paste' })
       .first();
+    this.cutOption = page.getByRole('listitem').filter({ hasText: 'Cut' });
     this.groupOption = page.getByRole('listitem').filter({ hasText: 'Group' });
     this.showMainComponentOption = page
       .getByRole('listitem')
@@ -367,6 +374,14 @@ exports.BasePage = class BasePage {
     await this.createComponentMenuItem.click();
   }
 
+  async createVariantViaRightClick() {
+    const layerSel = this.page.locator(
+      'div[class*="viewport"] [class*="viewport-selrect"]',
+    );
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.createVariantMenuItem.click();
+  }
+
   async flipVerticalViaRightClick() {
     await this.createdLayer.click({ button: 'right', force: true });
     await this.flipVerticalMenuItem.click();
@@ -490,5 +505,9 @@ exports.BasePage = class BasePage {
 
   async clickOnCancelButton() {
     await this.modalCancelButton.click();
+  }
+
+  async clickOnVariantsTitle(name) {
+    await this.page.getByTestId('viewport').getByText(name).first().click();
   }
 };
