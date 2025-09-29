@@ -115,6 +115,7 @@ mainTest.describe(() => {
 
   mainTest(qase([512], 'Change rotation (Design page in the right)'), async () => {
     await designPanelPage.changeRotationForLayer('90');
+    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-rotated-90.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
