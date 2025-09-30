@@ -1524,6 +1524,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.flexElementHeight100Btn.click();
   }
 
+  async clickOnFlexElementFixWidthBtn() {
+    await this.flexElementFixWidthBtn.click();
+  }
+
+  async clickOnFlexElementFixHeightBtn() {
+    await this.flexElementFixHeightBtn.click();
+  }
+
   async checkFlexElementMinMax(type, min = true, value) {
     switch (type) {
       case 'Width':
@@ -1699,5 +1707,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     checked
       ? await expect(await this.textStrikethrough).toBeChecked()
       : await expect(await this.textStrikethrough).not.toBeChecked();
+  }
+
+  async isFlexElementWidth100BtnVisible(visible = true) {
+    visible
+      ? await expect(await this.flexElementWidth100Btn).toBeVisible()
+      : await expect(await this.flexElementWidth100Btn).not.toBeVisible();
   }
 };

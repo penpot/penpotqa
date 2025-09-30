@@ -6,13 +6,15 @@ const { TeamPage } = require('../../../pages/dashboard/team-page');
 const { random } = require('../../../helpers/string-generator');
 const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
 const { qase } = require('playwright-qase-reporter/playwright');
+const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 
 const teamName = random().concat('autotest');
 
-let mainPage, dashboardPage, teamPage, layersPanelPage;
+let mainPage, dashboardPage, teamPage, layersPanelPage, designPanelPage;
 
 mainTest.beforeEach(async ({ page, browserName }) => {
   dashboardPage = new DashboardPage(page);
+  designPanelPage = new DesignPanelPage(page);
   teamPage = new TeamPage(page);
   mainPage = new MainPage(page);
   layersPanelPage = new LayersPanelPage(page);
@@ -36,7 +38,7 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase([2454], 'Add Variant to a component on the canvas'), async () => {
+mainTest(qase([2398], 'Add Variant to a component on the canvas'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 500);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -120,5 +122,22 @@ mainTest(
 
     await layersPanelPage.checkVariantLayerCount(2);
     await layersPanelPage.isLayerWithNameSelected('Value 1');
+  },
+);
+
+mainTest(
+  qase([2419], 'Changing the component frame in the design panel'),
+  async () => {
+    await mainPage.clickOnVariantsTitle('Rectangle');
+    await layersPanelPage.isLayerWithNameSelected('Rectangle');
+    await designPanelPage.isFlexElementWidth100BtnVisible(false);
+    await designPanelPage.clickOnFlexElementFixWidthBtn();
+    await designPanelPage.clickOnFlexElementFixHeightBtn();
+    await designPanelPage.changeHeightAndWidthForLayer('500', '500');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.checkSizeWidth('500');
+    await designPanelPage.checkSizeHeight('500');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.createdLayer).toHaveScreenshot('variants-500x500.png');
   },
 );
