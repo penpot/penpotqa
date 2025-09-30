@@ -57,12 +57,7 @@ mainTest(
     await dashboardPage.openSidebarItem('Fonts');
     await expect(teamPage.teamSettingsSection).toHaveScreenshot('fonts-image.png');
     await teamPage.openTeamSettingsPageViaOptionsMenu();
-    await expect(teamPage.teamSettingsSection).toHaveScreenshot(
-      'team-settings-image.png',
-      {
-        mask: [teamPage.teamIcon, teamPage.teamOwnerSection, teamPage.teamNameLabel],
-      },
-    );
+    await teamPage.checkTeamSettingsTabContent();
   },
 );
 
