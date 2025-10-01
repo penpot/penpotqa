@@ -10,6 +10,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
     //Assets panel
     this.assetsTab = page.getByRole('tab', { name: 'assets' });
+    this.assetsTabpanel = page.getByRole('tabpanel', { name: 'assets' });
     this.assetComponentLabel = page.locator(
       'div[class*="assets_components__grid-cell"]',
     );
@@ -24,6 +25,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     );
     this.assetComponentSelected = page.locator(
       'div[class*="sidebar_assets_components__selected"]',
+    );
+    this.assetVariantIcon = page.locator(
+      'div[class*="assets_components__grid-cell"] [href="#icon-variant"]',
     );
     this.assetsPanel = page.locator('article[class*="assets-bar"]');
     this.assetsSectionName = page.getByTestId('left-sidebar');
@@ -45,6 +49,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.ungroupFileLibraryMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Ungroup' });
+    this.combineAsVariantsFileLibraryMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Combine as variants' });
     this.groupNameInput = page.getByRole('textbox', { name: 'Group name' });
     this.createGroupButton = page.getByRole('button', {
       name: 'Create',
@@ -79,6 +86,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       name: 'Search font',
     });
     this.fontSizeInput = page.locator('div[class*="font-size-select"] input');
+    this.letterSpacingInput = page.getByTitle('Letter Spacing').locator('input');
     this.typographyNameInput = page.locator('input[class*="adv-typography-name"]');
     this.assetsTitleText = page.locator(
       'div[class*="asset-section"] span[class*="title-name"]',
@@ -107,6 +115,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.fontRecordOnTypographiesBottomPanel = page.locator(
       'div[class="typography-item"]',
     );
+    this.textUpperCaseButton = this.assetsTabpanel.getByTitle('Upper Case');
+    this.textCapitalizeButton = this.assetsTabpanel.getByTitle('Capitalize');
+    this.textLowerCaseButton = this.assetsTabpanel.getByTitle('Lower Case');
 
     //Assets panel - Libraries
     this.addAsSharedLibraryButton = page.getByRole('button', {
@@ -300,6 +311,26 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.page.keyboard.press('Enter');
   }
 
+  async selectLetterSpacing(value) {
+    await this.letterSpacingInput.clear();
+    await this.letterSpacingInput.fill(value);
+    await this.page.keyboard.press('Enter');
+  }
+
+  async selectTextCase(value) {
+    switch (value) {
+      case 'Upper':
+        await this.textUpperCaseButton.click();
+        break;
+      case 'Lower':
+        await this.textLowerCaseButton.click();
+        break;
+      case 'Capitalize':
+        await this.textCapitalizeButton.click();
+        break;
+    }
+  }
+
   async checkFont(fontName) {
     await expect(this.fontSelector).toHaveText(fontName);
   }
@@ -486,5 +517,35 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async isComponentHighlightedInAssetsTab() {
     await expect(this.assetComponentSelected).toBeVisible();
+  }
+
+  async isVariantsAddedToFileLibraryComponents() {
+    await expect(this.assetVariantIcon).toBeVisible();
+  }
+
+  async createGroupViaSelectAssets(assetType, newGroupName) {
+    let asset;
+    switch (assetType) {
+      case 'Colors':
+        asset = this.fileLibraryColorsColorBullet;
+        break;
+      case 'Typographies':
+        asset = this.fileLibraryTypographyRecord;
+        break;
+      case 'Components':
+        asset = this.assetComponentLabel;
+        break;
+    }
+    await asset.first().click({ modifiers: ['Shift'] });
+    await asset.last().click({ modifiers: ['Shift'] });
+    await asset.first().click({ button: 'right' });
+    await this.createGroupFileLibraryMenuItem.click();
+    await this.groupNameInput.fill(newGroupName);
+    await this.createGroupButton.click();
+  }
+
+  async combineAsVariantsGroup() {
+    await this.fileLibraryGroupTitle.click({ button: 'right' });
+    await this.combineAsVariantsFileLibraryMenuItem.click();
   }
 };

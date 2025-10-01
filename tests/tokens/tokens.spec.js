@@ -9,6 +9,7 @@ const { TokensPanelPage } = require('../../pages/workspace/tokens-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
+const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 
 let mainPage,
   teamPage,
@@ -16,7 +17,8 @@ let mainPage,
   tokensPage,
   designPanelPage,
   layersPanelPage,
-  colorPalettePage;
+  colorPalettePage,
+  assetsPanelPage;
 
 const teamName = random().concat('autotest');
 
@@ -28,6 +30,7 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
+  assetsPanelPage = new AssetsPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -446,3 +449,462 @@ mainTest(
     });
   },
 );
+
+mainTest.describe(() => {
+  const tokenName = 'global.font.family';
+  const tokenValue = 'Actor';
+  const newTokenValue = 'Inter';
+  const secondTokenName = 'global.font.family2';
+
+  mainTest.beforeEach(async ({ browserName }) => {
+    await tokensPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await tokensPage.clickTokensTab();
+    await tokensPage.createFontFamilyToken(tokenName, tokenValue);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.clickOnTokenWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+  });
+
+  mainTest(qase(2472, 'Apply a font family token'), async () => {
+    await tokensPage.isTokenAppliedWithName(tokenName);
+    await designPanelPage.checkFontName(tokenValue);
+  });
+
+  mainTest(qase(2475, 'Edit a font family token'), async () => {
+    await tokensPage.isTokenAppliedWithName(tokenName);
+    await tokensPage.editToken(tokenName, newTokenValue);
+    await tokensPage.waitForChangeIsSaved();
+    await designPanelPage.checkFontName(newTokenValue);
+    await tokensPage.isTokenAppliedWithName(tokenName);
+    await tokensPage.checkAppliedTokenTitle(
+      'Token: global.font.family\n' +
+        'Original value: Inter\n' +
+        'Resolved value: Inter',
+    );
+  });
+
+  mainTest(qase(2506, 'Reference a font family token'), async () => {
+    await tokensPage.isTokenAppliedWithName(tokenName);
+    await designPanelPage.checkFontName(tokenValue);
+
+    await tokensPage.createFontFamilyToken(secondTokenName, `{${tokenName}}`);
+    await tokensPage.isTokenVisibleWithName(secondTokenName);
+    await tokensPage.clickOnTokenWithName(secondTokenName);
+    await tokensPage.editToken(tokenName, newTokenValue);
+    await tokensPage.waitForChangeIsSaved();
+    await designPanelPage.checkFontName(newTokenValue);
+    await tokensPage.isTokenAppliedWithName(secondTokenName);
+  });
+});
+
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ browserName }) => {
+    await tokensPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await designPanelPage.changeTextFont('Source Sans Pro');
+    await designPanelPage.changeTextFontStyle('400');
+    await designPanelPage.changeTextFontSize('9');
+    await tokensPage.clickTokensTab();
+  });
+
+  mainTest(
+    qase(
+      2558,
+      'Apply a Font Weight token to a text not matching a family font style, but with a fallback value',
+    ),
+    async () => {
+      const tokenName = 'extra.black.font.weight';
+      const secondTokenName = '500.italic.font.weight';
+
+      await tokensPage.createFontWeightToken(tokenName, 'extra-black');
+      await tokensPage.isTokenVisibleWithName(tokenName);
+      await tokensPage.createFontWeightToken(secondTokenName, '500 italic');
+      await tokensPage.isTokenVisibleWithName(secondTokenName);
+
+      await tokensPage.clickOnTokenWithName(tokenName);
+      await tokensPage.checkImportErrorMessage(
+        `Error setting font weight/style. This font style does not exist in the current font`,
+      );
+      await tokensPage.closeModalWindow();
+      await tokensPage.isImportErrorMessageVisible(false);
+      await tokensPage.waitForChangeIsSaved();
+      await tokensPage.isTokenAppliedWithName(tokenName);
+      await designPanelPage.checkFontStyle('900');
+
+      await tokensPage.clickOnTokenWithName(secondTokenName);
+      await tokensPage.checkImportErrorMessage(
+        `Error setting font weight/style. This font style does not exist in the current font`,
+      );
+      await tokensPage.waitForChangeIsSaved();
+      await tokensPage.isTokenAppliedWithName(secondTokenName);
+      await designPanelPage.checkFontStyle('400 Italic');
+    },
+  );
+
+  mainTest(
+    qase(
+      2559,
+      'Apply a Font Weight token to a text not matching a family font style, with no fallback value',
+    ),
+    async () => {
+      const tokenName = 'extra.black.font.weight';
+
+      await tokensPage.createFontWeightToken(tokenName, '500');
+      await tokensPage.isTokenVisibleWithName(tokenName);
+
+      await designPanelPage.changeTextFont('Splash');
+      await tokensPage.clickOnTokenWithName(tokenName);
+      await tokensPage.checkImportErrorMessage(
+        `Error setting font weight/style. This font style does not exist in the current font`,
+      );
+      await tokensPage.waitForChangeIsSaved();
+      await tokensPage.isTokenAppliedWithName(tokenName);
+      await designPanelPage.checkFontStyle('400');
+    },
+  );
+
+  mainTest(
+    qase(
+      2562,
+      'Edit the value of a Font Weight token already applied to a component text with duplicated copies',
+    ),
+    async ({ browserName }) => {
+      const tokenName = '700.italic.font.weight';
+      const newTokenValue = '200';
+
+      await tokensPage.createFontWeightToken(tokenName, '700 Italic');
+      await tokensPage.isTokenVisibleWithName(tokenName);
+      await tokensPage.clickOnTokenWithName(tokenName);
+      await tokensPage.waitForChangeIsSaved();
+      await tokensPage.isTokenAppliedWithName(tokenName);
+      await designPanelPage.checkFontStyle('700 Italic');
+
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.copyLayerViaRightClick();
+      await mainPage.pressPasteShortcut(browserName);
+      await mainPage.waitForChangeIsSaved();
+
+      await tokensPage.editToken(tokenName, newTokenValue);
+      await tokensPage.waitForChangeIsSaved();
+
+      await layersPanelPage.openLayersTab();
+      await layersPanelPage.selectMainComponentChildLayer();
+      await designPanelPage.checkFontStyle(newTokenValue);
+      await layersPanelPage.selectCopyComponentChildLayer();
+      await designPanelPage.checkFontStyle(newTokenValue);
+    },
+  );
+});
+
+mainTest.describe(() => {
+  const tokenName = 'global.letter.spacing';
+  const tokenValue = '10';
+  const newTokenValue = '5';
+
+  mainTest.beforeEach(async ({ browserName }) => {
+    await tokensPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await tokensPage.clickTokensTab();
+    await tokensPage.createLetterSpacingToken(tokenName, tokenValue);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.clickOnTokenWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+  });
+
+  mainTest(
+    qase(2500, 'Apply a Letter Spacing token and override value from Design tab'),
+    async () => {
+      await tokensPage.isTokenAppliedWithName(tokenName);
+      await designPanelPage.checkLetterSpacing(tokenValue);
+      await designPanelPage.changeTextLetterSpacing(newTokenValue);
+      await tokensPage.waitForChangeIsSaved();
+      await tokensPage.isTokenAppliedWithName(tokenName, false);
+      await designPanelPage.checkLetterSpacing(newTokenValue);
+    },
+  );
+
+  mainTest(
+    qase(
+      2501,
+      'Letter Spacing token value can be override by Assets > Typography style',
+    ),
+    async () => {
+      await tokensPage.isTokenAppliedWithName(tokenName);
+      await designPanelPage.checkLetterSpacing(tokenValue);
+
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.clickAddFileLibraryTypographyButton();
+      await assetsPanelPage.waitForChangeIsSaved();
+      await assetsPanelPage.selectLetterSpacing(newTokenValue);
+      await designPanelPage.clickOnEnter();
+      await assetsPanelPage.waitForChangeIsSaved();
+
+      await tokensPage.clickTokensTab();
+      await designPanelPage.clickOnTypographyMenuButton();
+      await tokensPage.isTokenAppliedWithName(tokenName, false);
+      await designPanelPage.checkLetterSpacing(newTokenValue);
+    },
+  );
+});
+
+mainTest(
+  qase(
+    2536,
+    'Reference a dimension-type token as an operand (math operation / Dimensions token)',
+  ),
+  async () => {
+    const tokenName = 'global.letter.spacing';
+    const dimensionsToken = 'global.dimension';
+
+    await tokensPage.clickTokensTab();
+    await tokensPage.createDimensionToken(dimensionsToken, '2');
+
+    await tokensPage.createLetterSpacingToken(tokenName, `5px*{${dimensionsToken}}`);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.checkTokenTitle(
+      tokenName,
+      `Token: ${tokenName}\n` +
+        `Original value: 5px*{${dimensionsToken}}\n` +
+        'Resolved value: 10',
+    );
+
+    await tokensPage.editToken(tokenName, `5px/{${dimensionsToken}}`);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.checkTokenTitle(
+      tokenName,
+      `Token: ${tokenName}\n` +
+        `Original value: 5px/{${dimensionsToken}}\n` +
+        'Resolved value: 2.5',
+    );
+
+    await tokensPage.editToken(tokenName, `5px+{${dimensionsToken}}`);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.checkTokenTitle(
+      tokenName,
+      `Token: ${tokenName}\n` +
+        `Original value: 5px+{${dimensionsToken}}\n` +
+        'Resolved value: 7',
+    );
+
+    await tokensPage.editToken(tokenName, `5px-{${dimensionsToken}}`);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.checkTokenTitle(
+      tokenName,
+      `Token: ${tokenName}\n` +
+        `Original value: 5px-{${dimensionsToken}}\n` +
+        'Resolved value: 3',
+    );
+  },
+);
+
+mainTest(
+  qase(
+    2485,
+    'Reference a Number token as an operand (math operation / Number token)',
+  ),
+  async () => {
+    const tokenName = 'global.number';
+    const numberToken = 'numberToken';
+
+    await tokensPage.clickTokensTab();
+    await tokensPage.createNumberToken(numberToken, '2');
+    await tokensPage.waitForChangeIsSaved();
+
+    await tokensPage.createNumberToken(tokenName, `5*{${numberToken}}`);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.checkTokenTitle(
+      tokenName,
+      `Token: ${tokenName}\n` +
+        `Original value: 5*{${numberToken}}\n` +
+        'Resolved value: 10\n' +
+        'Right click to see options',
+    );
+
+    await tokensPage.editToken(tokenName, `5/{${numberToken}}`);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.checkTokenTitle(
+      tokenName,
+      `Token: ${tokenName}\n` +
+        `Original value: 5/{${numberToken}}\n` +
+        'Resolved value: 2.5\n' +
+        'Right click to see options',
+    );
+
+    await tokensPage.editToken(tokenName, `5+{${numberToken}}`);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.checkTokenTitle(
+      tokenName,
+      `Token: ${tokenName}\n` +
+        `Original value: 5+{${numberToken}}\n` +
+        'Resolved value: 7\n' +
+        'Right click to see options',
+    );
+
+    await tokensPage.editToken(tokenName, `5-{${numberToken}}`);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.checkTokenTitle(
+      tokenName,
+      `Token: ${tokenName}\n` +
+        `Original value: 5-{${numberToken}}\n` +
+        'Resolved value: 3\n' +
+        'Right click to see options',
+    );
+  },
+);
+
+mainTest(
+  qase(2477, 'Apply a Number token (Rotation) and override value from Design tab'),
+  async () => {
+    const tokenName = 'global.number';
+    const tokenValue = '45';
+    const newTokenValue = '0';
+
+    await tokensPage.createDefaultRectangleByCoordinates(320, 210);
+    await tokensPage.clickTokensTab();
+
+    await tokensPage.createNumberToken(tokenName, tokenValue);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.selectMenuItem(tokenName, 'Rotation');
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.isTokenAppliedWithName(tokenName);
+    await tokensPage.isMenuItemWithNameSelected(tokenName, 'Rotation');
+    await designPanelPage.checkRotationForLayer(tokenValue);
+
+    await designPanelPage.changeRotationForLayer(newTokenValue);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.isTokenAppliedWithName(tokenName, false);
+    await designPanelPage.checkRotationForLayer(newTokenValue);
+  },
+);
+
+mainTest(
+  qase(
+    2492,
+    'Apply a Number token (Line Height) and override value from Design tab',
+  ),
+  async ({ browserName }) => {
+    const tokenName = 'global.number';
+    const tokenValue = '2';
+    const newTokenValue = '1';
+
+    await tokensPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await tokensPage.clickTokensTab();
+
+    await tokensPage.createNumberToken(tokenName, tokenValue);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.selectMenuItem(tokenName, 'Line Height');
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.isTokenAppliedWithName(tokenName);
+    await tokensPage.isMenuItemWithNameSelected(tokenName, 'Line Height');
+    await designPanelPage.checkTextLineHeight(tokenValue);
+
+    await designPanelPage.changeTextLineHeight(newTokenValue);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.isTokenAppliedWithName(tokenName, false);
+    await designPanelPage.checkTextLineHeight(newTokenValue);
+  },
+);
+
+mainTest(
+  qase(2522, 'Apply a capitalize text case token to a uppercase text layer'),
+  async () => {
+    const tokenName = 'text-case-capitalize';
+    const tokenValue = 'Capitalize';
+    const text = 'EXAMPLE TEXT';
+    await tokensPage.createTextLayerByCoordinates(100, 200, text);
+    await tokensPage.clickTokensTab();
+    await tokensPage.createTextCaseToken(tokenName, tokenValue);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.clickOnTokenWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.isTokenAppliedWithName(tokenName);
+    await designPanelPage.checkTextCase(tokenValue);
+  },
+);
+
+mainTest(qase(2520, 'Override and re-apply a text case token'), async () => {
+  const tokenName = 'text-case-capitalize';
+  const tokenValue = 'Capitalize';
+  const text = 'EXAMPLE TEXT';
+
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.clickAddFileLibraryTypographyButton();
+  await assetsPanelPage.selectTextCase('Upper');
+  await assetsPanelPage.minimizeFileLibraryTypography();
+  await assetsPanelPage.waitForChangeIsSaved();
+
+  await tokensPage.clickTokensTab();
+  await tokensPage.createTextLayerByCoordinates(100, 200, text);
+  await tokensPage.createTextCaseToken(tokenName, tokenValue);
+  await tokensPage.isTokenVisibleWithName(tokenName);
+  await tokensPage.clickOnTokenWithName(tokenName);
+  await tokensPage.waitForChangeIsSaved();
+
+  await tokensPage.isTokenAppliedWithName(tokenName);
+  await designPanelPage.checkTextCase(tokenValue);
+
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
+  await tokensPage.waitForChangeIsSaved();
+  await designPanelPage.clickOnTypographyMenuButton();
+  await designPanelPage.checkTextCase('Upper');
+
+  await tokensPage.clickTokensTab();
+  await tokensPage.isTokenAppliedWithName(tokenName, false);
+
+  await tokensPage.clickOnTokenWithName(tokenName);
+  await tokensPage.waitForChangeIsSaved();
+  await tokensPage.isTokenAppliedWithName(tokenName);
+  await designPanelPage.checkTextCase(tokenValue);
+
+  await designPanelPage.changeTextCase('Lower');
+  await tokensPage.waitForChangeIsSaved();
+  await tokensPage.isTokenAppliedWithName(tokenName, false);
+  await designPanelPage.checkTextCase('Lower');
+});
+
+mainTest.describe(() => {
+  const tokenName = 'global.text.decoration';
+  const tokenValue = 'underline';
+  const newTokenValue = 'strike-through';
+
+  mainTest.beforeEach(async ({ browserName }) => {
+    await tokensPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await tokensPage.clickTokensTab();
+    await tokensPage.createTextDecorationToken(tokenName, tokenValue);
+    await tokensPage.isTokenVisibleWithName(tokenName);
+    await tokensPage.clickOnTokenWithName(tokenName);
+    await tokensPage.waitForChangeIsSaved();
+  });
+
+  mainTest(qase(2531, 'Edit a Text decoration token'), async () => {
+    await tokensPage.isTokenAppliedWithName(tokenName);
+    await tokensPage.editToken(tokenName, newTokenValue);
+    await tokensPage.waitForChangeIsSaved();
+    await tokensPage.isTokenAppliedWithName(tokenName);
+    await designPanelPage.isTextStrikethroughChecked();
+  });
+
+  mainTest(
+    qase(2535, 'Re-Apply the token after change the decorator manually'),
+    async () => {
+      await tokensPage.isTokenAppliedWithName(tokenName);
+      await designPanelPage.isTextUnderlineChecked();
+      await designPanelPage.clickOnTextStrikethroughButton();
+      await tokensPage.waitForChangeIsSaved();
+      await tokensPage.isTokenAppliedWithName(tokenName, false);
+      await designPanelPage.isTextStrikethroughChecked();
+      await tokensPage.clickOnTokenWithName(tokenName);
+      await tokensPage.waitForChangeIsSaved();
+      await tokensPage.isTokenAppliedWithName(tokenName);
+      await designPanelPage.isTextUnderlineChecked();
+    },
+  );
+});
