@@ -63,7 +63,7 @@ Some settings from _playwright.config.js_ may be useful:
 
 - All tests should be independent for running them in parallel mode
 - For run tests in parallel mode need to update key `workers` in `playwright.config.js` file
-- `workers`: `process.env.CI ? 5 : 3` - by default 3 workers are used for local run and 5 to run on CI/CD.
+- `workers`: `process.env.CI ? 6 : 3` - by default 3 workers are used for local run and 6 to run on CI/CD.
 - For disabling parallelism set `workers` to 1.
 
 **5. Tests amount and execution time.**
