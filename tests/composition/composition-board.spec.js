@@ -48,7 +48,7 @@ mainTest(qase([216], 'Change color background'), async () => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }, testInfo) => {
+  mainTest.beforeEach(async () => {
     await mainTest.slow();
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
@@ -679,7 +679,7 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page }, testInfo) => {
+  mainTest.beforeEach(async () => {
     await mainTest.slow();
     const board1 = 'Board #1';
     const board2 = 'Board #2';
@@ -868,4 +868,46 @@ mainTest.describe(() => {
       );
     },
   );
+
+  mainTest(
+    qase(
+      [2389],
+      'Create board with a default size preset (Toolbar) allows custom dimension after creation',
+    ),
+    async () => {
+      await mainPage.clickViewportOnce();
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+      await designPanelPage.checkSizeWidth('600');
+      await designPanelPage.checkSizeHeight('600');
+    },
+  );
 });
+
+mainTest(
+  qase(
+    [2390],
+    'Create board with a default size preset allow to change frame orientation (Toolbar)',
+  ),
+  async () => {
+    await mainPage.clickCreateBoardButton();
+
+    await designPanelPage.selectSizePresetsOption('Expanded');
+    await designPanelPage.clickOnVerticalOrientationButton();
+    await mainPage.clickViewportByCoordinates(100, 150);
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.isVerticalOrientationButtonChecked();
+    await designPanelPage.checkSizeWidth('800');
+    await designPanelPage.checkSizeHeight('1280');
+
+    await designPanelPage.selectSizePresetsOption('iPhone 16 ');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.isVerticalOrientationButtonChecked();
+    await designPanelPage.checkSizeWidth('393');
+    await designPanelPage.checkSizeHeight('852');
+    await designPanelPage.clickOnHorizontalOrientationButton();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.isHorizontalOrientationButtonChecked();
+    await designPanelPage.checkSizeWidth('852');
+    await designPanelPage.checkSizeHeight('393');
+  },
+);

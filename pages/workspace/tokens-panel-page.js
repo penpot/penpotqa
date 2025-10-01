@@ -67,6 +67,24 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     this.addFontSizeTokenButton = page.getByRole('button', {
       name: 'Add token: Font Size',
     });
+    this.addFontFamilyTokenButton = page.getByRole('button', {
+      name: 'Add token: Font Family',
+    });
+    this.addFontWeightTokenButton = page.getByRole('button', {
+      name: 'Add token: Font Weight',
+    });
+    this.addLetterSpacingTokenButton = page.getByRole('button', {
+      name: 'Add token: Letter Spacing',
+    });
+    this.addNumberTokenButton = page.getByRole('button', {
+      name: 'Add token: Number',
+    });
+    this.addTextCaseTokenButton = page.getByRole('button', {
+      name: 'Add token: Text Case',
+    });
+    this.addTextDecorationTokenButton = page.getByRole('button', {
+      name: 'Add token: Text Decoration',
+    });
 
     this.tokenNameInput = page.locator('#token-name');
     this.tokenValueInput = page.locator('div[class*="input_tokens_value"] input');
@@ -267,6 +285,51 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await this.modalSaveButton.click();
   }
 
+  async createFontFamilyToken(name = 'global.font.family', value = 'Actor') {
+    await this.addFontFamilyTokenButton.click();
+    await this.tokenNameInput.fill(name);
+    await this.tokenValueInput.fill(value);
+    await this.modalSaveButton.click();
+  }
+
+  async createFontWeightToken(name = 'global.font.weight', value = '400') {
+    await this.addFontWeightTokenButton.click();
+    await this.tokenNameInput.fill(name);
+    await this.tokenValueInput.fill(value);
+    await this.modalSaveButton.click();
+  }
+
+  async createLetterSpacingToken(name = 'global.letter.spacing', value = '10') {
+    await this.addLetterSpacingTokenButton.click();
+    await this.tokenNameInput.fill(name);
+    await this.tokenValueInput.fill(value);
+    await this.modalSaveButton.click();
+  }
+
+  async createNumberToken(name = 'global.number', value = '10') {
+    await this.addNumberTokenButton.click();
+    await this.tokenNameInput.fill(name);
+    await this.tokenValueInput.fill(value);
+    await this.modalSaveButton.click();
+  }
+
+  async createTextCaseToken(name = 'global.text.case', value = 'Capitalize') {
+    await this.addTextCaseTokenButton.click();
+    await this.tokenNameInput.fill(name);
+    await this.tokenValueInput.fill(value);
+    await this.modalSaveButton.click();
+  }
+
+  async createTextDecorationToken(
+    name = 'global.text.decoration',
+    value = 'underline',
+  ) {
+    await this.addTextDecorationTokenButton.click();
+    await this.tokenNameInput.fill(name);
+    await this.tokenValueInput.fill(value);
+    await this.modalSaveButton.click();
+  }
+
   async isTokenVisibleWithName(name, visible = true) {
     visible
       ? await expect(
@@ -384,7 +447,7 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
     await this.tokenDescriptionInput.fill(text);
   }
 
-  async editToken(tokenName, newValue, newDescription) {
+  async editToken(tokenName, newValue, newDescription = 'Description') {
     await this.openEditTokenWindow(tokenName);
     await this.enterTokenValue(newValue);
     await this.enterTokenDescription(newDescription);
@@ -399,6 +462,14 @@ exports.TokensPanelPage = class TokensPanelPage extends MainPage {
   async checkAppliedTokenTitle(text) {
     const tokenLocator = await this.page.locator(
       `button[class*="token-pill-applied"]`,
+    );
+    await tokenLocator.hover();
+    await expect(tokenLocator).toHaveAttribute('title', text);
+  }
+
+  async checkTokenTitle(tokenName, text) {
+    const tokenLocator = await this.page.locator(
+      `button:has(span[aria-label="${tokenName}"])`,
     );
     await tokenLocator.hover();
     await expect(tokenLocator).toHaveAttribute('title', text);
