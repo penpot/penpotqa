@@ -68,6 +68,7 @@ mainTest(qase([2396], 'Creating variants from a component group'), async () => {
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await assetsPanelPage.createGroupViaSelectAssets('Components', 'Test Group');
   await assetsPanelPage.combineAsVariantsGroup();
+  await assetsPanelPage.expandComponentsGroupOnAssetsTab();
   await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
 });
 
