@@ -1,0 +1,126 @@
+# ===========================================
+# BUILD OUTPUTS & GENERATED FILES
+# ===========================================
+
+# Build outputs
+build/Release
+dist
+.next
+.nuxt
+.vuepress/dist
+
+# Generated packages
+*.tgz
+
+
+# ===========================================
+# CACHE & TEMPORARY FILES
+# ===========================================
+
+# Build and bundler caches
+.cache
+.cache/
+.eslintcache
+.fusebox/
+.grunt
+.npm
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# TypeScript cache
+*.tsbuildinfo
+
+
+# ===========================================
+# CONFIGURATION & ENVIRONMENT
+# ===========================================
+
+# Environment variables
+.env
+.env.test
+
+# IDE configuration
+/.idea/
+
+# Lock files and configurations
+.lock-wscript
+.tern-port
+.yarn-integrity
+
+
+# ===========================================
+# DEPENDENCIES
+# ===========================================
+
+# Dependency directories
+bower_components
+jspm_packages/
+node_modules/
+
+# TypeScript declaration files
+typings/
+
+
+# ===========================================
+# LOGS & REPORTS
+# ===========================================
+
+# Application logs
+*.log
+lerna-debug.log*
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+*.pid
+*.pid.lock
+*.seed
+pids
+
+# REPL history
+.node_repl_history
+
+
+# ===========================================
+# PROJECT-SPECIFIC FILES
+# ===========================================
+
+# Gmail credentials
+/helpers/gmail_cred/
+
+# Playwright files
+/playwright-report/
+/playwright/.cache/
+
+# Test results
+/test-results/
+testResults.json
+
+
+# ===========================================
+# TESTING & COVERAGE
+# ===========================================
+
+# Code coverage
+*.lcov
+coverage
+lib-cov
+.nyc_output
+
+
+# ===========================================
+# THIRD-PARTY SERVICES
+# ===========================================
+
+# Database files
+.dynamodb/
+
+# Serverless framework
+.serverless/

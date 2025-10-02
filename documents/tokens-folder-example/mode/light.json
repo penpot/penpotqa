@@ -1,0 +1,9 @@
+{
+  "primary": {
+    "background": {
+      "$value": "#fff",
+      "$type": "color",
+      "$description": ""
+    }
+  }
+}

@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playwright Test Reports - Penpot QA</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #7f8c8d;
+        margin-bottom: 30px;
+        font-size: 1.1em;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        word-break: break-word;
+      }
+
+      th,
+      td {
+        padding: 15px 12px;
+        text-align: left;
+        border-bottom: 1px solid #ecf0f1;
+      }
+
+      th {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9em;
+        letter-spacing: 0.5px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+
+      tr:hover {
+        background-color: #e3f2fd;
+        transition: all 0.2s ease;
+      }
+
+      a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      a:hover {
+        color: #2980b9;
+        text-decoration: underline;
+      }
+
+      .workflow {
+        font-weight: bold;
+        font-family: monospace;
+        background: #e8f4f8;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #2c3e50;
+      }
+
+      .commit {
+        font-family: monospace;
+        background: #f1f2f6;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+
+      .date {
+        color: #7f8c8d;
+      }
+
+      .branch {
+        color: #7f8c8d;
+      }
+
+      .browser {
+        color: #7f8c8d;
+      }
+
+      .success-rate {
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+
+      .success-high {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .success-medium {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .success-low {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .stats {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .stats h3 {
+        margin: 0 0 10px 0;
+        color: #2c3e50;
+      }
+
+      /* Responsive styles */
+      @media (max-width: 900px) {
+        .container {
+          padding: 18px;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+
+        th,
+        td {
+          padding: 10px 6px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 6px;
+        }
+
+        .container {
+          padding: 8px 2px;
+          border-radius: 0;
+          box-shadow: none;
+        }
+
+        h1 {
+          font-size: 1.3em;
+        }
+
+        .subtitle {
+          font-size: 1em;
+        }
+
+        .stats {
+          padding: 10px 2px;
+        }
+
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+          width: 100%;
+        }
+
+        thead {
+          display: none;
+        }
+
+        tr {
+          margin-bottom: 18px;
+          background: #fff;
+          border-radius: 8px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+          padding: 8px 0;
+        }
+
+        td {
+          border: none;
+          position: relative;
+          padding-left: 50%;
+          min-height: 36px;
+        }
+
+        td:before {
+          position: absolute;
+          top: 10px;
+          left: 12px;
+          width: 45%;
+          white-space: nowrap;
+          font-weight: bold;
+          color: #2980b9;
+          content: attr(data-label);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>🎭 Playwright Test Reports</h1>
+      <p class="subtitle">
+        📊 Penpot QA - Automated Test Results & Historical Reports
+      </p>
+
+      <div class="stats">
+        <h3>🚀 Latest Test Results</h3>
+        <p>View detailed test reports for each run below</p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>📊 Success %</th>
+            <th>🔄 Workflow</th>
+            <th>📝 Commit</th>
+            <th>📅 Date</th>
+            <th>🌿 Branch</th>
+            <th>🌐 Browser</th>
+            <th>📊 Report</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- ROWS_PLACEHOLDER -->
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

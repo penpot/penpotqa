@@ -1,0 +1,53 @@
+const { mainTest } = require('../../fixtures');
+const { MainPage } = require('../../pages/workspace/main-page');
+const { expect } = require('@playwright/test');
+const { random } = require('../../helpers/string-generator');
+const { TeamPage } = require('../../pages/dashboard/team-page');
+const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
+const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
+const { qase } = require('playwright-qase-reporter/playwright');
+
+const teamName = random().concat('autotest');
+
+let teamPage, dashboardPage, mainPage, layersPanelPage;
+
+mainTest.beforeEach(async ({ page }) => {
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  layersPanelPage = new LayersPanelPage(page);
+  await teamPage.createTeam(teamName);
+  await teamPage.isTeamSelected(teamName);
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+});
+
+mainTest.afterEach(async () => {
+  await mainPage.backToDashboardFromFileEditor();
+  await teamPage.deleteTeam(teamName);
+});
+
+mainTest.describe(() => {
+  mainTest(qase([483], 'Create curve line (Toolbar)'), async () => {
+    await mainPage.clickCreateCurveButton();
+    await mainPage.drawCurve(900, 300, 600, 200);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.isCreatedLayerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('curve.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
+  });
+
+  mainTest(
+    qase([485], 'Rename path, that was created with curve with valid name'),
+    async () => {
+      await mainPage.clickCreateCurveButton();
+      await mainPage.drawCurve(900, 300, 600, 200);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.doubleClickLayerOnLayersTab('Path');
+      await layersPanelPage.typeNameCreatedLayerAndEnter('renamed curve');
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isLayerNameDisplayed('renamed curve');
+    },
+  );
+});

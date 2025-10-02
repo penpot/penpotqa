@@ -1,0 +1,25 @@
+[
+  {
+    "id": "0074edbb-0d51-80dc-8006-40cbafd3b869",
+    "name": "Light",
+    "group": "Mode",
+    "description": "",
+    "is-source": false,
+    "modified-at": "2025-06-09T14:02:41.787+02:00",
+    "selectedTokenSets": {
+      "mode/light": "enabled"
+    }
+  },
+  {
+    "id": "0074edbb-0d51-80dc-8006-40cbafd422de",
+    "name": "Dark",
+    "group": "Mode",
+    "description": "",
+    "is-source": false,
+    "modified-at": "2025-06-09T14:02:50.601+02:00",
+    "selectedTokenSets": {
+      "mode/light": "enabled",
+      "mode/dark": "enabled"
+    }
+  }
+]

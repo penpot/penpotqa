@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playwright Test Reports - Penpot QA</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #7f8c8d;
+        margin-bottom: 30px;
+        font-size: 1.1em;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        word-break: break-word;
+      }
+
+      th,
+      td {
+        padding: 15px 12px;
+        text-align: left;
+        border-bottom: 1px solid #ecf0f1;
+      }
+
+      th {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9em;
+        letter-spacing: 0.5px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+
+      tr:hover {
+        background-color: #e3f2fd;
+        transition: all 0.2s ease;
+      }
+
+      a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      a:hover {
+        color: #2980b9;
+        text-decoration: underline;
+      }
+
+      .workflow {
+        font-weight: bold;
+        font-family: monospace;
+        background: #e8f4f8;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #2c3e50;
+      }
+
+      .commit {
+        font-family: monospace;
+        background: #f1f2f6;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+
+      .date {
+        color: #7f8c8d;
+      }
+
+      .branch {
+        color: #7f8c8d;
+      }
+
+      .browser {
+        color: #7f8c8d;
+      }
+
+      .success-rate {
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+
+      .success-high {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .success-medium {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .success-low {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .stats {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .stats h3 {
+        margin: 0 0 10px 0;
+        color: #2c3e50;
+      }
+
+      /* Responsive styles */
+      @media (max-width: 900px) {
+        .container {
+          padding: 18px;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+
+        th,
+        td {
+          padding: 10px 6px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 6px;
+        }
+
+        .container {
+          padding: 8px 2px;
+          border-radius: 0;
+          box-shadow: none;
+        }
+
+        h1 {
+          font-size: 1.3em;
+        }
+
+        .subtitle {
+          font-size: 1em;
+        }
+
+        .stats {
+          padding: 10px 2px;
+        }
+
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+          width: 100%;
+        }
+
+        thead {
+          display: none;
+        }
+
+        tr {
+          margin-bottom: 18px;
+          background: #fff;
+          border-radius: 8px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+          padding: 8px 0;
+        }
+
+        td {
+          border: none;
+          position: relative;
+          padding-left: 50%;
+          min-height: 36px;
+        }
+
+        td:before {
+          position: absolute;
+          top: 10px;
+          left: 12px;
+          width: 45%;
+          white-space: nowrap;
+          font-weight: bold;
+          color: #2980b9;
+          content: attr(data-label);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>🎭 Playwright Test Reports</h1>
+      <p class="subtitle">
+        📊 Penpot QA - Automated Test Results & Historical Reports
+      </p>
+
+      <div class="stats">
+        <h3>🚀 Latest Test Results</h3>
+        <p>View detailed test reports for each run below</p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>📊 Success %</th>
+            <th>🔄 Workflow</th>
+            <th>📝 Commit</th>
+            <th>📅 Date</th>
+            <th>🌿 Branch</th>
+            <th>🌐 Browser</th>
+            <th>📊 Report</th>
+          </tr>
+        </thead>
+        <tbody>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">98%</td>
+    <td class="workflow" data-label="🔄 Workflow">PRE_daily</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/c070d2f7e3c0a8cc65078ce1e56917cd8f282a78">c070d2f</a></td>
+    <td class="date" data-label="📅 Date">2025-10-02 07:03 CEST</td>
+    <td class="branch" data-label="🌿 Branch">main</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18181333055/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/a84497eed2e12a22548974ffa636ea8857ac5ccb">a84497e</a></td>
+    <td class="date" data-label="📅 Date">2025-10-01 14:42 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/fix/no-space-left</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18161994492/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/73787c2cf2f246ddfdd4a2c30015663a62c60198">73787c2</a></td>
+    <td class="date" data-label="📅 Date">2025-10-01 13:38 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/fix/no-space-left</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18160427549/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/2461787693842d5a3640c1c7af882e3d5a3b738d">2461787</a></td>
+    <td class="date" data-label="📅 Date">2025-10-01 12:36 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/fix/no-space-left</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18158990145/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">97%</td>
+    <td class="workflow" data-label="🔄 Workflow">PRE_daily</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/826538f8d8228dd256224f5542e795157c3fbe6b">826538f</a></td>
+    <td class="date" data-label="📅 Date">2025-10-01 06:59 CEST</td>
+    <td class="branch" data-label="🌿 Branch">main</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18149346598/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">97%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/fe0d6a863b87ee8fb01b8d6db399abc76888107d">fe0d6a8</a></td>
+    <td class="date" data-label="📅 Date">2025-09-30 16:51 CEST</td>
+    <td class="branch" data-label="🌿 Branch">cstanislav/feature/variants</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18129578685/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">97%</td>
+    <td class="workflow" data-label="🔄 Workflow">PRE_daily</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/8d0a18f0eee3fcccde223cc8183d5ffd43f73aae">8d0a18f</a></td>
+    <td class="date" data-label="📅 Date">2025-09-30 06:49 CEST</td>
+    <td class="branch" data-label="🌿 Branch">main</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18116562151/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">98%</td>
+    <td class="workflow" data-label="🔄 Workflow">PRE_daily</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/8d0a18f0eee3fcccde223cc8183d5ffd43f73aae">8d0a18f</a></td>
+    <td class="date" data-label="📅 Date">2025-09-29 06:46 CEST</td>
+    <td class="branch" data-label="🌿 Branch">main</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18083770224/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/8d0a18f0eee3fcccde223cc8183d5ffd43f73aae">8d0a18f</a></td>
+    <td class="date" data-label="📅 Date">2025-09-26 15:44 CEST</td>
+    <td class="branch" data-label="🌿 Branch">main</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18038580610/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-medium" data-label="📊 Success %">N/A</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/6455da186980dbcfbfb6c6d8380295e1c9b02df6">6455da1</a></td>
+    <td class="date" data-label="📅 Date">2025-09-26 14:28 CEST</td>
+    <td class="branch" data-label="🌿 Branch">lugarbos/task/implement-login-setup</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18037316975/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/9e3dc635ea14458f3d65502c1df3569e3b985ae8">9e3dc63</a></td>
+    <td class="date" data-label="📅 Date">2025-09-26 11:39 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/mention-mattermost</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18033689096/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/55da667ad0bd0fe5a611913b039ed48507121490">55da667</a></td>
+    <td class="date" data-label="📅 Date">2025-09-26 09:45 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/mention-mattermost</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18031179866/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/4cfe7767ce9da09bab3d9864ba3b313fdacfd3f3">4cfe776</a></td>
+    <td class="date" data-label="📅 Date">2025-09-26 08:15 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/mention-mattermost</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18029312220/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">98%</td>
+    <td class="workflow" data-label="🔄 Workflow">PRE_daily</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/727e8ac562e2515a1602d849bd79a831aa25acdc">727e8ac</a></td>
+    <td class="date" data-label="📅 Date">2025-09-26 06:39 CEST</td>
+    <td class="branch" data-label="🌿 Branch">main</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18025954277/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">98%</td>
+    <td class="workflow" data-label="🔄 Workflow">PRE_daily_firefox</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/727e8ac562e2515a1602d849bd79a831aa25acdc">727e8ac</a></td>
+    <td class="date" data-label="📅 Date">2025-09-26 01:41 CEST</td>
+    <td class="branch" data-label="🌿 Branch">main</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Firefox">🦊 Firefox</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18019727864/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/4cfe7767ce9da09bab3d9864ba3b313fdacfd3f3">4cfe776</a></td>
+    <td class="date" data-label="📅 Date">2025-09-25 15:03 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/mention-mattermost</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18008071000/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/e4e6b2c1bf11022f87460d110025d0728a06fd9b">e4e6b2c</a></td>
+    <td class="date" data-label="📅 Date">2025-09-25 14:41 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/mention-mattermost</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-18007152862/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">98%</td>
+    <td class="workflow" data-label="🔄 Workflow">PRE_daily</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/727e8ac562e2515a1602d849bd79a831aa25acdc">727e8ac</a></td>
+    <td class="date" data-label="📅 Date">2025-09-25 06:36 CEST</td>
+    <td class="branch" data-label="🌿 Branch">main</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17994950636/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/f9b40aae15538d8f16ba138a1ef10e283cd2f970">f9b40aa</a></td>
+    <td class="date" data-label="📅 Date">2025-09-24 10:46 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/fix/lost-artifacts</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17971306381/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">98%</td>
+    <td class="workflow" data-label="🔄 Workflow">PRE_daily</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/6660800cecd9d7eff41c85a522d16942436d013a">6660800</a></td>
+    <td class="date" data-label="📅 Date">2025-09-24 06:38 CEST</td>
+    <td class="branch" data-label="🌿 Branch">main</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17964333818/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/7b88e4fe902d45012548115abad628079feb1a09">7b88e4f</a></td>
+    <td class="date" data-label="📅 Date">2025-09-22 15:11 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/run-folders-subset</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17916252547/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/62193cf23f0b51f7a36058bde64b0e9e68571084">62193cf</a></td>
+    <td class="date" data-label="📅 Date">2025-09-22 14:47 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/run-folders-subset</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17915458501/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/62193cf23f0b51f7a36058bde64b0e9e68571084">62193cf</a></td>
+    <td class="date" data-label="📅 Date">2025-09-22 14:13 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/run-folders-subset</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17914767086/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-medium" data-label="📊 Success %">50%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/f49d3564c9680efeaf0c0fa3254343e285dc363f">f49d356</a></td>
+    <td class="date" data-label="📅 Date">2025-09-22 10:08 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/fix/always_reports</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17908779900/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-medium" data-label="📊 Success %">50%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/d9096eadc1baca8f27f8c1a3352f1392bcf7252f">d9096ea</a></td>
+    <td class="date" data-label="📅 Date">2025-09-22 09:59 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/fix/always_reports</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17908573786/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/703f16f86cb8455270bfef3fecee7f89160d275b">703f16f</a></td>
+    <td class="date" data-label="📅 Date">2025-09-19 11:15 CEST</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17853927130/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/2b249674cdbec8701e41f01c11c843912b8a8738">2b24967</a></td>
+    <td class="date" data-label="📅 Date">2025-09-19 09:52 CET</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17853414313/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/5ae74bfb5f157f26a0306b402bcdafa17af23eab">5ae74bf</a></td>
+    <td class="date" data-label="📅 Date">2025-09-19 00:43 </td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17853191036/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/cb4dfb0e9c6a43f37cea24905f37cca8a3e45d2c">cb4dfb0</a></td>
+    <td class="date" data-label="📅 Date">2025-09-19 08:34 GMT</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17852998367/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/2ce6d556d2d12f01d7dfaff756bc47271f7a16db">2ce6d55</a></td>
+    <td class="date" data-label="📅 Date">2025-09-19 07:45 UTC</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17851912818/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/ca905c1efe4f4e3034feb55c390566b6d48c48f3">ca905c1</a></td>
+    <td class="date" data-label="📅 Date">2025-09-19 07:34 CET</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17851679979/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/6dbf6196fef71ca73f507a3e296d2a831f6b71cd">6dbf619</a></td>
+    <td class="date" data-label="📅 Date">2025-09-19 07:25 GMT</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17851481057/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PRE_daily</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/f2a21f3c694bc2dca1847e8d9ec9c5d716481f5c">f2a21f3</a></td>
+    <td class="date" data-label="📅 Date">2025-09-19 07:17 UTC</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17851287844/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/7e27aadc59e7949ba4a4b7b785d1ccb45a6d1a86">7e27aad</a></td>
+    <td class="date" data-label="📅 Date">2025-09-19 06:57 UTC</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17850904008/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+    <td class="success-rate success-high" data-label="📊 Success %">100%</td>
+    <td class="workflow" data-label="🔄 Workflow">PR_Manual</td>
+    <td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/1cb52bc4ff1da675b3afa0a3b86e08f3cef84c24">1cb52bc</a></td>
+    <td class="date" data-label="📅 Date">2025-09-19 06:48 UTC</td>
+    <td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td>
+    <td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td>
+    <td data-label="📊 Report"><a href="reports/run-17850713518/index.html">🔍 View Report</a></td>
+  </tr>
+  <tr>
+  <tr>
+  <tr>
+  <tr>
+          <tr><td class="success-rate success-high" data-label="📊 Success %">100%</td><td class="workflow" data-label="🔄 Workflow">PRE_daily</td><td class="commit" data-label="📝 Commit"><a href="https://github.com/penpot/penpotqa/commit/559c68d13ec52475ff8def2a06213f21bd426619">559c68d</a></td><td class="date" data-label="📅 Date">2025-09-17 13:25 UTC</td><td class="branch" data-label="🌿 Branch">estefafdez/feature/refactor-actions</td><td class="browser" data-label="🌐 Browser"><span title="Chrome">🌐 Chrome</span></td><td data-label="📊 Report"><a href="reports/run-17799020059/index.html">🔍 View Report</a></td></tr>           <tr>           <tr>           <tr>           <tr> 
+          <tr>
+          <tr>
+          <tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
