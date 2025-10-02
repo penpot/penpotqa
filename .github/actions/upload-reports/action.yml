@@ -22,6 +22,9 @@ runs:
     - name: Prepare new report
       shell: bash
       run: |
+        # Reset to a known good state to avoid conflicts
+        git reset --hard 2d21cf10
+
         mkdir -p gh-pages/reports/run-${{ github.run_id }}
         cp -r playwright-report/* gh-pages/reports/run-${{ github.run_id }}/
 
@@ -133,7 +136,7 @@ runs:
       with:
         name: ${{ inputs.artifact-name }}
         path: playwright-report/
-        retention-days: 30
+        retention-days: 7
         if-no-files-found: ignore
 
     - name: Commit and push to gh-pages
@@ -155,7 +158,8 @@ runs:
         # Push with retry logic to handle concurrent updates
         for i in {1..3}; do
           echo "Push attempt $i/3..."
-          if git push origin gh-pages; then
+          # We need to force the commit for now
+          if git push -f origin gh-pages; then
             echo "✅ Successfully pushed to gh-pages"
             break
           else
