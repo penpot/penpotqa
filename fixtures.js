@@ -5,8 +5,52 @@ const { RegisterPage } = require('./pages/register-page');
 const { updateTestResults } = require('./helpers/saveTestResults');
 const { random } = require('./helpers/string-generator');
 const { waitMessage } = require('./helpers/gmail');
+import fs from 'fs';
+import path from 'path';
 
-// TO DO - TO REVIEW
+// TO DO - TO REVIEW - LOGIN IN THE API
+// const mainTest = base.test.extend({
+//   age: async ({ page, request, context }, use, testInfo) => {
+//     const url = new URL('api/rpc/command/login-with-password', process.env.BASE_URL).toString();
+
+//     const response = await request.post(url, {
+//       headers: { 'Content-Type': 'application/json' },
+//       data: {
+//         email: process.env.LOGIN_EMAIL,
+//         password: process.env.LOGIN_PWD,
+//       },
+//     });
+
+//     if (!response.ok()) {
+//       throw new Error(`Login failed: ${response.status()} ${await response.text()}`);
+//     }
+
+//     // Extract cookies from the API context
+//     const cookies = await request.storageState();
+
+//     // Apply cookies to the browser context
+//     await context.addCookies(cookies.cookies);
+
+//     // Now navigate, should be logged in
+//     await page.goto(process.env.BASE_URL);
+
+//     const loginPage = new LoginPage(page);
+//     await loginPage.acceptCookie();
+
+//     const dashboardPage = new DashboardPage(page);
+//     await dashboardPage.isDashboardOpenedAfterLogin();
+//     await dashboardPage.isHeaderDisplayed('Projects');
+//     await dashboardPage.skipWhatNewsPopUp();
+//     await dashboardPage.skipPluginsPopUp();
+
+//     await use(page);
+
+//     // reporting cleanup
+//     await updateTestResults(testInfo.status, testInfo.retry);
+//   },
+// });
+
+// TO DO - TO REVIEW - LOGIN IN THE UI
 // const mainTest = base.test.extend({
 //   page: async ({ page }, use, testInfo) => {
 //     // Already signed in (storage state), so just open root
@@ -27,51 +71,54 @@ const { waitMessage } = require('./helpers/gmail');
 //   },
 // });
 
-const mainTest = base.test.extend({
-  page: async ({ page, request }, use, testInfo) => {
-    const authFile = '.auth/ownerUser.json';
-    const url = `${process.env.BASE_URL}api/rpc/command/login-with-password`;
+// const mainTest = base.test.extend({
+//     page: async ({ page, request }, use, testInfo) => {
+//     // Ensure auth directory exists
+//     const authDir = path.join(__dirname, '.auth');
+//     if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
 
-    const response = await request.post(url, {
-      data: {
-        email: process.env.LOGIN_EMAIL,
-        password: process.env.LOGIN_PWD,
-      },
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+//     const url = `${process.env.BASE_URL}api/rpc/command/login-with-password`;
 
-    if (!response.ok()) {
-      throw new Error(
-        `Login failed with status ${response.status()}: ${await response.text()}`,
-      );
-    }
+//     const response = await request.post(url, {
+//       data: {
+//         email: process.env.LOGIN_EMAIL,
+//         password: process.env.LOGIN_PWD,
+//       },
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     });
 
-    // Debugging: print body if needed
-    const body = await response.json();
-    console.log('Login response:', body);
+//     if (!response.ok()) {
+//       throw new Error(
+//         `Login failed with status ${response.status()}: ${await response.text()}`,
+//       );
+//     }
 
-    // Save cookies & local storage state
-    await request.storageState({ path: authFile });
+//     // Debugging: print body if needed
+//     const body = await response.json();
+//     console.log('Login response:', body);
 
-    // Already signed in (storage state), so just open root
-    await page.goto(process.env.BASE_URL);
+//     // Save cookies & local storage state
+//     await request.storageState({ path: authFile });
 
-    const loginPage = new LoginPage(page);
-    await loginPage.acceptCookie();
+//     // Already signed in (storage state), so just open root
+//     await page.goto(process.env.BASE_URL);
 
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.skipWhatNewsPopUp();
-    await dashboardPage.skipPluginsPopUp();
+//     const loginPage = new LoginPage(page);
+//     await loginPage.acceptCookie();
 
-    await use(page);
+//     const dashboardPage = new DashboardPage(page);
+//     await dashboardPage.isDashboardOpenedAfterLogin();
+//     await dashboardPage.isHeaderDisplayed('Projects');
+//     await dashboardPage.skipWhatNewsPopUp();
+//     await dashboardPage.skipPluginsPopUp();
 
-    await updateTestResults(testInfo.status, testInfo.retry);
-  },
-});
+//     await use(page);
+
+//     await updateTestResults(testInfo.status, testInfo.retry);
+//   },
+// });
 
 const registerTest = base.test.extend({
   name: async ({}, use) => {

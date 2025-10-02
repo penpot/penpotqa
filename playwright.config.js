@@ -72,7 +72,7 @@ const config = {
       },
       use: {
         browserName: 'chromium',
-        storageState: '.auth/ownerUser.json',
+        // storageState: '.auth/ownerUser.json',
         channel: 'chrome',
         viewport: {
           height: 969,
