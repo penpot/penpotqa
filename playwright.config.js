@@ -53,8 +53,8 @@ const config = {
     baseURL: process.env.BASE_URL,
     headless: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: process.env.CI ? 'on-first-retry' : 'on',
-    video: process.env.CI ? 'on-first-retry' : 'on',
+    trace: process.env.CI ? 'retain-on-failure' : 'on',
+    video: process.env.CI ? 'off' : 'on',
   },
   projects: [
     {
