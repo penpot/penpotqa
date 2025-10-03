@@ -1,5 +1,5 @@
 const { test } = require('@playwright/test');
-const { updateTestResults } = require('../helpers/saveTestResults');
+const { updateTestResults } = require('../../helpers/saveTestResults');
 
 test.describe('Sample Test Suite', () => {
   test.afterEach(async ({}, testInfo) => {
