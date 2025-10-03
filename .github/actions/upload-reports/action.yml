@@ -43,7 +43,7 @@ runs:
         cp -r playwright-report/* reports/run-${{ github.run_id }}/
 
         # Upload report to S3
-        aws s3 cp reports/run-${{ github.run_id }}/ s3://kaleidos-qa-report/run-${{ github.run_id }}/ --recursive
+        aws s3 cp reports/run-${{ github.run_id }}/ s3://kaleidos-qa-reports/run-${{ github.run_id }}/ --recursive
 
         # Simple approach: use date command with offset for Madrid time
         MONTH=$(date -u +%m)
