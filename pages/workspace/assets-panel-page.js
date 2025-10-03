@@ -548,4 +548,15 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.fileLibraryGroupTitle.click({ button: 'right' });
     await this.combineAsVariantsFileLibraryMenuItem.click();
   }
+
+  async clickOnGroupFileLibrary() {
+    await this.fileLibraryGroupTitle.click();
+  }
+
+  async expandComponentsGroupOnAssetsTab() {
+    if (!(await this.assetComponentLabel.isVisible())) {
+      await this.clickOnGroupFileLibrary();
+    }
+    await expect(this.assetComponentLabel).toBeVisible();
+  }
 };
