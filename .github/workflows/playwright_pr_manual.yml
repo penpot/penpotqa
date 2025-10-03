@@ -32,17 +32,11 @@ on:
           - tests/tokens
           - tests/ui-theme
           - tests/view-mode
-        default: 'tests/assets'
-
-# Prevent concurrent deployments to gh-pages
-concurrency:
-  group: pages-deployment
-  cancel-in-progress: false
+          - tests/prueba
+        default: 'tests/prueba'
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   tests_chromium:
@@ -96,7 +90,7 @@ jobs:
               fi
               if [ ! -d "${{ github.event.inputs.test_folder }}" ]; then
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
-                echo "Available folders:"
+                echo "Available folders in tests/:"
                 ls -la tests/
                 exit 1
               fi
@@ -113,16 +107,19 @@ jobs:
         with:
           browser-name: 'Chrome'
           artifact-name: 'playwright-report-chromium-pr-${{ github.event.inputs.test_mode }}'
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
         if: always()
 
-      - name: Send Mattermost Notification
-        uses: ./.github/actions/send-notification
-        with:
-          browser-name: 'Chrome'
-          channel-id: ${{ secrets.PR_CHANNEL_ID }}
-          login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
-          password: ${{ secrets.PASSWORD_MATTERMOST }}
-          folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
-          is-manual-execution: 'true'
-          username: ${{ github.actor }}
-        if: always()
+      # - name: Send Mattermost Notification
+      #   uses: ./.github/actions/send-notification
+      #   with:
+      #     browser-name: 'Chrome'
+      #     channel-id: ${{ secrets.PR_CHANNEL_ID }}
+      #     login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
+      #     password: ${{ secrets.PASSWORD_MATTERMOST }}
+      #     folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
+      #     is-manual-execution: 'true'
+      #     username: ${{ github.actor }}
+      #   if: always()
