@@ -21,13 +21,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout gh-pages branch
-      uses: actions/checkout@v4
-      with:
-        ref: gh-pages
-        path: gh-pages
-        token: ${{ github.token }}
-
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -35,31 +28,42 @@ runs:
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
 
-    - name: Prepare new report and upload to S3
+    - name: Upload report to S3
       shell: bash
       run: |
         # Create local report directory
         mkdir -p reports/run-${{ github.run_id }}
         cp -r playwright-report/* reports/run-${{ github.run_id }}/
 
-        # Upload report to S3
+        # Upload to S3
         aws s3 cp reports/run-${{ github.run_id }}/ s3://kaleidos-qa-reports/run-${{ github.run_id }}/ --recursive
+        echo "✅ Report uploaded to S3: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html"
 
-        # Simple approach: use date command with offset for Madrid time
+    - name: Checkout gh-pages for index update
+      uses: actions/checkout@v4
+      with:
+        ref: gh-pages
+        path: gh-pages
+        token: ${{ github.token }}
+
+    - name: Update reports index
+      shell: bash
+      run: |
+        # Calculate Madrid time
         MONTH=$(date -u +%m)
-
-        # Determine timezone offset - September (09) should be CEST
         if [[ "$MONTH" == "04" ]] || [[ "$MONTH" == "05" ]] || [[ "$MONTH" == "06" ]] || \
            [[ "$MONTH" == "07" ]] || [[ "$MONTH" == "08" ]] || [[ "$MONTH" == "09" ]] || [[ "$MONTH" == "10" ]]; then
-          # Summer time: UTC+2 (CEST)
           DATE_TIME=$(date -u -d "+2 hours" +"%Y-%m-%d %H:%M CEST")
         else
-          # Winter time: UTC+1 (CET)
           DATE_TIME=$(date -u -d "+1 hour" +"%Y-%m-%d %H:%M CET")
         fi
+
+        # Get report metadata
         SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
         BRANCH_NAME="${{ github.ref_name }}"
         WORKFLOW_NAME="${{ github.workflow }}"
+
+        # Calculate success percentage
         SUCCESS_PERCENT="N/A"
         SUCCESS_CLASS="success-medium"
         if [ -f "testResults.json" ]; then
@@ -76,13 +80,12 @@ runs:
           fi
         fi
 
-        BROWSER_ICON="🌐"
-        BROWSER_LABEL="Chrome"
+        # Set browser icon and workflow label
+        BROWSER_ICON="🌐"; BROWSER_LABEL="Chrome"
         if [ "${{ inputs.browser-name }}" = "Firefox" ]; then
-          BROWSER_ICON="🦊"
-          BROWSER_LABEL="Firefox"
+          BROWSER_ICON="🦊"; BROWSER_LABEL="Firefox"
         fi
-        # Determine workflow label based on workflow name
+
         if [[ "$WORKFLOW_NAME" == "Manual Penpot Tests for PR" ]]; then
           WORKFLOW_LABEL="PR_Manual"
         elif [[ "$WORKFLOW_NAME" =~ firefox|Firefox ]]; then
@@ -91,7 +94,7 @@ runs:
           WORKFLOW_LABEL="PRE_daily"
         fi
 
-        # Create temporary file for new row
+        # Create new report row
         cat > /tmp/new_row.html << EOF
           <tr>
             <td class="success-rate $SUCCESS_CLASS" data-label="📊 Success %">$SUCCESS_PERCENT</td>
@@ -104,46 +107,25 @@ runs:
           </tr>
         EOF
 
-        # Extract existing rows from current index.html if it exists
+        # Extract existing rows and combine with new one
         if [ -f gh-pages/index.html ]; then
-          # Create a temporary file to work with the tbody content
-          sed -n '/<tbody>/,/<\/tbody>/p' gh-pages/index.html > /tmp/tbody_content.html
-          
-          # Extract complete rows using sed to get everything from <tr> to </tr>
-          # Remove the tbody tags and placeholder comments, keep only the row content
-          sed '/<tbody>/d; /<\/tbody>/d; /<!-- ROWS_PLACEHOLDER -->/d; /^[[:space:]]*$/d' /tmp/tbody_content.html > /tmp/existing_rows.html
-          
-          # Cleanup temp file
-          rm -f /tmp/tbody_content.html
+          sed -n '/<tbody>/,/<\/tbody>/p' gh-pages/index.html | \
+          sed '/<tbody>/d; /<\/tbody>/d; /<!-- ROWS_PLACEHOLDER -->/d; /^[[:space:]]*$/d' > /tmp/existing_rows.html
         else
           touch /tmp/existing_rows.html
         fi
 
-        # Combine new row with existing rows
         cat /tmp/new_row.html > /tmp/all_rows.html
-        if [ -s /tmp/existing_rows.html ]; then
-          cat /tmp/existing_rows.html >> /tmp/all_rows.html
-        fi
+        [ -s /tmp/existing_rows.html ] && cat /tmp/existing_rows.html >> /tmp/all_rows.html
 
-        # Generate new index.html with all rows
+        # Generate updated index.html
         cp .github/html-template.html /tmp/template.html
+        awk '/<!-- ROWS_PLACEHOLDER -->/ { while ((getline line < "/tmp/all_rows.html") > 0) print line; close("/tmp/all_rows.html"); next } { print }' /tmp/template.html > gh-pages/index.html
 
-        # Use awk to replace the placeholder with the content of all_rows.html
-        awk '
-        /<!-- ROWS_PLACEHOLDER -->/ {
-          while ((getline line < "/tmp/all_rows.html") > 0) {
-            print line
-          }
-          close("/tmp/all_rows.html")
-          next
-        }
-        { print }
-        ' /tmp/template.html > gh-pages/index.html
-
-        # Cleanup temp files
+        # Cleanup
         rm -f /tmp/new_row.html /tmp/existing_rows.html /tmp/all_rows.html /tmp/template.html
 
-    - name: Upload Playwright Report as artifact
+    - name: Upload artifact for backup
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
@@ -151,7 +133,7 @@ runs:
         retention-days: 7
         if-no-files-found: ignore
 
-    - name: Commit and push to gh-pages
+    - name: Commit and push index update
       shell: bash
       run: |
         cd gh-pages
@@ -159,7 +141,6 @@ runs:
         git config user.email "github-actions@github.com"
         git add .
 
-        # Check if there are changes to commit
         if git diff --staged --quiet; then
           echo "No changes to commit"
           exit 0
@@ -167,16 +148,15 @@ runs:
 
         git commit -m "Add report for run ${{ github.run_id }}"
 
-        # Push with retry logic to handle concurrent updates
+        # Push with retry logic
         for i in {1..3}; do
           echo "Push attempt $i/3..."
-          # We need to force the commit for now
           if git push -f origin gh-pages; then
             echo "✅ Successfully pushed to gh-pages"
             break
           else
             if [ $i -lt 3 ]; then
-              echo "⚠️ Push failed, pulling latest changes and retrying..."
+              echo "⚠️ Push failed, retrying..."
               git pull --rebase origin gh-pages
               sleep $((i * 2))
             else
