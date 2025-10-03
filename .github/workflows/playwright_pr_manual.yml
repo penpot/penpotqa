@@ -75,6 +75,14 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
         run: |
+          echo "🔍 Debug information:"
+          echo "Working directory: $(pwd)"
+          echo "Contents of current directory:"
+          ls -la
+          echo "Contents of tests directory:"
+          ls -la tests/ || echo "tests directory not found"
+          echo "Selected test folder: ${{ github.event.inputs.test_folder }}"
+
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
               echo "🚀 Running all tests..."
@@ -90,12 +98,17 @@ jobs:
                 echo "❌ Error: No test folder specified"
                 exit 1
               fi
+              echo "🔍 Checking if folder exists: ${{ github.event.inputs.test_folder }}"
               if [ ! -d "${{ github.event.inputs.test_folder }}" ]; then
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
-                echo "Available folders:"
+                echo "Available folders in tests/:"
                 ls -la tests/
+                echo "Trying alternative paths..."
+                ls -la "./tests/" 2>/dev/null || echo "No ./tests/"
+                ls -la "tests/" 2>/dev/null || echo "No tests/"
                 exit 1
               fi
+              echo "✅ Folder exists, running tests..."
               npx playwright test --project=chrome -gv 'PERF' "${{ github.event.inputs.test_folder }}"
               ;;
             *)
@@ -114,14 +127,14 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
         if: always()
 
-      - name: Send Mattermost Notification
-        uses: ./.github/actions/send-notification
-        with:
-          browser-name: 'Chrome'
-          channel-id: ${{ secrets.PR_CHANNEL_ID }}
-          login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
-          password: ${{ secrets.PASSWORD_MATTERMOST }}
-          folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
-          is-manual-execution: 'true'
-          username: ${{ github.actor }}
-        if: always()
+      # - name: Send Mattermost Notification
+      #   uses: ./.github/actions/send-notification
+      #   with:
+      #     browser-name: 'Chrome'
+      #     channel-id: ${{ secrets.PR_CHANNEL_ID }}
+      #     login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
+      #     password: ${{ secrets.PASSWORD_MATTERMOST }}
+      #     folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
+      #     is-manual-execution: 'true'
+      #     username: ${{ github.actor }}
+      #   if: always()
