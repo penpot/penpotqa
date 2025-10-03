@@ -11,6 +11,11 @@ inputs:
 
 runs:
   using: 'composite'
+  env:
+    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
   steps:
     - name: Checkout gh-pages branch
       uses: actions/checkout@v4
@@ -19,14 +24,22 @@ runs:
         path: gh-pages
         token: ${{ github.token }}
 
-    - name: Prepare new report
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+    - name: Prepare new report and upload to S3
       shell: bash
       run: |
-        # Reset to a known good state to avoid conflicts
-        git reset --hard 2d21cf10
+        # Create local report directory
+        mkdir -p reports/run-${{ github.run_id }}
+        cp -r playwright-report/* reports/run-${{ github.run_id }}/
 
-        mkdir -p gh-pages/reports/run-${{ github.run_id }}
-        cp -r playwright-report/* gh-pages/reports/run-${{ github.run_id }}/
+        # Upload report to S3
+        aws s3 cp reports/run-${{ github.run_id }}/ s3://kaleidos-qa-report/run-${{ github.run_id }}/ --recursive
 
         # Simple approach: use date command with offset for Madrid time
         MONTH=$(date -u +%m)
@@ -83,7 +96,7 @@ runs:
             <td class="date" data-label="📅 Date">$DATE_TIME</td>
             <td class="branch" data-label="🌿 Branch">$BRANCH_NAME</td>
             <td class="browser" data-label="🌐 Browser"><span title="$BROWSER_LABEL">$BROWSER_ICON $BROWSER_LABEL</span></td>
-            <td data-label="📊 Report"><a href="reports/run-${{ github.run_id }}/index.html">🔍 View Report</a></td>
+            <td data-label="📊 Report"><a href="https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html">🔍 View Report</a></td>
           </tr>
         EOF
 
@@ -125,11 +138,6 @@ runs:
 
         # Cleanup temp files
         rm -f /tmp/new_row.html /tmp/existing_rows.html /tmp/all_rows.html /tmp/template.html
-
-        # Clean up old report directories (keep only 50 most recent)
-        if [ -d gh-pages/reports ]; then
-          ls -dt gh-pages/reports/run-* 2>/dev/null | tail -n +51 | xargs -r rm -rf
-        fi
 
     - name: Upload Playwright Report as artifact
       uses: actions/upload-artifact@v4

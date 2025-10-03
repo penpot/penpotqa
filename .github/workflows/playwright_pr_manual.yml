@@ -32,12 +32,8 @@ on:
           - tests/tokens
           - tests/ui-theme
           - tests/view-mode
-        default: 'tests/assets'
-
-# Prevent concurrent deployments to gh-pages
-concurrency:
-  group: pages-deployment
-  cancel-in-progress: false
+          - tests/prueba
+        default: 'tests/prueba'
 
 permissions:
   contents: write
