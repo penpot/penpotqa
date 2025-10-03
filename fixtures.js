@@ -1,39 +1,99 @@
-const base = require('@playwright/test');
+const { test: base, request: playwrightRequest } = require('@playwright/test');
+const path = require('path');
 const { LoginPage } = require('./pages/login-page.js');
 const { DashboardPage } = require('./pages/dashboard/dashboard-page.js');
 const { RegisterPage } = require('./pages/register-page');
 const { updateTestResults } = require('./helpers/saveTestResults');
 const { random } = require('./helpers/string-generator');
 const { waitMessage } = require('./helpers/gmail');
-import fs from 'fs';
-import path from 'path';
+const fs = require('fs');
 
-// TO DO - TO REVIEW - LOGIN IN THE API
-// const mainTest = base.test.extend({
-//   age: async ({ page, request, context }, use, testInfo) => {
-//     const url = new URL('api/rpc/command/login-with-password', process.env.BASE_URL).toString();
+const mainTest = base.extend({
+  page: async ({ browser }, use, testInfo) => {
+    // Create fresh API context
+    const apiContext = await playwrightRequest.newContext({
+      baseURL: process.env.BASE_URL,
+    });
 
-//     const response = await request.post(url, {
-//       headers: { 'Content-Type': 'application/json' },
-//       data: {
-//         email: process.env.LOGIN_EMAIL,
-//         password: process.env.LOGIN_PWD,
-//       },
-//     });
+    // Login via API
+    const response = await apiContext.post('api/rpc/command/login-with-password', {
+      data: { email: process.env.LOGIN_EMAIL, password: process.env.LOGIN_PWD },
+      headers: { 'Content-Type': 'application/json' },
+    });
 
-//     if (!response.ok()) {
-//       throw new Error(`Login failed: ${response.status()} ${await response.text()}`);
+    if (!response.ok()) {
+      throw new Error(`Login failed: ${response.status()} ${await response.text()}`);
+    }
+
+    // Get storageState for browser context
+    const storageState = await apiContext.storageState();
+    await apiContext.dispose();
+
+    // Create browser context using fresh storageState
+    const context = await browser.newContext({ storageState });
+    const page = await context.newPage();
+
+    // Navigate and UI setup
+    await page.goto(process.env.BASE_URL, { waitUntil: 'networkidle' });
+
+    const loginPage = new LoginPage(page);
+    await loginPage.acceptCookie();
+
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await dashboardPage.isHeaderDisplayed('Projects');
+    await dashboardPage.skipWhatNewsPopUp();
+    await dashboardPage.skipPluginsPopUp();
+
+    // Run test
+    await use(page);
+
+    // Cleanup
+    await updateTestResults(testInfo.status, testInfo.retry);
+    await context.close();
+  },
+});
+
+// TO DO - TO REVIEW - LOGIN VIA API AND SAVE STORAGE STATE: This causes issues with concurrency
+//**
+//  * Main test fixture
+//  */
+// const mainTest = base.extend({
+//   // Test-scoped storageState
+//   storageState: async ({}, use) => {
+//     const storagePath = path.resolve('.auth', 'ownerUser.json');
+
+//     // If storageState doesn't exist, login via API
+//     if (!fs.existsSync(storagePath)) {
+//       // Create a new APIRequestContext with baseURL
+//       const apiContext = await playwrightRequest.newContext({ baseURL: process.env.BASE_URL });
+
+//       const response = await apiContext.post('api/rpc/command/login-with-password', {
+//         data: { email: process.env.LOGIN_EMAIL, password: process.env.LOGIN_PWD },
+//         headers: { 'Content-Type': 'application/json' },
+//       });
+
+//       if (!response.ok()) {
+//         throw new Error(`Login failed: ${response.status()} ${await response.text()}`);
+//       }
+
+//       // Save storageState
+//       await apiContext.storageState({ path: storagePath });
+//       await apiContext.dispose();
 //     }
 
-//     // Extract cookies from the API context
-//     const cookies = await request.storageState();
+//     await use(storagePath);
+//   },
 
-//     // Apply cookies to the browser context
-//     await context.addCookies(cookies.cookies);
+//   // Page fixture with fresh browser context
+//   page: async ({ browser, storageState }, use, testInfo) => {
+//     const context = await browser.newContext({ storageState });
+//     const page = await context.newPage();
 
-//     // Now navigate, should be logged in
-//     await page.goto(process.env.BASE_URL);
+//     // Navigate to base URL
+//     await page.goto(process.env.BASE_URL, { waitUntil: 'networkidle' });
 
+//     // UI setup
 //     const loginPage = new LoginPage(page);
 //     await loginPage.acceptCookie();
 
@@ -45,63 +105,15 @@ import path from 'path';
 
 //     await use(page);
 
-//     // reporting cleanup
+//     // Reporting / cleanup
 //     await updateTestResults(testInfo.status, testInfo.retry);
+//     await context.close();
 //   },
 // });
 
-// TO DO - TO REVIEW - LOGIN IN THE UI
+// TO DO - TO REVIEW - LOGIN IN THE UI WITH STORAGE STATE FROM AUTH
 // const mainTest = base.test.extend({
 //   page: async ({ page }, use, testInfo) => {
-//     // Already signed in (storage state), so just open root
-//     await page.goto(process.env.BASE_URL);
-
-//     const loginPage = new LoginPage(page);
-//     await loginPage.acceptCookie();
-
-//     const dashboardPage = new DashboardPage(page);
-//     await dashboardPage.isDashboardOpenedAfterLogin();
-//     await dashboardPage.isHeaderDisplayed('Projects');
-//     await dashboardPage.skipWhatNewsPopUp();
-//     await dashboardPage.skipPluginsPopUp();
-
-//     await use(page);
-
-//     await updateTestResults(testInfo.status, testInfo.retry);
-//   },
-// });
-
-// const mainTest = base.test.extend({
-//     page: async ({ page, request }, use, testInfo) => {
-//     // Ensure auth directory exists
-//     const authDir = path.join(__dirname, '.auth');
-//     if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
-
-//     const url = `${process.env.BASE_URL}api/rpc/command/login-with-password`;
-
-//     const response = await request.post(url, {
-//       data: {
-//         email: process.env.LOGIN_EMAIL,
-//         password: process.env.LOGIN_PWD,
-//       },
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     });
-
-//     if (!response.ok()) {
-//       throw new Error(
-//         `Login failed with status ${response.status()}: ${await response.text()}`,
-//       );
-//     }
-
-//     // Debugging: print body if needed
-//     const body = await response.json();
-//     console.log('Login response:', body);
-
-//     // Save cookies & local storage state
-//     await request.storageState({ path: authFile });
-
 //     // Already signed in (storage state), so just open root
 //     await page.goto(process.env.BASE_URL);
 

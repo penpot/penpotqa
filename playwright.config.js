@@ -98,7 +98,7 @@ const config = {
       },
       use: {
         browserName: 'firefox',
-        storageState: '.auth/ownerUser.json',
+        // storageState: '.auth/ownerUser.json',
         viewport: {
           height: 969,
           width: 1920,
