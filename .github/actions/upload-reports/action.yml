@@ -1,5 +1,5 @@
-name: 'Generate and Upload Reports'
-description: 'Download existing reports, prepare history and upload to GitHub Pages'
+name: 'Generate and Upload Reports to S3'
+description: 'Upload Playwright reports and update reports index on S3'
 
 inputs:
   browser-name:
@@ -21,33 +21,26 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Configure AWS and upload report to S3
+    - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
 
-    - name: Upload report to S3
+    - name: Upload report and update index on S3
       shell: bash
       run: |
-        # Create and upload report to S3
+        # Upload report to S3
         mkdir -p reports/run-${{ github.run_id }}
         cp -r playwright-report/* reports/run-${{ github.run_id }}/
-        aws s3 cp reports/run-${{ github.run_id }}/ s3://kaleidos-qa-reports/run-${{ github.run_id }}/ --recursive
-        echo "✅ Report uploaded: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html"
+        aws s3 cp reports/run-${{ github.run_id }}/ s3://kaleidos-qa-reports/run-${{ github.run_id }}/ --recursive --content-type "text/html"
+        echo "✅ Report uploaded: http://kaleidos-qa-reports.s3-website.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html"
 
-    - name: Update reports index and push to gh-pages
-      shell: bash
-      run: |
-        # Checkout gh-pages optimized
-        git clone --depth 1 --branch gh-pages https://github.com/${{ github.repository }}.git gh-pages-temp
-        cd gh-pages-temp
-        git config user.name "github-actions"
-        git config user.email "github-actions@github.com"
-        git config gc.auto 0 && git config pack.window 1
+        # Download current index from S3 (if exists)
+        aws s3 cp s3://kaleidos-qa-reports/index.html current_index.html 2>/dev/null || echo "No existing index found, creating new one"
 
-        # Calculate metadata in one block
+        # Calculate metadata
         MONTH=$(date -u +%m)
         [[ "$MONTH" =~ ^(04|05|06|07|08|09|10)$ ]] && DATE_TIME=$(date -u -d "+2 hours" +"%Y-%m-%d %H:%M CEST") || DATE_TIME=$(date -u -d "+1 hour" +"%Y-%m-%d %H:%M CET")
         SHORT_SHA="${{ github.sha }}"
@@ -57,17 +50,17 @@ runs:
 
         # Success percentage and browser setup
         SUCCESS_PERCENT="N/A"; SUCCESS_CLASS="success-medium"
-        if [ -f "../testResults.json" ]; then
-          SUCCESS_PERCENT=$(node -e "try { console.log(Math.round(JSON.parse(require('fs').readFileSync('../testResults.json', 'utf8')).PercentPassed || 0) + '%'); } catch(e) { console.log('N/A'); }")
+        if [ -f "testResults.json" ]; then
+          SUCCESS_PERCENT=$(node -e "try { console.log(Math.round(JSON.parse(require('fs').readFileSync('testResults.json', 'utf8')).PercentPassed || 0) + '%'); } catch(e) { console.log('N/A'); }")
           [[ "$SUCCESS_PERCENT" != "N/A" ]] && PERCENT_NUM=${SUCCESS_PERCENT%\%} && [[ $PERCENT_NUM -ge 90 ]] && SUCCESS_CLASS="success-high" || [[ $PERCENT_NUM -ge 30 ]] && SUCCESS_CLASS="success-medium" || SUCCESS_CLASS="success-low"
         fi
 
         [[ "${{ inputs.browser-name }}" = "Firefox" ]] && BROWSER_ICON="🦊" && BROWSER_LABEL="Firefox" || { BROWSER_ICON="🌐"; BROWSER_LABEL="Chrome"; }
         [[ "$WORKFLOW_NAME" == "Manual Penpot Tests for PR" ]] && WORKFLOW_LABEL="PR_Manual" || [[ "$WORKFLOW_NAME" =~ firefox|Firefox ]] && WORKFLOW_LABEL="PRE_daily_firefox" || WORKFLOW_LABEL="PRE_daily"
 
-        # Generate complete updated index in one operation
+        # Generate updated index.html
         {
-          sed -n '1,/<!-- ROWS_PLACEHOLDER -->/p' ../github/html-template.html | head -n -1
+          sed -n '1,/<!-- ROWS_PLACEHOLDER -->/p' .github/html-template.html | head -n -1
           echo "          <tr>"
           echo "            <td class=\"success-rate $SUCCESS_CLASS\" data-label=\"📊 Success %\">$SUCCESS_PERCENT</td>"
           echo "            <td class=\"workflow\" data-label=\"🔄 Workflow\">$WORKFLOW_LABEL</td>"
@@ -75,30 +68,22 @@ runs:
           echo "            <td class=\"date\" data-label=\"📅 Date\">$DATE_TIME</td>"
           echo "            <td class=\"branch\" data-label=\"🌿 Branch\">$BRANCH_NAME</td>"
           echo "            <td class=\"browser\" data-label=\"🌐 Browser\"><span title=\"$BROWSER_LABEL\">$BROWSER_ICON $BROWSER_LABEL</span></td>"
-          echo "            <td data-label=\"📊 Report\"><a href=\"https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
+          echo "            <td data-label=\"📊 Report\"><a href=\"http://kaleidos-qa-reports.s3-website.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
           echo "          </tr>"
-          [ -f index.html ] && sed -n '/<tbody>/,/<\/tbody>/p' index.html | sed '1d;$d;/<!-- ROWS_PLACEHOLDER -->/d;/^[[:space:]]*$/d' || true
-          sed -n '/<!-- ROWS_PLACEHOLDER -->/,$p' ../github/html-template.html | tail -n +2
-        } > index.html
+          [ -f current_index.html ] && sed -n '/<tbody>/,/<\/tbody>/p' current_index.html | sed '1d;$d;/<!-- ROWS_PLACEHOLDER -->/d;/^[[:space:]]*$/d' || true
+          sed -n '/<!-- ROWS_PLACEHOLDER -->/,$p' .github/html-template.html | tail -n +2
+        } > new_index.html
 
-        # Commit and push optimized
-        git add index.html
-        if ! git diff --staged --quiet; then
-          LAST_MSG=$(git log -1 --pretty=%B 2>/dev/null || echo "")
-          if [[ "$LAST_MSG" =~ ^"Update reports index -" ]]; then
-            git commit --amend -m "Update reports index - $(date -u +%Y%m%d)" --no-verify
-            git push --force-with-lease origin gh-pages
-          else
-            git commit -m "Update reports index - $(date -u +%Y%m%d)" --no-verify
-            git push origin gh-pages
-          fi
-          echo "✅ Index updated and pushed to gh-pages"
-          git gc --prune=now --aggressive >/dev/null 2>&1 || true
-        fi
+        # Upload updated index to S3 with proper content type and caching
+        aws s3 cp new_index.html s3://kaleidos-qa-reports/index.html \
+          --content-type "text/html" \
+          --cache-control "max-age=300" \
+          --metadata-directive REPLACE
 
-        cd .. && rm -rf gh-pages-temp
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+        echo "✅ Index updated on S3: http://kaleidos-qa-reports.s3-website.eu-west-1.amazonaws.com/index.html"
+
+        # Cleanup
+        rm -f current_index.html new_index.html
 
     - name: Upload artifact backup
       uses: actions/upload-artifact@v4
