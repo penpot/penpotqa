@@ -78,11 +78,13 @@ async function sendMessage(
   // Build the user mention line with workflow name
   let workflowName = '';
   if (isManualExecution) {
-    workflowName = 'PR Manual';
+    workflowName = 'PR_manual';
   } else if (browserName && browserName.toLowerCase() === 'firefox') {
     workflowName = 'PRE_firefox';
+  } else if (browserName && browserName.toLowerCase() === 'webkit') {
+    workflowName = 'PRE_webkit';
   } else if (browserName && browserName.toLowerCase() === 'chrome') {
-    workflowName = 'PRE_daily';
+    workflowName = 'PRE_chrome_daily';
   }
 
   const userMentionLine =

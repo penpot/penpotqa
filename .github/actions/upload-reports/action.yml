@@ -63,8 +63,8 @@ runs:
             fi
           fi
 
-        [[ "${{ inputs.browser-name }}" = "Firefox" ]] && BROWSER_ICON="🦊" && BROWSER_LABEL="Firefox" || { BROWSER_ICON="🌐"; BROWSER_LABEL="Chrome"; }
-        [[ "$WORKFLOW_NAME" == "Manual Penpot Tests for PR" ]] && WORKFLOW_LABEL="PR_Manual" || [[ "$WORKFLOW_NAME" =~ firefox|Firefox ]] && WORKFLOW_LABEL="PRE_daily_firefox" || WORKFLOW_LABEL="PRE_daily"
+        [[ "${{ inputs.browser-name }}" = "Firefox" ]] && BROWSER_ICON="🦊" && BROWSER_LABEL="Firefox" || [[ "${{ inputs.browser-name }}" = "Webkit" ]] && { BROWSER_ICON="🦎"; BROWSER_LABEL="WebKit"; } || { BROWSER_ICON="🌐"; BROWSER_LABEL="Chrome"; }
+        [[ "$WORKFLOW_NAME" == "Manual Penpot Tests for PR" ]] && WORKFLOW_LABEL="PR_manual" || [[ "$WORKFLOW_NAME" =~ firefox|Firefox ]] && WORKFLOW_LABEL="PRE_firefox" || [[ "$WORKFLOW_NAME" =~ webkit|Webkit ]] && WORKFLOW_LABEL="PRE_webkit" || WORKFLOW_LABEL="PRE_chrome_daily"
 
         # Generate updated index.html
         {
