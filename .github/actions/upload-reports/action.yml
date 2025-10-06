@@ -34,7 +34,7 @@ runs:
         # Upload report to S3
         mkdir -p reports/run-${{ github.run_id }}
         cp -r playwright-report/* reports/run-${{ github.run_id }}/
-        aws s3 cp reports/run-${{ github.run_id }}/ s3://kaleidos-qa-reports/run-${{ github.run_id }}/ --recursive --content-type "text/html"
+        aws s3 sync reports/run-${{ github.run_id }}/ s3://kaleidos-qa-reports/run-${{ github.run_id }}/
         echo "✅ Report uploaded: http://kaleidos-qa-reports.s3-website.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html"
 
         # Download current index from S3 (if exists)
