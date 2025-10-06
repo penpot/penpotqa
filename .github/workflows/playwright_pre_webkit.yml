@@ -5,15 +5,8 @@ on:
   #   - cron: '00 20 * * 4'
   workflow_dispatch:
 
-# Prevent concurrent deployments to gh-pages
-concurrency:
-  group: pages-deployment
-  cancel-in-progress: false
-
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   tests_webkit:
@@ -57,6 +50,10 @@ jobs:
         with:
           browser-name: 'Webkit'
           artifact-name: 'playwright-report-webkit'
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+        if: always()
 
       - name: Send Mattermost Notification
         uses: ./.github/actions/send-notification
