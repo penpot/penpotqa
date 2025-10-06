@@ -32,8 +32,7 @@ on:
           - tests/tokens
           - tests/ui-theme
           - tests/view-mode
-          - tests/prueba
-        default: 'tests/prueba'
+        default: 'tests/login-signup'
 
 permissions:
   contents: write
