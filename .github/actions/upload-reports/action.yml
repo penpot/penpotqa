@@ -62,6 +62,7 @@ runs:
               SUCCESS_CLASS="success-low"
             fi
           fi
+        fi
 
         [[ "${{ inputs.browser-name }}" = "Firefox" ]] && BROWSER_ICON="🦊" && BROWSER_LABEL="Firefox" || [[ "${{ inputs.browser-name }}" = "Webkit" ]] && { BROWSER_ICON="🦎"; BROWSER_LABEL="WebKit"; } || { BROWSER_ICON="🌐"; BROWSER_LABEL="Chrome"; }
         if [[ "$WORKFLOW_NAME" == "Manual Penpot Tests for PR" ]]; then
