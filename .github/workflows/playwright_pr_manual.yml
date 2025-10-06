@@ -112,14 +112,14 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
         if: always()
 
-      # - name: Send Mattermost Notification
-      #   uses: ./.github/actions/send-notification
-      #   with:
-      #     browser-name: 'Chrome'
-      #     channel-id: ${{ secrets.PR_CHANNEL_ID }}
-      #     login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
-      #     password: ${{ secrets.PASSWORD_MATTERMOST }}
-      #     folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
-      #     is-manual-execution: 'true'
-      #     username: ${{ github.actor }}
-      #   if: always()
+      - name: Send Mattermost Notification
+        uses: ./.github/actions/send-notification
+        with:
+          browser-name: 'Chrome'
+          channel-id: ${{ secrets.PR_CHANNEL_ID }}
+          login-id: ${{ secrets.LOGIN_ID_MATTERMOST }}
+          password: ${{ secrets.PASSWORD_MATTERMOST }}
+          folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
+          is-manual-execution: 'true'
+          username: ${{ github.actor }}
+        if: always()

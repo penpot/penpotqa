@@ -102,7 +102,9 @@ async function sendMessage(
          process.env.GITHUB_RUN_ID
        }
        :computer: Browser: ${browserName}${folderLine}${userMentionLine}
-       :page_facing_up: Check interactive tests results: https://penpot.github.io/penpotqa/`;
+       :page_facing_up: Check interactive tests results: http://kaleidos-qa-reports.s3-website.eu-west-1.amazonaws.com/run-${
+         process.env.GITHUB_RUN_ID
+       }/index.html`;
   const requestBody = { channel_id: channel_id, message: messageWithLink };
 
   try {
