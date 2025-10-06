@@ -305,7 +305,7 @@ mainTest.describe('Text', () => {
       [2261],
       'Propagation of (style and content) changes from a text component to copies (overriding style or content)',
     ),
-    async ({ browserName }) => {
+    async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
       await designPanelPage.changeTextFont('Source Serif 4');
@@ -320,7 +320,7 @@ mainTest.describe('Text', () => {
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
-      await mainPage.editTextLayer('Testing Penpot !!', browserName);
+      await mainPage.editTextLayer('Testing Penpot !!');
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
