@@ -46,6 +46,7 @@ exports.StripePage = class StripePage extends BasePage {
     this.submitButton = page.getByTestId('cancellation_reason_submit');
     this.invoiceRow = page.getByTestId('hip-link');
     this.lastInvoice = this.invoiceRow.first();
+    this.currentSubscriptionHeader = page.getByText('Current subscription');
   }
 
   async clickOnAddPaymentMethodButton() {
@@ -75,6 +76,7 @@ exports.StripePage = class StripePage extends BasePage {
   }
 
   async clickOnAddCardButton() {
+    await this.isAddCardButtonEnabled();
     await this.confirmButton.click();
   }
 
@@ -86,7 +88,9 @@ exports.StripePage = class StripePage extends BasePage {
     await this.selectCardCountry();
     await this.enterCardZipCode();
     await this.clickOnSaveInfoCheckout();
+    await this.enterCardNumber();
     await this.clickOnAddCardButton();
+    await this.isCardNumberFieldVisible(false);
   }
 
   async clickOnReturnToPenpotButton() {
@@ -144,7 +148,7 @@ exports.StripePage = class StripePage extends BasePage {
     await expect(this.trialEndsDate).toHaveText(tomorrowFormatted);
   }
 
-  async waitTrialEndsDisappear(timeout = 40000, interval = 6000) {
+  async waitTrialEndsDisappear(timeout = 60000, interval = 6000) {
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
       const isVisible = await this.trialEnds.isVisible();
@@ -152,6 +156,7 @@ exports.StripePage = class StripePage extends BasePage {
         return;
       }
       await this.page.reload();
+      await expect(this.currentSubscriptionHeader).toBeVisible();
       await this.page.waitForTimeout(interval);
     }
     console.error(`The timeout for trial completion has expired.`);
@@ -247,5 +252,17 @@ exports.StripePage = class StripePage extends BasePage {
     (await this.cardSaveInfoCheckout.isVisible())
       ? await this.cardSaveInfoCheckout.click()
       : null;
+  }
+
+  async isCardNumberFieldVisible(visible = true, timeout = 30000) {
+    visible
+      ? await expect(this.cardNumberImput).toBeVisible({ timeout: timeout })
+      : await expect(this.cardNumberImput).not.toBeVisible({ timeout: timeout });
+  }
+
+  async isAddCardButtonEnabled(enabled = true) {
+    enabled
+      ? await expect(this.confirmButton).not.toBeDisabled()
+      : await expect(this.confirmButton).toBeDisabled();
   }
 };
