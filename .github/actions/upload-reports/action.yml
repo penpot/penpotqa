@@ -42,7 +42,11 @@ runs:
 
         # Calculate metadata
         MONTH=$(date -u +%m)
-        [[ "$MONTH" =~ ^(04|05|06|07|08|09|10)$ ]] && DATE_TIME=$(date -u -d "+2 hours" +"%Y-%m-%d %H:%M CEST") || DATE_TIME=$(date -u -d "+1 hour" +"%Y-%m-%d %H:%M CET")
+        if [[ "$MONTH" =~ ^(04|05|06|07|08|09|10)$ ]]; then
+          DATE_TIME=$(date -u -d "+2 hours" +"%Y-%m-%d %H:%M CEST")
+        else
+          DATE_TIME=$(date -u -d "+1 hour" +"%Y-%m-%d %H:%M CET")
+        fi
         SHORT_SHA="${{ github.sha }}"
         SHORT_SHA=${SHORT_SHA:0:7}
         BRANCH_NAME="${{ github.ref_name }}"
