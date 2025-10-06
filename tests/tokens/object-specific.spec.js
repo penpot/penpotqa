@@ -74,18 +74,21 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(2383, 'Board: Check active tokens in token list'), async () => {
-    await tokensPage.createDefaultBoardByCoordinates(100, 200);
-    await tokensPage.isTokenDisabledWithName('BORDER-RADIUS-1', false);
-    await tokensPage.isTokenDisabledWithName('COLOR-1', false);
-    await tokensPage.isTokenDisabledWithName('DIMENSIONS-1', false);
-    await tokensPage.isTokenDisabledWithName('FONT-SIZE-100', true);
-    await tokensPage.isTokenDisabledWithName('OPACITY-20', false);
-    await tokensPage.isTokenDisabledWithName('ROTATION-15', false);
-    await tokensPage.isTokenDisabledWithName('SIZING-0.5', false);
-    await tokensPage.isTokenDisabledWithName('SPACING-10', false);
-    await tokensPage.isTokenDisabledWithName('STROKE-WIDTH-10', false);
-  });
+  mainTest(
+    qase(2383, 'Board (in root): Check active tokens in token list'),
+    async () => {
+      await tokensPage.createDefaultBoardByCoordinates(100, 200);
+      await tokensPage.isTokenDisabledWithName('BORDER-RADIUS-1', false);
+      await tokensPage.isTokenDisabledWithName('COLOR-1', false);
+      await tokensPage.isTokenDisabledWithName('DIMENSIONS-1', false);
+      await tokensPage.isTokenDisabledWithName('FONT-SIZE-100', true);
+      await tokensPage.isTokenDisabledWithName('OPACITY-20', false);
+      await tokensPage.isTokenDisabledWithName('ROTATION-15', false);
+      await tokensPage.isTokenDisabledWithName('SIZING-0.5', false);
+      await tokensPage.isTokenDisabledWithName('SPACING-10', true);
+      await tokensPage.isTokenDisabledWithName('STROKE-WIDTH-10', false);
+    },
+  );
 
   mainTest(qase(2385, 'Path: Check active tokens in token list'), async () => {
     await tokensPage.createDefaultOpenPath(100, 200);
