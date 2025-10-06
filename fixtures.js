@@ -5,7 +5,7 @@ const { RegisterPage } = require('./pages/register-page');
 const { updateTestResults } = require('./helpers/saveTestResults');
 const { random } = require('./helpers/string-generator');
 const { waitMessage } = require('./helpers/gmail');
-const { apiLoginAccessToken } = require('./helpers/auth');
+const { apiLoginAccessToken } = require('./helpers/api/auth');
 
 /**
  * Main test fixture

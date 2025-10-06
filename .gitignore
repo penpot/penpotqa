@@ -98,7 +98,6 @@ pids
 # Playwright files
 /playwright-report/
 /playwright/.cache/
-/.auth/
 
 # Test results
 /test-results/
