@@ -52,8 +52,16 @@ runs:
         SUCCESS_PERCENT="N/A"; SUCCESS_CLASS="success-medium"
         if [ -f "testResults.json" ]; then
           SUCCESS_PERCENT=$(node -e "try { console.log(Math.round(JSON.parse(require('fs').readFileSync('testResults.json', 'utf8')).PercentPassed || 0) + '%'); } catch(e) { console.log('N/A'); }")
-          [[ "$SUCCESS_PERCENT" != "N/A" ]] && PERCENT_NUM=${SUCCESS_PERCENT%\%} && [[ $PERCENT_NUM -ge 90 ]] && SUCCESS_CLASS="success-high" || [[ $PERCENT_NUM -ge 30 ]] && SUCCESS_CLASS="success-medium" || SUCCESS_CLASS="success-low"
-        fi
+          if [[ "$SUCCESS_PERCENT" != "N/A" ]]; then
+            PERCENT_NUM=${SUCCESS_PERCENT%\%}
+            if [[ $PERCENT_NUM -ge 90 ]]; then
+              SUCCESS_CLASS="success-high"
+            elif [[ $PERCENT_NUM -ge 30 ]]; then
+              SUCCESS_CLASS="success-medium"
+            else
+              SUCCESS_CLASS="success-low"
+            fi
+          fi
 
         [[ "${{ inputs.browser-name }}" = "Firefox" ]] && BROWSER_ICON="🦊" && BROWSER_LABEL="Firefox" || { BROWSER_ICON="🌐"; BROWSER_LABEL="Chrome"; }
         [[ "$WORKFLOW_NAME" == "Manual Penpot Tests for PR" ]] && WORKFLOW_LABEL="PR_Manual" || [[ "$WORKFLOW_NAME" =~ firefox|Firefox ]] && WORKFLOW_LABEL="PRE_daily_firefox" || WORKFLOW_LABEL="PRE_daily"
