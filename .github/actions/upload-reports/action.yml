@@ -57,7 +57,7 @@ runs:
         if [ -f "testResults.json" ]; then
           SUCCESS_PERCENT=$(node -e "try { console.log(Math.round(JSON.parse(require('fs').readFileSync('testResults.json', 'utf8')).PercentPassed || 0) + '%'); } catch(e) { console.log('N/A'); }")
           if [[ "$SUCCESS_PERCENT" != "N/A" ]]; then
-            PERCENT_NUM=${SUCCESS_PERCENT%\%}
+            PERCENT_NUM=$(echo "$SUCCESS_PERCENT" | sed 's/%//')
             if [[ $PERCENT_NUM -ge 90 ]]; then
               SUCCESS_CLASS="success-high"
             elif [[ $PERCENT_NUM -ge 30 ]]; then
