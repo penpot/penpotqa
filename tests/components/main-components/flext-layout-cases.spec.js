@@ -53,20 +53,21 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
 
     await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
-    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickLayerOnLayersTab('Ellipse');
     await designPanelPage.changeAxisXandYForLayer('-50', '350');
-    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
+    await designPanelPage.checkXAxis('-50');
+    await designPanelPage.checkYAxis('350');
     await mainPage.clickViewportTwice();
 
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickLayerOnLayersTab('Rectangle');
     await designPanelPage.changeAxisXandYForLayer('-50', '250');
     await mainPage.waitForChangeIsSaved();
+    await designPanelPage.checkXAxis('-50');
+    await designPanelPage.checkYAxis('250');
 
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.waitForChangeIsSaved();
