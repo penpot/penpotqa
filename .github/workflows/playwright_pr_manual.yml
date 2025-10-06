@@ -89,8 +89,6 @@ jobs:
               fi
               if [ ! -d "${{ github.event.inputs.test_folder }}" ]; then
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
-                echo "Available folders in tests/:"
-                ls -la tests/
                 exit 1
               fi
               npx playwright test --project=chrome -gv 'PERF' "${{ github.event.inputs.test_folder }}"
