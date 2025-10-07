@@ -1,0 +1,33 @@
+name: 'Clean Sensitive Data from Traces'
+description: 'Removes sensitive information from Playwright trace files before uploading'
+
+inputs:
+  trace-directories:
+    description: 'Comma-separated list of directories to clean (default: test-results,playwright-report)'
+    required: false
+    default: 'test-results,playwright-report'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Clean sensitive data from traces
+      shell: bash
+      run: |
+        echo "🔒 Cleaning sensitive data from trace files..."
+
+        # Parse directories from input
+        IFS=',' read -ra DIRS <<< "${{ inputs.trace-directories }}"
+
+        for dir in "${DIRS[@]}"; do
+          # Trim whitespace
+          dir=$(echo "$dir" | xargs)
+          
+          if [ -d "$dir" ]; then
+            echo "📁 Processing directory: $dir"
+            node scripts/clean-traces.js "$dir"
+          else
+            echo "⚠️  Directory not found: $dir"
+          fi
+        done
+
+        echo "✅ Trace cleaning completed"
