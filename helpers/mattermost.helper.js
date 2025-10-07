@@ -19,7 +19,10 @@ async function getToken() {
     });
     return response.headers['token'];
   } catch (error) {
-    console.error('Error:', error);
+    console.error(
+      'Mattermost authentication error:',
+      error.message || 'Unknown error',
+    );
     return null;
   }
 }
@@ -119,7 +122,10 @@ async function sendMessage(
 
     return response.data;
   } catch (error) {
-    console.error('Error:', error);
+    console.error(
+      'Mattermost message send error:',
+      error.message || 'Unknown error',
+    );
     return null;
   }
 }
