@@ -31,7 +31,7 @@ const config = {
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 6 : 3,
+  workers: process.env.CI ? 3 : 3,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [
@@ -53,8 +53,8 @@ const config = {
     baseURL: process.env.BASE_URL,
     headless: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: process.env.CI ? 'retain-on-failure' : 'on',
-    video: process.env.CI ? 'off' : 'on',
+    trace: process.env.CI ? 'on-first-retry' : 'on',
+    video: process.env.CI ? 'on-first-retry' : 'on',
   },
   projects: [
     {
