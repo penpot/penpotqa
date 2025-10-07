@@ -115,23 +115,26 @@ mainTest.describe(() => {
 
   mainTest(qase([512], 'Change rotation (Design page in the right)'), async () => {
     await designPanelPage.changeRotationForLayer('90');
-    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.isCornerHandleVisible();
     await expect(mainPage.viewport).toHaveScreenshot('path-rotated-90.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.isCornerHandleVisible();
     await expect(mainPage.viewport).toHaveScreenshot('path-rotated-120.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.isCornerHandleVisible();
     await expect(mainPage.viewport).toHaveScreenshot('path-rotated-45.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.isCornerHandleVisible();
     await expect(mainPage.viewport).toHaveScreenshot('path-rotated-359.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });

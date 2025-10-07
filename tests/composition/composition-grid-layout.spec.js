@@ -239,7 +239,7 @@ mainTest(
     [1697, 1735],
     'Check if the grid layout is resized automatically,  Autoscale while resizing',
   ),
-  async ({ browserName }) => {
+  async () => {
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('300', '400');
     await mainPage.addGridLayoutViaRightClick();
@@ -248,8 +248,10 @@ mainTest(
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeHeightAndWidthForLayer('400', '600');
-    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
+    await designPanelPage.checkSizeWidth('600');
+    await designPanelPage.checkSizeHeight('400');
+    await mainPage.isCornerHandleVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
       'resized-board-with-grid-layout.png',
       {
@@ -262,8 +264,10 @@ mainTest(
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeHeightAndWidthForLayer('200', '300');
-    browserName !== 'webkit' ? await mainPage.waitForChangeIsUnsaved() : null;
     await mainPage.waitForChangeIsSaved();
+    await designPanelPage.checkSizeWidth('300');
+    await designPanelPage.checkSizeHeight('200');
+    await mainPage.isCornerHandleVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'resized-board-with-rectangle.png',
     );
