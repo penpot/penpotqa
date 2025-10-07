@@ -30,6 +30,15 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Mask sensitive values in logs
+        run: |
+          echo "::add-mask::${{ secrets.LOGIN_PWD }}"
+          echo "::add-mask::${{ secrets.REFRESH_TOKEN }}"
+          echo "::add-mask::${{ secrets.CLIENT_SECRET }}"
+          echo "::add-mask::${{ secrets.STRIPE_SK }}"
+          echo "::add-mask::${{ secrets.LOGIN_EMAIL }}"
+          echo "::add-mask::${{ secrets.SECOND_EMAIL }}"
+
       - name: Run Playwright tests
         id: run-tests
         env:
