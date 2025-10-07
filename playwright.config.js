@@ -60,6 +60,13 @@ const config = {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: process.env.CI ? 'retain-on-failure' : 'on',
     video: process.env.CI ? 'off' : 'on',
+    /* Configure tracing to exclude sensitive data */
+    traceOptions: {
+      snapshots: true,
+      screenshots: true,
+      sources: false,
+      mode: 'retain-on-failure',
+    },
   },
   projects: [
     {
