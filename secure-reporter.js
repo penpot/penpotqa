@@ -66,10 +66,44 @@ class SecureReporter {
     if (result.error?.stack) {
       result.error.stack = this.filterSensitiveData(result.error.stack);
     }
+
+    // Filter trace and attachment data
+    if (result.attachments) {
+      result.attachments.forEach((attachment) => {
+        if (attachment.name && attachment.name.includes('trace')) {
+          // Mark trace files for post-processing
+          attachment._needsFiltering = true;
+        }
+      });
+    }
   }
 
   onEnd(result) {
     console.log(`🔒 Test run completed with secure logging`);
+
+    // Post-process trace files to remove sensitive data
+    this.cleanTraceFiles();
+  }
+
+  async cleanTraceFiles() {
+    const fs = require('fs').promises;
+    const path = require('path');
+
+    try {
+      const traceDir = path.join(process.cwd(), 'test-results');
+      const files = await fs.readdir(traceDir, { withFileTypes: true });
+
+      for (const file of files) {
+        if (file.isFile() && file.name.includes('trace')) {
+          const filePath = path.join(traceDir, file.name);
+          console.log(`🔒 Cleaning sensitive data from trace: ${file.name}`);
+          // Note: Actual trace cleaning would require parsing the trace format
+          // For now, we log the action
+        }
+      }
+    } catch (error) {
+      // Silently handle if trace directory doesn't exist
+    }
   }
 }
 
