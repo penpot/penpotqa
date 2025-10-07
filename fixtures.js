@@ -1,4 +1,4 @@
-const { test: base, request: playwrightRequest } = require('@playwright/test');
+const { test: base } = require('@playwright/test');
 const { LoginPage } = require('./pages/login-page.js');
 const { DashboardPage } = require('./pages/dashboard/dashboard-page.js');
 const { RegisterPage } = require('./pages/register-page');
@@ -9,7 +9,8 @@ const { apiLoginAccessToken } = require('./helpers/api/auth');
 
 /**
  * Main test fixture
- * Login via API using Access Token and set Storage State
+ * Login via API using Access Token (previously set up in account from Your Account > Access Token) and set Storage State
+ * LOGIN_ACCESS_TOKEN set in .env file is required
  */
 const mainTest = base.extend({
   page: async ({ browser }, use, testInfo) => {
@@ -38,136 +39,6 @@ const mainTest = base.extend({
     await context.close();
   },
 });
-
-// TO DO - TO REVIEW - LOGIN VIA API (COOKIES) AND SAVE STORAGE STATE
-// const mainTest = base.extend({
-//   page: async ({ browser }, use, testInfo) => {
-//     // Create fresh API context
-//     const apiContext = await playwrightRequest.newContext({ baseURL: process.env.BASE_URL });
-
-//     // Login via API
-//     const response = await apiContext.post('api/rpc/command/login-with-password', {
-//       data: { email: process.env.LOGIN_EMAIL, password: process.env.LOGIN_PWD },
-//       headers: { 'Content-Type': 'application/json', },
-//     });
-
-//     if (!response.ok()) {
-//       throw new Error(`Login failed: ${response.status()} ${await response.text()}`);
-//     }
-
-//     // Get storageState for browser context
-//     const storageState = await apiContext.storageState();
-//     await apiContext.dispose();
-
-//     // Create browser context using fresh storageState
-//     const context = await browser.newContext({ storageState });
-//     const page = await context.newPage();
-
-//     // Extract team-id from auth-data cookie
-//     const authDataCookie = storageState.cookies.find(c => c.name === 'auth-data');
-//     if (!authDataCookie) throw new Error('auth-data cookie not found');
-
-//     const cookieValue = authDataCookie.value.replace(/"/g, '');
-//     const teamId = cookieValue.split('=')[1];
-
-//     // Navigate directly to dashboard using team-id
-//     const dashboardUrl = `${process.env.BASE_URL}#/dashboard/recent?team-id=${teamId}`;
-
-//     await page.goto(dashboardUrl, { waitUntil: 'domcontentloaded' });
-
-//     // UI setup
-//     const loginPage = new LoginPage(page);
-//     await loginPage.acceptCookie();
-
-//     const dashboardPage = new DashboardPage(page);
-//     await dashboardPage.isHeaderDisplayed('Projects');
-//     await dashboardPage.skipWhatNewsPopUp();
-//     await dashboardPage.skipPluginsPopUp();
-
-//     await use(page);
-
-//     await updateTestResults(testInfo.status, testInfo.retry);
-//     await context.close();
-//   },
-// });
-
-// TO DO - TO REVIEW - LOGIN VIA API AND SAVE STORAGE STATE: This causes issues with concurrency
-//**
-//  * Main test fixture
-//  */
-// const mainTest = base.extend({
-//   // Test-scoped storageState
-//   storageState: async ({}, use) => {
-//     const storagePath = path.resolve('.auth', 'ownerUser.json');
-
-//     // If storageState doesn't exist, login via API
-//     if (!fs.existsSync(storagePath)) {
-//       // Create a new APIRequestContext with baseURL
-//       const apiContext = await playwrightRequest.newContext({ baseURL: process.env.BASE_URL });
-
-//       const response = await apiContext.post('api/rpc/command/login-with-password', {
-//         data: { email: process.env.LOGIN_EMAIL, password: process.env.LOGIN_PWD },
-//         headers: { 'Content-Type': 'application/json' },
-//       });
-
-//       if (!response.ok()) {
-//         throw new Error(`Login failed: ${response.status()} ${await response.text()}`);
-//       }
-
-//       // Save storageState
-//       await apiContext.storageState({ path: storagePath });
-//       await apiContext.dispose();
-//     }
-
-//     await use(storagePath);
-//   },
-
-//   // Page fixture with fresh browser context
-//   page: async ({ browser, storageState }, use, testInfo) => {
-//     const context = await browser.newContext({ storageState });
-//     const page = await context.newPage();
-
-//     // Navigate to base URL
-//     await page.goto(process.env.BASE_URL, { waitUntil: 'networkidle' });
-
-//     // UI setup
-//     const loginPage = new LoginPage(page);
-//     await loginPage.acceptCookie();
-
-//     const dashboardPage = new DashboardPage(page);
-//     await dashboardPage.isDashboardOpenedAfterLogin();
-//     await dashboardPage.isHeaderDisplayed('Projects');
-//     await dashboardPage.skipWhatNewsPopUp();
-//     await dashboardPage.skipPluginsPopUp();
-
-//     await use(page);
-
-//     // Reporting / cleanup
-//     await updateTestResults(testInfo.status, testInfo.retry);
-//     await context.close();
-//   },
-// });
-
-// TO DO - TO REVIEW - LOGIN IN THE UI WITH STORAGE STATE FROM AUTH
-// const mainTest = base.test.extend({
-//   page: async ({ page }, use, testInfo) => {
-//     // Already signed in (storage state), so just open root
-//     await page.goto(process.env.BASE_URL);
-
-//     const loginPage = new LoginPage(page);
-//     await loginPage.acceptCookie();
-
-//     const dashboardPage = new DashboardPage(page);
-//     await dashboardPage.isDashboardOpenedAfterLogin();
-//     await dashboardPage.isHeaderDisplayed('Projects');
-//     await dashboardPage.skipWhatNewsPopUp();
-//     await dashboardPage.skipPluginsPopUp();
-
-//     await use(page);
-
-//     await updateTestResults(testInfo.status, testInfo.retry);
-//   },
-// });
 
 const registerTest = base.test.extend({
   name: async ({}, use) => {
