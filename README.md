@@ -21,6 +21,7 @@ Prerequisites for local run:
   - `CLIENT_ID` (for email access)
   - `CLIENT_SECRET` (for email access)
   - `STRIPE_SK` (for Stripe API access)
+  - `LOGIN_ACCESS_TOKEN` (for Penpot login)
 
 **2. Test run - main notes.**
 
@@ -119,6 +120,7 @@ For each environment the appropriate secrets were added:
 - _REFRESH_TOKEN_ (Token for email access)
 - _CLIENT_ID_ (for email access)
 - _CLIENT_SECRET_ (for email access)
+- \_LOGIN_ACCESS_TOKEN (Access Token generated for your account from Your Account settings > Access Tokens page)
 
 2 _.yml_ files were added into _.github/workflows_ directory with settings for environments:
 

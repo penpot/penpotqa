@@ -1,26 +1,42 @@
-const base = require('@playwright/test');
+const { test: base } = require('@playwright/test');
 const { LoginPage } = require('./pages/login-page.js');
 const { DashboardPage } = require('./pages/dashboard/dashboard-page.js');
 const { RegisterPage } = require('./pages/register-page');
 const { updateTestResults } = require('./helpers/saveTestResults');
 const { random } = require('./helpers/string-generator');
 const { waitMessage } = require('./helpers/gmail');
+const { apiLoginAccessToken } = require('./helpers/api/auth');
 
-const mainTest = base.test.extend({
-  page: async ({ page }, use, testInfo) => {
+/**
+ * Main test fixture
+ * Login via API using Access Token (previously set up in account from Your Account > Access Token) and set Storage State
+ * LOGIN_ACCESS_TOKEN set in .env file is required
+ */
+const mainTest = base.extend({
+  page: async ({ browser }, use, testInfo) => {
+    // Login via API using helper
+    const storageState = await apiLoginAccessToken();
+
+    // Create a fresh browser context for each test
+    const context = await browser.newContext({ storageState });
+    const page = await context.newPage();
+
+    // Go directly to BASE URL
+    await page.goto(`${process.env.BASE_URL}#/`, { waitUntil: 'domcontentloaded' });
+
+    // Accept cookies and skip pop-ups
     const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
-    await loginPage.goto();
     await loginPage.acceptCookie();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
+
+    const dashboardPage = new DashboardPage(page);
     await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.skipWhatNewsPopUp();
     await dashboardPage.skipPluginsPopUp();
+
     await use(page);
-    await updateTestResults(testInfo.status, testInfo.retry);
+
+    // await updateTestResults(testInfo.status, testInfo.retry);
+    await context.close();
   },
 });
 
