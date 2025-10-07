@@ -54,6 +54,10 @@ jobs:
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
         run: npx playwright test --project=firefox -gv 'PERF'
 
+      - name: Clean sensitive data from traces
+        uses: ./.github/actions/clean-traces
+        if: always()
+
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
         with:

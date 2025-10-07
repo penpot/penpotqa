@@ -108,6 +108,10 @@ jobs:
               ;;
           esac
 
+      - name: Clean sensitive data from traces
+        uses: ./.github/actions/clean-traces
+        if: always()
+
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
         with:
