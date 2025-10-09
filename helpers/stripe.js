@@ -30,6 +30,28 @@ async function findCustomersByEmail(email) {
   }
 }
 
+async function findCustomersByName(name) {
+  try {
+    const customers = await stripe.customers.search({
+      query: `name:"${name}"`,
+    });
+    return customers.data;
+  } catch (error) {
+    console.error(`Error when searching for clients by email "${name}":`, error);
+  }
+}
+
+async function findCustomersByPenpotId(penpotId) {
+  try {
+    const customers = await stripe.customers.search({
+      query: `metadata['penpotId']:'${penpotId}'`,
+    });
+    return customers.data;
+  } catch (error) {
+    console.error(`Error when searching for clients by email "${name}":`, error);
+  }
+}
+
 async function updateSubscription(subscriptionId, body) {
   try {
     return await stripe.subscriptions.update(subscriptionId, body);
@@ -93,6 +115,7 @@ async function waitCustomersWithEmail(
   while (Date.now() - startTime < timeout) {
     const customers = await findCustomersByEmail(email);
     if (customers && customers.length > 0) {
+      console.log(customers);
       return customers;
     }
     await page.waitForTimeout(interval);
@@ -102,13 +125,32 @@ async function waitCustomersWithEmail(
   );
 }
 
-async function createCustomerWithTestClock(page, name, email) {
+async function waitCustomersWithPenpotId(
+  page,
+  penpotId,
+  timeout = 40000,
+  interval = 2000,
+) {
+  const startTime = Date.now();
+  while (Date.now() - startTime < timeout) {
+    const customers = await findCustomersByPenpotId(penpotId);
+    if (customers && customers.length > 0) {
+      console.log(customers);
+      return customers;
+    }
+    await page.waitForTimeout(interval);
+  }
+  console.error(
+    `The timeout for searching for clients by penpotId "${penpotId}" has been exhausted.`,
+  );
+}
+
+async function createCustomerWithTestClock(page, name, email, penpotId) {
   const testClock = await createTestClock();
   const testClockId = testClock.id;
-  const penpotId = await getProfileIdByEmail(email);
 
   await createCustomer(name, email, testClockId, penpotId);
-  await waitCustomersWithEmail(page, email);
+  await waitCustomersWithPenpotId(page, penpotId);
   return testClockId;
 }
 
@@ -208,4 +250,6 @@ module.exports = {
   skipSubscriptionByMonths,
   updateSubscriptionTrialEnd,
   getActualExpirationDate,
+  waitCustomersWithPenpotId,
+  getProfileIdByEmail,
 };

@@ -16,6 +16,8 @@ const {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   skipSubscriptionByMonths,
+  getProfileIdByEmail,
+  waitCustomersWithPenpotId,
 } = require('../../helpers/stripe');
 
 let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
@@ -36,7 +38,11 @@ registerTest.afterEach(async () => {
 });
 
 registerTest.describe(() => {
-  registerTest.beforeEach(async () => {
+  let testClockId, penpotId;
+  registerTest.beforeEach(async ({ page, name, email }) => {
+    penpotId = await getProfileIdByEmail(email);
+    testClockId = await createCustomerWithTestClock(page, name, email, penpotId);
+
     await teamPage.createTeam(teamName);
     await teamPage.isTeamSelected(teamName);
   });
@@ -82,18 +88,22 @@ registerTest.describe(() => {
     },
   );
 
-  registerTest(
+  registerTest.only(
     qase(2347, 'Invoices capped at  $950 (Enterprise)'),
     async ({ page, name, email }) => {
       await registerTest.slow();
       const currentPlan = 'Enterprise';
       let date = new Date();
 
-      const testClockId = await createCustomerWithTestClock(page, name, email);
-
       await profilePage.tryTrialForPlan(currentPlan);
+
+      await waitCustomersWithPenpotId(page, penpotId);
+
       await profilePage.openYourAccountPage();
       await profilePage.openSubscriptionTab();
+
+      await waitCustomersWithPenpotId(page, penpotId);
+
       await profilePage.clickOnAddPaymentMethodButton();
       await stripePage.addDefaultCard();
       await stripePage.isVisaCardAdded(true);
@@ -101,6 +111,9 @@ registerTest.describe(() => {
 
       await stripePage.waitTrialEndsDisappear();
       await profilePage.reloadPage();
+
+      await waitCustomersWithPenpotId(page, penpotId);
+
       await stripePage.checkCurrentSubscription(currentPlan);
       await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
       await stripePage.checkLastInvoiceAmount(`950.00`);

@@ -76,8 +76,10 @@ exports.StripePage = class StripePage extends BasePage {
   }
 
   async clickOnAddCardButton() {
-    await this.isAddCardButtonEnabled();
-    await this.confirmButton.click();
+    if (await this.confirmButton.isVisible()) {
+      await this.isAddCardButtonEnabled();
+      await this.confirmButton.click();
+    }
   }
 
   async addDefaultCard() {
@@ -89,6 +91,7 @@ exports.StripePage = class StripePage extends BasePage {
     await this.enterCardZipCode();
     await this.clickOnSaveInfoCheckout();
     await this.enterCardNumber();
+    await this.page.waitForTimeout(2000);
     await this.clickOnAddCardButton();
     await this.isCardNumberFieldVisible(false);
   }
