@@ -142,7 +142,7 @@ mainTest.describe(() => {
         `Import was successful. Some tokens were not included.`,
       );
       await tokensPage.expandDetailMessage();
-      await tokensPage.checkImportTokenDetailErrorCount(2);
+      await tokensPage.checkImportTokenDetailErrorCount(1);
       await tokensPage.closeModalWindow();
       await tokensPage.isImportErrorMessageVisible(false);
     },

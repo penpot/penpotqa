@@ -49,7 +49,7 @@
     },
     "STROKE-WIDTH-10": {
       "$value": "10",
-      "$type": "strokeWidth",
+      "$type": "borderWidth",
       "$description": ""
     },
     "BORDER-RADIUS-3": {
@@ -94,7 +94,7 @@
     },
     "STROKE-WIDTH-20": {
       "$value": "20",
-      "$type": "strokeWidth",
+      "$type": "borderWidth",
       "$description": ""
     },
     "SIZING-4": {
@@ -134,7 +134,7 @@
     },
     "STROKE-WIDTH-5": {
       "$value": "5",
-      "$type": "strokeWidth",
+      "$type": "borderWidth",
       "$description": ""
     },
     "font-family-1": {
