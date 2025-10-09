@@ -191,7 +191,7 @@ mainTest(
 mainTest(qase([2148], 'Zoom out and check comment bubbles'), async () => {
   const comment = 'Test Comment';
   const xAxisCommentsCoordinates = [100, 50, 700];
-  const yAxisCommentsCoordinates = [100, 50, 700];
+  const yAxisCommentsCoordinates = [150, 50, 700];
 
   await mainPage.pressCKeyboardShortcut();
   for (let i = 0; i < xAxisCommentsCoordinates.length; i++) {
@@ -202,6 +202,7 @@ mainTest(qase([2148], 'Zoom out and check comment bubbles'), async () => {
     );
     await commentsPanelPage.enterCommentText(comment);
     await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.checkCommentCountInList(i + 1);
   }
   await commentsPanelPage.areCommentBubblesVisible(['1', '2', '3']);
   await mainPage.zoom(100, 100, 3);
@@ -392,18 +393,22 @@ mainTest.describe(() => {
     await commentsPanelPage.clickCommentMentionButton();
     await commentsPanelPage.clickFirstMentionMenuItem();
     await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.checkCommentCountInList(1);
 
     await mainPage.clickViewportByCoordinates(100, 100, 2);
     await commentsPanelPage.enterCommentText(comment);
     await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.checkCommentCountInList(2);
 
     await mainPage.clickViewportByCoordinates(600, 100, 2);
     await commentsPanelPage.enterCommentText(comment);
     await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.checkCommentCountInList(3);
 
     await mainPage.clickViewportByCoordinates(100, 800, 2);
     await commentsPanelPage.enterCommentText(comment);
     await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.checkCommentCountInList(4);
 
     await mainPage.backToDashboardFromFileEditor();
     await profilePage.logout();
@@ -474,12 +479,14 @@ mainTest.describe(() => {
       await commentsPanelPage.clickCommentMentionButton();
       await commentsPanelPage.clickFirstMentionMenuItem();
       await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.checkCommentCountInList(1);
 
       await mainPage.clickViewportByCoordinates(100, 100, 2);
       await commentsPanelPage.enterCommentText(comment);
       await commentsPanelPage.clickCommentMentionButton();
       await commentsPanelPage.clickFirstMentionMenuItem();
       await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.checkCommentCountInList(2);
 
       await mainPage.backToDashboardFromFileEditor();
       await profilePage.logout();
