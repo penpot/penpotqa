@@ -347,9 +347,87 @@
       }
     },
     "stroke": {
-      "outline": { "$value": "{xx.global.dimensions.1}", "$type": "strokeWidth" },
-      "medium": { "$value": "3", "$type": "strokeWidth" },
-      "small": { "$value": "1", "$type": "strokeWidth" }
+      "outline": {
+        "$value": "{xx.global.dimensions.1}",
+        "$type": "borderWidth"
+      },
+      "medium": { "$value": "3", "$type": "borderWidth" },
+      "small": { "$value": "1", "$type": "borderWidth" }
+    }
+  },
+  "global/typography": {
+    "font": {
+      "family": {
+        "base": {
+          "$value": [
+            "\"Graphik Regular\"",
+            "\"-system-ui\"",
+            "\"Helvetica\"",
+            "\"sans-serif\""
+          ],
+          "$type": "fontFamilies",
+          "$description": ""
+        }
+      },
+      "size": {
+        "base": {
+          "$value": "16",
+          "$type": "fontSizes",
+          "$description": ""
+        }
+      },
+      "weight": {
+        "normal": {
+          "$value": "Regular",
+          "$type": "fontWeights",
+          "$description": ""
+        },
+        "strong": {
+          "$value": "700",
+          "$type": "fontWeights",
+          "$description": ""
+        }
+      }
+    },
+    "h3": {
+      "$value": "{font.size.base} * {scale}",
+      "$type": "fontSizes",
+      "$description": ""
+    },
+    "scale": {
+      "$value": "1.3",
+      "$type": "number",
+      "$description": ""
+    },
+    "letter": {
+      "spacing": {
+        "increased": {
+          "$value": "2",
+          "$type": "letterSpacing",
+          "$description": ""
+        }
+      }
+    },
+    "text": {
+      "case": {
+        "uppercase": {
+          "$value": "uppercase",
+          "$type": "textCase",
+          "$description": ""
+        }
+      },
+      "decoration": {
+        "underline": {
+          "$value": "underline",
+          "$type": "textDecoration",
+          "$description": ""
+        },
+        "strikethrough": {
+          "$value": "strike-through",
+          "$type": "textDecoration",
+          "$description": ""
+        }
+      }
     }
   },
   "global / color": {
