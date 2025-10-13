@@ -108,14 +108,15 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   }
 
   async clickPostCommentButton() {
-    await this.waitForPostCommentButtonEnabled();
+    await this.isPostCommentButtonEnabled();
     await this.postCommentButton.click();
   }
 
-  async waitForPostCommentButtonEnabled(timeout = 5000) {
-    await expect(this.postCommentButton).not.toHaveAttribute('disabled', '', {
-      timeout: timeout,
-    });
+  async isPostCommentButtonEnabled() {
+    await expect(
+      this.postCommentButton,
+      'Comment post button is enabled',
+    ).toBeEnabled();
   }
 
   async clickCommentThreadIcon() {
