@@ -40,6 +40,7 @@ registerTest.afterEach(async () => {
 registerTest.describe(() => {
   let testClockId, penpotId;
   registerTest.beforeEach(async ({ page, name, email }) => {
+    console.log(name);
     penpotId = await getProfileIdByEmail(email);
     testClockId = await createCustomerWithTestClock(page, name, email, penpotId);
 

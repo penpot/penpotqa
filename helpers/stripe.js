@@ -37,18 +37,21 @@ async function findCustomersByName(name) {
     });
     return customers.data;
   } catch (error) {
-    console.error(`Error when searching for clients by email "${name}":`, error);
+    console.error(`Error when searching for clients by name "${name}":`, error);
   }
 }
 
 async function findCustomersByPenpotId(penpotId) {
   try {
     const customers = await stripe.customers.search({
-      query: `metadata['penpotId']:'${penpotId}'`,
+      query: `metadata['penpotId']:'${penpotId}' AND -metadata['deletedAt']:NULL`,
     });
     return customers.data;
   } catch (error) {
-    console.error(`Error when searching for clients by email "${name}":`, error);
+    console.error(
+      `Error when searching for clients by penpotId "${penpotId}":`,
+      error,
+    );
   }
 }
 
@@ -162,6 +165,7 @@ async function createCustomer(name, email, testClockId, penpotId) {
       test_clock: testClockId,
       metadata: {
         penpotId: penpotId,
+        deleteAt: null,
       },
     });
   } catch (error) {
