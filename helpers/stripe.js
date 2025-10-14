@@ -44,7 +44,7 @@ async function findCustomersByName(name) {
 async function findCustomersByPenpotId(penpotId) {
   try {
     const customers = await stripe.customers.search({
-      query: `metadata['penpotId']:'${penpotId}' AND -metadata['deletedAt']:NULL`,
+      query: `metadata['penpotId']:'${penpotId}'`,
     });
     return customers.data;
   } catch (error) {
@@ -138,7 +138,6 @@ async function waitCustomersWithPenpotId(
   while (Date.now() - startTime < timeout) {
     const customers = await findCustomersByPenpotId(penpotId);
     if (customers && customers.length > 0) {
-      console.log(customers);
       return customers;
     }
     await page.waitForTimeout(interval);
@@ -165,7 +164,6 @@ async function createCustomer(name, email, testClockId, penpotId) {
       test_clock: testClockId,
       metadata: {
         penpotId: penpotId,
-        deleteAt: null,
       },
     });
   } catch (error) {
@@ -223,12 +221,8 @@ async function loginInPenpot(email, password) {
 }
 
 async function getProfileIdByEmail(email, pass = process.env.LOGIN_PWD) {
-  const cookieString = await loginInPenpot(email, pass);
-  const parts = cookieString.headers['set-cookie'][0].split(';');
-  const authDataPart = parts.find((part) => part.trim().startsWith('auth-data='));
-  const profileId = authDataPart.split('=')[2].slice(0, -1);
-
-  return profileId ? profileId : null;
+  const userData = await loginInPenpot(email, pass);
+  return userData.data.id;
 }
 
 async function skipSubscriptionByDays(email, testClockId, days, date = new Date()) {
