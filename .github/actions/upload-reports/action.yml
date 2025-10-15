@@ -2,9 +2,6 @@ name: 'Generate and Upload Reports to S3'
 description: 'Upload Playwright reports and update reports index on S3'
 
 inputs:
-  browser-name:
-    description: 'Browser name for the report'
-    required: true
   artifact-name:
     description: 'Name for the artifact upload'
     required: true
@@ -16,6 +13,13 @@ inputs:
     required: true
   aws-region:
     description: 'AWS Region'
+    required: true
+  browser-name:
+    description: 'Browser name for the report'
+    required: true
+  is-manual-execution:
+    default: 'false'
+    description: 'Whether this is a manual execution (true/false)'
     required: true
 
 runs:
@@ -122,3 +126,4 @@ runs:
         path: playwright-report/
         retention-days: 7
         if-no-files-found: ignore
+      if: ${{ !inputs.is-manual-execution }}
