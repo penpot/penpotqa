@@ -96,7 +96,7 @@ mainTest(
   qase([2413], 'Remove the last component from the variants component'),
   async () => {
     await layersPanelPage.selectLayerByName('Value 1');
-    await mainPage.deleteLayerViaRightClick();
+    await mainPage.deleteLayerViaRightClickByName('Value 1');
     await mainPage.waitForChangeIsSaved();
 
     await layersPanelPage.selectLayerByName('Value 2');
@@ -114,7 +114,7 @@ mainTest(
     await layersPanelPage.copyElementViaAltDragAndDrop(200, 500);
 
     await layersPanelPage.selectLayerByName('Value 1');
-    await mainPage.deleteLayerViaRightClick();
+    await mainPage.deleteLayerViaRightClickByName('Value 1');
     await mainPage.waitForChangeIsSaved();
 
     await layersPanelPage.clickCopyComponentOnLayersTab();
