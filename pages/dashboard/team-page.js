@@ -97,12 +97,13 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.invitationRecordOptionsMenuButton = page.locator(
       'div[class*="main_ui_dashboard_team__table-field"] button',
     );
-    this.invitationRecordResendInvititationMenuItem = page
-      .getByRole('listitem')
+    this.resendInvititationButton = page
+      .getByRole('button')
       .filter({ hasText: 'Resend invitation' });
-    this.invitationRecordDeleteInvititationMenuItem = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Delete invitation' });
+    this.resendButton = page.getByRole('button', { name: 'Resend', exact: true });
+    this.deleteInvititationButton = page.locator(
+      'button:has([href="#icon-delete"])',
+    );
     this.memberRecordleaveTeamMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Leave team' });
@@ -421,14 +422,16 @@ exports.TeamPage = class TeamPage extends BasePage {
   async clickOnDeleteMemberButton() {
     await this.deleteMemberButton.click();
   }
-  async resendInvitation() {
-    await this.invitationRecordOptionsMenuButton.click();
-    await this.invitationRecordResendInvititationMenuItem.click();
+  async resendInvitation(email) {
+    await this.selectInvitationByEmail(email);
+    await this.resendInvititationButton.click();
+    await this.resendButton.click();
   }
 
-  async deleteInvitation() {
-    await this.invitationRecordOptionsMenuButton.click();
-    await this.invitationRecordDeleteInvititationMenuItem.click();
+  async deleteInvitation(email) {
+    await this.selectInvitationByEmail(email);
+    await this.deleteInvititationButton.click();
+    await this.continueButton.click();
   }
 
   async leaveTeam(teamName, role = 'Admin', name) {
@@ -612,5 +615,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.isTeamProjectsInfoDisplayed('0 projects');
     await this.isTeamFilesInfoDisplayed('0 files');
     await this.checkSubscriptionName('Professional');
+  }
+
+  async selectInvitationByEmail(email) {
+    await this.page.locator(`[for="email-${email}"] span`).click();
   }
 };

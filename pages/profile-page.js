@@ -14,7 +14,12 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.profileMenuButton = page.getByTestId('profile-btn');
     this.yourAccountMenuItem = page.getByTestId('profile-profile-opt');
     this.logoutMenuItem = page.getByTestId('logout-profile-opt');
-    this.giveFeedbackMenuItem = page.getByTestId('feedback-profile-opt');
+    this.helpLearningMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Help & Learning' });
+    this.giveFeedbackMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Give feedback' });
     this.backToDashboardBtn = page.getByRole('button', { name: 'Dashboard' });
 
     //Profile
@@ -106,6 +111,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
   async openGiveFeedbackPage() {
     await this.profileMenuButton.click();
+    await this.helpLearningMenuItem.hover();
     await this.giveFeedbackMenuItem.click();
   }
 

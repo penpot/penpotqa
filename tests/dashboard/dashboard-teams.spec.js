@@ -207,6 +207,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1176, 'Team Invitations - resend invitation via owner'),
     async () => {
+      const email = 'testeditor@test.com';
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -214,15 +215,11 @@ mainTest.describe(() => {
       await teamPage.isInviteMembersPopUpHeaderDisplayed(
         'Invite members to the team',
       );
-      await teamPage.enterEmailToInviteMembersPopUp('testeditor@test.com');
+      await teamPage.enterEmailToInviteMembersPopUp(email);
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await teamPage.isInvitationRecordDisplayed(
-        'testeditor@test.com',
-        'Editor',
-        'Pending',
-      );
-      await teamPage.resendInvitation();
+      await teamPage.isInvitationRecordDisplayed(email, 'Editor', 'Pending');
+      await teamPage.resendInvitation(email);
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
     },
   );
@@ -238,6 +235,7 @@ mainTest.describe(() => {
   mainTest(
     qase(1178, 'Team Invitations - delete invitation via owner'),
     async () => {
+      const email = 'testeditor@test.com';
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -245,15 +243,11 @@ mainTest.describe(() => {
       await teamPage.isInviteMembersPopUpHeaderDisplayed(
         'Invite members to the team',
       );
-      await teamPage.enterEmailToInviteMembersPopUp('testeditor@test.com');
+      await teamPage.enterEmailToInviteMembersPopUp(email);
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await teamPage.isInvitationRecordDisplayed(
-        'testeditor@test.com',
-        'Editor',
-        'Pending',
-      );
-      await teamPage.deleteInvitation();
+      await teamPage.isInvitationRecordDisplayed(email, 'Editor', 'Pending');
+      await teamPage.deleteInvitation(email);
       await teamPage.isInvitationRecordRemoved();
     },
   );
@@ -674,7 +668,7 @@ mainTest.describe(() => {
         'Pending',
       );
       await page.waitForTimeout(5000);
-      await teamPage.resendInvitation();
+      await teamPage.resendInvitation(secondEmail);
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
       await waitSecondMessage(page, secondEmail, 40);
@@ -1483,7 +1477,7 @@ mainTest.describe(() => {
         await teamPage.selectInvitationRoleInPopUp('Admin');
         await teamPage.clickSendInvitationButton();
         await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-        await teamPage.deleteInvitation();
+        await teamPage.deleteInvitation(firstEmail);
         await teamPage.isInvitationRecordRemoved();
         const firstInvite = await waitMessage(page, firstEmail, 40);
         await profilePage.logout();
