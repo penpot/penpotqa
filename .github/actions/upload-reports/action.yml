@@ -21,6 +21,9 @@ inputs:
     default: 'false'
     description: 'Whether this is a manual execution (true/false)'
     required: true
+  testdino_api_key:
+    description: 'Testdino API Key from the GitHub secrets'
+    required: true
 
 runs:
   using: 'composite'
@@ -118,6 +121,11 @@ runs:
 
         # Cleanup
         rm -f current_index.html new_index.html
+
+    - name: Testdino Reporter
+      shell: bash
+      run: npx --yes tdpw playwright-report/ --token="${{ inputs.testdino_api_key }}" --upload-html  --upload-traces --json-report playwright-report/results.json
+      if: ${{ !inputs.is-manual-execution }}
 
     - name: Upload artifact backup
       uses: actions/upload-artifact@v4
