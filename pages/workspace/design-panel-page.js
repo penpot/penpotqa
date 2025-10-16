@@ -12,7 +12,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel
     this.designTabpanel = page.getByRole('tabpanel', { name: 'design' });
     this.canvasBackgroundColorIcon = page.locator(
-      'div[class*="page__element-set"] div[class*="color-bullet-right"]',
+      'div[class*="page__element-set"] div[class*="color-bullet-wrapper"]',
     );
     this.layerRotationInput = page.locator('div[title="Rotation"] input');
     this.individualCornersRadiusButton = page.getByRole('button', {
@@ -46,12 +46,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Fill section
     this.firstColorIcon = page
       .locator(
-        '//div[contains(@class, "color-data")][not(contains(@class, "color_row__hidden"))]//div[contains(@class, "color_bullet__color-bullet-wrapper")]',
+        '//div[contains(@class, "color-data")][not(contains(@class, "color_row__hidden"))]//div[contains(@class, "color-bullet-wrapper")]',
       )
       .first();
     this.fillColorIcon = page
       .locator(
-        'div[class*="fill__element-set"] div[class*="color_bullet__color-bullet-wrapper"]',
+        'div[class*="fill__element-content"] div[class*="color-bullet-wrapper"]',
       )
       .last();
     this.fillColorComponentIcon = page
@@ -89,7 +89,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowBlurInput = page.locator('div[title="Blur"] input');
     this.shadowSpreadInput = page.locator('div[title="Spread"] input');
     this.shadowColorIcon = page.locator(
-      'div[class*="shadow-advanced-options"] div[class*="color_bullet__color-bullet-wrapper"]',
+      'div[class*="shadow-advanced-options"] div[class*="color-bullet-wrapper"]',
     );
     this.shadowOpacityInput = page.locator(
       'div[class*="shadow-advanced-options"] div[class*="color_row__opacity"] input',
@@ -240,12 +240,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Stroke section
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
-    this.strokeColorBullet = page.locator(
-      'div[class*="bullet-wrapper"] div[class*="color_bullet__is-not-library-color"]',
+    this.strokeElement = page.locator('div[class*="stroke__element-content"]');
+    this.strokeColorBullet = this.strokeElement.locator(
+      'div[class*="color-bullet-wrapper"]',
     );
-    this.strokeRemoveIcon = page
-      .locator('div[class*="stroke__element-content"]')
-      .getByRole('button', { name: 'Remove color' });
+    this.strokeRemoveIcon = this.strokeElement.getByRole('button', {
+      name: 'Remove color',
+    });
     this.strokeColorInput = page.locator(
       'div[class*="stroke-data"] input[class*="color-input"]',
     );
@@ -343,37 +344,26 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
 
     //Design panel - Component section
-    this.componentMenuButton = page.locator(
-      'div[class*="component__element-content"] div[class*="component-actions"]',
+    this.componentContent = page.locator('div[class*="component-content"]');
+    this.componentMenuButton = this.componentContent.locator(
+      'div[class*="component__pill-actions"]',
     );
     this.showInAssetsPanelOptionDesign = page
       .getByRole('listitem')
       .filter({ hasText: 'Show in assets panel' });
-    this.componentBlockOnDesignTab = page.locator(
-      'div[class*="component__element-set"]',
-    );
+    this.componentBlockOnDesignTab = page.locator('div[class*="component-section"]');
     this.createAnnotationOptionDesign = page
       .getByRole('listitem')
       .filter({ hasText: 'Create annotation' });
     this.annotationTextArea = page.locator('#annotation-textarea');
-    this.annotationCreateTitle = page.locator(
-      'div[class*="component-annotation"] div[class*=title]',
-    );
-    this.createAnnotationTick = page.locator(
-      'div[title*="Create"] svg[class*="icon-tick"]',
-    );
-    this.saveAnnotationTick = page.locator(
-      'div[title="Save"] svg[class="icon-tick"]',
-    );
-    this.discardAnnotationTick = page.locator(
-      'div[title="Discard"] svg[class="icon-close"]',
-    );
-    this.editAnnotationTick = page.locator(
-      'div[title="Edit"] svg[class="icon-curve"]',
-    );
-    this.deleteAnnotationTick = page.locator(
-      'div[title="Delete"] svg[class="icon-delete"]',
-    );
+    this.annotationCreateTitle = page
+      .locator('div[class*="component__annotation-title"]')
+      .first();
+    this.createAnnotationTick = this.componentContent.getByTitle('Create');
+    this.saveAnnotationTick = this.componentContent.getByTitle('Save');
+    this.discardAnnotationTick = this.componentContent.getByTitle('Discard');
+    this.editAnnotationTick = this.componentContent.getByTitle('Edit');
+    this.deleteAnnotationTick = this.componentContent.getByTitle('Delete');
     this.deleteAnnotationPopup = page.locator(
       'div[class*="modal-container"] h2:text-is("Delete annotation")',
     );
@@ -391,23 +381,23 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .filter({ hasText: 'Add new property' });
     this.propertyNameInput = page.locator('[class*="variant-property-name"] input');
     this.componentTypeOnDesignPanel = page.locator(
-      'div[class*="component__title"] span',
+      '[class*="component-title-bar-type"]',
     );
-    this.resetOverridesOptionDesign = page.locator(
-      'ul[class*="component__custom-select-dropdown"] span:text-is("Reset overrides")',
-    );
-    this.detachInstanceOptionDesign = page.locator(
-      'ul[class*="component__custom-select-dropdown"] span:text-is("Detach instance")',
-    );
+    this.resetOverridesOptionDesign = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Reset overrides' });
+    this.detachInstanceOptionDesign = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Detach instance' });
     this.clipContentButton = page.locator('//input[@id="clip-content"]/..');
     this.variantPropertyList = page.locator('[class*="variant-property-list"]');
     this.firstVariantProperty = this.variantPropertyList
       .locator('div[class*="variant-property-value-wrapper"]')
       .first();
-    this.swapComponentButton = page.getByTestId('swap-component-btn');
-    this.swapComponentTab = page.locator('[class*="component-swap"]').first();
+    this.swapComponentButton = page.getByTestId('component-pill-button');
+    this.swapComponentTab = page.locator('[class*="component__swap"]').first();
     this.swapGridRadiobutton = page.locator('label[for="swap-opt-grid"]');
-    this.variantWarningWrapper = page.locator('[class*="variant-warning-wrapper"]');
+    this.variantWarningWrapper = page.locator('[class*="variant-warning"]').first();
     this.locateDuplicatedVariantsButton = page.getByRole('button', {
       name: 'Locate duplicated variants',
       exact: true,
@@ -1297,7 +1287,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.annotationCreateTitle.hover();
 
     const selector = this.page.locator(
-      `div[class*="component-annotation"] div[data-replicated-value="${value}"]`,
+      `div[class*="component__annotation"] div[data-replicated-value="${value}"]`,
     );
     await expect(selector).toBeVisible();
   }

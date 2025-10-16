@@ -11,23 +11,21 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     //Assets panel
     this.assetsTab = page.getByRole('tab', { name: 'assets' });
     this.assetsTabpanel = page.getByRole('tabpanel', { name: 'assets' });
-    this.assetComponentLabel = page.locator(
-      'div[class*="assets_components__grid-cell"]',
-    );
+    this.assetComponentLabel = page.locator('div[class*="component-item-grid "]');
     this.assetsSecondComponentLabel = page.locator(
-      'div[class*="assets_components__grid-cell"] >>nth=1',
+      'div[class*="component-item-grid "] >>nth=1',
     );
     this.componentsGridOnAssetsTab = page.locator(
-      'div[class*="assets_components__asset-grid"]',
+      'div[class*="assets_common__opened"]:has(div[class*="assets_components__component-group-grid"])',
     );
     this.componentsTitleBarOnAssetsTab = page.locator(
       'div[class*="components_title_bar"] span:text-is("Components")',
     );
     this.assetComponentSelected = page.locator(
-      'div[class*="sidebar_assets_components__selected"]',
+      'div[class*="component-item-selected"]',
     );
-    this.assetVariantIcon = page.locator(
-      'div[class*="assets_components__grid-cell"] [href="#icon-variant"]',
+    this.assetVariantIcon = this.assetComponentLabel.locator(
+      '[href="#icon-variant"]',
     );
     this.assetsPanel = page.locator('article[class*="assets-bar"]');
     this.assetsSectionName = page.getByTestId('left-sidebar');
@@ -110,7 +108,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       .getByRole('menuitem')
       .filter({ hasText: 'Show main component' });
     this.fileLibraryComponentNameInput = page.locator(
-      'div[class*="assets_components__editing"] input',
+      'div[class*="assets_components__component-item-editing"] input',
     );
     this.fontRecordOnTypographiesBottomPanel = page.locator(
       'div[class="typography-item"]',
@@ -437,12 +435,16 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async clickSharedLibraryImportButton(name) {
-    const elem = this.page.locator(`//div[text()="${name}"]/../../button`);
+    const elem = this.page
+      .locator(`div[data-testid="library-item"]:has-text("${name}")`)
+      .getByRole('button');
     await elem.first().click();
   }
 
   async isSharedLibraryVisibleByName(name, visible = true) {
-    const elem = this.page.locator(`//div[text()="${name}"]/../../button`);
+    const elem = this.page
+      .locator(`div[data-testid="library-item"]:has-text("${name}")`)
+      .getByRole('button');
     visible
       ? await expect(elem.first()).toBeVisible()
       : await expect(elem.first()).not.toBeVisible();
@@ -450,7 +452,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async dragAndDropComponentToViewport(name) {
     await this.page.waitForTimeout(200);
-    const component = this.page.locator(`//span[@title="${name}"]/..`).last();
+    const component = this.page.locator(`//span[@title="${name}"]/../..`).last();
     await component.hover();
     await component.dragTo(this.viewport);
   }
