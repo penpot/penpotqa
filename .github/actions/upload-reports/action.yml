@@ -18,9 +18,10 @@ inputs:
     description: 'Browser name for the report'
     required: true
   is-manual-execution:
-    default: 'false'
     description: 'Whether this is a manual execution (true/false)'
     required: true
+    type: 'boolean'
+    default: 'false'
   testdino_api_key:
     description: 'Testdino API Key from the GitHub secrets'
     required: true
@@ -124,8 +125,10 @@ runs:
 
     - name: Testdino Reporter
       shell: bash
-      run: npx --yes tdpw playwright-report/ --token="${{ inputs.testdino_api_key }}" --upload-html  --upload-traces --json-report playwright-report/results.json
-      if: ${{ !inputs.is-manual-execution }}
+      run: |
+        npx --yes tdpw playwright-report/ --token="${{ inputs.testdino_api_key }}" --upload-html  --upload-traces --json-report playwright-report/results.json
+        echo "✅ Report uploaded to TestDino ('is-manual-execution': ${{ inputs.is-manual-execution }})"
+      if: ${{ inputs.is-manual-execution == 'false'}}
 
     - name: Upload artifact backup
       uses: actions/upload-artifact@v4
