@@ -1,6 +1,11 @@
 name: 'Setup HTTPS Infrastructure for QA Reports'
 
 on:
+  push:
+    branches:
+      - estefafdez/task/add-https
+    paths:
+      - '.github/workflows/setup-https-infrastructure.yml'
   workflow_dispatch:
     inputs:
       domain_name:
