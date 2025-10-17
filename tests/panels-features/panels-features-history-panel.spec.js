@@ -79,7 +79,7 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(1929, 'Save version via history panel'), async () => {
-    await historyPage.checkVersionName(versionName);
+    await historyPage.checkLastVersionName(versionName);
   });
 
   mainTest(
@@ -124,7 +124,7 @@ mainTest.describe(() => {
             'Verify the creation of an autosaved version after Restore',
         ),
         async () => {
-          await historyPage.checkAutosaveVersionsCount('1');
+          await historyPage.checkAutosaveVersionsCount('2');
         },
       );
 
@@ -167,11 +167,14 @@ mainTest.describe(() => {
     await historyPage.renameVersion(versionName);
     await historyPage.checkVersionName(versionName);
   });
+});
 
-  mainTest(qase(1935, 'Delete version via history panel'), async () => {
-    await historyPage.selectVersionOption('Delete');
-    await historyPage.isVersionListEmpty();
-  });
+mainTest(qase(1935, 'Delete version via history panel'), async () => {
+  await historyPage.clickHistoryPanelButton();
+  await historyPage.clickSaveVersionButton();
+  await historyPage.clickViewportTwice();
+  await historyPage.selectVersionOption('Delete');
+  await historyPage.isVersionListEmpty();
 });
 
 mainTest.describe(() => {
