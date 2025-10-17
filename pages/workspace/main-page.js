@@ -36,6 +36,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
     this.gridEditorButton = page.locator('button[class*="grid-editor-button"]');
     this.gridEditorCell = page.locator('rect[class*="grid-cell-outline"]');
+    this.cornerHandle = page.locator('circle[data-position="bottom-left"]');
 
     //Node panel
     this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
@@ -1283,5 +1284,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.typeText(text);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
+  }
+
+  async isCornerHandleVisible(visible = true) {
+    visible
+      ? await expect(this.cornerHandle).toBeVisible()
+      : await expect(this.cornerHandle).not.toBeVisible();
   }
 };

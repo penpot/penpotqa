@@ -217,10 +217,12 @@ mainTest(qase([1291], 'Undo component'), async ({ browserName }) => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickOnLayerOnCanvas();
   await designPanelPage.changeRotationForLayer('200');
+  await mainPage.isCornerHandleVisible();
   await expect(mainPage.createdLayer).toHaveScreenshot(
     'component-change_rotation.png',
   );
   await mainPage.clickShortcutCtrlZ(browserName);
+  await mainPage.isCornerHandleVisible();
   await expect(mainPage.createdLayer).toHaveScreenshot(
     'component-change_rotation_undo.png',
   );

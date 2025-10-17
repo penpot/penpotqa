@@ -102,11 +102,13 @@ jobs:
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
         with:
-          browser-name: 'Chrome'
           artifact-name: 'playwright-report-chromium-pr-${{ github.event.inputs.test_mode }}'
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+          browser-name: 'Chrome'
+          is-manual-execution: 'true'
+          testdino_api_key: ${{ secrets.TDPW_API_KEY }}
         if: always()
 
       - name: Send Mattermost Notification

@@ -309,6 +309,12 @@ exports.BasePage = class BasePage {
     await this.deleteLayerMenuItem.click();
   }
 
+  async deleteLayerViaRightClickByName(layerName) {
+    const layerSel = this.page.locator('#layers').getByText(layerName).first();
+    await layerSel.last().click({ button: 'right', force: true });
+    await this.deleteLayerMenuItem.click();
+  }
+
   async hideLayerViaRightClickOnCanvas(title) {
     const boardSel = this.page.locator(
       `//*[@class='frame-title']//../*[text()='${title}']`,
