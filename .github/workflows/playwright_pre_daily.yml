@@ -25,8 +25,6 @@ jobs:
 
       - name: Setup Playwright Environment
         uses: ./.github/actions/setup-playwright
-        with:
-          node-version: '22'
 
       - name: Run Playwright tests
         id: run-tests
