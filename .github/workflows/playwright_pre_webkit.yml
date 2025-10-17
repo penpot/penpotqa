@@ -43,7 +43,7 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: npx playwright test --project=webkit -gv 'PERF'
+        run: npx playwright test --project=webkit --grep-invert  'PERF'
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
