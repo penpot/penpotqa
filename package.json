@@ -28,19 +28,19 @@
   },
   "homepage": "https://github.com/penpot/penpotqa#readme",
   "devDependencies": {
-    "@playwright/test": "^1.56.0",
-    "dotenv": "^16.3.1",
-    "husky": "^9.1.6"
+    "@playwright/test": "^1.56.1",
+    "dotenv": "^17.2.3",
+    "husky": "^9.1.7"
   },
   "dependencies": {
-    "axios": "^1.6.8",
-    "cheerio": "^1.0.0-rc.12",
+    "axios": "^1.12.2",
+    "cheerio": "^1.1.2",
     "fs": "^0.0.1-security",
-    "googleapis": "^137.1.0",
-    "playwright-qase-reporter": "^2.1.5",
-    "prettier": "^3.0.1",
+    "googleapis": "^164.0.0",
+    "playwright-qase-reporter": "^2.1.6",
+    "prettier": "^3.6.2",
     "qaseio": "^2.4.3",
-    "stripe": "^18.3.0",
+    "stripe": "^19.1.0",
     "ts-node": "^10.9.2"
   }
 }
