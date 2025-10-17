@@ -191,6 +191,9 @@ exports.BasePage = class BasePage {
       'div[class*="error-detail-content"]',
     );
     this.detailsButton = page.getByRole('button', { name: 'Details' });
+    this.continueButton = this.page.getByRole('button', {
+      name: 'Continue',
+    });
   }
 
   async clearInput(input, browserName) {
