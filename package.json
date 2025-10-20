@@ -6,10 +6,10 @@
   "scripts": {
     "test": "npx playwright test --project=chrome -gv 'PERF'",
     "changed": "npx playwright test --project=chrome --only-changed",
-    "testLogin": "npx playwright test --project=chrome --grep-invert  'PERF' ./tests/panels-features/panels-features-fill.spec.js",
+    "testLogin": "npx playwright test --project=chrome -gv 'PERF' ./tests/panels-features/panels-features-fill.spec.js",
     "updateSnapshots": "npx playwright test --update-snapshots",
-    "firefox": "npx playwright test --project=firefox --grep-invert  'PERF' ",
-    "webkit": "npx playwright test --project=webkit --grep-invert  'PERF'",
+    "firefox": "npx playwright test --project=firefox -gv 'PERF' ",
+    "webkit": "npx playwright test --project=webkit -gv 'PERF'",
     "performance": "npx playwright test --retries=1 --timeout=555550000 --project=chrome -g 'PERF'",
     "performance:debug": "npx playwright test --debug --timeout=555550000 --project=chrome -g 'PERF'",
     "prettier": "npx prettier --write .",
