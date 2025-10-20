@@ -43,7 +43,7 @@ runs:
         mkdir -p reports/run-${{ github.run_id }}
         cp -r playwright-report/* reports/run-${{ github.run_id }}/
         aws s3 sync reports/run-${{ github.run_id }}/ s3://kaleidos-qa-reports/run-${{ github.run_id }}/
-        echo "✅ Report uploaded: http://kaleidos-qa-reports.s3-website.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html"
+        echo "✅ Report uploaded: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html"
 
         # Download current index from S3 (if exists)
         aws s3 cp s3://kaleidos-qa-reports/index.html current_index.html 2>/dev/null || echo "No existing index found, creating new one"
@@ -106,7 +106,7 @@ runs:
           echo "            <td class=\"date\" data-label=\"📅 Date\">$DATE_TIME</td>"
           echo "            <td class=\"branch\" data-label=\"🌿 Branch\">$BRANCH_NAME</td>"
           echo "            <td class=\"browser\" data-label=\"🌐 Browser\"><span title=\"$BROWSER_LABEL\">$BROWSER_ICON $BROWSER_LABEL</span></td>"
-          echo "            <td data-label=\"📊 Report\"><a href=\"http://kaleidos-qa-reports.s3-website.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
+          echo "            <td data-label=\"📊 Report\"><a href=\"https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.comrun-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
           echo "          </tr>"
           [ -f current_index.html ] && sed -n '/<tbody>/,/<\/tbody>/p' current_index.html | sed '1d;$d;/<!-- ROWS_PLACEHOLDER -->/d;/^[[:space:]]*$/d' || true
           sed -n '/<!-- ROWS_PLACEHOLDER -->/,$p' .github/html-template.html | tail -n +2
@@ -118,7 +118,7 @@ runs:
           --cache-control "max-age=300" \
           --metadata-directive REPLACE
 
-        echo "✅ Index updated on S3: http://kaleidos-qa-reports.s3-website.eu-west-1.amazonaws.com/index.html"
+        echo "✅ Index updated on S3: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.comindex.html"
 
         # Cleanup
         rm -f current_index.html new_index.html
