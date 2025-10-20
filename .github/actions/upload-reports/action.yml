@@ -106,7 +106,7 @@ runs:
           echo "            <td class=\"date\" data-label=\"📅 Date\">$DATE_TIME</td>"
           echo "            <td class=\"branch\" data-label=\"🌿 Branch\">$BRANCH_NAME</td>"
           echo "            <td class=\"browser\" data-label=\"🌐 Browser\"><span title=\"$BROWSER_LABEL\">$BROWSER_ICON $BROWSER_LABEL</span></td>"
-          echo "            <td data-label=\"📊 Report\"><a href=\"https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.comrun-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
+          echo "            <td data-label=\"📊 Report\"><a href=\"https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
           echo "          </tr>"
           [ -f current_index.html ] && sed -n '/<tbody>/,/<\/tbody>/p' current_index.html | sed '1d;$d;/<!-- ROWS_PLACEHOLDER -->/d;/^[[:space:]]*$/d' || true
           sed -n '/<!-- ROWS_PLACEHOLDER -->/,$p' .github/html-template.html | tail -n +2
@@ -118,7 +118,7 @@ runs:
           --cache-control "max-age=300" \
           --metadata-directive REPLACE
 
-        echo "✅ Index updated on S3: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.comindex.html"
+        echo "✅ Index updated on S3: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/index.html"
 
         # Cleanup
         rm -f current_index.html new_index.html
