@@ -1413,7 +1413,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         ? await this.strokeCapDropdowns.first()
         : await this.strokeCapDropdowns.last();
     await dropdown.click();
-    await dropdown.getByRole('option', { name: capName });
+    await dropdown.getByRole('option', { name: capName }).click();
   }
 
   async clickOnResizeBoardToFitButton() {
