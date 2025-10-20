@@ -44,19 +44,19 @@ exports.MainPage = class MainPage extends BasePage {
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=0',
     );
     this.secondNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=2',
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=1',
     );
     this.thirdNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=3',
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=2',
     );
     this.fourthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=4',
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=3',
     );
     this.fifthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=5',
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=4',
     );
     this.sixthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=6',
+      'g[class="path-point"] circle[pointer-events="visible"] >> nth=5',
     );
     this.nodePanelAddNodeButton = page.locator('button[title^="Add node"]');
     this.nodePanelDeleteNodeButton = page.locator('button[title^="Delete node"]');
@@ -451,10 +451,18 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickFirstNode() {
     await this.firstNode.click({ force: true });
+    // Small delay for Penpot to process the selection
+    await this.page.waitForTimeout(100);
   }
 
   async clickSecondNode() {
-    await this.secondNode.click({ force: true });
+    // Click with shift key modifier to ensure proper multi-selection
+    await this.secondNode.click({
+      force: true,
+      modifiers: ['Shift'],
+    });
+    // Small delay for Penpot to process the selection
+    await this.page.waitForTimeout(100);
   }
 
   async clickThirdNode() {
@@ -467,10 +475,35 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickFifthNode() {
     await this.fifthNode.click({ force: true });
+    await this.page.waitForTimeout(100);
+  }
+
+  async clickFifthNodeWithShift() {
+    await this.fifthNode.click({
+      force: true,
+      modifiers: ['Shift'],
+    });
+    await this.page.waitForTimeout(100);
   }
 
   async clickSixthNode() {
     await this.sixthNode.click({ force: true });
+  }
+
+  async clickFirstNodeWithShift() {
+    await this.firstNode.click({
+      force: true,
+      modifiers: ['Shift'],
+    });
+    await this.page.waitForTimeout(100);
+  }
+
+  async clickSecondNodeWithShift() {
+    await this.secondNode.click({
+      force: true,
+      modifiers: ['Shift'],
+    });
+    await this.page.waitForTimeout(100);
   }
 
   async holdShiftKeyboardButton() {
@@ -482,6 +515,13 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickAddNodeButtonOnNodePanel() {
+    // Wait for the button to be enabled after node selection
+    await this.nodePanelAddNodeButton.waitFor({ state: 'attached' });
+    // Check if button is enabled, if not, wait a bit longer for Penpot to process selection
+    const isDisabled = await this.nodePanelAddNodeButton.getAttribute('disabled');
+    if (isDisabled !== null) {
+      await this.page.waitForTimeout(500);
+    }
     await this.nodePanelAddNodeButton.click();
   }
 
