@@ -233,9 +233,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
     this.strokeElement = page.locator('div[class*="stroke__element-content"]');
-    this.strokeColorBullet = this.strokeElement.locator(
-      'div[class*="color-bullet-wrapper"]',
-    );
+    this.strokeColorBullet = page
+      .getByRole('button', { name: /^#[0-9A-Fa-f]{6}$/ })
+      .first();
     this.strokeRemoveIcon = this.strokeElement.getByRole('button', {
       name: 'Remove color',
     });

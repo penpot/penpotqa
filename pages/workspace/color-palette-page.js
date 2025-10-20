@@ -18,10 +18,18 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.saveColorStyleButton = page.getByRole('button', {
       name: 'Save color style',
     });
-    this.colorsLibrariesSelect = page.locator(
-      'div[class*="colorpicker_libraries__select-wrapper"]',
-    );
-    this.colorsFileLibraryOptions = page.getByText('File library', { exact: true });
+    this.colorsLibrariesSelect = page
+      .getByRole('combobox')
+      .last()
+      .or(
+        page
+          .locator('div[class*="colorpicker"]')
+          .locator('select, button[class*="select"]')
+          .first(),
+      );
+    this.colorsFileLibraryOptions = page.getByRole('option', {
+      name: 'File library',
+    });
     this.colorPaletteActionsBtn = page.locator('button[class*="palette-actions"]');
     this.colorPaletteMenu = page.locator('ul[class*="palette-menu"]');
     this.colorPaletteFileLibraryOpt = page
