@@ -50,16 +50,9 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       .locator('div[class*="thread-header"]')
       .first()
       .getByRole('button', { name: 'Options' });
-    this.commentOptionsButton = page
-      .locator('div[class*="thread-item-wrapper"]')
-      .first()
-      .getByRole('button', { name: 'Options' });
-    this.commentEditOptionMenuItem = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Edit' });
-    this.commentDeleteOptionMenuItem = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Delete thread' });
+    this.commentOptionsButton = page.getByRole('button', { name: 'Options' }).last();
+    this.commentEditOptionMenuItem = page.getByText('Edit').first();
+    this.commentDeleteOptionMenuItem = page.getByText('Delete thread').first();
     this.deleteThreadButton = page.getByRole('button', {
       name: 'Delete conversation',
     });
@@ -138,13 +131,23 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
 
   async clickCommentOptionsButton() {
     await this.commentOptionsButton.click();
+    // Wait a bit for the context menu to appear
+    await this.page.waitForTimeout(500);
   }
 
   async clickEditCommentOption() {
+    await this.commentEditOptionMenuItem.waitFor({
+      state: 'visible',
+      timeout: 10000,
+    });
     await this.commentEditOptionMenuItem.click();
   }
 
   async clickDeleteCommentOption() {
+    await this.commentDeleteOptionMenuItem.waitFor({
+      state: 'visible',
+      timeout: 10000,
+    });
     await this.commentDeleteOptionMenuItem.click();
   }
 

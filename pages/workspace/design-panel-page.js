@@ -89,7 +89,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowShowIcon = page.getByRole('button', { name: 'Toggle shadow' });
     this.shadowUnhideIcon = page.getByRole('button', { name: 'Toggle shadow' });
     this.shadowRemoveIcon = page.getByRole('button', { name: 'Remove shadow' });
-    this.shadowTypeField = page.locator('div[class*="shadow-type-select"]');
+    this.shadowTypeField = page
+      .locator('div[class*="shadow-data"] combobox')
+      .first();
 
     //Design panel - Flex Layout section
     this.flexLayoutMenu = page.locator('div[class*="flex-layout-menu"]');
