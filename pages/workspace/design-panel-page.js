@@ -71,21 +71,21 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowSection = page.getByText('Shadow', { exact: true });
     this.groupShadowSection = page.getByText('Group shadow', { exact: true });
     this.addShadowButton = page.getByRole('button', { name: 'Add shadow' });
-    this.shadowActionsButton = page.locator('button[class*="shadow__more-options"]');
-    this.shadowXInput = page.locator(
-      'div[class*="shadow-advanced-options"] div[title="X"] input',
-    );
-    this.shadowYInput = page.locator(
-      'div[class*="shadow-advanced-options"] div[title="Y"] input',
-    );
-    this.shadowBlurInput = page.locator('div[title="Blur"] input');
-    this.shadowSpreadInput = page.locator('div[title="Spread"] input');
-    this.shadowColorIcon = page.locator(
-      'div[class*="shadow-advanced-options"] div[class*="color-bullet-wrapper"]',
-    );
-    this.shadowOpacityInput = page.locator(
-      'div[class*="shadow-advanced-options"] div[class*="color_row__opacity"] input',
-    );
+    this.shadowActionsButton = page.getByRole('button', {
+      name: 'open more options',
+    });
+    this.shadowXInput = page.locator('div:has-text("X"):has(input) input').last();
+    this.shadowYInput = page.locator('div:has-text("Y"):has(input) input').last();
+    this.shadowBlurInput = page
+      .locator('div:has-text("Blur"):has(input) input')
+      .last();
+    this.shadowSpreadInput = page
+      .locator('div:has-text("Spread"):has(input) input')
+      .last();
+    this.shadowColorIcon = page
+      .getByRole('button', { name: /^#[0-9A-Fa-f]{6}$/ })
+      .nth(2);
+    this.shadowOpacityInput = page.locator('input[value="20"]').last();
     this.shadowShowIcon = page.getByRole('button', { name: 'Toggle shadow' });
     this.shadowUnhideIcon = page.getByRole('button', { name: 'Toggle shadow' });
     this.shadowRemoveIcon = page.getByRole('button', { name: 'Remove shadow' });
