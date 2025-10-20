@@ -50,27 +50,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       )
       .first();
     this.fillColorIcon = page
-      .locator(
-        'div[class*="fill__element-content"] div[class*="color-bullet-wrapper"]',
-      )
-      .last();
+      .getByRole('button', { name: /^#[0-9A-Fa-f]{6}$/ })
+      .first();
     this.fillColorComponentIcon = page
       .locator(
         'div[class*="selected-color-group"] span[class*="color-input-wrapper"]',
       )
       .last();
-    this.fillColorInput = page
-      .locator('div[class*="fill__element-content"] input[class*="color-input"]')
-      .last();
-    this.fillOpacityInput = page
-      .locator(
-        'div[class*="fill__element-content"] div[class*="opacity-element-wrapper"] input',
-      )
-      .last();
+    this.fillColorInput = page.getByRole('textbox', { name: 'Color' }).first();
+    this.fillOpacityInput = page.getByTestId('opacity-input').first();
     this.addFillButton = page.getByTestId('add-fill');
     this.removeFillButton = page
-      .locator('div[class*="fill__element-content"]')
-      .getByRole('button', { name: 'Remove color' });
+      .getByRole('button', { name: 'Remove color' })
+      .first();
     this.componentColorInput = page
       .locator(`input[class*='rows_color_row__color-input']`)
       .last();
