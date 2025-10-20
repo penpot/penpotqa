@@ -84,7 +84,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .last();
     this.shadowColorIcon = page
       .getByRole('button', { name: /^#[0-9A-Fa-f]{6}$/ })
-      .nth(2);
+      .nth(1);
     this.shadowOpacityInput = page.locator('input[value="20"]').last();
     this.shadowShowIcon = page.getByRole('button', { name: 'Toggle shadow' });
     this.shadowUnhideIcon = page.getByRole('button', { name: 'Toggle shadow' });
