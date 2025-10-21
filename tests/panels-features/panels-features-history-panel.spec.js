@@ -149,8 +149,7 @@ mainTest.describe(() => {
           await historyPage.selectSnapshotOption('Pin version');
           await historyPage.renameVersion(versionName);
           await historyPage.checkLastVersionName(versionName);
-          // Note: Autosave versions remain visible after pinning in current app behavior
-          await historyPage.isAutosaveVersionsVisible(true);
+          await historyPage.checkAutosaveVersionsCount('1');
         },
       );
     });
