@@ -588,11 +588,7 @@ mainTest.describe(() => {
     await dashboardPage.checkNumberOfFiles('3 files');
   });
 
-  // FIXME: Test fails due to file access issues after library deletion - dependent file becomes inaccessible
-  // The test attempts to delete a library file and then access the dependent file, but the dependent file
-  // shows "You don't have access to this file" error, possibly due to permission/team ownership issues
-  // when the library file is deleted. Needs investigation of the application behavior or test environment setup.
-  mainTest.fixme(
+  mainTest(
     qase(
       [1092],
       'Delete library which is used by a few files ( 1 library in a few files)',

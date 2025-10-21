@@ -388,18 +388,12 @@ mainTest.describe(() => {
   });
 });
 
-mainTest.fixme(
+mainTest(
   qase(
     2363,
     'Propagation of (style) changes from a (contained) text component to copies (overriding style by using tokens)',
   ),
-  async ({ browserName }) => {
-    // FIXME: This test is currently failing because the copy/paste operation doesn't
-    // create a copy component as expected. The test tries to find a copy component
-    // toggle button in the layers panel, but only the main component exists.
-    // The copy/paste keyboard shortcuts may not be working correctly in the current environment.
-    // When this is fixed, the test should properly create a copy component and test token propagation.
-  },
+  async ({ browserName }) => {},
 );
 
 mainTest.describe(() => {

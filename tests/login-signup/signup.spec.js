@@ -63,36 +63,30 @@ test.describe(() => {
       invite = await waitMessage(page, email, 40);
     });
 
-    test.fixme(qase(28, 'ON-1 Sign up with an email address'), async ({ page }) => {
-      // Gmail OAuth2 invalid_grant error - external dependency issue
+    test(qase(28, 'ON-1 Sign up with an email address'), async ({ page }) => {
       await checkRegisterText(invite.inviteText, randomName);
       await page.goto(invite.inviteUrl);
       await dashboardPage.fillOnboardingFirstQuestions();
     });
 
-    test.fixme(
-      qase([43, 44], 'ON-16,17 Onboarding questions flow'),
-      async ({ page }) => {
-        // Gmail OAuth2 invalid_grant error - external dependency issue
-        await page.goto(invite.inviteUrl);
-        await dashboardPage.fillOnboardingFirstQuestions();
-        await dashboardPage.skipWhatNewsPopUp();
-        await dashboardPage.enterOnboardingTeamName(randomName);
-        const rand1 = random().concat('autotest');
-        const firstEmail = `${process.env.GMAIL_NAME}+${rand1}@gmail.com`;
-        const rand2 = random().concat('autotest');
-        const secondEmail = `${process.env.GMAIL_NAME}+${rand2}@gmail.com`;
-        const emails = `${firstEmail}, ${secondEmail}`;
-        await dashboardPage.enterOnboardingInviteEmails(emails);
-        await dashboardPage.clickOnOnboardingCreateTeamButton();
-        await teamPage.isTeamSelected(randomName);
-      },
-    );
+    test(qase([43, 44], 'ON-16,17 Onboarding questions flow'), async ({ page }) => {
+      await page.goto(invite.inviteUrl);
+      await dashboardPage.fillOnboardingFirstQuestions();
+      await dashboardPage.skipWhatNewsPopUp();
+      await dashboardPage.enterOnboardingTeamName(randomName);
+      const rand1 = random().concat('autotest');
+      const firstEmail = `${process.env.GMAIL_NAME}+${rand1}@gmail.com`;
+      const rand2 = random().concat('autotest');
+      const secondEmail = `${process.env.GMAIL_NAME}+${rand2}@gmail.com`;
+      const emails = `${firstEmail}, ${secondEmail}`;
+      await dashboardPage.enterOnboardingInviteEmails(emails);
+      await dashboardPage.clickOnOnboardingCreateTeamButton();
+      await teamPage.isTeamSelected(randomName);
+    });
 
-    test.fixme(
+    test(
       qase([2245], 'Creating a team without member invitation after first login'),
       async ({ page }) => {
-        // Gmail OAuth2 invalid_grant error - external dependency issue
         await page.goto(invite.inviteUrl);
         await dashboardPage.fillOnboardingFirstQuestions();
         await dashboardPage.skipWhatNewsPopUp();
@@ -103,8 +97,7 @@ test.describe(() => {
     );
   });
 
-  test.fixme(qase(36, 'ON-9 Create demo account'), async () => {
-    // Demo account creation flow has changed - onboarding questions modal no longer appears with expected text "Help us get to know you"
+  test(qase(36, 'ON-9 Create demo account'), async () => {
     await registerPage.isRegisterPageOpened();
     await registerPage.clickOnCreateDemoAccountBtn();
     await dashboardPage.fillOnboardingQuestions();

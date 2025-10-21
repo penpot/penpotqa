@@ -203,16 +203,13 @@ mainTest.describe(() => {
     await dashboardPage.openFile();
   });
 
-  mainTest.fixme(
+  mainTest(
     qase(
       [1939, 1940, 1941],
       "Verification of displaying other users' versions in the version list" +
         'Setting "My Versions/ All Versions" filters in the version list',
     ),
     async ({ page }) => {
-      // FIXME: Gmail API is failing with invalid_grant error
-      // This indicates expired refresh tokens or OAuth configuration issues
-      // The test depends on receiving invitation emails via Gmail API
       const versionName = 'test version';
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');

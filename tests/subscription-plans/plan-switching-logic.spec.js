@@ -32,9 +32,7 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-// Gmail API authentication is currently failing with "invalid_grant" error
-// Marking as test.fixme() until external dependency is resolved
-registerTest.fixme(
+registerTest(
   qase(2302, 'Switch from Unlimited → Enterprise (Qase ID: 2302)'),
   async ({ page }) => {
     const timestamp = new Date().toLocaleString();
@@ -66,9 +64,7 @@ registerTest.fixme(
   },
 );
 
-// Gmail API authentication is currently failing with "invalid_grant" error
-// Marking as test.fixme() until external dependency is resolved
-registerTest.fixme(
+registerTest(
   qase(2303, 'Switch from Enterprise → Unlimited (Qase ID: 2303)'),
   async ({ page }) => {
     const currentPlan = 'Enterprise';
@@ -97,9 +93,7 @@ registerTest.fixme(
   },
 );
 
-// Gmail API authentication is currently failing with "invalid_grant" error
-// Marking as test.fixme() until external dependency is resolved
-registerTest.fixme(
+registerTest(
   qase(2304, 'Switch from Unlimited → Professional (Qase ID: 2304)'),
   async ({ page, name, email }) => {
     const currentPlan = 'Unlimited';

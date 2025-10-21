@@ -144,11 +144,7 @@ mainTest(
   },
 );
 
-// FIXME: Gmail API authentication failing with invalid_grant error
-// The test requires Gmail API access to validate email change functionality,
-// but the OAuth refresh token is invalid or expired, causing authentication failures.
-// This is an external service dependency issue that needs to be resolved in the test environment.
-registerTest.fixme(
+registerTest(
   qase(190, 'PR-4 Change email to valid'),
   async ({ page, name, email }) => {
     await registerTest.slow();

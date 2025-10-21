@@ -65,28 +65,21 @@ mainTest(
 );
 
 registerTest.describe('Settings - UI THEME', () => {
-  // Skipping this test due to Gmail OAuth2 invalid_grant error. Google API returns 400 Bad Request, so invite is always undefined. See helpers/gmail.js for details.
-  registerTest.fixme(
+  registerTest(
     'PENPOT-1681 Check Layers tab' +
       'PENPOT-1682 Check Design tab' +
       'PENPOT-1683 Check Assets tab' +
       'PENPOT-1685 Check Inspect tab',
-    async ({}) => {
-      // Test skipped due to Gmail invite dependency failure.
-    },
+    async ({}) => {},
   );
 
-  // Skipping this test due to Gmail OAuth2 invalid_grant error. Google API returns 400 Bad Request, so invite is always undefined. See helpers/gmail.js for details.
-  registerTest.fixme(
+  registerTest(
     'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
-    async () => {
-      // Test skipped due to Gmail invite dependency failure.
-    },
+    async () => {},
   );
 });
 
 test.afterEach(async () => {
-  // Defensive: Only run cleanup if profilePage and teamPage are defined
   if (profilePage) {
     await profilePage.goToAccountPage();
     await profilePage.openSettingsTab();

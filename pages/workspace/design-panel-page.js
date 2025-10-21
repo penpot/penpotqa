@@ -90,8 +90,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowUnhideIcon = page.getByRole('button', { name: 'Toggle shadow' });
     this.shadowRemoveIcon = page.getByRole('button', { name: 'Remove shadow' });
     this.shadowTypeField = page
-      .locator('div[class*="shadow-data"] combobox')
-      .first();
+      .getByRole('combobox')
+      .filter({ hasText: /Drop shadow|Inner shadow/ });
 
     //Design panel - Flex Layout section
     this.flexLayoutMenu = page.locator('div[class*="flex-layout-menu"]');
@@ -250,12 +250,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.strokeAlignmentField = page.getByTestId('stroke.alignment');
     this.strokeTypeField = page.getByTestId('stroke.style');
-    this.strokeFirstCapDropdown = page
-      .locator('div[class*="stroke_row__cap-select"]')
-      .first();
-    this.strokeSecondCapDropdown = page
-      .locator('div[class*="stroke_row__cap-select"]')
-      .last();
+    this.strokeFirstCapDropdown = page.getByRole('combobox').nth(3);
+    this.strokeSecondCapDropdown = page.getByRole('combobox').nth(4);
 
     //Design panel - Text section
     this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase');
@@ -1408,9 +1404,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     firstSecond === 'first'
       ? await this.strokeFirstCapDropdown.click()
       : await this.strokeSecondCapDropdown.click();
-    await this.page
-      .locator(`ul[class*="stroke-cap-dropdown"] span:has-text('${capName}')`)
-      .click();
+    await this.page.getByRole('option', { name: capName }).click();
   }
 
   async clickOnResizeBoardToFitButton() {

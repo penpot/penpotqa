@@ -850,10 +850,9 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.fixme(
+  mainTest(
     qase(702, 'CO-381 Comments dropdown (All and Only your comments)'),
     async ({ page }) => {
-      // Gmail API authentication issues preventing email invitations from working
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;

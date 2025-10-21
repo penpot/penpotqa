@@ -714,9 +714,7 @@ mainTest.describe(() => {
     );
   });
 
-  // FIXME: Test fails on Firefox with timeout waiting for unsaved changes indicator
-  // This appears to be a browser-specific timing issue with the save state detection
-  mainTest.fixme(qase([1737], 'Locate button'), async () => {
+  mainTest(qase([1737], 'Locate button'), async () => {
     await mainPage.clickBoardOnCanvas();
     await designPanelPage.changeAxisXandYForLayer('400', '2000');
     await designPanelPage.expandGridLayoutMenu();
@@ -765,9 +763,7 @@ mainTest.describe(() => {
     },
   );
 
-  // FIXME: Test fails on Firefox with timeout waiting for resize handler to be visible
-  // This appears to be a browser-specific issue with element visibility detection after undo operations
-  mainTest.fixme(qase([1743], 'Undo element editing'), async ({ browserName }) => {
+  mainTest(qase([1743], 'Undo element editing'), async ({ browserName }) => {
     await mainPage.createDefaultRectangleByCoordinates(410, 410, true);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickFillColorIcon();

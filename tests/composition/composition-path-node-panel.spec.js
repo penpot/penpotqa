@@ -35,12 +35,9 @@ mainTest.describe(() => {
     await mainPage.openNodesPanelViaRightClick();
   });
 
-  mainTest.fixme(
+  mainTest(
     qase([544], 'Add nodes (via Node panel and SHIFT++ shortcut)'),
     async () => {
-      // FIXME: Multi-node selection mechanism is not working properly
-      // The Add node button remains disabled even after selecting adjacent nodes
-      // This suggests a change in Penpot's node selection behavior or requirements
       await mainPage.holdShiftKeyboardButton();
       await mainPage.clickFirstNode();
       await mainPage.clickSecondNode();
@@ -83,12 +80,9 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.fixme(
+  mainTest(
     qase([547], 'Merge nodes (via Node panel and CTRL+J shortcut)'),
     async () => {
-      // FIXME: Multi-node selection mechanism is not working properly
-      // The Merge nodes button remains disabled even after selecting adjacent nodes
-      // This suggests a change in Penpot's node selection behavior or requirements
       await mainPage.holdShiftKeyboardButton();
       await mainPage.clickFirstNode();
       await mainPage.clickSecondNode();
@@ -143,12 +137,9 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest.fixme(
+  mainTest(
     qase([549], 'Separate nodes (via Node panel and K shortcut)'),
     async () => {
-      // FIXME: Multi-node selection mechanism is not working properly
-      // The Separate nodes button remains disabled even after selecting adjacent nodes
-      // This suggests a change in Penpot's node selection behavior or requirements
       await mainPage.holdShiftKeyboardButton();
       await mainPage.clickFirstNode();
       await mainPage.clickSecondNode();

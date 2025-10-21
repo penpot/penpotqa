@@ -79,11 +79,7 @@ mainTest(qase([2443], 'SWAP panel with variants'), async () => {
   );
 });
 
-mainTest.fixme(qase([2444], 'Changing Property for Child Components'), async () => {
-  // FIXME: The UI structure for variant property selection has changed from
-  // div[class*="variant-property-value-wrapper"] to direct comboboxes.
-  // The changeVariantPropertyValue method needs to be updated to work with
-  // the new combobox-based interface before this test can be re-enabled.
+mainTest(qase([2444], 'Changing Property for Child Components'), async () => {
   await dashboardPage.importAndOpenFile('documents/figure.penpot');
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
