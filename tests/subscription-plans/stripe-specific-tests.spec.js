@@ -46,7 +46,8 @@ registerTest.describe(() => {
     await profilePage.backToDashboardFromAccount();
   });
 
-  registerTest(
+  // Gmail API authentication is failing, marking test as fixme until external service is working
+  registerTest.fixme(
     qase(2346, 'Invoices capped at $7 (Unlimited)'),
     async ({ page, name, email }) => {
       const currentPlan = 'Unlimited';
@@ -82,7 +83,8 @@ registerTest.describe(() => {
     },
   );
 
-  registerTest(
+  // Gmail API authentication is failing, marking test as fixme until external service is working
+  registerTest.fixme(
     qase(2347, 'Invoices capped at  $950 (Enterprise)'),
     async ({ page, name, email }) => {
       await registerTest.slow();
@@ -119,7 +121,8 @@ registerTest.describe(() => {
     },
   );
 
-  registerTest(
+  // Gmail API authentication is failing, marking test as fixme until external service is working
+  registerTest.fixme(
     qase(2514, 'Maximum billing $175 (Unlimited)'),
     async ({ page, name, email }) => {
       const currentPlan = 'Unlimited';
@@ -159,7 +162,8 @@ registerTest.describe(() => {
   );
 });
 
-registerTest(
+// Gmail API authentication is failing, marking test as fixme until external service is working
+registerTest.fixme(
   qase(2324, 'Owner of team changes Enterprise to Professional'),
   async ({ page, name, email }) => {
     const currentPlan = 'Enterprise';
