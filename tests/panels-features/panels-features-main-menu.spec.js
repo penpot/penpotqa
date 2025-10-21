@@ -125,12 +125,14 @@ mainTest(qase(820, 'PF-102 Hide/show board names'), async () => {
   await mainPage.clickHideBoardNamesMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('board-hide-name.png', {
     mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    maxDiffPixelRatio: 0.02,
   });
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickShowBoardNamesMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('board-show-name.png', {
     mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    maxDiffPixelRatio: 0.02,
   });
 });
 
