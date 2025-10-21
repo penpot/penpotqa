@@ -124,3 +124,9 @@ lib-cov
 
 # Serverless framework
 .serverless/
+
+# Playwright MCP files
+.github/chatmodes/ 🎭 planner.chatmode.md
+.github/chatmodes/🎭 healer.chatmode.md
+.github/chatmodes/🎭 generator.chatmode.md
+.vscode/mcp.json
