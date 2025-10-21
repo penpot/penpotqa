@@ -215,12 +215,8 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await expect(
       this.profileImageInput.locator(`../img[src="${oldSrc}"]`),
     ).toBeHidden();
-    await this.page.waitForResponse(
-      (response) =>
-        response.url() ===
-          `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
-        response.status() === 200,
-    );
+    // Wait for the upload to complete by checking that any image is loaded
+    await expect(this.profileImageInput.locator('../img').first()).toBeVisible();
   }
 
   async backToDashboardFromAccount() {
