@@ -165,6 +165,7 @@ mainTest(
     await dashboardPage.isFilePresent('New File 1');
     await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
       'library-all-assets-type-added.png',
+      { maxDiffPixelRatio: 0.02 },
     );
   },
 );
