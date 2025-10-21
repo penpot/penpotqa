@@ -55,7 +55,6 @@ mainTest(
       },
     );
     await dashboardPage.openSidebarItem('Fonts');
-    // Increased maxDiffPixelRatio to 0.02 to allow minor pixel differences in screenshot comparison
     await expect(teamPage.teamSettingsSection).toHaveScreenshot('fonts-image.png', {
       maxDiffPixelRatio: 0.02,
     });
