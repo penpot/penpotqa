@@ -50,9 +50,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       )
       .first();
     this.fillColorIcon = page
-      .locator(
-        'div[class*="fill__element-content"] div[class*="color-bullet-wrapper"]',
-      )
+      .locator('div[class*="fill-content"] div[class*="color-bullet-wrapper"]')
       .last();
     this.fillColorComponentIcon = page
       .locator(
@@ -60,16 +58,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       )
       .last();
     this.fillColorInput = page
-      .locator('div[class*="fill__element-content"] input[class*="color-input"]')
+      .locator('div[class*="fill-content"] input[class*="color-input"]')
       .last();
     this.fillOpacityInput = page
       .locator(
-        'div[class*="fill__element-content"] div[class*="opacity-element-wrapper"] input',
+        'div[class*="fill-content"] div[class*="opacity-element-wrapper"] input',
       )
       .last();
     this.addFillButton = page.getByTestId('add-fill');
     this.removeFillButton = page
-      .locator('div[class*="fill__element-content"]')
+      .locator('div[class*="fill-content"]')
       .getByRole('button', { name: 'Remove color' });
     this.componentColorInput = page
       .locator(`input[class*='rows_color_row__color-input']`)
@@ -79,25 +77,27 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowSection = page.getByText('Shadow', { exact: true });
     this.groupShadowSection = page.getByText('Group shadow', { exact: true });
     this.addShadowButton = page.getByRole('button', { name: 'Add shadow' });
-    this.shadowActionsButton = page.locator('button[class*="shadow__more-options"]');
+    this.shadowActionsButton = page.locator(
+      '[class*="shadow_row__shadow-basic-info"] button',
+    );
     this.shadowXInput = page.locator(
-      'div[class*="shadow-advanced-options"] div[title="X"] input',
+      'div[class*="shadow-advanced"] div[title="X"] input',
     );
     this.shadowYInput = page.locator(
-      'div[class*="shadow-advanced-options"] div[title="Y"] input',
+      'div[class*="shadow-advanced"] div[title="Y"] input',
     );
     this.shadowBlurInput = page.locator('div[title="Blur"] input');
     this.shadowSpreadInput = page.locator('div[title="Spread"] input');
     this.shadowColorIcon = page.locator(
-      'div[class*="shadow-advanced-options"] div[class*="color-bullet-wrapper"]',
+      'div[class*="shadow-advanced"] div[class*="color-bullet-wrapper"]',
     );
     this.shadowOpacityInput = page.locator(
-      'div[class*="shadow-advanced-options"] div[class*="color_row__opacity"] input',
+      'div[class*="shadow-advanced"] div[class*="color_row__opacity"] input',
     );
     this.shadowShowIcon = page.getByRole('button', { name: 'Toggle shadow' });
     this.shadowUnhideIcon = page.getByRole('button', { name: 'Toggle shadow' });
     this.shadowRemoveIcon = page.getByRole('button', { name: 'Remove shadow' });
-    this.shadowTypeField = page.locator('div[class*="shadow-type-select"]');
+    this.shadowTypeField = page.locator('div[class*="shadow-basic-select"]');
 
     //Design panel - Flex Layout section
     this.flexLayoutMenu = page.locator('div[class*="flex-layout-menu"]');
@@ -240,7 +240,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Stroke section
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
-    this.strokeElement = page.locator('div[class*="stroke__element-content"]');
+    this.strokeElement = page.locator('div[class*="stroke-content"]');
     this.strokeColorBullet = this.strokeElement.locator(
       'div[class*="color-bullet-wrapper"]',
     );
@@ -250,20 +250,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeColorInput = page.locator(
       'div[class*="stroke-data"] input[class*="color-input"]',
     );
-    this.strokeWidthInput = page.locator(
-      'div[class*="stroke-data"] input[class*="width-input"]',
-    );
+    this.strokeWidthInput = page.getByTitle('Stroke width').locator('input');
     this.strokeOpacityInput = page.locator(
       'div[class*="stroke-data"] input[class*="opacity-input"]',
     );
     this.strokeAlignmentField = page.getByTestId('stroke.alignment');
     this.strokeTypeField = page.getByTestId('stroke.style');
-    this.strokeFirstCapDropdown = page
-      .locator('div[class*="stroke_row__cap-select"]')
-      .first();
-    this.strokeSecondCapDropdown = page
-      .locator('div[class*="stroke_row__cap-select"]')
-      .last();
+    this.strokeCapDropdowns = page
+      .locator('div[class*="stroke-caps-options"]')
+      .getByRole('combobox');
 
     //Design panel - Text section
     this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase');
@@ -663,7 +658,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async selectTypeForShadow(type) {
     await this.shadowTypeField.click();
-    const typeOptionSel = this.page.locator(`li:has-text("${type}")`);
+    const typeOptionSel = this.page.getByRole('option', { name: type, exact: true });
     await typeOptionSel.click();
   }
 
@@ -1413,12 +1408,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async changeCap(capName, firstSecond = 'first') {
-    firstSecond === 'first'
-      ? await this.strokeFirstCapDropdown.click()
-      : await this.strokeSecondCapDropdown.click();
-    await this.page
-      .locator(`ul[class*="stroke-cap-dropdown"] span:has-text('${capName}')`)
-      .click();
+    const dropdown =
+      firstSecond === 'first'
+        ? await this.strokeCapDropdowns.first()
+        : await this.strokeCapDropdowns.last();
+    await dropdown.click();
+    await dropdown.getByRole('option', { name: capName }).click();
   }
 
   async clickOnResizeBoardToFitButton() {
