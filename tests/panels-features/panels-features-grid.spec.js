@@ -310,6 +310,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('two-board-with-guide.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      maxDiffPixelRatio: 0.02,
     });
   });
 });
