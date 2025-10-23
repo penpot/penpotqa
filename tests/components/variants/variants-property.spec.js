@@ -70,12 +70,10 @@ mainTest(qase([2443], 'SWAP panel with variants'), async () => {
   await designPanelPage.clickOnSwapComponentButton();
   await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
     'swap-component-list.png',
-    { maxDiffPixelRatio: 0.02 },
   );
   await designPanelPage.clickOnSwapGridViewButton();
   await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
     'swap-component-grid.png',
-    { maxDiffPixelRatio: 0.02 },
   );
 });
 

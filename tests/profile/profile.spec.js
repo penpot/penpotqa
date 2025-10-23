@@ -31,7 +31,6 @@ mainTest(qase(195, 'PR-9 Add profile picture jpeg'), async ({ page }) => {
     'profile-avatar-block-png.png',
     {
       mask: [profilePage.profileNameInput, profilePage.profileEmailInput],
-      maxDiffPixelRatio: 0.05,
     },
   );
   await profilePage.uploadProfileImage('images/sample.jpeg');
@@ -40,7 +39,6 @@ mainTest(qase(195, 'PR-9 Add profile picture jpeg'), async ({ page }) => {
     'profile-avatar-block-jpeg.png',
     {
       mask: [profilePage.profileNameInput, profilePage.profileEmailInput],
-      maxDiffPixelRatio: 0.05,
     },
   );
 });

@@ -39,19 +39,16 @@ mainTest(qase([948], 'Typographic styles - add from Assets panel'), async () => 
   await mainPage.waitForChangeIsSaved();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     'typographies-add-typography-expanded.png',
-    { maxDiffPixelRatio: 0.02 },
   );
   await assetsPanelPage.minimizeFileLibraryTypography();
   await mainPage.clickViewportTwice();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     'typographies-add-typography-minimized.png',
-    { maxDiffPixelRatio: 0.02 },
   );
   await assetsPanelPage.expandFileLibraryTypography();
   await mainPage.clickViewportTwice();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     'typographies-add-typography-expanded.png',
-    { maxDiffPixelRatio: 0.02 },
   );
 });
 
@@ -75,7 +72,6 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.createdLayer).toHaveScreenshot(
         'apply-typography-to-text_from_assets.png',
-        { maxDiffPixelRatio: 0.02 },
       );
       await assetsPanelPage.editFileLibraryTypography();
       await assetsPanelPage.selectFont('Bellefair');
@@ -84,23 +80,19 @@ mainTest.describe(() => {
       await mainPage.clickViewportTwice();
       await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
         'typographies-edit-typography-expanded.png',
-        { maxDiffPixelRatio: 0.02 },
       );
       await assetsPanelPage.minimizeFileLibraryTypography();
       await mainPage.clickViewportTwice();
       await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
         'typographies-edit-typography-minimized.png',
-        { maxDiffPixelRatio: 0.02 },
       );
       await assetsPanelPage.expandFileLibraryTypography();
       await mainPage.clickViewportTwice();
       await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
         'typographies-edit-typography-expanded.png',
-        { maxDiffPixelRatio: 0.02 },
       );
       await expect(mainPage.createdLayer).toHaveScreenshot(
         'edited-typography-to-text_from_assets.png',
-        { maxDiffPixelRatio: 0.02 },
       );
     },
   );
@@ -111,13 +103,11 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'typographies-rename-typography-minimized.png',
-      { maxDiffPixelRatio: 0.02 },
     );
     await assetsPanelPage.expandFileLibraryTypography();
     await mainPage.waitForChangeIsSaved();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'typographies-rename-typography-expanded.png',
-      { maxDiffPixelRatio: 0.02 },
     );
   });
 
@@ -126,7 +116,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'typographies-deleted-typography.png',
-      { maxDiffPixelRatio: 0.02 },
     );
   });
 
@@ -136,7 +125,6 @@ mainTest.describe(() => {
     await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'group-typographies.png',
-      { maxDiffPixelRatio: 0.02 },
     );
   });
 
@@ -148,7 +136,6 @@ mainTest.describe(() => {
     await assetsPanelPage.isFileLibraryGroupCreated('New Group');
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'group-typographies-renamed.png',
-      { maxDiffPixelRatio: 0.02 },
     );
   });
 
@@ -160,7 +147,6 @@ mainTest.describe(() => {
     await assetsPanelPage.isFileLibraryGroupRemoved();
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'typographies-add-typography-minimized.png',
-      { maxDiffPixelRatio: 0.02 },
     );
   });
 

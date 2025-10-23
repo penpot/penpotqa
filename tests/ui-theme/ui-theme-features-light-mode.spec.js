@@ -55,9 +55,7 @@ mainTest(
       },
     );
     await dashboardPage.openSidebarItem('Fonts');
-    await expect(teamPage.teamSettingsSection).toHaveScreenshot('fonts-image.png', {
-      maxDiffPixelRatio: 0.02,
-    });
+    await expect(teamPage.teamSettingsSection).toHaveScreenshot('fonts-image.png');
     await teamPage.openTeamSettingsPageViaOptionsMenu();
     await teamPage.checkTeamSettingsTabContent();
   },
@@ -69,23 +67,72 @@ registerTest.describe('Settings - UI THEME', () => {
       'PENPOT-1682 Check Design tab' +
       'PENPOT-1683 Check Assets tab' +
       'PENPOT-1685 Check Inspect tab',
-    async ({}) => {},
+    async ({}) => {
+      await profilePage.backToDashboardFromAccount();
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+      await mainPage.createDefaultRectangleByCoordinates(300, 300);
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
+        'layers-file-left-sidebar-image.png',
+        {
+          mask: [mainPage.fileNameSpan],
+        },
+      );
+      await assetsPanelPage.clickAssetsTab();
+      await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
+        'assets-file-left-sidebar-image.png',
+        {
+          mask: [mainPage.fileNameSpan, assetsPanelPage.librariesOpenModalButton],
+        },
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+        'assets-file-right-sidebar-image.png',
+        {
+          mask: [mainPage.usersSection],
+        },
+      );
+      await inspectPanelPage.openInspectTab();
+      await inspectPanelPage.waitForCodeButtonVisible();
+      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+        'inspect-file-right-sidebar-image.png',
+        {
+          mask: [mainPage.usersSection],
+        },
+      );
+    },
   );
 
   registerTest(
     'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
-    async () => {},
+    async () => {
+      await profilePage.backToDashboardFromAccount();
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeButton();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(15000);
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-page-image.png',
+        { maxDiffPixelRatio: 0.0002 },
+      );
+      await viewModePage.openInspectTab();
+      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+        'view-mode-inspect-page-image.png',
+        { maxDiffPixelRatio: 0.0002 },
+      );
+    },
   );
 });
 
 test.afterEach(async () => {
-  if (profilePage) {
-    await profilePage.goToAccountPage();
-    await profilePage.openSettingsTab();
-    await profilePage.selectDarkTheme();
-    await profilePage.backToDashboardFromAccount();
-  }
-  if (teamPage) {
-    await teamPage.deleteTeam(teamName);
-  }
+  await profilePage.goToAccountPage();
+  await profilePage.openSettingsTab();
+  await profilePage.selectDarkTheme();
+  await profilePage.backToDashboardFromAccount();
+  await teamPage.deleteTeam(teamName);
 });

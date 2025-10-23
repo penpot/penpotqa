@@ -571,7 +571,6 @@ mainTest.describe(() => {
       'right-sidebar-inspect-code-section-image.png',
       {
         mask: [mainPage.usersSection, inspectPanelPage.codeHtmlStrings],
-        maxDiffPixelRatio: 0.05,
       },
     );
   });

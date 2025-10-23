@@ -32,69 +32,63 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest(
-  qase(2302, 'Switch from Unlimited → Enterprise (Qase ID: 2302)'),
-  async ({ page }) => {
-    const timestamp = new Date().toLocaleString();
-    console.log('Test Start:', timestamp);
+registerTest(qase(2302, 'Switch from Unlimited → Enterprise'), async ({ page }) => {
+  const timestamp = new Date().toLocaleString();
+  console.log('Test Start:', timestamp);
 
-    const currentPlan = 'Unlimited';
-    const newPlan = 'Enterprise';
+  const currentPlan = 'Unlimited';
+  const newPlan = 'Enterprise';
 
-    await registerTest.slow();
+  await registerTest.slow();
 
-    await profilePage.tryTrialForPlan(currentPlan);
-    await profilePage.openYourAccountPage();
-    await profilePage.openSubscriptionTab();
-    await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
-    await stripePage.isVisaCardAdded(true);
-    await stripePage.changeSubscription();
-    await stripePage.checkCurrentSubscription(newPlan);
+  await profilePage.tryTrialForPlan(currentPlan);
+  await profilePage.openYourAccountPage();
+  await profilePage.openSubscriptionTab();
+  await profilePage.clickOnAddPaymentMethodButton();
+  await stripePage.addDefaultCard();
+  await stripePage.isVisaCardAdded(true);
+  await stripePage.changeSubscription();
+  await stripePage.checkCurrentSubscription(newPlan);
 
-    await stripePage.waitTrialEndsDisappear();
-    await stripePage.changeSubscription();
-    await stripePage.checkCurrentSubscription(currentPlan);
-    await stripePage.checkLastInvoiceName(`Penpot ${currentPlan}`);
-    await stripePage.checkLastInvoiceAmount(`$0.00`);
-    await stripePage.clickOnReturnToPenpotButton();
-    await profilePage.checkSubscriptionName(currentPlan);
-    await profilePage.backToDashboardFromAccount();
-    await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
-  },
-);
+  await stripePage.waitTrialEndsDisappear();
+  await stripePage.changeSubscription();
+  await stripePage.checkCurrentSubscription(currentPlan);
+  await stripePage.checkLastInvoiceName(`Penpot ${currentPlan}`);
+  await stripePage.checkLastInvoiceAmount(`$0.00`);
+  await stripePage.clickOnReturnToPenpotButton();
+  await profilePage.checkSubscriptionName(currentPlan);
+  await profilePage.backToDashboardFromAccount();
+  await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
+});
 
-registerTest(
-  qase(2303, 'Switch from Enterprise → Unlimited (Qase ID: 2303)'),
-  async ({ page }) => {
-    const currentPlan = 'Enterprise';
-    const newPlan = 'Unlimited';
+registerTest(qase(2303, 'Switch from Enterprise → Unlimited'), async ({ page }) => {
+  const currentPlan = 'Enterprise';
+  const newPlan = 'Unlimited';
 
-    await registerTest.slow();
+  await registerTest.slow();
 
-    await profilePage.tryTrialForPlan(newPlan);
-    await profilePage.openYourAccountPage();
-    await profilePage.openSubscriptionTab();
-    await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
-    await stripePage.isVisaCardAdded(true);
-    await stripePage.changeSubscription();
-    await stripePage.checkCurrentSubscription(currentPlan);
+  await profilePage.tryTrialForPlan(newPlan);
+  await profilePage.openYourAccountPage();
+  await profilePage.openSubscriptionTab();
+  await profilePage.clickOnAddPaymentMethodButton();
+  await stripePage.addDefaultCard();
+  await stripePage.isVisaCardAdded(true);
+  await stripePage.changeSubscription();
+  await stripePage.checkCurrentSubscription(currentPlan);
 
-    await stripePage.waitTrialEndsDisappear();
-    await stripePage.changeSubscription();
-    await stripePage.checkCurrentSubscription(newPlan);
-    await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
-    await stripePage.checkLastInvoiceAmount(`$0.00`);
-    await stripePage.clickOnReturnToPenpotButton();
-    await profilePage.checkSubscriptionName(newPlan);
-    await profilePage.backToDashboardFromAccount();
-    await dashboardPage.checkSubscriptionName(newPlan + ' plan');
-  },
-);
+  await stripePage.waitTrialEndsDisappear();
+  await stripePage.changeSubscription();
+  await stripePage.checkCurrentSubscription(newPlan);
+  await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
+  await stripePage.checkLastInvoiceAmount(`$0.00`);
+  await stripePage.clickOnReturnToPenpotButton();
+  await profilePage.checkSubscriptionName(newPlan);
+  await profilePage.backToDashboardFromAccount();
+  await dashboardPage.checkSubscriptionName(newPlan + ' plan');
+});
 
 registerTest(
-  qase(2304, 'Switch from Unlimited → Professional (Qase ID: 2304)'),
+  qase(2304, 'Switch from Unlimited → Professional'),
   async ({ page, name, email }) => {
     const currentPlan = 'Unlimited';
     const defaultPlan = 'Professional';
