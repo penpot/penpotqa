@@ -35,7 +35,6 @@ registerTest.afterEach(async () => {
 registerTest(qase(2302, 'Switch from Unlimited → Enterprise'), async ({ page }) => {
   const timestamp = new Date().toLocaleString();
   console.log('Test Start:', timestamp);
-
   const currentPlan = 'Unlimited';
   const newPlan = 'Enterprise';
 
