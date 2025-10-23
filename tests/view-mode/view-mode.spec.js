@@ -203,7 +203,6 @@ mainTest.describe(() => {
     await viewModePage.clickInteractionsDropdown();
     await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
       'show-on-click-interactions-options-default-image.png',
-      { maxDiffPixelRatio: 0.02 },
     );
     await viewModePage.selectShowInteractionsOptions();
     await viewModePage.clickInteractionsDropdown();
@@ -213,7 +212,6 @@ mainTest.describe(() => {
     await viewModePage.clickInteractionsDropdown();
     await expect(viewModePage.interactionsDropdownOptions).toHaveScreenshot(
       'interactions-show-options-image.png',
-      { maxDiffPixelRatio: 0.02 },
     );
     await viewModePage.selectShowOnClickInteractionsOptions();
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
@@ -235,7 +233,6 @@ mainTest.describe(() => {
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.scaleDropdownOptions).toHaveScreenshot(
       'scale-dropdown-view-mode-page-image.png',
-      { maxDiffPixelRatio: 0.02 },
     );
     await viewModePage.clickDownscaleButton();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
@@ -257,19 +254,16 @@ mainTest.describe(() => {
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'fill-scale-board-view-mode-page-image.png',
-      { maxDiffPixelRatio: 0.02 },
     );
     await viewModePage.selectFullScreenScaleOptions();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.fullScreenSection).toHaveScreenshot(
       'full-screen-scale-board-view-mode-page-image.png',
-      { maxDiffPixelRatio: 0.02 },
     );
     await viewModePage.clickResetScaleButton();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.fullScreenSection).toHaveScreenshot(
       'full-screen-default-scale-board-view-mode-page-image.png',
-      { maxDiffPixelRatio: 0.02 },
     );
   });
 
@@ -305,7 +299,6 @@ mainTest.describe(() => {
     await viewModePage.openPageDropdown();
     await expect(viewModePage.pageDropdownOptions).toHaveScreenshot(
       'page-list-image.png',
-      { maxDiffPixelRatio: 0.02 },
     );
     await viewModePage.selectPageByName('Page 2');
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
@@ -314,7 +307,6 @@ mainTest.describe(() => {
     await viewModePage.openPageDropdown();
     await expect(viewModePage.pageDropdownOptions).toHaveScreenshot(
       'page-list-image2.png',
-      { maxDiffPixelRatio: 0.02 },
     );
     await viewModePage.selectPageByName('Page 1');
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
@@ -366,7 +358,6 @@ mainTest.describe(() => {
     await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
     await expect(newPage).toHaveScreenshot('comment-reply.png', {
       mask: [commentsPanelPage.commentsAuthorSection],
-      maxDiffPixelRatio: 0.02,
     });
   });
 
@@ -483,7 +474,6 @@ mainTest.describe(() => {
         'comments-list.png',
         {
           mask: [commentsPanelPage.commentsAuthorSection],
-          maxDiffPixelRatio: 0.02,
         },
       );
       await viewModePage.openCommentsDropdown();
@@ -505,7 +495,6 @@ mainTest.describe(() => {
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
       'view-mode-inspect-page-image.png',
-      { maxDiffPixelRatio: 0.02 },
     );
     await viewModePage.openInteractionsTab();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
@@ -540,7 +529,6 @@ mainTest.describe(() => {
       await newPage.waitForTimeout(200);
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-code-tab-image.png',
-        { maxDiffPixelRatio: 0.02 },
       );
     },
   );
@@ -565,7 +553,6 @@ mainTest.describe(() => {
     await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
     await expect(viewModePage.rightSidebar).toHaveScreenshot(
       'view-mode-export-right-sidebar-image.png',
-      { maxDiffPixelRatio: 0.02 },
     );
 
     await designPanelPage.clickExportElementButton(newPage);
@@ -614,27 +601,22 @@ mainTest.describe(() => {
       await layersPanelPage.clickLayerOnLayersTab('Rectangle');
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-rectangle-selected-image.png',
-        { maxDiffPixelRatio: 0.02 },
       );
       await layersPanelPage.clickLayerOnLayersTab('Ellipse');
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-ellipse-selected-image.png',
-        { maxDiffPixelRatio: 0.02 },
       );
       await layersPanelPage.clickLayerOnLayersTab('Hello World!');
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-test-selected-image.png',
-        { maxDiffPixelRatio: 0.02 },
       );
       await layersPanelPage.clickLayerOnLayersTab('Path');
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-path-selected-image.png',
-        { maxDiffPixelRatio: 0.02 },
       );
       await layersPanelPage.clickLayerOnLayersTab('mini_sample');
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-image-selected-image.png',
-        { maxDiffPixelRatio: 0.02 },
       );
     },
   );
@@ -652,7 +634,6 @@ mainTest.describe(() => {
     await viewModePage.copyWidth();
     await expect(viewModePage.rightSidebar).toHaveScreenshot(
       'view-mode-copy-width-image.png',
-      { maxDiffPixelRatio: 0.02 },
     );
     await viewModePage.checkBuffer('width: 200px;', newPage, browserName);
   });
@@ -699,18 +680,18 @@ mainTest.describe(() => {
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-image.png',
-        { mask: [viewModePage.copyLinkField], maxDiffPixelRatio: 0.02 },
+        { mask: [viewModePage.copyLinkField] },
       );
       await viewModePage.clickGetLinkButton();
       await viewModePage.clickManagePermissionsButton();
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-1page-selected-image.png',
-        { mask: [viewModePage.copyLinkField], maxDiffPixelRatio: 0.02 },
+        { mask: [viewModePage.copyLinkField] },
       );
       await viewModePage.selectAllPages();
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-all-pages-selected-image.png',
-        { mask: [viewModePage.copyLinkField], maxDiffPixelRatio: 0.02 },
+        { mask: [viewModePage.copyLinkField] },
       );
       await viewModePage.clickGetLinkButton();
       const shareLink = await viewModePage.clickCopyLinkButton();
@@ -750,9 +731,7 @@ mainTest.describe(() => {
       await profilePage.gotoLink(shareLink);
       viewModePage = new ViewModePage(page);
       await viewModePage.isViewerSectionVisible(false);
-      await expect(mainPage.loginDialog).toHaveScreenshot('shared-error-image.png', {
-        maxDiffPixelRatio: 0.02,
-      });
+      await expect(mainPage.loginDialog).toHaveScreenshot('shared-error-image.png');
       await loginPage.goto();
     },
   );
@@ -774,7 +753,7 @@ mainTest.describe(() => {
       await viewModePage.waitSuccessMessageHidden();
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-all-users-comment-image.png',
-        { mask: [viewModePage.copyLinkField], maxDiffPixelRatio: 0.02 },
+        { mask: [viewModePage.copyLinkField] },
       );
       await newPage.close();
 
@@ -791,7 +770,6 @@ mainTest.describe(() => {
       await viewModePage.clickCommentsButton();
       await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
         'view-mode-shared-comments-image.png',
-        { maxDiffPixelRatio: 0.02 },
       );
       await viewModePage.gotoLink(process.env.BASE_URL);
       await mainPage.isHeaderDisplayed('Projects');
@@ -819,7 +797,7 @@ mainTest.describe(() => {
       await viewModePage.waitSuccessMessageHidden();
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-all-users-inspect-image.png',
-        { mask: [viewModePage.copyLinkField], maxDiffPixelRatio: 0.02 },
+        { mask: [viewModePage.copyLinkField] },
       );
       await newPage.close();
 
@@ -841,7 +819,6 @@ mainTest.describe(() => {
         'view-mode-shared-code-image.png',
         {
           mask: [inspectPanelPage.codeHtmlStrings],
-          maxDiffPixelRatio: 0.02,
         },
       );
       await viewModePage.gotoLink(process.env.BASE_URL);
