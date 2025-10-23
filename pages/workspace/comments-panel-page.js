@@ -131,7 +131,6 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
 
   async clickCommentOptionsButton() {
     await this.commentOptionsButton.click();
-    // Wait for the context menu to appear by waiting for the edit option to be visible
     await this.commentEditOptionMenuItem.waitFor({
       state: 'visible',
       timeout: 5000,

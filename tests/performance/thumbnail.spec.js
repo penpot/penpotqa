@@ -6,7 +6,7 @@ performanceTest('PERF Thumbnail renderer', async ({ page }) => {
   const performancePage = new PerformancePage(page);
   await performancePage.setup();
 
-  // TODO: Medir el tiempo que tarda en renderizar el thumbnail.
+  // TODO: Measure the time that the thumbnail takes to render.
 
   const content = page.locator('.frame-container > .frame-content');
   await content.waitFor();

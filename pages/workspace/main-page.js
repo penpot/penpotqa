@@ -451,17 +451,14 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickFirstNode() {
     await this.firstNode.click({ force: true });
-    // Small delay for Penpot to process the selection
     await this.page.waitForTimeout(100);
   }
 
   async clickSecondNode() {
-    // Click with shift key modifier to ensure proper multi-selection
     await this.secondNode.click({
       force: true,
       modifiers: ['Shift'],
     });
-    // Small delay for Penpot to process the selection
     await this.page.waitForTimeout(100);
   }
 
@@ -515,9 +512,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickAddNodeButtonOnNodePanel() {
-    // Wait for the button to be enabled after node selection
     await this.nodePanelAddNodeButton.waitFor({ state: 'attached' });
-    // Check if button is enabled, if not, wait a bit longer for Penpot to process selection
     const isDisabled = await this.nodePanelAddNodeButton.getAttribute('disabled');
     if (isDisabled !== null) {
       await this.page.waitForTimeout(500);
