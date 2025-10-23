@@ -36,7 +36,6 @@ registerTest(
   qase(2302, 'Switch from Unlimited → Enterprise (Qase ID: 2302)'),
   async ({ page }) => {
     const timestamp = new Date().toLocaleString();
-    console.log('Test Start:', timestamp);
 
     const currentPlan = 'Unlimited';
     const newPlan = 'Enterprise';
