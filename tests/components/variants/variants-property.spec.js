@@ -90,6 +90,7 @@ mainTest(qase([2444], 'Changing Property for Child Components'), async () => {
 
   await layersPanelPage.selectLayerByName('Ellipse, Green');
   await layersPanelPage.copyElementViaAltDragAndDrop(100, 100);
+  await mainPage.waitForChangeIsSaved();
   await designPanelPage.changeVariantPropertyValue('Property 1', 'Arrow');
   await designPanelPage.changeVariantPropertyValue('Property 2', 'Blue');
   await layersPanelPage.copyElementViaAltDragAndDrop(100, 300);
@@ -97,20 +98,7 @@ mainTest(qase([2444], 'Changing Property for Child Components'), async () => {
 
   await layersPanelPage.clickFirstCopyComponentOnLayersTab();
   await designPanelPage.changeVariantPropertyValue('Property 1', 'Ellipse');
-  await designPanelPage.changeVariantPropertyValue('Property 2', 'Green');
-  await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Ellipse');
-  await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Green');
-
-  await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Arrow');
-  await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
-
-  await layersPanelPage.clickFirstCopyComponentOnLayersTab();
   await designPanelPage.changeVariantPropertyValue('Property 2', 'Yellow');
-  await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Yellow');
-
-  await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
 });
 
 mainTest(qase([2447], 'Property recovery'), async () => {

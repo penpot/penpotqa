@@ -57,18 +57,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         'div[class*="selected-color-group"] span[class*="color-input-wrapper"]',
       )
       .last();
-    this.fillColorInput = page
-      .locator('div[class*="fill-content"] input[class*="color-input"]')
-      .last();
-    this.fillOpacityInput = page
-      .locator(
-        'div[class*="fill-content"] div[class*="opacity-element-wrapper"] input',
-      )
-      .last();
+    this.fillColorInput = page.getByRole('textbox', { name: 'Color' }).first();
+    this.fillOpacityInput = page.getByTestId('opacity-input').first();
     this.addFillButton = page.getByTestId('add-fill');
     this.removeFillButton = page
-      .locator('div[class*="fill-content"]')
-      .getByRole('button', { name: 'Remove color' });
+      .getByRole('button', { name: 'Remove color' })
+      .first();
     this.componentColorInput = page
       .locator(`input[class*='rows_color_row__color-input']`)
       .last();
@@ -250,15 +244,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeColorInput = page.locator(
       'div[class*="stroke-data"] input[class*="color-input"]',
     );
-    this.strokeWidthInput = page.getByTitle('Stroke width').locator('input');
+    this.strokeWidthInput = page.locator('div[class*="stroke-width-input"] input');
     this.strokeOpacityInput = page.locator(
       'div[class*="stroke-data"] input[class*="opacity-input"]',
     );
     this.strokeAlignmentField = page.getByTestId('stroke.alignment');
     this.strokeTypeField = page.getByTestId('stroke.style');
-    this.strokeCapDropdowns = page
-      .locator('div[class*="stroke-caps-options"]')
-      .getByRole('combobox');
+    this.strokeFirstCapDropdown = page.getByRole('combobox').nth(3);
+    this.strokeSecondCapDropdown = page.getByRole('combobox').nth(4);
 
     //Design panel - Text section
     this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase');
@@ -1408,12 +1401,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async changeCap(capName, firstSecond = 'first') {
-    const dropdown =
-      firstSecond === 'first'
-        ? await this.strokeCapDropdowns.first()
-        : await this.strokeCapDropdowns.last();
-    await dropdown.click();
-    await dropdown.getByRole('option', { name: capName }).click();
+    firstSecond === 'first'
+      ? await this.strokeFirstCapDropdown.click()
+      : await this.strokeSecondCapDropdown.click();
+    await this.page.getByRole('option', { name: capName }).click();
   }
 
   async clickOnResizeBoardToFitButton() {

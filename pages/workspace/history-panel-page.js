@@ -28,9 +28,9 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
     this.snapshotElement = page.locator(
       'div[class*="milestone_group"][class*="version-entry"]',
     );
-    this.optionsSnapshotButton = page.locator(
-      'div[class*="milestone_group"][class*="version-entry"] button',
-    );
+    this.optionsSnapshotButton = page
+      .locator('div[class*="milestone_group"][class*="version-entry"] button')
+      .first();
     this.pinSnapshotButton = page.getByRole('button', { name: 'Pin version' });
     this.restoreSnapshotButton = page.getByRole('button', {
       name: 'Restore version',
