@@ -5,13 +5,13 @@ inputs:
   node-version:
     description: 'Node.js version to use'
     required: false
-    default: '25'
+    default: '22'
 
 runs:
   using: 'composite'
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
 

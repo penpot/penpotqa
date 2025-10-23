@@ -55,6 +55,8 @@ jobs:
 
       - name: Setup Playwright Environment
         uses: ./.github/actions/setup-playwright
+        with:
+          node-version: '22'
 
       - name: Run Playwright tests
         id: run-tests
@@ -73,11 +75,11 @@ jobs:
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
               echo "🚀 Running all tests..."
-              npx playwright test --project=chrome --grep-invert  'PERF'
+              npx playwright test --project=chrome -gv 'PERF'
               ;;
             "changed_only")
               echo "📝 Running tests for changed files only..."
-              npx playwright test --project=chrome --only-changed=origin/main --grep-invert  'PERF'
+              npx playwright test --project=chrome --only-changed=origin/main -gv 'PERF'
               ;;
             "by_folder")
               echo "📁 Running tests from folder: ${{ github.event.inputs.test_folder }}"
@@ -89,7 +91,7 @@ jobs:
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
                 exit 1
               fi
-              npx playwright test --project=chrome --grep-invert  'PERF' "${{ github.event.inputs.test_folder }}"
+              npx playwright test --project=chrome -gv 'PERF' "${{ github.event.inputs.test_folder }}"
               ;;
             *)
               echo "❌ Error: Invalid test mode"
