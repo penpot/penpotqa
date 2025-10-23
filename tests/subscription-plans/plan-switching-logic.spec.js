@@ -32,35 +32,42 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest(qase(2302, 'Switch from Unlimited → Enterprise'), async ({ page }) => {
-  const timestamp = new Date().toLocaleString();
-  console.log('Test Start:', timestamp);
-  const currentPlan = 'Unlimited';
-  const newPlan = 'Enterprise';
+registerTest(
+  qase(2302, 'Switch from Unlimited → Enterprise'),
+  async ({ page, name, email }) => {
+    const currentPlan = 'Unlimited';
+    const newPlan = 'Enterprise';
+    let date = new Date();
 
-  await registerTest.slow();
+    const testClockId = await createCustomerWithTestClock(page, name, email);
 
-  await profilePage.tryTrialForPlan(currentPlan);
-  await profilePage.openYourAccountPage();
-  await profilePage.openSubscriptionTab();
-  await profilePage.clickOnAddPaymentMethodButton();
-  await stripePage.addDefaultCard();
-  await stripePage.isVisaCardAdded(true);
-  await stripePage.changeSubscription();
-  await stripePage.checkCurrentSubscription(newPlan);
+    await profilePage.tryTrialForPlan(currentPlan);
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.clickOnAddPaymentMethodButton();
+    await stripePage.addDefaultCard();
+    await stripePage.isVisaCardAdded(true);
+    await skipSubscriptionByDays(email, testClockId, 15, date);
 
-  await stripePage.waitTrialEndsDisappear();
-  await stripePage.changeSubscription();
-  await stripePage.checkCurrentSubscription(currentPlan);
-  await stripePage.checkLastInvoiceName(`Penpot ${currentPlan}`);
-  await stripePage.checkLastInvoiceAmount(`$0.00`);
-  await stripePage.clickOnReturnToPenpotButton();
-  await profilePage.checkSubscriptionName(currentPlan);
-  await profilePage.backToDashboardFromAccount();
-  await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
-});
+    await stripePage.waitTrialEndsDisappear();
+    await profilePage.reloadPage();
+    await stripePage.checkCurrentSubscription(currentPlan);
+    await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
+    await stripePage.checkLastInvoiceAmount(`$7.00`);
+    await stripePage.changeSubscription();
+    await stripePage.checkCurrentSubscription(newPlan);
+    await page.waitForTimeout(1000);
+    await profilePage.reloadPage();
+    await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
+    await stripePage.checkLastInvoiceStatus(`Paid`);
+    await stripePage.clickOnReturnToPenpotButton();
+    await profilePage.checkSubscriptionName(newPlan);
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.checkSubscriptionName(newPlan + ' plan');
+  },
+);
 
-registerTest(qase(2303, 'Switch from Enterprise → Unlimited'), async ({ page }) => {
+registerTest(qase(2303, 'Switch from Enterprise → Unlimited'), async () => {
   const currentPlan = 'Enterprise';
   const newPlan = 'Unlimited';
 
