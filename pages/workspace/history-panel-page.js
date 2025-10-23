@@ -134,7 +134,7 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
 
   async selectSnapshotOption(option) {
     await this.snapshotElement.first().hover();
-    await this.optionsSnapshotButton.click();
+    await this.optionsSnapshotButton.first().click();
     switch (option) {
       case 'Pin version':
         await this.pinSnapshotButton.click();

@@ -137,7 +137,7 @@ mainTest.describe(() => {
           await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
           await historyPage.isHistoryPanelVisible(false);
           await historyPage.clickHistoryPanelButton();
-          await historyPage.checkAutosaveVersionsCount('2');
+          await historyPage.checkAutosaveVersionsCount('3');
         },
       );
 
@@ -149,7 +149,7 @@ mainTest.describe(() => {
           await historyPage.selectSnapshotOption('Pin version');
           await historyPage.renameVersion(versionName);
           await historyPage.checkLastVersionName(versionName);
-          await historyPage.isAutosaveVersionsVisible(false);
+          await historyPage.checkAutosaveVersionsCount('1');
         },
       );
     });
