@@ -191,6 +191,9 @@ exports.BasePage = class BasePage {
       'div[class*="error-detail-content"]',
     );
     this.detailsButton = page.getByRole('button', { name: 'Details' });
+    this.continueButton = this.page.getByRole('button', {
+      name: 'Continue',
+    });
   }
 
   async clearInput(input, browserName) {
@@ -306,6 +309,12 @@ exports.BasePage = class BasePage {
 
   async deleteLayerViaRightClick() {
     await this.createdLayer.click({ button: 'right', force: true });
+    await this.deleteLayerMenuItem.click();
+  }
+
+  async deleteLayerViaRightClickByName(layerName) {
+    const layerSel = this.page.locator('#layers').getByText(layerName).first();
+    await layerSel.last().click({ button: 'right', force: true });
     await this.deleteLayerMenuItem.click();
   }
 

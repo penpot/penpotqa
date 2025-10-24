@@ -108,7 +108,15 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   }
 
   async clickPostCommentButton() {
+    await this.isPostCommentButtonEnabled();
     await this.postCommentButton.click();
+  }
+
+  async isPostCommentButtonEnabled() {
+    await expect(
+      this.postCommentButton,
+      'Comment post button is enabled',
+    ).toBeEnabled();
   }
 
   async clickCommentThreadIcon() {

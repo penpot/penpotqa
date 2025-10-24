@@ -108,6 +108,7 @@ mainTest.describe(() => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.isCornerHandleVisible();
     await expect(mainPage.viewport).toHaveScreenshot('path-blur.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });

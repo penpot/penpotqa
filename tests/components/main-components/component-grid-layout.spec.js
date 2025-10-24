@@ -117,19 +117,23 @@ mainTest.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.pressCopyShortcut(browserName);
     await mainPage.pressPasteShortcut(browserName);
+    await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Board', true);
     await layersPanelPage.clickMainComponentOnLayersTab();
     await layersPanelPage.deleteMainComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board', false);
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await layersPanelPage.restoreMainComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.waitForMainComponentIsSelected();
+    await mainPage.isCornerHandleVisible();
+    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-component-with-grid-layout-main-restore.png',
       {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       },
     );
-    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
   });
 
   mainTest(
@@ -206,7 +210,7 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
+  mainTest.beforeEach(async () => {
     await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(400, 400);
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
@@ -271,7 +275,7 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ page, browserName }, testInfo) => {
+  mainTest.beforeEach(async ({ browserName }) => {
     await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(100, 100);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
