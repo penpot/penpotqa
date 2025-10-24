@@ -208,10 +208,12 @@ mainTest.describe(() => {
     });
     await designPanelPage.selectTypeForShadow('Inner shadow');
     await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
+    await mainPage.waitForResizeHandlerVisible();
     await designPanelPage.clickShadowColorIcon();
     await colorPalettePage.setHex('#96e637');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-inner-shadow.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });

@@ -274,13 +274,13 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isMultipleInvitationRecordDisplayed(email, role, status) {
-    const emailSelector = `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]`;
+    const emailSelector = `[class*="dashboard_team__field-email"]:has-text("${email}")`;
     const emailLocator = await this.page.locator(emailSelector);
     const roleLocator = await this.page.locator(
-      `${emailSelector}/following-sibling::div//span`,
+      `[class*="table-row-invitations"]:has(${emailSelector}) [class*="dashboard_team__field-roles"] span`,
     );
     const statusLocator = await this.page.locator(
-      `${emailSelector}/following-sibling::div//aside`,
+      `[class*="table-row-invitations"]:has(${emailSelector}) [class*="dashboard_team__field-status"] aside`,
     );
     await expect(emailLocator).toHaveText(email);
     await expect(roleLocator).toHaveText(role);
@@ -302,9 +302,10 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async changeInvitationRole(email, role) {
+    const emailSelector = `[class*="dashboard_team__field-email"]:has-text("${email}")`;
     await this.page
       .locator(
-        `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div//span`,
+        `[class*="table-row-invitations"]:has(${emailSelector}) [class*="dashboard_team__field-roles"] span`,
       )
       .click();
     switch (role) {
@@ -385,10 +386,12 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isInvitationRoleInPopUpNotDisplayed(email, role) {
-    const locator = this.page.locator(
-      `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div//span`,
-    );
-    await locator.click();
+    const emailSelector = `[class*="dashboard_team__field-email"]:has-text("${email}")`;
+    await this.page
+      .locator(
+        `[class*="table-row-invitations"]:has(${emailSelector}) [class*="dashboard_team__field-roles"] span`,
+      )
+      .click();
     let roleLoc;
     switch (role) {
       case 'Admin':
@@ -618,6 +621,6 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async selectInvitationByEmail(email) {
-    await this.page.locator(`[for="email-${email}"] span`).click();
+    await this.page.locator(`label:has([value="${email}"])`).click();
   }
 };
