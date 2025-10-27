@@ -103,9 +103,6 @@ registerTest.describe(() => {
 
       await stripePage.waitTrialEndsDisappear();
       await profilePage.reloadPage();
-
-      await waitCustomersWithPenpotId(page, penpotId);
-
       await stripePage.checkCurrentSubscription(currentPlan);
       await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
       await stripePage.checkLastInvoiceAmount(`950.00`);

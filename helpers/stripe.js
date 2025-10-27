@@ -118,7 +118,6 @@ async function waitCustomersWithEmail(
   while (Date.now() - startTime < timeout) {
     const customers = await findCustomersByEmail(email);
     if (customers && customers.length > 0) {
-      console.log(customers);
       return customers;
     }
     await page.waitForTimeout(interval);
