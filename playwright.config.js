@@ -121,6 +121,12 @@ const config = {
         },
       },
     },
+    {
+      name: 'teardown',
+      testMatch: 'global.teardown.js',
+      retries: 0,
+      dependencies: ['chrome', 'firefox', 'webkit'],
+    },
   ],
 };
 

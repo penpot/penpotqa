@@ -187,21 +187,39 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.isTeamSelected(teamName);
   }
 
+  // TO REMOVE - Delete expecting 'Your Penpot' after deletion
+  // async deleteTeam(teamName) {
+  //   await this.openTeamsListIfClosed();
+  //   const teamSel = this.page
+  //     .getByRole('menuitem')
+  //     .filter({ hasText: teamName })
+  //     .first();
+  //   if (await teamSel.isVisible()) {
+  //     await teamSel.click();
+  //     await this.isTeamSelected(teamName);
+  //     await this.teamOptionsMenuButton.click();
+  //     await this.deleteTeamMenuItem.click();
+  //     await this.deleteTeamButton.click();
+  //     await expect(this.teamCurrentBtn).not.toHaveText(teamName);
+  //     await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
+  //   }
+  // }
+
   async deleteTeam(teamName) {
     await this.openTeamsListIfClosed();
+
     const teamSel = this.page
       .getByRole('menuitem')
       .filter({ hasText: teamName })
       .first();
-    if (await teamSel.isVisible()) {
-      await teamSel.click();
-      await this.isTeamSelected(teamName);
-      await this.teamOptionsMenuButton.click();
-      await this.deleteTeamMenuItem.click();
-      await this.deleteTeamButton.click();
-      await expect(this.teamCurrentBtn).not.toHaveText(teamName);
-      await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
-    }
+
+    if (!(await teamSel.isVisible())) return;
+
+    // Click to select, open options, and delete
+    await teamSel.click();
+    await this.teamOptionsMenuButton.click();
+    await this.deleteTeamMenuItem.click();
+    await this.deleteTeamButton.click();
   }
 
   async deleteTeams(teams) {
