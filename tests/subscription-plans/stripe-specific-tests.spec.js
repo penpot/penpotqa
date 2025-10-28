@@ -16,6 +16,8 @@ const {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   skipSubscriptionByMonths,
+  getProfileIdByEmail,
+  waitCustomersWithPenpotId,
 } = require('../../helpers/stripe');
 
 let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
@@ -36,7 +38,11 @@ registerTest.afterEach(async () => {
 });
 
 registerTest.describe(() => {
-  registerTest.beforeEach(async () => {
+  let testClockId, penpotId;
+  registerTest.beforeEach(async ({ page, name, email }) => {
+    penpotId = await getProfileIdByEmail(email);
+    testClockId = await createCustomerWithTestClock(page, name, email, penpotId);
+
     await teamPage.createTeam(teamName);
     await teamPage.isTeamSelected(teamName);
   });
@@ -48,11 +54,9 @@ registerTest.describe(() => {
 
   registerTest(
     qase(2346, 'Invoices capped at $7 (Unlimited)'),
-    async ({ page, name, email }) => {
+    async ({ email }) => {
       const currentPlan = 'Unlimited';
       let date = new Date();
-
-      const testClockId = await createCustomerWithTestClock(page, name, email);
 
       await profilePage.tryTrialForPlan(currentPlan);
       await profilePage.openYourAccountPage();
@@ -84,12 +88,10 @@ registerTest.describe(() => {
 
   registerTest(
     qase(2347, 'Invoices capped at  $950 (Enterprise)'),
-    async ({ page, name, email }) => {
+    async ({ page, email }) => {
       await registerTest.slow();
       const currentPlan = 'Enterprise';
       let date = new Date();
-
-      const testClockId = await createCustomerWithTestClock(page, name, email);
 
       await profilePage.tryTrialForPlan(currentPlan);
       await profilePage.openYourAccountPage();
@@ -119,44 +121,36 @@ registerTest.describe(() => {
     },
   );
 
-  registerTest(
-    qase(2514, 'Maximum billing $175 (Unlimited)'),
-    async ({ page, name, email }) => {
-      const currentPlan = 'Unlimited';
-      let date = new Date();
+  registerTest(qase(2514, 'Maximum billing $175 (Unlimited)'), async ({ email }) => {
+    const currentPlan = 'Unlimited';
+    let date = new Date();
 
-      await teamPage.createTeam(teamName);
-      await teamPage.isTeamSelected(teamName);
+    await profilePage.tryTrialForPlan(currentPlan, '100');
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.clickOnAddPaymentMethodButton();
+    await stripePage.addDefaultCard();
+    await stripePage.isVisaCardAdded(true);
+    await skipSubscriptionByDays(email, testClockId, 20, date);
 
-      const testClockId = await createCustomerWithTestClock(page, name, email);
+    await stripePage.waitTrialEndsDisappear();
+    await profilePage.reloadPage();
+    await stripePage.checkCurrentSubscription(currentPlan);
+    await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
+    await stripePage.checkLastInvoiceAmount(`175.00`);
 
-      await profilePage.tryTrialForPlan(currentPlan, '100');
-      await profilePage.openYourAccountPage();
-      await profilePage.openSubscriptionTab();
-      await profilePage.clickOnAddPaymentMethodButton();
-      await stripePage.addDefaultCard();
-      await stripePage.isVisaCardAdded(true);
-      await skipSubscriptionByDays(email, testClockId, 20, date);
+    await skipSubscriptionByMonths(email, testClockId, 1, date);
+    await profilePage.reloadPage();
 
-      await stripePage.waitTrialEndsDisappear();
-      await profilePage.reloadPage();
-      await stripePage.checkCurrentSubscription(currentPlan);
-      await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
-      await stripePage.checkLastInvoiceAmount(`175.00`);
+    await skipSubscriptionByMonths(email, testClockId, 1, date);
+    await profilePage.reloadPage();
 
-      await skipSubscriptionByMonths(email, testClockId, 1, date);
-      await profilePage.reloadPage();
+    await skipSubscriptionByMonths(email, testClockId, 1, date);
+    await profilePage.reloadPage();
 
-      await skipSubscriptionByMonths(email, testClockId, 1, date);
-      await profilePage.reloadPage();
-
-      await skipSubscriptionByMonths(email, testClockId, 1, date);
-      await profilePage.reloadPage();
-
-      await stripePage.checkLastInvoiceStatus(`Paid`);
-      await stripePage.waitInvoiceAmountCount(`$175.00`, 3);
-    },
-  );
+    await stripePage.checkLastInvoiceStatus(`Paid`);
+    await stripePage.waitInvoiceAmountCount(`$175.00`, 3);
+  });
 });
 
 registerTest(
