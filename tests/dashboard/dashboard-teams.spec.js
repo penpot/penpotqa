@@ -1905,7 +1905,7 @@ registerTest.describe(() => {
   );
 });
 
-mainTest.describe(() => {
+mainTest.describe.serial('As a Viewer', () => {
   const team = random().concat('autotest');
   const firstAdmin = random().concat('autotest');
   const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
