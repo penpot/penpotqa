@@ -6,7 +6,7 @@ const { updateTestResults } = require('./helpers/saveTestResults');
 const { random } = require('./helpers/string-generator');
 const { waitMessage } = require('./helpers/gmail');
 
-const mainTest = base.test.extend({
+export const mainTest = base.test.extend({
   page: async ({ page }, use, testInfo) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
