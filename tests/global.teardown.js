@@ -1,9 +1,9 @@
-const { test } = require('@playwright/test');
-const { LoginPage } = require('../pages/login-page');
-const { DashboardPage } = require('../pages/dashboard/dashboard-page');
-const { TeamPage } = require('../pages/dashboard/team-page');
+import { test as teardown } from '@playwright/test';
+import { LoginPage } from '../pages/login-page';
+import { DashboardPage } from '../pages/dashboard/dashboard-page';
+import { TeamPage } from '../pages/dashboard/team-page';
 
-test('delete autotest teams', async ({ page }) => {
+teardown('delete autotest teams', async ({ page }) => {
   console.log('🌍 Cleaning up autotest teams...');
 
   const loginPage = new LoginPage(page);
