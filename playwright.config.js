@@ -125,7 +125,7 @@ const config = {
       name: 'teardown',
       testMatch: /global\.teardown\.ts/,
       retries: 0,
-      dependencies: ['chrome', 'firefox', 'webkit'],
+      dependencies: ['chrome'],
     },
   ],
 };
