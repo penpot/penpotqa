@@ -4,6 +4,9 @@ import { PerformancePage } from '../../pages/performance-page';
 
 performanceTest(
   'PERF Shape (single): Move single shape',
+  {
+    tag: '@perf',
+  },
   async ({ page, workingShapes }) => {
     const performancePage = new PerformancePage(page);
     await performancePage.setup();
@@ -27,6 +30,9 @@ performanceTest(
 
 performanceTest(
   'PERF Shape (single): Rotate single shape',
+  {
+    tag: '@perf',
+  },
   async ({ page, workingShapes }) => {
     const performancePage = new PerformancePage(page);
     await performancePage.setup();
@@ -46,6 +52,9 @@ performanceTest(
 
 performanceTest(
   'PERF Shape (single): Scale single shape',
+  {
+    tag: '@perf',
+  },
   async ({ page, workingShapes }) => {
     const performancePage = new PerformancePage(page);
     await performancePage.setup();
@@ -65,6 +74,9 @@ performanceTest(
 
 performanceTest(
   'PERF Shape (multiple): Move multiple shapes',
+  {
+    tag: '@perf',
+  },
   async ({ page, workingShapes }) => {
     const performancePage = new PerformancePage(page);
     await performancePage.setup();
@@ -82,6 +94,9 @@ performanceTest(
 
 performanceTest(
   'PERF Shape (multiple): Rotate multiple shapes',
+  {
+    tag: '@perf',
+  },
   async ({ page, workingShapes }) => {
     const performancePage = new PerformancePage(page);
     await performancePage.setup();
@@ -99,6 +114,9 @@ performanceTest(
 
 performanceTest(
   'PERF Shape (multiple): Scale multiple shapes',
+  {
+    tag: '@perf',
+  },
   async ({ page, workingShapes }) => {
     const performancePage = new PerformancePage(page);
     await performancePage.setup();
@@ -116,6 +134,9 @@ performanceTest(
 
 performanceTest(
   'PERF Shape (frame): Move frame nested shapes',
+  {
+    tag: '@perf',
+  },
   async ({ page, workingShapes }) => {
     const performancePage = new PerformancePage(page);
     await performancePage.setup();
@@ -136,6 +157,9 @@ performanceTest(
 
 performanceTest(
   'PERF Shape (frame): Rotate frame nested shapes',
+  {
+    tag: '@perf',
+  },
   async ({ page, workingShapes }) => {
     const performancePage = new PerformancePage(page);
     await performancePage.setup();
@@ -159,6 +183,9 @@ performanceTest(
 
 performanceTest(
   'PERF Shape (frame): Scale frame nested shapes',
+  {
+    tag: '@perf',
+  },
   async ({ page, workingShapes }) => {
     const performancePage = new PerformancePage(page);
     await performancePage.setup();
