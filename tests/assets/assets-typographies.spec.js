@@ -39,7 +39,6 @@ mainTest(qase([948], 'Typographic styles - add from Assets panel'), async () => 
   await mainPage.waitForChangeIsSaved();
   await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
     'typographies-add-typography-expanded.png',
-    { maxDiffPixels: 10 },
   );
   await assetsPanelPage.minimizeFileLibraryTypography();
   await mainPage.clickViewportTwice();
