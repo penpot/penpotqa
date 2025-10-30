@@ -194,6 +194,9 @@ exports.BasePage = class BasePage {
     this.continueButton = this.page.getByRole('button', {
       name: 'Continue',
     });
+    this.addVariantViewportButton = page.locator(
+      'g[class*="viewport_widgets__button-add-wrapper"]',
+    );
   }
 
   async clearInput(input, browserName) {
@@ -518,5 +521,9 @@ exports.BasePage = class BasePage {
 
   async clickOnVariantsTitle(name) {
     await this.page.getByTestId('viewport').getByText(name).first().click();
+  }
+
+  async clickOnAddVariantViewportButton() {
+    await this.addVariantViewportButton.first().click();
   }
 };

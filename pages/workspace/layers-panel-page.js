@@ -418,4 +418,16 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   async checkLayerNameInputValue(expectedName) {
     await expect(this.createdLayerOnLayersPanelNameInput).toHaveValue(expectedName);
   }
+
+  async selectNCopyComponentLayers(endIndex) {
+    for (let i = 0; i <= endIndex; i++) {
+      if (i === 0) {
+        await this.copyComponentLayer.nth(i).click();
+      } else {
+        await this.copyComponentLayer.nth(i).click({
+          modifiers: ['Shift'],
+        });
+      }
+    }
+  }
 };

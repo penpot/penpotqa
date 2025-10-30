@@ -8,6 +8,7 @@ const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page'
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
 const { qase } = require('playwright-qase-reporter/playwright');
+const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
 
 const teamName = random().concat('autotest');
 
@@ -16,7 +17,8 @@ let mainPage,
   teamPage,
   assetsPanelPage,
   designPanelPage,
-  colorPalettePage;
+  colorPalettePage,
+  layersPanelPage;
 
 mainTest.beforeEach(async ({ page, browserName }) => {
   dashboardPage = new DashboardPage(page);
@@ -25,6 +27,7 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   assetsPanelPage = new AssetsPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
   await dashboardPage.createFileViaPlaceholder();
   browserName === 'webkit' && !(await mainPage.isMainPageVisible())
@@ -87,5 +90,19 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot('copy-paste-variants.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
     });
+  },
+);
+
+mainTest(
+  qase([2570], 'Create a variant by "+" button on Viewport (Component selected)'),
+  async ({ browserName }) => {
+    await mainPage.createDefaultRectangleByCoordinates(200, 300);
+    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickOnVariantsTitle('Rectangle');
+    await mainPage.clickOnAddVariantViewportButton();
+    await layersPanelPage.checkVariantLayerCount(3);
   },
 );
