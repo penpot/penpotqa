@@ -59,6 +59,7 @@ const config = {
   projects: [
     {
       name: 'chrome',
+      grepInvert: /@perf/,
       expect: {
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.0001,
@@ -83,6 +84,7 @@ const config = {
     },
     {
       name: 'firefox',
+      grepInvert: /@perf/,
       expect: {
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.0001,
@@ -108,6 +110,7 @@ const config = {
     },
     {
       name: 'webkit',
+      grepInvert: /@perf/,
       expect: {
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.01,
@@ -123,6 +126,7 @@ const config = {
     },
     {
       name: 'teardown',
+      grepInvert: null,
       testMatch: /global\.teardown\.js/,
       retries: 0,
       dependencies: ['chrome'],
