@@ -1,6 +1,7 @@
 name: Daily Penpot Regression Tests on PRE
 on:
-  schedule: ## run tests at 01:00am UTC on every day-of-week from Monday through Friday
+  schedule:
+    # Run tests at 01:00am UTC on Monday–Friday
     - cron: '00 1 * * 1-5'
   workflow_dispatch:
 
@@ -17,6 +18,7 @@ jobs:
     runs-on: windows-2022
     env:
       TZ: Europe/Madrid
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,7 +41,15 @@ jobs:
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: npx playwright test --project=chrome --project=teardown
+        run: npx playwright test --project=chrome
+
+      - name: Run Teardown Project
+        if: always()
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
+          LOGIN_PWD: ${{ secrets.LOGIN_PWD }
+        run: npx playwright test --project=teardown
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports

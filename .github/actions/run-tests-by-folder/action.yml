@@ -62,8 +62,7 @@ runs:
         echo "⏱️  Timeout: ${{ inputs.timeout }}"
 
         # Build the command
-        # CMD="npx playwright test --project=${{ inputs.browser }}"
-        CMD="npx playwright test --project=${{ inputs.browser }} --project=teardown"
+        CMD="npx playwright test --project=${{ inputs.browser }}"
 
         # Add retries if specified
         if [ "${{ inputs.retries }}" != "1" ]; then
