@@ -212,7 +212,7 @@ mainTest.describe(() => {
       const versionName = 'test version';
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
 
       await historyPage.createDefaultBoardByCoordinates(200, 200);
       await historyPage.waitForChangeIsSaved();

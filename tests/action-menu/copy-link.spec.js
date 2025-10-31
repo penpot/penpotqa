@@ -49,7 +49,7 @@ mainTest.describe(() => {
     async ({ page }) => {
       await mainTest.slow();
       const firstEditor = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
 
       await mainPage.createDefaultBoardByCoordinates(100, 100);
       await mainPage.createDefaultBoardByCoordinates(100, 300, true);
