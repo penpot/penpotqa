@@ -90,14 +90,21 @@ jobs:
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
                 exit 1
               fi
-              # npx playwright test --project=chrome --grep-invert  'PERF' "${{ github.event.inputs.test_folder }}"
-              npx playwright test --project=chrome --project=teardown "${{ github.event.inputs.test_folder }}"
+              npx playwright test --project=chrome --grep-invert  'PERF' "${{ github.event.inputs.test_folder }}"
               ;;
             *)
               echo "❌ Error: Invalid test mode"
               exit 1
               ;;
           esac
+
+      - name: Run Teardown Project
+        if: always()
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
+          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+        run: npx playwright test --project=teardown
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
