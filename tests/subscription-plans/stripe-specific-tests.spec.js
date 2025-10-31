@@ -158,7 +158,7 @@ registerTest(
   async ({ page, name, email }) => {
     const currentPlan = 'Enterprise';
     const firstOwner = random().concat('autotest');
-    const firstEmail = `${process.env.GMAIL_NAME}+${firstOwner}@gmail.com`;
+    const firstEmail = `${process.env.GMAIL_NAME}+${firstOwner}${process.env.GMAIL_DOMAIN}`;
     const secondAdmin = name;
     const secondEmail = email;
 

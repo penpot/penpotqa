@@ -399,7 +399,7 @@ mainTest.describe(() => {
     qase(1207, 'Team. Unable to rename team (as editor)'),
     async ({ page }) => {
       const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
 
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -456,8 +456,8 @@ mainTest.describe(() => {
       'Team. Invitations - invite via owner (multiple invitations, editor)',
     ),
     async ({ page }) => {
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondEditor}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondEditor}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -541,9 +541,9 @@ mainTest.describe(() => {
       const mainAdmin = random().concat('autotest');
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
-      const mainEmail = `${process.env.GMAIL_NAME}+${mainAdmin}@gmail.com`;
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
+      const mainEmail = `${process.env.GMAIL_NAME}+${mainAdmin}${process.env.GMAIL_DOMAIN}`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
 
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -630,8 +630,8 @@ mainTest.describe(() => {
       await mainTest.slow();
       const mainAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
-      const mainEmail = `${process.env.GMAIL_NAME}+${mainAdmin}@gmail.com`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
+      const mainEmail = `${process.env.GMAIL_NAME}+${mainAdmin}${process.env.GMAIL_DOMAIN}`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
 
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -681,7 +681,7 @@ mainTest.describe(() => {
     async ({ page }) => {
       await mainTest.slow();
       const secondUser = random().concat('autotest');
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondUser}@gmail.com`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondUser}${process.env.GMAIL_DOMAIN}`;
 
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -745,8 +745,8 @@ mainTest.describe(() => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -825,8 +825,8 @@ mainTest.describe(() => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -891,7 +891,7 @@ mainTest.describe(() => {
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -933,8 +933,8 @@ mainTest.describe(() => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -979,7 +979,7 @@ mainTest.describe(() => {
   mainTest(qase(1197, 'Team. Members - leave team (as admin)'), async ({ page }) => {
     await mainTest.slow();
     const firstAdmin = random().concat('autotest');
-    const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+    const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
     await teamPage.openInvitationsPageViaOptionsMenu();
@@ -1013,7 +1013,7 @@ mainTest.describe(() => {
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
 
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
@@ -1050,7 +1050,7 @@ mainTest.describe(() => {
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -1100,8 +1100,8 @@ mainTest.describe(() => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -1159,8 +1159,8 @@ mainTest.describe(() => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -1226,8 +1226,8 @@ mainTest.describe(() => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
       const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -1422,7 +1422,7 @@ mainTest.describe(() => {
   mainTest(qase(1196, 'Team. Members - leave team (as owner)'), async ({ page }) => {
     await mainTest.slow();
     const firstAdmin = random().concat('autotest');
-    const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+    const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
     await teamPage.openInvitationsPageViaOptionsMenu();
@@ -1465,7 +1465,7 @@ mainTest.describe(() => {
       async ({ page }) => {
         await mainTest.slow();
         const firstAdmin = random().concat('autotest');
-        const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+        const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
         await teamPage.createTeam(team);
         await teamPage.isTeamSelected(team);
         await teamPage.openInvitationsPageViaOptionsMenu();
@@ -1638,7 +1638,7 @@ registerTest.describe(() => {
   let viewModePage;
   let invite;
   let secondRandomName = random().concat('autotest');
-  let secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}@gmail.com`;
+  let secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}${process.env.GMAIL_DOMAIN}`;
 
   registerTest.beforeEach(async ({ page }) => {
     await registerTest.slow();
@@ -1908,7 +1908,7 @@ registerTest.describe(() => {
 mainTest.describe(() => {
   const team = random().concat('autotest');
   const firstAdmin = random().concat('autotest');
-  const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+  const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
 
   mainTest.beforeEach(async ({ page }) => {
     await mainTest.slow();
@@ -2087,7 +2087,7 @@ mainTest.describe(() => {
 mainTest.describe(() => {
   const team = random().concat('autotest');
   const firstAdmin = random().concat('autotest');
-  const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+  const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
   let profilePage, dashboardPage, loginPage, teamPage, registerPage, mainPage;
 
   mainTest(

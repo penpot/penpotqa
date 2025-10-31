@@ -14,7 +14,7 @@ test.describe(() => {
   test.beforeEach(async ({ page }) => {
     await test.slow();
     randomName = random().concat('autotest');
-    email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
+    email = `${process.env.GMAIL_NAME}+${randomName}${process.env.GMAIL_DOMAIN}`;
     loginPage = new LoginPage(page);
     registerPage = new RegisterPage(page);
     dashboardPage = new DashboardPage(page);
