@@ -90,8 +90,7 @@ jobs:
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
                 exit 1
               fi
-              # npx playwright test --project=chrome --grep-invert  'PERF' "${{ github.event.inputs.test_folder }}"
-              npx playwright test --project=chrome --project=teardown "${{ github.event.inputs.test_folder }}"
+              npx playwright test --project=chrome --grep-invert  'PERF' "${{ github.event.inputs.test_folder }}"
               ;;
             *)
               echo "❌ Error: Invalid test mode"
