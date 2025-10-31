@@ -49,7 +49,7 @@ jobs:
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
-          LOGIN_PWD: ${{ secrets.LOGIN_PWD }
+          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
         run: npx playwright test --project=teardown
 
       - name: Generate and Upload Reports
