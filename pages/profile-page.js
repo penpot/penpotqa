@@ -20,6 +20,33 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.giveFeedbackMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Give feedback' });
+    this.learningCenterMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Learning Center' });
+    this.helpCenterMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Help Center' });
+    this.penpotHubMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Penpot hub' });
+    this.communityAndContributionsMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Community & Contributions' });
+    this.githubRepoMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Github repository' });
+    this.communityMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Community', hasNotText: 'Contributions' });
+    this.aboutPenpotMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'About Penpot' });
+    this.penpotChangelogMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Penpot Changelog' });
+    this.termsOfServiceMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Terms of service' });
     this.backToDashboardBtn = page.getByRole('button', { name: 'Dashboard' });
 
     //Profile
@@ -303,5 +330,61 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await this.closeModalWindow();
     await this.checkSubscriptionName(`${plan} (trial)`);
     await this.backToDashboardFromAccount();
+  }
+
+  async openLearningCenterPage() {
+    await this.profileMenuButton.click();
+    await this.helpLearningMenuItem.hover();
+    const popupPromise = this.page.waitForEvent('popup');
+    await this.learningCenterMenuItem.click();
+    return popupPromise;
+  }
+
+  async openHelpCenterPage() {
+    await this.profileMenuButton.click();
+    await this.helpLearningMenuItem.hover();
+    const popupPromise = this.page.waitForEvent('popup');
+    await this.helpCenterMenuItem.click();
+    return popupPromise;
+  }
+
+  async openPenpotHubPage() {
+    await this.profileMenuButton.click();
+    await this.helpLearningMenuItem.hover();
+    const popupPromise = this.page.waitForEvent('popup');
+    await this.penpotHubMenuItem.click();
+    return popupPromise;
+  }
+
+  async openGithubRepoPage() {
+    await this.profileMenuButton.click();
+    await this.communityAndContributionsMenuItem.hover();
+    const popupPromise = this.page.waitForEvent('popup');
+    await this.githubRepoMenuItem.click();
+    return popupPromise;
+  }
+
+  async openCommunityPage() {
+    await this.profileMenuButton.click();
+    await this.communityAndContributionsMenuItem.hover();
+    const popupPromise = this.page.waitForEvent('popup');
+    await this.communityMenuItem.click();
+    return popupPromise;
+  }
+
+  async openPenpotChangelogPage() {
+    await this.profileMenuButton.click();
+    await this.aboutPenpotMenuItem.hover();
+    const popupPromise = this.page.waitForEvent('popup');
+    await this.penpotChangelogMenuItem.click();
+    return popupPromise;
+  }
+
+  async openTermsOfServicePage() {
+    await this.profileMenuButton.click();
+    await this.aboutPenpotMenuItem.hover();
+    const popupPromise = this.page.waitForEvent('popup');
+    await this.termsOfServiceMenuItem.click();
+    return popupPromise;
   }
 };
