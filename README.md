@@ -121,7 +121,7 @@ For each environment the appropriate secrets were added:
 - _LOGIN_PWD_ (password from your Penpot account, which is used for tests)
 - _BASE_URL_ (Penpot url)
 - _GMAIL_NAME_ (Gmail account name for email verification)
-- \_GMAIL_DOMAIN (Domain for the account to access Gmail API Integration)
+- _GMAIL_DOMAIN_ (Domain for the account to access Gmail API Integration)
 - _REFRESH_TOKEN_ (Token for email access)
 - _CLIENT_ID_ (for email access)
 - _CLIENT_SECRET_ (for email access)
