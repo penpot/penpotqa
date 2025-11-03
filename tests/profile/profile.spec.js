@@ -148,7 +148,7 @@ registerTest(
     await registerTest.slow();
     const newEmail = `${process.env.GMAIL_NAME}+${random().concat(
       'autotest',
-    )}@gmail.com`;
+    )}${process.env.GMAIL_DOMAIN}`;
     const dashboardPage = new DashboardPage(page);
     const loginPage = new LoginPage(page);
     const profilePage = new ProfilePage(page);

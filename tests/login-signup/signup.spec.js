@@ -57,7 +57,7 @@ test.describe(() => {
     test.beforeEach(async ({ page }) => {
       await test.slow();
       randomName = random().concat('autotest');
-      email = `${process.env.GMAIL_NAME}+${randomName}@gmail.com`;
+      email = `${process.env.GMAIL_NAME}+${randomName}${process.env.GMAIL_DOMAIN}`;
       await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
       await registerPage.isRegisterEmailCorrect(email);
       invite = await waitMessage(page, email, 40);
@@ -75,9 +75,9 @@ test.describe(() => {
       await dashboardPage.skipWhatNewsPopUp();
       await dashboardPage.enterOnboardingTeamName(randomName);
       const rand1 = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${rand1}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${rand1}${process.env.GMAIL_DOMAIN}`;
       const rand2 = random().concat('autotest');
-      const secondEmail = `${process.env.GMAIL_NAME}+${rand2}@gmail.com`;
+      const secondEmail = `${process.env.GMAIL_NAME}+${rand2}${process.env.GMAIL_DOMAIN}`;
       const emails = `${firstEmail}, ${secondEmail}`;
       await dashboardPage.enterOnboardingInviteEmails(emails);
       await dashboardPage.clickOnOnboardingCreateTeamButton();

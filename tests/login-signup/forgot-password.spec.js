@@ -29,7 +29,7 @@ test(
     const forgotPasswordPage = new ForgotPasswordPage(page);
     await loginPage.goto();
     await loginPage.clickOnForgotPassword();
-    const email = `${process.env.GMAIL_NAME}autotest+${random()}@gmail.com`;
+    const email = `${process.env.GMAIL_NAME}autotest+${random()}${process.env.GMAIL_DOMAIN}`;
     await forgotPasswordPage.enterEmail(email);
     await forgotPasswordPage.clickRecoverPasswordButton();
     await forgotPasswordPage.isRecoverPasswordButtonDisabled();
