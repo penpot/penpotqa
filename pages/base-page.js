@@ -107,9 +107,11 @@ exports.BasePage = class BasePage {
     this.createAnnotationOption = page
       .getByRole('listitem')
       .filter({ hasText: 'Create annotation' });
+    // TODO: use the BaseComponent method instead, replacing calls in other pages & components
     this.duplicateOption = page
       .getByRole('listitem')
       .filter({ hasText: 'Duplicate' });
+    // TODO: use the BaseComponent method instead, replacing calls in other pages & components
     this.deleteOption = page.getByRole('listitem').filter({ hasText: 'Delete' });
     this.copyOption = page.getByRole('listitem').filter({ hasText: 'Copy' }).first();
     this.pasteOption = page
@@ -187,9 +189,6 @@ exports.BasePage = class BasePage {
     this.acceptCookieButton = page.getByRole('button', { name: 'Accept all' });
     this.renameOption = page.getByRole('listitem').filter({ hasText: 'Rename' });
     this.importErrorMessage = page.locator('div[class*="error-message"]');
-    this.importErrorDetailMessage = page.locator(
-      'div[class*="error-detail-content"]',
-    );
     this.detailsButton = page.getByRole('button', { name: 'Details' });
     this.continueButton = this.page.getByRole('button', {
       name: 'Continue',
@@ -245,6 +244,7 @@ exports.BasePage = class BasePage {
     await this.page.reload();
   }
 
+  // TODO: use the BaseComponent method instead, replacing calls in other pages & components
   async clickOnEnter() {
     await this.page.keyboard.press('Enter');
   }
