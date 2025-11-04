@@ -80,6 +80,7 @@ Create an `.env` file in the root directory with the following variables:
 | `LOGIN_PWD`     | Password from your Penpot account           |
 | `BASE_URL`      | Penpot URL (e.g., `http://localhost:9001/`) |
 | `GMAIL_NAME`    | Gmail account name for email verification   |
+| `GMAIL_DOMAIN ` | Gmail account domain for email verification |
 | `REFRESH_TOKEN` | Token for Gmail API access                  |
 | `CLIENT_ID`     | Client ID for Gmail API access              |
 | `CLIENT_SECRET` | Client Secret for Gmail API access          |
@@ -787,6 +788,7 @@ Automated email verification for:
 **OAuth2 Credentials Required:**
 
 - `GMAIL_NAME`: Gmail account username
+- `GMAIL_DOMAIN `: Gmail account domain (e.g. @gmail.com)
 - `REFRESH_TOKEN`: OAuth refresh token
 - `CLIENT_ID`: OAuth client ID
 - `CLIENT_SECRET`: OAuth client secret
@@ -1114,7 +1116,7 @@ await sendMessage({
 - `BASE_URL`
 - `LOGIN_EMAIL`, `SECOND_EMAIL`
 - `LOGIN_PWD`
-- `GMAIL_NAME`, `REFRESH_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`
+- `GMAIL_NAME`, `GMAIL_DOMAIN`, `REFRESH_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`
 - `STRIPE_SK`
 - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`
 - `PR_CHANNEL_ID`, `LOGIN_ID_MATTERMOST`, `PASSWORD_MATTERMOST`
