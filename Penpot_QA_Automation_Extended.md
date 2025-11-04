@@ -67,7 +67,7 @@ This document contains comprehensive information about the Penpot QA automation 
 - **Operating System**: Windows OS (required for snapshot consistency)
 - **Screen Resolution**: 1920х1080
 - **Node.js**: v22.5.1
-- **Penpot Account**: "Clean" account (no files/projects) with completed onboarding flow
+- **Penpot Account**: "Clean" account (no files/projects) with completed onboarding flow, and the account name must be 'QA Engineer'
 
 ### .env File Configuration
 
