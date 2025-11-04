@@ -10,12 +10,14 @@ const { StripePage } = require('../../pages/dashboard/stripe-page');
 const {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
+  getProfileIdByEmail,
 } = require('../../helpers/stripe');
 
 let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
 const teamName = random().concat('autotest');
+let testClockId, penpotId;
 
-registerTest.beforeEach(async ({ page }) => {
+registerTest.beforeEach(async ({ page, name, email }) => {
   await registerTest.slow();
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
@@ -23,6 +25,9 @@ registerTest.beforeEach(async ({ page }) => {
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
   stripePage = new StripePage(page);
+
+  penpotId = await getProfileIdByEmail(email);
+  testClockId = await createCustomerWithTestClock(page, name, email, penpotId);
 
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
@@ -34,10 +39,8 @@ registerTest.afterEach(async () => {
 
 registerTest(
   qase([2297, 2344], 'Trial ends, payment method added → switch to Unlimited'),
-  async ({ page, name, email }) => {
+  async ({ email }) => {
     const currentPlan = 'Unlimited';
-
-    const testClockId = await createCustomerWithTestClock(page, name, email);
 
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();
@@ -62,11 +65,9 @@ registerTest(
     2301,
     'Trial ends, no payment method ever added → switch to Professional (CANCELLED)',
   ),
-  async ({ page, name, email }) => {
+  async ({ email }) => {
     const currentPlan = 'Unlimited';
     const defaultPlan = 'Professional';
-
-    const testClockId = await createCustomerWithTestClock(page, name, email);
 
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();
@@ -89,10 +90,8 @@ registerTest(
 
 registerTest(
   qase(2337, 'Trial ends, no payment method → remains in Enterprise Trial (PAUSED)'),
-  async ({ page, name, email }) => {
+  async ({ email }) => {
     const currentPlan = 'Enterprise';
-
-    const testClockId = await createCustomerWithTestClock(page, name, email);
 
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();
