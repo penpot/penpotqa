@@ -10,18 +10,62 @@ const { TeamPage } = require('../../pages/dashboard/team-page.js');
 
 let loginPage, registerPage, dashboardPage, teamPage;
 
-test.describe('Sign up negative cases', () => {
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    registerPage = new RegisterPage(page);
-    dashboardPage = new DashboardPage(page);
-    teamPage = new TeamPage(page);
+test.beforeEach('Create new account', async ({ page }) => {
+  loginPage = new LoginPage(page);
+  registerPage = new RegisterPage(page);
+  dashboardPage = new DashboardPage(page);
+  teamPage = new TeamPage(page);
 
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.clickOnCreateAccount();
+  await loginPage.goto();
+  await loginPage.acceptCookie();
+  await loginPage.clickOnCreateAccount();
+});
+
+test.describe('Sign up via email invitation', () => {
+  let randomName, email, invite;
+  test.beforeEach(async ({ page }) => {
+    randomName = random().concat('autotest');
+    email = `${process.env.GMAIL_NAME}+${randomName}${process.env.GMAIL_DOMAIN}`;
+    await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
+    await registerPage.isRegisterEmailCorrect(email);
+    invite = await waitMessage(page, email, 40);
   });
 
+  test(qase(28, 'Sign up with an email address'), async ({ page }) => {
+    await checkRegisterText(invite.inviteText, randomName);
+    await page.goto(invite.inviteUrl);
+    await dashboardPage.fillOnboardingFirstQuestions();
+  });
+
+  test(qase([43, 44], 'Onboarding questions flow'), async ({ page }) => {
+    await page.goto(invite.inviteUrl);
+    await dashboardPage.fillOnboardingFirstQuestions();
+    await dashboardPage.skipWhatNewsPopUp();
+    await dashboardPage.enterOnboardingTeamName(randomName);
+    const rand1 = random().concat('autotest');
+    const firstEmail = `${process.env.GMAIL_NAME}+${rand1}${process.env.GMAIL_DOMAIN}`;
+    const rand2 = random().concat('autotest');
+    const secondEmail = `${process.env.GMAIL_NAME}+${rand2}${process.env.GMAIL_DOMAIN}`;
+    const emails = `${firstEmail}, ${secondEmail}`;
+    await dashboardPage.enterOnboardingInviteEmails(emails);
+    await dashboardPage.clickOnOnboardingCreateTeamButton();
+    await teamPage.isTeamSelected(randomName);
+  });
+
+  test(
+    qase([2245], 'Creating a team without member invitation after first login'),
+    async ({ page }) => {
+      await page.goto(invite.inviteUrl);
+      await dashboardPage.fillOnboardingFirstQuestions();
+      await dashboardPage.skipWhatNewsPopUp();
+      await dashboardPage.enterOnboardingTeamName(randomName);
+      await dashboardPage.clickOnOnboardingCreateEmptyTeamButton();
+      await teamPage.isTeamSelected(randomName);
+    },
+  );
+});
+
+test.describe('Create Account form negative cases', () => {
   test(qase(32, 'Sign up with invalid email address'), async () => {
     await registerPage.isRegisterPageOpened();
     await registerPage.enterEmail('test.com');
@@ -51,65 +95,21 @@ test.describe('Sign up negative cases', () => {
     await registerPage.isCreateAccountButtonVisible();
     await registerPage.isCreateAccountButtonDisabled();
   });
+});
 
-  test.describe('Sign up via email invitation', () => {
-    let randomName, email, invite;
-    test.beforeEach(async ({ page }) => {
-      randomName = random().concat('autotest');
-      email = `${process.env.GMAIL_NAME}+${randomName}${process.env.GMAIL_DOMAIN}`;
-      await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
-      await registerPage.isRegisterEmailCorrect(email);
-      invite = await waitMessage(page, email, 40);
-    });
+test(qase(36, 'Create demo account'), async () => {
+  await registerPage.isRegisterPageOpened();
+  await registerPage.clickOnCreateDemoAccountButton();
+  await dashboardPage.fillOnboardingQuestions();
+  await dashboardPage.isHeaderDisplayed('Projects');
+});
 
-    test(qase(28, 'Sign up with an email address'), async ({ page }) => {
-      await checkRegisterText(invite.inviteText, randomName);
-      await page.goto(invite.inviteUrl);
-      await dashboardPage.fillOnboardingFirstQuestions();
-    });
+test(qase(54, 'Sign up with email of existing user'), async () => {
+  const email = process.env.LOGIN_EMAIL;
+  await registerPage.registerAccount('test', email, process.env.LOGIN_PWD);
+  await registerPage.isRegisterEmailCorrect(email);
+});
 
-    test(qase([43, 44], 'Onboarding questions flow'), async ({ page }) => {
-      await page.goto(invite.inviteUrl);
-      await dashboardPage.fillOnboardingFirstQuestions();
-      await dashboardPage.skipWhatNewsPopUp();
-      await dashboardPage.enterOnboardingTeamName(randomName);
-      const rand1 = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${rand1}${process.env.GMAIL_DOMAIN}`;
-      const rand2 = random().concat('autotest');
-      const secondEmail = `${process.env.GMAIL_NAME}+${rand2}${process.env.GMAIL_DOMAIN}`;
-      const emails = `${firstEmail}, ${secondEmail}`;
-      await dashboardPage.enterOnboardingInviteEmails(emails);
-      await dashboardPage.clickOnOnboardingCreateTeamButton();
-      await teamPage.isTeamSelected(randomName);
-    });
-
-    test(
-      qase([2245], 'Creating a team without member invitation after first login'),
-      async ({ page }) => {
-        await page.goto(invite.inviteUrl);
-        await dashboardPage.fillOnboardingFirstQuestions();
-        await dashboardPage.skipWhatNewsPopUp();
-        await dashboardPage.enterOnboardingTeamName(randomName);
-        await dashboardPage.clickOnOnboardingCreateEmptyTeamButton();
-        await teamPage.isTeamSelected(randomName);
-      },
-    );
-  });
-
-  test(qase(36, 'Create demo account'), async () => {
-    await registerPage.isRegisterPageOpened();
-    await registerPage.clickOnCreateDemoAccountButton();
-    await dashboardPage.fillOnboardingQuestions();
-    await dashboardPage.isHeaderDisplayed('Projects');
-  });
-
-  test(qase(54, 'Sign up with email of existing user'), async () => {
-    const email = process.env.LOGIN_EMAIL;
-    await registerPage.registerAccount('test', email, process.env.LOGIN_PWD);
-    await registerPage.isRegisterEmailCorrect(email);
-  });
-
-  test.afterEach(async ({}, testInfo) => {
-    await updateTestResults(testInfo.status, testInfo.retry);
-  });
+test.afterEach(async ({}, testInfo) => {
+  await updateTestResults(testInfo.status, testInfo.retry);
 });
