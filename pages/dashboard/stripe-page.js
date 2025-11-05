@@ -39,7 +39,7 @@ exports.StripePage = class StripePage extends BasePage {
     this.cancelsEnds = page.locator(
       '[data-test="subscription-cancel-at-period-end-badge"]',
     );
-    this.cancelSubscriptionHeader = page.getByText('Cancel your subscription');
+    this.cancelSubscriptionHeader = page.getByText('Confirm cancellation');
     this.noLongerNeedItRadioButton = page.getByText('I no longer need it', {
       exact: true,
     });
@@ -151,7 +151,7 @@ exports.StripePage = class StripePage extends BasePage {
     await expect(this.trialEndsDate).toHaveText(tomorrowFormatted);
   }
 
-  async waitTrialEndsDisappear(timeout = 60000, interval = 6000) {
+  async waitTrialEndsDisappear(timeout = 60000, interval = 8000) {
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
       const isVisible = await this.trialEnds.isVisible();
@@ -169,7 +169,7 @@ exports.StripePage = class StripePage extends BasePage {
     ).not.toBeVisible({ timeout: 1000 });
   }
 
-  async waitCancelsEndsDisappear(timeout = 40000, interval = 6000) {
+  async waitCancelsEndsDisappear(timeout = 60000, interval = 8000) {
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
       const isVisible = await this.cancelsEnds.isVisible();
