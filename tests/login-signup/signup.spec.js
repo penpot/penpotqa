@@ -10,7 +10,7 @@ const { TeamPage } = require('../../pages/dashboard/team-page.js');
 
 let loginPage, registerPage, dashboardPage, teamPage;
 
-test.beforeEach('Create new account', async ({ page }) => {
+test.beforeEach('Navigate to "Create an account page"', async ({ page }) => {
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
   dashboardPage = new DashboardPage(page);
@@ -23,7 +23,7 @@ test.beforeEach('Create new account', async ({ page }) => {
 
 test.describe('Sign up via email invitation', () => {
   let randomName, email, invite;
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach('Create a new account', async ({ page }) => {
     randomName = random().concat('autotest');
     email = `${process.env.GMAIL_NAME}+${randomName}${process.env.GMAIL_DOMAIN}`;
     await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
