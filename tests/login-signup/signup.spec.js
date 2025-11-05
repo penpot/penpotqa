@@ -37,20 +37,23 @@ test.describe('Sign up via email invitation', () => {
     await dashboardPage.fillOnboardingFirstQuestions();
   });
 
-  test(qase([43, 44], 'Onboarding questions flow'), async ({ page }) => {
-    await page.goto(invite.inviteUrl);
-    await dashboardPage.fillOnboardingFirstQuestions();
-    await dashboardPage.skipWhatNewsPopUp();
-    await dashboardPage.enterOnboardingTeamName(randomName);
-    const rand1 = random().concat('autotest');
-    const firstEmail = `${process.env.GMAIL_NAME}+${rand1}${process.env.GMAIL_DOMAIN}`;
-    const rand2 = random().concat('autotest');
-    const secondEmail = `${process.env.GMAIL_NAME}+${rand2}${process.env.GMAIL_DOMAIN}`;
-    const emails = `${firstEmail}, ${secondEmail}`;
-    await dashboardPage.enterOnboardingInviteEmails(emails);
-    await dashboardPage.clickOnOnboardingCreateTeamButton();
-    await teamPage.isTeamSelected(randomName);
-  });
+  test(
+    qase(46, 'Add multiple members to your team from Onboarding modal'),
+    async ({ page }) => {
+      await page.goto(invite.inviteUrl);
+      await dashboardPage.fillOnboardingFirstQuestions();
+      await dashboardPage.skipWhatNewsPopUp();
+      await dashboardPage.enterOnboardingTeamName(randomName);
+      const rand1 = random().concat('autotest');
+      const firstEmail = `${process.env.GMAIL_NAME}+${rand1}${process.env.GMAIL_DOMAIN}`;
+      const rand2 = random().concat('autotest');
+      const secondEmail = `${process.env.GMAIL_NAME}+${rand2}${process.env.GMAIL_DOMAIN}`;
+      const emails = `${firstEmail}, ${secondEmail}`;
+      await dashboardPage.enterOnboardingInviteEmails(emails);
+      await dashboardPage.clickOnOnboardingCreateTeamButton();
+      await teamPage.isTeamSelected(randomName);
+    },
+  );
 
   test(
     qase([2245], 'Creating a team without member invitation after first login'),
