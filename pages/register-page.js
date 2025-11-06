@@ -8,31 +8,43 @@ exports.RegisterPage = class RegisterPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.pageTitle = page.getByTestId('registration-title');
-    this.emailInput = page.locator('#email');
-    this.passwordInput = page.locator('#password');
-    this.createAccountBtn = page.getByTestId('register-form-submit');
-    this.createAccountSecondBtn = page.getByRole('button', {
+    // Header
+    this.pageTitle = page.getByRole('heading', { name: 'Create an account' });
+
+    // Register form fields
+    this.fullnameInput = page.getByRole('textbox', { name: 'Full Name' });
+    this.emailInput = page.getByRole('textbox', { name: 'Work email' });
+    this.passwordInput = page.getByRole('textbox', { name: 'Password' });
+    this.passwordInputHint = page.getByText('At least 8 characters');
+
+    // Create account button
+    this.createAccountButton = page.getByRole('button', {
       name: 'Create an account',
     });
+
+    // Error messages
     this.emailInputError = page.getByTestId('email-input-error');
-    this.passwordInputHint = page.locator('div.main_ui_components_forms__hint');
     this.passwordInputError = page.getByTestId(':password-error');
-    this.fullnameInput = page.getByPlaceholder('Full Name');
-    this.acceptTermsCheckbox = page.locator(
-      'label[for="accept-terms-and-privacy"] span',
-    );
+
+    // Terms and conditions checkbox
+    this.acceptTermsCheckbox = page
+      .locator('.main_ui_components_forms__checkbox')
+      .first();
+
+    // Check your email page notification
     this.regEmailNotification = page.locator(
-      'div[class*="notification-text-email"]',
+      '.main_ui_auth_register__notification-text-email',
     );
-    this.createDemoAccountBtn = page.locator(
-      'div[class*="auth_register__demo-account"]',
-    );
+
+    // Demo Acccount (Only PRE)
+    this.createDemoAccountButton = page.getByText('Create demo account');
   }
 
   async isRegisterPageOpened() {
-    await expect(this.pageTitle).toBeVisible({ timeout: 30000 });
-    await expect(this.pageTitle).toHaveText('Create an account');
+    await expect(
+      this.pageTitle,
+      `"Create an account" heading is visible`,
+    ).toBeVisible();
   }
 
   async enterEmail(email) {
@@ -47,40 +59,47 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     await this.fullnameInput.fill(name);
   }
 
-  async isFullNameFieldDisplayed() {
-    await expect(this.fullnameInput).toBeVisible();
-  }
-
   async clickOnAcceptTermsCheckbox() {
     await this.acceptTermsCheckbox.click();
   }
 
-  async clickOnCreateAccountBtn() {
-    await this.createAccountBtn.click();
+  async clickOnCreateAccountButton() {
+    await this.createAccountButton.click();
   }
 
-  async clickOnCreateAccountSecondBtn() {
-    await this.createAccountSecondBtn.click();
+  async isCreateAccountButtonVisible() {
+    await expect(
+      this.createAccountButton,
+      `Create account button is visible`,
+    ).toBeVisible();
   }
 
-  async isCreateAccountBtnDisplayed() {
-    await expect(this.createAccountBtn).toBeVisible();
-  }
-
-  async isCreateAccountBtnDisabled() {
-    await expect(this.createAccountBtn).toBeDisabled();
+  async isCreateAccountButtonDisabled() {
+    await expect(
+      this.createAccountButton,
+      `Create account button is disabled`,
+    ).toBeDisabled();
   }
 
   async isEmailInputErrorDisplayed(error) {
-    await expect(this.emailInputError).toHaveText(error);
+    await expect(
+      this.emailInputError,
+      `Email input error is displayed: "${error}"`,
+    ).toHaveText(error);
   }
 
-  async isPasswordInputHintDisplayed(error) {
-    await expect(this.passwordInputHint).toHaveText(error);
+  async isPasswordInputHintVisible() {
+    await expect(
+      this.passwordInputHint,
+      `Password input hint "At least 8 characters" is visible`,
+    ).toBeVisible();
   }
 
   async isPasswordInputErrorDisplayed(error) {
-    await expect(this.passwordInputError).toHaveText(error);
+    await expect(
+      this.passwordInputError,
+      `Password input error is displayed: "${error}"`,
+    ).toHaveText(error);
   }
 
   async clickOnPasswordInput() {
@@ -92,12 +111,18 @@ exports.RegisterPage = class RegisterPage extends BasePage {
   }
 
   async isRegisterEmailCorrect(email) {
-    await expect(this.regEmailNotification).toBeVisible();
-    await expect(this.regEmailNotification).toHaveText(email);
+    await expect(
+      this.regEmailNotification,
+      `Verification email sent to "${email}" is visible`,
+    ).toBeVisible();
+    await expect(
+      this.regEmailNotification,
+      `Verification email sent to has text: "${email}"`,
+    ).toHaveText(email);
   }
 
-  async clickOnCreateDemoAccountBtn() {
-    await this.createDemoAccountBtn.click();
+  async clickOnCreateDemoAccountButton() {
+    await this.createDemoAccountButton.click();
   }
 
   async registerAccount(fullName, email, password) {
@@ -106,6 +131,6 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     await this.enterEmail(email);
     await this.enterPassword(password);
     await this.clickOnAcceptTermsCheckbox();
-    await this.clickOnCreateAccountBtn();
+    await this.clickOnCreateAccountButton();
   }
 };
