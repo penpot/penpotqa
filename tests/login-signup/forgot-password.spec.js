@@ -46,7 +46,6 @@ registerTest.describe(() => {
       dashboardPage = new DashboardPage(page);
       profilePage = new ProfilePage(page);
       forgotPasswordPage = new ForgotPasswordPage(page);
-      await page.context().clearCookies();
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
