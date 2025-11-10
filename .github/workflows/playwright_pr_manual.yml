@@ -101,7 +101,8 @@ jobs:
 
       - name: Run Teardown Project
         if: always()
-        # Teardown uses only the shared env (no Stripe key needed)
+        env:
+          STRIPE_SK: ${{ secrets.STRIPE_SK }}
         run: npx playwright test --project=teardown
 
       - name: Generate and Upload Reports
