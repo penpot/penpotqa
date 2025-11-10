@@ -60,8 +60,8 @@ jobs:
         id: run-tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
-          LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
-          SECOND_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
           GITHUB_RUN_ID: ${{ github.run_id }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
