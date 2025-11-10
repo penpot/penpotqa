@@ -14,6 +14,7 @@ Prerequisites for local run:
 - “Clear” Penpot account (without added files, projects, etc., but with a completed onboarding flow, and the account name must be 'QA Engineer').
 - The _.env_ file added to the root of the project with the following env variables:
   - `LOGIN_EMAIL` (email from your Penpot account)
+  - `SECOND_EMAIL` (email from your Penpot account for tests that use a secondary email to login, needs same password than LOGIN_EMAIL)
   - `LOGIN_PWD` (password from your Penpot account)
   - `BASE_URL` (Penpot url - e.g. http://localhost:9001/ if deployed locally)
   - `GMAIL_NAME` (Gmail account name for Gmail API integration)
@@ -118,6 +119,7 @@ On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:
 
 - _LOGIN_EMAIL_ (email from your Penpot account, which is used for tests)
+- _SECOND_EMAIL_ (secondary email from a secondary Penpot account)
 - _LOGIN_PWD_ (password from your Penpot account, which is used for tests)
 - _BASE_URL_ (Penpot url)
 - _GMAIL_NAME_ (Gmail account name for email verification)
