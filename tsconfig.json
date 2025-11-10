@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ESNext", // Modern JS output
+    "lib": ["DOM", "ESNext"], // Include DOM & modern JS APIs
+    "module": "CommonJS", // Playwright typically runs in Node.js
+    "moduleResolution": "Node", // Resolve Node-style imports
+    "types": ["node", "playwright"], // Include typings for Node & Playwright
+
+    /* JavaScript Support */
+    "allowJs": true, // Allow JS files
+    "checkJs": false, // Skip type checking .js files (set true if you want it)
+    "resolveJsonModule": true, // Allow importing JSON files
+
+    /* Type Checking */
+    "strict": true, // Enable all strict type checks
+    "noEmit": true, // Don’t output JS — Playwright only needs type-checking
+    "skipLibCheck": true, // Skip type checks on dependencies
+
+    /* File and Path Management */
+    "rootDir": ".", // Root of your project or tests
+    "baseUrl": ".", // Allows relative imports from project root
+    "paths": {
+      "@tests/*": ["tests/*"], // Example alias for test folder
+      "@pages/*": ["pages/*"]
+    },
+
+    /* Source Maps (optional, for debugging) */
+    "sourceMap": true
+  },
+  "include": ["tests/**/*", "playwright.config.js"],
+  "exclude": ["node_modules", "dist"]
+}
