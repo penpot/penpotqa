@@ -44,14 +44,14 @@ jobs:
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
         run: npx playwright test --project=chrome
 
-      - name: Run Teardown Project
-        if: always()
-        env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
-          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-          STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: npx playwright test --project=teardown
+      # - name: Run Teardown Project
+      #   if: always()
+      #   env:
+      #     BASE_URL: ${{ secrets.BASE_URL }}
+      #     LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+      #     LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+      #     STRIPE_SK: ${{ secrets.STRIPE_SK }}
+      #   run: npx playwright test --project=teardown
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports

@@ -13,7 +13,7 @@ const config = {
   testDir: './tests',
   /* Maximum time one test can run for. */
   timeout: process.env.CI ? 120 * 1000 : 80 * 1000,
-  // globalTeardown: require.resolve('./tests/global.teardown.js'),
+  globalTeardown: require.resolve('./tests/teardown/global.teardown.ts'),
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -125,13 +125,13 @@ const config = {
         },
       },
     },
-    {
-      name: 'teardown',
-      grepInvert: null,
-      testMatch: /global\.teardown\.ts/,
-      retries: 0,
-      dependencies: ['chrome'],
-    },
+    // {
+    //   name: 'teardown',
+    //   testDir: 'tests/teardown',       // Only runs files in this folder
+    //   testMatch: /global\.teardown\.ts$/, // Matches exactly your file
+    //   retries: 0,
+    //   dependencies: ['chrome'],
+    // },
   ],
 };
 
