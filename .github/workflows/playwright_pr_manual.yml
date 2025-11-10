@@ -39,14 +39,18 @@ permissions:
 
 jobs:
   tests_chromium:
+    runs-on: windows-2022
+    timeout-minutes: 280
+    environment: PRE
     defaults:
       run:
         shell: bash
-    environment: PRE
-    timeout-minutes: 280
-    runs-on: windows-2022
-    env:
+    env: # Shared env for all steps
       TZ: Europe/Madrid
+      BASE_URL: ${{ secrets.BASE_URL }}
+      LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+      LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -58,11 +62,8 @@ jobs:
 
       - name: Run Playwright tests
         id: run-tests
-        env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+        env: # Step-specific sensitive vars
           SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
-          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
           GITHUB_RUN_ID: ${{ github.run_id }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
@@ -74,11 +75,11 @@ jobs:
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
               echo "🚀 Running all tests..."
-              npx playwright test --project=chrome --grep-invert  'PERF'
+              npx playwright test --project=chrome
               ;;
             "changed_only")
               echo "📝 Running tests for changed files only..."
-              npx playwright test --project=chrome --only-changed=origin/main --grep-invert  'PERF'
+              npx playwright test --project=chrome --only-changed=origin/main
               ;;
             "by_folder")
               echo "📁 Running tests from folder: ${{ github.event.inputs.test_folder }}"
@@ -90,7 +91,7 @@ jobs:
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
                 exit 1
               fi
-              npx playwright test --project=chrome --grep-invert  'PERF' "${{ github.event.inputs.test_folder }}"
+              npx playwright test --project=chrome "${{ github.event.inputs.test_folder }}"
               ;;
             *)
               echo "❌ Error: Invalid test mode"
@@ -100,13 +101,11 @@ jobs:
 
       - name: Run Teardown Project
         if: always()
-        env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-          LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
-          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+        # Teardown uses only the shared env (no Stripe key needed)
         run: npx playwright test --project=teardown
 
       - name: Generate and Upload Reports
+        if: always()
         uses: ./.github/actions/upload-reports
         with:
           artifact-name: 'playwright-report-chromium-pr-${{ github.event.inputs.test_mode }}'
@@ -116,9 +115,9 @@ jobs:
           browser-name: 'Chrome'
           is-manual-execution: 'true'
           testdino_api_key: ${{ secrets.TDPW_API_KEY }}
-        if: always()
 
       - name: Send Mattermost Notification
+        if: always()
         uses: ./.github/actions/send-notification
         with:
           browser-name: 'Chrome'
@@ -128,4 +127,3 @@ jobs:
           folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
           is-manual-execution: 'true'
           username: ${{ github.actor }}
-        if: always()
