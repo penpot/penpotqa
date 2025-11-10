@@ -128,7 +128,7 @@ const config = {
     {
       name: 'teardown',
       grepInvert: null,
-      testMatch: /global\.teardown\.js/,
+      testMatch: /global\.teardown\.ts/,
       retries: 0,
       dependencies: ['chrome'],
     },
