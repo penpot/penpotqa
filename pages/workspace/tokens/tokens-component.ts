@@ -1,11 +1,30 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { TokensPage } from './tokens-page';
-import { HexColor, SampleData } from 'helpers/sample-data';
+import { BasicTokenData, TokensPage } from '@pages/workspace/tokens/tokens-page';
+import { SampleData } from 'helpers/sample-data';
 
-export type TokenType = {
-  name: string;
-  description?: string;
-};
+export enum TokenClass {
+  Color = 'Color',
+  BorderRadius = 'Border Radius',
+  Dimension = 'Dimensions',
+  FontFamily = 'Font Family',
+  FontSize = 'Font Size',
+  FontWeight = 'Font Weight',
+  LetterSpacing = 'Letter Spacing',
+  Number = 'Number',
+  Opacity = 'Opacity',
+  Rotation = 'Rotation',
+  Sizing = 'Sizing',
+  Spacing = 'Spacing',
+  StrokeWidth = 'Stroke Width',
+  TextCase = 'Text Case',
+  TextDecoration = 'Text Decoration',
+  Typography = 'Typography',
+}
+
+export interface MainToken<TokenClass> extends BasicTokenData {
+  class: TokenClass;
+  value?: string;
+}
 
 const sampleData = new SampleData();
 
@@ -115,123 +134,10 @@ export class TokensComponent {
       .getByRole('button');
   }
 
-  async createRadiusToken(name: string = 'global.radius', value: string = '-1') {
-    await this.addRadiusTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await this.tokensPage.modalSaveButton.click();
-  }
-
-  async createColorToken(
-    name: string = 'global.color',
-    value: HexColor = sampleData.color.redHexCode,
-  ) {
-    await this.addColorTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await expect(this.tokensPage.modalSaveButton).toBeEnabled();
-    await this.tokensPage.clickOnEnter();
-  }
-
-  async createOpacityToken(name: string = 'global.opacity', value: string = '0.7') {
-    await this.addOpacityTokenButton.click();
-    await expect(this.tokensPage.modalSaveButton).toBeDisabled();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await expect(this.tokensPage.modalSaveButton).toBeEnabled();
-    await this.tokensPage.clickOnEnter();
-  }
-
-  async createRotationToken(name = 'global.rotation', value = '-45') {
-    await this.addRotationTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await expect(this.tokensPage.modalSaveButton).toBeEnabled();
-    await this.tokensPage.clickOnEnter();
-  }
-
-  async createSizingToken(name = 'global.sizing', value = '200') {
-    await this.addSizingTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await expect(this.tokensPage.modalSaveButton).toBeEnabled();
-    await this.tokensPage.clickOnEnter();
-  }
-
-  async createSpacingToken(name = 'global.spacing', value = '20') {
-    await this.addSpacingTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await expect(this.tokensPage.modalSaveButton).toBeEnabled();
-    await this.tokensPage.clickOnEnter();
-  }
-
-  async createStrokeWidthToken(name = 'global.stroke', value = '5.5') {
-    await this.addStrokeWidthTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await expect(this.tokensPage.modalSaveButton).toBeEnabled();
-    await this.tokensPage.clickOnEnter();
-  }
-
-  async createDimensionToken(name = 'global.dimension', value = '100') {
-    await this.addDimensionsTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await expect(this.tokensPage.modalSaveButton).toBeEnabled();
-    await this.tokensPage.modalSaveButton.click();
-  }
-
-  async createFontSizeToken(name = 'global.font', value = '25') {
-    await this.addFontSizeTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await this.tokensPage.modalSaveButton.click();
-  }
-
-  async createFontFamilyToken(name = 'global.font.family', value = 'Actor') {
-    await this.addFontFamilyTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await this.tokensPage.modalSaveButton.click();
-  }
-
-  async createFontWeightToken(name = 'global.font.weight', value = '400') {
-    await this.addFontWeightTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await this.tokensPage.modalSaveButton.click();
-  }
-
-  async createLetterSpacingToken(name = 'global.letter.spacing', value = '10') {
-    await this.addLetterSpacingTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await this.tokensPage.modalSaveButton.click();
-  }
-
-  async createNumberToken(name = 'global.number', value = '10') {
-    await this.addNumberTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await this.tokensPage.modalSaveButton.click();
-  }
-
-  async createTextCaseToken(name = 'global.text.case', value = 'Capitalize') {
-    await this.addTextCaseTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await this.tokensPage.modalSaveButton.click();
-  }
-
-  async createTextDecorationToken(
-    name = 'global.text.decoration',
-    value = 'underline',
-  ) {
-    await this.addTextDecorationTokenButton.click();
-    await this.tokenNameInput.fill(name);
-    await this.tokenValueInput.fill(value);
-    await this.tokensPage.modalSaveButton.click();
+  async fillTokenData(mainToken: MainToken<TokenClass>) {
+    if (mainToken.value !== undefined) {
+      await this.tokenValueInput.fill(mainToken.value);
+    }
   }
 
   async isTokenVisibleWithName(name: string, visible = true) {
