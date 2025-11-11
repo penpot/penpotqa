@@ -125,13 +125,6 @@ const config = {
         },
       },
     },
-    // {
-    //   name: 'teardown',
-    //   testDir: 'tests/teardown',       // Only runs files in this folder
-    //   testMatch: /global\.teardown\.ts$/, // Matches exactly your file
-    //   retries: 0,
-    //   dependencies: ['chrome'],
-    // },
   ],
 };
 

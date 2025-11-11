@@ -39,26 +39,14 @@ permissions:
 
 jobs:
   tests_chromium:
-    runs-on: windows-2022
-    timeout-minutes: 280
-    environment: PRE
     defaults:
       run:
         shell: bash
-    env: # Shared env for all steps
+    environment: PRE
+    timeout-minutes: 280
+    runs-on: windows-2022
+    env:
       TZ: Europe/Madrid
-      BASE_URL: ${{ secrets.BASE_URL }}
-      LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
-      LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
-      SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
-      GITHUB_RUN_ID: ${{ github.run_id }}
-      REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-      CLIENT_ID: ${{ secrets.CLIENT_ID }}
-      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-      GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
-      GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
-      STRIPE_SK: ${{ secrets.STRIPE_SK }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -70,15 +58,18 @@ jobs:
 
       - name: Run Playwright tests
         id: run-tests
-        # env: # Step-specific sensitive vars
-        #   SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
-        #   GITHUB_RUN_ID: ${{ github.run_id }}
-        #   REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-        #   CLIENT_ID: ${{ secrets.CLIENT_ID }}
-        #   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-        #   GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
-        #   GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
-        #   STRIPE_SK: ${{ secrets.STRIPE_SK }}
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
+          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
+          GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
+          STRIPE_SK: ${{ secrets.STRIPE_SK }}
         run: |
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
@@ -107,14 +98,7 @@ jobs:
               ;;
           esac
 
-      # - name: Run Teardown Project
-      #   if: always()
-      #   env:
-      #     STRIPE_SK: ${{ secrets.STRIPE_SK }}
-      #   run: npx playwright test --project=teardown
-
       - name: Generate and Upload Reports
-        if: always()
         uses: ./.github/actions/upload-reports
         with:
           artifact-name: 'playwright-report-chromium-pr-${{ github.event.inputs.test_mode }}'
@@ -124,9 +108,9 @@ jobs:
           browser-name: 'Chrome'
           is-manual-execution: 'true'
           testdino_api_key: ${{ secrets.TDPW_API_KEY }}
+        if: always()
 
       - name: Send Mattermost Notification
-        if: always()
         uses: ./.github/actions/send-notification
         with:
           browser-name: 'Chrome'
@@ -136,3 +120,4 @@ jobs:
           folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
           is-manual-execution: 'true'
           username: ${{ github.actor }}
+        if: always()
