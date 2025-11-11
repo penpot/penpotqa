@@ -195,9 +195,11 @@ exports.TeamPage = class TeamPage extends BasePage {
       .first();
     if (await teamSel.isVisible()) {
       await teamSel.click();
+      await this.isTeamSelected(teamName);
       await this.teamOptionsMenuButton.click();
       await this.deleteTeamMenuItem.click();
       await this.deleteTeamButton.click();
+      await expect(this.teamCurrentBtn).not.toHaveText(teamName);
       await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
     }
   }
