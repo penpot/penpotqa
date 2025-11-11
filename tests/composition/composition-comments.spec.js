@@ -215,7 +215,7 @@ mainTest.describe(() => {
     async ({ page }) => {
       await mainTest.slow();
       const firstViewer = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstViewer}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstViewer}${process.env.GMAIL_DOMAIN}`;
       const numberOfComments = 10;
 
       await mainPage.backToDashboardFromFileEditor();
@@ -282,7 +282,7 @@ mainTest.describe(() => {
   mainTest(qase([2057], 'Click Notification in the pop-up'), async ({ page }) => {
     await mainTest.slow();
     const firstEditor = random().concat('autotest');
-    const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
+    const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
     const comment = 'Test Comment (main user)';
     const replyComment = 'Lorem Ipsum (editor user)';
 
@@ -347,7 +347,7 @@ mainTest.describe(() => {
   mainTest(qase([2086], '"Only your mentions" filter'), async ({ page }) => {
     await mainTest.slow();
     const firstEditor = random().concat('autotest');
-    const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
+    const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
     const comment = 'Test Comment (main user)';
 
     await mainPage.backToDashboardFromFileEditor();
@@ -431,7 +431,7 @@ mainTest.describe(() => {
     async ({ page }) => {
       await mainTest.slow();
       const firstEditor = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
       const comment = 'Test Comment (main user)';
 
       await mainPage.backToDashboardFromFileEditor();

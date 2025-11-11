@@ -9,10 +9,16 @@ exports.ForgotPasswordPage = class ForgotPasswordPage extends BasePage {
     super(page);
 
     this.emailInput = page.getByRole('textbox', { name: 'Work email' });
-    this.recoverPasswordButton = page.getByTestId('recovery-resquest-submit');
-    this.recoveryPwdInput = page.locator('#password-1');
-    this.recoveryPwdConfirmInput = page.locator('#password-2');
-    this.changePwdButton = page.getByRole('button', {
+    this.recoverPasswordButton = page.getByRole('button', {
+      name: 'Recover password',
+    });
+    this.recoveryPasswordInput = page.getByRole('textbox', {
+      name: 'Type a new password',
+    });
+    this.recoveryPasswordConfirmInput = page.getByRole('textbox', {
+      name: 'Confirm password',
+    });
+    this.changePasswordButton = page.getByRole('button', {
       name: 'Change your password',
     });
   }
@@ -26,18 +32,21 @@ exports.ForgotPasswordPage = class ForgotPasswordPage extends BasePage {
   }
 
   async isRecoverPasswordButtonDisabled() {
-    await expect(this.recoverPasswordButton).toBeDisabled();
+    await expect(
+      this.recoverPasswordButton,
+      'Recover Password button is disabled',
+    ).toBeDisabled();
   }
 
-  async enterNewPwd(loginPwd) {
-    await this.recoveryPwdInput.fill(loginPwd);
+  async enterNewPassword(loginPwd) {
+    await this.recoveryPasswordInput.fill(loginPwd);
   }
 
-  async enterConfirmPwd(loginPwd) {
-    await this.recoveryPwdConfirmInput.fill(loginPwd);
+  async enterConfirmPassword(loginPwd) {
+    await this.recoveryPasswordConfirmInput.fill(loginPwd);
   }
 
-  async clickOnChangePwdButton() {
-    await this.changePwdButton.click();
+  async clickOnChangePasswordButton() {
+    await this.changePasswordButton.click();
   }
 };

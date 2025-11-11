@@ -194,32 +194,88 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase([2568], 'Locate duplicated variants'), async ({ browserName }) => {
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
-  await mainPage.clickMoveButton();
+mainTest.describe(() => {
+  mainTest.beforeEach(async ({ browserName }) => {
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.isMainPageLoaded();
+    await mainPage.clickMoveButton();
 
-  await mainPage.createDefaultRectangleByCoordinates(200, 300);
-  await mainPage.createComponentViaShortcut(browserName);
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.createComponentViaShortcut(browserName);
-  await mainPage.waitForChangeIsSaved();
-  await layersPanelPage.selectLayerByName('Value 2');
-  await designPanelPage.changeVariantPropertyValue('Property 1', 'Value 1');
-  await designPanelPage.checkVariantWarning(
-    'This variant has identical properties and values to another variant. Adjust the values so they can be retrieved.',
-  );
-  await layersPanelPage.selectLayerByName('Value 1');
-  await mainPage.clickShortcutCtrlD(browserName);
-  await mainPage.waitForChangeIsSaved();
-  await layersPanelPage.checkVariantLayerCount(3);
+    await mainPage.createDefaultRectangleByCoordinates(200, 300);
+    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.selectLayerByName('Value 2');
+    await designPanelPage.changeVariantPropertyValue('Property 1', 'Value 1');
+    await designPanelPage.checkVariantWarning(
+      'This variant has identical properties and values to another variant. Adjust the values so they can be retrieved.',
+    );
+    await layersPanelPage.selectLayerByName('Value 1');
+    await mainPage.clickShortcutCtrlD(browserName);
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.checkVariantLayerCount(3);
 
-  await mainPage.clickOnVariantsTitle('Rectangle');
-  await designPanelPage.checkVariantWarning(
-    'Some variants have identical properties and values',
+    await mainPage.clickOnVariantsTitle('Rectangle');
+    await designPanelPage.checkVariantWarning(
+      'Some variants have identical properties and values',
+    );
+    await designPanelPage.clickOnLocateDuplicatedVariantsButton();
+  });
+
+  mainTest(
+    qase([2568], 'Conflicting variants with identical properties and values'),
+    async ({ browserName }) => {
+      await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
+        '2-value1-layers-selected.png',
+      );
+      await layersPanelPage.selectLayerByName('Value 1');
+      await mainPage.pressCopyShortcut(browserName);
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.pressPasteShortcut(browserName);
+      await layersPanelPage.isLayerWithNameSelected('Rectangle');
+      await designPanelPage.checkVariantWarning(
+        'This component has conflicting variants. Make sure each variation has a unique set of property values.',
+      );
+    },
   );
-  await designPanelPage.clickOnLocateDuplicatedVariantsButton();
-  await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-    '2-value1-layers-selected.png',
+
+  mainTest(
+    qase([2569], 'Changing several conflicting variant copies at once'),
+    async ({ browserName }) => {
+      await layersPanelPage.selectLayerByName('Value 1');
+      await mainPage.pressCopyShortcut(browserName);
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.pressPasteShortcut(browserName);
+      await layersPanelPage.isLayerWithNameSelected('Rectangle');
+
+      await layersPanelPage.selectLayerByName('Value 2');
+      await mainPage.pressCopyShortcut(browserName);
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.pressPasteShortcut(browserName);
+      await layersPanelPage.isLayerWithNameSelected('Rectangle');
+      await designPanelPage.checkVariantWarning(
+        'This component has conflicting variants. Make sure each variation has a unique set of property values.',
+      );
+      await layersPanelPage.selectNCopyComponentLayers(1);
+      await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Mixed');
+      await designPanelPage.checkVariantWarning(
+        'This component has conflicting variants. Make sure each variation has a unique set of property values.',
+      );
+      await designPanelPage.changeVariantPropertyValue('Property 1', 'Value 1');
+      await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Value 1');
+      await layersPanelPage.clickNCopyComponentOnLayersTab(0);
+      await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Value 1');
+      await designPanelPage.checkVariantWarning(
+        'This component has conflicting variants. Make sure each variation has a unique set of property values.',
+      );
+      await layersPanelPage.clickNCopyComponentOnLayersTab(1);
+      await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Value 1');
+      await designPanelPage.checkVariantWarning(
+        'This component has conflicting variants. Make sure each variation has a unique set of property values.',
+      );
+    },
   );
 });

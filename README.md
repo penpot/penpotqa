@@ -11,18 +11,24 @@ Prerequisites for local run:
 - Windows OS
 - Screen resolution 1920x1080
 - Installed Node.js v22.5.1
-- “Clear” Penpot account (without added files, projects, etc., but with a completed onboarding flow).
-- The _.env_ file added to the root of the project with 3 env variables:
+- “Clear” Penpot account (without added files, projects, etc., but with a completed onboarding flow, and the account name must be 'QA Engineer').
+- The _.env_ file added to the root of the project with the following env variables:
   - `LOGIN_EMAIL` (email from your Penpot account)
+  - `SECOND_EMAIL` (email from your Penpot account for tests that use a secondary email to login, needs same password than LOGIN_EMAIL)
   - `LOGIN_PWD` (password from your Penpot account)
   - `BASE_URL` (Penpot url - e.g. http://localhost:9001/ if deployed locally)
-  - `GMAIL_NAME` (Gmail account name for email verification)
+  - `GMAIL_NAME` (Gmail account name for Gmail API integration)
+  - `GMAIL_DOMAIN` (Domain for the account to access Gmail API Integration)
   - `REFRESH_TOKEN` (Token for email access)
   - `CLIENT_ID` (for email access)
   - `CLIENT_SECRET` (for email access)
   - `STRIPE_SK` (for Stripe API access)
 
-**2. Test run - main notes.**
+**2. Gmail Integration.**
+
+Gmail API integrations requires previous configuration by setting up Gmail API from Google Cloud Platform and getting a refresh token from https://developers.google.com/oauthplayground/.
+
+**3. Test run - main notes.**
 
 Once the repo is cloned you can follow these steps to use the correct node version, install the project dependencies, and Playwright with the latests browsers.
 
@@ -50,7 +56,7 @@ To run the tests in Firefox and Webkit browsers, use `"firefox"` and `"webkit"` 
 `"firefox": "npx playwright test --project=firefox"`
 `"webkit": "npx playwright test --project=webkit"`
 
-**3. Test run - additional settings.**
+**4. Test run - additional settings.**
 
 Some settings from _playwright.config.js_ may be useful:
 
@@ -59,21 +65,21 @@ Some settings from _playwright.config.js_ may be useful:
 - `use.headless `- change to _false_ to run in headed browser mode
 - `use.channel: "chrome"` - comment out to run tests in Chromium instead of Chrome (for "chrome" project)
 
-**4. Parallel tests execution.**
+**5. Parallel tests execution.**
 
 - All tests should be independent for running them in parallel mode
 - For run tests in parallel mode need to update key `workers` in `playwright.config.js` file
 - `workers`: `process.env.CI ? 6 : 3` - by default 3 workers are used for local run and 6 to run on CI/CD.
 - For disabling parallelism set `workers` to 1.
 
-**5. Tests amount and execution time.**
+**6. Tests amount and execution time.**
 
 - For now there are 531 tests in current repository
 - If parallel execution is enabled with default amount of workers (3) the average time for each browser is the following:
 - Chrome: 72 mins
 - Firefox: 81 mins
 
-**6. Snapshots comparison.**
+**7. Snapshots comparison.**
 
 Expected snapshots are stored in _tests/{spec-name}-snapshots/{project-name}_ folders (where project-name is the browser name).
 In most of the cases, they capture and compare not the whole visible area of the screen but only the single element/section (e.g. created shape or canvas with created board).
@@ -97,7 +103,7 @@ Note 1: there is a known issue that Chrome does render differently in headless a
 `expect.toHaveScreenshot.maxDiffPixelRatio: 0.01` is set in _playwright.config.js_ for "chrome" project , which means that
 an acceptable ratio of pixels that are different to the total amount of pixels is 1% within screenshot comparison.
 
-**7. Performance testing.**
+**8. Performance testing.**
 
 To exclude performance tests from the periodical regression test run the following scripts should be used:
 
@@ -107,15 +113,17 @@ To exclude performance tests from the periodical regression test run the followi
 Note: The above scripts should be executed via the command line. Do not run them directly from the _package.json_,
 because in such way performance tests are not ignored.
 
-**8. Running tests via GitHub Actions.**
+**9. Running tests via GitHub Actions.**
 
 On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:
 
 - _LOGIN_EMAIL_ (email from your Penpot account, which is used for tests)
+- _SECOND_EMAIL_ (secondary email from a secondary Penpot account)
 - _LOGIN_PWD_ (password from your Penpot account, which is used for tests)
 - _BASE_URL_ (Penpot url)
 - _GMAIL_NAME_ (Gmail account name for email verification)
+- _GMAIL_DOMAIN_ (Domain for the account to access Gmail API Integration)
 - _REFRESH_TOKEN_ (Token for email access)
 - _CLIENT_ID_ (for email access)
 - _CLIENT_SECRET_ (for email access)
