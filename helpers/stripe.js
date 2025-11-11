@@ -180,15 +180,31 @@ async function createTestClock() {
   }
 }
 
-async function advanceTestClock(testClockId, time) {
-  try {
-    return await stripe.testHelpers.testClocks.advance(testClockId, {
-      frozen_time: time,
-    });
-  } catch (error) {
-    console.error(`Error during accelerated test clock:`, error);
+async function advanceTestClock(testClockId, time, maxAttempts = 3) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await stripe.testHelpers.testClocks.advance(testClockId, {
+        frozen_time: time,
+      });
+    } catch (error) {
+      const statusCode = error.statusCode;
+      if (statusCode === 429 && attempt < maxAttempts) {
+        console.warn(
+          `[ATTEMPT ${attempt}/${maxAttempts}] Stripe returned 429 (${error.message}). Retrying in 4 seconds...`,
+        );
+        await delay(4000);
+      } else {
+        console.error(
+          `Error during accelerated test clock on attempt ${attempt}:`,
+          error,
+        );
+        throw error;
+      }
+    }
   }
 }
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function loginInPenpot(email, password) {
   const url = `${process.env.BASE_URL}api/rpc/command/login-with-password`;
