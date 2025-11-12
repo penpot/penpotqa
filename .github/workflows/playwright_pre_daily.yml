@@ -40,7 +40,7 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: npx playwright test --project=chrome --grep-invert  'PERF'
+        run: npx playwright test --project=chrome
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports

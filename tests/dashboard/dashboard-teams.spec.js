@@ -58,8 +58,8 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  const team1 = random().concat('QA Test team 1');
-  const team2 = random().concat('QA Test team 2');
+  const team1 = random().concat('autotest QA Test team 1');
+  const team2 = random().concat('autotest QA Test team 2');
 
   mainTest(qase(1163, 'Team.Switch between teams'), async () => {
     await teamPage.createTeam(team1);
