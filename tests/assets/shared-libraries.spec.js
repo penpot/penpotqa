@@ -647,7 +647,7 @@ mainTest(
 
 mainTest.describe(() => {
   const team1 = teamName;
-  const team2 = random().concat('QA Test team 2');
+  const team2 = random().concat('autotest QA Test team 2');
 
   mainTest(qase([1540], 'Move library to a different team'), async () => {
     await mainPage.createDefaultEllipseByCoordinates(200, 200);

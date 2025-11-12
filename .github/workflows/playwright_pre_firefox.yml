@@ -27,23 +27,22 @@ jobs:
 
       - name: Setup Playwright Environment
         uses: ./.github/actions/setup-playwright
-        with:
-          node-version: '22'
 
       - name: Run Playwright tests
         id: run-tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
-          LOGIN_EMAIL: ${{ secrets.SECOND_EMAIL }}
-          SECOND_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
           GITHUB_RUN_ID: ${{ github.run_id }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
+          GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: npx playwright test --project=firefox -gv 'PERF'
+        run: npx playwright test --project=firefox
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports

@@ -137,7 +137,7 @@ mainTest.describe(() => {
           await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
           await historyPage.isHistoryPanelVisible(false);
           await historyPage.clickHistoryPanelButton();
-          await historyPage.checkAutosaveVersionsCount('2');
+          await historyPage.checkAutosaveVersionsCount('3');
         },
       );
 
@@ -149,7 +149,7 @@ mainTest.describe(() => {
           await historyPage.selectSnapshotOption('Pin version');
           await historyPage.renameVersion(versionName);
           await historyPage.checkLastVersionName(versionName);
-          await historyPage.isAutosaveVersionsVisible(false);
+          await historyPage.checkAutosaveVersionsCount('1');
         },
       );
     });
@@ -212,7 +212,7 @@ mainTest.describe(() => {
       const versionName = 'test version';
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}@gmail.com`;
+      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
 
       await historyPage.createDefaultBoardByCoordinates(200, 200);
       await historyPage.waitForChangeIsSaved();

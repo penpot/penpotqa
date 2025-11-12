@@ -10,6 +10,7 @@ const { StripePage } = require('../../pages/dashboard/stripe-page');
 const {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
+  getProfileIdByEmail,
 } = require('../../helpers/stripe');
 
 let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
@@ -39,7 +40,13 @@ registerTest(
     const newPlan = 'Enterprise';
     let date = new Date();
 
-    const testClockId = await createCustomerWithTestClock(page, name, email);
+    const penpotId = await getProfileIdByEmail(email);
+    const testClockId = await createCustomerWithTestClock(
+      page,
+      name,
+      email,
+      penpotId,
+    );
 
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();
@@ -100,7 +107,13 @@ registerTest(
     const defaultPlan = 'Professional';
     let date = new Date();
 
-    const testClockId = await createCustomerWithTestClock(page, name, email);
+    const penpotId = await getProfileIdByEmail(email);
+    const testClockId = await createCustomerWithTestClock(
+      page,
+      name,
+      email,
+      penpotId,
+    );
 
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();

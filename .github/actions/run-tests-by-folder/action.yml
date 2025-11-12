@@ -81,7 +81,7 @@ runs:
 
         # Add grep invert if specified
         if [ -n "${{ inputs.grep-invert }}" ]; then
-          CMD="$CMD -gv '${{ inputs.grep-invert }}'"
+          CMD="$CMD --grep-invert  '${{ inputs.grep-invert }}'"
         fi
 
         # Add the test folder

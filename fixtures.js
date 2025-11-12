@@ -6,7 +6,7 @@ const { updateTestResults } = require('./helpers/saveTestResults');
 const { random } = require('./helpers/string-generator');
 const { waitMessage } = require('./helpers/gmail');
 
-const mainTest = base.test.extend({
+export const mainTest = base.test.extend({
   page: async ({ page }, use, testInfo) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
@@ -30,7 +30,7 @@ const registerTest = base.test.extend({
     await use(name);
   },
   email: async ({ name }, use) => {
-    const email = `${process.env.GMAIL_NAME}+${name}@gmail.com`;
+    const email = `${process.env.GMAIL_NAME}+${name}${process.env.GMAIL_DOMAIN}`;
     await use(email);
   },
   page: async ({ page, name, email }, use, testInfo) => {
