@@ -13,6 +13,7 @@ const config = {
   testDir: './tests',
   /* Maximum time one test can run for. */
   timeout: process.env.CI ? 120 * 1000 : 80 * 1000,
+  globalTeardown: require.resolve('./tests/global.teardown.ts'),
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -59,6 +60,7 @@ const config = {
   projects: [
     {
       name: 'chrome',
+      grepInvert: /@perf/,
       expect: {
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.05,
@@ -83,6 +85,7 @@ const config = {
     },
     {
       name: 'firefox',
+      grepInvert: /@perf/,
       expect: {
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.05,
@@ -108,6 +111,7 @@ const config = {
     },
     {
       name: 'webkit',
+      grepInvert: /@perf/,
       expect: {
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.01,
