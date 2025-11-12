@@ -8,10 +8,11 @@ export default async function globalTeardown() {
 
   const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
   const context = await browser.newContext();
-  await context.tracing.start({ screenshots: false, snapshots: true });
   const page = await context.newPage();
 
   try {
+    await context.tracing.start({ screenshots: false, snapshots: true });
+
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     const teamPage = new TeamPage(page);
@@ -50,10 +51,10 @@ export default async function globalTeardown() {
     console.log('✅ Global teardown complete.');
   } catch (err) {
     console.error('❌ Global teardown failed:', err);
-  } finally {
     await context.tracing.stop({
-      path: 'playwright-report/trace/global-teardown.zip',
+      path: 'playwright-report/trace/global-teardown-failure.zip',
     });
+  } finally {
     await browser.close();
   }
 }
