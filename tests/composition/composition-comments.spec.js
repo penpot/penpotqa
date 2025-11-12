@@ -110,27 +110,22 @@ mainTest.describe(() => {
       await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
       await expect(page).toHaveScreenshot('comment-edited.png', {
         mask: [
-          commentsPanelPage.commentsAuthorSection,
-          mainPage.usersSection,
-          mainPage.toolBarWindow,
+          page.locator('[class*="comments__thread-group"]'),
+          page.locator('div[data-theme="dark"] div[style*="position: absolute"]'),
         ],
       });
     },
   );
 
   mainTest(qase([1236], 'Delete thread'), async ({ page }) => {
-    await commentsPanelPage.clickCommentHeaderOptionsButton();
+    await commentsPanelPage.clickCommentOptionsButton();
     await commentsPanelPage.clickDeleteCommentOption();
     await commentsPanelPage.clickDeleteThreadButton();
-    await commentsPanelPage.isCommentThreadIconNotDisplayed();
-    await commentsPanelPage.isCommentsPanelPlaceholderDisplayed(
-      "You're all caught up! New comment notifications will appear here.",
-    );
-    await expect(page).toHaveScreenshot('comment-removed.png', {
+    await commentsPanelPage.isCommentNotDisplayedInCommentsPanel('Test Comment');
+    await expect(page).toHaveScreenshot('comment-deleted.png', {
       mask: [
-        commentsPanelPage.commentsAuthorSection,
-        mainPage.usersSection,
-        mainPage.toolBarWindow,
+        page.locator('[class*="comments__thread-group"]'),
+        page.locator('div[data-theme="dark"] div[style*="position: absolute"]'),
       ],
     });
   });

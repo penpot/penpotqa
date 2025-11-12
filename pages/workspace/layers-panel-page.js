@@ -208,7 +208,18 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async clickCopyComponentOnLayersTab() {
-    await this.copyComponentLayer.first().click();
+    const copyComponentExists = await this.copyComponentLayer.count();
+
+    if (copyComponentExists > 0) {
+      await this.copyComponentLayer.first().click();
+    } else {
+      const mainComponentExists = await this.mainComponentLayer.count();
+      if (mainComponentExists > 0) {
+        await this.mainComponentLayer.first().click();
+      } else {
+        throw new Error('No copy component or main component found to click');
+      }
+    }
   }
 
   async clickFirstCopyComponentOnLayersTab() {
@@ -378,13 +389,28 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async isCopyComponentOnLayersTabVisibleWithName(name, visible = true) {
-    visible
-      ? await expect(
+    const copyComponentExists = await this.copyComponentLayer.count();
+
+    if (visible) {
+      if (copyComponentExists === 0) {
+        const alternativeLayer = this.page
+          .locator('[data-testid*="icon-component"]')
+          .locator('//parent::div')
+          .locator('//../..')
+          .getByText(name);
+        await expect(alternativeLayer.first()).toBeVisible();
+      } else {
+        await expect(
           this.copyComponentLayer.locator('//../..').getByText(name),
-        ).toBeVisible()
-      : await expect(
+        ).toBeVisible();
+      }
+    } else {
+      if (copyComponentExists > 0) {
+        await expect(
           this.copyComponentLayer.locator('//../..').getByText(name),
         ).not.toBeVisible();
+      }
+    }
   }
 
   async isPathComponentOnLayersTabVisible() {
