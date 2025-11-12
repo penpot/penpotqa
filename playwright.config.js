@@ -13,7 +13,7 @@ const config = {
   testDir: './tests',
   /* Maximum time one test can run for. */
   timeout: process.env.CI ? 120 * 1000 : 80 * 1000,
-  globalTeardown: require.resolve('./tests/teardown/global.teardown.ts'),
+  globalTeardown: require.resolve('./tests/global.teardown.ts'),
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.

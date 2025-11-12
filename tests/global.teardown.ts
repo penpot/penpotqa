@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
-import { LoginPage } from '../../pages/login-page';
-import { DashboardPage } from '../../pages/dashboard/dashboard-page';
-import { TeamPage } from '../../pages/dashboard/team-page';
+import { LoginPage } from '@pages/login-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
 
 export default async function globalTeardown() {
   console.log('🌍 Cleaning up autotest teams...');
