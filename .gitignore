@@ -103,6 +103,12 @@ pids
 /test-results/
 testResults.json
 
+# GitHub Copilot chat modes
+.github/chatmodes
+
+# MCP configuration
+mcp.json
+
 
 # ===========================================
 # TESTING & COVERAGE

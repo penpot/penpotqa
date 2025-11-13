@@ -371,9 +371,13 @@ async function waitSecondMessage(page, email, timeoutSec = 40) {
     await page.waitForTimeout(interval);
   }
 
-  if (count !== 2) {
-    throw new Error('Timeout reached: second messages is still undefined');
+  if (count < 2) {
+    throw new Error(
+      `Timeout reached: expected at least 2 messages, but got ${count}`,
+    );
   }
+
+  return 1;
 }
 
 async function waitRequestMessage(page, email, timeoutSec = 40) {
