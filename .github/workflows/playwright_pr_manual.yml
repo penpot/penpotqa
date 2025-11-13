@@ -23,6 +23,7 @@ on:
           - tests/components
           - tests/composition
           - tests/dashboard
+          - tests/dashboard/teams
           - tests/login-signup
           - tests/panels-features
           - tests/performance
