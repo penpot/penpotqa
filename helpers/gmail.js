@@ -371,9 +371,13 @@ async function waitSecondMessage(page, email, timeoutSec = 40) {
     await page.waitForTimeout(interval);
   }
 
-  if (count !== 2) {
-    throw new Error('Timeout reached: second messages is still undefined');
+  if (count < 2) {
+    throw new Error(
+      `Timeout reached: expected at least 2 messages, but got ${count}`,
+    );
   }
+
+  return 1;
 }
 
 async function waitRequestMessage(page, email, timeoutSec = 40) {
@@ -396,6 +400,89 @@ async function waitRequestMessage(page, email, timeoutSec = 40) {
   }
 }
 
+async function waitForRecoveryMessage(page, email, timeoutSec = 60) {
+  const timeout = timeoutSec * 1000;
+  const interval = 5000;
+  const startTime = Date.now();
+
+  await page.waitForTimeout(interval); // Initial wait for email to arrive
+
+  while (Date.now() - startTime < timeout) {
+    try {
+      // Get all messages and check for recovery message
+      const allMessages = await authorize().then(async (auth) => {
+        const gmail = google.gmail({ version: 'v1', auth });
+        const res = await gmail.users.messages.list({
+          userId: 'me',
+          q: `to:${email}`,
+          maxResults: 5,
+        });
+
+        if (!res.data.messages || res.data.messages.length === 0) {
+          return null;
+        }
+
+        // Check each message for password reset content
+        for (const message of res.data.messages) {
+          try {
+            const msg = await gmail.users.messages.get({
+              userId: 'me',
+              id: message.id,
+            });
+
+            let body = null;
+            if (msg.data.payload.body && msg.data.payload.body.data) {
+              body = Buffer.from(msg.data.payload.body.data, 'base64').toString(
+                'utf-8',
+              );
+            } else if (msg.data.payload.parts && msg.data.payload.parts.length > 0) {
+              for (const part of msg.data.payload.parts) {
+                if (part.body && part.body.data) {
+                  body = Buffer.from(part.body.data, 'base64').toString('utf-8');
+                  break;
+                }
+              }
+            }
+
+            if (
+              body &&
+              (body.includes('We received a request to reset your password') ||
+                body.includes('reset your password'))
+            ) {
+              const urlRegex = /(https?:\/\/[^\s]+)/;
+              const match = body.match(urlRegex);
+              if (match) {
+                const url = match[0];
+                const remainingText = body.replace(url, '').trim();
+                return {
+                  inviteUrl: url,
+                  inviteText: remainingText,
+                };
+              }
+            }
+          } catch (error) {
+            console.log('Error processing message:', error);
+            continue;
+          }
+        }
+
+        return null;
+      });
+
+      if (allMessages) {
+        return allMessages;
+      }
+
+      await page.waitForTimeout(interval);
+    } catch (error) {
+      console.log('Error in waitForRecoveryMessage:', error);
+      await page.waitForTimeout(interval);
+    }
+  }
+
+  throw new Error('Timeout reached: recovery message not found');
+}
+
 module.exports = {
   checkInviteText,
   getRegisterMessage,
@@ -411,4 +498,5 @@ module.exports = {
   waitMessage,
   waitSecondMessage,
   waitRequestMessage,
+  waitForRecoveryMessage,
 };
