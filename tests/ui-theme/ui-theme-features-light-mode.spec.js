@@ -122,91 +122,73 @@ mainTest(
   },
 );
 
-registerTest.describe('Settings - UI THEME', () => {
-  registerTest.beforeEach(async ({ page }) => {
-    const pages = initializePageObjects(page);
-    ({
-      profilePage,
-      teamPage,
-      dashboardPage,
-      mainPage,
-      assetsPanelPage,
-      inspectPanelPage,
-      viewModePage,
-    } = pages);
+// Additional UI Theme tests using mainTest (authenticated session)
+// These tests were converted from registerTest to avoid registration flow issues
 
-    await setupLightTheme(profilePage, teamPage);
-  });
+mainTest(
+  'PENPOT-1681 Check Layers tab' +
+    'PENPOT-1682 Check Design tab' +
+    'PENPOT-1683 Check Assets tab' +
+    'PENPOT-1685 Check Inspect tab',
+  async ({}) => {
+    // Uses mainTest fixture with authenticated session to avoid registration issues
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.isMainPageLoaded();
+    await mainPage.createDefaultRectangleByCoordinates(300, 300);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
+      'layers-file-left-sidebar-image.png',
+      {
+        mask: [mainPage.fileNameSpan],
+      },
+    );
+    await assetsPanelPage.clickAssetsTab();
+    await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
+      'assets-file-left-sidebar-image.png',
+      {
+        mask: [mainPage.fileNameSpan, assetsPanelPage.librariesOpenModalButton],
+      },
+    );
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+      'assets-file-right-sidebar-image.png',
+      {
+        mask: [mainPage.usersSection],
+      },
+    );
+    await inspectPanelPage.openInspectTab();
+    await inspectPanelPage.waitForCodeButtonVisible();
+    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+      'inspect-file-right-sidebar-image.png',
+      {
+        mask: [mainPage.usersSection],
+      },
+    );
+  },
+);
 
-  registerTest.afterEach(async () => {
-    await cleanupThemeAndTeam(profilePage, teamPage);
-  });
-
-  registerTest.fixme(
-    'PENPOT-1681 Check Layers tab' +
-      'PENPOT-1682 Check Design tab' +
-      'PENPOT-1683 Check Assets tab' +
-      'PENPOT-1685 Check Inspect tab',
-    async ({}) => {
-      // FIXME: Registration form validation is preventing account creation - Create account button remains disabled
-      // This test needs investigation into form validation requirements
-      await profilePage.backToDashboardFromAccount();
-      await dashboardPage.createFileViaPlaceholder();
-      await mainPage.isMainPageLoaded();
-      await mainPage.createDefaultRectangleByCoordinates(300, 300);
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
-        'layers-file-left-sidebar-image.png',
-        {
-          mask: [mainPage.fileNameSpan],
-        },
-      );
-      await assetsPanelPage.clickAssetsTab();
-      await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
-        'assets-file-left-sidebar-image.png',
-        {
-          mask: [mainPage.fileNameSpan, assetsPanelPage.librariesOpenModalButton],
-        },
-      );
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'assets-file-right-sidebar-image.png',
-        {
-          mask: [mainPage.usersSection],
-        },
-      );
-      await inspectPanelPage.openInspectTab();
-      await inspectPanelPage.waitForCodeButtonVisible();
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'inspect-file-right-sidebar-image.png',
-        {
-          mask: [mainPage.usersSection],
-        },
-      );
-    },
-  );
-
-  registerTest.fixme(
-    'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
-    async () => {
-      await profilePage.backToDashboardFromAccount();
-      await dashboardPage.createFileViaPlaceholder();
-      await mainPage.isMainPageLoaded();
-      await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await mainPage.waitForChangeIsSaved();
-      const newPage = await viewModePage.clickViewModeButton();
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(15000);
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-        'view-mode-page-image.png',
-        { maxDiffPixelRatio: 0.0002 },
-      );
-      await viewModePage.openInspectTab();
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-        'view-mode-inspect-page-image.png',
-        { maxDiffPixelRatio: 0.0002 },
-      );
-    },
-  );
-});
+mainTest(
+  'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
+  async () => {
+    // Uses mainTest fixture with authenticated session to avoid registration issues
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.isMainPageLoaded();
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+    const newPage = await viewModePage.clickViewModeButton();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.waitForViewerSection(15000);
+    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      'view-mode-page-image.png',
+      { maxDiffPixelRatio: 0.0002 },
+    );
+    await viewModePage.openInspectTab();
+    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      'view-mode-inspect-page-image.png',
+      { maxDiffPixelRatio: 0.0002 },
+    );
+  },
+);
