@@ -67,7 +67,7 @@ mainTest.describe(() => {
       const newPage = await viewModePage.clickViewModeButton();
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'no-board-view-mode-page-image.png',
       );
     },
@@ -81,7 +81,7 @@ mainTest.describe(() => {
       const newPage = await viewModePage.clickViewModeShortcut();
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-page-image.png',
       );
     },
@@ -95,7 +95,7 @@ mainTest.describe(() => {
     await viewModePage.waitForViewerSection(45000);
     await viewModePage.clickFullScreenButton();
     await viewModePage.exitFullScreenMode();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-page-image.png',
     );
   });
@@ -110,27 +110,27 @@ mainTest.describe(() => {
       const newPage = await viewModePage.clickViewModeShortcut();
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'first-board-view-mode-page-image.png',
       );
       await viewModePage.clickNextButton();
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'second-board-view-mode-page-image.png',
       );
       await viewModePage.clickPrevButton();
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'first-board-view-mode-page-image.png',
       );
       await viewModePage.clickNextButton();
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'second-board-view-mode-page-image.png',
       );
       await viewModePage.clickPrevButton();
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'first-board-view-mode-page-image.png',
       );
     },
@@ -146,19 +146,19 @@ mainTest.describe(() => {
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'first-board-view-mode-page-image.png',
     );
     await viewModePage.clickNextButton();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'second-board-view-mode-page-image.png',
     );
     await viewModePage.clickNextButton();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'third-board-view-mode-page-image.png',
     );
     await viewModePage.clickResetButton();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'first-board-view-mode-page-image.png',
     );
   });
@@ -175,17 +175,17 @@ mainTest.describe(() => {
       await viewModePage.waitForViewerSection(45000);
       await viewModePage.clickSelectBoardDropdown();
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'board-dropdown-view-mode-page-image.png',
       );
       await viewModePage.selectSecondBoard();
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'second-board-selected-view-mode-page-image.png',
       );
       await viewModePage.selectFirstBoard();
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'first-board-selected-view-mode-page-image.png',
       );
     },
@@ -206,7 +206,7 @@ mainTest.describe(() => {
     );
     await viewModePage.selectShowInteractionsOptions();
     await viewModePage.clickInteractionsDropdown();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'show-interactions-board-view-mode-page-image.png',
     );
     await viewModePage.clickInteractionsDropdown();
@@ -214,11 +214,11 @@ mainTest.describe(() => {
       'interactions-show-options-image.png',
     );
     await viewModePage.selectShowOnClickInteractionsOptions();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'show-on-click-interactions-board-view-mode-page-image.png',
     );
     await viewModePage.clickInteractionsDropdown();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'show-on-click-interactions-board-view-mode-page-image2.png',
     );
   });
@@ -236,23 +236,23 @@ mainTest.describe(() => {
     );
     await viewModePage.clickDownscaleButton();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'downscale-board-view-mode-page-image.png',
     );
     await viewModePage.clickResetScaleButton();
     await viewModePage.clickUpscaleButton();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'upscale-board-view-mode-page-image.png',
     );
     await viewModePage.selectFitScaleOptions();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'fit-scale-board-view-mode-page-image.png',
     );
     await viewModePage.selectFillScaleOptions();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'fill-scale-board-view-mode-page-image.png',
     );
     await viewModePage.selectFullScreenScaleOptions();
@@ -277,12 +277,12 @@ mainTest.describe(() => {
       await viewModePage.waitForViewerSection(45000);
       await viewModePage.clickOnAdd();
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-page-add-button-image.png',
       );
       await viewModePage.clickOnSubtract();
       browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-page-subtract-button-image.png',
       );
     },
@@ -301,7 +301,7 @@ mainTest.describe(() => {
       'page-list-image.png',
     );
     await viewModePage.selectPageByName('Page 2');
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-2page-image.png',
     );
     await viewModePage.openPageDropdown();
@@ -309,7 +309,7 @@ mainTest.describe(() => {
       'page-list-image2.png',
     );
     await viewModePage.selectPageByName('Page 1');
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-1page-image.png',
     );
   });
@@ -493,12 +493,12 @@ mainTest.describe(() => {
     await viewModePage.waitForViewerSection(45000);
     await viewModePage.openInspectTab();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-inspect-page-image.png',
     );
     await viewModePage.openInteractionsTab();
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-interactions-page-image.png',
     );
   });
@@ -527,7 +527,7 @@ mainTest.describe(() => {
       await layersPanelPage.clickLayerOnLayersTab('Rectangle');
       await inspectPanelPage.openCodeTab();
       await newPage.waitForTimeout(200);
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-code-tab-image.png',
       );
     },
@@ -599,23 +599,23 @@ mainTest.describe(() => {
       layersPanelPage = new LayersPanelPage(newPage);
       await viewModePage.openInspectTab();
       await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-rectangle-selected-image.png',
       );
       await layersPanelPage.clickLayerOnLayersTab('Ellipse');
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-ellipse-selected-image.png',
       );
       await layersPanelPage.clickLayerOnLayersTab('Hello World!');
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-test-selected-image.png',
       );
       await layersPanelPage.clickLayerOnLayersTab('Path');
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-path-selected-image.png',
       );
       await layersPanelPage.clickLayerOnLayersTab('mini_sample');
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-image-selected-image.png',
       );
     },
@@ -703,7 +703,7 @@ mainTest.describe(() => {
       await profilePage.gotoLink(shareLink);
       const newViewModePage = new ViewModePage(page);
       await newViewModePage.isViewerSectionVisible();
-      await expect(newViewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(newViewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-shared-image.png',
       );
       await loginPage.goto();
@@ -768,7 +768,7 @@ mainTest.describe(() => {
       viewModePage = new ViewModePage(page);
       await viewModePage.isViewerSectionVisible();
       await viewModePage.clickCommentsButton();
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-shared-comments-image.png',
       );
       await viewModePage.gotoLink(process.env.BASE_URL);
@@ -815,7 +815,7 @@ mainTest.describe(() => {
       await viewModePage.openInspectTab();
       await inspectPanelPage.openCodeTab();
       await page.waitForTimeout(200);
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-shared-code-image.png',
         {
           mask: [inspectPanelPage.codeHtmlStrings],

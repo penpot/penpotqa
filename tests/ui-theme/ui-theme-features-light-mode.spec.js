@@ -17,19 +17,80 @@ let profilePage,
   inspectPanelPage,
   viewModePage;
 const teamName = random().concat('autotest');
-test.beforeEach(async ({ page }) => {
-  viewModePage = new ViewModePage(page);
-  inspectPanelPage = new InspectPanelPage(page);
-  assetsPanelPage = new AssetsPanelPage(page);
-  profilePage = new ProfilePage(page);
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
-  await profilePage.openYourAccountPage();
-  await profilePage.openSettingsTab();
-  await profilePage.selectLightTheme();
+
+/**
+ * Initialize all page objects for a given browser page
+ * @param {import('playwright').Page} page - The browser page instance
+ * @returns {Object} Object containing all initialized page objects
+ */
+function initializePageObjects(page) {
+  return {
+    profilePage: new ProfilePage(page),
+    teamPage: new TeamPage(page),
+    dashboardPage: new DashboardPage(page),
+    mainPage: new MainPage(page),
+    assetsPanelPage: new AssetsPanelPage(page),
+    inspectPanelPage: new InspectPanelPage(page),
+    viewModePage: new ViewModePage(page),
+  };
+}
+
+/**
+ * Setup light theme for testing
+ * @param {ProfilePage} profilePageInstance - Profile page instance
+ * @param {TeamPage} teamPageInstance - Team page instance
+ */
+async function setupLightTheme(profilePageInstance, teamPageInstance) {
+  await teamPageInstance.createTeam(teamName);
+  await teamPageInstance.isTeamSelected(teamName);
+  await profilePageInstance.openYourAccountPage();
+  await profilePageInstance.openSettingsTab();
+  await profilePageInstance.selectLightTheme();
+}
+
+/**
+ * Cleanup theme settings and team after test completion
+ * @param {ProfilePage} profilePageInstance - Profile page instance
+ * @param {TeamPage} teamPageInstance - Team page instance
+ */
+async function cleanupThemeAndTeam(profilePageInstance, teamPageInstance) {
+  try {
+    if (profilePageInstance) {
+      await profilePageInstance.goToAccountPage();
+      await profilePageInstance.openSettingsTab();
+      await profilePageInstance.selectDarkTheme();
+      await profilePageInstance.backToDashboardFromAccount();
+    }
+  } catch (e) {
+    console.log('Error in profile cleanup:', e.message);
+  }
+
+  try {
+    if (teamPageInstance) {
+      await teamPageInstance.deleteTeam(teamName);
+    }
+  } catch (e) {
+    console.log('Error in team cleanup:', e.message);
+  }
+}
+
+mainTest.beforeEach(async ({ page }) => {
+  const pages = initializePageObjects(page);
+  ({
+    profilePage,
+    teamPage,
+    dashboardPage,
+    mainPage,
+    assetsPanelPage,
+    inspectPanelPage,
+    viewModePage,
+  } = pages);
+
+  await setupLightTheme(profilePage, teamPage);
+});
+
+mainTest.afterEach(async () => {
+  await cleanupThemeAndTeam(profilePage, teamPage);
 });
 
 mainTest(
@@ -61,78 +122,68 @@ mainTest(
   },
 );
 
-registerTest.describe('Settings - UI THEME', () => {
-  registerTest(
-    'PENPOT-1681 Check Layers tab' +
-      'PENPOT-1682 Check Design tab' +
-      'PENPOT-1683 Check Assets tab' +
-      'PENPOT-1685 Check Inspect tab',
-    async ({}) => {
-      await profilePage.backToDashboardFromAccount();
-      await dashboardPage.createFileViaPlaceholder();
-      await mainPage.isMainPageLoaded();
-      await mainPage.createDefaultRectangleByCoordinates(300, 300);
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
-        'layers-file-left-sidebar-image.png',
-        {
-          mask: [mainPage.fileNameSpan],
-        },
-      );
-      await assetsPanelPage.clickAssetsTab();
-      await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
-        'assets-file-left-sidebar-image.png',
-        {
-          mask: [mainPage.fileNameSpan, assetsPanelPage.librariesOpenModalButton],
-        },
-      );
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'assets-file-right-sidebar-image.png',
-        {
-          mask: [mainPage.usersSection],
-        },
-      );
-      await inspectPanelPage.openInspectTab();
-      await inspectPanelPage.waitForCodeButtonVisible();
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'inspect-file-right-sidebar-image.png',
-        {
-          mask: [mainPage.usersSection],
-        },
-      );
-    },
-  );
+mainTest(
+  'PENPOT-1681 Check Layers tab' +
+    'PENPOT-1682 Check Design tab' +
+    'PENPOT-1683 Check Assets tab' +
+    'PENPOT-1685 Check Inspect tab',
+  async ({}) => {
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.isMainPageLoaded();
+    await mainPage.createDefaultRectangleByCoordinates(300, 300);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
+      'layers-file-left-sidebar-image.png',
+      {
+        mask: [mainPage.fileNameSpan],
+      },
+    );
+    await assetsPanelPage.clickAssetsTab();
+    await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
+      'assets-file-left-sidebar-image.png',
+      {
+        mask: [mainPage.fileNameSpan, assetsPanelPage.librariesOpenModalButton],
+      },
+    );
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+      'assets-file-right-sidebar-image.png',
+      {
+        mask: [mainPage.usersSection],
+      },
+    );
+    await inspectPanelPage.openInspectTab();
+    await inspectPanelPage.waitForCodeButtonVisible();
+    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+      'inspect-file-right-sidebar-image.png',
+      {
+        mask: [mainPage.usersSection],
+      },
+    );
+  },
+);
 
-  registerTest(
-    'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
-    async () => {
-      await profilePage.backToDashboardFromAccount();
-      await dashboardPage.createFileViaPlaceholder();
-      await mainPage.isMainPageLoaded();
-      await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await mainPage.waitForChangeIsSaved();
-      const newPage = await viewModePage.clickViewModeButton();
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(15000);
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-        'view-mode-page-image.png',
-        { maxDiffPixelRatio: 0.0002 },
-      );
-      await viewModePage.openInspectTab();
-      await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
-        'view-mode-inspect-page-image.png',
-        { maxDiffPixelRatio: 0.0002 },
-      );
-    },
-  );
-});
-
-test.afterEach(async () => {
-  await profilePage.goToAccountPage();
-  await profilePage.openSettingsTab();
-  await profilePage.selectDarkTheme();
-  await profilePage.backToDashboardFromAccount();
-  await teamPage.deleteTeam(teamName);
-});
+mainTest(
+  'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
+  async () => {
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.isMainPageLoaded();
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+    const newPage = await viewModePage.clickViewModeButton();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.waitForViewerSection(15000);
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+      'view-mode-page-image.png',
+      { maxDiffPixelRatio: 0.0002 },
+    );
+    await viewModePage.openInspectTab();
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+      'view-mode-inspect-page-image.png',
+      { maxDiffPixelRatio: 0.0002 },
+    );
+  },
+);
