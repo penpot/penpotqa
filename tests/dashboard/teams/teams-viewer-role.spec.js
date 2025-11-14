@@ -70,27 +70,64 @@ async function setupViewerUser(page, role = 'Viewer') {
 mainTest.describe('Viewer Role - Permissions', () => {
   let setup;
 
-  mainTest.beforeEach(async ({ page }) => {
-    setup = await setupViewerUser(page);
-  });
+  mainTest.beforeEach(
+    'Set up Viewer user: login with main account, create team, invite user with VIEWER role, register through invite and login as Viewer ',
+    async ({ page }) => {
+      setup = await setupViewerUser(page);
+    },
+  );
 
-  mainTest(qase(1870, 'Viewer cannot edit layers'), async () => {
-    const { dashboardPage, mainPage, layersPanelPage } = setup;
-    await dashboardPage.openFileWithName('New File 1');
-    await mainPage.waitForViewportVisible();
-    await mainPage.isDesignTabVisible(false);
+  mainTest(
+    qase(
+      [1870, 1889, 1891, 1894, 1898, 1906],
+      'Viewer permissions on viewport: can not edit layers, use toolbar, page management (creation, duplicate, delete), right click menu, open color palette, open typographies ',
+    ),
+    async () => {
+      const { dashboardPage, mainPage, layersPanelPage } = setup;
 
-    await layersPanelPage.clickMainComponentOnLayersTab();
-    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-      'right-sidebar-image.png',
-      {
-        maxDiffPixelRatio,
-        mask: [mainPage.usersSection],
-      },
-    );
+      await mainTest.step('Open file and wait for viewport', async () => {
+        await dashboardPage.openFileWithName('New File 1');
+        await mainPage.waitForViewportVisible();
+      });
 
-    await mainPage.backToDashboardFromFileEditor();
-  });
+      await mainTest.step('(1870) Viewer cannot edit layers', async () => {
+        await mainPage.isDesignTabVisible(false);
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+          'right-sidebar-image.png',
+          {
+            maxDiffPixelRatio,
+            mask: [mainPage.usersSection],
+          },
+        );
+      });
+
+      await mainTest.step('(1889) Viewer cannot use toolbar', async () => {
+        await mainPage.waitForViewportVisible();
+        await mainPage.isToolBarVisible(false);
+      });
+
+      await mainTest.step(
+        '(1891) Viewer cannot create, duplicate, delete page',
+        async () => {
+          await mainPage.isPageRightClickMenuVisible(false);
+        },
+      );
+
+      await mainTest.step('(1894) Viewer right-click menu', async () => {
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await mainPage.checkViewerRightClickMenu();
+      });
+
+      await mainTest.step('(1898) Viewer cannot open color palette', async () => {
+        await mainPage.isColorsPaletteButtonVisible(false);
+      });
+
+      await mainTest.step('(1906) Viewer cannot open typographies', async () => {
+        await mainPage.isTypographyButtonVisible(false);
+      });
+    },
+  );
 
   mainTest(qase(1873, 'Viewer cannot import to Drafts'), async () => {
     const { dashboardPage } = setup;
@@ -111,47 +148,6 @@ mainTest.describe('Viewer Role - Permissions', () => {
     await dashboardPage.isAddProjectButtonVisible(false);
     await dashboardPage.openSidebarItem('Drafts');
     await dashboardPage.isCreateFileOnDraftsTabButtonVisible(false);
-  });
-
-  mainTest(qase(1889, 'Viewer cannot use toolbar'), async () => {
-    const { dashboardPage, mainPage } = setup;
-    await dashboardPage.openFileWithName('New File 1');
-    await mainPage.waitForViewportVisible();
-    await mainPage.isToolBarVisible(false);
-    await mainPage.backToDashboardFromFileEditor();
-  });
-
-  mainTest(qase(1891, 'Viewer cannot create, duplicate, delete page'), async () => {
-    const { dashboardPage, mainPage } = setup;
-    await dashboardPage.openFileWithName('New File 1');
-    await mainPage.waitForViewportVisible();
-    await mainPage.isPageRightClickMenuVisible(false);
-    await mainPage.backToDashboardFromFileEditor();
-  });
-
-  mainTest(qase(1894, 'Viewer right-click menu'), async () => {
-    const { dashboardPage, mainPage, layersPanelPage } = setup;
-    await dashboardPage.openFileWithName('New File 1');
-    await mainPage.waitForViewportVisible();
-    await layersPanelPage.clickMainComponentOnLayersTab();
-    await mainPage.checkViewerRightClickMenu();
-    await mainPage.backToDashboardFromFileEditor();
-  });
-
-  mainTest(qase(1898, 'Viewer cannot open color palette'), async () => {
-    const { dashboardPage, mainPage } = setup;
-    await dashboardPage.openFileWithName('New File 1');
-    await mainPage.waitForViewportVisible();
-    await mainPage.isColorsPaletteButtonVisible(false);
-    await mainPage.backToDashboardFromFileEditor();
-  });
-
-  mainTest(qase(1906, 'Viewer cannot open typographies'), async () => {
-    const { dashboardPage, mainPage } = setup;
-    await dashboardPage.openFileWithName('New File 1');
-    await mainPage.waitForViewportVisible();
-    await mainPage.isTypographyButtonVisible(false);
-    await mainPage.backToDashboardFromFileEditor();
   });
 });
 
