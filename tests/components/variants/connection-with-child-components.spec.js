@@ -8,6 +8,7 @@ const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page'
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 const { qase } = require('playwright-qase-reporter/playwright');
+const { SampleData } = require('helpers/sample-data');
 
 const teamName = random().concat('autotest');
 
@@ -39,6 +40,8 @@ mainTest(
     'When converting a component to a variant, the connections are not lost',
   ),
   async () => {
+    const sampleData = new SampleData();
+
     await dashboardPage.importAndOpenFile('documents/figure.penpot');
     await mainPage.isMainPageLoaded();
     await mainPage.clickMoveButton();
@@ -55,19 +58,21 @@ mainTest(
 
     await layersPanelPage.selectLayerByName('Rectangle, Blue');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.setComponentColor('#cd0c3a');
+    await designPanelPage.setComponentColor(sampleData.color.redHexCode);
     await layersPanelPage.selectLayerByName('Rectangle, Blue');
-    await designPanelPage.isFillHexCodeSetComponent('cd0c3a');
+    await designPanelPage.isFillHexCodeSetComponent(sampleData.color.redHexCode);
     await mainPage.waitForChangeIsSaved();
 
     await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.isFillHexCodeSetComponent('cd0c3a');
+    await designPanelPage.isFillHexCodeSetComponent(sampleData.color.redHexCode);
   },
 );
 
 mainTest(
   qase([2433], 'Creating a child component by copying a variant'),
   async ({ browserName }) => {
+    const sampleData = new SampleData();
+
     await dashboardPage.createFileViaPlaceholder();
     browserName === 'webkit' && !(await mainPage.isMainPageVisible())
       ? await dashboardPage.createFileViaPlaceholder()
@@ -90,14 +95,14 @@ mainTest(
     await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Rectangle');
 
     await layersPanelPage.selectLayerByName('Value 2');
-    await designPanelPage.setComponentColor('#0538D1');
+    await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
     await layersPanelPage.selectLayerByName('Value 2');
-    await designPanelPage.isFillHexCodeSetComponent('0538d1');
+    await designPanelPage.isFillHexCodeSetComponent(sampleData.color.blueHexCode);
     await mainPage.waitForChangeIsSaved();
 
     await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.isFillHexCodeSetComponent('0538d1');
+    await designPanelPage.isFillHexCodeSetComponent(sampleData.color.blueHexCode);
     await designPanelPage.changeFirstVariantProperty('Value 1');
-    await designPanelPage.isFillHexCodeSetComponent('B1B2B5');
+    await designPanelPage.isFillHexCodeSetComponent(sampleData.color.grayHexCode);
   },
 );

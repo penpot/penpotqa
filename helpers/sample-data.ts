@@ -8,14 +8,21 @@ export type Color = RGBColor | RGBAColor | HexColor | string;
 
 export class SampleData {
   color: ColorSampleData = new ColorSampleData();
+  size: SizeInNumber | SizeInPx = 16;
 }
 
 export class ColorSampleData {
   redHexCode: HexColor = '#ff0000';
   greenHexCode: HexColor = '#00ff00';
+  greenHexCode1: HexColor = '#0F602A';
+  greenHexCode2: HexColor = '#83B092';
+  greenHexCode3: HexColor = '#326F46';
   blueHexCode: HexColor = '#0000ff';
   blackHexCode: HexColor = '#000000';
   whiteHexCode: HexColor = '#ffffff';
+  pinkHexCode: HexColor = '#C41ABC';
+  purpleHexCode: HexColor = '#660E62';
+  grayHexCode: HexColor = '#B1B2B5';
   transparentHexCode: HexColor = '#00000000';
 
   private getRandomRGBColor(): string {
@@ -31,12 +38,11 @@ export class ColorSampleData {
   }
 
   getRandomHexCode(): HexColor {
-    const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f'];
-    let hexCode = '#';
-
-    while (hexCode.length < 7) {
-      hexCode += digits[Math.round(Math.random() * digits.length)];
+    let letters: string = '0123456789abcdef';
+    let hexColor = '#';
+    for (let i = 0; i < 6; i++) {
+      hexColor += letters[Math.floor(Math.random() * 16)];
     }
-    return hexCode as HexColor;
+    return hexColor as HexColor;
   }
 }

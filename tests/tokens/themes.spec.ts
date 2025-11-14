@@ -1,12 +1,13 @@
-import { mainTest } from '../../fixtures';
-import { MainPage } from '../../pages/workspace/main-page';
-import { random } from '../../helpers/string-generator';
-import { TeamPage } from '../../pages/dashboard/team-page';
-import { DashboardPage } from '../../pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { DesignPanelPage } from '../../pages/workspace/design-panel-page';
-import { TokensPage } from '../../pages/workspace/tokens/tokens-page';
+import { mainTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
+import { random } from 'helpers/string-generator';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { TokensPage } from '@pages/workspace/tokens/tokens-page';
+import { MainToken, TokenClass } from '@pages/workspace/tokens/tokens-component';
 
 const teamName = random().concat('autotest');
 const sampleData = new SampleData();
@@ -37,10 +38,31 @@ mainTest(qase(2167, 'Create theme via "create one" link'), async ({ page }) => {
   await tokensPage.themesComp.checkSelectedTheme('No theme active');
 });
 
-mainTest.describe('Themes tests', () => {
+mainTest.describe(() => {
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
   let mainPage: MainPage;
+
+  const colorToken1: MainToken<TokenClass> = {
+    class: TokenClass.Color,
+    name: 'color',
+    value: sampleData.color.getRandomHexCode(),
+  };
+  const colorToken2: MainToken<TokenClass> = {
+    class: TokenClass.Color,
+    name: 'color',
+    value: sampleData.color.getRandomHexCode(),
+  };
+  const radiusToken1: MainToken<TokenClass> = {
+    class: TokenClass.BorderRadius,
+    name: 'border-radius',
+    value: '50',
+  };
+  const radiusToken2: MainToken<TokenClass> = {
+    class: TokenClass.BorderRadius,
+    name: 'border-radius',
+    value: '30',
+  };
 
   mainTest.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
@@ -55,40 +77,37 @@ mainTest.describe('Themes tests', () => {
     await tokensPage.setsComp.isGroupSetNameVisible('Mode');
     await tokensPage.setsComp.clickOnSetCheckboxByName('Dark');
     await tokensPage.setsComp.isSetCheckedByName('Dark');
-    await tokensPage.tokensComp.createColorToken('red', sampleData.color.redHexCode);
-    await tokensPage.tokensComp.clickOnTokenWithName('red');
+    await tokensPage.createTokenViaAddButtonAndEnter(colorToken1);
+    await tokensPage.tokensComp.clickOnTokenWithName(colorToken1.name);
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSetComponent(
-      sampleData.color.redHexCode.slice(1),
-    );
+    await designPanelPage.isFillHexCodeSetComponent(colorToken1.value);
 
     await tokensPage.setsComp.createSetViaButton('Mode/Light');
     await tokensPage.setsComp.isSetNameVisible('Light');
     await tokensPage.setsComp.clickOnSetCheckboxByName('Light');
     await tokensPage.setsComp.isSetCheckedByName('Light');
-    await tokensPage.tokensComp.createColorToken('red', sampleData.color.redHexCode);
+    await tokensPage.createTokenViaAddButtonAndEnter(colorToken2);
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSetComponent(
-      sampleData.color.redHexCode.slice(1),
-    );
+    await designPanelPage.isFillHexCodeSetComponent(colorToken2.value);
 
     await tokensPage.setsComp.createSetViaButton('Device/Desktop');
     await tokensPage.setsComp.isSetNameVisible('Desktop');
     await tokensPage.setsComp.isGroupSetNameVisible('Device');
     await tokensPage.setsComp.clickOnSetCheckboxByName('Desktop');
     await tokensPage.setsComp.isSetCheckedByName('Desktop');
-    await tokensPage.tokensComp.createRadiusToken('border-radius', '50');
-    await tokensPage.tokensComp.clickOnTokenWithName('border-radius');
+    await tokensPage.createTokenViaAddButtonAndSave(radiusToken1);
+    await tokensPage.tokensComp.clickOnTokenWithName(radiusToken1.name);
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.checkGeneralCornerRadius('50');
+    await designPanelPage.checkGeneralCornerRadius(radiusToken1.value);
 
     await tokensPage.setsComp.createSetViaButton('Device/Mobile');
     await tokensPage.setsComp.isSetNameVisible('Mobile');
     await tokensPage.setsComp.clickOnSetCheckboxByName('Mobile');
     await tokensPage.setsComp.isSetCheckedByName('Mobile');
-    await tokensPage.tokensComp.createRadiusToken('border-radius', '30');
+    await tokensPage.createTokenViaAddButtonAndSave(radiusToken2);
+
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.checkGeneralCornerRadius('30');
+    await designPanelPage.checkGeneralCornerRadius(radiusToken2.value);
   });
 
   mainTest(qase(2206, 'Enable themes in different groups'), async () => {
