@@ -176,12 +176,12 @@ mainTest(
     const newPage = await viewModePage.clickViewModeButton();
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(15000);
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-page-image.png',
       { maxDiffPixelRatio: 0.0002 },
     );
     await viewModePage.openInspectTab();
-    await expect(viewModePage.viewerLoyautSection).toHaveScreenshot(
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-inspect-page-image.png',
       { maxDiffPixelRatio: 0.0002 },
     );
