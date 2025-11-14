@@ -122,16 +122,12 @@ mainTest(
   },
 );
 
-// Additional UI Theme tests using mainTest (authenticated session)
-// These tests were converted from registerTest to avoid registration flow issues
-
 mainTest(
   'PENPOT-1681 Check Layers tab' +
     'PENPOT-1682 Check Design tab' +
     'PENPOT-1683 Check Assets tab' +
     'PENPOT-1685 Check Inspect tab',
   async ({}) => {
-    // Uses mainTest fixture with authenticated session to avoid registration issues
     await profilePage.backToDashboardFromAccount();
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
@@ -172,7 +168,6 @@ mainTest(
 mainTest(
   'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
   async () => {
-    // Uses mainTest fixture with authenticated session to avoid registration issues
     await profilePage.backToDashboardFromAccount();
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
