@@ -1,4 +1,4 @@
-const { registerTest, mainTest } = require('../../fixtures');
+const { registerTest } = require('../../fixtures');
 const { expect, test } = require('@playwright/test');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
@@ -74,7 +74,7 @@ async function cleanupThemeAndTeam(profilePageInstance, teamPageInstance) {
   }
 }
 
-mainTest.beforeEach(async ({ page }) => {
+registerTest.beforeEach(async ({ page }) => {
   const pages = initializePageObjects(page);
   ({
     profilePage,
@@ -89,11 +89,11 @@ mainTest.beforeEach(async ({ page }) => {
   await setupLightTheme(profilePage, teamPage);
 });
 
-mainTest.afterEach(async () => {
+registerTest.afterEach(async () => {
   await cleanupThemeAndTeam(profilePage, teamPage);
 });
 
-mainTest(
+registerTest(
   '1677 Check Projects page' +
     '1678 Check Fonts page' +
     '1679 Check Teams page (Settings tab)' +
@@ -122,7 +122,7 @@ mainTest(
   },
 );
 
-mainTest(
+registerTest(
   'PENPOT-1681 Check Layers tab' +
     'PENPOT-1682 Check Design tab' +
     'PENPOT-1683 Check Assets tab' +
@@ -165,7 +165,7 @@ mainTest(
   },
 );
 
-mainTest(
+registerTest(
   'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
   async () => {
     await profilePage.backToDashboardFromAccount();
