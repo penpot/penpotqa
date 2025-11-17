@@ -15,12 +15,12 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 profileTest(
   qase([187, 195], 'Edit profile: profile name and image'),
   async ({ profilePage }) => {
+    const newName = random();
+    const oldName = 'QA Engineer';
+
     await profileTest.step(
       `Change profile name to "${newName}" and change back to "${oldName}"`,
       async () => {
-        const newName = random();
-        const oldName = 'QA Engineer';
-
         await profilePage.changeProfileName(newName);
         await profilePage.isSuccessMessageDisplayed('Profile saved successfully!');
         await profilePage.isAccountNameDisplayed(newName);
