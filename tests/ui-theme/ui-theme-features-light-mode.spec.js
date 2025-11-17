@@ -94,10 +94,9 @@ registerTest.afterEach(async () => {
 });
 
 registerTest(
-  '1677 Check Projects page' +
-    '1678 Check Fonts page' +
-    '1679 Check Teams page (Settings tab)' +
-    '1680 Check "Your Account" page (Profile tab)',
+  [
+    '1677 Check Projects page, 1678 Check Fonts page, 1679 Check Teams page (Settings tab), 1680 Check "Your Account" page (Profile tab)',
+  ],
   async ({}) => {
     await profilePage.clickOnProfileTab();
     await expect(profilePage.profileSection).toHaveScreenshot('profile-image.png', {
@@ -123,10 +122,9 @@ registerTest(
 );
 
 registerTest(
-  'PENPOT-1681 Check Layers tab' +
-    'PENPOT-1682 Check Design tab' +
-    'PENPOT-1683 Check Assets tab' +
-    'PENPOT-1685 Check Inspect tab',
+  [
+    'PENPOT-1681 Check Layers tab, PENPOT-1682 Check Design tab, PENPOT-1683 Check Assets tab, PENPOT-1685 Check Inspect tab',
+  ],
   async ({}) => {
     await profilePage.backToDashboardFromAccount();
     await dashboardPage.createFileViaPlaceholder();
@@ -166,7 +164,7 @@ registerTest(
 );
 
 registerTest(
-  'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
+  ['PENPOT-1686 Check Inspect tab', 'PENPOT-1687 Check Interactions tab'],
   async () => {
     await profilePage.backToDashboardFromAccount();
     await dashboardPage.createFileViaPlaceholder();
