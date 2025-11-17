@@ -9,7 +9,7 @@ const { MainPage } = require('../../../pages/workspace/main-page.js');
 const { ViewModePage } = require('../../../pages/workspace/view-mode-page.js');
 const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page.js');
 const { waitMessage } = require('../../../helpers/gmail.js');
-const { loginAsSecondUser } = require('../../../helpers/flows.js'); // <- import helper
+const { loginAsSecondUser } = require('../../../helpers/user-flows.js');
 
 let teamPage, loginPage, profilePage, dashboardPage, mainPage, layersPanelPage;
 
@@ -97,7 +97,7 @@ mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
   mainTest(
     qase(
       1826,
-      'DDashboard: Navigate to invalid URL logged in and display error page',
+      'Dashboard: Navigate to invalid URL logged in and display error page',
     ),
     async ({ page }) => {
       // Generate bad Dashboard URL
