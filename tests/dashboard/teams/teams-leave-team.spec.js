@@ -69,42 +69,38 @@ async function setupInvitedUser(page, role = 'Editor') {
 
 let setup;
 
+// BeforeEach: set up invited user with correct role based on test title
 mainTest.beforeEach(
   'Set up invited user through Gmail flow',
   async ({ page }, testInfo) => {
-    const role = testInfo.title.includes('(as admin)') ? 'Admin' : 'Editor';
+    const role = testInfo.title.includes('Admin') ? 'Admin' : 'Editor';
     setup = await setupInvitedUser(page, role);
   },
 );
 
-mainTest(
-  qase(1197, 'Team Members: Admin can leave team and return to onboarding'),
-  async () => {
-    const { teamPage, dashboardPage, teamName } = setup;
+// Parameterized tests for Admin and Editor
+const roles = [
+  { role: 'Admin', qaseId: 1197 },
+  { role: 'Editor', qaseId: 1198 },
+];
 
-    await mainTest.step('Admin leaves the team', async () => {
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.leaveTeam(teamName);
-    });
+roles.forEach(({ role, qaseId }) => {
+  mainTest(
+    qase(
+      qaseId,
+      `Team Members: ${role} can leave team and return to onboarding (${role.toLowerCase()})`,
+    ),
+    async () => {
+      const { teamPage, dashboardPage, teamName } = setup;
 
-    await mainTest.step('Confirm onboarding flow', async () => {
-      await dashboardPage.clickOnOnboardingContinueWithoutTeamButton();
-    });
-  },
-);
+      await mainTest.step(`${role} leaves the team`, async () => {
+        await teamPage.openMembersPageViaOptionsMenu();
+        await teamPage.leaveTeam(teamName);
+      });
 
-mainTest(
-  qase(1198, 'Team Members: Editor can leave team and return to onboarding'),
-  async () => {
-    const { teamPage, dashboardPage, teamName } = setup;
-
-    await mainTest.step('Editor leaves the team', async () => {
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.leaveTeam(teamName);
-    });
-
-    await mainTest.step('Confirm onboarding flow', async () => {
-      await dashboardPage.clickOnOnboardingContinueWithoutTeamButton();
-    });
-  },
-);
+      await mainTest.step('Confirm onboarding flow', async () => {
+        await dashboardPage.clickOnOnboardingContinueWithoutTeamButton();
+      });
+    },
+  );
+});
