@@ -6,7 +6,6 @@ const { DashboardPage } = require('../../../pages/dashboard/dashboard-page.js');
 const { TeamPage } = require('../../../pages/dashboard/team-page.js');
 const { MainPage } = require('../../../pages/workspace/main-page.js');
 const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page.js');
-
 const { random } = require('../../../helpers/string-generator.js');
 const { waitMessage } = require('../../../helpers/gmail.js');
 const { qase } = require('playwright-qase-reporter/playwright');
