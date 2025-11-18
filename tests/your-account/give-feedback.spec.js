@@ -5,7 +5,7 @@ giveFeedbackTest(
   qase([207, 208], 'Send Feedback: validate empty and valid submission'),
   async ({ profilePage }) => {
     await giveFeedbackTest.step(
-      'Remove subject and validate behaviour with empty fields: send feedback is disabled',
+      '(207) Remove subject and validate behaviour with empty fields: send feedback is disabled',
       async () => {
         await profilePage.isSendFeedbackButtonDisabled();
         await profilePage.enterSubjectToGiveFeedbackForm('QA Test');
@@ -19,7 +19,7 @@ giveFeedbackTest(
     );
 
     await giveFeedbackTest.step(
-      'Enter subject, click on Send and validate success message',
+      '(208) Enter subject, click on Send and validate success message',
       async () => {
         await profilePage.enterSubjectToGiveFeedbackForm('QA Test');
         await profilePage.clickSendFeedbackButton();

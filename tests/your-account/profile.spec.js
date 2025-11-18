@@ -19,7 +19,7 @@ profileTest(
     const oldName = 'QA Engineer';
 
     await profileTest.step(
-      `Change profile name to "${newName}" and change back to "${oldName}"`,
+      `(187) Change profile name to "${newName}" and change back to "${oldName}"`,
       async () => {
         await profilePage.changeProfileName(newName);
         await profilePage.isSuccessMessageDisplayed('Profile saved successfully!');
@@ -30,7 +30,7 @@ profileTest(
       },
     );
 
-    await profileTest.step(`Upload profile image and validate`, async () => {
+    await profileTest.step(`(195) Upload profile image and validate`, async () => {
       await profilePage.uploadProfileImage('images/images.png');
       await profilePage.waitInfoMessageHidden();
       await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
