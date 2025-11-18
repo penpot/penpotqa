@@ -28,7 +28,7 @@ on:
           - tests/panels-features
           - tests/performance
           - tests/plugins
-          - tests/profile
+          - tests/your-account
           - tests/subscription-plans
           - tests/tokens
           - tests/ui-theme
