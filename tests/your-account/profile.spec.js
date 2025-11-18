@@ -13,41 +13,39 @@ const {
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 
 profileTest(
-  qase([187, 195], 'Edit profile: profile name and image'),
+  qase(187, 'Edit profile: profile name and image'),
   async ({ profilePage }) => {
     const newName = random();
     const oldName = 'QA Engineer';
 
-    await profileTest.step(
-      `(187) Change profile name to "${newName}" and change back to "${oldName}"`,
-      async () => {
-        await profilePage.changeProfileName(newName);
-        await profilePage.isSuccessMessageDisplayed('Profile saved successfully!');
-        await profilePage.isAccountNameDisplayed(newName);
-        await profilePage.changeProfileName(oldName);
-        await profilePage.isSuccessMessageDisplayed('Profile saved successfully!');
-        await profilePage.isAccountNameDisplayed(oldName);
+    await profilePage.changeProfileName(newName);
+    await profilePage.isSuccessMessageDisplayed('Profile saved successfully!');
+    await profilePage.isAccountNameDisplayed(newName);
+    await profilePage.changeProfileName(oldName);
+    await profilePage.isSuccessMessageDisplayed('Profile saved successfully!');
+    await profilePage.isAccountNameDisplayed(oldName);
+  },
+);
+
+profileTest(
+  qase(195, 'Upload profile image and validate'),
+  async ({ profilePage }) => {
+    await profilePage.uploadProfileImage('images/images.png');
+    await profilePage.waitInfoMessageHidden();
+    await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
+      'profile-avatar-block-png.png',
+      {
+        mask: [profilePage.profileNameInput, profilePage.profileEmailInput],
       },
     );
-
-    await profileTest.step(`(195) Upload profile image and validate`, async () => {
-      await profilePage.uploadProfileImage('images/images.png');
-      await profilePage.waitInfoMessageHidden();
-      await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
-        'profile-avatar-block-png.png',
-        {
-          mask: [profilePage.profileNameInput, profilePage.profileEmailInput],
-        },
-      );
-      await profilePage.uploadProfileImage('images/sample.jpeg');
-      await profilePage.waitInfoMessageHidden();
-      await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
-        'profile-avatar-block-jpeg.png',
-        {
-          mask: [profilePage.profileNameInput, profilePage.profileEmailInput],
-        },
-      );
-    });
+    await profilePage.uploadProfileImage('images/sample.jpeg');
+    await profilePage.waitInfoMessageHidden();
+    await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
+      'profile-avatar-block-jpeg.png',
+      {
+        mask: [profilePage.profileNameInput, profilePage.profileEmailInput],
+      },
+    );
   },
 );
 
