@@ -1,5 +1,6 @@
 const { mainTest } = require('../../fixtures');
 const { expect, test } = require('@playwright/test');
+const { qase } = require('playwright-qase-reporter');
 const { MainPage } = require('../../pages/workspace/main-page');
 const { random } = require('../../helpers/string-generator');
 const { ProfilePage } = require('../../pages/profile-page');
@@ -34,97 +35,124 @@ test.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  '1677 Check Projects page' +
-    '1678 Check Fonts page' +
-    '1679 Check Teams page (Settings tab)' +
-    '1680 Check "Your Account" page (Profile tab)',
+  qase(
+    [1677, 1678, 1679, 1680],
+    'Check Projects page, Check Fonts page, Check Teams page (Settings tab), Check "Your Account" page (Profile tab)',
+  ),
   async ({}) => {
-    await profilePage.clickOnProfileTab();
-    await expect(profilePage.profileSection).toHaveScreenshot('profile-image.png', {
-      mask: [
-        profilePage.profileAvatarBlock,
-        profilePage.profileEmailInput,
-        profilePage.profileNameInput,
-      ],
+    await test.step('(1680) Check "Your Account" page (Profile tab)', async () => {
+      await profilePage.clickOnProfileTab();
+      await expect(profilePage.profileSection).toHaveScreenshot(
+        'profile-image.png',
+        {
+          mask: [
+            profilePage.profileAvatarBlock,
+            profilePage.profileEmailInput,
+            profilePage.profileNameInput,
+          ],
+        },
+      );
     });
-    await profilePage.backToDashboardFromAccount();
-    await expect(dashboardPage.dashboardSection).toHaveScreenshot(
-      'dashboard-image.png',
-      {
-        mask: [profilePage.profileMenuButton, teamPage.teamCurrentNameDiv],
-        maxDiffPixelRatio: 0.01,
-      },
-    );
-    await dashboardPage.openSidebarItem('Fonts');
-    await expect(teamPage.teamSettingsSection).toHaveScreenshot('fonts-image.png');
-    await teamPage.openTeamSettingsPageViaOptionsMenu();
-    await teamPage.checkTeamSettingsTabContent();
+
+    await test.step('(1677) Check Projects page', async () => {
+      await profilePage.backToDashboardFromAccount();
+      await expect(dashboardPage.dashboardSection).toHaveScreenshot(
+        'dashboard-image.png',
+        {
+          mask: [profilePage.profileMenuButton, teamPage.teamCurrentNameDiv],
+          maxDiffPixelRatio: 0.01,
+        },
+      );
+    });
+
+    await test.step('(1678) Check Fonts page', async () => {
+      await dashboardPage.openSidebarItem('Fonts');
+      await expect(teamPage.teamSettingsSection).toHaveScreenshot('fonts-image.png');
+    });
+
+    await test.step('(1679) Check Teams page (Settings tab)', async () => {
+      await teamPage.openTeamSettingsPageViaOptionsMenu();
+      await teamPage.checkTeamSettingsTabContent();
+    });
   },
 );
 
 mainTest(
-  'PENPOT-1681 Check Layers tab' +
-    'PENPOT-1682 Check Design tab' +
-    'PENPOT-1683 Check Assets tab' +
-    'PENPOT-1685 Check Inspect tab',
+  qase(
+    [1681, 1682, 1683, 1685],
+    'Check Layers tab, Check Design tab, Check Assets tab, Check Inspect tab',
+  ),
   async ({}) => {
-    await profilePage.backToDashboardFromAccount();
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-    await mainPage.createDefaultRectangleByCoordinates(300, 300);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
-      'layers-file-left-sidebar-image.png',
-      {
-        mask: [mainPage.fileNameSpan],
-      },
-    );
-    await assetsPanelPage.clickAssetsTab();
-    await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
-      'assets-file-left-sidebar-image.png',
-      {
-        mask: [mainPage.fileNameSpan, assetsPanelPage.librariesOpenModalButton],
-      },
-    );
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-      'assets-file-right-sidebar-image.png',
-      {
-        mask: [mainPage.usersSection],
-      },
-    );
-    await inspectPanelPage.openInspectTab();
-    await inspectPanelPage.waitForCodeButtonVisible();
-    await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-      'inspect-file-right-sidebar-image.png',
-      {
-        mask: [mainPage.usersSection],
-      },
-    );
+    await test.step('(1681, 1682) Check Layers and Design tab', async () => {
+      await profilePage.backToDashboardFromAccount();
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+      await mainPage.createDefaultRectangleByCoordinates(300, 300);
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
+        'layers-file-left-sidebar-image.png',
+        {
+          mask: [mainPage.fileNameSpan],
+        },
+      );
+    });
+
+    await test.step('(1683) Check Assets tab', async () => {
+      await assetsPanelPage.clickAssetsTab();
+      await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
+        'assets-file-left-sidebar-image.png',
+        {
+          mask: [mainPage.fileNameSpan, assetsPanelPage.librariesOpenModalButton],
+        },
+      );
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+        'assets-file-right-sidebar-image.png',
+        {
+          mask: [mainPage.usersSection],
+        },
+      );
+    });
+
+    await test.step('(1685) Check Inspect tab', async () => {
+      await inspectPanelPage.openInspectTab();
+      await inspectPanelPage.waitForCodeButtonVisible();
+      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
+        'inspect-file-right-sidebar-image.png',
+        {
+          mask: [mainPage.usersSection],
+        },
+      );
+    });
   },
 );
 
 mainTest(
-  'PENPOT-1686 Check Inspect tab' + 'PENPOT-1687 Check Interactions tab',
+  qase([1686, 1687], 'Check Inspect tab, Check Interactions tab'),
   async () => {
-    await profilePage.backToDashboardFromAccount();
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeButton();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(15000);
-    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-      'view-mode-page-image.png',
-      { maxDiffPixelRatio: 0.0002 },
-    );
-    await viewModePage.openInspectTab();
-    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-      'view-mode-inspect-page-image.png',
-      { maxDiffPixelRatio: 0.0002 },
-    );
+    await test.step('(1687) Check Interactions tab', async () => {
+      await profilePage.backToDashboardFromAccount();
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeButton();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(15000);
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+        'view-mode-page-image.png',
+        { maxDiffPixelRatio: 0.0002 },
+      );
+    });
+
+    await test.step('(1686) Check Inspect tab', async () => {
+      await viewModePage.openInspectTab();
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+        'view-mode-inspect-page-image.png',
+        { maxDiffPixelRatio: 0.0002 },
+      );
+    });
   },
 );
 
