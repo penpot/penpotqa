@@ -49,32 +49,6 @@ async function setupLightTheme(profilePageInstance, teamPageInstance) {
   await profilePageInstance.selectLightTheme();
 }
 
-/**
- * Cleanup theme settings and team after test completion
- * @param {ProfilePage} profilePageInstance - Profile page instance
- * @param {TeamPage} teamPageInstance - Team page instance
- */
-async function cleanupThemeAndTeam(profilePageInstance, teamPageInstance) {
-  try {
-    if (profilePageInstance) {
-      await profilePageInstance.goToAccountPage();
-      await profilePageInstance.openSettingsTab();
-      await profilePageInstance.selectDarkTheme();
-      await profilePageInstance.backToDashboardFromAccount();
-    }
-  } catch (e) {
-    console.log('Error in profile cleanup:', e.message);
-  }
-
-  try {
-    if (teamPageInstance) {
-      await teamPageInstance.deleteTeam(teamName);
-    }
-  } catch (e) {
-    console.log('Error in team cleanup:', e.message);
-  }
-}
-
 mainTest.beforeEach(async ({ page }) => {
   const pages = initializePageObjects(page);
   ({
@@ -91,7 +65,14 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest.afterEach(async () => {
-  await cleanupThemeAndTeam(profilePage, teamPage);
+  try {
+    await profilePage.goToAccountPage();
+    await profilePage.openSettingsTab();
+    await profilePage.selectDarkTheme();
+    await profilePage.backToDashboardFromAccount();
+  } catch (e) {
+    console.log('Error in theme cleanup:', e.message);
+  }
 });
 
 mainTest(
@@ -99,25 +80,22 @@ mainTest(
     [1677, 1678, 1679, 1680],
     'Check Projects page, Check Fonts page, Check Teams page (Settings tab), Check "Your Account" page (Profile tab)',
   ),
-  async ({ mainTest }) => {
-    await mainTest.step(
-      '(1680) Check "Your Account" page (Profile tab)',
-      async () => {
-        await profilePage.clickOnProfileTab();
-        await expect(profilePage.profileSection).toHaveScreenshot(
-          'profile-image.png',
-          {
-            mask: [
-              profilePage.profileAvatarBlock,
-              profilePage.profileEmailInput,
-              profilePage.profileNameInput,
-            ],
-          },
-        );
-      },
-    );
+  async ({}) => {
+    await test.step('(1680) Check "Your Account" page (Profile tab)', async () => {
+      await profilePage.clickOnProfileTab();
+      await expect(profilePage.profileSection).toHaveScreenshot(
+        'profile-image.png',
+        {
+          mask: [
+            profilePage.profileAvatarBlock,
+            profilePage.profileEmailInput,
+            profilePage.profileNameInput,
+          ],
+        },
+      );
+    });
 
-    await mainTest.step('(1677) Check Projects page', async () => {
+    await test.step('(1677) Check Projects page', async () => {
       await profilePage.backToDashboardFromAccount();
       await expect(dashboardPage.dashboardSection).toHaveScreenshot(
         'dashboard-image.png',
@@ -128,12 +106,12 @@ mainTest(
       );
     });
 
-    await mainTest.step('(1678) Check Fonts page', async () => {
+    await test.step('(1678) Check Fonts page', async () => {
       await dashboardPage.openSidebarItem('Fonts');
       await expect(teamPage.teamSettingsSection).toHaveScreenshot('fonts-image.png');
     });
 
-    await mainTest.step('(1679) Check Teams page (Settings tab)', async () => {
+    await test.step('(1679) Check Teams page (Settings tab)', async () => {
       await teamPage.openTeamSettingsPageViaOptionsMenu();
       await teamPage.checkTeamSettingsTabContent();
     });
@@ -145,8 +123,8 @@ mainTest(
     [1681, 1682, 1683, 1685],
     'Check Layers tab, Check Design tab, Check Assets tab, Check Inspect tab',
   ),
-  async ({ mainTest }) => {
-    await mainTest.step('(1681, 1682) Check Layers and Design tab', async () => {
+  async ({}) => {
+    await test.step('(1681, 1682) Check Layers and Design tab', async () => {
       await profilePage.backToDashboardFromAccount();
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.isMainPageLoaded();
@@ -161,7 +139,7 @@ mainTest(
       );
     });
 
-    await mainTest.step('(1683) Check Assets tab', async () => {
+    await test.step('(1683) Check Assets tab', async () => {
       await assetsPanelPage.clickAssetsTab();
       await expect(mainPage.fileLeftSidebarAside).toHaveScreenshot(
         'assets-file-left-sidebar-image.png',
@@ -178,7 +156,7 @@ mainTest(
       );
     });
 
-    await mainTest.step('(1685) Check Inspect tab', async () => {
+    await test.step('(1685) Check Inspect tab', async () => {
       await inspectPanelPage.openInspectTab();
       await inspectPanelPage.waitForCodeButtonVisible();
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
@@ -193,8 +171,8 @@ mainTest(
 
 mainTest(
   qase([1686, 1687], 'Check Inspect tab, Check Interactions tab'),
-  async ({ mainTest }) => {
-    await mainTest.step('(1687) Check Interactions tab', async () => {
+  async ({}) => {
+    await test.step('(1687) Check Interactions tab', async () => {
       await profilePage.backToDashboardFromAccount();
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.isMainPageLoaded();
@@ -209,7 +187,7 @@ mainTest(
       );
     });
 
-    await mainTest.step('(1686) Check Inspect tab', async () => {
+    await test.step('(1686) Check Inspect tab', async () => {
       await viewModePage.openInspectTab();
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-inspect-page-image.png',
