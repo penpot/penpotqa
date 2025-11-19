@@ -275,7 +275,9 @@ exports.BasePage = class BasePage {
   }
 
   async isSuccessMessageDisplayed(message) {
-    await expect(this.successMessage).toHaveText(message);
+    await expect(this.successMessage, `Success message is "${message}"`).toHaveText(
+      message,
+    );
   }
 
   async waitSuccessMessageHidden() {

@@ -527,15 +527,22 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isInviteMessageDisplayed(message) {
-    await expect(this.inviteMessage).toHaveText(message);
+    await expect(this.inviteMessage, `Invite message is "${message}"`).toHaveText(
+      message,
+    );
   }
 
   async isErrorMessageDisplayed(message) {
-    await expect(this.errorMessage).toHaveText(message);
+    await expect(this.errorMessage, `Error message is "${message}"`).toHaveText(
+      message,
+    );
   }
 
   async isGoToPenpotButtonVisible() {
-    await expect(this.goToYourPenpotButton).toBeVisible();
+    await expect(
+      this.goToYourPenpotButton,
+      'Go to your Penpot button is visible',
+    ).toBeVisible();
   }
 
   async clickGoToPenpotButton() {
