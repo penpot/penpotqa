@@ -1,4 +1,4 @@
-const { registerTest } = require('../../fixtures');
+const { mainTest } = require('../../fixtures');
 const { expect, test } = require('@playwright/test');
 const { qase } = require('playwright-qase-reporter');
 const { MainPage } = require('../../pages/workspace/main-page');
@@ -75,7 +75,7 @@ async function cleanupThemeAndTeam(profilePageInstance, teamPageInstance) {
   }
 }
 
-registerTest.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }) => {
   const pages = initializePageObjects(page);
   ({
     profilePage,
@@ -90,11 +90,11 @@ registerTest.beforeEach(async ({ page }) => {
   await setupLightTheme(profilePage, teamPage);
 });
 
-registerTest.afterEach(async () => {
+mainTest.afterEach(async () => {
   await cleanupThemeAndTeam(profilePage, teamPage);
 });
 
-registerTest(
+mainTest(
   qase(
     [1677, 1678, 1679, 1680],
     'Check Projects page, Check Fonts page, Check Teams page (Settings tab), Check "Your Account" page (Profile tab)',
@@ -140,7 +140,7 @@ registerTest(
   },
 );
 
-registerTest(
+mainTest(
   qase(
     [1681, 1682, 1683, 1685],
     'Check Layers tab, Check Design tab, Check Assets tab, Check Inspect tab',
@@ -191,7 +191,7 @@ registerTest(
   },
 );
 
-registerTest(
+mainTest(
   qase([1686, 1687], 'Check Inspect tab, Check Interactions tab'),
   async ({ mainTest }) => {
     await mainTest.step('(1687) Check Interactions tab', async () => {
