@@ -52,15 +52,13 @@ registerTest.describe(() => {
     await profilePage.backToDashboardFromAccount();
   });
 
-  registerTest.fixme(
+  registerTest(
     qase(2346, 'Invoices capped at $7 (Unlimited)'),
     async ({ email }) => {
-      // FIXME: Test is failing due to element not found error.
-      // The assertion `expect(locator).toBeVisible()` fails for locator:
-      // getByText('Current subscription')
-      // Expected: visible, but element(s) not found after 5000ms timeout.
-      // This suggests the subscription page structure may have changed or
-      // there's a navigation/loading issue preventing the page from displaying correctly.
+      registerTest.fixme(
+        "Element getByText('Current subscription') not found - subscription page structure changed or navigation/loading issue",
+      );
+
       const currentPlan = 'Unlimited';
       let date = new Date();
 

@@ -33,14 +33,13 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest.fixme(
+registerTest(
   qase(2302, 'Switch from Unlimited → Enterprise'),
   async ({ page, name, email }) => {
-    // FIXME: Test is failing due to element not found error.
-    // The assertion `expect(locator).toBeVisible()` fails for locator:
-    // getByTestId('hip-link').first().getByText('Penpot Enterprise')
-    // Expected: visible, but element(s) not found after 5000ms timeout.
-    // This suggests the invoice text format or element structure may have changed.
+    registerTest.fixme(
+      "Element getByTestId('hip-link').first().getByText('Penpot Enterprise') not found - invoice text format or element structure may have changed",
+    );
+
     const currentPlan = 'Unlimited';
     const newPlan = 'Enterprise';
     let date = new Date();
