@@ -17,14 +17,7 @@ const {
   waitMessage,
   waitSecondMessage,
   waitRequestMessage,
-  checkConfirmAccessText,
-  checkDashboardConfirmAccessText,
-  checkYourPenpotConfirmAccessText,
-  checkYourPenpotViewModeConfirmAccessText,
-  checkSigningText,
 } = require('../../../helpers/gmail.js');
-
-const maxDiffPixelRatio = 0.001;
 
 let teamPage,
   loginPage,

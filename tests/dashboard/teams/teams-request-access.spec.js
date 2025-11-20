@@ -20,9 +20,7 @@ const {
   checkSigningText,
 } = require('../../../helpers/gmail.js');
 
-const maxDiffPixelRatio = 0.001;
-
-// Setup team and file
+// Set up Team and File
 async function setupTeamAndFile(page, teamName) {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
@@ -40,218 +38,305 @@ async function setupTeamAndFile(page, teamName) {
   return { loginPage, registerPage, dashboardPage, teamPage, profilePage, mainPage };
 }
 
-// Login helper
+// Setup ONLY a file (for Your Penpot workspace)
+async function setupFileOnly(page) {
+  const loginPage = new LoginPage(page);
+  const registerPage = new RegisterPage(page);
+  const dashboardPage = new DashboardPage(page);
+  const profilePage = new ProfilePage(page);
+  const mainPage = new MainPage(page);
+  const teamPage = new TeamPage(page);
+
+  await dashboardPage.createFileViaPlaceholder();
+  // await mainPage.waitForViewportVisible();
+  await mainPage.isMainPageLoaded();
+
+  return { loginPage, registerPage, dashboardPage, profilePage, mainPage, teamPage };
+}
+
+// Login as specific user helper
 async function loginAs({ profilePage, loginPage, dashboardPage }, email) {
-  await profilePage.logout();
   await loginPage.isEmailInputVisible();
-  await loginPage.isLoginPageOpened();
   await loginPage.enterEmail(email);
   await loginPage.enterPwd(process.env.LOGIN_PWD);
   await loginPage.clickLoginButton();
   await dashboardPage.isDashboardOpenedAfterLogin();
 }
 
-// Request access helper
-async function requestAccessFlow(
-  page,
-  currentURL,
-  { teamPage, dashboardPage },
-  viewModePage = null,
-  screenshotName,
-  maxDiff,
-) {
-  await page.goto(currentURL);
+let viewModePage;
+let invite;
+let secondRandomName = random() + 'autotest';
+let secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}${process.env.GMAIL_DOMAIN}`;
 
-  if (viewModePage) {
-    await viewModePage.waitForViewerSection(45000);
-    await viewModePage.isShareButtonVisible();
-  } else {
-    await expect(teamPage.accessDialog).toHaveScreenshot(screenshotName, {
-      maxDiffPixelRatio: maxDiff || maxDiffPixelRatio,
-    });
+const team = `${random()}-request-autotest`;
+
+registerTest.beforeEach(
+  'Create a new account, login and complete onboarding modal',
+  ({ page }) => {
+    viewModePage = new ViewModePage(page);
+  },
+);
+
+registerTest(
+  qase(
+    1827,
+    "Request access from Workspace URL (Not Your Penpot): 'You don't have access to this file'",
+  ),
+  async ({ page, email }) => {
+    // Create a team, a new file and navigate to Dasboard (as owner)
+    const setup = await setupTeamAndFile(page, team);
+    const { mainPage, teamPage, loginPage, dashboardPage, profilePage } = setup;
+
+    // Get Workspace URL and navigate to Dashboard
+    const currentURL = await mainPage.getUrl();
+    await mainPage.clickPencilBoxButton();
+
+    // Login as SECOND_EMAIL and navigate to URL
+    await profilePage.logout();
+    await loginAs(setup, process.env.SECOND_EMAIL);
+    await page.goto(currentURL);
+
+    // Request access as SECOND_EMAIL from dialog and return home
+    await teamPage.isRequestFileAccessDialogVisible();
     await teamPage.clickOnRequestAccessButton();
     await teamPage.isRequestAccessButtonVisible(false);
     await teamPage.checkRequestSentCorrectlyDialog();
     await teamPage.clickReturnHomeButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
-  }
-}
+    await profilePage.logout();
 
-registerTest.describe(
-  'User Permissions - Request Access (previous register) - View Mode',
-  () => {
-    let team;
-    let viewModePage;
-    let secondRandomName;
-    let secondEmail;
-    let invite;
+    // Login with owner email and check request access email
+    await loginAs(setup, email);
 
-    registerTest.beforeEach(async ({ page }) => {
-      await registerTest.slow();
-      viewModePage = new ViewModePage(page);
-      team = random().concat('autotest');
-      secondRandomName = random().concat('autotest');
-      secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}${process.env.GMAIL_DOMAIN}`;
-    });
+    await waitSecondMessage(page, email, 40);
+    const requestMessage = await waitRequestMessage(page, email, 40);
 
-    registerTest(
-      qase(1827, 'Request access from Workspace (Not Your Penpot)'),
-      async ({ page, email }) => {
-        const pages = await setupTeamAndFile(page, team);
-        const currentURL = await pages.mainPage.getUrl();
-        await pages.mainPage.clickPencilBoxButton();
-
-        await loginAs(pages, process.env.SECOND_EMAIL);
-        await requestAccessFlow(
-          page,
-          currentURL,
-          pages,
-          null,
-          'request-file-access-dialog-image.png',
-        );
-
-        await loginAs(pages, email);
-        await waitSecondMessage(page, email, 40);
-        const requestMessage = await waitRequestMessage(page, email, 40);
-        await checkConfirmAccessText(
-          requestMessage.inviteText,
-          'QA Engineer',
-          process.env.SECOND_EMAIL,
-          team,
-        );
-
-        await page.goto(requestMessage.inviteUrl[1]);
-        await viewModePage.waitForViewerSection(45000);
-        await viewModePage.isShareButtonVisible();
-      },
+    await checkConfirmAccessText(
+      requestMessage.inviteText,
+      'QA Engineer',
+      process.env.SECOND_EMAIL,
+      team,
     );
 
-    registerTest(
-      qase(1829, 'Request access from Dashboard (Not Your Penpot)'),
-      async ({ page, email }) => {
-        const pages = await setupTeamAndFile(page, team);
-        const currentURL = await pages.mainPage.getUrl();
-        await pages.mainPage.clickPencilBoxButton();
+    // Navigate to invite (view file)
+    await page.goto(requestMessage.inviteUrl[1]);
 
-        await loginAs(pages, process.env.SECOND_EMAIL);
-        await requestAccessFlow(
-          page,
-          currentURL,
-          pages,
-          null,
-          'request-project-access-dialog-image.png',
-          maxDiffPixelRatio,
-        );
+    // Validate Viewer page
+    await viewModePage.waitForViewerSection();
+    await viewModePage.isShareButtonVisible();
+  },
+);
 
-        await loginAs(pages, email);
-        await waitSecondMessage(page, email, 40);
-        const requestMessage = await waitRequestMessage(page, email, 40);
-        await checkDashboardConfirmAccessText(
-          requestMessage.inviteText,
-          'QA Engineer',
-          process.env.SECOND_EMAIL,
-          team,
-        );
-      },
-    );
+registerTest(
+  qase(
+    1829,
+    "Request access from Dashboard URL (Not Your Penpot): You don't have access to this project",
+  ),
+  async ({ page, email }) => {
+    // Create a team, a new file and navigate to Dasboard (as owner)
+    const setup = await setupTeamAndFile(page, team);
+    const { mainPage, teamPage, dashboardPage, loginPage, profilePage } = setup;
 
-    registerTest(
-      qase(1830, 'Request access from Workspace (Your Penpot)'),
-      async ({ page, email }) => {
-        const pages = await setupTeamAndFile(page, team);
-        const currentURL = await pages.mainPage.getUrl();
-        await pages.mainPage.clickPencilBoxButton();
+    // Navigate to Dashboard and get Dashboard URL
+    await mainPage.clickPencilBoxButton();
+    const currentURL = await mainPage.getUrl();
 
-        await loginAs(pages, process.env.SECOND_EMAIL);
-        await requestAccessFlow(page, currentURL, pages);
+    // Login as SECOND_EMAIL and navigate to Dashboard URL
+    await profilePage.logout();
+    await loginAs(setup, process.env.SECOND_EMAIL);
+    await page.goto(currentURL);
 
-        await loginAs(pages, email);
-        await waitSecondMessage(page, email, 40);
-        const requestMessage = await waitRequestMessage(page, email, 40);
-        await checkYourPenpotConfirmAccessText(
-          requestMessage.inviteText,
-          'QA Engineer',
-          process.env.SECOND_EMAIL,
-          team,
-        );
-      },
-    );
+    // Request access as SECOND_EMAIL from dialog and return home
+    await teamPage.isRequestAccessProjectDialogVisible();
+    await teamPage.clickOnRequestAccessButton();
+    await teamPage.isRequestAccessButtonVisible(false);
+    await teamPage.checkRequestSentCorrectlyDialog();
+    await teamPage.clickReturnHomeButton();
+    await profilePage.logout();
 
-    registerTest(
-      qase(1831, 'Request access from View mode (Your Penpot)'),
-      async ({ page, email }) => {
-        const pages = await setupTeamAndFile(page, team);
-        await pages.mainPage.createDefaultBoardByCoordinates(300, 300);
-        await pages.mainPage.waitForChangeIsSaved();
-        const newPage = await viewModePage.clickViewModeShortcut();
-        viewModePage = new ViewModePage(newPage);
-        await viewModePage.waitForViewerSection(45000);
-        const currentURL = await viewModePage.getUrl();
-        await pages.mainPage.clickPencilBoxButton();
+    // Login with owner email and check request access email
+    await loginAs(setup, email);
 
-        await loginAs(pages, process.env.SECOND_EMAIL);
-        await requestAccessFlow(page, currentURL, pages);
+    await waitSecondMessage(page, email, 40);
+    const requestMessage = await waitRequestMessage(page, email, 40);
 
-        await loginAs(pages, email);
-        await waitSecondMessage(page, email, 40);
-        const requestMessage = await waitRequestMessage(page, email, 40);
-        await checkYourPenpotViewModeConfirmAccessText(
-          requestMessage.inviteText,
-          'QA Engineer',
-          process.env.SECOND_EMAIL,
-          team,
-        );
-      },
-    );
-
-    registerTest(
-      qase(1833, 'Auto Join to the team'),
-      async ({ page, name, email }) => {
-        const pages = await setupTeamAndFile(page, team);
-        const currentURL = await pages.mainPage.getUrl();
-        await pages.mainPage.clickPencilBoxButton();
-
-        // Register second user
-        await pages.profilePage.logout();
-        await page.context().clearCookies();
-        await pages.mainPage.reloadPage();
-        await pages.loginPage.isLoginPageOpened();
-        await pages.loginPage.acceptCookie();
-        await pages.loginPage.clickOnCreateAccount();
-        await pages.registerPage.registerAccount(
-          secondRandomName,
-          secondEmail,
-          process.env.LOGIN_PWD,
-        );
-        await pages.registerPage.isRegisterEmailCorrect(secondEmail);
-        invite = await waitMessage(page, secondEmail, 40);
-        await page.goto(invite.inviteUrl);
-        await pages.dashboardPage.fillOnboardingQuestions();
-        await pages.dashboardPage.isDashboardOpenedAfterLogin();
-
-        // Request access
-        await page.goto(currentURL);
-        await pages.teamPage.checkRequestFileAccessDialog();
-        await pages.teamPage.clickOnRequestAccessButton();
-        await pages.teamPage.isRequestAccessButtonVisible(false);
-        await pages.teamPage.checkRequestSentCorrectlyDialog();
-        await pages.teamPage.clickReturnHomeButton();
-        await pages.dashboardPage.isDashboardOpenedAfterLogin();
-
-        // Login as primary user to confirm
-        await loginAs(pages, email);
-        await pages.teamPage.switchTeam(team);
-        await waitSecondMessage(page, email, 40);
-        const requestMessage = await waitRequestMessage(page, email, 40);
-        await page.goto(requestMessage.inviteUrl[0]);
-        await pages.teamPage.checkFirstInvitedEmail(secondEmail);
-        await pages.teamPage.waitForInvitationButtonEnabled(10000);
-        await pages.teamPage.clickSendInvitationButton();
-
-        await waitSecondMessage(page, secondEmail, 40);
-        const secondRequestMessage = await waitRequestMessage(page, secondEmail, 40);
-        await checkSigningText(secondRequestMessage.inviteText, name, team);
-      },
+    await checkDashboardConfirmAccessText(
+      requestMessage.inviteText,
+      'QA Engineer',
+      process.env.SECOND_EMAIL,
+      team,
     );
   },
 );
+
+registerTest(
+  qase(
+    1830,
+    "Request access from Workspace (Your Penpot): 'You don't have access to this file'",
+  ),
+  async ({ page, email }) => {
+    // Create a new file in Your Penpot (as owner)
+    const setup = await setupFileOnly(page);
+    const { mainPage, teamPage, profilePage, dashboardPage } = setup;
+
+    // Get Workspace URL and navigate to Dashboard
+    const currentURL = await mainPage.getUrl();
+    await mainPage.clickPencilBoxButton();
+
+    // Login as SECOND_EMAIL
+    await profilePage.logout();
+    await loginAs(setup, process.env.SECOND_EMAIL);
+
+    // Navigate to Workspace URL
+    await page.goto(currentURL);
+
+    // Request access as SECOND_EMAIL from dialog and return home
+    await teamPage.isRequestFileAccessDialogVisible();
+    await teamPage.clickOnRequestAccessButton();
+    await teamPage.isRequestAccessButtonVisible(false);
+    await teamPage.checkRequestSentCorrectlyDialog();
+    await teamPage.clickReturnHomeButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await profilePage.logout();
+
+    // Login with owner email and check request access email
+    await loginAs(setup, email);
+
+    await waitSecondMessage(page, email, 40);
+    const requestMessage = await waitRequestMessage(page, email, 40);
+
+    await checkYourPenpotConfirmAccessText(
+      requestMessage.inviteText,
+      'QA Engineer',
+      process.env.SECOND_EMAIL,
+      team,
+    );
+  },
+);
+
+registerTest(
+  qase(
+    1831,
+    "Request access from View mode (Your Penpot): 'You don't have access to this file'",
+  ),
+  async ({ page, email }) => {
+    // Create a new file in Your Penpot (as owner)
+    const setup = await setupFileOnly(page);
+    const { mainPage, teamPage, profilePage, dashboardPage } = setup;
+
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+
+    // Navigate to View Mode
+    const viewerPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(viewerPage);
+
+    await viewModePage.waitForViewerSection();
+
+    // Get View Mode URL and navigate to Dashboard
+    const currentURL = await viewModePage.getUrl();
+    await mainPage.clickPencilBoxButton();
+    await profilePage.logout();
+
+    // Login as SECOND_EMAIL
+    await loginAs(setup, process.env.SECOND_EMAIL);
+    await page.goto(currentURL);
+
+    // Request access as SECOND_EMAIL from dialog and return home
+    await teamPage.isRequestFileAccessDialogVisible();
+    await teamPage.clickOnRequestAccessButton();
+    await teamPage.isRequestAccessButtonVisible(false);
+    await teamPage.checkRequestSentCorrectlyDialog();
+    await teamPage.clickReturnHomeButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await profilePage.logout();
+
+    // Login with owner email and check request access email
+    await loginAs(setup, email);
+
+    await waitSecondMessage(page, email, 40);
+    const requestMessage = await waitRequestMessage(page, email, 40);
+
+    await checkYourPenpotViewModeConfirmAccessText(
+      requestMessage.inviteText,
+      'QA Engineer',
+      process.env.SECOND_EMAIL,
+      team,
+    );
+  },
+);
+
+registerTest(qase(1833, 'Auto Join to the team'), async ({ page, name, email }) => {
+  // Set up team and file
+  const setup = await setupTeamAndFile(page, team);
+  const { mainPage, teamPage, registerPage, dashboardPage, loginPage, profilePage } =
+    setup;
+
+  // Capture workspace URL and go back to Dashboard
+  const currentURL = await mainPage.getUrl();
+  await mainPage.clickPencilBoxButton();
+
+  // REGISTER second user (fresh session required)
+  await profilePage.logout();
+  await loginPage.isEmailInputVisible();
+  await page.context().clearCookies();
+  await mainPage.reloadPage();
+  await loginPage.isLoginPageOpened();
+  await loginPage.acceptCookie();
+  await loginPage.clickOnCreateAccount();
+
+  await registerPage.registerAccount(
+    secondRandomName,
+    secondEmail,
+    process.env.LOGIN_PWD,
+  );
+  await registerPage.isRegisterEmailCorrect(secondEmail);
+
+  const invite = await waitMessage(page, secondEmail, 40);
+  await page.goto(invite.inviteUrl);
+
+  await dashboardPage.fillOnboardingQuestions();
+  await dashboardPage.isDashboardOpenedAfterLogin();
+
+  // SECOND user requests access to file
+  await page.goto(currentURL);
+
+  await teamPage.isRequestFileAccessDialogVisible();
+  await teamPage.clickOnRequestAccessButton();
+  await teamPage.isRequestAccessButtonVisible(false);
+  await teamPage.checkRequestSentCorrectlyDialog();
+  await teamPage.clickReturnHomeButton();
+  await dashboardPage.isDashboardOpenedAfterLogin();
+
+  // Log out & clean session before OWNER login
+  await profilePage.logout();
+  await loginPage.isEmailInputVisible();
+  await page.context().clearCookies();
+  await mainPage.reloadPage();
+  await loginPage.isLoginPageOpened();
+  await loginPage.acceptCookie();
+
+  // Login back as OWNER
+  await loginPage.enterEmail(email);
+  await loginPage.enterPwd(process.env.LOGIN_PWD);
+  await loginPage.clickLoginButton();
+  await dashboardPage.isDashboardOpenedAfterLogin();
+
+  // Must switch back to the created team
+  await teamPage.switchTeam(team);
+
+  // OWNER receives request email & sends invitation
+  await waitSecondMessage(page, email, 40);
+  const requestMessage = await waitRequestMessage(page, email, 40);
+
+  await page.goto(requestMessage.inviteUrl[0]);
+  await teamPage.checkFirstInvitedEmail(secondEmail);
+  await teamPage.waitForInvitationButtonEnabled(10000);
+  await teamPage.clickSendInvitationButton();
+
+  // SECOND user receives the invitation signing email
+  await waitSecondMessage(page, secondEmail, 40);
+  const secondRequestMessage = await waitRequestMessage(page, secondEmail, 40);
+
+  await checkSigningText(secondRequestMessage.inviteText, name, team);
+});
