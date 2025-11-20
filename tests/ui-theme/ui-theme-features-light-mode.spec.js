@@ -1,4 +1,4 @@
-const { mainTest } = require('../../fixtures');
+const { mainTest, registerTest } = require('../../fixtures');
 const { expect, test } = require('@playwright/test');
 const { qase } = require('playwright-qase-reporter');
 const { MainPage } = require('../../pages/workspace/main-page');
@@ -77,7 +77,7 @@ mainTest(
   },
 );
 
-mainTest(
+registerTest(
   qase(
     [1681, 1682, 1683, 1685],
     'Check Layers tab, Check Design tab, Check Assets tab, Check Inspect tab',
@@ -128,7 +128,7 @@ mainTest(
   },
 );
 
-mainTest(
+registerTest(
   qase([1686, 1687], 'Check Inspect tab, Check Interactions tab'),
   async () => {
     await test.step('(1687) Check Interactions tab', async () => {
