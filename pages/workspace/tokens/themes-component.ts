@@ -1,5 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { BaseComponent } from '../../base-component';
+import { BaseComponent } from '@pages/base-component';
 
 export class ThemesComponent {
   readonly page: Page;

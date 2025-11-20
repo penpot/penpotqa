@@ -4,9 +4,9 @@ import { random } from 'helpers/string-generator';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { TypographyToken } from '@pages/workspace/tokens/typography-tokens-component';
-import { TokensPage } from '@pages/workspace/tokens/tokens-page';
-import { TokenClass } from '@pages/workspace/tokens/tokens-component';
+import { TypographyToken } from '@pages/workspace/tokens/token-components/typography-tokens-component';
+import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
+import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 const teamName = random().concat('autotest');
 
@@ -66,8 +66,12 @@ mainTest.describe(() => {
       await mainTest.step(
         'PENPOT-2584 Create typography token with complete property set',
         async () => {
-          await tokensPage.createTokenViaAddButtonAndSave(typographyToken);
-          await tokensPage.tokensComp.isTokenVisibleWithName(typographyToken.name);
+          await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
+            typographyToken,
+          );
+          await tokensPage.mainTokensComp.isTokenVisibleWithName(
+            typographyToken.name,
+          );
         },
       );
       await mainTest.step('PENPOT-2586 Edit a typography token', async () => {

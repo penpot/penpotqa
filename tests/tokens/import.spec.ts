@@ -4,7 +4,7 @@ import { qase } from 'playwright-qase-reporter/playwright';
 import { MainPage } from '../../pages/workspace/main-page';
 import { TeamPage } from '../../pages/dashboard/team-page';
 import { DashboardPage } from '../../pages/dashboard/dashboard-page';
-import { TokensPage } from '../../pages/workspace/tokens/tokens-page';
+import { TokensPage } from '../../pages/workspace/tokens/tokens-base-page';
 import { BaseComponent } from '../../pages/base-component';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 
@@ -99,9 +99,9 @@ mainTest(
     await tokensPage.clickTokensTab();
     await tokensPage.toolsComp.clickOnTokenToolsButton();
     await tokensPage.toolsComp.importTokens('documents/stitches-tokens.json');
-    await tokensPage.tokensComp.expandSectionByName('Color');
-    await tokensPage.tokensComp.isTokenVisibleWithName(firstBadTokenName);
-    await tokensPage.tokensComp.checkInvalidTokenCount(errorCount);
+    await tokensPage.mainTokensComp.expandSectionByName('Color');
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(firstBadTokenName);
+    await tokensPage.mainTokensComp.checkInvalidTokenCount(errorCount);
   },
 );
 
@@ -204,11 +204,13 @@ mainTest(
       'documents/fluid-typescale-tokens-1.json',
     );
     await tokensPage.setsComp.clickOnSetCheckboxByName('fluid-typescale-tokens-1');
-    await tokensPage.tokensComp.expandAllTokens();
+    await tokensPage.mainTokensComp.expandAllTokens();
     await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
-    await tokensPage.tokensComp.clickOnTokenWithName('font-scale.const.max.f0');
+    await tokensPage.mainTokensComp.clickOnTokenWithName('font-scale.const.max.f0');
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName('font-scale.const.max.f0');
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(
+      'font-scale.const.max.f0',
+    );
     await mainPage.waitForResizeHandlerVisible();
     await assetsPanelPage.checkFontSize('18');
   },
