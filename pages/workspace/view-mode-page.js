@@ -10,7 +10,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
 
     //Assets panel
     this.viewModeButton = page.getByTitle('View mode (G V)');
-    this.viewerLoyautSection = page.locator('#viewer-layout');
+    this.viewerLayoutSection = page.locator('#viewer-layout');
     this.inspectButton = page.getByRole('button', { name: 'Inspect' });
     this.rightSidebar = page.locator(`aside[class*='inspect_right_sidebar']`);
     this.fullScreenButton = page.getByTitle('Full Screen', { exact: true });
@@ -175,7 +175,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   }
 
   async clickOnViewSection() {
-    await this.viewerLoyautSection.click();
+    await this.viewerLayoutSection.click();
   }
 
   async clickOnBoardCounter() {
@@ -323,12 +323,12 @@ exports.ViewModePage = class ViewModePage extends BasePage {
 
   async isViewerSectionVisible(visible = true) {
     visible
-      ? await expect(this.viewerLoyautSection).toBeVisible()
-      : await expect(this.viewerLoyautSection).not.toBeVisible();
+      ? await expect(this.viewerLayoutSection).toBeVisible()
+      : await expect(this.viewerLayoutSection).not.toBeVisible();
   }
 
   async waitForViewerSection(timeout = 10000) {
-    await this.viewerLoyautSection.waitFor({ state: 'visible', timeout: timeout });
+    await this.viewerLayoutSection.waitFor({ state: 'visible', timeout: timeout });
   }
 
   async clickDestroyLinkButton() {
