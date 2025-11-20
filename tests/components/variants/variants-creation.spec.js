@@ -62,7 +62,7 @@ mainTest(qase([2396], 'Creating variants from a component group'), async () => {
   await mainPage.clickViewportOnce();
   await mainPage.clickOnLayerOnCanvas();
   await mainPage.waitForChangeIsSaved();
-  await designPanelPage.isFillHexCodeSet('0ea27a');
+  await designPanelPage.isFillHexCodeSet('#0ea27a');
   await mainPage.createComponentViaRightClick();
   await mainPage.createDefaultRectangleByCoordinates(300, 300);
   await mainPage.createComponentViaRightClick();

@@ -9,6 +9,7 @@ const { ColorPalettePage } = require('../../../pages/workspace/color-palette-pag
 const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
 const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
 const { qase } = require('playwright-qase-reporter/playwright');
+const { SampleData } = require('helpers/sample-data');
 
 const teamName = random().concat('autotest');
 
@@ -158,10 +159,11 @@ mainTest.describe(() => {
       'Create a component and 2 copies of it, change stroke color of main',
     ),
     async () => {
+      const sampleData = new SampleData();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.clickAddStrokeButton();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.setStrokeColor('#d80909');
+      await designPanelPage.setStrokeColor(sampleData.color.redHexCode);
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickViewportByCoordinates(400, 400);
       await mainPage.waitForChangeIsSaved();
@@ -178,6 +180,7 @@ mainTest.describe(() => {
   mainTest(
     qase([1444], 'Create a component and 2 copies of it, change fill of main'),
     async () => {
+      const sampleData = new SampleData();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
       await designPanelPage.changeHeightAndWidthForLayer('50', '50');
@@ -186,7 +189,7 @@ mainTest.describe(() => {
       await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#0538D1');
+      await colorPalettePage.setHex(sampleData.color.blueHexCode);
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
@@ -306,6 +309,7 @@ mainTest.describe('Text', () => {
       'Propagation of (style and content) changes from a text component to copies (overriding style or content)',
     ),
     async () => {
+      const sampleData = new SampleData();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
       await designPanelPage.changeTextFont('Source Serif 4');
@@ -315,7 +319,7 @@ mainTest.describe('Text', () => {
       await designPanelPage.clickOnTextAlignOptionsButton();
       await designPanelPage.clickOnTextStrikethroughButton();
       await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#ff0000');
+      await colorPalettePage.setHex(sampleData.color.redHexCode);
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
@@ -339,11 +343,17 @@ mainTest.describe('Text', () => {
       'Propagation of (independent) changes from a text component to (all) copies',
     ),
     async () => {
+      const sampleData = new SampleData();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
 
       await designPanelPage.clickAddStrokeButton();
-      await designPanelPage.changeStrokeSettings('#ff0000', '60', '10', 'Inside');
+      await designPanelPage.changeStrokeSettings(
+        sampleData.color.redHexCode,
+        '60',
+        '10',
+        'Inside',
+      );
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
       await designPanelPage.clickAddShadowButton();
@@ -371,6 +381,8 @@ mainTest.describe('Text', () => {
 });
 
 mainTest.describe(() => {
+  const sampleData = new SampleData();
+
   mainTest.beforeEach(async () => {
     await mainTest.slow();
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -389,9 +401,9 @@ mainTest.describe(() => {
       await designPanelPage.clickAddShadowButton();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.setComponentColor('#0538D1');
+      await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.isFillHexCodeSetComponent('0538d1');
+      await designPanelPage.isFillHexCodeSetComponent(sampleData.color.blueHexCode);
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-shadow.png',
@@ -408,16 +420,16 @@ mainTest.describe(() => {
     async ({ browserName }) => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.setComponentColor('#050E23');
+      await designPanelPage.setComponentColor(sampleData.color.blackHexCode);
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.setComponentColor('#C10C43');
+      await designPanelPage.setComponentColor(sampleData.color.redHexCode);
       await mainPage.clickViewportTwice();
       browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.isFillHexCodeSetComponent('050e23');
+      await designPanelPage.isFillHexCodeSetComponent(sampleData.color.blackHexCode);
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-fill.png',
         {
@@ -435,7 +447,7 @@ mainTest.describe(() => {
       await designPanelPage.changeValueForBlur('2');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.setComponentColor('#0538D1');
+      await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
@@ -457,7 +469,7 @@ mainTest.describe(() => {
       await designPanelPage.selectGridType('Rows');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.setComponentColor('#0538D1');
+      await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -494,6 +506,7 @@ mainTest.describe(() => {
 });
 
 mainTest(qase([1478], 'Changed direct, not overriden'), async () => {
+  const sampleData = new SampleData();
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -503,7 +516,7 @@ mainTest(qase([1478], 'Changed direct, not overriden'), async () => {
   await designPanelPage.changeAxisXandYForLayer('400', '500');
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
-  await designPanelPage.setComponentColor('#093EDC');
+  await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
@@ -515,6 +528,7 @@ mainTest(qase([1478], 'Changed direct, not overriden'), async () => {
 });
 
 mainTest(qase([1479], 'Changed remote, not overriden'), async () => {
+  const sampleData = new SampleData();
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -530,7 +544,7 @@ mainTest(qase([1479], 'Changed remote, not overriden'), async () => {
   await designPanelPage.changeAxisXandYForLayer('200', '500');
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
-  await designPanelPage.setComponentColor('#C41ABC');
+  await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
@@ -550,6 +564,7 @@ mainTest(qase([1479], 'Changed remote, not overriden'), async () => {
 });
 
 mainTest(qase([1480], 'Changed direct, overriden in copy'), async () => {
+  const sampleData = new SampleData();
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -558,11 +573,11 @@ mainTest(qase([1480], 'Changed direct, overriden in copy'), async () => {
   await layersPanelPage.clickCopyComponentOnLayersTab();
   await designPanelPage.changeAxisXandYForLayer('400', '500');
   await mainPage.waitForChangeIsSaved();
-  await designPanelPage.setComponentColor('#DC08D3');
+  await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
-  await designPanelPage.setComponentColor('#660E62');
+  await designPanelPage.setComponentColor(sampleData.color.purpleHexCode);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
@@ -582,6 +597,7 @@ mainTest(qase([1480], 'Changed direct, overriden in copy'), async () => {
 });
 
 mainTest(qase([1482], 'Changed remote, overriden in copy'), async () => {
+  const sampleData = new SampleData();
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -596,11 +612,11 @@ mainTest(qase([1482], 'Changed remote, overriden in copy'), async () => {
   await layersPanelPage.clickCopyComponentOnLayersTab();
   await designPanelPage.changeAxisXandYForLayer('200', '500');
   await mainPage.waitForChangeIsSaved();
-  await designPanelPage.setComponentColor('#0F602A');
+  await designPanelPage.setComponentColor(sampleData.color.greenHexCode);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
-  await designPanelPage.setComponentColor('#C41ABC');
+  await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot(
@@ -614,6 +630,7 @@ mainTest(qase([1482], 'Changed remote, overriden in copy'), async () => {
 mainTest(
   qase([1483], 'Changed remote, overriden in near, overriden in copy'),
   async () => {
+    const sampleData = new SampleData();
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -628,15 +645,15 @@ mainTest(
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await designPanelPage.changeAxisXandYForLayer('200', '500');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.setComponentColor('#0F602A');
+    await designPanelPage.setComponentColor(sampleData.color.greenHexCode1);
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickNMainComponentOnLayersTab(-2);
-    await designPanelPage.setComponentColor('#83B092');
+    await designPanelPage.setComponentColor(sampleData.color.greenHexCode2);
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickMainComponentOnLayersTab();
-    await designPanelPage.setComponentColor('#326F46');
+    await designPanelPage.setComponentColor(sampleData.color.greenHexCode3);
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(

@@ -505,11 +505,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async isFillHexCodeSet(value) {
-    await expect(this.fillColorInput).toHaveValue(value);
+    await expect(this.fillColorInput).toHaveValue(value.slice(1));
   }
 
   async isFillHexCodeSetComponent(value) {
-    await expect(this.componentColorInput).toHaveValue(value);
+    await expect(this.componentColorInput).toHaveValue(value.slice(1));
   }
 
   async isFillOpacitySet(value) {
