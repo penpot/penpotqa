@@ -1,6 +1,8 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { TokenClass } from './tokens-component';
-import { BasicTokenData } from './tokens-page';
+import {
+  TokenClass,
+  BasicTokenData,
+} from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 export interface TypographyToken<TokenClass> extends BasicTokenData {
   class: TokenClass;

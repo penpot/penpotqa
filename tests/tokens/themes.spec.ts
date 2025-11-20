@@ -6,8 +6,9 @@ import { MainPage } from '@pages/workspace/main-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { TokensPage } from '@pages/workspace/tokens/tokens-page';
-import { MainToken, TokenClass } from '@pages/workspace/tokens/tokens-component';
+import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
+import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
+import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 const teamName = random().concat('autotest');
 const sampleData = new SampleData();
@@ -77,8 +78,8 @@ mainTest.describe(() => {
     await tokensPage.setsComp.isGroupSetNameVisible('Mode');
     await tokensPage.setsComp.clickOnSetCheckboxByName('Dark');
     await tokensPage.setsComp.isSetCheckedByName('Dark');
-    await tokensPage.createTokenViaAddButtonAndEnter(colorToken1);
-    await tokensPage.tokensComp.clickOnTokenWithName(colorToken1.name);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken1);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(colorToken1.name);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.isFillHexCodeSetComponent(colorToken1.value);
 
@@ -86,7 +87,7 @@ mainTest.describe(() => {
     await tokensPage.setsComp.isSetNameVisible('Light');
     await tokensPage.setsComp.clickOnSetCheckboxByName('Light');
     await tokensPage.setsComp.isSetCheckedByName('Light');
-    await tokensPage.createTokenViaAddButtonAndEnter(colorToken2);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken2);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.isFillHexCodeSetComponent(colorToken2.value);
 
@@ -95,8 +96,8 @@ mainTest.describe(() => {
     await tokensPage.setsComp.isGroupSetNameVisible('Device');
     await tokensPage.setsComp.clickOnSetCheckboxByName('Desktop');
     await tokensPage.setsComp.isSetCheckedByName('Desktop');
-    await tokensPage.createTokenViaAddButtonAndSave(radiusToken1);
-    await tokensPage.tokensComp.clickOnTokenWithName(radiusToken1.name);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(radiusToken1);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(radiusToken1.name);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.checkGeneralCornerRadius(radiusToken1.value);
 
@@ -104,7 +105,7 @@ mainTest.describe(() => {
     await tokensPage.setsComp.isSetNameVisible('Mobile');
     await tokensPage.setsComp.clickOnSetCheckboxByName('Mobile');
     await tokensPage.setsComp.isSetCheckedByName('Mobile');
-    await tokensPage.createTokenViaAddButtonAndSave(radiusToken2);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(radiusToken2);
 
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.checkGeneralCornerRadius(radiusToken2.value);

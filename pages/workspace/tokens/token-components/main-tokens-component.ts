@@ -1,25 +1,10 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { BasicTokenData, TokensPage } from '@pages/workspace/tokens/tokens-page';
 import { SampleData } from 'helpers/sample-data';
-
-export enum TokenClass {
-  Color = 'Color',
-  BorderRadius = 'Border Radius',
-  Dimension = 'Dimensions',
-  FontFamily = 'Font Family',
-  FontSize = 'Font Size',
-  FontWeight = 'Font Weight',
-  LetterSpacing = 'Letter Spacing',
-  Number = 'Number',
-  Opacity = 'Opacity',
-  Rotation = 'Rotation',
-  Sizing = 'Sizing',
-  Spacing = 'Spacing',
-  StrokeWidth = 'Stroke Width',
-  TextCase = 'Text Case',
-  TextDecoration = 'Text Decoration',
-  Typography = 'Typography',
-}
+import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
+import {
+  TokenClass,
+  BasicTokenData,
+} from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 export interface MainToken<TokenClass> extends BasicTokenData {
   class: TokenClass;
@@ -28,7 +13,7 @@ export interface MainToken<TokenClass> extends BasicTokenData {
 
 const sampleData = new SampleData();
 
-export class TokensComponent {
+export class MainTokensComponent {
   readonly page: Page;
   readonly tokensPage: TokensPage;
 
