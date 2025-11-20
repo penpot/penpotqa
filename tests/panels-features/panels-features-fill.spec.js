@@ -38,7 +38,7 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(786, 'PF-68 Add fill to board'), async () => {
-    await designPanelPage.isFillHexCodeSet('FFFFFF');
+    await designPanelPage.isFillHexCodeSet('#FFFFFF');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.createdLayer).toHaveScreenshot('board-fill.png');
   });
@@ -48,7 +48,7 @@ mainTest.describe(() => {
     await colorPalettePage.modalSetHex('FF0000');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet('ff0000');
+    await designPanelPage.isFillHexCodeSet('#ff0000');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.createdLayer).toHaveScreenshot('board-changed-fill.png');
   });
@@ -57,7 +57,7 @@ mainTest.describe(() => {
     await designPanelPage.changeOpacityForFill('70');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet('FFFFFF');
+    await designPanelPage.isFillHexCodeSet('#FFFFFF');
     await designPanelPage.isFillOpacitySet('70');
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'board-changed-opacity.png',
@@ -80,7 +80,7 @@ mainTest.describe(() => {
   mainTest(qase(790, 'PF-72 Add fill to path'), async () => {
     await designPanelPage.clickAddFillButton();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet('B1B2B5');
+    await designPanelPage.isFillHexCodeSet('#B1B2B5');
     await designPanelPage.isFillOpacitySet('100');
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot('path-fill.png');
@@ -93,7 +93,7 @@ mainTest.describe(() => {
     await colorPalettePage.setHex('#FF0000');
     await mainPage.clickOnDesignTab();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet('FF0000');
+    await designPanelPage.isFillHexCodeSet('#FF0000');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.createdLayer).toHaveScreenshot('path-changed-fill.png');
   });
@@ -103,7 +103,7 @@ mainTest.describe(() => {
     await designPanelPage.changeOpacityForFill('70');
     await mainPage.clickOnDesignTab();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet('B1B2B5');
+    await designPanelPage.isFillHexCodeSet('#B1B2B5');
     await designPanelPage.isFillOpacitySet('70');
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot('path-changed-opacity.png');
@@ -128,7 +128,7 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(787, 'PF-69 Add fill to shape'), async () => {
-    await designPanelPage.isFillHexCodeSet('B1B2B5');
+    await designPanelPage.isFillHexCodeSet('#B1B2B5');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.createdLayer).toHaveScreenshot('rectangle-fill.png');
   });
@@ -136,7 +136,7 @@ mainTest.describe(() => {
   mainTest(qase(797, 'PF-79 Change fill opacity for shape'), async () => {
     await designPanelPage.changeOpacityForFill('70');
     await mainPage.clickViewportTwice();
-    await designPanelPage.isFillHexCodeSet('B1B2B5');
+    await designPanelPage.isFillHexCodeSet('#B1B2B5');
     await designPanelPage.isFillOpacitySet('70');
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot(
@@ -157,7 +157,7 @@ mainTest.describe(() => {
     await colorPalettePage.setHex('#FF0000');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet('FF0000');
+    await designPanelPage.isFillHexCodeSet('#FF0000');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'rectangle-changed-fill.png',
