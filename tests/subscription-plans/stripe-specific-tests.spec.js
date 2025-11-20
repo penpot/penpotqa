@@ -17,7 +17,8 @@ const {
   skipSubscriptionByDays,
   skipSubscriptionByMonths,
   getProfileIdByEmail,
-  waitCustomersWithPenpotId,
+  addPaymentMethodForCustomer,
+  addPaymentMethodForCustomerByCustomerEmail,
 } = require('../../helpers/stripe');
 
 let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
@@ -38,10 +39,11 @@ registerTest.afterEach(async () => {
 });
 
 registerTest.describe(() => {
-  let testClockId, penpotId;
+  let testClockId, penpotId, customerData;
   registerTest.beforeEach(async ({ page, name, email }) => {
     penpotId = await getProfileIdByEmail(email);
-    testClockId = await createCustomerWithTestClock(page, name, email, penpotId);
+    customerData = await createCustomerWithTestClock(page, name, email, penpotId);
+    testClockId = customerData.testClockId;
 
     await teamPage.createTeam(teamName);
     await teamPage.isTeamSelected(teamName);
@@ -62,7 +64,8 @@ registerTest.describe(() => {
       await profilePage.openYourAccountPage();
       await profilePage.openSubscriptionTab();
       await profilePage.clickOnAddPaymentMethodButton();
-      await stripePage.addDefaultCard();
+      await addPaymentMethodForCustomer(customerData.customerId);
+      await stripePage.reloadPage();
       await stripePage.isVisaCardAdded(true);
       await skipSubscriptionByDays(email, testClockId, 15, date);
 
@@ -97,7 +100,8 @@ registerTest.describe(() => {
       await profilePage.openYourAccountPage();
       await profilePage.openSubscriptionTab();
       await profilePage.clickOnAddPaymentMethodButton();
-      await stripePage.addDefaultCard();
+      await addPaymentMethodForCustomer(customerData.customerId);
+      await stripePage.reloadPage();
       await stripePage.isVisaCardAdded(true);
       await skipSubscriptionByDays(email, testClockId, 20, date);
 
@@ -129,7 +133,8 @@ registerTest.describe(() => {
     await profilePage.openYourAccountPage();
     await profilePage.openSubscriptionTab();
     await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
+    await addPaymentMethodForCustomer(customerData.customerId);
+    await stripePage.reloadPage();
     await stripePage.isVisaCardAdded(true);
     await skipSubscriptionByDays(email, testClockId, 20, date);
 
@@ -183,7 +188,8 @@ registerTest(
     await profilePage.openYourAccountPage();
     await profilePage.openSubscriptionTab();
     await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
+    await addPaymentMethodForCustomerByCustomerEmail(page, firstEmail);
+    await stripePage.reloadPage();
     await stripePage.isVisaCardAdded(true);
     await stripePage.changeSubscription();
     await stripePage.checkCurrentSubscription(currentPlan);
