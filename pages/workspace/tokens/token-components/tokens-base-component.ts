@@ -39,12 +39,17 @@ export class TokensComponent {
   readonly baseComp: BaseComponent;
   readonly mainTokensComp: MainTokensComponent;
   readonly typoTokensComp: TypographyTokensComponent;
+  readonly editTokenMenuItem: Locator;
 
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
     this.baseComp = new BaseComponent(page);
     this.typoTokensComp = new TypographyTokensComponent(page);
     this.mainTokensComp = new MainTokensComponent(page, tokensPage);
+
+    this.editTokenMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Edit token' });
   }
 
   private async getAddTokenButton(tokenClass: TokenClass): Promise<Locator> {
@@ -56,14 +61,30 @@ export class TokensComponent {
   ) {
     const addTokenButton = await this.getAddTokenButton(token.class);
     await addTokenButton.click();
+    await this.fillTokenData(token);
+  }
+
+  private async fillTokenData(
+    token: TypographyToken<TokenClass> | MainToken<TokenClass>,
+  ) {
     await this.mainTokensComp.tokenNameInput.fill(token.name);
-    await this.mainTokensComp.tokenDescriptionInput.fill(token.description ?? '');
+
+    if (token.description !== undefined) {
+      await this.mainTokensComp.tokenDescriptionInput.fill(token.description);
+    }
 
     if (token.class === TokenClass.Typography) {
       await this.typoTokensComp.fillTokenData(token);
     } else {
       await this.mainTokensComp.fillTokenData(token);
     }
+  }
+
+  async rightClickOnTokenWithName(name: string) {
+    await this.page
+      .getByRole('button')
+      .locator(`span[aria-label="${name}"]`)
+      .click({ button: 'right', force: true });
   }
 
   async createTokenViaAddButtonAndSave(
@@ -79,5 +100,14 @@ export class TokensComponent {
     await this.createTokenViaAddButton(token);
     await expect(this.baseComp.modalSaveButton).toBeEnabled();
     await this.baseComp.clickOnEnter();
+  }
+
+  async editTokenViaRightClickByName(
+    updatedToken: TypographyToken<TokenClass> | MainToken<TokenClass>,
+  ) {
+    await this.rightClickOnTokenWithName(updatedToken.name);
+    await this.editTokenMenuItem.click();
+    await this.fillTokenData(updatedToken);
+    await this.baseComp.modalSaveButton.click();
   }
 }

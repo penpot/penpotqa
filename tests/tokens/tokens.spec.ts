@@ -81,6 +81,7 @@ mainTest.describe(() => {
     },
   );
 
+  // TODO: Keep changing the usage of the editToken method (like this) in other token tests
   mainTest(
     qase(
       2166,
@@ -89,15 +90,24 @@ mainTest.describe(() => {
     async ({ page }) => {
       tokensPage = new TokensPage(page);
 
+      const radiusToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'global.radius',
+        value: '-1',
+        description: 'Description',
+      };
+
+      const updatedTokenData: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: radiusToken.name,
+        value: newTokenValue,
+      };
+
       await tokensPage.mainTokensComp.isTokenAppliedWithName(radiusToken.name);
-      await tokensPage.mainTokensComp.editToken(
-        radiusToken.name,
-        newTokenValue,
-        radiusToken.description,
-      );
+      await tokensPage.tokensComp.editTokenViaRightClickByName(updatedTokenData);
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.checkGeneralCornerRadius(newTokenValue);
-      await tokensPage.mainTokensComp.isTokenAppliedWithName(radiusToken.name);
+      await designPanelPage.checkGeneralCornerRadius(updatedTokenData.value);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(updatedTokenData.name);
       await expect(mainPage.createdLayer).toHaveScreenshot(
         'rectangle-border-radius-20.png',
       );
