@@ -612,7 +612,7 @@ mainTest(qase([1482], 'Changed remote, overriden in copy'), async () => {
   await layersPanelPage.clickCopyComponentOnLayersTab();
   await designPanelPage.changeAxisXandYForLayer('200', '500');
   await mainPage.waitForChangeIsSaved();
-  await designPanelPage.setComponentColor(sampleData.color.greenHexCode);
+  await designPanelPage.setComponentColor(sampleData.color.greenHexCode1);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
