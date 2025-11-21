@@ -55,13 +55,27 @@ export class TypographyTokensComponent {
   }
 
   async fillTokenData(typographyToken: TypographyToken<TokenClass>) {
-    await this.fontFamilyInput.fill(typographyToken.fontFamily ?? '');
-    await this.fontWeightInput.fill(typographyToken.fontWeight ?? '');
-    await this.fontSizeInput.fill(typographyToken.fontSize ?? '');
-    await this.lineHeightInput.fill(typographyToken.lineHeight ?? '');
-    await this.letterSpacingInput.fill(typographyToken.letterSpacing ?? '');
-    await this.textDecorationInput.fill(typographyToken.textDecoration ?? '');
-    await this.textCaseInput.fill(typographyToken.textCase ?? '');
+    if (typographyToken.fontFamily !== undefined) {
+      await this.fontFamilyInput.fill(typographyToken.fontFamily);
+    }
+    if (typographyToken.fontWeight !== undefined) {
+      await this.fontWeightInput.fill(typographyToken.fontWeight);
+    }
+    if (typographyToken.fontSize !== undefined) {
+      await this.fontSizeInput.fill(typographyToken.fontSize);
+    }
+    if (typographyToken.lineHeight !== undefined) {
+      await this.lineHeightInput.fill(typographyToken.lineHeight);
+    }
+    if (typographyToken.letterSpacing !== undefined) {
+      await this.letterSpacingInput.fill(typographyToken.letterSpacing);
+    }
+    if (typographyToken.textDecoration !== undefined) {
+      await this.textDecorationInput.fill(typographyToken.textDecoration);
+    }
+    if (typographyToken.textCase !== undefined) {
+      await this.textCaseInput.fill(typographyToken.textCase);
+    }
   }
 }
 
