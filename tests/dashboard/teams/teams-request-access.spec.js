@@ -33,7 +33,6 @@ async function setupTeamAndFile(page, teamName) {
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.waitForViewportVisible();
-  await mainPage.isMainPageLoaded();
 
   return { loginPage, registerPage, dashboardPage, teamPage, profilePage, mainPage };
 }
@@ -272,11 +271,11 @@ registerTest(qase(1833, 'Auto Join to the team'), async ({ page, name, email }) 
   const { mainPage, teamPage, registerPage, dashboardPage, loginPage, profilePage } =
     setup;
 
-  // Capture workspace URL and go back to Dashboard
+  // Get Workspace URL and go back to Dashboard
   const currentURL = await mainPage.getUrl();
   await mainPage.clickPencilBoxButton();
 
-  // REGISTER second user (fresh session required)
+  // Register a second user (fresh session required)
   await profilePage.logout();
   await loginPage.isEmailInputVisible();
   await page.context().clearCookies();
@@ -298,7 +297,7 @@ registerTest(qase(1833, 'Auto Join to the team'), async ({ page, name, email }) 
   await dashboardPage.fillOnboardingQuestions();
   await dashboardPage.isDashboardOpenedAfterLogin();
 
-  // SECOND user requests access to file
+  // Second user requests access to file
   await page.goto(currentURL);
 
   await teamPage.isRequestFileAccessDialogVisible();
