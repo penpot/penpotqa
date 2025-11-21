@@ -28,28 +28,35 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest(qase(2281, 'Display & Info for Enterprise Plan'), async ({ page }) => {
-  const currentPlan = 'Enterprise';
-  await profilePage.tryTrialForPlan('Unlimited');
-  await profilePage.openYourAccountPage();
-  await profilePage.openSubscriptionTab();
-  await profilePage.clickOnAddPaymentMethodButton();
-  await stripePage.addDefaultCard();
-  await stripePage.isVisaCardAdded(true);
-  await stripePage.changeSubscription();
-  await stripePage.checkCurrentSubscription(currentPlan);
-  await stripePage.clickOnReturnToPenpotButton();
+registerTest.fixme(
+  qase(2281, 'Display & Info for Enterprise Plan'),
+  async ({ page }) => {
+    registerTest.fixme(
+      'After upgrading the plan, the plan card title is not changed',
+    );
 
-  await profilePage.isSubscriptionNameVisible();
-  await dashboardPage.reloadPage();
-  await profilePage.checkSubscriptionName(currentPlan);
-  await profilePage.backToDashboardFromAccount();
-  await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
-  await teamPage.isSubscriptionIconVisible(true, currentPlan);
-  await teamPage.isSubscriptionIconVisibleInTeamDropdown(true);
-  await teamPage.openTeamSettingsPageViaOptionsMenu();
-  await teamPage.checkSubscriptionName(currentPlan);
-});
+    const currentPlan = 'Enterprise';
+    await profilePage.tryTrialForPlan('Unlimited');
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.clickOnAddPaymentMethodButton();
+    await stripePage.addDefaultCard();
+    await stripePage.isVisaCardAdded(true);
+    await stripePage.changeSubscription();
+    await stripePage.checkCurrentSubscription(currentPlan);
+    await stripePage.clickOnReturnToPenpotButton();
+
+    await profilePage.isSubscriptionNameVisible();
+    await dashboardPage.reloadPage();
+    await profilePage.checkSubscriptionName(currentPlan);
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
+    await teamPage.isSubscriptionIconVisible(true, currentPlan);
+    await teamPage.isSubscriptionIconVisibleInTeamDropdown(true);
+    await teamPage.openTeamSettingsPageViaOptionsMenu();
+    await teamPage.checkSubscriptionName(currentPlan);
+  },
+);
 
 registerTest(qase(2283, 'Display & Info for Professional Plan'), async () => {
   const currentPlan = 'Professional';

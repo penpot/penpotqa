@@ -36,10 +36,6 @@ registerTest.afterEach(async () => {
 registerTest(
   qase(2302, 'Switch from Unlimited → Enterprise'),
   async ({ page, name, email }) => {
-    registerTest.fixme(
-      "Element getByTestId('hip-link').first().getByText('Penpot Enterprise') not found - invoice text format or element structure may have changed",
-    );
-
     const currentPlan = 'Unlimited';
     const newPlan = 'Enterprise';
     let date = new Date();

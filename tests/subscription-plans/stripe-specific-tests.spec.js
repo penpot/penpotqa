@@ -55,10 +55,6 @@ registerTest.describe(() => {
   registerTest(
     qase(2346, 'Invoices capped at $7 (Unlimited)'),
     async ({ email }) => {
-      registerTest.fixme(
-        "Element getByText('Current subscription') not found - subscription page structure changed or navigation/loading issue",
-      );
-
       const currentPlan = 'Unlimited';
       let date = new Date();
 
