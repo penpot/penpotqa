@@ -1,12 +1,15 @@
-import { MainPage } from '@pages/workspace/main-page';
+import { qase } from 'playwright-qase-reporter/playwright';
 import { mainTest } from 'fixtures';
 import { random } from 'helpers/string-generator';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { qase } from 'playwright-qase-reporter/playwright';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
 import { TypographyToken } from '@pages/workspace/tokens/token-components/typography-tokens-component';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 
 const teamName = random().concat('autotest');
 
@@ -35,51 +38,232 @@ mainTest.afterEach(async ({ page }) => {
 mainTest.describe(() => {
   let mainPage: MainPage;
   let tokensPage: TokensPage;
-
-  const typographyToken: TypographyToken<TokenClass> = {
-    class: TokenClass.Typography,
-    name: 'global.typography',
-    fontFamily: 'Roboto Serif',
-    fontWeight: '400 Italic',
-    fontSize: '16px',
-    lineHeight: '1.5',
-    letterSpacing: '0.5px',
-    textDecoration: 'underline',
-    textCase: 'uppercase',
-    description: 'Autotest typography token',
-  };
+  let designPanelPage: DesignPanelPage;
+  let assetsPanelPage: AssetsPanelPage;
 
   mainTest.beforeEach(async ({ page, browserName }) => {
     tokensPage = new TokensPage(page);
     mainPage = new MainPage(page);
+    designPanelPage = new DesignPanelPage(page);
+    assetsPanelPage = new AssetsPanelPage(page);
 
     await mainPage.createDefaultTextLayerByCoordinates(500, 500, browserName);
     await tokensPage.tokensTab.click();
   });
 
+  const TYPO_TOKEN: TypographyToken<TokenClass> = {
+    class: TokenClass.Typography,
+    name: 'global.typography',
+    fontFamily: 'Karla',
+    fontWeight: '400 Italic',
+    fontSize: '18px',
+    lineHeight: '1.5px',
+    letterSpacing: '0.5',
+    textDecoration: 'strike-through',
+    textCase: 'uppercase',
+    description: 'Autotest typography token',
+  };
+
   mainTest(
     qase(
-      [2584, 2586, 2592, 2610, 2606, 2607],
-      'Create and edit a typography token, validating invalid values',
+      [2584, 2586, 2592, 2604, 2606, 2607],
+      'Create and edit a typography token (validating values and creation modes)',
     ),
     async () => {
+      const BAD_TOKEN_ALIAS = '{non.existent.token}';
+
       await mainTest.step(
-        'PENPOT-2584 Create typography token with complete property set',
+        '2584 Create typography token with complete property set',
         async () => {
-          await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
-            typographyToken,
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
+
+          await mainTest.step(
+            '2606 Switch Between Individual and Reference Token Forms\n' +
+              '2607 Validate Reference Token Form with Invalid References',
+            async () => {
+              await tokensPage.typoTokensComp.clickOnUseReferenceButton();
+              await tokensPage.typoTokensComp.fillAliasInput(BAD_TOKEN_ALIAS);
+              await tokensPage.typoTokensComp.isAliasInputErrorVisible();
+              await tokensPage.typoTokensComp.clickOnUseCompositeButton();
+            },
           );
-          await tokensPage.mainTokensComp.isTokenVisibleWithName(
-            typographyToken.name,
-          );
+          // fields should retain their values after switching modes
+          await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+          await tokensPage.mainTokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
+          await tokensPage.mainTokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
         },
       );
-      await mainTest.step('PENPOT-2586 Edit a typography token', async () => {
-        // TODO: implement test case PENPOT-2586
-        //  - Trying to reuse code from the `createTokenViaAddButton` method in `tokens-page.ts`
-        //  - Value moving the generic Token methods from `tokens-page.ts` to `tokens-component.ts`
+
+      const UPDATED_TOKEN: TypographyToken<TokenClass> = {
+        class: TokenClass.Typography,
+        name: TYPO_TOKEN.name,
+        fontWeight: 'thin',
+        fontSize: '16',
+        textDecoration: 'underline',
+        lineHeight: '24',
+      };
+      const THIN_FONT_WEIGHT_VALUE = '200';
+
+      await mainTest.step('2586 Edit a typography token', async () => {
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(UPDATED_TOKEN);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.mainTokensComp.isTokenAppliedWithName(UPDATED_TOKEN.name);
+
+        await designPanelPage.checkTextCase(TYPO_TOKEN.textCase);
+        await designPanelPage.checkLetterSpacing(TYPO_TOKEN.letterSpacing);
+        await designPanelPage.checkFontName(TYPO_TOKEN.fontFamily);
+
+        await designPanelPage.checkFontSize(UPDATED_TOKEN.fontSize);
+        await designPanelPage.checkTextLineHeight(UPDATED_TOKEN.lineHeight);
+        await designPanelPage.checkFontStyle(THIN_FONT_WEIGHT_VALUE);
+        await designPanelPage.clickOnTextAlignOptionsButton();
+        await designPanelPage.isTextUnderlineChecked();
       });
-      // TODO: implement the rest of the steps (2592, 2610, 2606, 2607)
+
+      const TOKEN_1: TypographyToken<TokenClass> = {
+        class: TokenClass.Typography,
+        name: TYPO_TOKEN.name,
+        fontSize: '120%',
+        lineHeight: '150%',
+      };
+      const RESOLVED_FONT_SIZE_1 = '120';
+      const RESOLVED_LINE_HEIGHT_1 = '1.5';
+      const TOKEN_2: TypographyToken<TokenClass> = {
+        class: TokenClass.Typography,
+        name: TYPO_TOKEN.name,
+        fontSize: '16px',
+        lineHeight: '103px%',
+      };
+      const RESOLVED_LINE_HEIGHT_2 = '1.03';
+      const TOKEN_3: TypographyToken<TokenClass> = {
+        class: TokenClass.Typography,
+        name: TYPO_TOKEN.name,
+        fontSize: '18px',
+        lineHeight: '17px',
+      };
+      const RESOLVED_LINE_HEIGHT_3 = '0.94';
+      const TOKEN_4: TypographyToken<TokenClass> = {
+        class: TokenClass.Typography,
+        name: TYPO_TOKEN.name,
+        fontSize: '16px',
+        lineHeight: '1.1',
+      };
+      const RESOLVED_LINE_HEIGHT_4 = '1.1';
+
+      await mainTest.step(
+        '2592 Validate Typography Token Units\n' +
+          '2604 Apply Typography Tokens with Line Height Calculation and with Different Units',
+        async () => {
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_1);
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkFontSize(RESOLVED_FONT_SIZE_1);
+          await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_1);
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_2);
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_2);
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_3);
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_3);
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_4);
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_4);
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase(
+      [2609, 26210],
+      'Check Typography Token detaches Typography Style Assets and Atomic Typography Tokens',
+    ),
+    async () => {
+      const FONT_FAMILY_STYLE = 'Rasa';
+      const LETTER_SPACING_STYLE = '3';
+
+      await mainTest.step(
+        '2609 Check Typography Token Detaches Applied Typography Style (Asset)',
+        async () => {
+          // set some typography styles to the text from the design panel
+          await assetsPanelPage.selectFont(FONT_FAMILY_STYLE);
+          await designPanelPage.changeTextLetterSpacing(LETTER_SPACING_STYLE);
+          // create a typography asset with these styles
+          await assetsPanelPage.clickAssetsTab();
+          await assetsPanelPage.clickAddFileLibraryTypographyButton();
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isTypographyAssetAgVisible(true);
+          // create and apply typography token
+          await tokensPage.tokensTab.click();
+          await tokensPage.tokensComp.createTokenViaAddButtonAndSave(TYPO_TOKEN);
+          await tokensPage.mainTokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
+          await tokensPage.mainTokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
+          // validates assets are detached after applying the typography token
+          await designPanelPage.isTypographyAssetAgVisible(false);
+          await designPanelPage.checkFontName(TYPO_TOKEN.fontFamily);
+          await designPanelPage.checkLetterSpacing(TYPO_TOKEN.letterSpacing);
+        },
+      );
+
+      const FF_TOKEN: MainToken<TokenClass> = {
+        class: TokenClass.FontFamily,
+        name: 'global.fontFamily',
+        value: 'Source Sans Pro',
+      };
+      const FS_TOKEN: MainToken<TokenClass> = {
+        class: TokenClass.FontSize,
+        name: 'global.fontSize',
+        value: '20',
+      };
+      const FW_TOKEN: MainToken<TokenClass> = {
+        class: TokenClass.FontWeight,
+        name: 'black.font.weight',
+        value: 'black',
+      };
+      const LS_TOKEN: MainToken<TokenClass> = {
+        class: TokenClass.LetterSpacing,
+        name: 'global.letter.spacing',
+        value: '10',
+      };
+      const CLEAN_TYPO_TOKEN: TypographyToken<TokenClass> = {
+        class: TokenClass.Typography,
+        name: 'global.clean.typography',
+        description: 'Autotest typography token',
+        textDecoration: 'none',
+      };
+      const STYLE_TOKENS = [FF_TOKEN, FS_TOKEN, FW_TOKEN, LS_TOKEN];
+      const TYPO_TOKENS = [TYPO_TOKEN, CLEAN_TYPO_TOKEN];
+
+      await mainTest.step(
+        '2610 Check Typography Token Unapplied Atomic Typography Tokens',
+        async () => {
+          // create the typography and style tokens
+          await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
+            CLEAN_TYPO_TOKEN,
+          );
+          for (const styleToken of STYLE_TOKENS) {
+            await tokensPage.tokensComp.createTokenViaAddButtonAndSave(styleToken);
+          }
+
+          for (const typoToken of TYPO_TOKENS) {
+            // apply all atomic typography tokens first
+            for (const styleToken of STYLE_TOKENS) {
+              await tokensPage.mainTokensComp.clickOnTokenWithName(styleToken.name);
+              await tokensPage.mainTokensComp.isTokenAppliedWithName(styleToken.name);
+            }
+            // then apply the typography token type
+            await tokensPage.mainTokensComp.clickOnTokenWithName(typoToken.name);
+            await tokensPage.mainTokensComp.isTokenAppliedWithName(typoToken.name);
+
+            // all atomic typography tokens should be unapplied
+            for (const styleToken of STYLE_TOKENS) {
+              await tokensPage.mainTokensComp.isTokenAppliedWithName(
+                styleToken.name,
+                false,
+              );
+            }
+          }
+        },
+      );
     },
   );
 });

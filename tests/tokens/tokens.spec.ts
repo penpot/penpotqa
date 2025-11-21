@@ -89,15 +89,24 @@ mainTest.describe(() => {
     async ({ page }) => {
       tokensPage = new TokensPage(page);
 
+      const radiusToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'global.radius',
+        value: '-1',
+        description: 'Description',
+      };
+
+      const updatedTokenData: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: radiusToken.name,
+        value: newTokenValue,
+      };
+
       await tokensPage.mainTokensComp.isTokenAppliedWithName(radiusToken.name);
-      await tokensPage.mainTokensComp.editToken(
-        radiusToken.name,
-        newTokenValue,
-        radiusToken.description,
-      );
+      await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.checkGeneralCornerRadius(newTokenValue);
-      await tokensPage.mainTokensComp.isTokenAppliedWithName(radiusToken.name);
+      await designPanelPage.checkGeneralCornerRadius(updatedTokenData.value);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(updatedTokenData.name);
       await expect(mainPage.createdLayer).toHaveScreenshot(
         'rectangle-border-radius-20.png',
       );
@@ -439,8 +448,8 @@ mainTest(
     await mainPage.clickBoardOnCanvas();
 
     await tokensPage.mainTokensComp.clickOnTokenWithName(dimensionToken.name);
-    await designPanelPage.checkSizeWidth('100');
-    await designPanelPage.checkSizeHeight('100');
+    await designPanelPage.checkSizeWidth(dimensionToken.value);
+    await designPanelPage.checkSizeHeight(dimensionToken.value);
     await tokensPage.mainTokensComp.isTokenAppliedWithName(dimensionToken.name);
     await tokensPage.mainTokensComp.isTokenAppliedWithName(sizingToken.name, false);
     await tokensPage.mainTokensComp.isAllSubMenuItemWithSectionNameSelected(
@@ -453,8 +462,8 @@ mainTest(
     await tokensPage.mainTokensComp.selectMenuItem(sizingToken.name, 'Height');
     await tokensPage.mainTokensComp.isTokenAppliedWithName(dimensionToken.name);
     await tokensPage.mainTokensComp.isTokenAppliedWithName(sizingToken.name);
-    await designPanelPage.checkSizeWidth('100');
-    await designPanelPage.checkSizeHeight('200');
+    await designPanelPage.checkSizeWidth(dimensionToken.value);
+    await designPanelPage.checkSizeHeight(sizingToken.value);
     await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
       sizingToken.name,
       'Height',
@@ -479,8 +488,12 @@ mainTest.describe(() => {
     value: '60',
   };
 
-  const newTokenValue = '120';
-  const tokenDescription = '120';
+  const updatedTokenData: MainToken<TokenClass> = {
+    class: TokenClass.FontSize,
+    name: fontSizeToken.name,
+    value: '120',
+    description: '120',
+  };
 
   mainTest.beforeEach(async ({ page, browserName }) => {
     mainPage = new MainPage(page);
@@ -520,11 +533,7 @@ mainTest.describe(() => {
       fontSizeToken.name,
       false,
     );
-    await tokensPage.mainTokensComp.editToken(
-      fontSizeToken.name,
-      newTokenValue,
-      tokenDescription,
-    );
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('texts-size-60-120.png', {
       mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
@@ -627,7 +636,11 @@ mainTest.describe(() => {
     name: 'global.font.family2',
     value: `{${fontFamilyToken.name}}`,
   };
-  const newTokenValue = 'Inter';
+  const updatedTokenData: MainToken<TokenClass> = {
+    class: TokenClass.FontFamily,
+    name: fontFamilyToken.name,
+    value: 'Inter',
+  };
 
   mainTest.beforeEach(async ({ page, browserName }) => {
     mainPage = new MainPage(page);
@@ -649,9 +662,9 @@ mainTest.describe(() => {
 
   mainTest(qase(2475, 'Edit a font family token'), async () => {
     await tokensPage.mainTokensComp.isTokenAppliedWithName(fontFamilyToken.name);
-    await tokensPage.mainTokensComp.editToken(fontFamilyToken.name, newTokenValue);
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.checkFontName(newTokenValue);
+    await designPanelPage.checkFontName(updatedTokenData.value);
     await tokensPage.mainTokensComp.isTokenAppliedWithName(fontFamilyToken.name);
     await tokensPage.mainTokensComp.checkAppliedTokenTitle(
       'Token: global.font.family\n' +
@@ -667,9 +680,9 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontFamilyTokenRef);
     await tokensPage.mainTokensComp.isTokenVisibleWithName(fontFamilyTokenRef.name);
     await tokensPage.mainTokensComp.clickOnTokenWithName(fontFamilyTokenRef.name);
-    await tokensPage.mainTokensComp.editToken(fontFamilyToken.name, newTokenValue);
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.checkFontName(newTokenValue);
+    await designPanelPage.checkFontName(updatedTokenData.value);
     await tokensPage.mainTokensComp.isTokenAppliedWithName(fontFamilyTokenRef.name);
   });
 });
@@ -773,7 +786,12 @@ mainTest.describe(() => {
         name: '700.italic.font.weight',
         value: '700 Italic',
       };
-      const newTokenValue = '200';
+
+      const updatedTokenData: MainToken<TokenClass> = {
+        class: TokenClass.FontWeight,
+        name: fontWeightToken.name,
+        value: '200',
+      };
 
       await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken);
       await tokensPage.mainTokensComp.isTokenVisibleWithName(fontWeightToken.name);
@@ -788,14 +806,14 @@ mainTest.describe(() => {
       await mainPage.pressPasteShortcut(browserName);
       await mainPage.waitForChangeIsSaved();
 
-      await tokensPage.mainTokensComp.editToken(fontWeightToken.name, newTokenValue);
+      await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
       await mainPage.waitForChangeIsSaved();
 
       await layersPanelPage.openLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
-      await designPanelPage.checkFontStyle(newTokenValue);
+      await designPanelPage.checkFontStyle(updatedTokenData.value);
       await layersPanelPage.selectCopyComponentChildLayer();
-      await designPanelPage.checkFontStyle(newTokenValue);
+      await designPanelPage.checkFontStyle(updatedTokenData.value);
     },
   );
 });
@@ -893,6 +911,12 @@ mainTest(
       value: `5px*{${dimensionToken.name}}`,
     };
 
+    const updatedTokenData: MainToken<TokenClass> = {
+      class: TokenClass.LetterSpacing,
+      name: letterSpacingToken.name,
+      value: `5px/{${dimensionToken.name}}`,
+    };
+
     await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionToken);
 
@@ -902,46 +926,39 @@ mainTest(
     await tokensPage.mainTokensComp.checkTokenTitle(
       letterSpacingToken.name,
       `Token: ${letterSpacingToken.name}\n` +
-        `Original value: 5px*{${dimensionToken.name}}\n` +
+        `Original value: ${letterSpacingToken.value}\n` +
         'Resolved value: 10',
     );
 
-    await tokensPage.mainTokensComp.editToken(
-      letterSpacingToken.name,
-      `5px/{${dimensionToken.name}}`,
-    );
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await tokensPage.mainTokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
     await tokensPage.mainTokensComp.checkTokenTitle(
       letterSpacingToken.name,
       `Token: ${letterSpacingToken.name}\n` +
-        `Original value: 5px/{${dimensionToken.name}}\n` +
+        `Original value: ${updatedTokenData.value}\n` +
         'Resolved value: 2.5',
     );
 
-    await tokensPage.mainTokensComp.editToken(
-      letterSpacingToken.name,
-      `5px+{${dimensionToken.name}}`,
-    );
+    updatedTokenData.value = `5px+{${dimensionToken.name}}`;
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await tokensPage.mainTokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
     await tokensPage.mainTokensComp.checkTokenTitle(
       letterSpacingToken.name,
       `Token: ${letterSpacingToken.name}\n` +
-        `Original value: 5px+{${dimensionToken.name}}\n` +
+        `Original value: ${updatedTokenData.value}\n` +
         'Resolved value: 7',
     );
 
-    await tokensPage.mainTokensComp.editToken(
-      letterSpacingToken.name,
-      `5px-{${dimensionToken.name}}`,
-    );
+    updatedTokenData.value = `5px-{${dimensionToken.name}}`;
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await tokensPage.mainTokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
     await tokensPage.mainTokensComp.checkTokenTitle(
       letterSpacingToken.name,
       `Token: ${letterSpacingToken.name}\n` +
-        `Original value: 5px-{${dimensionToken.name}}\n` +
+        `Original value: ${updatedTokenData.value}\n` +
         'Resolved value: 3',
     );
   },
@@ -967,6 +984,12 @@ mainTest(
       value: `5*{${numberToken.name}}`,
     };
 
+    const updatedTokenData: MainToken<TokenClass> = {
+      class: TokenClass.Number,
+      name: numberTokenRef.name,
+      value: `5/{${numberToken.name}}`,
+    };
+
     await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
     await mainPage.waitForChangeIsSaved();
@@ -982,44 +1005,37 @@ mainTest(
         'Right click to see options',
     );
 
-    await tokensPage.mainTokensComp.editToken(
-      numberTokenRef.name,
-      `5/{${numberToken.name}}`,
-    );
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await tokensPage.mainTokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await mainPage.waitForChangeIsSaved();
     await tokensPage.mainTokensComp.checkTokenTitle(
       numberTokenRef.name,
       `Token: ${numberTokenRef.name}\n` +
-        `Original value: 5/{${numberToken.name}}\n` +
+        `Original value: ${updatedTokenData.value}\n` +
         'Resolved value: 2.5\n' +
         'Right click to see options',
     );
 
-    await tokensPage.mainTokensComp.editToken(
-      numberTokenRef.name,
-      `5+{${numberToken.name}}`,
-    );
+    updatedTokenData.value = `5+{${numberToken.name}}`;
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await tokensPage.mainTokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await mainPage.waitForChangeIsSaved();
     await tokensPage.mainTokensComp.checkTokenTitle(
       numberTokenRef.name,
       `Token: ${numberTokenRef.name}\n` +
-        `Original value: 5+{${numberToken.name}}\n` +
+        `Original value: ${updatedTokenData.value}\n` +
         'Resolved value: 7\n' +
         'Right click to see options',
     );
 
-    await tokensPage.mainTokensComp.editToken(
-      numberTokenRef.name,
-      `5-{${numberToken.name}}`,
-    );
+    updatedTokenData.value = `5-{${numberToken.name}}`;
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await tokensPage.mainTokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await mainPage.waitForChangeIsSaved();
     await tokensPage.mainTokensComp.checkTokenTitle(
       numberTokenRef.name,
       `Token: ${numberTokenRef.name}\n` +
-        `Original value: 5-{${numberToken.name}}\n` +
+        `Original value: ${updatedTokenData.value}\n` +
         'Resolved value: 3\n' +
         'Right click to see options',
     );
@@ -1183,7 +1199,12 @@ mainTest.describe(() => {
     name: 'global.text.decoration',
     value: 'underline',
   };
-  const newTokenValue = 'strike-through';
+
+  const updatedTokenData: MainToken<TokenClass> = {
+    class: TokenClass.TextDecoration,
+    name: decorationToken.name,
+    value: 'strike-through',
+  };
 
   mainTest.beforeEach(async ({ page, browserName }) => {
     mainPage = new MainPage(page);
@@ -1200,7 +1221,7 @@ mainTest.describe(() => {
 
   mainTest(qase(2531, 'Edit a Text decoration token'), async () => {
     await tokensPage.mainTokensComp.isTokenAppliedWithName(decorationToken.name);
-    await tokensPage.mainTokensComp.editToken(decorationToken.name, newTokenValue);
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await mainPage.waitForChangeIsSaved();
     await tokensPage.mainTokensComp.isTokenAppliedWithName(decorationToken.name);
     await designPanelPage.isTextStrikethroughChecked();
