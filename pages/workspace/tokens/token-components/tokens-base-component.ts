@@ -40,24 +40,33 @@ export class TokensComponent {
   readonly mainTokensComp: MainTokensComponent;
   readonly typoTokensComp: TypographyTokensComponent;
 
+  readonly editTokenMenuItem: Locator;
+  readonly tokenDescriptionInput: Locator;
+
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
     this.baseComp = new BaseComponent(page);
     this.typoTokensComp = new TypographyTokensComponent(page);
     this.mainTokensComp = new MainTokensComponent(page, tokensPage);
+    this.tokenDescriptionInput = page.getByPlaceholder('Description');
+
+    this.editTokenMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Edit token' });
   }
 
   private async getAddTokenButton(tokenClass: TokenClass): Promise<Locator> {
     return this.page.getByRole('button', { name: `Add token: ${tokenClass}` });
   }
 
-  private async createTokenViaAddButton(
+  private async fillTokenData(
     token: TypographyToken<TokenClass> | MainToken<TokenClass>,
   ) {
-    const addTokenButton = await this.getAddTokenButton(token.class);
-    await addTokenButton.click();
     await this.mainTokensComp.tokenNameInput.fill(token.name);
-    await this.mainTokensComp.tokenDescriptionInput.fill(token.description ?? '');
+
+    if (token.description !== undefined) {
+      await this.tokenDescriptionInput.fill(token.description);
+    }
 
     if (token.class === TokenClass.Typography) {
       await this.typoTokensComp.fillTokenData(token);
@@ -66,18 +75,56 @@ export class TokensComponent {
     }
   }
 
+  async clickOnTokenDescription() {
+    await this.tokenDescriptionInput.click;
+  }
+
+  async enterTokenDescription(text: string) {
+    await this.tokenDescriptionInput.fill(text);
+  }
+
+  async rightClickOnTokenWithName(name: string) {
+    await this.page
+      .getByRole('button')
+      .locator(`span[aria-label="${name}"]`)
+      .click({ button: 'right', force: true });
+  }
+
+  async clickOnAddTokenAndFillData(
+    token: TypographyToken<TokenClass> | MainToken<TokenClass>,
+  ) {
+    const addTokenButton = await this.getAddTokenButton(token.class);
+    await addTokenButton.click();
+    await this.fillTokenData(token);
+  }
+
   async createTokenViaAddButtonAndSave(
     token: TypographyToken<TokenClass> | MainToken<TokenClass>,
   ) {
-    await this.createTokenViaAddButton(token);
+    await this.clickOnAddTokenAndFillData(token);
     await this.baseComp.modalSaveButton.click();
   }
 
   async createTokenViaAddButtonAndEnter(
     token: TypographyToken<TokenClass> | MainToken<TokenClass>,
   ) {
-    await this.createTokenViaAddButton(token);
+    await this.clickOnAddTokenAndFillData(token);
     await expect(this.baseComp.modalSaveButton).toBeEnabled();
     await this.baseComp.clickOnEnter();
+  }
+
+  async editTokenViaRightClickByName(
+    updatedToken: TypographyToken<TokenClass> | MainToken<TokenClass>,
+  ) {
+    await this.rightClickOnTokenWithName(updatedToken.name);
+    await this.editTokenMenuItem.click();
+    await this.fillTokenData(updatedToken);
+  }
+
+  async editTokenViaRightClickAndSave(
+    updatedToken: TypographyToken<TokenClass> | MainToken<TokenClass>,
+  ) {
+    await this.editTokenViaRightClickByName(updatedToken);
+    await this.baseComp.modalSaveButton.click();
   }
 }
