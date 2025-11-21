@@ -278,6 +278,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   }
 
   async checkSubscriptionName(name) {
+    await this.isSubscriptionNameVisible();
     await expect(this.currentPlanLabel).toHaveText(name);
   }
 
