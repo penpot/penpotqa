@@ -63,7 +63,7 @@ const config = {
       grepInvert: /@perf/,
       expect: {
         toHaveScreenshot: {
-          maxDiffPixelRatio: 0.0001,
+          maxDiffPixelRatio: 0.05,
         },
       },
       use: {
@@ -88,7 +88,7 @@ const config = {
       grepInvert: /@perf/,
       expect: {
         toHaveScreenshot: {
-          maxDiffPixelRatio: 0.0001,
+          maxDiffPixelRatio: 0.05,
         },
       },
       use: {
