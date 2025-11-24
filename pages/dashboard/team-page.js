@@ -117,23 +117,27 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.goToYourPenpotButton = page.getByRole('button', {
       name: 'Go to your Penpot',
     });
+
+    // Request Access dialog Locators
+    this.requestAccessDialog = page.locator('.main_ui_static__dialog').first();
     this.requestAccessButton = page.getByRole('button', { name: 'REQUEST ACCESS' });
     this.returnHomeButton = page.getByRole('button', { name: 'GO TO YOUR PENPOT' });
-    this.accessDialog = page.locator('div[class*="dialog"]').first();
     this.firstInvitedEmail = page.locator('span[class*="forms__text"]').first();
-    this.requestSentCorrectlyText = this.accessDialog.getByText(
+    this.requestSentCorrectlyText = this.requestAccessDialog.getByText(
       'Your request has been sent correctly!',
     );
-    this.requestSentCorrectlyDescribe = this.accessDialog.getByText(
+    this.requestSentCorrectlyDescribe = this.requestAccessDialog.getByText(
       "Remember that, if the owner allows it, you're going to be invited to the team.",
     );
     this.closeModalButton = page.locator('svg[class*="icon-close"]');
-    this.requestFileAccessText = this.accessDialog.getByText(
+    this.requestFileAccessText = this.requestAccessDialog.getByText(
       "You don't have access to this file.",
     );
-    this.requestFileAccessDescribe = this.accessDialog.getByText(
+    this.requestFileAccessDescribe = this.requestAccessDialog.getByText(
       'To access this file, you can ask the team owner.',
     );
+
+    // Subscriptions Locators
     this.subscriptionIcon = page.getByTestId('subscription-icon').first();
     this.subscriptionIconInTeamDropdown = page
       .getByRole('menuitem')
@@ -549,6 +553,13 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.goToYourPenpotButton.click();
   }
 
+  async isRequestAccessProjectDialogVisible() {
+    await expect(
+      this.requestAccessDialog.getByText("You don't have access to this project."),
+      'Request Access to Project dialog is visible',
+    ).toBeVisible();
+  }
+
   async clickOnRequestAccessButton() {
     await this.requestAccessButton.click();
   }
@@ -580,12 +591,24 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.closeModalButton).toBeVisible();
   }
 
-  async checkRequestFileAccessDialog() {
-    await expect(this.requestFileAccessText).toBeVisible();
-    await expect(this.requestFileAccessDescribe).toBeVisible();
-    await expect(this.goToYourPenpotButton).toBeVisible();
-    await expect(this.requestAccessButton).toBeVisible();
-    await expect(this.closeModalButton).toBeVisible();
+  async isRequestFileAccessDialogVisible() {
+    await expect(
+      this.requestFileAccessText,
+      '"You don\'t have access to this file." message is visible',
+    ).toBeVisible();
+    await expect(
+      this.requestFileAccessDescribe,
+      'Description is visible',
+    ).toBeVisible();
+    await expect(
+      this.goToYourPenpotButton,
+      'GO TO YOUR PENPOT button is visible',
+    ).toBeVisible();
+    await expect(
+      this.requestAccessButton,
+      'REQUEST ACCESS button is visible',
+    ).toBeVisible();
+    await expect(this.closeModalButton, 'Close button is visible').toBeVisible();
   }
 
   async assertRenameItemNotVisible() {

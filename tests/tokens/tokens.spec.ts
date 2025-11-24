@@ -1,16 +1,18 @@
-import { mainTest } from '../../fixtures';
 import { expect } from '@playwright/test';
-import { MainPage } from '../../pages/workspace/main-page';
-import { random } from '../../helpers/string-generator';
-import { TeamPage } from '../../pages/dashboard/team-page';
-import { DashboardPage } from '../../pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { DesignPanelPage } from '../../pages/workspace/design-panel-page';
-import { LayersPanelPage } from '../../pages/workspace/layers-panel-page';
-import { ColorPalettePage } from '../../pages/workspace/color-palette-page';
-import { AssetsPanelPage } from '../../pages/workspace/assets-panel-page';
-import { TokensPage } from '@pages/workspace/tokens/tokens-page';
-import { SampleData } from '../../helpers/sample-data';
+import { mainTest } from 'fixtures';
+import { SampleData } from 'helpers/sample-data';
+import { random } from 'helpers/string-generator';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
+import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
+import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 const teamName = random().concat('autotest');
 const sampleData = new SampleData();
@@ -41,10 +43,13 @@ mainTest.describe(() => {
   let mainPage: MainPage;
   let designPanelPage: DesignPanelPage;
 
-  const tokenName = 'global.radius';
-  const tokenValue = '-1';
+  const radiusToken: MainToken<TokenClass> = {
+    class: TokenClass.BorderRadius,
+    name: 'global.radius',
+    value: '-1',
+    description: 'Description',
+  };
   const newTokenValue = '20';
-  const tokenDescription = 'Description';
 
   mainTest.beforeEach(async ({ page }) => {
     tokensPage = new TokensPage(page);
@@ -53,9 +58,9 @@ mainTest.describe(() => {
 
     await mainPage.createDefaultRectangleByCoordinates(320, 210);
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createRadiusToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(radiusToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(radiusToken.name);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(radiusToken.name);
     await mainPage.waitForChangeIsSaved();
   });
 
@@ -64,12 +69,15 @@ mainTest.describe(() => {
     async ({ page }) => {
       tokensPage = new TokensPage(page);
 
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-      await designPanelPage.checkGeneralCornerRadius(tokenValue);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(radiusToken.name);
+      await designPanelPage.checkGeneralCornerRadius(radiusToken.value);
       await expect(mainPage.createdLayer).toHaveScreenshot(
         'rectangle-border-radius-1.png',
       );
-      await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'RadiusAll');
+      await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+        radiusToken.name,
+        'RadiusAll',
+      );
     },
   );
 
@@ -81,19 +89,19 @@ mainTest.describe(() => {
     async ({ page }) => {
       tokensPage = new TokensPage(page);
 
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-      await tokensPage.tokensComp.editToken(
-        tokenName,
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(radiusToken.name);
+      await tokensPage.mainTokensComp.editToken(
+        radiusToken.name,
         newTokenValue,
-        tokenDescription,
+        radiusToken.description,
       );
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.checkGeneralCornerRadius(newTokenValue);
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(radiusToken.name);
       await expect(mainPage.createdLayer).toHaveScreenshot(
         'rectangle-border-radius-20.png',
       );
-      await tokensPage.tokensComp.checkAppliedTokenTitle(
+      await tokensPage.mainTokensComp.checkAppliedTokenTitle(
         'Token: global.radius\n' + 'Original value: 20\n' + 'Resolved value: 20',
       );
     },
@@ -103,11 +111,14 @@ mainTest.describe(() => {
     qase(2136, 'Delete a token and redo deletion'),
     async ({ page, browserName }) => {
       tokensPage = new TokensPage(page);
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-      await tokensPage.tokensComp.deleteToken(tokenName);
-      await tokensPage.tokensComp.isTokenVisibleWithName(tokenName, false);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(radiusToken.name);
+      await tokensPage.mainTokensComp.deleteToken(radiusToken.name);
+      await tokensPage.mainTokensComp.isTokenVisibleWithName(
+        radiusToken.name,
+        false,
+      );
       await mainPage.clickShortcutCtrlZ(browserName);
-      await tokensPage.tokensComp.isTokenVisibleWithName(tokenName, true);
+      await tokensPage.mainTokensComp.isTokenVisibleWithName(radiusToken.name, true);
     },
   );
 });
@@ -117,8 +128,11 @@ mainTest.describe(() => {
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
 
-  const tokenName = 'global.color';
-  const tokenValue = sampleData.color.redHexCode;
+  const colorToken: MainToken<TokenClass> = {
+    class: TokenClass.Color,
+    name: 'global.color',
+    value: sampleData.color.redHexCode,
+  };
 
   mainTest.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
@@ -127,19 +141,22 @@ mainTest.describe(() => {
 
     await mainPage.createDefaultBoardByCoordinates(320, 210);
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createColorToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(colorToken.name);
   });
 
   mainTest(
     qase(2142, 'Apply default "color fill" token to a board (by left click)'),
     async () => {
-      await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+      await tokensPage.mainTokensComp.clickOnTokenWithName(colorToken.name);
       await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-      await designPanelPage.isFillHexCodeSetComponent(tokenValue.slice(1));
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(colorToken.name);
+      await designPanelPage.isFillHexCodeSetComponent(colorToken.value);
       await expect(mainPage.createdLayer).toHaveScreenshot('board-color-red.png');
-      await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'ColorFill');
+      await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+        colorToken.name,
+        'ColorFill',
+      );
     },
   );
 
@@ -148,12 +165,15 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.clickAddStrokeButton();
       await designPanelPage.setStrokeWidth('10');
-      await tokensPage.tokensComp.selectMenuItem(tokenName, 'Stroke');
+      await tokensPage.mainTokensComp.selectMenuItem(colorToken.name, 'Stroke');
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(colorToken.name);
       await expect(mainPage.createdLayer).toHaveScreenshot('board-red-stroke.png');
-      await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'Stroke');
+      await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+        colorToken.name,
+        'Stroke',
+      );
     },
   );
 });
@@ -164,18 +184,24 @@ mainTest(
     const mainPage: MainPage = new MainPage(page);
     const tokensPage: TokensPage = new TokensPage(page);
 
-    const tokenName = 'global.opacity';
-    const tokenValue = '0.7';
+    const opacityToken: MainToken<TokenClass> = {
+      class: TokenClass.Opacity,
+      name: 'global.opacity',
+      value: '0.7',
+    };
 
     await mainPage.uploadImage('images/sample.jpeg');
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createOpacityToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(opacityToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(opacityToken.name);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(opacityToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(opacityToken.name);
     await expect(mainPage.createdLayer).toHaveScreenshot('image-opacity-0-7.png');
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'Opacity');
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      opacityToken.name,
+      'Opacity',
+    );
   },
 );
 
@@ -186,21 +212,27 @@ mainTest(
     const tokensPage: TokensPage = new TokensPage(page);
     const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
 
-    const tokenName = 'global.rotation';
-    const tokenValue = '-(22.5+22.5)';
+    const rotationToken: MainToken<TokenClass> = {
+      class: TokenClass.Rotation,
+      name: 'global.rotation',
+      value: '-(22.5+22.5)',
+    };
     const tokenResolvedValue = '315'; // 315 == -45 == -(22.5+22.5)
 
     await mainPage.createDefaultTextLayerByCoordinates(320, 210, browserName);
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createRotationToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(rotationToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(rotationToken.name);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(rotationToken.name);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(rotationToken.name);
     await designPanelPage.checkRotationForLayer(tokenResolvedValue);
     browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.createdLayer).toHaveScreenshot('text-rotated-315.png');
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'Rotation');
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      rotationToken.name,
+      'Rotation',
+    );
   },
 );
 
@@ -212,17 +244,20 @@ mainTest(
     const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
     const layersPanelPage: LayersPanelPage = new LayersPanelPage(page);
 
-    const tokenName = 'global.sizing';
-    const tokenValue = '200';
+    const sizingToken: MainToken<TokenClass> = {
+      class: TokenClass.Sizing,
+      name: 'global.sizing',
+      value: '200',
+    };
 
     await mainPage.uploadImage('images/mini_sample.jpg');
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createSizingToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.selectMenuItem(tokenName, 'Max Width');
-    await tokensPage.tokensComp.selectMenuItem(tokenName, 'Min Height');
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(sizingToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(sizingToken.name);
+    await tokensPage.mainTokensComp.selectMenuItem(sizingToken.name, 'Max Width');
+    await tokensPage.mainTokensComp.selectMenuItem(sizingToken.name, 'Min Height');
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(sizingToken.name);
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'image-max-min-size-200.png',
     );
@@ -239,11 +274,17 @@ mainTest(
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'image-on-board-max-min-size-200.png',
     );
-    await designPanelPage.checkFlexElementMinMax('Width', false, tokenValue);
-    await designPanelPage.checkFlexElementMinMax('Height', true, tokenValue);
+    await designPanelPage.checkFlexElementMinMax('Width', false, sizingToken.value);
+    await designPanelPage.checkFlexElementMinMax('Height', true, sizingToken.value);
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'Max Width');
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'Min Height');
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      sizingToken.name,
+      'Max Width',
+    );
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      sizingToken.name,
+      'Min Height',
+    );
   },
 );
 
@@ -254,8 +295,11 @@ mainTest(
     const tokensPage: TokensPage = new TokensPage(page);
     const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
 
-    const tokenName = 'global.spacing';
-    const tokenValue = '-20';
+    const spacingToken: MainToken<TokenClass> = {
+      class: TokenClass.Spacing,
+      name: 'global.spacing',
+      value: '-20',
+    };
 
     await mainPage.createDefaultBoardByCoordinates(320, 210);
     await mainPage.addGridLayoutViaRightClick();
@@ -263,16 +307,17 @@ mainTest(
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createSpacingToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(spacingToken);
+
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(spacingToken.name);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(spacingToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await designPanelPage.checkRowGap(tokenValue);
-    await designPanelPage.checkColumnGap(tokenValue);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(spacingToken.name);
+    await designPanelPage.checkRowGap(spacingToken.value);
+    await designPanelPage.checkColumnGap(spacingToken.value);
     await expect(mainPage.createdLayer).toHaveScreenshot('board-spacing-20.png');
-    await tokensPage.tokensComp.isAllMenuItemWithSectionNameSelected(
-      tokenName,
+    await tokensPage.mainTokensComp.isAllMenuItemWithSectionNameSelected(
+      spacingToken.name,
       'Gaps',
     );
   },
@@ -285,22 +330,25 @@ mainTest(
     const tokensPage: TokensPage = new TokensPage(page);
     const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
 
-    const tokenName = 'global.stroke';
-    const tokenValue = '5.5';
+    const strokeToken: MainToken<TokenClass> = {
+      class: TokenClass.StrokeWidth,
+      name: 'global.stroke',
+      value: '5.5',
+    };
 
     await mainPage.createDefaultOpenPath();
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createStrokeWidthToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(strokeToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(strokeToken.name);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(strokeToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await designPanelPage.checkStrokeWidth(tokenValue);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(strokeToken.name);
+    await designPanelPage.checkStrokeWidth(strokeToken.value);
     await expect(mainPage.createdLayer).toHaveScreenshot(
       'path-stroke-width-5-5.png',
     );
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      tokenName,
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      strokeToken.name,
       'Stroke Width',
     );
   },
@@ -313,28 +361,41 @@ mainTest(
     const tokensPage: TokensPage = new TokensPage(page);
     const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
 
-    const tokenName = 'global.dimension';
-    const tokenValue = '550.5';
+    const dimensionToken: MainToken<TokenClass> = {
+      class: TokenClass.Dimension,
+      name: 'global.dimension',
+      value: '550.5',
+    };
 
     const defaultX = '100';
     const defaultY = '200';
 
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(
+      parseInt(defaultX),
+      parseInt(defaultY),
+      browserName,
+    );
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createDimensionToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(dimensionToken.name);
     await designPanelPage.checkXAxis(defaultX);
     await designPanelPage.checkYAxis(defaultY);
-    await tokensPage.tokensComp.selectMenuItem(tokenName, 'AxisX');
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await designPanelPage.checkXAxis(tokenValue);
+    await tokensPage.mainTokensComp.selectMenuItem(dimensionToken.name, 'AxisX');
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(dimensionToken.name);
+    await designPanelPage.checkXAxis(dimensionToken.value);
     await designPanelPage.checkYAxis(defaultY);
-    await tokensPage.tokensComp.selectMenuItem(tokenName, 'Y');
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await designPanelPage.checkXAxis(tokenValue);
-    await designPanelPage.checkYAxis(tokenValue);
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'AxisX');
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'Y');
+    await tokensPage.mainTokensComp.selectMenuItem(dimensionToken.name, 'Y');
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(dimensionToken.name);
+    await designPanelPage.checkXAxis(dimensionToken.value);
+    await designPanelPage.checkYAxis(dimensionToken.value);
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      dimensionToken.name,
+      'AxisX',
+    );
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      dimensionToken.name,
+      'Y',
+    );
   },
 );
 
@@ -345,51 +406,62 @@ mainTest(
     const tokensPage: TokensPage = new TokensPage(page);
     const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
 
-    const dimensionTokenName = 'global.dimension';
-    const sizingTokenName = 'global.sizing';
+    const sizingToken: MainToken<TokenClass> = {
+      class: TokenClass.Sizing,
+      name: 'global.sizing',
+      value: '200',
+    };
+    const dimensionToken: MainToken<TokenClass> = {
+      class: TokenClass.Dimension,
+      name: 'global.dimension',
+      value: '100',
+    };
 
     await mainPage.createDefaultEllipseByCoordinates(100, 200);
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createDimensionToken();
-    await tokensPage.tokensComp.isTokenVisibleWithName(dimensionTokenName);
-    await tokensPage.tokensComp.createSizingToken();
-    await tokensPage.tokensComp.isTokenVisibleWithName(sizingTokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(dimensionToken.name);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(sizingToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(sizingToken.name);
 
-    await tokensPage.tokensComp.clickOnTokenWithName(sizingTokenName);
-    await designPanelPage.checkSizeWidth('200');
-    await designPanelPage.checkSizeHeight('200');
-    await tokensPage.tokensComp.isTokenAppliedWithName(sizingTokenName);
-    await tokensPage.tokensComp.isTokenAppliedWithName(dimensionTokenName, false);
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      sizingTokenName,
+    await tokensPage.mainTokensComp.clickOnTokenWithName(sizingToken.name);
+    await designPanelPage.checkSizeWidth(sizingToken.value);
+    await designPanelPage.checkSizeHeight(sizingToken.value);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(sizingToken.name);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(
+      dimensionToken.name,
+      false,
+    );
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      sizingToken.name,
       'SizeAll',
     );
     await mainPage.clickBoardOnCanvas();
 
-    await tokensPage.tokensComp.clickOnTokenWithName(dimensionTokenName);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(dimensionToken.name);
     await designPanelPage.checkSizeWidth('100');
     await designPanelPage.checkSizeHeight('100');
-    await tokensPage.tokensComp.isTokenAppliedWithName(dimensionTokenName);
-    await tokensPage.tokensComp.isTokenAppliedWithName(sizingTokenName, false);
-    await tokensPage.tokensComp.isAllSubMenuItemWithSectionNameSelected(
-      dimensionTokenName,
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(dimensionToken.name);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(sizingToken.name, false);
+    await tokensPage.mainTokensComp.isAllSubMenuItemWithSectionNameSelected(
+      dimensionToken.name,
       'Sizing',
       'Size',
     );
     await mainPage.clickBoardOnCanvas();
 
-    await tokensPage.tokensComp.selectMenuItem(sizingTokenName, 'Height');
-    await tokensPage.tokensComp.isTokenAppliedWithName(dimensionTokenName);
-    await tokensPage.tokensComp.isTokenAppliedWithName(sizingTokenName);
+    await tokensPage.mainTokensComp.selectMenuItem(sizingToken.name, 'Height');
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(dimensionToken.name);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(sizingToken.name);
     await designPanelPage.checkSizeWidth('100');
     await designPanelPage.checkSizeHeight('200');
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      sizingTokenName,
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      sizingToken.name,
       'Height',
     );
     await mainPage.clickBoardOnCanvas();
-    await tokensPage.tokensComp.isSubMenuItemWithNameSelected(
-      dimensionTokenName,
+    await tokensPage.mainTokensComp.isSubMenuItemWithNameSelected(
+      dimensionToken.name,
       'Sizing',
       'Width',
     );
@@ -400,51 +472,56 @@ mainTest(
 mainTest.describe(() => {
   let mainPage: MainPage;
   let tokensPage: TokensPage;
-  let designPanelPage: DesignPanelPage;
 
-  const tokenName = 'global.font';
-  const tokenValue = '60';
+  const fontSizeToken: MainToken<TokenClass> = {
+    class: TokenClass.FontSize,
+    name: 'global.fontSize',
+    value: '60',
+  };
+
   const newTokenValue = '120';
   const tokenDescription = '120';
 
   mainTest.beforeEach(async ({ page, browserName }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
-    designPanelPage = new DesignPanelPage(page);
 
     await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createFontSizeToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontSizeToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(fontSizeToken.name);
   });
 
   mainTest(qase(2358, 'Create a font size token'), async () => {
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(fontSizeToken.name);
   });
 
   mainTest(qase(2359, 'Apply a font size token'), async () => {
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(fontSizeToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(fontSizeToken.name);
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.createdLayer).toHaveScreenshot('text-font-size-60.png');
   });
 
   mainTest(qase(2360, 'Detachment font size token'), async ({ browserName }) => {
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(fontSizeToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(fontSizeToken.name);
     await mainPage.createDefaultTextLayerByCoordinates(100, 600, browserName);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(fontSizeToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(fontSizeToken.name);
     await mainPage.clickViewportByCoordinates(120, 220);
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(fontSizeToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);
-    await tokensPage.tokensComp.editToken(
-      tokenName,
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(
+      fontSizeToken.name,
+      false,
+    );
+    await tokensPage.mainTokensComp.editToken(
+      fontSizeToken.name,
       newTokenValue,
       tokenDescription,
     );
@@ -467,23 +544,33 @@ mainTest(
     const layersPanelPage: LayersPanelPage = new LayersPanelPage(page);
     const colorPalettePage: ColorPalettePage = new ColorPalettePage(page);
 
-    const firstTokenName = 'color.random';
-    const secondTokenName = 'color.blue';
-    const firstTokenValue = sampleData.color.getRandomHexCode();
-    const secondTokenValue = sampleData.color.blueHexCode;
-    const thirdTokenValue = sampleData.color.greenHexCode;
+    const colorToken1: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: 'color1',
+      value: sampleData.color.getRandomHexCode(),
+    };
+    const colorToken2: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: 'color2',
+      value: sampleData.color.blueHexCode,
+    };
+    const colorToken3: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: 'color3',
+      value: sampleData.color.greenHexCode,
+    };
 
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createColorToken(firstTokenName, firstTokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(firstTokenName);
-    await tokensPage.tokensComp.createColorToken(secondTokenName, secondTokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(secondTokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(colorToken1);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(colorToken1.name);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken2);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(colorToken2.name);
 
     await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
-    await tokensPage.tokensComp.clickOnTokenWithName(firstTokenName);
-    await tokensPage.tokensComp.isTokenAppliedWithName(firstTokenName);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(colorToken1.name);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(colorToken1.name);
     await layersPanelPage.openLayersTab();
     await mainPage.pressFlexLayoutShortcut();
     await mainPage.waitForChangeIsSaved();
@@ -497,25 +584,25 @@ mainTest(
     await layersPanelPage.openLayersTab();
     await layersPanelPage.selectCopyComponentChildLayer();
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.clickOnTokenWithName(secondTokenName);
-    await tokensPage.tokensComp.isTokenAppliedWithName(secondTokenName);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(colorToken2.name);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(colorToken2.name);
     await layersPanelPage.openLayersTab();
     await layersPanelPage.clickMainComponentOnLayersTab();
     await layersPanelPage.selectMainComponentChildLayer();
 
     await designPanelPage.clickFillColorIcon();
-    await colorPalettePage.setHex(thirdTokenValue);
+    await colorPalettePage.setHex(colorToken3.value);
     await layersPanelPage.selectMainComponentChildLayer();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet(thirdTokenValue.slice(1));
+    await designPanelPage.isFillHexCodeSet(colorToken3.value);
 
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.isTokenAppliedWithName(firstTokenName, false);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(colorToken1.name, false);
     await layersPanelPage.openLayersTab();
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await layersPanelPage.selectCopyComponentChildLayer();
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.isTokenAppliedWithName(secondTokenName, true);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(colorToken2.name, true);
 
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('2-texts-color.png', {
@@ -529,10 +616,18 @@ mainTest.describe(() => {
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
 
-  const tokenName = 'global.font.family';
-  const tokenValue = 'Actor';
+  const fontFamilyToken: MainToken<TokenClass> = {
+    class: TokenClass.FontFamily,
+    name: 'global.font.family',
+    value: 'Actor',
+  };
+
+  const fontFamilyTokenRef: MainToken<TokenClass> = {
+    class: TokenClass.FontFamily,
+    name: 'global.font.family2',
+    value: `{${fontFamilyToken.name}}`,
+  };
   const newTokenValue = 'Inter';
-  const secondTokenName = 'global.font.family2';
 
   mainTest.beforeEach(async ({ page, browserName }) => {
     mainPage = new MainPage(page);
@@ -541,24 +636,24 @@ mainTest.describe(() => {
 
     await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createFontFamilyToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(fontFamilyToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(fontFamilyToken.name);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(fontFamilyToken.name);
     await mainPage.waitForChangeIsSaved();
   });
 
   mainTest(qase(2472, 'Apply a font family token'), async () => {
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await designPanelPage.checkFontName(tokenValue);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(fontFamilyToken.name);
+    await designPanelPage.checkFontName(fontFamilyToken.value);
   });
 
   mainTest(qase(2475, 'Edit a font family token'), async () => {
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await tokensPage.tokensComp.editToken(tokenName, newTokenValue);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(fontFamilyToken.name);
+    await tokensPage.mainTokensComp.editToken(fontFamilyToken.name, newTokenValue);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.checkFontName(newTokenValue);
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await tokensPage.tokensComp.checkAppliedTokenTitle(
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(fontFamilyToken.name);
+    await tokensPage.mainTokensComp.checkAppliedTokenTitle(
       'Token: global.font.family\n' +
         'Original value: Inter\n' +
         'Resolved value: Inter',
@@ -566,19 +661,16 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(2506, 'Reference a font family token'), async () => {
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await designPanelPage.checkFontName(tokenValue);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(fontFamilyToken.name);
+    await designPanelPage.checkFontName(fontFamilyToken.value);
 
-    await tokensPage.tokensComp.createFontFamilyToken(
-      secondTokenName,
-      `{${tokenName}}`,
-    );
-    await tokensPage.tokensComp.isTokenVisibleWithName(secondTokenName);
-    await tokensPage.tokensComp.clickOnTokenWithName(secondTokenName);
-    await tokensPage.tokensComp.editToken(tokenName, newTokenValue);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontFamilyTokenRef);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(fontFamilyTokenRef.name);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(fontFamilyTokenRef.name);
+    await tokensPage.mainTokensComp.editToken(fontFamilyToken.name, newTokenValue);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.checkFontName(newTokenValue);
-    await tokensPage.tokensComp.isTokenAppliedWithName(secondTokenName);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(fontFamilyTokenRef.name);
   });
 });
 
@@ -607,33 +699,39 @@ mainTest.describe(() => {
       'Apply a Font Weight token to a text not matching a family font style, but with a fallback value',
     ),
     async () => {
-      const tokenName = 'extra.black.font.weight';
-      const secondTokenName = '500.italic.font.weight';
+      const fontWeightToken1: MainToken<TokenClass> = {
+        class: TokenClass.FontWeight,
+        name: 'extra.black.font.weight',
+        value: 'extra-black',
+      };
 
-      await tokensPage.tokensComp.createFontWeightToken(tokenName, 'extra-black');
-      await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-      await tokensPage.tokensComp.createFontWeightToken(
-        secondTokenName,
-        '500 italic',
-      );
-      await tokensPage.tokensComp.isTokenVisibleWithName(secondTokenName);
+      const fontWeightToken2: MainToken<TokenClass> = {
+        class: TokenClass.FontWeight,
+        name: '500.italic.font.weight',
+        value: '500 italic',
+      };
 
-      await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken1);
+      await tokensPage.mainTokensComp.isTokenVisibleWithName(fontWeightToken1.name);
+      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken2);
+      await tokensPage.mainTokensComp.isTokenVisibleWithName(fontWeightToken2.name);
+
+      await tokensPage.mainTokensComp.clickOnTokenWithName(fontWeightToken1.name);
       await mainPage.checkImportErrorMessage(
         `Error setting font weight/style. This font style does not exist in the current font`,
       );
       await mainPage.closeModalWindow();
       await mainPage.isImportErrorMessageVisible(false);
       await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(fontWeightToken1.name);
       await designPanelPage.checkFontStyle('900');
 
-      await tokensPage.tokensComp.clickOnTokenWithName(secondTokenName);
+      await tokensPage.mainTokensComp.clickOnTokenWithName(fontWeightToken2.name);
       await mainPage.checkImportErrorMessage(
         `Error setting font weight/style. This font style does not exist in the current font`,
       );
       await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(secondTokenName);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(fontWeightToken2.name);
       await designPanelPage.checkFontStyle('400 Italic');
     },
   );
@@ -644,18 +742,22 @@ mainTest.describe(() => {
       'Apply a Font Weight token to a text not matching a family font style, with no fallback value',
     ),
     async () => {
-      const tokenName = 'extra.black.font.weight';
+      const fontWeightToken: MainToken<TokenClass> = {
+        class: TokenClass.FontWeight,
+        name: 'extra.black.font.weight',
+        value: '500',
+      };
 
-      await tokensPage.tokensComp.createFontWeightToken(tokenName, '500');
-      await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken);
+      await tokensPage.mainTokensComp.isTokenVisibleWithName(fontWeightToken.name);
 
       await designPanelPage.changeTextFont('Splash');
-      await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+      await tokensPage.mainTokensComp.clickOnTokenWithName(fontWeightToken.name);
       await mainPage.checkImportErrorMessage(
         `Error setting font weight/style. This font style does not exist in the current font`,
       );
       await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(fontWeightToken.name);
       await designPanelPage.checkFontStyle('400');
     },
   );
@@ -666,14 +768,18 @@ mainTest.describe(() => {
       'Edit the value of a Font Weight token already applied to a component text with duplicated copies',
     ),
     async ({ browserName }) => {
-      const tokenName = '700.italic.font.weight';
+      const fontWeightToken: MainToken<TokenClass> = {
+        class: TokenClass.FontWeight,
+        name: '700.italic.font.weight',
+        value: '700 Italic',
+      };
       const newTokenValue = '200';
 
-      await tokensPage.tokensComp.createFontWeightToken(tokenName, '700 Italic');
-      await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-      await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken);
+      await tokensPage.mainTokensComp.isTokenVisibleWithName(fontWeightToken.name);
+      await tokensPage.mainTokensComp.clickOnTokenWithName(fontWeightToken.name);
       await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(fontWeightToken.name);
       await designPanelPage.checkFontStyle('700 Italic');
 
       await mainPage.createComponentViaRightClick();
@@ -682,7 +788,7 @@ mainTest.describe(() => {
       await mainPage.pressPasteShortcut(browserName);
       await mainPage.waitForChangeIsSaved();
 
-      await tokensPage.tokensComp.editToken(tokenName, newTokenValue);
+      await tokensPage.mainTokensComp.editToken(fontWeightToken.name, newTokenValue);
       await mainPage.waitForChangeIsSaved();
 
       await layersPanelPage.openLayersTab();
@@ -700,8 +806,11 @@ mainTest.describe(() => {
   let designPanelPage: DesignPanelPage;
   let assetsPanelPage: AssetsPanelPage;
 
-  const tokenName = 'global.letter.spacing';
-  const tokenValue = '10';
+  const letterSpacingToken: MainToken<TokenClass> = {
+    class: TokenClass.LetterSpacing,
+    name: 'global.letter.spacing',
+    value: '10',
+  };
   const newTokenValue = '5';
 
   mainTest.beforeEach(async ({ page, browserName }) => {
@@ -712,20 +821,25 @@ mainTest.describe(() => {
 
     await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createLetterSpacingToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(letterSpacingToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(letterSpacingToken.name);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
   });
 
   mainTest(
     qase(2500, 'Apply a Letter Spacing token and override value from Design tab'),
     async () => {
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-      await designPanelPage.checkLetterSpacing(tokenValue);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(
+        letterSpacingToken.name,
+      );
+      await designPanelPage.checkLetterSpacing(letterSpacingToken.value);
       await designPanelPage.changeTextLetterSpacing(newTokenValue);
       await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(
+        letterSpacingToken.name,
+        false,
+      );
       await designPanelPage.checkLetterSpacing(newTokenValue);
     },
   );
@@ -736,8 +850,10 @@ mainTest.describe(() => {
       'Letter Spacing token value can be override by Assets > Typography style',
     ),
     async () => {
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-      await designPanelPage.checkLetterSpacing(tokenValue);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(
+        letterSpacingToken.name,
+      );
+      await designPanelPage.checkLetterSpacing(letterSpacingToken.value);
 
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.clickAddFileLibraryTypographyButton();
@@ -748,7 +864,10 @@ mainTest.describe(() => {
 
       await tokensPage.clickTokensTab();
       await designPanelPage.clickOnTypographyMenuButton();
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(
+        letterSpacingToken.name,
+        false,
+      );
       await designPanelPage.checkLetterSpacing(newTokenValue);
     },
   );
@@ -763,52 +882,66 @@ mainTest(
     const mainPage: MainPage = new MainPage(page);
     const tokensPage: TokensPage = new TokensPage(page);
 
-    const tokenName = 'global.letter.spacing';
-    const dimensionsToken = 'global.dimension';
+    const dimensionToken: MainToken<TokenClass> = {
+      class: TokenClass.Dimension,
+      name: 'global.dimension',
+      value: '2',
+    };
+    const letterSpacingToken: MainToken<TokenClass> = {
+      class: TokenClass.LetterSpacing,
+      name: 'global.letter.spacing',
+      value: `5px*{${dimensionToken.name}}`,
+    };
 
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createDimensionToken(dimensionsToken, '2');
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionToken);
 
-    await tokensPage.tokensComp.createLetterSpacingToken(
-      tokenName,
-      `5px*{${dimensionsToken}}`,
-    );
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(letterSpacingToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      tokenName,
-      `Token: ${tokenName}\n` +
-        `Original value: 5px*{${dimensionsToken}}\n` +
+    await tokensPage.mainTokensComp.checkTokenTitle(
+      letterSpacingToken.name,
+      `Token: ${letterSpacingToken.name}\n` +
+        `Original value: 5px*{${dimensionToken.name}}\n` +
         'Resolved value: 10',
     );
 
-    await tokensPage.tokensComp.editToken(tokenName, `5px/{${dimensionsToken}}`);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.mainTokensComp.editToken(
+      letterSpacingToken.name,
+      `5px/{${dimensionToken.name}}`,
+    );
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      tokenName,
-      `Token: ${tokenName}\n` +
-        `Original value: 5px/{${dimensionsToken}}\n` +
+    await tokensPage.mainTokensComp.checkTokenTitle(
+      letterSpacingToken.name,
+      `Token: ${letterSpacingToken.name}\n` +
+        `Original value: 5px/{${dimensionToken.name}}\n` +
         'Resolved value: 2.5',
     );
 
-    await tokensPage.tokensComp.editToken(tokenName, `5px+{${dimensionsToken}}`);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.mainTokensComp.editToken(
+      letterSpacingToken.name,
+      `5px+{${dimensionToken.name}}`,
+    );
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      tokenName,
-      `Token: ${tokenName}\n` +
-        `Original value: 5px+{${dimensionsToken}}\n` +
+    await tokensPage.mainTokensComp.checkTokenTitle(
+      letterSpacingToken.name,
+      `Token: ${letterSpacingToken.name}\n` +
+        `Original value: 5px+{${dimensionToken.name}}\n` +
         'Resolved value: 7',
     );
 
-    await tokensPage.tokensComp.editToken(tokenName, `5px-{${dimensionsToken}}`);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.mainTokensComp.editToken(
+      letterSpacingToken.name,
+      `5px-{${dimensionToken.name}}`,
+    );
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      tokenName,
-      `Token: ${tokenName}\n` +
-        `Original value: 5px-{${dimensionsToken}}\n` +
+    await tokensPage.mainTokensComp.checkTokenTitle(
+      letterSpacingToken.name,
+      `Token: ${letterSpacingToken.name}\n` +
+        `Original value: 5px-{${dimensionToken.name}}\n` +
         'Resolved value: 3',
     );
   },
@@ -823,53 +956,70 @@ mainTest(
     const mainPage: MainPage = new MainPage(page);
     const tokensPage: TokensPage = new TokensPage(page);
 
-    const tokenName = 'global.number';
-    const numberToken = 'numberToken';
+    const numberToken: MainToken<TokenClass> = {
+      class: TokenClass.Number,
+      name: 'numberToken',
+      value: '2',
+    };
+    const numberTokenRef: MainToken<TokenClass> = {
+      class: TokenClass.Number,
+      name: 'global.number',
+      value: `5*{${numberToken.name}}`,
+    };
 
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createNumberToken(numberToken, '2');
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
     await mainPage.waitForChangeIsSaved();
 
-    await tokensPage.tokensComp.createNumberToken(tokenName, `5*{${numberToken}}`);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(numberTokenRef);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      tokenName,
-      `Token: ${tokenName}\n` +
-        `Original value: 5*{${numberToken}}\n` +
+    await tokensPage.mainTokensComp.checkTokenTitle(
+      numberTokenRef.name,
+      `Token: ${numberTokenRef.name}\n` +
+        `Original value: 5*{${numberToken.name}}\n` +
         'Resolved value: 10\n' +
         'Right click to see options',
     );
 
-    await tokensPage.tokensComp.editToken(tokenName, `5/{${numberToken}}`);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.mainTokensComp.editToken(
+      numberTokenRef.name,
+      `5/{${numberToken.name}}`,
+    );
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      tokenName,
-      `Token: ${tokenName}\n` +
-        `Original value: 5/{${numberToken}}\n` +
+    await tokensPage.mainTokensComp.checkTokenTitle(
+      numberTokenRef.name,
+      `Token: ${numberTokenRef.name}\n` +
+        `Original value: 5/{${numberToken.name}}\n` +
         'Resolved value: 2.5\n' +
         'Right click to see options',
     );
 
-    await tokensPage.tokensComp.editToken(tokenName, `5+{${numberToken}}`);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.mainTokensComp.editToken(
+      numberTokenRef.name,
+      `5+{${numberToken.name}}`,
+    );
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      tokenName,
-      `Token: ${tokenName}\n` +
-        `Original value: 5+{${numberToken}}\n` +
+    await tokensPage.mainTokensComp.checkTokenTitle(
+      numberTokenRef.name,
+      `Token: ${numberTokenRef.name}\n` +
+        `Original value: 5+{${numberToken.name}}\n` +
         'Resolved value: 7\n' +
         'Right click to see options',
     );
 
-    await tokensPage.tokensComp.editToken(tokenName, `5-{${numberToken}}`);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
+    await tokensPage.mainTokensComp.editToken(
+      numberTokenRef.name,
+      `5-{${numberToken.name}}`,
+    );
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      tokenName,
-      `Token: ${tokenName}\n` +
-        `Original value: 5-{${numberToken}}\n` +
+    await tokensPage.mainTokensComp.checkTokenTitle(
+      numberTokenRef.name,
+      `Token: ${numberTokenRef.name}\n` +
+        `Original value: 5-{${numberToken.name}}\n` +
         'Resolved value: 3\n' +
         'Right click to see options',
     );
@@ -883,24 +1033,30 @@ mainTest(
     const tokensPage: TokensPage = new TokensPage(page);
     const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
 
-    const tokenName = 'global.number';
-    const tokenValue = '45';
+    const numberToken: MainToken<TokenClass> = {
+      class: TokenClass.Number,
+      name: 'global.number',
+      value: '45',
+    };
     const newTokenValue = '0';
 
     await mainPage.createDefaultRectangleByCoordinates(320, 210);
     await tokensPage.clickTokensTab();
 
-    await tokensPage.tokensComp.createNumberToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.selectMenuItem(tokenName, 'Rotation');
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(numberToken.name);
+    await tokensPage.mainTokensComp.selectMenuItem(numberToken.name, 'Rotation');
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'Rotation');
-    await designPanelPage.checkRotationForLayer(tokenValue);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(numberToken.name);
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      numberToken.name,
+      'Rotation',
+    );
+    await designPanelPage.checkRotationForLayer(numberToken.value);
 
     await designPanelPage.changeRotationForLayer(newTokenValue);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(numberToken.name, false);
     await designPanelPage.checkRotationForLayer(newTokenValue);
   },
 );
@@ -915,24 +1071,30 @@ mainTest(
     const tokensPage: TokensPage = new TokensPage(page);
     const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
 
-    const tokenName = 'global.number';
-    const tokenValue = '2';
+    const numberToken: MainToken<TokenClass> = {
+      class: TokenClass.Number,
+      name: 'global.number',
+      value: '2',
+    };
     const newTokenValue = '1';
 
     await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
     await tokensPage.clickTokensTab();
 
-    await tokensPage.tokensComp.createNumberToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.selectMenuItem(tokenName, 'Line Height');
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(numberToken.name);
+    await tokensPage.mainTokensComp.selectMenuItem(numberToken.name, 'Line Height');
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(tokenName, 'Line Height');
-    await designPanelPage.checkTextLineHeight(tokenValue);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(numberToken.name);
+    await tokensPage.mainTokensComp.isMenuItemWithNameSelected(
+      numberToken.name,
+      'Line Height',
+    );
+    await designPanelPage.checkTextLineHeight(numberToken.value);
 
     await designPanelPage.changeTextLineHeight(newTokenValue);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(numberToken.name, false);
     await designPanelPage.checkTextLineHeight(newTokenValue);
   },
 );
@@ -944,17 +1106,21 @@ mainTest(
     const tokensPage: TokensPage = new TokensPage(page);
     const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
 
-    const tokenName = 'text-case-capitalize';
-    const tokenValue = 'Capitalize';
+    const textCaseToken: MainToken<TokenClass> = {
+      class: TokenClass.TextCase,
+      name: 'text-case-capitalize',
+      value: 'Capitalize',
+    };
     const text = 'EXAMPLE TEXT';
+
     await mainPage.createTextLayerByCoordinates(100, 200, text);
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTextCaseToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(textCaseToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(textCaseToken.name);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(textCaseToken.name);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await designPanelPage.checkTextCase(tokenValue);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(textCaseToken.name);
+    await designPanelPage.checkTextCase(textCaseToken.value);
   },
 );
 
@@ -964,8 +1130,11 @@ mainTest(qase(2520, 'Override and re-apply a text case token'), async ({ page })
   const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
   const assetsPanelPage: AssetsPanelPage = new AssetsPanelPage(page);
 
-  const tokenName = 'text-case-capitalize';
-  const tokenValue = 'Capitalize';
+  const textCaseToken: MainToken<TokenClass> = {
+    class: TokenClass.TextCase,
+    name: 'text-case-capitalize',
+    value: 'Capitalize',
+  };
   const text = 'EXAMPLE TEXT';
 
   await assetsPanelPage.clickAssetsTab();
@@ -976,13 +1145,13 @@ mainTest(qase(2520, 'Override and re-apply a text case token'), async ({ page })
 
   await tokensPage.clickTokensTab();
   await mainPage.createTextLayerByCoordinates(100, 200, text);
-  await tokensPage.tokensComp.createTextCaseToken(tokenName, tokenValue);
-  await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-  await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+  await tokensPage.tokensComp.createTokenViaAddButtonAndSave(textCaseToken);
+  await tokensPage.mainTokensComp.isTokenVisibleWithName(textCaseToken.name);
+  await tokensPage.mainTokensComp.clickOnTokenWithName(textCaseToken.name);
   await mainPage.waitForChangeIsSaved();
 
-  await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-  await designPanelPage.checkTextCase(tokenValue);
+  await tokensPage.mainTokensComp.isTokenAppliedWithName(textCaseToken.name);
+  await designPanelPage.checkTextCase(textCaseToken.value);
 
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
@@ -991,16 +1160,16 @@ mainTest(qase(2520, 'Override and re-apply a text case token'), async ({ page })
   await designPanelPage.checkTextCase('Upper');
 
   await tokensPage.clickTokensTab();
-  await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);
+  await tokensPage.mainTokensComp.isTokenAppliedWithName(textCaseToken.name, false);
 
-  await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+  await tokensPage.mainTokensComp.clickOnTokenWithName(textCaseToken.name);
   await mainPage.waitForChangeIsSaved();
-  await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-  await designPanelPage.checkTextCase(tokenValue);
+  await tokensPage.mainTokensComp.isTokenAppliedWithName(textCaseToken.name);
+  await designPanelPage.checkTextCase(textCaseToken.value);
 
   await designPanelPage.changeTextCase('Lower');
   await mainPage.waitForChangeIsSaved();
-  await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);
+  await tokensPage.mainTokensComp.isTokenAppliedWithName(textCaseToken.name, false);
   await designPanelPage.checkTextCase('Lower');
 });
 
@@ -1009,8 +1178,11 @@ mainTest.describe(() => {
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
 
-  const tokenName = 'global.text.decoration';
-  const tokenValue = 'underline';
+  const decorationToken: MainToken<TokenClass> = {
+    class: TokenClass.TextDecoration,
+    name: 'global.text.decoration',
+    value: 'underline',
+  };
   const newTokenValue = 'strike-through';
 
   mainTest.beforeEach(async ({ page, browserName }) => {
@@ -1020,32 +1192,35 @@ mainTest.describe(() => {
 
     await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
     await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTextDecorationToken(tokenName, tokenValue);
-    await tokensPage.tokensComp.isTokenVisibleWithName(tokenName);
-    await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(decorationToken);
+    await tokensPage.mainTokensComp.isTokenVisibleWithName(decorationToken.name);
+    await tokensPage.mainTokensComp.clickOnTokenWithName(decorationToken.name);
     await mainPage.waitForChangeIsSaved();
   });
 
   mainTest(qase(2531, 'Edit a Text decoration token'), async () => {
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
-    await tokensPage.tokensComp.editToken(tokenName, newTokenValue);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(decorationToken.name);
+    await tokensPage.mainTokensComp.editToken(decorationToken.name, newTokenValue);
     await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+    await tokensPage.mainTokensComp.isTokenAppliedWithName(decorationToken.name);
     await designPanelPage.isTextStrikethroughChecked();
   });
 
   mainTest(
     qase(2535, 'Re-Apply the token after change the decorator manually'),
     async () => {
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(decorationToken.name);
       await designPanelPage.isTextUnderlineChecked();
       await designPanelPage.clickOnTextStrikethroughButton();
       await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(
+        decorationToken.name,
+        false,
+      );
       await designPanelPage.isTextStrikethroughChecked();
-      await tokensPage.tokensComp.clickOnTokenWithName(tokenName);
+      await tokensPage.mainTokensComp.clickOnTokenWithName(decorationToken.name);
       await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
+      await tokensPage.mainTokensComp.isTokenAppliedWithName(decorationToken.name);
       await designPanelPage.isTextUnderlineChecked();
     },
   );
