@@ -360,7 +360,7 @@ async function waitSecondMessage(page, email, timeoutSec = 40) {
   const timeout = timeoutSec * 1000;
   const interval = 4000;
   const startTime = Date.now();
-  let count;
+  let count = 0;
 
   await page.waitForTimeout(interval);
   while (Date.now() - startTime < timeout) {
