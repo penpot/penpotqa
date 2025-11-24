@@ -150,9 +150,9 @@ async function createCustomerWithTestClock(page, name, email, penpotId) {
   const testClock = await createTestClock();
   const testClockId = testClock.id;
 
-  await createCustomer(name, email, testClockId, penpotId);
+  const customerData = await createCustomer(name, email, testClockId, penpotId);
   await waitCustomersWithPenpotId(page, penpotId);
-  return testClockId;
+  return { testClockId: testClockId, customerId: customerData.id };
 }
 
 async function createCustomer(name, email, testClockId, penpotId) {
@@ -190,9 +190,9 @@ async function advanceTestClock(testClockId, time, maxAttempts = 3) {
       const statusCode = error.statusCode;
       if (statusCode === 429 && attempt < maxAttempts) {
         console.warn(
-          `[ATTEMPT ${attempt}/${maxAttempts}] Stripe returned 429 (${error.message}). Retrying in 4 seconds...`,
+          `[ATTEMPT ${attempt}/${maxAttempts}] Stripe returned 429 (${error.message}). Retrying in 6 seconds...`,
         );
-        await delay(4000);
+        await delay(6000);
       } else {
         console.error(
           `Error during accelerated test clock on attempt ${attempt}:`,
@@ -257,12 +257,67 @@ async function skipSubscriptionByMonths(
   return new Date(time * 1000);
 }
 
+async function createPaymentMethods(token = 'tok_visa') {
+  try {
+    return await stripe.paymentMethods.create({
+      type: 'card',
+      card: {
+        token: token,
+      },
+    });
+  } catch (error) {
+    console.error(`Error when creating card payment methods:`, error);
+  }
+}
+
+async function attachPaymentMethodToCustomer(customerId, paymentMethodId) {
+  try {
+    return await stripe.paymentMethods.attach(paymentMethodId, {
+      customer: customerId,
+    });
+  } catch (error) {
+    console.error(`Error when attaching payment method for customer:`, error);
+  }
+}
+
+async function setDefaultPaymentMethod(customerId, paymentMethodId) {
+  try {
+    return await stripe.customers.update(customerId, {
+      invoice_settings: {
+        default_payment_method: paymentMethodId,
+      },
+    });
+  } catch (error) {
+    console.error(`Error when setting up the default payment method:`, error);
+  }
+}
+
+async function addPaymentMethodForCustomer(customerId) {
+  const paymentMethod = await createPaymentMethods();
+  const attachPaymentMethod = await attachPaymentMethodToCustomer(
+    customerId,
+    paymentMethod.id,
+  );
+  return await setDefaultPaymentMethod(customerId, attachPaymentMethod.id);
+}
+
+async function addPaymentMethodForCustomerByCustomerEmail(page, email) {
+  const customerData = await waitCustomersWithEmail(page, email);
+  const paymentMethod = await createPaymentMethods();
+  const attachPaymentMethod = await attachPaymentMethodToCustomer(
+    customerData[0].id,
+    paymentMethod.id,
+  );
+  return await setDefaultPaymentMethod(customerData[0].id, attachPaymentMethod.id);
+}
+
 module.exports = {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   skipSubscriptionByMonths,
   updateSubscriptionTrialEnd,
   getActualExpirationDate,
-  waitCustomersWithPenpotId,
   getProfileIdByEmail,
+  addPaymentMethodForCustomer,
+  addPaymentMethodForCustomerByCustomerEmail,
 };
