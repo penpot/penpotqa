@@ -8,46 +8,36 @@ exports.LoginPage = class LoginPage extends BasePage {
   constructor(page) {
     super(page);
 
-    this.pageTitle = page
-      .getByRole('heading', { name: 'Log into my account', exact: true });
-    this.emailInput = page
-      .getByPlaceholder('Work email', { exact: true });
-    this.pwdInput = page
-      .getByPlaceholder('Password', { exact: true });
-    this.loginButton = page
-      .getByRole('button', { name: 'Login', exact: true });
-    this.emailInputError = page
-      .getByTestId(':email-error');
-    this.createAccountLink = page
-      .getByText('Create an account', { exact: true });
-    this.forgotPasswordLink = page
-      .getByText('Forgot password?', { exact: true });
+    this.pageTitle = page.getByRole('heading', {
+      name: 'Log into my account',
+      exact: true,
+    });
+    this.emailInput = page.getByPlaceholder('Work email', { exact: true });
+    this.pwdInput = page.getByPlaceholder('Password', { exact: true });
+    this.loginButton = page.getByRole('button', { name: 'Continue', exact: true });
+    this.emailInputError = page.getByTestId(':email-error');
+    this.createAccountLink = page.getByText('Create an account', { exact: true });
+    this.forgotPasswordLink = page.getByText('Forgot password?', { exact: true });
   }
 
   async getLoginError(text) {
-    return this.page
-      .getByRole('alert')
-      .filter({ hasText: text });
+    return this.page.getByRole('alert').filter({ hasText: text });
   }
 
   async goto() {
-    await this.page
-      .goto('/#/auth/login');
+    await this.page.goto('/#/auth/login');
   }
 
   async enterEmail(loginEmail) {
-    await this.emailInput
-      .fill(loginEmail);
+    await this.emailInput.fill(loginEmail);
   }
 
   async enterPwd(loginPwd) {
-    await this.pwdInput
-      .fill(loginPwd);
+    await this.pwdInput.fill(loginPwd);
   }
 
   async clickLoginButton() {
-    await this.loginButton
-      .click();
+    await this.loginButton.click();
   }
 
   async clickPwdInput() {
@@ -62,18 +52,15 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async isLoginButtonDisplayed() {
-    await expect(this.loginButton, 'Login button is displayed')
-      .toBeVisible();
+    await expect(this.loginButton, 'Login button is displayed').toBeVisible();
   }
 
   async isLoginButtonDisabled() {
-    await expect(this.loginButton, 'Login button is disabled')
-      .toBeDisabled();
+    await expect(this.loginButton, 'Login button is disabled').toBeDisabled();
   }
 
   async clickHeader() {
-    await this.pageTitle
-      .click();
+    await this.pageTitle.click();
   }
 
   async isLoginErrorMessageDisplayed(message) {
@@ -84,22 +71,18 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async clickOnCreateAccount() {
-    await this.createAccountLink
-      .click();
+    await this.createAccountLink.click();
   }
 
   async clickOnForgotPassword() {
-    await this.forgotPasswordLink
-      .click();
+    await this.forgotPasswordLink.click();
   }
 
   async isLoginPageOpened() {
-    await expect(this.pageTitle, 'Login page is opened')
-      .toBeVisible();
+    await expect(this.pageTitle, 'Login page is opened').toBeVisible();
   }
 
   async isEmailInputVisible() {
-    await expect(this.emailInput, 'Email input is visible')
-      .toBeVisible();
+    await expect(this.emailInput, 'Email input is visible').toBeVisible();
   }
 };
