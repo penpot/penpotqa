@@ -11,11 +11,12 @@ const {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   getProfileIdByEmail,
+  addPaymentMethodForCustomer,
 } = require('../../helpers/stripe');
 
 let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
 const teamName = random().concat('autotest');
-let testClockId, penpotId;
+let customerData, testClockId, penpotId;
 
 registerTest.beforeEach(async ({ page, name, email }) => {
   await registerTest.slow();
@@ -27,7 +28,8 @@ registerTest.beforeEach(async ({ page, name, email }) => {
   stripePage = new StripePage(page);
 
   penpotId = await getProfileIdByEmail(email);
-  testClockId = await createCustomerWithTestClock(page, name, email, penpotId);
+  customerData = await createCustomerWithTestClock(page, name, email, penpotId);
+  testClockId = customerData.testClockId;
 
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
@@ -45,8 +47,8 @@ registerTest(
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();
     await profilePage.openSubscriptionTab();
+    await addPaymentMethodForCustomer(customerData.customerId);
     await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
     await stripePage.isVisaCardAdded(true);
 
     await skipSubscriptionByDays(email, testClockId, 16);

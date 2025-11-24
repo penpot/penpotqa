@@ -8,6 +8,9 @@ const { ProfilePage } = require('../../pages/profile-page');
 const { LoginPage } = require('../../pages/login-page');
 const { RegisterPage } = require('../../pages/register-page');
 const { StripePage } = require('../../pages/dashboard/stripe-page');
+const {
+  addPaymentMethodForCustomerByCustomerEmail,
+} = require('../../helpers/stripe');
 
 let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
 const teamName = random().concat('autotest');
@@ -28,19 +31,16 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest.fixme(
+registerTest(
   qase(2281, 'Display & Info for Enterprise Plan'),
-  async ({ page }) => {
-    registerTest.fixme(
-      'After upgrading the plan, the plan card title is not changed',
-    );
-
+  async ({ page, email }) => {
     const currentPlan = 'Enterprise';
     await profilePage.tryTrialForPlan('Unlimited');
     await profilePage.openYourAccountPage();
     await profilePage.openSubscriptionTab();
     await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
+    await addPaymentMethodForCustomerByCustomerEmail(page, email);
+    await stripePage.reloadPage();
     await stripePage.isVisaCardAdded(true);
     await stripePage.changeSubscription();
     await stripePage.checkCurrentSubscription(currentPlan);

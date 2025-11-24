@@ -126,12 +126,15 @@ exports.StripePage = class StripePage extends BasePage {
     await this.clickOnSelectButton();
     await this.clickOnContinueButton();
     await this.clickOnConfirmButton();
+    await expect(await this.confirmButton).not.toBeVisible({ timeout: 10000 });
   }
 
   async checkCurrentSubscription(subscription = 'Unlimited') {
-    const subscriptionLocator = await this.page.getByText(`Penpot ${subscription}`, {
-      exact: true,
-    });
+    const subscriptionLocator = await this.page
+      .getByText(`Penpot ${subscription}`, {
+        exact: true,
+      })
+      .first();
     await expect(subscriptionLocator).toBeVisible();
   }
 

@@ -11,6 +11,8 @@ const {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   getProfileIdByEmail,
+  addPaymentMethodForCustomer,
+  addPaymentMethodForCustomerByCustomerEmail,
 } = require('../../helpers/stripe');
 
 let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
@@ -41,18 +43,20 @@ registerTest(
     let date = new Date();
 
     const penpotId = await getProfileIdByEmail(email);
-    const testClockId = await createCustomerWithTestClock(
+    const customerData = await createCustomerWithTestClock(
       page,
       name,
       email,
       penpotId,
     );
+    const testClockId = customerData.testClockId;
 
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();
     await profilePage.openSubscriptionTab();
     await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
+    await addPaymentMethodForCustomer(customerData.customerId);
+    await stripePage.reloadPage();
     await stripePage.isVisaCardAdded(true);
     await skipSubscriptionByDays(email, testClockId, 15, date);
 
@@ -74,31 +78,35 @@ registerTest(
   },
 );
 
-registerTest(qase(2303, 'Switch from Enterprise → Unlimited'), async () => {
-  const currentPlan = 'Enterprise';
-  const newPlan = 'Unlimited';
+registerTest(
+  qase(2303, 'Switch from Enterprise → Unlimited'),
+  async ({ page, email }) => {
+    const currentPlan = 'Enterprise';
+    const newPlan = 'Unlimited';
 
-  await registerTest.slow();
+    await registerTest.slow();
 
-  await profilePage.tryTrialForPlan(newPlan);
-  await profilePage.openYourAccountPage();
-  await profilePage.openSubscriptionTab();
-  await profilePage.clickOnAddPaymentMethodButton();
-  await stripePage.addDefaultCard();
-  await stripePage.isVisaCardAdded(true);
-  await stripePage.changeSubscription();
-  await stripePage.checkCurrentSubscription(currentPlan);
+    await profilePage.tryTrialForPlan(newPlan);
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.clickOnAddPaymentMethodButton();
+    await addPaymentMethodForCustomerByCustomerEmail(page, email);
+    await stripePage.reloadPage();
+    await stripePage.isVisaCardAdded(true);
+    await stripePage.changeSubscription();
+    await stripePage.checkCurrentSubscription(currentPlan);
 
-  await stripePage.waitTrialEndsDisappear();
-  await stripePage.changeSubscription();
-  await stripePage.checkCurrentSubscription(newPlan);
-  await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
-  await stripePage.checkLastInvoiceAmount(`$0.00`);
-  await stripePage.clickOnReturnToPenpotButton();
-  await profilePage.checkSubscriptionName(newPlan);
-  await profilePage.backToDashboardFromAccount();
-  await dashboardPage.checkSubscriptionName(newPlan + ' plan');
-});
+    await stripePage.waitTrialEndsDisappear();
+    await stripePage.changeSubscription();
+    await stripePage.checkCurrentSubscription(newPlan);
+    await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
+    await stripePage.checkLastInvoiceAmount(`$0.00`);
+    await stripePage.clickOnReturnToPenpotButton();
+    await profilePage.checkSubscriptionName(newPlan);
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.checkSubscriptionName(newPlan + ' plan');
+  },
+);
 
 registerTest(
   qase(2304, 'Switch from Unlimited → Professional'),
@@ -108,18 +116,20 @@ registerTest(
     let date = new Date();
 
     const penpotId = await getProfileIdByEmail(email);
-    const testClockId = await createCustomerWithTestClock(
+    const customerData = await createCustomerWithTestClock(
       page,
       name,
       email,
       penpotId,
     );
+    const testClockId = customerData.testClockId;
 
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();
     await profilePage.openSubscriptionTab();
     await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.addDefaultCard();
+    await addPaymentMethodForCustomer(customerData.customerId);
+    await stripePage.reloadPage();
     await stripePage.isVisaCardAdded(true);
     await skipSubscriptionByDays(email, testClockId, 15, date);
 
