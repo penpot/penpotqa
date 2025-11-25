@@ -1,5 +1,476 @@
 {
-  "components / section-message": {
+  "global/typography": {
+    "text": {
+      "case": {
+        "uppercase": {
+          "$value": "uppercase",
+          "$type": "textCase",
+          "$description": ""
+        }
+      },
+      "decoration": {
+        "strikethrough": {
+          "$value": "strike-through",
+          "$type": "textDecoration",
+          "$description": ""
+        },
+        "underline": {
+          "$value": "underline",
+          "$type": "textDecoration",
+          "$description": ""
+        }
+      }
+    },
+    "font": {
+      "family": {
+        "base": {
+          "$value": [
+            "\"Graphik Regular\"",
+            "\"-system-ui\"",
+            "\"Helvetica\"",
+            "\"sans-serif\""
+          ],
+          "$type": "fontFamilies",
+          "$description": ""
+        }
+      },
+      "weight": {
+        "normal": {
+          "$value": "Regular",
+          "$type": "fontWeights",
+          "$description": ""
+        },
+        "strong": {
+          "$value": "700",
+          "$type": "fontWeights",
+          "$description": ""
+        }
+      },
+      "size": {
+        "base": {
+          "$value": "16",
+          "$type": "fontSizes",
+          "$description": ""
+        }
+      }
+    },
+    "h3": {
+      "$value": "{font.size.base} * {scale}",
+      "$type": "fontSizes",
+      "$description": ""
+    },
+    "letter": {
+      "spacing": {
+        "increased": {
+          "$value": "2",
+          "$type": "letterSpacing",
+          "$description": ""
+        }
+      }
+    },
+    "scale": {
+      "$value": "1.3",
+      "$type": "number",
+      "$description": ""
+    },
+    "typography": {
+      "h3": {
+        "$value": {
+          "fontSizes": "24",
+          "fontWeights": "Regular italic",
+          "lineHeights": "2",
+          "letterSpacing": "5"
+        },
+        "$type": "typography",
+        "$description": ""
+      }
+    },
+    "typography-h2": {
+      "$value": {
+        "fontSizes": "36",
+        "fontWeights": "Bold",
+        "lineHeights": "3",
+        "letterSpacing": "2",
+        "textDecoration": "underline"
+      },
+      "$type": "typography",
+      "$description": ""
+    }
+  },
+  "alias/border": {
+    "xx": {
+      "alias": {
+        "border": {
+          "radius": {
+            "sm": {
+              "$value": "{xx.global.dimensions.2}",
+              "$type": "borderRadius",
+              "$description": "small border radius"
+            },
+            "md": {
+              "$value": "{xx.global.dimensions.3}",
+              "$type": "borderRadius",
+              "$description": "medium border radius"
+            },
+            "lg": {
+              "$value": "{xx.global.dimensions.5}",
+              "$type": "borderRadius",
+              "$description": "large border radius"
+            },
+            "round": {
+              "$value": "100%",
+              "$type": "borderRadius",
+              "$description": ""
+            }
+          }
+        }
+      }
+    },
+    "stroke": {
+      "outline": {
+        "$value": "{xx.global.dimensions.1}",
+        "$type": "borderWidth",
+        "$description": ""
+      },
+      "medium": {
+        "$value": "3",
+        "$type": "borderWidth",
+        "$description": ""
+      },
+      "small": {
+        "$value": "1",
+        "$type": "borderWidth",
+        "$description": ""
+      }
+    }
+  },
+  "alias/media-queries": {
+    "xx": {
+      "media": {
+        "xs": {
+          "$value": "576px",
+          "$type": "dimension",
+          "$description": "(min-width: 576px)"
+        },
+        "sm": {
+          "$value": "768px",
+          "$type": "dimension",
+          "$description": "(min-width: 768px)"
+        },
+        "md": {
+          "$value": "992px",
+          "$type": "dimension",
+          "$description": "min-width: 992px - Tablet portrait"
+        },
+        "lg": {
+          "$value": "1200px",
+          "$type": "dimension",
+          "$description": " (min-width: 1200px)  - Tablet landscape"
+        },
+        "xl": {
+          "$value": "1440px",
+          "$type": "dimension",
+          "$description": " (min-width: 1440px) - Desktop small"
+        },
+        "2xl": {
+          "$value": "1680px",
+          "$type": "dimension",
+          "$description": " (min-width: 1680px) - Desktop Large"
+        }
+      }
+    }
+  },
+  "wl-themes/client_theme_template": {
+    "xx": {
+      "alias": {
+        "color": {
+          "purpose": {
+            "infoLowEmphasis": {
+              "$value": "#2980b9",
+              "$type": "color",
+              "$description": "color for elements with informational purpose of low emphasis"
+            },
+            "onCritical": {
+              "$value": "#ffffff",
+              "$type": "color",
+              "$description": "color for elements placed on critical purpose background"
+            },
+            "criticalHighEmphasis": {
+              "$value": "#e74c3c",
+              "$type": "color",
+              "$description": "color for elements with critical purpose of high emphasis"
+            },
+            "successHighEmphasis": {
+              "$value": "#2ecc71",
+              "$type": "color",
+              "$description": "color for elements with success purpose of high emphasis"
+            },
+            "successLowEmphasis": {
+              "$value": "#2ecc71",
+              "$type": "color",
+              "$description": "color for elements with success purpose of low emphasis"
+            },
+            "onInfo": {
+              "$value": "#ffffff",
+              "$type": "color",
+              "$description": "color for elements placed on informational purpose background"
+            },
+            "criticalLowEmphasis": {
+              "$value": "#e74c3c",
+              "$type": "color",
+              "$description": "color for elements with critical purpose of low emphasis"
+            },
+            "onWarning": {
+              "$value": "#ffffff",
+              "$type": "color",
+              "$description": "color for elements placed on warning purpose background"
+            },
+            "onSuccess": {
+              "$value": "#ffffff",
+              "$type": "color",
+              "$description": "color for elements placed on success purpose background"
+            },
+            "warningLowEmphasis": {
+              "$value": "#f1c40f",
+              "$type": "color",
+              "$description": "color for elements with warning purpose of low emphasis"
+            },
+            "warningHighEmphasis": {
+              "$value": "#f1c40f",
+              "$type": "color",
+              "$description": "color for elements with warning purpose of high emphasis"
+            },
+            "infoHighEmphasis": {
+              "$value": "#2980b9",
+              "$type": "color",
+              "$description": "color for elements with informational purpose of high emphasis"
+            }
+          },
+          "border": {
+            "heavy": {
+              "$value": "#728090",
+              "$type": "color",
+              "$description": "heavy border color"
+            },
+            "focusOutline": {
+              "$value": "#0505A3",
+              "$type": "color",
+              "$description": "color for default focus outline"
+            },
+            "medium": {
+              "$value": "#9AA5B1",
+              "$type": "color",
+              "$description": "medium border color"
+            },
+            "subtle": {
+              "$value": "#C3C9D0",
+              "$type": "color",
+              "$description": "subtle border color"
+            }
+          },
+          "state": {
+            "select": {
+              "$value": "#B4B4F2",
+              "$type": "color",
+              "$description": "background color for selected elements"
+            },
+            "onSelect": {
+              "$value": "#0707D3",
+              "$type": "color",
+              "$description": "Foreground color for selected elements"
+            },
+            "disable": {
+              "$value": "#bdc3c7",
+              "$type": "color",
+              "$description": "background color for disabled elements"
+            },
+            "onDisable": {
+              "$value": "#7f8c8d",
+              "$type": "color",
+              "$description": "color for elements that are palced on disabled background color"
+            },
+            "selectInverted": {
+              "$value": "#0707D3",
+              "$type": "color",
+              "$description": "Inverted background color for selected elements"
+            },
+            "onSelectInverted": {
+              "$value": "#B4B4F2",
+              "$type": "color",
+              "$description": "inverted color for elements on selected backgrounds"
+            }
+          },
+          "primary": {
+            "onBrand": {
+              "$value": "#f5f5fa",
+              "$type": "color",
+              "$description": "color for elements that are placed on brand background color"
+            },
+            "interaction": {
+              "$value": "#DC7258",
+              "$type": "color",
+              "$description": "Color that indicates interactions"
+            },
+            "brand": {
+              "$value": "#3333C2",
+              "$type": "color",
+              "$description": "background color for primary brand elements "
+            },
+            "onInteraction": {
+              "$value": "#f5f5fa",
+              "$type": "color",
+              "$description": "color for elements that are placed on interactive background colors"
+            }
+          },
+          "text": {
+            "default": {
+              "$value": "#353535",
+              "$type": "color",
+              "$description": "Default text color "
+            },
+            "inverted": {
+              "$value": "#f5f5fa",
+              "$type": "color",
+              "$description": "Inverted text color"
+            },
+            "subtle": {
+              "$value": "#9E9E9E",
+              "$type": "color",
+              "$description": "Text color in subtle weight"
+            }
+          },
+          "background": {
+            "highEmphasis": {
+              "$value": "#ffffff",
+              "$type": "color",
+              "$description": "background Color for components with high emphasis"
+            },
+            "body": {
+              "$value": "#E3E6E9",
+              "$type": "color",
+              "$description": "body background color"
+            },
+            "lowEmphasis": {
+              "$value": "#F6F7F8",
+              "$type": "color",
+              "$description": "background color for elements with a low emphasis"
+            }
+          }
+        },
+        "border": {
+          "radius": {
+            "md": {
+              "$value": "4px",
+              "$type": "borderRadius",
+              "$description": "medium border radius"
+            },
+            "lg": {
+              "$value": "8px",
+              "$type": "borderRadius",
+              "$description": "large border radius"
+            },
+            "sm": {
+              "$value": "0",
+              "$type": "borderRadius",
+              "$description": "small border radius"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$themes": [
+    {
+      "id": "e2a3266a-c517-80f7-8005-dc49a408a813",
+      "name": "Brand",
+      "group": "Global",
+      "description": "",
+      "is-source": false,
+      "modified-at": "2025-03-11T07:23:20.483Z",
+      "selectedTokenSets": {
+        "global/color": "enabled",
+        "global/dimension": "enabled",
+        "alias/color-dark": "enabled",
+        "global/Opacity": "enabled"
+      }
+    },
+    {
+      "id": "e2a3266a-c517-80f7-8005-dc49a408c44f",
+      "name": "Light Mode",
+      "group": "Alias",
+      "description": "",
+      "is-source": false,
+      "modified-at": "2025-03-11T07:23:20.483Z",
+      "selectedTokenSets": {
+        "alias/media-queries": "enabled",
+        "alias/border": "enabled",
+        "alias/dimension": "enabled",
+        "alias/color-light": "enabled"
+      }
+    },
+    {
+      "id": "e2a3266a-c517-80f7-8005-dc49a408c451",
+      "name": "Dark Mode",
+      "group": "Alias",
+      "description": "",
+      "is-source": false,
+      "modified-at": "2025-03-11T07:23:20.483Z",
+      "selectedTokenSets": {
+        "alias/color-dark": "enabled",
+        "alias/border": "enabled",
+        "alias/dimension": "enabled"
+      }
+    },
+    {
+      "id": "e2a3266a-c517-80f7-8005-dc49a408c453",
+      "name": "Section Message",
+      "group": "Components",
+      "description": "",
+      "is-source": false,
+      "modified-at": "2025-03-11T07:23:20.483Z",
+      "selectedTokenSets": {
+        "components/section-message": "enabled"
+      }
+    },
+    {
+      "id": "e2a3266a-c517-80f7-8005-dc49a408c455",
+      "name": "Client Theme Template",
+      "group": "White Label",
+      "description": "",
+      "is-source": false,
+      "modified-at": "2025-03-11T07:23:20.483Z",
+      "selectedTokenSets": {
+        "wl-themes/client_theme_template": "enabled"
+      }
+    }
+  ],
+  "$metadata": {
+    "tokenSetOrder": [
+      "global/color",
+      "global/dimension",
+      "global/Opacity",
+      "global/typography",
+      "alias/border",
+      "alias/dimension",
+      "alias/color-light",
+      "alias/color-dark",
+      "alias/media-queries",
+      "components/section-message",
+      "wl-themes/client_theme_template"
+    ],
+    "activeThemes": ["Global/Brand", "Alias/Dark Mode"],
+    "activeSets": [
+      "alias/color-dark",
+      "alias/border",
+      "alias/dimension",
+      "global/color",
+      "global/dimension",
+      "global/Opacity",
+      "global/font",
+      "alias/font-screen-lg"
+    ]
+  },
+  "components/section-message": {
     "xx": {
       "component": {
         "sectionMessage": {
@@ -70,7 +541,7 @@
       }
     }
   },
-  "alias / color-dark": {
+  "alias/color-dark": {
     "xx": {
       "alias": {
         "color": {
@@ -243,11 +714,6 @@
               "$type": "color",
               "$description": "Inverted text color"
             },
-            "subtle": {
-              "$value": "{xx.global.color.neutral.400}",
-              "$type": "color",
-              "$description": "Text color in subtle weight"
-            },
             "emphasis": {
               "$value": "{xx.global.color.white}",
               "$type": "color",
@@ -255,6 +721,11 @@
             },
             "medium": {
               "$value": "{xx.global.color.neutral.600}",
+              "$type": "color",
+              "$description": "Text color in subtle weight"
+            },
+            "subtle": {
+              "$value": "{xx.global.color.neutral.400}",
               "$type": "color",
               "$description": "Text color in subtle weight"
             }
@@ -285,152 +756,90 @@
       }
     }
   },
-  "alias/media-queries": {
+  "global/dimension": {
     "xx": {
-      "media": {
-        "xs": {
-          "$value": "576px",
-          "$type": "dimension",
-          "$description": "(min-width: 576px)"
-        },
-        "sm": {
-          "$value": "768px",
-          "$type": "dimension",
-          "$description": "(min-width: 768px)"
-        },
-        "md": {
-          "$value": "992px",
-          "$type": "dimension",
-          "$description": "min-width: 992px - Tablet portrait"
-        },
-        "lg": {
-          "$value": "1200px",
-          "$type": "dimension",
-          "$description": " (min-width: 1200px)  - Tablet landscape"
-        },
-        "xl": {
-          "$value": "1440px",
-          "$type": "dimension",
-          "$description": " (min-width: 1440px) - Desktop small"
-        },
-        "2xl": {
-          "$value": "1680px",
-          "$type": "dimension",
-          "$description": " (min-width: 1680px) - Desktop Large"
-        }
-      }
-    }
-  },
-  "alias / border": {
-    "xx": {
-      "alias": {
-        "border": {
-          "radius": {
-            "sm": {
-              "$value": "{xx.global.dimensions.2}",
-              "$type": "borderRadius",
-              "$description": "small border radius"
-            },
-            "md": {
-              "$value": "{xx.global.dimensions.3}",
-              "$type": "borderRadius",
-              "$description": "medium border radius"
-            },
-            "lg": {
-              "$value": "{xx.global.dimensions.5}",
-              "$type": "borderRadius",
-              "$description": "large border radius"
-            },
-            "round": { "$value": "100%", "$type": "borderRadius" }
+      "global": {
+        "dimensions": {
+          "1": {
+            "$value": "2px",
+            "$type": "dimension",
+            "$description": "1st step of global dimensions sequence"
+          },
+          "2": {
+            "$value": "4px",
+            "$type": "dimension",
+            "$description": "2nd step of global dimensions sequence"
+          },
+          "3": {
+            "$value": "8px",
+            "$type": "dimension",
+            "$description": "3rd step of global dimensions sequence"
+          },
+          "4": {
+            "$value": "12px",
+            "$type": "dimension",
+            "$description": "4th step of global dimensions sequence"
+          },
+          "5": {
+            "$value": "16px",
+            "$type": "dimension",
+            "$description": "5th step of global dimensions sequence"
+          },
+          "6": {
+            "$value": "20px",
+            "$type": "dimension",
+            "$description": "6th step of global dimensions sequence"
+          },
+          "7": {
+            "$value": "24px",
+            "$type": "dimension",
+            "$description": "7th step of global dimensions sequence"
+          },
+          "8": {
+            "$value": "32px",
+            "$type": "dimension",
+            "$description": "8th step of global dimensions sequence"
+          },
+          "9": {
+            "$value": "44px",
+            "$type": "dimension",
+            "$description": "9th step of global dimensions sequence"
+          },
+          "10": {
+            "$value": "48px",
+            "$type": "dimension",
+            "$description": "10th step of global dimensions sequence"
+          },
+          "11": {
+            "$value": "52px",
+            "$type": "dimension",
+            "$description": "11th step of global dimensions sequence"
+          },
+          "12": {
+            "$value": "60px",
+            "$type": "dimension",
+            "$description": "12th step of global dimensions sequence"
+          },
+          "13": {
+            "$value": "64px",
+            "$type": "dimension",
+            "$description": "13th step of global dimensions sequence"
+          },
+          "14": {
+            "$value": "72px",
+            "$type": "dimension",
+            "$description": "14th step of global dimensions sequence"
+          },
+          "15": {
+            "$value": "80px",
+            "$type": "dimension",
+            "$description": "15th step of global dimensions sequence"
           }
         }
       }
-    },
-    "stroke": {
-      "outline": {
-        "$value": "{xx.global.dimensions.1}",
-        "$type": "borderWidth"
-      },
-      "medium": { "$value": "3", "$type": "borderWidth" },
-      "small": { "$value": "1", "$type": "borderWidth" }
     }
   },
-  "global/typography": {
-    "font": {
-      "family": {
-        "base": {
-          "$value": [
-            "\"Graphik Regular\"",
-            "\"-system-ui\"",
-            "\"Helvetica\"",
-            "\"sans-serif\""
-          ],
-          "$type": "fontFamilies",
-          "$description": ""
-        }
-      },
-      "size": {
-        "base": {
-          "$value": "16",
-          "$type": "fontSizes",
-          "$description": ""
-        }
-      },
-      "weight": {
-        "normal": {
-          "$value": "Regular",
-          "$type": "fontWeights",
-          "$description": ""
-        },
-        "strong": {
-          "$value": "700",
-          "$type": "fontWeights",
-          "$description": ""
-        }
-      }
-    },
-    "h3": {
-      "$value": "{font.size.base} * {scale}",
-      "$type": "fontSizes",
-      "$description": ""
-    },
-    "scale": {
-      "$value": "1.3",
-      "$type": "number",
-      "$description": ""
-    },
-    "letter": {
-      "spacing": {
-        "increased": {
-          "$value": "2",
-          "$type": "letterSpacing",
-          "$description": ""
-        }
-      }
-    },
-    "text": {
-      "case": {
-        "uppercase": {
-          "$value": "uppercase",
-          "$type": "textCase",
-          "$description": ""
-        }
-      },
-      "decoration": {
-        "underline": {
-          "$value": "underline",
-          "$type": "textDecoration",
-          "$description": ""
-        },
-        "strikethrough": {
-          "$value": "strike-through",
-          "$type": "textDecoration",
-          "$description": ""
-        }
-      }
-    }
-  },
-  "global / color": {
+  "global/color": {
     "xx": {
       "global": {
         "color": {
@@ -543,7 +952,11 @@
               "$description": "global color neutral of weight 950"
             }
           },
-          "white": { "$value": "#ffffff", "$type": "color" },
+          "white": {
+            "$value": "#ffffff",
+            "$type": "color",
+            "$description": ""
+          },
           "mint": {
             "50": {
               "$value": "#F6FEFB",
@@ -856,184 +1269,10 @@
               "$description": "global color red of weight 900"
             }
           },
-          "black": { "$value": "#000000", "$type": "color", "$description": "" }
-        }
-      }
-    }
-  },
-  "$themes": [
-    {
-      "name": "Brand",
-      "group": "Global",
-      "description": "",
-      "is-source": false,
-      "id": "e2a3266a-c517-80f7-8005-dc49a408a813",
-      "modified-at": "2025-03-11T08:23:20.483+01:00",
-      "selectedTokenSets": {
-        "global / font": "enabled",
-        "global / color": "enabled",
-        "global / dimension": "enabled",
-        "alias/color-dark": "enabled",
-        "global/Opacity": "enabled"
-      }
-    },
-    {
-      "name": "Light Mode",
-      "group": "Alias",
-      "description": "",
-      "is-source": false,
-      "id": "e2a3266a-c517-80f7-8005-dc49a408c44f",
-      "modified-at": "2025-03-11T08:23:20.483+01:00",
-      "selectedTokenSets": {
-        "global / font": "enabled",
-        "alias/media-queries": "enabled",
-        "alias / border": "enabled",
-        "alias / dimension": "enabled",
-        "alias / font-screen-lg": "enabled",
-        "alias/color-light": "enabled",
-        "alias / color-light": "enabled",
-        "alias/dimension": "enabled"
-      }
-    },
-    {
-      "name": "Dark Mode",
-      "group": "Alias",
-      "description": "",
-      "is-source": false,
-      "id": "e2a3266a-c517-80f7-8005-dc49a408c451",
-      "modified-at": "2025-03-11T08:23:20.483+01:00",
-      "selectedTokenSets": {
-        "alias / color-dark": "enabled",
-        "alias / border": "enabled",
-        "alias / dimension": "enabled",
-        "alias / font-screen-lg": "enabled",
-        "alias/dimension": "enabled"
-      }
-    },
-    {
-      "name": "Section Message",
-      "group": "Components",
-      "description": "",
-      "is-source": false,
-      "id": "e2a3266a-c517-80f7-8005-dc49a408c453",
-      "modified-at": "2025-03-11T08:23:20.483+01:00",
-      "selectedTokenSets": { "components / section-message": "enabled" }
-    },
-    {
-      "name": "Client Theme Template",
-      "group": "White Label",
-      "description": "",
-      "is-source": false,
-      "id": "e2a3266a-c517-80f7-8005-dc49a408c455",
-      "modified-at": "2025-03-11T08:23:20.483+01:00",
-      "selectedTokenSets": { "wl-themes / client_theme_template": "enabled" }
-    }
-  ],
-  "$metadata": {
-    "tokenSetOrder": [
-      "global / color",
-      "global / dimension",
-      "global/Opacity",
-      "alias / border",
-      "alias/dimension",
-      "alias/color-light",
-      "alias / color-dark",
-      "alias/media-queries",
-      "components / section-message",
-      "wl-themes / client_theme_template"
-    ],
-    "activeThemes": ["Global/Brand", "Alias/Dark Mode"],
-    "activeSets": [
-      "alias / color-dark",
-      "global / font",
-      "alias / border",
-      "global / color",
-      "alias / dimension",
-      "alias / font-screen-lg",
-      "global / dimension",
-      "alias/color-dark",
-      "global/Opacity",
-      "alias/dimension"
-    ]
-  },
-  "global / dimension": {
-    "xx": {
-      "global": {
-        "dimensions": {
-          "1": {
-            "$value": "2px",
-            "$type": "dimension",
-            "$description": "1st step of global dimensions sequence"
-          },
-          "2": {
-            "$value": "4px",
-            "$type": "dimension",
-            "$description": "2nd step of global dimensions sequence"
-          },
-          "3": {
-            "$value": "8px",
-            "$type": "dimension",
-            "$description": "3rd step of global dimensions sequence"
-          },
-          "4": {
-            "$value": "12px",
-            "$type": "dimension",
-            "$description": "4th step of global dimensions sequence"
-          },
-          "5": {
-            "$value": "16px",
-            "$type": "dimension",
-            "$description": "5th step of global dimensions sequence"
-          },
-          "6": {
-            "$value": "20px",
-            "$type": "dimension",
-            "$description": "6th step of global dimensions sequence"
-          },
-          "7": {
-            "$value": "24px",
-            "$type": "dimension",
-            "$description": "7th step of global dimensions sequence"
-          },
-          "8": {
-            "$value": "32px",
-            "$type": "dimension",
-            "$description": "8th step of global dimensions sequence"
-          },
-          "9": {
-            "$value": "44px",
-            "$type": "dimension",
-            "$description": "9th step of global dimensions sequence"
-          },
-          "10": {
-            "$value": "48px",
-            "$type": "dimension",
-            "$description": "10th step of global dimensions sequence"
-          },
-          "11": {
-            "$value": "52px",
-            "$type": "dimension",
-            "$description": "11th step of global dimensions sequence"
-          },
-          "12": {
-            "$value": "60px",
-            "$type": "dimension",
-            "$description": "12th step of global dimensions sequence"
-          },
-          "13": {
-            "$value": "64px",
-            "$type": "dimension",
-            "$description": "13th step of global dimensions sequence"
-          },
-          "14": {
-            "$value": "72px",
-            "$type": "dimension",
-            "$description": "14th step of global dimensions sequence"
-          },
-          "15": {
-            "$value": "80px",
-            "$type": "dimension",
-            "$description": "15th step of global dimensions sequence"
+          "black": {
+            "$value": "#000000",
+            "$type": "color",
+            "$description": ""
           }
         }
       }
@@ -1212,11 +1451,6 @@
               "$type": "color",
               "$description": "Inverted text color"
             },
-            "subtle": {
-              "$value": "{xx.global.color.neutral.600}",
-              "$type": "color",
-              "$description": "Text color in subtle weight"
-            },
             "emphasis": {
               "$value": "{xx.global.color.black}",
               "$type": "color",
@@ -1224,6 +1458,11 @@
             },
             "medium": {
               "$value": "{xx.global.color.neutral.400}",
+              "$type": "color",
+              "$description": "Text color in subtle weight"
+            },
+            "subtle": {
+              "$value": "{xx.global.color.neutral.600}",
               "$type": "color",
               "$description": "Text color in subtle weight"
             }
@@ -1256,12 +1495,36 @@
   },
   "global/Opacity": {
     "opacity": {
-      "0": { "$value": "0", "$type": "opacity" },
-      "10": { "$value": "0.1", "$type": "opacity" },
-      "50": { "$value": "0.5", "$type": "opacity", "$description": "" },
-      "0-copy": { "$value": "0", "$type": "opacity", "$description": "" },
-      "0-copy-copy": { "$value": "0", "$type": "opacity", "$description": "" },
-      "0-copy-2": { "$value": "0", "$type": "opacity", "$description": "" }
+      "0": {
+        "$value": "0",
+        "$type": "opacity",
+        "$description": ""
+      },
+      "10": {
+        "$value": "0.1",
+        "$type": "opacity",
+        "$description": ""
+      },
+      "50": {
+        "$value": "0.5",
+        "$type": "opacity",
+        "$description": ""
+      },
+      "0-copy": {
+        "$value": "0",
+        "$type": "opacity",
+        "$description": ""
+      },
+      "0-copy-copy": {
+        "$value": "0",
+        "$type": "opacity",
+        "$description": ""
+      },
+      "0-copy-2": {
+        "$value": "0",
+        "$type": "opacity",
+        "$description": ""
+      }
     }
   },
   "alias/dimension": {
@@ -1379,7 +1642,11 @@
       }
     },
     "rotation": {
-      "45": { "$value": "45", "$type": "rotation", "$description": "" }
+      "45": {
+        "$value": "45",
+        "$type": "rotation",
+        "$description": ""
+      }
     },
     "dimension": {
       "top": {
@@ -1387,205 +1654,6 @@
           "$value": "{xx.global.dimensions.7}",
           "$type": "dimension",
           "$description": ""
-        }
-      }
-    }
-  },
-  "wl-themes / client_theme_template": {
-    "xx": {
-      "alias": {
-        "color": {
-          "purpose": {
-            "infoLowEmphasis": {
-              "$value": "#2980b9",
-              "$type": "color",
-              "$description": "color for elements with informational purpose of low emphasis"
-            },
-            "onCritical": {
-              "$value": "#ffffff",
-              "$type": "color",
-              "$description": "color for elements placed on critical purpose background"
-            },
-            "criticalHighEmphasis": {
-              "$value": "#e74c3c",
-              "$type": "color",
-              "$description": "color for elements with critical purpose of high emphasis"
-            },
-            "successHighEmphasis": {
-              "$value": "#2ecc71",
-              "$type": "color",
-              "$description": "color for elements with success purpose of high emphasis"
-            },
-            "successLowEmphasis": {
-              "$value": "#2ecc71",
-              "$type": "color",
-              "$description": "color for elements with success purpose of low emphasis"
-            },
-            "onInfo": {
-              "$value": "#ffffff",
-              "$type": "color",
-              "$description": "color for elements placed on informational purpose background"
-            },
-            "criticalLowEmphasis": {
-              "$value": "#e74c3c",
-              "$type": "color",
-              "$description": "color for elements with critical purpose of low emphasis"
-            },
-            "onWarning": {
-              "$value": "#ffffff",
-              "$type": "color",
-              "$description": "color for elements placed on warning purpose background"
-            },
-            "onSuccess": {
-              "$value": "#ffffff",
-              "$type": "color",
-              "$description": "color for elements placed on success purpose background"
-            },
-            "warningLowEmphasis": {
-              "$value": "#f1c40f",
-              "$type": "color",
-              "$description": "color for elements with warning purpose of low emphasis"
-            },
-            "warningHighEmphasis": {
-              "$value": "#f1c40f",
-              "$type": "color",
-              "$description": "color for elements with warning purpose of high emphasis"
-            },
-            "infoHighEmphasis": {
-              "$value": "#2980b9",
-              "$type": "color",
-              "$description": "color for elements with informational purpose of high emphasis"
-            }
-          },
-          "border": {
-            "heavy": {
-              "$value": "#728090",
-              "$type": "color",
-              "$description": "heavy border color"
-            },
-            "focusOutline": {
-              "$value": "#0505A3",
-              "$type": "color",
-              "$description": "color for default focus outline"
-            },
-            "medium": {
-              "$value": "#9AA5B1",
-              "$type": "color",
-              "$description": "medium border color"
-            },
-            "subtle": {
-              "$value": "#C3C9D0",
-              "$type": "color",
-              "$description": "subtle border color"
-            }
-          },
-          "state": {
-            "select": {
-              "$value": "#B4B4F2",
-              "$type": "color",
-              "$description": "background color for selected elements"
-            },
-            "onSelect": {
-              "$value": "#0707D3",
-              "$type": "color",
-              "$description": "Foreground color for selected elements"
-            },
-            "disable": {
-              "$value": "#bdc3c7",
-              "$type": "color",
-              "$description": "background color for disabled elements"
-            },
-            "onDisable": {
-              "$value": "#7f8c8d",
-              "$type": "color",
-              "$description": "color for elements that are palced on disabled background color"
-            },
-            "selectInverted": {
-              "$value": "#0707D3",
-              "$type": "color",
-              "$description": "Inverted background color for selected elements"
-            },
-            "onSelectInverted": {
-              "$value": "#B4B4F2",
-              "$type": "color",
-              "$description": "inverted color for elements on selected backgrounds"
-            }
-          },
-          "primary": {
-            "onBrand": {
-              "$value": "#f5f5fa",
-              "$type": "color",
-              "$description": "color for elements that are placed on brand background color"
-            },
-            "interaction": {
-              "$value": "#DC7258",
-              "$type": "color",
-              "$description": "Color that indicates interactions"
-            },
-            "brand": {
-              "$value": "#3333C2",
-              "$type": "color",
-              "$description": "background color for primary brand elements "
-            },
-            "onInteraction": {
-              "$value": "#f5f5fa",
-              "$type": "color",
-              "$description": "color for elements that are placed on interactive background colors"
-            }
-          },
-          "text": {
-            "default": {
-              "$value": "#353535",
-              "$type": "color",
-              "$description": "Default text color "
-            },
-            "inverted": {
-              "$value": "#f5f5fa",
-              "$type": "color",
-              "$description": "Inverted text color"
-            },
-            "subtle": {
-              "$value": "#9E9E9E",
-              "$type": "color",
-              "$description": "Text color in subtle weight"
-            }
-          },
-          "background": {
-            "highEmphasis": {
-              "$value": "#ffffff",
-              "$type": "color",
-              "$description": "background Color for components with high emphasis"
-            },
-            "body": {
-              "$value": "#E3E6E9",
-              "$type": "color",
-              "$description": "body background color"
-            },
-            "lowEmphasis": {
-              "$value": "#F6F7F8",
-              "$type": "color",
-              "$description": "background color for elements with a low emphasis"
-            }
-          }
-        },
-        "border": {
-          "radius": {
-            "md": {
-              "$value": "4px",
-              "$type": "borderRadius",
-              "$description": "medium border radius"
-            },
-            "lg": {
-              "$value": "8px",
-              "$type": "borderRadius",
-              "$description": "large border radius"
-            },
-            "sm": {
-              "$value": "0",
-              "$type": "borderRadius",
-              "$description": "small border radius"
-            }
-          }
         }
       }
     }
