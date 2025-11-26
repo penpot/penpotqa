@@ -66,6 +66,14 @@ export class TypographyTokensComponent {
     );
   }
 
+  async clickOnUseReferenceButton() {
+    await this.useAliasButton.click();
+  }
+
+  async clickOnUseCompositeButton() {
+    await this.useCompositeButton.click();
+  }
+
   async fillTokenData(typographyToken: TypographyToken<TokenClass>) {
     if (typographyToken.fontFamily !== undefined) {
       await this.fontFamilyInput.fill(typographyToken.fontFamily);
@@ -100,21 +108,6 @@ export class TypographyTokensComponent {
           this.aliasInputError,
           'Missing token reference not expected, but found',
         ).not.toBeVisible();
-  }
-
-  async clickOnUseReferenceButton() {
-    await this.useAliasButton.click();
-  }
-
-  async clickOnUseCompositeButton() {
-    await this.useCompositeButton.click();
-  }
-
-  async hasFontFamilyInputValue(value: string = '') {
-    await expect(
-      this.fontFamilyInput,
-      'Font family field value mismatch in the create/edit token modal',
-    ).toHaveValue(value);
   }
 
   async fillAliasInput(value: string) {
