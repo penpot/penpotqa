@@ -322,6 +322,7 @@ mainTest.describe(() => {
         mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
       });
       await inspectPanelPage.openInspectTab();
+      await inspectPanelPage.openComputedTab();
       await expect(inspectPanelPage.textBlockOnInspect).toHaveScreenshot(
         'inspect-text-block-color.png',
         {

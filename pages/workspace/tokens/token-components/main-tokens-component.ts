@@ -101,7 +101,7 @@ export class MainTokensComponent {
     });
 
     this.tokenNameInput = page.locator('#token-name');
-    this.tokenValueInput = page.locator('div[class*="input_tokens_value"] input');
+    this.tokenValueInput = page.getByPlaceholder('{alias}');
     this.tokenDescriptionInput = page.getByPlaceholder('Description');
 
     this.editTokenMenuItem = page
