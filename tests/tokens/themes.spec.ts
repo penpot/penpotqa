@@ -79,7 +79,7 @@ mainTest.describe(() => {
     await tokensPage.setsComp.clickOnSetCheckboxByName('Dark');
     await tokensPage.setsComp.isSetCheckedByName('Dark');
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken1);
-    await tokensPage.mainTokensComp.clickOnTokenWithName(colorToken1.name);
+    await tokensPage.tokensComp.clickOnTokenWithName(colorToken1.name);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.isFillHexCodeSetComponent(colorToken1.value);
 
@@ -97,7 +97,7 @@ mainTest.describe(() => {
     await tokensPage.setsComp.clickOnSetCheckboxByName('Desktop');
     await tokensPage.setsComp.isSetCheckedByName('Desktop');
     await tokensPage.tokensComp.createTokenViaAddButtonAndSave(radiusToken1);
-    await tokensPage.mainTokensComp.clickOnTokenWithName(radiusToken1.name);
+    await tokensPage.tokensComp.clickOnTokenWithName(radiusToken1.name);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.checkGeneralCornerRadius(radiusToken1.value);
 

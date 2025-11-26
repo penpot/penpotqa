@@ -89,8 +89,8 @@ mainTest.describe(() => {
           );
           // fields should retain their values after switching modes
           await tokensPage.tokensComp.baseComp.clickOnSaveButton();
-          await tokensPage.mainTokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
-          await tokensPage.mainTokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
+          await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
+          await tokensPage.tokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
         },
       );
 
@@ -107,7 +107,7 @@ mainTest.describe(() => {
       await mainTest.step('2586 Edit a typography token', async () => {
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(UPDATED_TOKEN);
         await mainPage.waitForChangeIsSaved();
-        await tokensPage.mainTokensComp.isTokenAppliedWithName(UPDATED_TOKEN.name);
+        await tokensPage.tokensComp.isTokenAppliedWithName(UPDATED_TOKEN.name);
 
         await designPanelPage.checkTextCase(TYPO_TOKEN.textCase);
         await designPanelPage.checkLetterSpacing(TYPO_TOKEN.letterSpacing);
@@ -195,8 +195,8 @@ mainTest.describe(() => {
           // create and apply typography token
           await tokensPage.tokensTab.click();
           await tokensPage.tokensComp.createTokenViaAddButtonAndSave(TYPO_TOKEN);
-          await tokensPage.mainTokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
-          await tokensPage.mainTokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
+          await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
+          await tokensPage.tokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
           // validates assets are detached after applying the typography token
           await designPanelPage.isTypographyAssetAgVisible(false);
           await designPanelPage.checkFontName(TYPO_TOKEN.fontFamily);
@@ -247,16 +247,16 @@ mainTest.describe(() => {
           for (const typoToken of TYPO_TOKENS) {
             // apply all atomic typography tokens first
             for (const styleToken of STYLE_TOKENS) {
-              await tokensPage.mainTokensComp.clickOnTokenWithName(styleToken.name);
-              await tokensPage.mainTokensComp.isTokenAppliedWithName(styleToken.name);
+              await tokensPage.tokensComp.clickOnTokenWithName(styleToken.name);
+              await tokensPage.tokensComp.isTokenAppliedWithName(styleToken.name);
             }
             // then apply the typography token type
-            await tokensPage.mainTokensComp.clickOnTokenWithName(typoToken.name);
-            await tokensPage.mainTokensComp.isTokenAppliedWithName(typoToken.name);
+            await tokensPage.tokensComp.clickOnTokenWithName(typoToken.name);
+            await tokensPage.tokensComp.isTokenAppliedWithName(typoToken.name);
 
             // all atomic typography tokens should be unapplied
             for (const styleToken of STYLE_TOKENS) {
-              await tokensPage.mainTokensComp.isTokenAppliedWithName(
+              await tokensPage.tokensComp.isTokenAppliedWithName(
                 styleToken.name,
                 false,
               );
