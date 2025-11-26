@@ -2,17 +2,14 @@ name: 'Send Mattermost Notification'
 description: 'Send test results notification to Mattermost'
 
 inputs:
+  mattermost-webhook-url:
+    description: 'Mattermost webhook URL'
+    required: true
+  mattermost-channel:
+    description: 'Mattermost channel name'
+    required: true
   browser-name:
     description: 'Browser name for the notification'
-    required: true
-  channel-id:
-    description: 'Mattermost channel ID'
-    required: true
-  login-id:
-    description: 'Mattermost login ID'
-    required: true
-  password:
-    description: 'Mattermost password'
     required: true
   folder-path:
     description: 'Test folder path (optional)'
@@ -28,29 +25,38 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Send mattermost Message
+    - name: Generate Mattermost message content
+      id: message
       shell: bash
-      env:
-        CHANNEL_ID: ${{ inputs.channel-id }}
-        LOGIN_ID_MATTERMOST: ${{ inputs.login-id }}
-        PASSWORD_MATTERMOST: ${{ inputs.password }}
-      if: always()
       run: |
         FOLDER_PATH="${{ inputs.folder-path }}"
         IS_MANUAL="${{ inputs.is-manual-execution }}"
         USERNAME="${{ inputs.username }}"
 
-        # Build the command with all parameters
+        # Generate the message content and save to output
         if [ -n "$FOLDER_PATH" ]; then
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', true, '$USERNAME')"
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', true, '$USERNAME')")
           else
-            npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', false, null)"
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', false, null)")
           fi
         else
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}', null, true, '$USERNAME')"
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, true, '$USERNAME')")
           else
-            npx ts-node -e "require('./helpers/mattermost.helper.js').sendMessage('${{ inputs.browser-name }}', null, false, null)"
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, false, null)")
           fi
         fi
+
+        # Save message to output, handling multiline content
+        echo "message<<EOF" >> $GITHUB_OUTPUT
+        echo "$MESSAGE" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Send Mattermost notification
+      if: always()
+      uses: mattermost/action-mattermost-notify@master
+      with:
+        MATTERMOST_WEBHOOK_URL: ${{ inputs.mattermost-webhook-url }}
+        MATTERMOST_CHANNEL: ${{ inputs.mattermost-channel }}
+        TEXT: ${{ steps.message.outputs.message }}
