@@ -548,6 +548,8 @@ mainTest.describe(() => {
     await viewModePage.waitForViewerSection(45000);
     designPanelPage = new DesignPanelPage(newPage);
     await viewModePage.openInspectTab();
+    const inspectPanelPage = new InspectPanelPage(newPage);
+    await inspectPanelPage.openComputedTab();
 
     await designPanelPage.clickAddExportButtonForViewMode();
     await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
@@ -631,6 +633,8 @@ mainTest.describe(() => {
     await viewModePage.waitForViewerSection(45000);
     layersPanelPage = new LayersPanelPage(newPage);
     await viewModePage.openInspectTab();
+    const inspectPanelPage = new InspectPanelPage(newPage);
+    await inspectPanelPage.openComputedTab();
     await viewModePage.copyWidth();
     await expect(viewModePage.rightSidebar).toHaveScreenshot(
       'view-mode-copy-width-image.png',

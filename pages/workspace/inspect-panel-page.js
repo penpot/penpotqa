@@ -19,6 +19,11 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
       'div[class*="layout-row"] div[title="Row gap"]',
     );
     this.codeTabButton = page.getByRole('tab', { name: 'code' });
+    this.inspectTabSelector = page.locator(
+      'button[aria-label="inspect.tabs-switcher-label"]',
+    );
+    this.codeOption = page.getByRole('option', { name: 'Code' });
+    this.computedOption = page.getByRole('option', { name: 'Computed' });
     this.copyCssCodeButton = page.locator('button[class*="css-copy-btn"]');
     this.codeHtmlStrings = page.locator('span[class="hljs-string"]');
     this.svgCodeButton = page.locator('label[for=":svg"]');
@@ -38,11 +43,19 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
   }
 
   async openCodeTab() {
-    await this.codeTabButton.click();
+    await this.inspectTabSelector.click();
+    await this.codeOption.click();
+  }
+
+  async openComputedTab() {
+    await this.inspectTabSelector.click();
+    await this.computedOption.click();
   }
 
   async waitForCodeButtonVisible() {
-    await this.codeTabButton.waitFor({ state: 'visible', timeout: 10000 });
+    await this.inspectTabSelector
+      .filter({ hasText: 'Code' })
+      .waitFor({ state: 'visible', timeout: 10000 });
   }
 
   async copyCssCodeByName(name) {

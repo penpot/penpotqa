@@ -206,6 +206,7 @@ mainTest.describe(() => {
         'board-with-grid-row-gap.png',
       );
       await inspectPanelPage.openInspectTab();
+      await inspectPanelPage.openComputedTab();
       await inspectPanelPage.isRowGapExistOnInspectTab();
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
         'right-sidebar-inspect-row-gap-image.png',

@@ -123,6 +123,7 @@ mainTest.describe(() => {
     await designPanelPage.addAnnotationForComponent(annotation);
     await designPanelPage.waitForChangeIsSaved();
     await inspectPanelPage.openInspectTab();
+    await inspectPanelPage.openComputedTab();
     await inspectPanelPage.isAnnotationExistOnInspectTab();
     await inspectPanelPage.isAnnotationTextExistOnInspectTab(annotation);
   });
@@ -166,6 +167,7 @@ mainTest.describe(() => {
       await designPanelPage.isComponentTypeCopy(true);
       await designPanelPage.isAnnotationAddedToComponent(annotation);
       await inspectPanelPage.openInspectTab();
+      await inspectPanelPage.openComputedTab();
       await inspectPanelPage.isAnnotationExistOnInspectTab();
       await inspectPanelPage.isAnnotationTextExistOnInspectTab(annotation);
     },
