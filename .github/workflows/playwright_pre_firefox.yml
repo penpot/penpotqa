@@ -58,8 +58,7 @@ jobs:
       - name: Send Mattermost Notification
         uses: ./.github/actions/send-notification
         with:
-          mattermost-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK }}
-          mattermost-channel: Autotest Reports
+          mattermost-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }}
           browser-name: 'Firefox'
         if: always()
         continue-on-error: true

@@ -5,9 +5,6 @@ inputs:
   mattermost-webhook-url:
     description: 'Mattermost webhook URL'
     required: true
-  mattermost-channel:
-    description: 'Mattermost channel name'
-    required: true
   browser-name:
     description: 'Browser name for the notification'
     required: true
@@ -58,5 +55,4 @@ runs:
       uses: mattermost/action-mattermost-notify@master
       with:
         MATTERMOST_WEBHOOK_URL: ${{ inputs.mattermost-webhook-url }}
-        MATTERMOST_CHANNEL: ${{ inputs.mattermost-channel }}
         TEXT: ${{ steps.message.outputs.message }}
