@@ -48,7 +48,7 @@ async function listMessages(auth, email) {
       id: messages[0].id,
     });
     return Buffer.from(
-      msg.data.payload.parts[0].parts[0].body.data,
+      msg.data.payload.parts[0].parts[1].body.data,
       'base64',
     ).toString('utf-8');
   }
@@ -96,7 +96,7 @@ async function getRegisterMessage(email) {
     .then(async (auth) => {
       const body = await listMessages(auth, email);
       if (body) {
-        const urlRegex = /(https?:\/\/[^\s]+)/;
+        const urlRegex = /(https:\/\/design\.penpot\.dev\/#\/auth.*?)(?=["\s]|$)/;
         const match = body.match(urlRegex);
         if (match) {
           const url = match[0];
@@ -119,7 +119,7 @@ async function getRequestAccessMessage(email) {
     .then(async (auth) => {
       const body = await listMessages(auth, email);
       if (body) {
-        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const urlRegex = /(https:\/\/design\.penpot\.dev\/#\/auth.*?)(?=["\s]|$)/;
         const matches = Array.from(body.matchAll(urlRegex));
         if (matches) {
           const urls = matches.map((match) => match[0]);
