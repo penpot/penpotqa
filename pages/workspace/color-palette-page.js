@@ -38,6 +38,7 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.colorPaletteRemoveStopButton = page
       .locator('[class*="gradient-stops-list"]')
       .getByRole('button', { name: 'Remove color' });
+    this.colorButton = this.popUp.getByTitle('Color', { exact: true });
   }
 
   async setHex(value) {
@@ -114,5 +115,9 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
 
   async checkGradientStops(index = 2) {
     await expect(this.colorPaletteRemoveStopButton).toHaveCount(index);
+  }
+
+  async clickOnColorButton() {
+    await this.colorButton.click();
   }
 };
