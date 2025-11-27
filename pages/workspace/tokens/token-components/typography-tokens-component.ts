@@ -25,6 +25,10 @@ export class TypographyTokensComponent {
   private readonly letterSpacingInput: Locator;
   private readonly textDecorationInput: Locator;
   private readonly textCaseInput: Locator;
+  private readonly useAliasButton: Locator;
+  private readonly useCompositeButton: Locator;
+  private readonly aliasInput: Locator;
+  private readonly aliasInputError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -52,16 +56,62 @@ export class TypographyTokensComponent {
     this.textCaseInput = this.createTokenModal.getByRole('textbox', {
       name: 'Text case',
     });
+    this.useAliasButton = this.createTokenModal.getByTestId('reference-opt');
+    this.useCompositeButton = this.createTokenModal.getByTestId('composite-opt');
+    this.aliasInput = this.createTokenModal.getByRole('textbox', {
+      name: 'Reference',
+    });
+    this.aliasInputError = this.createTokenModal.getByText(
+      /^Missing token references:/,
+    );
+  }
+
+  async clickOnUseReferenceButton() {
+    await this.useAliasButton.click();
+  }
+
+  async clickOnUseCompositeButton() {
+    await this.useCompositeButton.click();
   }
 
   async fillTokenData(typographyToken: TypographyToken<TokenClass>) {
-    await this.fontFamilyInput.fill(typographyToken.fontFamily ?? '');
-    await this.fontWeightInput.fill(typographyToken.fontWeight ?? '');
-    await this.fontSizeInput.fill(typographyToken.fontSize ?? '');
-    await this.lineHeightInput.fill(typographyToken.lineHeight ?? '');
-    await this.letterSpacingInput.fill(typographyToken.letterSpacing ?? '');
-    await this.textDecorationInput.fill(typographyToken.textDecoration ?? '');
-    await this.textCaseInput.fill(typographyToken.textCase ?? '');
+    if (typographyToken.fontFamily !== undefined) {
+      await this.fontFamilyInput.fill(typographyToken.fontFamily);
+    }
+    if (typographyToken.fontWeight !== undefined) {
+      await this.fontWeightInput.fill(typographyToken.fontWeight);
+    }
+    if (typographyToken.fontSize !== undefined) {
+      await this.fontSizeInput.fill(typographyToken.fontSize);
+    }
+    if (typographyToken.lineHeight !== undefined) {
+      await this.lineHeightInput.fill(typographyToken.lineHeight);
+    }
+    if (typographyToken.letterSpacing !== undefined) {
+      await this.letterSpacingInput.fill(typographyToken.letterSpacing);
+    }
+    if (typographyToken.textDecoration !== undefined) {
+      await this.textDecorationInput.fill(typographyToken.textDecoration);
+    }
+    if (typographyToken.textCase !== undefined) {
+      await this.textCaseInput.fill(typographyToken.textCase);
+    }
+  }
+
+  async isAliasInputErrorVisible(boolean = true) {
+    return boolean
+      ? expect(
+          this.aliasInputError,
+          'Missing token reference expected, but not found',
+        ).toBeVisible()
+      : expect(
+          this.aliasInputError,
+          'Missing token reference not expected, but found',
+        ).not.toBeVisible();
+  }
+
+  async fillAliasInput(value: string) {
+    await this.aliasInput.fill(value);
   }
 }
 

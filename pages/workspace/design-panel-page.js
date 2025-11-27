@@ -280,7 +280,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textFontStyleSelector = page.locator(
       'div[class*="typography__font-variant-options"]',
     );
-    this.textFontSizeInput = page.locator('div[class*="font-size-select"] input');
+
+    this.textFontSizeInput = this.designTabpanel.getByRole('textbox', {
+      name: 'Font Size',
+    });
     this.textLineHeightInput = page.getByTitle('Line Height').locator('input');
     this.textLetterSpacingInput = page.getByTitle('Letter Spacing').locator('input');
     this.textAlignOptionsButton = page.getByTestId('text-align-options-button');
@@ -293,6 +296,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textUpperCaseButton = this.textTransformMenu.getByTitle('Upper Case');
     this.textCapitalizeButton = this.textTransformMenu.getByTitle('Capitalize');
     this.textLowerCaseButton = this.textTransformMenu.getByTitle('Lower Case');
+    this.typographyAssetAg = this.designTabpanel.getByText('Ag', {
+      exact: true,
+    });
 
     //Design panel - Export section
     this.exportSection = page.getByText('Export', { exact: true });
@@ -1652,6 +1658,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(await this.textFontSelector).toHaveText(name);
   }
 
+  async checkFontSize(value) {
+    await expect(await this.textFontSizeInput).toHaveAttribute('value', value);
+  }
+
   async checkFontStyle(name) {
     await expect(await this.textFontStyleSelector).toHaveText(name);
   }
@@ -1666,6 +1676,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickOnTypographyMenuButton() {
     await this.textTypographyMenuButton.click({ force: true });
+  }
+
+  async isTypographyAssetAgVisible(visible = true) {
+    visible
+      ? await expect(this.typographyAssetAg).toBeVisible(visible)
+      : await expect(this.typographyAssetAg).not.toBeVisible(visible);
   }
 
   async checkTextCase(value) {

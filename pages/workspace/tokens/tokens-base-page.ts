@@ -23,6 +23,7 @@ export class TokensPage extends MainPage {
 
   // locators
   readonly tokensTab: Locator;
+
   constructor(page: Page) {
     super(page);
 

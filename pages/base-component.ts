@@ -27,6 +27,10 @@ export class BaseComponent {
     await this.modalCancelButton.click();
   }
 
+  async clickOnSaveButton() {
+    await this.modalSaveButton.click();
+  }
+
   async closeModalWindow() {
     await this.modalCloseButton.last().click();
   }
