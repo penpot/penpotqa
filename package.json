@@ -8,7 +8,7 @@
     "test": "npx playwright test --project=chrome --grep-invert  'PERF'",
     "changed": "npx playwright test --project=chrome --only-changed",
     "testLogin": "npx playwright test --project=chrome --grep-invert  'PERF' ./tests/panels-features/panels-features-fill.spec.js",
-    "updateSnapshots": "npx playwright test --update-snapshots",
+    "updateSnapshots": "npx playwright test --project=chrome --project=firefox --update-snapshots",
     "firefox": "npx playwright test --project=firefox --grep-invert  'PERF' ",
     "webkit": "npx playwright test --project=webkit --grep-invert  'PERF'",
     "performance": "npx playwright test --retries=1 --timeout=555550000 --project=chrome -g 'PERF'",
