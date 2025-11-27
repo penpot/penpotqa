@@ -52,7 +52,7 @@ runs:
 
     - name: Send Mattermost notification
       if: always()
-      uses: mattermost/action-mattermost-notify@master
+      uses: mattermost/action-mattermost-notify@v1
       with:
         MATTERMOST_WEBHOOK_URL: ${{ inputs.mattermost-webhook-url }}
         TEXT: ${{ steps.message.outputs.message }}
