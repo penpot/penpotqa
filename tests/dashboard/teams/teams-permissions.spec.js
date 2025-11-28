@@ -214,7 +214,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -230,7 +230,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(secondEmail);
+      await loginPage.enterEmailAndClickOnContinue(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -310,7 +310,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(firstEmail);
+      await loginPage.enterEmailAndClickOnContinue(firstEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -515,7 +515,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -719,7 +719,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
     async () => {
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();

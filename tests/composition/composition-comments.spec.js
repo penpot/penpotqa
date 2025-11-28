@@ -249,7 +249,7 @@ mainTest.describe(() => {
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await teamPage.switchTeam(teamName);
@@ -268,7 +268,7 @@ mainTest.describe(() => {
       await profilePage.logout();
 
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(firstEmail);
+      await loginPage.enterEmailAndClickOnContinue(firstEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await teamPage.switchTeam(teamName);
@@ -331,7 +331,7 @@ mainTest.describe(() => {
 
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await teamPage.switchTeam(teamName);
@@ -379,7 +379,7 @@ mainTest.describe(() => {
 
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await teamPage.switchTeam(teamName);
@@ -413,7 +413,7 @@ mainTest.describe(() => {
     await mainPage.backToDashboardFromFileEditor();
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(firstEmail);
+    await loginPage.enterEmailAndClickOnContinue(firstEmail);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await teamPage.switchTeam(teamName);
@@ -465,7 +465,7 @@ mainTest.describe(() => {
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await teamPage.switchTeam(teamName);
@@ -491,7 +491,7 @@ mainTest.describe(() => {
       await mainPage.backToDashboardFromFileEditor();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(firstEmail);
+      await loginPage.enterEmailAndClickOnContinue(firstEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await teamPage.switchTeam(teamName);
@@ -523,7 +523,7 @@ mainTest.describe(() => {
   mainTest.afterEach(async () => {
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();

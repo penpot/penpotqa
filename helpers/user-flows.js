@@ -7,7 +7,7 @@ async function loginAsSecondUser(page) {
 
   await loginPage.isEmailInputVisible();
   await loginPage.isLoginPageOpened();
-  await loginPage.enterEmail(process.env.SECOND_EMAIL);
+  await loginPage.enterEmailAndClickOnContinue(process.env.SECOND_EMAIL);
   await loginPage.enterPwd(process.env.LOGIN_PWD);
   await loginPage.clickLoginButton();
   await dashboardPage.isDashboardOpenedAfterLogin();

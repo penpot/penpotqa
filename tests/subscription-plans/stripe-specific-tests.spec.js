@@ -202,7 +202,7 @@ registerTest(
     await teamPage.clickSendInvitationButton();
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(secondEmail);
+    await loginPage.enterEmailAndClickOnContinue(secondEmail);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
@@ -214,7 +214,7 @@ registerTest(
 
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(firstEmail);
+    await loginPage.enterEmailAndClickOnContinue(firstEmail);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
@@ -230,7 +230,7 @@ registerTest(
     );
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
-    await loginPage.enterEmail(secondEmail);
+    await loginPage.enterEmailAndClickOnContinue(secondEmail);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();

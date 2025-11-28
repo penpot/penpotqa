@@ -64,14 +64,14 @@ registerTest.describe(() => {
   );
 
   registerTest(qase(49, 'Forgot password flow'), async ({ email }) => {
-    await loginPage.enterEmail(email);
+    await loginPage.enterEmailAndClickOnContinue(email);
     await loginPage.enterPwd(newPwd);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
   });
 
   registerTest(qase(52, 'Login with old password'), async ({ email }) => {
-    await loginPage.enterEmail(email);
+    await loginPage.enterEmailAndClickOnContinue(email);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await loginPage.isLoginErrorMessageDisplayed('Email or password is incorrect.');

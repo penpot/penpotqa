@@ -32,6 +32,11 @@ exports.LoginPage = class LoginPage extends BasePage {
     await this.emailInput.fill(loginEmail);
   }
 
+  async enterEmailAndClickOnContinue(loginEmail) {
+    await this.emailInput.fill(loginEmail);
+    await this.clickLoginButton();
+  }
+
   async enterPwd(loginPwd) {
     await this.pwdInput.fill(loginPwd);
   }

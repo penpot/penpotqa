@@ -51,6 +51,10 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     await this.emailInput.fill(email);
   }
 
+  async enterEmailAndClickOnContinue(email) {
+    await this.emailInput.fill(email);
+  }
+
   async enterPassword(password) {
     await this.passwordInput.fill(password);
   }

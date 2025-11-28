@@ -19,7 +19,7 @@ export default async function globalTeardown() {
 
     await page.goto(`${process.env.BASE_URL}#/auth/login`);
     await loginPage.acceptCookie();
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();

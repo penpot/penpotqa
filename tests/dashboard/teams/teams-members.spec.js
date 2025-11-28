@@ -54,7 +54,7 @@ registerTest.describe('Members - As Owner - Change roles', () => {
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -76,7 +76,7 @@ registerTest.describe('Members - As Owner - Change roles', () => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(email);
+      await loginPage.enterEmailAndClickOnContinue(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -88,7 +88,7 @@ registerTest.describe('Members - As Owner - Change roles', () => {
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -100,7 +100,7 @@ registerTest.describe('Members - As Owner - Change roles', () => {
       await teamPage.isMultipleMemberRecordDisplayed(name, email, 'Owner');
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(email);
+      await loginPage.enterEmailAndClickOnContinue(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -118,7 +118,7 @@ registerTest.describe('Members - As Owner - Change roles', () => {
       await teamPage.clickSendInvitationButton();
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(email);
+      await loginPage.enterEmailAndClickOnContinue(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -130,7 +130,7 @@ registerTest.describe('Members - As Owner - Change roles', () => {
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -142,7 +142,7 @@ registerTest.describe('Members - As Owner - Change roles', () => {
       await teamPage.isMultipleMemberRecordDisplayed(name, email, 'Owner');
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
-      await loginPage.enterEmail(email);
+      await loginPage.enterEmailAndClickOnContinue(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -178,7 +178,7 @@ mainTest(qase(1196, 'Team. Members - leave team (as owner)'), async ({ page }) =
 
   await profilePage.logout();
   await loginPage.isLoginPageOpened();
-  await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+  await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
   await loginPage.enterPwd(process.env.LOGIN_PWD);
   await loginPage.clickLoginButton();
   await dashboardPage.isDashboardOpenedAfterLogin();
