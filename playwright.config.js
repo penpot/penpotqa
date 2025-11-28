@@ -33,8 +33,8 @@ const config = {
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 3 : 3,
-  /* Show verbose output on CI */
-  outputDir: process.env.CI ? 'test-results' : 'test-results',
+  /* Directory where test artifacts are stored */
+  outputDir: 'test-results',
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [
