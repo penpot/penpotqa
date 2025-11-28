@@ -70,7 +70,7 @@ registerTest(qase(190, 'Change email to valid'), async ({ page, name, email }) =
   await page.goto(changeEmail.inviteUrl);
   await profilePage.logout();
   await loginPage.isLoginPageOpened();
-  await loginPage.enterEmail(newEmail);
+  await loginPage.enterEmailAndClickOnContinue(newEmail);
   await loginPage.enterPwd(process.env.LOGIN_PWD);
   await loginPage.clickLoginButton();
   await dashboardPage.isDashboardOpenedAfterLogin();

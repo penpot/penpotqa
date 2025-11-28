@@ -178,7 +178,7 @@ mainTest.describe('Viewer Role - Role Changes', () => {
 
       // Change role to Editor
       await profilePage.logout();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -188,7 +188,7 @@ mainTest.describe('Viewer Role - Role Changes', () => {
 
       // Verify Editor rights
       await profilePage.logout();
-      await loginPage.enterEmail(userEmail);
+      await loginPage.enterEmailAndClickOnContinue(userEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -245,7 +245,7 @@ mainTest.describe('Viewer Role - Role Changes', () => {
 
       // Change Admin → Viewer
       await profilePage.logout();
-      await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
@@ -255,7 +255,7 @@ mainTest.describe('Viewer Role - Role Changes', () => {
 
       // Verify Viewer rights
       await profilePage.logout();
-      await loginPage.enterEmail(adminEmail);
+      await loginPage.enterEmailAndClickOnContinue(adminEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();

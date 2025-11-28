@@ -339,7 +339,7 @@ const mainTest = base.test.extend({
     await loginPage.acceptCookie();
 
     // 2. Login with main account
-    await loginPage.enterEmail(process.env.LOGIN_EMAIL);
+    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
 

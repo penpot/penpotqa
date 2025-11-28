@@ -56,7 +56,7 @@ async function setupFileOnly(page) {
 // Login as specific user helper
 async function loginAs({ profilePage, loginPage, dashboardPage }, email) {
   await loginPage.isEmailInputVisible();
-  await loginPage.enterEmail(email);
+  await loginPage.enterEmailAndClickOnContinue(email);
   await loginPage.enterPwd(process.env.LOGIN_PWD);
   await loginPage.clickLoginButton();
   await dashboardPage.isDashboardOpenedAfterLogin();
@@ -316,7 +316,7 @@ registerTest(qase(1833, 'Auto Join to the team'), async ({ page, name, email }) 
   await loginPage.acceptCookie();
 
   // Login back as OWNER
-  await loginPage.enterEmail(email);
+  await loginPage.enterEmailAndClickOnContinue(email);
   await loginPage.enterPwd(process.env.LOGIN_PWD);
   await loginPage.clickLoginButton();
   await dashboardPage.isDashboardOpenedAfterLogin();
