@@ -70,7 +70,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .locator('div[class*="fill-content"]')
       .getByRole('button', { name: 'Remove color' });
     this.componentColorInput = page
-      .locator(`input[class*='rows_color_row__color-input']`)
+      .locator(`input[class*="rows_color_row__color-input"]`)
+      .last();
+    this.fillTokenColor = this.designTabpanel
+      .locator(`[class*="fill-section"] div[class*="color_row__token-name"]`)
       .last();
 
     //Design panel - Shadow section
@@ -523,6 +526,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async isFillHexCodeSetComponent(value) {
     await expect(this.componentColorInput).toHaveValue(value.slice(1));
+  }
+
+  async isFillTokenColorSetComponent(value) {
+    await expect(this.fillTokenColor).toHaveText(value);
   }
 
   async isFillOpacitySet(value) {

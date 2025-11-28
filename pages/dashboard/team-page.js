@@ -466,8 +466,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.page.waitForResponse(
       (response) =>
         response.url() ===
-          `${process.env.BASE_URL}api/rpc/command/push-audit-events` &&
-        response.status() === 200,
+          `${process.env.BASE_URL}api/main/methods/push-audit-events` &&
+        response.status() === 204,
     );
   }
 

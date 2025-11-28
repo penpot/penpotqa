@@ -115,7 +115,7 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken1);
     await tokensPage.tokensComp.clickOnTokenWithName(colorToken1.name);
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSetComponent(colorToken1.value);
+    await designPanelPage.isFillTokenColorSetComponent(colorToken1.name);
 
     await tokensPage.setsComp.createSetViaButton('Mode/Light');
     await tokensPage.setsComp.isSetNameVisible('Light');
@@ -123,7 +123,7 @@ mainTest.describe(() => {
     await tokensPage.setsComp.isSetCheckedByName('Light');
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken2);
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSetComponent(colorToken2.value);
+    await designPanelPage.isFillTokenColorSetComponent(colorToken2.name);
 
     await tokensPage.setsComp.createSetViaButton('Device/Desktop');
     await tokensPage.setsComp.isSetNameVisible('Desktop');

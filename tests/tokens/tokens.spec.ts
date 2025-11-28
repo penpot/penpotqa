@@ -157,7 +157,7 @@ mainTest.describe(() => {
       await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
       await mainPage.waitForChangeIsSaved();
       await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
-      await designPanelPage.isFillHexCodeSetComponent(colorToken.value);
+      await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
       await expect(mainPage.createdLayer).toHaveScreenshot('board-color-red.png');
       await tokensPage.tokensComp.isMenuItemWithNameSelected(
         colorToken.name,
@@ -588,6 +588,7 @@ mainTest(
     await layersPanelPage.selectMainComponentChildLayer();
 
     await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.clickOnColorButton();
     await colorPalettePage.setHex(colorToken3.value);
     await layersPanelPage.selectMainComponentChildLayer();
     await mainPage.waitForChangeIsSaved();
