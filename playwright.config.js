@@ -33,9 +33,13 @@ const config = {
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 3 : 3,
+  /* Show verbose output on CI */
+  outputDir: process.env.CI ? 'test-results' : 'test-results',
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [
+        ['list'], // Shows each test as it runs with timing
+        ['github'], // GitHub Actions annotations
         ['html'],
         ['json', { outputFile: 'playwright-report/results.json' }],
         [
