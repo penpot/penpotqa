@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/penpot/penpotqa#readme",
   "devDependencies": {
-    "@playwright/test": "^1.56.1",
+    "@playwright/test": "^1.57.0",
     "dotenv": "^17.2.3",
     "husky": "^9.1.7"
   },
@@ -38,9 +38,9 @@
     "fs": "^0.0.1-security",
     "googleapis": "^166.0.0",
     "playwright-qase-reporter": "^2.1.6",
-    "prettier": "^3.6.2",
+    "prettier": "^3.7.1",
     "qaseio": "^2.4.3",
-    "stripe": "^19.3.0",
+    "stripe": "^20.0.0",
     "ts-node": "^10.9.2"
   }
 }

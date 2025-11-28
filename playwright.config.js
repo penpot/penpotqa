@@ -33,9 +33,13 @@ const config = {
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 3 : 3,
+  /* Directory where test artifacts are stored */
+  outputDir: 'test-results',
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [
+        ['list'], // Shows each test as it runs with timing
+        ['github'], // GitHub Actions annotations
         ['html'],
         ['json', { outputFile: 'playwright-report/results.json' }],
         [
@@ -56,6 +60,8 @@ const config = {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: process.env.CI ? 'on-first-retry' : 'on',
     video: process.env.CI ? 'on-first-retry' : 'on',
+    /* Capture screenshot on failure */
+    screenshot: 'only-on-failure',
   },
   projects: [
     {
