@@ -119,7 +119,7 @@ async function getRequestAccessMessage(email) {
     .then(async (auth) => {
       const body = await listMessages(auth, email);
       if (body) {
-        const urlRegex = /(https:\/\/design\.penpot\.dev\/#\/auth.*?)(?=["\s]|$)/;
+        const urlRegex = /(https:\/\/design\.penpot\.dev\/#\/[^\s"]*)/g;
         const matches = Array.from(body.matchAll(urlRegex));
         if (matches) {
           const urls = matches.map((match) => match[0]);
