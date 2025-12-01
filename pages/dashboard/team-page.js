@@ -203,8 +203,11 @@ exports.TeamPage = class TeamPage extends BasePage {
       await this.teamOptionsMenuButton.click();
       await this.deleteTeamMenuItem.click();
       await this.deleteTeamButton.click();
-      // Wait for the deletion to complete
-      await this.page.waitForTimeout(2000);
+      // Wait for the deletion API call to complete
+      await this.page.waitForResponse(
+        (response) => response.url().includes('/api/main/methods/delete-team'),
+        { timeout: 20000 },
+      );
       // Verify the team name is no longer the current team (it should change)
       const currentTeamText = await this.teamCurrentBtn.textContent();
       if (currentTeamText === teamName) {
