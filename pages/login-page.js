@@ -14,7 +14,7 @@ exports.LoginPage = class LoginPage extends BasePage {
     });
     this.emailInput = page.getByPlaceholder('Work email', { exact: true });
     this.pwdInput = page.getByPlaceholder('Password', { exact: true });
-    this.loginButton = page.getByRole('button', { name: 'Continue', exact: true });
+    this.loginButton = page.getByTestId('login-submit');
     this.emailInputError = page.getByTestId(':email-error');
     this.createAccountLink = page.getByText('Create an account', { exact: true });
     this.forgotPasswordLink = page.getByText('Forgot password?', { exact: true });
@@ -42,6 +42,7 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async clickLoginButton() {
+    await this.loginButton.waitFor({ state: 'visible' });
     await this.loginButton.click();
   }
 
@@ -61,7 +62,16 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async isLoginButtonDisabled() {
-    await expect(this.loginButton, 'Login button is disabled').toBeDisabled();
+    // TODO: The disabled property is empty when the button is disabled, need to check with devs and open a ticket.
+    // await expect(this.loginButton, 'Login button is disabled').toBeDisabled();
+    await expect(
+      this.loginButton,
+      'Login button has disabled attribute',
+    ).toHaveJSProperty('disabled', true);
+  }
+
+  async isLoginButtonEnabled() {
+    await expect(this.loginButton, 'Login button is enabled').toBeEnabled();
   }
 
   async clickHeader() {

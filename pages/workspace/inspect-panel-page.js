@@ -53,9 +53,9 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
   }
 
   async waitForCodeButtonVisible() {
-    await this.inspectTabSelector
-      .filter({ hasText: 'Code' })
-      .waitFor({ state: 'visible', timeout: 10000 });
+    await this.inspectTabSelector.click();
+    await this.codeOption.waitFor({ state: 'visible', timeout: 10000 });
+    await this.page.keyboard.press('Escape');
   }
 
   async copyCssCodeByName(name) {

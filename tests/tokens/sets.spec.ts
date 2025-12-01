@@ -147,11 +147,11 @@ mainTest.describe(() => {
 
   mainTest(qase(2139, 'Enable and Disable sets'), async () => {
     await tokensPage.setsComp.clickOnSetCheckboxByName('Light');
-    await designPanelPage.isFillHexCodeSetComponent(colorToken1.value);
+    await designPanelPage.isFillTokenColorSetComponent(colorToken1.name);
     await tokensPage.setsComp.clickOnSetCheckboxByName('Mobile');
     await designPanelPage.checkGeneralCornerRadius(radiusToken2.value);
     await tokensPage.setsComp.clickOnSetCheckboxByName('Light');
-    await designPanelPage.isFillHexCodeSetComponent(colorToken2.value);
+    await designPanelPage.isFillTokenColorSetComponent(colorToken2.name);
     await tokensPage.setsComp.clickOnSetCheckboxByName('Mobile');
     await designPanelPage.checkGeneralCornerRadius(radiusToken1.value);
   });
