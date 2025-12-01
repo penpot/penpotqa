@@ -42,7 +42,7 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async clickLoginButton() {
-    await this.loginButton.waitFor({ state: 'enabled' });
+    await this.loginButton.waitFor({ state: 'visible' });
     await this.loginButton.click();
   }
 
@@ -68,6 +68,10 @@ exports.LoginPage = class LoginPage extends BasePage {
       this.loginButton,
       'Login button has disabled attribute',
     ).toHaveJSProperty('disabled', true);
+  }
+
+  async isLoginButtonEnabled() {
+    await expect(this.loginButton, 'Login button is enabled').toBeEnabled();
   }
 
   async clickHeader() {

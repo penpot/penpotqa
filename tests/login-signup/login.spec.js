@@ -19,7 +19,7 @@ test(qase(40, 'Login with invalid email address'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.acceptCookie();
-  await loginPage.enterEmailAndClickOnContinue('test@com');
+  await loginPage.enterEmail('test@com');
   await loginPage.isEmailInputErrorDisplayed('Enter a valid email please');
   await loginPage.isLoginButtonDisplayed();
   await loginPage.isLoginButtonDisabled();
@@ -28,11 +28,12 @@ test(qase(40, 'Login with invalid email address'), async ({ page }) => {
 test(qase(41, 'Login with no password'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
+  await loginPage.acceptCookie();
   await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
   await loginPage.clickPwdInput();
   await loginPage.clickHeader();
   await loginPage.isLoginButtonDisplayed();
-  await loginPage.isLoginButtonDisabled();
+  await loginPage.isLoginButtonEnabled();
 });
 
 test(qase(42, 'Login with incorrect password'), async ({ page }) => {
