@@ -62,7 +62,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([685], 'CO-364 Click view mode (From right top click) - no boards created'),
+    qase([685], 'Click view mode (From right top click) - no boards created'),
     async () => {
       const newPage = await viewModePage.clickViewModeButton();
       viewModePage = new ViewModePage(newPage);
@@ -74,7 +74,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase([688], 'CO-367 Click view mode (From shortcut G+V) - board is created'),
+    qase([688], 'Click view mode (From shortcut G+V) - board is created'),
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
@@ -87,7 +87,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([690], 'CO-369 Full screen on/off'), async () => {
+  mainTest(qase([690], 'Full screen on/off'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -101,7 +101,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([698], 'CO-377 Click arrows to navigate to other boards'),
+    qase([698], 'Click arrows to navigate to other boards'),
     async ({ browserName }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
@@ -136,7 +136,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([700], 'CO-379 Click Back icon to reset view'), async () => {
+  mainTest(qase([700], 'Click Back icon to reset view'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultBoardByCoordinates(500, 500, true);
@@ -164,7 +164,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([699], 'CO-378 Click board dropdown to navigate to other boards'),
+    qase([699], 'Click board dropdown to navigate to other boards'),
     async ({ browserName }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
@@ -191,7 +191,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([689], 'CO-368 Interactions dropdown'), async () => {
+  mainTest(qase([689], 'Interactions dropdown'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.createDefaultBoardByCoordinates(500, 500, true);
     await mainPage.waitForChangeIsSaved();
@@ -223,7 +223,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([691], 'CO-370 Change scale'), async ({ browserName }) => {
+  mainTest(qase([691], 'Change scale'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -267,6 +267,7 @@ mainTest.describe(() => {
     );
   });
 
+  // TODO: The reference do not exists in qase.
   mainTest(
     qase([713], 'CO-392 Zoom by pressing + and - keys'),
     async ({ browserName }) => {
@@ -288,7 +289,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([708], 'CO-387 Page dropdown'), async () => {
+  mainTest(qase([708], 'Page dropdown'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickAddPageButton();
@@ -314,7 +315,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([701], 'CO-380 Create comment'), async () => {
+  mainTest(qase([701], 'Create comment'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -338,7 +339,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([709], 'CO-388 Reply comment'), async () => {
+  mainTest(qase([709], 'Reply comment'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -361,7 +362,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([710], 'CO-389 Edit comment'), async ({ browserName }) => {
+  mainTest(qase([710], 'Edit comment'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -389,7 +390,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([711], 'CO-390 Delete thread'), async ({ browserName }) => {
+  mainTest(qase([711], 'Delete thread'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -413,7 +414,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([703], 'CO-382 Comments dropdown (Hide resolved comments)'),
+    qase([703], 'Comments dropdown (Hide resolved comments)'),
     async ({ browserName }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
@@ -451,41 +452,38 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase([704], 'CO-383 Comments dropdown (Show comments list)'),
-    async () => {
-      await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await mainPage.waitForChangeIsSaved();
-      const newPage = await viewModePage.clickViewModeShortcut();
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(45000);
-      const commentsPanelPage = new CommentsPanelPage(newPage);
-      await viewModePage.clickCommentsButton();
-      await viewModePage.addComment();
-      await commentsPanelPage.enterCommentText('Test Comment');
-      await commentsPanelPage.clickPostCommentButton();
-      await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment');
-      await viewModePage.clickOnViewport();
+  mainTest(qase([704], 'Comments dropdown (Show comments list)'), async () => {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.waitForViewerSection(45000);
+    const commentsPanelPage = new CommentsPanelPage(newPage);
+    await viewModePage.clickCommentsButton();
+    await viewModePage.addComment();
+    await commentsPanelPage.enterCommentText('Test Comment');
+    await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment');
+    await viewModePage.clickOnViewport();
 
-      await viewModePage.openCommentsDropdown();
-      await viewModePage.selectShowCommentsListOption();
-      await viewModePage.isCommentInListVisible(true);
-      await expect(viewModePage.commentsRightPanel).toHaveScreenshot(
-        'comments-list.png',
-        {
-          mask: [commentsPanelPage.commentsAuthorSection],
-        },
-      );
-      await viewModePage.openCommentsDropdown();
-      await viewModePage.selectShowCommentsListOption();
-      await viewModePage.isCommentInListVisible(false);
-      await expect(newPage).toHaveScreenshot('comments-list-hidden.png', {
+    await viewModePage.openCommentsDropdown();
+    await viewModePage.selectShowCommentsListOption();
+    await viewModePage.isCommentInListVisible(true);
+    await expect(viewModePage.commentsRightPanel).toHaveScreenshot(
+      'comments-list.png',
+      {
         mask: [commentsPanelPage.commentsAuthorSection],
-      });
-    },
-  );
+      },
+    );
+    await viewModePage.openCommentsDropdown();
+    await viewModePage.selectShowCommentsListOption();
+    await viewModePage.isCommentInListVisible(false);
+    await expect(newPage).toHaveScreenshot('comments-list-hidden.png', {
+      mask: [commentsPanelPage.commentsAuthorSection],
+    });
+  });
 
-  mainTest(qase([706], 'CO-385 Switch to Inspect view'), async ({ browserName }) => {
+  mainTest(qase([706], 'Switch to Inspect view'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -504,10 +502,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(
-      [715],
-      'CO-394 Inspect functionality - Board elements dropdown in the top left',
-    ),
+    qase([715], 'Inspect functionality - Board elements dropdown in the top left'),
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await designPanelPage.changeHeightAndWidthForLayer('200', '200');
@@ -533,7 +528,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([717], 'CO-396 Inspect functionality- Export'), async () => {
+  mainTest(qase([717], 'Inspect functionality- Export'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await mainPage.waitForChangeIsSaved();
@@ -561,7 +556,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(1785, 'CO-387 Switch between layers from left menu'),
+    qase(1785, 'Switch between layers from left menu'),
     async ({ browserName }) => {
       await mainPage.createDefaultBoardByCoordinates(200, 200);
       await designPanelPage.changeHeightAndWidthForLayer('500', '700');
@@ -623,7 +618,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1787], 'CO-389 Copy layout and paste'), async ({ browserName }) => {
+  mainTest(qase([1787], 'Copy layout and paste'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await mainPage.waitForChangeIsSaved();
@@ -642,7 +637,7 @@ mainTest.describe(() => {
     await viewModePage.checkBuffer('width: 200px;', newPage, browserName);
   });
 
-  mainTest(qase([705], 'CO-384 Edit file'), async ({ page, browserName }) => {
+  mainTest(qase([705], 'Edit file'), async ({ page, browserName }) => {
     if (browserName === 'webkit') {
     } else {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -671,7 +666,7 @@ mainTest.describe(() => {
 
 mainTest.describe(() => {
   mainTest(
-    qase([693], 'CO-372 Share prototype - get link (2 pages)'),
+    qase([693], 'Share prototype - get link (2 pages)'),
     async ({ page, browserName }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
@@ -714,34 +709,31 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase([694], 'CO-373 Share prototype - destroy link'),
-    async ({ page }) => {
-      await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await mainPage.waitForChangeIsSaved();
-      const newPage = await viewModePage.clickViewModeShortcut();
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(45000);
-      await viewModePage.clickShareButton();
-      await viewModePage.clickGetLinkButton();
-      const shareLink = await viewModePage.clickCopyLinkButton();
-      await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
+  mainTest(qase([694], 'Share prototype - destroy link'), async ({ page }) => {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await mainPage.waitForChangeIsSaved();
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.waitForViewerSection(45000);
+    await viewModePage.clickShareButton();
+    await viewModePage.clickGetLinkButton();
+    const shareLink = await viewModePage.clickCopyLinkButton();
+    await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
 
-      await viewModePage.clickDestroyLinkButton();
+    await viewModePage.clickDestroyLinkButton();
 
-      await mainPage.clickPencilBoxButton();
-      await profilePage.logout();
-      await loginPage.isLoginPageOpened();
-      await profilePage.gotoLink(shareLink);
-      viewModePage = new ViewModePage(page);
-      await viewModePage.isViewerSectionVisible(false);
-      await expect(mainPage.loginDialog).toHaveScreenshot('shared-error-image.png');
-      await loginPage.goto();
-    },
-  );
+    await mainPage.clickPencilBoxButton();
+    await profilePage.logout();
+    await loginPage.isLoginPageOpened();
+    await profilePage.gotoLink(shareLink);
+    viewModePage = new ViewModePage(page);
+    await viewModePage.isViewerSectionVisible(false);
+    await expect(mainPage.loginDialog).toHaveScreenshot('shared-error-image.png');
+    await loginPage.goto();
+  });
 
   mainTest(
-    qase([696], 'CO-375 Share prototype - manage permissions ("Can comment")'),
+    qase([696], 'Share prototype - manage permissions ("Can comment")'),
     async ({ page }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
@@ -782,10 +774,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(
-      [697],
-      'CO-376 Share prototype - manage permissions ("Can inspect code  ")',
-    ),
+    qase([697], 'Share prototype - manage permissions ("Can inspect code  ")'),
     async ({ page }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
@@ -832,7 +821,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(702, 'CO-381 Comments dropdown (All and Only your comments)'),
+    qase(702, 'Comments dropdown (All and Only your comments)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
