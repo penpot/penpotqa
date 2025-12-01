@@ -124,6 +124,9 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.manageSubscriptionButton = page.getByRole('button', {
       name: 'Manage your subscription',
     });
+    this.skipPaymentsDetailsButton = page.locator(
+      'input[value="Skip for now and start trial"]',
+    );
   }
 
   async openYourAccountPage() {
@@ -300,7 +303,8 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   }
 
   async clickOnStartTrialButton() {
-    await this.startFreeTrialButton.click();
+    await this.continueButton.click();
+    await this.skipPaymentsDetailsButton.click();
   }
 
   async checkSubscriptionModalHeader(name) {

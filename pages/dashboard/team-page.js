@@ -150,6 +150,7 @@ exports.TeamPage = class TeamPage extends BasePage {
       'svg[class*="icon-character-u"]',
     );
     this.teamPlanName = page.locator('[class*="subscription__team-text"]');
+    this.teamCurrentBtnText = this.teamCurrentBtn.locator('span[class*="text"]');
   }
 
   async createTeam(teamName) {
@@ -163,7 +164,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   async isTeamSelected(teamName, browserName = 'chrome') {
     browserName === 'webkit'
       ? await expect(this.teamCurrentBtnWebkit).toHaveText(teamName)
-      : await expect(this.teamCurrentBtn).toHaveText(teamName);
+      : await expect(this.teamCurrentBtnText).toHaveText(teamName);
   }
 
   async waitForTeamBtn(timeout = 10000) {
