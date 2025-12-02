@@ -32,6 +32,9 @@ export class BaseComponent {
   }
 
   async closeModalWindow() {
-    await this.modalCloseButton.last().click();
+    const closeButton = this.modalCloseButton.last();
+    if (await closeButton.isVisible()) {
+      await closeButton.click({ force: true });
+    }
   }
 }
