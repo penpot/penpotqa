@@ -302,6 +302,10 @@ exports.BasePage = class BasePage {
 
   async waitForResizeHandlerVisible() {
     await this.resizeHandler.first().waitFor({ state: 'attached' });
+    const isVisible = await this.resizeHandler.first().isVisible();
+    if (!isVisible) {
+      await this.createdLayer.click({ force: true });
+    }
     await this.resizeHandler.first().waitFor({ state: 'visible' });
   }
 
