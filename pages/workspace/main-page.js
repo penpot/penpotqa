@@ -1093,24 +1093,28 @@ exports.MainPage = class MainPage extends BasePage {
   async duplicateGridRow() {
     await this.gridEditorLabel.last().hover();
     await this.gridEditorButton.click();
+    await this.duplicateRowMenuItem.waitFor({ state: 'visible' });
     await this.duplicateRowMenuItem.click();
   }
 
   async deleteGridRow() {
     await this.gridEditorLabel.last().hover();
     await this.gridEditorButton.click();
+    await this.deleteRowMenuItem.waitFor({ state: 'visible' });
     await this.deleteRowMenuItem.click();
   }
 
   async addGridRowBelow() {
     await this.gridEditorLabel.last().hover();
     await this.gridEditorButton.click();
+    await this.addRowBelowMenuItem.waitFor({ state: 'visible' });
     await this.addRowBelowMenuItem.click();
   }
 
   async addGridColumnRight() {
     await this.gridEditorLabel.first().hover();
     await this.gridEditorButton.click();
+    await this.addColumnRightMenuItem.waitFor({ state: 'visible' });
     await this.addColumnRightMenuItem.click();
   }
 
