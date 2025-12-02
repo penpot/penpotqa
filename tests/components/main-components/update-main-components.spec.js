@@ -45,7 +45,7 @@ mainTest(qase([1275], 'Update main component'), async () => {
   await mainPage.duplicateLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.changeAxisXandYForLayer('400', '500');
+  await designPanelPage.changeAxisXAndYForLayer('400', '500');
   await mainPage.waitForChangeIsSaved();
   await designPanelPage.clickComponentFillColorIcon();
   await colorPalettePage.modalSetHex('#304d6a');
@@ -86,11 +86,11 @@ mainTest.describe(() => {
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXandYForLayer('400', '500');
+    await designPanelPage.changeAxisXAndYForLayer('400', '500');
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXandYForLayer('50', '400');
+    await designPanelPage.changeAxisXAndYForLayer('50', '400');
   });
 
   mainTest(
@@ -391,7 +391,7 @@ mainTest.describe(() => {
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXandYForLayer('400', '500');
+    await designPanelPage.changeAxisXAndYForLayer('400', '500');
   });
 
   mainTest(
@@ -513,7 +513,7 @@ mainTest(qase([1478], 'Changed direct, not overriden'), async () => {
   await mainPage.duplicateLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.changeAxisXandYForLayer('400', '500');
+  await designPanelPage.changeAxisXAndYForLayer('400', '500');
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
   await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
@@ -535,13 +535,13 @@ mainTest(qase([1479], 'Changed remote, not overriden'), async () => {
   await mainPage.duplicateLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.changeAxisXandYForLayer('400', '500');
+  await designPanelPage.changeAxisXAndYForLayer('400', '500');
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.duplicateLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.changeAxisXandYForLayer('200', '500');
+  await designPanelPage.changeAxisXAndYForLayer('200', '500');
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickMainComponentOnLayersTab();
   await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
@@ -571,7 +571,7 @@ mainTest(qase([1480], 'Changed direct, overriden in copy'), async () => {
   await mainPage.duplicateLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.changeAxisXandYForLayer('400', '500');
+  await designPanelPage.changeAxisXAndYForLayer('400', '500');
   await mainPage.waitForChangeIsSaved();
   await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
   await mainPage.clickViewportTwice();
@@ -604,13 +604,13 @@ mainTest(qase([1482], 'Changed remote, overriden in copy'), async () => {
   await mainPage.duplicateLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.changeAxisXandYForLayer('400', '500');
+  await designPanelPage.changeAxisXAndYForLayer('400', '500');
   await mainPage.waitForChangeIsSaved();
   await mainPage.createComponentViaRightClick();
   await mainPage.duplicateLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.changeAxisXandYForLayer('200', '500');
+  await designPanelPage.changeAxisXAndYForLayer('200', '500');
   await mainPage.waitForChangeIsSaved();
   await designPanelPage.setComponentColor(sampleData.color.greenHexCode1);
   await mainPage.clickViewportTwice();
@@ -637,13 +637,13 @@ mainTest(
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXandYForLayer('400', '500');
+    await designPanelPage.changeAxisXAndYForLayer('400', '500');
     await mainPage.waitForChangeIsSaved();
     await mainPage.createComponentViaRightClick();
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXandYForLayer('200', '500');
+    await designPanelPage.changeAxisXAndYForLayer('200', '500');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.setComponentColor(sampleData.color.greenHexCode1);
     await mainPage.clickViewportTwice();

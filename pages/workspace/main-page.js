@@ -122,10 +122,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.showHideUIMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Show / Hide UI' });
-    this.dowloadPenpotFileMenuSubItem = page
+    this.downloadPenpotFileMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Download Penpot file (.penpot)' });
-    this.dowloadStandartFileMenuSubItem = page
+    this.downloadStandardFileMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Download standard file (.svg + .json)' });
     this.addAsSharedLibraryFileMenuSubItem = page
@@ -756,14 +756,14 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async downloadPenpotFileViaMenu() {
-    await this.dowloadPenpotFileMenuSubItem.click();
+    await this.downloadPenpotFileMenuSubItem.click();
     await this.page.waitForEvent('download');
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
 
   async downloadStandardFileViaMenu() {
-    await this.dowloadStandartFileMenuSubItem.click();
+    await this.downloadStandardFileMenuSubItem.click();
     await this.page.waitForEvent('download');
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();

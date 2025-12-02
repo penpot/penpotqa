@@ -35,7 +35,7 @@ mainTest(qase([1496], 'Undo deleted component'), async ({ browserName }) => {
   await mainPage.createComponentViaRightClick();
   await mainPage.duplicateLayerViaRightClick();
   await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.changeAxisXandYForLayer('400', '300');
+  await designPanelPage.changeAxisXAndYForLayer('400', '300');
   await mainPage.pressDeleteKeyboardButton();
   await mainPage.waitForChangeIsUnsaved();
   await mainPage.waitForChangeIsSaved();
@@ -57,7 +57,7 @@ mainTest(qase([1497], 'Delete copy component from DEL button'), async () => {
   await mainPage.duplicateLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.changeAxisXandYForLayer('400', '300');
+  await designPanelPage.changeAxisXAndYForLayer('400', '300');
   await mainPage.pressDeleteKeyboardButton();
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName(
