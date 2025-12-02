@@ -301,6 +301,7 @@ exports.BasePage = class BasePage {
   }
 
   async waitForResizeHandlerVisible() {
+    await this.resizeHandler.first().waitFor({ state: 'attached' });
     await this.resizeHandler.first().waitFor({ state: 'visible' });
   }
 
