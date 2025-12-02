@@ -21,6 +21,7 @@ giveFeedbackTest(
     await giveFeedbackTest.step(
       '(208) Enter subject, click on Send and validate success message',
       async () => {
+        await profilePage.selectFeedbackType('Idea');
         await profilePage.enterSubjectToGiveFeedbackForm('QA Test');
         await profilePage.clickSendFeedbackButton();
         await profilePage.isSuccessMessageDisplayed('Feedback sent');
