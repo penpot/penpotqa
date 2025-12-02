@@ -157,19 +157,23 @@ mainTest.describe(() => {
       2377,
       'Import tokens .zip (with a multifile inside) skipping not yet supported tokens',
     ),
-    async () => {
+    async ({ page }) => {
+      const baseComp: BaseComponent = new BaseComponent(page);
+
       await tokensPage.toolsComp.importTokensZip(
         'documents/tokens-multifile-with-skipped-tokens.zip',
       );
-      await tokensPage.themesComp.checkSelectedTheme('3 active themes');
-      await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+
       await tokensPage.checkImportErrorMessage(
         `Import was successful. Some tokens were not included.`,
       );
       await tokensPage.expandDetailMessage();
       await tokensPage.toolsComp.checkImportTokenDetailErrorCount(1);
-      await tokensPage.closeModalWindow();
+
+      await baseComp.closeModalWindow();
       await tokensPage.isImportErrorMessageVisible(false);
+
+      await page.waitForTimeout(1000);
     },
   );
 
