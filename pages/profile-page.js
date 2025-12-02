@@ -65,6 +65,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
       .filter({ hasText: 'Change email' });
 
     //Feedback
+    this.feedbackTypeDropdown = page.locator('[role="combobox"]');
     this.feedbackSubjectInput = page.locator('#subject');
     this.feedbackDescriptionInput = page.locator('textarea');
     this.sendFeedbackButton = page.getByRole('button', { name: 'Send' });
@@ -212,6 +213,11 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await this.newEmailInput.fill(newEmail);
     await this.confirmNewEmailInput.fill(newEmail);
     await this.confirmChangeEmailBtn.click();
+  }
+
+  async selectFeedbackType(type) {
+    await this.feedbackTypeDropdown.click();
+    await this.page.getByRole('option', { name: type }).click();
   }
 
   async enterSubjectToGiveFeedbackForm(text) {

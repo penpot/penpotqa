@@ -301,6 +301,11 @@ exports.BasePage = class BasePage {
   }
 
   async waitForResizeHandlerVisible() {
+    await this.resizeHandler.first().waitFor({ state: 'attached' });
+    const isVisible = await this.resizeHandler.first().isVisible();
+    if (!isVisible) {
+      await this.createdLayer.click({ force: true });
+    }
     await this.resizeHandler.first().waitFor({ state: 'visible' });
   }
 
@@ -385,6 +390,7 @@ exports.BasePage = class BasePage {
       'div[class*="viewport"] [class*="viewport-selrect"]',
     );
     await layerSel.last().waitFor({ state: 'visible', timeout: 10000 });
+    await layerSel.last().waitFor({ state: 'attached', timeout: 10000 });
     await layerSel.last().click({ button: 'right', force: true });
     await this.createComponentMenuItem.waitFor({ state: 'visible', timeout: 10000 });
     await this.createComponentMenuItem.click();

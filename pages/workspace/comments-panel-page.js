@@ -125,7 +125,9 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   }
 
   async clickResolvedCommentThreadIcon() {
-    await this.commentResolvedThreadIcon.click();
+    await this.commentResolvedThreadIcon.waitFor({ state: 'visible' });
+    await this.commentResolvedThreadIcon.hover();
+    await this.commentResolvedThreadIcon.click({ force: true });
   }
 
   async enterReplyText(text) {

@@ -556,6 +556,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.layerRotationInput.clear();
     await this.layerRotationInput.pressSequentially(value);
     await this.clickOnEnter();
+    await this.layerRotationInput.blur();
   }
 
   async clickIndividualCornersRadiusButton() {
