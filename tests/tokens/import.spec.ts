@@ -168,7 +168,7 @@ mainTest.describe(() => {
         `Import was successful. Some tokens were not included.`,
       );
       await tokensPage.expandDetailMessage();
-      await tokensPage.toolsComp.checkImportTokenDetailErrorCount(1);
+      await tokensPage.toolsComp.checkImportTokenDetailErrorCount(2);
 
       await baseComp.closeModalWindow();
       await tokensPage.isImportErrorMessageVisible(false);
