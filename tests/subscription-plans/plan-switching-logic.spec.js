@@ -38,6 +38,7 @@ registerTest.afterEach(async () => {
 registerTest.describe(
   'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
   () => {
+    registerTest.skip();
     registerTest.fixme(
       true,
       'Switch from Unlimited → Enterprise - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
@@ -83,6 +84,7 @@ registerTest.describe(
       },
     );
 
+    registerTest.skip();
     registerTest.fixme(
       true,
       'Switch from Enterprise → Unlimited - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
@@ -115,6 +117,7 @@ registerTest.describe(
       },
     );
 
+    registerTest.skip();
     registerTest.fixme(
       true,
       'Switch from Unlimited → Professional - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',

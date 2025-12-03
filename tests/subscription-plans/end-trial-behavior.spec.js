@@ -42,6 +42,7 @@ registerTest.afterEach(async () => {
 registerTest.describe(
   'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
   () => {
+    registerTest.skip();
     registerTest.fixme(
       true,
       'Trial ends, payment method added → switch to Unlimited - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
@@ -67,6 +68,7 @@ registerTest.describe(
       },
     );
 
+    registerTest.skip();
     registerTest.fixme(
       true,
       'Trial ends, no payment method ever added → switch to Professional (CANCELLED) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
@@ -97,6 +99,7 @@ registerTest.describe(
       },
     );
 
+    registerTest.skip();
     registerTest.fixme(
       true,
       'Trial ends, no payment method → remains in Enterprise Trial (PAUSED) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
