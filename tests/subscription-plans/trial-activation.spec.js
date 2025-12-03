@@ -31,7 +31,6 @@ registerTest.afterEach(async () => {
 registerTest.describe(
   'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
   () => {
-    registerTest.skip();
     registerTest.fixme(
       true,
       'Try it free for 14 days for Unlimited plan - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
@@ -48,7 +47,6 @@ registerTest.describe(
       },
     );
 
-    registerTest.skip();
     registerTest.fixme(
       true,
       'Verify Trial Label Behavior (for the Enterprise plan) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',

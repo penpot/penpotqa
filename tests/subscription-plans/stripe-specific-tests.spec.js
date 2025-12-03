@@ -56,7 +56,6 @@ registerTest.describe(
       await profilePage.backToDashboardFromAccount();
     });
 
-    registerTest.skip();
     registerTest.fixme(
       true,
       'Invoices capped at $7 (Unlimited) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
@@ -94,7 +93,6 @@ registerTest.describe(
       },
     );
 
-    registerTest.skip();
     registerTest.fixme(
       true,
       'Invoices capped at $950 (Enterprise) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
@@ -133,7 +131,6 @@ registerTest.describe(
       },
     );
 
-    registerTest.skip();
     registerTest.fixme(
       true,
       'Maximum billing $175 (Unlimited) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
@@ -173,7 +170,6 @@ registerTest.describe(
   },
 );
 
-registerTest.skip();
 registerTest.fixme(
   true,
   'Owner of team changes Enterprise to Professional - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
