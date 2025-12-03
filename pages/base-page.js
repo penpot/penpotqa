@@ -20,7 +20,7 @@ exports.BasePage = class BasePage {
     this.savedChangesIcon = page.getByTitle('Saved', { exact: true });
     this.unSavedChangesIcon = page.getByTitle('Saving', { exact: true });
     this.viewport = page.locator('div[class*="viewport"] >> nth=0');
-    this.resizeHandler = page.locator('[class="resize-handler"]');
+    this.resizeHandler = page.locator('div[class*="viewport"] .resize-handler');
 
     this.modalCancelButton = page.getByRole('button', { name: 'Cancel' });
     this.modalSaveButton = page.getByRole('button', { name: 'Save' });
