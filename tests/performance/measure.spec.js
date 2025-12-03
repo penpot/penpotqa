@@ -26,7 +26,7 @@ test(
 );
 
 test(
-  'PERF Measure lockings (frames per second ~= 0)',
+  'PERF Measure locking (frames per second ~= 0)',
   {
     tag: '@perf',
   },
