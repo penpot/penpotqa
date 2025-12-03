@@ -34,7 +34,6 @@ registerTest.afterEach(async () => {
 registerTest.describe(
   'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
   () => {
-    registerTest.skip();
     registerTest.fixme(
       true,
       'Display & Info for Enterprise Plan - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
@@ -64,7 +63,6 @@ registerTest.describe(
       },
     );
 
-    registerTest.skip();
     registerTest.fixme(
       true,
       'Display & Info for Professional Plan - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
