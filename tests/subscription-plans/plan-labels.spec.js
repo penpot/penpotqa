@@ -35,7 +35,8 @@ registerTest.describe(
   'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
   () => {
     registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      true,
+      'Display & Info for Enterprise Plan - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(2281, 'Display & Info for Enterprise Plan'),
       async ({ page, email }) => {
         const currentPlan = 'Enterprise';
@@ -63,7 +64,8 @@ registerTest.describe(
     );
 
     registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      true,
+      'Display & Info for Professional Plan - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(2283, 'Display & Info for Professional Plan'),
       async () => {
         const currentPlan = 'Professional';

@@ -39,7 +39,8 @@ registerTest.describe(
   'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
   () => {
     registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      true,
+      'Switch from Unlimited → Enterprise - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(2302, 'Switch from Unlimited → Enterprise'),
       async ({ page, name, email }) => {
         const currentPlan = 'Unlimited';
@@ -83,7 +84,8 @@ registerTest.describe(
     );
 
     registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      true,
+      'Switch from Enterprise → Unlimited - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(2303, 'Switch from Enterprise → Unlimited'),
       async ({ page, email }) => {
         const currentPlan = 'Enterprise';
@@ -114,7 +116,8 @@ registerTest.describe(
     );
 
     registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      true,
+      'Switch from Unlimited → Professional - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(2304, 'Switch from Unlimited → Professional'),
       async ({ page, name, email }) => {
         const currentPlan = 'Unlimited';
