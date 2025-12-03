@@ -20,7 +20,7 @@ exports.BasePage = class BasePage {
     this.savedChangesIcon = page.getByTitle('Saved', { exact: true });
     this.unSavedChangesIcon = page.getByTitle('Saving', { exact: true });
     this.viewport = page.locator('div[class*="viewport"] >> nth=0');
-    this.resizeHandler = page.locator('[class="resize-handler"]');
+    this.resizeHandler = page.locator('div[class*="viewport"] .resize-handler');
 
     this.modalCancelButton = page.getByRole('button', { name: 'Cancel' });
     this.modalSaveButton = page.getByRole('button', { name: 'Save' });
@@ -301,12 +301,17 @@ exports.BasePage = class BasePage {
   }
 
   async waitForResizeHandlerVisible() {
-    await this.resizeHandler.first().waitFor({ state: 'attached' });
-    const isVisible = await this.resizeHandler.first().isVisible();
-    if (!isVisible) {
-      await this.createdLayer.click({ force: true });
+    // Asegurar que hay un layer seleccionado
+    const layerCount = await this.createdLayer.count();
+    if (layerCount === 0) {
+      throw new Error('No layer found to wait for resize handler');
     }
-    await this.resizeHandler.first().waitFor({ state: 'visible' });
+
+    // Hacer click para asegurar selección
+    await this.createdLayer.first().click({ force: true });
+
+    // Esperar a que el handler aparezca con auto-retry de Playwright
+    await expect(this.resizeHandler.first()).toBeVisible({ timeout: 15000 });
   }
 
   async waitForViewportVisible(timeout = 30) {
