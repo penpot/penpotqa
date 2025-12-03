@@ -293,7 +293,7 @@ exports.BasePage = class BasePage {
   }
 
   async waitForChangeIsSaved() {
-    await this.savedChangesIcon.waitFor({ state: 'visible' });
+    await this.savedChangesIcon.waitFor({ state: 'visible', timeout: 30000 });
   }
 
   async waitForChangeIsUnsaved() {
@@ -301,16 +301,11 @@ exports.BasePage = class BasePage {
   }
 
   async waitForResizeHandlerVisible() {
-    // Asegurar que hay un layer seleccionado
     const layerCount = await this.createdLayer.count();
     if (layerCount === 0) {
       throw new Error('No layer found to wait for resize handler');
     }
-
-    // Hacer click para asegurar selección
     await this.createdLayer.first().click({ force: true });
-
-    // Esperar a que el handler aparezca con auto-retry de Playwright
     await expect(this.resizeHandler.first()).toBeVisible({ timeout: 15000 });
   }
 
