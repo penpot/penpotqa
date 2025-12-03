@@ -288,7 +288,7 @@ mainTest.describe(() => {
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickShortcutCtrlD(browserName);
-    await designPanelPage.changeAxisXandYForLayer('500', '100');
+    await designPanelPage.changeAxisXAndYForLayer('500', '100');
   });
 
   mainTest(

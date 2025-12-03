@@ -118,7 +118,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementMarginVertInput = page.locator(
       'div[title="Vertical margin"] input',
     );
-    this.flexElementMarginHorizontInput = page.locator(
+    this.flexElementMarginHorizontalInput = page.locator(
       'div[title="Horizontal margin"] input',
     );
     this.flexElementPositionAbsolute = page.locator(
@@ -199,7 +199,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.layoutVerticalPaddingInput = page.locator(
       'div[title="Vertical padding"] input',
     );
-    this.layoutHorizontPaddingInput = page.locator(
+    this.layoutHorizontalPaddingInput = page.locator(
       'div[title="Horizontal padding"] input',
     );
     this.layoutIndepPaddingsIcon = page.locator('button[class*="padding-toggle"]');
@@ -400,7 +400,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .first();
     this.swapComponentButton = page.getByTestId('component-pill-button');
     this.swapComponentTab = page.locator('[class*="component__swap"]').first();
-    this.swapGridRadiobutton = page.locator('label[for="swap-opt-grid"]');
+    this.swapGridRadioButton = page.locator('label[for="swap-opt-grid"]');
     this.variantWarningWrapper = page.locator('[class*="variant-warning"]').first();
     this.locateDuplicatedVariantsButton = page.getByRole('button', {
       name: 'Locate duplicated variants',
@@ -433,8 +433,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         await this.flexElementMarginVertInput.pressSequentially(value);
         break;
       case 'Horizontal':
-        await this.flexElementMarginHorizontInput.clear();
-        await this.flexElementMarginHorizontInput.pressSequentially(value);
+        await this.flexElementMarginHorizontalInput.clear();
+        await this.flexElementMarginHorizontalInput.pressSequentially(value);
         break;
     }
     await this.clickOnEnter();
@@ -1042,8 +1042,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         await this.layoutVerticalPaddingInput.pressSequentially(value);
         break;
       case 'Horizontal':
-        await this.layoutHorizontPaddingInput.clear();
-        await this.layoutHorizontPaddingInput.pressSequentially(value);
+        await this.layoutHorizontalPaddingInput.clear();
+        await this.layoutHorizontalPaddingInput.pressSequentially(value);
         break;
     }
     await this.clickOnEnter();
@@ -1054,7 +1054,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickLayoutHorizontalPaddingField() {
-    await this.layoutHorizontPaddingInput.click();
+    await this.layoutHorizontalPaddingInput.click();
   }
 
   async switchToIndependentPadding(flex = true) {
@@ -1332,7 +1332,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.addNewPropertyOptionDesign.click();
   }
 
-  async changeAxisXandYForLayer(x, y) {
+  async changeAxisXAndYForLayer(x, y) {
     await this.xAxisInput.clear();
     await this.xAxisInput.pressSequentially(x);
     await this.clickOnEnter();
@@ -1474,7 +1474,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         await expect(this.layoutVerticalPaddingInput).toHaveValue(value);
         break;
       case 'Horizontal':
-        await expect(this.layoutHorizontPaddingInput).toHaveValue(value);
+        await expect(this.layoutHorizontalPaddingInput).toHaveValue(value);
         break;
     }
   }
@@ -1630,7 +1630,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnSwapGridViewButton() {
-    await this.swapGridRadiobutton.click();
+    await this.swapGridRadioButton.click();
   }
 
   async checkVariantWarning(text) {

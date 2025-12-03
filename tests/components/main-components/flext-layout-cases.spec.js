@@ -55,7 +55,7 @@ mainTest.describe(() => {
     await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickLayerOnLayersTab('Ellipse');
-    await designPanelPage.changeAxisXandYForLayer('-50', '350');
+    await designPanelPage.changeAxisXAndYForLayer('-50', '350');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.checkXAxis('-50');
     await designPanelPage.checkYAxis('350');
@@ -64,7 +64,7 @@ mainTest.describe(() => {
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-    await designPanelPage.changeAxisXandYForLayer('-50', '250');
+    await designPanelPage.changeAxisXAndYForLayer('-50', '250');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.checkXAxis('-50');
     await designPanelPage.checkYAxis('250');
@@ -136,7 +136,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
 
       await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeAxisXandYForLayer('600', '200');
+      await designPanelPage.changeAxisXAndYForLayer('600', '200');
 
       await mainPage.createDefaultBoardByCoordinates(200, 200, true);
       await designPanelPage.changeHeightAndWidthForLayer('300', '300');

@@ -22,7 +22,7 @@ test(qase(50, 'Forgot password flow with invalid email'), async ({ page }) => {
   await forgotPasswordPage.isRecoverPasswordButtonDisabled();
 });
 
-test(qase(51, 'Forgot password flow with inexisted email'), async ({ page }) => {
+test(qase(51, 'Forgot password flow with non existed email'), async ({ page }) => {
   const loginPage = new LoginPage(page);
   const forgotPasswordPage = new ForgotPasswordPage(page);
   await loginPage.goto();
