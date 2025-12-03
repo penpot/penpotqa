@@ -14,15 +14,15 @@ exports.StripePage = class StripePage extends BasePage {
     this.iframeAddCardModal = page
       .locator('[class="StripeElement"]')
       .frameLocator('iframe[role="presentation"]');
-    this.cardNumberImput = this.iframeAddCardModal.locator('input[name="number"]');
-    this.cardExpirationDateImput = this.iframeAddCardModal.locator(
+    this.cardNumberInput = this.iframeAddCardModal.locator('input[name="number"]');
+    this.cardExpirationDateInput = this.iframeAddCardModal.locator(
       'input[name="expiry"]',
     );
-    this.cardCVCImput = this.iframeAddCardModal.locator('input[name="cvc"]');
+    this.cardCVCInput = this.iframeAddCardModal.locator('input[name="cvc"]');
     this.cardCountryDropdown = this.iframeAddCardModal.locator(
       'select[name="country"]',
     );
-    this.cardZipCodeImput = this.iframeAddCardModal.locator(
+    this.cardZipCodeInput = this.iframeAddCardModal.locator(
       'input[name="postalCode"]',
     );
     this.cardSaveInfoCheckout = this.iframeAddCardModal.locator(
@@ -54,20 +54,20 @@ exports.StripePage = class StripePage extends BasePage {
   }
 
   async enterCardNumber(number = '4242424242424242') {
-    await this.cardNumberImput.fill(number);
+    await this.cardNumberInput.fill(number);
   }
 
   async enterCardExpirationDate(date) {
-    await this.cardExpirationDateImput.fill(date);
+    await this.cardExpirationDateInput.fill(date);
   }
 
   async enterCardCVC(cvc = '123') {
-    await this.cardCVCImput.fill(cvc);
+    await this.cardCVCInput.fill(cvc);
   }
 
   async enterCardZipCode(zip = '12345') {
-    (await this.cardZipCodeImput.isVisible())
-      ? await this.cardZipCodeImput.fill(zip)
+    (await this.cardZipCodeInput.isVisible())
+      ? await this.cardZipCodeInput.fill(zip)
       : null;
   }
 
@@ -262,8 +262,8 @@ exports.StripePage = class StripePage extends BasePage {
 
   async isCardNumberFieldVisible(visible = true, timeout = 30000) {
     visible
-      ? await expect(this.cardNumberImput).toBeVisible({ timeout: timeout })
-      : await expect(this.cardNumberImput).not.toBeVisible({ timeout: timeout });
+      ? await expect(this.cardNumberInput).toBeVisible({ timeout: timeout })
+      : await expect(this.cardNumberInput).not.toBeVisible({ timeout: timeout });
   }
 
   async isAddCardButtonEnabled(enabled = true) {

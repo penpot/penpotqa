@@ -105,7 +105,7 @@ mainTest(
   },
 );
 
-mainTest(qase(2252, 'Import tokens multifile folder'), async ({ page }) => {
+mainTest(qase(2252, 'Import tokens multi-file folder'), async ({ page }) => {
   const mainPage: MainPage = new MainPage(page);
   const dashboardPage: DashboardPage = new DashboardPage(page);
   const tokensPage: TokensPage = new TokensPage(page);
@@ -146,7 +146,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(2376, 'Import tokens .zip (with a multifile inside)'), async () => {
+  mainTest(qase(2376, 'Import tokens .zip (with a multi-file inside)'), async () => {
     await tokensPage.toolsComp.importTokensZip('documents/tokens-multifile.zip');
     await tokensPage.themesComp.checkSelectedTheme('3 active themes');
     await tokensPage.setsComp.isSetNameVisible('client_theme_template');
@@ -155,7 +155,7 @@ mainTest.describe(() => {
   mainTest(
     qase(
       2377,
-      'Import tokens .zip (with a multifile inside) skipping not yet supported tokens',
+      'Import tokens .zip (with a multi-file inside) skipping not yet supported tokens',
     ),
     async ({ page }) => {
       const baseComp: BaseComponent = new BaseComponent(page);

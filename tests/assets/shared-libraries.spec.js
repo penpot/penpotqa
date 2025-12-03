@@ -394,10 +394,10 @@ mainTest.describe(() => {
     await assetsPanelPage.clickLibraryTitleWithName('New File 1');
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-    await designPanelPage.changeAxisXandYForLayer('100', '100');
+    await designPanelPage.changeAxisXAndYForLayer('100', '100');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
-    await designPanelPage.changeAxisXandYForLayer('300', '400');
+    await designPanelPage.changeAxisXAndYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickPencilBoxButton();
     await dashboardPage.isHeaderDisplayed('Projects');
@@ -553,7 +553,7 @@ mainTest.describe(() => {
     await assetsPanelPage.clickLibraryTitleWithName('New File 1');
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-    await designPanelPage.changeAxisXandYForLayer('300', '400');
+    await designPanelPage.changeAxisXAndYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
     await mainPage.waitForChangeIsSaved();
@@ -574,7 +574,7 @@ mainTest.describe(() => {
     await assetsPanelPage.clickLibraryTitleWithName('New File 1');
     await assetsPanelPage.clickLibraryComponentsTitle();
     await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-    await designPanelPage.changeAxisXandYForLayer('300', '400');
+    await designPanelPage.changeAxisXAndYForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
     await mainPage.waitForChangeIsSaved();

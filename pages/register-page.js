@@ -36,7 +36,7 @@ exports.RegisterPage = class RegisterPage extends BasePage {
       '.main_ui_auth_register__notification-text-email',
     );
 
-    // Demo Acccount (Only PRE)
+    // Demo Account (Only PRE)
     this.createDemoAccountButton = page.getByText('Create demo account');
   }
 

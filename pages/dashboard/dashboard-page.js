@@ -185,7 +185,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .first();
     this.planingOtherInput = page.locator('#planning-other');
     this.toolOtherInput = page.locator('#experience-design-tool-other[type="text"]');
-    this.responsabilityOtherInput = page.locator('#role-other');
+    this.responsibilityOtherInput = page.locator('#role-other');
     this.roleOtherInput = page.locator('#responsability-other');
     this.startWithOtherInput = page.locator('#start-with-other[type="text"]');
     this.refererOtherInput = page.locator('#referer-other[type="text"]');
@@ -256,7 +256,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       name: 'Mark all as read',
     });
     this.noNotificationsMessage = page.getByText("You're all caught up!");
-    this.markedAllNotifsAsReadMessage = page.getByText(
+    this.markedAllNotificationAsReadMessage = page.getByText(
       'Marked all notifications as read',
       { exact: true },
     );
@@ -1087,11 +1087,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async isKindOfWorkOtherInputVisible() {
-    await expect(this.responsabilityOtherInput).toBeVisible();
+    await expect(this.responsibilityOtherInput).toBeVisible();
   }
 
   async enterOtherKindOfWork(value) {
-    await this.responsabilityOtherInput.fill(value);
+    await this.responsibilityOtherInput.fill(value);
   }
 
   async isReferOtherInputVisible() {
@@ -1200,8 +1200,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.noNotificationsMessage).toBeVisible();
   }
 
-  async isMarkedAllNotifsAsReadMessage() {
-    await expect(this.markedAllNotifsAsReadMessage).toBeVisible();
+  async isMarkedAllNotificationAsReadMessage() {
+    await expect(this.markedAllNotificationAsReadMessage).toBeVisible();
   }
 
   async clickOnModalAcceptButton() {

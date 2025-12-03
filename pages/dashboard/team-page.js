@@ -97,14 +97,12 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.invitationRecordOptionsMenuButton = page.locator(
       'div[class*="main_ui_dashboard_team__table-field"] button',
     );
-    this.resendInvititationButton = page
+    this.resendInvitationButton = page
       .getByRole('button')
       .filter({ hasText: 'Resend invitation' });
     this.resendButton = page.getByRole('button', { name: 'Resend', exact: true });
-    this.deleteInvititationButton = page.locator(
-      'button:has([href="#icon-delete"])',
-    );
-    this.memberRecordleaveTeamMenuItem = page
+    this.deleteInvitationButton = page.locator('button:has([href="#icon-delete"])');
+    this.memberRecordLeaveTeamMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Leave team' });
     this.memberRecordDeleteMemberMenuItem = page
@@ -440,19 +438,19 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
   async resendInvitation(email) {
     await this.selectInvitationByEmail(email);
-    await this.resendInvititationButton.click();
+    await this.resendInvitationButton.click();
     await this.resendButton.click();
   }
 
   async deleteInvitation(email) {
     await this.selectInvitationByEmail(email);
-    await this.deleteInvititationButton.click();
+    await this.deleteInvitationButton.click();
     await this.continueButton.click();
   }
 
   async leaveTeam(teamName, role = 'Admin', name) {
     await this.invitationRecordOptionsMenuButton.first().click();
-    await this.memberRecordleaveTeamMenuItem.click();
+    await this.memberRecordLeaveTeamMenuItem.click();
     role === 'Owner'
       ? await this.selectMember(name)
       : await this.clickOnLeaveTeamButton();

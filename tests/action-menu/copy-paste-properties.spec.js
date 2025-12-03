@@ -137,12 +137,12 @@ mainTest.describe(() => {
       await designPanelPage.clickFirstColorIcon();
       await colorPalettePage.setHex('#0000FF');
       await mainPage.duplicateLayerViaRightClick();
-      await designPanelPage.changeAxisXandYForLayer('300', '150');
+      await designPanelPage.changeAxisXAndYForLayer('300', '150');
 
       await mainPage.createDefaultEllipseByCoordinates(100, 700, true);
       await mainPage.createComponentViaRightClick();
       await mainPage.duplicateLayerViaRightClick();
-      await designPanelPage.changeAxisXandYForLayer('350', '650');
+      await designPanelPage.changeAxisXAndYForLayer('350', '650');
       await mainPage.waitForChangeIsSaved();
 
       await layersPanelPage.clickNMainComponentOnLayersTab(1);
@@ -230,9 +230,8 @@ mainTest.describe(() => {
 
       await inspectPanelPage.openInspectTab();
       await inspectPanelPage.openCodeTab();
-      const cssCodeFromInspectTab = await inspectPanelPage.copyCssCodeByName(
-        'Ellipse',
-      );
+      const cssCodeFromInspectTab =
+        await inspectPanelPage.copyCssCodeByName('Ellipse');
 
       await expect(cssCode).toEqual(cssCodeFromInspectTab);
     },
