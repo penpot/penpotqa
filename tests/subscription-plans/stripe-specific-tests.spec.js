@@ -38,7 +38,7 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest.describe.skip(
+registerTest.describe(
   'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
   () => {
     let testClockId, penpotId, customerData;
@@ -57,7 +57,8 @@ registerTest.describe.skip(
     });
 
     registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      true,
+      'Invoices capped at $7 (Unlimited) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(2346, 'Invoices capped at $7 (Unlimited)'),
       async ({ email }) => {
         const currentPlan = 'Unlimited';
@@ -93,7 +94,8 @@ registerTest.describe.skip(
     );
 
     registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      true,
+      'Invoices capped at $950 (Enterprise) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(2347, 'Invoices capped at  $950 (Enterprise)'),
       async ({ page, email }) => {
         await registerTest.slow();
@@ -130,7 +132,8 @@ registerTest.describe.skip(
     );
 
     registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      true,
+      'Maximum billing $175 (Unlimited) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(2514, 'Maximum billing $175 (Unlimited)'),
       async ({ email }) => {
         const currentPlan = 'Unlimited';
@@ -168,7 +171,8 @@ registerTest.describe.skip(
 );
 
 registerTest.fixme(
-  'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+  true,
+  'Owner of team changes Enterprise to Professional - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
   qase(2324, 'Owner of team changes Enterprise to Professional'),
   async ({ page, name, email }) => {
     const currentPlan = 'Enterprise';
