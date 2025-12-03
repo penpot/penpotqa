@@ -32,7 +32,7 @@ mainTest.afterEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2266, 'Export tokens multifile folder (no token, set or theme)'),
+  qase(2266, 'Export tokens multi-file folder (no token, set or theme)'),
   async ({ page }) => {
     const mainPage: MainPage = new MainPage(page);
     const tokensPage: TokensPage = new TokensPage(page);
@@ -44,7 +44,7 @@ mainTest(
   },
 );
 
-mainTest(qase(2265, 'Export tokens multifile folder'), async ({ page }) => {
+mainTest(qase(2265, 'Export tokens multi-file folder'), async ({ page }) => {
   const tokensPage: TokensPage = new TokensPage(page);
   const baseComp: BaseComponent = new BaseComponent(page);
   await tokensPage.toolsComp.importTokensFolder('documents/tokens-folder-example');

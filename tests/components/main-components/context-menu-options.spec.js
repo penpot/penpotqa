@@ -239,7 +239,7 @@ mainTest.describe(() => {
       await mainPage.duplicateLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.changeAxisXandYForLayer('200', '0');
+      await designPanelPage.changeAxisXAndYForLayer('200', '0');
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.isAnnotationOptionNotVisibleRightClick();
       await designPanelPage.isComponentTypeCopy(true);
@@ -335,7 +335,7 @@ mainTest.describe(() => {
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXandYForLayer('400', '300');
+    await designPanelPage.changeAxisXAndYForLayer('400', '300');
   });
 
   mainTest(qase([1411], 'Click Show main component on copy'), async () => {
@@ -425,7 +425,7 @@ mainTest.describe(() => {
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await layersPanelPage.detachInstanceCopyComponentViaRightClick();
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-    await designPanelPage.changeAxisXandYForLayer('400', '300');
+    await designPanelPage.changeAxisXAndYForLayer('400', '300');
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -442,7 +442,7 @@ mainTest.describe(() => {
     await designPanelPage.clickOnDetachInstanceOption();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-    await designPanelPage.changeAxisXandYForLayer('400', '300');
+    await designPanelPage.changeAxisXAndYForLayer('400', '300');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-detach-instance-right-click.png',
@@ -489,11 +489,11 @@ mainTest.describe(() => {
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXandYForLayer('400', '400');
+    await designPanelPage.changeAxisXAndYForLayer('400', '400');
     await mainPage.duplicateLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXandYForLayer('50', '400');
+    await designPanelPage.changeAxisXAndYForLayer('50', '400');
 
     await layersPanelPage.clickFirstCopyComponentOnLayersTab();
     await designPanelPage.clickAddFillButton();
@@ -550,7 +550,7 @@ mainTest.describe(() => {
       await mainPage.duplicateLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickNCopyComponentOnLayersTab(-2);
-      await designPanelPage.changeAxisXandYForLayer('250', '500');
+      await designPanelPage.changeAxisXAndYForLayer('250', '500');
 
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.clickAddFillButton();

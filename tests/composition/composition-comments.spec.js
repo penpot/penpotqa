@@ -278,7 +278,7 @@ mainTest.describe(() => {
       await dashboardPage.clickOnNotificationButton();
       await dashboardPage.clickOnNotificationMarkAsReadButton();
       await dashboardPage.isUnreadNotificationVisible(false);
-      await dashboardPage.isMarkedAllNotifsAsReadMessage();
+      await dashboardPage.isMarkedAllNotificationAsReadMessage();
       await dashboardPage.clickOnNotificationButton();
       await dashboardPage.isNoNotificationsMessagePresent();
     },

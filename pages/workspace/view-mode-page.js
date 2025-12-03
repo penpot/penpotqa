@@ -29,7 +29,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.interactionsDropdownOptions = page.locator(
       'ul[class*="interactions__dropdown"]',
     );
-    this.dontShowInterOptions = page
+    this.doNotShowInterOptions = page
       .getByRole('listitem')
       .filter({ hasText: "Don't show interactions" });
     this.showInterOptions = page
