@@ -35,123 +35,115 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest.describe(
-  'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
-  () => {
-    registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
-      qase(2302, 'Switch from Unlimited → Enterprise'),
-      async ({ page, name, email }) => {
-        const currentPlan = 'Unlimited';
-        const newPlan = 'Enterprise';
-        let date = new Date();
+registerTest(
+  qase(2302, 'Switch from Unlimited → Enterprise'),
+  async ({ page, name, email }) => {
+    const currentPlan = 'Unlimited';
+    const newPlan = 'Enterprise';
+    let date = new Date();
 
-        const penpotId = await getProfileIdByEmail(email);
-        const customerData = await createCustomerWithTestClock(
-          page,
-          name,
-          email,
-          penpotId,
-        );
-        const testClockId = customerData.testClockId;
-
-        await profilePage.tryTrialForPlan(currentPlan);
-        await profilePage.openYourAccountPage();
-        await profilePage.openSubscriptionTab();
-        await profilePage.clickOnAddPaymentMethodButton();
-        await addPaymentMethodForCustomer(customerData.customerId);
-        await stripePage.reloadPage();
-        await stripePage.isVisaCardAdded(true);
-        await skipSubscriptionByDays(email, testClockId, 15, date);
-
-        await stripePage.waitTrialEndsDisappear();
-        await profilePage.reloadPage();
-        await stripePage.checkCurrentSubscription(currentPlan);
-        await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
-        await stripePage.checkLastInvoiceAmount(`$7.00`);
-        await stripePage.changeSubscription();
-        await stripePage.checkCurrentSubscription(newPlan);
-        await page.waitForTimeout(1000);
-        await profilePage.reloadPage();
-        await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
-        await stripePage.checkLastInvoiceStatus(`Paid`);
-        await stripePage.clickOnReturnToPenpotButton();
-        await profilePage.checkSubscriptionName(newPlan);
-        await profilePage.backToDashboardFromAccount();
-        await dashboardPage.checkSubscriptionName(newPlan + ' plan');
-      },
+    const penpotId = await getProfileIdByEmail(email);
+    const customerData = await createCustomerWithTestClock(
+      page,
+      name,
+      email,
+      penpotId,
     );
+    const testClockId = customerData.testClockId;
 
-    registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
-      qase(2303, 'Switch from Enterprise → Unlimited'),
-      async ({ page, email }) => {
-        const currentPlan = 'Enterprise';
-        const newPlan = 'Unlimited';
+    await profilePage.tryTrialForPlan(currentPlan);
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.clickOnAddPaymentMethodButton();
+    await addPaymentMethodForCustomer(customerData.customerId);
+    await stripePage.reloadPage();
+    await stripePage.isVisaCardAdded(true);
+    await skipSubscriptionByDays(email, testClockId, 15, date);
 
-        await registerTest.slow();
+    await stripePage.waitTrialEndsDisappear();
+    await profilePage.reloadPage();
+    await stripePage.checkCurrentSubscription(currentPlan);
+    await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
+    await stripePage.checkLastInvoiceAmount(`$7.00`);
+    await stripePage.changeSubscription();
+    await stripePage.checkCurrentSubscription(newPlan);
+    await page.waitForTimeout(1000);
+    await profilePage.reloadPage();
+    await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
+    await stripePage.checkLastInvoiceStatus(`Paid`);
+    await stripePage.clickOnReturnToPenpotButton();
+    await profilePage.checkSubscriptionName(newPlan);
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.checkSubscriptionName(newPlan + ' plan');
+  },
+);
 
-        await profilePage.tryTrialForPlan(newPlan);
-        await profilePage.openYourAccountPage();
-        await profilePage.openSubscriptionTab();
-        await profilePage.clickOnAddPaymentMethodButton();
-        await addPaymentMethodForCustomerByCustomerEmail(page, email);
-        await stripePage.reloadPage();
-        await stripePage.isVisaCardAdded(true);
-        await stripePage.changeSubscription();
-        await stripePage.checkCurrentSubscription(currentPlan);
+registerTest(
+  qase(2303, 'Switch from Enterprise → Unlimited'),
+  async ({ page, email }) => {
+    const currentPlan = 'Enterprise';
+    const newPlan = 'Unlimited';
 
-        await stripePage.waitTrialEndsDisappear();
-        await stripePage.changeSubscription();
-        await stripePage.checkCurrentSubscription(newPlan);
-        await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
-        await stripePage.checkLastInvoiceAmount(`$0.00`);
-        await stripePage.clickOnReturnToPenpotButton();
-        await profilePage.checkSubscriptionName(newPlan);
-        await profilePage.backToDashboardFromAccount();
-        await dashboardPage.checkSubscriptionName(newPlan + ' plan');
-      },
+    await registerTest.slow();
+
+    await profilePage.tryTrialForPlan(newPlan);
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.clickOnAddPaymentMethodButton();
+    await addPaymentMethodForCustomerByCustomerEmail(page, email);
+    await stripePage.reloadPage();
+    await stripePage.isVisaCardAdded(true);
+    await stripePage.changeSubscription();
+    await stripePage.checkCurrentSubscription(currentPlan);
+
+    await stripePage.waitTrialEndsDisappear();
+    await stripePage.changeSubscription();
+    await stripePage.checkCurrentSubscription(newPlan);
+    await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
+    await stripePage.checkLastInvoiceAmount(`$0.00`);
+    await stripePage.clickOnReturnToPenpotButton();
+    await profilePage.checkSubscriptionName(newPlan);
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.checkSubscriptionName(newPlan + ' plan');
+  },
+);
+
+registerTest(
+  qase(2304, 'Switch from Unlimited → Professional'),
+  async ({ page, name, email }) => {
+    const currentPlan = 'Unlimited';
+    const defaultPlan = 'Professional';
+    let date = new Date();
+
+    const penpotId = await getProfileIdByEmail(email);
+    const customerData = await createCustomerWithTestClock(
+      page,
+      name,
+      email,
+      penpotId,
     );
+    const testClockId = customerData.testClockId;
 
-    registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
-      qase(2304, 'Switch from Unlimited → Professional'),
-      async ({ page, name, email }) => {
-        const currentPlan = 'Unlimited';
-        const defaultPlan = 'Professional';
-        let date = new Date();
+    await profilePage.tryTrialForPlan(currentPlan);
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.clickOnAddPaymentMethodButton();
+    await addPaymentMethodForCustomer(customerData.customerId);
+    await stripePage.reloadPage();
+    await stripePage.isVisaCardAdded(true);
+    await skipSubscriptionByDays(email, testClockId, 15, date);
 
-        const penpotId = await getProfileIdByEmail(email);
-        const customerData = await createCustomerWithTestClock(
-          page,
-          name,
-          email,
-          penpotId,
-        );
-        const testClockId = customerData.testClockId;
+    await stripePage.waitTrialEndsDisappear();
+    await profilePage.reloadPage();
 
-        await profilePage.tryTrialForPlan(currentPlan);
-        await profilePage.openYourAccountPage();
-        await profilePage.openSubscriptionTab();
-        await profilePage.clickOnAddPaymentMethodButton();
-        await addPaymentMethodForCustomer(customerData.customerId);
-        await stripePage.reloadPage();
-        await stripePage.isVisaCardAdded(true);
-        await skipSubscriptionByDays(email, testClockId, 15, date);
+    await stripePage.cancelSubscription();
+    await skipSubscriptionByDays(email, testClockId, 40, date);
+    await stripePage.waitCancelsEndsDisappear();
 
-        await stripePage.waitTrialEndsDisappear();
-        await profilePage.reloadPage();
+    await stripePage.clickOnReturnToPenpotButton();
 
-        await stripePage.cancelSubscription();
-        await skipSubscriptionByDays(email, testClockId, 40, date);
-        await stripePage.waitCancelsEndsDisappear();
-
-        await stripePage.clickOnReturnToPenpotButton();
-
-        await profilePage.checkSubscriptionName(defaultPlan);
-        await profilePage.backToDashboardFromAccount();
-        await dashboardPage.checkSubscriptionName(defaultPlan + ' plan');
-      },
-    );
+    await profilePage.checkSubscriptionName(defaultPlan);
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.checkSubscriptionName(defaultPlan + ' plan');
   },
 );

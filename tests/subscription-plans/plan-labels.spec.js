@@ -31,52 +31,42 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest.describe(
-  'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
-  () => {
-    registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
-      qase(2281, 'Display & Info for Enterprise Plan'),
-      async ({ page, email }) => {
-        const currentPlan = 'Enterprise';
-        await profilePage.tryTrialForPlan('Unlimited');
-        await profilePage.openYourAccountPage();
-        await profilePage.openSubscriptionTab();
-        await profilePage.clickOnAddPaymentMethodButton();
-        await addPaymentMethodForCustomerByCustomerEmail(page, email);
-        await stripePage.reloadPage();
-        await stripePage.isVisaCardAdded(true);
-        await stripePage.changeSubscription();
-        await stripePage.checkCurrentSubscription(currentPlan);
-        await stripePage.clickOnReturnToPenpotButton();
+registerTest(
+  qase(2281, 'Display & Info for Enterprise Plan'),
+  async ({ page, email }) => {
+    const currentPlan = 'Enterprise';
+    await profilePage.tryTrialForPlan('Unlimited');
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.clickOnAddPaymentMethodButton();
+    await addPaymentMethodForCustomerByCustomerEmail(page, email);
+    await stripePage.reloadPage();
+    await stripePage.isVisaCardAdded(true);
+    await stripePage.changeSubscription();
+    await stripePage.checkCurrentSubscription(currentPlan);
+    await stripePage.clickOnReturnToPenpotButton();
 
-        await profilePage.isSubscriptionNameVisible();
-        await dashboardPage.reloadPage();
-        await profilePage.checkSubscriptionName(currentPlan);
-        await profilePage.backToDashboardFromAccount();
-        await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
-        await teamPage.isSubscriptionIconVisible(true, currentPlan);
-        await teamPage.isSubscriptionIconVisibleInTeamDropdown(true);
-        await teamPage.openTeamSettingsPageViaOptionsMenu();
-        await teamPage.checkSubscriptionName(currentPlan);
-      },
-    );
-
-    registerTest.fixme(
-      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
-      qase(2283, 'Display & Info for Professional Plan'),
-      async () => {
-        const currentPlan = 'Professional';
-        await profilePage.openYourAccountPage();
-        await profilePage.openSubscriptionTab();
-        await profilePage.checkSubscriptionName(currentPlan);
-        await profilePage.backToDashboardFromAccount();
-        await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
-        await teamPage.isSubscriptionIconVisible(false);
-        await teamPage.isSubscriptionIconVisibleInTeamDropdown(false);
-        await teamPage.openTeamSettingsPageViaOptionsMenu();
-        await teamPage.checkSubscriptionName(currentPlan);
-      },
-    );
+    await profilePage.isSubscriptionNameVisible();
+    await dashboardPage.reloadPage();
+    await profilePage.checkSubscriptionName(currentPlan);
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
+    await teamPage.isSubscriptionIconVisible(true, currentPlan);
+    await teamPage.isSubscriptionIconVisibleInTeamDropdown(true);
+    await teamPage.openTeamSettingsPageViaOptionsMenu();
+    await teamPage.checkSubscriptionName(currentPlan);
   },
 );
+
+registerTest(qase(2283, 'Display & Info for Professional Plan'), async () => {
+  const currentPlan = 'Professional';
+  await profilePage.openYourAccountPage();
+  await profilePage.openSubscriptionTab();
+  await profilePage.checkSubscriptionName(currentPlan);
+  await profilePage.backToDashboardFromAccount();
+  await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
+  await teamPage.isSubscriptionIconVisible(false);
+  await teamPage.isSubscriptionIconVisibleInTeamDropdown(false);
+  await teamPage.openTeamSettingsPageViaOptionsMenu();
+  await teamPage.checkSubscriptionName(currentPlan);
+});
