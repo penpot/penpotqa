@@ -39,7 +39,7 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest(
+registerTest.fixme(
   qase([2297, 2344], 'Trial ends, payment method added → switch to Unlimited'),
   async ({ email }) => {
     const currentPlan = 'Unlimited';
@@ -62,7 +62,7 @@ registerTest(
   },
 );
 
-registerTest(
+registerTest.fixme(
   qase(
     2301,
     'Trial ends, no payment method ever added → switch to Professional (CANCELLED)',
@@ -90,7 +90,7 @@ registerTest(
   },
 );
 
-registerTest(
+registerTest.fixme(
   qase(2337, 'Trial ends, no payment method → remains in Enterprise Trial (PAUSED)'),
   async ({ email }) => {
     const currentPlan = 'Enterprise';

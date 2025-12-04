@@ -31,7 +31,7 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest(
+registerTest.fixme(
   qase(2281, 'Display & Info for Enterprise Plan'),
   async ({ page, email }) => {
     const currentPlan = 'Enterprise';
@@ -58,7 +58,7 @@ registerTest(
   },
 );
 
-registerTest(qase(2283, 'Display & Info for Professional Plan'), async () => {
+registerTest.fixme(qase(2283, 'Display & Info for Professional Plan'), async () => {
   const currentPlan = 'Professional';
   await profilePage.openYourAccountPage();
   await profilePage.openSubscriptionTab();

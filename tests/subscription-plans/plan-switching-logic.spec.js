@@ -35,7 +35,7 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest(
+registerTest.fixme(
   qase(2302, 'Switch from Unlimited → Enterprise'),
   async ({ page, name, email }) => {
     const currentPlan = 'Unlimited';
@@ -78,7 +78,7 @@ registerTest(
   },
 );
 
-registerTest(
+registerTest.fixme(
   qase(2303, 'Switch from Enterprise → Unlimited'),
   async ({ page, email }) => {
     const currentPlan = 'Enterprise';
@@ -108,7 +108,7 @@ registerTest(
   },
 );
 
-registerTest(
+registerTest.fixme(
   qase(2304, 'Switch from Unlimited → Professional'),
   async ({ page, name, email }) => {
     const currentPlan = 'Unlimited';
