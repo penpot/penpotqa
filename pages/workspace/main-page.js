@@ -1091,48 +1091,30 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async duplicateGridRow() {
-    await expect(this.gridEditorLabel.last()).toBeVisible();
     await this.gridEditorLabel.last().hover();
-
-    await expect(this.gridEditorButton).toBeVisible();
-    await expect(this.gridEditorButton).toBeEnabled();
     await this.gridEditorButton.click();
-
-    await expect(this.duplicateRowMenuItem).toBeVisible();
+    await this.duplicateRowMenuItem.waitFor({ state: 'visible' });
     await this.duplicateRowMenuItem.click();
   }
 
   async deleteGridRow() {
-    await expect(this.gridEditorLabel.last()).toBeVisible();
     await this.gridEditorLabel.last().hover();
-    await expect(this.gridEditorButton).toBeVisible();
-    await expect(this.gridEditorButton).toBeEnabled();
     await this.gridEditorButton.click();
-    await expect(this.deleteRowMenuItem.first()).toBeVisible();
-    await this.deleteRowMenuItem.first().click();
+    await this.deleteRowMenuItem.waitFor({ state: 'visible' });
+    await this.deleteRowMenuItem.click();
   }
 
   async addGridRowBelow() {
-    await expect(this.gridEditorLabel.last()).toBeVisible();
     await this.gridEditorLabel.last().hover();
-
-    await expect(this.gridEditorButton).toBeVisible();
-    await expect(this.gridEditorButton).toBeEnabled();
     await this.gridEditorButton.click();
-
-    await expect(this.addRowBelowMenuItem).toBeVisible();
+    await this.addRowBelowMenuItem.waitFor({ state: 'visible' });
     await this.addRowBelowMenuItem.click();
   }
 
   async addGridColumnRight() {
-    await expect(this.gridEditorLabel.first()).toBeVisible();
     await this.gridEditorLabel.first().hover();
-
-    await expect(this.gridEditorButton).toBeVisible();
-    await expect(this.gridEditorButton).toBeEnabled();
     await this.gridEditorButton.click();
-
-    await expect(this.addColumnRightMenuItem).toBeVisible();
+    await this.addColumnRightMenuItem.waitFor({ state: 'visible' });
     await this.addColumnRightMenuItem.click();
   }
 

@@ -293,7 +293,7 @@ exports.BasePage = class BasePage {
   }
 
   async waitForChangeIsSaved() {
-    await this.savedChangesIcon.waitFor({ state: 'visible', timeout: 30000 });
+    await this.savedChangesIcon.waitFor({ state: 'visible' });
   }
 
   async waitForChangeIsUnsaved() {
@@ -301,12 +301,12 @@ exports.BasePage = class BasePage {
   }
 
   async waitForResizeHandlerVisible() {
-    const layerCount = await this.createdLayer.count();
-    if (layerCount === 0) {
-      throw new Error('No layer found to wait for resize handler');
+    await this.resizeHandler.first().waitFor({ state: 'attached' });
+    const isVisible = await this.resizeHandler.first().isVisible();
+    if (!isVisible) {
+      await this.createdLayer.click({ force: true });
     }
-    await this.createdLayer.first().click({ force: true });
-    await expect(this.resizeHandler.first()).toBeVisible({ timeout: 15000 });
+    await this.resizeHandler.first().waitFor({ state: 'visible' });
   }
 
   async waitForViewportVisible(timeout = 30) {

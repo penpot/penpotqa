@@ -31,12 +31,11 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest.describe(
+registerTest.describe.skip(
   'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
   () => {
     registerTest.fixme(
-      true,
-      'Display & Info for Enterprise Plan - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(2281, 'Display & Info for Enterprise Plan'),
       async ({ page, email }) => {
         const currentPlan = 'Enterprise';
@@ -64,8 +63,7 @@ registerTest.describe(
     );
 
     registerTest.fixme(
-      true,
-      'Display & Info for Professional Plan - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(2283, 'Display & Info for Professional Plan'),
       async () => {
         const currentPlan = 'Professional';

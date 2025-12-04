@@ -39,12 +39,11 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest.describe(
+registerTest.describe.skip(
   'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
   () => {
     registerTest.fixme(
-      true,
-      'Trial ends, payment method added → switch to Unlimited - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase([2297, 2344], 'Trial ends, payment method added → switch to Unlimited'),
       async ({ email }) => {
         const currentPlan = 'Unlimited';
@@ -68,8 +67,7 @@ registerTest.describe(
     );
 
     registerTest.fixme(
-      true,
-      'Trial ends, no payment method ever added → switch to Professional (CANCELLED) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(
         2301,
         'Trial ends, no payment method ever added → switch to Professional (CANCELLED)',
@@ -98,8 +96,7 @@ registerTest.describe(
     );
 
     registerTest.fixme(
-      true,
-      'Trial ends, no payment method → remains in Enterprise Trial (PAUSED) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
+      'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
       qase(
         2337,
         'Trial ends, no payment method → remains in Enterprise Trial (PAUSED)',
