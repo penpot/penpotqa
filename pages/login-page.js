@@ -62,6 +62,8 @@ exports.LoginPage = class LoginPage extends BasePage {
   }
 
   async isLoginButtonDisabled() {
+    // TODO: The disabled property is empty when the button is disabled, need to check with devs and open a ticket.
+    // await expect(this.loginButton, 'Login button is disabled').toBeDisabled();
     await expect(
       this.loginButton,
       'Login button has disabled attribute',
