@@ -20,7 +20,7 @@ exports.BasePage = class BasePage {
     this.savedChangesIcon = page.getByTitle('Saved', { exact: true });
     this.unSavedChangesIcon = page.getByTitle('Saving', { exact: true });
     this.viewport = page.locator('div[class*="viewport"] >> nth=0');
-    this.resizeHandler = page.locator('[class="resize-handler"]');
+    this.resizeHandler = page.locator('div[class*="viewport"] .resize-handler');
 
     this.modalCancelButton = page.getByRole('button', { name: 'Cancel' });
     this.modalSaveButton = page.getByRole('button', { name: 'Save' });
@@ -293,7 +293,7 @@ exports.BasePage = class BasePage {
   }
 
   async waitForChangeIsSaved() {
-    await this.savedChangesIcon.waitFor({ state: 'visible', timeout: 30000 });
+    await this.savedChangesIcon.waitFor({ state: 'visible' });
   }
 
   async waitForChangeIsUnsaved() {
@@ -301,12 +301,12 @@ exports.BasePage = class BasePage {
   }
 
   async waitForResizeHandlerVisible() {
-    const layerCount = await this.createdLayer.count();
-    if (layerCount === 0) {
-      throw new Error('No layer found to wait for resize handler');
+    await this.resizeHandler.first().waitFor({ state: 'attached' });
+    const isVisible = await this.resizeHandler.first().isVisible();
+    if (!isVisible) {
+      await this.createdLayer.click({ force: true });
     }
-    await this.createdLayer.first().click({ force: true });
-    await expect(this.resizeHandler.first()).toBeVisible({ timeout: 15000 });
+    await this.resizeHandler.first().waitFor({ state: 'visible' });
   }
 
   async waitForViewportVisible(timeout = 30) {

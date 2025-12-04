@@ -28,48 +28,39 @@ registerTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-registerTest.describe(
-  'Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
-  () => {
-    registerTest.fixme(
-      true,
-      'Try it free for 14 days for Unlimited plan - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
-      qase(2289, 'Try it free for 14 days for Unlimited plan'),
-      async () => {
-        const currentPlan = 'Unlimited';
+registerTest.fixme(
+  qase(2289, 'Try it free for 14 days for Unlimited plan'),
+  async () => {
+    const currentPlan = 'Unlimited';
 
-        await profilePage.tryTrialForPlan(currentPlan, '5');
-        await profilePage.openYourAccountPage();
-        await profilePage.openSubscriptionTab();
-        await profilePage.checkSubscriptionName(currentPlan + ' (trial)');
-        await profilePage.backToDashboardFromAccount();
-        await dashboardPage.checkSubscriptionName(currentPlan + ' plan (trial)');
-      },
-    );
+    await profilePage.tryTrialForPlan(currentPlan, '5');
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.checkSubscriptionName(currentPlan + ' (trial)');
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.checkSubscriptionName(currentPlan + ' plan (trial)');
+  },
+);
 
-    registerTest.fixme(
-      true,
-      'Verify Trial Label Behavior (for the Enterprise plan) - Disabled: Flaky Stripe payment tests - awaiting stable testing strategy',
-      qase(2294, 'Verify Trial Label Behavior (for the Enterprise plan)'),
-      async ({ page, email }) => {
-        const currentPlan = 'Enterprise';
+registerTest.fixme(
+  qase(2294, 'Verify Trial Label Behavior (for the Enterprise plan)'),
+  async ({ page, email }) => {
+    const currentPlan = 'Enterprise';
 
-        await profilePage.tryTrialForPlan(currentPlan, '5');
-        await profilePage.openYourAccountPage();
-        await profilePage.openSubscriptionTab();
-        await profilePage.checkSubscriptionName(currentPlan + ' (trial)');
-        await updateSubscriptionTrialEnd(page, email);
-        await profilePage.backToDashboardFromAccount();
-        await dashboardPage.checkSubscriptionName(currentPlan + ' plan (trial)');
-        await profilePage.openYourAccountPage();
-        await profilePage.openSubscriptionTab();
-        await profilePage.checkSubscriptionName(currentPlan + ' (trial)');
-        await profilePage.clickOnManageSubscriptionButton();
-        await stripePage.isTrialEndsVisible();
-        await stripePage.isTrialEndsTomorrow();
-        await stripePage.clickOnReturnToPenpotButton();
-        await profilePage.backToDashboardFromAccount();
-      },
-    );
+    await profilePage.tryTrialForPlan(currentPlan, '5');
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.checkSubscriptionName(currentPlan + ' (trial)');
+    await updateSubscriptionTrialEnd(page, email);
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.checkSubscriptionName(currentPlan + ' plan (trial)');
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.checkSubscriptionName(currentPlan + ' (trial)');
+    await profilePage.clickOnManageSubscriptionButton();
+    await stripePage.isTrialEndsVisible();
+    await stripePage.isTrialEndsTomorrow();
+    await stripePage.clickOnReturnToPenpotButton();
+    await profilePage.backToDashboardFromAccount();
   },
 );
