@@ -451,8 +451,12 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.resendButton.click();
   }
 
-  async deleteInvitation(email) {
-    await this.selectInvitationByEmail(email);
+  async deleteInvitation(emails) {
+    const emailList = Array.isArray(emails) ? emails : [emails];
+    for (const email of emailList) {
+      await this.selectInvitationByEmail(email);
+    }
+
     await this.deleteInvitationButton.click();
     await this.continueButton.click();
   }
@@ -467,8 +471,22 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
   }
 
-  async isInvitationRecordRemoved() {
-    await expect(this.invitationRecord).not.toBeVisible();
+  async isInvitationRecordRemoved(emails = null) {
+    if (emails !== null && emails !== undefined && emails !== '') {
+      const emailList = Array.isArray(emails) ? emails : [emails];
+      if (emailList.length > 0) {
+        for (const email of emailList) {
+          await expect(
+            this.page.locator(
+              `[class*="dashboard_team__field-email"]:has-text("${email}")`,
+            ),
+          ).not.toBeVisible();
+        }
+        return;
+      }
+    }
+
+    await expect(this.page.locator('text=No pending invitations')).toBeVisible();
   }
 
   async openTeamSettingsPageViaOptionsMenu() {

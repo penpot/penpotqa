@@ -296,23 +296,27 @@ mainTest(qase(1176, 'Resend multiple invitations via owner'), async () => {
   await teamPage.deleteTeam(team);
 });
 
-mainTest(qase(1178, 'Team Invitations - delete invitation via owner'), async () => {
+mainTest(qase(1178, 'Delete multiple invitations via owner'), async () => {
   const team = random().concat('autotest');
   const email = 'testeditor@test.com';
+  const email2 = 'testeditor2@test.com';
+  const email3 = 'testeditor3@test.com';
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-  await teamPage.enterEmailToInviteMembersPopUp(email);
+  await teamPage.enterEmailToInviteMembersPopUp([email, email2, email3]);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
   await teamPage.isInvitationRecordDisplayed([
     { email: email, role: 'Editor', status: 'Pending' },
+    { email: email2, role: 'Editor', status: 'Pending' },
+    { email: email3, role: 'Editor', status: 'Pending' },
   ]);
-  await teamPage.deleteInvitation(email);
-  await teamPage.isInvitationRecordRemoved();
+  await teamPage.deleteInvitation([email, email2, email3]);
+  await teamPage.isInvitationRecordRemoved([email, email2, email3]);
   await teamPage.deleteTeam(team);
 });
 
