@@ -4,6 +4,7 @@ const { expect } = require('@playwright/test');
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 const rToken = process.env.REFRESH_TOKEN;
+const urlRegex = /(https?:\/\/[^\s]+)/g;
 
 async function authorize() {
   const oAuth2Client = new google.auth.OAuth2(
@@ -48,7 +49,7 @@ async function listMessages(auth, email) {
       id: messages[0].id,
     });
     return Buffer.from(
-      msg.data.payload.parts[0].parts[1].body.data,
+      msg.data.payload.parts[0].parts[0].body.data,
       'base64',
     ).toString('utf-8');
   }
@@ -96,7 +97,6 @@ async function getRegisterMessage(email) {
     .then(async (auth) => {
       const body = await listMessages(auth, email);
       if (body) {
-        const urlRegex = /(https:\/\/design\.penpot\.dev\/#\/auth.*?)(?=["\s]|$)/;
         const match = body.match(urlRegex);
         if (match) {
           const url = match[0];
@@ -119,7 +119,6 @@ async function getRequestAccessMessage(email) {
     .then(async (auth) => {
       const body = await listMessages(auth, email);
       if (body) {
-        const urlRegex = /(https:\/\/design\.penpot\.dev\/#\/[^\s"]*)/g;
         const matches = Array.from(body.matchAll(urlRegex));
         if (matches) {
           const urls = matches.map((match) => match[0]);
