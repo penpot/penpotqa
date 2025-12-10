@@ -262,8 +262,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.inviteMembersTeamHeroButton.click();
   }
 
-  async enterEmailToInviteMembersPopUp(email) {
-    await this.inviteMembersToTeamEmailInput.fill(email);
+  async enterEmailToInviteMembersPopUp(emails) {
+    const emailString = Array.isArray(emails) ? emails.join(', ') : emails;
+    await this.inviteMembersToTeamEmailInput.fill(emailString);
   }
 
   async clickSendInvitationButton() {
@@ -278,10 +279,14 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.warningMessageText).toHaveText(text);
   }
 
-  async isInvitationRecordDisplayed(email, role, status) {
-    await expect(this.invitationRecordEmailCell).toHaveText(email);
-    await expect(this.invitationRecordRoleCell).toHaveText(role);
-    await expect(this.invitationRecordStatusCell).toHaveText(status);
+  async isInvitationRecordDisplayed(invitations) {
+    for (const invitation of invitations) {
+      await this.isMultipleInvitationRecordDisplayed(
+        invitation.email,
+        invitation.role,
+        invitation.status,
+      );
+    }
   }
 
   async isMultipleInvitationRecordDisplayed(email, role, status) {
@@ -436,8 +441,12 @@ exports.TeamPage = class TeamPage extends BasePage {
   async clickOnDeleteMemberButton() {
     await this.deleteMemberButton.click();
   }
-  async resendInvitation(email) {
-    await this.selectInvitationByEmail(email);
+  async resendInvitation(emails) {
+    const emailList = Array.isArray(emails) ? emails : [emails];
+    for (const email of emailList) {
+      await this.selectInvitationByEmail(email);
+    }
+
     await this.resendInvitationButton.click();
     await this.resendButton.click();
   }
