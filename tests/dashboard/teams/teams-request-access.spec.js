@@ -67,7 +67,8 @@ let invite;
 let secondRandomName = random() + 'autotest';
 let secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}${process.env.GMAIL_DOMAIN}`;
 
-const team = `${random()}-request-autotest`;
+const teamName = `${random()}-request-autotest`;
+const userName = 'QA Engineer';
 
 registerTest.beforeEach(
   'Create a new account, login and complete onboarding modal',
@@ -83,7 +84,7 @@ registerTest(
   ),
   async ({ page, email }) => {
     // Create a team, a new file and navigate to Dasboard (as owner)
-    const setup = await setupTeamAndFile(page, team);
+    const setup = await setupTeamAndFile(page, teamName);
     const { mainPage, teamPage, loginPage, dashboardPage, profilePage } = setup;
 
     // Get Workspace URL and navigate to Dashboard
@@ -112,9 +113,9 @@ registerTest(
 
     await checkConfirmAccessText(
       requestMessage.inviteText,
-      'QA Engineer',
+      userName,
       process.env.SECOND_EMAIL,
-      team,
+      teamName,
     );
 
     // Navigate to invite (view file)
@@ -133,7 +134,7 @@ registerTest(
   ),
   async ({ page, email }) => {
     // Create a team, a new file and navigate to Dasboard (as owner)
-    const setup = await setupTeamAndFile(page, team);
+    const setup = await setupTeamAndFile(page, teamName);
     const { mainPage, teamPage, dashboardPage, loginPage, profilePage } = setup;
 
     // Navigate to Dashboard and get Dashboard URL
@@ -161,9 +162,9 @@ registerTest(
 
     await checkDashboardConfirmAccessText(
       requestMessage.inviteText,
-      'QA Engineer',
+      userName,
       process.env.SECOND_EMAIL,
-      team,
+      teamName,
     );
   },
 );
@@ -206,9 +207,8 @@ registerTest(
 
     await checkYourPenpotConfirmAccessText(
       requestMessage.inviteText,
-      'QA Engineer',
+      userName,
       process.env.SECOND_EMAIL,
-      team,
     );
   },
 );
@@ -258,16 +258,16 @@ registerTest(
 
     await checkYourPenpotViewModeConfirmAccessText(
       requestMessage.inviteText,
-      'QA Engineer',
+      userName,
       process.env.SECOND_EMAIL,
-      team,
+      teamName,
     );
   },
 );
 
 registerTest(qase(1833, 'Auto Join to the team'), async ({ page, name, email }) => {
   // Set up team and file
-  const setup = await setupTeamAndFile(page, team);
+  const setup = await setupTeamAndFile(page, teamName);
   const { mainPage, teamPage, registerPage, dashboardPage, loginPage, profilePage } =
     setup;
 
@@ -322,7 +322,7 @@ registerTest(qase(1833, 'Auto Join to the team'), async ({ page, name, email }) 
   await dashboardPage.isDashboardOpenedAfterLogin();
 
   // Must switch back to the created team
-  await teamPage.switchTeam(team);
+  await teamPage.switchTeam(teamName);
 
   // OWNER receives request email & sends invitation
   await waitSecondMessage(page, email, 40);
@@ -337,5 +337,5 @@ registerTest(qase(1833, 'Auto Join to the team'), async ({ page, name, email }) 
   await waitSecondMessage(page, secondEmail, 40);
   const secondRequestMessage = await waitRequestMessage(page, secondEmail, 40);
 
-  await checkSigningText(secondRequestMessage.inviteText, name, team);
+  await checkSigningText(secondRequestMessage.inviteText, name, teamName);
 });
