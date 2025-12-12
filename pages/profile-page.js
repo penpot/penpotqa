@@ -308,9 +308,13 @@ exports.ProfilePage = class ProfilePage extends BasePage {
       .click();
   }
 
-  async clickOnStartTrialButton() {
-    await this.continueButton.click();
-    await this.skipPaymentsDetailsButton.click();
+  async clickOnStartTrialButton(plan) {
+    if (plan === 'Unlimited') {
+      await this.continueButton.click();
+      await this.skipPaymentsDetailsButton.click();
+    } else {
+      await this.startFreeTrialButton.click();
+    }
   }
 
   async checkSubscriptionModalHeader(name) {
@@ -336,7 +340,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     if (plan === 'Unlimited' && editors !== undefined) {
       await this.enterMembers(editors);
     }
-    await this.clickOnStartTrialButton();
+    await this.clickOnStartTrialButton(plan);
     await this.checkSubscriptionModalHeader(`You are ${plan} (trial)!`);
     await this.closeModalWindow();
     await this.checkSubscriptionName(`${plan} (trial)`);
