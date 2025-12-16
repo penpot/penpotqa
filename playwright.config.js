@@ -51,7 +51,7 @@ const config = {
         [
           'playwright-smart-reporter',
           {
-            outputFile: 'playwright-report/smart-report.html',
+            outputFile: 'smart-report.html',
             historyFile: 'test-history.json',
             maxHistoryRuns: 10,
             performanceThreshold: 0.2,
