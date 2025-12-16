@@ -53,10 +53,30 @@ runs:
     - name: Download test history from S3
       shell: bash
       run: |
-        echo "🔍 Downloading test history from S3..."
+        echo "🔍 Setting up history structure for comparisons..."
+        mkdir -p history
+
+        # Clean branch name for folder structure
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        mkdir -p "history/${CLEAN_BRANCH}"
+
+        # Download main history file
+        echo "📥 Downloading main test history from S3..."
         aws s3 cp s3://kaleidos-qa-reports/test-history.json test-history.json 2>/dev/null && \
-          echo "✅ Downloaded existing history ($(wc -c < test-history.json) bytes)" || \
-          echo "❌ No existing history in S3 - starting fresh"
+          echo "✅ Downloaded main history ($(wc -c < test-history.json) bytes)" || \
+          echo "❌ No main history in S3 - starting fresh"
+
+        # Download branch-specific history files
+        echo "📥 Downloading branch history files from S3..."
+        aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null && \
+          echo "✅ Downloaded branch history files" || \
+          echo "❌ No branch history files found"
+
+        # List available history files for comparison
+        if [ -d "history/${CLEAN_BRANCH}" ] && [ "$(ls -A history/${CLEAN_BRANCH})" ]; then
+          echo "📊 Available history files for comparison:"
+          ls -la "history/${CLEAN_BRANCH}/" | grep "history_" || echo "No history files yet"
+        fi
 
     - name: Check history file status
       shell: bash
@@ -188,17 +208,37 @@ runs:
     - name: Check and save history file for cache
       shell: bash
       run: |
-        echo "🔍 Checking history file after tests..."
+        echo "🔍 Processing history files after tests..."
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+
         if [ -f "test-history.json" ]; then
           echo "✅ History file exists after tests ($(wc -c < test-history.json) bytes)"
-          echo "Last 200 chars: $(tail -c 200 test-history.json)"
           
-          # Upload updated history to S3 for persistence across all runs
+          # Save branch-specific history file with run ID
+          HISTORY_FILE="history_${{ github.run_id }}_$(date +%Y%m%d_%H%M%S).json"
+          mkdir -p "history/${CLEAN_BRANCH}"
+          cp test-history.json "history/${CLEAN_BRANCH}/${HISTORY_FILE}"
+          echo "💾 Saved run-specific history: ${HISTORY_FILE}"
+          
+          # Upload main history to S3
           aws s3 cp test-history.json s3://kaleidos-qa-reports/test-history.json \
             --content-type "application/json" \
             --cache-control "max-age=300" \
             --metadata-directive REPLACE
-          echo "📤 Uploaded updated history to S3"
+          echo "📤 Uploaded main history to S3"
+          
+          # Upload branch-specific history structure to S3
+          aws s3 sync "history/${CLEAN_BRANCH}/" s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ \
+            --content-type "application/json" \
+            --cache-control "max-age=300"
+          echo "📤 Uploaded branch history files to S3"
+          
+          # Clean old history files (keep only last 10 per branch)
+          echo "🧹 Cleaning old history files..."
+          cd "history/${CLEAN_BRANCH}"
+          ls -t history_*.json | tail -n +11 | xargs rm -f 2>/dev/null || true
+          cd ../..
+          
         else
           echo "❌ No history file generated after tests"
         fi

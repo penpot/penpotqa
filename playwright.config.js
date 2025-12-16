@@ -63,6 +63,8 @@ const config = {
             enableAIRecommendations: true,
             stabilityThreshold: 70,
             retryFailureThreshold: 3,
+            baselineRunId: process.env.BASELINE_RUN_ID || null,
+            enableRunComparison: true,
           },
         ],
       ]

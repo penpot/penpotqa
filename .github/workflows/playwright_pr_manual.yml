@@ -57,6 +57,28 @@ jobs:
       - name: Setup Playwright Environment
         uses: ./.github/actions/setup-playwright
 
+      - name: Configure baseline for comparison
+        shell: bash
+        run: |
+          # Find the most recent history file for comparison baseline
+          CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+
+          if [ -d "history/${CLEAN_BRANCH}" ] && [ "$(ls -A history/${CLEAN_BRANCH})" ]; then
+            # Get the most recent history file (excluding current run)
+            LATEST_HISTORY=$(ls -t history/${CLEAN_BRANCH}/history_*.json 2>/dev/null | head -1)
+            if [ -n "$LATEST_HISTORY" ]; then
+              # Extract run ID from filename
+              BASELINE_ID=$(basename "$LATEST_HISTORY" | sed 's/history_\([0-9]*\)_.*/\1/')
+              echo "BASELINE_RUN_ID=$BASELINE_ID" >> $GITHUB_ENV
+              echo "🎯 Set baseline for comparison: Run $BASELINE_ID"
+              echo "📁 Using history file: $LATEST_HISTORY"
+            else
+              echo "ℹ️ No previous history files found - no baseline comparison"
+            fi
+          else
+            echo "ℹ️ No history directory for branch - first run"
+          fi
+
       - name: Run Playwright tests
         id: run-tests
         env:
@@ -71,6 +93,7 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
+          BASELINE_RUN_ID: ${{ env.BASELINE_RUN_ID }}
         run: |
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
