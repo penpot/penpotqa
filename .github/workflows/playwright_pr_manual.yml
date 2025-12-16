@@ -122,3 +122,13 @@ jobs:
           username: ${{ github.actor }}
           smart-report-url: ${{ steps.upload-reports.outputs.smart-report-url }}
         if: always()
+
+      - name: Comment test results on PR
+        uses: ./.github/actions/comment-test-results
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          browser-name: 'Chrome'
+          report-url: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html
+          smart-report-url: ${{ steps.upload-reports.outputs.smart-report-url }}
+          test-folder: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
+        if: always()

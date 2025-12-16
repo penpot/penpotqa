@@ -1,0 +1,118 @@
+name: 'Comment Test Results on PR'
+description: 'Posts test results as a comment on pull request using the generated JSON'
+
+inputs:
+  github-token:
+    description: 'GitHub token for posting comments'
+    required: true
+    default: ${{ github.token }}
+  browser-name:
+    description: 'Browser name for the test results'
+    required: true
+  test-results-file:
+    description: 'Path to the test results JSON file'
+    required: false
+    default: 'testResults.json'
+  report-url:
+    description: 'URL to the full test report'
+    required: false
+  smart-report-url:
+    description: 'URL to the smart test report'
+    required: false
+  test-folder:
+    description: 'Specific test folder that was executed'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Generate test results comment
+      id: generate-comment
+      shell: bash
+      run: |
+        if [ ! -f "${{ inputs.test-results-file }}" ]; then
+          echo "❌ Test results file not found: ${{ inputs.test-results-file }}"
+          echo "comment-body=❌ Test results file not found. Tests may not have completed successfully." >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        # Read test results from JSON
+        RESULTS=$(cat "${{ inputs.test-results-file }}")
+        PASSED=$(echo "$RESULTS" | node -e "console.log(JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).Passed || 0)")
+        FAILED=$(echo "$RESULTS" | node -e "console.log(JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).Failed || 0)")
+        FLAKY=$(echo "$RESULTS" | node -e "console.log(JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).Flaky || 0)")
+        PERCENT=$(echo "$RESULTS" | node -e "console.log(Math.round(JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).PercentPassed || 0))")
+
+        TOTAL=$((PASSED + FAILED + FLAKY))
+
+        # Determine status emoji and color
+        if [ "$PERCENT" -ge 90 ]; then
+          STATUS_EMOJI="✅"
+          STATUS_COLOR="🟢"
+        elif [ "$PERCENT" -ge 70 ]; then
+          STATUS_EMOJI="⚠️"
+          STATUS_COLOR="🟡"
+        else
+          STATUS_EMOJI="❌"
+          STATUS_COLOR="🔴"
+        fi
+
+        # Build folder info if provided
+        FOLDER_INFO=""
+        if [ -n "${{ inputs.test-folder }}" ]; then
+          FOLDER_INFO="
+        **📁 Test Folder:** \`${{ inputs.test-folder }}\`"
+        fi
+
+        # Build report links
+        REPORT_LINKS=""
+        if [ -n "${{ inputs.report-url }}" ]; then
+          REPORT_LINKS="
+        🔗 **[View Full Report](${{ inputs.report-url }})**"
+        fi
+
+        if [ -n "${{ inputs.smart-report-url }}" ]; then
+          REPORT_LINKS="$REPORT_LINKS
+        📊 **[View Smart Analysis](${{ inputs.smart-report-url }})**"
+        fi
+
+        # Generate comment body
+        COMMENT_BODY="## $STATUS_EMOJI Test Results - ${{ inputs.browser-name }} $STATUS_COLOR
+
+        | Metric | Value |
+        |--------|-------|
+        | **Success Rate** | **${PERCENT}%** |
+        | ✅ **Passed** | **${PASSED}** |
+        | ❌ **Failed** | **${FAILED}** |
+        | ⚡ **Flaky** | **${FLAKY}** |
+        | 📊 **Total** | **${TOTAL}** |$FOLDER_INFO
+
+        **🌐 Browser:** ${{ inputs.browser-name }}
+        **🔄 Run ID:** [\`${{ github.run_id }}\`](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})$REPORT_LINKS
+
+        ---
+        <sub>🤖 Automated test results • Updated $(date -u '+%Y-%m-%d %H:%M UTC')</sub>"
+
+        # Escape newlines for GitHub output
+        COMMENT_BODY="${COMMENT_BODY//$'\n'/'%0A'}"
+        COMMENT_BODY="${COMMENT_BODY//$'\r'/'%0D'}"
+
+        echo "comment-body=$COMMENT_BODY" >> $GITHUB_OUTPUT
+
+        echo "✅ Generated comment for $TOTAL tests ($PERCENT% success rate)"
+
+    - name: Post or update comment on PR
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+      with:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        message: ${{ steps.generate-comment.outputs.comment-body }}
+        header: test-results-${{ inputs.browser-name }}
+        recreate: true
+
+    - name: Post comment on commit (non-PR context)
+      if: github.event_name != 'pull_request' && github.event_name != 'pull_request_target'
+      shell: bash
+      run: |
+        echo "ℹ️ Not a PR context - skipping comment. Results would be:"
+        echo "${{ steps.generate-comment.outputs.comment-body }}" | sed 's/%0A/\n/g' | sed 's/%0D/\r/g'
