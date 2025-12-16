@@ -1,0 +1,78 @@
+name: 'Setup Test History and Baseline'
+description: 'Downloads test history from S3 and configures baseline for comparisons'
+
+inputs:
+  aws-access-key-id:
+    description: 'AWS Access Key ID'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS Secret Access Key'
+    required: true
+  aws-region:
+    description: 'AWS Region'
+    required: true
+
+outputs:
+  baseline-run-id:
+    description: 'Baseline run ID for comparison'
+    value: ${{ steps.setup-baseline.outputs.baseline-run-id }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+
+    - name: Download test history from S3
+      shell: bash
+      run: |
+        echo "🔍 Setting up history structure for comparisons..."
+        mkdir -p history
+
+        # Clean branch name for folder structure
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        mkdir -p "history/${CLEAN_BRANCH}"
+
+        # Download main history file
+        echo "📥 Downloading main test history from S3..."
+        aws s3 cp s3://kaleidos-qa-reports/test-history.json test-history.json 2>/dev/null && \
+          echo "✅ Downloaded main history ($(wc -c < test-history.json) bytes)" || \
+          echo "❌ No main history in S3 - starting fresh"
+
+        # Download branch-specific history files
+        echo "📥 Downloading branch history files from S3..."
+        aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null && \
+          echo "✅ Downloaded branch history files" || \
+          echo "❌ No branch history files found"
+
+    - name: Setup baseline for comparison
+      id: setup-baseline
+      shell: bash
+      run: |
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+
+        # List available history files for comparison
+        if [ -d "history/${CLEAN_BRANCH}" ] && [ "$(ls -A history/${CLEAN_BRANCH})" ]; then
+          echo "📊 Available history files for comparison:"
+          ls -la "history/${CLEAN_BRANCH}/" | grep "history_" || echo "No history files yet"
+          
+          # Configure baseline for comparison
+          LATEST_HISTORY=$(ls -t history/${CLEAN_BRANCH}/history_*.json 2>/dev/null | head -1)
+          if [ -n "$LATEST_HISTORY" ]; then
+            BASELINE_ID=$(basename "$LATEST_HISTORY" | sed 's/history_\([0-9]*\)_.*/\1/')
+            echo "BASELINE_RUN_ID=$BASELINE_ID" >> $GITHUB_ENV
+            echo "baseline-run-id=$BASELINE_ID" >> $GITHUB_OUTPUT
+            echo "🎯 Set baseline for comparison: Run $BASELINE_ID"
+            echo "📁 Using history file: $LATEST_HISTORY"
+          else
+            echo "ℹ️ No previous history files found - no baseline comparison"
+            echo "baseline-run-id=" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "ℹ️ No history directory for branch - first run"
+          echo "baseline-run-id=" >> $GITHUB_OUTPUT
+        fi

@@ -76,6 +76,15 @@ runs:
         if [ -d "history/${CLEAN_BRANCH}" ] && [ "$(ls -A history/${CLEAN_BRANCH})" ]; then
           echo "📊 Available history files for comparison:"
           ls -la "history/${CLEAN_BRANCH}/" | grep "history_" || echo "No history files yet"
+          
+          # Configure baseline for comparison
+          LATEST_HISTORY=$(ls -t history/${CLEAN_BRANCH}/history_*.json 2>/dev/null | head -1)
+          if [ -n "$LATEST_HISTORY" ]; then
+            BASELINE_ID=$(basename "$LATEST_HISTORY" | sed 's/history_\([0-9]*\)_.*/\1/')
+            echo "BASELINE_RUN_ID=$BASELINE_ID" >> $GITHUB_ENV
+            echo "🎯 Set baseline for comparison: Run $BASELINE_ID"
+            echo "📁 Using history file: $LATEST_HISTORY"
+          fi
         fi
 
     - name: Check history file status
@@ -235,9 +244,7 @@ runs:
           
           # Clean old history files (keep only last 10 per branch)
           echo "🧹 Cleaning old history files..."
-          cd "history/${CLEAN_BRANCH}"
-          ls -t history_*.json | tail -n +11 | xargs rm -f 2>/dev/null || true
-          cd ../..
+          (cd "history/${CLEAN_BRANCH}" && ls -t history_*.json | tail -n +11 | xargs rm -f 2>/dev/null) || true
           
         else
           echo "❌ No history file generated after tests"
