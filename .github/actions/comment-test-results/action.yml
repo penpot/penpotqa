@@ -37,11 +37,10 @@ runs:
         fi
 
         # Read test results from JSON
-        RESULTS=$(cat "${{ inputs.test-results-file }}")
-        PASSED=$(echo "$RESULTS" | node -e "console.log(JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).Passed || 0)")
-        FAILED=$(echo "$RESULTS" | node -e "console.log(JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).Failed || 0)")
-        FLAKY=$(echo "$RESULTS" | node -e "console.log(JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).Flaky || 0)")
-        PERCENT=$(echo "$RESULTS" | node -e "console.log(Math.round(JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).PercentPassed || 0))")
+        PASSED=$(node -e "console.log(JSON.parse(require('fs').readFileSync('${{ inputs.test-results-file }}', 'utf8')).Passed || 0)")
+        FAILED=$(node -e "console.log(JSON.parse(require('fs').readFileSync('${{ inputs.test-results-file }}', 'utf8')).Failed || 0)")
+        FLAKY=$(node -e "console.log(JSON.parse(require('fs').readFileSync('${{ inputs.test-results-file }}', 'utf8')).Flaky || 0)")
+        PERCENT=$(node -e "console.log(Math.round(JSON.parse(require('fs').readFileSync('${{ inputs.test-results-file }}', 'utf8')).PercentPassed || 0))")
 
         TOTAL=$((PASSED + FAILED + FLAKY))
 
