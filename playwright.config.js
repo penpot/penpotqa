@@ -51,8 +51,9 @@ const config = {
         [
           'playwright-smart-reporter',
           {
-            outputFile: 'smart-report.html',
-            historyFile: 'test-history.json',
+            outputFile: './smart-report.html',
+            historyFile: './test-history.json',
+            outputPath: './',
             maxHistoryRuns: 10,
             performanceThreshold: 0.2,
             enableRetryAnalysis: true,
@@ -65,6 +66,7 @@ const config = {
             retryFailureThreshold: 3,
             baselineRunId: process.env.BASELINE_RUN_ID || null,
             enableRunComparison: true,
+            saveHistory: true,
           },
         ],
       ]

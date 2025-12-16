@@ -218,10 +218,23 @@ runs:
       shell: bash
       run: |
         echo "🔍 Processing history files after tests..."
+
+        # Debug: Check all potential history files
+        echo "📂 Current directory contents:"
+        ls -la
+
+        echo "🔍 Looking for history files..."
+        find . -name "*history*.json" -type f 2>/dev/null || echo "No history files found"
+
+        # Debug: Check smart report too
+        echo "📊 Looking for smart report files..."
+        find . -name "smart-report.html" -type f 2>/dev/null || echo "No smart report found"
+
         CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
 
         if [ -f "test-history.json" ]; then
           echo "✅ History file exists after tests ($(wc -c < test-history.json) bytes)"
+          echo "📝 First 500 chars: $(head -c 500 test-history.json)"
           
           # Save branch-specific history file with run ID
           HISTORY_FILE="history_${{ github.run_id }}_$(date +%Y%m%d_%H%M%S).json"
@@ -247,7 +260,9 @@ runs:
           (cd "history/${CLEAN_BRANCH}" && ls -t history_*.json | tail -n +11 | xargs rm -f 2>/dev/null) || true
           
         else
-          echo "❌ No history file generated after tests"
+          echo "❌ No test-history.json file found after tests"
+          echo "💡 This could indicate playwright-smart-reporter is not generating the history file"
+          echo "🔧 Check if baselineRunId env variable was set: $BASELINE_RUN_ID"
         fi
 
     - name: Testdino Reporter
