@@ -66,6 +66,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Debug baseline configuration
+        if: always()
         run: |
           echo "🔍 Baseline Configuration:"
           echo "BASELINE_RUN_ID: ${BASELINE_RUN_ID:-'Not set'}"
@@ -81,6 +82,7 @@ jobs:
 
       - name: Run Playwright tests
         id: run-tests
+        if: always() # Always run tests even if baseline setup fails
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}

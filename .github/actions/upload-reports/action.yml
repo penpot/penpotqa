@@ -79,7 +79,18 @@ runs:
       run: |
         # Upload report to S3
         mkdir -p reports/run-${{ github.run_id }}
-        cp -r playwright-report/* reports/run-${{ github.run_id }}/
+
+        # Check if playwright-report directory exists
+        if [ -d "playwright-report" ] && [ "$(ls -A playwright-report 2>/dev/null)" ]; then
+          cp -r playwright-report/* reports/run-${{ github.run_id }}/
+          echo "✅ Playwright report copied to upload directory"
+        else
+          # Create placeholder files if no report exists
+          echo "<h1>No Test Report</h1><p>Tests may not have been executed or failed to generate report.</p>" > reports/run-${{ github.run_id }}/index.html
+          echo '{"status": "no-tests-run", "timestamp": "'$(date -Iseconds)'"}' > reports/run-${{ github.run_id }}/results.json
+          echo "⚠️ No playwright report found, created placeholder"
+        fi
+
         aws s3 sync reports/run-${{ github.run_id }}/ s3://kaleidos-qa-reports/run-${{ github.run_id }}/
         echo "✅ Report uploaded: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html"
 
