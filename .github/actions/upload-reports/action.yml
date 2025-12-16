@@ -232,9 +232,26 @@ runs:
 
         CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
 
+        # Check multiple possible locations for history file
+        HISTORY_FILE_PATH=""
         if [ -f "test-history.json" ]; then
-          echo "✅ History file exists after tests ($(wc -c < test-history.json) bytes)"
-          echo "📝 First 500 chars: $(head -c 500 test-history.json)"
+          HISTORY_FILE_PATH="test-history.json"
+          echo "✅ Found history file in root: test-history.json"
+        elif [ -f "tests/test-history.json" ]; then
+          HISTORY_FILE_PATH="tests/test-history.json"
+          echo "✅ Found history file in tests/: tests/test-history.json"
+        elif [ -f "playwright-report/test-history.json" ]; then
+          HISTORY_FILE_PATH="playwright-report/test-history.json"
+          echo "✅ Found history file in playwright-report/: playwright-report/test-history.json"
+        fi
+
+        if [ -n "$HISTORY_FILE_PATH" ]; then
+          echo "✅ History file exists after tests ($(wc -c < "$HISTORY_FILE_PATH") bytes)"
+          echo "📝 First 500 chars: $(head -c 500 "$HISTORY_FILE_PATH")"
+          
+          # Copy history file to root for consistency
+          cp "$HISTORY_FILE_PATH" test-history.json
+          echo "📋 Copied history file to root for processing"
           
           # Save branch-specific history file with run ID
           HISTORY_FILE="history_${{ github.run_id }}_$(date +%Y%m%d_%H%M%S).json"
