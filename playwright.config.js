@@ -64,8 +64,13 @@ const config = {
             stabilityThreshold: 70,
             retryFailureThreshold: 3,
             baselineRunId: process.env.BASELINE_RUN_ID || null,
-            enableRunComparison: true,
-            saveHistory: true,
+            // Ensure CI detection works properly
+            ciProvider: process.env.CI ? 'github' : undefined,
+            runId: process.env.GITHUB_RUN_ID || undefined,
+            branch: process.env.GITHUB_REF_NAME || undefined,
+            commit: process.env.GITHUB_SHA
+              ? process.env.GITHUB_SHA.substring(0, 7)
+              : undefined,
           },
         ],
       ]

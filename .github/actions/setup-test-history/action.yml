@@ -49,15 +49,48 @@ runs:
         CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
 
         # Configure baseline for comparison
-        if [ -d "history/${CLEAN_BRANCH}" ] && [ "$(ls -A history/${CLEAN_BRANCH})" ]; then
-          LATEST_HISTORY=$(ls -t history/${CLEAN_BRANCH}/history_*.json 2>/dev/null | head -1)
-          if [ -n "$LATEST_HISTORY" ]; then
-            BASELINE_ID=$(basename "$LATEST_HISTORY" | sed 's/history_\([0-9]*\)_.*/\1/')
-            echo "BASELINE_RUN_ID=$BASELINE_ID" >> $GITHUB_ENV
-            echo "baseline-run-id=$BASELINE_ID" >> $GITHUB_OUTPUT
+        if [ -f "test-history.json" ]; then
+          # Try to extract the most recent run ID from the main history file
+          LATEST_RUN_ID=$(node -pe "
+            try {
+              const history = JSON.parse(require('fs').readFileSync('test-history.json', 'utf8'));
+              if (history.runs && history.runs.length > 0) {
+                // Find the most recent run that isn't the current one
+                const sortedRuns = history.runs
+                  .filter(run => run.runId && run.runId !== '${{ github.run_id }}')
+                  .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+                console.log(sortedRuns[0]?.runId || '');
+              } else {
+                console.log('');
+              }
+            } catch (e) {
+              console.log('');
+            }
+          " 2>/dev/null)
+          
+          if [ -n "$LATEST_RUN_ID" ] && [ "$LATEST_RUN_ID" != "undefined" ] && [ "$LATEST_RUN_ID" != "null" ]; then
+            echo "BASELINE_RUN_ID=$LATEST_RUN_ID" >> $GITHUB_ENV
+            echo "baseline-run-id=$LATEST_RUN_ID" >> $GITHUB_OUTPUT
+            echo "✅ Found baseline run ID from history: $LATEST_RUN_ID"
           else
-            echo "baseline-run-id=" >> $GITHUB_OUTPUT
+            # Fallback: try to extract from branch-specific history files
+            if [ -d "history/${CLEAN_BRANCH}" ] && [ "$(ls -A history/${CLEAN_BRANCH})" ]; then
+              LATEST_HISTORY=$(ls -t history/${CLEAN_BRANCH}/history_*.json 2>/dev/null | head -1)
+              if [ -n "$LATEST_HISTORY" ]; then
+                BASELINE_ID=$(basename "$LATEST_HISTORY" | sed 's/history_\([0-9]*\)_.*/\1/')
+                echo "BASELINE_RUN_ID=$BASELINE_ID" >> $GITHUB_ENV
+                echo "baseline-run-id=$BASELINE_ID" >> $GITHUB_OUTPUT
+                echo "⚠️ Using fallback baseline from filename: $BASELINE_ID"
+              else
+                echo "baseline-run-id=" >> $GITHUB_OUTPUT
+                echo "❌ No baseline found"
+              fi
+            else
+              echo "baseline-run-id=" >> $GITHUB_OUTPUT
+              echo "❌ No history available for baseline"
+            fi
           fi
         else
           echo "baseline-run-id=" >> $GITHUB_OUTPUT
+          echo "❌ No test-history.json file found"
         fi

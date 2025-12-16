@@ -58,11 +58,26 @@ jobs:
         uses: ./.github/actions/setup-playwright
 
       - name: Setup test history and baseline
+        id: setup-baseline
         uses: ./.github/actions/setup-test-history
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Debug baseline configuration
+        run: |
+          echo "🔍 Baseline Configuration:"
+          echo "BASELINE_RUN_ID: ${BASELINE_RUN_ID:-'Not set'}"
+          echo "Current Run ID: ${{ github.run_id }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "SHA: ${{ github.sha }}"
+          if [ -f "test-history.json" ]; then
+            echo "📋 History file exists, size: $(wc -c < test-history.json) bytes"
+            echo "📊 History runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+          else
+            echo "❌ No history file found"
+          fi
 
       - name: Run Playwright tests
         id: run-tests
@@ -78,6 +93,14 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
+          # CI detection variables for playwright-smart-reporter
+          CI: true
+          GITHUB_ACTIONS: true
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          # Baseline for comparison
+          BASELINE_RUN_ID: ${{ env.BASELINE_RUN_ID }}
         run: |
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
@@ -102,6 +125,29 @@ jobs:
               exit 1
               ;;
           esac
+
+      - name: Verify smart report generation
+        if: always()
+        run: |
+          echo "📊 Smart Report Verification:"
+          if [ -f "smart-report.html" ]; then
+            echo "✅ Smart report exists: smart-report.html ($(wc -c < smart-report.html) bytes)"
+            # Check if comparison section exists in the report
+            if grep -q "baseline\|comparison\|previous.*run" smart-report.html 2>/dev/null; then
+              echo "🔄 Historical comparison detected in report"
+            else
+              echo "⚠️ No historical comparison found in report"
+            fi
+          elif [ -f "tests/smart-report.html" ]; then
+            echo "✅ Smart report exists: tests/smart-report.html ($(wc -c < tests/smart-report.html) bytes)"
+            if grep -q "baseline\|comparison\|previous.*run" tests/smart-report.html 2>/dev/null; then
+              echo "🔄 Historical comparison detected in report"
+            else
+              echo "⚠️ No historical comparison found in report"
+            fi
+          else
+            echo "❌ No smart report found"
+          fi
 
       - name: Generate and Upload Reports
         id: upload-reports
