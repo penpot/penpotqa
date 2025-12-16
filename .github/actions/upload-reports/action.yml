@@ -26,6 +26,11 @@ inputs:
     description: 'Testdino API Key from the GitHub secrets'
     required: true
 
+outputs:
+  smart-report-url:
+    description: 'URL of the uploaded smart report'
+    value: ${{ steps.upload-smart-report.outputs.smart-report-url }}
+
 runs:
   using: 'composite'
   steps:
@@ -129,6 +134,24 @@ runs:
 
         # Cleanup
         rm -f current_index.html new_index.html
+
+    - name: Upload smart report to S3
+      id: upload-smart-report
+      shell: bash
+      run: |
+        if [ -f "smart-report.html" ]; then
+          aws s3 cp smart-report.html s3://kaleidos-qa-reports/run-${{ github.run_id }}/smart-report.html \
+            --content-type "text/html" \
+            --cache-control "max-age=300" \
+            --metadata-directive REPLACE
+          
+          SMART_REPORT_URL="https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/smart-report.html"
+          echo "smart-report-url=$SMART_REPORT_URL" >> $GITHUB_OUTPUT
+          echo "✅ Smart report uploaded: $SMART_REPORT_URL"
+        else
+          echo "⚠️ smart-report.html not found, skipping upload"
+          echo "smart-report-url=" >> $GITHUB_OUTPUT
+        fi
 
     - name: Testdino Reporter
       shell: bash

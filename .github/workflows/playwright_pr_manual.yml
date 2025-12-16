@@ -100,6 +100,7 @@ jobs:
           esac
 
       - name: Generate and Upload Reports
+        id: upload-reports
         uses: ./.github/actions/upload-reports
         with:
           artifact-name: 'playwright-report-chromium-pr-${{ github.event.inputs.test_mode }}'
@@ -119,4 +120,5 @@ jobs:
           folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
           is-manual-execution: 'true'
           username: ${{ github.actor }}
+          smart-report-url: ${{ steps.upload-reports.outputs.smart-report-url }}
         if: always()

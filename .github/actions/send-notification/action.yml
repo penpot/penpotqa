@@ -18,6 +18,9 @@ inputs:
   username:
     description: 'Username for manual execution mention'
     required: false
+  smart-report-url:
+    description: 'URL of the smart report'
+    required: false
 
 runs:
   using: 'composite'
@@ -29,19 +32,20 @@ runs:
         FOLDER_PATH="${{ inputs.folder-path }}"
         IS_MANUAL="${{ inputs.is-manual-execution }}"
         USERNAME="${{ inputs.username }}"
+        SMART_REPORT_URL="${{ inputs.smart-report-url }}"
 
         # Generate the message content and save to output
         if [ -n "$FOLDER_PATH" ]; then
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', true, '$USERNAME')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', true, '$USERNAME', '$SMART_REPORT_URL')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', false, null)")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', false, null, '$SMART_REPORT_URL')")
           fi
         else
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, true, '$USERNAME')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, true, '$USERNAME', '$SMART_REPORT_URL')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, false, null)")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, false, null, '$SMART_REPORT_URL')")
           fi
         fi
 

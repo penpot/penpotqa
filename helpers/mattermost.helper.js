@@ -5,6 +5,7 @@ async function generateMessage(
   folderPath = null,
   isManualExecution = false,
   username = null,
+  smartReportUrl = null,
 ) {
   function roundNumber(num) {
     return Math.round(num * 100) / 100;
@@ -37,6 +38,11 @@ async function generateMessage(
       ? `\n       :wave: @${username} your \"${workflowName}\" automated run has finished!`
       : '';
 
+  // Build smart report line if URL is provided
+  const smartReportLine = smartReportUrl
+    ? `\n       :chart_with_upwards_trend: Smart Report: ${smartReportUrl}`
+    : '';
+
   const messageWithLink = `**Total Tests** : **${
     results.Passed + results.Failed + results.Flaky
   }**   :person_doing_cartwheel:   **Success Percentage:** **${roundNumber(
@@ -51,7 +57,7 @@ async function generateMessage(
        :computer: Browser: ${browserName}${folderLine}${userMentionLine}
        :page_facing_up: Check interactive tests results: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${
          process.env.GITHUB_RUN_ID
-       }/index.html`;
+       }/index.html${smartReportLine}`;
 
   console.log(messageWithLink);
   return messageWithLink;

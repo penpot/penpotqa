@@ -43,6 +43,7 @@ jobs:
         run: npx playwright test --project=chrome
 
       - name: Generate and Upload Reports
+        id: upload-reports
         uses: ./.github/actions/upload-reports
         with:
           browser-name: 'Chrome'
@@ -58,5 +59,6 @@ jobs:
         with:
           mattermost-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }}
           browser-name: 'Chrome'
+          smart-report-url: ${{ steps.upload-reports.outputs.smart-report-url }}
         if: always()
         continue-on-error: true
