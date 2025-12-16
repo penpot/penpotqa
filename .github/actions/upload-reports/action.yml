@@ -45,8 +45,29 @@ runs:
       uses: actions/cache@v4
       with:
         path: test-history.json
-        key: test-history-${{ github.ref }}
-        restore-keys: test-history-
+        key: test-history-${{ github.ref }}-${{ github.run_number }}
+        restore-keys: |
+          test-history-${{ github.ref }}-
+          test-history-
+
+    - name: Download test history from S3
+      shell: bash
+      run: |
+        echo "🔍 Downloading test history from S3..."
+        aws s3 cp s3://kaleidos-qa-reports/test-history.json test-history.json 2>/dev/null && \
+          echo "✅ Downloaded existing history ($(wc -c < test-history.json) bytes)" || \
+          echo "❌ No existing history in S3 - starting fresh"
+
+    - name: Check history file status
+      shell: bash
+      run: |
+        echo "🔍 Checking history file before tests..."
+        if [ -f "test-history.json" ]; then
+          echo "✅ History file exists ($(wc -c < test-history.json) bytes)"
+          echo "First 200 chars: $(head -c 200 test-history.json)"
+        else
+          echo "❌ No history file found - this is the first run"
+        fi
 
     - name: Upload report and update index on S3
       shell: bash
@@ -162,6 +183,24 @@ runs:
           echo "smart-report-url=$SMART_REPORT_URL" >> $GITHUB_OUTPUT
         else
           echo "smart-report-url=" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Check and save history file for cache
+      shell: bash
+      run: |
+        echo "🔍 Checking history file after tests..."
+        if [ -f "test-history.json" ]; then
+          echo "✅ History file exists after tests ($(wc -c < test-history.json) bytes)"
+          echo "Last 200 chars: $(tail -c 200 test-history.json)"
+          
+          # Upload updated history to S3 for persistence across all runs
+          aws s3 cp test-history.json s3://kaleidos-qa-reports/test-history.json \
+            --content-type "application/json" \
+            --cache-control "max-age=300" \
+            --metadata-directive REPLACE
+          echo "📤 Uploaded updated history to S3"
+        else
+          echo "❌ No history file generated after tests"
         fi
 
     - name: Testdino Reporter
