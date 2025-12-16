@@ -139,7 +139,16 @@ runs:
       id: upload-smart-report
       shell: bash
       run: |
-        if [ -f "smart-report.html" ]; then
+        if [ -f "playwright-report/smart-report.html" ]; then
+          aws s3 cp playwright-report/smart-report.html s3://kaleidos-qa-reports/run-${{ github.run_id }}/smart-report.html \
+            --content-type "text/html" \
+            --cache-control "max-age=300" \
+            --metadata-directive REPLACE
+          
+          SMART_REPORT_URL="https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/smart-report.html"
+          echo "smart-report-url=$SMART_REPORT_URL" >> $GITHUB_OUTPUT
+          echo "✅ Smart report uploaded: $SMART_REPORT_URL"
+        elif [ -f "smart-report.html" ]; then
           aws s3 cp smart-report.html s3://kaleidos-qa-reports/run-${{ github.run_id }}/smart-report.html \
             --content-type "text/html" \
             --cache-control "max-age=300" \
@@ -149,7 +158,7 @@ runs:
           echo "smart-report-url=$SMART_REPORT_URL" >> $GITHUB_OUTPUT
           echo "✅ Smart report uploaded: $SMART_REPORT_URL"
         else
-          echo "⚠️ smart-report.html not found, skipping upload"
+          echo "⚠️ smart-report.html not found in expected locations, skipping upload"
           echo "smart-report-url=" >> $GITHUB_OUTPUT
         fi
 
