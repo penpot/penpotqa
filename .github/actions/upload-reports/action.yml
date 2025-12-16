@@ -53,7 +53,6 @@ runs:
     - name: Download test history from S3
       shell: bash
       run: |
-        echo "🔍 Setting up history structure for comparisons..."
         mkdir -p history
 
         # Clean branch name for folder structure
@@ -61,41 +60,18 @@ runs:
         mkdir -p "history/${CLEAN_BRANCH}"
 
         # Download main history file
-        echo "📥 Downloading main test history from S3..."
-        aws s3 cp s3://kaleidos-qa-reports/test-history.json test-history.json 2>/dev/null && \
-          echo "✅ Downloaded main history ($(wc -c < test-history.json) bytes)" || \
-          echo "❌ No main history in S3 - starting fresh"
+        aws s3 cp s3://kaleidos-qa-reports/test-history.json test-history.json 2>/dev/null
 
         # Download branch-specific history files
-        echo "📥 Downloading branch history files from S3..."
-        aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null && \
-          echo "✅ Downloaded branch history files" || \
-          echo "❌ No branch history files found"
+        aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null
 
-        # List available history files for comparison
+        # Configure baseline for comparison
         if [ -d "history/${CLEAN_BRANCH}" ] && [ "$(ls -A history/${CLEAN_BRANCH})" ]; then
-          echo "📊 Available history files for comparison:"
-          ls -la "history/${CLEAN_BRANCH}/" | grep "history_" || echo "No history files yet"
-          
-          # Configure baseline for comparison
           LATEST_HISTORY=$(ls -t history/${CLEAN_BRANCH}/history_*.json 2>/dev/null | head -1)
           if [ -n "$LATEST_HISTORY" ]; then
             BASELINE_ID=$(basename "$LATEST_HISTORY" | sed 's/history_\([0-9]*\)_.*/\1/')
             echo "BASELINE_RUN_ID=$BASELINE_ID" >> $GITHUB_ENV
-            echo "🎯 Set baseline for comparison: Run $BASELINE_ID"
-            echo "📁 Using history file: $LATEST_HISTORY"
           fi
-        fi
-
-    - name: Check history file status
-      shell: bash
-      run: |
-        echo "🔍 Checking history file before tests..."
-        if [ -f "test-history.json" ]; then
-          echo "✅ History file exists ($(wc -c < test-history.json) bytes)"
-          echo "First 200 chars: $(head -c 200 test-history.json)"
-        else
-          echo "❌ No history file found - this is the first run"
         fi
 
     - name: Upload report and update index on S3
@@ -217,69 +193,40 @@ runs:
     - name: Check and save history file for cache
       shell: bash
       run: |
-        echo "🔍 Processing history files after tests..."
-
-        # Debug: Check all potential history files
-        echo "📂 Current directory contents:"
-        ls -la
-
-        echo "🔍 Looking for history files..."
-        find . -name "*history*.json" -type f 2>/dev/null || echo "No history files found"
-
-        # Debug: Check smart report too
-        echo "📊 Looking for smart report files..."
-        find . -name "smart-report.html" -type f 2>/dev/null || echo "No smart report found"
-
         CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
 
         # Check multiple possible locations for history file
         HISTORY_FILE_PATH=""
         if [ -f "test-history.json" ]; then
           HISTORY_FILE_PATH="test-history.json"
-          echo "✅ Found history file in root: test-history.json"
         elif [ -f "tests/test-history.json" ]; then
           HISTORY_FILE_PATH="tests/test-history.json"
-          echo "✅ Found history file in tests/: tests/test-history.json"
         elif [ -f "playwright-report/test-history.json" ]; then
           HISTORY_FILE_PATH="playwright-report/test-history.json"
-          echo "✅ Found history file in playwright-report/: playwright-report/test-history.json"
         fi
 
         if [ -n "$HISTORY_FILE_PATH" ]; then
-          echo "✅ History file exists after tests ($(wc -c < "$HISTORY_FILE_PATH") bytes)"
-          echo "📝 First 500 chars: $(head -c 500 "$HISTORY_FILE_PATH")"
-          
           # Copy history file to root for consistency
           cp "$HISTORY_FILE_PATH" test-history.json
-          echo "📋 Copied history file to root for processing"
           
           # Save branch-specific history file with run ID
           HISTORY_FILE="history_${{ github.run_id }}_$(date +%Y%m%d_%H%M%S).json"
           mkdir -p "history/${CLEAN_BRANCH}"
           cp test-history.json "history/${CLEAN_BRANCH}/${HISTORY_FILE}"
-          echo "💾 Saved run-specific history: ${HISTORY_FILE}"
           
           # Upload main history to S3
           aws s3 cp test-history.json s3://kaleidos-qa-reports/test-history.json \
             --content-type "application/json" \
             --cache-control "max-age=300" \
             --metadata-directive REPLACE
-          echo "📤 Uploaded main history to S3"
           
           # Upload branch-specific history structure to S3
           aws s3 sync "history/${CLEAN_BRANCH}/" s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ \
             --content-type "application/json" \
             --cache-control "max-age=300"
-          echo "📤 Uploaded branch history files to S3"
           
           # Clean old history files (keep only last 10 per branch)
-          echo "🧹 Cleaning old history files..."
           (cd "history/${CLEAN_BRANCH}" && ls -t history_*.json | tail -n +11 | xargs rm -f 2>/dev/null) || true
-          
-        else
-          echo "❌ No test-history.json file found after tests"
-          echo "💡 This could indicate playwright-smart-reporter is not generating the history file"
-          echo "🔧 Check if baselineRunId env variable was set: $BASELINE_RUN_ID"
         fi
 
     - name: Testdino Reporter

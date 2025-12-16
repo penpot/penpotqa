@@ -44,23 +44,15 @@ runs:
       shell: bash
       run: |
         if [ ! -d "${{ inputs.test-folder }}" ]; then
-          echo "❌ Error: Test folder '${{ inputs.test-folder }}' does not exist"
+          echo "Error: Test folder '${{ inputs.test-folder }}' does not exist"
           echo "Available test folders:"
           ls -la tests/
           exit 1
         fi
-        echo "✅ Test folder '${{ inputs.test-folder }}' exists"
-        echo "📁 Contents:"
-        ls -la "${{ inputs.test-folder }}"
 
     - name: Run Playwright tests
       shell: bash
       run: |
-        echo "🚀 Running tests from folder: ${{ inputs.test-folder }}"
-        echo "🌐 Browser: ${{ inputs.browser }}"
-        echo "🔄 Retries: ${{ inputs.retries }}"
-        echo "⏱️  Timeout: ${{ inputs.timeout }}"
-
         # Build the command
         CMD="npx playwright test --project=${{ inputs.browser }}"
 
@@ -87,15 +79,13 @@ runs:
         # Add the test folder
         CMD="$CMD ${{ inputs.test-folder }}"
 
-        echo "📋 Executing command: $CMD"
         eval $CMD
 
     - name: Test Results Summary
       shell: bash
       if: always()
       run: |
-        echo "📊 Test execution completed for folder: ${{ inputs.test-folder }}"
-        echo "🌐 Browser used: ${{ inputs.browser }}"
+        echo "Test execution completed for folder: ${{ inputs.test-folder }}"
         if [ -d "test-results" ]; then
-          echo "📁 Test results available in test-results directory"
+          echo "Test results available in test-results directory"
         fi

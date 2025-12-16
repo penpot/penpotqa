@@ -64,17 +64,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Debug environment before tests
-        run: |
-          echo "🔍 Environment variables for history:"
-          echo "BASELINE_RUN_ID: $BASELINE_RUN_ID"
-          echo "🔍 Current directory contents:"
-          ls -la
-          echo "🔍 Looking for existing history files:"
-          find . -name "*history*.json" -type f 2>/dev/null || echo "No history files found"
-          echo "🔍 Playwright config smart reporter section:"
-          grep -A 20 "playwright-smart-reporter" playwright.config.js || echo "Config not found"
-
       - name: Run Playwright tests
         id: run-tests
         env:
@@ -92,27 +81,24 @@ jobs:
         run: |
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
-              echo "🚀 Running all tests..."
               npx playwright test --project=chrome
               ;;
             "changed_only")
-              echo "📝 Running tests for changed files only..."
               npx playwright test --project=chrome --only-changed=origin/main
               ;;
             "by_folder")
-              echo "📁 Running tests from folder: ${{ github.event.inputs.test_folder }}"
               if [ -z "${{ github.event.inputs.test_folder }}" ]; then
-                echo "❌ Error: No test folder specified"
+                echo "Error: No test folder specified"
                 exit 1
               fi
               if [ ! -d "${{ github.event.inputs.test_folder }}" ]; then
-                echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
+                echo "Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
                 exit 1
               fi
               npx playwright test --project=chrome "${{ github.event.inputs.test_folder }}"
               ;;
             *)
-              echo "❌ Error: Invalid test mode"
+              echo "Error: Invalid test mode"
               exit 1
               ;;
           esac
