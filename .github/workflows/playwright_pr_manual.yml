@@ -1,8 +1,6 @@
 name: Manual Penpot Tests for PR
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
       test_mode:
