@@ -139,33 +139,20 @@ runs:
       id: upload-smart-report
       shell: bash
       run: |
-        echo "🔍 Looking for smart report files..."
-        echo "Current directory: $(pwd)"
-        echo "Files in current directory:"
-        ls -la *.html 2>/dev/null || echo "No HTML files in root"
-        echo "Files in playwright-report:"
-        ls -la playwright-report/*.html 2>/dev/null || echo "No HTML files in playwright-report"
-
         # Check for smart report in multiple possible locations
         SMART_REPORT_PATH=""
         if [ -f "smart-report.html" ]; then
           SMART_REPORT_PATH="smart-report.html"
-          echo "✅ Found smart-report.html in root"
         elif [ -f "playwright-report/smart-report.html" ]; then
           SMART_REPORT_PATH="playwright-report/smart-report.html"
-          echo "✅ Found smart-report.html in playwright-report/"
         elif [ -f "tests/smart-report.html" ]; then
           SMART_REPORT_PATH="tests/smart-report.html"
-          echo "✅ Found smart-report.html in tests/"
         else
-          echo "❌ smart-report.html not found anywhere"
-          echo "Creating a simple placeholder for debugging..."
           echo "<h1>Smart Report Placeholder</h1><p>Generated at $(date)</p>" > smart-report.html
           SMART_REPORT_PATH="smart-report.html"
         fi
 
         if [ -n "$SMART_REPORT_PATH" ]; then
-          echo "📤 Uploading $SMART_REPORT_PATH to S3..."
           aws s3 cp "$SMART_REPORT_PATH" s3://kaleidos-qa-reports/run-${{ github.run_id }}/smart-report.html \
             --content-type "text/html" \
             --cache-control "max-age=300" \
@@ -173,9 +160,7 @@ runs:
           
           SMART_REPORT_URL="https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/smart-report.html"
           echo "smart-report-url=$SMART_REPORT_URL" >> $GITHUB_OUTPUT
-          echo "✅ Smart report uploaded: $SMART_REPORT_URL"
         else
-          echo "⚠️ No smart report to upload"
           echo "smart-report-url=" >> $GITHUB_OUTPUT
         fi
 

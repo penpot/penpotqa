@@ -34,10 +34,6 @@ runs:
         USERNAME="${{ inputs.username }}"
         SMART_REPORT_URL="${{ inputs.smart-report-url }}"
 
-        echo "🔍 Debug info:"
-        echo "Smart Report URL input: '$SMART_REPORT_URL'"
-        echo "Browser: ${{ inputs.browser-name }}"
-
         # Generate the message content and save to output
         if [ -n "$FOLDER_PATH" ]; then
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then

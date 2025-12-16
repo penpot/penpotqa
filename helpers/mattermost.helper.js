@@ -44,9 +44,6 @@ async function generateMessage(
       ? `\n       :chart_with_upwards_trend: Smart Report: ${smartReportUrl}`
       : '';
 
-  console.log('Smart Report URL received:', smartReportUrl);
-  console.log('Smart Report Line:', smartReportLine);
-
   const messageWithLink = `**Total Tests** : **${
     results.Passed + results.Failed + results.Flaky
   }**   :person_doing_cartwheel:   **Success Percentage:** **${roundNumber(
