@@ -36,6 +36,13 @@ runs:
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
 
+    - name: Playwright-smart-reporter historical
+      uses: actions/cache@v4
+      with:
+        path: test-history.json
+        key: test-history-${{ github.ref }}
+        restore-keys: test-history-
+
     - name: Upload report and update index on S3
       shell: bash
       run: |
