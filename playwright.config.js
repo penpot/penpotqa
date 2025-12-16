@@ -48,6 +48,15 @@ const config = {
             logging: true,
           },
         ],
+        [
+          'playwright-smart-reporter',
+          {
+            outputFile: 'smart-report.html',
+            historyFile: 'test-history.json',
+            maxHistoryRuns: 10,
+            performanceThreshold: 0.2,
+          },
+        ],
       ]
     : [['html'], ['json', { outputFile: 'playwright-report/results.json' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
