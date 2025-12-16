@@ -206,11 +206,13 @@ runs:
         fi
 
         if [ -n "$HISTORY_FILE_PATH" ]; then
-          # Copy history file to root for consistency
-          cp "$HISTORY_FILE_PATH" test-history.json
+          # Copy history file to root for consistency (only if not already there)
+          if [ "$HISTORY_FILE_PATH" != "test-history.json" ]; then
+            cp "$HISTORY_FILE_PATH" test-history.json
+          fi
           
           # Save branch-specific history file with run ID
-          HISTORY_FILE="history_${{ github.run_id }}_$(date +%Y%m%d_%H%M%S).json"
+          HISTORY_FILE="test-history_${{ github.run_id }}_$(date +%Y%m%d_%H%M%S).json"
           mkdir -p "history/${CLEAN_BRANCH}"
           cp test-history.json "history/${CLEAN_BRANCH}/${HISTORY_FILE}"
           
