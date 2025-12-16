@@ -103,15 +103,16 @@ runs:
 
     - name: Post or update comment on PR
       uses: marocchino/sticky-pull-request-comment@v2
-      if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+      if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target' || (github.event_name == 'workflow_dispatch' && github.event.pull_request.number)
       with:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         message: ${{ steps.generate-comment.outputs.comment-body }}
         header: test-results-${{ inputs.browser-name }}
         recreate: true
+        number: ${{ github.event.pull_request.number || github.event.number }}
 
     - name: Post comment on commit (non-PR context)
-      if: github.event_name != 'pull_request' && github.event_name != 'pull_request_target'
+      if: github.event_name == 'workflow_dispatch' && !github.event.pull_request.number
       shell: bash
       run: |
         echo "ℹ️ Not a PR context - skipping comment. Results would be:"

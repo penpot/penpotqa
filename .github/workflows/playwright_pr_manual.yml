@@ -1,6 +1,8 @@
 name: Manual Penpot Tests for PR
 
 on:
+  pull_request:
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
       test_mode:
@@ -36,7 +38,8 @@ on:
         default: 'tests/login-signup'
 
 permissions:
-  contents: write
+  contents: read
+  pull-requests: write
 
 jobs:
   tests_chromium:
