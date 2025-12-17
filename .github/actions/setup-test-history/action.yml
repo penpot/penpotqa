@@ -42,7 +42,8 @@ runs:
         # Debug downloaded file
         if [ -f "test-history.json" ]; then
           echo "📥 Downloaded main history file: $(wc -c < test-history.json) bytes"
-          echo "🔍 Downloaded file runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { console.error("Parse error:", e.message); 0 }')"
+          echo "🔍 Downloaded file structure: $(node -pe 'try { const h=JSON.parse(require("fs").readFileSync("test-history.json", "utf8")); Object.keys(h).join(",") } catch(e) { "error" }')"
+          echo "🔍 Downloaded file runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
         fi
 
         # Download branch-specific history files
@@ -52,18 +53,19 @@ runs:
         if [ -d "history/${CLEAN_BRANCH}" ]; then
           echo "📁 Branch history files found:"
           ls -la "history/${CLEAN_BRANCH}/" || echo "No files in branch directory"
+          
+          for file in history/${CLEAN_BRANCH}/history_*.json; do
+            if [ -f "$file" ]; then
+              echo "📄 Branch file: $file ($(wc -c < "$file") bytes)"
+              echo "🔍 Branch file runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+            fi
+          done
         fi
 
     - name: Merge test histories
       shell: bash
       run: |
         CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
-
-        # Ensure playwright-smart-reporter is available for merge CLI
-        if ! npm list playwright-smart-reporter > /dev/null 2>&1; then
-          echo "Installing playwright-smart-reporter for merge CLI..."
-          npm install playwright-smart-reporter
-        fi
 
         # Create array of history files to merge
         HISTORY_FILES=()
@@ -74,7 +76,7 @@ runs:
           echo "Found main history file: test-history.json"
         fi
 
-        # Add branch-specific history files
+        # Add branch-specific history files  
         if [ -d "history/${CLEAN_BRANCH}" ]; then
           for file in history/${CLEAN_BRANCH}/history_*.json; do
             if [ -f "$file" ]; then
@@ -93,6 +95,7 @@ runs:
             if [ -f "$file" ]; then
               echo "📄 File: $file ($(wc -c < "$file") bytes)"
               echo "🔍 Runs in $file: $(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+              echo "🔍 Tests in $file: $(node -pe 'try { Object.keys(JSON.parse(require("fs").readFileSync("'$file'", "utf8")).tests || {}).length } catch(e) { 0 }')"
             fi
           done
           
@@ -102,89 +105,38 @@ runs:
             mv merged-history.json test-history.json
             echo "✅ Successfully merged history files"
             echo "📊 Merged history runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
-            echo "🔍 Merged file structure: $(node -pe 'try { const h=JSON.parse(require("fs").readFileSync("test-history.json", "utf8")); Object.keys(h).join(",") } catch(e) { "error" }')"
           else
             echo "❌ Failed to merge history files"
           fi
         elif [ ${#HISTORY_FILES[@]} -eq 1 ]; then
           echo "Using single history file: ${HISTORY_FILES[0]}"
           echo "🔍 Single file runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("'${HISTORY_FILES[0]}'", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
-          echo "🔍 Single file content preview:"
-          head -c 300 "${HISTORY_FILES[0]}" || echo "Could not read file"
-          echo ""
+          # Copy to root location if not already there
           if [ "${HISTORY_FILES[0]}" != "test-history.json" ]; then
             cp "${HISTORY_FILES[0]}" test-history.json
           fi
-          echo "📊 Final history runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
         else
-          echo "No history files found to merge"
+          echo "No history files found to merge. Creating empty baseline."
+          # Create empty baseline history
+          echo '{"runs":[],"tests":{},"summaries":[]}' > test-history.json
         fi
 
-    - name: Setup baseline for comparison
+        # Final debug output
+        if [ -f "test-history.json" ]; then
+          echo "📊 Final test-history.json:"
+          echo "   Size: $(wc -c < test-history.json) bytes"
+          echo "   Runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+          echo "   Tests: $(node -pe 'try { Object.keys(JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).tests || {}).length } catch(e) { 0 }')"
+        fi
+
+    - name: Setup baseline run ID
       id: setup-baseline
       shell: bash
       run: |
-        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        # Generate unique baseline run ID based on timestamp and commit
+        BASELINE_ID="${{ github.sha }}_$(date +%s)"
+        echo "baseline-run-id=${BASELINE_ID}" >> $GITHUB_OUTPUT
+        echo "📝 Baseline Run ID set to: ${BASELINE_ID}"
 
-        # Configure baseline for comparison
-        if [ -f "test-history.json" ]; then
-          # Try to extract the most recent run ID from the main history file
-          LATEST_RUN_ID=$(node -e "
-            try {
-              const fs = require('fs');
-              const data = fs.readFileSync('test-history.json', 'utf8');
-              const history = JSON.parse(data);
-              if (history.runs && Array.isArray(history.runs) && history.runs.length > 0) {
-                const currentRunId = '${{ github.run_id }}';
-                const sortedRuns = history.runs
-                  .filter(run => run && run.runId && String(run.runId) !== String(currentRunId))
-                  .sort((a, b) => {
-                    const dateA = new Date(a.timestamp || 0);
-                    const dateB = new Date(b.timestamp || 0);
-                    return dateB.getTime() - dateA.getTime();
-                  });
-                if (sortedRuns.length > 0 && sortedRuns[0].runId) {
-                  console.log(String(sortedRuns[0].runId));
-                } else {
-                  console.log('');
-                }
-              } else {
-                console.log('');
-              }
-            } catch (e) {
-              console.log('');
-            }
-          " 2>/dev/null)
-          
-          if [ -n "$LATEST_RUN_ID" ] && [ "$LATEST_RUN_ID" != "undefined" ] && [ "$LATEST_RUN_ID" != "null" ] && [ "$LATEST_RUN_ID" != "" ]; then
-            echo "BASELINE_RUN_ID=$LATEST_RUN_ID" >> $GITHUB_ENV
-            echo "baseline-run-id=$LATEST_RUN_ID" >> $GITHUB_OUTPUT
-            echo "✅ Found baseline run ID from history: $LATEST_RUN_ID"
-          else
-            # Fallback: try to extract from branch-specific history files
-            if [ -d "history/${CLEAN_BRANCH}" ] && [ "$(ls -A history/${CLEAN_BRANCH})" ]; then
-              LATEST_HISTORY=$(ls -t history/${CLEAN_BRANCH}/history_*.json 2>/dev/null | head -1)
-              if [ -n "$LATEST_HISTORY" ]; then
-                BASELINE_ID=$(basename "$LATEST_HISTORY" | sed 's/history_\([0-9]*\)_.*/\1/')
-                if [ -n "$BASELINE_ID" ] && [ "$BASELINE_ID" != "" ]; then
-                  echo "BASELINE_RUN_ID=$BASELINE_ID" >> $GITHUB_ENV
-                  echo "baseline-run-id=$BASELINE_ID" >> $GITHUB_OUTPUT
-                  echo "⚠️ Using fallback baseline from filename: $BASELINE_ID"
-                else
-                  echo "baseline-run-id=" >> $GITHUB_OUTPUT
-                  echo "❌ No valid baseline ID found in filename"
-                fi
-              else
-                echo "baseline-run-id=" >> $GITHUB_OUTPUT
-                echo "❌ No baseline found"
-              fi
-            else
-              echo "baseline-run-id=" >> $GITHUB_OUTPUT
-              echo "❌ No history available for baseline"
-            fi
-          fi
-        else
-          echo "baseline-run-id=" >> $GITHUB_OUTPUT
-          echo "BASELINE_RUN_ID=" >> $GITHUB_ENV
-          echo "❌ No test-history.json file found"
-        fi
+        # Export for use in subsequent steps
+        echo "BASELINE_RUN_ID=${BASELINE_ID}" >> $GITHUB_ENV
