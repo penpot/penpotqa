@@ -76,6 +76,28 @@ jobs:
           if [ -f "test-history.json" ]; then
             echo "📋 History file exists, size: $(wc -c < test-history.json) bytes"
             echo "📊 History runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+            echo "🔍 History file structure:"
+            head -c 500 test-history.json || echo "Could not read file content"
+            echo ""
+            echo "🧪 Detailed history analysis:"
+            node -e "
+              try {
+                const fs = require('fs');
+                const data = fs.readFileSync('test-history.json', 'utf8');
+                console.log('File content length:', data.length);
+                const history = JSON.parse(data);
+                console.log('Parsed object keys:', Object.keys(history));
+                console.log('Runs property:', typeof history.runs, Array.isArray(history.runs));
+                if (history.runs) {
+                  console.log('Runs length:', history.runs.length);
+                  if (history.runs.length > 0) {
+                    console.log('First run keys:', Object.keys(history.runs[0]));
+                  }
+                }
+              } catch (e) {
+                console.log('Parse error:', e.message);
+              }
+            "
           else
             echo "❌ No history file found"
           fi

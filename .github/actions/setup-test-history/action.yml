@@ -39,8 +39,20 @@ runs:
         # Download main history file
         aws s3 cp s3://kaleidos-qa-reports/test-history.json test-history.json 2>/dev/null || echo "No main history file found"
 
+        # Debug downloaded file
+        if [ -f "test-history.json" ]; then
+          echo "📥 Downloaded main history file: $(wc -c < test-history.json) bytes"
+          echo "🔍 Downloaded file runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { console.error("Parse error:", e.message); 0 }')"
+        fi
+
         # Download branch-specific history files
         aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null || echo "No branch-specific history found"
+
+        # Debug branch files
+        if [ -d "history/${CLEAN_BRANCH}" ]; then
+          echo "📁 Branch history files found:"
+          ls -la "history/${CLEAN_BRANCH}/" || echo "No files in branch directory"
+        fi
 
     - name: Merge test histories
       shell: bash
@@ -75,20 +87,35 @@ runs:
         # If we have multiple history files, merge them
         if [ ${#HISTORY_FILES[@]} -gt 1 ]; then
           echo "Merging ${#HISTORY_FILES[@]} history files..."
+          
+          # Debug: show content of each file before merge
+          for file in "${HISTORY_FILES[@]}"; do
+            if [ -f "$file" ]; then
+              echo "📄 File: $file ($(wc -c < "$file") bytes)"
+              echo "🔍 Runs in $file: $(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+            fi
+          done
+          
           npx playwright-smart-reporter-merge-history "${HISTORY_FILES[@]}" -o merged-history.json --max-runs 15
           
           if [ -f "merged-history.json" ]; then
             mv merged-history.json test-history.json
             echo "✅ Successfully merged history files"
             echo "📊 Merged history runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+            echo "🔍 Merged file structure: $(node -pe 'try { const h=JSON.parse(require("fs").readFileSync("test-history.json", "utf8")); Object.keys(h).join(",") } catch(e) { "error" }')"
           else
             echo "❌ Failed to merge history files"
           fi
         elif [ ${#HISTORY_FILES[@]} -eq 1 ]; then
           echo "Using single history file: ${HISTORY_FILES[0]}"
+          echo "🔍 Single file runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("'${HISTORY_FILES[0]}'", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+          echo "🔍 Single file content preview:"
+          head -c 300 "${HISTORY_FILES[0]}" || echo "Could not read file"
+          echo ""
           if [ "${HISTORY_FILES[0]}" != "test-history.json" ]; then
             cp "${HISTORY_FILES[0]}" test-history.json
           fi
+          echo "📊 Final history runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
         else
           echo "No history files found to merge"
         fi
