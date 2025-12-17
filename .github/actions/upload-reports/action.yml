@@ -60,17 +60,94 @@ runs:
         mkdir -p "history/${CLEAN_BRANCH}"
 
         # Download main history file
-        aws s3 cp s3://kaleidos-qa-reports/test-history.json test-history.json 2>/dev/null
+        aws s3 cp s3://kaleidos-qa-reports/test-history.json main-history.json 2>/dev/null || echo "No main history file found"
 
         # Download branch-specific history files
-        aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null
+        aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null || echo "No branch-specific history found"
+
+    - name: Merge downloaded histories with current
+      shell: bash
+      run: |
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+
+        # Ensure playwright-smart-reporter is available for merge CLI
+        if ! npm list playwright-smart-reporter > /dev/null 2>&1; then
+          echo "Installing playwright-smart-reporter for merge CLI..."
+          npm install playwright-smart-reporter
+        fi
+
+        # Create array of history files to merge
+        HISTORY_FILES=()
+
+        # Add current test history if it exists
+        if [ -f "test-history.json" ]; then
+          HISTORY_FILES+=("test-history.json")
+          echo "Found current history file: test-history.json"
+        fi
+
+        # Add downloaded main history file if it exists
+        if [ -f "main-history.json" ]; then
+          HISTORY_FILES+=("main-history.json")
+          echo "Found main history file: main-history.json"
+        fi
+
+        # Add branch-specific history files
+        if [ -d "history/${CLEAN_BRANCH}" ]; then
+          for file in history/${CLEAN_BRANCH}/history_*.json; do
+            if [ -f "$file" ]; then
+              HISTORY_FILES+=("$file")
+              echo "Found branch history file: $file"
+            fi
+          done
+        fi
+
+        # If we have multiple history files, merge them
+        if [ ${#HISTORY_FILES[@]} -gt 1 ]; then
+          echo "Merging ${#HISTORY_FILES[@]} history files..."
+          npx playwright-smart-reporter-merge-history "${HISTORY_FILES[@]}" -o merged-history.json --max-runs 15
+          
+          if [ -f "merged-history.json" ]; then
+            mv merged-history.json test-history.json
+            echo "✅ Successfully merged history files"
+            echo "📊 Final history runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+          else
+            echo "❌ Failed to merge history files"
+          fi
+        elif [ ${#HISTORY_FILES[@]} -eq 1 ]; then
+          echo "Using single history file: ${HISTORY_FILES[0]}"
+          if [ "${HISTORY_FILES[0]}" != "test-history.json" ]; then
+            cp "${HISTORY_FILES[0]}" test-history.json
+          fi
+        else
+          echo "No history files found"
+        fi
 
         # Configure baseline for comparison
-        if [ -d "history/${CLEAN_BRANCH}" ] && [ "$(ls -A history/${CLEAN_BRANCH})" ]; then
-          LATEST_HISTORY=$(ls -t history/${CLEAN_BRANCH}/history_*.json 2>/dev/null | head -1)
-          if [ -n "$LATEST_HISTORY" ]; then
-            BASELINE_ID=$(basename "$LATEST_HISTORY" | sed 's/history_\([0-9]*\)_.*/\1/')
-            echo "BASELINE_RUN_ID=$BASELINE_ID" >> $GITHUB_ENV
+        if [ -f "test-history.json" ]; then
+          LATEST_RUN_ID=$(node -e "
+            try {
+              const fs = require('fs');
+              const data = fs.readFileSync('test-history.json', 'utf8');
+              const history = JSON.parse(data);
+              if (history.runs && Array.isArray(history.runs) && history.runs.length > 0) {
+                const currentRunId = '${{ github.run_id }}';
+                const sortedRuns = history.runs
+                  .filter(run => run && run.runId && String(run.runId) !== String(currentRunId))
+                  .sort((a, b) => {
+                    const dateA = new Date(a.timestamp || 0);
+                    const dateB = new Date(b.timestamp || 0);
+                    return dateB.getTime() - dateA.getTime();
+                  });
+                if (sortedRuns.length > 0 && sortedRuns[0].runId) {
+                  console.log(String(sortedRuns[0].runId));
+                }
+              }
+            } catch (e) { }
+          " 2>/dev/null)
+          
+          if [ -n "$LATEST_RUN_ID" ] && [ "$LATEST_RUN_ID" != "undefined" ] && [ "$LATEST_RUN_ID" != "null" ]; then
+            echo "BASELINE_RUN_ID=$LATEST_RUN_ID" >> $GITHUB_ENV
+            echo "✅ Set baseline run ID: $LATEST_RUN_ID"
           fi
         fi
 
