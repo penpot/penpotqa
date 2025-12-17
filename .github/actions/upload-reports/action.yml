@@ -130,6 +130,12 @@ runs:
       id: upload-smart-report
       shell: bash
       run: |
+        # Define required variables
+        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        COMMIT_SHORT="${{ github.sha }}"
+        COMMIT_SHORT=${COMMIT_SHORT:0:7}
+
         # Use same structure as playwright report: run-{GITHUB_RUN_ID}/smart-report.html
         REPORT_DIR="run-${{ github.run_id }}"
 

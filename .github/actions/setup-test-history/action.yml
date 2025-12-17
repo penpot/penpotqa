@@ -67,7 +67,30 @@ runs:
       run: |
         CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
 
-        # Create array of history files to merge
+        # FORCE CLEANUP: Delete all malformed history files with 0 runs
+        echo "🧹 Cleaning up malformed history files with 0 runs..."
+
+        if [ -f "test-history.json" ]; then
+          RUNS_COUNT=$(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')
+          if [ "$RUNS_COUNT" -eq 0 ]; then
+            echo "🗑️ Deleting malformed main history file (0 runs): test-history.json"
+            rm -f test-history.json
+          fi
+        fi
+
+        if [ -d "history/${CLEAN_BRANCH}" ]; then
+          for file in history/${CLEAN_BRANCH}/*.json; do
+            if [ -f "$file" ]; then
+              RUNS_COUNT=$(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')
+              if [ "$RUNS_COUNT" -eq 0 ]; then
+                echo "🗑️ Deleting malformed branch history file (0 runs): $file"
+                rm -f "$file"
+              fi
+            fi
+          done
+        fi
+
+        # Create array of history files to merge (only valid ones remaining)
         HISTORY_FILES=()
 
         # Add main history file if it exists AND has runs > 0
@@ -75,9 +98,7 @@ runs:
           RUNS_COUNT=$(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')
           if [ "$RUNS_COUNT" -gt 0 ]; then
             HISTORY_FILES+=("test-history.json")
-            echo "Found main history file with $RUNS_COUNT runs: test-history.json"
-          else
-            echo "⚠️ Skipping main history file (0 runs): test-history.json"
+            echo "✅ Found valid main history file with $RUNS_COUNT runs: test-history.json"
           fi
         fi
 
@@ -88,9 +109,7 @@ runs:
               RUNS_COUNT=$(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')
               if [ "$RUNS_COUNT" -gt 0 ]; then
                 HISTORY_FILES+=("$file")
-                echo "Found branch history file with $RUNS_COUNT runs: $file"
-              else
-                echo "⚠️ Skipping branch history file (0 runs): $file"
+                echo "✅ Found valid branch history file with $RUNS_COUNT runs: $file"
               fi
             fi
           done
@@ -129,12 +148,12 @@ runs:
           echo "🔄 No valid history files with runs found. Creating empty baseline for new run."
           # Create empty baseline history that will be populated by the current run
           cat > test-history.json << 'EOF'
-          {
-            "runs": [],
-            "tests": {},
-            "summaries": []
-          }
-          EOF
+        {
+          "runs": [],
+          "tests": {},
+          "summaries": []
+        }
+        EOF
           echo "✅ Created fresh empty baseline history file"
           echo "   Tests: 0 (will be populated by current run)"
         fi

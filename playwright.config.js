@@ -65,7 +65,9 @@ const config = {
             retryFailureThreshold: 3,
             baselineRunId: process.env.BASELINE_RUN_ID || undefined,
             // Critical: runId is required for history tracking
-            runId: process.env.CURRENT_RUN_ID || `${Date.now()}`,
+            runId:
+              process.env.CURRENT_RUN_ID ||
+              `run_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
             // Add run metadata for better history tracking
             runMetadata: {
               branch: process.env.GITHUB_REF_NAME || 'local',
@@ -73,10 +75,12 @@ const config = {
               environment: process.env.CI ? 'ci' : 'local',
               timestamp: new Date().toISOString(),
               actor: process.env.GITHUB_ACTOR || 'local-user',
-              // Debug info
+              runId:
+                process.env.CURRENT_RUN_ID ||
+                `run_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`, // Duplicate for debugging
+              // Force run generation debugging
               debug: true,
-              currentRunId: process.env.CURRENT_RUN_ID,
-              baselineRunId: process.env.BASELINE_RUN_ID,
+              forceNewRun: true,
             },
           },
         ],
