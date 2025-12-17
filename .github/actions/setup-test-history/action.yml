@@ -1,5 +1,5 @@
 name: 'Setup Test History and Baseline'
-description: 'Downloads test history from S3 and configures baseline for comparisons'
+description: 'Downloads test history from S3 and configures baseline for comparisons - v2'
 
 inputs:
   aws-access-key-id:
