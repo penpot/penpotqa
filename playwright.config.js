@@ -73,6 +73,10 @@ const config = {
               environment: process.env.CI ? 'ci' : 'local',
               timestamp: new Date().toISOString(),
               actor: process.env.GITHUB_ACTOR || 'local-user',
+              // Debug info
+              debug: true,
+              currentRunId: process.env.CURRENT_RUN_ID,
+              baselineRunId: process.env.BASELINE_RUN_ID,
             },
           },
         ],
