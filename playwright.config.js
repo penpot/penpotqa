@@ -53,7 +53,7 @@ const config = {
           {
             outputFile: 'smart-report.html',
             historyFile: 'test-history.json',
-            maxHistoryRuns: 10,
+            maxHistoryRuns: 15,
             performanceThreshold: 0.2,
             enableRetryAnalysis: true,
             enableFailureClustering: true,
@@ -63,14 +63,7 @@ const config = {
             enableAIRecommendations: true,
             stabilityThreshold: 70,
             retryFailureThreshold: 3,
-            baselineRunId: process.env.BASELINE_RUN_ID || null,
-            // Ensure CI detection works properly
-            ciProvider: process.env.CI ? 'github' : undefined,
-            runId: process.env.GITHUB_RUN_ID || undefined,
-            branch: process.env.GITHUB_REF_NAME || undefined,
-            commit: process.env.GITHUB_SHA
-              ? process.env.GITHUB_SHA.substring(0, 7)
-              : undefined,
+            baselineRunId: process.env.BASELINE_RUN_ID || undefined,
           },
         ],
       ]
