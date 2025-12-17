@@ -1,0 +1,236 @@
+name: 'Generate and Upload Reports to S3'
+description: 'Upload Playwright reports and update reports index on S3'
+
+inputs:
+  artifact-name:
+    description: 'Name for the artifact upload'
+    required: true
+  aws-access-key-id:
+    description: 'AWS Access Key ID'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS Secret Access Key'
+    required: true
+  aws-region:
+    description: 'AWS Region'
+    required: true
+  browser-name:
+    description: 'Browser name for the report'
+    required: true
+  is-manual-execution:
+    description: 'Whether this is a manual execution (true/false)'
+    required: true
+    type: 'boolean'
+    default: 'false'
+  testdino_api_key:
+    description: 'Testdino API Key from the GitHub secrets'
+    required: true
+
+outputs:
+  smart-report-url:
+    description: 'URL of the uploaded smart report'
+    value: ${{ steps.upload-smart-report.outputs.smart-report-url }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+
+    - name: Playwright-smart-reporter historical
+      uses: actions/cache@v4
+      with:
+        path: test-history.json
+        key: test-history-${{ github.ref }}-${{ github.run_number }}
+        restore-keys: |
+          test-history-${{ github.ref }}-
+          test-history-
+
+    - name: Download test history from S3
+      shell: bash
+      run: |
+        mkdir -p history
+
+        # Clean branch name for folder structure
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        mkdir -p "history/${CLEAN_BRANCH}"
+
+        # Download main history file
+        aws s3 cp s3://kaleidos-qa-reports/test-history.json main-history.json 2>/dev/null || echo "No main history file found"
+
+        # Download branch-specific history files
+        aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null || echo "No branch-specific history found"
+
+    - name: Merge downloaded histories with current
+      shell: bash
+      run: |
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+
+        # Create array of history files to merge
+        HISTORY_FILES=()
+
+        # Add current test history if it exists
+        if [ -f "test-history.json" ]; then
+          HISTORY_FILES+=("test-history.json")
+          echo "Found current history file: test-history.json"
+        fi
+
+        # Add downloaded main history file if it exists
+        if [ -f "main-history.json" ]; then
+          HISTORY_FILES+=("main-history.json")
+          echo "Found main history file: main-history.json"
+        fi
+
+        # Add branch-specific history files
+        if [ -d "history/${CLEAN_BRANCH}" ]; then
+          for file in history/${CLEAN_BRANCH}/history_*.json; do
+            if [ -f "$file" ]; then
+              HISTORY_FILES+=("$file")
+              echo "Found branch history file: $file"
+            fi
+          done
+        fi
+
+        # If we have multiple history files, merge them
+        if [ ${#HISTORY_FILES[@]} -gt 1 ]; then
+          echo "Merging ${#HISTORY_FILES[@]} history files..."
+          
+          # Debug: show content of each file before merge
+          for file in "${HISTORY_FILES[@]}"; do
+            if [ -f "$file" ]; then
+              echo "📄 File: $file ($(wc -c < "$file") bytes)"
+              echo "🔍 Runs in $file: $(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+            fi
+          done
+          
+          npx playwright-smart-reporter-merge-history "${HISTORY_FILES[@]}" -o merged-history.json --max-runs 15
+          
+          if [ -f "merged-history.json" ]; then
+            mv merged-history.json test-history.json
+            echo "✅ Successfully merged history files"
+            echo "📊 Merged history runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+          else
+            echo "❌ Failed to merge history files"
+          fi
+        elif [ ${#HISTORY_FILES[@]} -eq 1 ]; then
+          echo "Using single history file: ${HISTORY_FILES[0]}"
+          # Copy to root location if not already there
+          if [ "${HISTORY_FILES[0]}" != "test-history.json" ]; then
+            cp "${HISTORY_FILES[0]}" test-history.json
+          fi
+        else
+          echo "No history files found to merge"
+        fi
+
+    - name: Upload smart report to S3
+      id: upload-smart-report
+      shell: bash
+      run: |
+        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        COMMIT_SHORT="${{ github.sha }}"
+        COMMIT_SHORT=${COMMIT_SHORT:0:7}
+
+        # Generate unique filename for this run
+        SMART_REPORT_NAME="smart-report_${CLEAN_BRANCH}_${{ inputs.browser-name }}_${COMMIT_SHORT}_${TIMESTAMP}.html"
+
+        # Upload the smart report if it exists
+        if [ -f "smart-report.html" ]; then
+          aws s3 cp smart-report.html "s3://kaleidos-qa-reports/${SMART_REPORT_NAME}"
+          SMART_REPORT_URL="https://kaleidos-qa-reports.s3.amazonaws.com/${SMART_REPORT_NAME}"
+          echo "smart-report-url=${SMART_REPORT_URL}" >> $GITHUB_OUTPUT
+          echo "📊 Smart report uploaded: ${SMART_REPORT_URL}"
+        else
+          echo "❌ smart-report.html not found"
+        fi
+
+    - name: Upload test history to S3
+      shell: bash
+      run: |
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+        COMMIT_SHORT="${{ github.sha }}"
+        COMMIT_SHORT=${COMMIT_SHORT:0:7}
+
+        # Debug final test history before upload
+        if [ -f "test-history.json" ]; then
+          echo "📊 Final test-history.json before upload:"
+          echo "   Size: $(wc -c < test-history.json) bytes"
+          echo "   Runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
+          echo "   Tests: $(node -pe 'try { Object.keys(JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).tests || {}).length } catch(e) { 0 }')"
+          
+          # Upload main history file
+          aws s3 cp test-history.json s3://kaleidos-qa-reports/test-history.json
+          echo "✅ Uploaded main test-history.json"
+          
+          # Also upload branch-specific history for future merges
+          BRANCH_HISTORY_FILE="history_${COMMIT_SHORT}_${TIMESTAMP}.json"
+          aws s3 cp test-history.json "s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/${BRANCH_HISTORY_FILE}"
+          echo "✅ Uploaded branch history: history/${CLEAN_BRANCH}/${BRANCH_HISTORY_FILE}"
+        else
+          echo "❌ test-history.json not found"
+        fi
+
+    - name: Upload Playwright Report to S3
+      shell: bash
+      run: |
+        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        COMMIT_SHORT="${{ github.sha }}"
+        COMMIT_SHORT=${COMMIT_SHORT:0:7}
+
+        # Generate unique folder name for this run
+        REPORT_FOLDER="playwright-report_${CLEAN_BRANCH}_${{ inputs.browser-name }}_${COMMIT_SHORT}_${TIMESTAMP}"
+
+        # Upload the entire playwright-report directory
+        if [ -d "playwright-report" ]; then
+          aws s3 sync playwright-report/ "s3://kaleidos-qa-reports/${REPORT_FOLDER}/"
+          REPORT_URL="https://kaleidos-qa-reports.s3.amazonaws.com/${REPORT_FOLDER}/index.html"
+          echo "📊 Playwright report uploaded: ${REPORT_URL}"
+        else
+          echo "❌ playwright-report directory not found"
+        fi
+
+    - name: Upload to Testdino
+      shell: bash
+      env:
+        TESTDINO_API_KEY: ${{ inputs.testdino_api_key }}
+      run: |
+        if [ -f "testResults.json" ]; then
+          echo "📤 Uploading results to Testdino..."
+          RESPONSE=$(curl -s -X POST "https://api.testdino.com/api/v2/results" \
+            -H "Authorization: Bearer $TESTDINO_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d @testResults.json \
+            --write-out "HTTP_CODE:%{http_code}")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | sed 's/HTTP_CODE:[0-9]*$//')
+          
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "201" ]; then
+            echo "✅ Successfully uploaded to Testdino"
+            echo "📊 Response: $BODY"
+          else
+            echo "❌ Failed to upload to Testdino (HTTP $HTTP_CODE)"
+            echo "📊 Response: $BODY"
+          fi
+        else
+          echo "❌ testResults.json not found"
+        fi
+
+    - name: Archive reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: |
+          playwright-report/
+          smart-report.html
+          test-results/
+          testResults.json
+          test-history.json
+        retention-days: 30
