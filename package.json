@@ -38,10 +38,10 @@
     "fs": "^0.0.1-security",
     "googleapis": "^169.0.0",
     "playwright-qase-reporter": "^2.1.6",
-    "playwright-smart-reporter": "^0.5.0",
+    "playwright-smart-reporter": "^0.6.0",
     "prettier": "^3.7.4",
     "qaseio": "^2.4.3",
-    "stripe": "^20.0.0",
+    "stripe": "^20.1.0",
     "ts-node": "^10.9.2"
   }
 }
