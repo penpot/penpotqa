@@ -64,6 +64,16 @@ const config = {
             stabilityThreshold: 70,
             retryFailureThreshold: 3,
             baselineRunId: process.env.BASELINE_RUN_ID || undefined,
+            // Critical: runId is required for history tracking
+            runId: process.env.CURRENT_RUN_ID || `${Date.now()}`,
+            // Add run metadata for better history tracking
+            runMetadata: {
+              branch: process.env.GITHUB_REF_NAME || 'local',
+              commit: process.env.GITHUB_SHA || 'unknown',
+              environment: process.env.CI ? 'ci' : 'local',
+              timestamp: new Date().toISOString(),
+              actor: process.env.GITHUB_ACTOR || 'local-user',
+            },
           },
         ],
       ]

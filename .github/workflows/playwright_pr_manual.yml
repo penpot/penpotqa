@@ -125,6 +125,8 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           # Baseline for comparison
           BASELINE_RUN_ID: ${{ env.BASELINE_RUN_ID }}
+          # Current run ID for smart reporter history tracking (CRITICAL)
+          CURRENT_RUN_ID: ${{ github.run_id }}
         run: |
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
