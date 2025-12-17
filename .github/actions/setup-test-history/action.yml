@@ -128,7 +128,15 @@ runs:
         else
           echo "🔄 No valid history files with runs found. Creating empty baseline for new run."
           # Create empty baseline history that will be populated by the current run
-          echo "   Tests: $(node -pe 'try { Object.keys(JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).tests || {}).length } catch(e) { 0 }')"
+          cat > test-history.json << 'EOF'
+          {
+            "runs": [],
+            "tests": {},
+            "summaries": []
+          }
+          EOF
+          echo "✅ Created fresh empty baseline history file"
+          echo "   Tests: 0 (will be populated by current run)"
         fi
 
     - name: Setup baseline run ID

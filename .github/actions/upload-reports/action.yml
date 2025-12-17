@@ -130,13 +130,8 @@ runs:
       id: upload-smart-report
       shell: bash
       run: |
-        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
-        COMMIT_SHORT="${{ github.sha }}"
-        COMMIT_SHORT=${COMMIT_SHORT:0:7}
-
-        # Generate unique filename for this run
-        SMART_REPORT_NAME="smart-report_${CLEAN_BRANCH}_${{ inputs.browser-name }}_${COMMIT_SHORT}_${TIMESTAMP}.html"
+        # Use same structure as playwright report: run-{GITHUB_RUN_ID}/smart-report.html
+        REPORT_DIR="run-${{ github.run_id }}"
 
         # Look for smart report in both possible locations
         SMART_REPORT_FILE=""
@@ -150,8 +145,8 @@ runs:
 
         # Upload the smart report if it exists
         if [ -n "$SMART_REPORT_FILE" ]; then
-          aws s3 cp "$SMART_REPORT_FILE" "s3://kaleidos-qa-reports/${SMART_REPORT_NAME}"
-          SMART_REPORT_URL="https://kaleidos-qa-reports.s3.amazonaws.com/${SMART_REPORT_NAME}"
+          aws s3 cp "$SMART_REPORT_FILE" "s3://kaleidos-qa-reports/${REPORT_DIR}/smart-report.html"
+          SMART_REPORT_URL="https://kaleidos-qa-reports.s3.amazonaws.com/${REPORT_DIR}/smart-report.html"
           echo "smart-report-url=${SMART_REPORT_URL}" >> $GITHUB_OUTPUT
           echo "📊 Smart report uploaded: ${SMART_REPORT_URL}"
         else
