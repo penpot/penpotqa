@@ -156,6 +156,10 @@ runs:
           echo "📊 Smart report uploaded: ${SMART_REPORT_URL}"
         else
           echo "❌ smart-report.html not found in root or tests folder"
+        fi
+
+        # Always upload history files
+        if [ -f "test-history.json" ]; then
           echo "📊 Final test-history.json before upload:"
           echo "   Size: $(wc -c < test-history.json) bytes"
           echo "   Runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
