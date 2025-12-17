@@ -156,23 +156,27 @@ jobs:
         if: always()
         run: |
           echo "📊 Smart Report Verification:"
+          SMART_REPORT_FOUND=false
+
           if [ -f "smart-report.html" ]; then
             echo "✅ Smart report exists: smart-report.html ($(wc -c < smart-report.html) bytes)"
-            # Check if comparison section exists in the report
-            if grep -q "baseline\|comparison\|previous.*run" smart-report.html 2>/dev/null; then
-              echo "🔄 Historical comparison detected in report"
-            else
-              echo "⚠️ No historical comparison found in report"
-            fi
+            SMART_REPORT_FOUND=true
+            REPORT_FILE="smart-report.html"
           elif [ -f "tests/smart-report.html" ]; then
             echo "✅ Smart report exists: tests/smart-report.html ($(wc -c < tests/smart-report.html) bytes)"
-            if grep -q "baseline\|comparison\|previous.*run" tests/smart-report.html 2>/dev/null; then
+            SMART_REPORT_FOUND=true
+            REPORT_FILE="tests/smart-report.html"
+          else
+            echo "❌ No smart report found in root or tests folder"
+          fi
+
+          if [ "$SMART_REPORT_FOUND" = true ]; then
+            # Check if comparison section exists in the report
+            if grep -q "baseline\|comparison\|previous.*run" "$REPORT_FILE" 2>/dev/null; then
               echo "🔄 Historical comparison detected in report"
             else
               echo "⚠️ No historical comparison found in report"
             fi
-          else
-            echo "❌ No smart report found"
           fi
 
       - name: Generate and Upload Reports

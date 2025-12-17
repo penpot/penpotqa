@@ -138,26 +138,24 @@ runs:
         # Generate unique filename for this run
         SMART_REPORT_NAME="smart-report_${CLEAN_BRANCH}_${{ inputs.browser-name }}_${COMMIT_SHORT}_${TIMESTAMP}.html"
 
-        # Upload the smart report if it exists
+        # Look for smart report in both possible locations
+        SMART_REPORT_FILE=""
         if [ -f "smart-report.html" ]; then
-          aws s3 cp smart-report.html "s3://kaleidos-qa-reports/${SMART_REPORT_NAME}"
+          SMART_REPORT_FILE="smart-report.html"
+          echo "📊 Found smart report at root: smart-report.html"
+        elif [ -f "tests/smart-report.html" ]; then
+          SMART_REPORT_FILE="tests/smart-report.html"
+          echo "📊 Found smart report in tests folder: tests/smart-report.html"
+        fi
+
+        # Upload the smart report if it exists
+        if [ -n "$SMART_REPORT_FILE" ]; then
+          aws s3 cp "$SMART_REPORT_FILE" "s3://kaleidos-qa-reports/${SMART_REPORT_NAME}"
           SMART_REPORT_URL="https://kaleidos-qa-reports.s3.amazonaws.com/${SMART_REPORT_NAME}"
           echo "smart-report-url=${SMART_REPORT_URL}" >> $GITHUB_OUTPUT
           echo "📊 Smart report uploaded: ${SMART_REPORT_URL}"
         else
-          echo "❌ smart-report.html not found"
-        fi
-
-    - name: Upload test history to S3
-      shell: bash
-      run: |
-        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
-        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-        COMMIT_SHORT="${{ github.sha }}"
-        COMMIT_SHORT=${COMMIT_SHORT:0:7}
-
-        # Debug final test history before upload
-        if [ -f "test-history.json" ]; then
+          echo "❌ smart-report.html not found in root or tests folder"
           echo "📊 Final test-history.json before upload:"
           echo "   Size: $(wc -c < test-history.json) bytes"
           echo "   Runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
