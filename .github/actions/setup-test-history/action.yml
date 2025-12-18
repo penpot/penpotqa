@@ -25,5 +25,56 @@ runs:
     - name: Setup test history
       shell: bash
       run: |
-        # Simply restore any existing test-history.json
-        aws s3 cp s3://kaleidos-qa-reports/test-history.json test-history.json 2>/dev/null || echo "No existing history found, starting fresh"
+        # Always maintain test history following playwright-smart-reporter README format
+        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        echo "🔍 Setting up test history for branch: ${CLEAN_BRANCH}"
+
+        # Create directory structure
+        mkdir -p "history/${CLEAN_BRANCH}"
+
+        # Download main test-history.json if exists (this is the format the plugin expects)
+        echo "📥 Downloading main test-history.json..."
+        aws s3 cp s3://kaleidos-qa-reports/test-history.json test-history.json 2>/dev/null || echo "No main test-history.json found, will start fresh"
+
+        # Download branch-specific history files for backup/reference
+        echo "📥 Downloading branch-specific history files..."
+        aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null || echo "No branch-specific history found"
+
+        # If we have a test-history.json, show info about it
+        if [ -f "test-history.json" ]; then
+          echo "✅ Found existing test-history.json"
+          echo "📊 File size: $(wc -c < test-history.json) bytes"
+          
+          # Extract baseline run ID for the smart reporter
+          BASELINE_RUN_ID=$(node -pe 'try { 
+            const history = JSON.parse(require("fs").readFileSync("test-history.json", "utf8")); 
+            const runs = history.runs || []; 
+            runs.length > 0 ? runs[runs.length - 1].id || runs[0].id : "" 
+          } catch(e) { "" }')
+          
+          if [ -n "$BASELINE_RUN_ID" ]; then
+            echo "BASELINE_RUN_ID=${BASELINE_RUN_ID}" >> $GITHUB_ENV
+            echo "🎯 Baseline Run ID set to: ${BASELINE_RUN_ID}"
+            
+            # Show history stats
+            echo "📊 History stats:"
+            node -e "
+              try {
+                const history = JSON.parse(require('fs').readFileSync('test-history.json', 'utf8'));
+                console.log('   Runs:', (history.runs || []).length);
+                console.log('   Tests:', Object.keys(history.tests || {}).length);
+                console.log('   Summaries:', (history.summaries || []).length);
+                if (history.runs && history.runs.length > 0) {
+                  const latestRun = history.runs[history.runs.length - 1];
+                  console.log('   Latest run ID:', latestRun.id || 'no-id');
+                }
+              } catch(e) {
+                console.log('   ❌ Parse error:', e.message);
+              }
+            "
+          else
+            echo "⚠️ Could not extract baseline run ID from history"
+          fi
+        else
+          echo "ℹ️ No existing test-history.json found, smart reporter will start fresh"
+        fi

@@ -50,14 +50,11 @@ runs:
           test-history-${{ github.ref }}-
           test-history-
 
-    - name: Download test history from S3
+    - name: Download and merge test history from S3
       shell: bash
       run: |
-        # Skip history operations for manual executions to avoid interference
-        if [[ "${{ inputs.is-manual-execution }}" == "true" ]]; then
-          echo "ℹ️ Manual execution detected - skipping history download and merge operations"
-          exit 0
-        fi
+        # Always maintain test history for proper historical comparison
+        echo "🔄 Processing test history for continued historical tracking"
 
         mkdir -p history
 
@@ -74,11 +71,8 @@ runs:
     - name: Merge downloaded histories with current
       shell: bash
       run: |
-        # Skip history merge for manual executions
-        if [[ "${{ inputs.is-manual-execution }}" == "true" ]]; then
-          echo "ℹ️ Manual execution detected - skipping history merge"
-          exit 0
-        fi
+        # Always merge history to maintain continuity
+        echo "🔄 Merging test history files for historical tracking"
 
         CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
 
@@ -171,10 +165,8 @@ runs:
           echo "❌ smart-report.html not found in root or tests folder"
         fi
 
-        # Upload history files (skip for manual executions to avoid interference)
-        if [[ "${{ inputs.is-manual-execution }}" == "true" ]]; then
-          echo "ℹ️ Manual execution detected - skipping history file upload to avoid interference with automated runs"
-        elif [ -f "test-history.json" ]; then
+        # Always upload history files to maintain continuity
+        if [ -f "test-history.json" ]; then
           echo "📊 Final test-history.json before upload:"
           echo "   Size: $(wc -c < test-history.json) bytes"
           echo "   Runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
