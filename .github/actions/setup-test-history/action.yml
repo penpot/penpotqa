@@ -53,6 +53,20 @@ runs:
           echo "✅ Using: $BEST_FILE"
           cp "$BEST_FILE" test-history.json
           echo "📊 Branch-specific history loaded for: ${CLEAN_BRANCH}"
+          
+          # Extract the most recent run ID from history for baseline
+          BASELINE_RUN_ID=$(node -pe 'try { 
+            const history = JSON.parse(require("fs").readFileSync("test-history.json", "utf8")); 
+            const runs = history.runs || []; 
+            runs.length > 0 ? runs[runs.length - 1].id || runs[0].id : "" 
+          } catch(e) { "" }')
+          
+          if [ -n "$BASELINE_RUN_ID" ]; then
+            echo "BASELINE_RUN_ID=${BASELINE_RUN_ID}" >> $GITHUB_ENV
+            echo "🎯 Baseline Run ID set to: ${BASELINE_RUN_ID}"
+          else
+            echo "⚠️ Could not extract baseline run ID from history"
+          fi
         else
           echo "ℹ️ No test-history files found for branch ${CLEAN_BRANCH}, smart reporter will start fresh"
         fi
