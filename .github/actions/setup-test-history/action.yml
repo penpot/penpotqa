@@ -167,11 +167,11 @@ runs:
               FILE_SIZE=$(wc -c < "$file")
               echo "🔍 Checking file: $file (${FILE_SIZE} bytes)"
               
-              # Verify file has valid structure and runs
-              HAS_RUNS=$(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')
-              echo "   Runs found: $HAS_RUNS"
+              # Simply check if file is valid JSON and has some content
+              IS_VALID_JSON=$(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")); true } catch(e) { false }')
+              echo "   Valid JSON: $IS_VALID_JSON"
               
-              if [ "$HAS_RUNS" -gt 0 ] && [ "$FILE_SIZE" -gt "$BEST_SIZE" ]; then
+              if [ "$IS_VALID_JSON" = "true" ] && [ "$FILE_SIZE" -gt "$BEST_SIZE" ]; then
                 BEST_FILE="$file"
                 BEST_SIZE="$FILE_SIZE"
                 echo "   ✅ New best file candidate: $file"
@@ -183,11 +183,10 @@ runs:
             echo "🎯 Using best history file: $BEST_FILE (${BEST_SIZE} bytes)"
             cp "$BEST_FILE" test-history.json
             
-            # Show summary of selected file
-            RUNS_COUNT=$(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')
-            TESTS_COUNT=$(node -pe 'try { Object.keys(JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).tests || {}).length } catch(e) { 0 }')
-            echo "   📊 Selected history contains: $RUNS_COUNT runs, $TESTS_COUNT tests"
-            echo "   ✅ Successfully loaded existing history data"
+            # Show summary of selected file structure (without requiring specific fields)
+            echo "   📊 Selected history file loaded successfully"
+            echo "   📄 File structure: $(node -pe 'try { const h=JSON.parse(require("fs").readFileSync("test-history.json", "utf8")); Object.keys(h).join(",") } catch(e) { "unknown" }')"
+            echo "   ✅ History data available for smart reporter"
           else
             echo "❌ ERROR: No usable history files found in S3"
             echo "❌ Cannot create test history without valid historical data"
