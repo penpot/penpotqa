@@ -33,28 +33,115 @@ runs:
         mkdir -p "history/${CLEAN_BRANCH}"
         aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ --exclude "*" --include "test-history*" 2>/dev/null || echo "No test-history files found for branch ${CLEAN_BRANCH}"
 
-        # Find the largest test-history file for this branch (most complete)
-        BEST_FILE=""
-        BEST_SIZE=0
+        # Find and fix all test-history files for this branch
+        HISTORY_FILES=()
 
         for file in history/${CLEAN_BRANCH}/test-history*.json; do
           if [ -f "$file" ]; then
             FILE_SIZE=$(wc -c < "$file")
-            echo "📄 Found: $file (${FILE_SIZE} bytes)"
+            echo "📄 Processing: $file (${FILE_SIZE} bytes)"
             
-            if [ "$FILE_SIZE" -gt "$BEST_SIZE" ]; then
-              BEST_FILE="$file"
-              BEST_SIZE="$FILE_SIZE"
+            # Check if file has runs, if not, add a run ID
+            HAS_RUNS=$(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')
+            
+            if [ "$HAS_RUNS" -eq 0 ]; then
+              echo "   🔧 File has no runs, generating run ID..."
+              
+              # Extract timestamp from filename to use as run ID
+              FILENAME=$(basename "$file")
+              RUN_ID=$(echo "$FILENAME" | grep -o '[0-9]\+_[0-9]\+' | head -1)
+              
+              if [ -z "$RUN_ID" ]; then
+                RUN_ID="run_$(date +%s)"
+              fi
+              
+              # Add run ID to the file
+              node -e "
+                const fs = require('fs');
+                try {
+                  const data = JSON.parse(fs.readFileSync('$file', 'utf8'));
+                  if (!data.runs || data.runs.length === 0) {
+                    data.runs = [{
+                      id: '$RUN_ID',
+                      startedAt: new Date().toISOString(),
+                      finishedAt: new Date().toISOString(),
+                      status: 'completed',
+                      summary: { passed: 0, failed: 0, total: 0 }
+                    }];
+                    fs.writeFileSync('$file', JSON.stringify(data, null, 2));
+                    console.log('   ✅ Added run ID: $RUN_ID');
+                  }
+                } catch(e) {
+                  console.log('   ❌ Error processing file: ' + e.message);
+                }
+              "
+            else
+              echo "   ✅ File already has $HAS_RUNS runs"
             fi
+            
+            # Add to files to merge
+            HISTORY_FILES+=("$file")
           fi
         done
 
-        if [ -n "$BEST_FILE" ]; then
-          echo "✅ Using: $BEST_FILE"
-          cp "$BEST_FILE" test-history.json
-          echo "📊 Branch-specific history loaded for: ${CLEAN_BRANCH}"
+        # Merge all history files into one
+        if [ ${#HISTORY_FILES[@]} -gt 0 ]; then
+          echo "🔗 Merging ${#HISTORY_FILES[@]} history files..."
           
-          # Extract the most recent run ID from history for baseline
+          node -e "
+            const fs = require('fs');
+            const mergedHistory = { runs: [], tests: {}, summaries: [] };
+            
+            const files = ['${HISTORY_FILES[*]}'].join(' ').split(' ');
+            
+            files.forEach(file => {
+              if (!file) return;
+              try {
+                console.log('   📄 Processing: ' + file);
+                const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+                
+                // Merge runs
+                if (data.runs) {
+                  mergedHistory.runs.push(...data.runs);
+                }
+                
+                // Merge tests
+                if (data.tests) {
+                  Object.assign(mergedHistory.tests, data.tests);
+                }
+                
+                // Merge summaries
+                if (data.summaries) {
+                  mergedHistory.summaries.push(...data.summaries);
+                }
+              } catch(e) {
+                console.log('   ❌ Error reading ' + file + ': ' + e.message);
+              }
+            });
+            
+            // Remove duplicate runs by ID
+            const uniqueRuns = {};
+            mergedHistory.runs.forEach(run => {
+              if (run.id) uniqueRuns[run.id] = run;
+            });
+            mergedHistory.runs = Object.values(uniqueRuns);
+            
+            // Remove duplicate summaries by runId
+            const uniqueSummaries = {};
+            mergedHistory.summaries.forEach(summary => {
+              if (summary.runId) uniqueSummaries[summary.runId] = summary;
+            });
+            mergedHistory.summaries = Object.values(uniqueSummaries);
+            
+            fs.writeFileSync('test-history.json', JSON.stringify(mergedHistory, null, 2));
+            console.log('✅ Merged ' + mergedHistory.runs.length + ' unique runs from ' + files.length + ' files');
+          "
+        fi
+
+        if [ ${#HISTORY_FILES[@]} -gt 0 ]; then
+          echo "📊 Unified history loaded with multiple runs for branch: ${CLEAN_BRANCH}"
+          
+          # Extract the most recent run ID from merged history for baseline
           BASELINE_RUN_ID=$(node -pe 'try { 
             const history = JSON.parse(require("fs").readFileSync("test-history.json", "utf8")); 
             const runs = history.runs || []; 
@@ -65,7 +152,7 @@ runs:
             echo "BASELINE_RUN_ID=${BASELINE_RUN_ID}" >> $GITHUB_ENV
             echo "🎯 Baseline Run ID set to: ${BASELINE_RUN_ID}"
           else
-            echo "⚠️ Could not extract baseline run ID from history"
+            echo "⚠️ Could not extract baseline run ID from merged history"
           fi
         else
           echo "ℹ️ No test-history files found for branch ${CLEAN_BRANCH}, smart reporter will start fresh"
