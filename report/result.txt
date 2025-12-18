@@ -1,0 +1,11 @@
+
+        Test run results
+        
+        Summary:
+          - ⌛ Total test cases 11
+          - 📦 Tests results: 
+            - Passed ✅: 0
+            - Failed ❌: 11
+            - Skipped ⏩: 0
+            
+        To see the full report, please visit our github page for more details
