@@ -53,6 +53,12 @@ runs:
     - name: Download test history from S3
       shell: bash
       run: |
+        # Skip history operations for manual executions to avoid interference
+        if [[ "${{ inputs.is-manual-execution }}" == "true" ]]; then
+          echo "ℹ️ Manual execution detected - skipping history download and merge operations"
+          exit 0
+        fi
+
         mkdir -p history
 
         # Clean branch name for folder structure
@@ -68,6 +74,12 @@ runs:
     - name: Merge downloaded histories with current
       shell: bash
       run: |
+        # Skip history merge for manual executions
+        if [[ "${{ inputs.is-manual-execution }}" == "true" ]]; then
+          echo "ℹ️ Manual execution detected - skipping history merge"
+          exit 0
+        fi
+
         CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
 
         # Create array of history files to merge
@@ -159,8 +171,10 @@ runs:
           echo "❌ smart-report.html not found in root or tests folder"
         fi
 
-        # Always upload history files
-        if [ -f "test-history.json" ]; then
+        # Upload history files (skip for manual executions to avoid interference)
+        if [[ "${{ inputs.is-manual-execution }}" == "true" ]]; then
+          echo "ℹ️ Manual execution detected - skipping history file upload to avoid interference with automated runs"
+        elif [ -f "test-history.json" ]; then
           echo "📊 Final test-history.json before upload:"
           echo "   Size: $(wc -c < test-history.json) bytes"
           echo "   Runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
@@ -203,6 +217,12 @@ runs:
       env:
         TESTDINO_API_KEY: ${{ inputs.testdino_api_key }}
       run: |
+        # Skip Testdino uploads for manual executions
+        if [[ "${{ inputs.is-manual-execution }}" == "true" ]]; then
+          echo "ℹ️ Manual execution detected - skipping Testdino upload (manual runs are not tracked in external systems)"
+          exit 0
+        fi
+
         if [ -f "testResults.json" ]; then
           echo "📤 Uploading results to Testdino..."
           RESPONSE=$(curl -s -X POST "https://api.testdino.com/api/v2/results" \
@@ -236,4 +256,5 @@ runs:
           test-results/
           testResults.json
           test-history.json
-        retention-days: 7
+        # Use shorter retention for manual executions, longer for automated
+        retention-days: ${{ inputs.is-manual-execution == true && 3 || 7 }}
