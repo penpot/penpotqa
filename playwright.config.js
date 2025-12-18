@@ -68,6 +68,9 @@ const config = {
             runId:
               process.env.CURRENT_RUN_ID ||
               `run_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
+            // Ensure run recording is enabled
+            recordRuns: true,
+            generateOnEnd: true,
             // Add run metadata for better history tracking
             runMetadata: {
               branch: process.env.GITHUB_REF_NAME || 'local',
@@ -77,10 +80,7 @@ const config = {
               actor: process.env.GITHUB_ACTOR || 'local-user',
               runId:
                 process.env.CURRENT_RUN_ID ||
-                `run_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`, // Duplicate for debugging
-              // Force run generation debugging
-              debug: true,
-              forceNewRun: true,
+                `run_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
             },
           },
         ],
