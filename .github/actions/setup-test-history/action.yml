@@ -1,5 +1,5 @@
 name: 'Setup Test History and Baseline'
-description: 'Downloads test history from S3 and configures baseline for comparisons - v2'
+description: 'Downloads test history from S3 for smart reporter'
 
 inputs:
   aws-access-key-id:
@@ -11,11 +11,6 @@ inputs:
   aws-region:
     description: 'AWS Region'
     required: true
-
-outputs:
-  baseline-run-id:
-    description: 'Baseline run ID for comparison'
-    value: ${{ steps.setup-baseline.outputs.baseline-run-id }}
 
 runs:
   using: 'composite'
@@ -30,179 +25,34 @@ runs:
     - name: Download test history from S3
       shell: bash
       run: |
-        mkdir -p history
-
-        # Clean branch name for folder structure
+        # Use branch-specific history files
         CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
+        echo "🔍 Looking for test-history files for branch: ${CLEAN_BRANCH}"
+
+        # Download test-history files specific to this branch
         mkdir -p "history/${CLEAN_BRANCH}"
+        aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ --exclude "*" --include "test-history*" 2>/dev/null || echo "No test-history files found for branch ${CLEAN_BRANCH}"
 
-        # Download main history file
-        aws s3 cp s3://kaleidos-qa-reports/test-history.json test-history.json 2>/dev/null || echo "No main history file found"
+        # Find the largest test-history file for this branch (most complete)
+        BEST_FILE=""
+        BEST_SIZE=0
 
-        # Debug downloaded file
-        if [ -f "test-history.json" ]; then
-          echo "📥 Downloaded main history file: $(wc -c < test-history.json) bytes"
-          echo "🔍 Downloaded file structure: $(node -pe 'try { const h=JSON.parse(require("fs").readFileSync("test-history.json", "utf8")); Object.keys(h).join(",") } catch(e) { "error" }')"
-          echo "🔍 Downloaded file runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
-        fi
-
-        # Download branch-specific history files
-        aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null || echo "No branch-specific history found"
-
-        # Debug branch files
-        if [ -d "history/${CLEAN_BRANCH}" ]; then
-          echo "📁 Branch history files found:"
-          ls -la "history/${CLEAN_BRANCH}/" || echo "No files in branch directory"
-          
-          for file in history/${CLEAN_BRANCH}/history_*.json; do
-            if [ -f "$file" ]; then
-              echo "📄 Branch file: $file ($(wc -c < "$file") bytes)"
-              echo "🔍 Branch file runs: $(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
-            fi
-          done
-        fi
-
-    - name: Merge test histories
-      shell: bash
-      run: |
-        CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
-
-        # FORCE CLEANUP: Delete all malformed history files with 0 runs
-        echo "🧹 Cleaning up malformed history files with 0 runs..."
-
-        if [ -f "test-history.json" ]; then
-          RUNS_COUNT=$(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')
-          if [ "$RUNS_COUNT" -eq 0 ]; then
-            echo "🗑️ Deleting malformed main history file (0 runs): test-history.json"
-            rm -f test-history.json
-          fi
-        fi
-
-        if [ -d "history/${CLEAN_BRANCH}" ]; then
-          for file in history/${CLEAN_BRANCH}/*.json; do
-            if [ -f "$file" ]; then
-              RUNS_COUNT=$(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')
-              if [ "$RUNS_COUNT" -eq 0 ]; then
-                echo "🗑️ Deleting malformed branch history file (0 runs): $file"
-                rm -f "$file"
-              fi
-            fi
-          done
-        fi
-
-        # Create array of history files to merge (only valid ones remaining)
-        HISTORY_FILES=()
-
-        # Add main history file if it exists AND has runs > 0
-        if [ -f "test-history.json" ]; then
-          RUNS_COUNT=$(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')
-          if [ "$RUNS_COUNT" -gt 0 ]; then
-            HISTORY_FILES+=("test-history.json")
-            echo "✅ Found valid main history file with $RUNS_COUNT runs: test-history.json"
-          fi
-        fi
-
-        # Add branch-specific history files if they have runs > 0
-        if [ -d "history/${CLEAN_BRANCH}" ]; then
-          for file in history/${CLEAN_BRANCH}/history_*.json; do
-            if [ -f "$file" ]; then
-              RUNS_COUNT=$(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')
-              if [ "$RUNS_COUNT" -gt 0 ]; then
-                HISTORY_FILES+=("$file")
-                echo "✅ Found valid branch history file with $RUNS_COUNT runs: $file"
-              fi
-            fi
-          done
-        fi
-
-        # If we have multiple valid history files, merge them
-        if [ ${#HISTORY_FILES[@]} -gt 1 ]; then
-          echo "Merging ${#HISTORY_FILES[@]} valid history files..."
-          
-          # Debug: show content of each file before merge
-          for file in "${HISTORY_FILES[@]}"; do
-            if [ -f "$file" ]; then
-              echo "📄 File: $file ($(wc -c < "$file") bytes)"
-              echo "🔍 Runs in $file: $(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
-              echo "🔍 Tests in $file: $(node -pe 'try { Object.keys(JSON.parse(require("fs").readFileSync("'$file'", "utf8")).tests || {}).length } catch(e) { 0 }')"
-            fi
-          done
-          
-          npx playwright-smart-reporter-merge-history "${HISTORY_FILES[@]}" -o merged-history.json --max-runs 15
-          
-          if [ -f "merged-history.json" ]; then
-            mv merged-history.json test-history.json
-            echo "✅ Successfully merged history files"
-            echo "📊 Merged history runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("test-history.json", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
-          else
-            echo "❌ Failed to merge history files"
-          fi
-        elif [ ${#HISTORY_FILES[@]} -eq 1 ]; then
-          echo "Using single valid history file: ${HISTORY_FILES[0]}"
-          echo "🔍 Single file runs count: $(node -pe 'try { JSON.parse(require("fs").readFileSync("'${HISTORY_FILES[0]}'", "utf8")).runs?.length || 0 } catch(e) { 0 }')"
-          # Copy to root location if not already there
-          if [ "${HISTORY_FILES[0]}" != "test-history.json" ]; then
-            cp "${HISTORY_FILES[0]}" test-history.json
-          fi
-        else
-          echo "🔄 No valid history files with runs found. Searching for existing history files in S3..."
-          
-          # Search specifically in the branch history folder for existing files
-          CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9._-]/_/g')
-          echo "🔍 Searching in s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/"
-          
-          # Download all history files from branch folder
-          aws s3 sync s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/ history/${CLEAN_BRANCH}/ 2>/dev/null || echo "No branch history found"
-          
-          # List all downloaded files
-          echo "📁 Available history files:"
-          ls -la history/${CLEAN_BRANCH}/ 2>/dev/null || echo "No files downloaded"
-          
-          # Look for the most recent and largest history file (likely most complete)
-          BEST_FILE=""
-          BEST_SIZE=0
-          
-          for file in history/${CLEAN_BRANCH}/history_*.json history/${CLEAN_BRANCH}/test-history_*.json; do
-            if [ -f "$file" ]; then
-              FILE_SIZE=$(wc -c < "$file")
-              echo "🔍 Checking file: $file (${FILE_SIZE} bytes)"
-              
-              # Simply check if file is valid JSON and has some content
-              IS_VALID_JSON=$(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")); true } catch(e) { false }')
-              echo "   Valid JSON: $IS_VALID_JSON"
-              
-              if [ "$IS_VALID_JSON" = "true" ] && [ "$FILE_SIZE" -gt "$BEST_SIZE" ]; then
-                BEST_FILE="$file"
-                BEST_SIZE="$FILE_SIZE"
-                echo "   ✅ New best file candidate: $file"
-              fi
-            fi
-          done
-          
-          if [ -n "$BEST_FILE" ] && [ -f "$BEST_FILE" ]; then
-            echo "🎯 Using best history file: $BEST_FILE (${BEST_SIZE} bytes)"
-            cp "$BEST_FILE" test-history.json
+        for file in history/${CLEAN_BRANCH}/test-history*.json; do
+          if [ -f "$file" ]; then
+            FILE_SIZE=$(wc -c < "$file")
+            echo "📄 Found: $file (${FILE_SIZE} bytes)"
             
-            # Show summary of selected file structure (without requiring specific fields)
-            echo "   📊 Selected history file loaded successfully"
-            echo "   📄 File structure: $(node -pe 'try { const h=JSON.parse(require("fs").readFileSync("test-history.json", "utf8")); Object.keys(h).join(",") } catch(e) { "unknown" }')"
-            echo "   ✅ History data available for smart reporter"
-          else
-            echo "❌ ERROR: No usable history files found in S3"
-            echo "❌ Cannot create test history without valid historical data"
-            echo "❌ Please ensure history files are available in s3://kaleidos-qa-reports/history/${CLEAN_BRANCH}/"
-            exit 1
+            if [ "$FILE_SIZE" -gt "$BEST_SIZE" ]; then
+              BEST_FILE="$file"
+              BEST_SIZE="$FILE_SIZE"
+            fi
           fi
+        done
+
+        if [ -n "$BEST_FILE" ]; then
+          echo "✅ Using: $BEST_FILE"
+          cp "$BEST_FILE" test-history.json
+          echo "📊 Branch-specific history loaded for: ${CLEAN_BRANCH}"
+        else
+          echo "ℹ️ No test-history files found for branch ${CLEAN_BRANCH}, smart reporter will start fresh"
         fi
-
-    - name: Setup baseline run ID
-      id: setup-baseline
-      shell: bash
-      run: |
-        # Generate unique baseline run ID based on timestamp and commit
-        BASELINE_ID="${{ github.sha }}_$(date +%s)"
-        echo "baseline-run-id=${BASELINE_ID}" >> $GITHUB_OUTPUT
-        echo "📝 Baseline Run ID set to: ${BASELINE_ID}"
-
-        # Export for use in subsequent steps
-        echo "BASELINE_RUN_ID=${BASELINE_ID}" >> $GITHUB_ENV
