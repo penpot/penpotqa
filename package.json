@@ -33,6 +33,7 @@
     "husky": "^9.1.7"
   },
   "dependencies": {
+    "@estruyf/github-actions-reporter": "^1.10.0",
     "axios": "^1.13.2",
     "cheerio": "^1.1.2",
     "fs": "^0.0.1-security",

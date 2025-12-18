@@ -48,6 +48,15 @@ const config = {
             logging: true,
           },
         ],
+        [
+          '@estruyf/github-actions-reporter',
+          {
+            title: 'Github actions reporter',
+            showAnnotations: true,
+            useDetails: true,
+            showError: true,
+          },
+        ],
       ]
     : [['html'], ['json', { outputFile: 'playwright-report/results.json' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
