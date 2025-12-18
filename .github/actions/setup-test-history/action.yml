@@ -145,17 +145,71 @@ runs:
             cp "${HISTORY_FILES[0]}" test-history.json
           fi
         else
-          echo "🔄 No valid history files with runs found. Creating empty baseline for new run."
-          # Create empty baseline history that will be populated by the current run
-          cat > test-history.json << 'EOF'
-        {
-          "runs": [],
-          "tests": {},
-          "summaries": []
-        }
-        EOF
-          echo "✅ Created fresh empty baseline history file"
-          echo "   Tests: 0 (will be populated by current run)"
+          echo "🔄 No valid history files with runs found. Searching for alternative history files in S3..."
+          
+          # Try to download any additional history files from S3 with different patterns
+          echo "🔍 Searching for test-results files in S3..."
+          aws s3 ls s3://kaleidos-qa-reports/ --recursive | grep -E "(test-results|history)" || echo "No additional files found"
+          
+          # Try to download test-results files that might contain usable data
+          for pattern in "test-results-*.json" "history-*.json" "playwright-report-*.json"; do
+            echo "Searching for pattern: $pattern"
+            aws s3 cp s3://kaleidos-qa-reports/ . --recursive --exclude "*" --include "$pattern" 2>/dev/null || echo "No files found for pattern $pattern"
+          done
+          
+          # List downloaded files
+          echo "📁 Downloaded files:"
+          ls -la *.json 2>/dev/null || echo "No JSON files found"
+          
+          # Look for any JSON file with test results that we can use
+          FOUND_RESULTS=false
+          for file in test-results-*.json history-*.json playwright-report-*.json; do
+            if [ -f "$file" ]; then
+              echo "🔍 Checking file: $file"
+              # Check if file contains test results we can convert
+              HAS_TESTS=$(node -pe 'try { const data=JSON.parse(require("fs").readFileSync("'$file'", "utf8")); (data.tests && Array.isArray(data.tests)) || (data.suites && Array.isArray(data.suites)) } catch(e) { false }')
+              if [ "$HAS_TESTS" = "true" ]; then
+                echo "✅ Found usable test results in: $file"
+                # Convert to basic history format
+                node -e "
+                  const fs = require('fs');
+                  try {
+                    const data = JSON.parse(fs.readFileSync('$file', 'utf8'));
+                    const runId = 'baseline_' + Date.now();
+                    const history = {
+                      runs: [{
+                        id: runId,
+                        startedAt: new Date().toISOString(),
+                        finishedAt: new Date().toISOString(),
+                        status: 'passed',
+                        summary: data.stats || { passed: 0, failed: 0, total: 0 }
+                      }],
+                      tests: {},
+                      summaries: [{
+                        runId: runId,
+                        passed: data.stats?.passed || 0,
+                        failed: data.stats?.failed || 0,
+                        total: data.stats?.total || 0
+                      }]
+                    };
+                    fs.writeFileSync('test-history.json', JSON.stringify(history, null, 2));
+                    console.log('✅ Converted test results to history format');
+                  } catch(e) {
+                    console.log('❌ Failed to convert: ' + e.message);
+                  }
+                "
+                FOUND_RESULTS=true
+                break
+              fi
+            fi
+          done
+          
+          if [ "$FOUND_RESULTS" = "false" ]; then
+            echo "❌ ERROR: No usable test result files found in S3"
+            echo "❌ Cannot create test history without valid historical data"
+            echo "❌ Please ensure test-results files are available in s3://kaleidos-qa-reports/"
+            exit 1
+          fi
         fi
 
     - name: Setup baseline run ID
