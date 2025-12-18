@@ -41,52 +41,42 @@ runs:
             FILE_SIZE=$(wc -c < "$file")
             echo "📄 Processing: $file (${FILE_SIZE} bytes)"
             
-            # Check if file has runs, if not, add a run ID
-            HAS_RUNS=$(node -pe 'try { JSON.parse(require("fs").readFileSync("'$file'", "utf8")).runs?.length || 0 } catch(e) { 0 }')
-            
-            if [ "$HAS_RUNS" -eq 0 ]; then
-              echo "   🔧 File has no runs, generating run ID..."
-              
-              # Extract timestamp from filename to use as run ID
-              FILENAME=$(basename "$file")
-              RUN_ID=$(echo "$FILENAME" | grep -o '[0-9]\+_[0-9]\+' | head -1)
-              
-              if [ -z "$RUN_ID" ]; then
-                RUN_ID="run_$(date +%s)"
-              fi
-              
-              # Add run ID to the file
-              node -e "
-                const fs = require('fs');
-                try {
-                  const data = JSON.parse(fs.readFileSync('$file', 'utf8'));
-                  if (!data.runs || data.runs.length === 0) {
-                    data.runs = [{
-                      id: '$RUN_ID',
-                      startedAt: new Date().toISOString(),
-                      finishedAt: new Date().toISOString(),
-                      status: 'completed',
-                      summary: { passed: 0, failed: 0, total: 0 }
-                    }];
-                    fs.writeFileSync('$file', JSON.stringify(data, null, 2));
-                    console.log('   ✅ Added run ID: $RUN_ID');
-                  }
-                } catch(e) {
-                  console.log('   ❌ Error processing file: ' + e.message);
+            # Debug: Show what's actually inside each file
+            echo "   🔍 File content analysis:"
+            node -e "
+              try {
+                const data = JSON.parse(require('fs').readFileSync('$file', 'utf8'));
+                console.log('     Runs:', data.runs?.length || 0);
+                console.log('     Tests:', Object.keys(data.tests || {}).length);
+                console.log('     Summaries:', data.summaries?.length || 0);
+                if (data.runs && data.runs.length > 0) {
+                  const firstRun = data.runs[0];
+                  console.log('     First run summary:', JSON.stringify(firstRun.summary || {}));
+                  console.log('     First run ID:', firstRun.id || 'no-id');
                 }
-              "
-            else
-              echo "   ✅ File already has $HAS_RUNS runs"
-            fi
+                if (Object.keys(data.tests || {}).length > 0) {
+                  const testNames = Object.keys(data.tests).slice(0, 2);
+                  console.log('     Sample tests:', testNames.join(', '));
+                }
+              } catch(e) {
+                console.log('     ❌ Parse error:', e.message);
+              }
+            "
             
-            # Add to files to merge
+            # Add to files to analyze
             HISTORY_FILES+=("$file")
           fi
         done
 
         # Merge all history files into one
         if [ ${#HISTORY_FILES[@]} -gt 0 ]; then
-          echo "🔗 Merging ${#HISTORY_FILES[@]} history files..."
+          echo "🔗 Analyzing and merging ${#HISTORY_FILES[@]} history files..."
+          
+          # First, let's see what we actually have
+          echo "📊 Content summary:"
+          for file in "${HISTORY_FILES[@]}"; do
+            echo "   📄 $file"
+          done
           
           node -e "
             const fs = require('fs');
@@ -157,3 +147,31 @@ runs:
         else
           echo "ℹ️ No test-history files found for branch ${CLEAN_BRANCH}, smart reporter will start fresh"
         fi
+
+        # CLEANUP: After analyzing, delete all existing history data to start fresh
+        echo ""
+        echo "🧹 Analysis complete - now cleaning up all existing history data in S3 for fresh start..."
+
+        # Delete main history file
+        aws s3 rm s3://kaleidos-qa-reports/test-history.json 2>/dev/null || echo "No main history file to delete"
+
+        # Delete all branch history files
+        echo "🗑️ Deleting all branch history folders..."
+        aws s3 rm s3://kaleidos-qa-reports/history/ --recursive 2>/dev/null || echo "No history folders to delete"
+
+        # Delete any other test-related JSON files
+        echo "🗑️ Deleting any other test-related JSON files..."
+        aws s3 ls s3://kaleidos-qa-reports/ --recursive | grep "\.json$" | while read -r line; do
+          # Extract the file path from the ls output (skip date/time/size columns)
+          file_path=$(echo "$line" | awk '{print $4}')
+          if [[ "$file_path" == *"test"* || "$file_path" == *"history"* || "$file_path" == *"result"* ]]; then
+            echo "🗑️ Deleting: $file_path"
+            aws s3 rm "s3://kaleidos-qa-reports/$file_path" 2>/dev/null || true
+          fi
+        done
+
+        echo "✅ S3 cleanup completed - smart reporter will start with clean slate"
+
+        # Remove local test-history.json if it was created
+        rm -f test-history.json
+        echo "🧹 Local cleanup completed"
