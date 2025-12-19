@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/penpot/penpotqa#readme",
   "devDependencies": {
+    "@currents/playwright": "^1.20.0",
     "@playwright/test": "^1.57.0",
     "dotenv": "^17.2.3",
     "husky": "^9.1.7"

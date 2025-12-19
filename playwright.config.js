@@ -1,3 +1,10 @@
+const { defineConfig, devices, PlaywrightTestConfig } = require('@playwright/test');
+const {
+  CurrentsFixtures,
+  CurrentsWorkerFixtures,
+  currentsReporter,
+} = require('@currents/playwright');
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -38,6 +45,7 @@ const config = {
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [
+        [currentsReporter()],
         ['list'], // Shows each test as it runs with timing
         ['github'], // GitHub Actions annotations
         ['html'],
@@ -49,7 +57,11 @@ const config = {
           },
         ],
       ]
-    : [['html'], ['json', { outputFile: 'playwright-report/results.json' }]],
+    : [
+        // ['html'],
+        // ['json', { outputFile: 'playwright-report/results.json' }],
+        currentsReporter(),
+      ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
@@ -58,10 +70,10 @@ const config = {
     baseURL: process.env.BASE_URL,
     headless: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: process.env.CI ? 'on-first-retry' : 'on',
-    video: process.env.CI ? 'on-first-retry' : 'on',
+    trace: 'on',
+    video: 'on',
     /* Capture screenshot on failure */
-    screenshot: 'only-on-failure',
+    screenshot: 'on',
   },
   projects: [
     {

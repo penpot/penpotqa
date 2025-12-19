@@ -75,11 +75,11 @@ jobs:
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
               echo "🚀 Running all tests..."
-              npx playwright test --project=chrome
+              npx playwright test --reporter=currentsReporter --project=chrome
               ;;
             "changed_only")
               echo "📝 Running tests for changed files only..."
-              npx playwright test --project=chrome --only-changed=origin/main
+              npx playwright test --reporter=currentsReporter  --project=chrome --only-changed=origin/main
               ;;
             "by_folder")
               echo "📁 Running tests from folder: ${{ github.event.inputs.test_folder }}"
@@ -91,7 +91,7 @@ jobs:
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
                 exit 1
               fi
-              npx playwright test --project=chrome "${{ github.event.inputs.test_folder }}"
+              npx playwright test --reporter=currentsReporter --project=chrome "${{ github.event.inputs.test_folder }}"
               ;;
             *)
               echo "❌ Error: Invalid test mode"
