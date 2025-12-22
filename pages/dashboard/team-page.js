@@ -627,9 +627,15 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async isSubscriptionIconVisible(subscriptionPlan) {
     if (subscriptionPlan === 'Unlimited') {
-      await expect(this.unlimitedIcon).toBeVisible();
+      await expect(
+        this.unlimitedIcon,
+        'Unlimited Plan icon is visible',
+      ).toBeVisible();
     } else if (subscriptionPlan === 'Enterprise') {
-      await expect(this.enterpriseIcon).toBeVisible();
+      await expect(
+        this.enterpriseIcon,
+        'Enterprise Plan icon is visible',
+      ).toBeVisible();
     } else {
       return;
     }
