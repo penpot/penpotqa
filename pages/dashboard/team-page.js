@@ -142,10 +142,10 @@ exports.TeamPage = class TeamPage extends BasePage {
       .getByTestId('subscription-icon')
       .first();
     this.enterpriseIcon = this.subscriptionIcon.locator(
-      'svg[class*="icon-character-e"]',
+      'use[href="#icon-character-e"]',
     );
     this.unlimitedIcon = this.subscriptionIcon.locator(
-      'svg[class*="icon-character-u"]',
+      'use[href="#icon-character-u"]',
     );
     this.teamPlanName = page.locator('[class*="subscription__team-text"]');
     this.teamCurrentBtnText = this.teamCurrentBtn.locator('span[class*="text"]');
@@ -625,15 +625,21 @@ exports.TeamPage = class TeamPage extends BasePage {
     ).not.toBeVisible();
   }
 
-  async isSubscriptionIconVisible(visible = true, subscription = 'Unlimited') {
-    const icon =
-      subscription.toLowerCase() === 'unlimited'
-        ? this.unlimitedIcon
-        : this.enterpriseIcon;
+  async isSubscriptionIconVisible(subscriptionPlan) {
+    if (subscriptionPlan === 'Unlimited') {
+      await expect(this.unlimitedIcon).toBeVisible();
+    } else if (subscriptionPlan === 'Enterprise') {
+      await expect(this.enterpriseIcon).toBeVisible();
+    } else {
+      return;
+    }
+  }
 
-    visible
-      ? await expect(icon).toBeVisible()
-      : await expect(icon).not.toBeVisible();
+  async isSubscriptionIconNotVisible() {
+    await expect(
+      this.subscriptionIcon,
+      'Subscription icon is not visible',
+    ).not.toBeVisible();
   }
 
   async isSubscriptionIconVisibleInTeamDropdown(visible = true) {
