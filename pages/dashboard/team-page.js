@@ -687,4 +687,11 @@ exports.TeamPage = class TeamPage extends BasePage {
   async selectInvitationByEmail(email) {
     await this.page.locator(`label:has([value="${email}"])`).click();
   }
+
+  async isInvitationSelectionDisabled(email) {
+    const checkboxLocator = this.page.locator(
+      `label:has([value="${email}"]) input[type="checkbox"]`,
+    );
+    await expect(checkboxLocator).not.toBeVisible();
+  }
 };
