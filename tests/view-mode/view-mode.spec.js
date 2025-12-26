@@ -808,7 +808,7 @@ mainTest.describe(() => {
       await viewModePage.openInspectTab();
       await inspectPanelPage.openCodeTab();
       await inspectPanelPage.codeHtmlStrings.waitFor({ state: 'visible' });
-      await expect(page.locator('#viewer-layout')).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-shared-code-image.png',
         {
           mask: [page.locator('#right-sidebar')],
