@@ -811,7 +811,7 @@ mainTest.describe(() => {
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-shared-code-image.png',
         {
-          mask: [inspectPanelPage.codeHtmlStrings],
+          mask: [viewModePage.rightSidebar],
         },
       );
       await viewModePage.gotoLink(process.env.BASE_URL);
