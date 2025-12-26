@@ -808,10 +808,10 @@ mainTest.describe(() => {
       await viewModePage.openInspectTab();
       await inspectPanelPage.openCodeTab();
       await inspectPanelPage.codeHtmlStrings.waitFor({ state: 'visible' });
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+      await expect(page.locator('#viewer-layout')).toHaveScreenshot(
         'view-mode-shared-code-image.png',
         {
-          mask: [viewModePage.rightSidebar],
+          mask: [page.locator('#right-sidebar')],
         },
       );
       await viewModePage.gotoLink(process.env.BASE_URL);
