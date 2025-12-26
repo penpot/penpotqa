@@ -161,7 +161,7 @@ registerTest.describe(() => {
   );
 });
 
-registerTest.fixme(
+registerTest(
   qase(2324, 'Owner of team changes Enterprise to Professional'),
   async ({ page, name, email }) => {
     const currentPlan = 'Enterprise';
@@ -239,6 +239,6 @@ registerTest.fixme(
     await dashboardPage.isDashboardOpenedAfterLogin();
     await teamPage.switchTeam(teamName);
     await teamPage.isTeamSelected(teamName);
-    await teamPage.isSubscriptionIconVisible(false, currentPlan);
+    await teamPage.isSubscriptionIconNotVisible();
   },
 );
