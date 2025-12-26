@@ -807,7 +807,7 @@ mainTest.describe(() => {
       await viewModePage.isViewerSectionVisible();
       await viewModePage.openInspectTab();
       await inspectPanelPage.openCodeTab();
-      await page.waitForTimeout(200);
+      await inspectPanelPage.codeHtmlStrings.waitFor({ state: 'visible' });
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-shared-code-image.png',
         {
