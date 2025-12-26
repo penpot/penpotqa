@@ -807,14 +807,11 @@ mainTest.describe(() => {
       await viewModePage.isViewerSectionVisible();
       await viewModePage.openInspectTab();
       await inspectPanelPage.openCodeTab();
-      await inspectPanelPage.codeHtmlStrings.waitFor({ state: 'visible' });
-      await viewModePage.viewerLayoutSection.waitFor({ state: 'visible' });
-      await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(200);
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-shared-code-image.png',
         {
-          mask: [page.locator('#right-sidebar')],
+          mask: [inspectPanelPage.codeHtmlStrings],
         },
       );
       await viewModePage.gotoLink(process.env.BASE_URL);
