@@ -32,7 +32,10 @@ registerTest.afterEach(async () => {
 });
 
 registerTest(
-  qase(2281, 'Display & Info for Enterprise Plan'),
+  qase(
+    [2281, 2348],
+    'Display & Info for Enterprise Plan. Enterprise badge visible immediately',
+  ),
   async ({ page, email }) => {
     const trialPlan = 'Unlimited';
     const currentPlan = 'Enterprise';

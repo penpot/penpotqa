@@ -43,22 +43,19 @@ mainTest.beforeEach(async ({ page }) => {
   mainPage = new MainPage(page);
 });
 
-mainTest(
-  qase(1164, 'Team Invitations - open the form via Invitations tab'),
-  async () => {
-    const team = random().concat('autotest');
+mainTest(qase(1164, 'Open the form via Invitations tab'), async () => {
+  const team = random().concat('autotest');
 
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-    await teamPage.openInvitationsPageViaOptionsMenu();
-    await teamPage.clickInviteMembersToTeamButton();
-    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-    await teamPage.deleteTeam(team);
-  },
-);
+  await teamPage.createTeam(team);
+  await teamPage.isTeamSelected(team);
+  await teamPage.openInvitationsPageViaOptionsMenu();
+  await teamPage.clickInviteMembersToTeamButton();
+  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.deleteTeam(team);
+});
 
 registerTest(
-  qase(1165, 'Team Invitations - open the form via Team Hero'),
+  qase(1165, 'Open the form via Team Hero ("Invite members" button)'),
   async () => {
     const team = random().concat('autotest');
 
@@ -70,69 +67,56 @@ registerTest(
   },
 );
 
-mainTest(
-  qase(1166, 'Team Invitations invite via owner single invitation, editor'),
-  async () => {
-    const team = random().concat('autotest');
+mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () => {
+  const team = random().concat('autotest');
 
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-    await teamPage.openInvitationsPageViaOptionsMenu();
-    await teamPage.clickInviteMembersToTeamButton();
-    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-    await teamPage.enterEmailToInviteMembersPopUp('testeditor@test.com');
-    await teamPage.clickSendInvitationButton();
-    await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-    await teamPage.isInvitationRecordDisplayed(
-      'testeditor@test.com',
-      'Editor',
-      'Pending',
-    );
-    await teamPage.deleteTeam(team);
-  },
-);
+  await teamPage.createTeam(team);
+  await teamPage.isTeamSelected(team);
+  await teamPage.openInvitationsPageViaOptionsMenu();
+  await teamPage.clickInviteMembersToTeamButton();
+  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.enterEmailToInviteMembersPopUp('testeditor@test.com');
+  await teamPage.clickSendInvitationButton();
+  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+  await teamPage.isInvitationRecordDisplayed([
+    { email: 'testeditor@test.com', role: 'Editor', status: 'Pending' },
+  ]);
+  await teamPage.deleteTeam(team);
+});
 
-mainTest(
-  qase(1167, 'Team Invitations - invite via owner single invitation, admin'),
-  async () => {
-    const team = random().concat('autotest');
+mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => {
+  const team = random().concat('autotest');
 
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-    await teamPage.openInvitationsPageViaOptionsMenu();
-    await teamPage.clickInviteMembersToTeamButton();
-    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-    await teamPage.selectInvitationRoleInPopUp('Admin');
-    await teamPage.enterEmailToInviteMembersPopUp('testadmin@test.com');
-    await teamPage.clickSendInvitationButton();
-    await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-    await teamPage.isInvitationRecordDisplayed(
-      'testadmin@test.com',
-      'Admin',
-      'Pending',
-    );
-    await teamPage.deleteTeam(team);
-  },
-);
+  await teamPage.createTeam(team);
+  await teamPage.isTeamSelected(team);
+  await teamPage.openInvitationsPageViaOptionsMenu();
+  await teamPage.clickInviteMembersToTeamButton();
+  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.selectInvitationRoleInPopUp('Admin');
+  await teamPage.enterEmailToInviteMembersPopUp('testadmin@test.com');
+  await teamPage.clickSendInvitationButton();
+  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+  await teamPage.isInvitationRecordDisplayed([
+    { email: 'testadmin@test.com', role: 'Admin', status: 'Pending' },
+  ]);
+  await teamPage.deleteTeam(team);
+});
 
-mainTest(
-  qase(1175, 'Team.Invitations-fail to send invitation to existing team member'),
-  async () => {
-    const team = random().concat('autotest');
+mainTest(qase(1175, 'Fail to send invitation to existing team member'), async () => {
+  const team = random().concat('autotest');
 
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-    await teamPage.openInvitationsPageViaOptionsMenu();
-    await teamPage.clickInviteMembersToTeamButton();
-    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-    await teamPage.enterEmailToInviteMembersPopUp(process.env.LOGIN_EMAIL);
-    await teamPage.isSendInvitationBtnDisabled();
-    await teamPage.isSendInvitationWarningExist(
-      "Some members are already on the team. We'll invite the rest.",
-    );
-    await teamPage.deleteTeam(team);
-  },
-);
+  await teamPage.createTeam(team);
+  await teamPage.isTeamSelected(team);
+  await teamPage.openInvitationsPageViaOptionsMenu();
+  await teamPage.clickInviteMembersToTeamButton();
+  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.enterEmailToInviteMembersPopUp(process.env.LOGIN_EMAIL);
+  await teamPage.isSendInvitationBtnDisabled();
+  await teamPage.isSendInvitationWarningExist(
+    "Some members are already on the team. We'll invite the rest.",
+  );
+  await teamPage.deleteTeam(team);
+});
 
 registerTest.describe(
   'As Owner - Invite Members - Send invite (registered but not team member)',
@@ -158,10 +142,7 @@ registerTest.describe(
     );
 
     registerTest(
-      qase(
-        1174,
-        'Team. Invitations - send invitation to registered user (but not a team member)',
-      ),
+      qase(1174, 'Invite to a registered user (not a team member)'),
       async ({ page, email }) => {
         await teamPage.selectInvitationRoleInPopUp('Admin');
         await teamPage.enterEmailToInviteMembersPopUp(email);
@@ -190,10 +171,7 @@ mainTest.describe(
     const secondEditor = random().concat('autotest');
 
     mainTest(
-      qase(
-        1168,
-        'Team. Invitations - invite via owner (multiple invitations, editor)',
-      ),
+      qase(1168, 'Invite via owner (multiple invitations, editor)'),
       async ({ page }) => {
         const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
         const secondEmail = `${process.env.GMAIL_NAME}+${secondEditor}${process.env.GMAIL_DOMAIN}`;
@@ -276,65 +254,71 @@ mainTest.describe(
   },
 );
 
-mainTest(qase(1176, 'Team Invitations - resend invitation via owner'), async () => {
+mainTest(qase(1176, 'Resend multiple invitations via owner'), async () => {
   const team = random().concat('autotest');
   const email = 'testeditor@test.com';
-  await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
-  await teamPage.openInvitationsPageViaOptionsMenu();
-  await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-  await teamPage.enterEmailToInviteMembersPopUp(email);
-  await teamPage.clickSendInvitationButton();
-  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-  await teamPage.isInvitationRecordDisplayed(email, 'Editor', 'Pending');
-  await teamPage.resendInvitation(email);
-  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-  await teamPage.deleteTeam(team);
-});
-
-mainTest(qase(1178, 'Team Invitations - delete invitation via owner'), async () => {
-  const team = random().concat('autotest');
-  const email = 'testeditor@test.com';
+  const email2 = 'testeditor2@test.com';
+  const email3 = 'testeditor3@test.com';
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-  await teamPage.enterEmailToInviteMembersPopUp(email);
+  await teamPage.enterEmailToInviteMembersPopUp([email, email2, email3]);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-  await teamPage.isInvitationRecordDisplayed(email, 'Editor', 'Pending');
-  await teamPage.deleteInvitation(email);
-  await teamPage.isInvitationRecordRemoved();
+  await teamPage.isInvitationRecordDisplayed([
+    { email: email, role: 'Editor', status: 'Pending' },
+    { email: email2, role: 'Editor', status: 'Pending' },
+    { email: email3, role: 'Editor', status: 'Pending' },
+  ]);
+  await teamPage.resendInvitation([email, email2, email3]);
+  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
   await teamPage.deleteTeam(team);
 });
 
-mainTest(
-  qase(1181, 'Team Invitations - change role in invitation via owner'),
-  async () => {
-    const team = random().concat('autotest');
+mainTest(qase(1178, 'Delete multiple invitations via owner'), async () => {
+  const team = random().concat('autotest');
+  const email = 'testeditor@test.com';
+  const email2 = 'testeditor2@test.com';
+  const email3 = 'testeditor3@test.com';
 
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-    await teamPage.openInvitationsPageViaOptionsMenu();
-    await teamPage.clickInviteMembersToTeamButton();
-    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-    await teamPage.enterEmailToInviteMembersPopUp('testrole@test.com');
-    await teamPage.clickSendInvitationButton();
-    await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-    await teamPage.isInvitationRecordDisplayed(
-      'testrole@test.com',
-      'Editor',
-      'Pending',
-    );
-    await teamPage.selectInvitationRoleInInvitationRecord('Admin');
-    await teamPage.isInvitationRecordDisplayed(
-      'testrole@test.com',
-      'Admin',
-      'Pending',
-    );
-    await teamPage.deleteTeam(team);
-  },
-);
+  await teamPage.createTeam(team);
+  await teamPage.isTeamSelected(team);
+  await teamPage.openInvitationsPageViaOptionsMenu();
+  await teamPage.clickInviteMembersToTeamButton();
+  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.enterEmailToInviteMembersPopUp([email, email2, email3]);
+  await teamPage.clickSendInvitationButton();
+  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+  await teamPage.isInvitationRecordDisplayed([
+    { email: email, role: 'Editor', status: 'Pending' },
+    { email: email2, role: 'Editor', status: 'Pending' },
+    { email: email3, role: 'Editor', status: 'Pending' },
+  ]);
+  await teamPage.deleteInvitation([email, email2, email3]);
+  await teamPage.isInvitationRecordRemoved([email, email2, email3]);
+  await teamPage.deleteTeam(team);
+});
+
+mainTest(qase(1181, 'Change role in invitation via owner'), async () => {
+  const team = random().concat('autotest');
+
+  await teamPage.createTeam(team);
+  await teamPage.isTeamSelected(team);
+  await teamPage.openInvitationsPageViaOptionsMenu();
+  await teamPage.clickInviteMembersToTeamButton();
+  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.enterEmailToInviteMembersPopUp('testrole@test.com');
+  await teamPage.clickSendInvitationButton();
+  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+  await teamPage.isInvitationRecordDisplayed([
+    { email: 'testrole@test.com', role: 'Editor', status: 'Pending' },
+  ]);
+  await teamPage.selectInvitationRoleInInvitationRecord('Admin');
+  await teamPage.isInvitationRecordDisplayed([
+    { email: 'testrole@test.com', role: 'Admin', status: 'Pending' },
+  ]);
+  await teamPage.deleteTeam(team);
+});

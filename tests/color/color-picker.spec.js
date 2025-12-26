@@ -118,26 +118,29 @@ mainTest(qase([1045], 'Open Color palette from shortcut'), async () => {
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest(qase([1046], 'Open Color palette from toolbar'), async () => {
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await designPanelPage.clickFillColorIcon();
-  await colorPalettePage.setHex('#FF0000');
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await designPanelPage.clickFillColorIcon();
-  await colorPalettePage.setHex('#B1B2B5');
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.openCloseColorsPaletteFromSidebar();
-  await mainPage.isColorsPaletteDisplayed();
-  await expect(mainPage.typographiesColorsBottomPanel).toHaveScreenshot(
-    'colors-panel.png',
-  );
-  await mainPage.openCloseColorsPaletteFromSidebar();
-  await mainPage.isColorsPaletteNotDisplayed();
-});
+mainTest(
+  qase([1046, 1040], 'Open Color palette from toolbar. Type valid color code.'),
+  async () => {
+    await mainPage.clickCreateBoardButton();
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#FF0000');
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#B1B2B5');
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.openCloseColorsPaletteFromSidebar();
+    await mainPage.isColorsPaletteDisplayed();
+    await expect(mainPage.typographiesColorsBottomPanel).toHaveScreenshot(
+      'colors-panel.png',
+    );
+    await mainPage.openCloseColorsPaletteFromSidebar();
+    await mainPage.isColorsPaletteNotDisplayed();
+  },
+);
 
 mainTest(qase([1048], 'Choose file library colors'), async () => {
   await assetsPanelPage.clickAssetsTab();

@@ -262,8 +262,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.inviteMembersTeamHeroButton.click();
   }
 
-  async enterEmailToInviteMembersPopUp(email) {
-    await this.inviteMembersToTeamEmailInput.fill(email);
+  async enterEmailToInviteMembersPopUp(emails) {
+    const emailString = Array.isArray(emails) ? emails.join(', ') : emails;
+    await this.inviteMembersToTeamEmailInput.fill(emailString);
   }
 
   async clickSendInvitationButton() {
@@ -278,10 +279,14 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.warningMessageText).toHaveText(text);
   }
 
-  async isInvitationRecordDisplayed(email, role, status) {
-    await expect(this.invitationRecordEmailCell).toHaveText(email);
-    await expect(this.invitationRecordRoleCell).toHaveText(role);
-    await expect(this.invitationRecordStatusCell).toHaveText(status);
+  async isInvitationRecordDisplayed(invitations) {
+    for (const invitation of invitations) {
+      await this.isMultipleInvitationRecordDisplayed(
+        invitation.email,
+        invitation.role,
+        invitation.status,
+      );
+    }
   }
 
   async isMultipleInvitationRecordDisplayed(email, role, status) {
@@ -436,14 +441,22 @@ exports.TeamPage = class TeamPage extends BasePage {
   async clickOnDeleteMemberButton() {
     await this.deleteMemberButton.click();
   }
-  async resendInvitation(email) {
-    await this.selectInvitationByEmail(email);
+  async resendInvitation(emails) {
+    const emailList = Array.isArray(emails) ? emails : [emails];
+    for (const email of emailList) {
+      await this.selectInvitationByEmail(email);
+    }
+
     await this.resendInvitationButton.click();
     await this.resendButton.click();
   }
 
-  async deleteInvitation(email) {
-    await this.selectInvitationByEmail(email);
+  async deleteInvitation(emails) {
+    const emailList = Array.isArray(emails) ? emails : [emails];
+    for (const email of emailList) {
+      await this.selectInvitationByEmail(email);
+    }
+
     await this.deleteInvitationButton.click();
     await this.continueButton.click();
   }
@@ -458,8 +471,22 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
   }
 
-  async isInvitationRecordRemoved() {
-    await expect(this.invitationRecord).not.toBeVisible();
+  async isInvitationRecordRemoved(emails = null) {
+    if (emails !== null && emails !== undefined && emails !== '') {
+      const emailList = Array.isArray(emails) ? emails : [emails];
+      if (emailList.length > 0) {
+        for (const email of emailList) {
+          await expect(
+            this.page.locator(
+              `[class*="dashboard_team__field-email"]:has-text("${email}")`,
+            ),
+          ).not.toBeVisible();
+        }
+        return;
+      }
+    }
+
+    await expect(this.page.locator('text=No pending invitations')).toBeVisible();
   }
 
   async openTeamSettingsPageViaOptionsMenu() {
@@ -671,5 +698,12 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async selectInvitationByEmail(email) {
     await this.page.locator(`label:has([value="${email}"])`).click();
+  }
+
+  async isInvitationSelectionDisabled(email) {
+    const checkboxLocator = this.page.locator(
+      `label:has([value="${email}"]) input[type="checkbox"]`,
+    );
+    await expect(checkboxLocator).not.toBeVisible();
   }
 };

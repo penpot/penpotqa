@@ -431,10 +431,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(
-      1183,
-      'Team. Invitations - unable to create, edit and delete invitations via editor',
-    ),
+    qase(1183, 'Unable to create, edit, resend and delete invitations via editor'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -479,6 +476,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isInviteMembersToTeamButtonDisabled();
       await teamPage.isInvitationRecordOptionsDisabled(firstEmail);
       await teamPage.isInvitationRoleInPopUpNotDisplayed(firstAdmin, 'Editor');
+      await teamPage.isInvitationSelectionDisabled(firstEmail);
     },
   );
 
