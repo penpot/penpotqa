@@ -808,6 +808,9 @@ mainTest.describe(() => {
       await viewModePage.openInspectTab();
       await inspectPanelPage.openCodeTab();
       await inspectPanelPage.codeHtmlStrings.waitFor({ state: 'visible' });
+      await viewModePage.viewerLayoutSection.waitFor({ state: 'visible' });
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(1000);
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-shared-code-image.png',
         {
