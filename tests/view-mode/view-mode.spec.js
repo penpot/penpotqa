@@ -764,7 +764,7 @@ mainTest.describe(() => {
       viewModePage = new ViewModePage(page);
       await viewModePage.isViewerSectionVisible();
       await viewModePage.clickCommentsButton();
-      await expect(viewModePage.commentsContainer).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-shared-comments-image.png',
       );
       await viewModePage.gotoLink(process.env.BASE_URL);
@@ -796,6 +796,7 @@ mainTest.describe(() => {
 
       await mainPage.clickPencilBoxButton();
       await profilePage.logout();
+      await page.context().clearCookies();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmailAndClickOnContinue(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -808,7 +809,7 @@ mainTest.describe(() => {
       await viewModePage.openInspectTab();
       await inspectPanelPage.openCodeTab();
       await page.waitForTimeout(200);
-      await expect(viewModePage.rightSidebar).toHaveScreenshot(
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-shared-code-image.png',
         {
           mask: [inspectPanelPage.codeHtmlStrings],
