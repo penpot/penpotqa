@@ -764,7 +764,7 @@ mainTest.describe(() => {
       viewModePage = new ViewModePage(page);
       await viewModePage.isViewerSectionVisible();
       await viewModePage.clickCommentsButton();
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+      await expect(viewModePage.commentsContainer).toHaveScreenshot(
         'view-mode-shared-comments-image.png',
       );
       await viewModePage.gotoLink(process.env.BASE_URL);
