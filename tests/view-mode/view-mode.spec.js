@@ -796,6 +796,7 @@ mainTest.describe(() => {
 
       await mainPage.clickPencilBoxButton();
       await profilePage.logout();
+      await page.context().clearCookies();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmailAndClickOnContinue(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
