@@ -808,7 +808,7 @@ mainTest.describe(() => {
       await viewModePage.openInspectTab();
       await inspectPanelPage.openCodeTab();
       await page.waitForTimeout(200);
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+      await expect(viewModePage.rightSidebar).toHaveScreenshot(
         'view-mode-shared-code-image.png',
         {
           mask: [inspectPanelPage.codeHtmlStrings],
