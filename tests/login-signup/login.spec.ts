@@ -1,8 +1,8 @@
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page.js');
-const { LoginPage } = require('../../pages/login-page.js');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { test } = require('@playwright/test');
-const { updateTestResults } = require('../../helpers/saveTestResults.js');
+import { qase } from 'playwright-qase-reporter/playwright';
+import { test } from '@playwright/test';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { LoginPage } from '@pages/login-page';
+import { updateTestResults } from 'helpers/saveTestResults';
 
 test(qase(35, 'Login with an email address'), async ({ page }) => {
   const loginPage = new LoginPage(page);
@@ -44,6 +44,24 @@ test(qase(42, 'Login with incorrect password'), async ({ page }) => {
   await loginPage.clickLoginButton();
   await loginPage.isLoginErrorMessageDisplayed('Email or password is incorrect.');
 });
+
+test(
+  qase(
+    2639,
+    'Attempt to log in with a Custom SSO email using standard Penpot login form',
+  ),
+  async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.acceptCookie();
+    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
+    await loginPage.enterEmail(process.env.SSO_LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.SSO_LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.isHeaderDisplayed('Projects');
+  },
+);
 
 test.afterEach(async ({ page }, testInfo) => {
   await updateTestResults(testInfo.status, testInfo.retry);

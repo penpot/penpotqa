@@ -33,6 +33,8 @@ jobs:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+          SSO_LOGIN_EMAIL: ${{ secrets.SSO_LOGIN_EMAIL }}
+          SSO_LOGIN_PWD: ${{ secrets.SSO_LOGIN_PWD }}
           GITHUB_RUN_ID: ${{ github.run_id }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
