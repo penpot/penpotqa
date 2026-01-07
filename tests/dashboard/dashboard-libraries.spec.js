@@ -30,6 +30,7 @@ mainTest.beforeEach(async ({ page }) => {
   colorPalettePage = new ColorPalettePage(page);
   colorPalettePopUp = new ColorPalettePage(page);
   await teamPage.createTeam(teamName);
+  await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });
