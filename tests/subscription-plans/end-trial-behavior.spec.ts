@@ -1,4 +1,5 @@
 const { registerTest } = require('../../fixtures');
+import { Page } from '@playwright/test';
 import { random } from '../../helpers/string-generator';
 import { TeamPage } from '../../pages/dashboard/team-page';
 import { DashboardPage } from '../../pages/dashboard/dashboard-page';
@@ -22,7 +23,7 @@ let testClockId: string;
 let penpotId: string;
 
 registerTest.beforeEach(
-  async ({ page, name, email }: { page: any; name: string; email: string }) => {
+  async ({ page, name, email }: { page: Page; name: string; email: string }) => {
     await registerTest.slow();
     teamPage = new TeamPage(page);
     dashboardPage = new DashboardPage(page);
