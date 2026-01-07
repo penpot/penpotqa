@@ -19,8 +19,8 @@ mainTest.beforeEach(async ({ page }) => {
 
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
-  await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   await dashboardPage.isHeaderDisplayed('Projects');
+  await dashboardPage.hideLibrariesAndTemplatesCarrousel();
 });
 
 mainTest.afterEach(async () => {
