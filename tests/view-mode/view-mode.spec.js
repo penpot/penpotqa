@@ -815,9 +815,10 @@ mainTest.describe(() => {
           mask: [inspectPanelPage.codeHtmlStrings],
         },
       );
-      await viewModePage.gotoLink(process.env.BASE_URL);
-      await mainPage.isHeaderDisplayed('Projects');
+      await page.goto(process.env.BASE_URL);
+      await dashboardPage.isDashboardOpenedAfterLogin();
       await profilePage.logout();
+      await loginPage.isLoginPageOpened();
     },
   );
 
