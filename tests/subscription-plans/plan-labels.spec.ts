@@ -1,21 +1,24 @@
 const { mainTest, registerTest } = require('../../fixtures');
-const { test } = require('@playwright/test');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { ProfilePage } = require('../../pages/profile-page');
-const { LoginPage } = require('../../pages/login-page');
-const { RegisterPage } = require('../../pages/register-page');
-const { StripePage } = require('../../pages/dashboard/stripe-page');
-const {
-  addPaymentMethodForCustomerByCustomerEmail,
-} = require('../../helpers/stripe');
+import { test, Page } from '@playwright/test';
+import { random } from '../../helpers/string-generator';
+import { TeamPage } from '../../pages/dashboard/team-page';
+import { DashboardPage } from '../../pages/dashboard/dashboard-page';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { ProfilePage } from '../../pages/profile-page';
+import { LoginPage } from '../../pages/login-page';
+import { RegisterPage } from '../../pages/register-page';
+import { StripePage } from '../../pages/dashboard/stripe-page';
+import { addPaymentMethodForCustomerByCustomerEmail } from '../../helpers/stripe';
 
-let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
-const teamName = random().concat('autotest');
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let profilePage: ProfilePage;
+let loginPage: LoginPage;
+let registerPage: RegisterPage;
+let stripePage: StripePage;
+const teamName: string = random().concat('autotest');
 
-registerTest.beforeEach(async ({ page }) => {
+registerTest.beforeEach(async ({ page }: { page: Page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
@@ -28,7 +31,9 @@ registerTest.beforeEach(async ({ page }) => {
 });
 
 registerTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
+  if (teamPage && teamName) {
+    await teamPage.deleteTeam(teamName);
+  }
 });
 
 registerTest(
@@ -36,9 +41,9 @@ registerTest(
     [2281, 2348],
     'Display & Info for Enterprise Plan. Enterprise badge visible immediately',
   ),
-  async ({ page, email }) => {
-    const trialPlan = 'Unlimited';
-    const currentPlan = 'Enterprise';
+  async ({ page, email }: { page: Page; email: string }) => {
+    const trialPlan: string = 'Unlimited';
+    const currentPlan: string = 'Enterprise';
 
     await test.step(`Subscribe for ${trialPlan} plan trial`, async () => {
       await profilePage.tryTrialForPlan(trialPlan);
@@ -73,7 +78,7 @@ registerTest(
 );
 
 registerTest(qase(2283, 'Display & Info for Professional Plan'), async () => {
-  const currentPlan = 'Professional';
+  const currentPlan: string = 'Professional';
   await profilePage.openYourAccountPage();
   await profilePage.openSubscriptionTab();
   await profilePage.checkSubscriptionName(currentPlan);
