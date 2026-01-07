@@ -774,7 +774,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase([697], 'Share prototype - manage permissions ("Can inspect code  ")'),
+    qase([697], 'Share prototype - manage permissions ("Can inspect code")'),
     async ({ page }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
@@ -796,6 +796,7 @@ mainTest.describe(() => {
 
       await mainPage.clickPencilBoxButton();
       await profilePage.logout();
+      await page.context().clearCookies();
       await loginPage.isLoginPageOpened();
       await loginPage.enterEmailAndClickOnContinue(process.env.SECOND_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
