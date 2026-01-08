@@ -67,7 +67,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       'div[class*="thread-header"] span[class*="comments__checkbox"]',
     );
     this.commentsPanelPlaceholderText = page.locator(
-      'div[class*="thread-group-placeholder"] span[class*="placeholder-label"]',
+      '.main_ui_workspace_comments__thread-group-placeholder',
     );
     this.commentsAuthorSection = page.locator('div[class*="comments__author"]');
     this.commentMentionButton = page.locator('[class*="open-mentions-button"]');
