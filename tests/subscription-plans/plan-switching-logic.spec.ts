@@ -39,7 +39,7 @@ registerTest.afterEach(async () => {
   }
 });
 
-registerTest.fixme(
+registerTest(
   qase(2302, 'Switch from Unlimited → Enterprise'),
   async ({ page, name, email }: { page: Page; name: string; email: string }) => {
     const currentPlan = 'Unlimited';
@@ -82,7 +82,7 @@ registerTest.fixme(
   },
 );
 
-registerTest.fixme(
+registerTest(
   qase(2303, 'Switch from Enterprise → Unlimited'),
   async ({ page, email }: { page: Page; email: string }) => {
     const currentPlan = 'Enterprise';
@@ -112,7 +112,7 @@ registerTest.fixme(
   },
 );
 
-registerTest.fixme(
+registerTest(
   qase(2304, 'Switch from Unlimited → Professional'),
   async ({ page, name, email }: { page: Page; name: string; email: string }) => {
     const currentPlan = 'Unlimited';

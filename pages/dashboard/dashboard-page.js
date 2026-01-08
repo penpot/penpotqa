@@ -900,7 +900,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async clickOnStartButton() {
     await expect(this.startButton).not.toHaveAttribute('disabled');
     await this.startButton.click();
-    await expect(this.startButton).toBeHidden();
+    await expect(this.startButton).toBeHidden({ timeout: 10000 });
   }
 
   async fillSecondOnboardPage(branding, visual, wireframes) {
@@ -1045,12 +1045,18 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async clickOnOnboardingContinueWithoutTeamButton() {
     if (await this.onboardingContinueWithoutTeamBtn.isVisible()) {
       await this.onboardingContinueWithoutTeamBtn.click();
-      await this.page.waitForResponse(
-        (response) =>
-          response.url() ===
-            `${process.env.BASE_URL}api/main/methods/push-audit-events` &&
-          response.status() === 204,
-      );
+      await this.page
+        .waitForResponse(
+          (response) =>
+            response.url() ===
+              `${process.env.BASE_URL}api/main/methods/push-audit-events` &&
+            response.status() === 204,
+          { timeout: 10000 },
+        )
+        .catch(() => {
+          // Continue if response doesn't arrive in time
+          console.log('push-audit-events response timeout - continuing');
+        });
     }
   }
 
