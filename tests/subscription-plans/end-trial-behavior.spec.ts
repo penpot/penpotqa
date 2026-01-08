@@ -1,11 +1,11 @@
 const { registerTest } = require('fixtures');
 import { Page } from '@playwright/test';
 import { random } from 'helpers/string-generator';
-import { TeamPage } from 'pages/dashboard/team-page';
-import { DashboardPage } from 'pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { ProfilePage } from 'pages/profile-page';
-import { StripePage } from 'pages/dashboard/stripe-page';
+import { ProfilePage } from '@pages/profile-page';
+import { StripePage } from '@pages/dashboard/stripe-page';
 import {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
