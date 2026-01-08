@@ -1,14 +1,13 @@
-const { registerTest } = require('../../fixtures');
-import { Page } from '@playwright/test';
-import { random } from '../../helpers/string-generator';
-import { TeamPage } from '../../pages/dashboard/team-page';
-import { DashboardPage } from '../../pages/dashboard/dashboard-page';
+import { registerTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { ProfilePage } from '../../pages/profile-page';
-import { LoginPage } from '../../pages/login-page';
-import { RegisterPage } from '../../pages/register-page';
-import { StripePage } from '../../pages/dashboard/stripe-page';
-import { updateSubscriptionTrialEnd } from '../../helpers/stripe';
+import { ProfilePage } from '@pages/profile-page';
+import { LoginPage } from '@pages/login-page';
+import { RegisterPage } from '@pages/register-page';
+import { StripePage } from '@pages/dashboard/stripe-page';
+import { updateSubscriptionTrialEnd } from 'helpers/stripe';
 
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
@@ -16,15 +15,16 @@ let profilePage: ProfilePage;
 let loginPage: LoginPage;
 let registerPage: RegisterPage;
 let stripePage: StripePage;
-const teamName: string = random().concat('autotest');
+let teamName: string;
 
-registerTest.beforeEach(async ({ page }: { page: Page }) => {
+registerTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
   stripePage = new StripePage(page);
+  teamName = random().concat('autotest');
 
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
@@ -37,7 +37,7 @@ registerTest.afterEach(async () => {
 });
 
 registerTest(qase(2289, 'Try it free for 14 days for Unlimited plan'), async () => {
-  const currentPlan: string = 'Unlimited';
+  const currentPlan = 'Unlimited';
 
   await profilePage.tryTrialForPlan(currentPlan, '5');
   await profilePage.openYourAccountPage();
@@ -49,8 +49,8 @@ registerTest(qase(2289, 'Try it free for 14 days for Unlimited plan'), async () 
 
 registerTest(
   qase(2294, 'Verify Trial Label Behavior (for the Enterprise plan)'),
-  async ({ page, email }: { page: Page; email: string }) => {
-    const currentPlan: string = 'Enterprise';
+  async ({ page, email }) => {
+    const currentPlan = 'Enterprise';
 
     await profilePage.tryTrialForPlan(currentPlan, '5');
     await profilePage.openYourAccountPage();
