@@ -5,8 +5,6 @@ import { TeamPage } from '../../pages/dashboard/team-page';
 import { DashboardPage } from '../../pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { ProfilePage } from '../../pages/profile-page';
-import { LoginPage } from '../../pages/login-page';
-import { RegisterPage } from '../../pages/register-page';
 import { StripePage } from '../../pages/dashboard/stripe-page';
 import {
   createCustomerWithTestClock,
@@ -19,8 +17,6 @@ import {
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let profilePage: ProfilePage;
-let loginPage: LoginPage;
-let registerPage: RegisterPage;
 let stripePage: StripePage;
 const teamName: string = random().concat('autotest');
 
@@ -30,8 +26,6 @@ registerTest.beforeEach(
     teamPage = new TeamPage(page);
     dashboardPage = new DashboardPage(page);
     profilePage = new ProfilePage(page);
-    loginPage = new LoginPage(page);
-    registerPage = new RegisterPage(page);
     stripePage = new StripePage(page);
 
     await teamPage.createTeam(teamName);
