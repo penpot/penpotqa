@@ -108,13 +108,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexLayoutCollapsedIcon = page.locator(
       'div[class*="layout_container"] button:has([href="#icon-arrow-right"])',
     );
-    this.flexElementAlignStartBtn = page.locator(
-      'label[title="Align self start"] span',
-    );
-    this.flexElementAlignCenterBtn = page.locator(
-      'label[title="Align self center"] span',
-    );
-    this.flexElementAlignEndBtn = page.locator('label[title="Align self end"] span');
+    this.flexElementAlignStartBtn = page.getByTestId('align-self-start');
+    this.flexElementAlignCenterBtn = page.getByTestId('align-self-center');
+    this.flexElementAlignEndBtn = page.getByTestId('align-self-end');
     this.flexElementMarginVertInput = page.locator(
       'div[title="Vertical margin"] input',
     );
@@ -264,20 +260,20 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .getByRole('combobox');
 
     //Design panel - Text section
-    this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase');
-    this.textLowerCaseIcon = page.locator('svg.icon-text-lowercase');
-    this.textTitleCaseIcon = page.locator('svg.icon-text-mixed');
+    this.textUpperCaseIcon = page.getByTestId('text-transform-uppercase');
+    this.textLowerCaseIcon = page.getByTestId('text-transform-lowercase');
+    this.textTitleCaseIcon = page.getByTestId('text-transform-capitalize');
     this.textMoreOptionsIcon = page
       .locator('div[class*="text__element-content"]')
       .getByRole('button', { name: 'Options' });
     this.textVerticalOptionsBlock = page.locator(
       'div[class*="vertical-align-options"]',
     );
-    this.textAlignTop = page.locator('svg.icon-text-top');
-    this.textAlignMiddle = page.locator('svg.icon-text-middle');
-    this.textAlignBottom = page.locator('svg.icon-text-bottom');
-    this.textIconLTR = page.locator('svg.icon-text-ltr');
-    this.textIconRTL = page.locator('svg.icon-text-rtl');
+    this.textAlignTop = page.getByTestId('vertical-text-align-top');
+    this.textAlignMiddle = page.getByTestId('vertical-text-align-center');
+    this.textAlignBottom = page.getByTestId('vertical-text-align-bottom');
+    this.textIconLTR = page.getByTestId('ltr-text-direction');
+    this.textIconRTL = page.getByTestId('rtl-text-direction');
     this.textFontSelector = page.locator('div[class*="typography__font-option"]');
     this.textFontSelectorSearchInput = page.getByPlaceholder('Search font');
     this.textFontStyleSelector = page.locator(
