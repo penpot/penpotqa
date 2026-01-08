@@ -1,26 +1,25 @@
-const { registerTest } = require('../../fixtures');
+const { registerTest } = require('fixtures');
 import { Page } from '@playwright/test';
-import { random } from '../../helpers/string-generator';
-import { TeamPage } from '../../pages/dashboard/team-page';
-import { DashboardPage } from '../../pages/dashboard/dashboard-page';
+import { random } from 'helpers/string-generator';
+import { TeamPage } from 'pages/dashboard/team-page';
+import { DashboardPage } from 'pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { ProfilePage } from '../../pages/profile-page';
-import { StripePage } from '../../pages/dashboard/stripe-page';
+import { ProfilePage } from 'pages/profile-page';
+import { StripePage } from 'pages/dashboard/stripe-page';
 import {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   getProfileIdByEmail,
   addPaymentMethodForCustomer,
-} from '../../helpers/stripe';
+} from 'helpers/stripe';
 
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let profilePage: ProfilePage;
 let stripePage: StripePage;
-const teamName: string = random().concat('autotest');
+let teamName: string;
 let customerData: any;
 let testClockId: string;
-let penpotId: string;
 
 registerTest.beforeEach(
   async ({ page, name, email }: { page: Page; name: string; email: string }) => {
@@ -29,8 +28,9 @@ registerTest.beforeEach(
     dashboardPage = new DashboardPage(page);
     profilePage = new ProfilePage(page);
     stripePage = new StripePage(page);
+    teamName = random().concat('autotest');
 
-    penpotId = await getProfileIdByEmail(email);
+    const penpotId = await getProfileIdByEmail(email);
     customerData = await createCustomerWithTestClock(page, name, email, penpotId);
     testClockId = customerData.testClockId;
 
