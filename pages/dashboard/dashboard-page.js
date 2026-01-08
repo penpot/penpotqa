@@ -168,6 +168,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontFormatError = this.successMessage;
 
     // Libraries & Templates Section
+    this.librariesHideButton = page.getByRole('button', {
+      name: 'Libraries & Templates Hide',
+    });
     this.librariesContainer = page.locator(
       '.main_ui_dashboard_libraries__dashboard-container',
     );
@@ -414,6 +417,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isSharedLibraryIconNotDisplayed() {
     await expect(this.sharedLibraryIcon).not.toBeVisible();
+  }
+
+  async hideLibrariesAndTemplatesCarrousel() {
+    if (await this.librariesHideButton.isVisible()) {
+      await this.librariesHideButton.click();
+    }
   }
 
   async downloadFileViaRightClick() {
