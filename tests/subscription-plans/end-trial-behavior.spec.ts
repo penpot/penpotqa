@@ -1,5 +1,4 @@
-const { registerTest } = require('fixtures');
-import { Page } from '@playwright/test';
+import { registerTest } from 'fixtures';
 import { random } from 'helpers/string-generator';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
@@ -21,23 +20,21 @@ let teamName: string;
 let customerData: any;
 let testClockId: string;
 
-registerTest.beforeEach(
-  async ({ page, name, email }: { page: Page; name: string; email: string }) => {
-    await registerTest.slow();
-    teamPage = new TeamPage(page);
-    dashboardPage = new DashboardPage(page);
-    profilePage = new ProfilePage(page);
-    stripePage = new StripePage(page);
-    teamName = random().concat('autotest');
+registerTest.beforeEach(async ({ page, name, email }) => {
+  await registerTest.slow();
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  profilePage = new ProfilePage(page);
+  stripePage = new StripePage(page);
+  teamName = random().concat('autotest');
 
-    const penpotId = await getProfileIdByEmail(email);
-    customerData = await createCustomerWithTestClock(page, name, email, penpotId);
-    testClockId = customerData.testClockId;
+  const penpotId = await getProfileIdByEmail(email);
+  customerData = await createCustomerWithTestClock(page, name, email, penpotId);
+  testClockId = customerData.testClockId;
 
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
-  },
-);
+  await teamPage.createTeam(teamName);
+  await teamPage.isTeamSelected(teamName);
+});
 
 registerTest.afterEach(async () => {
   if (teamPage && teamName) {
@@ -47,8 +44,8 @@ registerTest.afterEach(async () => {
 
 registerTest(
   qase([2297, 2344], 'Trial ends, payment method added → switch to Unlimited'),
-  async ({ email }: { email: string }) => {
-    const currentPlan: string = 'Unlimited';
+  async ({ email }) => {
+    const currentPlan = 'Unlimited';
 
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();
@@ -73,9 +70,9 @@ registerTest(
     2301,
     'Trial ends, no payment method ever added → switch to Professional (CANCELLED)',
   ),
-  async ({ email }: { email: string }) => {
-    const currentPlan: string = 'Unlimited';
-    const defaultPlan: string = 'Professional';
+  async ({ email }) => {
+    const currentPlan = 'Unlimited';
+    const defaultPlan = 'Professional';
 
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();
@@ -98,8 +95,8 @@ registerTest(
 
 registerTest(
   qase(2337, 'Trial ends, no payment method → remains in Enterprise Trial (PAUSED)'),
-  async ({ email }: { email: string }) => {
-    const currentPlan: string = 'Enterprise';
+  async ({ email }) => {
+    const currentPlan = 'Enterprise';
 
     await profilePage.tryTrialForPlan(currentPlan);
     await profilePage.openYourAccountPage();
