@@ -24,7 +24,36 @@ export const mainTest = base.test.extend({
   },
 });
 
-const registerTest = base.test.extend({
+// TODO: Remove these JSDoc type annotations once this file is migrated to TypeScript.
+
+/** These annotations are necessary to provide type information for TypeScript test files
+ * that import registerTest, allowing them to use fixtures (name, email, page) without
+ * TypeScript implicit 'any' errors.
+ **/
+
+/**
+ * @typedef {Object} RegisterTestFixtures
+ * @property {string} name - Generated random name for the test
+ * @property {string} email - Generated email for registration
+ * @property {import('@playwright/test').Page} page - Playwright page object
+ */
+
+/**
+ * @typedef {import('@playwright/test').PlaywrightTestArgs &
+ *   import('@playwright/test').PlaywrightTestOptions &
+ *   RegisterTestFixtures} RegisterTestArgs
+ */
+
+/**
+ * @typedef {import('@playwright/test').PlaywrightWorkerArgs &
+ *   import('@playwright/test').PlaywrightWorkerOptions} RegisterWorkerArgs
+ */
+
+/**
+ * @type {import('@playwright/test').TestType<RegisterTestArgs, RegisterWorkerArgs>}
+ */
+
+export const registerTest = base.test.extend({
   name: async ({}, use) => {
     const name = random().concat('autotest');
     await use(name);

@@ -1,33 +1,34 @@
-const { registerTest } = require('../../fixtures');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { ProfilePage } = require('../../pages/profile-page');
-const { LoginPage } = require('../../pages/login-page');
-const { RegisterPage } = require('../../pages/register-page');
-const { StripePage } = require('../../pages/dashboard/stripe-page');
-const {
+import { registerTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { ProfilePage } from '@pages/profile-page';
+import { StripePage } from '@pages/dashboard/stripe-page';
+import {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   getProfileIdByEmail,
   addPaymentMethodForCustomer,
-} = require('../../helpers/stripe');
+} from 'helpers/stripe';
 
-let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
-const teamName = random().concat('autotest');
-let customerData, testClockId, penpotId;
+const teamName: string = random().concat('autotest');
+
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let profilePage: ProfilePage;
+let stripePage: StripePage;
+let customerData: any;
+let testClockId: string;
 
 registerTest.beforeEach(async ({ page, name, email }) => {
   await registerTest.slow();
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
-  loginPage = new LoginPage(page);
-  registerPage = new RegisterPage(page);
   stripePage = new StripePage(page);
 
-  penpotId = await getProfileIdByEmail(email);
+  const penpotId: string = await getProfileIdByEmail(email);
   customerData = await createCustomerWithTestClock(page, name, email, penpotId);
   testClockId = customerData.testClockId;
 
@@ -36,10 +37,12 @@ registerTest.beforeEach(async ({ page, name, email }) => {
 });
 
 registerTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
+  if (teamPage && teamName) {
+    await teamPage.deleteTeam(teamName);
+  }
 });
 
-registerTest.fixme(
+registerTest(
   qase([2297, 2344], 'Trial ends, payment method added → switch to Unlimited'),
   async ({ email }) => {
     const currentPlan = 'Unlimited';
@@ -62,7 +65,7 @@ registerTest.fixme(
   },
 );
 
-registerTest.fixme(
+registerTest(
   qase(
     2301,
     'Trial ends, no payment method ever added → switch to Professional (CANCELLED)',
@@ -90,7 +93,7 @@ registerTest.fixme(
   },
 );
 
-registerTest.fixme(
+registerTest(
   qase(2337, 'Trial ends, no payment method → remains in Enterprise Trial (PAUSED)'),
   async ({ email }) => {
     const currentPlan = 'Enterprise';
