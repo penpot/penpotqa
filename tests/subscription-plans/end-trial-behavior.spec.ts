@@ -12,11 +12,12 @@ import {
   addPaymentMethodForCustomer,
 } from 'helpers/stripe';
 
+const teamName: string = random().concat('autotest');
+
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let profilePage: ProfilePage;
 let stripePage: StripePage;
-let teamName: string;
 let customerData: any;
 let testClockId: string;
 
@@ -26,7 +27,6 @@ registerTest.beforeEach(async ({ page, name, email }) => {
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
   stripePage = new StripePage(page);
-  teamName = random().concat('autotest');
 
   const penpotId = await getProfileIdByEmail(email);
   customerData = await createCustomerWithTestClock(page, name, email, penpotId);

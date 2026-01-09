@@ -9,13 +9,14 @@ import { RegisterPage } from '@pages/register-page';
 import { StripePage } from '@pages/dashboard/stripe-page';
 import { updateSubscriptionTrialEnd } from 'helpers/stripe';
 
+const teamName: string = random().concat('autotest');
+
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let profilePage: ProfilePage;
 let loginPage: LoginPage;
 let registerPage: RegisterPage;
 let stripePage: StripePage;
-let teamName: string;
 
 registerTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
@@ -24,7 +25,6 @@ registerTest.beforeEach(async ({ page }) => {
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
   stripePage = new StripePage(page);
-  teamName = random().concat('autotest');
 
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
