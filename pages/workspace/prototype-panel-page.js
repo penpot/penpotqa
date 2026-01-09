@@ -20,16 +20,35 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
     this.addInteractionButton = page.getByRole('button', {
       name: 'Add interaction',
     });
-    this.removeSecondInteractionButton = page.locator(
-      'button[class*="interactions__remove-btn"] >>nth=1',
+
+    //Flow Section
+    this.flowSection = page.locator(
+      '.main_ui_workspace_sidebar_options_menus_interactions__section',
     );
-    this.firstInteractionRecord = page.locator(
-      'div[class*="interactions-summary"] >>nth=0',
+    this.removeFlowButton = this.flowSection.getByRole('button', { name: 'Remove' });
+
+    //Interactions Section
+    this.interactionsSection = page.locator(
+      '.main_ui_workspace_sidebar_options_menus_interactions__section',
     );
-    this.interactionDestinationField = page.locator(
-      '//*[text()="Destination"]//parent::div//div[contains(@class, "custom-select")]',
+    this.interactionsRecordRemoveButton = this.interactionsSection.getByRole(
+      'button',
+      { name: 'Remove' },
     );
-    this.removeFlowButton = page.getByRole('button', { name: 'Remove flow' });
+    this.interactionRecordOptionsButton = this.interactionsSection.getByRole(
+      'button',
+      { name: 'Options' },
+    );
+
+    //Options Section
+    this.interactionsOptionsMenu = page.locator(
+      '.main_ui_workspace_sidebar_options_menus_interactions__interaction-item',
+    );
+    this.interactionDestinationField = this.interactionsOptionsMenu
+      .locator(
+        '.main_ui_workspace_sidebar_options_menus_interactions__interaction-row',
+      )
+      .filter({ hasText: 'Destination' });
   }
 
   async clickPrototypeTab() {
@@ -66,12 +85,14 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
     await expect(this.prototypeArrowSecondConnector).not.toBeVisible();
   }
 
-  async clickRemoveSecondInteractionButton() {
-    await this.removeSecondInteractionButton.click();
+  async clickRemoveInteractionByIndex(index) {
+    const interactionRecord = this.interactionsRecordRemoveButton.nth(index);
+    await interactionRecord.click();
   }
 
-  async clickFirstInteractionRecord() {
-    await this.firstInteractionRecord.click();
+  async openInteractionsOptionsByIndex(index) {
+    const interactionOption = this.interactionRecordOptionsButton.nth(index);
+    await interactionOption.click();
   }
 
   async renameFlow(newName) {
@@ -80,14 +101,16 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
     await this.clickOnEnter();
   }
 
-  async clickRemoveFlowButton() {
-    await this.removeFlowButton.click();
+  async clickRemoveFlowByIndex(index) {
+    const flowRecord = this.removeFlowButton.nth(index);
+    await flowRecord.click();
   }
 
   async selectInteractionDestination(value) {
-    const optionSel = this.page.locator(
-      `div[class*="interaction-type-select"] span:has-text("${value}")`,
-    );
+    const optionSel = this.interactionDestinationField.getByRole('option', {
+      name: value,
+    });
+
     await this.interactionDestinationField.click();
     await optionSel.click();
   }
