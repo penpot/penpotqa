@@ -28,7 +28,7 @@ registerTest.beforeEach(async ({ page, name, email }) => {
   profilePage = new ProfilePage(page);
   stripePage = new StripePage(page);
 
-  const penpotId = await getProfileIdByEmail(email);
+  const penpotId: string = await getProfileIdByEmail(email);
   customerData = await createCustomerWithTestClock(page, name, email, penpotId);
   testClockId = customerData.testClockId;
 
