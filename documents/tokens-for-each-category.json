@@ -45,6 +45,19 @@
       "$type": "letterSpacing",
       "$description": ""
     },
+    "SHADOW-1": {
+      "$value": [
+        {
+          "offsetX": "4",
+          "offsetY": "4",
+          "blur": "4",
+          "spread": "0",
+          "color": "rgb(99, 135, 156)"
+        }
+      ],
+      "$type": "shadow",
+      "$description": ""
+    },
     "OPACITY-40": {
       "$value": "40%",
       "$type": "opacity",
@@ -110,6 +123,20 @@
     "OPACITY-60": {
       "$value": "0.6",
       "$type": "opacity",
+      "$description": ""
+    },
+    "SHADOW-2": {
+      "$value": [
+        {
+          "offsetX": "5",
+          "offsetY": "5",
+          "blur": "5",
+          "spread": "0",
+          "color": "rgb(186, 3, 3)",
+          "inset": true
+        }
+      ],
+      "$type": "shadow",
       "$description": ""
     },
     "NUMBER-4": {
@@ -222,8 +249,8 @@
     },
     "TYPOGRAPHY-1": {
       "$value": {
-        "fontFamilies": ["Aboreto"],
         "fontSizes": "24",
+        "fontFamilies": ["Aboreto"],
         "fontWeights": "Bold"
       },
       "$type": "typography",
@@ -246,9 +273,9 @@
     },
     "TYPOGRAPHY-3": {
       "$value": {
-        "fontFamilies": ["Borel"],
+        "lineHeights": "5",
         "fontSizes": "36",
-        "lineHeights": "5"
+        "fontFamilies": ["Borel"]
       },
       "$type": "typography",
       "$description": ""

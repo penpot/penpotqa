@@ -73,28 +73,28 @@
       "$type": "number",
       "$description": ""
     },
-    "typography": {
-      "h3": {
-        "$value": {
-          "fontSizes": "24",
-          "fontWeights": "Regular italic",
-          "lineHeights": "2",
-          "letterSpacing": "5"
-        },
-        "$type": "typography",
-        "$description": ""
-      }
-    },
     "typography-h2": {
       "$value": {
-        "fontSizes": "36",
-        "fontWeights": "Bold",
         "lineHeights": "3",
+        "fontSizes": "36",
         "letterSpacing": "2",
+        "fontWeights": "Bold",
         "textDecoration": "underline"
       },
       "$type": "typography",
       "$description": ""
+    },
+    "typography": {
+      "h3": {
+        "$value": {
+          "lineHeights": "2",
+          "fontSizes": "24",
+          "letterSpacing": "5",
+          "fontWeights": "Regular italic"
+        },
+        "$type": "typography",
+        "$description": ""
+      }
     }
   },
   "alias/border": {
@@ -385,8 +385,7 @@
       "name": "Brand",
       "group": "Global",
       "description": "",
-      "is-source": false,
-      "modified-at": "2025-03-11T07:23:20.483Z",
+      "isSource": false,
       "selectedTokenSets": {
         "global/color": "enabled",
         "global/dimension": "enabled",
@@ -399,8 +398,7 @@
       "name": "Light Mode",
       "group": "Alias",
       "description": "",
-      "is-source": false,
-      "modified-at": "2025-03-11T07:23:20.483Z",
+      "isSource": false,
       "selectedTokenSets": {
         "alias/media-queries": "enabled",
         "alias/border": "enabled",
@@ -413,8 +411,7 @@
       "name": "Dark Mode",
       "group": "Alias",
       "description": "",
-      "is-source": false,
-      "modified-at": "2025-03-11T07:23:20.483Z",
+      "isSource": false,
       "selectedTokenSets": {
         "alias/color-dark": "enabled",
         "alias/border": "enabled",
@@ -426,8 +423,7 @@
       "name": "Section Message",
       "group": "Components",
       "description": "",
-      "is-source": false,
-      "modified-at": "2025-03-11T07:23:20.483Z",
+      "isSource": false,
       "selectedTokenSets": {
         "components/section-message": "enabled"
       }
@@ -437,8 +433,7 @@
       "name": "Client Theme Template",
       "group": "White Label",
       "description": "",
-      "is-source": false,
-      "modified-at": "2025-03-11T07:23:20.483Z",
+      "isSource": false,
       "selectedTokenSets": {
         "wl-themes/client_theme_template": "enabled"
       }
@@ -1276,6 +1271,19 @@
           }
         }
       }
+    },
+    "default-shadow": {
+      "$value": [
+        {
+          "offsetX": "4",
+          "offsetY": "4",
+          "blur": "4",
+          "spread": "0",
+          "color": "rgb(20, 91, 202)"
+        }
+      ],
+      "$type": "shadow",
+      "$description": ""
     }
   },
   "alias/color-light": {
