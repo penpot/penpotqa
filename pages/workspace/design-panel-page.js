@@ -527,8 +527,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.fillOpacityInput.pressSequentially(value);
   }
 
-  async fillSearchByTokenNameInput(value) {
-    await this.searchByTokenNameInput.fill(value);
+  async fillSearchByTokenNameInput(tokenName) {
+    await this.searchByTokenNameInput.fill(tokenName);
   }
 
   async isFillHexCodeSet(value) {
