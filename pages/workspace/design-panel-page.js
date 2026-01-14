@@ -531,6 +531,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.searchByTokenNameInput.fill(tokenName);
   }
 
+  async clickColorTokenButton(tokenName) {
+    await this.getColorTokenButtonByName(tokenName).click();
+  }
+
   async isFillHexCodeSet(value) {
     await expect(this.fillColorInput).toHaveValue(value.slice(1));
   }

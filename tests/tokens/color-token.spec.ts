@@ -141,6 +141,15 @@ mainTest.describe(() => {
           await designPanelPage.isColorTokenButtonNotVisible(colorToken.name);
         },
       );
+
+      await mainTest.step(
+        `Apply "${secondColorToken.name}" and assert that color token is applied to the board`,
+        async () => {
+          await designPanelPage.clickColorTokenButton(secondColorToken.name);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(secondColorToken.name);
+        },
+      );
     },
   );
 });
