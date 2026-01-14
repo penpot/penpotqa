@@ -1,37 +1,25 @@
-const { mainTest } = require('../../../fixtures');
-const { MainPage } = require('../../../pages/workspace/main-page');
-const { expect } = require('@playwright/test');
-const { DashboardPage } = require('../../../pages/dashboard/dashboard-page');
-const { TeamPage } = require('../../../pages/dashboard/team-page');
-const { random } = require('../../../helpers/string-generator');
-const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
-const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
-const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
+import { expect } from '@playwright/test';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { mainTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 
 const teamName = random().concat('autotest');
 
-let mainPage,
-  dashboardPage,
-  teamPage,
-  assetsPanelPage,
-  designPanelPage,
-  colorPalettePage,
-  layersPanelPage;
-
 mainTest.beforeEach(async ({ page }) => {
-  designPanelPage = new DesignPanelPage(page);
-  layersPanelPage = new LayersPanelPage(page);
-  dashboardPage = new DashboardPage(page);
-  teamPage = new TeamPage(page);
-  mainPage = new MainPage(page);
-  assetsPanelPage = new AssetsPanelPage(page);
-  colorPalettePage = new ColorPalettePage(page);
+  let teamPage = new TeamPage(page);
   await teamPage.createTeam(teamName);
 });
 
-mainTest.afterEach(async () => {
+mainTest.afterEach(async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const mainPage = new MainPage(page);
+
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
@@ -41,7 +29,13 @@ mainTest(
     [2441],
     'Component groups are passed to Property when creating a component with variants (several groups)',
   ),
-  async () => {
+  async ({ page }) => {
+    let dashboardPage = new DashboardPage(page);
+    let mainPage = new MainPage(page);
+    let assetsPanelPage = new AssetsPanelPage(page);
+    let layersPanelPage = new LayersPanelPage(page);
+    let designPanelPage = new DesignPanelPage(page);
+
     await dashboardPage.importAndOpenFile('documents/figure.penpot');
     await mainPage.isMainPageLoaded();
     await mainPage.clickMoveButton();
@@ -61,7 +55,12 @@ mainTest(
   },
 );
 
-mainTest(qase([2443], 'SWAP panel with variants'), async () => {
+mainTest(qase([2443], 'SWAP panel with variants'), async ({ page }) => {
+  let dashboardPage = new DashboardPage(page);
+  let mainPage = new MainPage(page);
+  let layersPanelPage = new LayersPanelPage(page);
+  let designPanelPage = new DesignPanelPage(page);
+
   await dashboardPage.importAndOpenFile('documents/swap.penpot');
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
@@ -77,43 +76,58 @@ mainTest(qase([2443], 'SWAP panel with variants'), async () => {
   );
 });
 
-mainTest(qase([2444], 'Changing Property for Child Components'), async () => {
-  await dashboardPage.importAndOpenFile('documents/figure.penpot');
-  await mainPage.isMainPageLoaded();
-  await mainPage.clickMoveButton();
+mainTest(
+  qase([2444], 'Changing Property for Child Components'),
+  async ({ page }) => {
+    let dashboardPage = new DashboardPage(page);
+    let mainPage = new MainPage(page);
+    let layersPanelPage = new LayersPanelPage(page);
+    let designPanelPage = new DesignPanelPage(page);
+    let assetsPanelPage = new AssetsPanelPage(page);
 
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await assetsPanelPage.combineAsVariantsGroup();
-  await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
-  await layersPanelPage.openLayersTab();
+    await dashboardPage.importAndOpenFile('documents/figure.penpot');
+    await mainPage.isMainPageLoaded();
+    await mainPage.clickMoveButton();
 
-  await layersPanelPage.selectLayerByName('Ellipse, Green');
-  await layersPanelPage.copyElementViaAltDragAndDrop(100, 100);
-  await designPanelPage.changeVariantPropertyValue('Property 1', 'Arrow');
-  await designPanelPage.changeVariantPropertyValue('Property 2', 'Blue');
-  await layersPanelPage.copyElementViaAltDragAndDrop(100, 300);
-  await designPanelPage.waitForChangeIsSaved();
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.combineAsVariantsGroup();
+    await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
+    await layersPanelPage.openLayersTab();
 
-  await layersPanelPage.clickFirstCopyComponentOnLayersTab();
-  await designPanelPage.changeVariantPropertyValue('Property 1', 'Ellipse');
-  await designPanelPage.changeVariantPropertyValue('Property 2', 'Green');
-  await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Ellipse');
-  await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Green');
+    await layersPanelPage.selectLayerByName('Ellipse, Green');
+    await layersPanelPage.copyElementViaAltDragAndDrop(100, 100);
+    await designPanelPage.changeVariantPropertyValue('Property 1', 'Arrow');
+    await designPanelPage.changeVariantPropertyValue('Property 2', 'Blue');
+    await layersPanelPage.copyElementViaAltDragAndDrop(100, 300);
+    await designPanelPage.waitForChangeIsSaved();
 
-  await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Arrow');
-  await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
+    await layersPanelPage.clickFirstCopyComponentOnLayersTab();
+    await designPanelPage.changeVariantPropertyValue('Property 1', 'Ellipse');
+    await designPanelPage.changeVariantPropertyValue('Property 2', 'Green');
+    await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Ellipse');
+    await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Green');
 
-  await layersPanelPage.clickFirstCopyComponentOnLayersTab();
-  await designPanelPage.changeVariantPropertyValue('Property 2', 'Yellow');
-  await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Yellow');
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Arrow');
+    await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
 
-  await layersPanelPage.clickCopyComponentOnLayersTab();
-  await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
-});
+    await layersPanelPage.clickFirstCopyComponentOnLayersTab();
+    await designPanelPage.changeVariantPropertyValue('Property 2', 'Yellow');
+    await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Yellow');
 
-mainTest(qase([2447], 'Property recovery'), async () => {
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
+  },
+);
+
+mainTest(qase([2447], 'Property recovery'), async ({ page }) => {
+  let dashboardPage = new DashboardPage(page);
+  let mainPage = new MainPage(page);
+  let layersPanelPage = new LayersPanelPage(page);
+  let designPanelPage = new DesignPanelPage(page);
+  let assetsPanelPage = new AssetsPanelPage(page);
+
   await dashboardPage.importAndOpenFile('documents/bulk-less-happy.penpot');
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
@@ -141,7 +155,19 @@ mainTest(qase([2447], 'Property recovery'), async () => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
+  let mainPage: MainPage;
+  let designPanelPage: DesignPanelPage;
+  let layersPanelPage: LayersPanelPage;
+  let assetsPanelPage: AssetsPanelPage;
+  let dashboardPage: DashboardPage;
+
+  mainTest.beforeEach(async ({ page }) => {
+    dashboardPage = new DashboardPage(page);
+    mainPage = new MainPage(page);
+    assetsPanelPage = new AssetsPanelPage(page);
+    layersPanelPage = new LayersPanelPage(page);
+    designPanelPage = new DesignPanelPage(page);
+
     await dashboardPage.importAndOpenFile('documents/figure.penpot');
     await mainPage.isMainPageLoaded();
     await mainPage.clickMoveButton();
@@ -207,7 +233,17 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ browserName }) => {
+  let mainPage: MainPage;
+  let designPanelPage: DesignPanelPage;
+  let layersPanelPage: LayersPanelPage;
+  let dashboardPage: DashboardPage;
+
+  mainTest.beforeEach(async ({ browserName, page }) => {
+    mainPage = new MainPage(page);
+    dashboardPage = new DashboardPage(page);
+    layersPanelPage = new LayersPanelPage(page);
+    designPanelPage = new DesignPanelPage(page);
+
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
     await mainPage.clickMoveButton();
@@ -289,5 +325,34 @@ mainTest.describe(() => {
         'This component has conflicting variants. Make sure each variation has a unique set of property values.',
       );
     },
+  );
+});
+
+mainTest.describe(() => {
+  let mainPage: MainPage;
+  let designPanelPage: DesignPanelPage;
+  let layersPanelPage: LayersPanelPage;
+  let dashboardPage: DashboardPage;
+
+  mainTest.beforeEach(async ({ browserName, page }) => {
+    mainPage = new MainPage(page);
+    dashboardPage = new DashboardPage(page);
+    layersPanelPage = new LayersPanelPage(page);
+    designPanelPage = new DesignPanelPage(page);
+
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.isMainPageLoaded();
+    await mainPage.clickMoveButton();
+
+    await mainPage.createDefaultRectangleByCoordinates(200, 300);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createVariantViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+  });
+
+  mainTest(
+    qase([2615], 'Toggle displayed for true/false properties'),
+    async ({ browserName }) => {},
   );
 });
