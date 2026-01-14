@@ -79,6 +79,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.searchByTokenNameInput = page.getByRole('textbox', {
       name: 'Search by token name',
     });
+    this.selectedColors = this.designTabpanel.locator(
+      '[class*="color_selection__element-set"]',
+    );
+    this.selectedColorInputs = this.selectedColors.getByRole('textbox', {
+      name: 'Color',
+    });
+    this.lastSelectedColorInput = this.selectedColorInputs.last();
 
     //Design panel - Shadow section
     this.shadowSection = page.getByText('Shadow', { exact: true });
@@ -406,6 +413,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       name: 'Locate duplicated variants',
       exact: true,
     });
+    this.variantPropertySwitch = this.componentBlockOnDesignTab.getByRole('switch');
   }
 
   async isFlexElementSectionOpened() {
@@ -537,6 +545,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async isFillHexCodeSet(value) {
     await expect(this.fillColorInput).toHaveValue(value.slice(1));
+  }
+
+  async isSelectedHexCode(value) {
+    await expect(this.lastSelectedColorInput).toHaveValue(value.slice(1));
   }
 
   async isFillHexCodeSetComponent(value) {
