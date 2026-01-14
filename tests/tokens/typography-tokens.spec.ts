@@ -76,19 +76,24 @@ mainTest.describe(() => {
         '2584 Create typography token with complete property set',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
-
-          await mainTest.step(
-            '2606 Switch Between Individual and Reference Token Forms\n' +
-              '2607 Validate Reference Token Form with Invalid References',
-            async () => {
-              await tokensPage.typoTokensComp.clickOnUseReferenceButton();
-              await tokensPage.typoTokensComp.fillAliasInput(BAD_TOKEN_ALIAS);
-              await tokensPage.typoTokensComp.isAliasInputErrorVisible();
-              await tokensPage.typoTokensComp.clickOnUseCompositeButton();
-            },
-          );
-          // fields should retain their values after switching modes
           await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
+        },
+      );
+
+      await mainTest.step(
+        '2606 Switch Between Individual and Reference Token Forms\n' +
+          '2607 Validate Reference Token Form with Invalid References',
+        async () => {
+          await tokensPage.tokensComp.rightClickOnTokenWithName(TYPO_TOKEN.name);
+          await tokensPage.tokensComp.editTokenMenuItem.click();
+          await tokensPage.typoTokensComp.clickOnUseReferenceButton();
+          await tokensPage.typoTokensComp.fillAliasInput(BAD_TOKEN_ALIAS);
+          await tokensPage.typoTokensComp.isAliasInputErrorVisible();
+          await tokensPage.typoTokensComp.clickOnUseCompositeButton();
+          // fields should retain their values after switching modes
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
           await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
           await tokensPage.tokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
         },
