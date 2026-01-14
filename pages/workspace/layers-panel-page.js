@@ -254,7 +254,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   async expandMainComponentOnLayersTab() {
     if (!(await this.mainComponentLayerToggleExpand.first().isVisible())) {
       if (await this.mainComponentLayerToggleCollapse.first().isVisible()) {
-        await this.mainComponentLayerToggleCollapse.first().click();
+        await this.mainComponentLayerToggleCollapse.first().click({ force: true });
         await expect(this.mainComponentLayerToggleExpand.first()).toBeVisible();
       }
     }
@@ -263,7 +263,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   async expandCopyComponentOnLayersTab() {
     if (!(await this.copyComponentLayerToggleExpand.first().isVisible())) {
       if (await this.copyComponentLayerToggleCollapse.first().isVisible()) {
-        await this.copyComponentLayerToggleCollapse.first().click();
+        await this.copyComponentLayerToggleCollapse.first().click({ force: true });
         await expect(this.copyComponentLayerToggleExpand.first()).toBeVisible();
       }
     }
