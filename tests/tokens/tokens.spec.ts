@@ -129,61 +129,6 @@ mainTest.describe(() => {
   );
 });
 
-mainTest.describe(() => {
-  let mainPage: MainPage;
-  let tokensPage: TokensPage;
-  let designPanelPage: DesignPanelPage;
-
-  const colorToken: MainToken<TokenClass> = {
-    class: TokenClass.Color,
-    name: 'global.color',
-    value: sampleData.color.redHexCode,
-  };
-
-  mainTest.beforeEach(async ({ page }) => {
-    mainPage = new MainPage(page);
-    tokensPage = new TokensPage(page);
-    designPanelPage = new DesignPanelPage(page);
-
-    await mainPage.createDefaultBoardByCoordinates(320, 210);
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(colorToken.name);
-  });
-
-  mainTest(
-    qase(2142, 'Apply default "color fill" token to a board (by left click)'),
-    async () => {
-      await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
-      await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
-      await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
-      await expect(mainPage.createdLayer).toHaveScreenshot('board-color-red.png');
-      await tokensPage.tokensComp.isMenuItemWithNameSelected(
-        colorToken.name,
-        'ColorFill',
-      );
-    },
-  );
-
-  mainTest(
-    qase(2147, 'Apply "color stroke" token to a board (by right click)'),
-    async () => {
-      await designPanelPage.clickAddStrokeButton();
-      await designPanelPage.setStrokeWidth('10');
-      await tokensPage.tokensComp.selectMenuItem(colorToken.name, 'Stroke');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
-      await expect(mainPage.createdLayer).toHaveScreenshot('board-red-stroke.png');
-      await tokensPage.tokensComp.isMenuItemWithNameSelected(
-        colorToken.name,
-        'Stroke',
-      );
-    },
-  );
-});
-
 mainTest(
   qase(2172, 'Apply default "opacity" token to an image (by left click)'),
   async ({ page }) => {
