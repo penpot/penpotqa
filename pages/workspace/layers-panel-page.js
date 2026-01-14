@@ -57,6 +57,66 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     );
   }
 
+  /**
+   * This function gets the arrow button locator from a layer given its name.
+   *
+   * @param {*} layerName The layer name to get its arrow button
+   * @returns A locator
+   */
+  getArrowButtonFromLayerWithName(layerName) {
+    return this.layersRows.filter({ hasText: layerName }).locator('.icon-arrow');
+  }
+
+  /**
+   * This function expands or collapses a layer given its name (to the opposite of its current status), by clicking on its arrow icon.
+   *
+   * @param {string} name The layer name to expand or collapse
+   */
+  async collapseOrUncollapseLayerByName(name) {
+    const layerArrowButton = this.getArrowButtonFromLayerWithName(name);
+    await layerArrowButton.click();
+  }
+
+  /**
+   * This function get single layer rows (not blocks of children), matching the searching criteria of the two parameters. Useful to diferentiate between same-named parent and children nodes.
+   *
+   * @param {string|null} layerName It'll recover layers matching this name, when provided. It won't
+   *  filter by name if null.
+   * @param {boolean} uncollapsedChildrenOnly It will recover just the visible children (already UNCOLLAPSED)
+   *  layers (when true), or also include the parent layers (when false).
+   * @returns A locator to recover the layer rows matching the given parameters.
+   */
+  getLayerRowsBy(layerName = null, uncollapsedChildrenOnly = false) {
+    let composedLocator = this.page;
+
+    if (uncollapsedChildrenOnly === true) {
+      composedLocator = composedLocator.getByTestId(/children-[0-9-a-f]+$/i);
+    }
+
+    composedLocator = composedLocator.getByTestId('layer-row');
+
+    if (layerName !== null) {
+      composedLocator = composedLocator.filter({ hasText: layerName });
+    }
+
+    return composedLocator;
+  }
+
+  /**
+   * This function clicks on the first layer row matching the search criteria specified on the parameters
+   *
+   * @param {string} layerName It'll recover layers matching this name, when provided. It won't
+   *  filter by name if null.
+   * @param {boolean} uncollapsedChildrenOnly It will search just on the UNCOLLAPSED children layers
+   *  (when true), or it'll also include parent layers (when false).
+   */
+  async selectFirstLayerByNameJustForVisibleChildren(
+    layerName,
+    uncollapsedChildrenOnly = true,
+  ) {
+    await this.getLayerRowsBy(layerName, uncollapsedChildrenOnly).first().click();
+  }
+
   async expandGroupOnLayersTab() {
     if (!(await this.layerItemToggleExpand.isVisible())) {
       await this.layerBoardToggleContentCollapse.first().click();
