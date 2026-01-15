@@ -66,37 +66,16 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      [2584, 2586, 2592, 2604, 2606, 2607],
-      'Create and edit a typography token (validating values and creation modes)',
+      [2584, 2586, 2592, 2604],
+      'Create and edit a typography token (validating values and units)',
     ),
     async () => {
-      const BAD_TOKEN_ALIAS = '{non.existent.token}';
-
       await mainTest.step(
         '2584 Create typography token with complete property set',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
           await tokensPage.tokensComp.baseComp.clickOnSaveButton();
           await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
-        },
-      );
-
-      await mainTest.step(
-        '2606 Switch Between Individual and Reference Token Forms\n' +
-          '2607 Validate Reference Token Form with Invalid References',
-        async () => {
-          await mainTest.step('Open token edit modal', async () => {
-            await tokensPage.tokensComp.rightClickOnTokenWithName(TYPO_TOKEN.name);
-            await tokensPage.tokensComp.editTokenMenuItem.click();
-          });
-
-          await tokensPage.typoTokensComp.clickOnUseReferenceButton();
-          await tokensPage.typoTokensComp.fillAliasInput(BAD_TOKEN_ALIAS);
-          await tokensPage.typoTokensComp.isAliasInputErrorVisible();
-          await tokensPage.typoTokensComp.clickOnUseCompositeButton();
-          // fields should retain their values after switching modes
-          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
           await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
           await tokensPage.tokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
         },
@@ -158,23 +137,59 @@ mainTest.describe(() => {
       };
       const RESOLVED_LINE_HEIGHT_4 = '1.1';
 
+      await mainTest.step('2592 Validate Typography Token Units', async () => {
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_1, mainPage);
+        await designPanelPage.checkFontSize(RESOLVED_FONT_SIZE_1);
+        await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_1);
+      });
+
       await mainTest.step(
-        '2592 Validate Typography Token Units\n' +
-          '2604 Apply Typography Tokens with Line Height Calculation and with Different Units',
+        '2604 Apply Typography Tokens with Line Height Calculation and with Different Units',
         async () => {
-          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_1);
-          await mainPage.waitForChangeIsSaved();
-          await designPanelPage.checkFontSize(RESOLVED_FONT_SIZE_1);
-          await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_1);
-          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_2);
-          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(
+            TOKEN_2,
+            mainPage,
+          );
           await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_2);
-          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_3);
-          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(
+            TOKEN_3,
+            mainPage,
+          );
           await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_3);
-          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_4);
-          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(
+            TOKEN_4,
+            mainPage,
+          );
           await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_4);
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase([2606, 2607], 'Switch between token forms and validate invalid references'),
+    async () => {
+      const BAD_TOKEN_ALIAS = '{non.existent.token}';
+
+      await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
+
+      await mainTest.step(
+        '2606 Switch Between Individual and Reference Token Forms',
+        async () => {
+          await tokensPage.typoTokensComp.clickOnUseReferenceButton();
+          await tokensPage.typoTokensComp.clickOnUseCompositeButton();
+          // fields should retain their values after switching modes
+          await tokensPage.typoTokensComp.checkTypographicTokenValues(TYPO_TOKEN);
+        },
+      );
+
+      await mainTest.step(
+        '2607 Validate Reference Token Form with Invalid References',
+        async () => {
+          await tokensPage.typoTokensComp.clickOnUseReferenceButton();
+          await tokensPage.typoTokensComp.fillAliasInput(BAD_TOKEN_ALIAS);
+          await tokensPage.typoTokensComp.isAliasInputErrorVisible();
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
         },
       );
     },

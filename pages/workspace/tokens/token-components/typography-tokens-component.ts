@@ -113,6 +113,52 @@ export class TypographyTokensComponent {
   async fillAliasInput(value: string) {
     await this.aliasInput.fill(value);
   }
+
+  getFieldLocator(fieldName: string): Locator | null {
+    const fieldMap: { [key: string]: Locator } = {
+      fontFamily: this.fontFamilyInput,
+      fontWeight: this.fontWeightInput,
+      fontSize: this.fontSizeInput,
+      lineHeight: this.lineHeightInput,
+      letterSpacing: this.letterSpacingInput,
+      textDecoration: this.textDecorationInput,
+      textCase: this.textCaseInput,
+    };
+    return fieldMap[fieldName] || null;
+  }
+
+  async checkTokenField(fieldName: string, expectedValue: string) {
+    const field = this.getFieldLocator(fieldName);
+    if (!field) {
+      throw new Error(`Unknown field name: ${fieldName}`);
+    }
+
+    await expect(field).toHaveValue(expectedValue);
+  }
+
+  async checkTypographicTokenValues(token: TypographyToken<TokenClass>) {
+    if (token.fontFamily !== undefined) {
+      await this.checkTokenField('fontFamily', token.fontFamily);
+    }
+    if (token.fontWeight !== undefined) {
+      await this.checkTokenField('fontWeight', token.fontWeight);
+    }
+    if (token.fontSize !== undefined) {
+      await this.checkTokenField('fontSize', token.fontSize);
+    }
+    if (token.lineHeight !== undefined) {
+      await this.checkTokenField('lineHeight', token.lineHeight);
+    }
+    if (token.letterSpacing !== undefined) {
+      await this.checkTokenField('letterSpacing', token.letterSpacing);
+    }
+    if (token.textDecoration !== undefined) {
+      await this.checkTokenField('textDecoration', token.textDecoration);
+    }
+    if (token.textCase !== undefined) {
+      await this.checkTokenField('textCase', token.textCase);
+    }
+  }
 }
 
 export default TypographyTokensComponent;

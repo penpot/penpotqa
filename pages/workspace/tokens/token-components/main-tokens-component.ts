@@ -98,4 +98,11 @@ export class MainTokensComponent {
   async enterTokenValue(value: string) {
     await this.tokenValueInput.fill(value);
   }
+
+  getFieldLocator(fieldName: string): Locator | null {
+    const fieldMap: { [key: string]: Locator } = {
+      value: this.tokenValueInput,
+    };
+    return fieldMap[fieldName] || null;
+  }
 }
