@@ -86,8 +86,11 @@ mainTest.describe(() => {
         '2606 Switch Between Individual and Reference Token Forms\n' +
           '2607 Validate Reference Token Form with Invalid References',
         async () => {
-          await tokensPage.tokensComp.rightClickOnTokenWithName(TYPO_TOKEN.name);
-          await tokensPage.tokensComp.editTokenMenuItem.click();
+          await mainTest.step('Open token edit modal', async () => {
+            await tokensPage.tokensComp.rightClickOnTokenWithName(TYPO_TOKEN.name);
+            await tokensPage.tokensComp.editTokenMenuItem.click();
+          });
+
           await tokensPage.typoTokensComp.clickOnUseReferenceButton();
           await tokensPage.typoTokensComp.fillAliasInput(BAD_TOKEN_ALIAS);
           await tokensPage.typoTokensComp.isAliasInputErrorVisible();
