@@ -44,6 +44,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.horizontalOrientationButton = page.locator('label[for="size-horizontal"]');
 
     //Design panel - Fill section
+    this.colorPickerContainer = page.getByTestId('colorpicker');
     this.firstColorIcon = page
       .locator(
         '//div[contains(@class, "color-data")][not(contains(@class, "color_row__hidden"))]//div[contains(@class, "color-bullet-wrapper")]',
@@ -75,6 +76,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.fillTokenColor = this.designTabpanel
       .locator(`[class*="fill-section"] div[class*="color_row__token-name"]`)
       .last();
+    this.searchByTokenNameInput = page.getByRole('textbox', {
+      name: 'Search by token name',
+    });
 
     //Design panel - Shadow section
     this.shadowSection = page.getByText('Shadow', { exact: true });
@@ -504,6 +508,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  getColorTokenButtonByName(tokenName) {
+    return this.colorPickerContainer.getByRole('button', {
+      name: tokenName,
+      exact: true,
+    });
+  }
+
   async clickFirstColorIcon() {
     await this.firstColorIcon.click();
   }
@@ -514,6 +525,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeOpacityForFill(value) {
     await this.fillOpacityInput.clear();
     await this.fillOpacityInput.pressSequentially(value);
+  }
+
+  async fillSearchByTokenNameInput(tokenName) {
+    await this.searchByTokenNameInput.fill(tokenName);
+  }
+
+  async clickColorTokenButton(tokenName) {
+    await this.getColorTokenButtonByName(tokenName).click();
   }
 
   async isFillHexCodeSet(value) {
@@ -530,6 +549,27 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async isFillOpacitySet(value) {
     await expect(this.fillOpacityInput).toHaveValue(value);
+  }
+
+  async isSearchByTokenNameInputVisible() {
+    await expect(
+      this.searchByTokenNameInput,
+      'Search by token name input is visible',
+    ).toBeVisible();
+  }
+
+  async isColorTokenButtonVisible(tokenName) {
+    await expect(
+      this.getColorTokenButtonByName(tokenName),
+      `Color token button "${tokenName}" is visible`,
+    ).toBeVisible();
+  }
+
+  async isColorTokenButtonNotVisible(tokenName) {
+    await expect(
+      this.getColorTokenButtonByName(tokenName),
+      `Color token button "${tokenName}" is not visible`,
+    ).not.toBeVisible();
   }
 
   async clickAddFillButton() {
