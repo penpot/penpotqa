@@ -299,7 +299,7 @@ export class TokensComponent {
     }
   }
 
-  async checkTokenField(
+  async checkTokenFieldHasExpectedValue(
     fieldName: string,
     expectedValue: string,
     tokenClass: TokenClass,
