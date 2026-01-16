@@ -176,7 +176,9 @@ mainTest.describe(() => {
           await tokensPage.typoTokensComp.clickOnUseReferenceButton();
           await tokensPage.typoTokensComp.clickOnUseCompositeButton();
           // fields should retain their values after switching modes
-          await tokensPage.typoTokensComp.expectTokenFieldValues(TYPO_TOKEN);
+          await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
+            TYPO_TOKEN,
+          );
         },
       );
 

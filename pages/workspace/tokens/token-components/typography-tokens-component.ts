@@ -114,11 +114,9 @@ export class TypographyTokensComponent {
     await this.aliasInput.fill(value);
   }
 
-  async checkTokenFieldHasExpectedValue(token: TypographyToken<TokenClass>) {
-    await this.expectTokenFieldValues(token);
-  }
-
-  async expectTokenFieldValues(typographyToken: TypographyToken<TokenClass>) {
+  async checkTokenFieldHasExpectedValue(
+    typographyToken: TypographyToken<TokenClass>,
+  ) {
     if (typographyToken.fontFamily !== undefined) {
       await expect(this.fontFamilyInput).toHaveValue(typographyToken.fontFamily);
     }
