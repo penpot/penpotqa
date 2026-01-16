@@ -298,25 +298,4 @@ export class TokensComponent {
       await this.expandTokensButton.nth(count - 1 - i).click();
     }
   }
-
-  async checkTokenFieldHasExpectedValue(
-    fieldName: string,
-    expectedValue: string,
-    tokenClass: TokenClass,
-  ) {
-    let field;
-    if (tokenClass === TokenClass.Typography) {
-      field = this.typoTokensComp.getFieldLocator(fieldName);
-    } else {
-      field = this.mainTokensComp.getFieldLocator(fieldName);
-    }
-
-    if (!field) {
-      throw new Error(
-        `Unknown field name: ${fieldName} for token class: ${tokenClass}`,
-      );
-    }
-
-    await expect(field).toHaveValue(expectedValue);
-  }
 }
