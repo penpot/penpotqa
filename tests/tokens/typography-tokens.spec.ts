@@ -138,7 +138,7 @@ mainTest.describe(() => {
       const RESOLVED_LINE_HEIGHT_4 = '1.1';
 
       await mainTest.step('2592 Validate Typography Token Units', async () => {
-        await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_1, mainPage);
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_1);
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.checkFontSize(RESOLVED_FONT_SIZE_1);
         await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_1);
@@ -147,22 +147,13 @@ mainTest.describe(() => {
       await mainTest.step(
         '2604 Apply Typography Tokens with Line Height Calculation and with Different Units',
         async () => {
-          await tokensPage.tokensComp.editTokenViaRightClickAndSave(
-            TOKEN_2,
-            mainPage,
-          );
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_2);
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_2);
-          await tokensPage.tokensComp.editTokenViaRightClickAndSave(
-            TOKEN_3,
-            mainPage,
-          );
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_3);
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_3);
-          await tokensPage.tokensComp.editTokenViaRightClickAndSave(
-            TOKEN_4,
-            mainPage,
-          );
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_4);
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_4);
         },
