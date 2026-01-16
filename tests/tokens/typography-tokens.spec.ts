@@ -166,7 +166,9 @@ mainTest.describe(() => {
     async () => {
       const BAD_TOKEN_ALIAS = '{non.existent.token}';
 
-      await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
+      await mainTest.step('Add a typography token and fill data', async () => {
+        await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
+      });
 
       await mainTest.step(
         '2606 Switch Between Individual and Reference Token Forms',
