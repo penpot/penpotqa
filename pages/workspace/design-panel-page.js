@@ -81,12 +81,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
 
     //Design panel - Shadow section
+    this.shadowSectionContainer = page.locator(
+      '.main_ui_workspace_sidebar_options_menus_shadow__shadow-section',
+    );
     this.shadowSection = page.getByText('Shadow', { exact: true });
     this.groupShadowSection = page.getByText('Group shadow', { exact: true });
     this.addShadowButton = page.getByRole('button', { name: 'Add shadow' });
-    this.shadowActionsButton = page.locator(
-      '[class*="shadow_row__shadow-basic-info"] button',
-    );
+    this.shadowActionsButton = this.shadowSectionContainer.getByRole('button', {
+      name: 'open more options',
+    });
     this.shadowXInput = page.locator(
       'div[class*="shadow-advanced"] div[title="X"] input',
     );
@@ -105,6 +108,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowUnhideIcon = page.getByRole('button', { name: 'Toggle shadow' });
     this.shadowRemoveIcon = page.getByRole('button', { name: 'Remove shadow' });
     this.shadowTypeField = page.locator('div[class*="shadow-basic-select"]');
+    this.shadowTypeOptionsMenu = this.shadowSectionContainer.getByRole('button', {
+      name: 'open more options',
+    });
 
     //Design panel - Flex Layout section
     this.flexLayoutMenu = page.locator('div[class*="flex-layout-menu"]');
@@ -1758,5 +1764,54 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     visible
       ? await expect(await this.flexElementWidth100Btn).toBeVisible()
       : await expect(await this.flexElementWidth100Btn).not.toBeVisible();
+  }
+
+  async isShadowTypeSelectedVisible(shadowType) {
+    const typeOptionSel = this.shadowSectionContainer
+      .getByRole('combobox')
+      .filter({ hasText: shadowType });
+    await expect(
+      await typeOptionSel,
+      `Shadow Type Option: "${shadowType}" is visible`,
+    ).toBeVisible();
+  }
+
+  async hasShadowXOffsetExpectedValue(value) {
+    await expect(
+      await this.shadowXInput,
+      `Shadow X Offset Input has expected value: "${value}"`,
+    ).toHaveValue(value);
+  }
+
+  async hasShadowYOffsetExpectedValue(value) {
+    await expect(
+      await this.shadowYInput,
+      `Shadow Y Offset Input has expected value: "${value}"`,
+    ).toHaveValue(value);
+  }
+
+  async hasShadowBlurExpectedValue(value) {
+    await expect(
+      await this.shadowBlurInput,
+      `Shadow Blur Input has expected value: "${value}"`,
+    ).toHaveValue(value);
+  }
+
+  async hasShadowSpreadExpectedValue(value) {
+    await expect(
+      await this.shadowSpreadInput,
+      `Shadow Spread Input has expected value: "${value}"`,
+    ).toHaveValue(value);
+  }
+
+  async isExpectedShadowColorVisible(color) {
+    const shadowColorButton = this.shadowSectionContainer.getByRole('button', {
+      name: color,
+    });
+
+    await expect(
+      await shadowColorButton,
+      `Shadow Color Button has expected value: "${color}"`,
+    ).toBeVisible();
   }
 };

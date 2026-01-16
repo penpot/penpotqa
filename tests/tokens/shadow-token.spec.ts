@@ -1,27 +1,31 @@
-import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { mainTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
 import { random } from 'helpers/string-generator';
 import { MainPage } from '@pages/workspace/main-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { ColorPalettePage } from '@pages/workspace/color-palette-page';
-import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
-import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 import { ShadowToken } from '@pages/workspace/tokens/token-components/shadow-tokens-component';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 
 const teamName = random().concat('autotest');
 const sampleData = new SampleData();
+const BAD_TOKEN_ALIAS = '{non.existent.token}';
 
-mainTest.beforeEach(async ({ page, browserName }) => {
-  let teamPage: TeamPage = new TeamPage(page);
-  let dashboardPage: DashboardPage = new DashboardPage(page);
-  let mainPage: MainPage = new MainPage(page);
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+let tokensPage: TokensPage;
+let designPanelPage: DesignPanelPage;
+
+mainTest.beforeEach('Create a team and a file', async ({ page, browserName }) => {
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  designPanelPage = new DesignPanelPage(page);
+
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -32,42 +36,34 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const mainPage: MainPage = new MainPage(page);
+mainTest.afterEach('Back to Dashboard and delete team created', async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest.describe(() => {
-  let mainPage: MainPage;
-  let tokensPage: TokensPage;
-  let designPanelPage: DesignPanelPage;
-  let assetsPanelPage: AssetsPanelPage;
+  mainTest.beforeEach(
+    'Create a rectangle and click on Tokens tab',
+    async ({ page }) => {
+      tokensPage = new TokensPage(page);
 
-  mainTest.beforeEach(async ({ page }) => {
-    tokensPage = new TokensPage(page);
-    mainPage = new MainPage(page);
-    designPanelPage = new DesignPanelPage(page);
-    assetsPanelPage = new AssetsPanelPage(page);
-
-    await mainPage.createDefaultRectangleByCoordinates(320, 210);
-    await tokensPage.tokensTab.click();
-  });
+      await mainPage.createDefaultRectangleByCoordinates(320, 210);
+      await tokensPage.tokensTab.click();
+    },
+  );
 
   mainTest(
-    qase([2673, 2675, 2682, 2678, 2680], 'Create and edit a shadow token'),
+    qase(
+      [2673, 2586],
+      'Create token with inner shadow, validate dropdown and edit to update',
+    ),
     async () => {
       const SHADOW_TOKEN: ShadowToken<TokenClass> = {
         class: TokenClass.Shadow,
         name: 'global.shadow',
         shadows: [
           {
-            xOffset: '4',
-            yOffset: '4',
-            blurRadius: '10',
-            spreadRadius: '0',
-            color: 'rgba(0, 0, 0, 0.25)',
+            color: sampleData.color.redHexCode,
             shadowType: 'Inner shadow',
           },
         ],
@@ -78,35 +74,57 @@ mainTest.describe(() => {
         name: SHADOW_TOKEN.name,
         shadows: [
           {
-            xOffset: '40',
-            yOffset: '50',
+            color: sampleData.color.blueHexCode,
+            xOffset: '-40',
+            yOffset: '-50',
             blurRadius: '30',
             spreadRadius: '10',
-            color: 'rgba(0, 0, 0, 0.25)',
-            shadowType: 'Inner shadow',
           },
         ],
       };
 
-      const BAD_TOKEN_ALIAS = '{non.existent.token}';
-
       await mainTest.step(
-        '(2673, 2675)  Create token with inner shadow, invididual shadow values',
+        '(2673)  Create token with inner shadow, apply and assert expected default values in Design Panel shadow type options menu',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(SHADOW_TOKEN);
+          await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+          await tokensPage.tokensComp.isTokenVisibleWithName(SHADOW_TOKEN.name);
+          await tokensPage.tokensComp.clickOnTokenWithName(SHADOW_TOKEN.name);
+
+          //Assert shadow values in Design Panel REVISARs
+          await designPanelPage.isShadowTypeSelectedVisible(
+            SHADOW_TOKEN.shadows[0].shadowType,
+          );
+          await designPanelPage.clickShadowActionsButton();
+          await designPanelPage.hasShadowYOffsetExpectedValue('4');
+          await designPanelPage.hasShadowXOffsetExpectedValue('4');
+          await designPanelPage.hasShadowBlurExpectedValue('4');
+          await designPanelPage.hasShadowSpreadExpectedValue('0');
+          await designPanelPage.isExpectedShadowColorVisible(
+            SHADOW_TOKEN.shadows[0].color,
+          );
         },
-      );
-
-      await mainTest.step('(2683)  Box shadow token dropdown', async () => {});
-
-      await mainTest.step(
-        '(2678) Create token with unit shadow values',
-        async () => {},
       );
 
       await mainTest.step('2586 Edit a typography token', async () => {
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(UPDATED_TOKEN);
-        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenVisibleWithName(UPDATED_TOKEN.name);
+        await tokensPage.tokensComp.clickOnTokenWithName(UPDATED_TOKEN.name);
+
+        //Assert shadow values in Design Panel
+        await designPanelPage.isShadowTypeSelectedVisible(
+          UPDATED_TOKEN.shadows[0].shadowType,
+        );
+        await designPanelPage.clickShadowActionsButton();
+        await designPanelPage.hasShadowYOffsetExpectedValue(
+          UPDATED_TOKEN.shadows[0].yOffset!,
+        );
+        await designPanelPage.hasShadowXOffsetExpectedValue('4');
+        await designPanelPage.hasShadowBlurExpectedValue('4');
+        await designPanelPage.hasShadowSpreadExpectedValue('0');
+        await designPanelPage.isExpectedShadowColorVisible(
+          UPDATED_TOKEN.shadows[0].color,
+        );
       });
     },
   );
@@ -114,7 +132,7 @@ mainTest.describe(() => {
   mainTest(
     qase(
       [2678, 2680, 2681, 2682],
-      'Create a shadow token with multiple shadows, add a shadow with unit shadow values, edit, remove multiple shadows',
+      'Create a shadow token with units (drop shadow) with multiple shadows, add a shadow with unit shadow values, edit, remove multiple shadows',
     ),
     async () => {
       const MULTI_SHADOW_TOKEN: ShadowToken<TokenClass> = {
