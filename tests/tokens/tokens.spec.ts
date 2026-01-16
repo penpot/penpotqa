@@ -861,8 +861,8 @@ mainTest(
     );
 
     await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
+    await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await tokensPage.tokensComp.checkTokenTitle(
       letterSpacingToken.name,
       `Token: ${letterSpacingToken.name}\n` +
@@ -872,8 +872,8 @@ mainTest(
 
     updatedTokenData.value = `5px+{${dimensionToken.name}}`;
     await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
+    await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await tokensPage.tokensComp.checkTokenTitle(
       letterSpacingToken.name,
       `Token: ${letterSpacingToken.name}\n` +
@@ -883,8 +883,8 @@ mainTest(
 
     updatedTokenData.value = `5px-{${dimensionToken.name}}`;
     await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await mainPage.waitForChangeIsSaved();
+    await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
     await tokensPage.tokensComp.checkTokenTitle(
       letterSpacingToken.name,
       `Token: ${letterSpacingToken.name}\n` +
@@ -936,8 +936,8 @@ mainTest(
     );
 
     await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await mainPage.waitForChangeIsSaved();
+    await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await tokensPage.tokensComp.checkTokenTitle(
       numberTokenRef.name,
       `Token: ${numberTokenRef.name}\n` +
@@ -948,8 +948,8 @@ mainTest(
 
     updatedTokenData.value = `5+{${numberToken.name}}`;
     await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await mainPage.waitForChangeIsSaved();
+    await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await tokensPage.tokensComp.checkTokenTitle(
       numberTokenRef.name,
       `Token: ${numberTokenRef.name}\n` +
@@ -960,8 +960,8 @@ mainTest(
 
     updatedTokenData.value = `5-{${numberToken.name}}`;
     await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await mainPage.waitForChangeIsSaved();
+    await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
     await tokensPage.tokensComp.checkTokenTitle(
       numberTokenRef.name,
       `Token: ${numberTokenRef.name}\n` +
@@ -1151,8 +1151,8 @@ mainTest.describe(() => {
 
   mainTest(qase(2531, 'Edit a Text decoration token'), async () => {
     await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await mainPage.waitForChangeIsSaved();
+    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
     await designPanelPage.isTextStrikethroughChecked();
   });
