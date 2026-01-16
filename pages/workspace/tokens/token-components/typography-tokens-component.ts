@@ -114,52 +114,31 @@ export class TypographyTokensComponent {
     await this.aliasInput.fill(value);
   }
 
-  async checkTokenFieldHasExpectedValue(fieldName: string, expectedValue: string) {
-    const fieldMap: { [key: string]: Locator } = {
-      fontFamily: this.fontFamilyInput,
-      fontWeight: this.fontWeightInput,
-      fontSize: this.fontSizeInput,
-      lineHeight: this.lineHeightInput,
-      letterSpacing: this.letterSpacingInput,
-      textDecoration: this.textDecorationInput,
-      textCase: this.textCaseInput,
-    };
-
-    const field = fieldMap[fieldName];
-    if (!field) {
-      throw new Error(`Unknown field name: ${fieldName}`);
+  async expectTokenFieldValues(typographyToken: TypographyToken<TokenClass>) {
+    if (typographyToken.fontFamily !== undefined) {
+      await expect(this.fontFamilyInput).toHaveValue(typographyToken.fontFamily);
     }
-
-    await expect(field).toHaveValue(expectedValue);
-  }
-
-  async checkTypographicTokenValues(token: TypographyToken<TokenClass>) {
-    if (token.fontFamily !== undefined) {
-      await this.checkTokenFieldHasExpectedValue('fontFamily', token.fontFamily);
+    if (typographyToken.fontWeight !== undefined) {
+      await expect(this.fontWeightInput).toHaveValue(typographyToken.fontWeight);
     }
-    if (token.fontWeight !== undefined) {
-      await this.checkTokenFieldHasExpectedValue('fontWeight', token.fontWeight);
+    if (typographyToken.fontSize !== undefined) {
+      await expect(this.fontSizeInput).toHaveValue(typographyToken.fontSize);
     }
-    if (token.fontSize !== undefined) {
-      await this.checkTokenFieldHasExpectedValue('fontSize', token.fontSize);
+    if (typographyToken.lineHeight !== undefined) {
+      await expect(this.lineHeightInput).toHaveValue(typographyToken.lineHeight);
     }
-    if (token.lineHeight !== undefined) {
-      await this.checkTokenFieldHasExpectedValue('lineHeight', token.lineHeight);
-    }
-    if (token.letterSpacing !== undefined) {
-      await this.checkTokenFieldHasExpectedValue(
-        'letterSpacing',
-        token.letterSpacing,
+    if (typographyToken.letterSpacing !== undefined) {
+      await expect(this.letterSpacingInput).toHaveValue(
+        typographyToken.letterSpacing,
       );
     }
-    if (token.textDecoration !== undefined) {
-      await this.checkTokenFieldHasExpectedValue(
-        'textDecoration',
-        token.textDecoration,
+    if (typographyToken.textDecoration !== undefined) {
+      await expect(this.textDecorationInput).toHaveValue(
+        typographyToken.textDecoration,
       );
     }
-    if (token.textCase !== undefined) {
-      await this.checkTokenFieldHasExpectedValue('textCase', token.textCase);
+    if (typographyToken.textCase !== undefined) {
+      await expect(this.textCaseInput).toHaveValue(typographyToken.textCase);
     }
   }
 }
