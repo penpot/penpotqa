@@ -139,6 +139,7 @@ mainTest.describe(() => {
 
       await mainTest.step('2592 Validate Typography Token Units', async () => {
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_1, mainPage);
+        await mainPage.waitForChangeIsSaved();
         await designPanelPage.checkFontSize(RESOLVED_FONT_SIZE_1);
         await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_1);
       });
@@ -150,16 +151,19 @@ mainTest.describe(() => {
             TOKEN_2,
             mainPage,
           );
+          await mainPage.waitForChangeIsSaved();
           await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_2);
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(
             TOKEN_3,
             mainPage,
           );
+          await mainPage.waitForChangeIsSaved();
           await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_3);
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(
             TOKEN_4,
             mainPage,
           );
+          await mainPage.waitForChangeIsSaved();
           await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_4);
         },
       );
@@ -197,7 +201,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      [2609, 26210],
+      [2609, 2610],
       'Check Typography Token detaches Typography Style Assets and Atomic Typography Tokens',
     ),
     async () => {
