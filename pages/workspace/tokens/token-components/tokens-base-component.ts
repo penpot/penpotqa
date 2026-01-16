@@ -145,13 +145,9 @@ export class TokensComponent {
 
   async editTokenViaRightClickAndSave(
     updatedToken: TypographyToken<TokenClass> | MainToken<TokenClass>,
-    mainPage?: any,
   ) {
     await this.editTokenViaRightClickByName(updatedToken);
     await this.baseComp.modalSaveButton.click();
-    if (mainPage) {
-      await mainPage.waitForChangeIsSaved();
-    }
   }
 
   async isTokenVisibleWithName(name: string, visible = true) {
