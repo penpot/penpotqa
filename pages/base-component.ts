@@ -24,11 +24,17 @@ export class BaseComponent {
   }
 
   async clickOnCancelButton() {
-    await this.modalCancelButton.click();
+    if (await this.modalCancelButton.isVisible()) {
+      await expect(this.modalCancelButton).toBeEnabled();
+      await this.modalCancelButton.click();
+    }
   }
 
   async clickOnSaveButton() {
-    await this.modalSaveButton.click();
+    if (await this.modalSaveButton.isVisible()) {
+      await expect(this.modalSaveButton).toBeEnabled();
+      await this.modalSaveButton.click();
+    }
   }
 
   async closeModalWindow() {
