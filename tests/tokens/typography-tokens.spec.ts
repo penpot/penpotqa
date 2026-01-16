@@ -175,7 +175,7 @@ mainTest.describe(() => {
         async () => {
           await tokensPage.typoTokensComp.clickOnUseReferenceButton();
           await tokensPage.typoTokensComp.clickOnUseCompositeButton();
-          // fields should retain their values after switching modes
+          // Fields should retain their values after switching modes
           await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
             TYPO_TOKEN,
           );
@@ -206,20 +206,20 @@ mainTest.describe(() => {
       await mainTest.step(
         '2609 Check Typography Token Detaches Applied Typography Style (Asset)',
         async () => {
-          // set some typography styles to the text from the design panel
+          // Set some typography styles to the text from the design panel
           await assetsPanelPage.selectFont(FONT_FAMILY_STYLE);
           await designPanelPage.changeTextLetterSpacing(LETTER_SPACING_STYLE);
-          // create a typography asset with these styles
+          // Create a typography asset with these styles
           await assetsPanelPage.clickAssetsTab();
           await assetsPanelPage.clickAddFileLibraryTypographyButton();
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.isTypographyAssetAgVisible(true);
-          // create and apply typography token
+          // Create and apply typography token
           await tokensPage.tokensTab.click();
           await tokensPage.tokensComp.createTokenViaAddButtonAndSave(TYPO_TOKEN);
           await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
           await tokensPage.tokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
-          // validates assets are detached after applying the typography token
+          // Validates assets are detached after applying the typography token
           await designPanelPage.isTypographyAssetAgVisible(false);
           await designPanelPage.checkFontName(TYPO_TOKEN.fontFamily);
           await designPanelPage.checkLetterSpacing(TYPO_TOKEN.letterSpacing);
@@ -258,7 +258,7 @@ mainTest.describe(() => {
       await mainTest.step(
         '2610 Check Typography Token Unapplied Atomic Typography Tokens',
         async () => {
-          // create the typography and style tokens
+          // Create the typography and style tokens
           await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
             CLEAN_TYPO_TOKEN,
           );
@@ -267,16 +267,16 @@ mainTest.describe(() => {
           }
 
           for (const typoToken of TYPO_TOKENS) {
-            // apply all atomic typography tokens first
+            // Apply all atomic typography tokens first
             for (const styleToken of STYLE_TOKENS) {
               await tokensPage.tokensComp.clickOnTokenWithName(styleToken.name);
               await tokensPage.tokensComp.isTokenAppliedWithName(styleToken.name);
             }
-            // then apply the typography token type
+            // Then apply the typography token type
             await tokensPage.tokensComp.clickOnTokenWithName(typoToken.name);
             await tokensPage.tokensComp.isTokenAppliedWithName(typoToken.name);
 
-            // all atomic typography tokens should be unapplied
+            // All atomic typography tokens should be unapplied
             for (const styleToken of STYLE_TOKENS) {
               await tokensPage.tokensComp.isTokenAppliedWithName(
                 styleToken.name,
