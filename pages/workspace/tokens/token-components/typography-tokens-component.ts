@@ -114,7 +114,7 @@ export class TypographyTokensComponent {
     await this.aliasInput.fill(value);
   }
 
-  getFieldLocator(fieldName: string): Locator | null {
+  async checkTokenFieldHasExpectedValue(fieldName: string, expectedValue: string) {
     const fieldMap: { [key: string]: Locator } = {
       fontFamily: this.fontFamilyInput,
       fontWeight: this.fontWeightInput,
@@ -124,11 +124,8 @@ export class TypographyTokensComponent {
       textDecoration: this.textDecorationInput,
       textCase: this.textCaseInput,
     };
-    return fieldMap[fieldName] || null;
-  }
 
-  async checkTokenFieldHasExpectedValue(fieldName: string, expectedValue: string) {
-    const field = this.getFieldLocator(fieldName);
+    const field = fieldMap[fieldName];
     if (!field) {
       throw new Error(`Unknown field name: ${fieldName}`);
     }
