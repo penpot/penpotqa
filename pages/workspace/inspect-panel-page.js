@@ -28,6 +28,18 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     this.codeHtmlStrings = page.locator('span[class="hljs-string"]');
     this.svgCodeButton = page.locator('label[for=":svg"]');
     this.copyHtmlCodeButton = page.locator('button[class*="html-copy-btn"]');
+    this.tokensSetAndThemesSection = page.getByText('Token Sets & Themes');
+    this.tokensSetAndThemesSectionCollapseButton = page.getByRole('button', {
+      name: 'Toggle panel Token Sets &',
+    });
+    this.sizeAndPositionSection = page.getByText('Size and position');
+    this.sizeAndPositionSectionCollapseButton = page.getByRole('button', {
+      name: 'Toggle panel Size and position',
+    });
+    this.fillSection = page.getByTestId('right-sidebar').getByText('Fill');
+    this.fillSectionCollapseButton = page.getByRole('button', {
+      name: 'Toggle panel Fill',
+    });
   }
 
   async openInspectTab() {
@@ -80,5 +92,43 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
 
   async clickOnSVGCodeButton() {
     await this.svgCodeButton.click();
+  }
+
+  async isTokenSetsAndThemesSectionVisible() {
+    await expect(this.tokensSetAndThemesSection).toBeVisible();
+  }
+
+  async isSizeAndPositionSectionVisible() {
+    await expect(this.sizeAndPositionSection).toBeVisible();
+  }
+
+  async isFillSectionVisible() {
+    await expect(this.fillSection).toBeVisible();
+  }
+
+  async isTokensSetAndThemesSectionCollapseButtonVisible() {
+    await expect(this.tokensSetAndThemesSectionCollapseButton).toBeVisible();
+  }
+
+  async isSizeAndPositionSectionCollapseButtonVisible() {
+    await expect(this.sizeAndPositionSectionCollapseButton).toBeVisible();
+  }
+
+  async isFillSectionCollapseButtonVisible() {
+    await expect(this.fillSectionCollapseButton).toBeVisible();
+  }
+
+  async collapseInspectStyleSection(sectionTitle, propertyTerm) {
+    await this.page
+      .getByRole('button', { name: `Toggle panel ${sectionTitle}` })
+      .click();
+    await expect(this.page.getByText(propertyTerm)).not.toBeVisible();
+  }
+
+  async uncollapseInspectStyleSection(sectionTitle, propertyTerm) {
+    await this.page
+      .getByRole('button', { name: `Toggle panel ${sectionTitle}` })
+      .click();
+    await expect(this.page.getByText(propertyTerm)).toBeVisible();
   }
 };
