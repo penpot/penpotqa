@@ -12,7 +12,6 @@ import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 
 const teamName = random().concat('autotest');
 const sampleData = new SampleData();
-const BAD_TOKEN_ALIAS = '{non.existent.token}';
 
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
