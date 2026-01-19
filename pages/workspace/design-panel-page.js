@@ -108,9 +108,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.shadowUnhideIcon = page.getByRole('button', { name: 'Toggle shadow' });
     this.shadowRemoveIcon = page.getByRole('button', { name: 'Remove shadow' });
     this.shadowTypeField = page.locator('div[class*="shadow-basic-select"]');
-    this.shadowTypeOptionsMenu = this.shadowSectionContainer.getByRole('button', {
-      name: 'open more options',
-    });
 
     //Design panel - Flex Layout section
     this.flexLayoutMenu = page.locator('div[class*="flex-layout-menu"]');
@@ -671,8 +668,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.addShadowButton.click();
   }
 
-  async clickShadowActionsButton() {
-    await this.shadowActionsButton.click();
+  async clickShadowActionsButton(index = 0) {
+    await this.shadowActionsButton.nth(index).click();
   }
 
   async changeShadowSettings(x, y, blur, spread, opacity) {
@@ -1766,40 +1763,54 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       : await expect(await this.flexElementWidth100Btn).not.toBeVisible();
   }
 
-  async isShadowTypeSelectedVisible(shadowType) {
+  async isExpectedShadowTypeOption(shadowType, index = 0) {
     const typeOptionSel = this.shadowSectionContainer
       .getByRole('combobox')
-      .filter({ hasText: shadowType });
+      .filter({ hasText: shadowType })
+      .nth(index);
+
     await expect(
-      await typeOptionSel,
-      `Shadow Type Option: "${shadowType}" is visible`,
-    ).toBeVisible();
+      typeOptionSel,
+      `Shadow Type Option #${index + 1} should have text "${shadowType}"`,
+    ).toHaveText(shadowType);
   }
 
-  async hasShadowXOffsetExpectedValue(value) {
+  async isShadowTypeOptionNotVisible(shadowType, index = 0) {
+    const typeOptionSel = this.shadowSectionContainer
+      .getByRole('combobox')
+      .filter({ hasText: shadowType })
+      .nth(index);
+
     await expect(
-      await this.shadowXInput,
+      typeOptionSel,
+      `Shadow Type Option #${index + 1} "${shadowType} is not visible"`,
+    ).not.toBeVisible();
+  }
+
+  async hasShadowXOffsetExpectedValue(value, index = 0) {
+    await expect(
+      await this.shadowXInput.nth(index),
       `Shadow X Offset Input has expected value: "${value}"`,
     ).toHaveValue(value);
   }
 
-  async hasShadowYOffsetExpectedValue(value) {
+  async hasShadowYOffsetExpectedValue(value, index = 0) {
     await expect(
-      await this.shadowYInput,
+      await this.shadowYInput.nth(index),
       `Shadow Y Offset Input has expected value: "${value}"`,
     ).toHaveValue(value);
   }
 
-  async hasShadowBlurExpectedValue(value) {
+  async hasShadowBlurExpectedValue(value, index = 0) {
     await expect(
-      await this.shadowBlurInput,
+      await this.shadowBlurInput.nth(index),
       `Shadow Blur Input has expected value: "${value}"`,
     ).toHaveValue(value);
   }
 
-  async hasShadowSpreadExpectedValue(value) {
+  async hasShadowSpreadExpectedValue(value, index = 0) {
     await expect(
-      await this.shadowSpreadInput,
+      await this.shadowSpreadInput.nth(index),
       `Shadow Spread Input has expected value: "${value}"`,
     ).toHaveValue(value);
   }

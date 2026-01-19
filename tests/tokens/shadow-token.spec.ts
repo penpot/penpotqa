@@ -54,8 +54,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      [2673, 2586],
-      'Create token with inner shadow, validate dropdown and edit to update',
+      [2673, 2682],
+      'Create shadow token with default values and inner shadow, assert expected values and edit',
     ),
     async () => {
       const SHADOW_TOKEN: ShadowToken<TokenClass> = {
@@ -91,39 +91,53 @@ mainTest.describe(() => {
           await tokensPage.tokensComp.isTokenVisibleWithName(SHADOW_TOKEN.name);
           await tokensPage.tokensComp.clickOnTokenWithName(SHADOW_TOKEN.name);
 
-          //Assert shadow values in Design Panel REVISARs
-          await designPanelPage.isShadowTypeSelectedVisible(
-            SHADOW_TOKEN.shadows[0].shadowType,
-          );
-          await designPanelPage.clickShadowActionsButton();
-          await designPanelPage.hasShadowYOffsetExpectedValue('4');
-          await designPanelPage.hasShadowXOffsetExpectedValue('4');
-          await designPanelPage.hasShadowBlurExpectedValue('4');
-          await designPanelPage.hasShadowSpreadExpectedValue('0');
-          await designPanelPage.isExpectedShadowColorVisible(
-            SHADOW_TOKEN.shadows[0].color,
+          await mainTest.step(
+            'Assert shadow token values are applied in Design tab',
+            async () => {
+              await designPanelPage.isExpectedShadowTypeOption(
+                SHADOW_TOKEN.shadows[0].shadowType!,
+              );
+              await designPanelPage.clickShadowActionsButton();
+              await designPanelPage.hasShadowXOffsetExpectedValue('4');
+              await designPanelPage.hasShadowYOffsetExpectedValue('4');
+              await designPanelPage.hasShadowBlurExpectedValue('4');
+              await designPanelPage.hasShadowSpreadExpectedValue('0');
+              await designPanelPage.isExpectedShadowColorVisible(
+                SHADOW_TOKEN.shadows[0].color,
+              );
+            },
           );
         },
       );
 
-      await mainTest.step('2586 Edit a typography token', async () => {
+      await mainTest.step('(2682) Edit a shadow token', async () => {
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(UPDATED_TOKEN);
         await tokensPage.tokensComp.isTokenVisibleWithName(UPDATED_TOKEN.name);
         await tokensPage.tokensComp.clickOnTokenWithName(UPDATED_TOKEN.name);
 
-        //Assert shadow values in Design Panel
-        await designPanelPage.isShadowTypeSelectedVisible(
-          UPDATED_TOKEN.shadows[0].shadowType,
-        );
-        await designPanelPage.clickShadowActionsButton();
-        await designPanelPage.hasShadowYOffsetExpectedValue(
-          UPDATED_TOKEN.shadows[0].yOffset!,
-        );
-        await designPanelPage.hasShadowXOffsetExpectedValue('4');
-        await designPanelPage.hasShadowBlurExpectedValue('4');
-        await designPanelPage.hasShadowSpreadExpectedValue('0');
-        await designPanelPage.isExpectedShadowColorVisible(
-          UPDATED_TOKEN.shadows[0].color,
+        await mainTest.step(
+          'Assert shadow token values are applied in Design tab',
+          async () => {
+            await designPanelPage.isExpectedShadowTypeOption(
+              SHADOW_TOKEN.shadows[0].shadowType!,
+            );
+            await designPanelPage.clickShadowActionsButton();
+            await designPanelPage.hasShadowXOffsetExpectedValue(
+              UPDATED_TOKEN.shadows[0].xOffset!,
+            );
+            await designPanelPage.hasShadowYOffsetExpectedValue(
+              UPDATED_TOKEN.shadows[0].yOffset!,
+            );
+            await designPanelPage.hasShadowBlurExpectedValue(
+              UPDATED_TOKEN.shadows[0].blurRadius!,
+            );
+            await designPanelPage.hasShadowSpreadExpectedValue(
+              UPDATED_TOKEN.shadows[0].spreadRadius!,
+            );
+            await designPanelPage.isExpectedShadowColorVisible(
+              UPDATED_TOKEN.shadows[0].color,
+            );
+          },
         );
       });
     },
@@ -131,8 +145,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      [2678, 2680, 2681, 2682],
-      'Create a shadow token with units (drop shadow) with multiple shadows, add a shadow with unit shadow values, edit, remove multiple shadows',
+      [2680, 2678, 2681],
+      'Add multiple shadows to a single token (with units shadow values) and remove multiple shadows',
     ),
     async () => {
       const MULTI_SHADOW_TOKEN: ShadowToken<TokenClass> = {
@@ -157,23 +171,8 @@ mainTest.describe(() => {
         ],
       };
 
-      const UPDATED_TOKEN: ShadowToken<TokenClass> = {
-        class: TokenClass.Shadow,
-        name: MULTI_SHADOW_TOKEN.name,
-        shadows: [
-          {
-            xOffset: '-40',
-            yOffset: '-50',
-            blurRadius: '30',
-            spreadRadius: '10',
-            color: sampleData.color.greenHexCode,
-            shadowType: 'Inner shadow',
-          },
-        ],
-      };
-
       await mainTest.step(
-        '(2680, 2678) Add multiple shadows to a single token, (2678) Create token with units shadow values',
+        '(2680, 2678) Add multiple shadows to a single token, Create token with units shadow values',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(MULTI_SHADOW_TOKEN);
           await tokensPage.tokensComp.baseComp.clickOnSaveButton();
@@ -181,6 +180,56 @@ mainTest.describe(() => {
             MULTI_SHADOW_TOKEN.name,
           );
           await tokensPage.tokensComp.clickOnTokenWithName(MULTI_SHADOW_TOKEN.name);
+
+          await mainTest.step(
+            'Assert first shadow token values are applied in Design tab',
+            async () => {
+              await designPanelPage.isExpectedShadowTypeOption(
+                MULTI_SHADOW_TOKEN.shadows[0].shadowType!,
+              );
+
+              // Open more options button
+              await designPanelPage.clickShadowActionsButton();
+
+              // Assert expected values
+              await designPanelPage.hasShadowXOffsetExpectedValue(
+                MULTI_SHADOW_TOKEN.shadows[0].xOffset!,
+              );
+              await designPanelPage.hasShadowYOffsetExpectedValue(
+                MULTI_SHADOW_TOKEN.shadows[0].yOffset!,
+              );
+              await designPanelPage.hasShadowBlurExpectedValue(
+                MULTI_SHADOW_TOKEN.shadows[0].blurRadius!,
+              );
+              await designPanelPage.hasShadowSpreadExpectedValue(
+                MULTI_SHADOW_TOKEN.shadows[0].spreadRadius!,
+              );
+              await designPanelPage.isExpectedShadowColorVisible(
+                MULTI_SHADOW_TOKEN.shadows[0].color,
+              );
+            },
+          );
+
+          await mainTest.step(
+            'Assert second shadow token values are applied in Design tab',
+            async () => {
+              await designPanelPage.isExpectedShadowTypeOption(
+                MULTI_SHADOW_TOKEN.shadows[0].shadowType!,
+                1,
+              );
+              // Open more options button
+              await designPanelPage.clickShadowActionsButton(1);
+
+              // Assert expected values
+              await designPanelPage.hasShadowXOffsetExpectedValue('40', 1);
+              await designPanelPage.hasShadowYOffsetExpectedValue('50', 1);
+              await designPanelPage.hasShadowBlurExpectedValue('50', 1);
+              await designPanelPage.hasShadowSpreadExpectedValue('10', 1);
+              await designPanelPage.isExpectedShadowColorVisible(
+                MULTI_SHADOW_TOKEN.shadows[1].color,
+              );
+            },
+          );
         },
       );
 
@@ -190,14 +239,90 @@ mainTest.describe(() => {
           await tokensPage.tokensComp.clickEditToken(MULTI_SHADOW_TOKEN);
           await tokensPage.tokensComp.shadowTokensComp.removeShadow(1);
           await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+
+          await mainTest.step(
+            'Assert first shadow is visible and second is not in Design tab',
+            async () => {
+              await designPanelPage.isExpectedShadowTypeOption(
+                MULTI_SHADOW_TOKEN.shadows[0].shadowType!,
+              );
+              await designPanelPage.isShadowTypeOptionNotVisible(
+                MULTI_SHADOW_TOKEN.shadows[0].shadowType!,
+                1,
+              );
+            },
+          );
         },
       );
+    },
+  );
 
-      await mainTest.step('(2682) Edit shadow token', async () => {
-        await tokensPage.tokensComp.editTokenViaRightClickAndSave(UPDATED_TOKEN);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(UPDATED_TOKEN.name);
+  mainTest(
+    qase(2685, 'Create token with Single reference shadow values'),
+    async () => {
+      const SHADOW_TOKEN: ShadowToken<TokenClass> = {
+        class: TokenClass.Shadow,
+        name: 'global.shadow.first',
+        shadows: [
+          {
+            color: sampleData.color.redHexCode,
+            shadowType: 'Inner shadow',
+          },
+        ],
+      };
+
+      const SECOND_SHADOW_TOKEN: ShadowToken<TokenClass> = {
+        class: TokenClass.Shadow,
+        name: 'global.shadow.second',
+        shadows: [
+          {
+            color: sampleData.color.redHexCode,
+            shadowType: 'Inner shadow',
+          },
+        ],
+      };
+
+      await mainTest.step('Create a shadow token', async () => {
+        await tokensPage.tokensComp.clickOnAddTokenAndFillData(SHADOW_TOKEN);
+        await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+        await tokensPage.tokensComp.isTokenVisibleWithName(SHADOW_TOKEN.name);
+        await tokensPage.tokensComp.clickOnTokenWithName(SHADOW_TOKEN.name);
       });
+
+      await mainTest.step(
+        'Create a second shadow token and use single reference to the first one',
+        async () => {
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(
+            SECOND_SHADOW_TOKEN,
+          );
+          await tokensPage.tokensComp.shadowTokensComp.clickOnUseReferenceButton();
+          await tokensPage.tokensComp.shadowTokensComp.fillAliasInput(
+            `{${SHADOW_TOKEN.name}}`,
+          );
+          await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+          await tokensPage.tokensComp.isTokenVisibleWithName(
+            SECOND_SHADOW_TOKEN.name,
+          );
+          await tokensPage.tokensComp.clickOnTokenWithName(SECOND_SHADOW_TOKEN.name);
+
+          await mainTest.step(
+            'Assert values of the referenced shadow token are applied in Design tab',
+            async () => {
+              await designPanelPage.isExpectedShadowTypeOption(
+                SHADOW_TOKEN.shadows[0].shadowType!,
+              );
+
+              // Open more options button
+              await designPanelPage.clickShadowActionsButton();
+
+              // Assert expected values
+              await designPanelPage.isExpectedShadowColorVisible(
+                SHADOW_TOKEN.shadows[0].color,
+              );
+            },
+          );
+        },
+      );
     },
   );
 });
