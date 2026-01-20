@@ -10,6 +10,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     // Dashboard Header
     this.addProjectButton = page.getByRole('button', { name: 'New project' });
+    this.alertMessage = page.getByRole('alert');
+
+    // Deleted Navigation
+    this.recentTab = page.getByTestId('recent-tab');
+    this.deletedTab = page.getByTestId('deleted-tab');
 
     // Files Grid
     this.numberOfFilesText = page.locator(
@@ -1219,5 +1224,31 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async checkSubscriptionName(name) {
     await expect(this.subscriptionName).toHaveText(name);
+  }
+
+  async openRecentTab() {
+    await this.recentTab.click();
+  }
+
+  async openDeletedTab() {
+    await this.deletedTab.click();
+
+    await this.page.waitForLoadState('networkidle');
+
+    // // Wait for /get-projects to finish
+    // await this.page.waitForResponse(resp => resp.url().includes('/get-projects') && resp.status() === 200);
+
+    // // Wait for /get-team-deleted-files to finish
+    // await this.page.waitForResponse(resp => resp.url().includes('/get-team-deleted-files') && resp.status() === 200);
+  }
+
+  async isRestoreAlertMessageVisible(fileName) {
+    const alertMessage = this.alertMessage.getByText(
+      `${fileName} has been successfully restored.`,
+    );
+    await expect(
+      this.alertMessage,
+      `"${fileName} has been successfully restored." message is visible`,
+    ).toBeVisible();
   }
 };
