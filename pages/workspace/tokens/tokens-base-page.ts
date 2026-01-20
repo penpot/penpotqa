@@ -6,6 +6,7 @@ import { ToolsComponent } from '@pages/workspace/tokens/tools-component';
 import { TokensComponent } from './token-components/tokens-base-component';
 import { MainTokensComponent } from './token-components/main-tokens-component';
 import { TypographyTokensComponent } from './token-components/typography-tokens-component';
+import { ShadowTokensComponent } from './token-components/shadow-tokens-component';
 
 export interface BasicTokenData {
   name: string;
@@ -19,6 +20,7 @@ export class TokensPage extends MainPage {
   readonly toolsComp: ToolsComponent;
   readonly tokensComp: TokensComponent;
   readonly typoTokensComp: TypographyTokensComponent;
+  readonly shadowTokensComp: ShadowTokensComponent;
   readonly mainTokensComp: MainTokensComponent;
 
   // locators
@@ -34,6 +36,7 @@ export class TokensPage extends MainPage {
     this.tokensComp = new TokensComponent(page, this);
     this.typoTokensComp = new TypographyTokensComponent(page);
     this.mainTokensComp = new MainTokensComponent(page, this);
+    this.shadowTokensComp = new ShadowTokensComponent(page);
 
     // locators
     this.tokensTab = page.getByRole('tab', { name: 'Tokens' });
