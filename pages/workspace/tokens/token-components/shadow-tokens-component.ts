@@ -73,7 +73,7 @@ export class ShadowTokensComponent {
     return this.getShadowContainer(index).getByRole('textbox', { name: 'Color' });
   }
 
-  private async getShadowTokenTypeOption(shadowType: string): Promise<Locator> {
+  private getShadowTokenTypeOption(shadowType: string): Locator {
     return this.createTokenModal.getByRole('option', { name: shadowType });
   }
 
@@ -121,7 +121,7 @@ export class ShadowTokensComponent {
   /**
    * Fills token data for one or multiple shadows
    */
-  async fillTokenData(shadowToken: ShadowToken<TokenClass>) {
+  async fillShadowTokenData(shadowToken: ShadowToken<TokenClass>) {
     for (let i = 0; i < shadowToken.shadows.length; i++) {
       if (i > 0) {
         await this.addShadowButton.click();

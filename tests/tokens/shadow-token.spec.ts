@@ -47,7 +47,7 @@ mainTest.describe(() => {
       tokensPage = new TokensPage(page);
 
       await mainPage.createDefaultRectangleByCoordinates(320, 210);
-      await tokensPage.tokensTab.click();
+      await tokensPage.clickTokensTab();
     },
   );
 

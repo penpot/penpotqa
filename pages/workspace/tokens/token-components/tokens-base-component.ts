@@ -98,7 +98,9 @@ export class TokensComponent {
     if (token.class === TokenClass.Typography) {
       await this.typoTokensComp.fillTokenData(token);
     } else if (token.class === TokenClass.Shadow) {
-      await this.shadowTokensComp.fillTokenData(token as ShadowToken<TokenClass>);
+      await this.shadowTokensComp.fillShadowTokenData(
+        token as ShadowToken<TokenClass>,
+      );
     } else {
       await this.mainTokensComp.fillTokenData(token);
     }
