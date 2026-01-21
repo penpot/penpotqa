@@ -5,66 +5,92 @@ export class DeletedPage extends BasePage {
   // Section header
   readonly restoreAllButton: Locator;
   readonly clearTrashButton: Locator;
-  readonly deletedInfoMessage: Locator;
+  readonly emptyTrashMessage: Locator;
 
   // Grid
+  readonly deletedProjectWrapper: Locator;
   readonly deletedProjectRow: Locator;
   readonly restoreFileButton: Locator;
   readonly deleteFileButton: Locator;
+  readonly restoreProjectButton: Locator;
+  readonly deleteProjectButton: Locator;
 
   // Confirm Modal
   readonly confirmModal: Locator;
   readonly continueButton: Locator;
+  readonly deleteForeverButton: Locator;
 
   constructor(page: Page) {
     super(page);
 
+    // Section header
     this.restoreAllButton = page.getByRole('button', { name: 'Restore All' });
     this.clearTrashButton = page.getByRole('button', { name: 'Clear Trash' });
-    this.deletedInfoMessage = page.locator(
-      '.main_ui_dashboard_deleted__deleted-info',
+    this.emptyTrashMessage = this.page.getByText(
+      'Your trash is empty. Deleted files and projects will appear here.',
     );
 
+    // Grid
+    this.deletedProjectWrapper = page.locator(
+      '.main_ui_dashboard_deleted__project-name-wrapper',
+    );
     this.deletedProjectRow = page.locator(
       '.main_ui_dashboard_deleted__dashboard-project-row',
     );
     this.restoreFileButton = page.getByRole('menuitem', { name: 'Restore File' });
     this.deleteFileButton = page.getByRole('menuitem', { name: 'Delete File' });
+    this.restoreProjectButton = page.getByRole('menuitem', {
+      name: 'Restore Project',
+    });
+    this.deleteProjectButton = page.getByRole('menuitem', {
+      name: 'Delete Project',
+    });
 
+    // Confirm Modal
     this.confirmModal = page.locator('.main_ui_confirm__modal-container');
     this.continueButton = this.confirmModal.getByRole('button', {
       name: 'Continue',
     });
+    this.deleteForeverButton = this.confirmModal.getByRole('button', {
+      name: 'Delete Forever',
+    });
   }
 
-  private async getDeletedProjectRowByName(projectName: string): Promise<Locator> {
+  /**
+   * Returns the deleted project row matching the given project name.
+   * @param projectName The name of the deleted project.
+   */
+  private async getDeletedProjectRowByName(projectName: string) {
     return this.deletedProjectRow.filter({ hasText: projectName });
   }
 
-  // Locate a deleted item (file) by name, inside a specific project
-  private async getDeletedItemByName(
-    projectName: string,
-    fileName: string,
-  ): Promise<Locator> {
+  /**
+   * Returns the deleted file by name, inside a specific project.
+   * @param projectName The name of the project containing the deleted file.
+   * @param fileName The name of the deleted file.
+   */
+  private async getDeletedFileByName(projectName: string, fileName: string) {
     const projectRow = await this.getDeletedProjectRowByName(projectName);
     return projectRow.getByRole('button', { name: fileName });
   }
 
-  async waitForDeletedItemDetached(
-    projectName: string,
-    fileName: string,
-  ): Promise<void> {
-    const deletedItem = await this.getDeletedItemByName(projectName, fileName);
-    await deletedItem.waitFor({ state: 'detached' });
+  async openFileOptionsMenu(projectName: string, fileName: string) {
+    const deletedFile = await this.getDeletedFileByName(projectName, fileName);
+
+    const fileOptionsMenuButton = deletedFile.getByRole('button', {
+      name: 'Options',
+      exact: true,
+    });
+
+    await fileOptionsMenuButton.click();
   }
 
-  async clickOnFileOptionsForFile(
-    projectName: string,
-    fileName: string,
-  ): Promise<void> {
-    const deletedItem = await this.getDeletedItemByName(projectName, fileName);
+  async openProjectOptionsMenu(projectName: string) {
+    const deletedProject = (
+      await this.getDeletedProjectRowByName(projectName)
+    ).locator('.main_ui_dashboard_deleted__project-name-wrapper');
 
-    const fileOptionsMenuButton = deletedItem.getByRole('button', {
+    const fileOptionsMenuButton = deletedProject.getByRole('button', {
       name: 'Options',
       exact: true,
     });
@@ -80,78 +106,97 @@ export class DeletedPage extends BasePage {
     await this.clearTrashButton.click();
   }
 
-  async clickDeletedItem(projectName: string, fileName: string): Promise<void> {
-    const deletedItem = await this.getDeletedItemByName(projectName, fileName);
-    await deletedItem.click();
-  }
-
-  async restoreFileViaOptionsIcon(
-    projectName: string,
-    fileName: string,
-  ): Promise<void> {
-    await this.clickOnFileOptionsForFile(projectName, fileName);
+  async restoreFileViaOptionsIcon(projectName: string, fileName: string) {
+    await this.openFileOptionsMenu(projectName, fileName);
     await this.restoreFileButton.click();
   }
 
-  async deleteFileViaOptionsIcon(
-    projectName: string,
-    fileName: string,
-  ): Promise<void> {
-    await this.clickOnFileOptionsForFile(projectName, fileName);
+  async deleteFileViaOptionsIcon(projectName: string, fileName: string) {
+    await this.openFileOptionsMenu(projectName, fileName);
     await this.deleteFileButton.click();
   }
 
-  async confirmRestoreFile(): Promise<void> {
-    // Click the button to trigger the restore
+  async restoreProjectViaOptionsIcon(projectName: string) {
+    await this.openProjectOptionsMenu(projectName);
+    await this.restoreProjectButton.click();
+  }
+
+  async restoreAllProjectsAndFiles() {
+    await this.clickRestoreAllButton();
+    await this.clickContinueButton();
+  }
+
+  async deleteAllForeverProjectsAndFiles() {
+    await this.clickClearTrashButton();
+    await this.confirmDeleteForever();
+  }
+
+  async deleteProjectViaOptionsIcon(projectName: string) {
+    await this.openProjectOptionsMenu(projectName);
+    await this.deleteProjectButton.click();
+  }
+
+  async clickContinueButton() {
     await this.continueButton.click();
-
-    // Wait for the restore request to finish and contain the 'end' event
-    await this.page.waitForResponse(async (resp) => {
-      if (
-        !resp.url().includes('restore-deleted-team-files') ||
-        resp.status() !== 200
-      ) {
-        return false;
-      }
-
-      const body = await resp.text();
-      return body.includes('"event":"end"');
-    });
   }
 
-  async restoreDeletedFile(projectName: string, fileName: string): Promise<void> {
+  async confirmDeleteForever() {
+    await this.deleteForeverButton.click();
+  }
+
+  async restoreDeletedFileViaOptions(projectName: string, fileName: string) {
     await this.restoreFileViaOptionsIcon(projectName, fileName);
-    await this.confirmRestoreFile();
-    await this.waitForDeletedItemDetached(projectName, fileName);
+    await this.clickContinueButton();
   }
 
-  async isDeletedInfoVisible(message: string) {
+  async deleteForeverDeletedFileViaOptions(projectName: string, fileName: string) {
+    await this.deleteFileViaOptionsIcon(projectName, fileName);
+    await this.confirmDeleteForever();
+  }
+
+  async restoreDeletedProjectViaOptions(projectName: string) {
+    await this.restoreProjectViaOptionsIcon(projectName);
+    await this.clickContinueButton();
+  }
+
+  async deleteForeverDeletedProjectViaOptions(projectName: string) {
+    await this.deleteProjectViaOptionsIcon(projectName);
+    await this.confirmDeleteForever();
+  }
+
+  async isDeletedFileVisible(projectName: string, fileName: string) {
+    const deletedFile = await this.getDeletedFileByName(projectName, fileName);
+    await expect(deletedFile, `Deleted file "${fileName}" is visible`).toBeVisible();
+  }
+
+  async isDeletedFileNotVisible(projectName: string, fileName: string) {
+    const deletedFile = await this.getDeletedFileByName(projectName, fileName);
     await expect(
-      this.deletedInfoMessage.getByText(message),
-      `Deleted info message "${message}" is visible`,
+      deletedFile,
+      `Deleted file "${fileName}" is not visible`,
+    ).not.toBeVisible();
+  }
+
+  async isDeletedProjectVisible(projectName: string) {
+    const deletedProject = await this.getDeletedProjectRowByName(projectName);
+    await expect(
+      deletedProject,
+      `Deleted project "${projectName}" is visible`,
     ).toBeVisible();
   }
 
-  async isDeletedItemVisible(
-    projectName: string,
-    fileName: string,
-    timeout?: number,
-  ): Promise<void> {
-    const deletedItem = await this.getDeletedItemByName(projectName, fileName);
-    await expect(deletedItem, `Deleted item "${fileName}" is visible`).toBeVisible({
-      timeout,
-    });
+  async isDeletedProjectNotVisible(projectName: string) {
+    const deletedProject = await this.getDeletedProjectRowByName(projectName);
+    await expect(
+      deletedProject,
+      `Deleted project "${projectName}" is NOT visible`,
+    ).not.toBeVisible();
   }
 
-  async isDeletedItemNotVisible(
-    projectName: string,
-    fileName: string,
-    timeout?: number,
-  ): Promise<void> {
-    const deletedItem = await this.getDeletedItemByName(projectName, fileName);
+  async isEmptyTrashMessageVisible() {
     await expect(
-      deletedItem,
-      `Deleted item "${fileName}" is not visible`,
-    ).not.toBeVisible({ timeout });
+      this.emptyTrashMessage,
+      'Empty trash message is visible',
+    ).toBeVisible();
   }
 }

@@ -139,6 +139,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     // Sidebar section > Search Input
     this.searchInput = page.getByPlaceholder('Search');
+    this.searchTextMessage = page.locator('.main_ui_dashboard_search__text');
 
     // Sidebar section > Fonts
     this.fontsSidebarItem = page.getByTestId('fonts');
@@ -461,6 +462,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.projectNameTitle.first()).toHaveText(projectName);
   }
 
+  async isProjectByNameDisplayed(projectName) {
+    await expect(this.projectNameTitle.getByText(projectName)).toBeVisible();
+  }
+
   async isProjectTitleNotVisible(projectName) {
     const deletedProject = this.projectNameTitle.getByText(projectName, {
       exact: true,
@@ -651,6 +656,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async search(text) {
     await this.searchInput.pressSequentially(text);
+  }
+
+  async fillSearchInput(text) {
+    await this.searchInput.fill(text);
   }
 
   async uploadFont(filePath) {
@@ -1232,23 +1241,39 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async openDeletedTab() {
     await this.deletedTab.click();
-
-    await this.page.waitForLoadState('networkidle');
-
-    // // Wait for /get-projects to finish
-    // await this.page.waitForResponse(resp => resp.url().includes('/get-projects') && resp.status() === 200);
-
-    // // Wait for /get-team-deleted-files to finish
-    // await this.page.waitForResponse(resp => resp.url().includes('/get-team-deleted-files') && resp.status() === 200);
   }
 
-  async isRestoreAlertMessageVisible(fileName) {
+  async isRestoreAlertMessageVisible(name) {
     const alertMessage = this.alertMessage.getByText(
-      `${fileName} has been successfully restored.`,
+      `${name} has been successfully restored.`,
     );
     await expect(
       this.alertMessage,
-      `"${fileName} has been successfully restored." message is visible`,
+      `"${name} has been successfully restored." message is visible`,
     ).toBeVisible();
+  }
+
+  async isDeleteAlertMessageVisible(name) {
+    const alertMessage = this.alertMessage.getByText(
+      `${name} has been successfully deleted.`,
+    );
+    await expect(
+      this.alertMessage,
+      `"${name} has been successfully deleted." message is visible`,
+    ).toBeVisible();
+  }
+
+  async isSearchResultMessageVisible(name) {
+    const resultText = this.searchTextMessage.getByText(
+      `No matches found for “${name}“`,
+    );
+    await expect(
+      resultText,
+      `"No matches found for ${name}" is visible`,
+    ).toBeVisible();
+  }
+
+  async isDeletedTabNotVisible() {
+    await expect(this.deletedTab, `DELETED tab is NOT visible`).not.toBeVisible();
   }
 };
