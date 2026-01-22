@@ -40,6 +40,7 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     this.fillSectionCollapseButton = page.getByRole('button', {
       name: 'Toggle panel Fill',
     });
+    this.strokeSection = page.getByText('Stroke', { exact: true });
   }
 
   async openInspectTab() {
@@ -106,6 +107,41 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     await expect(this.fillSection).toBeVisible();
   }
 
+  async isStrokeSectionVisible() {
+    await expect(this.strokeSection).toBeVisible();
+  }
+
+  async isStrokeBorderWidthNameVisible(strokeName) {
+    const strokeBorderWidthName = this.page.getByText(strokeName);
+    await expect(strokeBorderWidthName).toBeVisible();
+  }
+
+  async hoverStrokeBorderWidthName(strokeName) {
+    const strokeBorderWidthName = this.page.getByText(strokeName);
+    await strokeBorderWidthName.hover();
+  }
+
+  async isStrokeBorderWidthTooltipVisible(strokeValue) {
+    const strokeBorderWidthTooltipTitle = this.page.getByText('Resolved value:');
+    const strokeBorderWidthTooltipValue = this.page.getByText(strokeValue, {
+      exact: true,
+    });
+    await expect(strokeBorderWidthTooltipTitle).toBeVisible();
+    await expect(strokeBorderWidthTooltipValue).toBeVisible();
+  }
+
+  async copyStrokeBorderWidthToClipboard(strokeName) {
+    const strokeBorderWidthButton = this.page.getByRole('button', {
+      name: `${strokeName} Copy to clipboard`,
+    });
+    await expect(strokeBorderWidthButton).toBeVisible();
+    await strokeBorderWidthButton.click();
+    const clipboardText = await this.page.evaluate(async () => {
+      return await navigator.clipboard.readText();
+    });
+    await expect(clipboardText).toBe(strokeName);
+  }
+
   async isTokensSetAndThemesSectionCollapseButtonVisible() {
     await expect(this.tokensSetAndThemesSectionCollapseButton).toBeVisible();
   }
@@ -130,5 +166,11 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
       .getByRole('button', { name: `Toggle panel ${sectionTitle}` })
       .click();
     await expect(this.page.getByText(propertyTerm)).toBeVisible();
+  }
+
+  async isActiveSetsNameVisible(activeSetsNames) {
+    await expect(
+      this.page.getByText(activeSetsNames, { exact: true }),
+    ).toBeVisible();
   }
 };
