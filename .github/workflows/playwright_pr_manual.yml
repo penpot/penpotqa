@@ -24,6 +24,7 @@ on:
           - tests/composition
           - tests/dashboard
           - tests/dashboard/teams
+          - tests/dashboard/trash
           - tests/login-signup
           - tests/panels-features
           - tests/performance

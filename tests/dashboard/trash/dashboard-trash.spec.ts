@@ -1,11 +1,11 @@
 import { Page } from '@playwright/test';
-import { mainTest } from '../../fixtures';
-import { MainPage } from '../../pages/workspace/main-page';
-import { DashboardPage } from '../../pages/dashboard/dashboard-page';
-import { TeamPage } from '../../pages/dashboard/team-page';
-import { random } from '../../helpers/string-generator';
+import { mainTest } from 'fixtures';
+import { MainPage } from '@pages/workspace/main-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DeletedPage } from '@pages/dashboard/dashboard-deleted-page';
+import { random } from 'helpers/string-generator';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { DeletedPage } from '../../pages/dashboard/dashboard-deleted-page';
 import { setupViewerRoleUser } from 'helpers/user-flows';
 import { setupEditorRoleUser } from 'helpers/user-flows';
 import { setupAdminRoleUser } from 'helpers/user-flows';
@@ -18,7 +18,7 @@ let mainPage: MainPage;
 let deletedPage: DeletedPage;
 
 mainTest.describe(
-  '(2692, 2709, 2705, 2712, 2713) As Owner - Deleted files (Trash)',
+  '(2692, 2709, 2705, 2712, 2713, 2687) As Owner - Deleted files (Trash)',
   () => {
     mainTest.beforeEach('Create a new team', async ({ page }: { page: Page }) => {
       teamPage = new TeamPage(page);
@@ -39,8 +39,8 @@ mainTest.describe(
 
     mainTest(
       qase(
-        [2692, 2709],
-        'Restore file from Trash (existing project, owner user role) / Search a file that is in Trash: the files are excluded',
+        [2692, 2709, 2687],
+        'Restore file from Trash (existing project, owner user role) / Search a file that is in Trash: the files are excluded / Access "Deleted" section from the dashboard navigation - empty state',
       ),
       async () => {
         const projectName = 'Test Project';
@@ -75,6 +75,14 @@ mainTest.describe(
             await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
             await dashboardPage.isRestoreAlertMessageVisible(fileName);
             await deletedPage.isDeletedFileNotVisible(projectName, fileName);
+
+            await mainTest.step(
+              '(2687) Access "Deleted" section from the dashboard navigation - empty state',
+              async () => {
+                await deletedPage.isEmptyTrashMessageVisible();
+              },
+            );
+
             await dashboardPage.openSidebarItem('Projects');
             await dashboardPage.isFilePresent(fileName);
           },
@@ -123,11 +131,47 @@ mainTest.describe(
           await dashboardPage.deleteProjectViaRightclick();
         });
 
-        await mainTest.step('(2705) Clear all trash (bulk)', async () => {
+        await mainTest.step('(2705) Clear all trash (bulk) / ', async () => {
           await dashboardPage.openDeletedTab();
-          await deletedPage.deleteAllForeverProjectsAndFiles();
+          await deletedPage.deleteAllProjectsAndFilesForever();
           await deletedPage.isEmptyTrashMessageVisible();
         });
+      },
+    );
+
+    mainTest(
+      qase(2712, 'Delete and restore file added as a shared library'),
+      async () => {
+        const projectName = 'Test Project';
+        const fileName = 'New File 1';
+
+        await mainTest.step(
+          'Add a new project, create a file, add as Shared Library and delete it',
+          async () => {
+            await dashboardPage.clickAddProjectButton();
+            await dashboardPage.setProjectName(projectName);
+            await dashboardPage.isProjectByNameDisplayed(projectName);
+            await dashboardPage.createFileViaTitlePanel();
+            await mainPage.clickPencilBoxButton();
+            await dashboardPage.addFileAsSharedLibraryViaRightclick();
+            await dashboardPage.deleteFileViaRightclick();
+          },
+        );
+
+        await mainTest.step(
+          'Click on Deleted tab, restore deleted file via options icon and assert is Shared Library',
+          async () => {
+            await dashboardPage.openSidebarItem('Projects');
+            await dashboardPage.openDeletedTab();
+            await deletedPage.isDeletedFileVisible(projectName, fileName);
+            await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
+            await dashboardPage.isRestoreAlertMessageVisible(fileName);
+            await deletedPage.isDeletedFileNotVisible(projectName, fileName);
+            await dashboardPage.openSidebarItem('Projects');
+            await dashboardPage.isFilePresent(fileName);
+            await dashboardPage.isSharedLibraryIconDisplayed();
+          },
+        );
       },
     );
   },
@@ -263,8 +307,7 @@ mainTest.describe('(2694, 2702) As Admin - Deleted files (Trash)', () => {
               await deletedPage.isDeletedProjectVisible(projectName);
               await deletedPage.restoreDeletedProjectViaOptions(projectName);
               await dashboardPage.isRestoreAlertMessageVisible(fileName);
-              // await deletedPage.isDeletedProjectNotVisible(projectName);
-              await deletedPage.waitForDeletedProjectNotVisible(projectName);
+              await deletedPage.isDeletedProjectNotVisible(projectName, 10000);
             },
           );
 
