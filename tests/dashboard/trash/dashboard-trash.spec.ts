@@ -74,7 +74,8 @@ mainTest.describe(
             await deletedPage.isDeletedFileVisible(projectName, fileName);
             await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
             await dashboardPage.isRestoreAlertMessageVisible(fileName);
-            await deletedPage.isDeletedFileNotVisible(projectName, fileName);
+            // await deletedPage.isDeletedFileNotVisible(projectName, fileName);
+            await deletedPage.waitForDeletedFileNotVisible(projectName, fileName);
 
             await mainTest.step(
               '(2687) Access "Deleted" section from the dashboard navigation - empty state',
@@ -116,6 +117,13 @@ mainTest.describe(
         await mainTest.step('(2713) Restore all trash (bulk)', async () => {
           await dashboardPage.openDeletedTab();
           await deletedPage.restoreAllProjectsAndFiles();
+
+          for (const { projectName } of projects) {
+            await mainTest.step(`Assert "${projectName}" not exists`, async () => {
+              await deletedPage.waitForDeletedProjectNotVisible(projectName);
+            });
+          }
+
           await deletedPage.isEmptyTrashMessageVisible();
           await dashboardPage.openSidebarItem('Projects');
 
@@ -134,6 +142,13 @@ mainTest.describe(
         await mainTest.step('(2705) Clear all trash (bulk) / ', async () => {
           await dashboardPage.openDeletedTab();
           await deletedPage.deleteAllProjectsAndFilesForever();
+
+          for (const { projectName } of projects) {
+            await mainTest.step(`Assert "${projectName}" not exists`, async () => {
+              await deletedPage.waitForDeletedProjectNotVisible(projectName);
+            });
+          }
+
           await deletedPage.isEmptyTrashMessageVisible();
         });
       },
@@ -163,10 +178,12 @@ mainTest.describe(
           async () => {
             await dashboardPage.openSidebarItem('Projects');
             await dashboardPage.openDeletedTab();
-            await deletedPage.isDeletedFileVisible(projectName, fileName);
+            // await deletedPage.isDeletedFileVisible(projectName, fileName);
+            await deletedPage.waitForDeletedFileVisible(projectName, fileName);
             await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
             await dashboardPage.isRestoreAlertMessageVisible(fileName);
-            await deletedPage.isDeletedFileNotVisible(projectName, fileName);
+            // await deletedPage.isDeletedFileNotVisible(projectName, fileName);
+            await deletedPage.waitForDeletedFileNotVisible(projectName, fileName);
             await dashboardPage.openSidebarItem('Projects');
             await dashboardPage.isFilePresent(fileName);
             await dashboardPage.isSharedLibraryIconDisplayed();
