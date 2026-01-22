@@ -17,10 +17,6 @@ let dashboardPage: DashboardPage;
 let mainPage: MainPage;
 let deletedPage: DeletedPage;
 
-// mainTest.afterEach(async () => {
-//   await teamPage.deleteTeam(teamName);
-// });
-
 mainTest.describe(
   '(2692, 2709, 2705, 2712, 2713) As Owner - Deleted files (Trash)',
   () => {
@@ -34,6 +30,11 @@ mainTest.describe(
       await teamPage.isTeamSelected(teamName);
       await dashboardPage.isHeaderDisplayed('Projects');
       await dashboardPage.hideLibrariesAndTemplatesCarrousel();
+    });
+
+    mainTest.afterEach(async ({ page }: { page: Page }) => {
+      deletedPage = new DeletedPage(page);
+      await teamPage.deleteTeam(teamName);
     });
 
     mainTest(
@@ -262,7 +263,8 @@ mainTest.describe('(2694, 2702) As Admin - Deleted files (Trash)', () => {
               await deletedPage.isDeletedProjectVisible(projectName);
               await deletedPage.restoreDeletedProjectViaOptions(projectName);
               await dashboardPage.isRestoreAlertMessageVisible(fileName);
-              await deletedPage.isDeletedProjectNotVisible(projectName);
+              // await deletedPage.isDeletedProjectNotVisible(projectName);
+              await deletedPage.waitForDeletedProjectNotVisible(projectName);
             },
           );
 

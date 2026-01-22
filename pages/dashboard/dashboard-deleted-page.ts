@@ -177,6 +177,16 @@ export class DeletedPage extends BasePage {
     ).not.toBeVisible();
   }
 
+  async waitForDeletedFileNotVisible(projectName: string, fileName: string) {
+    const deletedFile = await this.getDeletedFileByName(projectName, fileName);
+    await deletedFile.waitFor({ state: 'detached' });
+  }
+
+  async waitForDeletedProjectNotVisible(projectName: string) {
+    const deletedProject = await this.getDeletedProjectRowByName(projectName);
+    await deletedProject.waitFor({ state: 'detached' });
+  }
+
   async isDeletedProjectVisible(projectName: string) {
     const deletedProject = await this.getDeletedProjectRowByName(projectName);
     await expect(
