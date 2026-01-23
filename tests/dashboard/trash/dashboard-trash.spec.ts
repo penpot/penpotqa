@@ -110,17 +110,25 @@ mainTest.describe(
               await dashboardPage.createFileViaTitlePanel();
               await mainPage.clickPencilBoxButton();
               await dashboardPage.deleteProjectViaRightclick();
+              await dashboardPage.isProjectTitleNotVisible(projectName);
             },
           );
         }
 
         await mainTest.step('(2713) Restore all trash (bulk)', async () => {
           await dashboardPage.openDeletedTab();
+
+          for (const { projectName } of projects) {
+            await mainTest.step(`Assert "${projectName}" exists`, async () => {
+              await deletedPage.waitForDeletedProjectVisible(projectName);
+            });
+          }
+
           await deletedPage.restoreAllProjectsAndFiles();
 
           for (const { projectName } of projects) {
             await mainTest.step(`Assert "${projectName}" not exists`, async () => {
-              await deletedPage.waitForDeletedProjectNotVisible(projectName);
+              await deletedPage.isDeletedProjectNotVisible(projectName);
             });
           }
 
@@ -170,6 +178,7 @@ mainTest.describe(
             await mainPage.clickPencilBoxButton();
             await dashboardPage.addFileAsSharedLibraryViaRightclick();
             await dashboardPage.deleteFileViaRightclick();
+            await dashboardPage.isFileNotVisible(fileName);
           },
         );
 

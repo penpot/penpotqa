@@ -377,6 +377,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.fileNameTitle).toHaveText(fileName);
   }
 
+  async isFileNotVisible(fileName) {
+    await expect(this.fileNameTitle).not.toBeVisible();
+  }
+
   async duplicateFileViaRightclick() {
     await this.fileTile.click({ button: 'right' });
     await this.duplicateFileMenuItem.click();
