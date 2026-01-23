@@ -317,10 +317,24 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     }
   }
 
+  // async deleteProjectViaRightclick() {
+  //   await this.projectNameTitle.first().click({ button: 'right' });
+  //   await this.deleteProjectMenuItem.click();
+  //   await this.deleteProjectButton.click();
+  // }
+
   async deleteProjectViaRightclick() {
     await this.projectNameTitle.first().click({ button: 'right' });
     await this.deleteProjectMenuItem.click();
-    await this.deleteProjectButton.click();
+
+    const responsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/delete-project') &&
+        response.request().method() === 'POST' &&
+        response.status() === 204,
+    );
+
+    await Promise.all([responsePromise, this.deleteProjectButton.click()]);
   }
 
   async deleteProjectViaOptionsIcon() {
