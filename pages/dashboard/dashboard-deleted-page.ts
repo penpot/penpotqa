@@ -74,6 +74,26 @@ export class DeletedPage extends BasePage {
     return projectRow.getByRole('button', { name: fileName });
   }
 
+  private async restoreFileViaOptionsIcon(projectName: string, fileName: string) {
+    await this.openFileOptionsMenu(projectName, fileName);
+    await this.restoreFileButton.click();
+  }
+
+  private async deleteFileViaOptionsIcon(projectName: string, fileName: string) {
+    await this.openFileOptionsMenu(projectName, fileName);
+    await this.deleteFileButton.click();
+  }
+
+  private async restoreProjectViaOptionsIcon(projectName: string) {
+    await this.openProjectOptionsMenu(projectName);
+    await this.restoreProjectButton.click();
+  }
+
+  private async deleteProjectViaOptionsIcon(projectName: string) {
+    await this.openProjectOptionsMenu(projectName);
+    await this.deleteProjectButton.click();
+  }
+
   async openFileOptionsMenu(projectName: string, fileName: string) {
     const deletedFile = await this.getDeletedFileByName(projectName, fileName);
 
@@ -106,36 +126,6 @@ export class DeletedPage extends BasePage {
     await this.clearTrashButton.click();
   }
 
-  async restoreFileViaOptionsIcon(projectName: string, fileName: string) {
-    await this.openFileOptionsMenu(projectName, fileName);
-    await this.restoreFileButton.click();
-  }
-
-  async deleteFileViaOptionsIcon(projectName: string, fileName: string) {
-    await this.openFileOptionsMenu(projectName, fileName);
-    await this.deleteFileButton.click();
-  }
-
-  async restoreProjectViaOptionsIcon(projectName: string) {
-    await this.openProjectOptionsMenu(projectName);
-    await this.restoreProjectButton.click();
-  }
-
-  async restoreAllProjectsAndFiles() {
-    await this.clickRestoreAllButton();
-    await this.clickContinueButton();
-  }
-
-  async deleteAllProjectsAndFilesForever() {
-    await this.clickClearTrashButton();
-    await this.confirmDeleteForever();
-  }
-
-  async deleteProjectViaOptionsIcon(projectName: string) {
-    await this.openProjectOptionsMenu(projectName);
-    await this.deleteProjectButton.click();
-  }
-
   async clickContinueButton() {
     await this.continueButton.click();
   }
@@ -144,24 +134,87 @@ export class DeletedPage extends BasePage {
     await this.deleteForeverButton.click();
   }
 
+  // async restoreAllProjectsAndFiles() {
+  //   await this.clickRestoreAllButton();
+  //   await this.clickContinueButton();
+  // }
+
+  async restoreAllProjectsAndFiles() {
+    await this.clickRestoreAllButton();
+
+    const responsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/restore-deleted-team-files') &&
+        response.request().method() === 'POST' &&
+        response.status() === 200,
+    );
+
+    await Promise.all([responsePromise, this.clickContinueButton()]);
+  }
+
+  async deleteAllProjectsAndFilesForever() {
+    await this.clickClearTrashButton();
+
+    const responsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/permanently-delete-team-files') &&
+        response.request().method() === 'POST' &&
+        response.status() === 200,
+    );
+
+    await Promise.all([responsePromise, this.confirmDeleteForever()]);
+  }
+
   async restoreDeletedFileViaOptions(projectName: string, fileName: string) {
     await this.restoreFileViaOptionsIcon(projectName, fileName);
-    await this.clickContinueButton();
+
+    const responsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/restore-deleted-team-files') &&
+        response.request().method() === 'POST' &&
+        response.status() === 200,
+    );
+
+    await Promise.all([responsePromise, this.clickContinueButton()]);
   }
 
   async deleteForeverDeletedFileViaOptions(projectName: string, fileName: string) {
     await this.deleteFileViaOptionsIcon(projectName, fileName);
-    await this.confirmDeleteForever();
+
+    const responsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/permanently-delete-team-files') &&
+        response.request().method() === 'POST' &&
+        response.status() === 200,
+    );
+
+    await Promise.all([responsePromise, this.confirmDeleteForever()]);
   }
 
   async restoreDeletedProjectViaOptions(projectName: string) {
     await this.restoreProjectViaOptionsIcon(projectName);
-    await this.clickContinueButton();
+
+    const responsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/restore-deleted-team-files') &&
+        response.request().method() === 'POST' &&
+        response.status() === 200,
+    );
+
+    await Promise.all([responsePromise, this.clickContinueButton()]);
   }
 
   async deleteForeverDeletedProjectViaOptions(projectName: string) {
     await this.deleteProjectViaOptionsIcon(projectName);
-    await this.confirmDeleteForever();
+
+    const responsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/permanently-delete-team-files') &&
+        response.request().method() === 'POST' &&
+        response.status() === 200,
+    );
+
+    await Promise.all([responsePromise, this.confirmDeleteForever()]);
   }
 
   async isDeletedFileVisible(projectName: string, fileName: string) {
@@ -175,6 +228,22 @@ export class DeletedPage extends BasePage {
       deletedFile,
       `Deleted file "${fileName}" is not visible`,
     ).not.toBeVisible();
+  }
+
+  async isDeletedProjectVisible(projectName: string) {
+    const deletedProject = await this.getDeletedProjectRowByName(projectName);
+    await expect(
+      deletedProject,
+      `Deleted project "${projectName}" is visible`,
+    ).toBeVisible();
+  }
+
+  async isDeletedProjectNotVisible(projectName: string, timeout?: number) {
+    const deletedProject = await this.getDeletedProjectRowByName(projectName);
+    await expect(
+      deletedProject,
+      `Deleted project "${projectName}" is NOT visible`,
+    ).not.toBeVisible({ timeout });
   }
 
   async waitForDeletedFileVisible(projectName: string, fileName: string) {
@@ -195,22 +264,6 @@ export class DeletedPage extends BasePage {
   async waitForDeletedProjectVisible(projectName: string) {
     const deletedProject = await this.getDeletedProjectRowByName(projectName);
     await deletedProject.waitFor({ state: 'visible' });
-  }
-
-  async isDeletedProjectVisible(projectName: string) {
-    const deletedProject = await this.getDeletedProjectRowByName(projectName);
-    await expect(
-      deletedProject,
-      `Deleted project "${projectName}" is visible`,
-    ).toBeVisible();
-  }
-
-  async isDeletedProjectNotVisible(projectName: string, timeout?: number) {
-    const deletedProject = await this.getDeletedProjectRowByName(projectName);
-    await expect(
-      deletedProject,
-      `Deleted project "${projectName}" is NOT visible`,
-    ).not.toBeVisible({ timeout });
   }
 
   async isEmptyTrashMessageVisible() {
