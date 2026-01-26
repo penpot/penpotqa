@@ -19,6 +19,8 @@ let deletedPage: DeletedPage;
 
 mainTest.describe('As Owner', () => {
   mainTest.beforeEach('Create a new team', async ({ page }: { page: Page }) => {
+    mainTest.slow();
+
     teamPage = new TeamPage(page);
     dashboardPage = new DashboardPage(page);
     mainPage = new MainPage(page);
@@ -70,11 +72,9 @@ mainTest.describe('As Owner', () => {
           await dashboardPage.openSidebarItem('Projects');
           await dashboardPage.openDeletedTab();
           await deletedPage.isDeletedFileVisible(projectName, fileName);
-          // await deletedPage.waitForDeletedFileVisible(projectName, fileName);
           await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
           await dashboardPage.isRestoreAlertMessageVisible(fileName);
           await deletedPage.isDeletedFileNotVisible(projectName, fileName);
-          // await deletedPage.waitForDeletedFileNotVisible(projectName, fileName);
 
           await mainTest.step(
             '(2687) Access "Deleted" section from the dashboard navigation - empty state',
@@ -120,7 +120,6 @@ mainTest.describe('As Owner', () => {
         for (const { projectName } of projects) {
           await mainTest.step(`Assert "${projectName}" exists`, async () => {
             await deletedPage.isDeletedProjectVisible(projectName);
-            // await deletedPage.waitForDeletedProjectVisible(projectName);
           });
         }
 
@@ -154,7 +153,6 @@ mainTest.describe('As Owner', () => {
         for (const { projectName } of projects) {
           await mainTest.step(`Assert "${projectName}" not exists`, async () => {
             await deletedPage.isDeletedProjectNotVisible(projectName);
-            // await deletedPage.waitForDeletedProjectNotVisible(projectName);
           });
         }
 
@@ -189,11 +187,9 @@ mainTest.describe('As Owner', () => {
           await dashboardPage.openSidebarItem('Projects');
           await dashboardPage.openDeletedTab();
           await deletedPage.isDeletedFileVisible(projectName, fileName);
-          // await deletedPage.waitForDeletedFileVisible(projectName, fileName);
           await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
           await dashboardPage.isRestoreAlertMessageVisible(fileName);
           await deletedPage.isDeletedFileNotVisible(projectName, fileName);
-          // await deletedPage.waitForDeletedFileNotVisible(projectName, fileName);
           await dashboardPage.openSidebarItem('Projects');
           await dashboardPage.isFilePresentWithName(fileName);
           await dashboardPage.isSharedLibraryIconDisplayed();
@@ -211,6 +207,8 @@ mainTest.describe('As Editor', () => {
   mainTest.beforeEach(
     'Set up Editor user: login with main account, create team, invite user with EDITOR role, register through invite and login as Editor ',
     async ({ page }) => {
+      mainTest.slow();
+
       setup = await setupEditorRoleUser(page);
 
       teamPage = new TeamPage(page);
@@ -249,7 +247,6 @@ mainTest.describe('As Editor', () => {
               await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
               await dashboardPage.isRestoreAlertMessageVisible(fileName);
               await deletedPage.isDeletedFileNotVisible(projectName, fileName);
-              // await deletedPage.waitForDeletedFileNotVisible(projectName, fileName);
             },
           );
 
@@ -297,6 +294,8 @@ mainTest.describe('As Admin', () => {
   mainTest.beforeEach(
     'Set up Admin user: login with main account, create team, invite user with ADMIN role, register through invite and login as Admin ',
     async ({ page }) => {
+      mainTest.slow();
+
       setup = await setupAdminRoleUser(page);
 
       teamPage = new TeamPage(page);
@@ -334,7 +333,7 @@ mainTest.describe('As Admin', () => {
               await deletedPage.isDeletedProjectVisible(projectName);
               await deletedPage.restoreDeletedProjectViaOptions(projectName);
               await dashboardPage.isRestoreAlertMessageVisible(fileName);
-              await deletedPage.isDeletedProjectNotVisible(projectName, 10000);
+              await deletedPage.isDeletedProjectNotVisible(projectName);
             },
           );
 
@@ -377,6 +376,8 @@ mainTest.describe('As Viewer', () => {
   mainTest.beforeEach(
     'Set up Viewer user: login with main account, create team, invite user with VIEWER role, register through invite and login as Viewer ',
     async ({ page }) => {
+      mainTest.slow();
+
       setup = await setupViewerRoleUser(page);
 
       dashboardPage = new DashboardPage(page);

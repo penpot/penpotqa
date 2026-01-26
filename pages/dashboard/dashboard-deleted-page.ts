@@ -134,11 +134,6 @@ export class DeletedPage extends BasePage {
     await this.deleteForeverButton.click();
   }
 
-  // async restoreAllProjectsAndFiles() {
-  //   await this.clickRestoreAllButton();
-  //   await this.clickContinueButton();
-  // }
-
   async restoreAllProjectsAndFiles() {
     await this.clickRestoreAllButton();
 
@@ -238,32 +233,12 @@ export class DeletedPage extends BasePage {
     ).toBeVisible();
   }
 
-  async isDeletedProjectNotVisible(projectName: string, timeout?: number) {
+  async isDeletedProjectNotVisible(projectName: string) {
     const deletedProject = await this.getDeletedProjectRowByName(projectName);
     await expect(
       deletedProject,
       `Deleted project "${projectName}" is NOT visible`,
-    ).not.toBeVisible({ timeout });
-  }
-
-  async waitForDeletedFileVisible(projectName: string, fileName: string) {
-    const deletedFile = await this.getDeletedFileByName(projectName, fileName);
-    await deletedFile.waitFor({ state: 'visible' });
-  }
-
-  async waitForDeletedFileNotVisible(projectName: string, fileName: string) {
-    const deletedFile = await this.getDeletedFileByName(projectName, fileName);
-    await deletedFile.waitFor({ state: 'detached' });
-  }
-
-  async waitForDeletedProjectNotVisible(projectName: string) {
-    const deletedProject = await this.getDeletedProjectRowByName(projectName);
-    await deletedProject.waitFor({ state: 'detached' });
-  }
-
-  async waitForDeletedProjectVisible(projectName: string) {
-    const deletedProject = await this.getDeletedProjectRowByName(projectName);
-    await deletedProject.waitFor({ state: 'visible' });
+    ).not.toBeVisible();
   }
 
   async isEmptyTrashMessageVisible() {
