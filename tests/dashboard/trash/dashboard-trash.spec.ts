@@ -166,7 +166,7 @@ mainTest.describe('As Owner', () => {
         async () => {
           await dashboardPage.openSidebarItem('Projects');
           await dashboardPage.openDeletedTab();
-          await deletedPage.isDeletedFileVisible(projectName, fileName);
+          await deletedPage.isDeletedFileVisible(projectName, fileName, 10000);
           await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
           await dashboardPage.isRestoreAlertMessageVisible(fileName);
           await deletedPage.isDeletedFileNotVisible(projectName, fileName, 10000);
