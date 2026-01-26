@@ -1277,14 +1277,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     ).toBeVisible();
   }
 
-  async isSearchResultMessageVisible(name) {
+  async isSearchResultMessageVisible(name, timeout) {
     const resultText = this.searchTextMessage.getByText(
       `No matches found for “${name}“`,
     );
     await expect(
       resultText,
       `"No matches found for ${name}" is visible`,
-    ).toBeVisible();
+    ).toBeVisible(timeout);
   }
 
   async isDeletedTabNotVisible() {

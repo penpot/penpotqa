@@ -212,61 +212,71 @@ export class DeletedPage extends BasePage {
     await Promise.all([responsePromise, this.confirmDeleteForever()]);
   }
 
-  async isDeletedFileVisible(projectName: string, fileName: string) {
+  async isDeletedFileVisible(
+    projectName: string,
+    fileName: string,
+    timeout?: number,
+  ) {
     const deletedFile = await this.getDeletedFileByName(projectName, fileName);
-    await expect(deletedFile, `Deleted file "${fileName}" is visible`).toBeVisible();
+    await expect(deletedFile, `Deleted file "${fileName}" is visible`).toBeVisible({
+      timeout,
+    });
   }
 
-  async isDeletedFileNotVisible(projectName: string, fileName: string) {
+  async isDeletedFileNotVisible(
+    projectName: string,
+    fileName: string,
+    timeout?: number,
+  ) {
     const deletedFile = await this.getDeletedFileByName(projectName, fileName);
     await expect(
       deletedFile,
       `Deleted file "${fileName}" is not visible`,
-    ).not.toBeVisible();
+    ).not.toBeVisible({ timeout });
   }
 
-  async isDeletedProjectVisible(projectName: string) {
+  async isDeletedProjectVisible(projectName: string, timeout?: number) {
     const deletedProject = await this.getDeletedProjectRowByName(projectName);
     await expect(
       deletedProject,
       `Deleted project "${projectName}" is visible`,
-    ).toBeVisible();
+    ).toBeVisible({ timeout });
   }
 
-  async isDeletedProjectNotVisible(projectName: string) {
+  async isDeletedProjectNotVisible(projectName: string, timeout?: number) {
     const deletedProject = await this.getDeletedProjectRowByName(projectName);
     await expect(
       deletedProject,
       `Deleted project "${projectName}" is NOT visible`,
-    ).not.toBeVisible();
+    ).not.toBeVisible({ timeout });
   }
 
-  async areDeletedProjectsNotVisible(projectNames: string[]) {
+  async areDeletedProjectsNotVisible(projectNames: string[], timeout?: number) {
     for (const projectName of projectNames) {
       const deletedProject = await this.getDeletedProjectRowByName(projectName);
 
       await expect(
         deletedProject,
         `Deleted project "${projectName}" should NOT be visible`,
-      ).not.toBeVisible();
+      ).not.toBeVisible({ timeout });
     }
   }
 
-  async areDeletedProjectsVisible(projectNames: string[]) {
+  async areDeletedProjectsVisible(projectNames: string[], timeout?: number) {
     for (const projectName of projectNames) {
       const deletedProject = await this.getDeletedProjectRowByName(projectName);
 
       await expect(
         deletedProject,
         `Deleted project "${projectName}" should be visible`,
-      ).toBeVisible();
+      ).toBeVisible({ timeout });
     }
   }
 
-  async isEmptyTrashMessageVisible() {
+  async isEmptyTrashMessageVisible(timeout?: number) {
     await expect(
       this.emptyTrashMessage,
       'Empty trash message is visible',
-    ).toBeVisible();
+    ).toBeVisible({ timeout });
   }
 }

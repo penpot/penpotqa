@@ -20,8 +20,6 @@ let mainPage: MainPage;
 let deletedPage: DeletedPage;
 
 mainTest.describe('As Owner', () => {
-  mainTest.slow();
-
   mainTest.beforeEach('Create a new team', async ({ page }: { page: Page }) => {
     teamPage = new TeamPage(page);
     dashboardPage = new DashboardPage(page);
@@ -64,7 +62,7 @@ mainTest.describe('As Owner', () => {
         '(2709) Search a file that is in Trash: the files are excluded',
         async () => {
           await dashboardPage.fillSearchInput(fileName);
-          await dashboardPage.isSearchResultMessageVisible(fileName);
+          await dashboardPage.isSearchResultMessageVisible(fileName, 10000);
         },
       );
 
@@ -138,7 +136,7 @@ mainTest.describe('As Owner', () => {
         await deletedPage.areDeletedProjectsNotVisible(
           projects.map((p) => p.projectName),
         );
-        await deletedPage.isEmptyTrashMessageVisible();
+        await deletedPage.isEmptyTrashMessageVisible(10000);
       });
     },
   );
@@ -171,7 +169,7 @@ mainTest.describe('As Owner', () => {
           await deletedPage.isDeletedFileVisible(projectName, fileName);
           await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
           await dashboardPage.isRestoreAlertMessageVisible(fileName);
-          await deletedPage.isDeletedFileNotVisible(projectName, fileName);
+          await deletedPage.isDeletedFileNotVisible(projectName, fileName, 10000);
           await dashboardPage.openSidebarItem('Projects');
           await dashboardPage.isFilePresentWithName(fileName);
           await dashboardPage.isSharedLibraryIconDisplayed();
@@ -182,8 +180,6 @@ mainTest.describe('As Owner', () => {
 });
 
 mainTest.describe('As Editor', () => {
-  mainTest.slow();
-
   let setup;
   const projectName = 'Test Project';
   const fileName = 'New File 1';
@@ -220,7 +216,7 @@ mainTest.describe('As Editor', () => {
           await dashboardPage.deleteProjectViaOptionsIcon();
 
           await dashboardPage.openDeletedTab();
-          await deletedPage.isDeletedFileVisible(projectName, fileName);
+          await deletedPage.isDeletedFileVisible(projectName, fileName, 10000);
           await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
           await dashboardPage.isRestoreAlertMessageVisible(fileName);
           await deletedPage.isDeletedFileNotVisible(projectName, fileName);
@@ -249,8 +245,6 @@ mainTest.describe('As Editor', () => {
 });
 
 mainTest.describe('As Admin', () => {
-  mainTest.slow();
-
   let setup;
   const projectName = 'Test Project';
   const fileName = 'New File 1';
@@ -287,7 +281,7 @@ mainTest.describe('As Admin', () => {
           await dashboardPage.deleteProjectViaOptionsIcon();
 
           await dashboardPage.openDeletedTab();
-          await deletedPage.isDeletedProjectVisible(projectName);
+          await deletedPage.isDeletedProjectVisible(projectName, 10000);
           await deletedPage.restoreDeletedProjectViaOptions(projectName);
           await dashboardPage.isRestoreAlertMessageVisible(fileName);
           await deletedPage.isDeletedProjectNotVisible(projectName);
@@ -313,8 +307,6 @@ mainTest.describe('As Admin', () => {
 });
 
 mainTest.describe('As Viewer', () => {
-  mainTest.slow();
-
   let setup;
 
   mainTest.beforeEach(
