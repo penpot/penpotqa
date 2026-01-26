@@ -241,24 +241,26 @@ export class DeletedPage extends BasePage {
     ).not.toBeVisible();
   }
 
-  async waitForDeletedFileVisible(projectName: string, fileName: string) {
-    const deletedFile = await this.getDeletedFileByName(projectName, fileName);
-    await deletedFile.waitFor({ state: 'visible' });
+  async areDeletedProjectsNotVisible(projectNames: string[]) {
+    for (const projectName of projectNames) {
+      const deletedProject = await this.getDeletedProjectRowByName(projectName);
+
+      await expect(
+        deletedProject,
+        `Deleted project "${projectName}" should NOT be visible`,
+      ).not.toBeVisible();
+    }
   }
 
-  async waitForDeletedFileNotVisible(projectName: string, fileName: string) {
-    const deletedFile = await this.getDeletedFileByName(projectName, fileName);
-    await deletedFile.waitFor({ state: 'detached' });
-  }
+  async areDeletedProjectsVisible(projectNames: string[]) {
+    for (const projectName of projectNames) {
+      const deletedProject = await this.getDeletedProjectRowByName(projectName);
 
-  async waitForDeletedProjectNotVisible(projectName: string) {
-    const deletedProject = await this.getDeletedProjectRowByName(projectName);
-    await deletedProject.waitFor({ state: 'detached' });
-  }
-
-  async waitForDeletedProjectVisible(projectName: string) {
-    const deletedProject = await this.getDeletedProjectRowByName(projectName);
-    await deletedProject.waitFor({ state: 'visible' });
+      await expect(
+        deletedProject,
+        `Deleted project "${projectName}" should be visible`,
+      ).toBeVisible();
+    }
   }
 
   async isEmptyTrashMessageVisible() {

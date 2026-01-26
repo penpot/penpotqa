@@ -317,12 +317,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     }
   }
 
-  // async deleteProjectViaRightclick() {
-  //   await this.projectNameTitle.first().click({ button: 'right' });
-  //   await this.deleteProjectMenuItem.click();
-  //   await this.deleteProjectButton.click();
-  // }
-
   async deleteProjectViaRightclick() {
     await this.projectNameTitle.first().click({ button: 'right' });
     await this.deleteProjectMenuItem.click();
@@ -345,14 +339,19 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async deleteProjectsIfExist() {
-    for (const project of await this.projectNameTitle.elementHandles()) {
-      const name = (await project.innerText()).valueOf();
+    const count = await this.projectNameTitle.count();
+
+    for (let i = 0; i < count; i++) {
+      const project = this.projectNameTitle.nth(0); // always first
+      const name = await project.innerText();
+
       if (!name.includes('Drafts')) {
         await project.click({ button: 'right' });
         await this.deleteProjectMenuItem.click();
         await this.deleteProjectButton.click();
       }
     }
+
     await expect(this.projectNameTitle).toHaveCount(1);
   }
 
@@ -489,10 +488,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       exact: true,
     });
 
-    await expect(
-      deletedProject,
-      'Project title should not be visible',
-    ).not.toBeVisible();
+    await expect(deletedProject, 'Project title should be hidden').toBeHidden();
   }
 
   async createProject(projectName) {
