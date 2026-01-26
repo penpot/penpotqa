@@ -18,6 +18,8 @@ let mainPage: MainPage;
 let deletedPage: DeletedPage;
 
 mainTest.describe('As Owner', () => {
+  mainTest.slow();
+
   mainTest.beforeEach('Create a new team', async ({ page }: { page: Page }) => {
     mainTest.slow();
 
@@ -128,6 +130,7 @@ mainTest.describe('As Owner', () => {
         for (const { projectName } of projects) {
           await mainTest.step(`Assert "${projectName}" not exists`, async () => {
             await deletedPage.isDeletedProjectNotVisible(projectName);
+            // await deletedPage.waitForDeletedProjectNotVisible(projectName);
           });
         }
 
@@ -200,6 +203,8 @@ mainTest.describe('As Owner', () => {
 });
 
 mainTest.describe('As Editor', () => {
+  mainTest.slow();
+
   let setup;
   const projectName = 'Test Project';
   const fileName = 'New File 1';
@@ -244,6 +249,7 @@ mainTest.describe('As Editor', () => {
             async () => {
               await dashboardPage.openDeletedTab();
               await deletedPage.isDeletedFileVisible(projectName, fileName);
+              // await deletedPage.waitForDeletedFileVisible(projectName, fileName);
               await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
               await dashboardPage.isRestoreAlertMessageVisible(fileName);
               await deletedPage.isDeletedFileNotVisible(projectName, fileName);
@@ -272,12 +278,14 @@ mainTest.describe('As Editor', () => {
             async () => {
               await dashboardPage.openDeletedTab();
               await deletedPage.isDeletedFileVisible(projectName, fileName);
+              // await deletedPage.waitForDeletedFileVisible(projectName, fileName);
               await deletedPage.deleteForeverDeletedFileViaOptions(
                 projectName,
                 fileName,
               );
               await dashboardPage.isDeleteAlertMessageVisible(fileName);
               await deletedPage.isDeletedFileNotVisible(projectName, fileName);
+              // await deletedPage.waitForDeletedFileNotVisible(projectName, fileName);
             },
           );
         },
@@ -287,6 +295,8 @@ mainTest.describe('As Editor', () => {
 });
 
 mainTest.describe('As Admin', () => {
+  mainTest.slow();
+
   let setup;
   const projectName = 'Test Project';
   const fileName = 'New File 1';
@@ -331,9 +341,11 @@ mainTest.describe('As Admin', () => {
             async () => {
               await dashboardPage.openDeletedTab();
               await deletedPage.isDeletedProjectVisible(projectName);
+              // await deletedPage.waitForDeletedProjectVisible(projectName);
               await deletedPage.restoreDeletedProjectViaOptions(projectName);
               await dashboardPage.isRestoreAlertMessageVisible(fileName);
               await deletedPage.isDeletedProjectNotVisible(projectName);
+              // await deletedPage.waitForDeletedProjectNotVisible(projectName);
             },
           );
 
@@ -359,9 +371,11 @@ mainTest.describe('As Admin', () => {
             async () => {
               await dashboardPage.openDeletedTab();
               await deletedPage.isDeletedProjectVisible(projectName);
+              // await deletedPage.waitForDeletedProjectVisible(projectName);
               await deletedPage.deleteForeverDeletedProjectViaOptions(projectName);
               await dashboardPage.isDeleteAlertMessageVisible(projectName);
               await deletedPage.isDeletedProjectNotVisible(projectName);
+              // await deletedPage.waitForDeletedProjectNotVisible(projectName);
             },
           );
         },
@@ -371,6 +385,8 @@ mainTest.describe('As Admin', () => {
 });
 
 mainTest.describe('As Viewer', () => {
+  mainTest.slow();
+
   let setup;
 
   mainTest.beforeEach(
