@@ -48,7 +48,8 @@ async function generateMessage(
        :cat2: GitRun: https://github.com/penpot/penpotqa/actions/runs/${
          process.env.GITHUB_RUN_ID
        }
-       :computer: Browser: ${browserName}${folderLine}${userMentionLine}
+       :computer: Browser: ${browserName}
+       :herb: Branch: ${process.env.GITHUB_REF_NAME || 'N/A'}${folderLine}${userMentionLine}
        :page_facing_up: Check interactive tests results: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${
          process.env.GITHUB_RUN_ID
        }/index.html`;
