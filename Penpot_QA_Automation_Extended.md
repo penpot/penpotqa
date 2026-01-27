@@ -64,9 +64,9 @@ This document contains comprehensive information about the Penpot QA automation 
 
 ### Prerequisites for Local Run
 
-- **Operating System**: Windows OS (required for snapshot consistency)
+- **Operating System**: Ubuntu 24.04 (required for snapshot consistency)
 - **Screen Resolution**: 1920х1080
-- **Node.js**: v22.5.1
+- **Node.js**: v25.2.1
 - **Penpot Account**: "Clean" account (no files/projects) with completed onboarding flow, and the account name must be 'QA Engineer'
 
 ### .env File Configuration
@@ -1080,7 +1080,7 @@ await sendMessage({
 1. **playwright_pr_manual.yml** - Manual test execution for PRs
    - Options: all tests, changed only, by folder
    - Browser: Chrome
-   - OS: Windows 2022
+   - OS: Ubuntu 24.04
 
 2. **playwright_pre_daily.yml** - Daily Chrome tests on PRE
 3. **playwright_pre_firefox.yml** - Firefox tests on PRE
@@ -1360,7 +1360,7 @@ npx playwright show-trace trace.zip
 **Solution:**
 
 1. Check if UI change is intentional
-2. Run in headless mode on Windows
+2. Run in headless mode on Ubuntu 24.04
 3. Delete old snapshot and re-run test
 
 #### Issue: Flaky test due to timing
@@ -1422,7 +1422,7 @@ contextOptions: {
 - Mask dynamic elements
 - Run in headless mode for updates
 - Verify changes before updating
-- Update on Windows for consistency
+- Update on Ubuntu 24.04 for consistency
 
 ❌ **DON'T:**
 
@@ -1511,7 +1511,7 @@ All browsers use:
 viewport: { width: 1920, height: 969 }
 ```
 
-**Why 969?** This is the viewport size for a Full HD monitor (1920x1080). The height is 969 instead of 1080 because we subtract the Windows taskbar height from the total screen height to get the actual available viewport area
+**Why 969?** This is the viewport size for a Full HD monitor (1920x1080). The height is 969 instead of 1080 because we subtract the Ubuntu 24.04 taskbar height from the total screen height to get the actual available viewport area
 
 ### Headless Mode
 
@@ -1650,8 +1650,8 @@ npm run performance
 
 ### Before First Run
 
-- [ ] Windows OS with 1920x1080 resolution
-- [ ] Node.js v22.5.1 installed
+- [ ] Ubuntu 24.04 OS with 1920x1080 resolution
+- [ ] Node.js v25.2.1 installed
 - [ ] `.env` file created with all variables
 - [ ] Clean Penpot account with completed onboarding
 - [ ] Gmail API credentials configured
