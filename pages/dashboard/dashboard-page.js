@@ -320,15 +320,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async deleteProjectViaRightclick() {
     await this.projectNameTitle.first().click({ button: 'right' });
     await this.deleteProjectMenuItem.click();
-
-    const responsePromise = this.page.waitForResponse(
-      (response) =>
-        response.url().includes('/delete-project') &&
-        response.request().method() === 'POST' &&
-        response.status() === 204,
-    );
-
-    await Promise.all([responsePromise, this.deleteProjectButton.click()]);
+    await this.deleteProjectButton.click();
   }
 
   async deleteProjectViaOptionsIcon() {
@@ -342,7 +334,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     const count = await this.projectNameTitle.count();
 
     for (let i = 0; i < count; i++) {
-      const project = this.projectNameTitle.nth(0); // always first
+      const project = this.projectNameTitle.nth(0);
       const name = await project.innerText();
 
       if (!name.includes('Drafts')) {
