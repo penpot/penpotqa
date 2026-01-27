@@ -8,9 +8,9 @@ Based on Playwright framework.
 
 Prerequisites for local run:
 
-- Windows OS
+- Ubuntu 24.04 OS
 - Screen resolution 1920x1080
-- Installed Node.js v22.5.1
+- Installed Node.js v25.2.1
 - “Clear” Penpot account (without added files, projects, etc., but with a completed onboarding flow, and the account name must be 'QA Engineer').
 - The _.env_ file added to the root of the project with the following env variables:
   - `LOGIN_EMAIL` (email from your Penpot account)
