@@ -1,22 +1,28 @@
-const { registerTest } = require('../../fixtures');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { ProfilePage } = require('../../pages/profile-page');
-const { LoginPage } = require('../../pages/login-page');
-const { RegisterPage } = require('../../pages/register-page');
-const { StripePage } = require('../../pages/dashboard/stripe-page');
-const {
+import { registerTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { ProfilePage } from '@pages/profile-page';
+import { LoginPage } from '@pages/login-page';
+import { RegisterPage } from '@pages/register-page';
+import { StripePage } from '@pages/dashboard/stripe-page';
+import {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   getProfileIdByEmail,
   addPaymentMethodForCustomer,
   addPaymentMethodForCustomerByCustomerEmail,
-} = require('../../helpers/stripe');
+} from 'helpers/stripe';
 
-let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
-const teamName = random().concat('autotest');
+const teamName: string = random().concat('autotest');
+
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let profilePage: ProfilePage;
+let loginPage: LoginPage;
+let registerPage: RegisterPage;
+let stripePage: StripePage;
 
 registerTest.beforeEach(async ({ page }) => {
   await registerTest.slow();
@@ -32,10 +38,12 @@ registerTest.beforeEach(async ({ page }) => {
 });
 
 registerTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
+  if (teamPage && teamName) {
+    await teamPage.deleteTeam(teamName);
+  }
 });
 
-registerTest.fixme(
+registerTest(
   qase(2302, 'Switch from Unlimited → Enterprise'),
   async ({ page, name, email }) => {
     const currentPlan = 'Unlimited';
@@ -78,7 +86,7 @@ registerTest.fixme(
   },
 );
 
-registerTest.fixme(
+registerTest(
   qase(2303, 'Switch from Enterprise → Unlimited'),
   async ({ page, email }) => {
     const currentPlan = 'Enterprise';
@@ -108,7 +116,7 @@ registerTest.fixme(
   },
 );
 
-registerTest.fixme(
+registerTest(
   qase(2304, 'Switch from Unlimited → Professional'),
   async ({ page, name, email }) => {
     const currentPlan = 'Unlimited';
