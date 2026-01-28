@@ -10,6 +10,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     // Dashboard Header
     this.addProjectButton = page.getByRole('button', { name: 'New project' });
+    this.alertMessage = page.getByRole('alert');
+
+    // Deleted Navigation
+    this.recentTab = page.getByTestId('recent-tab');
+    this.deletedTab = page.getByTestId('deleted-tab');
 
     // Files Grid
     this.numberOfFilesText = page.locator(
@@ -134,6 +139,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     // Sidebar section > Search Input
     this.searchInput = page.getByPlaceholder('Search');
+    this.searchTextMessage = page.locator('.main_ui_dashboard_search__text');
 
     // Sidebar section > Fonts
     this.fontsSidebarItem = page.getByTestId('fonts');
@@ -325,14 +331,19 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async deleteProjectsIfExist() {
-    for (const project of await this.projectNameTitle.elementHandles()) {
-      const name = (await project.innerText()).valueOf();
+    const count = await this.projectNameTitle.count();
+
+    for (let i = 0; i < count; i++) {
+      const project = this.projectNameTitle.nth(0);
+      const name = await project.innerText();
+
       if (!name.includes('Drafts')) {
         await project.click({ button: 'right' });
         await this.deleteProjectMenuItem.click();
         await this.deleteProjectButton.click();
       }
     }
+
     await expect(this.projectNameTitle).toHaveCount(1);
   }
 
@@ -369,6 +380,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isFilePresent(fileName) {
     await expect(this.fileNameTitle).toHaveText(fileName);
+  }
+
+  async isFileNotVisible(fileName) {
+    await expect(this.fileNameTitle).not.toBeVisible();
   }
 
   async duplicateFileViaRightclick() {
@@ -456,15 +471,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.projectNameTitle.first()).toHaveText(projectName);
   }
 
+  async isProjectByNameDisplayed(projectName) {
+    await expect(this.projectNameTitle.getByText(projectName)).toBeVisible();
+  }
+
   async isProjectTitleNotVisible(projectName) {
     const deletedProject = this.projectNameTitle.getByText(projectName, {
       exact: true,
     });
 
-    await expect(
-      deletedProject,
-      'Project title should not be visible',
-    ).not.toBeVisible();
+    await expect(deletedProject, 'Project title should be hidden').toBeHidden();
   }
 
   async createProject(projectName) {
@@ -646,6 +662,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async search(text) {
     await this.searchInput.pressSequentially(text);
+  }
+
+  async fillSearchInput(text) {
+    await this.searchInput.fill(text);
   }
 
   async uploadFont(filePath) {
@@ -1219,5 +1239,48 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async checkSubscriptionName(name) {
     await expect(this.subscriptionName).toHaveText(name);
+  }
+
+  async openRecentTab() {
+    await this.recentTab.click();
+  }
+
+  async openDeletedTab() {
+    await this.deletedTab.click();
+  }
+
+  async isRestoreAlertMessageVisible(name) {
+    const alertMessage = this.alertMessage.getByText(
+      `${name} has been successfully restored.`,
+    );
+    await expect(
+      this.alertMessage,
+      `"${name} has been successfully restored." message is visible`,
+    ).toBeVisible();
+  }
+
+  async isDeleteAlertMessageVisible(name) {
+    const alertMessage = this.alertMessage.getByText(
+      `${name} has been successfully deleted.`,
+    );
+    await expect(
+      this.alertMessage,
+      `"${name} has been successfully deleted." message is visible`,
+    ).toBeVisible();
+  }
+
+  async isSearchResultMessageVisible(name, timeout = 5000) {
+    const resultText = this.searchTextMessage.getByText(
+      `No matches found for “${name}“`,
+    );
+
+    await expect(
+      resultText,
+      `"No matches found for ${name}" is visible`,
+    ).toBeVisible({ timeout });
+  }
+
+  async isDeletedTabNotVisible() {
+    await expect(this.deletedTab, `DELETED tab is NOT visible`).not.toBeVisible();
   }
 };
