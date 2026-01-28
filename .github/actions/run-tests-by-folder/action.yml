@@ -96,6 +96,7 @@ runs:
       run: |
         echo "📊 Test execution completed for folder: ${{ inputs.test-folder }}"
         echo "🌐 Browser used: ${{ inputs.browser }}"
+        echo "🌿 Branch: ${{ github.ref_name }}"
         if [ -d "test-results" ]; then
           echo "📁 Test results available in test-results directory"
         fi
