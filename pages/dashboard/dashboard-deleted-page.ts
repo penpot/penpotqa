@@ -3,6 +3,7 @@ import { BasePage } from '../base-page';
 
 export class DeletedPage extends BasePage {
   // Section header
+  readonly deletedSection: Locator;
   readonly restoreAllButton: Locator;
   readonly clearTrashButton: Locator;
   readonly emptyTrashMessage: Locator;
@@ -24,14 +25,19 @@ export class DeletedPage extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    this.restoreAllButton = page.getByRole('button', { name: 'Restore All' });
-    this.clearTrashButton = page.getByRole('button', { name: 'Clear Trash' });
+    this.deletedSection = page.getByTestId('deleted-page-section');
+    this.restoreAllButton = this.deletedSection.getByRole('button', {
+      name: 'Restore All',
+    });
+    this.clearTrashButton = this.deletedSection.getByRole('button', {
+      name: 'Clear Trash',
+    });
 
-    this.emptyTrashMessage = page.getByText(
+    this.emptyTrashMessage = this.deletedSection.getByText(
       'Your trash is empty. Deleted files and projects will appear here.',
     );
 
-    this.deletedProjectRow = page.locator(
+    this.deletedProjectRow = this.deletedSection.locator(
       '.main_ui_dashboard_deleted__dashboard-project-row',
     );
 
