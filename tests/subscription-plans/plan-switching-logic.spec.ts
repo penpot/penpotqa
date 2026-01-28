@@ -1,37 +1,41 @@
-const { registerTest } = require('../../fixtures');
-import { Page } from '@playwright/test';
-import { random } from '../../helpers/string-generator';
-import { TeamPage } from '../../pages/dashboard/team-page';
-import { DashboardPage } from '../../pages/dashboard/dashboard-page';
+import { registerTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { ProfilePage } from '../../pages/profile-page';
-import { StripePage } from '../../pages/dashboard/stripe-page';
+import { ProfilePage } from '@pages/profile-page';
+import { LoginPage } from '@pages/login-page';
+import { RegisterPage } from '@pages/register-page';
+import { StripePage } from '@pages/dashboard/stripe-page';
 import {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   getProfileIdByEmail,
   addPaymentMethodForCustomer,
   addPaymentMethodForCustomerByCustomerEmail,
-} from '../../helpers/stripe';
+} from 'helpers/stripe';
+
+const teamName: string = random().concat('autotest');
 
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let profilePage: ProfilePage;
+let loginPage: LoginPage;
+let registerPage: RegisterPage;
 let stripePage: StripePage;
-const teamName: string = random().concat('autotest');
 
-registerTest.beforeEach(
-  async ({ page }: { page: Page; name: string; email: string }) => {
-    await registerTest.slow();
-    teamPage = new TeamPage(page);
-    dashboardPage = new DashboardPage(page);
-    profilePage = new ProfilePage(page);
-    stripePage = new StripePage(page);
+registerTest.beforeEach(async ({ page }) => {
+  await registerTest.slow();
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  profilePage = new ProfilePage(page);
+  loginPage = new LoginPage(page);
+  registerPage = new RegisterPage(page);
+  stripePage = new StripePage(page);
 
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
-  },
-);
+  await teamPage.createTeam(teamName);
+  await teamPage.isTeamSelected(teamName);
+});
 
 registerTest.afterEach(async () => {
   if (teamPage && teamName) {
@@ -41,7 +45,7 @@ registerTest.afterEach(async () => {
 
 registerTest(
   qase(2302, 'Switch from Unlimited → Enterprise'),
-  async ({ page, name, email }: { page: Page; name: string; email: string }) => {
+  async ({ page, name, email }) => {
     const currentPlan = 'Unlimited';
     const newPlan = 'Enterprise';
     let date = new Date();
@@ -84,7 +88,7 @@ registerTest(
 
 registerTest(
   qase(2303, 'Switch from Enterprise → Unlimited'),
-  async ({ page, email }: { page: Page; email: string }) => {
+  async ({ page, email }) => {
     const currentPlan = 'Enterprise';
     const newPlan = 'Unlimited';
 
@@ -114,7 +118,7 @@ registerTest(
 
 registerTest(
   qase(2304, 'Switch from Unlimited → Professional'),
-  async ({ page, name, email }: { page: Page; name: string; email: string }) => {
+  async ({ page, name, email }) => {
     const currentPlan = 'Unlimited';
     const defaultPlan = 'Professional';
     let date = new Date();
