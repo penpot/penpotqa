@@ -2,19 +2,14 @@ import { chromium } from 'playwright';
 import { LoginPage } from '@pages/login-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import * as fs from 'fs';
-import * as path from 'path';
 
 export default async function globalTeardown() {
-  // Check if any tests were actually executed
-  if (!shouldRunTeardown()) {
-    console.log('No tests were executed, skipping global teardown...');
-    return;
-  }
-
   console.log('🌍 Cleaning up autotest teams...');
 
-  const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+  const browser = await chromium.launch({
+    headless: true,
+    args: ['--no-sandbox'],
+  });
   const context = await browser.newContext();
   const page = await context.newPage();
 
@@ -33,16 +28,18 @@ export default async function globalTeardown() {
     await dashboardPage.isDashboardOpenedAfterLogin();
 
     const autotestRegex = /autotest/i;
-    let deletedOne = false;
+
     for (let attempt = 0; attempt < 20; attempt++) {
       await teamPage.openTeamsListIfClosed();
+
       const teamMenuItems = page.getByRole('menuitem');
       const teamCount = await teamMenuItems.count();
-      deletedOne = false;
+      let deletedOne = false;
 
       for (let i = 0; i < teamCount; i++) {
         const teamItem = teamMenuItems.nth(i);
         if (!(await teamItem.isVisible())) continue;
+
         const teamText = (await teamItem.textContent())?.trim();
         if (!teamText || teamText === 'Your Penpot') continue;
         if (!autotestRegex.test(teamText)) continue;
@@ -64,42 +61,5 @@ export default async function globalTeardown() {
     });
   } finally {
     await browser.close();
-  }
-}
-
-/**
- * Determines if teardown should run based on test execution indicators
- */
-function shouldRunTeardown(): boolean {
-  try {
-    // Check if test results directory exists (indicates tests were run)
-    const testResultsPath = path.join(process.cwd(), 'test-results');
-    if (fs.existsSync(testResultsPath)) {
-      const files = fs.readdirSync(testResultsPath);
-      if (files.length > 0) {
-        console.log('Found test results, proceeding with teardown...');
-        return true;
-      }
-    }
-
-    // Check if playwright report directory exists
-    const reportPath = path.join(process.cwd(), 'playwright-report');
-    if (fs.existsSync(reportPath)) {
-      console.log('Found playwright report, proceeding with teardown...');
-      return true;
-    }
-
-    // If none of the above conditions are met, skip teardown
-    console.log(
-      'No indicators that tests were executed found. Skipping teardown...',
-    );
-    return false;
-  } catch (error) {
-    // Default to running teardown if we can't determine
-    console.warn(
-      'Error checking test execution status, proceeding with teardown as fallback:',
-      error,
-    );
-    return true;
   }
 }

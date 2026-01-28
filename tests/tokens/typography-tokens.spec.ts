@@ -66,29 +66,16 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      [2584, 2586, 2592, 2604, 2606, 2607],
-      'Create and edit a typography token (validating values and creation modes)',
+      [2584, 2586, 2592, 2604],
+      'Create and edit a typography token (validating values and units)',
     ),
     async () => {
-      const BAD_TOKEN_ALIAS = '{non.existent.token}';
-
       await mainTest.step(
         '2584 Create typography token with complete property set',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
-
-          await mainTest.step(
-            '2606 Switch Between Individual and Reference Token Forms\n' +
-              '2607 Validate Reference Token Form with Invalid References',
-            async () => {
-              await tokensPage.typoTokensComp.clickOnUseReferenceButton();
-              await tokensPage.typoTokensComp.fillAliasInput(BAD_TOKEN_ALIAS);
-              await tokensPage.typoTokensComp.isAliasInputErrorVisible();
-              await tokensPage.typoTokensComp.clickOnUseCompositeButton();
-            },
-          );
-          // fields should retain their values after switching modes
           await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+          await mainPage.waitForChangeIsSaved();
           await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
           await tokensPage.tokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
         },
@@ -150,14 +137,16 @@ mainTest.describe(() => {
       };
       const RESOLVED_LINE_HEIGHT_4 = '1.1';
 
+      await mainTest.step('2592 Validate Typography Token Units', async () => {
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_1);
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkFontSize(RESOLVED_FONT_SIZE_1);
+        await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_1);
+      });
+
       await mainTest.step(
-        '2592 Validate Typography Token Units\n' +
-          '2604 Apply Typography Tokens with Line Height Calculation and with Different Units',
+        '2604 Apply Typography Tokens with Line Height Calculation and with Different Units',
         async () => {
-          await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_1);
-          await mainPage.waitForChangeIsSaved();
-          await designPanelPage.checkFontSize(RESOLVED_FONT_SIZE_1);
-          await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_1);
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_2);
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_2);
@@ -173,8 +162,41 @@ mainTest.describe(() => {
   );
 
   mainTest(
+    qase([2606, 2607], 'Switch between token forms and validate invalid references'),
+    async () => {
+      const BAD_TOKEN_ALIAS = '{non.existent.token}';
+
+      await mainTest.step('Add a typography token and fill data', async () => {
+        await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
+      });
+
+      await mainTest.step(
+        '2606 Switch Between Individual and Reference Token Forms',
+        async () => {
+          await tokensPage.typoTokensComp.clickOnUseReferenceButton();
+          await tokensPage.typoTokensComp.clickOnUseCompositeButton();
+          // Fields should retain their values after switching modes
+          await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
+            TYPO_TOKEN,
+          );
+        },
+      );
+
+      await mainTest.step(
+        '2607 Validate Reference Token Form with Invalid References',
+        async () => {
+          await tokensPage.typoTokensComp.clickOnUseReferenceButton();
+          await tokensPage.typoTokensComp.fillAliasInput(BAD_TOKEN_ALIAS);
+          await tokensPage.typoTokensComp.isAliasInputErrorVisible();
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+        },
+      );
+    },
+  );
+
+  mainTest(
     qase(
-      [2609, 26210],
+      [2609, 2610],
       'Check Typography Token detaches Typography Style Assets and Atomic Typography Tokens',
     ),
     async () => {
@@ -184,20 +206,20 @@ mainTest.describe(() => {
       await mainTest.step(
         '2609 Check Typography Token Detaches Applied Typography Style (Asset)',
         async () => {
-          // set some typography styles to the text from the design panel
+          // Set some typography styles to the text from the design panel
           await assetsPanelPage.selectFont(FONT_FAMILY_STYLE);
           await designPanelPage.changeTextLetterSpacing(LETTER_SPACING_STYLE);
-          // create a typography asset with these styles
+          // Create a typography asset with these styles
           await assetsPanelPage.clickAssetsTab();
           await assetsPanelPage.clickAddFileLibraryTypographyButton();
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.isTypographyAssetAgVisible(true);
-          // create and apply typography token
+          // Create and apply typography token
           await tokensPage.tokensTab.click();
           await tokensPage.tokensComp.createTokenViaAddButtonAndSave(TYPO_TOKEN);
           await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
           await tokensPage.tokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
-          // validates assets are detached after applying the typography token
+          // Validates assets are detached after applying the typography token
           await designPanelPage.isTypographyAssetAgVisible(false);
           await designPanelPage.checkFontName(TYPO_TOKEN.fontFamily);
           await designPanelPage.checkLetterSpacing(TYPO_TOKEN.letterSpacing);
@@ -236,7 +258,7 @@ mainTest.describe(() => {
       await mainTest.step(
         '2610 Check Typography Token Unapplied Atomic Typography Tokens',
         async () => {
-          // create the typography and style tokens
+          // Create the typography and style tokens
           await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
             CLEAN_TYPO_TOKEN,
           );
@@ -245,16 +267,16 @@ mainTest.describe(() => {
           }
 
           for (const typoToken of TYPO_TOKENS) {
-            // apply all atomic typography tokens first
+            // Apply all atomic typography tokens first
             for (const styleToken of STYLE_TOKENS) {
               await tokensPage.tokensComp.clickOnTokenWithName(styleToken.name);
               await tokensPage.tokensComp.isTokenAppliedWithName(styleToken.name);
             }
-            // then apply the typography token type
+            // Then apply the typography token type
             await tokensPage.tokensComp.clickOnTokenWithName(typoToken.name);
             await tokensPage.tokensComp.isTokenAppliedWithName(typoToken.name);
 
-            // all atomic typography tokens should be unapplied
+            // All atomic typography tokens should be unapplied
             for (const styleToken of STYLE_TOKENS) {
               await tokensPage.tokensComp.isTokenAppliedWithName(
                 styleToken.name,

@@ -9,6 +9,7 @@ import {
   TypographyTokensComponent,
   TypographyToken,
 } from '@pages/workspace/tokens/token-components/typography-tokens-component';
+import { ShadowTokensComponent, ShadowToken } from './shadow-tokens-component';
 
 export enum TokenClass {
   Color = 'Color',
@@ -27,6 +28,7 @@ export enum TokenClass {
   TextCase = 'Text Case',
   TextDecoration = 'Text Decoration',
   Typography = 'Typography',
+  Shadow = 'Shadow',
 }
 
 export interface BasicTokenData {
@@ -39,7 +41,7 @@ export class TokensComponent {
   readonly baseComp: BaseComponent;
   readonly mainTokensComp: MainTokensComponent;
   readonly typoTokensComp: TypographyTokensComponent;
-
+  readonly shadowTokensComp: ShadowTokensComponent;
   readonly tokenSideBar: Locator;
   readonly tokenSections: Locator;
   readonly invalidToken: Locator;
@@ -55,7 +57,7 @@ export class TokensComponent {
     this.baseComp = new BaseComponent(page);
     this.typoTokensComp = new TypographyTokensComponent(page);
     this.mainTokensComp = new MainTokensComponent(page, tokensPage);
-
+    this.shadowTokensComp = new ShadowTokensComponent(page);
     this.tokenSideBar = page.getByTestId('tokens-sidebar');
     this.tokenSections = this.tokenSideBar.locator('[class*="section-name"]');
     this.invalidToken = page.locator('button[class*="token-pill-invalid-applied"]');
@@ -82,7 +84,10 @@ export class TokensComponent {
   }
 
   private async fillTokenData(
-    token: TypographyToken<TokenClass> | MainToken<TokenClass>,
+    token:
+      | TypographyToken<TokenClass>
+      | ShadowToken<TokenClass>
+      | MainToken<TokenClass>,
   ) {
     await this.tokenNameInput.fill(token.name);
 
@@ -92,13 +97,17 @@ export class TokensComponent {
 
     if (token.class === TokenClass.Typography) {
       await this.typoTokensComp.fillTokenData(token);
+    } else if (token.class === TokenClass.Shadow) {
+      await this.shadowTokensComp.fillShadowTokenData(
+        token as ShadowToken<TokenClass>,
+      );
     } else {
       await this.mainTokensComp.fillTokenData(token);
     }
   }
 
   async clickOnTokenDescription() {
-    await this.tokenDescriptionInput.click;
+    await this.tokenDescriptionInput.click();
   }
 
   async enterTokenDescription(text: string) {
@@ -113,7 +122,10 @@ export class TokensComponent {
   }
 
   async clickOnAddTokenAndFillData(
-    token: TypographyToken<TokenClass> | MainToken<TokenClass>,
+    token:
+      | TypographyToken<TokenClass>
+      | ShadowToken<TokenClass>
+      | MainToken<TokenClass>,
   ) {
     const addTokenButton = await this.getAddTokenButton(token.class);
     await addTokenButton.click();
@@ -121,22 +133,41 @@ export class TokensComponent {
   }
 
   async createTokenViaAddButtonAndSave(
-    token: TypographyToken<TokenClass> | MainToken<TokenClass>,
+    token:
+      | TypographyToken<TokenClass>
+      | ShadowToken<TokenClass>
+      | MainToken<TokenClass>,
   ) {
     await this.clickOnAddTokenAndFillData(token);
     await this.baseComp.modalSaveButton.click();
   }
 
   async createTokenViaAddButtonAndEnter(
-    token: TypographyToken<TokenClass> | MainToken<TokenClass>,
+    token:
+      | TypographyToken<TokenClass>
+      | ShadowToken<TokenClass>
+      | MainToken<TokenClass>,
   ) {
     await this.clickOnAddTokenAndFillData(token);
     await expect(this.baseComp.modalSaveButton).toBeEnabled();
     await this.baseComp.clickOnEnter();
   }
 
+  async clickEditToken(
+    updatedToken:
+      | TypographyToken<TokenClass>
+      | ShadowToken<TokenClass>
+      | MainToken<TokenClass>,
+  ) {
+    await this.rightClickOnTokenWithName(updatedToken.name);
+    await this.editTokenMenuItem.click();
+  }
+
   async editTokenViaRightClickByName(
-    updatedToken: TypographyToken<TokenClass> | MainToken<TokenClass>,
+    updatedToken:
+      | TypographyToken<TokenClass>
+      | ShadowToken<TokenClass>
+      | MainToken<TokenClass>,
   ) {
     await this.rightClickOnTokenWithName(updatedToken.name);
     await this.editTokenMenuItem.click();
@@ -144,7 +175,10 @@ export class TokensComponent {
   }
 
   async editTokenViaRightClickAndSave(
-    updatedToken: TypographyToken<TokenClass> | MainToken<TokenClass>,
+    updatedToken:
+      | TypographyToken<TokenClass>
+      | ShadowToken<TokenClass>
+      | MainToken<TokenClass>,
   ) {
     await this.editTokenViaRightClickByName(updatedToken);
     await this.baseComp.modalSaveButton.click();

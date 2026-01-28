@@ -20,6 +20,7 @@ mainTest.beforeEach(async ({ page }) => {
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
+  await dashboardPage.hideLibrariesAndTemplatesCarrousel();
 });
 
 mainTest.afterEach(async () => {

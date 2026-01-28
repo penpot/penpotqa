@@ -28,6 +28,8 @@ mainTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
   await teamPage.createTeam(teamName);
+  await dashboardPage.isHeaderDisplayed('Projects');
+  await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });

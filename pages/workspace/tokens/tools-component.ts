@@ -55,8 +55,6 @@ export class ToolsComponent {
 
   async importTokens(file: string) {
     await this.importButton.click();
-    await this.showOptionsButton.click();
-    await this.jsonOption.click();
     const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.chooseFileButton.click();
     const fileChooser = await fileChooserPromise;
@@ -75,6 +73,8 @@ export class ToolsComponent {
 
   async importTokensZip(file: string) {
     await this.importButton.click();
+    await this.showOptionsButton.click();
+    await this.zipOption.click();
     const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.chooseZipButton.click();
     const fileChooser = await fileChooserPromise;

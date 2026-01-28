@@ -44,6 +44,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.horizontalOrientationButton = page.locator('label[for="size-horizontal"]');
 
     //Design panel - Fill section
+    this.colorPickerContainer = page.getByTestId('colorpicker');
     this.firstColorIcon = page
       .locator(
         '//div[contains(@class, "color-data")][not(contains(@class, "color_row__hidden"))]//div[contains(@class, "color-bullet-wrapper")]',
@@ -75,14 +76,27 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.fillTokenColor = this.designTabpanel
       .locator(`[class*="fill-section"] div[class*="color_row__token-name"]`)
       .last();
+    this.searchByTokenNameInput = page.getByRole('textbox', {
+      name: 'Search by token name',
+    });
+    this.selectedColors = this.designTabpanel.locator(
+      '[class*="color_selection__element-set"]',
+    );
+    this.selectedColorInputs = this.selectedColors.getByRole('textbox', {
+      name: 'Color',
+    });
+    this.lastSelectedColorInput = this.selectedColorInputs.last();
 
     //Design panel - Shadow section
+    this.shadowSectionContainer = page.locator(
+      '.main_ui_workspace_sidebar_options_menus_shadow__shadow-section',
+    );
     this.shadowSection = page.getByText('Shadow', { exact: true });
     this.groupShadowSection = page.getByText('Group shadow', { exact: true });
     this.addShadowButton = page.getByRole('button', { name: 'Add shadow' });
-    this.shadowActionsButton = page.locator(
-      '[class*="shadow_row__shadow-basic-info"] button',
-    );
+    this.shadowActionsButton = this.shadowSectionContainer.getByRole('button', {
+      name: 'open more options',
+    });
     this.shadowXInput = page.locator(
       'div[class*="shadow-advanced"] div[title="X"] input',
     );
@@ -108,13 +122,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexLayoutCollapsedIcon = page.locator(
       'div[class*="layout_container"] button:has([href="#icon-arrow-right"])',
     );
-    this.flexElementAlignStartBtn = page.locator(
-      'label[title="Align self start"] span',
-    );
-    this.flexElementAlignCenterBtn = page.locator(
-      'label[title="Align self center"] span',
-    );
-    this.flexElementAlignEndBtn = page.locator('label[title="Align self end"] span');
+    this.flexElementAlignStartBtn = page.getByTestId('align-self-start');
+    this.flexElementAlignCenterBtn = page.getByTestId('align-self-center');
+    this.flexElementAlignEndBtn = page.getByTestId('align-self-end');
     this.flexElementMarginVertInput = page.locator(
       'div[title="Vertical margin"] input',
     );
@@ -264,20 +274,20 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .getByRole('combobox');
 
     //Design panel - Text section
-    this.textUpperCaseIcon = page.locator('svg.icon-text-uppercase');
-    this.textLowerCaseIcon = page.locator('svg.icon-text-lowercase');
-    this.textTitleCaseIcon = page.locator('svg.icon-text-mixed');
+    this.textUpperCaseIcon = page.getByTestId('text-transform-uppercase');
+    this.textLowerCaseIcon = page.getByTestId('text-transform-lowercase');
+    this.textTitleCaseIcon = page.getByTestId('text-transform-capitalize');
     this.textMoreOptionsIcon = page
       .locator('div[class*="text__element-content"]')
       .getByRole('button', { name: 'Options' });
     this.textVerticalOptionsBlock = page.locator(
       'div[class*="vertical-align-options"]',
     );
-    this.textAlignTop = page.locator('svg.icon-text-top');
-    this.textAlignMiddle = page.locator('svg.icon-text-middle');
-    this.textAlignBottom = page.locator('svg.icon-text-bottom');
-    this.textIconLTR = page.locator('svg.icon-text-ltr');
-    this.textIconRTL = page.locator('svg.icon-text-rtl');
+    this.textAlignTop = page.getByTestId('vertical-text-align-top');
+    this.textAlignMiddle = page.getByTestId('vertical-text-align-center');
+    this.textAlignBottom = page.getByTestId('vertical-text-align-bottom');
+    this.textIconLTR = page.getByTestId('ltr-text-direction');
+    this.textIconRTL = page.getByTestId('rtl-text-direction');
     this.textFontSelector = page.locator('div[class*="typography__font-option"]');
     this.textFontSelectorSearchInput = page.getByPlaceholder('Search font');
     this.textFontStyleSelector = page.locator(
@@ -406,6 +416,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       name: 'Locate duplicated variants',
       exact: true,
     });
+    this.variantPropertySwitch = this.componentBlockOnDesignTab.getByRole('switch');
   }
 
   async isFlexElementSectionOpened() {
@@ -508,6 +519,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  getColorTokenButtonByName(tokenName) {
+    return this.colorPickerContainer.getByRole('button', {
+      name: tokenName,
+      exact: true,
+    });
+  }
+
   async clickFirstColorIcon() {
     await this.firstColorIcon.click();
   }
@@ -520,8 +538,20 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.fillOpacityInput.pressSequentially(value);
   }
 
+  async fillSearchByTokenNameInput(tokenName) {
+    await this.searchByTokenNameInput.fill(tokenName);
+  }
+
+  async clickColorTokenButton(tokenName) {
+    await this.getColorTokenButtonByName(tokenName).click();
+  }
+
   async isFillHexCodeSet(value) {
     await expect(this.fillColorInput).toHaveValue(value.slice(1));
+  }
+
+  async isSelectedHexCode(value) {
+    await expect(this.lastSelectedColorInput).toHaveValue(value.slice(1));
   }
 
   async isFillHexCodeSetComponent(value) {
@@ -534,6 +564,27 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async isFillOpacitySet(value) {
     await expect(this.fillOpacityInput).toHaveValue(value);
+  }
+
+  async isSearchByTokenNameInputVisible() {
+    await expect(
+      this.searchByTokenNameInput,
+      'Search by token name input is visible',
+    ).toBeVisible();
+  }
+
+  async isColorTokenButtonVisible(tokenName) {
+    await expect(
+      this.getColorTokenButtonByName(tokenName),
+      `Color token button "${tokenName}" is visible`,
+    ).toBeVisible();
+  }
+
+  async isColorTokenButtonNotVisible(tokenName) {
+    await expect(
+      this.getColorTokenButtonByName(tokenName),
+      `Color token button "${tokenName}" is not visible`,
+    ).not.toBeVisible();
   }
 
   async clickAddFillButton() {
@@ -629,8 +680,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.addShadowButton.click();
   }
 
-  async clickShadowActionsButton() {
-    await this.shadowActionsButton.click();
+  async clickShadowActionsButton(index = 0) {
+    await this.shadowActionsButton.nth(index).click();
   }
 
   async changeShadowSettings(x, y, blur, spread, opacity) {
@@ -1722,5 +1773,68 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     visible
       ? await expect(await this.flexElementWidth100Btn).toBeVisible()
       : await expect(await this.flexElementWidth100Btn).not.toBeVisible();
+  }
+
+  async isExpectedShadowTypeOption(shadowType, index = 0) {
+    const typeOptionSel = this.shadowSectionContainer
+      .getByRole('combobox')
+      .filter({ hasText: shadowType })
+      .nth(index);
+
+    await expect(
+      typeOptionSel,
+      `Shadow Type Option #${index + 1} should have text "${shadowType}"`,
+    ).toHaveText(shadowType);
+  }
+
+  async isShadowTypeOptionNotVisible(shadowType, index = 0) {
+    const typeOptionSel = this.shadowSectionContainer
+      .getByRole('combobox')
+      .filter({ hasText: shadowType })
+      .nth(index);
+
+    await expect(
+      typeOptionSel,
+      `Shadow Type Option #${index + 1} "${shadowType} is not visible"`,
+    ).not.toBeVisible();
+  }
+
+  async hasShadowXOffsetExpectedValue(value, index = 0) {
+    await expect(
+      await this.shadowXInput.nth(index),
+      `Shadow X Offset Input has expected value: "${value}"`,
+    ).toHaveValue(value);
+  }
+
+  async hasShadowYOffsetExpectedValue(value, index = 0) {
+    await expect(
+      await this.shadowYInput.nth(index),
+      `Shadow Y Offset Input has expected value: "${value}"`,
+    ).toHaveValue(value);
+  }
+
+  async hasShadowBlurExpectedValue(value, index = 0) {
+    await expect(
+      await this.shadowBlurInput.nth(index),
+      `Shadow Blur Input has expected value: "${value}"`,
+    ).toHaveValue(value);
+  }
+
+  async hasShadowSpreadExpectedValue(value, index = 0) {
+    await expect(
+      await this.shadowSpreadInput.nth(index),
+      `Shadow Spread Input has expected value: "${value}"`,
+    ).toHaveValue(value);
+  }
+
+  async isExpectedShadowColorVisible(color) {
+    const shadowColorButton = this.shadowSectionContainer.getByRole('button', {
+      name: color,
+    });
+
+    await expect(
+      await shadowColorButton,
+      `Shadow Color Button has expected value: "${color}"`,
+    ).toBeVisible();
   }
 };

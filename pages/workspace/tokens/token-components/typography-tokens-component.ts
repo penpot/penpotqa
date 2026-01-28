@@ -113,6 +113,36 @@ export class TypographyTokensComponent {
   async fillAliasInput(value: string) {
     await this.aliasInput.fill(value);
   }
+
+  async checkTokenFieldHasExpectedValue(
+    typographyToken: TypographyToken<TokenClass>,
+  ) {
+    if (typographyToken.fontFamily !== undefined) {
+      await expect(this.fontFamilyInput).toHaveValue(typographyToken.fontFamily);
+    }
+    if (typographyToken.fontWeight !== undefined) {
+      await expect(this.fontWeightInput).toHaveValue(typographyToken.fontWeight);
+    }
+    if (typographyToken.fontSize !== undefined) {
+      await expect(this.fontSizeInput).toHaveValue(typographyToken.fontSize);
+    }
+    if (typographyToken.lineHeight !== undefined) {
+      await expect(this.lineHeightInput).toHaveValue(typographyToken.lineHeight);
+    }
+    if (typographyToken.letterSpacing !== undefined) {
+      await expect(this.letterSpacingInput).toHaveValue(
+        typographyToken.letterSpacing,
+      );
+    }
+    if (typographyToken.textDecoration !== undefined) {
+      await expect(this.textDecorationInput).toHaveValue(
+        typographyToken.textDecoration,
+      );
+    }
+    if (typographyToken.textCase !== undefined) {
+      await expect(this.textCaseInput).toHaveValue(typographyToken.textCase);
+    }
+  }
 }
 
 export default TypographyTokensComponent;

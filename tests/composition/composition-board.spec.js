@@ -502,10 +502,10 @@ mainTest.describe(() => {
         'Small360 x 640',
         'Mobile360 x 640',
         'Tablet768 x 1024',
-        'Google Pixel 7 Pro1440 x 3120',
-        'Google Pixel 6a/61080 x 2400',
+        'Google Pixel 7 Pro412 x 892',
+        'Google Pixel 6a/6412 x 915',
         'Google Pixel 4a/5393 x 851',
-        'Samsung Galaxy S221080 x 2340',
+        'Samsung Galaxy S22360 x 780',
         'Samsung Galaxy S20+384 x 854',
         'Samsung Galaxy A71/A51412 x 914',
         'MICROSOFT',
@@ -597,25 +597,25 @@ mainTest.describe(() => {
       await designPanelPage.selectSizePresetsOption('Google Pixel 6a/6');
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('1080');
-      await designPanelPage.checkSizeHeight('2400');
+      await designPanelPage.checkSizeWidth('412');
+      await designPanelPage.checkSizeHeight('915');
       await designPanelPage.clickOnHorizontalOrientationButton();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.isHorizontalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('2400');
-      await designPanelPage.checkSizeHeight('1080');
+      await designPanelPage.checkSizeWidth('915');
+      await designPanelPage.checkSizeHeight('412');
 
       // Select Samsung S22 preset
       await designPanelPage.selectSizePresetsOption('Samsung Galaxy S22');
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('1080');
-      await designPanelPage.checkSizeHeight('2340');
+      await designPanelPage.checkSizeWidth('360');
+      await designPanelPage.checkSizeHeight('780');
       await designPanelPage.clickOnHorizontalOrientationButton();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.isHorizontalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('2340');
-      await designPanelPage.checkSizeHeight('1080');
+      await designPanelPage.checkSizeWidth('780');
+      await designPanelPage.checkSizeHeight('360');
 
       // Select Surface Pro 4/5/6/7 preset
       await designPanelPage.selectSizePresetsOption('Surface Pro 4/5/6/7');
