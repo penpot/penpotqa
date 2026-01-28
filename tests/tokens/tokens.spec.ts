@@ -522,6 +522,7 @@ mainTest(
     await mainPage.pressCopyShortcut(browserName);
     await mainPage.pressPasteShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportOnce();
 
     await layersPanelPage.openLayersTab();
     await layersPanelPage.selectCopyComponentChildLayer();
