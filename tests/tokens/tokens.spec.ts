@@ -519,9 +519,8 @@ mainTest(
     await mainPage.waitForResizeHandlerVisible();
     await layersPanelPage.createComponentViaShortcut(browserName, true);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.pressCopyShortcut(browserName);
-    await mainPage.pressPasteShortcut(browserName);
-    await mainPage.clickViewportOnce();
+    await mainPage.copyLayerViaRightClick();
+    await mainPage.pasteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
 
     await layersPanelPage.openLayersTab();
