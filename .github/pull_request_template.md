@@ -21,7 +21,7 @@ _How did you solve the problem?_
 ## How to test
 
 - [ ] Check the code
-- [ ] Update the Automation Status field in Qase
+- [ ] Update the test case in Qase (Automation Status field or steps changed)
 - [ ] It complies with the test conventions
 - [ ] There are no missing snapshots for win32 (x3 browsers)
 - [ ] The tests run OK
