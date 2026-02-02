@@ -1,0 +1,125 @@
+name: Manual Penpot Tests (TESTS environment)
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Test execution mode'
+        required: true
+        type: choice
+        options:
+          - 'all_tests'
+          - 'changed_only'
+          - 'by_folder'
+        default: 'by_folder'
+      test_folder:
+        description: 'Test folder (only if you select "by_folder")'
+        required: false
+        type: choice
+        options:
+          - tests/action-menu
+          - tests/assets
+          - tests/color
+          - tests/components
+          - tests/composition
+          - tests/dashboard
+          - tests/dashboard/teams
+          - tests/dashboard/trash
+          - tests/login-signup
+          - tests/panels-features
+          - tests/performance
+          - tests/plugins
+          - tests/your-account
+          - tests/subscription-plans
+          - tests/tokens
+          - tests/ui-theme
+          - tests/view-mode
+        default: 'tests/login-signup'
+
+permissions:
+  contents: write
+
+jobs:
+  tests_chromium:
+    defaults:
+      run:
+        shell: bash
+    environment: TESTS
+    timeout-minutes: 280
+    runs-on: ubuntu-24.04
+    env:
+      TZ: Europe/Madrid
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Playwright Environment
+        uses: ./.github/actions/setup-playwright
+
+      - name: Run Playwright tests
+        id: run-tests
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
+          LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
+          SSO_LOGIN_EMAIL: ${{ secrets.SSO_LOGIN_EMAIL }}
+          SSO_LOGIN_PWD: ${{ secrets.SSO_LOGIN_PWD }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
+          GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
+          STRIPE_SK: ${{ secrets.STRIPE_SK }}
+        run: |
+          case "${{ github.event.inputs.test_mode }}" in
+            "all_tests")
+              echo "🚀 Running all tests..."
+              npx playwright test --project=chrome
+              ;;
+            "changed_only")
+              echo "📝 Running tests for changed files only..."
+              npx playwright test --project=chrome --only-changed=origin/main
+              ;;
+            "by_folder")
+              echo "📁 Running tests from folder: ${{ github.event.inputs.test_folder }}"
+              if [ -z "${{ github.event.inputs.test_folder }}" ]; then
+                echo "❌ Error: No test folder specified"
+                exit 1
+              fi
+              if [ ! -d "${{ github.event.inputs.test_folder }}" ]; then
+                echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
+                exit 1
+              fi
+              npx playwright test --project=chrome "${{ github.event.inputs.test_folder }}"
+              ;;
+            *)
+              echo "❌ Error: Invalid test mode"
+              exit 1
+              ;;
+          esac
+
+      - name: Generate and Upload Reports
+        uses: ./.github/actions/upload-reports
+        with:
+          artifact-name: 'playwright-report-chromium-pr-${{ github.event.inputs.test_mode }}'
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          browser-name: 'Chrome'
+          is-manual-execution: 'true'
+          testdino_api_key: ${{ secrets.TDPW_API_KEY }}
+        if: always()
+
+      - name: Send Mattermost Notification
+        uses: ./.github/actions/send-notification
+        with:
+          mattermost-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_PR }}
+          browser-name: 'Chrome'
+          folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
+          is-manual-execution: 'true'
+          username: ${{ github.actor }}
+        if: always()
