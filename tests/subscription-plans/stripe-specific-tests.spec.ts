@@ -49,9 +49,6 @@ registerTest.describe(() => {
   });
 
   registerTest.afterEach(async () => {
-    if (teamPage && teamName) {
-      await teamPage.deleteTeam(teamName);
-    }
     await stripePage.clickOnReturnToPenpotButton();
     await profilePage.backToDashboardFromAccount();
   });
@@ -93,7 +90,7 @@ registerTest.describe(() => {
 
   registerTest(
     qase(2347, 'Invoices capped at  $950 (Enterprise)'),
-    async ({ page, email }) => {
+    async ({ email }) => {
       await registerTest.slow();
       const currentPlan = 'Enterprise';
       const date = new Date();
@@ -248,9 +245,5 @@ registerTest(
     await teamPage.switchTeam(teamName);
     await teamPage.isTeamSelected(teamName);
     await teamPage.isSubscriptionIconNotVisible();
-
-    if (teamPage && teamName) {
-      await teamPage.deleteTeam(teamName);
-    }
   },
 );

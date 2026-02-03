@@ -30,12 +30,6 @@ registerTest.beforeEach(async ({ page }) => {
   await teamPage.isTeamSelected(teamName);
 });
 
-registerTest.afterEach(async () => {
-  if (teamPage && teamName) {
-    await teamPage.deleteTeam(teamName);
-  }
-});
-
 registerTest(qase(2289, 'Try it free for 14 days for Unlimited plan'), async () => {
   const currentPlan = 'Unlimited';
 

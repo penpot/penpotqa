@@ -36,12 +36,6 @@ registerTest.beforeEach(async ({ page, name, email }) => {
   await teamPage.isTeamSelected(teamName);
 });
 
-registerTest.afterEach(async () => {
-  if (teamPage && teamName) {
-    await teamPage.deleteTeam(teamName);
-  }
-});
-
 registerTest(
   qase([2297, 2344], 'Trial ends, payment method added → switch to Unlimited'),
   async ({ email }) => {
