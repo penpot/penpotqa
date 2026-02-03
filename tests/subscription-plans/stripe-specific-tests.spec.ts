@@ -32,7 +32,6 @@ registerTest.describe(() => {
   let customerData: any;
 
   registerTest.beforeEach(async ({ page, name, email }) => {
-    await registerTest.slow();
     teamPage = new TeamPage(page);
     dashboardPage = new DashboardPage(page);
     profilePage = new ProfilePage(page);
@@ -91,7 +90,6 @@ registerTest.describe(() => {
   registerTest(
     qase(2347, 'Invoices capped at  $950 (Enterprise)'),
     async ({ email }) => {
-      await registerTest.slow();
       const currentPlan = 'Enterprise';
       const date = new Date();
 
@@ -160,8 +158,6 @@ registerTest.describe(() => {
 registerTest(
   qase(2324, 'Owner of team changes Enterprise to Professional'),
   async ({ page, name, email }) => {
-    await registerTest.slow();
-
     const currentPlan = 'Enterprise';
     const firstOwner: string = random().concat('autotest');
     const firstEmail: string = `${process.env.GMAIL_NAME}+${firstOwner}${process.env.GMAIL_DOMAIN}`;

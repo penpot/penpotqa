@@ -22,7 +22,6 @@ let customerData: any;
 let testClockId: string;
 
 registerTest.beforeEach(async ({ page, name, email }) => {
-  await registerTest.slow();
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);

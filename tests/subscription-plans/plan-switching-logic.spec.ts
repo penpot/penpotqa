@@ -25,7 +25,6 @@ let registerPage: RegisterPage;
 let stripePage: StripePage;
 
 registerTest.beforeEach(async ({ page }) => {
-  await registerTest.slow();
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
@@ -85,8 +84,6 @@ registerTest(
   async ({ page, email }) => {
     const currentPlan = 'Enterprise';
     const newPlan = 'Unlimited';
-
-    await registerTest.slow();
 
     await profilePage.tryTrialForPlan(newPlan);
     await profilePage.openYourAccountPage();
