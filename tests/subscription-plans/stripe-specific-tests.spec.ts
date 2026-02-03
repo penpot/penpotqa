@@ -1,46 +1,44 @@
-const { registerTest } = require('../../fixtures');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { ProfilePage } = require('../../pages/profile-page');
-const {
-  waitMessage,
-  waitSecondMessage,
-  getRegisterMessage,
-} = require('../../helpers/gmail');
-const { LoginPage } = require('../../pages/login-page');
-const { RegisterPage } = require('../../pages/register-page');
-const { StripePage } = require('../../pages/dashboard/stripe-page');
-const {
+import { registerTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { ProfilePage } from '@pages/profile-page';
+import { waitMessage, waitSecondMessage, getRegisterMessage } from 'helpers/gmail';
+import { LoginPage } from '@pages/login-page';
+import { RegisterPage } from '@pages/register-page';
+import { StripePage } from '@pages/dashboard/stripe-page';
+import {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   skipSubscriptionByMonths,
   getProfileIdByEmail,
   addPaymentMethodForCustomer,
   addPaymentMethodForCustomerByCustomerEmail,
-} = require('../../helpers/stripe');
+} from 'helpers/stripe';
 
-let teamPage, dashboardPage, profilePage, loginPage, registerPage, stripePage;
-const teamName = random().concat('autotest');
+const teamName: string = random().concat('autotest');
 
-registerTest.beforeEach(async ({ page }) => {
-  await registerTest.slow();
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  profilePage = new ProfilePage(page);
-  loginPage = new LoginPage(page);
-  registerPage = new RegisterPage(page);
-  stripePage = new StripePage(page);
-});
-
-registerTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
-});
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let profilePage: ProfilePage;
+let loginPage: LoginPage;
+let registerPage: RegisterPage;
+let stripePage: StripePage;
 
 registerTest.describe(() => {
-  let testClockId, penpotId, customerData;
+  let testClockId: string;
+  let penpotId: string;
+  let customerData: any;
+
   registerTest.beforeEach(async ({ page, name, email }) => {
+    teamPage = new TeamPage(page);
+    dashboardPage = new DashboardPage(page);
+    profilePage = new ProfilePage(page);
+    loginPage = new LoginPage(page);
+    registerPage = new RegisterPage(page);
+    stripePage = new StripePage(page);
+
     penpotId = await getProfileIdByEmail(email);
     customerData = await createCustomerWithTestClock(page, name, email, penpotId);
     testClockId = customerData.testClockId;
@@ -54,11 +52,11 @@ registerTest.describe(() => {
     await profilePage.backToDashboardFromAccount();
   });
 
-  registerTest.fixme(
+  registerTest(
     qase(2346, 'Invoices capped at $7 (Unlimited)'),
     async ({ email }) => {
       const currentPlan = 'Unlimited';
-      let date = new Date();
+      const date = new Date();
 
       await profilePage.tryTrialForPlan(currentPlan);
       await profilePage.openYourAccountPage();
@@ -89,12 +87,11 @@ registerTest.describe(() => {
     },
   );
 
-  registerTest.fixme(
+  registerTest(
     qase(2347, 'Invoices capped at  $950 (Enterprise)'),
-    async ({ page, email }) => {
-      await registerTest.slow();
+    async ({ email }) => {
       const currentPlan = 'Enterprise';
-      let date = new Date();
+      const date = new Date();
 
       await profilePage.tryTrialForPlan(currentPlan);
       await profilePage.openYourAccountPage();
@@ -125,50 +122,54 @@ registerTest.describe(() => {
     },
   );
 
-  registerTest.fixme(
-    qase(2514, 'Maximum billing $175 (Unlimited)'),
-    async ({ email }) => {
-      const currentPlan = 'Unlimited';
-      let date = new Date();
+  registerTest(qase(2514, 'Maximum billing $175 (Unlimited)'), async ({ email }) => {
+    const currentPlan = 'Unlimited';
+    const date = new Date();
 
-      await profilePage.tryTrialForPlan(currentPlan, '100');
-      await profilePage.openYourAccountPage();
-      await profilePage.openSubscriptionTab();
-      await profilePage.clickOnAddPaymentMethodButton();
-      await addPaymentMethodForCustomer(customerData.customerId);
-      await stripePage.reloadPage();
-      await stripePage.isVisaCardAdded(true);
-      await skipSubscriptionByDays(email, testClockId, 20, date);
+    await profilePage.tryTrialForPlan(currentPlan, '100');
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.clickOnAddPaymentMethodButton();
+    await addPaymentMethodForCustomer(customerData.customerId);
+    await stripePage.reloadPage();
+    await stripePage.isVisaCardAdded(true);
+    await skipSubscriptionByDays(email, testClockId, 20, date);
 
-      await stripePage.waitTrialEndsDisappear();
-      await profilePage.reloadPage();
-      await stripePage.checkCurrentSubscription(currentPlan);
-      await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
-      await stripePage.checkLastInvoiceAmount(`175.00`);
+    await stripePage.waitTrialEndsDisappear();
+    await profilePage.reloadPage();
+    await stripePage.checkCurrentSubscription(currentPlan);
+    await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
+    await stripePage.checkLastInvoiceAmount(`175.00`);
 
-      await skipSubscriptionByMonths(email, testClockId, 1, date);
-      await profilePage.reloadPage();
+    await skipSubscriptionByMonths(email, testClockId, 1, date);
+    await profilePage.reloadPage();
 
-      await skipSubscriptionByMonths(email, testClockId, 1, date);
-      await profilePage.reloadPage();
+    await skipSubscriptionByMonths(email, testClockId, 1, date);
+    await profilePage.reloadPage();
 
-      await skipSubscriptionByMonths(email, testClockId, 1, date);
-      await profilePage.reloadPage();
+    await skipSubscriptionByMonths(email, testClockId, 1, date);
+    await profilePage.reloadPage();
 
-      await stripePage.checkLastInvoiceStatus(`Paid`);
-      await stripePage.waitInvoiceAmountCount(`$175.00`, 3);
-    },
-  );
+    await stripePage.checkLastInvoiceStatus(`Paid`);
+    await stripePage.waitInvoiceAmountCount(`$175.00`, 3);
+  });
 });
 
 registerTest(
   qase(2324, 'Owner of team changes Enterprise to Professional'),
   async ({ page, name, email }) => {
     const currentPlan = 'Enterprise';
-    const firstOwner = random().concat('autotest');
-    const firstEmail = `${process.env.GMAIL_NAME}+${firstOwner}${process.env.GMAIL_DOMAIN}`;
-    const secondAdmin = name;
-    const secondEmail = email;
+    const firstOwner: string = random().concat('autotest');
+    const firstEmail: string = `${process.env.GMAIL_NAME}+${firstOwner}${process.env.GMAIL_DOMAIN}`;
+    const secondAdmin: string = name;
+    const secondEmail: string = email;
+
+    teamPage = new TeamPage(page);
+    dashboardPage = new DashboardPage(page);
+    profilePage = new ProfilePage(page);
+    loginPage = new LoginPage(page);
+    registerPage = new RegisterPage(page);
+    stripePage = new StripePage(page);
 
     await profilePage.logout();
     await loginPage.isLoginPageOpened();
@@ -180,7 +181,7 @@ registerTest(
     );
     await registerPage.isRegisterEmailCorrect(firstEmail);
     const register2 = await waitMessage(page, firstEmail, 40);
-    await page.goto(register2.inviteUrl);
+    await page.goto(register2!.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
 
     await dashboardPage.isDashboardOpenedAfterLogin();
@@ -211,7 +212,7 @@ registerTest(
     await dashboardPage.isDashboardOpenedAfterLogin();
     await waitSecondMessage(page, secondEmail, 40);
     const invite = await getRegisterMessage(secondEmail);
-    await page.goto(invite.inviteUrl);
+    await page.goto(invite!.inviteUrl);
     await teamPage.switchTeam(teamName);
     await teamPage.isTeamSelected(teamName);
 

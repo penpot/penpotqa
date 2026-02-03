@@ -22,7 +22,6 @@ let customerData: any;
 let testClockId: string;
 
 registerTest.beforeEach(async ({ page, name, email }) => {
-  await registerTest.slow();
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
@@ -34,12 +33,6 @@ registerTest.beforeEach(async ({ page, name, email }) => {
 
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
-});
-
-registerTest.afterEach(async () => {
-  if (teamPage && teamName) {
-    await teamPage.deleteTeam(teamName);
-  }
 });
 
 registerTest(

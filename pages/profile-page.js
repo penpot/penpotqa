@@ -115,6 +115,9 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.startFreeTrialButton = page.getByRole('button', {
       name: 'Start free trial',
     });
+    this.changeSubscriptionModal = page.locator(
+      '[class*="subscription__modal-success-content"]',
+    );
     this.changeSubscriptionModalHeader = page.locator(
       '[class*="subscription__modal-title"]',
     );
@@ -317,6 +320,10 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     }
   }
 
+  async isSubscriptionModalVisible() {
+    await expect(this.changeSubscriptionModal).toBeVisible();
+  }
+
   async checkSubscriptionModalHeader(name) {
     await expect(this.changeSubscriptionModalHeader).toHaveText(name);
   }
@@ -341,6 +348,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
       await this.enterMembers(editors);
     }
     await this.clickOnStartTrialButton(plan);
+    await this.isSubscriptionModalVisible();
     await this.checkSubscriptionModalHeader(`You are ${plan} (trial)!`);
     await this.closeModalWindow();
     await this.checkSubscriptionName(`${plan} (trial)`);
