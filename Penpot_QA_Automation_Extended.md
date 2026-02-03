@@ -1085,6 +1085,10 @@ await sendMessage({
 2. **playwright_pre_daily.yml** - Daily Chrome tests on PRE
 3. **playwright_pre_firefox.yml** - Firefox tests on PRE
 4. **playwright_pre_webkit.yml** - WebKit tests on PRE
+5. **playwright_tests_manual.yml** - Manual Penpot Tests (TESTS environment)
+   - Options: all tests, changed only, by folder
+   - Browser: Chrome
+   - OS: Ubuntu 24.04
 
 ### Custom GitHub Actions
 
@@ -1109,17 +1113,27 @@ await sendMessage({
 - Purpose: Verification after production deployment
 - **Note:** Must manually login and close "Release Notes" popup before running
 
+**TESTS (PRE with New Render):**
+
+- Manual trigger only
+- Purpose: Tests stabilization
+
 ### Secrets Configuration
 
 **Required secrets per environment:**
 
 - `BASE_URL`
-- `LOGIN_EMAIL`, `SECOND_EMAIL`
-- `LOGIN_PWD`
+- `LOGIN_EMAIL`, `SECOND_EMAIL`, `LOGIN_PWD`
 - `GMAIL_NAME`, `GMAIL_DOMAIN`, `REFRESH_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`
 - `STRIPE_SK`
-- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`
-- `PR_CHANNEL_ID`, `LOGIN_ID_MATTERMOST`, `PASSWORD_MATTERMOST`
+- `MATTERMOST_WEBHOOK_DAILY_REPORT`, `MATTERMOST_WEBHOOK_PR`
+- `TDPW_API_KEY`
+
+**Required Repository secrets**
+
+- `AWS_ACCESS_KEY_ID`, `AWS_REGION`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET`
+
+> Note: These variables will be available to every environment.
 
 ### Artifacts
 
