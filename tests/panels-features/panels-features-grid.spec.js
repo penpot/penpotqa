@@ -4,18 +4,20 @@ const { expect } = require('@playwright/test');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
+const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { qase } = require('playwright-qase-reporter/playwright');
 
 const teamName = random().concat('autotest');
 
-let teamPage, mainPage, designPanelPage, dashboardPage;
+let teamPage, mainPage, designPanelPage, dashboardPage, layersPanelPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   designPanelPage = new DesignPanelPage(page);
   mainPage = new MainPage(page);
+  layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -29,16 +31,19 @@ mainTest.afterEach(async () => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
+    const layerName = 'Board';
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isCreatedLayerVisible();
+    await layersPanelPage.isLayerPresentOnLayersTab(layerName, true);
   });
 
   mainTest(qase(719, 'PF-1 Set square grid'), async () => {
     await designPanelPage.clickAddGridButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('square-grid-default.png');
+    await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(qase(720, 'PF-2 Square grid - change size'), async () => {
