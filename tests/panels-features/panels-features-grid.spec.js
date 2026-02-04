@@ -38,7 +38,9 @@ mainTest.describe(() => {
   mainTest(qase(719, 'PF-1 Set square grid'), async () => {
     await designPanelPage.clickAddGridButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('square-grid-default.png');
+    await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
   });
 
   mainTest(qase(720, 'PF-2 Square grid - change size'), async () => {
@@ -47,8 +49,11 @@ mainTest.describe(() => {
     await designPanelPage.changeSizeForGrid('8');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
+    await expect(mainPage.viewport).toHaveScreenshot(
       'square-grid-changed-size.png',
+      {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      },
     );
   });
 

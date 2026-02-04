@@ -1344,7 +1344,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async createAnnotationRightClick() {
-    const layerSel = this.page.locator('div[class*="viewport"] [id^="shape"]');
+    const layerSel = this.page.getByTestId('layer-item');
     await layerSel.last().click({ button: 'right', force: true });
     await this.createAnnotationOption.click();
     await expect(this.annotationTextArea).toBeVisible();
