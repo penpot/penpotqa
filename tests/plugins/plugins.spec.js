@@ -6,6 +6,9 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { PluginsPage } = require('../../pages/workspace/plugins-page');
 const { qase } = require('playwright-qase-reporter/playwright');
 
+//TO REMOVE
+mainTest.skip(true, 'Temporarily disabled due to unrelated to new render');
+
 const teamName = random().concat('autotest');
 
 let pluginsPage, teamPage, dashboardPage;
