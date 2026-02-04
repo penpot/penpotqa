@@ -27,9 +27,7 @@ exports.BasePage = class BasePage {
     this.modalCloseButton = page.getByRole('button', { name: 'Close' });
 
     //Layer right-click menu items
-    this.createdLayer = page.locator(
-      'div[class*="viewport"] [id^="shape"] >> nth=0',
-    );
+    this.createdLayer = page.getByTestId('layer-item').first();
     this.copyLayer = page
       .locator('div[class*="viewport"] [class*="viewport-selrect"]')
       .last();

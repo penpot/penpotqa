@@ -1096,13 +1096,13 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async groupLayerViaRightClick() {
-    const layerSel = this.page.locator('div[class*="viewport"] [id^="shape"]');
+    const layerSel = this.page.getByTestId('layer-item');
     await layerSel.last().click({ button: 'right', force: true });
     await this.groupOption.click();
   }
 
   async showInAssetsPanelRightClick() {
-    const layerSel = this.page.locator('div[class*="viewport"] [id^="shape"]');
+    const layerSel = this.page.getByTestId('layer-item');
     await layerSel.last().click({ button: 'right', force: true });
     await this.showInAssetsPanelOption.click();
   }
