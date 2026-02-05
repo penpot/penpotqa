@@ -66,7 +66,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-layout.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
       await designPanelPage.openGridEditModeFromDesignPanel();
@@ -74,7 +74,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-edit-mode.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment],
+          mask: await mainPage.maskViewport(true),
         },
       );
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
@@ -94,7 +94,7 @@ mainTest.describe(() => {
       await mainPage.addColumnsGridLayout(30);
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-3-30.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment],
+        mask: await mainPage.maskViewport(true),
       });
       await expect(mainPage.columnsRowsOnDesignPanel).toHaveScreenshot(
         'lot-1fr-columns.png',
@@ -145,8 +145,11 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.changeLayoutAlignment('Center', false);
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-alignment-center.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
     },
   );
@@ -173,7 +176,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-paddings.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment],
+          mask: await mainPage.maskViewport(true),
         },
       );
       await mainPage.waitForChangeIsSaved();
@@ -184,8 +187,11 @@ mainTest.describe(() => {
       await designPanelPage.clickGridDoneButton();
       await designPanelPage.changeLayoutJustification('Space between', false);
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-justify-space-between.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.checkLayoutJustification('Space between', false);
