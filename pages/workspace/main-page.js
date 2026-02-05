@@ -29,6 +29,9 @@ exports.MainPage = class MainPage extends BasePage {
       .getByTestId('viewport')
       .locator('[class*="viewport-controls cursor-pen drawing"]');
 
+    //Grid editor Toolbar
+    this.gridEditorToolBar = page.getByText('Editing grid').locator('..');
+
     //Viewport
     this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
     this.guides = page.locator('.guides .new-guides');
@@ -199,6 +202,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.deletePageOkButton = page.getByRole('button', { name: 'Ok' });
 
     // Bottom palette
+    this.bottomPaletteToolBar = page.locator('.main_ui_workspace_palette__palettes');
     this.typographyButton = page.getByRole('button', { name: 'Typographies' });
     this.bottomPaletteContentBlock = page.locator(
       'div[class="main_ui_workspace_palette__palette"]',
@@ -1317,5 +1321,18 @@ exports.MainPage = class MainPage extends BasePage {
     visible
       ? await expect(this.cornerHandle).toBeVisible()
       : await expect(this.cornerHandle).not.toBeVisible();
+  }
+
+  async maskViewport(gridEditorToolbar = false) {
+    const maskLocatorsList = [
+      this.guides,
+      this.guidesFragment,
+      this.toolBarWindow,
+      this.bottomPaletteToolBar,
+    ];
+    if (gridEditorToolbar) {
+      maskLocatorsList.push(this.gridEditorToolBar);
+    }
+    return maskLocatorsList;
   }
 };
