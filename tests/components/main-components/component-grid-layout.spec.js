@@ -63,7 +63,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'empty-board-component-with-grid-layout.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(true),
       },
     );
   });
@@ -85,7 +85,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-px-row.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment],
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
         },
       );
     },
@@ -137,7 +137,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-component-with-grid-layout-main-restore.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(true),
       },
     );
   });
@@ -203,7 +203,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-from-library-file.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
 
@@ -217,7 +217,7 @@ mainTest.describe(() => {
       await expect(newMainPage.viewport).toHaveScreenshot(
         'board-component-on-first-file.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
     },
@@ -255,10 +255,10 @@ mainTest.describe(() => {
       await mainPage.copyLayerViaRightClick();
       await mainPage.pressPasteShortcut(browserName);
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-copy-paste.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
@@ -273,7 +273,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-with-rectangle.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
     },
@@ -286,7 +286,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-duplicated.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
       await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
@@ -322,7 +322,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-main-updated.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
     },
@@ -373,7 +373,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-detach-instance.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
