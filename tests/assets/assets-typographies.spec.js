@@ -74,7 +74,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'apply-typography-to-text_from_assets.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
       await assetsPanelPage.editFileLibraryTypography();
@@ -98,7 +98,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'edited-typography-to-text_from_assets.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
     },
