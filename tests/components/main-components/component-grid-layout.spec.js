@@ -203,7 +203,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-from-library-file.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: await mainPage.maskViewport(true),
         },
       );
 
@@ -217,7 +217,7 @@ mainTest.describe(() => {
       await expect(newMainPage.viewport).toHaveScreenshot(
         'board-component-on-first-file.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: await mainPage.maskViewport(true),
         },
       );
     },
