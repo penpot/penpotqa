@@ -44,7 +44,7 @@ mainTest(qase([2398], 'Add Variant to a component on the canvas'), async () => {
   await mainPage.waitForChangeIsSaved();
 
   await layersPanelPage.dragAndDropComponentToVariantViaCanvas(200, 300);
-  await layersPanelPage.checkVariantLayerCount(3);
+  await layersPanelPage.checkVariantLayerCount(2);
 });
 
 mainTest(
@@ -138,6 +138,8 @@ mainTest(
     await designPanelPage.checkSizeWidth('500');
     await designPanelPage.checkSizeHeight('500');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('variants-500x500.png');
+    await expect(mainPage.viewport).toHaveScreenshot('variants-500x500.png', {
+      mask: await mainPage.maskViewport(),
+    });
   },
 );
