@@ -111,7 +111,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-on-page2.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
     },
@@ -154,7 +154,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-blue-color.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
       await mainPage.clickViewportOnce();
@@ -162,7 +162,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-undo-color.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
       await layersPanelPage.deleteMainComponentViaRightClick();
@@ -172,7 +172,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-restored.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
     },
@@ -207,9 +207,9 @@ mainTest.describe(() => {
         },
       );
 
-      //const popupPromise = page.waitForEvent('popup');
+      const popupPromise = page.waitForEvent('popup');
       await mainPage.showMainComponentViaRightClick();
-      //const newPage = await popupPromise;
+      const newPage = await popupPromise;
       const newMainPage = new MainPage(newPage);
       await newMainPage.waitForViewportVisible();
       await newMainPage.isCopyLayerVisible();
@@ -339,7 +339,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-main-show.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
     },
@@ -356,7 +356,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-reset-overrides.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(true),
         },
       );
     },
