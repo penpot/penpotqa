@@ -71,8 +71,11 @@ mainTest.describe(() => {
 
       await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
       await designPanelPage.checkGeneralCornerRadius(radiusToken.value);
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-border-radius-1.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
       await tokensPage.tokensComp.isMenuItemWithNameSelected(
         radiusToken.name,
@@ -107,8 +110,11 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.checkGeneralCornerRadius(updatedTokenData.value);
       await tokensPage.tokensComp.isTokenAppliedWithName(updatedTokenData.name);
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-border-radius-20.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
       await tokensPage.tokensComp.checkAppliedTokenTitle(
         'Token: border-radius\n' + 'Original value: 20\n' + 'Resolved value: 20',
@@ -149,7 +155,9 @@ mainTest(
     await tokensPage.tokensComp.clickOnTokenWithName(opacityToken.name);
     await mainPage.waitForChangeIsSaved();
     await tokensPage.tokensComp.isTokenAppliedWithName(opacityToken.name);
-    await expect(mainPage.createdLayer).toHaveScreenshot('image-opacity-0-7.png');
+    await expect(mainPage.viewport).toHaveScreenshot('image-opacity-0-7.png', {
+      mask: await mainPage.maskViewport(),
+    });
     await tokensPage.tokensComp.isMenuItemWithNameSelected(
       opacityToken.name,
       'Opacity',
@@ -180,7 +188,9 @@ mainTest(
     await designPanelPage.checkRotationForLayer(tokenResolvedValue);
     browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('text-rotated-315.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-315.png', {
+      mask: await mainPage.maskViewport(),
+    });
     await tokensPage.tokensComp.isMenuItemWithNameSelected(
       rotationToken.name,
       'Rotation',
@@ -210,9 +220,9 @@ mainTest(
     await tokensPage.tokensComp.selectMenuItem(sizingToken.name, 'Min Height');
     await mainPage.waitForChangeIsSaved();
     await tokensPage.tokensComp.isTokenAppliedWithName(sizingToken.name);
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'image-max-min-size-200.png',
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('image-max-min-size-200.png', {
+      mask: await mainPage.maskViewport(),
+    });
     await mainPage.createDefaultBoardByCoordinates(100, 200, true);
     await designPanelPage.changeHeightAndWidthForLayer('600', '600');
     await mainPage.addFlexLayoutViaRightClick();
@@ -223,8 +233,11 @@ mainTest(
     await designPanelPage.clickOnFlexElementWidth100Btn();
     await designPanelPage.clickOnFlexElementHeight100Btn();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
+    await expect(mainPage.viewport).toHaveScreenshot(
       'image-on-board-max-min-size-200.png',
+      {
+        mask: await mainPage.maskViewport(),
+      },
     );
     await designPanelPage.checkFlexElementMinMax('Width', false, sizingToken.value);
     await designPanelPage.checkFlexElementMinMax('Height', true, sizingToken.value);
@@ -267,7 +280,9 @@ mainTest(
     await tokensPage.tokensComp.isTokenAppliedWithName(spacingToken.name);
     await designPanelPage.checkRowGap(spacingToken.value);
     await designPanelPage.checkColumnGap(spacingToken.value);
-    await expect(mainPage.createdLayer).toHaveScreenshot('board-spacing-20.png');
+    await expect(mainPage.viewport).toHaveScreenshot('board-spacing-20.png', {
+      mask: await mainPage.maskViewport(),
+    });
     await tokensPage.tokensComp.isAllMenuItemWithSectionNameSelected(
       spacingToken.name,
       'Gaps',
@@ -296,9 +311,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await tokensPage.tokensComp.isTokenAppliedWithName(strokeToken.name);
     await designPanelPage.checkStrokeWidth(strokeToken.value);
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'path-stroke-width-5-5.png',
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('path-stroke-width-5-5.png', {
+      mask: await mainPage.maskViewport(),
+    });
     await tokensPage.tokensComp.isMenuItemWithNameSelected(
       strokeToken.name,
       'Stroke Width',
@@ -451,7 +466,9 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
     await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.createdLayer).toHaveScreenshot('text-font-size-60.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-font-size-60.png', {
+      mask: await mainPage.maskViewport(),
+    });
   });
 
   mainTest(qase(2360, 'Detachment font size token'), async ({ browserName }) => {
