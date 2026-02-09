@@ -85,7 +85,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-px-row.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: await mainPage.maskViewport(true),
         },
       );
     },
