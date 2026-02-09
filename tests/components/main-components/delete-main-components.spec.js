@@ -50,6 +50,9 @@ mainTest(qase([1456], 'Delete component Assets tab'), async () => {
   await assetsPanelPage.selectTypeFromAllAssetsDropdown('Components');
   await expect(assetsPanelPage.assetsTitleText).toHaveScreenshot(
     'assets-component-delete.png',
+    {
+      mask: await mainPage.maskViewport(),
+    },
   );
 });
 
