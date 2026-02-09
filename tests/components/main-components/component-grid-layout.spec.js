@@ -85,7 +85,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-px-row.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -111,7 +111,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-on-page2.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -154,7 +154,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-blue-color.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
       await mainPage.clickViewportOnce();
@@ -162,7 +162,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-undo-color.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
       await layersPanelPage.deleteMainComponentViaRightClick();
@@ -172,7 +172,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-restored.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -203,7 +203,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-from-library-file.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
 
@@ -217,7 +217,7 @@ mainTest.describe(() => {
       await expect(newMainPage.viewport).toHaveScreenshot(
         'board-component-on-first-file.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -263,6 +263,9 @@ mainTest.describe(() => {
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'copy-paste-layer.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
     },
   );
@@ -339,7 +342,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-main-show.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -356,7 +359,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-reset-overrides.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -378,6 +381,9 @@ mainTest.describe(() => {
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'detach-instance-layer.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
     },
   );
