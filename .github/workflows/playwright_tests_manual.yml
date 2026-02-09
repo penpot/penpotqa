@@ -21,6 +21,9 @@ on:
           - tests/assets
           - tests/color
           - tests/components
+          - tests/components/copy-components
+          - tests/components/main-components
+          - tests/components/variants
           - tests/composition
           - tests/dashboard
           - tests/dashboard/teams
