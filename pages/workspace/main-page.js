@@ -33,7 +33,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.gridEditorToolBar = page.getByText('Editing grid').locator('..');
 
     //Viewport
-    this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
+    this.textbox = this.viewport.getByRole('textbox').first();
     this.guides = page.locator('.guides .new-guides');
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
@@ -270,18 +270,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async typeTextFromKeyboard() {
-    await this.page.keyboard.press('H');
-    await this.page.keyboard.press('e');
-    await this.page.keyboard.press('l');
-    await this.page.keyboard.press('l');
-    await this.page.keyboard.press('o');
-    await this.page.keyboard.press('Space');
-    await this.page.keyboard.press('W');
-    await this.page.keyboard.press('o');
-    await this.page.keyboard.press('r');
-    await this.page.keyboard.press('l');
-    await this.page.keyboard.press('d');
-    await this.page.keyboard.press('!');
+    await this.page.keyboard.type('Hello world!');
   }
 
   async uploadImage(filePath) {
@@ -995,36 +984,20 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayer(browserName) {
+  async createDefaultTextLayer() {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(200, 300);
-    const platform = getPlatformName();
-    if (platform === 'darwin') {
-      await this.typeTextFromKeyboard();
-    } else if (browserName === 'webkit') {
-      await this.page.waitForTimeout(2000);
-      await this.typeTextFromKeyboard();
-    } else {
-      await expect(this.textbox).toBeVisible();
-      await this.typeText('Hello World!');
-    }
+    await expect(this.textbox).toBeVisible();
+    await this.typeTextFromKeyboard();
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayerByCoordinates(x, y, browserName) {
+  async createDefaultTextLayerByCoordinates(x, y) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
-    const platform = getPlatformName();
-    if (platform === 'darwin') {
-      await this.typeTextFromKeyboard();
-    } else if (browserName === 'webkit') {
-      await this.page.waitForTimeout(400);
-      await this.typeTextFromKeyboard();
-    } else {
-      await expect(this.textbox).toBeVisible();
-      await this.typeText('Hello World!');
-    }
+    await expect(this.textbox).toBeVisible();
+    await this.typeTextFromKeyboard();
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }

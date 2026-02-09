@@ -43,7 +43,7 @@ mainTest.describe(() => {
   mainTest.beforeEach(async ({ browserName }) => {
     await mainTest.slow();
     browserName === 'webkit' ? await mainPage.waitForViewportVisible() : null;
-    await mainPage.createDefaultTextLayer(browserName);
+    await mainPage.createDefaultTextLayer();
   });
 
   mainTest(qase([377], 'Create Text(Toolbar)'), async () => {
