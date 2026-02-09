@@ -33,7 +33,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.gridEditorToolBar = page.getByText('Editing grid').locator('..');
 
     //Viewport
-    this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
+    this.textbox = this.viewport.getByRole('textbox').first();
     this.guides = page.locator('.guides .new-guides');
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
