@@ -81,7 +81,9 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.isTokenDisabledWithName('STROKE-WIDTH-10', false);
 
     await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
+    await layersPanelPage.openLayersTab();
     await mainPage.clickOnLayerOnCanvas();
+    await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
   });
 
