@@ -138,6 +138,8 @@ mainTest(
     await designPanelPage.checkSizeWidth('500');
     await designPanelPage.checkSizeHeight('500');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('variants-500x500.png');
+    await expect(mainPage.viewport).toHaveScreenshot('variants-500x500.png', {
+      mask: await mainPage.maskViewport(),
+    });
   },
 );
