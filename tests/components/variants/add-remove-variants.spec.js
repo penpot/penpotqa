@@ -44,7 +44,7 @@ mainTest(qase([2398], 'Add Variant to a component on the canvas'), async () => {
   await mainPage.waitForChangeIsSaved();
 
   await layersPanelPage.dragAndDropComponentToVariantViaCanvas(200, 300);
-  await layersPanelPage.checkVariantLayerCount(2);
+  await layersPanelPage.checkVariantLayerCount(3);
 });
 
 mainTest(
