@@ -71,7 +71,9 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
       await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
-      await expect(mainPage.createdLayer).toHaveScreenshot('board-color-red.png');
+      await expect(mainPage.viewport).toHaveScreenshot('board-color-red.png', {
+        mask: await mainPage.maskViewport(),
+      });
       await tokensPage.tokensComp.isMenuItemWithNameSelected(
         colorToken.name,
         'ColorFill',
@@ -88,7 +90,9 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
       await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
-      await expect(mainPage.createdLayer).toHaveScreenshot('board-red-stroke.png');
+      await expect(mainPage.viewport).toHaveScreenshot('board-red-stroke.png', {
+        mask: await mainPage.maskViewport(),
+      });
       await tokensPage.tokensComp.isMenuItemWithNameSelected(
         colorToken.name,
         'Stroke',
