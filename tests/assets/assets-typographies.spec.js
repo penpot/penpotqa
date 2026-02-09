@@ -71,8 +71,11 @@ mainTest.describe(() => {
       await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'apply-typography-to-text_from_assets.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
       await assetsPanelPage.editFileLibraryTypography();
       await assetsPanelPage.selectFont('Bellefair');
@@ -92,8 +95,11 @@ mainTest.describe(() => {
       await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
         'typographies-edit-typography-expanded.png',
       );
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'edited-typography-to-text_from_assets.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
     },
   );
