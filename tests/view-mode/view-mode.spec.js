@@ -656,7 +656,9 @@ mainTest.describe(() => {
       mainPage = new MainPage(oldPage);
       teamPage = new TeamPage(oldPage);
       await mainPage.waitForViewportVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('main-page-opened.png');
+      await expect(mainPage.viewport).toHaveScreenshot('main-page-opened.png', {
+        mask: await mainPage.maskViewport(),
+      });
     }
   });
 });
