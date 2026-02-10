@@ -49,7 +49,7 @@ mainTest.describe(() => {
   mainTest(qase([377], 'Create Text(Toolbar)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
   });
 
@@ -57,19 +57,27 @@ mainTest.describe(() => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('text-rotated-90.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-90.png', {
+      mask: await mainPage.maskViewport(),
+    });
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('text-rotated-120.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-120.png', {
+      mask: await mainPage.maskViewport(),
+    });
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('text-rotated-45.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-45.png', {
+      mask: await mainPage.maskViewport(),
+    });
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('text-rotated-359.png');
+    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-359.png', {
+      mask: await mainPage.maskViewport(),
+    });
   });
 
   mainTest(
@@ -81,22 +89,25 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-drop-shadow-default.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
       await designPanelPage.hideShadow();
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow-hide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'text-drop-shadow-default.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
+      );
       await designPanelPage.unhideShadow();
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-drop-shadow-unhide.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
@@ -105,7 +116,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-inner-shadow-default.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
       await designPanelPage.removeShadow();
@@ -130,7 +141,7 @@ mainTest.describe(() => {
     browserName === 'webkit' ? await mainPage.waitForChangeIsUnsaved() : null;
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
     await designPanelPage.selectTypeForShadow('Inner shadow');
     await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
@@ -139,7 +150,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
   });
 
@@ -151,25 +162,25 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text-blur-default.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
     await designPanelPage.hideBlur();
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text-blur-hide.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
     await designPanelPage.unhideBlur();
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text-blur-unhide.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
     await designPanelPage.removeBlur();
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
   });
 
@@ -179,7 +190,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text-blur.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
   });
 
@@ -188,7 +199,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-stroke-default.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
     await mainPage.clickOnLayerOnCanvas();
     await designPanelPage.changeStrokeSettings('#43E50B', '60', '10', 'Inside');
@@ -197,7 +208,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'text-stroke-inside-dotted.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await mainPage.clickOnLayerOnCanvas();
@@ -207,7 +218,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'text-stroke-outside-dashed.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await mainPage.clickOnLayerOnCanvas();
@@ -217,7 +228,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'text-stroke-center-solid.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await mainPage.clickOnLayerOnCanvas();
@@ -227,7 +238,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'text-stroke-center-mixed.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await mainPage.clickOnLayerOnCanvas();
@@ -235,7 +246,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text-stroke-remove.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
   });
 
@@ -263,13 +274,19 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.changeTextCase('Upper');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot('text-upper-case.png');
+      await expect(mainPage.viewport).toHaveScreenshot('text-upper-case.png', {
+        mask: await mainPage.maskViewport(),
+      });
       await designPanelPage.changeTextCase('Title');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot('text-title-case.png');
+      await expect(mainPage.viewport).toHaveScreenshot('text-title-case.png', {
+        mask: await mainPage.maskViewport(),
+      });
       await designPanelPage.changeTextCase('Lower');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot('text-lower-case.png');
+      await expect(mainPage.viewport).toHaveScreenshot('text-lower-case.png', {
+        mask: await mainPage.maskViewport(),
+      });
     },
   );
 
@@ -279,19 +296,19 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-align-middle.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
     await designPanelPage.changeTextAlignment('Bottom');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-align-bottom.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
     await designPanelPage.changeTextAlignment('Top');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-align-top.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
   });
 
@@ -299,13 +316,13 @@ mainTest.describe(() => {
     await designPanelPage.changeTextDirection('RTL');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-rtl.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
       maxDiffPixels: 30,
     });
     await designPanelPage.changeTextDirection('LTR');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-ltr.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
       maxDiffPixels: 40,
     });
   });
@@ -319,14 +336,14 @@ mainTest.describe(() => {
       await mainPage.clickMoveButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-fill-opacity.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       });
       await inspectPanelPage.openInspectTab();
       await inspectPanelPage.openComputedTab();
       await expect(inspectPanelPage.textBlockOnInspect).toHaveScreenshot(
         'inspect-text-block-color.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -336,7 +353,7 @@ mainTest.describe(() => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-to-board.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
   });
 });
