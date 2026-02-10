@@ -178,7 +178,7 @@ mainTest(
     };
     const tokenResolvedValue = '315'; // 315 == -45 == -(22.5+22.5)
 
-    await mainPage.createDefaultTextLayerByCoordinates(320, 210, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(320, 210);
     await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(rotationToken);
     await tokensPage.tokensComp.isTokenVisibleWithName(rotationToken.name);
@@ -339,7 +339,6 @@ mainTest(
     await mainPage.createDefaultTextLayerByCoordinates(
       parseInt(defaultX),
       parseInt(defaultY),
-      browserName,
     );
     await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionToken);
@@ -446,11 +445,11 @@ mainTest.describe(() => {
     description: '120',
   };
 
-  mainTest.beforeEach(async ({ page, browserName }) => {
+  mainTest.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
 
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
     await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontSizeToken);
     await tokensPage.tokensComp.isTokenVisibleWithName(fontSizeToken.name);
@@ -470,11 +469,11 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(2360, 'Detachment font size token'), async ({ browserName }) => {
+  mainTest(qase(2360, 'Detachment font size token'), async () => {
     await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
     await mainPage.waitForChangeIsSaved();
     await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
-    await mainPage.createDefaultTextLayerByCoordinates(100, 600, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(100, 600);
     await mainPage.waitForChangeIsSaved();
     await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
     await mainPage.waitForChangeIsSaved();
@@ -525,7 +524,7 @@ mainTest(
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken2);
     await tokensPage.tokensComp.isTokenVisibleWithName(colorToken2.name);
 
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await tokensPage.tokensComp.clickOnTokenWithName(colorToken1.name);
@@ -593,12 +592,12 @@ mainTest.describe(() => {
     value: 'Inter',
   };
 
-  mainTest.beforeEach(async ({ page, browserName }) => {
+  mainTest.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
 
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
     await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.createTokenViaAddButtonAndSave(fontFamilyToken);
     await tokensPage.tokensComp.isTokenVisibleWithName(fontFamilyToken.name);
@@ -644,13 +643,13 @@ mainTest.describe(() => {
   let designPanelPage: DesignPanelPage;
   let layersPanelPage: LayersPanelPage;
 
-  mainTest.beforeEach(async ({ page, browserName }) => {
+  mainTest.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
     layersPanelPage = new LayersPanelPage(page);
 
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
     await designPanelPage.changeTextFont('Source Sans Pro');
     await designPanelPage.changeTextFontStyle('400');
     await designPanelPage.changeTextFontSize('9');
@@ -782,13 +781,13 @@ mainTest.describe(() => {
   };
   const newTokenValue = '5';
 
-  mainTest.beforeEach(async ({ page, browserName }) => {
+  mainTest.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
     assetsPanelPage = new AssetsPanelPage(page);
 
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
     await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.createTokenViaAddButtonAndSave(letterSpacingToken);
     await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
@@ -1029,7 +1028,7 @@ mainTest(
     2492,
     'Apply a Number token (Line Height) and override value from Design tab',
   ),
-  async ({ page, browserName }) => {
+  async ({ page }) => {
     const mainPage: MainPage = new MainPage(page);
     const tokensPage: TokensPage = new TokensPage(page);
     const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
@@ -1041,7 +1040,7 @@ mainTest(
     };
     const newTokenValue = '1';
 
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
     await tokensPage.clickTokensTab();
 
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
@@ -1153,12 +1152,12 @@ mainTest.describe(() => {
     value: 'strike-through',
   };
 
-  mainTest.beforeEach(async ({ page, browserName }) => {
+  mainTest.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
 
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
     await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.createTokenViaAddButtonAndSave(decorationToken);
     await tokensPage.tokensComp.isTokenVisibleWithName(decorationToken.name);
