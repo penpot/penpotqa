@@ -105,14 +105,14 @@ mainTest.describe(() => {
 
     mainTest(
       qase([1973], 'Copy paste properties into 3 different layers'),
-      async ({ browserName }) => {
+      async () => {
         await mainPage.copyLayerPropertyViaRightClick();
 
         await mainPage.clickAddPageButton();
         await mainPage.clickOnPageOnLayersPanel(false);
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
         await mainPage.createDefaultBoardByCoordinates(300, 300, true);
-        await mainPage.createDefaultTextLayerByCoordinates(500, 500, browserName);
+        await mainPage.createDefaultTextLayerByCoordinates(500, 500);
         await mainPage.clickMainMenuButton();
         await mainPage.clickEditMainMenuItem();
         await mainPage.clickSelectAllMainMenuSubItem();
@@ -202,22 +202,19 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase([1978], 'Copy paste typography property'),
-    async ({ browserName }) => {
-      await mainPage.createDefaultTextLayerByCoordinates(100, 100, browserName);
-      await assetsPanelPage.selectFont('Sofia');
-      await assetsPanelPage.selectFontSize('20');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickShortcutCtrlAltC();
+  mainTest(qase([1978], 'Copy paste typography property'), async () => {
+    await mainPage.createDefaultTextLayerByCoordinates(100, 100);
+    await assetsPanelPage.selectFont('Sofia');
+    await assetsPanelPage.selectFontSize('20');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickShortcutCtrlAltC();
 
-      await mainPage.createDefaultTextLayerByCoordinates(500, 500, browserName);
-      await mainPage.clickShortcutCtrlAltV();
+    await mainPage.createDefaultTextLayerByCoordinates(500, 500);
+    await mainPage.clickShortcutCtrlAltV();
 
-      await assetsPanelPage.checkFont('Sofia');
-      await assetsPanelPage.checkFontSize('20');
-    },
-  );
+    await assetsPanelPage.checkFont('Sofia');
+    await assetsPanelPage.checkFontSize('20');
+  });
 
   mainTest(
     qase(
