@@ -381,9 +381,6 @@ mainTest.describe(() => {
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'detach-instance-layer.png',
-        {
-          mask: await mainPage.maskViewport(),
-        },
       );
     },
   );
