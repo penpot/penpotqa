@@ -68,25 +68,24 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
   });
 
-  mainTest(
-    qase(2382, 'Text layer: Check active tokens in token list'),
-    async ({ browserName }) => {
-      await tokensPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
-      await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', true);
-      await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
-      await tokensPage.tokensComp.isTokenDisabledWithName('STROKE-WIDTH-10', false);
+  mainTest(qase(2382, 'Text layer: Check active tokens in token list'), async () => {
+    await tokensPage.createDefaultTextLayerByCoordinates(100, 200);
+    await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', true);
+    await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
+    await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
+    await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', false);
+    await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
+    await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+    await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
+    await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
+    await tokensPage.tokensComp.isTokenDisabledWithName('STROKE-WIDTH-10', false);
 
-      await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
-      await mainPage.clickOnLayerOnCanvas();
-      await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
-    },
-  );
+    await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
+    await layersPanelPage.openLayersTab();
+    await mainPage.clickOnLayerOnCanvas();
+    await tokensPage.clickTokensTab();
+    await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
+  });
 
   mainTest(
     qase(2383, 'Board (in root): Check active tokens in token list'),

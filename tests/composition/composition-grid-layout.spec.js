@@ -617,8 +617,8 @@ mainTest.describe(() => {
       [1715],
       'Create a board with Grid Layout - add grid lines, check edit mode and add the text',
     ),
-    async ({ browserName }) => {
-      await mainPage.createDefaultTextLayerByCoordinates(500, 500, browserName);
+    async () => {
+      await mainPage.createDefaultTextLayerByCoordinates(500, 500);
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
       await mainPage.waitForChangeIsUnsaved();
