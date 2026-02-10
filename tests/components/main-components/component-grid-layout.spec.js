@@ -60,8 +60,11 @@ mainTest.describe(() => {
   mainTest(qase([1717], 'Create a component from empty Grid Board'), async ({}) => {
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
+    await expect(mainPage.viewport).toHaveScreenshot(
       'empty-board-component-with-grid-layout.png',
+      {
+        mask: await mainPage.maskViewport(),
+      },
     );
   });
 
@@ -82,7 +85,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-px-row.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment],
+          mask: await mainPage.maskViewport(true),
         },
       );
     },
@@ -105,8 +108,11 @@ mainTest.describe(() => {
       await mainPage.isPageNameSelected('Page 1', false);
       await mainPage.isPageNameSelected('Page 2', true);
       await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Board');
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-on-page2.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
     },
   );
@@ -131,7 +137,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-component-with-grid-layout-main-restore.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
   });
@@ -148,20 +154,26 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-blue-color.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
       await mainPage.clickViewportOnce();
       await mainPage.clickShortcutCtrlZ(browserName);
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-undo-color.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
       await layersPanelPage.deleteMainComponentViaRightClick();
       await mainPage.isCreatedLayerVisible(false);
       await mainPage.clickShortcutCtrlZ(browserName);
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-restored.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
     },
   );
@@ -188,8 +200,11 @@ mainTest.describe(() => {
       await assetsPanelPage.clickLibraryComponentsTitle();
       await assetsPanelPage.dragAndDropComponentToViewport('Board');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'board-from-library-file.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
 
       const popupPromise = page.waitForEvent('popup');
@@ -202,7 +217,7 @@ mainTest.describe(() => {
       await expect(newMainPage.viewport).toHaveScreenshot(
         'board-component-on-first-file.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await newMainPage.maskViewport(),
         },
       );
     },
@@ -240,11 +255,17 @@ mainTest.describe(() => {
       await mainPage.copyLayerViaRightClick();
       await mainPage.pressPasteShortcut(browserName);
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-copy-paste.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'copy-paste-layer.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
     },
   );
@@ -252,8 +273,11 @@ mainTest.describe(() => {
   mainTest(
     qase([1719], 'Create a component from grid board with some element inside'),
     async ({}) => {
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-with-rectangle.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
     },
   );
@@ -265,7 +289,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-duplicated.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
       await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
@@ -301,7 +325,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-main-updated.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -318,7 +342,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-main-show.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -335,7 +359,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-reset-overrides.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -352,7 +376,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-detach-instance.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(

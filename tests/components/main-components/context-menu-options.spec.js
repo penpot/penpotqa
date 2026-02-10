@@ -138,7 +138,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-rectangle-duplicated-canvas.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
   });
@@ -148,7 +148,7 @@ mainTest.describe(() => {
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.showFileLibraryMainComponent();
     await expect(mainPage.viewport).toHaveScreenshot('component-show-main.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
   });
 
@@ -164,7 +164,7 @@ mainTest.describe(() => {
       await designPanelPage.addAnnotationForComponent(annotation);
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.isComponentTypeCopy(true);
+      await designPanelPage.isComponentTypeCopy();
       await designPanelPage.isAnnotationAddedToComponent(annotation);
       await inspectPanelPage.openInspectTab();
       await inspectPanelPage.openComputedTab();
@@ -242,12 +242,12 @@ mainTest.describe(() => {
       await designPanelPage.changeAxisXAndYForLayer('200', '0');
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.isAnnotationOptionNotVisibleRightClick();
-      await designPanelPage.isComponentTypeCopy(true);
+      await designPanelPage.isComponentTypeCopy();
       await designPanelPage.isAnnotationNotAddedToComponent();
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.isAnnotationOptionNotVisible();
-      await designPanelPage.isComponentTypeCopy(true);
+      await designPanelPage.isComponentTypeCopy();
       await designPanelPage.isAnnotationNotAddedToComponent();
     },
   );
@@ -266,7 +266,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'ellipse-complex-component-canvas.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Component 1');
@@ -296,7 +296,7 @@ mainTest(
     await layersPanelPage.openLayersTab();
     await layersPanelPage.isLayerNameDisplayed(groupName + ' / Board');
     await expect(mainPage.viewport).toHaveScreenshot('component-group-canvas.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: await mainPage.maskViewport(),
     });
   },
 );
@@ -312,7 +312,7 @@ mainTest(qase([1453], 'Rename component with valid name'), async () => {
   await mainPage.waitForChangeIsSaved();
   await layersPanelPage.openLayersTab();
   await expect(mainPage.viewport).toHaveScreenshot('component-new-name-canvas.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: await mainPage.maskViewport(),
   });
   await layersPanelPage.isLayerNameDisplayed(newName);
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
@@ -345,7 +345,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-show-main.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
   });
@@ -358,7 +358,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-reset-overrides.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
   });
@@ -399,7 +399,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-color-reset-overrides.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -416,7 +416,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-component-restore-main.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
   });
@@ -431,7 +431,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-detach-instance-right-click.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
   });
@@ -447,7 +447,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-detach-instance-right-click.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
   });
@@ -474,7 +474,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-reset-overrides.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
   });
@@ -535,7 +535,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-color-update-component.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -572,7 +572,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-color.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
     },
