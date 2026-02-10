@@ -325,9 +325,6 @@ mainTest(qase([1751], 'Grouping component copies'), async () => {
   await layersPanelPage.expandGroupOnLayersTab();
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
     'copy-components-group-layers.png',
-    {
-      mask: await mainPage.maskViewport(),
-    },
   );
 });
 

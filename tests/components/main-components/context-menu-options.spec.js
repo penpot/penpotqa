@@ -76,9 +76,6 @@ mainTest.describe(() => {
     await designPanelPage.isAnnotationAddedToComponent(annotation);
     await expect(designPanelPage.componentBlockOnDesignTab).toHaveScreenshot(
       'component-annotation.png',
-      {
-        mask: await mainPage.maskViewport(),
-      },
     );
   });
 
