@@ -88,6 +88,9 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-main-component-canvas.png',
+      {
+        mask: await mainPage.maskViewport(),
+      },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
   },
