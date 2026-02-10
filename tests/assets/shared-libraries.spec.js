@@ -54,7 +54,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-shared-library.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
       await assetsPanelPage.clickAssetsTab();
@@ -117,7 +117,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-shared-library.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -138,7 +138,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-unpublished-shared-library.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -162,7 +162,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-unpublished-shared-library.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
       await assetsPanelPage.clickAssetsTab();
@@ -197,7 +197,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-publish-shared-library-few-files.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -299,14 +299,20 @@ mainTest.describe(() => {
 
       await dashboardPage.openFileWithName('New File 2');
       await assetsPanelPage.clickAssetsTab();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'unpublish-shared-library-component-file2.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
       await mainPage.clickPencilBoxButton();
       await dashboardPage.openFileWithName('New File 3');
       await assetsPanelPage.clickAssetsTab();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'unpublish-shared-library-component-file3.png',
+        {
+          mask: await mainPage.maskViewport(),
+        },
       );
     },
   );
@@ -324,7 +330,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-publish-shared-library-2-files.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -378,7 +384,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-publish-update-library-1-file.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -436,7 +442,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-1.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -478,7 +484,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-1.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
       await assetsPanelPage.clickAssetsTab();
@@ -490,30 +496,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-2.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        },
-      );
-    },
-  );
-
-  mainTest(
-    qase(
-      [1362],
-      'Closing Updates pop-up on "More info" stage (changes are not applied)',
-    ),
-    async () => {
-      await dashboardPage.openFileWithName('New File 2');
-      await mainPage.isWrapperMessageVisible();
-      await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(
-        'wrapper-message.png',
-      );
-      await assetsPanelPage.clickLibrariesMoreInfoButton();
-      await assetsPanelPage.isLibrariesUpdateButtonVisible();
-      await assetsPanelPage.clickCloseModalButton();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'component-publish-update-file2-3.png',
-        {
-          mask: [mainPage.toolBarWindow, mainPage.guides],
+          mask: await mainPage.maskViewport(),
         },
       );
     },
@@ -536,7 +519,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-publish-update-library-1-file.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: await mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -599,13 +582,13 @@ mainTest.describe(() => {
 
       await dashboardPage.openFileWithName('New File 2');
       await mainPage.waitForViewportVisible();
+
       await expect(mainPage.viewport).toHaveScreenshot(
         'library-without-library-viewport.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
-
       await mainPage.clickPencilBoxButton();
       await dashboardPage.isHeaderDisplayed('Projects');
 
@@ -614,7 +597,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'library-without-library-viewport2.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: await mainPage.maskViewport(),
         },
       );
     },

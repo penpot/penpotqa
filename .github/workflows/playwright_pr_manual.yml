@@ -11,6 +11,7 @@ on:
           - 'all_tests'
           - 'changed_only'
           - 'by_folder'
+          - 'by_spec'
         default: 'changed_only'
       test_folder:
         description: 'Test folder (only if you select "by_folder")'
@@ -21,6 +22,9 @@ on:
           - tests/assets
           - tests/color
           - tests/components
+          - tests/components/copy-components
+          - tests/components/main-components
+          - tests/components/variants
           - tests/composition
           - tests/dashboard
           - tests/dashboard/teams
@@ -35,6 +39,10 @@ on:
           - tests/ui-theme
           - tests/view-mode
         default: 'tests/login-signup'
+      test_spec:
+        description: 'Test spec path (only if you select "by_spec", e.g., tests/login-signup/login.spec.ts)'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -96,6 +104,10 @@ jobs:
               fi
               npx playwright test --project=chrome "${{ github.event.inputs.test_folder }}"
               ;;
+            "by_spec")
+              echo "📄 Running test spec: ${{ github.event.inputs.test_spec }}"
+              npx playwright test --project=chrome "${{ github.event.inputs.test_spec }}"
+              ;;
             *)
               echo "❌ Error: Invalid test mode"
               exit 1
@@ -119,7 +131,7 @@ jobs:
         with:
           mattermost-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_PR }}
           browser-name: 'Chrome'
-          folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || '' }}
+          folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || github.event.inputs.test_mode == 'by_spec' && github.event.inputs.test_spec || '' }}
           is-manual-execution: 'true'
           username: ${{ github.actor }}
         if: always()
