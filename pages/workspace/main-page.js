@@ -265,10 +265,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.createTextButton.click({ delay: 500 });
   }
 
-  async typeText(text) {
-    await this.textbox.fill(text);
-  }
-
   async typeTextFromKeyboard() {
     await this.page.keyboard.type('Hello world!');
   }
@@ -1256,7 +1252,7 @@ exports.MainPage = class MainPage extends BasePage {
   async editTextLayer(text, browserName = 'chromium') {
     await this.doubleClickTextOnCanvas(browserName);
     await expect(this.textbox).toBeVisible();
-    await this.typeText(text);
+    await this.page.keyboard.type(text);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
@@ -1285,7 +1281,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
     await expect(this.textbox).toBeVisible();
-    await this.typeText(text);
+    await this.page.keyboard.type(text);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
