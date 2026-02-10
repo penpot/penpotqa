@@ -128,31 +128,28 @@ mainTest(
   },
 );
 
-mainTest(
-  qase([1434], 'Create component from text by right-click'),
-  async ({ browserName }) => {
-    await mainPage.createDefaultTextLayer(browserName);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'text-main-component-canvas.png',
-      {
-        mask: await mainPage.maskViewport(),
-      },
-    );
-    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Hello World!');
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-    await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-    await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
-      'text-component-asset.png',
-      {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-        maxDiffPixelRatio: 0.002,
-      },
-    );
-  },
-);
+mainTest(qase([1434], 'Create component from text by right-click'), async () => {
+  await mainPage.createDefaultTextLayer();
+  await mainPage.createComponentViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.viewport).toHaveScreenshot(
+    'text-main-component-canvas.png',
+    {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    },
+  );
+  await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Hello World!');
+  await assetsPanelPage.clickAssetsTab();
+  await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+  await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+  await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
+    'text-component-asset.png',
+    {
+      mask: [assetsPanelPage.librariesOpenModalButton],
+      maxDiffPixelRatio: 0.002,
+    },
+  );
+});
 
 mainTest(qase([1435], 'Create component from image by right-click'), async () => {
   await mainPage.uploadImage('images/sample.jpeg');
@@ -273,8 +270,8 @@ mainTest(
 
 mainTest(
   qase([1531], 'Create multiple components from text, board and image'),
-  async ({ browserName }) => {
-    await mainPage.createDefaultTextLayer(browserName);
+  async () => {
+    await mainPage.createDefaultTextLayer();
     await mainPage.createDefaultBoardByCoordinates(200, 400);
     await mainPage.uploadImage('images/sample.jpeg');
     await mainPage.clickViewportTwice();
