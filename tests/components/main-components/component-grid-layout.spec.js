@@ -63,7 +63,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'empty-board-component-with-grid-layout.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -85,7 +85,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-px-row.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
     },
@@ -111,7 +111,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-on-page2.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -137,7 +137,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-component-with-grid-layout-main-restore.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -154,7 +154,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-blue-color.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.clickViewportOnce();
@@ -162,7 +162,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-undo-color.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await layersPanelPage.deleteMainComponentViaRightClick();
@@ -172,7 +172,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-restored.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -203,7 +203,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-from-library-file.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
 
@@ -258,13 +258,13 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-copy-paste.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'copy-paste-layer.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -276,7 +276,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-with-rectangle.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -289,7 +289,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-duplicated.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
@@ -325,7 +325,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-main-updated.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -342,7 +342,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-main-show.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -359,7 +359,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-reset-overrides.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -376,7 +376,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-component-with-grid-layout-detach-instance.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(

@@ -70,7 +70,7 @@ mainTest.describe(() => {
     await assetsPanelPage.clickFileLibraryColorsColorBullet();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('apply-color-to-shapes.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await assetsPanelPage.editFileLibraryColor();
     await colorPalettePopUp.setHex('#00ff00');
@@ -79,7 +79,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00#00ff00');
     await expect(mainPage.viewport).toHaveScreenshot('edited-color-to-shapes.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -136,7 +136,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'apply-color-to-stroke-board.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });

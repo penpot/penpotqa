@@ -47,7 +47,7 @@ mainTest.describe(() => {
     await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
     await designPanelPage.isLayoutRemoveButtonExists();
     await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -59,7 +59,7 @@ mainTest.describe(() => {
       await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
       await designPanelPage.isLayoutRemoveButtonExists();
       await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -119,26 +119,26 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-row-reverse-direction.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeLayoutDirection('Column');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-column-direction.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeLayoutDirection('Column reverse');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-column-reverse-direction.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeLayoutDirection('Row');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-row-direction.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -150,17 +150,17 @@ mainTest.describe(() => {
     await designPanelPage.changeLayoutAlignment('Center');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-align-center.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeLayoutAlignment('End');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-align-end.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeLayoutAlignment('Start');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-align-start.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -172,19 +172,19 @@ mainTest.describe(() => {
     await designPanelPage.changeLayoutJustification('Center');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-justify-center.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeLayoutJustification('End');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-justify-end.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeLayoutJustification('Space between');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-justify-space-between.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeLayoutJustification('Space around');
@@ -192,7 +192,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-justify-space-around.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeLayoutJustification('Space evenly');
@@ -200,13 +200,13 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-justify-space-evenly.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeLayoutJustification('Start');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-justify-start.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -218,17 +218,17 @@ mainTest.describe(() => {
     await designPanelPage.changeLayoutColumnGap('5');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-column-gap-5.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeLayoutColumnGap('15');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-column-gap-15.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeLayoutColumnGap('0');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-column-gap-0.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -242,17 +242,17 @@ mainTest.describe(() => {
     await designPanelPage.changeLayoutRowGap('5');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-row-gap-5.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeLayoutRowGap('15');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-row-gap-15.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeLayoutRowGap('0');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-row-gap-0.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -266,14 +266,14 @@ mainTest.describe(() => {
     await designPanelPage.changeLayoutPadding('Horizontal', '15');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-padding-5-15.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeLayoutPadding('Horizontal', '0');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-horizontal_padding-0.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeLayoutPadding('Vertical', '0');
@@ -281,7 +281,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-vertical_padding-0.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -300,7 +300,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-top-left-padding-10-15.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeLayoutJustification('End');
@@ -308,7 +308,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-top-left-padding-10-15-justify.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeLayoutIndependentPadding('Right', '20');
@@ -318,7 +318,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-top-left-right-padding-justify-align.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeLayoutIndependentPadding('Bottom', '25');
@@ -326,7 +326,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-top-left-right-bottom-padding.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -342,20 +342,20 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'flex-element-align-center.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeFlexElementAlignment('End');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('flex-element-align-end.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeFlexElementAlignment('Start');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'flex-element-align-start.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -373,7 +373,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'flex-element-margin-10-25.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeFlexElementMargin('Vertical', '0');
@@ -381,7 +381,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'flex-element-margin-vert-0.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.changeFlexElementMargin('Horizontal', '0');
@@ -389,7 +389,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'flex-element-margin-horizont-0.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -416,19 +416,19 @@ mainTest.describe(() => {
     await designPanelPage.changeLayoutColumnGap('0');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('layout-padding-gap-0.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.clickLayoutVerticalPaddingField();
     await expect(mainPage.viewport).toHaveScreenshot('layout-padding-gap-0.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.clickLayoutHorizontalPaddingField();
     await expect(mainPage.viewport).toHaveScreenshot('layout-padding-gap-0.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.clickLayoutColumnGapField();
     await expect(mainPage.viewport).toHaveScreenshot('layout-padding-gap-0.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -439,7 +439,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'layout-column-gap-highlighted.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -456,7 +456,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'flex-element-position-absolute.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
