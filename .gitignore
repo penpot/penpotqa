@@ -109,6 +109,8 @@ testResults.json
 # MCP configuration
 mcp.json
 
+# Agents configuration
+.agents/
 
 # ===========================================
 # TESTING & COVERAGE

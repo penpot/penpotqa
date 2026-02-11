@@ -63,11 +63,11 @@ mainTest.describe(() => {
 
   mainTest(
     qase([950], 'Edit Typography Asset After Applying to Element'),
-    async ({ browserName }) => {
-      await mainPage.createDefaultTextLayerByCoordinates(200, 200, browserName);
+    async () => {
+      await mainPage.createDefaultTextLayerByCoordinates(200, 200);
       await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
       await mainPage.clickViewportTwice();
-      await mainPage.createDefaultTextLayerByCoordinates(200, 400, browserName);
+      await mainPage.createDefaultTextLayerByCoordinates(200, 400);
       await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
