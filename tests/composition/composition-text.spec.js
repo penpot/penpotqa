@@ -201,6 +201,7 @@ mainTest.describe(() => {
           await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
             mask: await mainPage.maskViewport(),
           });
+          await mainPage.focusLayerViaShortcut();
         },
       );
     },
@@ -264,6 +265,7 @@ mainTest.describe(() => {
         await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
           mask: await mainPage.maskViewport(),
         });
+        await mainPage.focusLayerViaShortcut();
       });
     },
   );
