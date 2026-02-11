@@ -58,36 +58,44 @@ mainTest.describe(() => {
       await designPanelPage.changeRotationForLayer('90');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-rotated-90.png', {
         mask: await mainPage.maskViewport(),
       });
+      await mainPage.focusLayerViaShortcut();
     });
 
     await mainTest.step('Change rotation to 120', async () => {
       await designPanelPage.changeRotationForLayer('120');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-rotated-120.png', {
         mask: await mainPage.maskViewport(),
       });
+      await mainPage.focusLayerViaShortcut();
     });
 
     await mainTest.step('Change rotation to 45', async () => {
       await designPanelPage.changeRotationForLayer('45');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-rotated-45.png', {
         mask: await mainPage.maskViewport(),
       });
+      await mainPage.focusLayerViaShortcut();
     });
 
     await mainTest.step('Change rotation to 360', async () => {
       await designPanelPage.changeRotationForLayer('360');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-rotated-359.png', {
         mask: await mainPage.maskViewport(),
       });
+      await mainPage.focusLayerViaShortcut();
     });
   });
 
@@ -364,30 +372,36 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([424], 'Change text uppercase, lowercase (Design section)'),
+    qase([424], 'Change text uppercase, title case, lowercase (Design section)'),
     async () => {
       await mainTest.step('Change text case to Uppercase', async () => {
         await designPanelPage.changeTextCase('Upper');
         await mainPage.waitForChangeIsSaved();
+        await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-upper-case.png', {
           mask: await mainPage.maskViewport(),
         });
+        await mainPage.focusLayerViaShortcut();
       });
 
       await mainTest.step('Change to text case to Title Case', async () => {
         await designPanelPage.changeTextCase('Title');
         await mainPage.waitForChangeIsSaved();
+        await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-title-case.png', {
           mask: await mainPage.maskViewport(),
         });
+        await mainPage.focusLayerViaShortcut();
       });
 
       await mainTest.step('Change to text case to Lower Case', async () => {
         await designPanelPage.changeTextCase('Lower');
         await mainPage.waitForChangeIsSaved();
+        await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-lower-case.png', {
           mask: await mainPage.maskViewport(),
         });
+        await mainPage.focusLayerViaShortcut();
       });
     },
   );
