@@ -39,7 +39,7 @@ mainTest.describe(() => {
     await designPanelPage.clickAddGridButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -52,7 +52,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'square-grid-changed-size.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -67,7 +67,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'square-grid-changed-opacity.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -82,7 +82,7 @@ mainTest.describe(() => {
     await designPanelPage.clickUseDefaultGridButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -92,17 +92,17 @@ mainTest.describe(() => {
       await designPanelPage.clickAddGridButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await designPanelPage.clickHideGridButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('square-grid-hide.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await designPanelPage.clickUnhideGridButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('square-grid-unhide.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -111,21 +111,21 @@ mainTest.describe(() => {
     await designPanelPage.clickAddGridButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickMainMenuButton();
     await mainPage.clickViewMainMenuItem();
     await mainPage.clickHideGridsMainMenuSubItem();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-grid-hide.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickMainMenuButton();
     await mainPage.clickViewMainMenuItem();
     await mainPage.clickShowGridsMainMenuSubItem();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-grid-unhide.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -135,7 +135,7 @@ mainTest.describe(() => {
     await designPanelPage.clickRemoveGridButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-without-grid.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -144,7 +144,7 @@ mainTest.describe(() => {
     await designPanelPage.selectGridType('Columns');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -158,7 +158,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'columns-grid-changed-columns.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -176,7 +176,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'columns-grid-changed-width.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -186,21 +186,21 @@ mainTest.describe(() => {
     await designPanelPage.selectGridType('Columns');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.clickGridActionsButton();
     await designPanelPage.changeOpacityForGrid('50');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('columns-grid-opacity-50.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeOpacityForGrid('100');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'columns-grid-opacity-100.png',
-      { mask: await mainPage.maskViewport() },
+      { mask: mainPage.maskViewport() },
     );
   });
 
@@ -214,7 +214,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -225,17 +225,17 @@ mainTest.describe(() => {
       await designPanelPage.selectGridType('Columns');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await designPanelPage.clickHideGridButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('columns-grid-hide.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await designPanelPage.clickUnhideGridButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('columns-grid-unhide.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -247,7 +247,7 @@ mainTest.describe(() => {
     await designPanelPage.clickRemoveGridButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-without-grid.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -256,7 +256,7 @@ mainTest.describe(() => {
     await designPanelPage.selectGridType('Rows');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -268,7 +268,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-changed-rows.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -285,7 +285,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'rows-grid-changed-height.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -295,20 +295,20 @@ mainTest.describe(() => {
     await designPanelPage.selectGridType('Rows');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.clickGridActionsButton();
     await designPanelPage.changeOpacityForGrid('50');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-opacity-50.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeOpacityForGrid('100');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-opacity-100.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -322,7 +322,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -331,21 +331,21 @@ mainTest.describe(() => {
     await designPanelPage.selectGridType('Rows');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickMainMenuButton();
     await mainPage.clickViewMainMenuItem();
     await mainPage.clickHideGridsMainMenuSubItem();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-hide.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickMainMenuButton();
     await mainPage.clickViewMainMenuItem();
     await mainPage.clickShowGridsMainMenuSubItem();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-unhide.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -356,7 +356,7 @@ mainTest.describe(() => {
     await designPanelPage.clickRemoveGridButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-without-grid.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -367,7 +367,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('two-board-with-guide.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 });

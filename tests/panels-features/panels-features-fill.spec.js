@@ -41,7 +41,7 @@ mainTest.describe(() => {
     await designPanelPage.isFillHexCodeSet('#FFFFFF');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.viewport).toHaveScreenshot('board-fill.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -53,7 +53,7 @@ mainTest.describe(() => {
     await designPanelPage.isFillHexCodeSet('#ff0000');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.viewport).toHaveScreenshot('board-changed-fill.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -64,7 +64,7 @@ mainTest.describe(() => {
     await designPanelPage.isFillHexCodeSet('#FFFFFF');
     await designPanelPage.isFillOpacitySet('70');
     await expect(mainPage.viewport).toHaveScreenshot('board-changed-opacity.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -72,7 +72,7 @@ mainTest.describe(() => {
     await designPanelPage.clickRemoveFillButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-removed-fill.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 });
@@ -90,7 +90,7 @@ mainTest.describe(() => {
     await designPanelPage.isFillOpacitySet('100');
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('path-fill.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -104,7 +104,7 @@ mainTest.describe(() => {
     await designPanelPage.isFillHexCodeSet('#FF0000');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.viewport).toHaveScreenshot('path-changed-fill.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -117,7 +117,7 @@ mainTest.describe(() => {
     await designPanelPage.isFillOpacitySet('70');
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('path-changed-opacity.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -128,7 +128,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnDesignTab();
     await expect(mainPage.viewport).toHaveScreenshot('path-removed-fill.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 });
@@ -145,7 +145,7 @@ mainTest.describe(() => {
     await designPanelPage.isFillHexCodeSet('#B1B2B5');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-fill.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -158,7 +158,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-changed-opacity.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -167,7 +167,7 @@ mainTest.describe(() => {
     await designPanelPage.clickRemoveFillButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle--removed-fill.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -179,7 +179,7 @@ mainTest.describe(() => {
     await designPanelPage.isFillHexCodeSet('#FF0000');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-changed-fill.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 });

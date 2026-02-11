@@ -43,7 +43,7 @@ mainTest(qase([1496], 'Undo deleted component'), async ({ browserName }) => {
   await expect(mainPage.viewport).toHaveScreenshot(
     'rectangle-copy-component-delete.png',
     {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     },
   );
 
@@ -54,7 +54,7 @@ mainTest(qase([1496], 'Undo deleted component'), async ({ browserName }) => {
   await expect(mainPage.viewport).toHaveScreenshot(
     'rectangle-copy-component-delete-undo.png',
     {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     },
   );
 });

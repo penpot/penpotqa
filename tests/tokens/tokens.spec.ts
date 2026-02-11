@@ -74,7 +74,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-border-radius-1.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await tokensPage.tokensComp.isMenuItemWithNameSelected(
@@ -113,7 +113,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-border-radius-20.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await tokensPage.tokensComp.checkAppliedTokenTitle(
@@ -156,7 +156,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await tokensPage.tokensComp.isTokenAppliedWithName(opacityToken.name);
     await expect(mainPage.viewport).toHaveScreenshot('image-opacity-0-7.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await tokensPage.tokensComp.isMenuItemWithNameSelected(
       opacityToken.name,
@@ -189,7 +189,7 @@ mainTest(
     browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('text-rotated-315.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await tokensPage.tokensComp.isMenuItemWithNameSelected(
       rotationToken.name,
@@ -221,7 +221,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await tokensPage.tokensComp.isTokenAppliedWithName(sizingToken.name);
     await expect(mainPage.viewport).toHaveScreenshot('image-max-min-size-200.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.createDefaultBoardByCoordinates(100, 200, true);
     await designPanelPage.changeHeightAndWidthForLayer('600', '600');
@@ -236,7 +236,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'image-on-board-max-min-size-200.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await designPanelPage.checkFlexElementMinMax('Width', false, sizingToken.value);
@@ -281,7 +281,7 @@ mainTest(
     await designPanelPage.checkRowGap(spacingToken.value);
     await designPanelPage.checkColumnGap(spacingToken.value);
     await expect(mainPage.viewport).toHaveScreenshot('board-spacing-20.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await tokensPage.tokensComp.isAllMenuItemWithSectionNameSelected(
       spacingToken.name,
@@ -312,7 +312,7 @@ mainTest(
     await tokensPage.tokensComp.isTokenAppliedWithName(strokeToken.name);
     await designPanelPage.checkStrokeWidth(strokeToken.value);
     await expect(mainPage.viewport).toHaveScreenshot('path-stroke-width-5-5.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await tokensPage.tokensComp.isMenuItemWithNameSelected(
       strokeToken.name,
@@ -466,7 +466,7 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text-font-size-60.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 

@@ -66,7 +66,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-layout.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
       await designPanelPage.openGridEditModeFromDesignPanel();
@@ -74,7 +74,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-edit-mode.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
       await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
@@ -94,7 +94,7 @@ mainTest.describe(() => {
       await mainPage.addColumnsGridLayout(30);
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-3-30.png', {
-        mask: await mainPage.maskViewport(true),
+        mask: mainPage.maskViewport({ gridEditorToolbar: true }),
       });
       await expect(mainPage.columnsRowsOnDesignPanel).toHaveScreenshot(
         'lot-1fr-columns.png',
@@ -148,7 +148,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-alignment-center.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -176,7 +176,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-paddings.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
       await mainPage.waitForChangeIsSaved();
@@ -190,7 +190,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-justify-space-between.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.waitForChangeIsSaved();
@@ -211,7 +211,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-row-gap.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
       await inspectPanelPage.openInspectTab();
@@ -238,7 +238,7 @@ mainTest.describe(() => {
       await mainPage.addColumnGridLayoutBtnClick();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-3-3.png', {
-        mask: await mainPage.maskViewport(true),
+        mask: mainPage.maskViewport({ gridEditorToolbar: true }),
       });
     },
   );
@@ -265,7 +265,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'resized-board-with-grid-layout.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.createDefaultRectangleByCoordinates(210, 210, true);
@@ -281,7 +281,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'resized-board-with-rectangle.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   },
@@ -311,7 +311,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'resized-board-with-image.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   },
@@ -373,7 +373,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-image-alignment-center.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
 
@@ -395,7 +395,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-image-paddings.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
     },
@@ -414,7 +414,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'column-direction-image.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -431,7 +431,7 @@ mainTest.describe(() => {
       await layersPanelPage.clickLayerOnLayersTab('mini_sample');
       await mainPage.duplicateLayerViaLayersTab('mini_sample');
       await expect(mainPage.viewport).toHaveScreenshot('row-direction-image.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -444,12 +444,12 @@ mainTest.describe(() => {
       await designPanelPage.changeLayoutAlignment('Center', false);
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('alignment-image.png', {
-        mask: await mainPage.maskViewport(true),
+        mask: mainPage.maskViewport({ gridEditorToolbar: true }),
       });
       await designPanelPage.changeLayoutJustification('Space between', false);
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('position-image.png', {
-        mask: await mainPage.maskViewport(true),
+        mask: mainPage.maskViewport({ gridEditorToolbar: true }),
       });
     },
   );
@@ -469,7 +469,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-with-image-grid-paddings.png',
       {
-        mask: await mainPage.maskViewport(true),
+        mask: mainPage.maskViewport({ gridEditorToolbar: true }),
       },
     );
     await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Top', '50');
@@ -483,7 +483,7 @@ mainTest.describe(() => {
     await designPanelPage.isFlexElementSectionOpened();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-with-flex-layout.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
@@ -508,7 +508,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-image-delete-row.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
       await mainPage.duplicateGridRow();
@@ -516,7 +516,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-image-duplicated-row.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
       await mainPage.addGridRowBelow();
@@ -524,7 +524,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-image-add-row-below.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
       await mainPage.addGridColumnRight();
@@ -532,7 +532,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-image-add-column-right.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
     },
@@ -575,7 +575,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'red-board-with-4-image.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -625,7 +625,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
 
       await expect(mainPage.viewport).toHaveScreenshot('board-with-grid-text.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -644,20 +644,20 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-duplicated-row.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
       await mainPage.deleteGridRow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-with-delete-row.png', {
-        mask: await mainPage.maskViewport(true),
+        mask: mainPage.maskViewport({ gridEditorToolbar: true }),
       });
       await mainPage.addGridRowBelow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-add-row-below.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
     },
@@ -671,7 +671,7 @@ mainTest.describe(() => {
       await mainPage.changeGridRowLabel('100 PX');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-with-px-row.png', {
-        mask: await mainPage.maskViewport(true),
+        mask: mainPage.maskViewport({ gridEditorToolbar: true }),
       });
     },
   );
@@ -690,7 +690,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-vertical-area.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
       await mainPage.selectGridCellMultiple(1, 2);
@@ -698,7 +698,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-horizontal-area.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
     },
@@ -716,7 +716,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-4cell-area.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
     },
@@ -731,7 +731,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-with-grid-selected-column.png',
       {
-        mask: await mainPage.maskViewport(true),
+        mask: mainPage.maskViewport({ gridEditorToolbar: true }),
       },
     );
   });
@@ -744,11 +744,11 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-not-visible.png', {
-      mask: await mainPage.maskViewport(true),
+      mask: mainPage.maskViewport({ gridEditorToolbar: true }),
     });
     await designPanelPage.clickGridLocateButton();
     await expect(mainPage.viewport).toHaveScreenshot('board-visible.png', {
-      mask: await mainPage.maskViewport(true),
+      mask: mainPage.maskViewport({ gridEditorToolbar: true }),
     });
   });
 
@@ -771,7 +771,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'column-direction-rectangle.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.clickShortcutCtrlZ(browserName);
@@ -785,7 +785,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'row-direction-rectangle.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -799,13 +799,13 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-green-color.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickViewportOnce();
     await mainPage.clickShortcutCtrlZ(browserName);
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-undo-color.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -819,7 +819,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-with-grid-manual-area.png',
       {
-        mask: await mainPage.maskViewport(true),
+        mask: mainPage.maskViewport({ gridEditorToolbar: true }),
       },
     );
   });
@@ -841,7 +841,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-with-grid-horizontal-area-right.png',
         {
-          mask: await mainPage.maskViewport(true),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         },
       );
     },
@@ -872,7 +872,7 @@ mainTest(
     await mainPage.clickShortcutCtrlZ(browserName);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('grid-with-removed-image.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   },
 );
@@ -892,7 +892,7 @@ mainTest(qase([1710], 'Add grid lines as a dashboard - table'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot(
     'dashboard-with-grid-layout.png',
     {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     },
   );
 });
@@ -922,6 +922,6 @@ mainTest(qase([1712], 'Add grid lines, change px for all column'), async () => {
   await designPanelPage.enterGridCellValue(2, '200');
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('grid-with-px-all-column.png', {
-    mask: await mainPage.maskViewport(true),
+    mask: mainPage.maskViewport({ gridEditorToolbar: true }),
   });
 });

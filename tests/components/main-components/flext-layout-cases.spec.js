@@ -89,7 +89,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-component-change-board-direction.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -106,7 +106,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-component-change-board-alignment.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -166,7 +166,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-inside-board-change-paddings.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -184,7 +184,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-inside-board-change-alignment.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
