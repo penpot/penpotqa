@@ -480,6 +480,7 @@ mainTest.describe(() => {
   mainTest(qase([434], 'Selection to board'), async () => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.focusLayerViaShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('text-to-board.png', {
       mask: await mainPage.maskViewport(),
     });
