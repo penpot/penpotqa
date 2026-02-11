@@ -177,25 +177,26 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-first-hide.png', {
-        mask: await mainPage.maskViewport(),
+        mask: await mainPage.maskViewport(false, true),
       });
+
       await layersPanelPage.hideLayerViaRightClickOnLayersTab(path2);
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-second-hide.png', {
-        mask: await mainPage.maskViewport(),
+        mask: await mainPage.maskViewport(false, true),
       });
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(path2, false);
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-second-show.png', {
-        mask: await mainPage.maskViewport(),
+        mask: await mainPage.maskViewport(false, true),
       });
       await layersPanelPage.unHideLayerViaRightClickOnLayersTab(path1);
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(page).toHaveScreenshot('path-first-show.png', {
-        mask: await mainPage.maskViewport(),
+        mask: await mainPage.maskViewport(false, true),
       });
     },
   );
