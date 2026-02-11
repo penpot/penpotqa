@@ -1294,16 +1294,13 @@ exports.MainPage = class MainPage extends BasePage {
       : await expect(this.cornerHandle).not.toBeVisible();
   }
 
-  async maskViewport(gridEditorToolbar = false) {
-    const maskLocatorsList = [
+  maskViewport({ gridEditorToolbar = false } = {}) {
+    return [
       this.guides,
       this.guidesFragment,
       this.toolBarWindow,
       this.bottomPaletteToolBar,
+      ...(gridEditorToolbar ? [this.gridEditorToolBar] : []),
     ];
-    if (gridEditorToolbar) {
-      maskLocatorsList.push(this.gridEditorToolBar);
-    }
-    return maskLocatorsList;
   }
 };

@@ -77,14 +77,14 @@ mainTest(qase([2443], 'SWAP panel with variants'), async () => {
   await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
     'swap-component-list.png',
     {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     },
   );
   await designPanelPage.clickOnSwapGridViewButton();
   await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
     'swap-component-grid.png',
     {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     },
   );
 });
