@@ -41,7 +41,6 @@ mainTest.afterEach(async () => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async ({ browserName }) => {
-    await mainTest.slow();
     browserName === 'webkit' ? await mainPage.waitForViewportVisible() : null;
     await mainPage.createDefaultTextLayer();
   });
