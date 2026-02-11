@@ -54,7 +54,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-shared-library.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await assetsPanelPage.clickAssetsTab();
@@ -117,7 +117,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-shared-library.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -138,7 +138,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-unpublished-shared-library.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -162,7 +162,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-unpublished-shared-library.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await assetsPanelPage.clickAssetsTab();
@@ -197,7 +197,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-publish-shared-library-few-files.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -302,7 +302,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'unpublish-shared-library-component-file2.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.clickPencilBoxButton();
@@ -311,7 +311,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'unpublish-shared-library-component-file3.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -330,7 +330,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-publish-shared-library-2-files.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -384,7 +384,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-publish-update-library-1-file.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -442,7 +442,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-1.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -484,7 +484,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-1.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await assetsPanelPage.clickAssetsTab();
@@ -496,7 +496,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-2.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -519,7 +519,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-publish-update-library-1-file.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickPencilBoxButton();
@@ -586,7 +586,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'library-without-library-viewport.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.clickPencilBoxButton();
@@ -597,7 +597,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'library-without-library-viewport2.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },

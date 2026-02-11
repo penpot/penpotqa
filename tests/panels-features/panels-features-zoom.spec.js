@@ -101,6 +101,6 @@ mainTest(qase(856, 'PF-138 Zoom to selected via top right menu'), async () => {
   await mainPage.zoomToFitSelected();
   await mainPage.clickViewportTwice();
   await expect(mainPage.viewport).toHaveScreenshot('canvas-zoom-to-selected.png', {
-    mask: await mainPage.maskViewport(),
+    mask: mainPage.maskViewport(),
   });
 });

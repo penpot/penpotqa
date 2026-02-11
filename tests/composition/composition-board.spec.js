@@ -60,7 +60,7 @@ mainTest.describe(() => {
     async () => {
       await mainPage.isCreatedLayerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('board.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -153,7 +153,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-drop-shadow-default.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await designPanelPage.hideShadow();
@@ -162,7 +162,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-drop-shadow-hide.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await designPanelPage.unhideShadow();
@@ -171,7 +171,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-drop-shadow-unhide.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
@@ -180,7 +180,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-inner-shadow-default.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await designPanelPage.removeShadow();
@@ -189,7 +189,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-inner-shadow-remove.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -204,7 +204,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-drop-shadow.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.selectTypeForShadow('Inner shadow');
     await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
@@ -215,7 +215,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-inner-shadow.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -227,25 +227,25 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-blur-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.hideBlur();
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-blur-hide.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.unhideBlur();
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-blur-unhide.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.removeBlur();
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-blur-remove.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -255,7 +255,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-blur.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -264,7 +264,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-stroke-default.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await designPanelPage.changeStrokeSettings(
@@ -279,7 +279,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-stroke-inside-dotted.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -295,7 +295,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-stroke-outside-dashed.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -311,7 +311,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-stroke-center-solid.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -327,7 +327,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-stroke-center-mixed.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -335,7 +335,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-stroke-remove.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -344,7 +344,7 @@ mainTest.describe(() => {
     await mainPage.deleteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -353,7 +353,7 @@ mainTest.describe(() => {
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -362,25 +362,25 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-rotated-90.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-rotated-120.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-rotated-45.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-rotated-359.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -391,7 +391,7 @@ mainTest.describe(() => {
       await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-changed-corners.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
       await mainPage.waitForChangeIsSaved();
@@ -449,7 +449,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.setFlexElementPositionAbsolute();
     await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickViewportByCoordinates(300, 100, 2);
     await layersPanelPage.selectBoardChildLayer('Board');
@@ -459,7 +459,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-in-flex-board-moved.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -717,11 +717,11 @@ mainTest.describe(() => {
       const board2 = 'Board #2';
       await layersPanelPage.doubleClickLayerIconOnLayersTab(board1);
       await expect(mainPage.viewport).toHaveScreenshot('board-first-zoom.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await layersPanelPage.doubleClickLayerIconOnLayersTab(board2);
       await expect(mainPage.viewport).toHaveScreenshot('board-second-zoom.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -735,25 +735,25 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-first-hide.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await mainPage.hideLayerViaRightClickOnLayersTab(board2);
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-second-hide.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await layersPanelPage.unHideLayerViaRightClickOnLayersTab(board1);
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-first-show.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board2, false);
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board-second-show.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -830,7 +830,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'resize-board-to-fit-2-elements.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -849,7 +849,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'resize-board-to-fit-partially-outside.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },

@@ -72,7 +72,7 @@ mainTest.describe(() => {
       await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
       await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
       await expect(mainPage.viewport).toHaveScreenshot('board-color-red.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await tokensPage.tokensComp.isMenuItemWithNameSelected(
         colorToken.name,
@@ -91,7 +91,7 @@ mainTest.describe(() => {
       await mainPage.waitForResizeHandlerVisible();
       await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
       await expect(mainPage.viewport).toHaveScreenshot('board-red-stroke.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await tokensPage.tokensComp.isMenuItemWithNameSelected(
         colorToken.name,

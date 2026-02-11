@@ -45,7 +45,7 @@ mainTest.describe(() => {
       await mainPage.clickAddNodeButtonOnNodePanel();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('path-added-one-node.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await mainPage.clickFourthNode();
       await mainPage.holdShiftKeyboardButton();
@@ -54,7 +54,7 @@ mainTest.describe(() => {
       await mainPage.pressShiftPlusKeyboardShortcut();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('path-added-two-nodes.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -66,7 +66,7 @@ mainTest.describe(() => {
       await mainPage.clickDeleteNodeButtonOnNodePanel();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('path-deleted-one-node.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await mainPage.clickSecondNode();
       await mainPage.pressDeleteKeyboardButton();
@@ -74,7 +74,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-deleted-two-nodes.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -92,7 +92,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-merged-nodes-once.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.holdShiftKeyboardButton();
@@ -104,7 +104,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-merged-nodes-twice.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -124,7 +124,7 @@ mainTest.describe(() => {
     await mainPage.clickJoinNodesButtonOnNodePanel();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-joined-nodes-once.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.holdShiftKeyboardButton();
     await mainPage.clickFifthNode();
@@ -133,7 +133,7 @@ mainTest.describe(() => {
     await mainPage.pressJKeyboardShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-joined-nodes-twice.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -149,7 +149,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-separated-nodes-once.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.clickSecondNode();
@@ -161,7 +161,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-separated-nodes-twice.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -176,7 +176,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-to-corner-one-node.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.clickSecondNode();
@@ -185,7 +185,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-to-corner-two-nodes.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -205,13 +205,13 @@ mainTest(
     await mainPage.clickToCurveButtonOnNodePanel();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-to-curve-one-node.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickSecondNode();
     await mainPage.pressCKeyboardShortcut();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-to-curve-two-nodes.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   },
 );
