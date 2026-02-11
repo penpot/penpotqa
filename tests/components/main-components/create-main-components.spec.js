@@ -71,7 +71,7 @@ mainTest(
       await expect(mainPage.viewport).toHaveScreenshot(
         'copy-main-components-on-canvas.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
@@ -89,7 +89,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-main-component-canvas.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
@@ -105,7 +105,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'ellipse-main-component-canvas.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
@@ -121,7 +121,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-main-component-canvas.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
@@ -160,7 +160,7 @@ mainTest(qase([1435], 'Create component from image by right-click'), async () =>
   await expect(mainPage.viewport).toHaveScreenshot(
     'image-main-component-canvas.png',
     {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     },
   );
   await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('sample');
@@ -183,7 +183,7 @@ mainTest(qase([1436], 'Create component from path by right-click'), async () => 
   await expect(mainPage.viewport).toHaveScreenshot(
     'path-main-component-canvas.png',
     {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     },
   );
   await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
@@ -207,7 +207,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'curve-main-component-canvas.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
@@ -231,14 +231,14 @@ mainTest(qase([1291], 'Undo component'), async ({ browserName }) => {
   await designPanelPage.changeRotationForLayer('200');
   await mainPage.isCornerHandleVisible();
   await expect(mainPage.viewport).toHaveScreenshot('component-change_rotation.png', {
-    mask: await mainPage.maskViewport(),
+    mask: mainPage.maskViewport(),
   });
   await mainPage.clickShortcutCtrlZ(browserName);
   await mainPage.isCornerHandleVisible();
   await expect(mainPage.viewport).toHaveScreenshot(
     'component-change_rotation_undo.png',
     {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     },
   );
 });
@@ -256,7 +256,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'multiple-components-canvas.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
@@ -284,7 +284,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'multiple-components-canvas-3-layers.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
@@ -342,7 +342,7 @@ mainTest(qase([1749], 'Change group shadow color'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot(
     'components-change-group-shadow-color.png',
     {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     },
   );
 });

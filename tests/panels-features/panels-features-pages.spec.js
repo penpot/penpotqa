@@ -157,7 +157,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-show-main.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   },
@@ -187,7 +187,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-reset-overrides.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   },
@@ -222,7 +222,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-update-main.png',
       {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       },
     );
   },
