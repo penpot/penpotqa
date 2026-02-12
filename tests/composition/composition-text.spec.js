@@ -442,16 +442,21 @@ mainTest.describe(() => {
   mainTest(qase([427], 'Change RTL/LTR (Design section)'), async () => {
     await designPanelPage.changeTextDirection('RTL');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.focusLayerViaShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('text-rtl.png', {
       mask: await mainPage.maskViewport(),
       maxDiffPixels: 30,
     });
+    await mainPage.focusLayerViaShortcut();
+
     await designPanelPage.changeTextDirection('LTR');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.focusLayerViaShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('text-ltr.png', {
       mask: await mainPage.maskViewport(),
       maxDiffPixels: 40,
     });
+    await mainPage.focusLayerViaShortcut();
   });
 
   mainTest(
