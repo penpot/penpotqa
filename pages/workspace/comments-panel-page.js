@@ -21,6 +21,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentCommentsPanelText = page.locator(
       '[class*="sidebar"] div[class*="comments__cover"] div[class*="comments__item"]',
     );
+    this.commentAvatarImage = page.locator('img.main_ui_comments__avatar-image');
     this.commentReplyText = this.commentText.nth(1);
     this.commentReplyCommentsPanelText = page.getByText('1 reply', { exact: true });
     this.postCommentButton = page.getByRole('button', { name: 'Post' }).first();

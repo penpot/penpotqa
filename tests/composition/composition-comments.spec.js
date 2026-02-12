@@ -60,6 +60,7 @@ mainTest.describe(() => {
     await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
       mask: mainPage.maskViewport({ usersSection: true }, [
         commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
       ]),
     });
     await mainPage.clickViewportOnce();
@@ -67,6 +68,7 @@ mainTest.describe(() => {
     await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
       mask: mainPage.maskViewport({ usersSection: true }, [
         commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
       ]),
     });
   });
@@ -83,6 +85,7 @@ mainTest.describe(() => {
       await expect(page).toHaveScreenshot('comment-reply.png', {
         mask: mainPage.maskViewport({ usersSection: true }, [
           commentsPanelPage.commentsAuthorSection,
+          commentsPanelPage.commentAvatarImage,
         ]),
       });
     },
@@ -105,6 +108,7 @@ mainTest.describe(() => {
       await expect(page).toHaveScreenshot('comment-edited.png', {
         mask: mainPage.maskViewport({ usersSection: true }, [
           commentsPanelPage.commentsAuthorSection,
+          commentsPanelPage.commentAvatarImage,
         ]),
       });
     },
@@ -121,6 +125,7 @@ mainTest.describe(() => {
     await expect(page).toHaveScreenshot('comment-removed.png', {
       mask: mainPage.maskViewport({ usersSection: true }, [
         commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
       ]),
     });
   });
@@ -132,6 +137,7 @@ mainTest.describe(() => {
     await expect(page).toHaveScreenshot('comment-resolved-closed-pop-up.png', {
       mask: mainPage.maskViewport({ usersSection: true }, [
         commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
       ]),
     });
     await commentsPanelPage.clickResolvedCommentThreadIcon();
@@ -139,6 +145,7 @@ mainTest.describe(() => {
     await expect(page).toHaveScreenshot('comment-resolved-opened-pop-up.png', {
       mask: mainPage.maskViewport({ usersSection: true }, [
         commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
       ]),
     });
   });
@@ -158,6 +165,7 @@ mainTest(
     await expect(page).toHaveScreenshot('comment-latin-opened-pop-up.png', {
       mask: mainPage.maskViewport({ usersSection: true }, [
         commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
       ]),
     });
     await mainPage.clickViewportOnce();
@@ -165,6 +173,7 @@ mainTest(
     await expect(page).toHaveScreenshot('comment-latin-closed-pop-up.png', {
       mask: mainPage.maskViewport({ usersSection: true }, [
         commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
       ]),
     });
   },
