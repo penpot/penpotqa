@@ -579,7 +579,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultTextLayerByCoordinates(220, 330);
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
+    await layersPanelPage.dragAndDropComponentToBoard('Hello world!');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.createSmallClosedPathByCoordinates(330, 330);
@@ -601,7 +601,7 @@ mainTest.describe(() => {
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-ellipse-selected-image.png',
     );
-    await layersPanelPage.clickLayerOnLayersTab('Hello World!');
+    await layersPanelPage.clickLayerOnLayersTab('Hello world!');
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-test-selected-image.png',
     );
