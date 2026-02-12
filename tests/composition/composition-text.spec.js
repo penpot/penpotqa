@@ -177,7 +177,6 @@ mainTest.describe(() => {
         await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
         await designPanelPage.clickShadowColorIcon();
         await colorPalettePage.setHex('#304d6a');
-        await mainPage.clickMoveButton();
         await mainPage.waitForChangeIsSaved();
         await mainPage.clickOnLayerOnCanvas();
         await mainPage.focusLayerViaShortcut();
@@ -202,7 +201,6 @@ mainTest.describe(() => {
           await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
             mask: await mainPage.maskViewport(),
           });
-          await mainPage.focusLayerViaShortcut();
         },
       );
     },
