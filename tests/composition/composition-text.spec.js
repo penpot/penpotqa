@@ -121,7 +121,7 @@ mainTest.describe(() => {
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
-          'text-drop-shadow-default.png',
+          'text-drop-shadow-hide.png',
           {
             mask: await mainPage.maskViewport(),
           },
@@ -179,6 +179,7 @@ mainTest.describe(() => {
         await colorPalettePage.setHex('#304d6a');
         await mainPage.clickMoveButton();
         await mainPage.waitForChangeIsSaved();
+        await mainPage.clickOnLayerOnCanvas();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
           mask: await mainPage.maskViewport(),
@@ -196,6 +197,7 @@ mainTest.describe(() => {
           await colorPalettePage.setHex('#96e637');
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await mainPage.clickOnLayerOnCanvas();
           await mainPage.focusLayerViaShortcut();
           await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
             mask: await mainPage.maskViewport(),
@@ -246,7 +248,7 @@ mainTest.describe(() => {
         await mainPage.focusLayerViaShortcut();
       });
 
-      await mainTest.step('Unide blur', async () => {
+      await mainTest.step('Unhide blur', async () => {
         await designPanelPage.unhideBlur();
         await mainPage.waitForChangeIsSaved();
         await mainPage.waitForResizeHandlerVisible();
