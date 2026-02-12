@@ -47,7 +47,7 @@ mainTest.describe(() => {
   mainTest(qase([274], 'Create Rectangle (Toolbar)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -92,7 +92,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-drop-shadow-default.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
       await designPanelPage.hideShadow();
@@ -101,7 +101,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-drop-shadow-hide.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
       await designPanelPage.unhideShadow();
@@ -110,7 +110,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-drop-shadow-unhide.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
       await designPanelPage.selectTypeForShadow('Inner shadow');
@@ -119,7 +119,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-inner-shadow-default.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
       await designPanelPage.removeShadow();
@@ -128,7 +128,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-inner-shadow-remove.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -146,26 +146,26 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-blur-default.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
       await designPanelPage.hideBlur();
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-blur-hide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       });
       await designPanelPage.unhideBlur();
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-blur-unhide.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       });
       await designPanelPage.removeBlur();
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-blur-remove.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -177,7 +177,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-stroke-default.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickOnLayerOnCanvas();
@@ -193,7 +193,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-stroke-inside-dotted.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickOnLayerOnCanvas();
@@ -209,7 +209,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-stroke-outside-dashed.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickOnLayerOnCanvas();
@@ -225,7 +225,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-stroke-center-solid.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickOnLayerOnCanvas();
@@ -241,7 +241,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'rectangle-stroke-center-mixed.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       },
     );
     await mainPage.clickOnLayerOnCanvas();
@@ -249,7 +249,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-stroke-remove.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -269,7 +269,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-drop-shadow.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
     await designPanelPage.selectTypeForShadow('Inner shadow');
     await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
@@ -278,7 +278,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-inner-shadow.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -288,7 +288,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-blur.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -311,23 +311,27 @@ mainTest.describe(() => {
     await designPanelPage.changeRotationForLayer('90');
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.createdLayer).toHaveScreenshot('rectangle-rotated-90.png');
+    await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-90.png', {
+      mask: mainPage.maskViewport(),
+    });
     await designPanelPage.changeRotationForLayer('120');
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'rectangle-rotated-120.png',
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-120.png', {
+      mask: mainPage.maskViewport(),
+    });
     await designPanelPage.changeRotationForLayer('45');
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.createdLayer).toHaveScreenshot('rectangle-rotated-45.png');
+    await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-45.png', {
+      mask: mainPage.maskViewport(),
+    });
     await designPanelPage.changeRotationForLayer('360');
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'rectangle-rotated-359.png',
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-359.png', {
+      mask: mainPage.maskViewport(),
+    });
   });
 
   mainTest(
@@ -336,13 +340,14 @@ mainTest.describe(() => {
       await designPanelPage.clickIndividualCornersRadiusButton();
       await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle-changed-corners.png',
+        { mask: mainPage.maskViewport() },
       );
       await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       });
     },
   );
@@ -358,7 +363,7 @@ mainTest.describe(() => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-to-board.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   });
 });
@@ -373,11 +378,11 @@ mainTest(qase([2255], 'Select and deselect rectangles'), async ({ browserName })
   await mainPage.pressSelectAllShortcut(browserName);
   await mainPage.deselectElement();
   await expect(mainPage.viewport).toHaveScreenshot('three-rectangle-selected.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
   await mainPage.deselectElement();
   await mainPage.deselectElement();
   await expect(mainPage.viewport).toHaveScreenshot('one-rectangle-selected.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
 });
