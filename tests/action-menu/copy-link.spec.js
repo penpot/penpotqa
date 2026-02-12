@@ -89,7 +89,7 @@ mainTest.describe(() => {
       await page.goto(link);
       await mainPage.isMainPageLoaded();
       await expect(mainPage.viewport).toHaveScreenshot('2-board-link.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       });
       await mainPage.backToDashboardFromFileEditor();
     },
