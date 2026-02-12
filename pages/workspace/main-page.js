@@ -1292,13 +1292,18 @@ exports.MainPage = class MainPage extends BasePage {
       : await expect(this.cornerHandle).not.toBeVisible();
   }
 
-  maskViewport({ gridEditorToolbar = false } = {}) {
+  maskViewport(
+    { gridEditorToolbar = false, usersSection = false } = {},
+    additionalElements = [],
+  ) {
     return [
       this.guides,
       this.guidesFragment,
       this.toolBarWindow,
       this.bottomPaletteToolBar,
       ...(gridEditorToolbar ? [this.gridEditorToolBar] : []),
+      ...(usersSection ? [this.usersSection] : []),
+      ...additionalElements,
     ];
   }
 };
