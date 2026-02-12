@@ -232,7 +232,7 @@ mainTest.describe(() => {
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-blur.png', {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         });
         await mainPage.focusLayerViaShortcut();
       });
