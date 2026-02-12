@@ -48,7 +48,7 @@ mainTest.describe(() => {
   mainTest(qase([377], 'Create Text(Toolbar)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('text.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 
@@ -59,7 +59,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-rotated-90.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await mainPage.focusLayerViaShortcut();
     });
@@ -70,7 +70,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-rotated-120.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await mainPage.focusLayerViaShortcut();
     });
@@ -81,7 +81,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-rotated-45.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await mainPage.focusLayerViaShortcut();
     });
@@ -92,7 +92,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-rotated-359.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await mainPage.focusLayerViaShortcut();
     });
@@ -109,7 +109,7 @@ mainTest.describe(() => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'text-drop-shadow-default.png',
           {
-            mask: await mainPage.maskViewport(),
+            mask: mainPage.maskViewport(),
           },
         );
         await mainPage.focusLayerViaShortcut();
@@ -123,7 +123,7 @@ mainTest.describe(() => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'text-drop-shadow-hide.png',
           {
-            mask: await mainPage.maskViewport(),
+            mask: mainPage.maskViewport(),
           },
         );
         await mainPage.focusLayerViaShortcut();
@@ -137,7 +137,7 @@ mainTest.describe(() => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'text-drop-shadow-unhide.png',
           {
-            mask: await mainPage.maskViewport(),
+            mask: mainPage.maskViewport(),
           },
         );
         await mainPage.focusLayerViaShortcut();
@@ -151,7 +151,7 @@ mainTest.describe(() => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'text-inner-shadow-default.png',
           {
-            mask: await mainPage.maskViewport(),
+            mask: mainPage.maskViewport(),
           },
         );
         await mainPage.focusLayerViaShortcut();
@@ -165,7 +165,7 @@ mainTest.describe(() => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'text-inner-shadow-remove.png',
           {
-            mask: await mainPage.maskViewport(),
+            mask: mainPage.maskViewport(),
           },
         );
         await mainPage.focusLayerViaShortcut();
@@ -184,7 +184,7 @@ mainTest.describe(() => {
       await mainPage.clickOnLayerOnCanvas();
       await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await mainPage.focusLayerViaShortcut();
     });
@@ -202,7 +202,7 @@ mainTest.describe(() => {
         await mainPage.clickOnLayerOnCanvas();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         });
       },
     );
@@ -221,7 +221,7 @@ mainTest.describe(() => {
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-blur-default.png', {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         });
         await mainPage.focusLayerViaShortcut();
       });
@@ -243,7 +243,7 @@ mainTest.describe(() => {
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-blur-hide.png', {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         });
         await mainPage.focusLayerViaShortcut();
       });
@@ -254,7 +254,7 @@ mainTest.describe(() => {
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-blur-unhide.png', {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         });
         await mainPage.focusLayerViaShortcut();
       });
@@ -264,7 +264,7 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         });
         await mainPage.focusLayerViaShortcut();
       });
@@ -278,7 +278,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-stroke-default.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await mainPage.focusLayerViaShortcut();
     });
@@ -292,7 +292,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-stroke-inside-dotted.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.focusLayerViaShortcut();
@@ -307,7 +307,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-stroke-outside-dashed.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.focusLayerViaShortcut();
@@ -322,7 +322,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-stroke-center-solid.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.focusLayerViaShortcut();
@@ -337,7 +337,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'text-stroke-center-mixed.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
       await mainPage.focusLayerViaShortcut();
@@ -350,7 +350,7 @@ mainTest.describe(() => {
       await mainPage.waitForResizeHandlerVisible();
       await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-stroke-remove.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     });
   });
@@ -382,7 +382,7 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-upper-case.png', {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         });
         await mainPage.focusLayerViaShortcut();
       });
@@ -392,7 +392,7 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-title-case.png', {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         });
         await mainPage.focusLayerViaShortcut();
       });
@@ -402,7 +402,7 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-lower-case.png', {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         });
         await mainPage.focusLayerViaShortcut();
       });
@@ -416,7 +416,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-middle.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     });
 
@@ -425,7 +425,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-bottom.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     });
 
@@ -434,7 +434,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-top.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
     });
   });
@@ -444,7 +444,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.focusLayerViaShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('text-rtl.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
       maxDiffPixels: 30,
     });
     await mainPage.focusLayerViaShortcut();
@@ -453,7 +453,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.focusLayerViaShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('text-ltr.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
       maxDiffPixels: 40,
     });
     await mainPage.focusLayerViaShortcut();
@@ -469,7 +469,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-fill-opacity.png', {
-        mask: await mainPage.maskViewport(),
+        mask: mainPage.maskViewport(),
       });
       await mainPage.focusLayerViaShortcut();
       await inspectPanelPage.openInspectTab();
@@ -477,7 +477,7 @@ mainTest.describe(() => {
       await expect(inspectPanelPage.textBlockOnInspect).toHaveScreenshot(
         'inspect-text-block-color.png',
         {
-          mask: await mainPage.maskViewport(),
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -488,7 +488,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.focusLayerViaShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('text-to-board.png', {
-      mask: await mainPage.maskViewport(),
+      mask: mainPage.maskViewport(),
     });
   });
 });
