@@ -99,7 +99,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([381, 382], 'Add, hide, unhide, change type and delete Shadow to Text'),
+    qase([381], 'Add, hide, unhide, change type and delete Shadow to Text'),
     async () => {
       await mainTest.step('Add shadow', async () => {
         await designPanelPage.clickAddShadowButton();
@@ -170,41 +170,43 @@ mainTest.describe(() => {
         );
         await mainPage.focusLayerViaShortcut();
       });
+    },
+  );
 
-      await mainTest.step('Add a new shadow with settings', async () => {
-        await designPanelPage.clickAddShadowButton();
+  mainTest(qase([382], 'Add and edit Shadow to text'), async ({ browserName }) => {
+    await mainTest.step('Add a new shadow with settings', async () => {
+      await designPanelPage.clickAddShadowButton();
+      await designPanelPage.clickShadowActionsButton();
+      await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
+      await designPanelPage.clickShadowColorIcon();
+      await colorPalettePage.setHex('#304d6a');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickOnLayerOnCanvas();
+      await mainPage.focusLayerViaShortcut();
+      await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
+        mask: await mainPage.maskViewport(),
+      });
+      await mainPage.focusLayerViaShortcut();
+    });
+
+    await mainTest.step(
+      'Change type of shadow to Inner Shadow and change settings',
+      async () => {
+        await designPanelPage.selectTypeForShadow('Inner shadow');
         await designPanelPage.clickShadowActionsButton();
-        await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
+        await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
         await designPanelPage.clickShadowColorIcon();
-        await colorPalettePage.setHex('#304d6a');
+        await colorPalettePage.setHex('#96e637');
+        await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
         await mainPage.clickOnLayerOnCanvas();
         await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
+        await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
           mask: await mainPage.maskViewport(),
         });
-        await mainPage.focusLayerViaShortcut();
-      });
-
-      await mainTest.step(
-        'Change type of shadow to Inner Shadow and change settings',
-        async () => {
-          await designPanelPage.selectTypeForShadow('Inner shadow');
-          await designPanelPage.clickShadowActionsButton();
-          await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
-          await designPanelPage.clickShadowColorIcon();
-          await colorPalettePage.setHex('#96e637');
-          await mainPage.clickViewportTwice();
-          await mainPage.waitForChangeIsSaved();
-          await mainPage.clickOnLayerOnCanvas();
-          await mainPage.focusLayerViaShortcut();
-          await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
-            mask: await mainPage.maskViewport(),
-          });
-        },
-      );
-    },
-  );
+      },
+    );
+  });
 
   mainTest(
     qase([384, 385], 'Add, change value, hide, unhide and delete Blur to text'),
