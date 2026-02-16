@@ -54,7 +54,7 @@ mainTest.afterEach('Delete team', async () => {
 mainTest(qase(2654, 'Computed panel - Shows raw property values'), async () => {
   const colorToken: MainToken<TokenClass> = {
     class: TokenClass.Color,
-    name: 'global.color',
+    name: 'color',
     value: sampleData.color.redHexCode,
   };
 
@@ -110,7 +110,7 @@ mainTest(
   async () => {
     const strokeToken: MainToken<TokenClass> = {
       class: TokenClass.StrokeWidth,
-      name: 'global.stroke',
+      name: 'stroke-width',
       value: '5',
     };
 

@@ -45,7 +45,7 @@ mainTest.describe(() => {
 
   const radiusToken: MainToken<TokenClass> = {
     class: TokenClass.BorderRadius,
-    name: 'global.radius',
+    name: 'border-radius',
     value: '-1',
     description: 'Description',
   };
@@ -91,7 +91,7 @@ mainTest.describe(() => {
 
       const radiusToken: MainToken<TokenClass> = {
         class: TokenClass.BorderRadius,
-        name: 'global.radius',
+        name: 'border-radius',
         value: '-1',
         description: 'Description',
       };
@@ -111,7 +111,7 @@ mainTest.describe(() => {
         'rectangle-border-radius-20.png',
       );
       await tokensPage.tokensComp.checkAppliedTokenTitle(
-        'Token: global.radius\n' + 'Original value: 20\n' + 'Resolved value: 20',
+        'Token: border-radius\n' + 'Original value: 20\n' + 'Resolved value: 20',
       );
     },
   );
@@ -137,7 +137,7 @@ mainTest(
 
     const opacityToken: MainToken<TokenClass> = {
       class: TokenClass.Opacity,
-      name: 'global.opacity',
+      name: 'opacity',
       value: '0.7',
     };
 
@@ -165,7 +165,7 @@ mainTest(
 
     const rotationToken: MainToken<TokenClass> = {
       class: TokenClass.Rotation,
-      name: 'global.rotation',
+      name: 'rotation',
       value: '-(22.5+22.5)',
     };
     const tokenResolvedValue = '315'; // 315 == -45 == -(22.5+22.5)
@@ -197,7 +197,7 @@ mainTest(
 
     const sizingToken: MainToken<TokenClass> = {
       class: TokenClass.Sizing,
-      name: 'global.sizing',
+      name: 'sizing',
       value: '200',
     };
 
@@ -248,7 +248,7 @@ mainTest(
 
     const spacingToken: MainToken<TokenClass> = {
       class: TokenClass.Spacing,
-      name: 'global.spacing',
+      name: 'spacing',
       value: '-20',
     };
 
@@ -283,7 +283,7 @@ mainTest(
 
     const strokeToken: MainToken<TokenClass> = {
       class: TokenClass.StrokeWidth,
-      name: 'global.stroke',
+      name: 'stroke-width',
       value: '5.5',
     };
 
@@ -314,7 +314,7 @@ mainTest(
 
     const dimensionToken: MainToken<TokenClass> = {
       class: TokenClass.Dimension,
-      name: 'global.dimension',
+      name: 'dimension',
       value: '550.5',
     };
 
@@ -356,12 +356,12 @@ mainTest(
 
     const sizingToken: MainToken<TokenClass> = {
       class: TokenClass.Sizing,
-      name: 'global.sizing',
+      name: 'sizing',
       value: '200',
     };
     const dimensionToken: MainToken<TokenClass> = {
       class: TokenClass.Dimension,
-      name: 'global.dimension',
+      name: 'dimension',
       value: '100',
     };
 
@@ -420,7 +420,7 @@ mainTest.describe(() => {
 
   const fontSizeToken: MainToken<TokenClass> = {
     class: TokenClass.FontSize,
-    name: 'global.fontSize',
+    name: 'fontSize',
     value: '60',
   };
 
@@ -561,13 +561,13 @@ mainTest.describe(() => {
 
   const fontFamilyToken: MainToken<TokenClass> = {
     class: TokenClass.FontFamily,
-    name: 'global.font.family',
+    name: 'font-family',
     value: 'Actor',
   };
 
   const fontFamilyTokenRef: MainToken<TokenClass> = {
     class: TokenClass.FontFamily,
-    name: 'global.font.family2',
+    name: 'font-family2',
     value: `{${fontFamilyToken.name}}`,
   };
   const updatedTokenData: MainToken<TokenClass> = {
@@ -601,9 +601,7 @@ mainTest.describe(() => {
     await designPanelPage.checkFontName(updatedTokenData.value);
     await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
     await tokensPage.tokensComp.checkAppliedTokenTitle(
-      'Token: global.font.family\n' +
-        'Original value: Inter\n' +
-        'Resolved value: Inter',
+      'Token: font-family\n' + 'Original value: Inter\n' + 'Resolved value: Inter',
     );
   });
 
@@ -648,13 +646,13 @@ mainTest.describe(() => {
     async () => {
       const fontWeightToken1: MainToken<TokenClass> = {
         class: TokenClass.FontWeight,
-        name: 'extra.black.font.weight',
+        name: 'extra-black-font-weight',
         value: 'extra-black',
       };
 
       const fontWeightToken2: MainToken<TokenClass> = {
         class: TokenClass.FontWeight,
-        name: '500.italic.font.weight',
+        name: '500-italic-font-weight',
         value: '500 italic',
       };
 
@@ -691,7 +689,7 @@ mainTest.describe(() => {
     async () => {
       const fontWeightToken: MainToken<TokenClass> = {
         class: TokenClass.FontWeight,
-        name: 'extra.black.font.weight',
+        name: 'extra-black-font-weight',
         value: '500',
       };
 
@@ -717,7 +715,7 @@ mainTest.describe(() => {
     async ({ browserName }) => {
       const fontWeightToken: MainToken<TokenClass> = {
         class: TokenClass.FontWeight,
-        name: '700.italic.font.weight',
+        name: '700-italic-font-weight',
         value: '700 Italic',
       };
 
@@ -760,7 +758,7 @@ mainTest.describe(() => {
 
   const letterSpacingToken: MainToken<TokenClass> = {
     class: TokenClass.LetterSpacing,
-    name: 'global.letter.spacing',
+    name: 'letter-spacing',
     value: '10',
   };
   const newTokenValue = '5';
@@ -832,12 +830,12 @@ mainTest(
 
     const dimensionToken: MainToken<TokenClass> = {
       class: TokenClass.Dimension,
-      name: 'global.dimension',
+      name: 'dimension',
       value: '2',
     };
     const letterSpacingToken: MainToken<TokenClass> = {
       class: TokenClass.LetterSpacing,
-      name: 'global.letter.spacing',
+      name: 'letter-spacing',
       value: `5px*{${dimensionToken.name}}`,
     };
 
@@ -910,7 +908,7 @@ mainTest(
     };
     const numberTokenRef: MainToken<TokenClass> = {
       class: TokenClass.Number,
-      name: 'global.number',
+      name: 'number',
       value: `5*{${numberToken.name}}`,
     };
 
@@ -981,7 +979,7 @@ mainTest(
 
     const numberToken: MainToken<TokenClass> = {
       class: TokenClass.Number,
-      name: 'global.number',
+      name: 'number',
       value: '45',
     };
     const newTokenValue = '0';
@@ -1019,7 +1017,7 @@ mainTest(
 
     const numberToken: MainToken<TokenClass> = {
       class: TokenClass.Number,
-      name: 'global.number',
+      name: 'number',
       value: '2',
     };
     const newTokenValue = '1';
@@ -1126,7 +1124,7 @@ mainTest.describe(() => {
 
   const decorationToken: MainToken<TokenClass> = {
     class: TokenClass.TextDecoration,
-    name: 'global.text.decoration',
+    name: 'text-decoration',
     value: 'underline',
   };
 
