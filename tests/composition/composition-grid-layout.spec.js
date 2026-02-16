@@ -620,7 +620,7 @@ mainTest.describe(() => {
     async () => {
       await mainPage.createDefaultTextLayerByCoordinates(500, 500);
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
+      await layersPanelPage.dragAndDropComponentToBoard('Hello world!');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
 
