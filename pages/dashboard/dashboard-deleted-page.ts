@@ -302,4 +302,58 @@ export class DeletedPage extends BasePage {
       timeout: timeout ?? DeletedPage.DEFAULT_TIMEOUT,
     });
   }
+
+  /**
+   * Verifies that a deleted file is NOT visible in the trash
+   * @param projectName - The name of the project containing the file
+   * @param fileName - The name of the deleted file
+   * @param timeout - Optional timeout in milliseconds (defaults to 10000ms)
+   */
+  async isDeletedFileNotVisible(
+    projectName: string,
+    fileName: string,
+    timeout?: number,
+  ) {
+    await expect(this.getDeletedFileByName(projectName, fileName)).toHaveCount(0, {
+      timeout: timeout ?? DeletedPage.DEFAULT_TIMEOUT,
+    });
+  }
+
+  /**
+   * Verifies that a deleted project is NOT visible in the trash
+   * @param projectName - The name of the deleted project
+   * @param timeout - Optional timeout in milliseconds (defaults to 10000ms)
+   */
+  async isDeletedProjectNotVisible(projectName: string, timeout?: number) {
+    await expect(this.getDeletedProjectRowByName(projectName)).toHaveCount(0, {
+      timeout: timeout ?? DeletedPage.DEFAULT_TIMEOUT,
+    });
+  }
+
+  /**
+   * Gets the total count of deleted projects in the trash
+   * @returns Promise<number> - The number of deleted projects
+   */
+  async getDeletedProjectsCount(): Promise<number> {
+    return await this.deletedProjectRow.count();
+  }
+
+  /**
+   * Checks if there are any deleted projects in the trash
+   * @returns Promise<boolean> - True if there are deleted projects, false otherwise
+   */
+  async hasDeletedProjects(): Promise<boolean> {
+    const count = await this.getDeletedProjectsCount();
+    return count > 0;
+  }
+
+  /**
+   * Checks if the trash is currently empty
+   * @returns Promise<boolean> - True if trash is empty, false otherwise
+   */
+  async isTrashEmpty(): Promise<boolean> {
+    const isEmpty = await this.emptyTrashMessage.isVisible();
+    const projectCount = await this.getDeletedProjectsCount();
+    return isEmpty && projectCount === 0;
+  }
 }
