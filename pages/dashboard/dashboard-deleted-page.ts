@@ -9,22 +9,26 @@ export class DeletedPage extends BasePage {
   // Default timeout for assertions and wait operations (in milliseconds)
   private static readonly DEFAULT_TIMEOUT = 10000;
 
-  // Section header
+  /* -------------------------------------------------
+   * Page element locators
+   * ------------------------------------------------- */
+
+  // Section header elements
   readonly deletedSection: Locator;
   readonly restoreAllButton: Locator;
   readonly clearTrashButton: Locator;
   readonly emptyTrashMessage: Locator;
 
-  // Grid
+  // Grid elements
   readonly deletedProjectRow: Locator;
 
-  // Menu actions
+  // Menu action items (context menu options)
   readonly restoreFileButton: Locator;
   readonly deleteFileButton: Locator;
   readonly restoreProjectButton: Locator;
   readonly deleteProjectButton: Locator;
 
-  // Confirm modal
+  // Confirmation modal elements
   readonly confirmModal: Locator;
   readonly continueButton: Locator;
   readonly deleteForeverButton: Locator;
@@ -70,6 +74,10 @@ export class DeletedPage extends BasePage {
 
   /* -------------------------------------------------
    * Locator helpers
+   *
+   * These private methods build locators for specific elements
+   * within the deleted page. They're used internally by other
+   * methods to maintain consistency and reduce duplication.
    * ------------------------------------------------- */
 
   /**
@@ -95,6 +103,10 @@ export class DeletedPage extends BasePage {
 
   /* -------------------------------------------------
    * Menu helpers
+   *
+   * Methods for interacting with context menus (options menus)
+   * for deleted projects and files. These methods open the
+   * three-dot menu that appears on each deleted item.
    * ------------------------------------------------- */
 
   /**
@@ -126,6 +138,10 @@ export class DeletedPage extends BasePage {
 
   /* -------------------------------------------------
    * UI state transitions
+   *
+   * Private methods that wait for specific UI state changes.
+   * These ensure that actions complete successfully before
+   * proceeding, making tests more reliable and deterministic.
    * ------------------------------------------------- */
 
   /**
@@ -179,6 +195,10 @@ export class DeletedPage extends BasePage {
 
   /* -------------------------------------------------
    * Actions
+   *
+   * High-level action methods that perform complete workflows.
+   * Each method handles clicking, confirming, and waiting for
+   * the action to complete. These are the main methods used in tests.
    * ------------------------------------------------- */
 
   /**
@@ -263,6 +283,11 @@ export class DeletedPage extends BasePage {
 
   /* -------------------------------------------------
    * Assertions
+   *
+   * Verification methods for testing. These methods use Playwright's
+   * expect assertions to verify the state of deleted items in the trash.
+   * Includes both positive (isVisible) and negative (isNotVisible) assertions,
+   * as well as helper methods that return boolean values for conditional logic.
    * ------------------------------------------------- */
 
   /**
@@ -355,5 +380,60 @@ export class DeletedPage extends BasePage {
     const isEmpty = await this.emptyTrashMessage.isVisible();
     const projectCount = await this.getDeletedProjectsCount();
     return isEmpty && projectCount === 0;
+  }
+
+  /* -------------------------------------------------
+   * Convenience aliases for common operations
+   * These methods provide shorter names for frequently used actions
+   * ------------------------------------------------- */
+
+  /**
+   * Alias for restoreDeletedFileViaOptions
+   * @param projectName - The name of the project containing the file
+   * @param fileName - The name of the file to restore
+   */
+  async restoreFile(projectName: string, fileName: string) {
+    await this.restoreDeletedFileViaOptions(projectName, fileName);
+  }
+
+  /**
+   * Alias for deleteForeverDeletedFileViaOptions
+   * @param projectName - The name of the project containing the file
+   * @param fileName - The name of the file to delete permanently
+   */
+  async deleteFile(projectName: string, fileName: string) {
+    await this.deleteForeverDeletedFileViaOptions(projectName, fileName);
+  }
+
+  /**
+   * Alias for restoreDeletedProjectViaOptions
+   * @param projectName - The name of the project to restore
+   */
+  async restoreProject(projectName: string) {
+    await this.restoreDeletedProjectViaOptions(projectName);
+  }
+
+  /**
+   * Alias for deleteForeverDeletedProjectViaOptions
+   * @param projectName - The name of the project to delete permanently
+   */
+  async deleteProject(projectName: string) {
+    await this.deleteForeverDeletedProjectViaOptions(projectName);
+  }
+
+  /**
+   * Alias for restoreAllProjectsAndFiles
+   * Shorter name for restoring all items from trash
+   */
+  async restoreAll() {
+    await this.restoreAllProjectsAndFiles();
+  }
+
+  /**
+   * Alias for deleteAllProjectsAndFilesForever
+   * Shorter name for emptying the trash completely
+   */
+  async emptyTrash() {
+    await this.deleteAllProjectsAndFilesForever();
   }
 }
