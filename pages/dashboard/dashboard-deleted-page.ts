@@ -37,8 +37,9 @@ export class DeletedPage extends BasePage {
       'Your trash is empty. Deleted files and projects will appear here.',
     );
 
+    // TODO: Replace with data-testid when available in app
     this.deletedProjectRow = this.deletedSection.locator(
-      '.main_ui_dashboard_deleted__dashboard-project-row',
+      '[class*="dashboard-project-row"]',
     );
 
     this.restoreFileButton = page.getByRole('menuitem', { name: 'Restore File' });
@@ -50,7 +51,8 @@ export class DeletedPage extends BasePage {
       name: 'Delete Project',
     });
 
-    this.confirmModal = page.locator('.main_ui_confirm__modal-container');
+    // TODO: Replace with data-testid when available in app
+    this.confirmModal = page.locator('[class*="modal-container"][class*="confirm"]');
     this.continueButton = this.confirmModal.getByRole('button', {
       name: 'Continue',
     });
@@ -78,8 +80,9 @@ export class DeletedPage extends BasePage {
    * ------------------------------------------------- */
 
   async openProjectOptionsMenu(projectName: string) {
+    // TODO: Replace with data-testid when available in app
     const deletedProject = this.getDeletedProjectRowByName(projectName)
-      .locator('.main_ui_dashboard_deleted__project-name-wrapper')
+      .locator('[class*="project-name-wrapper"]')
       .getByRole('button', {
         name: 'Options',
         exact: true,
