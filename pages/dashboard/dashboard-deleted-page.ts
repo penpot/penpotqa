@@ -6,6 +6,9 @@ import { BasePage } from '../base-page';
  * Handles interactions with deleted projects and files in the trash
  */
 export class DeletedPage extends BasePage {
+  // Default timeout for assertions and wait operations (in milliseconds)
+  private static readonly DEFAULT_TIMEOUT = 10000;
+
   // Section header
   readonly deletedSection: Locator;
   readonly restoreAllButton: Locator;
@@ -127,35 +130,51 @@ export class DeletedPage extends BasePage {
 
   /**
    * Waits for the confirmation modal to close
+   * @param timeout - Optional timeout in milliseconds
    */
-  private async waitForConfirmModalToClose() {
-    await this.confirmModal.waitFor({ state: 'hidden' });
+  private async waitForConfirmModalToClose(timeout?: number) {
+    await this.confirmModal.waitFor({
+      state: 'hidden',
+      timeout: timeout ?? DeletedPage.DEFAULT_TIMEOUT,
+    });
   }
 
   /**
    * Waits for a specific file to disappear from the trash
    * @param projectName - The name of the project containing the file
    * @param fileName - The name of the file
+   * @param timeout - Optional timeout in milliseconds
    */
-  private async waitForFileToDisappear(projectName: string, fileName: string) {
-    await expect(this.getDeletedFileByName(projectName, fileName)).toHaveCount(0);
+  private async waitForFileToDisappear(
+    projectName: string,
+    fileName: string,
+    timeout?: number,
+  ) {
+    await expect(this.getDeletedFileByName(projectName, fileName)).toHaveCount(0, {
+      timeout: timeout ?? DeletedPage.DEFAULT_TIMEOUT,
+    });
   }
 
   /**
    * Waits for a specific project to disappear from the trash
    * @param projectName - The name of the project
+   * @param timeout - Optional timeout in milliseconds
    */
-  private async waitForProjectToDisappear(projectName: string) {
-    await expect(this.getDeletedProjectRowByName(projectName)).toHaveCount(0);
+  private async waitForProjectToDisappear(projectName: string, timeout?: number) {
+    await expect(this.getDeletedProjectRowByName(projectName)).toHaveCount(0, {
+      timeout: timeout ?? DeletedPage.DEFAULT_TIMEOUT,
+    });
   }
 
   /**
    * Waits until the trash is completely empty
    * Verifies that no deleted items remain and the empty message is visible
+   * @param timeout - Optional timeout in milliseconds
    */
-  private async waitUntilTrashIsEmpty() {
-    await expect(this.deletedProjectRow).toHaveCount(0);
-    await expect(this.emptyTrashMessage).toBeVisible();
+  private async waitUntilTrashIsEmpty(timeout?: number) {
+    const timeoutValue = timeout ?? DeletedPage.DEFAULT_TIMEOUT;
+    await expect(this.deletedProjectRow).toHaveCount(0, { timeout: timeoutValue });
+    await expect(this.emptyTrashMessage).toBeVisible({ timeout: timeoutValue });
   }
 
   /* -------------------------------------------------
@@ -250,7 +269,7 @@ export class DeletedPage extends BasePage {
    * Verifies that a deleted file is visible in the trash
    * @param projectName - The name of the project containing the file
    * @param fileName - The name of the deleted file
-   * @param timeout - Optional timeout in milliseconds
+   * @param timeout - Optional timeout in milliseconds (defaults to 10000ms)
    */
   async isDeletedFileVisible(
     projectName: string,
@@ -258,26 +277,29 @@ export class DeletedPage extends BasePage {
     timeout?: number,
   ) {
     await expect(this.getDeletedFileByName(projectName, fileName)).toBeVisible({
-      timeout,
+      timeout: timeout ?? DeletedPage.DEFAULT_TIMEOUT,
     });
   }
 
   /**
    * Verifies that a deleted project is visible in the trash
    * @param projectName - The name of the deleted project
-   * @param timeout - Optional timeout in milliseconds
+   * @param timeout - Optional timeout in milliseconds (defaults to 10000ms)
    */
   async isDeletedProjectVisible(projectName: string, timeout?: number) {
     await expect(this.getDeletedProjectRowByName(projectName)).toBeVisible({
-      timeout,
+      timeout: timeout ?? DeletedPage.DEFAULT_TIMEOUT,
     });
   }
 
   /**
    * Verifies that the empty trash message is visible
    * This indicates that there are no deleted items in the trash
+   * @param timeout - Optional timeout in milliseconds (defaults to 10000ms)
    */
-  async isEmptyTrashMessageVisible() {
-    await expect(this.emptyTrashMessage).toBeVisible();
+  async isEmptyTrashMessageVisible(timeout?: number) {
+    await expect(this.emptyTrashMessage).toBeVisible({
+      timeout: timeout ?? DeletedPage.DEFAULT_TIMEOUT,
+    });
   }
 }
