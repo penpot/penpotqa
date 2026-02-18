@@ -476,14 +476,14 @@ mainTest.describe(() => {
 
       await commentsPanelPage.enterCommentText(comment);
       await commentsPanelPage.clickCommentMentionButton();
-      await commentsPanelPage.clickFirstMentionMenuItem();
+      await commentsPanelPage.clickMentionMenuItemByName(firstEditor);
       await commentsPanelPage.clickPostCommentButton();
       await commentsPanelPage.checkCommentCountInList(1);
 
       await mainPage.clickViewportByCoordinates(100, 100, 2);
       await commentsPanelPage.enterCommentText(comment);
       await commentsPanelPage.clickCommentMentionButton();
-      await commentsPanelPage.clickFirstMentionMenuItem();
+      await commentsPanelPage.clickMentionMenuItemByName(firstEditor);
       await commentsPanelPage.clickPostCommentButton();
       await commentsPanelPage.checkCommentCountInList(2);
 
