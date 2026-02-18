@@ -71,7 +71,7 @@ export class TokensComponent {
       .filter({ hasText: 'Delete token' });
 
     this.expandTokensButton = this.tokenSideBar
-      .locator('[class*="title_bar__title-wrapper"]')
+      .locator('[class*="layer-button-wrapper"]')
       .getByRole('button');
 
     this.editTokenMenuItem = page
