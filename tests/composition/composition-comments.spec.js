@@ -423,6 +423,7 @@ mainTest.describe(() => {
     await commentsPanelPage.clickCreateCommentButton();
     await commentsPanelPage.selectShowYourMentionsOption();
 
+    await commentsPanelPage.checkCommentCount(1);
     await commentsPanelPage.checkCommentCountInList(1);
     await commentsPanelPage.isCommentDisplayedInCommentsPanel(
       comment + ` ${firstEditor}`,
