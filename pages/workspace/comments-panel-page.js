@@ -220,10 +220,6 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.commentMentionButton.click();
   }
 
-  async clickFirstMentionMenuItem() {
-    await this.mentionMenuItem.first().click();
-  }
-
   async clickMentionMenuItemByName(name) {
     await this.mentionMenuItem.filter({ hasText: name }).click();
   }

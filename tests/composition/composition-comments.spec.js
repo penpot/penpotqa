@@ -261,7 +261,7 @@ mainTest.describe(() => {
         await mainPage.zoom(10, 10, 3);
         await mainPage.clickViewportByCoordinates(600, 300, 2);
         await commentsPanelPage.clickCommentMentionButton();
-        await commentsPanelPage.clickFirstMentionMenuItem();
+        await commentsPanelPage.clickMentionMenuItemByName(firstViewer);
         await commentsPanelPage.clickPostCommentButton();
       }
       await mainPage.backToDashboardFromFileEditor();
