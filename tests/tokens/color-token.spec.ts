@@ -46,7 +46,7 @@ mainTest.describe(() => {
 
   const colorToken: MainToken<TokenClass> = {
     class: TokenClass.Color,
-    name: 'global.color',
+    name: 'color',
     value: sampleData.color.redHexCode,
   };
 
@@ -105,7 +105,7 @@ mainTest.describe(() => {
     async () => {
       const secondColorToken: MainToken<TokenClass> = {
         class: TokenClass.Color,
-        name: 'color.secondary',
+        name: 'color-secondary',
         value: sampleData.color.blueHexCode,
       };
 
