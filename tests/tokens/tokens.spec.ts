@@ -673,9 +673,9 @@ mainTest.describe(() => {
       await designPanelPage.checkFontStyle('900');
 
       await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken2.name);
-      // await mainPage.checkImportErrorMessage(
-      //   `Error setting font weight/style. This font style does not exist in the current font`,
-      // );
+      await mainPage.checkImportErrorMessage(
+        `Error setting font weight/style. This font style does not exist in the current font`,
+      );
       await mainPage.waitForChangeIsSaved();
       await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken2.name);
       await designPanelPage.checkFontStyle('400 Italic');
