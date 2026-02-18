@@ -25,7 +25,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentReplyCommentsPanelText = page.getByText('1 reply', { exact: true });
     this.postCommentButton = page.getByRole('button', { name: 'Post' }).first();
     this.commentThreadIcon = page.locator(
-      'div[class*="comments-container"] div[data-testid*="floating-thread-bubble"]',
+      '[data-testid^="floating-thread-bubble-"]',
     );
     this.commentThreadPreview = page.locator(
       'div[class*="comments-container"] [class*="floating-thread-item-wrapper"]',
@@ -224,9 +224,14 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.mentionMenuItem.first().click();
   }
 
+  async clickMentionMenuItemByName(name) {
+    await this.mentionMenuItem.filter({ hasText: name }).click();
+  }
+
   async selectShowYourMentionsOption() {
     await this.commentsDropdown.click();
     await this.showYourMentionsOption.click();
+    await expect(this.showYourMentionsOption).not.toBeVisible();
   }
 
   async checkCommentCount(count) {

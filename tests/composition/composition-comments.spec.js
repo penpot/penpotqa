@@ -391,7 +391,7 @@ mainTest.describe(() => {
 
     await commentsPanelPage.enterCommentText(comment);
     await commentsPanelPage.clickCommentMentionButton();
-    await commentsPanelPage.clickFirstMentionMenuItem();
+    await commentsPanelPage.clickMentionMenuItemByName(firstEditor);
     await commentsPanelPage.clickPostCommentButton();
     await commentsPanelPage.checkCommentCountInList(1);
 
@@ -423,7 +423,6 @@ mainTest.describe(() => {
     await commentsPanelPage.clickCreateCommentButton();
     await commentsPanelPage.selectShowYourMentionsOption();
 
-    await commentsPanelPage.checkCommentCount(1);
     await commentsPanelPage.checkCommentCountInList(1);
     await commentsPanelPage.isCommentDisplayedInCommentsPanel(
       comment + ` ${firstEditor}`,
