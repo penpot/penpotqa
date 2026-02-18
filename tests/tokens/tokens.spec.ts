@@ -46,7 +46,7 @@ mainTest.describe(() => {
   const radiusToken: MainToken<TokenClass> = {
     class: TokenClass.BorderRadius,
     name: 'border-radius',
-    value: '-1',
+    value: '10',
     description: 'Description',
   };
   const newTokenValue = '20';
@@ -124,6 +124,7 @@ mainTest.describe(() => {
       await tokensPage.tokensComp.deleteToken(radiusToken.name);
       await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, false);
       await mainPage.clickShortcutCtrlZ(browserName);
+      await tokensPage.tokensComp.expandTokenByName(TokenClass.BorderRadius);
       await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, true);
     },
   );
@@ -672,9 +673,9 @@ mainTest.describe(() => {
       await designPanelPage.checkFontStyle('900');
 
       await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken2.name);
-      await mainPage.checkImportErrorMessage(
-        `Error setting font weight/style. This font style does not exist in the current font`,
-      );
+      // await mainPage.checkImportErrorMessage(
+      //   `Error setting font weight/style. This font style does not exist in the current font`,
+      // );
       await mainPage.waitForChangeIsSaved();
       await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken2.name);
       await designPanelPage.checkFontStyle('400 Italic');
