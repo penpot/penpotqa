@@ -83,6 +83,10 @@ export class TokensComponent {
     return this.page.getByRole('button', { name: `Add token: ${tokenClass}` });
   }
 
+  private async getTokenTreeButton(tokenClass: TokenClass): Promise<Locator> {
+    return this.tokenSideBar.getByRole('button', { name: `${tokenClass}` }).first();
+  }
+
   private async fillTokenData(
     token:
       | TypographyToken<TokenClass>
@@ -331,5 +335,10 @@ export class TokensComponent {
     for (let i = 0; i < count; i++) {
       await this.expandTokensButton.nth(count - 1 - i).click();
     }
+  }
+
+  async expandTokenByName(tokenClass: TokenClass) {
+    const tokenName = await this.getTokenTreeButton(tokenClass);
+    await tokenName.click();
   }
 }
