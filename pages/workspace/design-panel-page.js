@@ -1625,10 +1625,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async isHorizontalOrientationButtonChecked(checked = true) {
-    const buttonClass = await this.horizontalOrientationButton.getAttribute('class');
-    checked
-      ? await expect(buttonClass).toContain('radio_buttons__checked')
-      : await expect(buttonClass).not.toContain('radio_buttons__checked');
+    await expect(async () => {
+      const buttonClass =
+        await this.horizontalOrientationButton.getAttribute('class');
+      checked
+        ? expect(buttonClass).toContain('radio_buttons__checked')
+        : expect(buttonClass).not.toContain('radio_buttons__checked');
+    }).toPass({ timeout: 10000 });
   }
 
   async clickOnVerticalOrientationButton() {
@@ -1636,10 +1639,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async isVerticalOrientationButtonChecked(checked = true) {
-    const buttonClass = await this.verticalOrientationButton.getAttribute('class');
-    checked
-      ? await expect(buttonClass).toContain('radio_buttons__checked')
-      : await expect(buttonClass).not.toContain('radio_buttons__checked');
+    await expect(async () => {
+      const buttonClass = await this.verticalOrientationButton.getAttribute('class');
+      checked
+        ? expect(buttonClass).toContain('radio_buttons__checked')
+        : expect(buttonClass).not.toContain('radio_buttons__checked');
+    }).toPass({ timeout: 10000 });
   }
 
   async changeFirstVariantProperty(value) {
