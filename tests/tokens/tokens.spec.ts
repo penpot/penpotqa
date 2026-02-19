@@ -46,7 +46,7 @@ mainTest.describe(() => {
   const radiusToken: MainToken<TokenClass> = {
     class: TokenClass.BorderRadius,
     name: 'border-radius',
-    value: '-1',
+    value: '10',
     description: 'Description',
   };
   const newTokenValue = '20';
@@ -124,6 +124,7 @@ mainTest.describe(() => {
       await tokensPage.tokensComp.deleteToken(radiusToken.name);
       await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, false);
       await mainPage.clickShortcutCtrlZ(browserName);
+      await tokensPage.tokensComp.expandTokenByName(TokenClass.BorderRadius);
       await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, true);
     },
   );
