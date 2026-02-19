@@ -242,9 +242,8 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async isLayerPresentOnLayersTab(layer, isVisible) {
-    const layerSel = this.page.locator(
-      `div[data-testid="layer-row"]:has(span:text-is("${layer}"))`,
-    );
+    const layerSel = this.layersRows.filter({ hasText: layer });
+
     if (isVisible) {
       await expect(layerSel).toBeVisible();
     } else {
