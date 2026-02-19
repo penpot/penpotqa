@@ -41,13 +41,13 @@ mainTest.describe(() => {
   let designPanelPage: DesignPanelPage;
   let assetsPanelPage: AssetsPanelPage;
 
-  mainTest.beforeEach(async ({ page, browserName }) => {
+  mainTest.beforeEach(async ({ page }) => {
     tokensPage = new TokensPage(page);
     mainPage = new MainPage(page);
     designPanelPage = new DesignPanelPage(page);
     assetsPanelPage = new AssetsPanelPage(page);
 
-    await mainPage.createDefaultTextLayerByCoordinates(500, 500, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(500, 500);
     await tokensPage.tokensTab.click();
   });
 

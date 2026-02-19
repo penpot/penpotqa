@@ -191,29 +191,24 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(
-  qase(2361, 'Apply imported font size tokens'),
-  async ({ page, browserName }) => {
-    const mainPage: MainPage = new MainPage(page);
-    const dashboardPage: DashboardPage = new DashboardPage(page);
-    const assetsPanelPage: AssetsPanelPage = new AssetsPanelPage(page);
-    const tokensPage: TokensPage = new TokensPage(page);
+mainTest(qase(2361, 'Apply imported font size tokens'), async ({ page }) => {
+  const mainPage: MainPage = new MainPage(page);
+  const dashboardPage: DashboardPage = new DashboardPage(page);
+  const assetsPanelPage: AssetsPanelPage = new AssetsPanelPage(page);
+  const tokensPage: TokensPage = new TokensPage(page);
 
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-    await mainPage.clickMoveButton();
-    await tokensPage.clickTokensTab();
-    await tokensPage.toolsComp.clickOnTokenToolsButton();
-    await tokensPage.toolsComp.importTokens(
-      'documents/fluid-typescale-tokens-1.json',
-    );
-    await tokensPage.setsComp.clickOnSetCheckboxByName('fluid-typescale-tokens-1');
-    await tokensPage.tokensComp.expandAllTokens();
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
-    await tokensPage.tokensComp.clickOnTokenWithName('font-scale.const.max.f0');
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName('font-scale.const.max.f0');
-    await mainPage.waitForResizeHandlerVisible();
-    await assetsPanelPage.checkFontSize('18');
-  },
-);
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
+  await tokensPage.clickTokensTab();
+  await tokensPage.toolsComp.clickOnTokenToolsButton();
+  await tokensPage.toolsComp.importTokens('documents/fluid-typescale-tokens-1.json');
+  await tokensPage.setsComp.clickOnSetCheckboxByName('fluid-typescale-tokens-1');
+  await tokensPage.tokensComp.expandAllTokens();
+  await mainPage.createDefaultTextLayerByCoordinates(100, 200);
+  await tokensPage.tokensComp.clickOnTokenWithName('font-scale.const.max.f0');
+  await mainPage.waitForChangeIsSaved();
+  await tokensPage.tokensComp.isTokenAppliedWithName('font-scale.const.max.f0');
+  await mainPage.waitForResizeHandlerVisible();
+  await assetsPanelPage.checkFontSize('18');
+});

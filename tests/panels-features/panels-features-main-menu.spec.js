@@ -47,13 +47,19 @@ mainTest(
 
     await designPanelPage.clickAddGridButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('square-grid-default.png');
+    await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+      mask: mainPage.maskViewport(),
+    });
     await mainPage.pressHideShowGridsShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot('square-grid-hide.png');
+    await expect(mainPage.viewport).toHaveScreenshot('square-grid-hide.png', {
+      mask: mainPage.maskViewport(),
+    });
     await mainPage.pressHideShowGridsShortcut();
     await mainPage.waitForChangeIsSaved(browserName);
-    await expect(mainPage.createdLayer).toHaveScreenshot('square-grid-default.png');
+    await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+      mask: mainPage.maskViewport(),
+    });
   },
 );
 
@@ -63,14 +69,14 @@ mainTest(qase(816, 'PF-98-1 Hide/show rulers via main menu'), async () => {
   await mainPage.clickHideRulersMainMenuSubItem();
   await mainPage.clickViewportOnce();
   await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickShowRulersMainMenuSubItem();
   await mainPage.clickViewportOnce();
   await expect(mainPage.viewport).toHaveScreenshot('viewport-default.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
 });
 
@@ -80,11 +86,11 @@ mainTest(
     await mainPage.clickViewportTwice();
     await mainPage.pressHideShowRulersShortcut(browserName);
     await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
     await mainPage.pressHideShowRulersShortcut(browserName);
     await expect(mainPage.viewport).toHaveScreenshot('viewport-default.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   },
 );
@@ -124,13 +130,13 @@ mainTest(qase(820, 'PF-102 Hide/show board names'), async () => {
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickHideBoardNamesMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('board-hide-name.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickShowBoardNamesMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('board-show-name.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
 });
 
@@ -138,19 +144,19 @@ mainTest(qase(821, 'PF-103-1 Hide/show pixel grid via main menu'), async () => {
   await mainPage.clickViewportTwice();
   await mainPage.increaseZoom(10);
   await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickHidePixelGridMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-pixel-grid.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
   await mainPage.clickMainMenuButton();
   await mainPage.clickViewMainMenuItem();
   await mainPage.clickShowPixelGridMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
 });
 
@@ -160,15 +166,15 @@ mainTest(
     await mainPage.clickViewportTwice();
     await mainPage.increaseZoom(10);
     await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
     await mainPage.pressHideShowPixelGridShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-pixel-grid.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
     await mainPage.pressHideShowPixelGridShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   },
 );
@@ -177,17 +183,17 @@ mainTest(
   qase(822, 'PF-104 Hide/show UI via main menu and shortcut "/"'),
   async () => {
     await expect(mainPage.viewport).toHaveScreenshot('canvas-show-ui.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickMainMenuButton();
     await mainPage.clickViewMainMenuItem();
     await mainPage.clickShowHideUIMainMenuSubItem();
     await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-ui.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
     await mainPage.pressHideShowUIShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('canvas-show-ui.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   },
 );
@@ -199,21 +205,21 @@ mainTest(
     await mainPage.createDefaultEllipseByCoordinates(100, 600);
     await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot('layers-all-unselected.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickMainMenuButton();
     await mainPage.clickEditMainMenuItem();
     await mainPage.clickSelectAllMainMenuSubItem();
     await expect(mainPage.viewport).toHaveScreenshot('layers-all-selected.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
     await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot('layers-all-unselected.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
     await mainPage.pressSelectAllShortcut(browserName);
     await expect(mainPage.viewport).toHaveScreenshot('layers-all-selected.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   },
 );

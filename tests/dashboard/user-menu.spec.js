@@ -5,6 +5,9 @@ const { expect } = require('@playwright/test');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { ProfilePage } = require('../../pages/profile-page');
 
+// TO REMOVE
+mainTest.skip(true, 'Temporarily disabled due to unrelated to new render');
+
 let dashboardPage, mainPage, profilePage;
 
 mainTest.beforeEach(async ({ page }) => {

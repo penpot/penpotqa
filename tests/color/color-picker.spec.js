@@ -75,7 +75,9 @@ mainTest(qase([1035], 'Use Recent colors'), async () => {
   await colorPalettePage.clickColorBullet(false, 0);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.createdLayer).toHaveScreenshot('board-recent-color.png');
+  await expect(mainPage.viewport).toHaveScreenshot('board-recent-color.png', {
+    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+  });
 });
 
 mainTest(qase([1036], 'Use colors from File library'), async () => {
@@ -91,8 +93,11 @@ mainTest(qase([1036], 'Use colors from File library'), async () => {
   await colorPalettePage.clickColorBullet();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.createdLayer).toHaveScreenshot(
+  await expect(mainPage.viewport).toHaveScreenshot(
     'rectangle-file-library-color.png',
+    {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    },
   );
 });
 
@@ -182,18 +187,18 @@ mainTest(
     await colorPalettePage.setHex('#B1B2B5');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'rectangle-color-B1B2B5.png',
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('rectangle-color-B1B2B5.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await mainPage.pressColorsPaletteShortcut();
     await mainPage.isColorsPaletteDisplayed();
     await expect(mainPage.typographiesColorsBottomPanel).toHaveScreenshot(
       'colors-panel.png',
     );
     await colorPalettePage.selectColorBulletFromPalette('#FF0000');
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'rectangle-color-FF0000.png',
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('rectangle-color-FF0000.png', {
+      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    });
     await mainPage.pressColorsPaletteShortcut();
     await mainPage.isColorsPaletteNotDisplayed();
   },
