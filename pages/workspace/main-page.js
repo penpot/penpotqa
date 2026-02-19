@@ -224,13 +224,15 @@ exports.MainPage = class MainPage extends BasePage {
     );
 
     //Shortcuts panel
-    this.shortcutsPanel = page.locator(
-      'div[class="main_ui_workspace_sidebar_shortcuts__shortcuts-list"]',
+    this.shortcutsContainer = this.page.locator(
+      '.main_ui_workspace_sidebar_shortcuts__shortcuts',
     );
-    this.closeShortcutsPanelIcon = page.locator(
-      'button[class*="shortcuts-close-button"]',
+    this.shortcutsPanel = this.shortcutsContainer.locator(
+      '.main_ui_workspace_sidebar_shortcuts__shortcuts-list',
     );
-
+    this.closeShortcutsPanelIcon = this.shortcutsContainer.getByRole('button', {
+      name: 'Close',
+    });
     this.fileLeftSidebarAside = page.getByTestId('left-sidebar');
     this.fileRightSidebarAside = page.getByTestId('right-sidebar');
 
