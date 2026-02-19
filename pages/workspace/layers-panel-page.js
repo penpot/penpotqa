@@ -231,14 +231,13 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async hideUnhideLayerByIconOnLayersTab(layer, hide = true) {
-    const layerRow = this.page.locator(
-      `div[data-testid="layer-row"]:has(span:text-is("${layer}"))`,
-    );
-    await layerRow.hover();
+    const layerRow = this.layersRows.filter({ hasText: layer });
+
+    await layerRow.click();
     if (hide) {
-      await layerRow.locator('button[title="Hide"]').click({ force: true });
+      await layerRow.getByRole('button', { name: 'Hide' }).first().click();
     } else {
-      await layerRow.locator('button[title="Show"]').click({ force: true });
+      await layerRow.getByRole('button', { name: 'Show' }).first().click();
     }
   }
 
