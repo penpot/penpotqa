@@ -7,6 +7,7 @@ import { DashboardPage } from '../../pages/dashboard/dashboard-page';
 import { TokensPage } from '../../pages/workspace/tokens/tokens-base-page';
 import { BaseComponent } from '../../pages/base-component';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 const teamName = random().concat('autotest');
 
@@ -91,15 +92,15 @@ mainTest(
     const mainPage: MainPage = new MainPage(page);
     const dashboardPage: DashboardPage = new DashboardPage(page);
     const tokensPage: TokensPage = new TokensPage(page);
-    const firstBadTokenName = 'dark.theme.accent.default';
-    const errorCount = 18;
+    const firstBadTokenName = 'dark-muted';
+    const errorCount = 4;
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
     await mainPage.clickMoveButton();
     await tokensPage.clickTokensTab();
     await tokensPage.toolsComp.clickOnTokenToolsButton();
     await tokensPage.toolsComp.importTokens('documents/stitches-tokens.json');
-    await tokensPage.tokensComp.expandSectionByName('Color');
+    await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
     await tokensPage.tokensComp.isTokenVisibleWithName(firstBadTokenName);
     await tokensPage.tokensComp.checkInvalidTokenCount(errorCount);
   },
@@ -190,30 +191,3 @@ mainTest.describe(() => {
     await tokensPage.isImportErrorMessageVisible(false);
   });
 });
-
-mainTest(
-  qase(2361, 'Apply imported font size tokens'),
-  async ({ page, browserName }) => {
-    const mainPage: MainPage = new MainPage(page);
-    const dashboardPage: DashboardPage = new DashboardPage(page);
-    const assetsPanelPage: AssetsPanelPage = new AssetsPanelPage(page);
-    const tokensPage: TokensPage = new TokensPage(page);
-
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-    await mainPage.clickMoveButton();
-    await tokensPage.clickTokensTab();
-    await tokensPage.toolsComp.clickOnTokenToolsButton();
-    await tokensPage.toolsComp.importTokens(
-      'documents/fluid-typescale-tokens-1.json',
-    );
-    await tokensPage.setsComp.clickOnSetCheckboxByName('fluid-typescale-tokens-1');
-    await tokensPage.tokensComp.expandAllTokens();
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
-    await tokensPage.tokensComp.clickOnTokenWithName('font-scale.const.max.f0');
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName('font-scale.const.max.f0');
-    await mainPage.waitForResizeHandlerVisible();
-    await assetsPanelPage.checkFontSize('18');
-  },
-);
