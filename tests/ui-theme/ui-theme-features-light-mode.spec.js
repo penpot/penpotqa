@@ -34,10 +34,10 @@ test.beforeEach(async ({ page }) => {
   await profilePage.selectLightTheme();
 });
 
-mainTest(
+registerTest(
   qase(
-    [1677, 1678, 1679, 1680],
-    'Check Projects page, Check Fonts page, Check Teams page (Settings tab), Check "Your Account" page (Profile tab)',
+    [1680, 1681, 1682, 1683, 1685, 1677, 1678],
+    'Check Light UI them in: Projects, "Your Account" (Profile tab), ',
   ),
   async ({}) => {
     await test.step('(1680) Check "Your Account" page (Profile tab)', async () => {
@@ -54,35 +54,6 @@ mainTest(
       );
     });
 
-    await test.step('(1677) Check Projects page', async () => {
-      await profilePage.backToDashboardFromAccount();
-      await expect(dashboardPage.dashboardSection).toHaveScreenshot(
-        'dashboard-image.png',
-        {
-          mask: [profilePage.profileMenuButton, teamPage.teamCurrentNameDiv],
-          maxDiffPixelRatio: 0.01,
-        },
-      );
-    });
-
-    await test.step('(1678) Check Fonts page', async () => {
-      await dashboardPage.openSidebarItem('Fonts');
-      await expect(teamPage.teamSettingsSection).toHaveScreenshot('fonts-image.png');
-    });
-
-    await test.step('(1679) Check Teams page (Settings tab)', async () => {
-      await teamPage.openTeamSettingsPageViaOptionsMenu();
-      await teamPage.checkTeamSettingsTabContent();
-    });
-  },
-);
-
-registerTest(
-  qase(
-    [1681, 1682, 1683, 1685],
-    'Check Layers tab, Check Design tab, Check Assets tab, Check Inspect tab',
-  ),
-  async ({}) => {
     await test.step('(1681, 1682) Check Layers and Design tab', async () => {
       await profilePage.backToDashboardFromAccount();
       await dashboardPage.createFileViaPlaceholder();
@@ -125,6 +96,41 @@ registerTest(
         },
       );
     });
+
+    await test.step('(1677) Check Projects page', async () => {
+      await mainPage.backToDashboardFromFileEditor();
+      await expect(dashboardPage.dashboardSection).toHaveScreenshot(
+        'dashboard-image.png',
+        {
+          mask: [profilePage.profileMenuButton, teamPage.teamCurrentNameDiv],
+          maxDiffPixelRatio: 0.01,
+        },
+      );
+    });
+
+    await test.step('(1687) Check Interactions tab', async () => {
+      await profilePage.backToDashboardFromAccount();
+      await dashboardPage.hideLibrariesAndTemplatesCarrousel();
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+      await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await mainPage.waitForChangeIsSaved();
+      const newPage = await viewModePage.clickViewModeButton();
+      viewModePage = new ViewModePage(newPage);
+      await viewModePage.waitForViewerSection(15000);
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+        'view-mode-page-image.png',
+        { maxDiffPixelRatio: 0.0002 },
+      );
+    });
+
+    await test.step('(1686) Check Inspect tab', async () => {
+      await viewModePage.openInspectTab();
+      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+        'view-mode-inspect-page-image.png',
+        { maxDiffPixelRatio: 0.0002 },
+      );
+    });
   },
 );
 
@@ -155,13 +161,3 @@ registerTest(
     });
   },
 );
-
-test.afterEach(async ({ page }) => {
-  const profilePageLocal = new ProfilePage(page);
-  const teamPageLocal = new TeamPage(page);
-  await profilePageLocal.goToAccountPage();
-  await profilePageLocal.openSettingsTab();
-  await profilePageLocal.selectDarkTheme();
-  await profilePageLocal.backToDashboardFromAccount();
-  await teamPageLocal.deleteTeam(teamName);
-});
