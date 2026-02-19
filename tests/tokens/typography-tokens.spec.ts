@@ -53,7 +53,7 @@ mainTest.describe(() => {
 
   const TYPO_TOKEN: TypographyToken<TokenClass> = {
     class: TokenClass.Typography,
-    name: 'global.typography',
+    name: 'typography',
     fontFamily: 'Karla',
     fontWeight: '400 Italic',
     fontSize: '18px',
@@ -164,7 +164,7 @@ mainTest.describe(() => {
   mainTest(
     qase([2606, 2607], 'Switch between token forms and validate invalid references'),
     async () => {
-      const BAD_TOKEN_ALIAS = '{non.existent.token}';
+      const BAD_TOKEN_ALIAS = '{non-existent-token}';
 
       await mainTest.step('Add a typography token and fill data', async () => {
         await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
@@ -228,27 +228,27 @@ mainTest.describe(() => {
 
       const FF_TOKEN: MainToken<TokenClass> = {
         class: TokenClass.FontFamily,
-        name: 'global.fontFamily',
+        name: 'fontFamily',
         value: 'Source Sans Pro',
       };
       const FS_TOKEN: MainToken<TokenClass> = {
         class: TokenClass.FontSize,
-        name: 'global.fontSize',
+        name: 'fontSize',
         value: '20',
       };
       const FW_TOKEN: MainToken<TokenClass> = {
         class: TokenClass.FontWeight,
-        name: 'black.font.weight',
+        name: 'black-font-weight',
         value: 'black',
       };
       const LS_TOKEN: MainToken<TokenClass> = {
         class: TokenClass.LetterSpacing,
-        name: 'global.letter.spacing',
+        name: 'letter-spacing',
         value: '10',
       };
       const CLEAN_TYPO_TOKEN: TypographyToken<TokenClass> = {
         class: TokenClass.Typography,
-        name: 'global.clean.typography',
+        name: 'clean-typography',
         description: 'Autotest typography token',
         textDecoration: 'none',
       };

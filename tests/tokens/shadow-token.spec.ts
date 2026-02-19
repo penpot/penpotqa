@@ -59,7 +59,7 @@ mainTest.describe(() => {
     async () => {
       const SHADOW_TOKEN: ShadowToken<TokenClass> = {
         class: TokenClass.Shadow,
-        name: 'global.shadow',
+        name: 'shadow',
         shadows: [
           {
             color: sampleData.color.redHexCode,
@@ -150,7 +150,7 @@ mainTest.describe(() => {
     async () => {
       const MULTI_SHADOW_TOKEN: ShadowToken<TokenClass> = {
         class: TokenClass.Shadow,
-        name: 'global.multi.shadow',
+        name: 'multi-shadow',
         shadows: [
           {
             xOffset: '-40',
@@ -261,7 +261,7 @@ mainTest.describe(() => {
     async () => {
       const SHADOW_TOKEN: ShadowToken<TokenClass> = {
         class: TokenClass.Shadow,
-        name: 'global.shadow.first',
+        name: 'shadow-first',
         shadows: [
           {
             color: sampleData.color.redHexCode,
@@ -272,7 +272,7 @@ mainTest.describe(() => {
 
       const SECOND_SHADOW_TOKEN: ShadowToken<TokenClass> = {
         class: TokenClass.Shadow,
-        name: 'global.shadow.second',
+        name: 'shadow-second',
         shadows: [
           {
             color: sampleData.color.redHexCode,
