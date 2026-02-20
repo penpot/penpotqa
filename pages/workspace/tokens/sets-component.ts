@@ -79,7 +79,9 @@ export class SetsComponent {
   }
 
   async checkActiveSetsCountByThemeName(name: string, count: string) {
-    const themeRow = await this.page.getByTitle(name).locator('//../..');
+    const themeRow = this.page
+      .locator('[class*="theme-row"]')
+      .filter({ has: this.page.getByText(name, { exact: true }) });
     await expect(themeRow.getByTitle('Edit theme and manage sets')).toHaveText(
       `${count} active sets`,
     );
