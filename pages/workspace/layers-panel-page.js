@@ -231,9 +231,9 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async hideUnhideLayerByIconOnLayersTab(layer, hide = true) {
-    const layerRow = this.layersRows.filter({ hasText: layer });
-
+    const layerRow = this.getLayerRowsBy(layer);
     await layerRow.click();
+
     if (hide) {
       await layerRow.getByRole('button', { name: 'Hide' }).first().click();
     } else {
@@ -242,7 +242,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async isLayerPresentOnLayersTab(layer, isVisible) {
-    const layerSel = this.layersRows.filter({ hasText: layer });
+    const layerSel = this.getLayerRowsBy(layer);
 
     if (isVisible) {
       await expect(layerSel).toBeVisible();
