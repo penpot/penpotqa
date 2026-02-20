@@ -559,123 +559,133 @@ mainTest.describe(() => {
       await mainPage.isCreatedLayerVisible();
       await designPanelPage.checkSizePresetsOptions(sizePresetsOptions);
 
-      // Select iPhone 13/14 preset
-      await designPanelPage.selectSizePresetsOption('iPhone 13/14 ');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('390');
-      await designPanelPage.checkSizeHeight('844');
-      await designPanelPage.clickOnHorizontalOrientationButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isHorizontalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('844');
-      await designPanelPage.checkSizeHeight('390');
+      await mainTest.step('Select iPhone 13/14 preset', async () => {
+        await designPanelPage.selectSizePresetsOption('iPhone 13/14 ');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('390');
+        await designPanelPage.checkSizeHeight('844');
+        await designPanelPage.clickOnHorizontalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('844');
+        await designPanelPage.checkSizeHeight('390');
+      });
 
-      // Select iPad preset
-      await designPanelPage.selectSizePresetsOption('iPad');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('768');
-      await designPanelPage.checkSizeHeight('1024');
-      await designPanelPage.clickOnHorizontalOrientationButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.checkSizeWidth('1024');
-      await designPanelPage.checkSizeHeight('768');
+      await mainTest.step('Select iPad preset', async () => {
+        await designPanelPage.selectSizePresetsOption('iPad');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('768');
+        await designPanelPage.checkSizeHeight('1024');
+        await designPanelPage.clickOnHorizontalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkSizeWidth('1024');
+        await designPanelPage.checkSizeHeight('768');
+      });
 
-      // Select Mobile preset
-      await designPanelPage.selectSizePresetsOption('Mobile');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('360');
-      await designPanelPage.checkSizeHeight('640');
-      await designPanelPage.clickOnHorizontalOrientationButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.checkSizeWidth('640');
-      await designPanelPage.checkSizeHeight('360');
+      await mainTest.step('Select Mobile preset', async () => {
+        await designPanelPage.selectSizePresetsOption('Mobile');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('360');
+        await designPanelPage.checkSizeHeight('640');
+        await designPanelPage.clickOnHorizontalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkSizeWidth('640');
+        await designPanelPage.checkSizeHeight('360');
+      });
 
-      // Select Google Pixel 6a preset
-      await designPanelPage.selectSizePresetsOption('Google Pixel 6a/6');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('412');
-      await designPanelPage.checkSizeHeight('915');
-      await designPanelPage.clickOnHorizontalOrientationButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isHorizontalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('915');
-      await designPanelPage.checkSizeHeight('412');
+      await mainTest.step('Select Google Pixel 6a preset', async () => {
+        await designPanelPage.selectSizePresetsOption('Google Pixel 6a/6');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('412');
+        await designPanelPage.checkSizeHeight('915');
+        await designPanelPage.clickOnHorizontalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('915');
+        await designPanelPage.checkSizeHeight('412');
+      });
 
-      // Select Samsung S22 preset
-      await designPanelPage.selectSizePresetsOption('Samsung Galaxy S22');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('360');
-      await designPanelPage.checkSizeHeight('780');
-      await designPanelPage.clickOnHorizontalOrientationButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isHorizontalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('780');
-      await designPanelPage.checkSizeHeight('360');
+      await mainTest.step('Select Samsung S22 preset', async () => {
+        await designPanelPage.selectSizePresetsOption('Samsung Galaxy S22');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('360');
+        await designPanelPage.checkSizeHeight('780');
+        await designPanelPage.clickOnHorizontalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('780');
+        await designPanelPage.checkSizeHeight('360');
+      });
 
-      // Select Surface Pro 4/5/6/7 preset
-      await designPanelPage.selectSizePresetsOption('Surface Pro 4/5/6/7');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isHorizontalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('1368');
-      await designPanelPage.checkSizeHeight('912');
-      await designPanelPage.clickOnVerticalOrientationButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('912');
-      await designPanelPage.checkSizeHeight('1368');
+      await mainTest.step('Select Surface Pro 4/5/6/7 preset', async () => {
+        await designPanelPage.selectSizePresetsOption('Surface Pro 4/5/6/7');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('1368');
+        await designPanelPage.checkSizeHeight('912');
+        await designPanelPage.clickOnVerticalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('912');
+        await designPanelPage.checkSizeHeight('1368');
+      });
 
-      // Select Remarkable 2 preset
-      await designPanelPage.selectSizePresetsOption('Remarkable 2');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('1404');
-      await designPanelPage.checkSizeHeight('1872');
-      await designPanelPage.clickOnHorizontalOrientationButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isHorizontalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('1872');
-      await designPanelPage.checkSizeHeight('1404');
+      await mainTest.step('Select Remarkable 2 preset', async () => {
+        await designPanelPage.selectSizePresetsOption('Remarkable 2');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('1404');
+        await designPanelPage.checkSizeHeight('1872');
+        await designPanelPage.clickOnHorizontalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('1872');
+        await designPanelPage.checkSizeHeight('1404');
+      });
 
-      // Select Web 1024 preset
-      await designPanelPage.selectSizePresetsOption('Web 1024');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isHorizontalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('1024');
-      await designPanelPage.checkSizeHeight('768');
-      await designPanelPage.clickOnVerticalOrientationButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('768');
-      await designPanelPage.checkSizeHeight('1024');
+      await mainTest.step('Select Web 1024 preset', async () => {
+        await designPanelPage.selectSizePresetsOption('Web 1024');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('1024');
+        await designPanelPage.checkSizeHeight('768');
+        await designPanelPage.clickOnVerticalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('768');
+        await designPanelPage.checkSizeHeight('1024');
+      });
 
-      // Select A4 preset
-      await designPanelPage.selectSizePresetsOption('A4');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('794');
-      await designPanelPage.checkSizeHeight('1123');
-      await designPanelPage.clickOnHorizontalOrientationButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isHorizontalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('1123');
-      await designPanelPage.checkSizeHeight('794');
+      await mainTest.step('Select A4 preset', async () => {
+        await designPanelPage.selectSizePresetsOption('A4');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('794');
+        await designPanelPage.checkSizeHeight('1123');
+        await designPanelPage.clickOnHorizontalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('1123');
+        await designPanelPage.checkSizeHeight('794');
+      });
 
-      // Select Instagram Story preset
-      await designPanelPage.selectSizePresetsOption('Instagram story');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isVerticalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('1080');
-      await designPanelPage.checkSizeHeight('1920');
-      await designPanelPage.clickOnHorizontalOrientationButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isHorizontalOrientationButtonChecked();
-      await designPanelPage.checkSizeWidth('1920');
-      await designPanelPage.checkSizeHeight('1080');
+      await mainTest.step('Select Instagram Story preset', async () => {
+        await designPanelPage.selectSizePresetsOption('Instagram story');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('1080');
+        await designPanelPage.checkSizeHeight('1920');
+        await designPanelPage.clickOnHorizontalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('1920');
+        await designPanelPage.checkSizeHeight('1080');
+      });
     },
   );
 });

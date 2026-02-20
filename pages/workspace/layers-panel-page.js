@@ -231,21 +231,19 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async hideUnhideLayerByIconOnLayersTab(layer, hide = true) {
-    const commonSel = `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`;
-    await this.page.locator(commonSel).hover();
+    const layerRow = this.layersRows.filter({ hasText: layer });
+
+    await layerRow.click();
     if (hide) {
-      await this.page
-        .locator(commonSel.concat('//button[@title="Hide"]'))
-        .click({ force: true });
+      await layerRow.getByRole('button', { name: 'Hide' }).first().click();
     } else {
-      await this.page.locator(commonSel.concat('//button[@title="Show"]')).click();
+      await layerRow.getByRole('button', { name: 'Show' }).first().click();
     }
   }
 
   async isLayerPresentOnLayersTab(layer, isVisible) {
-    const layerSel = this.page.locator(
-      `//*[text()="${layer}"]//parent::div[contains(@class, "element-list-body")]`,
-    );
+    const layerSel = this.layersRows.filter({ hasText: layer });
+
     if (isVisible) {
       await expect(layerSel).toBeVisible();
     } else {

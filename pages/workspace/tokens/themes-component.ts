@@ -81,7 +81,9 @@ export class ThemesComponent {
   }
 
   async openEditThemeModalByThemeName(name: string) {
-    const themeRow = await this.page.getByTitle(name).locator('//../..');
+    const themeRow = this.page
+      .locator('[class*="theme-row"]')
+      .filter({ has: this.page.getByText(name, { exact: true }) });
     await themeRow.getByTitle('Edit theme and manage sets').click();
   }
 
@@ -95,12 +97,5 @@ export class ThemesComponent {
 
   async saveTheme() {
     await this.baseComponent.modalSaveButton.click();
-  }
-
-  async checkActiveSetsCountByThemeName(name: string, count: number) {
-    const themeRow = await this.page.getByTitle(name).locator('//../..');
-    await expect(themeRow.getByTitle('Edit theme and manage sets')).toHaveText(
-      `${count} active sets`,
-    );
   }
 }
