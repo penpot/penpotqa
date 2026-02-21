@@ -1,0 +1,7 @@
+{
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "github.copilot.chat.codeGeneration.instructions": [
+    { "file": ".ai/skills/playwright-best-practices/SKILL.md" },
+    { "file": ".ai/skills/playwright-cli/SKILL.md" }
+  ]
+}
