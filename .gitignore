@@ -87,7 +87,6 @@ pids
 # REPL history
 .node_repl_history
 
-
 # ===========================================
 # PROJECT-SPECIFIC FILES
 # ===========================================
@@ -102,9 +101,6 @@ pids
 # Test results
 /test-results/
 testResults.json
-
-# GitHub Copilot chat modes
-.github/chatmodes
 
 # MCP configuration
 mcp.json
