@@ -123,8 +123,8 @@ test('launch packaged app', async () => {
     process.platform === 'darwin'
       ? '/Applications/MyApp.app/Contents/MacOS/MyApp'
       : process.platform === 'win32'
-        ? 'C:\\Program Files\\MyApp\\MyApp.exe'
-        : '/usr/bin/myapp';
+      ? 'C:\\Program Files\\MyApp\\MyApp.exe'
+      : '/usr/bin/myapp';
 
   const electronApp = await electron.launch({
     executablePath: appPath,

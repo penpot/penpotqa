@@ -447,7 +447,10 @@ test('no performance regression', async ({ page }) => {
 
   expect(
     metrics.loadTime,
-    `Load time ${metrics.loadTime}ms is ${((metrics.loadTime / baseline - 1) * 100).toFixed(1)}% slower than baseline`,
+    `Load time ${metrics.loadTime}ms is ${(
+      (metrics.loadTime / baseline - 1) *
+      100
+    ).toFixed(1)}% slower than baseline`,
   ).toBeLessThan(baseline * threshold);
 });
 ```

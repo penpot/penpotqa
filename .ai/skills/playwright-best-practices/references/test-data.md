@@ -462,7 +462,9 @@ export const test = base.extend<{}, { db: DbTransaction }>({
           const placeholders = keys.map((_, i) => `$${i + 1}`);
 
           const result = await client.query(
-            `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${placeholders.join(', ')}) RETURNING *`,
+            `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${placeholders.join(
+              ', ',
+            )}) RETURNING *`,
             values,
           );
           return result.rows[0];
