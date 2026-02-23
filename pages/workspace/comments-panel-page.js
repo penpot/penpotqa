@@ -24,7 +24,9 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentReplyText = this.commentText.nth(1);
     this.commentReplyCommentsPanelText = page.getByText('1 reply', { exact: true });
     this.postCommentButton = page.getByRole('button', { name: 'Post' }).first();
-    this.commentThreadIcon = page.getByTestId('floating-thread-bubble-1');
+    this.commentThreadIcon = page.locator(
+      '[data-testid^="floating-thread-bubble-"]',
+    );
     this.commentThreadPreview = page.locator(
       'div[class*="comments-container"] [class*="floating-thread-item-wrapper"]',
     );
@@ -117,8 +119,8 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     ).toBeEnabled();
   }
 
-  async clickCommentThreadIcon() {
-    await this.commentThreadIcon.hover();
+  async clickCommentThreadIconByNumber(number) {
+    await this.commentThreadBubbleByIndex(number).hover();
     await this.commentThreadPreview.click();
   }
 

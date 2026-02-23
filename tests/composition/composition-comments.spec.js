@@ -106,7 +106,7 @@ mainTest.describe(() => {
       await mainPage.reloadPage();
       await commentsPanelPage.clickCreateCommentButton();
       await commentsPanelPage.isCommentDisplayedInCommentsPanel(editedComment);
-      await commentsPanelPage.clickCommentThreadIcon();
+      await commentsPanelPage.clickCommentThreadIconByNumber('1');
       await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
       await expect(page).toHaveScreenshot('comment-edited.png', {
         mask: [
@@ -322,7 +322,7 @@ mainTest.describe(() => {
     await mainPage.isMainPageLoaded();
 
     await commentsPanelPage.clickCreateCommentButton();
-    await commentsPanelPage.clickCommentThreadIcon();
+    await commentsPanelPage.clickCommentThreadIconByNumber('1');
     await commentsPanelPage.enterReplyText(replyComment);
     await commentsPanelPage.clickPostCommentButton();
     await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);

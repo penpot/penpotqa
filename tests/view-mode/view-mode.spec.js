@@ -382,7 +382,7 @@ mainTest.describe(() => {
     await commentsPanelPage.clickPostCommentButton();
     await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
     await commentsPanelPage.reloadPage();
-    await commentsPanelPage.clickCommentThreadIcon();
+    await commentsPanelPage.clickCommentThreadIconByNumber('1');
     await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
     browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(newPage).toHaveScreenshot('comment-edited.png', {
