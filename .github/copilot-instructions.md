@@ -1,7 +1,7 @@
 # Copilot Instructions
 
-## Skills disponibles
+## Available Skills
 
-Para escribir, depurar o mantener tests de Playwright consulta `.ai/skills/playwright-best-practices/SKILL.md`
+For writing, debugging, or maintaining Playwright tests, consult `.ai/skills/playwright-best-practices/SKILL.md`
 
-Para automatizar interacciones con el navegador (navegar, rellenar formularios, capturas de pantalla) consulta `.ai/skills/playwright-cli/SKILL.md`
+For automating browser interactions (navigation, form filling, screenshots) consult `.ai/skills/playwright-cli/SKILL.md`
