@@ -269,10 +269,21 @@ mainTest.describe(() => {
           for (const typoToken of TYPO_TOKENS) {
             // Apply all atomic typography tokens first
             for (const styleToken of STYLE_TOKENS) {
+              await mainPage.clickViewportOnce();
+              // await layersPanelPage.openLayersTab(); -- to navigate to Layers tab in new render
+              await mainPage.clickOnLayerOnCanvas();
+              // await tokensPage.clickTokensTab(); -- to navigate back to Tokens tab in new render
+
               await tokensPage.tokensComp.clickOnTokenWithName(styleToken.name);
               await tokensPage.tokensComp.isTokenAppliedWithName(styleToken.name);
             }
-            // Then apply the typography token type
+
+            // Select text layer and then apply the typography token type
+            await mainPage.clickViewportOnce();
+            // await layersPanelPage.openLayersTab(); -- to navigate to Layers tab in new render
+            await mainPage.clickOnLayerOnCanvas();
+            // await tokensPage.clickTokensTab(); -- to navigate back to Tokens tab in new render
+
             await tokensPage.tokensComp.clickOnTokenWithName(typoToken.name);
             await tokensPage.tokensComp.isTokenAppliedWithName(typoToken.name);
 

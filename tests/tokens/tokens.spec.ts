@@ -559,6 +559,7 @@ mainTest.describe(() => {
   let mainPage: MainPage;
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
+  let layersPanelPage: LayersPanelPage;
 
   const fontFamilyToken: MainToken<TokenClass> = {
     class: TokenClass.FontFamily,
@@ -581,6 +582,7 @@ mainTest.describe(() => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
+    layersPanelPage = new LayersPanelPage(page);
 
     await mainPage.createDefaultTextLayerByCoordinates(100, 200, browserName);
     await tokensPage.clickTokensTab();
@@ -612,6 +614,12 @@ mainTest.describe(() => {
 
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontFamilyTokenRef);
     await tokensPage.tokensComp.isTokenVisibleWithName(fontFamilyTokenRef.name);
+    await mainPage.clickViewportOnce();
+
+    // await layersPanelPage.openLayersTab(); -- to navigate to Layers tab in new render
+    await mainPage.clickOnLayerOnCanvas();
+    // await tokensPage.clickTokensTab(); -- to navigate back to Tokens tab in new render
+
     await tokensPage.tokensComp.clickOnTokenWithName(fontFamilyTokenRef.name);
     await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await mainPage.waitForChangeIsSaved();
@@ -662,6 +670,11 @@ mainTest.describe(() => {
       await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken2);
       await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken2.name);
 
+      await mainPage.clickViewportOnce();
+      // await layersPanelPage.openLayersTab(); -- to navigate to Layers tab in new render
+      await mainPage.clickOnLayerOnCanvas();
+      // await tokensPage.clickTokensTab(); -- to navigate back to Tokens tab in new render
+
       await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken1.name);
       await mainPage.checkImportErrorMessage(
         `Error setting font weight/style. This font style does not exist in the current font`,
@@ -671,6 +684,11 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken1.name);
       await designPanelPage.checkFontStyle('900');
+
+      await mainPage.clickViewportOnce();
+      // await layersPanelPage.openLayersTab(); -- to navigate to Layers tab in new render
+      await mainPage.clickOnLayerOnCanvas();
+      // await tokensPage.clickTokensTab(); -- to navigate back to Tokens tab in new render
 
       await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken2.name);
       await mainPage.checkImportErrorMessage(
