@@ -43,7 +43,7 @@ mainTest(qase([216], 'Change color background'), async () => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('color-background.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
 });
 
@@ -396,7 +396,7 @@ mainTest.describe(() => {
       await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('board.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       });
     },
   );
