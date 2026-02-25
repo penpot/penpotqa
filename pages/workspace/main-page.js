@@ -434,7 +434,6 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressFlexLayoutShortcut() {
-    // await this.createdLayer.click({ force: true });
     await this.page.keyboard.press('Shift+A');
   }
 
