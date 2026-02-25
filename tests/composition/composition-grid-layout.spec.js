@@ -620,7 +620,7 @@ mainTest.describe(() => {
     async () => {
       await mainPage.createDefaultTextLayerByCoordinates(500, 500);
       await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
+      await layersPanelPage.dragAndDropComponentToBoard('Hello world!');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
 
@@ -741,7 +741,6 @@ mainTest.describe(() => {
     await designPanelPage.changeAxisXAndYForLayer('400', '2000');
     await designPanelPage.expandGridLayoutMenu();
     await designPanelPage.openGridEditModeFromDesignPanel();
-    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-not-visible.png', {
       mask: mainPage.maskViewport({ gridEditorToolbar: true }),
