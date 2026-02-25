@@ -741,7 +741,6 @@ mainTest.describe(() => {
     await designPanelPage.changeAxisXAndYForLayer('400', '2000');
     await designPanelPage.expandGridLayoutMenu();
     await designPanelPage.openGridEditModeFromDesignPanel();
-    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-not-visible.png', {
       mask: mainPage.maskViewport({ gridEditorToolbar: true }),
