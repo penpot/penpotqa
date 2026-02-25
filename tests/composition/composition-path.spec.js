@@ -184,6 +184,7 @@ mainTest.describe(() => {
           mainPage.usersSection,
         ],
       });
+      await mainPage.clickViewportOnce();
       await layersPanelPage.hideLayerViaRightClickOnLayersTab(path2);
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
