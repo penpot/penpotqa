@@ -443,7 +443,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultEllipseByCoordinates(220, 220);
     await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
-    await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropElementToElement('Board', 'Main Board');
     await mainPage.waitForChangeIsSaved();
