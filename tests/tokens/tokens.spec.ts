@@ -184,6 +184,7 @@ mainTest(
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(rotationToken);
     await tokensPage.tokensComp.isTokenVisibleWithName(rotationToken.name);
     await tokensPage.tokensComp.clickOnTokenWithName(rotationToken.name);
+    await mainPage.clickViewportOnce();
     await tokensPage.tokensComp.isTokenAppliedWithName(rotationToken.name);
     await designPanelPage.checkRotationForLayer(tokenResolvedValue);
     browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
@@ -486,7 +487,7 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('texts-size-60-120.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   });
 });
@@ -632,9 +633,9 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.isTokenVisibleWithName(fontFamilyTokenRef.name);
     await mainPage.clickViewportOnce();
 
-    // await layersPanelPage.openLayersTab(); -- to navigate to Layers tab in new render
+    await layersPanelPage.openLayersTab();
     await mainPage.clickOnLayerOnCanvas();
-    // await tokensPage.clickTokensTab(); -- to navigate back to Tokens tab in new render
+    await tokensPage.clickTokensTab();
 
     await tokensPage.tokensComp.clickOnTokenWithName(fontFamilyTokenRef.name);
     await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
@@ -687,9 +688,9 @@ mainTest.describe(() => {
       await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken2.name);
 
       await mainPage.clickViewportOnce();
-      // await layersPanelPage.openLayersTab(); -- to navigate to Layers tab in new render
+      await layersPanelPage.openLayersTab();
       await mainPage.clickOnLayerOnCanvas();
-      // await tokensPage.clickTokensTab(); -- to navigate back to Tokens tab in new render
+      await tokensPage.clickTokensTab();
 
       await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken1.name);
       await mainPage.checkImportErrorMessage(
@@ -702,9 +703,9 @@ mainTest.describe(() => {
       await designPanelPage.checkFontStyle('900');
 
       await mainPage.clickViewportOnce();
-      // await layersPanelPage.openLayersTab(); -- to navigate to Layers tab in new render
+      await layersPanelPage.openLayersTab();
       await mainPage.clickOnLayerOnCanvas();
-      // await tokensPage.clickTokensTab(); -- to navigate back to Tokens tab in new render
+      await tokensPage.clickTokensTab();
 
       await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken2.name);
       await mainPage.checkImportErrorMessage(
