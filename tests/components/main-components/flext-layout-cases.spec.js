@@ -48,11 +48,13 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
 
       await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-      await mainPage.createComponentViaRightClick();
+      await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
       await mainPage.waitForChangeIsSaved();
 
-      await mainPage.createDefaultEllipseByCoordinates(200, 300);
-      await mainPage.createComponentViaRightClick();
+      await mainPage.createDefaultEllipseByCoordinates(300, 300);
+      await mainPage.createComponentViaRightClickFromLayerByName('Ellipse');
+      await mainPage.waitForChangeIsSaved();
+
       await mainPage.clickCreatedBoardTitleOnCanvas();
     },
   );

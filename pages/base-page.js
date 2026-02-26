@@ -394,6 +394,13 @@ exports.BasePage = class BasePage {
     await this.createComponentMenuItem.click();
   }
 
+  async createComponentViaRightClickFromLayerByName(name) {
+    const layerSel = this.createdLayer.getByText(name).first();
+    await layerSel.last().click({ button: 'right' });
+    await this.createComponentMenuItem.waitFor({ state: 'visible', timeout: 10000 });
+    await this.createComponentMenuItem.click();
+  }
+
   async createVariantViaRightClick() {
     const layerSel = this.page.locator(
       'div[class*="viewport"] [class*="viewport-selrect"]',
