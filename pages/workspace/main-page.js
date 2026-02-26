@@ -35,6 +35,7 @@ exports.MainPage = class MainPage extends BasePage {
     //Viewport
     this.textbox = this.viewport.getByRole('textbox').first();
     this.guides = page.locator('.guides .new-guides');
+    this.rulers = page.locator('.rulers');
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
     this.gridEditorButton = page.locator('button[class*="grid-editor-button"]');
@@ -1295,11 +1296,11 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   maskViewport(
-    { gridEditorToolbar = false, usersSection = false } = {},
+    { gridEditorToolbar = false, usersSection = false, useRulers = false } = {},
     additionalElements = [],
   ) {
     return [
-      this.guides,
+      useRulers ? this.rulers : this.guides,
       this.guidesFragment,
       this.toolBarWindow,
       this.bottomPaletteToolBar,
