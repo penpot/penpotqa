@@ -38,75 +38,58 @@ mainTest.afterEach(async () => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    await mainTest.slow();
-
-    await mainPage.createDefaultEllipseByCoordinates(200, 300);
-    await mainPage.createComponentViaRightClick();
-
-    await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
-    await mainPage.createComponentViaRightClick();
-
-    await mainPage.createDefaultBoardByCoordinates(400, 200, true);
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-    await mainPage.clickViewportTwice();
-
-    await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.clickLayerOnLayersTab('Ellipse');
-    await designPanelPage.changeAxisXAndYForLayer('-50', '350');
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.checkXAxis('-50');
-    await designPanelPage.checkYAxis('350');
-    await mainPage.clickViewportTwice();
-
-    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-    await designPanelPage.changeAxisXAndYForLayer('-50', '250');
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.checkXAxis('-50');
-    await designPanelPage.checkYAxis('250');
-
-    await mainPage.clickCreatedBoardTitleOnCanvas();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.addFlexLayoutViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickViewportTwice();
-    await mainPage.clickCreatedBoardTitleOnCanvas();
-    await layersPanelPage.isHorizontalFlexIconVisibleOnLayer();
-  });
-
-  mainTest(
-    qase(
-      [1503],
-      'Create flex board with main component and its copy, change direction',
-    ),
+  mainTest.beforeEach(
+    'Add a flex layout board, rectangle and ellipse components',
     async () => {
-      await designPanelPage.changeLayoutDirection('Column');
+      await mainPage.createDefaultBoardByCoordinates(200, 200);
+      await designPanelPage.changeHeightAndWidthForLayer('300', '300');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'main-component-change-board-direction.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
+      await mainPage.addFlexLayoutViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+
+      await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
+      await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
+      await mainPage.waitForChangeIsSaved();
+
+      await mainPage.createDefaultEllipseByCoordinates(300, 300);
+      await mainPage.createComponentViaRightClickFromLayerByName('Ellipse');
+      await mainPage.waitForChangeIsSaved();
+
+      await mainPage.clickCreatedBoardTitleOnCanvas();
     },
   );
 
   mainTest(
     qase(
-      [1504],
-      'Create flex board with main component and its copy, change alignment',
+      [1503, 1504],
+      'Create flex board with main component and its copy, change direction and alignment',
     ),
     async () => {
-      await designPanelPage.changeLayoutAlignment('Center');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'main-component-change-board-alignment.png',
-        {
-          mask: mainPage.maskViewport(),
+      await mainTest.step(
+        '(1503) Create flex board with main component and its copy, change direction',
+        async () => {
+          await designPanelPage.changeLayoutDirection('Column');
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'main-component-change-board-direction.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
+
+      await mainTest.step(
+        '(1504) Create flex board with main component and its copy, change alingment',
+        async () => {
+          await designPanelPage.changeLayoutAlignment('Center');
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'main-component-change-board-alignment.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
     },
