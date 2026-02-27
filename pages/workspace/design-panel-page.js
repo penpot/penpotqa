@@ -1,6 +1,7 @@
 const { expect } = require('@playwright/test');
 const { BasePage } = require('../base-page');
 const { mainTest } = require('../../fixtures');
+const { safeAction, FlakyAction } = require('helpers/safeActions');
 
 exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   /**
@@ -14,10 +15,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.canvasBackgroundColorIcon = page.locator(
       'div[class*="page__element-set"] div[class*="color-bullet-wrapper"]',
     );
+    this.layerRotationSection = page.getByTitle('Rotation', { exact: true });
     this.layerRotationInput = page.locator('div[title="Rotation"] input');
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
     });
+    this.generalRadiusSection = page.getByTitle('Radius', { exact: true });
     this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
     this.topLeftCornerRadiusInput = page.getByRole('textbox', { name: 'Top left' });
     this.topRightCornerRadiusInput = page.getByRole('textbox', {
@@ -29,9 +32,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.bottomRightCornerRadiusInput = page.getByRole('textbox', {
       name: 'Bottom right',
     });
+    this.sizeWidthSection = page.getByTitle('Width', { exact: true });
     this.sizeWidthInput = page.locator('div[title="Width"] input');
+    this.sizeHeightSection = page.getByTitle('Height', { exact: true });
     this.sizeHeightInput = page.locator('div[title="Height"] input');
+    this.xAxisSection = page.getByTitle('X axis', { exact: true });
     this.xAxisInput = page.locator('div[title="X axis"] input');
+    this.yAxisSection = page.getByTitle('Y axis', { exact: true });
     this.yAxisInput = page.locator('div[title="Y axis"] input');
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
@@ -250,10 +257,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
 
     //Design panel - Blur section
-    this.blurSection = page.getByText('Blur', { exact: true });
+    this.blurSection = page.locator(`[class*="blur__element-set"]`).first();
     this.addBlurButton = page.getByRole('button', { name: 'Add blur' });
+    this.blurOptionsSection = page.locator('[class*="blur__first-row"]');
     this.blurMoreOptions = page.locator('button[class*="blur__show-more"]');
-    this.blurValueInput = page.locator('#blur-input-sidebar');
+    this.blurValueSection = page.locator('div[class*="blur__second-row"]');
+    this.blurValueInput = page.getByRole('textbox', { name: 'Value' });
     this.blurHideIcon = page.getByRole('button', { name: 'Toggle blur' });
     this.blurUnhideIcon = page.getByRole('button', { name: 'Toggle blur' });
     this.blurRemoveIcon = page.getByRole('button', { name: 'Remove blur' });
@@ -427,6 +436,36 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.variantPropertySwitch = this.componentBlockOnDesignTab.getByRole('switch');
   }
 
+  /**
+   * It safely performs a flaky action over the UI, hovering a parent locator beforehand,
+   * fixing scroll issues, ensuring visibility, and applying additional options if provided.
+   *
+   * @param {*} locator The locator representing the element that should receive the action.
+   * @param {*} flakyAction The UI action type to perform safely.
+   * @param {*} flakyActionArgs Arguments to pass to the action.
+   * @param {*} flakyActionOptions Optional settings for the safe action.
+   *
+   * @returns The result of the provided action.
+   *
+   * @example
+   *    await this.safeAction(this.addBlurButton, this.blurSection, FlakyAction.click);
+   */
+  async safeAction(
+    locator,
+    flakyAction,
+    flakyActionArgs = [],
+    flakyActionOptions = {},
+  ) {
+    return await safeAction(
+      this.page,
+      locator,
+      flakyAction,
+      flakyActionArgs,
+      flakyActionOptions,
+    );
+  }
+
+  // Normal page actions
   async isFlexElementSectionOpened() {
     await expect(this.flexElementMenu).toBeVisible();
   }
@@ -460,8 +499,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async setComponentColor(color) {
-    await this.componentColorInput.clear();
-    await this.componentColorInput.fill(color);
+    await this.safeAction(this.componentColorInput, FlakyAction.clear);
+    await this.safeAction(this.componentColorInput, FlakyAction.fill, [color]);
   }
 
   async setFlexElementPositionAbsolute() {
@@ -476,44 +515,52 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickAddStrokeButton() {
     await this.strokeSection.waitFor();
-    await this.addStrokeButton.click();
+    await this.safeAction(this.addStrokeButton, FlakyAction.click, [], {
+      hoverLocator: this.strokeSection,
+    });
   }
 
   async clickStrokeColorBullet() {
-    await this.strokeColorBullet.click();
+    await this.safeAction(this.strokeColorBullet, FlakyAction.click);
   }
 
   async removeStroke() {
-    await this.strokeRemoveIcon.click();
+    await this.safeAction(this.strokeRemoveIcon, FlakyAction.click);
   }
 
   async setStrokeColor(value) {
-    await this.strokeColorInput.clear();
-    await this.strokeColorInput.pressSequentially(value);
+    await this.safeAction(this.strokeColorInput, FlakyAction.clear);
+    await this.safeAction(this.strokeColorInput, FlakyAction.pressSequentially, [
+      value,
+    ]);
     await this.clickOnEnter();
   }
 
   async setStrokeAlignment(value) {
     const optionSel = this.page.locator(`li span:text-is("${value}")`);
-    await this.strokeAlignmentField.click();
-    await optionSel.click();
+    await this.safeAction(this.strokeAlignmentField, FlakyAction.click);
+    await this.safeAction(optionSel, FlakyAction.click);
   }
 
   async setStrokeType(value) {
     const optionSel = this.page.locator(`li span:text-is("${value}")`);
-    await this.strokeTypeField.click();
-    await optionSel.click();
+    await this.safeAction(this.strokeTypeField, FlakyAction.click);
+    await this.safeAction(optionSel, FlakyAction.click);
   }
 
   async setStrokeWidth(value) {
-    await this.strokeWidthInput.clear();
-    await this.strokeWidthInput.pressSequentially(value);
+    await this.safeAction(this.strokeWidthInput, FlakyAction.clear);
+    await this.safeAction(this.strokeWidthInput, FlakyAction.pressSequentially, [
+      value,
+    ]);
     await this.clickOnEnter();
   }
 
   async setStrokeOpacity(value) {
-    await this.strokeOpacityInput.clear();
-    await this.strokeOpacityInput.pressSequentially(value);
+    await this.safeAction(this.strokeOpacityInput, FlakyAction.clear);
+    await this.safeAction(this.strokeOpacityInput, FlakyAction.pressSequentially, [
+      value,
+    ]);
     await this.clickOnEnter();
   }
 
@@ -535,15 +582,17 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickFirstColorIcon() {
-    await this.firstColorIcon.click();
+    await this.safeAction(this.firstColorIcon, FlakyAction.click);
   }
   async clickFillColorIcon() {
-    await this.fillColorIcon.click();
+    await this.safeAction(this.fillColorIcon, FlakyAction.click);
   }
 
   async changeOpacityForFill(value) {
-    await this.fillOpacityInput.clear();
-    await this.fillOpacityInput.pressSequentially(value);
+    await this.safeAction(this.fillOpacityInput, FlakyAction.clear);
+    await this.safeAction(this.fillOpacityInput, FlakyAction.pressSequentially, [
+      value,
+    ]);
   }
 
   async fillSearchByTokenNameInput(tokenName) {
@@ -596,7 +645,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickAddFillButton() {
-    await this.addFillButton.click();
+    await this.safeAction(this.addFillButton, FlakyAction.click);
   }
 
   async clickRemoveFillButton() {
@@ -608,18 +657,20 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickComponentFillColorIcon() {
-    await this.fillColorComponentIcon.click();
+    await this.safeAction(this.fillColorComponentIcon, FlakyAction.click);
   }
 
   async changeRotationForLayer(value) {
-    await this.layerRotationInput.clear();
-    await this.layerRotationInput.pressSequentially(value);
+    await this.safeAction(this.layerRotationInput, FlakyAction.clear);
+    await this.safeAction(this.layerRotationInput, FlakyAction.pressSequentially, [
+      value,
+    ]);
     await this.clickOnEnter();
-    await this.layerRotationInput.blur();
+    await this.safeAction(this.layerRotationInput, FlakyAction.blur);
   }
 
   async clickIndividualCornersRadiusButton() {
-    await this.individualCornersRadiusButton.click();
+    await this.safeAction(this.individualCornersRadiusButton, FlakyAction.click);
   }
 
   async changeIndependentCorners(topLeft, topRight, bottomLeft, bottomRight) {
@@ -630,47 +681,80 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async changeGeneralCornerRadiusForLayer(value) {
-    await this.generalCornerRadiusInput.clear();
-    await this.generalCornerRadiusInput.pressSequentially(value);
+    await this.safeAction(this.generalCornerRadiusInput, FlakyAction.clear);
+    await this.safeAction(
+      this.generalCornerRadiusInput,
+      FlakyAction.pressSequentially,
+      [value],
+      { hoverLocator: this.generalCornerRadiusSection },
+    );
     await this.clickOnEnter();
   }
 
   async changeTopLeftCornerRadiusForLayer(value) {
-    await this.topLeftCornerRadiusInput.clear();
-    await this.topLeftCornerRadiusInput.pressSequentially(value);
+    await this.safeAction(this.topLeftCornerRadiusInput, FlakyAction.clear);
+    await this.safeAction(
+      this.topLeftCornerRadiusInput,
+      FlakyAction.pressSequentially,
+      [value],
+    );
     await this.clickOnEnter();
   }
 
   async changeTopRightCornerRadiusForLayer(value) {
-    await this.topRightCornerRadiusInput.clear();
-    await this.topRightCornerRadiusInput.pressSequentially(value);
+    await this.safeAction(this.topRightCornerRadiusInput, FlakyAction.clear);
+    await this.safeAction(
+      this.topRightCornerRadiusInput,
+      FlakyAction.pressSequentially,
+      [value],
+    );
     await this.clickOnEnter();
   }
 
   async changeBottomLeftCornerRadiusForLayer(value) {
-    await this.bottomLeftCornerRadiusInput.clear();
-    await this.bottomLeftCornerRadiusInput.pressSequentially(value);
+    await this.safeAction(this.bottomLeftCornerRadiusInput, FlakyAction.clear);
+    await this.safeAction(
+      this.bottomLeftCornerRadiusInput,
+      FlakyAction.pressSequentially,
+      [value],
+    );
     await this.clickOnEnter();
   }
 
   async changeBottomRightCornerRadiusForLayer(value) {
-    await this.bottomRightCornerRadiusInput.clear();
-    await this.bottomRightCornerRadiusInput.pressSequentially(value);
+    await this.safeAction(this.bottomRightCornerRadiusInput, FlakyAction.clear);
+    await this.safeAction(
+      this.bottomRightCornerRadiusInput,
+      FlakyAction.pressSequentially,
+      [value],
+    );
     await this.clickOnEnter();
   }
 
   async changeWidthForLayer(width) {
-    await this.sizeWidthInput.clear();
-    await this.sizeWidthInput.pressSequentially(width);
+    await this.safeAction(this.sizeWidthInput, FlakyAction.clear, [], {
+      hoverLocator: this.sizeWidthSection,
+    });
+    await this.safeAction(
+      this.sizeWidthInput,
+      FlakyAction.pressSequentially,
+      [width],
+      { hoverLocator: this.sizeWidthSection },
+    );
     await this.clickOnEnter();
-    await this.waitForChangeIsSaved();
   }
 
   async changeHeightForLayer(height) {
-    await this.sizeHeightInput.clear();
-    await this.sizeHeightInput.pressSequentially(height);
+    await this.safeAction(this.sizeHeightInput, FlakyAction.clear, [], {
+      hoverLocator: this.sizeHeightSection,
+    });
+    await this.safeAction(
+      this.sizeHeightInput,
+      FlakyAction.pressSequentially,
+      [height],
+      { hoverLocator: this.sizeHeightSection },
+    );
     await this.clickOnEnter();
-    await this.waitForChangeIsSaved();
   }
 
   async changeHeightAndWidthForLayer(height, width) {
@@ -680,12 +764,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickAddShadowButton() {
     await this.shadowSection.waitFor();
-    await this.addShadowButton.click();
+    await this.safeAction(this.addShadowButton, FlakyAction.click, [], {
+      hoverLocator: this.shadowSection,
+    });
   }
 
   async clickAddGroupShadowButton() {
     await this.groupShadowSection.waitFor();
-    await this.addShadowButton.click();
+    await this.safeAction(this.addShadowButton, FlakyAction.click);
   }
 
   async clickShadowActionsButton(index = 0) {
@@ -701,8 +787,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async changeXForShadow(value) {
-    await this.shadowXInput.clear();
-    await this.shadowXInput.pressSequentially(value);
+    await this.safeAction(this.shadowXInput, FlakyAction.clear);
+    await this.safeAction(this.shadowXInput, FlakyAction.pressSequentially, [value]);
   }
 
   async changeYForShadow(value) {
@@ -748,14 +834,24 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickAddBlurButton() {
-    await this.blurSection.waitFor();
-    await this.addBlurButton.click({ delay: 500 });
+    await this.safeAction(this.addBlurButton, FlakyAction.click, [], {
+      hoverLocator: this.blurSection,
+    });
   }
 
   async changeValueForBlur(value) {
-    await this.blurMoreOptions.click();
-    await this.blurValueInput.clear();
-    await this.blurValueInput.pressSequentially(value);
+    await this.safeAction(this.blurMoreOptions, FlakyAction.click, [], {
+      hoverLocator: this.blurOptionsSection,
+    });
+    await this.safeAction(this.blurValueInput, FlakyAction.clear, [], {
+      hoverLocator: this.blurValueSection,
+    });
+    await this.safeAction(
+      this.blurValueInput,
+      FlakyAction.pressSequentially,
+      [value],
+      { hoverLocator: this.blurValueSection },
+    );
   }
 
   async hideBlur() {
@@ -1392,14 +1488,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async changeAxisXAndYForLayer(x, y) {
-    await this.xAxisInput.clear();
-    await this.xAxisInput.pressSequentially(x);
+    await this.safeAction(this.xAxisInput, FlakyAction.clear, [], {
+      hoverLocator: this.xAxisSection,
+    });
+    await this.safeAction(this.xAxisInput, FlakyAction.pressSequentially, [x], {
+      hoverLocator: this.xAxisSection,
+    });
     await this.clickOnEnter();
-    await this.waitForChangeIsSaved();
-    await this.yAxisInput.clear();
-    await this.yAxisInput.pressSequentially(y);
+    await this.safeAction(this.yAxisInput, FlakyAction.clear, [], {
+      hoverLocator: this.yAxisSection,
+    });
+    await this.safeAction(this.yAxisInput, FlakyAction.pressSequentially, [y]);
     await this.clickOnEnter();
-    await this.waitForChangeIsSaved();
   }
 
   async clickOnResetOverridesOption() {
@@ -1411,18 +1511,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnClipContentButton() {
-    await this.clipContentButton.click();
+    await this.safeAction(this.clipContentButton, FlakyAction.click);
   }
 
   async clickOnManualButton() {
-    await this.manualButton.click();
+    await this.safeAction(this.manualButton, FlakyAction.click);
   }
   async clickOnAreaButton() {
-    await this.areaButton.click();
+    await this.safeAction(this.areaButton, FlakyAction.click);
   }
 
   async enterAreaName(name) {
-    await this.areaNameInput.fill(name);
+    await this.safeAction(this.areaNameInput, FlakyAction.fill, [name]);
   }
 
   async selectGridCellUnit(cellNumber, unit = 'PX') {
@@ -1462,7 +1562,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnGridExpandColumnUnitButton() {
-    await this.gridExpandGridColumnLengthButton.click();
+    await this.safeAction(this.gridExpandGridColumnLengthButton, FlakyAction.click);
   }
 
   async hoverOnGridFirstColumnSelectButton() {
@@ -1475,8 +1575,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     const inputLocator = await this.page.locator(
       `div[class*="grid_cell__row"] div[class*="grid_cell__coord-input"] input >>nth=${cellNumber}`,
     );
-    await inputLocator.click();
-    await inputLocator.fill(value);
+    await this.safeAction(inputLocator, FlakyAction.click);
+    await this.safeAction(inputLocator, FlakyAction.fill, [value]);
     await this.clickOnEnter();
   }
 
@@ -1485,12 +1585,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       firstSecond === 'first'
         ? await this.strokeCapDropdowns.first()
         : await this.strokeCapDropdowns.last();
-    await dropdown.click();
+    await this.safeAction(dropdown, FlakyAction.click);
     await dropdown.getByRole('option', { name: capName }).click();
   }
 
   async clickOnResizeBoardToFitButton() {
-    await this.resizeBoardToFitButton.click();
+    await this.safeAction(this.resizeBoardToFitButton, FlakyAction.click);
   }
 
   async isLayoutAlignmentSelected(alignment, flex = true) {
@@ -1575,19 +1675,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnFlexElementWidth100Btn() {
-    await this.flexElementWidth100Btn.click();
+    await this.safeAction(this.flexElementWidth100Btn, FlakyAction.click);
   }
 
   async clickOnFlexElementHeight100Btn() {
-    await this.flexElementHeight100Btn.click();
+    await this.safeAction(this.flexElementHeight100Btn, FlakyAction.click);
   }
 
   async clickOnFlexElementFixWidthBtn() {
-    await this.flexElementFixWidthBtn.click();
+    await this.safeAction(this.flexElementFixWidthBtn, FlakyAction.click);
   }
 
   async clickOnFlexElementFixHeightBtn() {
-    await this.flexElementFixHeightBtn.click();
+    await this.safeAction(this.flexElementFixHeightBtn, FlakyAction.click);
   }
 
   async checkFlexElementMinMax(type, min = true, value) {
@@ -1606,7 +1706,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async openSizePresetsDropdown() {
-    await this.sizePresetsDropdown.click();
+    await this.safeAction(this.sizePresetsDropdown, FlakyAction.click);
   }
 
   async checkSizePresetsOptions(options) {
@@ -1635,7 +1735,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnVerticalOrientationButton() {
-    await this.verticalOrientationButton.click();
+    await this.safeAction(this.verticalOrientationButton, FlakyAction.click);
   }
 
   async isVerticalOrientationButtonChecked(checked = true, timeout = 10000) {
@@ -1648,7 +1748,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async changeFirstVariantProperty(value) {
-    await this.firstVariantProperty.click();
+    await this.safeAction(this.firstVariantProperty, FlakyAction.click);
     await this.firstVariantProperty.getByRole('listbox').getByText(value).click();
   }
 
@@ -1659,7 +1759,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     const variantValue = await variantString.locator(
       'div[class*="variant-property-value-wrapper"]',
     );
-    await variantValue.click();
+    await this.safeAction(variantValue, FlakyAction.click);
     await variantValue.getByRole('listbox').getByText(propertyValue).click();
   }
 
@@ -1723,7 +1823,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnLocateDuplicatedVariantsButton() {
-    await this.locateDuplicatedVariantsButton.click();
+    await this.safeAction(this.locateDuplicatedVariantsButton, FlakyAction.click);
   }
 
   async checkFontName(name) {
