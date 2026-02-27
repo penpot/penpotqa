@@ -555,68 +555,65 @@ mainTest.describe(() => {
     await designPanelPage.clickExportElementButton(newPage);
   });
 
-  mainTest(
-    qase(1785, 'Switch between layers from left menu'),
-    async ({ browserName }) => {
-      await mainPage.createDefaultBoardByCoordinates(200, 200);
-      await designPanelPage.changeHeightAndWidthForLayer('500', '700');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.uploadImage('images/mini_sample.jpg');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createDefaultRectangleByCoordinates(220, 220);
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createDefaultEllipseByCoordinates(330, 220, true);
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createDefaultTextLayerByCoordinates(220, 330, browserName);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('Hello World!');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createSmallClosedPathByCoordinates(330, 330);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('Path');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
+  mainTest(qase(1785, 'Switch between layers from left menu'), async () => {
+    await mainPage.createDefaultBoardByCoordinates(200, 200);
+    await designPanelPage.changeHeightAndWidthForLayer('500', '700');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.uploadImage('images/mini_sample.jpg');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultRectangleByCoordinates(220, 220);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultEllipseByCoordinates(330, 220, true);
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultTextLayerByCoordinates(220, 330);
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.dragAndDropComponentToBoard('Hello world!');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createSmallClosedPathByCoordinates(330, 330);
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.dragAndDropComponentToBoard('Path');
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
 
-      const newPage = await viewModePage.clickViewModeShortcut();
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(45000);
-      layersPanelPage = new LayersPanelPage(newPage);
-      await viewModePage.openInspectTab();
-      await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-rectangle-selected-image.png',
-      );
-      await layersPanelPage.clickLayerOnLayersTab('Ellipse');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-ellipse-selected-image.png',
-      );
-      await layersPanelPage.clickLayerOnLayersTab('Hello World!');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-test-selected-image.png',
-      );
-      await layersPanelPage.clickLayerOnLayersTab('Path');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-path-selected-image.png',
-      );
-      await layersPanelPage.clickLayerOnLayersTab('mini_sample');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-image-selected-image.png',
-      );
-    },
-  );
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.waitForViewerSection(45000);
+    layersPanelPage = new LayersPanelPage(newPage);
+    await viewModePage.openInspectTab();
+    await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+      'view-mode-rectangle-selected-image.png',
+    );
+    await layersPanelPage.clickLayerOnLayersTab('Ellipse');
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+      'view-mode-ellipse-selected-image.png',
+    );
+    await layersPanelPage.clickLayerOnLayersTab('Hello world!');
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+      'view-mode-test-selected-image.png',
+    );
+    await layersPanelPage.clickLayerOnLayersTab('Path');
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+      'view-mode-path-selected-image.png',
+    );
+    await layersPanelPage.clickLayerOnLayersTab('mini_sample');
+    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+      'view-mode-image-selected-image.png',
+    );
+  });
 
   mainTest(qase([1787], 'Copy layout and paste'), async ({ browserName }) => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -659,7 +656,9 @@ mainTest.describe(() => {
       mainPage = new MainPage(oldPage);
       teamPage = new TeamPage(oldPage);
       await mainPage.waitForViewportVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('main-page-opened.png');
+      await expect(mainPage.viewport).toHaveScreenshot('main-page-opened.png', {
+        mask: mainPage.maskViewport(),
+      });
     }
   });
 });

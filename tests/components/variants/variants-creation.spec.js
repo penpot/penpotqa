@@ -88,7 +88,7 @@ mainTest(
     await mainPage.pressPasteShortcut(browserName);
     await mainPage.clickViewportOnce();
     await expect(mainPage.viewport).toHaveScreenshot('copy-paste-variants.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
   },
 );

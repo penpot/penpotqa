@@ -69,18 +69,18 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.clickFileLibraryColorsColorBullet();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'apply-color-to-shapes.png',
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('apply-color-to-shapes.png', {
+      mask: mainPage.maskViewport(),
+    });
     await assetsPanelPage.editFileLibraryColor();
     await colorPalettePopUp.setHex('#00ff00');
     await colorPalettePopUp.clickSaveColorStyleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00#00ff00');
-    await expect(mainPage.createdLayer).toHaveScreenshot(
-      'edited-color-to-shapes.png',
-    );
+    await expect(mainPage.viewport).toHaveScreenshot('edited-color-to-shapes.png', {
+      mask: mainPage.maskViewport(),
+    });
   });
 
   mainTest(qase([935], 'File library colors - rename'), async () => {
@@ -133,8 +133,11 @@ mainTest.describe(() => {
     await assetsPanelPage.clickAndPressAltFileLibraryColorsColorBullet();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportByCoordinates(900, 100, 3);
-    await expect(mainPage.createdLayer).toHaveScreenshot(
+    await expect(mainPage.viewport).toHaveScreenshot(
       'apply-color-to-stroke-board.png',
+      {
+        mask: mainPage.maskViewport(),
+      },
     );
   });
 });

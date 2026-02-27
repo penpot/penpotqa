@@ -39,14 +39,23 @@ mainTest(qase([1496], 'Undo deleted component'), async ({ browserName }) => {
   await mainPage.pressDeleteKeyboardButton();
   await mainPage.waitForChangeIsUnsaved();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.createdLayer).toHaveScreenshot(
+
+  await expect(mainPage.viewport).toHaveScreenshot(
     'rectangle-copy-component-delete.png',
+    {
+      mask: mainPage.maskViewport(),
+    },
   );
+
   await mainPage.clickShortcutCtrlZ(browserName);
   await mainPage.waitForChangeIsUnsaved();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.createdLayer).toHaveScreenshot(
+
+  await expect(mainPage.viewport).toHaveScreenshot(
     'rectangle-copy-component-delete-undo.png',
+    {
+      mask: mainPage.maskViewport(),
+    },
   );
 });
 

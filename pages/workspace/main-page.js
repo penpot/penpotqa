@@ -29,9 +29,13 @@ exports.MainPage = class MainPage extends BasePage {
       .getByTestId('viewport')
       .locator('[class*="viewport-controls cursor-pen drawing"]');
 
+    //Grid editor Toolbar
+    this.gridEditorToolBar = page.getByText('Editing grid').locator('..');
+
     //Viewport
-    this.textbox = page.locator('div[role="textbox"] div[contenteditable="true"]');
+    this.textbox = this.viewport.getByRole('textbox').first();
     this.guides = page.locator('.guides .new-guides');
+    this.rulers = page.locator('.rulers');
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
     this.gridEditorButton = page.locator('button[class*="grid-editor-button"]');
@@ -199,6 +203,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.deletePageOkButton = page.getByRole('button', { name: 'Ok' });
 
     // Bottom palette
+    this.bottomPaletteToolBar = page.locator('.main_ui_workspace_palette__palettes');
     this.typographyButton = page.getByRole('button', { name: 'Typographies' });
     this.bottomPaletteContentBlock = page.locator(
       'div[class="main_ui_workspace_palette__palette"]',
@@ -263,23 +268,8 @@ exports.MainPage = class MainPage extends BasePage {
     await this.createTextButton.click({ delay: 500 });
   }
 
-  async typeText(text) {
-    await this.textbox.fill(text);
-  }
-
   async typeTextFromKeyboard() {
-    await this.page.keyboard.press('H');
-    await this.page.keyboard.press('e');
-    await this.page.keyboard.press('l');
-    await this.page.keyboard.press('l');
-    await this.page.keyboard.press('o');
-    await this.page.keyboard.press('Space');
-    await this.page.keyboard.press('W');
-    await this.page.keyboard.press('o');
-    await this.page.keyboard.press('r');
-    await this.page.keyboard.press('l');
-    await this.page.keyboard.press('d');
-    await this.page.keyboard.press('!');
+    await this.page.keyboard.type('Hello world!');
   }
 
   async uploadImage(filePath) {
@@ -445,7 +435,6 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressFlexLayoutShortcut() {
-    await this.createdLayer.click({ force: true });
     await this.page.keyboard.press('Shift+A');
   }
 
@@ -993,36 +982,20 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayer(browserName) {
+  async createDefaultTextLayer() {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(200, 300);
-    const platform = getPlatformName();
-    if (platform === 'darwin') {
-      await this.typeTextFromKeyboard();
-    } else if (browserName === 'webkit') {
-      await this.page.waitForTimeout(2000);
-      await this.typeTextFromKeyboard();
-    } else {
-      await expect(this.textbox).toBeVisible();
-      await this.typeText('Hello World!');
-    }
+    await expect(this.textbox).toBeVisible();
+    await this.typeTextFromKeyboard();
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
 
-  async createDefaultTextLayerByCoordinates(x, y, browserName) {
+  async createDefaultTextLayerByCoordinates(x, y) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
-    const platform = getPlatformName();
-    if (platform === 'darwin') {
-      await this.typeTextFromKeyboard();
-    } else if (browserName === 'webkit') {
-      await this.page.waitForTimeout(400);
-      await this.typeTextFromKeyboard();
-    } else {
-      await expect(this.textbox).toBeVisible();
-      await this.typeText('Hello World!');
-    }
+    await expect(this.textbox).toBeVisible();
+    await this.typeTextFromKeyboard();
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
@@ -1098,13 +1071,13 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async groupLayerViaRightClick() {
-    const layerSel = this.page.locator('div[class*="viewport"] [id^="shape"]');
+    const layerSel = this.page.getByTestId('layer-item');
     await layerSel.last().click({ button: 'right', force: true });
     await this.groupOption.click();
   }
 
   async showInAssetsPanelRightClick() {
-    const layerSel = this.page.locator('div[class*="viewport"] [id^="shape"]');
+    const layerSel = this.page.getByTestId('layer-item');
     await layerSel.last().click({ button: 'right', force: true });
     await this.showInAssetsPanelOption.click();
   }
@@ -1281,7 +1254,7 @@ exports.MainPage = class MainPage extends BasePage {
   async editTextLayer(text, browserName = 'chromium') {
     await this.doubleClickTextOnCanvas(browserName);
     await expect(this.textbox).toBeVisible();
-    await this.typeText(text);
+    await this.page.keyboard.type(text);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
@@ -1310,7 +1283,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
     await expect(this.textbox).toBeVisible();
-    await this.typeText(text);
+    await this.page.keyboard.type(text);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
@@ -1319,5 +1292,20 @@ exports.MainPage = class MainPage extends BasePage {
     visible
       ? await expect(this.cornerHandle).toBeVisible()
       : await expect(this.cornerHandle).not.toBeVisible();
+  }
+
+  maskViewport(
+    { gridEditorToolbar = false, usersSection = false, useRulers = false } = {},
+    additionalElements = [],
+  ) {
+    return [
+      useRulers ? this.rulers : this.guides,
+      this.guidesFragment,
+      this.toolBarWindow,
+      this.bottomPaletteToolBar,
+      ...(gridEditorToolbar ? [this.gridEditorToolBar] : []),
+      ...(usersSection ? [this.usersSection] : []),
+      ...additionalElements,
+    ];
   }
 };

@@ -63,16 +63,19 @@ mainTest.describe(() => {
 
   mainTest(
     qase([950], 'Edit Typography Asset After Applying to Element'),
-    async ({ browserName }) => {
-      await mainPage.createDefaultTextLayerByCoordinates(200, 200, browserName);
+    async () => {
+      await mainPage.createDefaultTextLayerByCoordinates(200, 200);
       await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
       await mainPage.clickViewportTwice();
-      await mainPage.createDefaultTextLayerByCoordinates(200, 400, browserName);
+      await mainPage.createDefaultTextLayerByCoordinates(200, 400);
       await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'apply-typography-to-text_from_assets.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
       );
       await assetsPanelPage.editFileLibraryTypography();
       await assetsPanelPage.selectFont('Bellefair');
@@ -92,8 +95,11 @@ mainTest.describe(() => {
       await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
         'typographies-edit-typography-expanded.png',
       );
-      await expect(mainPage.createdLayer).toHaveScreenshot(
+      await expect(mainPage.viewport).toHaveScreenshot(
         'edited-typography-to-text_from_assets.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
       );
     },
   );

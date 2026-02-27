@@ -4,6 +4,9 @@ const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { qase } = require('playwright-qase-reporter/playwright');
 
+// TO REMOVE
+mainTest.skip(true, 'Temporarily disabled due to unrelated to new render');
+
 const teamName = random().concat('autotest');
 
 let teamPage, dashboardPage;

@@ -157,7 +157,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-show-main.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       },
     );
   },
@@ -184,8 +184,11 @@ mainTest(
     await designPanelPage.changeHeightAndWidthForLayer('100', '150');
     await basePage.resetOverridesViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
+    await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-reset-overrides.png',
+      {
+        mask: mainPage.maskViewport(),
+      },
     );
   },
 );
@@ -216,8 +219,11 @@ mainTest(
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnPageOnLayersPanel(true);
-    await expect(mainPage.createdLayer).toHaveScreenshot(
+    await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-update-main.png',
+      {
+        mask: mainPage.maskViewport(),
+      },
     );
   },
 );
