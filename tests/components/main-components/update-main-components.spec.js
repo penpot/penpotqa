@@ -355,20 +355,23 @@ mainTest.describe('Text', () => {
         'Inside',
       );
       await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
+      // await mainPage.waitForResizeHandlerVisible();
       await designPanelPage.clickAddShadowButton();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await layersPanelPage.selectMainComponentChildLayer();
+      // await mainPage.waitForResizeHandlerVisible();
       await designPanelPage.clickAddBlurButton();
+      await expect(designPanelPage.blurMoreOptions).toBeVisible();
+      await designPanelPage.changeValueForBlur('0.5');
       await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
+      // await mainPage.waitForResizeHandlerVisible();
       await designPanelPage.changeRotationForLayer('40');
       await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
+      // await mainPage.waitForResizeHandlerVisible();
       await designPanelPage.changeWidthForLayer('40');
       await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-
+      // await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-text-independent-changes.png',
         {
