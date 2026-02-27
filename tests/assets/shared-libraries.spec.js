@@ -302,7 +302,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'unpublish-shared-library-component-file2.png',
         {
-          mask: mainPage.maskViewport(),
+          mask: mainPage.maskViewport({ useRulers: true }),
         },
       );
       await mainPage.clickPencilBoxButton();
@@ -311,7 +311,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'unpublish-shared-library-component-file3.png',
         {
-          mask: mainPage.maskViewport(),
+          mask: mainPage.maskViewport({ useRulers: true }),
         },
       );
     },
@@ -586,7 +586,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'library-without-library-viewport.png',
         {
-          mask: mainPage.maskViewport(),
+          mask: mainPage.maskViewport({ useRulers: true }),
         },
       );
       await mainPage.clickPencilBoxButton();
@@ -597,7 +597,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'library-without-library-viewport2.png',
         {
-          mask: mainPage.maskViewport(),
+          mask: mainPage.maskViewport({ useRulers: true }),
         },
       );
     },
