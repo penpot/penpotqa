@@ -291,6 +291,15 @@ exports.BasePage = class BasePage {
     await this.moveButton.click({ force: true });
   }
 
+  async waitForUpdateFileRequest() {
+    await this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/api/main/methods/update-file') &&
+        response.request().method() === 'POST' &&
+        response.status() === 200,
+    );
+  }
+
   async waitForChangeIsSaved() {
     await this.savedChangesIcon.waitFor({ state: 'visible' });
   }
@@ -536,61 +545,5 @@ exports.BasePage = class BasePage {
 
   async clickOnAddVariantViewportButton() {
     await this.addVariantViewportButton.first().click();
-  }
-
-  /**
-   * Initialize WASM event listeners - exactly like dev repo
-   */
-  async initializeWasmEventListeners() {
-    if (this.isWasmInitialized) return;
-
-    await this.page.addInitScript(() => {
-      document.addEventListener('penpot:wasm:loaded', () => {
-        window.wasmModuleLoaded = true;
-      });
-
-      document.addEventListener('penpot:wasm:render', () => {
-        window.wasmRenderCount = (window.wasmRenderCount || 0) + 1;
-      });
-
-      document.addEventListener('penpot:wasm:set-objects', () => {
-        window.wasmSetObjectsFinished = true;
-      });
-    });
-
-    this.isWasmInitialized = true;
-  }
-
-  /**
-   * Wait for the first WASM render to complete - exactly like dev repo
-   */
-  async waitForFirstRender() {
-    // Wait for canvas only
-    await this.page.locator('canvas').waitFor({ timeout: 30000 });
-
-    // Wait for WASM set-objects event
-    await this.page.waitForFunction(() => {
-      console.log('RAF:', window.wasmSetObjectsFinished);
-      return window.wasmSetObjectsFinished;
-    });
-  }
-
-  /**
-   * Get current render count
-   */
-  async getRenderCount() {
-    return await this.page.evaluate(() => window.wasmRenderCount || 0);
-  }
-
-  /**
-   * Wait for next render after a change - exactly like dev repo
-   */
-  async waitForNextRender(previousCount = null) {
-    const baseCount =
-      previousCount === null ? await this.getRenderCount() : previousCount;
-    await this.page.waitForFunction(
-      (count) => (window.wasmRenderCount || 0) > count,
-      baseCount,
-    );
   }
 };
