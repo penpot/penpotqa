@@ -31,6 +31,8 @@ mainTest.beforeEach(async ({ page }) => {
   inspectPanelPage = new InspectPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
+
+  await mainPage.initializeWasmEventListeners();
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -127,13 +129,18 @@ mainTest.describe(() => {
     await mainPage.clickViewportOnce();
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.waitForChangeIsSaved();
+    // Ensure first render is complete
+    await mainPage.waitForFirstRender();
   });
 
   mainTest(
     qase([1690], 'Create a board with Grid Layout - change direction'),
     async () => {
+      // Get render count BEFORE the visual change      const renderCountBefore = await mainPage.getRenderCount();
       await designPanelPage.changeLayoutDirection('Column', false);
       await mainPage.waitForChangeIsSaved();
+      // Wait for next render to ensure visual update is complete
+      await mainPage.waitForNextRender(renderCountBefore);
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'column-direction-layer.png',
       );

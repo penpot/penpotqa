@@ -7,6 +7,7 @@ exports.BasePage = class BasePage {
    */
   constructor(page) {
     this.page = page;
+    this.isWasmInitialized = false;
     this.header = page.locator('div[class*="dashboard-title"] h1');
     this.successMessage = page.locator(
       'div[class*="shared_notification_pill__type-toast"]',
@@ -291,18 +292,6 @@ exports.BasePage = class BasePage {
   }
 
   async waitForChangeIsSaved() {
-    try {
-      await this.unSavedChangesIcon.waitFor({
-        state: 'visible',
-        timeout: 2000,
-      });
-    } catch (error) {
-      console.debug(
-        'Unsaved icon not visible (expected for fast saves):',
-        error.message,
-      );
-    }
-
     await this.savedChangesIcon.waitFor({ state: 'visible' });
   }
 
@@ -547,5 +536,61 @@ exports.BasePage = class BasePage {
 
   async clickOnAddVariantViewportButton() {
     await this.addVariantViewportButton.first().click();
+  }
+
+  /**
+   * Initialize WASM event listeners - exactly like dev repo
+   */
+  async initializeWasmEventListeners() {
+    if (this.isWasmInitialized) return;
+
+    await this.page.addInitScript(() => {
+      document.addEventListener('penpot:wasm:loaded', () => {
+        window.wasmModuleLoaded = true;
+      });
+
+      document.addEventListener('penpot:wasm:render', () => {
+        window.wasmRenderCount = (window.wasmRenderCount || 0) + 1;
+      });
+
+      document.addEventListener('penpot:wasm:set-objects', () => {
+        window.wasmSetObjectsFinished = true;
+      });
+    });
+
+    this.isWasmInitialized = true;
+  }
+
+  /**
+   * Wait for the first WASM render to complete - exactly like dev repo
+   */
+  async waitForFirstRender() {
+    // Wait for canvas only
+    await this.page.locator('canvas').waitFor({ timeout: 30000 });
+
+    // Wait for WASM set-objects event
+    await this.page.waitForFunction(() => {
+      console.log('RAF:', window.wasmSetObjectsFinished);
+      return window.wasmSetObjectsFinished;
+    });
+  }
+
+  /**
+   * Get current render count
+   */
+  async getRenderCount() {
+    return await this.page.evaluate(() => window.wasmRenderCount || 0);
+  }
+
+  /**
+   * Wait for next render after a change - exactly like dev repo
+   */
+  async waitForNextRender(previousCount = null) {
+    const baseCount =
+      previousCount === null ? await this.getRenderCount() : previousCount;
+    await this.page.waitForFunction(
+      (count) => (window.wasmRenderCount || 0) > count,
+      baseCount,
+    );
   }
 };
