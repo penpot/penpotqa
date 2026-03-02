@@ -290,6 +290,15 @@ exports.BasePage = class BasePage {
     await this.moveButton.click({ force: true });
   }
 
+  async waitForUpdateFileRequest() {
+    await this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/api/main/methods/update-file') &&
+        response.request().method() === 'POST' &&
+        response.status() === 200,
+    );
+  }
+
   async waitForChangeIsSaved() {
     await this.savedChangesIcon.waitFor({ state: 'visible' });
   }

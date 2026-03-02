@@ -31,6 +31,7 @@ mainTest.beforeEach(async ({ page }) => {
   inspectPanelPage = new InspectPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
+
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -132,7 +133,9 @@ mainTest.describe(() => {
   mainTest(
     qase([1690], 'Create a board with Grid Layout - change direction'),
     async () => {
+      const waitForUpdateFile = mainPage.waitForUpdateFileRequest();
       await designPanelPage.changeLayoutDirection('Column', false);
+      await waitForUpdateFile;
       await mainPage.waitForChangeIsSaved();
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'column-direction-layer.png',
