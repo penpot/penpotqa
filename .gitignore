@@ -49,6 +49,7 @@ npm-debug.log*
 # Playwright files
 /playwright-report/
 /playwright/.cache/
+.playwright-cli/
 
 # Test results
 /test-results/
