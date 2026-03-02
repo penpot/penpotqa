@@ -98,7 +98,7 @@ mainTest.describe(() => {
         await mainPage.clickShortcutCtrlAltV();
 
         await expect(mainPage.viewport).toHaveScreenshot('copies-property.png', {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         });
       },
     );
@@ -122,7 +122,7 @@ mainTest.describe(() => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'copies-property-3-layers.png',
           {
-            mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+            mask: mainPage.maskViewport(),
           },
         );
       },
@@ -155,7 +155,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'paste-property-copy-component.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -259,7 +259,7 @@ mainTest.describe(() => {
       await mainPage.pasteLayerViaRightClick();
 
       await expect(mainPage.viewport).toHaveScreenshot('copies-path.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       });
     },
   );
