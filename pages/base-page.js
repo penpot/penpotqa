@@ -7,7 +7,6 @@ exports.BasePage = class BasePage {
    */
   constructor(page) {
     this.page = page;
-    this.isWasmInitialized = false;
     this.header = page.locator('div[class*="dashboard-title"] h1');
     this.successMessage = page.locator(
       'div[class*="shared_notification_pill__type-toast"]',
