@@ -133,8 +133,9 @@ mainTest.describe(() => {
   mainTest(
     qase([1690], 'Create a board with Grid Layout - change direction'),
     async () => {
+      const waitForUpdateFile = mainPage.waitForUpdateFileRequest();
       await designPanelPage.changeLayoutDirection('Column', false);
-      await mainPage.waitForUpdateFileRequest();
+      await waitForUpdateFile;
       await mainPage.waitForChangeIsSaved();
       await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
         'column-direction-layer.png',
