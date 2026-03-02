@@ -291,6 +291,18 @@ exports.BasePage = class BasePage {
   }
 
   async waitForChangeIsSaved() {
+    try {
+      await this.unSavedChangesIcon.waitFor({
+        state: 'visible',
+        timeout: 2000,
+      });
+    } catch (error) {
+      console.debug(
+        'Unsaved icon not visible (expected for fast saves):',
+        error.message,
+      );
+    }
+
     await this.savedChangesIcon.waitFor({ state: 'visible' });
   }
 
