@@ -118,6 +118,7 @@ mainTest.describe(() => {
         await mainPage.clickSelectAllMainMenuSubItem();
 
         await mainPage.clickShortcutCtrlAltV();
+        await mainPage.waitForChangeIsSaved();
 
         await expect(mainPage.viewport).toHaveScreenshot(
           'copies-property-3-layers.png',
