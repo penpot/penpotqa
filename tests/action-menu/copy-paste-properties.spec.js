@@ -95,10 +95,12 @@ mainTest.describe(() => {
         await mainPage.copyLayerPropertyViaRightClick();
 
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
+        const waitForUpdate = mainPage.waitForUpdateFileRequest();
         await mainPage.clickShortcutCtrlAltV();
+        await waitForUpdate;
 
         await expect(mainPage.viewport).toHaveScreenshot('copies-property.png', {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         });
       },
     );
@@ -118,11 +120,13 @@ mainTest.describe(() => {
         await mainPage.clickSelectAllMainMenuSubItem();
 
         await mainPage.clickShortcutCtrlAltV();
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
 
         await expect(mainPage.viewport).toHaveScreenshot(
           'copies-property-3-layers.png',
           {
-            mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+            mask: mainPage.maskViewport(),
           },
         );
       },
@@ -147,15 +151,16 @@ mainTest.describe(() => {
 
       await layersPanelPage.clickNMainComponentOnLayersTab(1);
       await mainPage.clickShortcutCtrlAltC();
-
       await layersPanelPage.clickNCopyComponentOnLayersTab(0);
       await mainPage.clickShortcutCtrlAltV();
 
+      await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
+
       await expect(mainPage.viewport).toHaveScreenshot(
         'paste-property-copy-component.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -256,10 +261,12 @@ mainTest.describe(() => {
     async () => {
       await mainPage.createDefaultOpenPath();
       await mainPage.copyLayerSVGViaRightClick();
+      const waitForUpdate = mainPage.waitForUpdateFileRequest();
       await mainPage.pasteLayerViaRightClick();
+      await waitForUpdate;
 
       await expect(mainPage.viewport).toHaveScreenshot('copies-path.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       });
     },
   );
