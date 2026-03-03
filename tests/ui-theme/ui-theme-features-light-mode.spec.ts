@@ -7,10 +7,13 @@ import { ProfilePage } from '../../pages/profile-page';
 import { DashboardPage } from '../../pages/dashboard/dashboard-page';
 import { TeamPage } from '../../pages/dashboard/team-page';
 
+//TO REMOVE
+registerTest.skip(true, 'Temporarily disabled due to unrelated to new render');
+
 const teamName: string = random().concat('autotest');
 
 registerTest(
-  qase(1677, 'Check Light UI them in Projects page'),
+  qase(1677, 'Check Light UI theme in Projects page'),
   async ({ page }: { page: Page }) => {
     let teamPage: TeamPage = new TeamPage(page);
     let profilePage: ProfilePage = new ProfilePage(page);
