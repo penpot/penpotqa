@@ -153,8 +153,12 @@ mainTest.describe(() => {
       await mainPage.clickShortcutCtrlAltC();
 
       await layersPanelPage.clickNCopyComponentOnLayersTab(0);
+      const waitForChangeIsPersisted = (async () => {
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
+      })();
       await mainPage.clickShortcutCtrlAltV();
-      await mainPage.waitForChangeIsSaved();
+      await waitForChangeIsPersisted;
 
       await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
