@@ -119,9 +119,9 @@ mainTest.describe(() => {
         await mainPage.clickEditMainMenuItem();
         await mainPage.clickSelectAllMainMenuSubItem();
 
-        const waitForUpdate = mainPage.waitForUpdateFileRequest();
         await mainPage.clickShortcutCtrlAltV();
-        await waitForUpdate;
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
 
         await expect(mainPage.viewport).toHaveScreenshot(
           'copies-property-3-layers.png',
@@ -151,16 +151,12 @@ mainTest.describe(() => {
 
       await layersPanelPage.clickNMainComponentOnLayersTab(1);
       await mainPage.clickShortcutCtrlAltC();
-
       await layersPanelPage.clickNCopyComponentOnLayersTab(0);
-      const waitForChangeIsPersisted = (async () => {
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-      })();
       await mainPage.clickShortcutCtrlAltV();
-      await waitForChangeIsPersisted;
 
+      await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
+
       await expect(mainPage.viewport).toHaveScreenshot(
         'paste-property-copy-component.png',
         {
