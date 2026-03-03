@@ -153,7 +153,6 @@ mainTest.describe(() => {
       await layersPanelPage.clickNCopyComponentOnLayersTab(0);
       await mainPage.clickShortcutCtrlAltV();
       await mainPage.waitForChangeIsSaved();
-      //await mainPage.waitForUpdateFileRequest();
 
       await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
