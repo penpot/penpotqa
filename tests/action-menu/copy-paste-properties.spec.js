@@ -96,6 +96,7 @@ mainTest.describe(() => {
 
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
         await mainPage.clickShortcutCtrlAltV();
+        await mainPage.waitForUpdateFileRequest();
 
         await expect(mainPage.viewport).toHaveScreenshot('copies-property.png', {
           mask: mainPage.maskViewport(),
@@ -118,7 +119,7 @@ mainTest.describe(() => {
         await mainPage.clickSelectAllMainMenuSubItem();
 
         await mainPage.clickShortcutCtrlAltV();
-        await mainPage.waitForChangeIsSaved();
+        await mainPage.waitForUpdateFileRequest();
 
         await expect(mainPage.viewport).toHaveScreenshot(
           'copies-property-3-layers.png',
@@ -151,6 +152,8 @@ mainTest.describe(() => {
 
       await layersPanelPage.clickNCopyComponentOnLayersTab(0);
       await mainPage.clickShortcutCtrlAltV();
+      await mainPage.waitForChangeIsSaved();
+      //await mainPage.waitForUpdateFileRequest();
 
       await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -258,6 +261,7 @@ mainTest.describe(() => {
       await mainPage.createDefaultOpenPath();
       await mainPage.copyLayerSVGViaRightClick();
       await mainPage.pasteLayerViaRightClick();
+      await mainPage.waitForUpdateFileRequest();
 
       await expect(mainPage.viewport).toHaveScreenshot('copies-path.png', {
         mask: mainPage.maskViewport(),
