@@ -62,6 +62,11 @@ const config = {
     video: process.env.CI ? 'on-first-retry' : 'on',
     /* Capture screenshot on failure */
     screenshot: 'only-on-failure',
+    /* Default viewport for all projects */
+    viewport: {
+      height: 969,
+      width: 1920,
+    },
   },
   projects: [
     {
