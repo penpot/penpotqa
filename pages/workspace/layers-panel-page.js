@@ -161,6 +161,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       button: 'right',
       force: true,
     });
+
     await this.renameOption.locator('span').first().click();
     if (newName) {
       await this.typeNameCreatedLayerAndEnter(newName);
