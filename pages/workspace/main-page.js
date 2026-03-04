@@ -1268,7 +1268,7 @@ exports.MainPage = class MainPage extends BasePage {
     });
   }
 
-  async dragAndDropComponentToVariantContainerOnCanvas(componentName, variantName) {
+  async dragAndDropComponentToVariantContainerViaCanvas(componentName, variantName) {
     // Step 1: select the variant to get its selrect bounding box (frame body center)
     await this.clickOnVariantsTitle(variantName);
     await expect(this.copyLayer).toBeVisible();
