@@ -27,6 +27,8 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
+  await layersPanelPage.renameLayerViaRightClick('Rectangle', 'Rectangle1');
+
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createVariantViaRightClick();
@@ -39,11 +41,17 @@ mainTest.afterEach(async () => {
 });
 
 mainTest(qase([2398], 'Add Variant to a component on the canvas'), async () => {
-  await mainPage.createDefaultRectangleByCoordinates(200, 500);
-  await mainPage.createComponentViaRightClick();
+  await mainPage.clickViewportTwice();
+  await mainPage.createDefaultRectangleByCoordinates(500, 300);
+  await layersPanelPage.renameLayerViaRightClick('Rectangle', 'Rectangle2');
+
+  await mainPage.createComponentViaRightClickFromLayerByName('Rectangle2');
   await mainPage.waitForChangeIsSaved();
 
-  await layersPanelPage.dragAndDropComponentToVariantViaCanvas(200, 300);
+  await layersPanelPage.dragAndDropComponentToVariantContainerOnCanvas(
+    'Rectangle2',
+    'Rectangle1',
+  );
   await layersPanelPage.checkVariantLayerCount(3);
 });
 
