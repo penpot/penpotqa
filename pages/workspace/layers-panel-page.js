@@ -157,7 +157,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
 
   async renameLayerViaRightClick(layerName) {
     const layerSel = this.layersRows.getByText(layerName);
-    await layerSel.last().click({
+    await layerSel.first().click({
       button: 'right',
       force: true,
     });
