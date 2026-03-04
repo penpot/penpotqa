@@ -1268,6 +1268,28 @@ exports.MainPage = class MainPage extends BasePage {
     });
   }
 
+  async dragAndDropComponentToVariantContainerOnCanvas(componentName, variantName) {
+    // Step 1: select the variant to get its selrect bounding box (frame body center)
+    await this.clickOnVariantsTitle(variantName);
+    await expect(this.copyLayer).toBeVisible();
+    const variantBox = await this.copyLayer.boundingBox();
+    const variantCenterX = variantBox.x + variantBox.width / 2;
+    const variantCenterY = variantBox.y + variantBox.height / 2;
+
+    // Step 2: re-select the component so its selrect is the drag source
+    await this.page.locator('#layers').getByText(componentName).first().click();
+    await expect(this.copyLayer).toBeVisible();
+    const componentBox = await this.copyLayer.boundingBox();
+    const componentCenterX = componentBox.x + componentBox.width / 2;
+    const componentCenterY = componentBox.y + componentBox.height / 2;
+
+    // Step 3: drag using raw mouse events with intermediate steps to trigger dragover
+    await this.page.mouse.move(componentCenterX, componentCenterY);
+    await this.page.mouse.down();
+    await this.page.mouse.move(variantCenterX, variantCenterY, { steps: 10 });
+    await this.page.mouse.up();
+  }
+
   async copyElementViaAltDragAndDrop(x, y) {
     await expect(this.copyLayer).toBeVisible();
     await this.copyLayer.hover();
