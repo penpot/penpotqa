@@ -1,16 +1,20 @@
-const { mainTest } = require('../../../fixtures');
-const { MainPage } = require('../../../pages/workspace/main-page');
-const { expect } = require('@playwright/test');
-const { DashboardPage } = require('../../../pages/dashboard/dashboard-page');
-const { TeamPage } = require('../../../pages/dashboard/team-page');
-const { random } = require('../../../helpers/string-generator');
-const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
+import { expect } from '@playwright/test';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { mainTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 
 const teamName = random().concat('autotest');
 
-let mainPage, dashboardPage, teamPage, layersPanelPage, designPanelPage;
+let mainPage: MainPage;
+let dashboardPage: DashboardPage;
+let teamPage: TeamPage;
+let layersPanelPage: LayersPanelPage;
+let designPanelPage: DesignPanelPage;
 
 mainTest.beforeEach(async ({ page, browserName }) => {
   dashboardPage = new DashboardPage(page);
@@ -48,7 +52,7 @@ mainTest(qase([2398], 'Add Variant to a component on the canvas'), async () => {
   await mainPage.createComponentViaRightClickFromLayerByName('Rectangle2');
   await mainPage.waitForChangeIsSaved();
 
-  await layersPanelPage.dragAndDropComponentToVariantContainerViaCanvas(
+  await mainPage.dragAndDropComponentToVariantContainerViaCanvas(
     'Rectangle2',
     'Rectangle1',
   );
@@ -110,7 +114,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
 
     await layersPanelPage.selectLayerByName('Value 2');
-    await layersPanelPage.dragAndDropComponentOutOfVariantContainerViaCanvas(
+    await mainPage.dragAndDropComponentOutOfVariantContainerViaCanvas(
       'Value 2',
       'Rectangle1',
     );
@@ -124,7 +128,7 @@ mainTest(
   qase([2407], 'Restoring a deleted variant from the child component'),
   async () => {
     await layersPanelPage.selectLayerByName('Value 1');
-    await layersPanelPage.copyElementViaAltDragAndDrop(200, 500);
+    await mainPage.copyElementViaAltDragAndDrop(200, 500);
 
     await layersPanelPage.selectLayerByName('Value 1');
     await mainPage.deleteLayerViaRightClickByName('Value 1');
