@@ -80,10 +80,6 @@ const config = {
       use: {
         browserName: 'chromium',
         channel: 'chrome',
-        viewport: {
-          height: 969,
-          width: 1920,
-        },
         launchOptions: {
           ignoreDefaultArgs: ['--hide-scrollbars'],
           args: ['--headless=new'], // Use new headless mode
@@ -104,10 +100,6 @@ const config = {
       },
       use: {
         browserName: 'firefox',
-        viewport: {
-          height: 969,
-          width: 1920,
-        },
       },
       launchOptions: {
         firefoxUserPrefs: {
@@ -130,10 +122,6 @@ const config = {
       },
       use: {
         browserName: 'webkit',
-        viewport: {
-          height: 969,
-          width: 1920,
-        },
       },
     },
   ],
