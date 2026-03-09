@@ -155,6 +155,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.clickOnEnter();
   }
 
+  /**
+   * @param {string} layerName
+   * @param {string | null} newName
+   */
   async renameLayerViaRightClick(layerName, newName = null) {
     const layerSel = this.layersRows.getByText(layerName);
     await layerSel.first().click({
