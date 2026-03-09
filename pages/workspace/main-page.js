@@ -1277,7 +1277,7 @@ exports.MainPage = class MainPage extends BasePage {
     const variantCenterY = variantBox.y + variantBox.height / 2;
 
     // Step 2: re-select the component so its selrect is the drag source
-    await this.page.locator('#layers').getByText(componentName).first().click();
+    await this.page.locator('#layers').getByText(componentName, { exact: true }).first().click();
     await expect(this.copyLayer).toBeVisible();
     const componentBox = await this.copyLayer.boundingBox();
     const componentCenterX = componentBox.x + componentBox.width / 2;
