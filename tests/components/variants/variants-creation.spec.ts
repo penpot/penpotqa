@@ -99,7 +99,7 @@ mainTest(
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.createVariantViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnVariantsTitle('Rectangle');
     await mainPage.clickOnAddVariantViewportButton();
