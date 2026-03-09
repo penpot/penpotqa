@@ -81,12 +81,12 @@ mainTest(
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.createVariantViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnVariantsTitle('Rectangle');
     await mainPage.copyLayerViaRightClick();
     await mainPage.pressPasteShortcut(browserName);
-    await mainPage.clickViewportOnce();
+    await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot('copy-paste-variants.png', {
       mask: mainPage.maskViewport(),
     });
