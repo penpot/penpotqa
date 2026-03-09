@@ -60,10 +60,11 @@ mainTest(
   qase([2399], 'Add Variant to a component from the Layers tab'),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 500);
+    await layersPanelPage.renameLayerViaRightClick('Rectangle', 'Rectangle2');
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
 
-    await layersPanelPage.dragAndDropComponentToVariants('Rectangle');
+    await layersPanelPage.dragAndDropComponentToVariants('Rectangle2');
     await layersPanelPage.checkVariantLayerCount(3);
   },
 );
