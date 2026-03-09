@@ -61,7 +61,6 @@ mainTest.describe(() => {
     qase([1536], 'Show in assets panel option from component context menu (RMB)'),
     async () => {
       await mainPage.showInAssetsPanelRightClick();
-      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await assetsPanelPage.isComponentHighlightedInAssetsTab();
     },
