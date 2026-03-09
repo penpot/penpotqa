@@ -98,7 +98,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.pressPasteShortcut(browserName);
     await layersPanelPage.checkVariantLayerCount(1);
-    await layersPanelPage.isLayerWithNameSelected('Rectangle / Value 2');
+    await layersPanelPage.isLayerWithNameSelected('Rectangle1 / Value 2');
   },
 );
 
@@ -110,10 +110,13 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
 
     await layersPanelPage.selectLayerByName('Value 2');
-    await layersPanelPage.dragAndDropComponentToVariantViaCanvas(200, 500);
+    await layersPanelPage.dragAndDropComponentOutOfVariantContainerViaCanvas(
+      'Value 2',
+      'Rectangle1',
+    );
 
     await layersPanelPage.isVariantLayerVisible(false);
-    await layersPanelPage.isLayerWithNameSelected('Rectangle / Value 2');
+    await layersPanelPage.isLayerWithNameSelected('Rectangle1 / Value 2');
   },
 );
 
@@ -138,8 +141,8 @@ mainTest(
 mainTest(
   qase([2419], 'Changing the component frame in the design panel'),
   async () => {
-    await mainPage.clickOnVariantsTitle('Rectangle');
-    await layersPanelPage.isLayerWithNameSelected('Rectangle');
+    await mainPage.clickOnVariantsTitle('Rectangle1');
+    await layersPanelPage.isLayerWithNameSelected('Rectangle1');
     await designPanelPage.isFlexElementWidth100BtnVisible(false);
     await designPanelPage.clickOnFlexElementFixWidthBtn();
     await designPanelPage.clickOnFlexElementFixHeightBtn();
