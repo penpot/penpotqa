@@ -225,7 +225,7 @@ mainTest.describe(() => {
     await mainPage.clickMoveButton();
 
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
-    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
     await mainPage.waitForChangeIsSaved();
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
