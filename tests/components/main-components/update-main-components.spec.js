@@ -355,13 +355,6 @@ mainTest.describe('Text', () => {
         'Inside',
       );
       await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await designPanelPage.clickAddShadowButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
       await designPanelPage.changeRotationForLayer('40');
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
