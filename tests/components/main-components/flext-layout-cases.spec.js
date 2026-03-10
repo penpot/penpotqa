@@ -80,7 +80,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        '(1504) Create flex board with main component and its copy, change alingment',
+        '(1504) Create flex board with main component and its copy, change alignment',
         async () => {
           await designPanelPage.changeLayoutAlignment('Center');
           await mainPage.waitForChangeIsSaved();
