@@ -1,36 +1,37 @@
-const { expect } = require('@playwright/test');
-const { mainTest } = require('../../fixtures');
-const { MainPage } = require('../../pages/workspace/main-page');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { ViewModePage } = require('../../pages/workspace/view-mode-page');
-const { PrototypePanelPage } = require('../../pages/workspace/prototype-panel-page');
-const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
-const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
-const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
-const { ProfilePage } = require('../../pages/profile-page');
-const { LoginPage } = require('../../pages/login-page');
-const { RegisterPage } = require('../../pages/register-page');
-const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
-const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
+import { expect } from '@playwright/test';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { mainTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { ViewModePage } from '@pages/workspace/view-mode-page';
+import { PrototypePanelPage } from '@pages/workspace/prototype-panel-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
+import { ProfilePage } from '@pages/profile-page';
+import { LoginPage } from '@pages/login-page';
+import { RegisterPage } from '@pages/register-page';
+import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 
 const teamName = random().concat('autotest');
 
-let teamPage,
-  dashboardPage,
-  mainPage,
-  viewModePage,
-  prototypePanelPage,
-  designPanelPage,
-  layersPanelPage,
-  profilePage,
-  loginPage,
-  registerPage,
-  colorPalettePage,
-  assetsPanelPage,
-  inspectPanelPage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+let viewModePage: ViewModePage;
+let prototypePanelPage: PrototypePanelPage;
+let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
+let profilePage: ProfilePage;
+let loginPage: LoginPage;
+let registerPage: RegisterPage;
+let colorPalettePage: ColorPalettePage;
+let assetsPanelPage: AssetsPanelPage;
+let inspectPanelPage: InspectPanelPage;
+
 mainTest.beforeEach(async ({ page, browserName }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
