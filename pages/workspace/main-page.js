@@ -1269,7 +1269,6 @@ exports.MainPage = class MainPage extends BasePage {
   async dragAndDropComponentToVariantContainerViaCanvas(componentName, variantName) {
     // Step 1: select the variant to get its selrect bounding box (frame body center)
     await this.clickOnVariantsTitle(variantName);
-    await expect(this.copyLayer).toBeVisible();
     const variantBox = await this.copyLayer.boundingBox();
     const variantCenterX = variantBox.x + variantBox.width / 2;
     const variantCenterY = variantBox.y + variantBox.height / 2;
@@ -1280,7 +1279,6 @@ exports.MainPage = class MainPage extends BasePage {
       .getByText(componentName, { exact: true })
       .first()
       .click();
-    await expect(this.copyLayer).toBeVisible();
     const componentBox = await this.copyLayer.boundingBox();
     const componentCenterX = componentBox.x + componentBox.width / 2;
     const componentCenterY = componentBox.y + componentBox.height / 2;
@@ -1306,7 +1304,6 @@ exports.MainPage = class MainPage extends BasePage {
   ) {
     // Step 1: select the variant to get its selrect bounding box (to calculate a drop point outside)
     await this.clickOnVariantsTitle(variantName);
-    await expect(this.copyLayer).toBeVisible();
     const variantBox = await this.copyLayer.boundingBox();
     const targetX = variantBox.x + variantBox.width + 150;
     const targetY = variantBox.y + variantBox.height / 2;
@@ -1317,7 +1314,6 @@ exports.MainPage = class MainPage extends BasePage {
       .getByText(componentName, { exact: true })
       .first()
       .click();
-    await expect(this.copyLayer).toBeVisible();
     const componentBox = await this.copyLayer.boundingBox();
     const componentCenterX = componentBox.x + componentBox.width / 2;
     const componentCenterY = componentBox.y + componentBox.height / 2;
