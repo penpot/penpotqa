@@ -1259,15 +1259,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async dragAndDropComponentToVariantViaCanvas(x, y) {
-    await expect(this.copyLayer).toBeVisible();
-    await this.copyLayer.hover();
-    await this.copyLayer.dragTo(this.viewport, {
-      force: false,
-      targetPosition: { x: x, y: y },
-    });
-  }
-
   /**
    * Drags a component from the layers panel and drops it into a variant container on the canvas.
    * Dynamically calculates the drop target by selecting the variant first to obtain its bounding box.
