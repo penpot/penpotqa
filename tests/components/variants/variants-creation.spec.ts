@@ -1,24 +1,24 @@
-const { mainTest } = require('../../../fixtures');
-const { MainPage } = require('../../../pages/workspace/main-page');
-const { expect } = require('@playwright/test');
-const { DashboardPage } = require('../../../pages/dashboard/dashboard-page');
-const { TeamPage } = require('../../../pages/dashboard/team-page');
-const { random } = require('../../../helpers/string-generator');
-const { AssetsPanelPage } = require('../../../pages/workspace/assets-panel-page');
-const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
-const { ColorPalettePage } = require('../../../pages/workspace/color-palette-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
+import { expect } from '@playwright/test';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { mainTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 
 const teamName = random().concat('autotest');
 
-let mainPage,
-  dashboardPage,
-  teamPage,
-  assetsPanelPage,
-  designPanelPage,
-  colorPalettePage,
-  layersPanelPage;
+let mainPage: MainPage;
+let dashboardPage: DashboardPage;
+let teamPage: TeamPage;
+let assetsPanelPage: AssetsPanelPage;
+let designPanelPage: DesignPanelPage;
+let colorPalettePage: ColorPalettePage;
+let layersPanelPage: LayersPanelPage;
 
 mainTest.beforeEach(async ({ page, browserName }) => {
   dashboardPage = new DashboardPage(page);
@@ -81,12 +81,13 @@ mainTest(
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.createVariantViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnVariantsTitle('Rectangle');
     await mainPage.copyLayerViaRightClick();
     await mainPage.pressPasteShortcut(browserName);
-    await mainPage.clickViewportOnce();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot('copy-paste-variants.png', {
       mask: mainPage.maskViewport(),
     });
@@ -99,7 +100,7 @@ mainTest(
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaShortcut(browserName);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.createVariantViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnVariantsTitle('Rectangle');
     await mainPage.clickOnAddVariantViewportButton();
