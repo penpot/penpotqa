@@ -1071,8 +1071,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async groupLayerViaRightClick() {
-    const layerSel = this.page.getByTestId('layer-item');
-    await layerSel.last().click({ button: 'right', force: true });
+    await this.rightClickOnElement();
     await this.groupOption.click();
   }
 

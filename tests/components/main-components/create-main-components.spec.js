@@ -304,6 +304,7 @@ mainTest(
 
 mainTest(qase([1751], 'Grouping component copies'), async () => {
   await mainTest.slow();
+  const groupName = 'Group';
   await mainPage.createDefaultEllipseByCoordinates(200, 200);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
@@ -317,9 +318,10 @@ mainTest(qase([1751], 'Grouping component copies'), async () => {
   await mainPage.clickSelectAllMainMenuSubItem();
   await mainPage.waitForChangeIsSaved();
   await mainPage.duplicateLayerViaRightClick();
+  await mainPage.waitForChangeIsSaved();
   await mainPage.groupLayerViaRightClick();
   await mainPage.waitForChangeIsSaved();
-  await layersPanelPage.expandGroupOnLayersTab();
+  await layersPanelPage.expandGroupOnLayersTab(groupName);
   await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
     'copy-components-group-layers.png',
   );
