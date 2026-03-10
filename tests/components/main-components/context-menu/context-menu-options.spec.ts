@@ -73,7 +73,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isSecondComponentWithNameAddedToFileLibrary('Rectangle');
     await layersPanelPage.openLayersTab();
-
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-rectangle-duplicated-canvas.png',
       {
@@ -86,7 +85,6 @@ mainTest.describe(() => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.showFileLibraryMainComponent();
-
     await expect(mainPage.viewport).toHaveScreenshot('component-show-main.png', {
       mask: mainPage.maskViewport(),
     });
@@ -117,18 +115,14 @@ mainTest.describe(() => {
     await mainPage.createDefaultEllipseByCoordinates(100, 200, true);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
-
     await mainPage.uploadImage('images/sample.jpeg');
     await mainPage.waitForChangeIsSaved();
-
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
-
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-grid-view.png',
       {
@@ -136,10 +130,8 @@ mainTest.describe(() => {
         maxDiffPixelRatio: 0.01,
       },
     );
-
     await assetsPanelPage.clickFileLibraryListViewButton();
     await mainPage.waitForChangeIsSaved();
-
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-list-view.png',
       {
@@ -147,10 +139,8 @@ mainTest.describe(() => {
         maxDiffPixelRatio: 0.01,
       },
     );
-
     await assetsPanelPage.clickFileLibraryGridViewButton();
     await mainPage.waitForChangeIsSaved();
-
     await expect(assetsPanelPage.assetsPanel).toHaveScreenshot(
       'component-grid-view.png',
       {
@@ -165,15 +155,12 @@ mainTest.describe(() => {
     async () => {
       await mainPage.duplicateLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
-
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.changeAxisXAndYForLayer('200', '0');
       await mainPage.waitForChangeIsSaved();
-
       await designPanelPage.isAnnotationOptionNotVisibleRightClick();
       await designPanelPage.isComponentTypeCopy();
       await designPanelPage.isAnnotationNotAddedToComponent();
-
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.isAnnotationOptionNotVisible();
