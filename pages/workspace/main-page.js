@@ -1258,23 +1258,85 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async dragAndDropComponentToVariantViaCanvas(x, y) {
-    await expect(this.copyLayer).toBeVisible();
-    await this.copyLayer.hover();
-    await this.copyLayer.dragTo(this.viewport, {
-      force: false,
-      targetPosition: { x: x, y: y },
-    });
+  /**
+   * Drags a component from the layers panel and drops it into a variant container on the canvas.
+   * Dynamically calculates the drop target by selecting the variant first to obtain its bounding box.
+   *
+   * @param {string} componentName - Name of the component to drag (as shown in the layers panel).
+   * @param {string} variantName - Name of the variant container to drop the component into.
+   */
+  async dragAndDropComponentToVariantContainerViaCanvas(componentName, variantName) {
+    // Step 1: select the variant to get its selrect bounding box (frame body center)
+    await this.clickOnVariantsTitle(variantName);
+    const variantBox = await this.copyLayer.boundingBox();
+    const variantCenterX = variantBox.x + variantBox.width / 2;
+    const variantCenterY = variantBox.y + variantBox.height / 2;
+
+    // Step 2: re-select the component so its selrect is the drag source
+    await this.page
+      .locator('#layers')
+      .getByText(componentName, { exact: true })
+      .first()
+      .click();
+    const componentBox = await this.copyLayer.boundingBox();
+    const componentCenterX = componentBox.x + componentBox.width / 2;
+    const componentCenterY = componentBox.y + componentBox.height / 2;
+
+    // Step 3: drag using raw mouse events with intermediate steps to trigger dragover
+    await this.page.mouse.move(componentCenterX, componentCenterY);
+    await this.page.mouse.down();
+    await this.page.mouse.move(variantCenterX, variantCenterY, { steps: 10 });
+    await this.page.mouse.up();
+  }
+
+  /**
+   * Drags a component out of a variant container and drops it onto an empty area of the canvas.
+   * Dynamically calculates the drop target by selecting the variant first to obtain its bounding box,
+   * then places the component to the right of the variant container.
+   *
+   * @param {string} componentName - Name of the component to drag out (as shown in the layers panel).
+   * @param {string} variantName - Name of the variant container the component currently belongs to.
+   */
+  async dragAndDropComponentOutOfVariantContainerViaCanvas(
+    componentName,
+    variantName,
+  ) {
+    // Step 1: select the variant to get its selrect bounding box (to calculate a drop point outside)
+    await this.clickOnVariantsTitle(variantName);
+    const variantBox = await this.copyLayer.boundingBox();
+    const targetX = variantBox.x + variantBox.width + 150;
+    const targetY = variantBox.y + variantBox.height / 2;
+
+    // Step 2: select the component inside the variant so its selrect is the drag source
+    await this.page
+      .locator('#layers')
+      .getByText(componentName, { exact: true })
+      .first()
+      .click();
+    const componentBox = await this.copyLayer.boundingBox();
+    const componentCenterX = componentBox.x + componentBox.width / 2;
+    const componentCenterY = componentBox.y + componentBox.height / 2;
+
+    // Step 3: drag using raw mouse events with intermediate steps to trigger dragover
+    await this.page.mouse.move(componentCenterX, componentCenterY);
+    await this.page.mouse.down();
+    await this.page.mouse.move(targetX, targetY, { steps: 10 });
+    await this.page.mouse.up();
   }
 
   async copyElementViaAltDragAndDrop(x, y) {
-    await expect(this.copyLayer).toBeVisible();
-    await this.copyLayer.hover();
+    const box = await this.copyLayer.boundingBox();
+
+    const startX = box.x + box.width / 2;
+    const startY = box.y + box.height / 2;
+
     await this.page.keyboard.down('Alt');
-    await this.copyLayer.dragTo(this.viewport, {
-      force: false,
-      targetPosition: { x: x, y: y },
-    });
+
+    await this.page.mouse.move(startX, startY);
+    await this.page.mouse.down();
+    await this.page.mouse.move(x, y, { steps: 10 });
+    await this.page.mouse.up();
+
     await this.page.keyboard.up('Alt');
   }
 

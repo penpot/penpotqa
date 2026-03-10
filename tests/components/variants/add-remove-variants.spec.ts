@@ -1,16 +1,20 @@
-const { mainTest } = require('../../../fixtures');
-const { MainPage } = require('../../../pages/workspace/main-page');
-const { expect } = require('@playwright/test');
-const { DashboardPage } = require('../../../pages/dashboard/dashboard-page');
-const { TeamPage } = require('../../../pages/dashboard/team-page');
-const { random } = require('../../../helpers/string-generator');
-const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { DesignPanelPage } = require('../../../pages/workspace/design-panel-page');
+import { expect } from '@playwright/test';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { mainTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 
 const teamName = random().concat('autotest');
 
-let mainPage, dashboardPage, teamPage, layersPanelPage, designPanelPage;
+let mainPage: MainPage;
+let dashboardPage: DashboardPage;
+let teamPage: TeamPage;
+let layersPanelPage: LayersPanelPage;
+let designPanelPage: DesignPanelPage;
 
 mainTest.beforeEach(async ({ page, browserName }) => {
   dashboardPage = new DashboardPage(page);
@@ -27,6 +31,8 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
+  await layersPanelPage.renameLayerViaRightClick('Rectangle', 'Rectangle1');
+
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.createVariantViaRightClick();
@@ -39,11 +45,18 @@ mainTest.afterEach(async () => {
 });
 
 mainTest(qase([2398], 'Add Variant to a component on the canvas'), async () => {
-  await mainPage.createDefaultRectangleByCoordinates(200, 500);
-  await mainPage.createComponentViaRightClick();
+  await mainPage.clickViewportTwice();
+  await mainPage.createDefaultRectangleByCoordinates(600, 300);
+  await layersPanelPage.renameLayerViaRightClick('Rectangle', 'Rectangle2');
+
+  await mainPage.createComponentViaRightClickFromLayerByName('Rectangle2');
   await mainPage.waitForChangeIsSaved();
 
-  await layersPanelPage.dragAndDropComponentToVariantViaCanvas(200, 300);
+  await mainPage.dragAndDropComponentToVariantContainerViaCanvas(
+    'Rectangle2',
+    'Rectangle1',
+  );
+
   await layersPanelPage.checkVariantLayerCount(3);
 });
 
@@ -51,10 +64,11 @@ mainTest(
   qase([2399], 'Add Variant to a component from the Layers tab'),
   async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 500);
+    await layersPanelPage.renameLayerViaRightClick('Rectangle', 'Rectangle2');
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
 
-    await layersPanelPage.dragAndDropComponentToVariants('Rectangle');
+    await layersPanelPage.dragAndDropComponentToVariants('Rectangle2');
     await layersPanelPage.checkVariantLayerCount(3);
   },
 );
@@ -88,7 +102,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.pressPasteShortcut(browserName);
     await layersPanelPage.checkVariantLayerCount(1);
-    await layersPanelPage.isLayerWithNameSelected('Rectangle / Value 2');
+    await layersPanelPage.isLayerWithNameSelected('Rectangle1 / Value 2');
   },
 );
 
@@ -100,10 +114,13 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
 
     await layersPanelPage.selectLayerByName('Value 2');
-    await layersPanelPage.dragAndDropComponentToVariantViaCanvas(200, 500);
+    await mainPage.dragAndDropComponentOutOfVariantContainerViaCanvas(
+      'Value 2',
+      'Rectangle1',
+    );
 
     await layersPanelPage.isVariantLayerVisible(false);
-    await layersPanelPage.isLayerWithNameSelected('Rectangle / Value 2');
+    await layersPanelPage.isLayerWithNameSelected('Rectangle1 / Value 2');
   },
 );
 
@@ -111,7 +128,7 @@ mainTest(
   qase([2407], 'Restoring a deleted variant from the child component'),
   async () => {
     await layersPanelPage.selectLayerByName('Value 1');
-    await layersPanelPage.copyElementViaAltDragAndDrop(200, 500);
+    await mainPage.copyElementViaAltDragAndDrop(200, 500);
 
     await layersPanelPage.selectLayerByName('Value 1');
     await mainPage.deleteLayerViaRightClickByName('Value 1');
@@ -128,8 +145,8 @@ mainTest(
 mainTest(
   qase([2419], 'Changing the component frame in the design panel'),
   async () => {
-    await mainPage.clickOnVariantsTitle('Rectangle');
-    await layersPanelPage.isLayerWithNameSelected('Rectangle');
+    await mainPage.clickOnVariantsTitle('Rectangle1');
+    await layersPanelPage.isLayerWithNameSelected('Rectangle1');
     await designPanelPage.isFlexElementWidth100BtnVisible(false);
     await designPanelPage.clickOnFlexElementFixWidthBtn();
     await designPanelPage.clickOnFlexElementFixHeightBtn();
