@@ -117,11 +117,11 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.getLayerRowsBy(layerName, uncollapsedChildrenOnly).first().click();
   }
 
-  async expandGroupOnLayersTab() {
-    if (!(await this.layerItemToggleExpand.isVisible())) {
-      await this.layerBoardToggleContentCollapse.first().click();
-      await expect(this.layerItemToggleExpand).toBeVisible();
-    }
+  async expandGroupOnLayersTab(groupName) {
+    const groupToggleContent = this.page
+      .getByRole('checkbox', { name: groupName })
+      .getByTestId('toggle-content');
+    await groupToggleContent.click();
   }
 
   async expandBoardOnLayersTab() {

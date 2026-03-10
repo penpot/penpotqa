@@ -1071,8 +1071,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async groupLayerViaRightClick() {
-    const layerSel = this.page.getByTestId('layer-item');
-    await layerSel.last().click({ button: 'right', force: true });
+    await this.rightClickOnElement();
     await this.groupOption.click();
   }
 
@@ -1326,13 +1325,18 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async copyElementViaAltDragAndDrop(x, y) {
-    await expect(this.copyLayer).toBeVisible();
-    await this.copyLayer.hover();
+    const box = await this.copyLayer.boundingBox();
+
+    const startX = box.x + box.width / 2;
+    const startY = box.y + box.height / 2;
+
     await this.page.keyboard.down('Alt');
-    await this.copyLayer.dragTo(this.viewport, {
-      force: false,
-      targetPosition: { x: x, y: y },
-    });
+
+    await this.page.mouse.move(startX, startY);
+    await this.page.mouse.down();
+    await this.page.mouse.move(x, y, { steps: 10 });
+    await this.page.mouse.up();
+
     await this.page.keyboard.up('Alt');
   }
 
