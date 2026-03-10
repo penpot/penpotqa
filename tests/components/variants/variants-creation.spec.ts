@@ -86,6 +86,7 @@ mainTest(
     await mainPage.clickOnVariantsTitle('Rectangle');
     await mainPage.copyLayerViaRightClick();
     await mainPage.pressPasteShortcut(browserName);
+    await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot('copy-paste-variants.png', {
       mask: mainPage.maskViewport(),
