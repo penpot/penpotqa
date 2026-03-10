@@ -5,14 +5,9 @@ import { random } from 'helpers/string-generator';
 import { MainPage } from '@pages/workspace/main-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { ViewModePage } from '@pages/workspace/view-mode-page';
-import { PrototypePanelPage } from '@pages/workspace/prototype-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
-import { ProfilePage } from '@pages/profile-page';
-import { LoginPage } from '@pages/login-page';
-import { RegisterPage } from '@pages/register-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 
@@ -21,13 +16,8 @@ const teamName = random().concat('autotest');
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
-let viewModePage: ViewModePage;
-let prototypePanelPage: PrototypePanelPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
-let profilePage: ProfilePage;
-let loginPage: LoginPage;
-let registerPage: RegisterPage;
 let colorPalettePage: ColorPalettePage;
 let assetsPanelPage: AssetsPanelPage;
 let inspectPanelPage: InspectPanelPage;
@@ -36,13 +26,8 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
-  viewModePage = new ViewModePage(page);
-  prototypePanelPage = new PrototypePanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
-  profilePage = new ProfilePage(page);
-  loginPage = new LoginPage(page);
-  registerPage = new RegisterPage(page);
   colorPalettePage = new ColorPalettePage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
@@ -96,9 +81,10 @@ mainTest.describe(() => {
         await mainPage.copyLayerPropertyViaRightClick();
 
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
-        const waitForUpdate = mainPage.waitForUpdateFileRequest();
-        await mainPage.clickShortcutCtrlAltV();
-        await waitForUpdate;
+        await Promise.all([
+          mainPage.waitForUpdateFileRequest(),
+          mainPage.clickShortcutCtrlAltV(),
+        ]);
 
         await expect(mainPage.viewport).toHaveScreenshot('copies-property.png', {
           mask: mainPage.maskViewport(),
@@ -262,9 +248,10 @@ mainTest.describe(() => {
     async () => {
       await mainPage.createDefaultOpenPath();
       await mainPage.copyLayerSVGViaRightClick();
-      const waitForUpdate = mainPage.waitForUpdateFileRequest();
-      await mainPage.pasteLayerViaRightClick();
-      await waitForUpdate;
+      await Promise.all([
+        mainPage.waitForUpdateFileRequest(),
+        mainPage.pasteLayerViaRightClick(),
+      ]);
 
       await expect(mainPage.viewport).toHaveScreenshot('copies-path.png', {
         mask: mainPage.maskViewport(),
