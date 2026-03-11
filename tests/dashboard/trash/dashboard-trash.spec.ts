@@ -12,9 +12,6 @@ import {
   setupAdminRoleUser,
 } from 'helpers/user-flows';
 
-// TO REMOVE
-mainTest.skip(true, 'Temporarily disabled due to unrelated to new render');
-
 const teamName: string = random().concat('autotest');
 
 let teamPage: TeamPage;

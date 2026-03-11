@@ -23,9 +23,6 @@ const {
   checkSigningText,
 } = require('../../../helpers/gmail.js');
 
-// TO REMOVE
-mainTest.skip(true, 'Temporarily disabled due to unrelated to new render');
-
 const maxDiffPixelRatio = 0.001;
 
 let teamPage,
