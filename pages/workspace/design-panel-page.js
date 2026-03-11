@@ -1354,8 +1354,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async createAnnotationRightClick() {
-    const layerSel = this.page.getByTestId('layer-item');
-    await layerSel.last().click({ button: 'right', force: true });
+    const layerSel = this.page.getByTestId('layer-row').nth(0);
+    await layerSel.click();
+    await layerSel.click({ button: 'right' });
     await this.createAnnotationOption.click();
     await expect(this.annotationTextArea).toBeVisible();
   }
