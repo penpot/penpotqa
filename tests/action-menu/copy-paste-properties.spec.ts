@@ -1,47 +1,33 @@
-const { expect } = require('@playwright/test');
-const { mainTest } = require('../../fixtures');
-const { MainPage } = require('../../pages/workspace/main-page');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { ViewModePage } = require('../../pages/workspace/view-mode-page');
-const { PrototypePanelPage } = require('../../pages/workspace/prototype-panel-page');
-const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
-const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
-const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
-const { ProfilePage } = require('../../pages/profile-page');
-const { LoginPage } = require('../../pages/login-page');
-const { RegisterPage } = require('../../pages/register-page');
-const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
-const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
+import { expect } from '@playwright/test';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { mainTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
+import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 
 const teamName = random().concat('autotest');
 
-let teamPage,
-  dashboardPage,
-  mainPage,
-  viewModePage,
-  prototypePanelPage,
-  designPanelPage,
-  layersPanelPage,
-  profilePage,
-  loginPage,
-  registerPage,
-  colorPalettePage,
-  assetsPanelPage,
-  inspectPanelPage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
+let colorPalettePage: ColorPalettePage;
+let assetsPanelPage: AssetsPanelPage;
+let inspectPanelPage: InspectPanelPage;
+
 mainTest.beforeEach(async ({ page, browserName }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
-  viewModePage = new ViewModePage(page);
-  prototypePanelPage = new PrototypePanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
-  profilePage = new ProfilePage(page);
-  loginPage = new LoginPage(page);
-  registerPage = new RegisterPage(page);
   colorPalettePage = new ColorPalettePage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
@@ -95,9 +81,10 @@ mainTest.describe(() => {
         await mainPage.copyLayerPropertyViaRightClick();
 
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
-        const waitForUpdate = mainPage.waitForUpdateFileRequest();
-        await mainPage.clickShortcutCtrlAltV();
-        await waitForUpdate;
+        await Promise.all([
+          mainPage.waitForUpdateFileRequest(),
+          mainPage.clickShortcutCtrlAltV(),
+        ]);
 
         await expect(mainPage.viewport).toHaveScreenshot('copies-property.png', {
           mask: mainPage.maskViewport(),
@@ -119,9 +106,10 @@ mainTest.describe(() => {
         await mainPage.clickEditMainMenuItem();
         await mainPage.clickSelectAllMainMenuSubItem();
 
-        await mainPage.clickShortcutCtrlAltV();
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
+        await Promise.all([
+          mainPage.waitForUpdateFileRequest(),
+          mainPage.clickShortcutCtrlAltV(),
+        ]);
 
         await expect(mainPage.viewport).toHaveScreenshot(
           'copies-property-3-layers.png',
@@ -261,9 +249,10 @@ mainTest.describe(() => {
     async () => {
       await mainPage.createDefaultOpenPath();
       await mainPage.copyLayerSVGViaRightClick();
-      const waitForUpdate = mainPage.waitForUpdateFileRequest();
-      await mainPage.pasteLayerViaRightClick();
-      await waitForUpdate;
+      await Promise.all([
+        mainPage.waitForUpdateFileRequest(),
+        mainPage.pasteLayerViaRightClick(),
+      ]);
 
       await expect(mainPage.viewport).toHaveScreenshot('copies-path.png', {
         mask: mainPage.maskViewport(),
