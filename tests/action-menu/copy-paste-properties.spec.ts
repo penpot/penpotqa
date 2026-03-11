@@ -102,10 +102,10 @@ mainTest.describe(() => {
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
         await mainPage.createDefaultBoardByCoordinates(300, 300, true);
         await mainPage.createDefaultTextLayerByCoordinates(500, 500);
-        await mainPage.waitForChangeIsSaved();
         await mainPage.clickMainMenuButton();
         await mainPage.clickEditMainMenuItem();
         await mainPage.clickSelectAllMainMenuSubItem();
+
         await mainPage.clickShortcutCtrlAltV();
         await mainPage.waitForChangeIsSaved();
 
