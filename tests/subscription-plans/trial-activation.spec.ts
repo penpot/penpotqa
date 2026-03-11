@@ -9,9 +9,6 @@ import { RegisterPage } from '@pages/register-page';
 import { StripePage } from '@pages/dashboard/stripe-page';
 import { updateSubscriptionTrialEnd } from 'helpers/stripe';
 
-//TO REMOVE
-registerTest.skip(true, 'Temporarily disabled due to unrelated to new render');
-
 const teamName: string = random().concat('autotest');
 
 let teamPage: TeamPage;

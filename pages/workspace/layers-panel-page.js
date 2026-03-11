@@ -117,11 +117,11 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.getLayerRowsBy(layerName, uncollapsedChildrenOnly).first().click();
   }
 
-  async expandGroupOnLayersTab() {
-    if (!(await this.layerItemToggleExpand.isVisible())) {
-      await this.layerBoardToggleContentCollapse.first().click();
-      await expect(this.layerItemToggleExpand).toBeVisible();
-    }
+  async expandGroupOnLayersTab(groupName) {
+    const groupToggleContent = this.page
+      .getByRole('checkbox', { name: groupName })
+      .getByTestId('toggle-content');
+    await groupToggleContent.click();
   }
 
   async expandBoardOnLayersTab() {
@@ -155,13 +155,21 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.clickOnEnter();
   }
 
-  async renameLayerViaRightClick(layerName) {
+  /**
+   * @param {string} layerName
+   * @param {string | null} newName
+   */
+  async renameLayerViaRightClick(layerName, newName = null) {
     const layerSel = this.layersRows.getByText(layerName);
-    await layerSel.last().click({
+    await layerSel.first().click({
       button: 'right',
       force: true,
     });
+
     await this.renameOption.locator('span').first().click();
+    if (newName) {
+      await this.typeNameCreatedLayerAndEnter(newName);
+    }
   }
 
   async isLayerNameDisplayed(name) {
