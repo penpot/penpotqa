@@ -461,6 +461,9 @@ mainTest.describe(() => {
 
       await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
         'libraries-change-window.png',
+        {
+          mask: [assetsPanelPage.librariesComponentSvg],
+        },
       );
       await assetsPanelPage.clickCloseModalButton();
     },
@@ -577,7 +580,16 @@ mainTest.describe(() => {
       await dashboardPage.deleteFileWithNameViaRightClick('New File 1');
       await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
         'library-delete-warning.png',
+        { mask: [dashboardPage.deletedSharedElementList] },
       );
+      await expect(dashboardPage.deletedSharedElementList).toHaveCount(2);
+      await expect(dashboardPage.deletedSharedElementList.nth(0)).toContainText(
+        /New File [2-3]/,
+      );
+      await expect(dashboardPage.deletedSharedElementList.nth(1)).toContainText(
+        /New File [2-3]/,
+      );
+
       await dashboardPage.clickDeleteFileButton();
 
       await dashboardPage.openFileWithName('New File 2');
