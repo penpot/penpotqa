@@ -17,9 +17,6 @@ import {
   addPaymentMethodForCustomerByCustomerEmail,
 } from 'helpers/stripe';
 
-//TO REMOVE
-registerTest.skip(true, 'Temporarily disabled due to unrelated to new render');
-
 const teamName: string = random().concat('autotest');
 
 let teamPage: TeamPage;
