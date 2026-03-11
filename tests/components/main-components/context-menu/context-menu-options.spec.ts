@@ -13,14 +13,14 @@ import { qase } from 'playwright-qase-reporter/playwright';
 
 const teamName: string = random().concat('autotest');
 
-let mainPage: MainPage,
-  basePage: BasePage,
-  dashboardPage: DashboardPage,
-  teamPage: TeamPage,
-  layersPanelPage: LayersPanelPage,
-  designPanelPage: DesignPanelPage,
-  colorPalettePage: ColorPalettePage,
-  assetsPanelPage: AssetsPanelPage;
+let mainPage: MainPage;
+let basePage: BasePage;
+let dashboardPage: DashboardPage;
+let teamPage: TeamPage;
+let layersPanelPage: LayersPanelPage;
+let designPanelPage: DesignPanelPage;
+let colorPalettePage: ColorPalettePage;
+let assetsPanelPage: AssetsPanelPage;
 
 mainTest.beforeEach(async ({ page }: { page: Page }) => {
   dashboardPage = new DashboardPage(page);
