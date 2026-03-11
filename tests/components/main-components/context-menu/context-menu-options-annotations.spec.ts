@@ -53,8 +53,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      [1419, 1424, 1427, 1423, 1425],
-      'Create annotation: cancel, create, delete, right-click, edit',
+      [1419, 1427, 1423, 1425],
+      'Create annotation: create, delete, create via right-click, edit',
     ),
     async () => {
       const newAnnotation = 'Edit annotation';
