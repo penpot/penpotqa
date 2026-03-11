@@ -1,24 +1,24 @@
-const { mainTest } = require('../../fixtures');
-const { expect } = require('@playwright/test');
-const { MainPage } = require('../../pages/workspace/main-page');
-const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
-const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
-const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
-const { qase } = require('playwright-qase-reporter/playwright');
+import { expect } from '@playwright/test';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { mainTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { MainPage } from '@pages/workspace/main-page';
+import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 
-const teamName = random().concat('autotest');
+const teamName: string = random().concat('autotest');
 
-let mainPage,
-  colorPalettePage,
-  teamPage,
-  dashboardPage,
-  designPanelPage,
-  layersPanelPage,
-  inspectPanelPage;
+let mainPage: MainPage;
+let colorPalettePage: ColorPalettePage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
+let inspectPanelPage: InspectPanelPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
@@ -173,7 +173,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([382], 'Add and edit Shadow to text'), async ({ browserName }) => {
+  mainTest(qase([382], 'Add and edit Shadow to text'), async () => {
     await mainTest.step('Add a new shadow with settings', async () => {
       await designPanelPage.clickAddShadowButton();
       await designPanelPage.clickShadowActionsButton();
