@@ -183,7 +183,6 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickOnLayerOnCanvas();
       await mainPage.focusLayerViaShortcut();
-      await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
         mask: mainPage.maskViewport(),
       });
