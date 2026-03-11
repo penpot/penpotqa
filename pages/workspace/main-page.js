@@ -1076,8 +1076,9 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async showInAssetsPanelRightClick() {
-    const layerSel = this.page.getByTestId('layer-item');
-    await layerSel.last().click({ button: 'right', force: true });
+    const layerSel = this.page.getByTestId('layer-row').nth(0);
+    await layerSel.getByTestId('toggle-content').click();
+    await layerSel.click({ button: 'right' });
     await this.showInAssetsPanelOption.click();
   }
 

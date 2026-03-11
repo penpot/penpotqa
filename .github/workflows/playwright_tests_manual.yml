@@ -24,6 +24,7 @@ on:
           - tests/components
           - tests/components/copy-components
           - tests/components/main-components
+          - tests/components/main-components/context-menu
           - tests/components/variants
           - tests/composition
           - tests/dashboard
