@@ -7,9 +7,6 @@ import { ProfilePage } from '../../pages/profile-page';
 import { DashboardPage } from '../../pages/dashboard/dashboard-page';
 import { TeamPage } from '../../pages/dashboard/team-page';
 
-//TO REMOVE
-registerTest.skip(true, 'Temporarily disabled due to unrelated to new render');
-
 const teamName: string = random().concat('autotest');
 
 registerTest(

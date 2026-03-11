@@ -8,9 +8,6 @@ const { random } = require('../../../helpers/string-generator.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { waitMessage } = require('../../../helpers/gmail.js');
 
-// TO REMOVE
-mainTest.skip(true, 'Temporarily disabled due to unrelated to new render');
-
 let teamPage, loginPage, registerPage, dashboardPage, profilePage;
 
 mainTest.beforeEach(async ({ page }) => {
