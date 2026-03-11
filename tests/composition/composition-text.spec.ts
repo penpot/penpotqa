@@ -182,7 +182,7 @@ mainTest.describe(() => {
       await colorPalettePage.setHex('#304d6a');
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickOnLayerOnCanvas();
-      await mainPage.focusLayerViaShortcut();
+      await mainPage.focusLayerViaRightClickOnCanvas();
       await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
         mask: mainPage.maskViewport(),
       });
