@@ -114,21 +114,24 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1236], 'Delete thread'), async ({ page }) => {
-    await commentsPanelPage.clickCommentHeaderOptionsButton();
-    await commentsPanelPage.clickDeleteCommentOption();
-    await commentsPanelPage.clickDeleteThreadButton();
-    await commentsPanelPage.isCommentThreadIconNotDisplayed();
-    await commentsPanelPage.isCommentsPanelPlaceholderDisplayed(
-      "You're all caught up! New comment notifications will appear here.",
-    );
-    await expect(page).toHaveScreenshot('comment-removed.png', {
-      mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
-        commentsPanelPage.commentsAuthorSection,
-        commentsPanelPage.commentAvatarImage,
-      ]),
-    });
-  });
+  mainTest(
+    qase([1236, 2053], 'Delete thread & Check notification icon with no activity'),
+    async ({ page }) => {
+      await commentsPanelPage.clickCommentHeaderOptionsButton();
+      await commentsPanelPage.clickDeleteCommentOption();
+      await commentsPanelPage.clickDeleteThreadButton();
+      await commentsPanelPage.isCommentThreadIconNotDisplayed();
+      await commentsPanelPage.isCommentsPanelPlaceholderDisplayed(
+        "You're all caught up! New comment notifications will appear here.",
+      );
+      await expect(page).toHaveScreenshot('comment-removed.png', {
+        mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+          commentsPanelPage.commentsAuthorSection,
+          commentsPanelPage.commentAvatarImage,
+        ]),
+      });
+    },
+  );
 
   mainTest(qase([1240], 'Resolve comment'), async ({ page }) => {
     await commentsPanelPage.clickResolveCommentCheckbox();
