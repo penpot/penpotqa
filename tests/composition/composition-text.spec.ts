@@ -10,7 +10,7 @@ import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 
-const teamName: string = random().concat('autotest');
+const teamName = random().concat('autotest');
 
 let mainPage: MainPage;
 let colorPalettePage: ColorPalettePage;
