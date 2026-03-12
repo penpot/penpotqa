@@ -52,51 +52,54 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([380], 'Change rotation (Design page in the right)'), async () => {
-    await mainTest.step('Change rotation to 90', async () => {
-      await designPanelPage.changeRotationForLayer('90');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot('text-rotated-90.png', {
-        mask: mainPage.maskViewport(),
+  mainTest(
+    qase([380, 397], 'Change rotation from the design panel and focus on & off'),
+    async () => {
+      await mainTest.step('Change rotation to 90', async () => {
+        await designPanelPage.changeRotationForLayer('90');
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.focusLayerViaShortcut();
+        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-90.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await mainPage.focusLayerViaShortcut();
       });
-      await mainPage.focusLayerViaShortcut();
-    });
 
-    await mainTest.step('Change rotation to 120', async () => {
-      await designPanelPage.changeRotationForLayer('120');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot('text-rotated-120.png', {
-        mask: mainPage.maskViewport(),
+      await mainTest.step('Change rotation to 120', async () => {
+        await designPanelPage.changeRotationForLayer('120');
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.focusLayerViaShortcut();
+        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-120.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await mainPage.focusLayerViaShortcut();
       });
-      await mainPage.focusLayerViaShortcut();
-    });
 
-    await mainTest.step('Change rotation to 45', async () => {
-      await designPanelPage.changeRotationForLayer('45');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot('text-rotated-45.png', {
-        mask: mainPage.maskViewport(),
+      await mainTest.step('Change rotation to 45', async () => {
+        await designPanelPage.changeRotationForLayer('45');
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.focusLayerViaShortcut();
+        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-45.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await mainPage.focusLayerViaShortcut();
       });
-      await mainPage.focusLayerViaShortcut();
-    });
 
-    await mainTest.step('Change rotation to 360', async () => {
-      await designPanelPage.changeRotationForLayer('360');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot('text-rotated-359.png', {
-        mask: mainPage.maskViewport(),
+      await mainTest.step('Change rotation to 360', async () => {
+        await designPanelPage.changeRotationForLayer('360');
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.focusLayerViaShortcut();
+        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-359.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await mainPage.focusLayerViaShortcut();
       });
-      await mainPage.focusLayerViaShortcut();
-    });
-  });
+    },
+  );
 
   mainTest(
     qase([381], 'Add, hide, unhide, change type and delete Shadow to Text'),
