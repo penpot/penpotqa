@@ -183,6 +183,7 @@ mainTest.describe(() => {
       await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
       await designPanelPage.clickShadowColorIcon();
       await colorPalettePage.setHex('#304d6a');
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickOnLayerOnCanvas();
       await mainPage.focusLayerViaShortcut();
