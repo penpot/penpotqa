@@ -183,10 +183,10 @@ mainTest.describe(() => {
       await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
       await designPanelPage.clickShadowColorIcon();
       await colorPalettePage.setHex('#304d6a');
-      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickOnLayerOnCanvas();
       await mainPage.focusLayerViaShortcut();
+      await layersPanelPage.isFocusModeOn();
       await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
         mask: mainPage.maskViewport(),
       });
@@ -246,6 +246,7 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
+        await layersPanelPage.isFocusModeOn();
         await expect(mainPage.viewport).toHaveScreenshot('text-blur-hide.png', {
           mask: mainPage.maskViewport(),
         });
@@ -265,9 +266,9 @@ mainTest.describe(() => {
 
       await mainTest.step('Remove blur', async () => {
         await designPanelPage.removeBlur();
-        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
         await mainPage.focusLayerViaShortcut();
+        await layersPanelPage.isFocusModeOn();
         await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
           mask: mainPage.maskViewport(),
         });
