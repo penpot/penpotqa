@@ -187,6 +187,7 @@ mainTest.describe(() => {
       await mainPage.clickOnLayerOnCanvas();
       await mainPage.focusLayerViaShortcut();
       await layersPanelPage.isFocusModeOn();
+      await mainPage.waitForViewportVisible();
       await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
         mask: mainPage.maskViewport(),
       });
