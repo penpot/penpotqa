@@ -1,25 +1,28 @@
-const { mainTest } = require('../../../fixtures');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { random } = require('../../../helpers/string-generator.js');
-const { LoginPage } = require('../../../pages/login-page.js');
-const { ProfilePage } = require('../../../pages/profile-page.js');
-const { DashboardPage } = require('../../../pages/dashboard/dashboard-page.js');
-const { TeamPage } = require('../../../pages/dashboard/team-page.js');
-const { MainPage } = require('../../../pages/workspace/main-page.js');
-const { ViewModePage } = require('../../../pages/workspace/view-mode-page.js');
-const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page.js');
-const { waitMessage } = require('../../../helpers/gmail.js');
-const { loginAsSecondUser } = require('../../../helpers/user-flows.js');
+import { Page } from '@playwright/test';
+import { mainTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { random } from 'helpers/string-generator';
+import { waitMessage } from 'helpers/gmail';
+import { loginAsSecondUser } from 'helpers/user-flows';
+import { LoginPage } from '@pages/login-page';
+import { ProfilePage } from '@pages/profile-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { ViewModePage } from '@pages/workspace/view-mode-page';
 
-let teamPage, loginPage, profilePage, dashboardPage, mainPage, layersPanelPage;
+let teamPage: TeamPage;
+let loginPage: LoginPage;
+let profilePage: ProfilePage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
 
-const initPages = async ({ page }) => {
+const initPages = async ({ page }: { page: Page }) => {
   teamPage = new TeamPage(page);
   loginPage = new LoginPage(page);
   profilePage = new ProfilePage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
-  layersPanelPage = new LayersPanelPage(page);
 };
 
 mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
@@ -40,7 +43,6 @@ mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
       'Workspace: Navigate to invalid URL logged in and display error page',
     ),
     async ({ page }) => {
-      // Generate bad URL
       const currentURL = await mainPage.getUrl();
       const badURL = await mainPage.makeBadUrl(currentURL);
 
@@ -65,9 +67,9 @@ mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
       'View Mode: Navigate to invalid URL logged in and display error page',
     ),
     async ({ page }) => {
-      // Generate bad URL from view mode
       let viewModePage = new ViewModePage(page);
       const newPage = await viewModePage.clickViewModeShortcut();
+
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
 
@@ -100,8 +102,8 @@ mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
       'Dashboard: Navigate to invalid URL logged in and display error page',
     ),
     async ({ page }) => {
-      // Generate bad Dashboard URL
       await mainPage.clickPencilBoxButton();
+
       const currentURL = await mainPage.getUrl();
       const badURL = await mainPage.makeBadDashboardUrl(currentURL);
 
@@ -137,13 +139,17 @@ mainTest(
       async () => {
         await teamPage.createTeam(team);
         await teamPage.isTeamSelected(team);
+
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
+
         await teamPage.isInviteMembersPopUpHeaderDisplayed(
           'Invite members to the team',
         );
+
         await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
         await teamPage.selectInvitationRoleInPopUp('Admin');
+
         await teamPage.clickSendInvitationButton();
         await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
       },
@@ -158,9 +164,12 @@ mainTest(
       `Click on invite received and validate Invite invalid message`,
       async () => {
         const firstInvite = await waitMessage(page, firstEmail, 40);
+
         await profilePage.logout();
         await loginPage.isLoginPageOpened();
-        await page.goto(firstInvite.inviteUrl);
+
+        await page.goto(firstInvite!.inviteUrl);
+
         await teamPage.isInviteMessageDisplayed('Invite invalid');
       },
     );
@@ -177,13 +186,13 @@ mainTest(
 
     const team = `${random()}-bad-url-autotest`;
 
-    // Generate bad URL
     const currentURL = await mainPage.getUrl();
     const badURL = await mainPage.makeBadUrl(currentURL);
 
     await mainTest.step(`Create a team and a file`, async () => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
+
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.isMainPageLoaded();
     });
@@ -213,15 +222,17 @@ mainTest(
     await mainTest.step(`Create a team and a file with a board`, async () => {
       await teamPage.createTeam(team);
       await teamPage.isTeamSelected(team);
+
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.isMainPageLoaded();
+
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
     });
 
-    // Generate bad URL from View Mode
     let viewModePage = new ViewModePage(page);
     const newPage = await viewModePage.clickViewModeShortcut();
+
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
 
