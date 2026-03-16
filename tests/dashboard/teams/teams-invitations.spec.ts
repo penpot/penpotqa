@@ -1,39 +1,30 @@
-const { mainTest, registerTest } = require('../../../fixtures');
-const { LoginPage } = require('../../../pages/login-page.js');
-const { RegisterPage } = require('../../../pages/register-page.js');
-const { ProfilePage } = require('../../../pages/profile-page.js');
-const { DashboardPage } = require('../../../pages/dashboard/dashboard-page.js');
-const { TeamPage } = require('../../../pages/dashboard/team-page.js');
-const { MainPage } = require('../../../pages/workspace/main-page.js');
-const { ViewModePage } = require('../../../pages/workspace/view-mode-page.js');
-const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page.js');
-const { random } = require('../../../helpers/string-generator.js');
-const { qase } = require('playwright-qase-reporter/playwright');
-const {
+import { Page } from '@playwright/test';
+import { mainTest, registerTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { LoginPage } from 'pages/login-page';
+import { RegisterPage } from 'pages/register-page';
+import { ProfilePage } from 'pages/profile-page';
+import { DashboardPage } from 'pages/dashboard/dashboard-page';
+import { TeamPage } from 'pages/dashboard/team-page';
+import { MainPage } from 'pages/workspace/main-page';
+import { LayersPanelPage } from 'pages/workspace/layers-panel-page';
+import { random } from 'helpers/string-generator';
+import {
   getRegisterMessage,
   checkInviteText,
-  checkMessagesCount,
   waitMessage,
   waitSecondMessage,
-  waitRequestMessage,
-  checkConfirmAccessText,
-  checkDashboardConfirmAccessText,
-  checkYourPenpotConfirmAccessText,
-  checkYourPenpotViewModeConfirmAccessText,
-  checkSigningText,
-} = require('../../../helpers/gmail.js');
+} from 'helpers/gmail';
 
-const maxDiffPixelRatio = 0.001;
+let teamPage: TeamPage;
+let loginPage: LoginPage;
+let registerPage: RegisterPage;
+let dashboardPage: DashboardPage;
+let layersPanelPage: LayersPanelPage;
+let profilePage: ProfilePage;
+let mainPage: MainPage;
 
-let teamPage,
-  loginPage,
-  registerPage,
-  dashboardPage,
-  layersPanelPage,
-  profilePage,
-  mainPage;
-
-mainTest.beforeEach(async ({ page }) => {
+mainTest.beforeEach(async ({ page }: { page: Page }) => {
   teamPage = new TeamPage(page);
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
@@ -78,9 +69,11 @@ mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () =>
   await teamPage.enterEmailToInviteMembersPopUp('testeditor@test.com');
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+
   await teamPage.isInvitationRecordDisplayed([
     { email: 'testeditor@test.com', role: 'Editor', status: 'Pending' },
   ]);
+
   await teamPage.deleteTeam(team);
 });
 
@@ -92,13 +85,17 @@ mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => 
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+
   await teamPage.selectInvitationRoleInPopUp('Admin');
   await teamPage.enterEmailToInviteMembersPopUp('testadmin@test.com');
+
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+
   await teamPage.isInvitationRecordDisplayed([
     { email: 'testadmin@test.com', role: 'Admin', status: 'Pending' },
   ]);
+
   await teamPage.deleteTeam(team);
 });
 
@@ -109,12 +106,16 @@ mainTest(qase(1175, 'Fail to send invitation to existing team member'), async ()
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
+
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+
   await teamPage.enterEmailToInviteMembersPopUp(process.env.LOGIN_EMAIL);
   await teamPage.isSendInvitationBtnDisabled();
+
   await teamPage.isSendInvitationWarningExist(
     "Some members are already on the team. We'll invite the rest.",
   );
+
   await teamPage.deleteTeam(team);
 });
 
@@ -130,12 +131,16 @@ registerTest.describe(
 
         await profilePage.logout();
         await loginPage.isLoginPageOpened();
+
         await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
         await loginPage.enterPwd(process.env.LOGIN_PWD);
         await loginPage.clickLoginButton();
+
         await dashboardPage.isDashboardOpenedAfterLogin();
+
         await teamPage.createTeam(team);
         await teamPage.isTeamSelected(team);
+
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
       },
@@ -143,19 +148,28 @@ registerTest.describe(
 
     registerTest(
       qase(1174, 'Invite to a registered user (not a team member)'),
-      async ({ page, email }) => {
+      async ({ page, email }: { page: Page; email: string }) => {
         await teamPage.selectInvitationRoleInPopUp('Admin');
         await teamPage.enterEmailToInviteMembersPopUp(email);
+
         await teamPage.clickSendInvitationButton();
+
         await profilePage.logout();
         await loginPage.isLoginPageOpened();
+
         await loginPage.enterEmailAndClickOnContinue(email);
         await loginPage.enterPwd(process.env.LOGIN_PWD);
+
         await loginPage.clickLoginButton();
+
         await dashboardPage.isDashboardOpenedAfterLogin();
+
         await waitSecondMessage(page, email, 40);
+
         const invite = await getRegisterMessage(email);
-        await page.goto(invite.inviteUrl);
+
+        await page.goto(invite!.inviteUrl);
+
         await teamPage.switchTeam(team);
         await teamPage.isTeamSelected(team);
       },
@@ -200,12 +214,12 @@ mainTest.describe(
         const firstInvite = await waitMessage(page, firstEmail, 40);
         const secondInvite = await waitMessage(page, secondEmail, 40);
         const user = process.env.CI ? 'QA Engineer' : 'QA Engineer'; //'k8q6byz';
-        await checkInviteText(firstInvite.inviteText, team, user);
-        await checkInviteText(secondInvite.inviteText, team, user);
+        await checkInviteText(firstInvite!.inviteText, team, user);
+        await checkInviteText(secondInvite!.inviteText, team, user);
         await profilePage.logout();
         await loginPage.isLoginPageOpened();
 
-        await page.goto(firstInvite.inviteUrl);
+        await page.goto(firstInvite!.inviteUrl);
         await registerPage.registerAccount(
           firstEditor,
           firstEmail,
@@ -215,7 +229,7 @@ mainTest.describe(
         await teamPage.isTeamSelected(team);
         await profilePage.logout();
         await loginPage.isLoginPageOpened();
-        await page.goto(secondInvite.inviteUrl);
+        await page.goto(secondInvite!.inviteUrl);
         await registerPage.registerAccount(
           secondEditor,
           secondEmail,
