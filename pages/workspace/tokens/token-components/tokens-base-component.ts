@@ -293,7 +293,7 @@ export class TokensComponent {
 
   async isMenuItemVisible(tokenName: string, itemName: string, visible = true) {
     await this.rightClickOnTokenWithName(tokenName);
-    const item = await this.page
+    const item = this.page
       .getByTestId('tokens-context-menu-for-token')
       .getByRole('listitem')
       .locator(`[class*="item-text"]`)
@@ -309,15 +309,13 @@ export class TokensComponent {
   }
 
   async checkAppliedTokenTitle(text: string) {
-    const tokenLocator = await this.page.locator(
-      `button[class*="token-pill-applied"]`,
-    );
+    const tokenLocator = this.page.locator(`button[class*="token-pill-applied"]`);
     await tokenLocator.hover();
     await expect(tokenLocator).toHaveAttribute('title', text);
   }
 
   async checkTokenTitle(tokenName: string, text: string) {
-    const tokenLocator = await this.page.locator(
+    const tokenLocator = this.page.locator(
       `button:has(span[aria-label="${tokenName}"])`,
     );
     await tokenLocator.hover();
@@ -349,8 +347,11 @@ export class TokensComponent {
   }
 
   async expandTokenByName(tokenClass: TokenClass) {
-    const tokenName = await this.getTokenTreeButton(tokenClass);
-    await tokenName.click();
+    const button = await this.getTokenTreeButton(tokenClass);
+    const isExpanded = await button.getAttribute('aria-expanded');
+    if (isExpanded !== 'true') {
+      await button.click();
+    }
   }
 
   async isRemapModalVisible() {
