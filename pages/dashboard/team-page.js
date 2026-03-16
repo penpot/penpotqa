@@ -471,9 +471,13 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
   }
 
+  /**
+   * @param {string | string[] | null} emails
+   */
   async isInvitationRecordRemoved(emails = null) {
     if (emails !== null && emails !== undefined && emails !== '') {
       const emailList = Array.isArray(emails) ? emails : [emails];
+
       if (emailList.length > 0) {
         for (const email of emailList) {
           await expect(
