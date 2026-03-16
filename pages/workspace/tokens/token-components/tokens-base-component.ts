@@ -51,6 +51,9 @@ export class TokensComponent {
   readonly duplicateTokenMenuItem: Locator;
   readonly deleteTokenMenuItem: Locator;
   readonly expandTokensButton: Locator;
+  readonly remapModal: Locator;
+  readonly remapTokensButton: Locator;
+  readonly dontRemapButton: Locator;
 
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
@@ -77,6 +80,14 @@ export class TokensComponent {
     this.editTokenMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Edit token' });
+
+    this.remapModal = page.getByTestId('token-remapping-modal');
+    this.remapTokensButton = this.remapModal.getByRole('button', {
+      name: 'Remap tokens',
+    });
+    this.dontRemapButton = this.remapModal.getByRole('button', {
+      name: "Don't remap",
+    });
   }
 
   private async getAddTokenButton(tokenClass: TokenClass): Promise<Locator> {
@@ -340,5 +351,17 @@ export class TokensComponent {
   async expandTokenByName(tokenClass: TokenClass) {
     const tokenName = await this.getTokenTreeButton(tokenClass);
     await tokenName.click();
+  }
+
+  async isRemapModalVisible() {
+    await expect(this.remapModal).toBeVisible();
+  }
+
+  async clickRemapTokensButton() {
+    await this.remapTokensButton.click();
+  }
+
+  async clickDontRemapButton() {
+    await this.dontRemapButton.click();
   }
 }
