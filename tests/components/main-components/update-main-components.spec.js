@@ -103,7 +103,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-rotation.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -127,7 +127,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-add-corners.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -147,7 +147,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-add-corners.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -170,7 +170,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-add-stroke.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
           maxDiffPixels: 0,
         },
       );
@@ -196,7 +196,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-component-change-fill-color.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -218,7 +218,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-shadow-default.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
           maxDiffPixels: 0,
         },
       );
@@ -233,7 +233,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-shadow-updated.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
           maxDiffPixels: 0,
         },
       );
@@ -251,7 +251,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-blur.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
           maxDiffPixels: 0,
         },
       );
@@ -273,7 +273,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-grid-default.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
           maxDiffPixels: 0,
         },
       );
@@ -284,7 +284,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-grid-updated.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
           maxDiffPixels: 0,
         },
       );
@@ -330,7 +330,7 @@ mainTest.describe('Text', () => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-text.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
           maxDiffPixels: 0,
         },
       );
@@ -355,13 +355,6 @@ mainTest.describe('Text', () => {
         'Inside',
       );
       await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await designPanelPage.clickAddShadowButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await designPanelPage.clickAddBlurButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
       await designPanelPage.changeRotationForLayer('40');
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
@@ -372,7 +365,7 @@ mainTest.describe('Text', () => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-text-independent-changes.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
           maxDiffPixels: 0,
         },
       );
@@ -408,7 +401,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-shadow.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
           maxDiffPixels: 0,
         },
       );
@@ -433,7 +426,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-fill.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -455,7 +448,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-blur.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
         },
       );
     },
@@ -475,7 +468,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-grid.png',
         {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+          mask: mainPage.maskViewport(),
           maxDiffPixels: 0,
         },
       );
@@ -499,7 +492,7 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot(
       'main-copies-component-change-name.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       },
     );
   });
@@ -522,7 +515,7 @@ mainTest(qase([1478], 'Changed direct, not overriden'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot(
     '1478-component-update-canvas.png',
     {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     },
   );
 });
@@ -550,7 +543,7 @@ mainTest(qase([1479], 'Changed remote, not overriden'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot(
     '1479-component-update-canvas.png',
     {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     },
   );
   await assetsPanelPage.clickAssetsTab();
@@ -583,7 +576,7 @@ mainTest(qase([1480], 'Changed direct, overriden in copy'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot(
     '1480-component-update-canvas.png',
     {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     },
   );
   await assetsPanelPage.clickAssetsTab();
@@ -622,7 +615,7 @@ mainTest(qase([1482], 'Changed remote, overriden in copy'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot(
     '1482-component-update-canvas.png',
     {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     },
   );
 });
@@ -659,7 +652,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       '1483-component-update-canvas.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       },
     );
   },

@@ -145,6 +145,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.librariesMoreInfoButton = page.getByRole('button', { name: 'More info' });
     this.closeModalButton = page.locator('svg[class*="close-icon"]');
     this.librariesModal = page.locator('div[class*="libraries__modal-dialog"]');
+    this.librariesComponentSvg = this.librariesModal.locator('[class=fills]');
   }
 
   async clickAssetsTab() {

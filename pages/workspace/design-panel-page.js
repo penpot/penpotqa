@@ -250,13 +250,23 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
 
     //Design panel - Blur section
-    this.blurSection = page.getByText('Blur', { exact: true });
-    this.addBlurButton = page.getByRole('button', { name: 'Add blur' });
-    this.blurMoreOptions = page.locator('button[class*="blur__show-more"]');
-    this.blurValueInput = page.locator('#blur-input-sidebar');
-    this.blurHideIcon = page.getByRole('button', { name: 'Toggle blur' });
-    this.blurUnhideIcon = page.getByRole('button', { name: 'Toggle blur' });
-    this.blurRemoveIcon = page.getByRole('button', { name: 'Remove blur' });
+    this.blurSection = page.locator(
+      '.main_ui_workspace_sidebar_options_menus_blur__element-set',
+    );
+    this.addBlurButton = this.blurSection.getByRole('button', { name: 'Add blur' });
+    this.blurMoreOptions = this.blurSection.locator(
+      'button[class*="blur__show-more"]',
+    );
+    this.blurValueInput = this.blurSection.locator('#blur-input-sidebar');
+    this.blurHideIcon = this.blurSection.getByRole('button', {
+      name: 'Toggle blur',
+    });
+    this.blurUnhideIcon = this.blurSection.getByRole('button', {
+      name: 'Toggle blur',
+    });
+    this.blurRemoveIcon = this.blurSection.getByRole('button', {
+      name: 'Remove blur',
+    });
 
     //Design panel - Stroke section
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
@@ -749,7 +759,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickAddBlurButton() {
     await this.blurSection.waitFor();
-    await this.addBlurButton.click({ delay: 500 });
+    await this.addBlurButton.click();
   }
 
   async changeValueForBlur(value) {
@@ -1344,8 +1354,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async createAnnotationRightClick() {
-    const layerSel = this.page.locator('div[class*="viewport"] [id^="shape"]');
-    await layerSel.last().click({ button: 'right', force: true });
+    const layerSel = this.page.getByTestId('layer-row').nth(0);
+    await layerSel.click();
+    await layerSel.click({ button: 'right' });
     await this.createAnnotationOption.click();
     await expect(this.annotationTextArea).toBeVisible();
   }

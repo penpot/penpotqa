@@ -31,6 +31,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.deleteFileModalWindow = page.locator(
       'div[class*="delete_shared__modal-container"]',
     );
+    this.deletedSharedElementList = this.deleteFileModalWindow.getByRole('listitem');
     this.createFileButtonPlaceholder = page
       .locator('[class*="empty-project-container"]')
       .getByTitle('Add file');

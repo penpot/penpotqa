@@ -27,9 +27,7 @@ exports.BasePage = class BasePage {
     this.modalCloseButton = page.getByRole('button', { name: 'Close' });
 
     //Layer right-click menu items
-    this.createdLayer = page.locator(
-      'div[class*="viewport"] [id^="shape"] >> nth=0',
-    );
+    this.createdLayer = page.getByTestId('layer-item').first();
     this.copyLayer = page
       .locator('div[class*="viewport"] [class*="viewport-selrect"]')
       .last();
@@ -292,6 +290,15 @@ exports.BasePage = class BasePage {
     await this.moveButton.click({ force: true });
   }
 
+  async waitForUpdateFileRequest() {
+    await this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/api/main/methods/update-file') &&
+        response.request().method() === 'POST' &&
+        response.status() === 200,
+    );
+  }
+
   async waitForChangeIsSaved() {
     await this.savedChangesIcon.waitFor({ state: 'visible' });
   }
@@ -393,6 +400,13 @@ exports.BasePage = class BasePage {
     await layerSel.last().waitFor({ state: 'attached', timeout: 10000 });
     await layerSel.last().click({ button: 'right', force: true });
     await this.createComponentMenuItem.waitFor({ state: 'visible', timeout: 10000 });
+    await this.createComponentMenuItem.click();
+  }
+
+  async createComponentViaRightClickFromLayerByName(name) {
+    const layerSel = this.createdLayer.getByText(name);
+    await layerSel.last().click({ button: 'right' });
+    await this.createComponentMenuItem.waitFor({ state: 'visible' });
     await this.createComponentMenuItem.click();
   }
 
