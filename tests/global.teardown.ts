@@ -1,65 +1,87 @@
-import { chromium } from 'playwright';
-import { LoginPage } from '@pages/login-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
+import { request } from '@playwright/test';
+
+const AUTOTEST_REGEX = /autotest/i;
+const CONCURRENCY = 15;
 
 export default async function globalTeardown() {
-  console.log('🌍 Cleaning up autotest teams...');
+  console.log('🌍 Cleaning autotest teams via API...');
 
-  const browser = await chromium.launch({
-    headless: true,
-    args: ['--no-sandbox'],
+  const api = await request.newContext({
+    baseURL: process.env.BASE_URL?.replace(/\/$/, ''),
+    extraHTTPHeaders: {
+      'Content-Type': 'application/json',
+    },
   });
-  const context = await browser.newContext();
-  const page = await context.newPage();
 
   try {
-    await context.tracing.start({ screenshots: false, snapshots: true });
+    // Login
+    const loginResponse = await api.post(
+      '/api/rpc/command/login-with-password?_fmt=json',
+      {
+        data: {
+          email: process.env.LOGIN_EMAIL,
+          password: process.env.LOGIN_PWD,
+        },
+      },
+    );
 
-    const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
-    const teamPage = new TeamPage(page);
-
-    await page.goto(`${process.env.BASE_URL}#/auth/login`);
-    await loginPage.acceptCookie();
-    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-
-    const autotestRegex = /autotest/i;
-
-    for (let attempt = 0; attempt < 20; attempt++) {
-      await teamPage.openTeamsListIfClosed();
-
-      const teamMenuItems = page.getByRole('menuitem');
-      const teamCount = await teamMenuItems.count();
-      let deletedOne = false;
-
-      for (let i = 0; i < teamCount; i++) {
-        const teamItem = teamMenuItems.nth(i);
-        if (!(await teamItem.isVisible())) continue;
-
-        const teamText = (await teamItem.textContent())?.trim();
-        if (!teamText || teamText === 'Your Penpot') continue;
-        if (!autotestRegex.test(teamText)) continue;
-
-        console.log(`🧹 Deleting team: ${teamText}`);
-        await teamPage.deleteTeam(teamText);
-        deletedOne = true;
-        break;
-      }
-
-      if (!deletedOne) break;
+    if (!loginResponse.ok()) {
+      throw new Error(`Login failed: ${loginResponse.status()}`);
     }
 
-    console.log('✅ Global teardown complete.');
-  } catch (err) {
-    console.error('❌ Global teardown failed:', err);
-    await context.tracing.stop({
-      path: 'playwright-report/trace/global-teardown-failure.zip',
+    console.log('✅ Logged in via API');
+
+    // Fetch teams (GET request)
+    const teamsResponse = await api.get('/api/rpc/command/get-teams?_fmt=json');
+
+    if (!teamsResponse.ok()) {
+      throw new Error(`Failed fetching teams: ${teamsResponse.status()}`);
+    }
+
+    const teams = await teamsResponse.json();
+
+    const autotestTeams = teams.filter(
+      (team: any) => !team.isDefault && AUTOTEST_REGEX.test(team.name),
+    );
+
+    console.log(`🧹 Found ${autotestTeams.length} autotest teams`);
+
+    if (!autotestTeams.length) {
+      console.log('✅ Nothing to clean');
+      return;
+    }
+
+    // Delete with concurrency
+    const queue = [...autotestTeams];
+
+    const workers = Array.from({ length: CONCURRENCY }).map(async () => {
+      while (queue.length) {
+        const team = queue.pop();
+        if (!team) return;
+
+        try {
+          const res = await api.post('/api/rpc/command/delete-team?_fmt=json', {
+            data: { id: team.id },
+          });
+
+          if (!res.ok()) {
+            console.warn(`⚠️ Failed deleting ${team.name}`);
+            continue;
+          }
+
+          console.log(`🗑️ Deleted ${team.name}`);
+        } catch (err) {
+          console.warn(`⚠️ Error deleting ${team.name}`, err);
+        }
+      }
     });
+
+    await Promise.all(workers);
+
+    console.log('✅ Global teardown complete');
+  } catch (error) {
+    console.error('❌ Global teardown failed:', error);
   } finally {
-    await browser.close();
+    await api.dispose();
   }
 }
