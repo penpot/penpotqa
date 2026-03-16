@@ -176,18 +176,21 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([382], 'Add and edit Shadow to text'), async () => {
+  mainTest(qase([382], 'Add and edit Shadow to text'), async ({ browserName }) => {
+    await designPanelPage.clickFillColorIcon();
+    await colorPalettePage.setHex('#de1b1b');
+    await mainPage.waitForChangeIsSaved();
+
     await mainTest.step('Add a new shadow with settings', async () => {
       await designPanelPage.clickAddShadowButton();
       await designPanelPage.clickShadowActionsButton();
-      await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
+      await designPanelPage.changeShadowSettings('2', '7', '0.5', '.5', '50');
       await designPanelPage.clickShadowColorIcon();
       await colorPalettePage.setHex('#304d6a');
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickOnLayerOnCanvas();
       await mainPage.focusLayerViaShortcut();
-      await layersPanelPage.isFocusModeOn();
-      await mainPage.waitForViewportVisible();
+      await mainPage.clickViewportTwice();
       await expect(mainPage.viewport).toHaveScreenshot('text-drop-shadow.png', {
         mask: mainPage.maskViewport(),
       });
@@ -202,10 +205,10 @@ mainTest.describe(() => {
         await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
         await designPanelPage.clickShadowColorIcon();
         await colorPalettePage.setHex('#96e637');
-        await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
         await mainPage.clickOnLayerOnCanvas();
         await mainPage.focusLayerViaShortcut();
+        await mainPage.clickViewportTwice();
         await expect(mainPage.viewport).toHaveScreenshot('text-inner-shadow.png', {
           mask: mainPage.maskViewport(),
         });
@@ -247,7 +250,6 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
-        await layersPanelPage.isFocusModeOn();
         await expect(mainPage.viewport).toHaveScreenshot('text-blur-hide.png', {
           mask: mainPage.maskViewport(),
         });
@@ -269,7 +271,6 @@ mainTest.describe(() => {
         await designPanelPage.removeBlur();
         await mainPage.waitForChangeIsSaved();
         await mainPage.focusLayerViaShortcut();
-        await layersPanelPage.isFocusModeOn();
         await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
           mask: mainPage.maskViewport(),
         });
