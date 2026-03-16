@@ -142,3 +142,139 @@ mainTest.describe(() => {
     );
   });
 });
+
+mainTest.describe(() => {
+  let mainPage: MainPage;
+  let dashboardPage: DashboardPage;
+  let tokensPage: TokensPage;
+
+  const originalTokenName = 'blue-500';
+  const renamedTokenName = 'blue-600';
+  const newColorValue = '#0080ff';
+  const importedFileName = '2721';
+
+  mainTest.beforeEach(async ({ page }) => {
+    mainPage = new MainPage(page);
+    dashboardPage = new DashboardPage(page);
+    tokensPage = new TokensPage(page);
+
+    await dashboardPage.openSidebarItem('Drafts');
+    await dashboardPage.importFileFromProjectPage('documents/2721.penpot');
+    await dashboardPage.isFilePresent(importedFileName);
+    await dashboardPage.openFileWithName(importedFileName);
+    await tokensPage.clickTokensTab();
+  });
+
+  mainTest(
+    qase(
+      [2721],
+      'Rename a token that has been applied to some attribute of one shape',
+    ),
+    async () => {
+      const originalToken: MainToken<TokenClass> = {
+        class: TokenClass.Color,
+        name: originalTokenName,
+      };
+      const renamedToken: MainToken<TokenClass> = {
+        class: TokenClass.Color,
+        name: renamedTokenName,
+      };
+
+      await mainTest.step(
+        `Select "${originalTokenName}" token and open Edit Token modal`,
+        async () => {
+          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+          await tokensPage.tokensComp.clickEditToken(originalToken);
+        },
+      );
+
+      await mainTest.step(
+        `Edit the token name to "${renamedTokenName}"`,
+        async () => {
+          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenName);
+        },
+      );
+
+      await mainTest.step(
+        'Save — remap modal opens, token name not changed yet',
+        async () => {
+          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
+        },
+      );
+
+      await mainTest.step(
+        'Check remap modal is visible with rename info and references',
+        async () => {
+          await tokensPage.tokensComp.isRemapModalVisible();
+        },
+      );
+
+      await mainTest.step(
+        `Confirm remap — "${originalTokenName}" renamed to "${renamedTokenName}" and still visible`,
+        async () => {
+          await tokensPage.tokensComp.clickRemapTokensButton();
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenVisibleWithName(renamedTokenName);
+        },
+      );
+
+      await mainTest.step(
+        `Change the color of "${renamedTokenName}" to "${newColorValue}"`,
+        async () => {
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave({
+            ...renamedToken,
+            value: newColorValue,
+          });
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step('Select the "LIGHT COMPACT" set', async () => {
+        await tokensPage.setsComp.setName
+          .filter({ hasText: 'LIGHT COMPACT' })
+          .click();
+      });
+
+      await mainTest.step(
+        'Hover "color-primary" — verify updated reference and resolved color',
+        async () => {
+          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+          const expectedTitle = [
+            'Token: color-primary',
+            `Original value: {${renamedTokenName}}`,
+            `Resolved value: ${newColorValue}`,
+          ].join('\n');
+          await tokensPage.tokensComp.checkTokenTitle(
+            'color-primary',
+            expectedTitle,
+          );
+        },
+      );
+
+      await mainTest.step('Select the "DARK" set', async () => {
+        await tokensPage.setsComp.setName.filter({ hasText: 'DARK' }).click();
+      });
+
+      await mainTest.step('Enable the "DARK" set', async () => {
+        await tokensPage.setsComp.clickOnSetCheckboxByName('DARK');
+        await mainPage.waitForChangeIsSaved();
+      });
+
+      await mainTest.step(
+        'Hover "color-primary" — verify DARK set value ({red-500} → #d8274e)',
+        async () => {
+          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+          const expectedTitle = [
+            'Token: color-primary',
+            'Original value: {red-500}',
+            'Resolved value: #d8274e',
+          ].join('\n');
+          await tokensPage.tokensComp.checkTokenTitle(
+            'color-primary',
+            expectedTitle,
+          );
+        },
+      );
+    },
+  );
+});
