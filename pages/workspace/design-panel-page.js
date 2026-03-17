@@ -396,11 +396,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.discardAnnotationTick = this.componentContent.getByTitle('Discard');
     this.editAnnotationTick = this.componentContent.getByTitle('Edit');
     this.deleteAnnotationTick = this.componentContent.getByTitle('Delete');
-    this.deleteAnnotationPopup = page.locator(
-      'div[class*="modal-container"] h2:text-is("Delete annotation")',
-    );
-    this.deleteAnnotationOkBtn = page.locator(
-      'div[class*="modal-container"] input[value="Ok"]',
+    this.deleteAnnotationModalContainer = page
+      .locator('.main_ui_confirm__modal-container')
+      .filter({ hasText: 'Delete annotation' });
+    this.deleteAnnotationOkBtn = this.deleteAnnotationModalContainer.getByRole(
+      'button',
+      { name: 'Ok', exact: true },
     );
     this.createVariantOptionDesign = page
       .getByRole('listitem')
@@ -1346,7 +1347,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async clickOnDeleteAnnotation() {
     await this.annotationCreateTitle.hover();
     await this.deleteAnnotationTick.click();
-    await expect(this.deleteAnnotationPopup).toBeVisible();
+    await expect(this.deleteAnnotationModalContainer).toBeVisible();
   }
 
   async confirmDeleteAnnotation() {
@@ -1354,9 +1355,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async createAnnotationRightClick() {
-    const layerSel = this.page.getByTestId('layer-row').nth(0);
-    await layerSel.click();
-    await layerSel.click({ button: 'right' });
+    const layerSel = this.page.getByTestId('layer-row').first();
+    await layerSel.dispatchEvent('contextmenu');
+
     await this.createAnnotationOption.click();
     await expect(this.annotationTextArea).toBeVisible();
   }
