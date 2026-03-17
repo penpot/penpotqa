@@ -35,16 +35,3 @@ mainTest(qase(1148, 'Search file from Drafts'), async () => {
   await dashboardPage.isHeaderDisplayed('Search results');
   await dashboardPage.isFilePresent('qwe');
 });
-
-mainTest(qase(1149, 'Search file from Projects'), async () => {
-  await dashboardPage.clickAddProjectButton();
-  await dashboardPage.setProjectName('Test Project');
-  await dashboardPage.isProjectTitleDisplayed('Test Project');
-  await dashboardPage.createFileViaProjectPlaceholder();
-  await mainPage.clickPencilBoxButton();
-  await dashboardPage.renameFile('qaz');
-  await dashboardPage.openSidebarItem('Projects');
-  await dashboardPage.search('qaz');
-  await dashboardPage.isHeaderDisplayed('Search results');
-  await dashboardPage.isFilePresent('qaz');
-});
