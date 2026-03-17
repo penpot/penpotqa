@@ -15,7 +15,6 @@ exports.BasePage = class BasePage {
       'aside[class*="warning"] div[class*="context_notification"]',
     );
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
-    this.wrapperMessage = page.getByTestId('actionable');
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });
     this.savedChangesIcon = page.getByTitle('Saved', { exact: true });
     this.unSavedChangesIcon = page.getByTitle('Saving', { exact: true });
@@ -480,10 +479,6 @@ exports.BasePage = class BasePage {
   async resetOverridesViaRightClick() {
     await this.copyLayer.click({ button: 'right', force: true });
     await this.resetOverridesOption.click();
-  }
-
-  async isWrapperMessageVisible() {
-    await expect(this.wrapperMessage).toBeVisible({ timeout: 10000 });
   }
 
   async renameCreatedBoardViaRightClick() {

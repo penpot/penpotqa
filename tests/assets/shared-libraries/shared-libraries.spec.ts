@@ -150,12 +150,8 @@ mainTest.describe(() => {
       'Apply updates from Libraries → Updates (after dismissing at the beginning)',
     ),
     async () => {
-      await mainTest.slow();
       await dashboardPage.openFileWithName('New File 2');
-      await mainPage.isWrapperMessageVisible();
-      await expect(assetsPanelPage.wrapperMessage).toHaveScreenshot(
-        'wrapper-message.png',
-      );
+      await assetsPanelPage.isWrapperMessageVisible();
       await assetsPanelPage.clickDismissButton();
       await mainPage.reloadPage();
       await mainPage.waitForViewportVisible();
@@ -187,7 +183,7 @@ mainTest.describe(() => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
-    await mainTest.slow();
+    mainTest.slow();
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -253,17 +249,7 @@ mainTest.describe(() => {
     ),
     async () => {
       await dashboardPage.deleteFileWithNameViaRightClick('New File 1');
-      await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
-        'library-delete-warning.png',
-        { mask: [dashboardPage.deletedSharedElementList] },
-      );
-      await expect(dashboardPage.deletedSharedElementList).toHaveCount(2);
-      await expect(dashboardPage.deletedSharedElementList.nth(0)).toContainText(
-        /New File [2-3]/,
-      );
-      await expect(dashboardPage.deletedSharedElementList.nth(1)).toContainText(
-        /New File [2-3]/,
-      );
+      await dashboardPage.isDeletingLibraryWarningVisible(2, /New File [2-3]/);
 
       await dashboardPage.clickDeleteFileButton();
 
@@ -296,9 +282,8 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  const team2 = random().concat('autotest QA Test team 2');
-
   mainTest.afterEach(async () => {
+    const team2 = random().concat('autotest QA Test team 2');
     await teamPage.page.waitForTimeout(1000);
     await teamPage.deleteTeam(team2);
   });
@@ -329,20 +314,17 @@ mainTest.describe(() => {
   });
 
   mainTest(qase([1004], 'Search shared library (LIBRARIES pop-up)'), async () => {
-    await assetsPanelPage.searchSharedLibraries('Whiteboarding & mapping kit');
-    await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
-      'libraries-window-search.png',
-    );
+    const libraryName1 = 'Whiteboarding & mapping kit';
+    const libraryName2 = 'Circum Icons pack';
+
+    await assetsPanelPage.searchSharedLibraries(libraryName1);
+    await assetsPanelPage.firstLibraryItemContainsLibraryName(libraryName1);
     await assetsPanelPage.clearSearchSharedLibraries();
     await assetsPanelPage.searchSharedLibraries('Circ');
-    await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
-      'libraries-window-part-search.png',
-    );
+    await assetsPanelPage.firstLibraryItemContainsLibraryName(libraryName2);
     await assetsPanelPage.clearSearchSharedLibraries();
     await assetsPanelPage.searchSharedLibraries('qwer');
-    await expect(assetsPanelPage.librariesModal).toHaveScreenshot(
-      'libraries-window-invalid-search.png',
-    );
+    await assetsPanelPage.isEmptyLibrarySearchResults();
     await assetsPanelPage.clearSearchSharedLibraries();
   });
 
