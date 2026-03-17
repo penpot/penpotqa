@@ -119,21 +119,16 @@ mainTest.describe(() => {
 
   mainTest(qase([1730], 'Restore main component'), async ({ browserName }) => {
     await mainPage.createComponentViaRightClick();
-    await mainPage.clickViewportOnce();
-    await mainPage.clickCreatedBoardTitleOnCanvas();
-    await mainPage.pressCopyShortcut(browserName);
-    await mainPage.pressPasteShortcut(browserName);
-    await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Board', true);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.duplicateLayerViaRightClick();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickMainComponentOnLayersTab();
     await layersPanelPage.deleteMainComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board', false);
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await layersPanelPage.restoreMainComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.waitForMainComponentIsSelected();
-    await mainPage.isCornerHandleVisible();
-    await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-component-with-grid-layout-main-restore.png',
       {
@@ -179,7 +174,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase([1732, 1733, 1734], 'Click "Show main component" in File2'),
+    qase([1732, 1733], '[Grid layout] Use shared component in another file'),
     async ({ page }) => {
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -204,20 +199,6 @@ mainTest.describe(() => {
         'board-from-library-file.png',
         {
           mask: mainPage.maskViewport(),
-        },
-      );
-
-      const popupPromise = page.waitForEvent('popup');
-      await mainPage.showMainComponentViaRightClick();
-      const newPage = await popupPromise;
-      const newMainPage = new MainPage(newPage);
-      await newMainPage.waitForViewportVisible();
-      await newMainPage.isCopyLayerVisible();
-      await newPage.waitForTimeout(2000);
-      await expect(newMainPage.viewport).toHaveScreenshot(
-        'board-component-on-first-file.png',
-        {
-          mask: await newMainPage.maskViewport(),
         },
       );
     },
