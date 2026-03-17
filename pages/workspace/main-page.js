@@ -829,12 +829,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.duplicatePageMenuItem.click();
   }
 
-  async clickOnPageOnLayersPanel(firstPage = true) {
-    if (firstPage) {
-      await this.firstPageListItem.click();
-    } else {
-      await this.secondPageListItem.click();
-    }
+  async clickOnPageOnLayersPanel(pageNumber = 1) {
+    await this.page
+      .getByTestId('page-name')
+      .filter({ hasText: `Page ${pageNumber}` })
+      .click();
   }
 
   async clickCollapseExpandPagesButton() {
