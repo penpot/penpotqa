@@ -832,7 +832,7 @@ exports.MainPage = class MainPage extends BasePage {
   async clickOnPageOnLayersPanel(pageNumber = 1) {
     await this.page
       .getByTestId('page-name')
-      .filter({ hasText: `Page ${pageNumber}`, exact: true })
+      .filter({ hasText: new RegExp(`^Page ${pageNumber}$`) })
       .click();
   }
 
