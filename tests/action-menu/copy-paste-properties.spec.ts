@@ -98,7 +98,7 @@ mainTest.describe(() => {
         await mainPage.copyLayerPropertyViaRightClick();
 
         await mainPage.clickAddPageButton();
-        await mainPage.clickOnPageOnLayersPanel(false);
+        await mainPage.clickOnPageOnLayersPanel(2);
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
         await mainPage.createDefaultBoardByCoordinates(300, 300, true);
         await mainPage.createDefaultTextLayerByCoordinates(500, 500);

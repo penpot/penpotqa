@@ -69,7 +69,7 @@ mainTest(qase(834, 'PF-116 Duplicate page'), async () => {
 
 mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
   await mainPage.clickAddPageButton();
-  await mainPage.clickOnPageOnLayersPanel(false);
+  await mainPage.clickOnPageOnLayersPanel(2);
   await mainPage.clickMoveButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -149,7 +149,7 @@ mainTest(
     await mainPage.pressCopyShortcut(browserName);
     await mainPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickOnPageOnLayersPanel(false);
+    await mainPage.clickOnPageOnLayersPanel(2);
     await mainPage.pressPasteShortcut(browserName);
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await basePage.showMainComponentViaRightClick();
@@ -174,7 +174,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickOnPageOnLayersPanel(false);
+    await mainPage.clickOnPageOnLayersPanel(2);
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.dragComponentOnCanvas(100, 100);
@@ -204,7 +204,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickOnPageOnLayersPanel(false);
+    await mainPage.clickOnPageOnLayersPanel(2);
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.dragComponentOnCanvas(500, 500);
@@ -218,7 +218,7 @@ mainTest(
     await layersPanelPage.updateMainComponentViaRightClick();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickOnPageOnLayersPanel(true);
+    await mainPage.clickOnPageOnLayersPanel(1);
     await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-update-main.png',
       {
