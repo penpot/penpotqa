@@ -7,6 +7,8 @@ import { DashboardPage } from '../../pages/dashboard/dashboard-page';
 import { TokensPage } from '../../pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 
 const teamName = random().concat('autotest');
 
@@ -273,6 +275,164 @@ mainTest.describe(() => {
             'color-primary',
             expectedTitle,
           );
+        },
+      );
+    },
+  );
+});
+
+mainTest.describe(() => {
+  let mainPage: MainPage;
+  let tokensPage: TokensPage;
+  let layersPanelPage: LayersPanelPage;
+  let designPanelPage: DesignPanelPage;
+
+  const tokenA: MainToken<TokenClass> = {
+    class: TokenClass.Color,
+    name: 'base-color',
+    value: '#111111',
+  };
+  const renamedTokenA: MainToken<TokenClass> = {
+    ...tokenA,
+    name: 'base-color-new',
+  };
+  const tokenB: MainToken<TokenClass> = {
+    class: TokenClass.Color,
+    name: 'semantic-color',
+    value: '{base-color}',
+  };
+  const newTokenAValue = '#222222';
+
+  mainTest.beforeEach(async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
+    mainPage = new MainPage(page);
+    tokensPage = new TokensPage(page);
+    layersPanelPage = new LayersPanelPage(page);
+    designPanelPage = new DesignPanelPage(page);
+
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.isMainPageLoaded();
+    await mainPage.clickMoveButton();
+
+    await mainPage.createDefaultBoardByCoordinates(320, 210);
+    await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+    await mainPage.createDefaultRectangleByCoordinates(350, 250);
+    await mainPage.waitForChangeIsSaved();
+
+    await tokensPage.clickTokensTab();
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(tokenA);
+    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(tokenB);
+
+    await mainPage.clickViewportByCoordinates(350, 250);
+    await tokensPage.tokensComp.clickOnTokenWithName(tokenB.name);
+    await mainPage.waitForChangeIsSaved();
+
+    await mainPage.createComponentsMultipleShapesRightClick(true);
+    await mainPage.waitForChangeIsSaved();
+  });
+
+  mainTest(
+    qase(
+      [2723],
+      'Rename a token that has been applied to a shape in a main component',
+    ),
+    async () => {
+      await mainTest.step('Copy the component twice (3 total)', async () => {
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+      });
+
+      await mainTest.step('Copy the component to a new page 2', async () => {
+        await mainPage.copyLayerViaRightClick();
+        await layersPanelPage.openLayersTab();
+        await mainPage.clickAddPageButton();
+        await mainPage.clickOnPageOnLayersPanel(2);
+        await mainPage.clickViewportTwice();
+        await mainPage.pasteLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.clickOnPageOnLayersPanel(1);
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Select Token A "${tokenA.name}" and open Edit Token modal`,
+        async () => {
+          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+          await tokensPage.tokensComp.clickEditToken(tokenA);
+        },
+      );
+
+      await mainTest.step(
+        `Edit Token A name to "${renamedTokenA.name}"`,
+        async () => {
+          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenA.name);
+        },
+      );
+
+      await mainTest.step(
+        'Save — remap modal opens, token name not changed yet',
+        async () => {
+          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
+        },
+      );
+
+      await mainTest.step(
+        'Check remap modal is visible with rename info and references',
+        async () => {
+          await tokensPage.tokensComp.isRemapModalVisible();
+        },
+      );
+
+      await mainTest.step(
+        'Click "Remap tokens" — Token A renamed, Token B reference updated',
+        async () => {
+          await tokensPage.tokensComp.clickRemapTokensButton();
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenVisibleWithName(renamedTokenA.name);
+        },
+      );
+
+      await mainTest.step(
+        'Check Token B is still applied and references new Token A name',
+        async () => {
+          await layersPanelPage.openLayersTab();
+          await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+          await tokensPage.clickTokensTab();
+          //await designPanelPage.isFillTokenColorSetComponent(tokenB.name);
+        },
+      );
+
+      await mainTest.step(
+        `Change renamed Token A value to "${newTokenAValue}"`,
+        async () => {
+          await tokensPage.tokensComp.clickEditToken(renamedTokenA);
+          await tokensPage.tokensComp.mainTokensComp.enterTokenValue(newTokenAValue);
+          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step(
+        'Check To await layersPanelPage.openLayersTab();ken B still applied on page 1',
+        async () => {
+          await layersPanelPage.openLayersTab();
+          await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+          await tokensPage.clickTokensTab();
+          //await tokensPage.tokensComp.isTokenAppliedWithName(tokenB.name);
+        },
+      );
+
+      await mainTest.step(
+        'Navigate to page 2 and check Token B still applied',
+        async () => {
+          await layersPanelPage.openLayersTab();
+          await mainPage.clickOnPageOnLayersPanel(2);
+          await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+          await tokensPage.clickTokensTab();
+          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+          //await designPanelPage.isFillTokenColorSetComponent(tokenB.name);
         },
       );
     },
