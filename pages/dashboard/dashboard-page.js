@@ -25,9 +25,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.fileNameTitle = page.locator('div[class*="item-info"] h3');
     this.deleteFileMenuItem = page.getByTestId('file-delete');
-    this.deleteFileButton = page.locator(
-      'input[value="Delete files"],input[value="Delete file"]',
-    );
+    this.deleteFileButton = page.getByRole('button', { name: 'Delete file' });
     this.deleteFileModalWindow = page.locator(
       'div[class*="delete_shared__modal-container"]',
     );
