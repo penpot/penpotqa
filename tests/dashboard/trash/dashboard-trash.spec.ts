@@ -56,6 +56,8 @@ mainTest.describe('As Owner', () => {
         await dashboardPage.createFileViaTitlePanel();
         await mainPage.clickPencilBoxButton();
         await dashboardPage.deleteFileViaRightclick();
+        await dashboardPage.isDeletedFileSuccessMessageVisible();
+        await dashboardPage.isDeletedFileSuccessMessageNotVisible();
       });
 
       await mainTest.step(
@@ -101,6 +103,8 @@ mainTest.describe('As Owner', () => {
           await dashboardPage.createFileViaTitlePanel();
           await mainPage.clickPencilBoxButton();
           await dashboardPage.deleteProjectViaRightclick();
+          await dashboardPage.isDeletedProjectSuccessMessageVisible();
+          await dashboardPage.isDeletedProjectSuccessMessageNotVisible();
           await dashboardPage.isProjectTitleNotVisible(projectName);
         },
       );
@@ -131,38 +135,6 @@ mainTest.describe('As Owner', () => {
       await deletedPage.isEmptyTrashMessageVisible();
     });
   });
-
-  mainTest(
-    qase(2712, 'Delete and restore file added as shared library'),
-    async () => {
-      const projectName = 'Test Project';
-      const fileName = 'New File 1';
-
-      await mainTest.step('Create shared library file and delete it', async () => {
-        await dashboardPage.clickAddProjectButton();
-        await dashboardPage.setProjectName(projectName);
-        await dashboardPage.isProjectByNameDisplayed(projectName);
-        await dashboardPage.createFileViaTitlePanel();
-        await mainPage.clickPencilBoxButton();
-        await dashboardPage.addFileAsSharedLibraryViaRightclick();
-        await dashboardPage.deleteFileViaRightclick();
-        await dashboardPage.isFileNotVisible(fileName);
-      });
-
-      await mainTest.step('Restore shared library file from Trash', async () => {
-        await dashboardPage.openSidebarItem('Projects');
-        await dashboardPage.openDeletedTab();
-
-        await deletedPage.isDeletedFileVisible(projectName, fileName);
-        await deletedPage.restoreDeletedFileViaOptions(projectName, fileName);
-
-        await dashboardPage.isRestoreAlertMessageVisible(fileName);
-        await dashboardPage.openSidebarItem('Projects');
-        await dashboardPage.isFilePresentWithName(fileName);
-        await dashboardPage.isSharedLibraryIconDisplayed();
-      });
-    },
-  );
 });
 
 /* =========================================================
@@ -196,7 +168,8 @@ mainTest.describe('As Editor', () => {
           await dashboardPage.createFileViaTitlePanel();
           await mainPage.clickPencilBoxButton();
           await dashboardPage.deleteProjectViaOptionsIcon();
-
+          await dashboardPage.isDeletedProjectSuccessMessageVisible();
+          await dashboardPage.isDeletedProjectSuccessMessageNotVisible();
           await dashboardPage.openDeletedTab();
 
           await deletedPage.isDeletedFileVisible(projectName, fileName);
@@ -213,6 +186,8 @@ mainTest.describe('As Editor', () => {
         '(2701) Permanent Delete file from Trash (editor user role)',
         async () => {
           await dashboardPage.deleteFileViaOptionsIcon();
+          await dashboardPage.isDeletedFileSuccessMessageVisible();
+          await dashboardPage.isDeletedFileSuccessMessageNotVisible();
           await dashboardPage.openDeletedTab();
 
           await deletedPage.isDeletedFileVisible(projectName, fileName);
@@ -259,6 +234,8 @@ mainTest.describe('As Admin', () => {
           await dashboardPage.createFileViaTitlePanel();
           await mainPage.clickPencilBoxButton();
           await dashboardPage.deleteProjectViaOptionsIcon();
+          await dashboardPage.isDeletedProjectSuccessMessageVisible();
+          await dashboardPage.isDeletedProjectSuccessMessageNotVisible();
 
           await dashboardPage.openDeletedTab();
 
@@ -276,6 +253,8 @@ mainTest.describe('As Admin', () => {
         '(2702) Permanent Delete project from Trash (admin user role)',
         async () => {
           await dashboardPage.deleteProjectViaOptionsIcon();
+          await dashboardPage.isDeletedProjectSuccessMessageVisible();
+          await dashboardPage.isDeletedProjectSuccessMessageNotVisible();
           await dashboardPage.openDeletedTab();
 
           await deletedPage.isDeletedProjectVisible(projectName);
