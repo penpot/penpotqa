@@ -98,7 +98,7 @@ mainTest.describe(() => {
         );
 
         await mainTest.step(
-          'Save — remap modal opens, token name not changed yet',
+          'Save — remap modal opens, the token name not changed yet',
           async () => {
             await tokensPage.tokensComp.baseComp.modalSaveButton.click();
           },
@@ -112,7 +112,7 @@ mainTest.describe(() => {
         );
 
         await mainTest.step(
-          `Confirm remap — "${borderRadiusToken.name}" renamed to "${renamedBorderRadiusToken.name}" and still highlighted`,
+          `Confirm remap — "${borderRadiusToken.name}" renamed to "${renamedBorderRadiusToken.name}".`,
           async () => {
             await tokensPage.tokensComp.clickRemapTokensButton();
             await mainPage.waitForChangeIsSaved();
@@ -212,7 +212,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        `Confirm remap — "${originalTokenName}" renamed to "${renamedTokenName}" and still visible`,
+        `Confirm remap — "${originalTokenName}" renamed to "${renamedTokenName}".`,
         async () => {
           await tokensPage.tokensComp.clickRemapTokensButton();
           await mainPage.waitForChangeIsSaved();
@@ -318,6 +318,9 @@ mainTest.describe(() => {
     await mainPage.doubleClickCreatedBoardTitleOnCanvas();
     await mainPage.createDefaultRectangleByCoordinates(350, 250);
     await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.openLayersTab();
+    await layersPanelPage.renameLayerViaRightClick('Rectangle', 'main-rectangle');
+    await mainPage.waitForChangeIsSaved();
 
     await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(tokenA);
@@ -339,14 +342,19 @@ mainTest.describe(() => {
     async () => {
       await mainTest.step('Copy the component twice (3 total)', async () => {
         await mainPage.duplicateLayerViaRightClick();
+        await layersPanelPage.openLayersTab();
+        await layersPanelPage.renameSelectedLayerViaDoubleClick('copy-rectangle-1');
         await mainPage.waitForChangeIsSaved();
         await mainPage.duplicateLayerViaRightClick();
+        await layersPanelPage.openLayersTab();
+        await layersPanelPage.renameSelectedLayerViaDoubleClick('copy-rectangle-2');
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainTest.step('Copy the component to a new page 2', async () => {
-        await mainPage.copyLayerViaRightClick();
+      await mainTest.step('Copy the component to a new Page 2', async () => {
         await layersPanelPage.openLayersTab();
+        await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
+        await mainPage.copyLayerViaRightClick();
         await mainPage.clickAddPageButton();
         await mainPage.clickOnPageOnLayersPanel(2);
         await mainPage.clickViewportTwice();
@@ -398,9 +406,9 @@ mainTest.describe(() => {
         'Check Token B is still applied and references new Token A name',
         async () => {
           await layersPanelPage.openLayersTab();
-          await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+          await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
           await tokensPage.clickTokensTab();
-          //await designPanelPage.isFillTokenColorSetComponent(tokenB.name);
+          await designPanelPage.isFillTokenColorSetComponent(tokenB.name);
         },
       );
 
@@ -414,25 +422,23 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step(
-        'Check To await layersPanelPage.openLayersTab();ken B still applied on page 1',
-        async () => {
-          await layersPanelPage.openLayersTab();
-          await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-          await tokensPage.clickTokensTab();
-          //await tokensPage.tokensComp.isTokenAppliedWithName(tokenB.name);
-        },
-      );
+      await mainTest.step('Check Token B still applied on Page 1', async () => {
+        await layersPanelPage.openLayersTab();
+        await mainPage.clickOnPageOnLayersPanel(1);
+        await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
+        await tokensPage.clickTokensTab();
+        await designPanelPage.isFillTokenColorSetComponent(tokenB.name);
+      });
 
       await mainTest.step(
-        'Navigate to page 2 and check Token B still applied',
+        'Navigate to Page 2 and check Token B still applied',
         async () => {
           await layersPanelPage.openLayersTab();
           await mainPage.clickOnPageOnLayersPanel(2);
-          await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+          await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
           await tokensPage.clickTokensTab();
           await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-          //await designPanelPage.isFillTokenColorSetComponent(tokenB.name);
+          await designPanelPage.isFillTokenColorSetComponent(tokenB.name);
         },
       );
     },
