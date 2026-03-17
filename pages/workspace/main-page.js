@@ -174,10 +174,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.pagesBlock = page.locator('div.main_ui_workspace_sidebar_sitemap__sitemap');
     this.firstPageListItem = page
       .getByTestId('page-name')
-      .filter({ hasText: 'Page 1' });
+      .filter({ hasText: /^Page 1$/ });
     this.secondPageListItem = page
       .getByTestId('page-name')
-      .filter({ hasText: 'Page 2' });
+      .filter({ hasText: /^Page 2$/ });
     this.selectedPage = page.locator(
       'ul[class*="page-list"] li[class*="sitemap__selected"] div[class*="element-list-body"]',
     );
