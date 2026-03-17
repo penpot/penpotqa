@@ -172,12 +172,12 @@ exports.MainPage = class MainPage extends BasePage {
     //Pages
     this.addPageButton = page.locator('button[class*="add-page"]');
     this.pagesBlock = page.locator('div.main_ui_workspace_sidebar_sitemap__sitemap');
-    this.firstPageListItem = page.locator(
-      'ul[class*="page-list"] div[class*="element-list-body"] >>nth=0',
-    );
-    this.secondPageListItem = page.locator(
-      'ul[class*="page-list"] div[class*="element-list-body"] >>nth=1',
-    );
+    this.firstPageListItem = page
+      .getByTestId('page-name')
+      .filter({ hasText: 'Page 1' });
+    this.secondPageListItem = page
+      .getByTestId('page-name')
+      .filter({ hasText: 'Page 2' });
     this.selectedPage = page.locator(
       'ul[class*="page-list"] li[class*="sitemap__selected"] div[class*="element-list-body"]',
     );
@@ -832,7 +832,7 @@ exports.MainPage = class MainPage extends BasePage {
   async clickOnPageOnLayersPanel(pageNumber = 1) {
     await this.page
       .getByTestId('page-name')
-      .filter({ hasText: `Page ${pageNumber}` })
+      .filter({ hasText: `Page ${pageNumber}`, exact: true })
       .click();
   }
 
