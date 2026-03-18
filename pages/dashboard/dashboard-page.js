@@ -29,7 +29,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.deleteFileModalWindow = page.locator(
       'div[class*="delete_shared__modal-container"]',
     );
+    this.deletedFileSuccessMessage = page.getByText(
+      'Your file has been deleted successfully',
+    );
     this.deletedSharedElementList = this.deleteFileModalWindow.getByRole('listitem');
+    this.deletedProjectSuccessMessage = page.getByText(
+      'Your project has been deleted successfully',
+    );
     this.createFileButtonPlaceholder = page
       .locator('[class*="empty-project-container"]')
       .getByTitle('Add file');
@@ -297,6 +303,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.deleteFileButton.click();
   }
 
+  async isDeletedFileSuccessMessageVisible() {
+    await expect(this.deletedFileSuccessMessage).toBeVisible();
+  }
+
+  async isDeletedFileSuccessMessageNotVisible() {
+    await expect(this.deletedFileSuccessMessage).toBeHidden({ timeout: 15000 });
+  }
+
   async deleteFiles() {
     let counter = 0;
     while (await this.fileTile.count()) {
@@ -327,6 +341,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.projectOptionsMenuButton.first().click({ force: true });
     await this.deleteProjectMenuItem.click();
     await this.deleteProjectButton.click();
+  }
+
+  async isDeletedProjectSuccessMessageVisible() {
+    await expect(this.deletedProjectSuccessMessage).toBeVisible();
+  }
+
+  async isDeletedProjectSuccessMessageNotVisible() {
+    await expect(this.deletedProjectSuccessMessage).toBeHidden({ timeout: 15000 });
   }
 
   async deleteProjectsIfExist() {
