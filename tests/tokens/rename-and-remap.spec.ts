@@ -326,7 +326,9 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(tokenA);
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(tokenB);
 
-    await mainPage.clickViewportByCoordinates(350, 250);
+    await layersPanelPage.openLayersTab();
+    await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
+    await tokensPage.clickTokensTab();
     await tokensPage.tokensComp.clickOnTokenWithName(tokenB.name);
     await mainPage.waitForChangeIsSaved();
 
