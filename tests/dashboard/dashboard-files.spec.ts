@@ -53,9 +53,7 @@ mainTest.describe('Drafts management', () => {
 
       await mainTest.step('(76) Delete file in Drafts via right click', async () => {
         await dashboardPage.deleteFileViaRightclick();
-        await dashboardPage.isSuccessMessageDisplayed(
-          'Your file has been deleted successfully',
-        );
+        await dashboardPage.isDeletedFileSuccessMessageVisible();
         await dashboardPage.waitSuccessMessageHidden();
         await dashboardPage.checkNumberOfFiles('0 files');
       });
@@ -164,18 +162,14 @@ mainTest.describe('Files management', () => {
 
   mainTest(qase(1123, 'Delete file in Project via right click'), async () => {
     await dashboardPage.deleteFileViaRightclick();
-    await dashboardPage.isSuccessMessageDisplayed(
-      'Your file has been deleted successfully',
-    );
+    await dashboardPage.isDeletedFileSuccessMessageVisible();
     await dashboardPage.waitSuccessMessageHidden();
     await dashboardPage.checkNumberOfFiles('0 files');
   });
 
   mainTest(qase(1123, 'Delete file in Project via Options icon'), async () => {
     await dashboardPage.deleteFileViaOptionsIcon();
-    await dashboardPage.isSuccessMessageDisplayed(
-      'Your file has been deleted successfully',
-    );
+    await dashboardPage.isDeletedFileSuccessMessageVisible();
     await dashboardPage.waitSuccessMessageHidden();
     await dashboardPage.checkNumberOfFiles('0 files');
   });

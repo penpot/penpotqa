@@ -634,9 +634,7 @@ mainTest(
     await dashboardPage.isSharedLibraryIconDisplayed();
 
     await dashboardPage.deleteFileViaRightclick();
-    await dashboardPage.isSuccessMessageDisplayed(
-      'Your file has been deleted successfully',
-    );
+    await dashboardPage.isDeletedFileSuccessMessageVisible();
     await dashboardPage.waitSuccessMessageHidden();
     await dashboardPage.checkNumberOfFiles('0 files');
   },
