@@ -54,6 +54,7 @@ export class TokensComponent {
   readonly remapModal: Locator;
   readonly remapTokensButton: Locator;
   readonly dontRemapButton: Locator;
+  readonly tokenGroupName: Locator;
 
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
@@ -88,6 +89,7 @@ export class TokensComponent {
     this.dontRemapButton = this.remapModal.getByRole('button', {
       name: "Don't remap",
     });
+    this.tokenGroupName = this.tokenSideBar.locator('[class*="layer-button-name"]');
   }
 
   private async getAddTokenButton(tokenClass: TokenClass): Promise<Locator> {
@@ -364,5 +366,50 @@ export class TokensComponent {
 
   async clickDontRemapButton() {
     await this.dontRemapButton.click();
+  }
+
+  async isTokenSingleSegment(name: string) {
+    const nameWrapper = this.page.locator(`span[aria-label="${name}"]`);
+    await expect(nameWrapper).not.toHaveClass(/divided/);
+    await expect(nameWrapper).toHaveText(name);
+    await expect(nameWrapper.locator('span')).toHaveCount(0);
+  }
+
+  async isTokenGroupVisible(groupName: string, visible = true) {
+    const group = this.tokenGroupName.filter({
+      hasText: new RegExp(`^${groupName}$`),
+    });
+    visible
+      ? await expect(group).toBeVisible()
+      : await expect(group).not.toBeVisible();
+  }
+
+  async isTokenVisibleInGroup(groupName: string, tokenName: string, visible = true) {
+    const token = this.page
+      .locator(`#folder-children-${groupName}`)
+      .locator(`span[aria-label="${tokenName}"]`);
+    visible
+      ? await expect(token).toBeVisible()
+      : await expect(token).not.toBeVisible();
+  }
+
+  async isLastSegmentVisibleInGroup(
+    groupName: string,
+    segment: string,
+    visible = true,
+  ) {
+    const lastSegment = this.page
+      .locator(`#folder-children-${groupName}`)
+      .locator('span[class*="last-name-wrapper"]')
+      .filter({ hasText: segment });
+    visible
+      ? await expect(lastSegment).toBeVisible()
+      : await expect(lastSegment).not.toBeVisible();
+  }
+
+  async isTokenGroupCount(groupName: string, count: number) {
+    await expect(
+      this.tokenGroupName.filter({ hasText: new RegExp(`^${groupName}$`) }),
+    ).toHaveCount(count);
   }
 }
