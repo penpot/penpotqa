@@ -1305,13 +1305,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.deletedTab, `DELETED tab is NOT visible`).not.toBeVisible();
   }
 
-  async isDeletingLibraryWarningVisible(count, text) {
-    await expect(this.deletedSharedElementList).toHaveCount(2);
-    await expect(this.deletedSharedElementList.nth(0)).toContainText(
-      /New File [2-3]/,
-    );
-    await expect(this.deletedSharedElementList.nth(1)).toContainText(
-      /New File [2-3]/,
-    );
+  async isDeletingLibraryWarningVisible(expectedCount, expectedText) {
+    await expect(this.deletedSharedElementList).toHaveCount(expectedCount);
+
+    const items = this.deletedSharedElementList;
+
+    for (let i = 0; i < expectedCount; i++) {
+      await expect(items.nth(i)).toContainText(expectedText);
+    }
   }
 };
