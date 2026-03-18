@@ -68,11 +68,7 @@ mainTest.describe(() => {
           await tokensPage.tokensComp.isTokenVisibleWithName(
             singleSegmentToken.name,
           );
-          const nameWrapper = tokensPage.page.locator(
-            `span[aria-label="${singleSegmentToken.name}"][class*="name-wrapper"]`,
-          );
-          await expect(nameWrapper).toHaveText(singleSegmentToken.name);
-          await expect(nameWrapper.locator('span')).toHaveCount(0);
+          await tokensPage.tokensComp.isTokenSingleSegment(singleSegmentToken.name);
         },
       );
 
@@ -85,6 +81,100 @@ mainTest.describe(() => {
           await expect(tokensPage.tokensComp.editTokenMenuItem).toBeVisible();
           await expect(tokensPage.tokensComp.duplicateTokenMenuItem).toBeVisible();
           await expect(tokensPage.tokensComp.deleteTokenMenuItem).toBeVisible();
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase(
+      [2730],
+      'Tokens with the same path are displayed under the same nested group path',
+    ),
+    async () => {
+      const primarySmallToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'primary.small',
+        value: '4',
+      };
+      const primaryBigToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'primary.big',
+        value: '16',
+      };
+
+      await mainTest.step(
+        `Create first token with path name "${primarySmallToken.name}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            primarySmallToken,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify group "primary" is visible and pill "small" appears under it`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible('primary');
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            'primary',
+            primarySmallToken.name,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            'primary',
+            'small',
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Create second token with path name "${primaryBigToken.name}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            primaryBigToken,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "primary" group contains both "small" and "big" token pills`,
+        async () => {
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            'primary',
+            primarySmallToken.name,
+          );
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            'primary',
+            primaryBigToken.name,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            'primary',
+            'small',
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup('primary', 'big');
+        },
+      );
+
+      await mainTest.step(
+        'Verify only one "primary" group exists in the UI',
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupCount('primary', 1);
+        },
+      );
+
+      await mainTest.step(
+        'Snapshot of the Border Radius section showing the nested group structure',
+        async () => {
+          const borderRadiusSection = tokensPage.page
+            .locator('[class*="token-section-wrapper"]')
+            .filter({
+              has: tokensPage.page.locator(
+                '[aria-controls="token-tree-border-radius"]',
+              ),
+            });
+          await expect(borderRadiusSection).toHaveScreenshot(
+            'token-group-primary-nested.png',
+          );
         },
       );
     },
