@@ -41,6 +41,50 @@ mainTest.afterEach(async () => {
 });
 
 mainTest.describe(() => {
+  const team1 = teamName;
+  const team2 = random().concat('autotest QA Test team 2');
+
+  mainTest(qase([1540], 'Move library to a different team'), async () => {
+    await mainPage.createDefaultEllipseByCoordinates(200, 200);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.addFileAsSharedLibraryViaRightclick();
+    await dashboardPage.isSharedLibraryIconDisplayed();
+
+    await dashboardPage.createFileViaTitlePanel();
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.clickLibrariesButton();
+    await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
+    await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
+    await assetsPanelPage.clickCloseModalButton();
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
+    await assetsPanelPage.clickLibraryComponentsTitle();
+    await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.clickPencilBoxButton();
+
+    await teamPage.createTeam(team2);
+    await teamPage.isTeamSelected(team2);
+    await teamPage.switchTeam(team1);
+
+    await dashboardPage.moveFileToOtherTeamViaRightClick('New File 1', team2);
+    await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
+      'library-move-to-other-team-warning.png',
+    );
+    await dashboardPage.clickOnMoveButton();
+    await teamPage.isTeamSelected(team2);
+    await dashboardPage.isSharedLibraryIconDisplayed();
+  });
+
+  mainTest.afterEach(async () => {
+    await teamPage.page.waitForTimeout(1000);
+    await teamPage.deleteTeam(team2);
+  });
+});
+
+mainTest.describe(() => {
   mainTest(
     qase([1457], 'Publish Shared Library from the Libraries popup (with assets)'),
     async () => {
