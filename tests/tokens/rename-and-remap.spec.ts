@@ -81,45 +81,9 @@ mainTest.describe('Token rename — referenced in other token expressions', () =
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainTest.step(
-        `Select "${borderRadiusToken.name}" token and open Edit Token modal`,
-        async () => {
-          await tokensPage.tokensComp.clickEditToken(borderRadiusToken);
-        },
-      );
-
-      await mainTest.step(
-        `Edit the token name to "${renamedBorderRadiusToken.name}"`,
-        async () => {
-          await tokensPage.tokensComp.tokenNameInput.fill(
-            renamedBorderRadiusToken.name,
-          );
-        },
-      );
-
-      await mainTest.step(
-        'Save — remap modal opens, the token name not changed yet',
-        async () => {
-          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
-        },
-      );
-
-      await mainTest.step(
-        'Check remap modal is visible with rename info and references',
-        async () => {
-          await tokensPage.tokensComp.isRemapTokenModalVisible();
-        },
-      );
-
-      await mainTest.step(
-        `Confirm remap — "${borderRadiusToken.name}" renamed to "${renamedBorderRadiusToken.name}"`,
-        async () => {
-          await tokensPage.tokensComp.clickRemapTokensButton();
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenVisibleWithName(
-            renamedBorderRadiusToken.name,
-          );
-        },
+      await tokensPage.renameTokenAndConfirmRemap(
+        borderRadiusToken,
+        renamedBorderRadiusToken.name,
       );
 
       await mainTest.step(
@@ -169,43 +133,7 @@ mainTest.describe('Token rename — applied to a shape attribute', () => {
         await tokensPage.clickTokensTab();
       });
 
-      await mainTest.step(
-        `Select "${originalTokenName}" token and open Edit Token modal`,
-        async () => {
-          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-          await tokensPage.tokensComp.clickEditToken(originalToken);
-        },
-      );
-
-      await mainTest.step(
-        `Edit the token name to "${renamedTokenName}"`,
-        async () => {
-          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenName);
-        },
-      );
-
-      await mainTest.step(
-        'Save — remap modal opens, token name not changed yet',
-        async () => {
-          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
-        },
-      );
-
-      await mainTest.step(
-        'Check remap modal is visible with rename info and references',
-        async () => {
-          await tokensPage.tokensComp.isRemapTokenModalVisible();
-        },
-      );
-
-      await mainTest.step(
-        `Confirm remap — "${originalTokenName}" renamed to "${renamedTokenName}"`,
-        async () => {
-          await tokensPage.tokensComp.clickRemapTokensButton();
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenVisibleWithName(renamedTokenName);
-        },
-      );
+      await tokensPage.renameTokenAndConfirmRemap(originalToken, renamedTokenName);
 
       await mainTest.step(
         `Change the color of "${renamedTokenName}" to "${newColorValue}"`,
@@ -240,11 +168,8 @@ mainTest.describe('Token rename — applied to a shape attribute', () => {
         },
       );
 
-      await mainTest.step('Select the "DARK" set', async () => {
+      await mainTest.step('Select and enable the "DARK" set', async () => {
         await tokensPage.setsComp.setName.filter({ hasText: 'DARK' }).click();
-      });
-
-      await mainTest.step('Enable the "DARK" set', async () => {
         await tokensPage.setsComp.clickOnSetCheckboxByName('DARK');
         await mainPage.waitForChangeIsSaved();
       });
@@ -353,43 +278,7 @@ mainTest.describe('Token rename — applied to a shape in a main component', () 
         await tokensPage.clickTokensTab();
       });
 
-      await mainTest.step(
-        `Select Token A "${tokenA.name}" and open Edit Token modal`,
-        async () => {
-          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-          await tokensPage.tokensComp.clickEditToken(tokenA);
-        },
-      );
-
-      await mainTest.step(
-        `Edit Token A name to "${renamedTokenA.name}"`,
-        async () => {
-          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenA.name);
-        },
-      );
-
-      await mainTest.step(
-        'Save — remap modal opens, token name not changed yet',
-        async () => {
-          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
-        },
-      );
-
-      await mainTest.step(
-        'Check remap modal is visible with rename info and references',
-        async () => {
-          await tokensPage.tokensComp.isRemapTokenModalVisible();
-        },
-      );
-
-      await mainTest.step(
-        'Click "Remap tokens" — Token A renamed, Token B reference updated',
-        async () => {
-          await tokensPage.tokensComp.clickRemapTokensButton();
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenVisibleWithName(renamedTokenA.name);
-        },
-      );
+      await tokensPage.renameTokenAndConfirmRemap(tokenA, renamedTokenA.name);
 
       await mainTest.step(
         'Check Token B is still applied and references new Token A name',
