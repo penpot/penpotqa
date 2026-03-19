@@ -1,10 +1,10 @@
-import { mainTest } from '../../fixtures';
-import { random } from '../../helpers/string-generator';
+import { mainTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { MainPage } from '../../pages/workspace/main-page';
-import { TeamPage } from '../../pages/dashboard/team-page';
-import { DashboardPage } from '../../pages/dashboard/dashboard-page';
-import { TokensPage } from '../../pages/workspace/tokens/tokens-base-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
@@ -12,17 +12,20 @@ import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 
 const teamName = random().concat('autotest');
 
+let mainPage: MainPage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+
 mainTest.beforeEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const dashboardPage: DashboardPage = new DashboardPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
 mainTest.afterEach(async ({ page }) => {
-  const mainPage: MainPage = new MainPage(page);
-  const teamPage: TeamPage = new TeamPage(page);
+  mainPage = new MainPage(page);
 
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
@@ -107,7 +110,7 @@ mainTest.describe(() => {
         await mainTest.step(
           'Check remap modal is visible with rename info and references',
           async () => {
-            await tokensPage.tokensComp.isRemapModalVisible();
+            await tokensPage.tokensComp.isRemapTokenModalVisible();
           },
         );
 
@@ -207,7 +210,7 @@ mainTest.describe(() => {
       await mainTest.step(
         'Check remap modal is visible with rename info and references',
         async () => {
-          await tokensPage.tokensComp.isRemapModalVisible();
+          await tokensPage.tokensComp.isRemapTokenModalVisible();
         },
       );
 
@@ -283,6 +286,7 @@ mainTest.describe(() => {
 
 mainTest.describe(() => {
   let mainPage: MainPage;
+  let dashboardPage: DashboardPage;
   let tokensPage: TokensPage;
   let layersPanelPage: LayersPanelPage;
   let designPanelPage: DesignPanelPage;
@@ -304,7 +308,7 @@ mainTest.describe(() => {
   const newTokenAValue = '#222222';
 
   mainTest.beforeEach(async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
+    dashboardPage = new DashboardPage(page);
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     layersPanelPage = new LayersPanelPage(page);
@@ -391,7 +395,7 @@ mainTest.describe(() => {
       await mainTest.step(
         'Check remap modal is visible with rename info and references',
         async () => {
-          await tokensPage.tokensComp.isRemapModalVisible();
+          await tokensPage.tokensComp.isRemapTokenModalVisible();
         },
       );
 
