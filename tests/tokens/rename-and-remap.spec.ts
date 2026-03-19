@@ -34,7 +34,13 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest.describe('Token rename — referenced in other token expressions', () => {
+mainTest.describe(() => {
+  mainTest.beforeEach(async () => {
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.isMainPageLoaded();
+    await mainPage.clickMoveButton();
+  });
+
   mainTest(
     qase([2719], 'should update references in expressions when a token is renamed'),
     async () => {
@@ -53,8 +59,7 @@ mainTest.describe('Token rename — referenced in other token expressions', () =
         name: 'border-radius-new',
       };
 
-      await mainTest.step('Create file and open Tokens panel', async () => {
-        await tokensPage.createFileAndEnterWorkspace(dashboardPage);
+      await mainTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
         await tokensPage.toolsComp.clickOnTokenToolsButton();
       });
@@ -104,94 +109,7 @@ mainTest.describe('Token rename — referenced in other token expressions', () =
       );
     },
   );
-});
 
-mainTest.describe('Token rename — applied to a shape attribute', () => {
-  mainTest(
-    qase([2721], 'should remap applied token references when a token is renamed'),
-    async () => {
-      const originalTokenName = 'blue-500';
-      const renamedTokenName = 'blue-600';
-      const newColorValue = '#0080ff';
-      const importedFileName = '2721';
-      const originalToken: MainToken<TokenClass> = {
-        class: TokenClass.Color,
-        name: originalTokenName,
-      };
-      const renamedToken: MainToken<TokenClass> = {
-        class: TokenClass.Color,
-        name: renamedTokenName,
-      };
-
-      await mainTest.step('Import penpot file and open Tokens panel', async () => {
-        await dashboardPage.openSidebarItem('Drafts');
-        await dashboardPage.importFileFromProjectPage('documents/2721.penpot');
-        await dashboardPage.isFilePresent(importedFileName);
-        await dashboardPage.openFileWithName(importedFileName);
-        await tokensPage.clickTokensTab();
-      });
-
-      await tokensPage.renameTokenAndConfirmRemap(originalToken, renamedTokenName);
-
-      await mainTest.step(
-        `Change the color of "${renamedTokenName}" to "${newColorValue}"`,
-        async () => {
-          await tokensPage.tokensComp.editTokenViaRightClickAndSave({
-            ...renamedToken,
-            value: newColorValue,
-          });
-          await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await mainTest.step('Select the "LIGHT COMPACT" set', async () => {
-        await tokensPage.setsComp.setName
-          .filter({ hasText: 'LIGHT COMPACT' })
-          .click();
-      });
-
-      await mainTest.step(
-        'Hover "color-primary" — verify updated reference and resolved color',
-        async () => {
-          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-          const expectedTitle = [
-            'Token: color-primary',
-            `Original value: {${renamedTokenName}}`,
-            `Resolved value: ${newColorValue}`,
-          ].join('\n');
-          await tokensPage.tokensComp.checkTokenTitle(
-            'color-primary',
-            expectedTitle,
-          );
-        },
-      );
-
-      await mainTest.step('Select and enable the "DARK" set', async () => {
-        await tokensPage.setsComp.setName.filter({ hasText: 'DARK' }).click();
-        await tokensPage.setsComp.clickOnSetCheckboxByName('DARK');
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step(
-        'Hover "color-primary" — verify DARK set value ({red-500} → #d8274e)',
-        async () => {
-          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-          const expectedTitle = [
-            'Token: color-primary',
-            'Original value: {red-500}',
-            'Resolved value: #d8274e',
-          ].join('\n');
-          await tokensPage.tokensComp.checkTokenTitle(
-            'color-primary',
-            expectedTitle,
-          );
-        },
-      );
-    },
-  );
-});
-
-mainTest.describe('Token rename — applied to a shape in a main component', () => {
   mainTest(
     qase(
       [2723],
@@ -217,8 +135,7 @@ mainTest.describe('Token rename — applied to a shape in a main component', () 
       layersPanelPage = new LayersPanelPage(page);
       designPanelPage = new DesignPanelPage(page);
 
-      await mainTest.step('Create file with board and named rectangle', async () => {
-        await tokensPage.createFileAndEnterWorkspace(dashboardPage);
+      await mainTest.step('Create board and named rectangle', async () => {
         await mainPage.createDefaultBoardByCoordinates(320, 210);
         await mainPage.doubleClickCreatedBoardTitleOnCanvas();
         await mainPage.createDefaultRectangleByCoordinates(350, 250);
@@ -318,3 +235,78 @@ mainTest.describe('Token rename — applied to a shape in a main component', () 
     },
   );
 });
+
+mainTest(
+  qase([2721], 'should remap applied token references when a token is renamed'),
+  async () => {
+    const originalTokenName = 'blue-500';
+    const renamedTokenName = 'blue-600';
+    const newColorValue = '#0080ff';
+    const importedFileName = '2721';
+    const originalToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: originalTokenName,
+    };
+    const renamedToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: renamedTokenName,
+    };
+
+    await mainTest.step('Import penpot file and open Tokens panel', async () => {
+      await dashboardPage.openSidebarItem('Drafts');
+      await dashboardPage.importFileFromProjectPage('documents/2721.penpot');
+      await dashboardPage.isFilePresent(importedFileName);
+      await dashboardPage.openFileWithName(importedFileName);
+      await tokensPage.clickTokensTab();
+    });
+
+    await tokensPage.renameTokenAndConfirmRemap(originalToken, renamedTokenName);
+
+    await mainTest.step(
+      `Change the color of "${renamedTokenName}" to "${newColorValue}"`,
+      async () => {
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave({
+          ...renamedToken,
+          value: newColorValue,
+        });
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
+
+    await mainTest.step('Select the "LIGHT COMPACT" set', async () => {
+      await tokensPage.setsComp.setName.filter({ hasText: 'LIGHT COMPACT' }).click();
+    });
+
+    await mainTest.step(
+      'Hover "color-primary" — verify updated reference and resolved color',
+      async () => {
+        await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+        const expectedTitle = [
+          'Token: color-primary',
+          `Original value: {${renamedTokenName}}`,
+          `Resolved value: ${newColorValue}`,
+        ].join('\n');
+        await tokensPage.tokensComp.checkTokenTitle('color-primary', expectedTitle);
+      },
+    );
+
+    await mainTest.step('Select and enable the "DARK" set', async () => {
+      await tokensPage.setsComp.setName.filter({ hasText: 'DARK' }).click();
+      await tokensPage.setsComp.clickOnSetCheckboxByName('DARK');
+      await mainPage.waitForChangeIsSaved();
+    });
+
+    await mainTest.step(
+      'Hover "color-primary" — verify DARK set value ({red-500} → #d8274e)',
+      async () => {
+        await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+        const expectedTitle = [
+          'Token: color-primary',
+          'Original value: {red-500}',
+          'Resolved value: #d8274e',
+        ].join('\n');
+        await tokensPage.tokensComp.checkTokenTitle('color-primary', expectedTitle);
+      },
+    );
+  },
+);

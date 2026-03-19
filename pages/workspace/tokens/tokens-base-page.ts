@@ -53,12 +53,6 @@ export class TokensPage extends MainPage {
     await this.tokensTab.click();
   }
 
-  async createFileAndEnterWorkspace(dashboardPage: DashboardPage): Promise<void> {
-    await dashboardPage.createFileViaPlaceholder();
-    await this.isMainPageLoaded();
-    await this.clickMoveButton();
-  }
-
   async renameTokenAndConfirmRemap(
     originalToken: MainToken<TokenClass>,
     newName: string,
