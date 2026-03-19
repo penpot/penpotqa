@@ -27,7 +27,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.deleteFileMenuItem = page.getByTestId('file-delete');
     this.deleteFileButton = page.getByRole('button', { name: 'Delete file' });
     this.deleteFileModalWindow = page.locator(
-      'div[class*="delete_shared__modal-container"]',
+      '.main_ui_delete_shared__modal-container',
     );
     this.deletedFileSuccessMessage = page.getByText(
       'Your file has been deleted successfully',
@@ -1303,5 +1303,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isDeletedTabNotVisible() {
     await expect(this.deletedTab, `DELETED tab is NOT visible`).not.toBeVisible();
+  }
+
+  async isDeletingLibraryWarningVisible(expectedCount, expectedText) {
+    await expect(this.deletedSharedElementList).toHaveCount(expectedCount);
+
+    const items = this.deletedSharedElementList;
+
+    for (let i = 0; i < expectedCount; i++) {
+      await expect(items.nth(i)).toContainText(expectedText);
+    }
   }
 };
