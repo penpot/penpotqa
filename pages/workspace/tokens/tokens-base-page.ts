@@ -1,5 +1,6 @@
 import { type Locator, type Page, expect } from '@playwright/test';
 import { MainPage } from '@pages/workspace/main-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { SetsComponent } from '@pages/workspace/tokens/sets-component';
 import { ThemesComponent } from '@pages/workspace/tokens/themes-component';
 import { ToolsComponent } from '@pages/workspace/tokens/tools-component';
@@ -50,6 +51,12 @@ export class TokensPage extends MainPage {
 
   async clickTokensTab() {
     await this.tokensTab.click();
+  }
+
+  async createFileAndEnterWorkspace(dashboardPage: DashboardPage): Promise<void> {
+    await dashboardPage.createFileViaPlaceholder();
+    await this.isMainPageLoaded();
+    await this.clickMoveButton();
   }
 
   async renameTokenAndConfirmRemap(

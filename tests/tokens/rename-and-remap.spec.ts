@@ -54,9 +54,7 @@ mainTest.describe('Token rename — referenced in other token expressions', () =
       };
 
       await mainTest.step('Create file and open Tokens panel', async () => {
-        await dashboardPage.createFileViaPlaceholder();
-        await mainPage.isMainPageLoaded();
-        await mainPage.clickMoveButton();
+        await tokensPage.createFileAndEnterWorkspace(dashboardPage);
         await tokensPage.clickTokensTab();
         await tokensPage.toolsComp.clickOnTokenToolsButton();
       });
@@ -220,9 +218,7 @@ mainTest.describe('Token rename — applied to a shape in a main component', () 
       designPanelPage = new DesignPanelPage(page);
 
       await mainTest.step('Create file with board and named rectangle', async () => {
-        await dashboardPage.createFileViaPlaceholder();
-        await mainPage.isMainPageLoaded();
-        await mainPage.clickMoveButton();
+        await tokensPage.createFileAndEnterWorkspace(dashboardPage);
         await mainPage.createDefaultBoardByCoordinates(320, 210);
         await mainPage.doubleClickCreatedBoardTitleOnCanvas();
         await mainPage.createDefaultRectangleByCoordinates(350, 250);
