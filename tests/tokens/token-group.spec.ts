@@ -11,48 +11,46 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
-mainTest.beforeEach(
-  'Create a team and a new file',
-  async ({ page, browserName }) => {
-    const teamPage = new TeamPage(page);
-    const dashboardPage = new DashboardPage(page);
-    const mainPage = new MainPage(page);
+let mainPage: MainPage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let tokensPage: TokensPage;
 
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
-    await dashboardPage.createFileViaPlaceholder();
-    browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-      ? await dashboardPage.createFileViaPlaceholder()
-      : null;
-    await mainPage.isMainPageLoaded();
-    await mainPage.clickMoveButton();
-  },
-);
+mainTest.beforeEach(async ({ page, browserName }) => {
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  tokensPage = new TokensPage(page);
 
-mainTest.afterEach(async ({ page }) => {
-  const mainPage = new MainPage(page);
-  const teamPage = new TeamPage(page);
+  await teamPage.createTeam(teamName);
+  await teamPage.isTeamSelected(teamName);
+  await dashboardPage.createFileViaPlaceholder();
+  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
+    ? await dashboardPage.createFileViaPlaceholder()
+    : null;
+  await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
+});
+
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest.describe(() => {
-  let tokensPage: TokensPage;
-
-  const singleSegmentToken: MainToken<TokenClass> = {
-    class: TokenClass.BorderRadius,
-    name: 'big',
-    value: '10',
-  };
-
-  mainTest.beforeEach('Navigate to Tokens tab', async ({ page }) => {
-    tokensPage = new TokensPage(page);
-    await tokensPage.clickTokensTab();
-  });
-
   mainTest(
     qase([2728], 'Display token pill for single-segment token name'),
     async () => {
+      const singleSegmentToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'big',
+        value: '10',
+      };
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
       await mainTest.step(
         `Create a token with single-segment name "${singleSegmentToken.name}"`,
         async () => {
@@ -102,6 +100,10 @@ mainTest.describe(() => {
         name: 'primary.big',
         value: '16',
       };
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
 
       await mainTest.step(
         `Create first token with path name "${primarySmallToken.name}"`,
