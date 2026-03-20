@@ -55,9 +55,11 @@ export class TokensComponent {
   readonly remapTokensButton: Locator;
   readonly dontRemapButton: Locator;
   readonly tokenGroupName: Locator;
+  readonly tokensPage: TokensPage;
 
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
+    this.tokensPage = tokensPage;
     this.baseComp = new BaseComponent(page);
     this.typoTokensComp = new TypographyTokensComponent(page);
     this.mainTokensComp = new MainTokensComponent(page, tokensPage);
@@ -356,7 +358,7 @@ export class TokensComponent {
     }
   }
 
-  async isRemapModalVisible() {
+  async isRemapTokenModalVisible() {
     await expect(this.remapModal).toBeVisible();
   }
 
@@ -411,5 +413,19 @@ export class TokensComponent {
     await expect(
       this.tokenGroupName.filter({ hasText: new RegExp(`^${groupName}$`) }),
     ).toHaveCount(count);
+  }
+
+  async renameTokenAndConfirmRemap(
+    originalToken: MainToken<TokenClass>,
+    newName: string,
+  ): Promise<void> {
+    await this.expandTokenByName(originalToken.class);
+    await this.clickEditToken(originalToken);
+    await this.tokenNameInput.fill(newName);
+    await this.baseComp.modalSaveButton.click();
+    await this.isRemapTokenModalVisible();
+    await this.clickRemapTokensButton();
+    await this.tokensPage.waitForChangeIsSaved();
+    await this.isTokenVisibleWithName(newName);
   }
 }
