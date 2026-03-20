@@ -51,7 +51,7 @@ export class TokensComponent {
   readonly duplicateTokenMenuItem: Locator;
   readonly deleteTokenMenuItem: Locator;
   readonly expandTokensButton: Locator;
-  readonly remapModal: Locator;
+  readonly remapTokenModal: Locator;
   readonly remapTokensButton: Locator;
   readonly dontRemapButton: Locator;
   readonly tokenGroupName: Locator;
@@ -75,7 +75,6 @@ export class TokensComponent {
     this.deleteTokenMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Delete token' });
-
     this.expandTokensButton = this.tokenSideBar
       .locator('[class*="layer-button-wrapper"]')
       .getByRole('button');
@@ -84,11 +83,11 @@ export class TokensComponent {
       .getByRole('listitem')
       .filter({ hasText: 'Edit token' });
 
-    this.remapModal = page.getByTestId('token-remapping-modal');
-    this.remapTokensButton = this.remapModal.getByRole('button', {
+    this.remapTokenModal = page.getByTestId('token-remapping-modal');
+    this.remapTokensButton = this.remapTokenModal.getByRole('button', {
       name: 'Remap tokens',
     });
-    this.dontRemapButton = this.remapModal.getByRole('button', {
+    this.dontRemapButton = this.remapTokenModal.getByRole('button', {
       name: "Don't remap",
     });
     this.tokenGroupName = this.tokenSideBar.locator('[class*="layer-button-name"]');
@@ -351,15 +350,15 @@ export class TokensComponent {
   }
 
   async expandTokenByName(tokenClass: TokenClass) {
-    const button = await this.getTokenTreeButton(tokenClass);
-    const isExpanded = await button.getAttribute('aria-expanded');
+    const tokenTreeButton = await this.getTokenTreeButton(tokenClass);
+    const isExpanded = await tokenTreeButton.getAttribute('aria-expanded');
     if (isExpanded !== 'true') {
-      await button.click();
+      await tokenTreeButton.click();
     }
   }
 
   async isRemapTokenModalVisible() {
-    await expect(this.remapModal).toBeVisible();
+    await expect(this.remapTokenModal).toBeVisible();
   }
 
   async clickRemapTokensButton() {
