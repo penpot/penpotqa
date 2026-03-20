@@ -2,7 +2,7 @@ import { registerTest } from '../../fixtures';
 import { expect, Page } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter';
 import { MainPage } from '../../pages/workspace/main-page';
-import { random } from 'helpers/string-generator';
+import { random } from '../../helpers/string-generator';
 import { ProfilePage } from '../../pages/profile-page';
 import { DashboardPage } from '../../pages/dashboard/dashboard-page';
 import { TeamPage } from '../../pages/dashboard/team-page';
