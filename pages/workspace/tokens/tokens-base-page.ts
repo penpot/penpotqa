@@ -1,6 +1,5 @@
-import { type Locator, type Page, expect } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 import { MainPage } from '@pages/workspace/main-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { SetsComponent } from '@pages/workspace/tokens/sets-component';
 import { ThemesComponent } from '@pages/workspace/tokens/themes-component';
 import { ToolsComponent } from '@pages/workspace/tokens/tools-component';
@@ -51,19 +50,5 @@ export class TokensPage extends MainPage {
 
   async clickTokensTab() {
     await this.tokensTab.click();
-  }
-
-  async renameTokenAndConfirmRemap(
-    originalToken: MainToken<TokenClass>,
-    newName: string,
-  ): Promise<void> {
-    await this.tokensComp.expandTokenByName(originalToken.class);
-    await this.tokensComp.clickEditToken(originalToken);
-    await this.tokensComp.tokenNameInput.fill(newName);
-    await this.tokensComp.baseComp.modalSaveButton.click();
-    await this.tokensComp.isRemapTokenModalVisible();
-    await this.tokensComp.clickRemapTokensButton();
-    await this.waitForChangeIsSaved();
-    await this.tokensComp.isTokenVisibleWithName(newName);
   }
 }

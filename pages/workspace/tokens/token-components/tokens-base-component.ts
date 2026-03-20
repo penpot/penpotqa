@@ -48,15 +48,17 @@ export class TokensComponent {
   readonly editTokenMenuItem: Locator;
   readonly tokenDescriptionInput: Locator;
   readonly tokenNameInput: Locator;
-  readonly duplicateTokenMenuItem: Locator;
   readonly deleteTokenMenuItem: Locator;
   readonly expandTokensButton: Locator;
   readonly remapTokenModal: Locator;
   readonly remapTokensButton: Locator;
   readonly dontRemapButton: Locator;
 
+  readonly tokensPage: TokensPage;
+
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
+    this.tokensPage = tokensPage;
     this.baseComp = new BaseComponent(page);
     this.typoTokensComp = new TypographyTokensComponent(page);
     this.mainTokensComp = new MainTokensComponent(page, tokensPage);
@@ -66,9 +68,6 @@ export class TokensComponent {
     this.invalidToken = page.locator('button[class*="token-pill-invalid-applied"]');
     this.tokenDescriptionInput = page.getByPlaceholder('Description');
     this.tokenNameInput = page.locator('#token-name');
-    this.duplicateTokenMenuItem = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Duplicate  token' });
     this.deleteTokenMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Delete token' });
@@ -364,5 +363,18 @@ export class TokensComponent {
 
   async clickDontRemapButton() {
     await this.dontRemapButton.click();
+  }
+  async renameTokenAndConfirmRemap(
+    originalToken: MainToken<TokenClass>,
+    newName: string,
+  ): Promise<void> {
+    await this.expandTokenByName(originalToken.class);
+    await this.clickEditToken(originalToken);
+    await this.tokenNameInput.fill(newName);
+    await this.baseComp.modalSaveButton.click();
+    await this.isRemapTokenModalVisible();
+    await this.clickRemapTokensButton();
+    await this.tokensPage.waitForChangeIsSaved();
+    await this.isTokenVisibleWithName(newName);
   }
 }
