@@ -1,12 +1,18 @@
-import { type Locator, type Page, expect } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 import { MainPage } from '@pages/workspace/main-page';
 import { SetsComponent } from '@pages/workspace/tokens/sets-component';
 import { ThemesComponent } from '@pages/workspace/tokens/themes-component';
 import { ToolsComponent } from '@pages/workspace/tokens/tools-component';
-import { TokensComponent } from './token-components/tokens-base-component';
-import { MainTokensComponent } from './token-components/main-tokens-component';
-import { TypographyTokensComponent } from './token-components/typography-tokens-component';
-import { ShadowTokensComponent } from './token-components/shadow-tokens-component';
+import {
+  TokensComponent,
+  TokenClass,
+} from '@pages/workspace/tokens/token-components/tokens-base-component';
+import {
+  MainTokensComponent,
+  MainToken,
+} from '@pages/workspace/tokens/token-components/main-tokens-component';
+import { TypographyTokensComponent } from '@pages/workspace/tokens/token-components/typography-tokens-component';
+import { ShadowTokensComponent } from '@pages/workspace/tokens/token-components/shadow-tokens-component';
 
 export interface BasicTokenData {
   name: string;
