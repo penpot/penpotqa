@@ -105,11 +105,9 @@ mainTest.describe(() => {
         await mainPage.clickMainMenuButton();
         await mainPage.clickEditMainMenuItem();
         await mainPage.clickSelectAllMainMenuSubItem();
-
-        await Promise.all([
-          mainPage.waitForUpdateFileRequest(),
-          mainPage.clickShortcutCtrlAltV(),
-        ]);
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.clickShortcutCtrlAltV();
+        await mainPage.waitForChangeIsSaved();
 
         await expect(mainPage.viewport).toHaveScreenshot(
           'copies-property-3-layers.png',
