@@ -42,7 +42,10 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([2719], 'should update references in expressions when a token is renamed'),
+    qase(
+      [2719],
+      'Rename a token that is being referenced from other tokens as part of an expression',
+    ),
     async () => {
       const borderRadiusToken: MainToken<TokenClass> = {
         class: TokenClass.BorderRadius,
@@ -84,7 +87,7 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await tokensPage.renameTokenAndConfirmRemap(
+      await tokensPage.tokensComp.renameTokenAndConfirmRemap(
         borderRadiusToken,
         renamedBorderRadiusToken.name,
       );
@@ -113,7 +116,7 @@ mainTest.describe(() => {
   mainTest(
     qase(
       [2723],
-      'should update token references across pages and component copies when renamed',
+      'Rename a token that has been applied to a shape in a main component',
     ),
     async ({ page }) => {
       const tokenA: MainToken<TokenClass> = {
@@ -191,7 +194,10 @@ mainTest.describe(() => {
         await tokensPage.clickTokensTab();
       });
 
-      await tokensPage.renameTokenAndConfirmRemap(tokenA, renamedTokenA.name);
+      await tokensPage.tokensComp.renameTokenAndConfirmRemap(
+        tokenA,
+        renamedTokenA.name,
+      );
 
       await mainTest.step(
         'Check Token B is still applied and references new Token A name',
@@ -237,7 +243,10 @@ mainTest.describe(() => {
 });
 
 mainTest(
-  qase([2721], 'should remap applied token references when a token is renamed'),
+  qase(
+    [2721],
+    'Rename a token that has been applied to some attribute of one shape.',
+  ),
   async () => {
     const originalTokenName = 'blue-500';
     const renamedTokenName = 'blue-600';
@@ -260,7 +269,10 @@ mainTest(
       await tokensPage.clickTokensTab();
     });
 
-    await tokensPage.renameTokenAndConfirmRemap(originalToken, renamedTokenName);
+    await tokensPage.tokensComp.renameTokenAndConfirmRemap(
+      originalToken,
+      renamedTokenName,
+    );
 
     await mainTest.step(
       `Change the color of "${renamedTokenName}" to "${newColorValue}"`,
