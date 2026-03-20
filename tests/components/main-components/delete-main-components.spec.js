@@ -33,7 +33,6 @@ mainTest(qase([1295], 'Undo deleted component'), async ({ browserName }) => {
   await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
   await mainPage.waitForChangeIsSaved();
   await mainPage.deleteLayerViaRightClick();
-  await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible(false);
   await mainPage.clickShortcutCtrlZ(browserName);
   await mainPage.isCreatedLayerVisible(true);
