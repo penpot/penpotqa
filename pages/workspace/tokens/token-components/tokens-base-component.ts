@@ -48,12 +48,17 @@ export class TokensComponent {
   readonly editTokenMenuItem: Locator;
   readonly tokenDescriptionInput: Locator;
   readonly tokenNameInput: Locator;
-  readonly duplicateTokenMenuItem: Locator;
   readonly deleteTokenMenuItem: Locator;
   readonly expandTokensButton: Locator;
+  readonly remapTokenModal: Locator;
+  readonly remapTokensButton: Locator;
+  readonly dontRemapButton: Locator;
+
+  readonly tokensPage: TokensPage;
 
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
+    this.tokensPage = tokensPage;
     this.baseComp = new BaseComponent(page);
     this.typoTokensComp = new TypographyTokensComponent(page);
     this.mainTokensComp = new MainTokensComponent(page, tokensPage);
@@ -63,9 +68,6 @@ export class TokensComponent {
     this.invalidToken = page.locator('button[class*="token-pill-invalid-applied"]');
     this.tokenDescriptionInput = page.getByPlaceholder('Description');
     this.tokenNameInput = page.locator('#token-name');
-    this.duplicateTokenMenuItem = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Duplicate  token' });
     this.deleteTokenMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Delete token' });
@@ -77,6 +79,14 @@ export class TokensComponent {
     this.editTokenMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Edit token' });
+
+    this.remapTokenModal = page.getByTestId('token-remapping-modal');
+    this.remapTokensButton = this.remapTokenModal.getByRole('button', {
+      name: 'Remap tokens',
+    });
+    this.dontRemapButton = this.remapTokenModal.getByRole('button', {
+      name: "Don't remap",
+    });
   }
 
   private async getAddTokenButton(tokenClass: TokenClass): Promise<Locator> {
@@ -282,7 +292,7 @@ export class TokensComponent {
 
   async isMenuItemVisible(tokenName: string, itemName: string, visible = true) {
     await this.rightClickOnTokenWithName(tokenName);
-    const item = await this.page
+    const item = this.page
       .getByTestId('tokens-context-menu-for-token')
       .getByRole('listitem')
       .locator(`[class*="item-text"]`)
@@ -298,15 +308,13 @@ export class TokensComponent {
   }
 
   async checkAppliedTokenTitle(text: string) {
-    const tokenLocator = await this.page.locator(
-      `button[class*="token-pill-applied"]`,
-    );
+    const tokenLocator = this.page.locator(`button[class*="token-pill-applied"]`);
     await tokenLocator.hover();
     await expect(tokenLocator).toHaveAttribute('title', text);
   }
 
   async checkTokenTitle(tokenName: string, text: string) {
-    const tokenLocator = await this.page.locator(
+    const tokenLocator = this.page.locator(
       `button:has(span[aria-label="${tokenName}"])`,
     );
     await tokenLocator.hover();
@@ -338,7 +346,35 @@ export class TokensComponent {
   }
 
   async expandTokenByName(tokenClass: TokenClass) {
-    const tokenName = await this.getTokenTreeButton(tokenClass);
-    await tokenName.click();
+    const tokenTreeButton = await this.getTokenTreeButton(tokenClass);
+    const isExpanded = await tokenTreeButton.getAttribute('aria-expanded');
+    if (isExpanded !== 'true') {
+      await tokenTreeButton.click();
+    }
+  }
+
+  async isRemapTokenModalVisible() {
+    await expect(this.remapTokenModal).toBeVisible();
+  }
+
+  async clickRemapTokensButton() {
+    await this.remapTokensButton.click();
+  }
+
+  async clickDontRemapButton() {
+    await this.dontRemapButton.click();
+  }
+  async renameTokenAndConfirmRemap(
+    originalToken: MainToken<TokenClass>,
+    newName: string,
+  ): Promise<void> {
+    await this.expandTokenByName(originalToken.class);
+    await this.clickEditToken(originalToken);
+    await this.tokenNameInput.fill(newName);
+    await this.baseComp.modalSaveButton.click();
+    await this.isRemapTokenModalVisible();
+    await this.clickRemapTokensButton();
+    await this.tokensPage.waitForChangeIsSaved();
+    await this.isTokenVisibleWithName(newName);
   }
 }

@@ -74,7 +74,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .locator(`input[class*="rows_color_row__color-input"]`)
       .last();
     this.fillTokenColor = this.designTabpanel
-      .locator(`[class*="fill-section"] div[class*="color_row__token-name"]`)
+      .locator('div[class*="color_row__token-name"]')
       .last();
     this.searchByTokenNameInput = page.getByRole('textbox', {
       name: 'Search by token name',

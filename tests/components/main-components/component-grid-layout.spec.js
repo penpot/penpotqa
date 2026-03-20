@@ -100,7 +100,7 @@ mainTest.describe(() => {
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await mainPage.pressCopyShortcut(browserName);
       await mainPage.clickAddPageButton();
-      await mainPage.clickOnPageOnLayersPanel(false);
+      await mainPage.clickOnPageOnLayersPanel(2);
       await mainPage.clickMoveButton();
       await mainPage.pressPasteShortcut(browserName);
       await mainPage.waitForChangeIsUnsaved();

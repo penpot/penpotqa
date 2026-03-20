@@ -180,6 +180,16 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await expect(this.createdLayerOnLayersPanelSpan).toHaveText(name);
   }
 
+  async renameSelectedLayerViaDoubleClick(newName) {
+    const selectedLayer = this.page
+      .locator(
+        'div[class*="sidebar_layer_item__selected"] span[class*="element-name"]',
+      )
+      .first();
+    await selectedLayer.dblclick();
+    await this.typeNameCreatedLayerAndEnter(newName);
+  }
+
   async doubleClickLayerOnLayersTab(name) {
     const layer = this.page.locator(
       `div[class*="element-list-body"] span[class*="element-name"]:text-is("${name}") >>nth=0`,
