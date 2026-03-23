@@ -198,7 +198,7 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'board-from-library-file.png',
         {
-          mask: mainPage.maskViewport(),
+          mask: mainPage.maskViewport({ usersSection: true, useRulers: true }),
         },
       );
     },
