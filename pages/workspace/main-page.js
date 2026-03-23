@@ -176,15 +176,11 @@ exports.MainPage = class MainPage extends BasePage {
       .getByTestId('page-name')
       .filter({ hasText: /^Page 1$/ });
     this.getPageListItemByName = (name, index = null) => {
+      const pageNameLocator = page.getByTestId('page-name');
       if (index !== null) {
-        return page
-          .locator('ul[class*="page-list"] li')
-          .nth(index)
-          .getByTestId('page-name');
+        return pageNameLocator.nth(index);
       }
-      return page
-        .getByTestId('page-name')
-        .filter({ hasText: new RegExp(`^${name}$`) });
+      return pageNameLocator.filter({ hasText: new RegExp(`^${name}$`) });
     };
     this.secondPageListItem = page
       .getByTestId('page-name')
