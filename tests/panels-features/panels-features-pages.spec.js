@@ -39,7 +39,7 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase(832, 'PF-114 Create new page'), async () => {
+mainTest(qase(832, 'Create new page'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
@@ -48,7 +48,7 @@ mainTest(qase(832, 'PF-114 Create new page'), async () => {
   await expect(mainPage.pagesBlock).toHaveScreenshot('page-1-and-page-2.png');
 });
 
-mainTest(qase(833, 'PF-115 Rename page'), async () => {
+mainTest(qase(833, 'Rename page'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
@@ -60,14 +60,14 @@ mainTest(qase(833, 'PF-115 Rename page'), async () => {
   await mainPage.isSecondPageNameDisplayed('NewSecondPage');
 });
 
-mainTest(qase(834, 'PF-116 Duplicate page'), async () => {
+mainTest(qase(834, 'Duplicate page'), async () => {
   await mainPage.duplicatePageViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('Page 1');
   await mainPage.isSecondPageNameDisplayed('Page 1 (copy)');
 });
 
-mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
+mainTest(qase(835, 'Switch between pages'), async ({ page }) => {
   await mainPage.clickAddPageButton();
   await mainPage.clickOnPageOnLayersPanel(2);
   await mainPage.clickMoveButton();
@@ -95,7 +95,7 @@ mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
   });
 });
 
-mainTest(qase(836, 'PF-118 Collapse/expand pages list'), async () => {
+mainTest(qase(836, 'Collapse/expand pages list'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCollapseExpandPagesButton();
@@ -110,7 +110,7 @@ mainTest(qase(836, 'PF-118 Collapse/expand pages list'), async () => {
   await mainPage.isSecondPageNameDisplayed('Page 2');
 });
 
-mainTest(qase(837, 'PF-119 Delete page'), async () => {
+mainTest(qase(837, 'Delete page'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddPageButton();
