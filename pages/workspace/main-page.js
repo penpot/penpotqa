@@ -186,15 +186,9 @@ exports.MainPage = class MainPage extends BasePage {
         .getByTestId('page-name')
         .filter({ hasText: new RegExp(`^${name}$`) });
     };
-    this.firstPageGenericListItem = page.locator(
-      'ul[class*="page-list"] div[class*="element-list-body"] >>nth=0',
-    );
     this.secondPageListItem = page
       .getByTestId('page-name')
       .filter({ hasText: /^Page 2$/ });
-    this.secondPageGenericListItem = page.locator(
-      'ul[class*="page-list"] div[class*="element-list-body"] >>nth=1',
-    );
     this.selectedPage = page.locator(
       'ul[class*="page-list"] li[class*="sitemap__selected"] div[class*="element-list-body"]',
     );
