@@ -175,6 +175,13 @@ exports.MainPage = class MainPage extends BasePage {
     this.firstPageListItem = page
       .getByTestId('page-name')
       .filter({ hasText: /^Page 1$/ });
+    this.getPageListItemByName = (name, index = null) => {
+      const pageNameLocator = page.getByTestId('page-name');
+      if (index !== null) {
+        return pageNameLocator.nth(index);
+      }
+      return pageNameLocator.filter({ hasText: new RegExp(`^${name}$`) });
+    };
     this.secondPageListItem = page
       .getByTestId('page-name')
       .filter({ hasText: /^Page 2$/ });
@@ -793,8 +800,10 @@ exports.MainPage = class MainPage extends BasePage {
       : await expect(this.firstPageListItem).not.toBeVisible();
   }
 
-  async isFirstPageNameDisplayed(name) {
-    await expect(this.firstPageListItem).toHaveText(name);
+  async isFirstPageNameDisplayed(name, displayed = true) {
+    displayed
+      ? await expect(this.getPageListItemByName(name, 0)).toBeVisible()
+      : await expect(this.getPageListItemByName(name)).not.toBeVisible();
   }
 
   async isSecondPageAddedToAssetsPanel(added = true) {
@@ -805,8 +814,8 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isSecondPageNameDisplayed(name, displayed = true) {
     displayed
-      ? await expect(this.secondPageListItem).toHaveText(name)
-      : await expect(this.secondPageListItem).not.toHaveText(name);
+      ? await expect(this.getPageListItemByName(name, 1)).toBeVisible()
+      : await expect(this.getPageListItemByName(name)).not.toBeVisible();
   }
 
   async renamePageViaRightClick(newName, isFirstPage = true) {
@@ -846,8 +855,8 @@ exports.MainPage = class MainPage extends BasePage {
     await this.deletePageOkButton.click();
   }
 
-  async deleteSecondPageViaTrashIcon() {
-    await this.secondPageListItem.click();
+  async deleteSecondPageViaTrashIcon(name) {
+    await this.getPageListItemByName(name).click();
     await this.pageTrashIcon.click();
     await this.deletePageOkButton.click();
   }
