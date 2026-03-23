@@ -175,9 +175,15 @@ exports.MainPage = class MainPage extends BasePage {
     this.firstPageListItem = page
       .getByTestId('page-name')
       .filter({ hasText: /^Page 1$/ });
+    this.firstPageGenericListItem = page.locator(
+      'ul[class*="page-list"] div[class*="element-list-body"] >>nth=0',
+    );
     this.secondPageListItem = page
       .getByTestId('page-name')
       .filter({ hasText: /^Page 2$/ });
+    this.secondPageGenericListItem = page.locator(
+      'ul[class*="page-list"] div[class*="element-list-body"] >>nth=1',
+    );
     this.selectedPage = page.locator(
       'ul[class*="page-list"] li[class*="sitemap__selected"] div[class*="element-list-body"]',
     );
@@ -794,7 +800,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async isFirstPageNameDisplayed(name) {
-    await expect(this.firstPageListItem).toHaveText(name);
+    await expect(this.firstPageGenericListItem).toHaveText(name);
   }
 
   async isSecondPageAddedToAssetsPanel(added = true) {
@@ -805,8 +811,8 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isSecondPageNameDisplayed(name, displayed = true) {
     displayed
-      ? await expect(this.secondPageListItem).toHaveText(name)
-      : await expect(this.secondPageListItem).not.toHaveText(name);
+      ? await expect(this.secondPageGenericListItem).toHaveText(name)
+      : await expect(this.secondPageGenericListItem).not.toHaveText(name);
   }
 
   async renamePageViaRightClick(newName, isFirstPage = true) {
