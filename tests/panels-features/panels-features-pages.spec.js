@@ -119,7 +119,7 @@ mainTest(qase(837, 'Delete page'), async () => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('Page 1');
   await mainPage.isSecondPageNameDisplayed('Page 3');
-  await mainPage.deleteSecondPageViaTrashIcon();
+  await mainPage.deleteSecondPageViaTrashIcon('Page 3');
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('Page 1');
   await mainPage.isSecondPageAddedToAssetsPanel(false);

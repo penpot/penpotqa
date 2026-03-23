@@ -175,6 +175,17 @@ exports.MainPage = class MainPage extends BasePage {
     this.firstPageListItem = page
       .getByTestId('page-name')
       .filter({ hasText: /^Page 1$/ });
+    this.getPageListItemByName = (name, index = null) => {
+      if (index !== null) {
+        return page
+          .locator('ul[class*="page-list"] li')
+          .nth(index)
+          .getByTestId('page-name');
+      }
+      return page
+        .getByTestId('page-name')
+        .filter({ hasText: new RegExp(`^${name}$`) });
+    };
     this.firstPageGenericListItem = page.locator(
       'ul[class*="page-list"] div[class*="element-list-body"] >>nth=0',
     );
@@ -799,8 +810,10 @@ exports.MainPage = class MainPage extends BasePage {
       : await expect(this.firstPageListItem).not.toBeVisible();
   }
 
-  async isFirstPageNameDisplayed(name) {
-    await expect(this.firstPageGenericListItem).toHaveText(name);
+  async isFirstPageNameDisplayed(name, displayed = true) {
+    displayed
+      ? await expect(this.getPageListItemByName(name, 0)).toBeVisible()
+      : await expect(this.getPageListItemByName(name)).not.toBeVisible();
   }
 
   async isSecondPageAddedToAssetsPanel(added = true) {
@@ -811,8 +824,8 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isSecondPageNameDisplayed(name, displayed = true) {
     displayed
-      ? await expect(this.secondPageGenericListItem).toHaveText(name)
-      : await expect(this.secondPageGenericListItem).not.toHaveText(name);
+      ? await expect(this.getPageListItemByName(name, 1)).toBeVisible()
+      : await expect(this.getPageListItemByName(name)).not.toBeVisible();
   }
 
   async renamePageViaRightClick(newName, isFirstPage = true) {
@@ -852,8 +865,8 @@ exports.MainPage = class MainPage extends BasePage {
     await this.deletePageOkButton.click();
   }
 
-  async deleteSecondPageViaTrashIcon() {
-    await this.secondPageListItem.click();
+  async deleteSecondPageViaTrashIcon(name) {
+    await this.getPageListItemByName(name).click();
     await this.pageTrashIcon.click();
     await this.deletePageOkButton.click();
   }
