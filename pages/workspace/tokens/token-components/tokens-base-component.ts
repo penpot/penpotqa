@@ -393,7 +393,10 @@ export class TokensComponent {
     tokenName: string,
     visible = true,
   ) {
-    const groupButton = this.page.getByRole('button', { name: group.name });
+    const groupButton = this.page.getByRole('button', {
+      name: group.name,
+      exact: true,
+    });
     const childrenContainerId = await groupButton.getAttribute('aria-controls');
     const token = this.page
       .locator(`#${childrenContainerId}`)
