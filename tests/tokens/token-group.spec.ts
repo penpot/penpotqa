@@ -7,7 +7,10 @@ import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
-import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
+import {
+  TokenClass,
+  TokenGroupData,
+} from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 const teamName = random().concat('autotest');
 
@@ -90,6 +93,7 @@ mainTest.describe(() => {
       'Tokens with the same path are displayed under the same nested group path',
     ),
     async () => {
+      const primaryGroup: TokenGroupData = { name: 'primary' };
       const primarySmallToken: MainToken<TokenClass> = {
         class: TokenClass.BorderRadius,
         name: 'primary.small',
@@ -117,13 +121,13 @@ mainTest.describe(() => {
       await mainTest.step(
         `Verify group "primary" is visible and pill "small" appears under it`,
         async () => {
-          await tokensPage.tokensComp.isTokenGroupVisible('primary');
+          await tokensPage.tokensComp.isTokenGroupVisible(primaryGroup);
           await tokensPage.tokensComp.isTokenVisibleInGroup(
-            'primary',
+            primaryGroup,
             primarySmallToken.name,
           );
           await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
-            'primary',
+            primaryGroup,
             'small',
           );
         },
@@ -142,25 +146,28 @@ mainTest.describe(() => {
         `Verify "primary" group contains both "small" and "big" token pills`,
         async () => {
           await tokensPage.tokensComp.isTokenVisibleInGroup(
-            'primary',
+            primaryGroup,
             primarySmallToken.name,
           );
           await tokensPage.tokensComp.isTokenVisibleInGroup(
-            'primary',
+            primaryGroup,
             primaryBigToken.name,
           );
           await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
-            'primary',
+            primaryGroup,
             'small',
           );
-          await tokensPage.tokensComp.isLastSegmentVisibleInGroup('primary', 'big');
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            primaryGroup,
+            'big',
+          );
         },
       );
 
       await mainTest.step(
         'Verify only one "primary" group exists in the UI',
         async () => {
-          await tokensPage.tokensComp.isTokenGroupCount('primary', 1);
+          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 1);
         },
       );
 
