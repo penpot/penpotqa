@@ -36,6 +36,16 @@ export interface BasicTokenData {
   description?: string;
 }
 
+/**
+ * Represents a token group node in the token tree.
+ * Extends BasicTokenData so that `name` holds the group path segment (e.g. 'primary').
+ * The optional `parent` field models nested group hierarchies and can be left unset
+ * when the test only needs to reference a top-level group.
+ */
+export interface TokenGroupData extends BasicTokenData {
+  parent?: TokenGroupData;
+}
+
 export class TokensComponent {
   readonly page: Page;
   readonly baseComp: BaseComponent;
@@ -376,18 +386,22 @@ export class TokensComponent {
     await expect(nameWrapper.locator('span')).toHaveCount(0);
   }
 
-  async isTokenGroupVisible(groupName: string, visible = true) {
-    const group = this.tokenGroupName.filter({
-      hasText: new RegExp(`^${groupName}$`),
+  async isTokenGroupVisible(group: TokenGroupData, visible = true) {
+    const groupLocator = this.tokenGroupName.filter({
+      hasText: new RegExp(`^${group.name}$`),
     });
     visible
-      ? await expect(group).toBeVisible()
-      : await expect(group).not.toBeVisible();
+      ? await expect(groupLocator).toBeVisible()
+      : await expect(groupLocator).not.toBeVisible();
   }
 
-  async isTokenVisibleInGroup(groupName: string, tokenName: string, visible = true) {
+  async isTokenVisibleInGroup(
+    group: TokenGroupData,
+    tokenName: string,
+    visible = true,
+  ) {
     const token = this.page
-      .locator(`#folder-children-${groupName}`)
+      .locator(`#folder-children-${group.name}`)
       .locator(`span[aria-label="${tokenName}"]`);
     visible
       ? await expect(token).toBeVisible()
@@ -395,12 +409,12 @@ export class TokensComponent {
   }
 
   async isLastSegmentVisibleInGroup(
-    groupName: string,
+    group: TokenGroupData,
     segment: string,
     visible = true,
   ) {
     const lastSegment = this.page
-      .locator(`#folder-children-${groupName}`)
+      .locator(`#folder-children-${group.name}`)
       .locator('span[class*="last-name-wrapper"]')
       .filter({ hasText: segment });
     visible
@@ -408,9 +422,9 @@ export class TokensComponent {
       : await expect(lastSegment).not.toBeVisible();
   }
 
-  async isTokenGroupCount(groupName: string, count: number) {
+  async isTokenGroupCount(group: TokenGroupData, count: number) {
     await expect(
-      this.tokenGroupName.filter({ hasText: new RegExp(`^${groupName}$`) }),
+      this.tokenGroupName.filter({ hasText: new RegExp(`^${group.name}$`) }),
     ).toHaveCount(count);
   }
 
