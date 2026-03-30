@@ -214,19 +214,12 @@ export class TokensComponent {
 
   async isTokenVisibleWithName(name: string, visible = true) {
     visible
-      ? await expect(
-          this.page.getByRole('button').locator(`span[aria-label="${name}"]`),
-        ).toBeVisible()
-      : await expect(
-          this.page.getByRole('button').locator(`span[aria-label="${name}"]`),
-        ).not.toBeVisible();
+      ? await expect(this.page.getByRole('button', { name })).toBeVisible()
+      : await expect(this.page.getByRole('button', { name })).not.toBeVisible();
   }
 
   async clickOnTokenWithName(name: string) {
-    await this.page
-      .getByRole('button')
-      .locator(`span[aria-label="${name}"]`)
-      .click();
+    await this.page.getByRole('button', { name }).click();
   }
 
   async isTokenAppliedWithName(name: string, applied = true) {
@@ -380,7 +373,7 @@ export class TokensComponent {
   }
 
   async isTokenSingleSegment(name: string) {
-    const nameWrapper = this.page.locator(`span[aria-label="${name}"]`);
+    const nameWrapper = this.page.getByRole('button', { name }).locator('span');
     await expect(nameWrapper).not.toHaveClass(/divided/);
     await expect(nameWrapper).toHaveText(name);
     await expect(nameWrapper.locator('span')).toHaveCount(0);
@@ -400,9 +393,11 @@ export class TokensComponent {
     tokenName: string,
     visible = true,
   ) {
+    const groupButton = this.page.getByRole('button', { name: group.name });
+    const childrenContainerId = await groupButton.getAttribute('aria-controls');
     const token = this.page
-      .locator(`#folder-children-${group.name}`)
-      .locator(`span[aria-label="${tokenName}"]`);
+      .locator(`#${childrenContainerId}`)
+      .getByRole('button', { name: tokenName });
     visible
       ? await expect(token).toBeVisible()
       : await expect(token).not.toBeVisible();
