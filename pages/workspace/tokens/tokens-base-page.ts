@@ -14,11 +14,6 @@ import {
 import { TypographyTokensComponent } from '@pages/workspace/tokens/token-components/typography-tokens-component';
 import { ShadowTokensComponent } from '@pages/workspace/tokens/token-components/shadow-tokens-component';
 
-export interface BasicTokenData {
-  name: string;
-  description?: string;
-}
-
 export class TokensPage extends MainPage {
   // components
   readonly setsComp: SetsComponent;
