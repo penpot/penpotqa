@@ -7,10 +7,7 @@ import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
-import {
-  TokenClass,
-  TokenGroupData,
-} from '@pages/workspace/tokens/token-components/tokens-base-component';
+import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 const teamName = random().concat('autotest');
 
@@ -93,16 +90,17 @@ mainTest.describe(() => {
       'Tokens with the same path are displayed under the same nested group path',
     ),
     async () => {
-      const primaryGroup: TokenGroupData = { name: 'primary' };
       const primarySmallToken: MainToken<TokenClass> = {
         class: TokenClass.BorderRadius,
         name: 'primary.small',
         value: '4',
+        parent: { name: 'primary' },
       };
       const primaryBigToken: MainToken<TokenClass> = {
         class: TokenClass.BorderRadius,
-        name: 'primary.big',
+        name: `${primarySmallToken.parent!.name}.big`,
         value: '16',
+        parent: primarySmallToken.parent,
       };
 
       await mainTest.step('Open Tokens panel', async () => {
@@ -110,7 +108,7 @@ mainTest.describe(() => {
       });
 
       await mainTest.step(
-        `Create first token with path name "${primarySmallToken.name}"`,
+        `Create first token with path name "${primarySmallToken.parent!.name}.small"`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
             primarySmallToken,
@@ -119,22 +117,22 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        `Verify group "primary" is visible and pill "small" appears under it`,
+        `Verify group "${primarySmallToken.parent!.name}" is visible and pill "small" appears under it`,
         async () => {
-          await tokensPage.tokensComp.isTokenGroupVisible(primaryGroup);
+          await tokensPage.tokensComp.isTokenGroupVisible(primarySmallToken.parent!);
           await tokensPage.tokensComp.isTokenVisibleInGroup(
-            primaryGroup,
+            primarySmallToken.parent!,
             primarySmallToken.name,
           );
           await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
-            primaryGroup,
+            primarySmallToken.parent!,
             'small',
           );
         },
       );
 
       await mainTest.step(
-        `Create second token with path name "${primaryBigToken.name}"`,
+        `Create second token with path name "${primaryBigToken.parent!.name}.big"`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
             primaryBigToken,
@@ -143,22 +141,22 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        `Verify "primary" group contains both "small" and "big" token pills`,
+        `Verify "${primarySmallToken.parent!.name}" group contains both "small" and "big" token pills`,
         async () => {
           await tokensPage.tokensComp.isTokenVisibleInGroup(
-            primaryGroup,
+            primarySmallToken.parent!,
             primarySmallToken.name,
           );
           await tokensPage.tokensComp.isTokenVisibleInGroup(
-            primaryGroup,
+            primarySmallToken.parent!,
             primaryBigToken.name,
           );
           await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
-            primaryGroup,
+            primarySmallToken.parent!,
             'small',
           );
           await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
-            primaryGroup,
+            primarySmallToken.parent!,
             'big',
           );
         },
@@ -167,7 +165,10 @@ mainTest.describe(() => {
       await mainTest.step(
         'Verify only one "primary" group exists in the UI',
         async () => {
-          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 1);
+          await tokensPage.tokensComp.isTokenGroupCount(
+            primarySmallToken.parent!,
+            1,
+          );
         },
       );
 
