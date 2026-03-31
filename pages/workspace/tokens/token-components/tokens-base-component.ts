@@ -36,6 +36,16 @@ export interface BasicTokenData {
   description?: string;
 }
 
+/**
+ * Represents a token group node in the token tree.
+ * Extends BasicTokenData so that `name` holds the group path segment (e.g. 'primary').
+ * The optional `parent` field models nested group hierarchies and can be left unset
+ * when the test only needs to reference a top-level group.
+ */
+export interface TokenGroupData extends BasicTokenData {
+  parent?: TokenGroupData;
+}
+
 export class TokensComponent {
   readonly page: Page;
   readonly baseComp: BaseComponent;
@@ -48,12 +58,13 @@ export class TokensComponent {
   readonly editTokenMenuItem: Locator;
   readonly tokenDescriptionInput: Locator;
   readonly tokenNameInput: Locator;
+  readonly duplicateTokenMenuItem: Locator;
   readonly deleteTokenMenuItem: Locator;
   readonly expandTokensButton: Locator;
   readonly remapTokenModal: Locator;
   readonly remapTokensButton: Locator;
   readonly dontRemapButton: Locator;
-
+  readonly tokenGroupName: Locator;
   readonly tokensPage: TokensPage;
 
   constructor(page: Page, tokensPage: TokensPage) {
@@ -68,10 +79,12 @@ export class TokensComponent {
     this.invalidToken = page.locator('button[class*="token-pill-invalid-applied"]');
     this.tokenDescriptionInput = page.getByPlaceholder('Description');
     this.tokenNameInput = page.locator('#token-name');
+    this.duplicateTokenMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Duplicate  token' });
     this.deleteTokenMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Delete token' });
-
     this.expandTokensButton = this.tokenSideBar
       .locator('[class*="layer-button-wrapper"]')
       .getByRole('button');
@@ -87,6 +100,7 @@ export class TokensComponent {
     this.dontRemapButton = this.remapTokenModal.getByRole('button', {
       name: "Don't remap",
     });
+    this.tokenGroupName = this.tokenSideBar.locator('[class*="layer-button-name"]');
   }
 
   private async getAddTokenButton(tokenClass: TokenClass): Promise<Locator> {
@@ -200,19 +214,12 @@ export class TokensComponent {
 
   async isTokenVisibleWithName(name: string, visible = true) {
     visible
-      ? await expect(
-          this.page.getByRole('button').locator(`span[aria-label="${name}"]`),
-        ).toBeVisible()
-      : await expect(
-          this.page.getByRole('button').locator(`span[aria-label="${name}"]`),
-        ).not.toBeVisible();
+      ? await expect(this.page.getByRole('button', { name })).toBeVisible()
+      : await expect(this.page.getByRole('button', { name })).not.toBeVisible();
   }
 
   async clickOnTokenWithName(name: string) {
-    await this.page
-      .getByRole('button')
-      .locator(`span[aria-label="${name}"]`)
-      .click();
+    await this.page.getByRole('button', { name }).click();
   }
 
   async isTokenAppliedWithName(name: string, applied = true) {
@@ -364,6 +371,61 @@ export class TokensComponent {
   async clickDontRemapButton() {
     await this.dontRemapButton.click();
   }
+
+  async isTokenSingleSegment(name: string) {
+    const nameWrapper = this.page.getByRole('button', { name }).locator('span');
+    await expect(nameWrapper).not.toHaveClass(/divided/);
+    await expect(nameWrapper).toHaveText(name);
+    await expect(nameWrapper.locator('span')).toHaveCount(0);
+  }
+
+  async isTokenGroupVisible(group: TokenGroupData, visible = true) {
+    const groupLocator = this.tokenGroupName.filter({
+      hasText: new RegExp(`^${group.name}$`),
+    });
+    visible
+      ? await expect(groupLocator).toBeVisible()
+      : await expect(groupLocator).not.toBeVisible();
+  }
+
+  async isTokenVisibleInGroup(
+    group: TokenGroupData,
+    tokenName: string,
+    visible = true,
+  ) {
+    const groupButton = this.page.getByRole('button', {
+      name: group.name,
+      exact: true,
+    });
+    const childrenContainerId = await groupButton.getAttribute('aria-controls');
+    const token = this.page
+      .locator(`#${childrenContainerId}`)
+      .getByRole('button', { name: tokenName });
+    visible
+      ? await expect(token).toBeVisible()
+      : await expect(token).not.toBeVisible();
+  }
+
+  async isLastSegmentVisibleInGroup(
+    group: TokenGroupData,
+    segment: string,
+    visible = true,
+  ) {
+    const lastSegment = this.page
+      .locator(`#folder-children-${group.name}`)
+      .locator('span[class*="last-name-wrapper"]')
+      .filter({ hasText: segment });
+    visible
+      ? await expect(lastSegment).toBeVisible()
+      : await expect(lastSegment).not.toBeVisible();
+  }
+
+  async isTokenGroupCount(group: TokenGroupData, count: number) {
+    await expect(
+      this.tokenGroupName.filter({ hasText: new RegExp(`^${group.name}$`) }),
+    ).toHaveCount(count);
+  }
+
   async renameTokenAndConfirmRemap(
     originalToken: MainToken<TokenClass>,
     newName: string,
