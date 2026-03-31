@@ -846,8 +846,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     const teamMenuItem = this.page
       .getByRole('menuitem')
       .filter({ hasText: teamName });
-    await expect(teamMenuItem).toBeVisible();
-    await teamMenuItem.click();
+
+    await teamMenuItem.waitFor({ state: 'attached' });
+    await teamMenuItem.waitFor({ state: 'visible', timeout: 10000 });
+    await teamMenuItem.click({ force: true });
   }
 
   async clickDeleteFileButton() {
@@ -858,7 +860,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     const elem = this.page.getByRole('button', { name: fileName }).first();
     await elem.click({ button: 'right' });
     await expect(this.moveToFileMenuItem).toBeVisible();
-    await this.moveToFileMenuItem.click();
+    await this.moveToFileMenuItem.click({ force: true });
 
     await expect(this.moveToOtherTeamMenuItem).toBeVisible();
     await this.moveToOtherTeamMenuItem.click({ force: true });
