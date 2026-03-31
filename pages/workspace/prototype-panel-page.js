@@ -77,6 +77,10 @@ exports.PrototypePanelPage = class PrototypePanelPage extends BasePage {
     await this.addInteractionButton.click({ delay: 500 });
   }
 
+  async checkNumberOfInteractions(count) {
+    await expect(this.interactionsSection).toHaveCount(count);
+  }
+
   async isPrototypeArrowSecondConnectorDisplayed() {
     await expect(this.prototypeArrowSecondConnector).toBeVisible();
   }
