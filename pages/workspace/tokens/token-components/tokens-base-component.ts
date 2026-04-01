@@ -214,12 +214,19 @@ export class TokensComponent {
 
   async isTokenVisibleWithName(name: string, visible = true) {
     visible
-      ? await expect(this.page.getByRole('button', { name })).toBeVisible()
-      : await expect(this.page.getByRole('button', { name })).not.toBeVisible();
+      ? await expect(
+          this.page.getByRole('button').locator(`span[aria-label="${name}"]`),
+        ).toBeVisible()
+      : await expect(
+          this.page.getByRole('button').locator(`span[aria-label="${name}"]`),
+        ).not.toBeVisible();
   }
 
   async clickOnTokenWithName(name: string) {
-    await this.page.getByRole('button', { name }).click();
+    await this.page
+      .getByRole('button')
+      .locator(`span[aria-label="${name}"]`)
+      .click();
   }
 
   async isTokenAppliedWithName(name: string, applied = true) {
