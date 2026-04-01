@@ -60,7 +60,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.moveToOtherTeamMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Move to other team' });
-    this.draftsMenuItem = page.getByRole('menuitem').filter({ hasText: 'Drafts' });
+    this.draftsMenuItem = page.getByRole('menuitem', { name: 'Drafts', exact: true });
     this.dashboardLibraryItem = page
       .getByRole('button', { name: 'New File 1' })
       .locator(`div[class*="dashboard_grid__library"]`);
