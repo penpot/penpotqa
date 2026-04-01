@@ -10,6 +10,7 @@ import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+import { waitForViewportStable } from 'helpers/renderer';
 
 const teamName = random().concat('autotest');
 
@@ -96,7 +97,6 @@ mainTest.describe(() => {
       qase([1973], 'Copy paste properties into 3 different layers'),
       async () => {
         await mainPage.copyLayerPropertyViaRightClick();
-
         await mainPage.clickAddPageButton();
         await mainPage.clickOnPageOnLayersPanel(2);
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
@@ -108,6 +108,7 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await mainPage.clickShortcutCtrlAltV();
         await mainPage.waitForChangeIsSaved();
+        await waitForViewportStable(mainPage.page);
 
         await expect(mainPage.viewport).toHaveScreenshot(
           'copies-property-3-layers.png',
