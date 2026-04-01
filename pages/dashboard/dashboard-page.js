@@ -60,6 +60,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.moveToOtherTeamMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Move to other team' });
+    this.draftsMenuItem = page.getByRole('menuitem', { name: 'Drafts', exact: true });
     this.dashboardLibraryItem = page
       .getByRole('button', { name: 'New File 1' })
       .locator(`div[class*="dashboard_grid__library"]`);
@@ -841,6 +842,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.deleteFileMenuItem.click();
   }
 
+  async clickOnTeamMenuItem(teamName) {
+    const teamMenuItem = this.page
+      .getByRole('menuitem')
+      .filter({ hasText: teamName });
+
+    await teamMenuItem.waitFor({ state: 'attached' });
+    await teamMenuItem.waitFor({ state: 'visible', timeout: 10000 });
+    await teamMenuItem.click({ force: true });
+  }
+
   async clickDeleteFileButton() {
     await this.deleteFileButton.click();
   }
@@ -849,12 +860,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     const elem = this.page.getByRole('button', { name: fileName }).first();
     await elem.click({ button: 'right' });
     await expect(this.moveToFileMenuItem).toBeVisible();
-    await this.moveToFileMenuItem.click();
-    await this.moveToOtherTeamMenuItem.click();
-    await this.page
-      .locator(`//li[@role="menuitem"]/a[text()="${otherTeamName}"]`)
-      .click();
-    await this.page.locator(`//li[@role="menuitem"]/a[text()="Drafts"]`).click();
+    await this.moveToFileMenuItem.click({ force: true });
+
+    await expect(this.moveToOtherTeamMenuItem).toBeVisible();
+    await this.moveToOtherTeamMenuItem.click({ force: true });
+
+    await this.clickOnTeamMenuItem(otherTeamName);
+
+    await expect(this.draftsMenuItem).toBeVisible();
+    await this.draftsMenuItem.click();
   }
 
   async clickOnMoveButton() {
