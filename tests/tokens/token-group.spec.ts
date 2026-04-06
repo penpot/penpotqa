@@ -198,55 +198,59 @@ mainTest.describe(() => {
     async () => {
       const foundationBigToken: MainToken<TokenClass> = {
         class: TokenClass.BorderRadius,
-        name: 'foundation.big',
+        name: 'big',
         value: '16',
         parent: { name: 'foundation' },
       };
       const primarySmallToken: MainToken<TokenClass> = {
         class: TokenClass.BorderRadius,
-        name: 'primary.small',
+        name: 'small',
         value: '4',
         parent: { name: 'primary' },
       };
-      const renamedTokenName = 'foundation.small';
+      const fullPath = (token: MainToken<TokenClass>) =>
+        `${token.parent!.name}.${token.name}`;
+      const renamedTokenName = `${foundationBigToken.parent!.name}.${primarySmallToken.name}`;
 
       await mainTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
       });
 
       await mainTest.step(
-        'Create token "foundation.big" to ensure the "foundation" group exists',
+        `Create token "${fullPath(foundationBigToken)}" to ensure the "${foundationBigToken.parent!.name}" group exists`,
         async () => {
-          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
-            foundationBigToken,
-          );
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
+            ...foundationBigToken,
+            name: fullPath(foundationBigToken),
+          });
         },
       );
 
       await mainTest.step(
-        'Verify "foundation" group exists and contains "big" token pill',
+        `Verify "${foundationBigToken.parent!.name}" group exists and contains "${foundationBigToken.name}" token pill`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupVisible(
             foundationBigToken.parent!,
           );
           await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
             foundationBigToken.parent!,
-            'big',
+            foundationBigToken.name,
           );
         },
       );
 
       await mainTest.step(
-        'Create token "primary.small" under a different path',
+        `Create token "${fullPath(primarySmallToken)}" under a different path`,
         async () => {
-          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
-            primarySmallToken,
-          );
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
+            ...primarySmallToken,
+            name: fullPath(primarySmallToken),
+          });
         },
       );
 
       await mainTest.step(
-        'Collapse the "foundation" group to simulate a previously collapsed destination',
+        `Collapse the "${foundationBigToken.parent!.name}" group to simulate a previously collapsed destination`,
         async () => {
           await tokensPage.tokensComp.clickOnTokenGroup(foundationBigToken.parent!);
           await tokensPage.tokensComp.isTokenGroupExpanded(
@@ -257,9 +261,12 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Edit "primary.small" and rename it to "foundation.small"',
+        `Edit "${fullPath(primarySmallToken)}" and rename it to "${renamedTokenName}"`,
         async () => {
-          await tokensPage.tokensComp.clickEditToken(primarySmallToken);
+          await tokensPage.tokensComp.clickEditToken({
+            ...primarySmallToken,
+            name: fullPath(primarySmallToken),
+          });
           await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenName);
           await tokensPage.tokensComp.baseComp.modalSaveButton.click();
           await mainPage.waitForChangeIsSaved();
@@ -267,7 +274,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Verify "foundation" group is automatically expanded after saving',
+        `Verify "${foundationBigToken.parent!.name}" group is automatically expanded after saving`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupExpanded(
             foundationBigToken.parent!,
@@ -276,7 +283,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Verify "small" token pill is visible under the "foundation" group without manual expansion',
+        `Verify "${primarySmallToken.name}" token pill is visible under the "${foundationBigToken.parent!.name}" group without manual expansion`,
         async () => {
           await tokensPage.tokensComp.isTokenVisibleInGroup(
             foundationBigToken.parent!,
@@ -284,7 +291,7 @@ mainTest.describe(() => {
           );
           await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
             foundationBigToken.parent!,
-            'small',
+            primarySmallToken.name,
           );
         },
       );
