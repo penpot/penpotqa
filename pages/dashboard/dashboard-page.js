@@ -60,7 +60,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.moveToOtherTeamMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Move to other team' });
-    this.draftsMenuItem = page.getByRole('menuitem', { name: 'Drafts', exact: true });
+    this.draftsContextMenuItem = page.getByRole('menuitem', {
+      name: 'Drafts',
+      exact: true,
+    });
     this.dashboardLibraryItem = page
       .getByRole('button', { name: 'New File 1' })
       .locator(`div[class*="dashboard_grid__library"]`);
@@ -843,9 +846,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickOnTeamMenuItem(teamName) {
-    const teamMenuItem = this.page
-      .getByRole('menuitem')
-      .filter({ hasText: teamName });
+    const teamMenuItem = this.page.getByRole('menuitem', {
+      name: teamName,
+      exact: true,
+    });
 
     await teamMenuItem.waitFor({ state: 'attached' });
     await teamMenuItem.waitFor({ state: 'visible', timeout: 10000 });
@@ -867,8 +871,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
     await this.clickOnTeamMenuItem(otherTeamName);
 
-    await expect(this.draftsMenuItem).toBeVisible();
-    await this.draftsMenuItem.click();
+    await expect(this.draftsContextMenuItem).toBeVisible();
+    await this.draftsContextMenuItem.click();
   }
 
   async clickOnMoveButton() {
