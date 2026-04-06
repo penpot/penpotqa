@@ -251,6 +251,7 @@ mainTest.describe(() => {
           await tokensPage.tokensComp.clickEditToken(primarySmallToken);
           await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenName);
           await tokensPage.tokensComp.baseComp.modalSaveButton.click();
+          await mainPage.waitForChangeIsSaved();
         },
       );
 
