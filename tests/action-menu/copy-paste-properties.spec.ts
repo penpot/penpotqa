@@ -96,7 +96,6 @@ mainTest.describe(() => {
       qase([1973], 'Copy paste properties into 3 different layers'),
       async () => {
         await mainPage.copyLayerPropertyViaRightClick();
-
         await mainPage.clickAddPageButton();
         await mainPage.clickOnPageOnLayersPanel(2);
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
@@ -108,6 +107,19 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await mainPage.clickShortcutCtrlAltV();
         await mainPage.waitForChangeIsSaved();
+
+        // TODO: Remove the hardcoded timeout, and think of waiting the API WASM responses when the viewport is completely rendered
+        await mainPage.page.waitForTimeout(150);
+        // wait for 2 frames
+        await mainPage.page.evaluate(() => {
+          return new Promise<void>((resolve) => {
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                resolve();
+              });
+            });
+          });
+        });
 
         await expect(mainPage.viewport).toHaveScreenshot(
           'copies-property-3-layers.png',
