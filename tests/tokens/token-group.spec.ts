@@ -290,11 +290,11 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Verify "primary" group no longer exists after moving its only token out',
+        'Verify "primary" group is removed from the DOM after moving its only token out',
         async () => {
-          await tokensPage.tokensComp.isTokenGroupVisible(
+          await tokensPage.tokensComp.isTokenGroupCount(
             primarySmallToken.parent!,
-            false,
+            0,
           );
         },
       );
