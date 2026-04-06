@@ -189,4 +189,104 @@ mainTest.describe(() => {
       );
     },
   );
+
+  mainTest(
+    qase(
+      [2735],
+      'Editing token path moves token to an existing group path and unfolds the new path',
+    ),
+    async () => {
+      const foundationBigToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'foundation.big',
+        value: '16',
+        parent: { name: 'foundation' },
+      };
+      const primarySmallToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'primary.small',
+        value: '4',
+        parent: { name: 'primary' },
+      };
+      const renamedTokenName = 'foundation.small';
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        'Create token "foundation.big" to ensure the "foundation" group exists',
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            foundationBigToken,
+          );
+        },
+      );
+
+      await mainTest.step(
+        'Verify "foundation" group exists and contains "big" token pill',
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(
+            foundationBigToken.parent!,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            foundationBigToken.parent!,
+            'big',
+          );
+        },
+      );
+
+      await mainTest.step(
+        'Create token "primary.small" under a different path',
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            primarySmallToken,
+          );
+        },
+      );
+
+      await mainTest.step(
+        'Edit "primary.small" and rename it to "foundation.small"',
+        async () => {
+          await tokensPage.tokensComp.clickEditToken(primarySmallToken);
+          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenName);
+          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
+        },
+      );
+
+      await mainTest.step(
+        'Verify "small" token pill is moved under the "foundation" group',
+        async () => {
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            foundationBigToken.parent!,
+            renamedTokenName,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            foundationBigToken.parent!,
+            'small',
+          );
+        },
+      );
+
+      await mainTest.step(
+        'Verify "foundation" group is automatically unfolded and "small" pill is visible',
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(
+            foundationBigToken.parent!,
+          );
+          await tokensPage.tokensComp.isTokenVisibleWithName(renamedTokenName);
+        },
+      );
+
+      await mainTest.step(
+        'Verify "primary" group no longer exists after moving its only token out',
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(
+            primarySmallToken.parent!,
+            false,
+          );
+        },
+      );
+    },
+  );
 });
