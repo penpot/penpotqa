@@ -189,4 +189,122 @@ mainTest.describe(() => {
       );
     },
   );
+
+  mainTest(
+    qase(
+      [2735],
+      'Editing token path moves token to an existing group path and unfolds the new path',
+    ),
+    async () => {
+      const foundationBigToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'big',
+        value: '16',
+        parent: { name: 'foundation' },
+      };
+      const primarySmallToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'small',
+        value: '4',
+        parent: { name: 'primary' },
+      };
+      const fullPath = (token: MainToken<TokenClass>) =>
+        `${token.parent!.name}.${token.name}`;
+      const renamedTokenName = `${foundationBigToken.parent!.name}.${primarySmallToken.name}`;
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Create token "${fullPath(foundationBigToken)}" to ensure the "${foundationBigToken.parent!.name}" group exists`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
+            ...foundationBigToken,
+            name: fullPath(foundationBigToken),
+          });
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${foundationBigToken.parent!.name}" group exists and contains "${foundationBigToken.name}" token pill`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(
+            foundationBigToken.parent!,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            foundationBigToken.parent!,
+            foundationBigToken.name,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Create token "${fullPath(primarySmallToken)}" under a different path`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
+            ...primarySmallToken,
+            name: fullPath(primarySmallToken),
+          });
+        },
+      );
+
+      await mainTest.step(
+        `Collapse the "${foundationBigToken.parent!.name}" group to simulate a previously collapsed destination`,
+        async () => {
+          await tokensPage.tokensComp.clickOnTokenGroup(foundationBigToken.parent!);
+          await tokensPage.tokensComp.isTokenGroupExpanded(
+            foundationBigToken.parent!,
+            false,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Edit "${fullPath(primarySmallToken)}" and rename it to "${renamedTokenName}"`,
+        async () => {
+          await tokensPage.tokensComp.clickEditToken({
+            ...primarySmallToken,
+            name: fullPath(primarySmallToken),
+          });
+          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenName);
+          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${foundationBigToken.parent!.name}" group is automatically expanded after saving`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupExpanded(
+            foundationBigToken.parent!,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${primarySmallToken.name}" token pill is visible under the "${foundationBigToken.parent!.name}" group without manual expansion`,
+        async () => {
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            foundationBigToken.parent!,
+            renamedTokenName,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            foundationBigToken.parent!,
+            primarySmallToken.name,
+          );
+        },
+      );
+
+      await mainTest.step(
+        'Verify "primary" group is removed from the DOM after moving its only token out',
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupCount(
+            primarySmallToken.parent!,
+            0,
+          );
+        },
+      );
+    },
+  );
 });
