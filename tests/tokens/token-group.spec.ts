@@ -246,6 +246,17 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
+        'Collapse the "foundation" group to simulate a previously collapsed destination',
+        async () => {
+          await tokensPage.tokensComp.clickOnTokenGroup(foundationBigToken.parent!);
+          await tokensPage.tokensComp.isTokenGroupExpanded(
+            foundationBigToken.parent!,
+            false,
+          );
+        },
+      );
+
+      await mainTest.step(
         'Edit "primary.small" and rename it to "foundation.small"',
         async () => {
           await tokensPage.tokensComp.clickEditToken(primarySmallToken);
@@ -256,7 +267,16 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Verify "small" token pill is moved under the "foundation" group',
+        'Verify "foundation" group is automatically expanded after saving',
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupExpanded(
+            foundationBigToken.parent!,
+          );
+        },
+      );
+
+      await mainTest.step(
+        'Verify "small" token pill is visible under the "foundation" group without manual expansion',
         async () => {
           await tokensPage.tokensComp.isTokenVisibleInGroup(
             foundationBigToken.parent!,
@@ -266,16 +286,6 @@ mainTest.describe(() => {
             foundationBigToken.parent!,
             'small',
           );
-        },
-      );
-
-      await mainTest.step(
-        'Verify "foundation" group is automatically unfolded and "small" pill is visible',
-        async () => {
-          await tokensPage.tokensComp.isTokenGroupVisible(
-            foundationBigToken.parent!,
-          );
-          await tokensPage.tokensComp.isTokenVisibleWithName(renamedTokenName);
         },
       );
 

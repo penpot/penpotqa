@@ -433,6 +433,21 @@ export class TokensComponent {
     ).toHaveCount(count);
   }
 
+  async clickOnTokenGroup(group: TokenGroupData) {
+    await this.page.getByRole('button', { name: group.name, exact: true }).click();
+  }
+
+  async isTokenGroupExpanded(group: TokenGroupData, expanded = true) {
+    const groupButton = this.page.getByRole('button', {
+      name: group.name,
+      exact: true,
+    });
+    await expect(groupButton).toHaveAttribute(
+      'aria-expanded',
+      expanded ? 'true' : 'false',
+    );
+  }
+
   async renameTokenAndConfirmRemap(
     originalToken: MainToken<TokenClass>,
     newName: string,
