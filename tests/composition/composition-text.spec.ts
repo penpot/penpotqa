@@ -270,6 +270,7 @@ mainTest.describe(() => {
       await mainTest.step('Remove blur', async () => {
         await designPanelPage.removeBlur();
         await mainPage.waitForChangeIsSaved();
+        await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
           mask: mainPage.maskViewport(),
