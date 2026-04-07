@@ -71,7 +71,7 @@ mainTest(
       await expect(mainPage.viewport).toHaveScreenshot(
         'copy-main-components-on-canvas.png',
         {
-          mask: mainPage.maskViewport(),
+          mask: mainPage.maskViewport({ useRulers: true }),
         },
       );
       await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
