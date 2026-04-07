@@ -55,6 +55,16 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.copyComponentLayerToggleCollapse = this.copyComponentLayer.locator(
       'xpath=./../button[contains(@class, "toggle-content")]',
     );
+    this.mainComponentChildrenContainer = page.locator(
+      '[data-testid="layer-row"]:has([data-testid="icon-component"]) + div[data-testid*="children"]',
+    );
+    this.mainComponentChildrenRows =
+      this.mainComponentChildrenContainer.getByTestId('layer-row');
+    this.copyComponentChildrenContainer = page.locator(
+      '[data-testid="layer-row"]:has([data-testid="icon-component-copy"]) + div[data-testid*="children"]',
+    );
+    this.copyComponentChildrenRows =
+      this.copyComponentChildrenContainer.getByTestId('layer-row');
   }
 
   /**
@@ -328,21 +338,41 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async expandMainComponentOnLayersTab() {
-    if (!(await this.mainComponentLayerToggleExpand.first().isVisible())) {
+    await this.mainComponentLayer.first().waitFor({ state: 'visible' });
+
+    const childrenVisible = await this.mainComponentChildrenContainer
+      .first()
+      .isVisible();
+
+    if (!childrenVisible) {
       if (await this.mainComponentLayerToggleCollapse.first().isVisible()) {
         await this.mainComponentLayerToggleCollapse.first().click({ force: true });
-        await expect(this.mainComponentLayerToggleExpand.first()).toBeVisible();
+        await this.mainComponentChildrenContainer
+          .first()
+          .waitFor({ state: 'visible' });
       }
     }
+
+    await this.mainComponentChildrenRows.first().waitFor({ state: 'visible' });
   }
 
   async expandCopyComponentOnLayersTab() {
-    if (!(await this.copyComponentLayerToggleExpand.first().isVisible())) {
+    await this.copyComponentLayer.first().waitFor({ state: 'visible' });
+
+    const childrenVisible = await this.copyComponentChildrenContainer
+      .first()
+      .isVisible();
+
+    if (!childrenVisible) {
       if (await this.copyComponentLayerToggleCollapse.first().isVisible()) {
         await this.copyComponentLayerToggleCollapse.first().click({ force: true });
-        await expect(this.copyComponentLayerToggleExpand.first()).toBeVisible();
+        await this.copyComponentChildrenContainer
+          .first()
+          .waitFor({ state: 'visible' });
       }
     }
+
+    await this.copyComponentChildrenRows.first().waitFor({ state: 'visible' });
   }
 
   async selectMainComponentChildLayer() {
@@ -351,12 +381,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async clickMainComponentChildLayerOnLayersTab() {
-    const layer = this.page
-      .locator(
-        '*[data-testid="layer-row"]:has([data-testid="icon-component"]) + div[data-testid*="children"]',
-      )
-      .first();
-    await layer.click();
+    await this.mainComponentChildrenRows.first().click();
   }
 
   async selectCopyComponentChildLayer() {
@@ -365,12 +390,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async clickCopyComponentChildLayerOnLayersTab() {
-    const layer = this.page
-      .locator(
-        '*[data-testid="layer-row"]:has([data-testid="icon-component-copy"]) + div[data-testid*="children"]',
-      )
-      .first();
-    await layer.click();
+    await this.copyComponentChildrenRows.first().click();
   }
 
   async isCopyComponentNameDisplayed(name) {
