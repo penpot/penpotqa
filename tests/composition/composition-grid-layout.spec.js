@@ -746,11 +746,11 @@ mainTest.describe(() => {
     await designPanelPage.openGridEditModeFromDesignPanel();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-not-visible.png', {
-      mask: mainPage.maskViewport({ gridEditorToolbar: true }),
+      mask: mainPage.maskViewport({ gridEditorToolbar: true, useRulers: true }),
     });
     await designPanelPage.clickGridLocateButton();
     await expect(mainPage.viewport).toHaveScreenshot('board-visible.png', {
-      mask: mainPage.maskViewport({ gridEditorToolbar: true }),
+      mask: mainPage.maskViewport({ gridEditorToolbar: true, useRulers: true }),
     });
   });
 
