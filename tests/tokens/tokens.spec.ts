@@ -779,6 +779,7 @@ mainTest.describe(() => {
       await layersPanelPage.openLayersTab();
       await layersPanelPage.selectMainComponentChildLayer();
       await designPanelPage.checkFontStyle(updatedTokenData.value);
+      await mainPage.clickViewportOnce();
       await layersPanelPage.selectCopyComponentChildLayer();
       await designPanelPage.checkFontStyle(updatedTokenData.value);
     },
