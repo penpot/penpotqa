@@ -869,13 +869,12 @@ mainTest(
     await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isLayerPresentOnLayersTab('mini_sample', true);
     await mainPage.clickShortcutCtrlZ(browserName);
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickShortcutCtrlZ(browserName);
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('grid-with-removed-image.png', {
-      mask: mainPage.maskViewport(),
-    });
+    await layersPanelPage.isLayerPresentOnLayersTab('mini_sample', false);
   },
 );
 
