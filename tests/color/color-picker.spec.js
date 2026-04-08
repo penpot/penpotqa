@@ -76,7 +76,7 @@ mainTest(qase([1035], 'Use Recent colors'), async () => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('board-recent-color.png', {
-    mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    mask: mainPage.maskViewport(),
   });
 });
 
@@ -96,7 +96,7 @@ mainTest(qase([1036], 'Use colors from File library'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot(
     'rectangle-file-library-color.png',
     {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     },
   );
 });
@@ -188,7 +188,7 @@ mainTest(
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-color-B1B2B5.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      mask: mainPage.maskViewport(),
     });
     await mainPage.pressColorsPaletteShortcut();
     await mainPage.isColorsPaletteDisplayed();
