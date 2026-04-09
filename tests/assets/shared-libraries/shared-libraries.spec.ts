@@ -45,6 +45,7 @@ mainTest.describe(() => {
   const team2 = random().concat('autotest QA Test team 2');
 
   mainTest(qase([1540], 'Move library to a different team'), async () => {
+    mainTest.slow();
     await mainPage.createDefaultEllipseByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -210,6 +211,7 @@ mainTest.describe(() => {
       await assetsPanelPage.clickUpdatesTab();
       await assetsPanelPage.clickLibrariesUpdateButton();
       await assetsPanelPage.clickCloseModalButton();
+      await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-2.png',
