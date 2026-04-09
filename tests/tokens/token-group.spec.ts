@@ -7,7 +7,10 @@ import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
-import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
+import {
+  TokenClass,
+  buildTokenPath,
+} from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 const teamName = random().concat('autotest');
 
@@ -320,9 +323,21 @@ mainTest.describe(() => {
         value: '16',
         parent: { name: 'primary' },
       };
-      const newGroupData = { name: 'newgroup' };
-      const subGroupData = { name: 'subgroup' };
-      const renamedTokenName = 'newgroup.subgroup.big';
+      const renamedToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'big',
+        value: '16',
+        parent: {
+          name: 'subgroup',
+          parent: { name: 'newgroup' },
+        },
+      };
+      const renamedTokenFullPath = buildTokenPath(
+        renamedToken.name,
+        renamedToken.parent,
+      );
+      const subGroup = renamedToken.parent!;
+      const newGroup = subGroup.parent!;
 
       await mainTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
@@ -343,41 +358,41 @@ mainTest.describe(() => {
           await tokensPage.tokensComp.isTokenGroupVisible(primaryBigToken.parent!);
           await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
             primaryBigToken.parent!,
-            'big',
+            renamedToken.name,
           );
         },
       );
 
       await mainTest.step(
-        `Edit "${primaryBigToken.name}" and rename it to "${renamedTokenName}"`,
+        `Edit "${primaryBigToken.name}" and rename it to "${renamedTokenFullPath}"`,
         async () => {
           await tokensPage.tokensComp.clickEditToken(primaryBigToken);
-          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenName);
+          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenFullPath);
           await tokensPage.tokensComp.baseComp.modalSaveButton.click();
           await mainPage.waitForChangeIsSaved();
         },
       );
 
       await mainTest.step(
-        `Verify new groups "${newGroupData.name}" and "${subGroupData.name}" are created and automatically unfolded`,
+        `Verify new groups "${newGroup.name}" and "${subGroup.name}" are created and automatically unfolded`,
         async () => {
-          await tokensPage.tokensComp.isTokenGroupVisible(newGroupData);
-          await tokensPage.tokensComp.isTokenGroupExpanded(newGroupData);
-          await tokensPage.tokensComp.isTokenGroupVisible(subGroupData);
-          await tokensPage.tokensComp.isTokenGroupExpanded(subGroupData);
+          await tokensPage.tokensComp.isTokenGroupVisible(newGroup);
+          await tokensPage.tokensComp.isTokenGroupExpanded(newGroup);
+          await tokensPage.tokensComp.isTokenGroupVisible(subGroup);
+          await tokensPage.tokensComp.isTokenGroupExpanded(subGroup);
         },
       );
 
       await mainTest.step(
-        `Verify token pill "big" is visible under "${subGroupData.name}" group`,
+        `Verify token pill "${renamedToken.name}" is visible under "${subGroup.name}" group`,
         async () => {
           await tokensPage.tokensComp.isTokenVisibleInGroup(
-            subGroupData,
-            renamedTokenName,
+            subGroup,
+            renamedTokenFullPath,
           );
           await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
-            subGroupData,
-            'big',
+            subGroup,
+            renamedToken.name,
           );
         },
       );
