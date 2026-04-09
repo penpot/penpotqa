@@ -864,15 +864,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     const elem = this.page.getByRole('button', { name: fileName }).first();
     await elem.click({ button: 'right' });
 
-    await this.moveToFileMenuItem.waitFor({ state: 'visible', timeout: 15000 });
+    await this.moveToFileMenuItem.waitFor({ state: 'visible' });
     await this.moveToFileMenuItem.click();
 
-    await this.moveToOtherTeamMenuItem.waitFor({ state: 'visible', timeout: 15000 });
+    await this.moveToOtherTeamMenuItem.waitFor({ state: 'visible' });
     await this.moveToOtherTeamMenuItem.click();
 
     await this.clickOnTeamMenuItem(otherTeamName);
 
-    await this.draftsContextMenuItem.waitFor({ state: 'visible', timeout: 15000 });
+    await this.draftsContextMenuItem.waitFor({ state: 'visible' });
     await this.draftsContextMenuItem.click();
   }
 
