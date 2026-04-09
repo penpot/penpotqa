@@ -846,14 +846,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickOnTeamMenuItem(teamName) {
-    const teamMenuItem = this.page.getByRole('menuitem', {
-      name: teamName,
-      exact: true,
-    });
-
-    await teamMenuItem.waitFor({ state: 'attached' });
-    await teamMenuItem.waitFor({ state: 'visible', timeout: 10000 });
-    await teamMenuItem.click({ force: true });
+    const teamMenuItem = this.page
+      .getByRole('menuitem')
+      .filter({ hasText: teamName })
+      .first();
+    await teamMenuItem.waitFor({ state: 'visible', timeout: 15000 });
+    await teamMenuItem.click();
   }
 
   async clickDeleteFileButton() {
@@ -861,17 +859,20 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async moveFileToOtherTeamViaRightClick(fileName, otherTeamName) {
+    await this.waitSuccessMessageHidden();
+
     const elem = this.page.getByRole('button', { name: fileName }).first();
     await elem.click({ button: 'right' });
-    await expect(this.moveToFileMenuItem).toBeVisible();
-    await this.moveToFileMenuItem.click({ force: true });
 
-    await expect(this.moveToOtherTeamMenuItem).toBeVisible();
-    await this.moveToOtherTeamMenuItem.click({ force: true });
+    await this.moveToFileMenuItem.waitFor({ state: 'visible' });
+    await this.moveToFileMenuItem.click();
+
+    await this.moveToOtherTeamMenuItem.waitFor({ state: 'visible' });
+    await this.moveToOtherTeamMenuItem.click();
 
     await this.clickOnTeamMenuItem(otherTeamName);
 
-    await expect(this.draftsContextMenuItem).toBeVisible();
+    await this.draftsContextMenuItem.waitFor({ state: 'visible' });
     await this.draftsContextMenuItem.click();
   }
 
