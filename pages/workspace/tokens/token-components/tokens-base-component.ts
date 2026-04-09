@@ -46,6 +46,12 @@ export interface TokenGroupData extends BasicTokenData {
   parent?: TokenGroupData;
 }
 
+/**
+ * Builds the full dot-separated path for a token or group segment using the name, parent and TokensGroupData.
+ */
+export const buildTokenPath = (name: string, parent?: TokenGroupData): string =>
+  parent ? `${buildTokenPath(parent.name, parent.parent)}.${name}` : name;
+
 export class TokensComponent {
   readonly page: Page;
   readonly baseComp: BaseComponent;
