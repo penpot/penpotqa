@@ -404,6 +404,7 @@ export class TokensComponent {
       name: group.name,
       exact: true,
     });
+    await expect(groupButton).toHaveAttribute('aria-controls', /.+/);
     const childrenContainerId = await groupButton.getAttribute('aria-controls');
     const token = this.page
       .locator(`[id="${childrenContainerId}"]`)
@@ -422,6 +423,7 @@ export class TokensComponent {
       name: group.name,
       exact: true,
     });
+    await expect(groupButton).toHaveAttribute('aria-controls', /.+/);
     const childrenContainerId = await groupButton.getAttribute('aria-controls');
     const lastSegment = this.page
       .locator(`[id="${childrenContainerId}"]`)
