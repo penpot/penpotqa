@@ -307,4 +307,87 @@ mainTest.describe(() => {
       );
     },
   );
+
+  mainTest(
+    qase(
+      [2736],
+      'Editing token path creates missing groups in UI and moves token accordingly',
+    ),
+    async () => {
+      const primaryBigToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'primary.big',
+        value: '16',
+        parent: { name: 'primary' },
+      };
+      const newGroupData = { name: 'newgroup' };
+      const subGroupData = { name: 'subgroup' };
+      const renamedTokenName = 'newgroup.subgroup.big';
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Create a token named "${primaryBigToken.name}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            primaryBigToken,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${primaryBigToken.parent!.name}" group exists and contains "big" token pill`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(primaryBigToken.parent!);
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            primaryBigToken.parent!,
+            'big',
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Edit "${primaryBigToken.name}" and rename it to "${renamedTokenName}"`,
+        async () => {
+          await tokensPage.tokensComp.clickEditToken(primaryBigToken);
+          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenName);
+          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step(
+        `Verify new groups "${newGroupData.name}" and "${subGroupData.name}" are created and automatically unfolded`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(newGroupData);
+          await tokensPage.tokensComp.isTokenGroupExpanded(newGroupData);
+          await tokensPage.tokensComp.isTokenGroupVisible(subGroupData);
+          await tokensPage.tokensComp.isTokenGroupExpanded(subGroupData);
+        },
+      );
+
+      await mainTest.step(
+        `Verify token pill "big" is visible under "${subGroupData.name}" group`,
+        async () => {
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            subGroupData,
+            renamedTokenName,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            subGroupData,
+            'big',
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${primaryBigToken.parent!.name}" group is removed from the DOM after moving its only token out`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupCount(primaryBigToken.parent!, 0);
+        },
+      );
+    },
+  );
 });
