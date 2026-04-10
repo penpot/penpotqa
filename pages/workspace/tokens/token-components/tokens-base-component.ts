@@ -97,7 +97,7 @@ export class TokensComponent {
       .filter({ hasText: 'Delete token' });
     this.deleteTokensGroupMenuItem = page
       .getByRole('listitem')
-      .filter({ hasText: 'Delete' });
+      .filter({ hasText: /^Delete$/ });
     this.expandTokensButton = this.tokenSideBar
       .locator('[class*="layer-button-wrapper"]')
       .getByRole('button');
