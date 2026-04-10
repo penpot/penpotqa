@@ -188,6 +188,10 @@ export class TokensComponent {
     await this.baseComp.clickOnEnter();
   }
 
+  async isSaveButtonDisabled() {
+    await expect(this.baseComp.modalSaveButton).toBeDisabled();
+  }
+
   async clickEditToken(
     updatedToken:
       | TypographyToken<TokenClass>

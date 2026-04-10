@@ -405,4 +405,77 @@ mainTest.describe(() => {
       );
     },
   );
+
+  mainTest(
+    qase(
+      [2741],
+      'Error handling: Prevent creating token with empty name or invalid path format',
+    ),
+    async () => {
+      const tokenValue = '8';
+      const primaryGroup = { name: 'primary' };
+      const emptyNameToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: '',
+        value: tokenValue,
+      };
+      const doubleDotToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'primary..big',
+        value: tokenValue,
+      };
+      const leadingTrailingDotToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: '.primary.big.',
+        value: tokenValue,
+      };
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Attempt to create a token with an empty name "${emptyNameToken.name}" and verify Save button is disabled`,
+        async () => {
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(emptyNameToken);
+          await tokensPage.tokensComp.isSaveButtonDisabled();
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+        },
+      );
+
+      await mainTest.step(
+        `Attempt to create a token with a malformed path "${doubleDotToken.name}" and verify Save button is disabled`,
+        async () => {
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(doubleDotToken);
+          await tokensPage.tokensComp.isSaveButtonDisabled();
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+        },
+      );
+
+      await mainTest.step(
+        `Verify no "${primaryGroup.name}" group is created after the double-dot path attempt`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+        },
+      );
+
+      await mainTest.step(
+        `Attempt to create a token with leading/trailing separators "${leadingTrailingDotToken.name}" and verify Save button is disabled`,
+        async () => {
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(
+            leadingTrailingDotToken,
+          );
+          await tokensPage.tokensComp.isSaveButtonDisabled();
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+        },
+      );
+
+      await mainTest.step(
+        `Verify no "${primaryGroup.name}" group is created after the leading/trailing separator attempt`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+        },
+      );
+    },
+  );
 });
