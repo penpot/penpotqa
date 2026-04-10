@@ -438,9 +438,7 @@ mainTest.describe(() => {
         `Attempt to create a token with an empty name "${emptyNameToken.name}" and verify Save button is disabled`,
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(emptyNameToken);
-          await expect(
-            tokensPage.tokensComp.baseComp.modalSaveButton,
-          ).toBeDisabled();
+          await tokensPage.tokensComp.isSaveButtonDisabled();
           await tokensPage.tokensComp.baseComp.clickOnCancelButton();
         },
       );
@@ -449,9 +447,7 @@ mainTest.describe(() => {
         `Attempt to create a token with a malformed path "${doubleDotToken.name}" and verify Save button is disabled`,
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(doubleDotToken);
-          await expect(
-            tokensPage.tokensComp.baseComp.modalSaveButton,
-          ).toBeDisabled();
+          await tokensPage.tokensComp.isSaveButtonDisabled();
           await tokensPage.tokensComp.baseComp.clickOnCancelButton();
         },
       );
@@ -469,9 +465,7 @@ mainTest.describe(() => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(
             leadingTrailingDotToken,
           );
-          await expect(
-            tokensPage.tokensComp.baseComp.modalSaveButton,
-          ).toBeDisabled();
+          await tokensPage.tokensComp.isSaveButtonDisabled();
           await tokensPage.tokensComp.baseComp.clickOnCancelButton();
         },
       );
