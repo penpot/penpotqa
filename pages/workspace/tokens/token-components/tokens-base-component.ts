@@ -214,6 +214,7 @@ export class TokensComponent {
 
   async deleteTokenGroup(group: TokenGroupData) {
     await this.rightClickOnTokenGroup(group);
+    await this.isDeleteGroupMenuItemVisible();
     await this.deleteTokensGroupMenuItem.click();
   }
 

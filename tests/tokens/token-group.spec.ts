@@ -533,15 +533,6 @@ mainTest.describe(() => {
     );
 
     await mainTest.step(
-      `Right-click on "${foundationsGroup.name}" group and verify "Delete" menu item is visible`,
-      async () => {
-        await tokensPage.tokensComp.rightClickOnTokenGroup(foundationsGroup);
-        await tokensPage.tokensComp.isDeleteGroupMenuItemVisible();
-        await tokensPage.tokensComp.page.keyboard.press('Escape');
-      },
-    );
-
-    await mainTest.step(
       `Delete "${foundationsGroup.name}" group and verify "${foundationsGroup.name}", "${primaryGroup.name}" groups and tokens "${darkToken.name}", "${accentToken.name}", "${foregroundToken.name}", "${backgroundToken.name}" are removed`,
       async () => {
         await tokensPage.tokensComp.deleteTokenGroup(foundationsGroup);
