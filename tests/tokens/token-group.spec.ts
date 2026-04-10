@@ -440,6 +440,7 @@ mainTest.describe(() => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(emptyNameToken);
           await tokensPage.tokensComp.isSaveButtonDisabled();
           await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+          await tokensPage.tokensComp.isCreateTokenModalClosed();
         },
       );
 
@@ -449,6 +450,7 @@ mainTest.describe(() => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(doubleDotToken);
           await tokensPage.tokensComp.isSaveButtonDisabled();
           await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+          await tokensPage.tokensComp.isCreateTokenModalClosed();
         },
       );
 
@@ -467,6 +469,7 @@ mainTest.describe(() => {
           );
           await tokensPage.tokensComp.isSaveButtonDisabled();
           await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+          await tokensPage.tokensComp.isCreateTokenModalClosed();
         },
       );
 
