@@ -46,6 +46,13 @@ export interface TokenGroupData extends BasicTokenData {
   parent?: TokenGroupData;
 }
 
+/**
+ * Builds the full dot-separated path for a token or group segment from the provided
+ * `name` and the `TokenGroupData` parent chain.
+ */
+export const buildTokenPath = (name: string, parent?: TokenGroupData): string =>
+  parent ? `${buildTokenPath(parent.name, parent.parent)}.${name}` : name;
+
 export class TokensComponent {
   readonly page: Page;
   readonly baseComp: BaseComponent;
@@ -404,9 +411,10 @@ export class TokensComponent {
       name: group.name,
       exact: true,
     });
+    await expect(groupButton).toHaveAttribute('aria-controls', /.+/);
     const childrenContainerId = await groupButton.getAttribute('aria-controls');
     const token = this.page
-      .locator(`#${childrenContainerId}`)
+      .locator(`[id="${childrenContainerId}"]`)
       .getByRole('button', { name: tokenName });
     visible
       ? await expect(token).toBeVisible()
@@ -418,8 +426,14 @@ export class TokensComponent {
     segment: string,
     visible = true,
   ) {
+    const groupButton = this.page.getByRole('button', {
+      name: group.name,
+      exact: true,
+    });
+    await expect(groupButton).toHaveAttribute('aria-controls', /.+/);
+    const childrenContainerId = await groupButton.getAttribute('aria-controls');
     const lastSegment = this.page
-      .locator(`#folder-children-${group.name}`)
+      .locator(`[id="${childrenContainerId}"]`)
       .locator('span[class*="last-name-wrapper"]')
       .filter({ hasText: segment });
     visible
