@@ -414,19 +414,30 @@ mainTest.describe(() => {
     async () => {
       const tokenValue = '8';
       const primaryGroup = { name: 'primary' };
+      const emptyNameToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: '',
+        value: tokenValue,
+      };
+      const doubleDotToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'primary..big',
+        value: tokenValue,
+      };
+      const leadingTrailingDotToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: '.primary.big.',
+        value: tokenValue,
+      };
 
       await mainTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
       });
 
       await mainTest.step(
-        'Attempt to create a token with an empty name and verify Save button is disabled',
+        `Attempt to create a token with an empty name "${emptyNameToken.name}" and verify Save button is disabled`,
         async () => {
-          await tokensPage.tokensComp.clickOnAddTokenAndFillData({
-            class: TokenClass.BorderRadius,
-            name: '',
-            value: tokenValue,
-          });
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(emptyNameToken);
           await expect(
             tokensPage.tokensComp.baseComp.modalSaveButton,
           ).toBeDisabled();
@@ -435,20 +446,29 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Verify no groups or token pills were created after the empty name attempt',
+        `Attempt to create a token with a malformed path "${doubleDotToken.name}" and verify Save button is disabled`,
+        async () => {
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(doubleDotToken);
+          await expect(
+            tokensPage.tokensComp.baseComp.modalSaveButton,
+          ).toBeDisabled();
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+        },
+      );
+
+      await mainTest.step(
+        `Verify no "${primaryGroup.name}" group is created after the double-dot path attempt`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
         },
       );
 
       await mainTest.step(
-        'Attempt to create a token with a malformed path "primary..big" and verify Save button is disabled',
+        `Attempt to create a token with leading/trailing separators "${leadingTrailingDotToken.name}" and verify Save button is disabled`,
         async () => {
-          await tokensPage.tokensComp.clickOnAddTokenAndFillData({
-            class: TokenClass.BorderRadius,
-            name: 'primary..big',
-            value: tokenValue,
-          });
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(
+            leadingTrailingDotToken,
+          );
           await expect(
             tokensPage.tokensComp.baseComp.modalSaveButton,
           ).toBeDisabled();
@@ -457,29 +477,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Verify no group with an empty name segment is created after the double-dot path attempt',
-        async () => {
-          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
-        },
-      );
-
-      await mainTest.step(
-        'Attempt to create a token with leading/trailing separators ".primary.big." and verify Save button is disabled',
-        async () => {
-          await tokensPage.tokensComp.clickOnAddTokenAndFillData({
-            class: TokenClass.BorderRadius,
-            name: '.primary.big.',
-            value: tokenValue,
-          });
-          await expect(
-            tokensPage.tokensComp.baseComp.modalSaveButton,
-          ).toBeDisabled();
-          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
-        },
-      );
-
-      await mainTest.step(
-        'Verify no incorrect groups are created after the leading/trailing separator attempt',
+        `Verify no "${primaryGroup.name}" group is created after the leading/trailing separator attempt`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
         },
