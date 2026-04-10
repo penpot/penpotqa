@@ -353,8 +353,13 @@ export class TokensComponent {
       : await expect(item).not.toBeVisible();
   }
 
+  async isDeleteTokenMenuItemVisible() {
+    await expect(this.deleteTokenMenuItem).toBeVisible();
+  }
+
   async deleteToken(tokenName: string) {
     await this.rightClickOnTokenWithName(tokenName);
+    await this.isDeleteTokenMenuItemVisible();
     await this.deleteTokenMenuItem.click();
   }
 
