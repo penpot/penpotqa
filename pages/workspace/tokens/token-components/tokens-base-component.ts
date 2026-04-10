@@ -203,8 +203,8 @@ export class TokensComponent {
   }
 
   async rightClickOnTokenGroup(group: TokenGroupData) {
-    await this.tokenGroupName
-      .filter({ hasText: new RegExp(`^${group.name}$`) })
+    await this.page
+      .getByRole('button', { name: group.name, exact: true })
       .click({ button: 'right' });
   }
 
