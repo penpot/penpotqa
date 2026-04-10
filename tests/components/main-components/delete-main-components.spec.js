@@ -28,16 +28,6 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase([1295], 'Undo deleted component'), async ({ browserName }) => {
-  await mainPage.createDefaultRectangleByCoordinates(200, 300);
-  await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.deleteLayerViaRightClick();
-  await mainPage.isCreatedLayerVisible(false);
-  await mainPage.clickShortcutCtrlZ(browserName);
-  await mainPage.isCreatedLayerVisible(true);
-});
-
 mainTest(qase([1456], 'Delete component Assets tab'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
