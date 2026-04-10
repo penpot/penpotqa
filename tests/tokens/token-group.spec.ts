@@ -74,7 +74,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Open context menu and verify Edit, Duplicate, Delete actions are visible',
+        `Open context menu on "${singleSegmentToken.name}" and verify Edit, Duplicate, Delete actions are visible`,
         async () => {
           await tokensPage.tokensComp.rightClickOnTokenWithName(
             singleSegmentToken.name,
@@ -111,7 +111,7 @@ mainTest.describe(() => {
       });
 
       await mainTest.step(
-        `Create first token with path name "${primarySmallToken.parent!.name}.small"`,
+        `Create first token with path name "${primarySmallToken.name}"`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
             primarySmallToken,
@@ -120,7 +120,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        `Verify group "${primarySmallToken.parent!.name}" is visible and pill "small" appears under it`,
+        `Verify group "${primarySmallToken.parent!.name}" is visible and pill "${primarySmallToken.name}" appears under it`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupVisible(primarySmallToken.parent!);
           await tokensPage.tokensComp.isTokenVisibleInGroup(
@@ -135,7 +135,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        `Create second token with path name "${primaryBigToken.parent!.name}.big"`,
+        `Create second token with path name "${primaryBigToken.name}"`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
             primaryBigToken,
@@ -144,7 +144,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        `Verify "${primarySmallToken.parent!.name}" group contains both "small" and "big" token pills`,
+        `Verify "${primarySmallToken.parent!.name}" group contains both "${primarySmallToken.name}" and "${primaryBigToken.name}" token pills`,
         async () => {
           await tokensPage.tokensComp.isTokenVisibleInGroup(
             primarySmallToken.parent!,
@@ -166,7 +166,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Verify only one "primary" group exists in the UI',
+        `Verify only one "${primarySmallToken.parent!.name}" group exists in the UI`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupCount(
             primarySmallToken.parent!,
@@ -300,7 +300,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Verify "primary" group is removed from the DOM after moving its only token out',
+        `Verify "${primarySmallToken.parent!.name}" group is removed from the DOM after moving its only token out`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupCount(
             primarySmallToken.parent!,
@@ -353,7 +353,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        `Verify "${primaryBigToken.parent!.name}" group exists and contains "big" token pill`,
+        `Verify "${primaryBigToken.parent!.name}" group exists and contains "${renamedToken.name}" token pill`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupVisible(primaryBigToken.parent!);
           await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
@@ -481,4 +481,83 @@ mainTest.describe(() => {
       );
     },
   );
+
+  mainTest(qase([2742], 'Remove a tokens group'), async () => {
+    const tokenValue = '#000000';
+    const foundationsGroup = { name: 'foundations' };
+    const primaryGroup = { name: 'primary', parent: foundationsGroup };
+
+    const groupPrefix = `${foundationsGroup.name}.${primaryGroup.name}`;
+
+    const darkToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: `${groupPrefix}.dark`,
+      value: tokenValue,
+    };
+    const accentToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: `${groupPrefix}.accent`,
+      value: tokenValue,
+    };
+    const foregroundToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: `${groupPrefix}.foreground`,
+      value: tokenValue,
+    };
+    const backgroundToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: `${groupPrefix}.background`,
+      value: tokenValue,
+    };
+
+    await mainTest.step('Open Tokens panel', async () => {
+      await tokensPage.clickTokensTab();
+    });
+
+    await mainTest.step(
+      `Create color tokens "${darkToken.name}", "${accentToken.name}", "${foregroundToken.name}" and "${backgroundToken.name}"`,
+      async () => {
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(darkToken);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(accentToken);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(foregroundToken);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(backgroundToken);
+      },
+    );
+
+    await mainTest.step(
+      `Verify "${foundationsGroup.name}" and "${primaryGroup.name}" groups are visible`,
+      async () => {
+        await tokensPage.tokensComp.isTokenGroupVisible(foundationsGroup);
+        await tokensPage.tokensComp.isTokenGroupVisible(primaryGroup);
+      },
+    );
+
+    await mainTest.step(
+      `Right-click on "${foundationsGroup.name}" group and verify "Delete" menu item is visible`,
+      async () => {
+        await tokensPage.tokensComp.rightClickOnTokenGroup(foundationsGroup);
+        await tokensPage.tokensComp.isDeleteGroupMenuItemVisible();
+        await tokensPage.tokensComp.page.keyboard.press('Escape');
+      },
+    );
+
+    await mainTest.step(
+      `Delete "${foundationsGroup.name}" group and verify "${foundationsGroup.name}", "${primaryGroup.name}" groups and tokens "${darkToken.name}", "${accentToken.name}", "${foregroundToken.name}", "${backgroundToken.name}" are removed`,
+      async () => {
+        await tokensPage.tokensComp.deleteTokenGroup(foundationsGroup);
+        await tokensPage.tokensComp.isTokenGroupCount(foundationsGroup, 0);
+        await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+        await tokensPage.tokensComp.isTokenVisibleWithName(darkToken.name, false);
+        await tokensPage.tokensComp.isTokenVisibleWithName(accentToken.name, false);
+        await tokensPage.tokensComp.isTokenVisibleWithName(
+          foregroundToken.name,
+          false,
+        );
+        await tokensPage.tokensComp.isTokenVisibleWithName(
+          backgroundToken.name,
+          false,
+        );
+      },
+    );
+  });
 });
