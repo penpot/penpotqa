@@ -67,6 +67,7 @@ export class TokensComponent {
   readonly tokenNameInput: Locator;
   readonly duplicateTokenMenuItem: Locator;
   readonly deleteTokenMenuItem: Locator;
+  readonly deleteTokensGroupMenuItem: Locator;
   readonly expandTokensButton: Locator;
   readonly remapTokenModal: Locator;
   readonly remapTokensButton: Locator;
@@ -94,6 +95,9 @@ export class TokensComponent {
     this.deleteTokenMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Delete token' });
+    this.deleteTokensGroupMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete' });
     this.expandTokensButton = this.tokenSideBar
       .locator('[class*="layer-button-wrapper"]')
       .getByRole('button');
@@ -196,6 +200,21 @@ export class TokensComponent {
 
   async isCreateTokenModalClosed() {
     await expect(this.createTokenModal).not.toBeVisible();
+  }
+
+  async rightClickOnTokenGroup(group: TokenGroupData) {
+    await this.tokenGroupName
+      .filter({ hasText: new RegExp(`^${group.name}$`) })
+      .click({ button: 'right' });
+  }
+
+  async isDeleteGroupMenuItemVisible() {
+    await expect(this.deleteTokensGroupMenuItem).toBeVisible();
+  }
+
+  async deleteTokenGroup(group: TokenGroupData) {
+    await this.rightClickOnTokenGroup(group);
+    await this.deleteTokensGroupMenuItem.click();
   }
 
   async clickEditToken(
