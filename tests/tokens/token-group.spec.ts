@@ -551,4 +551,47 @@ mainTest.describe(() => {
       },
     );
   });
+
+  mainTest(
+    qase([2743], 'Remove a token in a tokens group (with an only one token)'),
+    async () => {
+      const tokenValue = '#000000';
+      const foundationsGroup = { name: 'foundations' };
+      const primaryGroup = { name: 'primary', parent: foundationsGroup };
+
+      const groupPrefix = `${foundationsGroup.name}.${primaryGroup.name}`;
+
+      const darkToken: MainToken<TokenClass> = {
+        class: TokenClass.Color,
+        name: `${groupPrefix}.dark`,
+        value: tokenValue,
+      };
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(`Create color token "${darkToken.name}"`, async () => {
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(darkToken);
+      });
+
+      await mainTest.step(
+        `Verify "${foundationsGroup.name}" and "${primaryGroup.name}" groups are visible`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(foundationsGroup);
+          await tokensPage.tokensComp.isTokenGroupVisible(primaryGroup);
+        },
+      );
+
+      await mainTest.step(
+        `Delete "${darkToken.name}" token and verify it is removed along with "${foundationsGroup.name}" and "${primaryGroup.name}" groups`,
+        async () => {
+          await tokensPage.tokensComp.deleteToken(darkToken.name);
+          await tokensPage.tokensComp.isTokenVisibleWithName(darkToken.name, false);
+          await tokensPage.tokensComp.isTokenGroupCount(foundationsGroup, 0);
+          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+        },
+      );
+    },
+  );
 });
