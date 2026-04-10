@@ -594,4 +594,77 @@ mainTest.describe(() => {
       );
     },
   );
+
+  mainTest(
+    qase(
+      [2745],
+      'Remove a tokens group (with a token referenced in other tokens group)',
+    ),
+    async () => {
+      const primaryGroup = { name: 'primary' };
+      const secondaryGroup = { name: 'secondary' };
+      const primaryToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: `${primaryGroup.name}.border-radius30`,
+        value: '30',
+      };
+      const secondaryToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: `${secondaryGroup.name}.border-radius60`,
+        value: `{${primaryToken.name}}+2`,
+      };
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Create token "${primaryToken.name}" with value "${primaryToken.value}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(primaryToken);
+        },
+      );
+
+      await mainTest.step(
+        `Create token "${secondaryToken.name}" with value "${secondaryToken.value}" referencing "${primaryToken.name}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            secondaryToken,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${primaryGroup.name}" and "${secondaryGroup.name}" groups are visible`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(primaryGroup);
+          await tokensPage.tokensComp.isTokenGroupVisible(secondaryGroup);
+        },
+      );
+
+      await mainTest.step(
+        `Delete "${primaryGroup.name}" group and verify group and token "${primaryToken.name}" are removed`,
+        async () => {
+          await tokensPage.tokensComp.deleteTokenGroup(primaryGroup);
+          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+          await tokensPage.tokensComp.isTokenVisibleWithName(
+            primaryToken.name,
+            false,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${secondaryToken.name}" is highlighted as invalid and shows "Reference is not valid or is not in any active set" tooltip`,
+        async () => {
+          await tokensPage.tokensComp.checkInvalidTokenCount(1);
+          await tokensPage.tokensComp.invalidToken.hover();
+          await expect(tokensPage.tokensComp.invalidToken).toHaveAttribute(
+            'title',
+            'Reference is not valid or is not in any active set',
+          );
+        },
+      );
+    },
+  );
 });
