@@ -208,13 +208,9 @@ export class TokensComponent {
       .click({ button: 'right' });
   }
 
-  async isDeleteGroupMenuItemVisible() {
-    await expect(this.deleteTokensGroupMenuItem).toBeVisible();
-  }
-
   async deleteTokenGroup(group: TokenGroupData) {
     await this.rightClickOnTokenGroup(group);
-    await this.isDeleteGroupMenuItemVisible();
+    await expect(this.deleteTokensGroupMenuItem).toBeVisible();
     await this.deleteTokensGroupMenuItem.click();
   }
 
