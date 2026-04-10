@@ -355,10 +355,10 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.unSavedChangesIcon).toBeVisible();
   }
 
-  async isCreatedLayerVisible(visible = true) {
+  async isCreatedLayerVisible(visible = true, timeout) {
     visible
-      ? await expect(this.createdLayer).toBeVisible()
-      : await expect(this.createdLayer).not.toBeVisible();
+      ? await expect(this.createdLayer).toBeVisible({ timeout })
+      : await expect(this.createdLayer).not.toBeVisible({ timeout });
   }
 
   async isCopyLayerVisible() {

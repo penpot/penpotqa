@@ -33,9 +33,11 @@ mainTest(qase([1295], 'Undo deleted component'), async ({ browserName }) => {
   await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
   await mainPage.waitForChangeIsSaved();
   await mainPage.deleteLayerViaRightClick();
-  await mainPage.isCreatedLayerVisible(false);
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isCreatedLayerVisible(false, 10000);
   await mainPage.clickShortcutCtrlZ(browserName);
-  await mainPage.isCreatedLayerVisible(true);
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isCreatedLayerVisible(true, 10000);
 });
 
 mainTest(qase([1456], 'Delete component Assets tab'), async () => {
