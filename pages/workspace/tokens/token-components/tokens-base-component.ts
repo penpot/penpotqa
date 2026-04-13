@@ -238,8 +238,7 @@ export class TokensComponent {
       | ShadowToken<TokenClass>
       | MainToken<TokenClass>,
   ) {
-    await this.rightClickOnTokenWithName(updatedToken.name);
-    await this.editTokenMenuItem.click();
+    await this.clickEditToken(updatedToken);
     await this.fillTokenData(updatedToken);
   }
 
