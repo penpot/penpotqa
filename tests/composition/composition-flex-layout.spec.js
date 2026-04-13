@@ -461,4 +461,48 @@ mainTest.describe(() => {
       );
     },
   );
+
+  mainTest(
+    qase([640, 641], 'Use different numbers of paddings on all sides'),
+    async () => {
+      await mainTest.step('(640) Switch to independent paddings', async () => {
+        await designPanelPage.switchToIndependentPadding();
+        await mainPage.waitForChangeIsSaved();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'flex-layout-independent-paddings.png',
+          { mask: mainPage.maskViewport() },
+        );
+      });
+
+      await mainTest.step('(641) Set Top padding to 20', async () => {
+        await designPanelPage.changeLayoutIndependentPadding('Top', '20');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Top', '20');
+      });
+
+      await mainTest.step('(641) Set Bottom padding to -20, expects 0', async () => {
+        await designPanelPage.changeLayoutIndependentPadding('Bottom', '-20');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Bottom', '0');
+      });
+
+      await mainTest.step('(641) Set Right padding to 200000000', async () => {
+        await designPanelPage.changeLayoutIndependentPadding('Right', '200000000');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkLayoutIndependentPaddingOnGridEdit(
+          'Right',
+          '200000000',
+        );
+      });
+
+      await mainTest.step(
+        '(641) Set Left padding to invalid text, expects value unchanged',
+        async () => {
+          await designPanelPage.changeLayoutIndependentPadding('Left', 'Test');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Left', '0');
+        },
+      );
+    },
+  );
 });
