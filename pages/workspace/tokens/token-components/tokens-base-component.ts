@@ -254,13 +254,12 @@ export class TokensComponent {
   }
 
   async isTokenVisibleWithName(name: string, visible = true) {
+    const token = this.page
+      .getByRole('button')
+      .locator(`span[aria-label="${name}"]`);
     visible
-      ? await expect(
-          this.page.getByRole('button').locator(`span[aria-label="${name}"]`),
-        ).toBeVisible()
-      : await expect(
-          this.page.getByRole('button').locator(`span[aria-label="${name}"]`),
-        ).not.toBeVisible();
+      ? await expect(token).toBeVisible()
+      : await expect(token).not.toBeVisible();
   }
 
   async clickOnTokenWithName(name: string) {
@@ -271,31 +270,21 @@ export class TokensComponent {
   }
 
   async isTokenAppliedWithName(name: string, applied = true) {
+    const token = this.page.locator(
+      `button[class*="token-pill-applied"] span[aria-label="${name}"]`,
+    );
     applied
-      ? await expect(
-          this.page.locator(
-            `button[class*="token-pill-applied"] span[aria-label="${name}"]`,
-          ),
-        ).toBeVisible()
-      : await expect(
-          this.page.locator(
-            `button[class*="token-pill-applied"] span[aria-label="${name}"]`,
-          ),
-        ).not.toBeVisible();
+      ? await expect(token).toBeVisible()
+      : await expect(token).not.toBeVisible();
   }
 
   async isTokenDisabledWithName(name: string, disabled = true) {
+    const token = this.page.locator(
+      `button[class*="token-pill-disabled"] span[aria-label="${name}"]`,
+    );
     disabled
-      ? await expect(
-          this.page.locator(
-            `button[class*="token-pill-disabled"] span[aria-label="${name}"]`,
-          ),
-        ).toBeVisible()
-      : await expect(
-          this.page.locator(
-            `button[class*="token-pill-disabled"] span[aria-label="${name}"]`,
-          ),
-        ).not.toBeVisible();
+      ? await expect(token).toBeVisible()
+      : await expect(token).not.toBeVisible();
   }
 
   async isMenuItemWithNameSelected(tokenName: string, itemName: string) {
