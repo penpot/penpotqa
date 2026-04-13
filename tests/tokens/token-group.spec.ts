@@ -188,9 +188,9 @@ mainTest.describe(() => {
       await mainTest.step(
         'Snapshot of the Border Radius section showing the nested group structure',
         async () => {
-          await expect(tokensPage.tokensComp.borderRadiusSection).toHaveScreenshot(
-            'token-group-primary-nested.png',
-          );
+          await expect(
+            tokensPage.tokensComp.getTokenSection(TokenClass.BorderRadius),
+          ).toHaveScreenshot('token-group-primary-nested.png');
         },
       );
     },
