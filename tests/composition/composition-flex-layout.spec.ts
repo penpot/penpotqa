@@ -64,6 +64,7 @@ mainTest.describe(() => {
     async () => {
       await mainTest.step('Add flex layout via shortcut (SHIFT+A)', async () => {
         await mainPage.pressFlexLayoutShortcut();
+        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
       });
       await mainTest.step('Verify flex layout is applied', async () => {
@@ -82,6 +83,7 @@ mainTest.describe(() => {
     async () => {
       await mainTest.step('Add flex layout and verify it is applied', async () => {
         await mainPage.addFlexLayoutViaRightClick();
+        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
         await designPanelPage.isLayoutRemoveButtonExists();
@@ -89,6 +91,7 @@ mainTest.describe(() => {
       await mainTest.step('Remove flex layout via right click', async () => {
         await mainPage.clickCreatedBoardTitleOnCanvas();
         await mainPage.removeFlexLayoutViaRightClick();
+        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
       });
       await mainTest.step('Verify flex layout is removed', async () => {
@@ -105,6 +108,7 @@ mainTest.describe(() => {
         'Add flex layout via shortcut and verify it is applied',
         async () => {
           await mainPage.pressFlexLayoutShortcut();
+          await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
           await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
           await designPanelPage.isLayoutRemoveButtonExists();
@@ -113,6 +117,7 @@ mainTest.describe(() => {
       await mainTest.step('Remove flex layout via shortcut (SHIFT+A)', async () => {
         await mainPage.clickCreatedBoardTitleOnCanvas();
         await mainPage.pressFlexLayoutShortcut();
+        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
       });
       await mainTest.step('Verify flex layout is removed', async () => {
@@ -127,6 +132,7 @@ mainTest.describe(() => {
     async () => {
       await mainTest.step('Add flex layout and verify it is applied', async () => {
         await mainPage.addFlexLayoutViaRightClick();
+        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
         await designPanelPage.isLayoutRemoveButtonExists();
@@ -134,6 +140,7 @@ mainTest.describe(() => {
       await mainTest.step('Remove flex layout from Design panel', async () => {
         await mainPage.clickCreatedBoardTitleOnCanvas();
         await designPanelPage.removeLayoutFromDesignPanel();
+        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
       });
       await mainTest.step('Verify flex layout is removed', async () => {
