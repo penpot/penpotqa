@@ -52,9 +52,10 @@ mainTest.describe(() => {
     await mainTest.step('Verify flex layout is applied', async () => {
       await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
       await designPanelPage.isLayoutRemoveButtonExists();
-      await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
-        mask: mainPage.maskViewport(),
-      });
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'board-with-layout-right-click.png',
+        { mask: mainPage.maskViewport() },
+      );
     });
   });
 
@@ -68,9 +69,10 @@ mainTest.describe(() => {
       await mainTest.step('Verify flex layout is applied', async () => {
         await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
         await designPanelPage.isLayoutRemoveButtonExists();
-        await expect(mainPage.viewport).toHaveScreenshot('board-with-layout.png', {
-          mask: mainPage.maskViewport(),
-        });
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'board-with-layout-shortcut.png',
+          { mask: mainPage.maskViewport() },
+        );
       });
     },
   );
