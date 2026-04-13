@@ -9,7 +9,10 @@ import {
   TypographyTokensComponent,
   TypographyToken,
 } from '@pages/workspace/tokens/token-components/typography-tokens-component';
-import { ShadowTokensComponent, ShadowToken } from './shadow-tokens-component';
+import {
+  ShadowTokensComponent,
+  ShadowToken,
+} from '@pages/workspace/tokens/token-components/shadow-tokens-component';
 
 export enum TokenClass {
   Color = 'Color',
