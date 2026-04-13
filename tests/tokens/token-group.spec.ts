@@ -579,7 +579,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([2743], 'Remove a token in a tokens group (with an only one token)'),
+    qase([2743], 'Remove a token in a tokens group (with only one token)'),
     async () => {
       const tokenValue = '#000000';
       const foundationsGroup = { name: 'foundations' };
