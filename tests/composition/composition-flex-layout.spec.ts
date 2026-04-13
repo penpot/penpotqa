@@ -463,7 +463,7 @@ mainTest.describe(() => {
         await designPanelPage.changeFlexElementMargin('Horizontal', '0');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot(
-          'flex-element-margin-horizont-0.png',
+          'flex-element-margin-horizontal-0.png',
           { mask: mainPage.maskViewport() },
         );
       });
