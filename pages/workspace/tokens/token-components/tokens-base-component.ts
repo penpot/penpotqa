@@ -120,11 +120,11 @@ export class TokensComponent {
     this.tokenGroupName = this.tokenSideBar.locator('[class*="layer-button-name"]');
   }
 
-  private async getAddTokenButton(tokenClass: TokenClass): Promise<Locator> {
+  private getAddTokenButton(tokenClass: TokenClass): Locator {
     return this.page.getByRole('button', { name: `Add token: ${tokenClass}` });
   }
 
-  private async getTokenTreeButton(tokenClass: TokenClass): Promise<Locator> {
+  private getTokenTreeButton(tokenClass: TokenClass): Locator {
     return this.tokenSideBar.getByRole('button', { name: `${tokenClass}` }).first();
   }
 
@@ -172,7 +172,7 @@ export class TokensComponent {
       | ShadowToken<TokenClass>
       | MainToken<TokenClass>,
   ) {
-    const addTokenButton = await this.getAddTokenButton(token.class);
+    const addTokenButton = this.getAddTokenButton(token.class);
     await addTokenButton.click();
     await this.fillTokenData(token);
   }
@@ -406,7 +406,7 @@ export class TokensComponent {
   }
 
   async expandTokenByName(tokenClass: TokenClass) {
-    const tokenTreeButton = await this.getTokenTreeButton(tokenClass);
+    const tokenTreeButton = this.getTokenTreeButton(tokenClass);
     const isExpanded = await tokenTreeButton.getAttribute('aria-expanded');
     if (isExpanded !== 'true') {
       await tokenTreeButton.click();
