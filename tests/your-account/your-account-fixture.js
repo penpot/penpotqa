@@ -26,6 +26,19 @@ const passwordTest = mainTest.extend({
   },
 });
 
+// Open Your Account > Integrations section
+const integrationsTest = mainTest.extend({
+  profilePage: async ({ page }, use) => {
+    const profilePage = new ProfilePage(page);
+
+    await profilePage.openYourAccountPage();
+    await profilePage.openIntegrationsPage();
+    await profilePage.isHeaderDisplayed('Your account');
+
+    await use(profilePage);
+  },
+});
+
 // Open Your Account > Give Feedback section
 const giveFeedbackTest = mainTest.extend({
   profilePage: async ({ page }, use) => {
@@ -38,4 +51,4 @@ const giveFeedbackTest = mainTest.extend({
   },
 });
 
-module.exports = { profileTest, passwordTest, giveFeedbackTest };
+module.exports = { profileTest, passwordTest, giveFeedbackTest, integrationsTest };
