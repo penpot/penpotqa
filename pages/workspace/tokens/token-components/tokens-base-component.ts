@@ -75,6 +75,7 @@ export class TokensComponent {
   readonly tokenGroupName: Locator;
   readonly tokensPage: TokensPage;
   readonly createTokenModal: Locator;
+  readonly borderRadiusSection: Locator;
 
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
@@ -85,6 +86,9 @@ export class TokensComponent {
     this.shadowTokensComp = new ShadowTokensComponent(page);
     this.tokenSideBar = page.getByTestId('tokens-sidebar');
     this.createTokenModal = page.getByTestId('token-update-create-modal');
+    this.borderRadiusSection = page
+      .locator('[class*="token-section-wrapper"]')
+      .filter({ has: page.locator('[aria-controls="token-tree-border-radius"]') });
     this.tokenSections = this.tokenSideBar.locator('[class*="section-name"]');
     this.invalidToken = page.locator('button[class*="token-pill-invalid-applied"]');
     this.tokenDescriptionInput = page.getByPlaceholder('Description');
