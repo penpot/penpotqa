@@ -1181,7 +1181,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clickOnEnter();
   }
 
-  async checkLayoutIndependentPaddingOnGridEdit(type, value) {
+  async verifyIndependentPaddingValue(type, value) {
     switch (type) {
       case 'Bottom':
         await expect(this.layoutPaddingBottomInput).toHaveValue(value);

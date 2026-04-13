@@ -183,10 +183,10 @@ mainTest.describe(() => {
         },
       );
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Top', '50');
-      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Left', '50');
-      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Bottom', '50');
-      await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Right', '50');
+      await designPanelPage.verifyIndependentPaddingValue('Top', '50');
+      await designPanelPage.verifyIndependentPaddingValue('Left', '50');
+      await designPanelPage.verifyIndependentPaddingValue('Bottom', '50');
+      await designPanelPage.verifyIndependentPaddingValue('Right', '50');
       await designPanelPage.clickGridDoneButton();
       await designPanelPage.changeLayoutJustification('Space between', false);
       await mainPage.waitForChangeIsSaved();
@@ -475,10 +475,10 @@ mainTest.describe(() => {
         mask: mainPage.maskViewport({ gridEditorToolbar: true }),
       },
     );
-    await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Top', '50');
-    await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Left', '50');
-    await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Bottom', '50');
-    await designPanelPage.checkLayoutIndependentPaddingOnGridEdit('Right', '50');
+    await designPanelPage.verifyIndependentPaddingValue('Top', '50');
+    await designPanelPage.verifyIndependentPaddingValue('Left', '50');
+    await designPanelPage.verifyIndependentPaddingValue('Bottom', '50');
+    await designPanelPage.verifyIndependentPaddingValue('Right', '50');
   });
 
   mainTest(qase([1706], 'Adding Flex Board'), async () => {
