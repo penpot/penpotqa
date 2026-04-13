@@ -65,6 +65,7 @@ export class TokensComponent {
   readonly tokenSideBar: Locator;
   readonly tokenSections: Locator;
   readonly invalidToken: Locator;
+  readonly tokenContextMenu: Locator;
   readonly editTokenMenuItem: Locator;
   readonly tokenDescriptionInput: Locator;
   readonly tokenNameInput: Locator;
@@ -88,14 +89,15 @@ export class TokensComponent {
     this.shadowTokensComp = new ShadowTokensComponent(page);
     this.tokenSideBar = page.getByTestId('tokens-sidebar');
     this.createTokenModal = page.getByTestId('token-update-create-modal');
+    this.tokenContextMenu = page.getByTestId('tokens-context-menu-for-token');
     this.tokenSections = this.tokenSideBar.locator('[class*="section-name"]');
     this.invalidToken = page.locator('button[class*="token-pill-invalid-applied"]');
     this.tokenDescriptionInput = page.getByPlaceholder('Description');
     this.tokenNameInput = page.locator('#token-name');
-    this.duplicateTokenMenuItem = page
+    this.duplicateTokenMenuItem = this.tokenContextMenu
       .getByRole('listitem')
       .filter({ hasText: 'Duplicate  token' });
-    this.deleteTokenMenuItem = page
+    this.deleteTokenMenuItem = this.tokenContextMenu
       .getByRole('listitem')
       .filter({ hasText: 'Delete token' });
     this.deleteTokensGroupMenuItem = page
@@ -104,8 +106,7 @@ export class TokensComponent {
     this.expandTokensButton = this.tokenSideBar
       .locator('[class*="layer-button-wrapper"]')
       .getByRole('button');
-
-    this.editTokenMenuItem = page
+    this.editTokenMenuItem = this.tokenContextMenu
       .getByRole('listitem')
       .filter({ hasText: 'Edit token' });
 
