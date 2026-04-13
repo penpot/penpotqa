@@ -35,7 +35,6 @@ mainTest.afterEach(async () => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
-    await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
@@ -144,6 +143,7 @@ mainTest.describe(() => {
 
   mainTest.describe(() => {
     mainTest.beforeEach(async () => {
+      mainTest.slow();
       await mainPage.addFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -401,6 +401,7 @@ mainTest.describe(() => {
 
   mainTest.describe(() => {
     mainTest.beforeEach(async () => {
+      mainTest.slow();
       await mainPage.addFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
