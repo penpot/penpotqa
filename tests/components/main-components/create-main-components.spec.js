@@ -263,8 +263,8 @@ mainTest(
     await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-    await assetsPanelPage.isComponentWithNameAddedToFileLibrary('Ellipse');
-    await assetsPanelPage.isSecondComponentWithNameAddedToFileLibrary('Rectangle');
+    await assetsPanelPage.isComponentVisibleInAssetsTab('Ellipse');
+    await assetsPanelPage.isSecondComponentVisibleInAssetsTab('Rectangle');
   },
 );
 
@@ -347,4 +347,59 @@ mainTest(qase([1749], 'Change group shadow color'), async () => {
       mask: mainPage.maskViewport(),
     },
   );
+});
+
+mainTest(qase([1287], 'Search items in Components'), async () => {
+  const component1Name = 'new test component';
+  const component2Name = 'test component';
+  const component3Name = 'abcd';
+
+  await mainTest.step('Create 4 components with specific names', async () => {
+    await mainPage.createDefaultBoardByCoordinates(100, 200);
+    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
+    await layersPanelPage.typeNameCreatedLayerAndEnter(component1Name);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createComponentViaRightClickFromLayerByName(component1Name);
+
+    await mainPage.createDefaultBoardByCoordinates(300, 200);
+    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
+    await layersPanelPage.typeNameCreatedLayerAndEnter(component2Name);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createComponentViaRightClickFromLayerByName(component2Name);
+
+    await mainPage.createDefaultBoardByCoordinates(500, 200);
+    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
+    await layersPanelPage.typeNameCreatedLayerAndEnter(component3Name);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createComponentViaRightClickFromLayerByName(component3Name);
+
+    const component4Name = '1234';
+    await mainPage.createDefaultBoardByCoordinates(700, 200);
+    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
+    await layersPanelPage.typeNameCreatedLayerAndEnter(component4Name);
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.createComponentViaRightClickFromLayerByName(component4Name);
+  });
+
+  await mainTest.step('Search components by name in assets tab', async () => {
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.searchInAssetsTab(component1Name);
+    await assetsPanelPage.isComponentVisibleInAssetsTab(component1Name);
+    await assetsPanelPage.clearSearchInputInAssetsTab();
+
+    await assetsPanelPage.searchInAssetsTab(component2Name);
+    await assetsPanelPage.isComponentVisibleInAssetsTab(component1Name);
+    await assetsPanelPage.isSecondComponentVisibleInAssetsTab(component2Name);
+    await assetsPanelPage.clearSearchInputInAssetsTab();
+
+    await assetsPanelPage.searchInAssetsTab(component3Name);
+    await assetsPanelPage.isComponentVisibleInAssetsTab(
+      component3Name.toUpperCase(),
+    );
+    await assetsPanelPage.clearSearchInputInAssetsTab();
+
+    const invalidComponentName = 'qwe';
+    await assetsPanelPage.searchInAssetsTab(invalidComponentName);
+    await assetsPanelPage.isComponentNotVisibleInAssetsTab();
+  });
 });
