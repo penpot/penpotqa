@@ -74,6 +74,16 @@ mainTest(
 );
 
 mainTest(
+  qase([2404], 'Delete variant from the component using the context menu'),
+  async () => {
+    await mainPage.deleteLayerViaRightClickByName('Value 2');
+    await mainPage.waitForChangeIsSaved();
+
+    await layersPanelPage.checkVariantLayerCount(1);
+  },
+);
+
+mainTest(
   qase([2407], 'Restoring a deleted variant from the child component'),
   async () => {
     await layersPanelPage.selectLayerByName('Value 1');
