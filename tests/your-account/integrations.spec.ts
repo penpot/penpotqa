@@ -1,13 +1,13 @@
-const { ProfilePage } = require('@pages/profile-page');
-const { integrationsTest } = require('./your-account-fixture');
-const { qase } = require('playwright-qase-reporter/playwright');
+import { ProfilePage } from '@pages/profile-page';
+import { integrationsTest } from './your-account-fixture';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 integrationsTest(
   qase(
     2749,
     'Delete an existing access token and verify it is removed from the list',
   ),
-  async ({ profilePage }) => {
+  async ({ profilePage }: { profilePage: ProfilePage }) => {
     await integrationsTest.step('Create an access token', async () => {
       const accessTokenName = 'Access token test';
       await profilePage.createAccessToken(accessTokenName);
