@@ -71,7 +71,7 @@ mainTest.describe(() => {
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.duplicateFileLibraryComponent();
     await mainPage.waitForChangeIsSaved();
-    await assetsPanelPage.isSecondComponentWithNameAddedToFileLibrary('Rectangle');
+    await assetsPanelPage.isSecondComponentVisibleInAssetsTab('Rectangle');
     await layersPanelPage.openLayersTab();
     await expect(mainPage.viewport).toHaveScreenshot(
       'component-rectangle-duplicated-canvas.png',
@@ -108,7 +108,7 @@ mainTest.describe(() => {
     await assetsPanelPage.ungroupFileLibrary();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.isFileLibraryGroupRemoved();
-    await assetsPanelPage.isComponentWithNameAddedToFileLibrary('Rectangle');
+    await assetsPanelPage.isComponentVisibleInAssetsTab('Rectangle');
   });
 
   mainTest(qase([1676], 'Components - change view (list/tile)'), async () => {

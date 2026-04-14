@@ -116,6 +116,10 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.textUpperCaseButton = this.assetsTabpanel.getByTitle('Upper Case');
     this.textCapitalizeButton = this.assetsTabpanel.getByTitle('Capitalize');
     this.textLowerCaseButton = this.assetsTabpanel.getByTitle('Lower Case');
+    this.assetsSearchInput = page.getByRole('textbox', { name: 'Search assets' });
+    this.clearSearchButtonInAssetsTab = page.locator(
+      '.main_ui_components_search_bar__clear-icon',
+    );
 
     //Assets panel - Libraries
     this.addAsSharedLibraryButton = page.getByRole('button', {
@@ -174,11 +178,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.assetsTab.click();
   }
 
-  async isSecondComponentAddedToFileLibrary() {
-    await expect(this.assetsSecondComponentLabel).toBeVisible();
-  }
-
-  async isComponentNotAddedToFileLibraryComponents() {
+  async isComponentNotVisibleInAssetsTab() {
     await expect(this.assetComponentLabel).not.toBeVisible();
   }
 
@@ -518,12 +518,12 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.librariesSearchClearButton.click();
   }
 
-  async isComponentWithNameAddedToFileLibrary(name) {
+  async isComponentVisibleInAssetsTab(name) {
     await this.assetComponentLabel.first().hover();
     await expect(this.assetComponentLabel.first().getByTitle(name)).toBeVisible();
   }
 
-  async isSecondComponentWithNameAddedToFileLibrary(name) {
+  async isSecondComponentVisibleInAssetsTab(name) {
     await this.assetsSecondComponentLabel.hover();
     await expect(this.assetsSecondComponentLabel.getByTitle(name)).toBeVisible();
   }
@@ -590,5 +590,15 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async isEmptyLibrarySearchResults() {
     await expect(this.emptyResults, `No matches found is visible`).toBeVisible();
+  }
+
+  async searchInAssetsTab(assetName) {
+    await this.assetsSearchInput.click();
+    await this.assetsSearchInput.pressSequentially(assetName);
+    await this.page.keyboard.press('Enter');
+  }
+
+  async clearSearchInputInAssetsTab() {
+    await this.clearSearchButtonInAssetsTab.click();
   }
 };
