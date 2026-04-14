@@ -308,6 +308,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textIconRTL = page.getByTestId('rtl-text-direction');
     this.textFontSelector = page.locator('div[class*="typography__font-option"]');
     this.textFontSelectorSearchInput = page.getByPlaceholder('Search font');
+    this.textFontItemResult = page.locator(
+      '.main_ui_workspace_sidebar_options_menus_typography__font-item',
+    );
     this.textFontStyleSelector = page.locator(
       'div[class*="typography__font-variant-options"]',
     );
@@ -829,9 +832,33 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
-  async changeTextFont(fontName) {
+  async openTypographyFontDropdown() {
     await this.textFontSelector.click();
+  }
+
+  async searchTypographyFontFromSearch(fontName) {
     await this.textFontSelectorSearchInput.fill(fontName);
+  }
+
+  async clearTypographyFontSearchBar() {
+    await this.textFontSelectorSearchInput.clear();
+  }
+
+  async isTypographyFontItemVisible(fontName) {
+    await expect(
+      this.textFontItemResult.getByText(fontName, { exact: true }),
+    ).toBeVisible();
+  }
+
+  async isTypographyFontItemNotVisible(fontName) {
+    await expect(
+      this.textFontItemResult.getByText(fontName, { exact: true }),
+    ).not.toBeVisible();
+  }
+
+  async changeTextFont(fontName) {
+    await this.openTypographyFontDropdown();
+    await this.searchTypographyFontFromSearch(fontName);
     await this.page
       .locator(`div[class*="font-item"] span:has-text('${fontName}')`)
       .click();

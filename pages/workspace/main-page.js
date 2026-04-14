@@ -252,7 +252,11 @@ exports.MainPage = class MainPage extends BasePage {
     this.loginDialog = page.locator('div[class*="dialog-login"]');
 
     this.viewportControls = page.locator('.viewport-controls');
-    // Comments
+
+    //Focus Mode
+    this.focusModeTag = page.locator(
+      '.main_ui_workspace_sidebar_layers__focus-mode-tag-wrapper',
+    );
   }
 
   async clickMoveButton() {
@@ -406,6 +410,10 @@ exports.MainPage = class MainPage extends BasePage {
 
   async focusLayerViaShortcut() {
     await this.page.keyboard.press('F');
+  }
+
+  async clickfocusModeTag() {
+    await this.focusModeTag.click();
   }
 
   async drawCurve(x1, y1, x2, y2) {

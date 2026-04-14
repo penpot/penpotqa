@@ -427,8 +427,9 @@ mainTest.describe(() => {
     await layersPanelPage.typeNameCreatedLayerAndEnter('Test');
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isBoardNameDisplayed('Test');
+    await layersPanelPage.openLayerSearchBar();
     await layersPanelPage.searchLayer('test');
-    await layersPanelPage.isLayerSearched('Test');
+    await layersPanelPage.isLayerNameDisplayed('Test');
   });
 
   mainTest(qase([1756], 'Absolute positioned board moving'), async () => {
