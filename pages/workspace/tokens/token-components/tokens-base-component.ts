@@ -259,7 +259,9 @@ export class TokensComponent {
   }
 
   async isTokenVisibleWithName(name: string, visible = true) {
-    const token = this.page.getByRole('button', { name: name, exact: true });
+    const token = this.page
+      .getByRole('button')
+      .locator(`span[aria-label="${name}"]`);
     visible
       ? await expect(token).toBeVisible()
       : await expect(token).not.toBeVisible();
