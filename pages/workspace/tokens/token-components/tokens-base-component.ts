@@ -121,10 +121,9 @@ export class TokensComponent {
   }
 
   getTokenSection(tokenClass: TokenClass): Locator {
-    const treeId = `token-tree-${tokenClass.toLowerCase().replace(/\s+/g, '-')}`;
-    return this.page
-      .locator('[class*="token-section-wrapper"]')
-      .filter({ has: this.page.locator(`[aria-controls="${treeId}"]`) });
+    return this.page.getByTestId(
+      `section-${tokenClass.toLowerCase().replace(/\s+/g, '-')}`,
+    );
   }
 
   private getAddTokenButton(tokenClass: TokenClass): Locator {
