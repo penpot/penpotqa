@@ -36,7 +36,7 @@ mainTest(qase([1456], 'Delete component Assets tab'), async () => {
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await assetsPanelPage.deleteFileLibraryComponents();
   await mainPage.waitForChangeIsSaved();
-  await assetsPanelPage.isComponentNotAddedToFileLibraryComponents();
+  await assetsPanelPage.isComponentNotVisibleInAssetsTab();
   await assetsPanelPage.selectTypeFromAllAssetsDropdown('Components');
   await expect(assetsPanelPage.assetsTitleText).toHaveScreenshot(
     'assets-component-delete.png',
@@ -59,5 +59,5 @@ mainTest(qase([1345], 'Restore main component from context menu'), async () => {
   await mainPage.waitForChangeIsSaved();
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await assetsPanelPage.isComponentWithNameAddedToFileLibrary('Rectangle');
+  await assetsPanelPage.isComponentVisibleInAssetsTab('Rectangle');
 });
