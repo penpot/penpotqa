@@ -74,6 +74,24 @@ mainTest(
 );
 
 mainTest(
+  qase([2407], 'Restoring a deleted variant from the child component'),
+  async () => {
+    await layersPanelPage.selectLayerByName('Value 1');
+    await mainPage.copyElementViaAltDragAndDrop(200, 500);
+
+    await layersPanelPage.selectLayerByName('Value 1');
+    await mainPage.deleteLayerViaRightClickByName('Value 1');
+    await mainPage.waitForChangeIsSaved();
+
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await layersPanelPage.restoreVariantViaRightClick();
+
+    await layersPanelPage.checkVariantLayerCount(2);
+    await layersPanelPage.isLayerWithNameSelected('Value 1');
+  },
+);
+
+mainTest(
   qase(
     [2409],
     'Add Variants to a component by cutting and pasting the main component',
@@ -121,24 +139,6 @@ mainTest(
 
     await layersPanelPage.isVariantLayerVisible(false);
     await layersPanelPage.isLayerWithNameSelected('Rectangle1 / Value 2');
-  },
-);
-
-mainTest(
-  qase([2407], 'Restoring a deleted variant from the child component'),
-  async () => {
-    await layersPanelPage.selectLayerByName('Value 1');
-    await mainPage.copyElementViaAltDragAndDrop(200, 500);
-
-    await layersPanelPage.selectLayerByName('Value 1');
-    await mainPage.deleteLayerViaRightClickByName('Value 1');
-    await mainPage.waitForChangeIsSaved();
-
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await layersPanelPage.restoreVariantViaRightClick();
-
-    await layersPanelPage.checkVariantLayerCount(2);
-    await layersPanelPage.isLayerWithNameSelected('Value 1');
   },
 );
 
