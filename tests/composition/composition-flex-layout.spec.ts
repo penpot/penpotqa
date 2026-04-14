@@ -509,19 +509,22 @@ mainTest.describe(() => {
       await mainTest.step('(641) Set Top padding to 20', async () => {
         await designPanelPage.changeLayoutIndependentPadding('Top', '20');
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.verifyIndependentPaddingValue('Top', '20');
+        await designPanelPage.verifyLayoutIndependentPaddingValue('Top', '20');
       });
 
       await mainTest.step('(641) Set Bottom padding to -20, expects 0', async () => {
         await designPanelPage.changeLayoutIndependentPadding('Bottom', '-20');
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.verifyIndependentPaddingValue('Bottom', '0');
+        await designPanelPage.verifyLayoutIndependentPaddingValue('Bottom', '0');
       });
 
       await mainTest.step('(641) Set Right padding to 200000000', async () => {
         await designPanelPage.changeLayoutIndependentPadding('Right', '200000000');
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.verifyIndependentPaddingValue('Right', '200000000');
+        await designPanelPage.verifyLayoutIndependentPaddingValue(
+          'Right',
+          '200000000',
+        );
       });
 
       await mainTest.step(
@@ -529,7 +532,7 @@ mainTest.describe(() => {
         async () => {
           await designPanelPage.changeLayoutIndependentPadding('Left', 'Test');
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.verifyIndependentPaddingValue('Left', '0');
+          await designPanelPage.verifyLayoutIndependentPaddingValue('Left', '0');
         },
       );
     },
