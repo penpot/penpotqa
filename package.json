@@ -4,7 +4,7 @@
   "description": "QA Test for Penpot",
   "main": "index.js",
   "scripts": {
-    "open": " npx playwright test --project=chrome --ui",
+    "open": " npx playwright test --ui",
     "test": "npx playwright test --project=chrome --grep-invert  'PERF'",
     "changed": "npx playwright test --project=chrome --only-changed",
     "testLogin": "npx playwright test --project=chrome --grep-invert  'PERF' ./tests/panels-features/panels-features-fill.spec.js",
