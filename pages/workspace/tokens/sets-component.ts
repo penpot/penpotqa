@@ -50,7 +50,10 @@ export class SetsComponent {
   }
 
   async checkFirstSetName(text: string) {
-    await expect(this.setName.first(), `First Set Name is ${text}`).toHaveText(text);
+    await expect(
+      this.setName.first(),
+      `First set name should be "${text}"`,
+    ).toHaveText(text);
   }
 
   async isSetNameVisible(text: string, visible = true) {
@@ -80,6 +83,7 @@ export class SetsComponent {
   async isSetCheckedByName(setName: string) {
     await expect(
       this.setName.filter({ hasText: setName }).getByRole('checkbox'),
+      `Set "${setName}" checkbox should be checked`,
     ).toBeChecked();
   }
 
