@@ -15,11 +15,6 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       'div[class*="workspace_sidebar_layer_item__layer-row"]',
     );
     this.createdLayerOnLayersPanelNameInput = this.layersRows.getByRole('textbox');
-    this.searchLayersIcon = page.locator('svg [href="#icon-search"]');
-    this.searchLayersInput = page.getByPlaceholder('Search layers');
-    this.searchedLayerOnLayersPanelNameText = page.locator(
-      'span[class*="element-name"] >> nth=1',
-    );
     this.verticalFlexLayoutIcon = page.getByTestId('icon-flex-vertical');
     this.horizontalFlexLayoutIcon = page.getByTestId('icon-flex-horizontal');
     this.focusModeDiv = page.getByText('Focus mode', { exact: true });
@@ -65,6 +60,12 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     );
     this.copyComponentChildrenRows =
       this.copyComponentChildrenContainer.getByTestId('layer-row');
+
+    // Layers Search Bar
+    this.searchLayersIcon = this.layersSidebar.getByRole('button', {
+      name: 'Search',
+    });
+    this.searchLayersInput = this.layersSidebar.getByPlaceholder('Search layers');
   }
 
   /**
@@ -183,7 +184,15 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async isLayerNameDisplayed(name) {
-    await expect(this.createdLayerOnLayersPanelSpan).toHaveText(name);
+    await expect(
+      this.layersRows.getByText(name, { exact: true }).first(),
+    ).toBeVisible();
+  }
+
+  async isLayerNameNotDisplayed(name) {
+    await expect(
+      this.layersRows.getByText(name, { exact: true }).first(),
+    ).not.toBeVisible();
   }
 
   async isBoardNameDisplayed(name) {
@@ -221,13 +230,16 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await iconSel.dblclick();
   }
 
-  async searchLayer(name) {
+  async openLayerSearchBar() {
     await this.searchLayersIcon.click();
+  }
+
+  async searchLayer(name) {
     await this.searchLayersInput.fill(name);
   }
 
-  async isLayerSearched(name) {
-    await expect(this.searchedLayerOnLayersPanelNameText).toHaveText(name);
+  async clearLayerSearchBar() {
+    await this.searchLayersInput.clear();
   }
 
   async isVerticalFlexIconVisibleOnLayer(condition = true) {
