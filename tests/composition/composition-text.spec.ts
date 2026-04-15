@@ -500,4 +500,151 @@ mainTest.describe(() => {
       mask: mainPage.maskViewport(),
     });
   });
+
+  mainTest(qase([394], 'Click "Focus on" text from right click'), async () => {
+    const firstText = 'Hello world!';
+    const secondText = 'Second text';
+
+    await mainPage.createTextLayerByCoordinates(100, 200, secondText);
+    await mainPage.focusLayerViaRightClickOnLayersTab(firstText);
+    await expect(mainPage.viewport).toHaveScreenshot('first-text-focused.png', {
+      mask: mainPage.maskViewport(),
+    });
+    await mainPage.clickFocusModeTag();
+    await mainPage.focusLayerViaRightClickOnLayersTab(secondText);
+    await expect(mainPage.viewport).toHaveScreenshot('second-text-focused.png', {
+      mask: mainPage.maskViewport(),
+    });
+    await mainPage.clickFocusModeTag();
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'first-and-second-text-not-focused.png',
+      {
+        mask: mainPage.maskViewport(),
+      },
+    );
+  });
+
+  mainTest(qase([421], 'Search text by name'), async () => {
+    const firstText = 'Hello world!';
+    const secondText = 'Second text';
+    const thirdText = 'Third text';
+
+    const renamedFirstText = 'new test text';
+    const renamedSecondText = 'test text';
+    const renamedThirdText = 'abcd';
+
+    await mainTest.step('Create text layers', async () => {
+      await mainPage.createTextLayerByCoordinates(100, 200, secondText);
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createTextLayerByCoordinates(100, 300, thirdText);
+      await mainPage.waitForChangeIsSaved();
+    });
+
+    await mainTest.step(
+      'Rename text layers and assert expected layer name',
+      async () => {
+        await layersPanelPage.doubleClickLayerOnLayersTab(firstText);
+        await layersPanelPage.typeNameCreatedLayerAndEnter(renamedFirstText);
+        await layersPanelPage.isLayerNameDisplayed(renamedFirstText);
+
+        await layersPanelPage.doubleClickLayerOnLayersTab(secondText);
+        await layersPanelPage.typeNameCreatedLayerAndEnter(renamedSecondText);
+        await layersPanelPage.isLayerNameDisplayed(renamedSecondText);
+
+        await layersPanelPage.doubleClickLayerOnLayersTab(thirdText);
+        await layersPanelPage.typeNameCreatedLayerAndEnter(renamedThirdText);
+        await layersPanelPage.isLayerNameDisplayed(renamedThirdText);
+      },
+    );
+
+    await mainTest.step(
+      `Type in search: ${renamedFirstText} and assert 1st Text is filtered`,
+      async () => {
+        await layersPanelPage.openLayerSearchBar();
+        await layersPanelPage.searchLayer(renamedFirstText);
+        await layersPanelPage.isLayerNameDisplayed(renamedFirstText);
+        await layersPanelPage.isLayerNameNotDisplayed(renamedSecondText);
+        await layersPanelPage.isLayerNameNotDisplayed(renamedThirdText);
+        await layersPanelPage.clearLayerSearchBar();
+      },
+    );
+
+    await mainTest.step(
+      `Type in search "test Text" and assert 1st & 2nd Texts are filtered`,
+      async () => {
+        await layersPanelPage.searchLayer('test Text');
+        await layersPanelPage.isLayerNameDisplayed(renamedFirstText);
+        await layersPanelPage.isLayerNameDisplayed(renamedSecondText);
+        await layersPanelPage.isLayerNameNotDisplayed(renamedThirdText);
+        await layersPanelPage.clearLayerSearchBar();
+      },
+    );
+
+    await mainTest.step(
+      `Type in search "ABCD" and assert 3rd Text is filtered`,
+      async () => {
+        await layersPanelPage.searchLayer('ABCD');
+        await layersPanelPage.isLayerNameDisplayed(renamedThirdText);
+        await layersPanelPage.isLayerNameNotDisplayed(renamedFirstText);
+        await layersPanelPage.isLayerNameNotDisplayed(renamedSecondText);
+        await layersPanelPage.clearLayerSearchBar();
+      },
+    );
+
+    await mainTest.step(
+      `Type in search "qwe" and assert no texts are filtered`,
+      async () => {
+        await layersPanelPage.searchLayer('qwe');
+        await layersPanelPage.isLayerNameNotDisplayed(renamedFirstText);
+        await layersPanelPage.isLayerNameNotDisplayed(renamedSecondText);
+        await layersPanelPage.isLayerNameNotDisplayed(renamedThirdText);
+      },
+    );
+  });
+
+  mainTest(qase([429], 'Search fonts'), async () => {
+    const fontName1 = 'Unlock';
+    const fontName2 = 'Acme';
+    const fontName3 = 'Source';
+    const fontName4 = 'abcd';
+
+    await mainTest.step(
+      `Search: "${fontName1}" and assert 1st Font is filtered`,
+      async () => {
+        await designPanelPage.openTypographyFontDropdown();
+        await designPanelPage.searchTypographyFontFromSearch(fontName1);
+        await designPanelPage.isTypographyFontItemVisible(fontName1);
+        await designPanelPage.clearTypographyFontSearchBar();
+      },
+    );
+
+    await mainTest.step(
+      `Search: "${fontName2}" and assert 2nd Font is filtered`,
+      async () => {
+        await designPanelPage.searchTypographyFontFromSearch(fontName2);
+        await designPanelPage.isTypographyFontItemVisible(fontName2);
+        await designPanelPage.clearTypographyFontSearchBar();
+      },
+    );
+
+    await mainTest.step(
+      `Search: "${fontName3}" and assert 4 fonts which contain "${fontName3}" are found`,
+      async () => {
+        await designPanelPage.searchTypographyFontFromSearch(fontName3);
+        await designPanelPage.isTypographyFontItemVisible('Source Code Pro');
+        await designPanelPage.isTypographyFontItemVisible('Source Sans 3');
+        await designPanelPage.isTypographyFontItemVisible('Source Sans Pro');
+        await designPanelPage.isTypographyFontItemVisible('Source Serif 4');
+        await designPanelPage.clearTypographyFontSearchBar();
+      },
+    );
+
+    await mainTest.step(
+      `Search: "${fontName4}" and assert No results are found`,
+      async () => {
+        await designPanelPage.searchTypographyFontFromSearch(fontName4);
+        await designPanelPage.isTypographyFontItemNotVisible(fontName4);
+      },
+    );
+  });
 });
