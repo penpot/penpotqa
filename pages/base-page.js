@@ -403,7 +403,7 @@ exports.BasePage = class BasePage {
   }
 
   async createComponentViaRightClickFromLayerByName(name) {
-    const layerSel = this.createdLayer.getByText(name);
+    const layerSel = this.createdLayer.getByText(name, { exact: true });
     await layerSel.last().click({ button: 'right' });
     await this.createComponentMenuItem.waitFor({ state: 'visible' });
     await this.createComponentMenuItem.click();
