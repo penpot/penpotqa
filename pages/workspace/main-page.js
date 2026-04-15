@@ -412,7 +412,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press('F');
   }
 
-  async clickfocusModeTag() {
+  async clickFocusModeTag() {
     await this.focusModeTag.click();
   }
 

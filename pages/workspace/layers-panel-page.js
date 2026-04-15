@@ -62,8 +62,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       this.copyComponentChildrenContainer.getByTestId('layer-row');
 
     // Layers Search Bar
-    this.searchLayersIcon = page.getByRole('button', { name: 'Search' });
-    this.searchLayersInput = page.getByPlaceholder('Search layers');
+    this.searchLayersIcon = this.layersSidebar.getByRole('button', {
+      name: 'Search',
+    });
+    this.searchLayersInput = this.layersSidebar.getByPlaceholder('Search layers');
   }
 
   /**
@@ -228,7 +230,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await iconSel.dblclick();
   }
 
-  async openLayerSearchBar(name) {
+  async openLayerSearchBar() {
     await this.searchLayersIcon.click();
   }
 

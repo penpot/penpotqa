@@ -510,12 +510,12 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('first-text-focused.png', {
       mask: mainPage.maskViewport(),
     });
-    await mainPage.clickfocusModeTag();
+    await mainPage.clickFocusModeTag();
     await mainPage.focusLayerViaRightClickOnLayersTab(secondText);
     await expect(mainPage.viewport).toHaveScreenshot('second-text-focused.png', {
       mask: mainPage.maskViewport(),
     });
-    await mainPage.clickfocusModeTag();
+    await mainPage.clickFocusModeTag();
     await expect(mainPage.viewport).toHaveScreenshot(
       'first-and-second-text-not-focused.png',
       {
@@ -617,7 +617,7 @@ mainTest.describe(() => {
     );
 
     await mainTest.step(
-      `Search: "${fontName2}" and assert 1st Font is filtered`,
+      `Search: "${fontName2}" and assert 2nd Font is filtered`,
       async () => {
         await designPanelPage.searchTypographyFontFromSearch(fontName2);
         await designPanelPage.isTypographyFontItemVisible(fontName2);
