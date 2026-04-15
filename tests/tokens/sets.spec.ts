@@ -50,6 +50,38 @@ mainTest(qase(2102, 'Create a set via "create one" link'), async ({ page }) => {
   });
 });
 
+mainTest(qase(2105, 'Create a set using an existing name'), async ({ page }) => {
+  const tokensPage: TokensPage = new TokensPage(page);
+  const setName = 'Mobile';
+  const colorToken: MainToken<TokenClass> = {
+    class: TokenClass.Color,
+    name: 'color',
+    value: sampleData.color.getRandomHexCode(),
+  };
+
+  await mainTest.step(`Create set "${setName}"`, async () => {
+    await tokensPage.clickTokensTab();
+    await tokensPage.setsComp.createSetViaButton(setName);
+    await tokensPage.setsComp.checkFirstSetName(setName);
+  });
+
+  await mainTest.step(
+    `Create color token "${colorToken.name}" in the set`,
+    async () => {
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(colorToken);
+      await tokensPage.tokensComp.isTokenVisibleWithName(colorToken.name);
+    },
+  );
+
+  await mainTest.step(
+    `Try to create a set with the existing name "${setName}" and check error is shown`,
+    async () => {
+      await tokensPage.setsComp.createSetViaButton(setName);
+      await tokensPage.setsComp.checkSetNameAlreadyExistsError();
+    },
+  );
+});
+
 mainTest(qase(2127, 'Rename a set'), async ({ page }) => {
   const tokensPage: TokensPage = new TokensPage(page);
   const name = 'Mobile';
