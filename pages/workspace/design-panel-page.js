@@ -79,6 +79,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.searchByTokenNameInput = page.getByRole('textbox', {
       name: 'Search by token name',
     });
+    this.colorPickerTokensButton =
+      this.colorPickerContainer.getByTestId('opt-token-color');
     this.selectedColors = this.designTabpanel.locator(
       '[class*="color_selection__element-set"]',
     );
@@ -606,6 +608,24 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(
       this.getColorTokenButtonByName(tokenName),
       `Color token button "${tokenName}" is not visible`,
+    ).not.toBeVisible();
+  }
+
+  async clickColorPickerTokensButton() {
+    await this.colorPickerTokensButton.click();
+  }
+
+  async isColorPickerTokensButtonVisible() {
+    await expect(
+      this.colorPickerTokensButton,
+      'Color picker Tokens switch button is visible',
+    ).toBeVisible();
+  }
+
+  async isSearchByTokenNameInputNotVisible() {
+    await expect(
+      this.searchByTokenNameInput,
+      'Search by token name input is not visible (Colors mode is active)',
     ).not.toBeVisible();
   }
 
