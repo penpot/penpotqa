@@ -36,9 +36,18 @@ mainTest.afterEach(async ({ page }) => {
 mainTest(qase(2102, 'Create a set via "create one" link'), async ({ page }) => {
   const tokensPage: TokensPage = new TokensPage(page);
   const name = 'Mobile';
-  await tokensPage.clickTokensTab();
-  await tokensPage.setsComp.createSetViaLink(name);
-  await tokensPage.setsComp.checkFirstSetName(name);
+
+  await mainTest.step('Open tokens tab', async () => {
+    await tokensPage.clickTokensTab();
+  });
+
+  await mainTest.step('Create set via "create one" link', async () => {
+    await tokensPage.setsComp.createSetViaLink(name);
+  });
+
+  await mainTest.step('Check first set name is correct', async () => {
+    await tokensPage.setsComp.checkFirstSetName(name);
+  });
 });
 
 mainTest(qase(2127, 'Rename a set'), async ({ page }) => {
@@ -146,26 +155,68 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(2139, 'Enable and Disable sets'), async () => {
-    await tokensPage.setsComp.clickOnSetCheckboxByName('Light');
-    await designPanelPage.isFillTokenColorSetComponent(colorToken1.name);
-    await tokensPage.setsComp.clickOnSetCheckboxByName('Mobile');
-    await designPanelPage.checkGeneralCornerRadius(radiusToken2.value);
-    await tokensPage.setsComp.clickOnSetCheckboxByName('Light');
-    await designPanelPage.isFillTokenColorSetComponent(colorToken2.name);
-    await tokensPage.setsComp.clickOnSetCheckboxByName('Mobile');
-    await designPanelPage.checkGeneralCornerRadius(radiusToken1.value);
+    await mainTest.step(
+      'Disable Light set and check Dark color token is applied',
+      async () => {
+        await tokensPage.setsComp.clickOnSetCheckboxByName('Light');
+        await designPanelPage.isFillTokenColorSetComponent(colorToken1.name);
+      },
+    );
+
+    await mainTest.step(
+      'Disable Mobile set and check Desktop radius is applied',
+      async () => {
+        await tokensPage.setsComp.clickOnSetCheckboxByName('Mobile');
+        await designPanelPage.checkGeneralCornerRadius(radiusToken2.value);
+      },
+    );
+
+    await mainTest.step(
+      'Enable Light set and check Light color token is applied',
+      async () => {
+        await tokensPage.setsComp.clickOnSetCheckboxByName('Light');
+        await designPanelPage.isFillTokenColorSetComponent(colorToken2.name);
+      },
+    );
+
+    await mainTest.step(
+      'Enable Mobile set and check Mobile radius is applied',
+      async () => {
+        await tokensPage.setsComp.clickOnSetCheckboxByName('Mobile');
+        await designPanelPage.checkGeneralCornerRadius(radiusToken1.value);
+      },
+    );
   });
 
   mainTest(qase(2141, 'Add set to this group'), async () => {
-    await tokensPage.setsComp.addSetToGroupByName('Device', 'Tablet');
-    await tokensPage.setsComp.isSetNameVisible('Tablet', true);
+    await mainTest.step('Add Tablet set to Device group', async () => {
+      await tokensPage.setsComp.addSetToGroupByName('Device', 'Tablet');
+    });
+
+    await mainTest.step(
+      'Check Tablet set is visible inside Device group',
+      async () => {
+        await tokensPage.setsComp.isSetNameVisible('Tablet', true);
+      },
+    );
   });
 
   mainTest(qase(2146, 'Delete a set group'), async () => {
-    await tokensPage.setsComp.deleteSetsGroupByName('Device');
-    await tokensPage.setsComp.isGroupSetNameVisible('Device', false);
-    await tokensPage.setsComp.isSetNameVisible('Desktop', false);
-    await tokensPage.setsComp.isSetNameVisible('Mobile', false);
+    await mainTest.step('Delete Device set group', async () => {
+      await tokensPage.setsComp.deleteSetsGroupByName('Device');
+    });
+
+    await mainTest.step('Check Device group is no longer visible', async () => {
+      await tokensPage.setsComp.isGroupSetNameVisible('Device', false);
+    });
+
+    await mainTest.step(
+      'Check Desktop and Mobile sets are no longer visible',
+      async () => {
+        await tokensPage.setsComp.isSetNameVisible('Desktop', false);
+        await tokensPage.setsComp.isSetNameVisible('Mobile', false);
+      },
+    );
   });
 });
 
@@ -173,17 +224,41 @@ mainTest(qase(2231, 'Duplicate set'), async ({ page }) => {
   const tokensPage: TokensPage = new TokensPage(page);
 
   const name = 'Mobile';
-  await tokensPage.clickTokensTab();
-  await tokensPage.setsComp.createSetViaButton(name);
-  await tokensPage.setsComp.checkFirstSetName(name);
-  await tokensPage.setsComp.duplicateSetByName(name);
   const firstSetName = name + '-copy';
-  await tokensPage.setsComp.isSetNameVisible(firstSetName);
-  await tokensPage.setsComp.duplicateSetByName(firstSetName);
   const secondSetName = firstSetName + '-copy';
-  await tokensPage.setsComp.isSetNameVisible(secondSetName);
-  await tokensPage.setsComp.duplicateSetByName(secondSetName);
   const thirdSetName = secondSetName + '-copy';
-  await tokensPage.setsComp.isSetNameVisible(thirdSetName);
-  await tokensPage.setsComp.duplicateSetByName(thirdSetName);
+
+  await mainTest.step('Create initial set', async () => {
+    await tokensPage.clickTokensTab();
+    await tokensPage.setsComp.createSetViaButton(name);
+    await tokensPage.setsComp.checkFirstSetName(name);
+  });
+
+  await mainTest.step(
+    'Duplicate set for the first time and check copy is visible',
+    async () => {
+      await tokensPage.setsComp.duplicateSetByName(name);
+      await tokensPage.setsComp.isSetNameVisible(firstSetName);
+    },
+  );
+
+  await mainTest.step(
+    'Duplicate set for the second time and check copy is visible',
+    async () => {
+      await tokensPage.setsComp.duplicateSetByName(firstSetName);
+      await tokensPage.setsComp.isSetNameVisible(secondSetName);
+    },
+  );
+
+  await mainTest.step(
+    'Duplicate set for the third time and check copy is visible',
+    async () => {
+      await tokensPage.setsComp.duplicateSetByName(secondSetName);
+      await tokensPage.setsComp.isSetNameVisible(thirdSetName);
+    },
+  );
+
+  await mainTest.step('Duplicate set for the fourth time', async () => {
+    await tokensPage.setsComp.duplicateSetByName(thirdSetName);
+  });
 });
