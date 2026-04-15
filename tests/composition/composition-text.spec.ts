@@ -535,7 +535,9 @@ mainTest.describe(() => {
 
     await mainTest.step('Create text layers', async () => {
       await mainPage.createTextLayerByCoordinates(100, 200, secondText);
+      await mainPage.waitForChangeIsSaved();
       await mainPage.createTextLayerByCoordinates(100, 300, thirdText);
+      await mainPage.waitForChangeIsSaved();
     });
 
     await mainTest.step(
