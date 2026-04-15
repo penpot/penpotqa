@@ -55,14 +55,14 @@ export class SetsComponent {
 
   async isSetNameVisible(text: string, visible = true) {
     visible
-      ? await expect(this.setName.filter({ hasText: text })).toHaveCount(1)
-      : await expect(this.setName.filter({ hasText: text })).toHaveCount(0);
+      ? await expect(this.setName.filter({ hasText: text })).toBeVisible()
+      : await expect(this.setName.filter({ hasText: text })).not.toBeVisible();
   }
 
   async isGroupSetNameVisible(text: string, visible = true) {
     visible
-      ? await expect(this.groupSetName.filter({ hasText: text })).toHaveCount(1)
-      : await expect(this.groupSetName.filter({ hasText: text })).toHaveCount(0);
+      ? await expect(this.groupSetName.filter({ hasText: text })).toBeVisible()
+      : await expect(this.groupSetName.filter({ hasText: text })).not.toBeVisible();
   }
 
   async clickOnSetCheckboxByName(setName: string) {
