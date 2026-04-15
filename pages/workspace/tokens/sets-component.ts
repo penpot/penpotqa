@@ -20,7 +20,7 @@ export class SetsComponent {
     // token sets locators
     this.createOneSetButton = page
       .locator('[class*="empty-sets-wrapper"]')
-      .getByText('Create one.');
+      .getByRole('button', { name: 'Create one.' });
     this.createSetButton = page.getByRole('button', { name: 'Add set' });
     this.setsNameInput = page.getByPlaceholder("Enter name (use '/' for groups)");
     this.setName = page.getByTestId('tokens-set-item');
