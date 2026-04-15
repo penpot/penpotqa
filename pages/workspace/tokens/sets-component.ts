@@ -11,6 +11,7 @@ export class SetsComponent {
   readonly groupSetName: Locator;
   readonly renameContextMenuOption: Locator;
   readonly addSetToGroupOption: Locator;
+  readonly duplicateSetNameError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -30,6 +31,10 @@ export class SetsComponent {
     this.addSetToGroupOption = page
       .getByRole('listitem')
       .filter({ hasText: 'Add set to this group' });
+    this.duplicateSetNameError = page.getByText(
+      'A set with the same name already exists',
+      { exact: true },
+    );
   }
 
   async createSetViaLink(name: string) {
@@ -115,5 +120,12 @@ export class SetsComponent {
     await this.renameContextMenuOption.click();
     await this.setsNameInput.fill(newSetName);
     await this.baseComponent.clickOnEnter();
+  }
+
+  async checkSetNameAlreadyExistsError() {
+    await expect(
+      this.duplicateSetNameError,
+      'Duplicate set name error notification should be visible',
+    ).toBeVisible();
   }
 }
