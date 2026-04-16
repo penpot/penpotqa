@@ -11,12 +11,13 @@ export class ThemesComponent {
   readonly groupThemeNameInput: Locator;
   readonly themesDropdown: Locator;
   readonly backToThemeListButton: Locator;
+  readonly themeNameErrorForm: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.baseComponent = new BaseComponent(page);
 
-    // Sets locators
+    // Themes locators
     this.themeUpdateCreateModal = page.getByTestId(
       'token-theme-update-create-modal',
     );
@@ -34,6 +35,7 @@ export class ThemesComponent {
     this.backToThemeListButton = page.getByRole('button', {
       name: 'Back to theme list',
     });
+    this.themeNameErrorForm = page.getByText('Theme Option with the same');
   }
 
   async createThemeViaLinkWithSet(name: string, setName: string) {
@@ -58,11 +60,17 @@ export class ThemesComponent {
     await this.baseComponent.modalSaveButton.click();
   }
 
-  async addNewThemeWithGroup(groupName: string, themeName: string) {
+  async addNewThemeWithGroup(
+    groupName: string,
+    themeName: string,
+    checkErrorForm: boolean = false,
+  ) {
     await this.addNewThemeButton.click();
     await this.groupThemeNameInput.fill(groupName);
     await this.themeNameInput.fill(themeName);
-    await this.baseComponent.modalSaveButton.click();
+    if (!checkErrorForm) {
+      await this.baseComponent.modalSaveButton.click();
+    }
   }
 
   async addNewTheme(themeName: string) {
@@ -85,6 +93,11 @@ export class ThemesComponent {
       .locator('[class*="theme-row"]')
       .filter({ has: this.page.getByText(name, { exact: true }) });
     await themeRow.getByTitle('Edit theme and manage sets').click();
+  }
+
+  async editThemeName(newThemeName: string) {
+    await this.themeNameInput.fill(newThemeName);
+    await this.baseComponent.modalSaveButton.click();
   }
 
   async activateSetInTheme(name: string) {

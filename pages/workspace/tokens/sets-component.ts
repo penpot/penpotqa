@@ -11,6 +11,7 @@ export class SetsComponent {
   readonly groupSetName: Locator;
   readonly renameContextMenuOption: Locator;
   readonly addSetToGroupOption: Locator;
+  readonly duplicateSetNameError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -19,7 +20,7 @@ export class SetsComponent {
     // token sets locators
     this.createOneSetButton = page
       .locator('[class*="empty-sets-wrapper"]')
-      .getByText('Create one.');
+      .getByRole('button', { name: 'Create one.' });
     this.createSetButton = page.getByRole('button', { name: 'Add set' });
     this.setsNameInput = page.getByPlaceholder("Enter name (use '/' for groups)");
     this.setName = page.getByTestId('tokens-set-item');
@@ -30,6 +31,10 @@ export class SetsComponent {
     this.addSetToGroupOption = page
       .getByRole('listitem')
       .filter({ hasText: 'Add set to this group' });
+    this.duplicateSetNameError = page.getByText(
+      'A set with the same name already exists',
+      { exact: true },
+    );
   }
 
   async createSetViaLink(name: string) {
@@ -45,19 +50,35 @@ export class SetsComponent {
   }
 
   async checkFirstSetName(text: string) {
-    await expect(this.setName.first(), `First Set Name is ${text}`).toHaveText(text);
+    await expect(
+      this.setName.first(),
+      `First set name should be "${text}"`,
+    ).toHaveText(text);
   }
 
   async isSetNameVisible(text: string, visible = true) {
-    visible
-      ? await expect(this.setName.filter({ hasText: text })).toHaveCount(1)
-      : await expect(this.setName.filter({ hasText: text })).toHaveCount(0);
+    const setItem = this.setName.filter({ hasText: text });
+    if (visible) {
+      await expect(setItem, `Set "${text}" should have count 1`).toHaveCount(1);
+      await expect(setItem, `Set "${text}" should be visible`).toBeVisible();
+    } else {
+      await expect(setItem, `Set "${text}" should not exist in the DOM`).toHaveCount(
+        0,
+      );
+    }
   }
 
   async isGroupSetNameVisible(text: string, visible = true) {
-    visible
-      ? await expect(this.groupSetName.filter({ hasText: text })).toHaveCount(1)
-      : await expect(this.groupSetName.filter({ hasText: text })).toHaveCount(0);
+    const groupItem = this.groupSetName.filter({ hasText: text });
+    if (visible) {
+      await expect(groupItem, `Group "${text}" should have count 1`).toHaveCount(1);
+      await expect(groupItem, `Group "${text}" should be visible`).toBeVisible();
+    } else {
+      await expect(
+        groupItem,
+        `Group "${text}" should not exist in the DOM`,
+      ).toHaveCount(0);
+    }
   }
 
   async clickOnSetCheckboxByName(setName: string) {
@@ -75,6 +96,7 @@ export class SetsComponent {
   async isSetCheckedByName(setName: string) {
     await expect(
       this.setName.filter({ hasText: setName }).getByRole('checkbox'),
+      `Set "${setName}" checkbox should be checked`,
     ).toBeChecked();
   }
 
@@ -110,10 +132,23 @@ export class SetsComponent {
     await this.baseComponent.clickOnEnter();
   }
 
+  async renameGroupByDoubleClick(groupName: string, newGroupName: string) {
+    await this.groupSetName.filter({ hasText: groupName }).dblclick();
+    await this.setsNameInput.fill(newGroupName);
+    await this.baseComponent.clickOnEnter();
+  }
+
   async renameSetViaContextMenu(oldSetName: string, newSetName: string) {
     await this.rightClickOnSetByName(oldSetName);
     await this.renameContextMenuOption.click();
     await this.setsNameInput.fill(newSetName);
     await this.baseComponent.clickOnEnter();
+  }
+
+  async checkSetNameAlreadyExistsError() {
+    await expect(
+      this.duplicateSetNameError,
+      'Duplicate set name error notification should be visible',
+    ).toBeVisible();
   }
 }
