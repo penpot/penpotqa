@@ -14,12 +14,16 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 const teamName = random().concat('autotest');
 const sampleData = new SampleData();
 
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+
 mainTest.beforeEach(
   'Create a team and a new file',
   async ({ page, browserName }) => {
-    let teamPage: TeamPage = new TeamPage(page);
-    let dashboardPage: DashboardPage = new DashboardPage(page);
-    let mainPage: MainPage = new MainPage(page);
+    teamPage = new TeamPage(page);
+    dashboardPage = new DashboardPage(page);
+    mainPage = new MainPage(page);
 
     await teamPage.createTeam(teamName);
     await teamPage.isTeamSelected(teamName);
@@ -33,8 +37,8 @@ mainTest.beforeEach(
 );
 
 mainTest.afterEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const mainPage: MainPage = new MainPage(page);
+  mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
