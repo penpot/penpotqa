@@ -199,7 +199,7 @@ mainTest.describe(() => {
     });
 
     await mainTest.step(
-      'Check "Dark" and "Light" sets are now visible under "Device" group',
+      'Check "Dark" and "Light" sets are still visible after the merge',
       async () => {
         await tokensPage.setsComp.isSetNameVisible('Dark');
         await tokensPage.setsComp.isSetNameVisible('Light');
