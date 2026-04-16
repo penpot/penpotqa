@@ -16,7 +16,7 @@ nvm use && npm install && npx playwright install
 npm test
 
 # Run a single test file
-npx playwright test tests/dashboard/dashboard.spec.js --project=chrome
+npx playwright test tests/dashboard/dashboard-files.spec.ts --project=chrome
 
 # Run tests matching a title pattern
 npx playwright test -g "CO-154 Transform ellipse to path" --project=chrome
@@ -45,10 +45,12 @@ npm run prettier
 All page interactions are abstracted into page objects under `pages/`:
 
 - **`base-page.js`** — Shared locators and methods (viewport, context menus, save state). All workspace page objects use these.
-- **`pages/workspace/`** — Editor page objects: `main-page.js` (canvas), `design-panel-page.js`, `layers-panel-page.js`, `assets-panel-page.js`, `color-palette-page.js`, `prototype-panel-page.js`, `inspect-panel-page.js`, `view-mode-page.js`, `comments-panel-page.js`, `plugins-page.js`
-- **`pages/workspace/tokens/`** — Design tokens feature (TypeScript). Uses `BaseComponent` (`base-component.ts`) as base class with a component composition pattern: `TokensBasePage` composes `SetsComponent`, `ThemesComponent`, `ToolsComponent`, and token-type components.
-- **`pages/dashboard/`** — Dashboard and team management: `dashboard-page.js`, `team-page.js`
-- **`pages/login-page.js`**, **`register-page.js`**, **`profile-page.js`** — Auth flows
+- **`base-component.ts`** — Base class for component composition (shared by tokens and other TS page objects).
+- **`pages/workspace/`** — Editor page objects: `main-page.js` (canvas), `design-panel-page.js`, `layers-panel-page.js`, `assets-panel-page.js`, `color-palette-page.js`, `prototype-panel-page.js`, `inspect-panel-page.js`, `view-mode-page.js`, `comments-panel-page.js`, `plugins-page.js`, `history-panel-page.js`
+- **`pages/workspace/tokens/`** — Design tokens feature (TypeScript). Uses `BaseComponent` as base class with a component composition pattern: `TokensBasePage` composes `SetsComponent`, `ThemesComponent`, `ToolsComponent`, and token-type components.
+- **`pages/dashboard/`** — Dashboard and team management: `dashboard-page.js`, `team-page.js`, `dashboard-deleted-page.ts`
+- **`pages/login-page.js`**, **`register-page.js`**, **`profile-page.js`**, **`forgot-password-page.js`** — Auth flows
+- **`pages/performance-page.js`** — Page object for performance tests
 
 ### Test Fixtures (`fixtures.js`)
 
@@ -60,9 +62,9 @@ All page interactions are abstracted into page objects under `pages/`:
 
 Tests are grouped by feature area. Each spec file imports from `fixtures.js` and uses the `qase()` wrapper to link tests to Qase test management IDs:
 
-```javascript
-const { mainTest } = require('../../fixtures');
-const { qase } = require('playwright-qase-reporter/playwright');
+```typescript
+import { mainTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 mainTest(qase(1234, 'Test title'), async ({ page }) => {
   await mainTest.step('Step description', async () => {
@@ -70,6 +72,8 @@ mainTest(qase(1234, 'Test title'), async ({ page }) => {
   });
 });
 ```
+
+New spec files must be TypeScript (`.spec.ts`). Legacy files in `.spec.js` are being migrated progressively.
 
 ### Visual Regression
 
@@ -82,6 +86,11 @@ Snapshots are stored at `tests/{dir}/{file}-snapshots/linux/{browser}/`. Compari
 - `stripe.js` — Stripe API for subscription/payment tests
 - `saveTestResults.js` — Tracks pass/fail counts
 - `sample-data.ts` — Shared test data constants
+- `angle.js` — Angle calculation utilities
+- `rect.js` — Rectangle geometry utilities
+- `get-platform.js` — Platform detection helper
+- `user-flows.js` — Reusable multi-step user flows shared across tests
+- `mattermost.helper.js` — Mattermost integration helpers
 
 ## Key Conventions
 
