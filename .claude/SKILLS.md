@@ -79,7 +79,17 @@ await page.goto(changeEmail!.inviteUrl);
 
 Common cases: return values from Gmail helpers (`getRegisterMessage`, `waitMessage`), Stripe helpers, or any function that returns `T | undefined`.
 
-## 4. Keep `.js` originals during migration
+## 4. Rename snapshot folder
+
+If a `<spec-name>.spec.js-snapshots` directory exists next to the spec file, rename it to `<spec-name>.spec.ts-snapshots`:
+
+```bash
+mv tests/path/to/foo.spec.js-snapshots tests/path/to/foo.spec.ts-snapshots
+```
+
+Do this as part of the migration, before confirming it is complete.
+
+## 5. Keep `.js` originals during migration
 
 Do not delete the original `.js` files until the user confirms the migration is complete.
 
