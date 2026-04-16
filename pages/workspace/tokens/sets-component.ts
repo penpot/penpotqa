@@ -57,15 +57,28 @@ export class SetsComponent {
   }
 
   async isSetNameVisible(text: string, visible = true) {
-    visible
-      ? await expect(this.setName.filter({ hasText: text })).toBeVisible()
-      : await expect(this.setName.filter({ hasText: text })).not.toBeVisible();
+    const setItem = this.setName.filter({ hasText: text });
+    if (visible) {
+      await expect(setItem, `Set "${text}" should have count 1`).toHaveCount(1);
+      await expect(setItem, `Set "${text}" should be visible`).toBeVisible();
+    } else {
+      await expect(setItem, `Set "${text}" should not exist in the DOM`).toHaveCount(
+        0,
+      );
+    }
   }
 
   async isGroupSetNameVisible(text: string, visible = true) {
-    visible
-      ? await expect(this.groupSetName.filter({ hasText: text })).toBeVisible()
-      : await expect(this.groupSetName.filter({ hasText: text })).not.toBeVisible();
+    const groupItem = this.groupSetName.filter({ hasText: text });
+    if (visible) {
+      await expect(groupItem, `Group "${text}" should have count 1`).toHaveCount(1);
+      await expect(groupItem, `Group "${text}" should be visible`).toBeVisible();
+    } else {
+      await expect(
+        groupItem,
+        `Group "${text}" should not exist in the DOM`,
+      ).toHaveCount(0);
+    }
   }
 
   async clickOnSetCheckboxByName(setName: string) {
