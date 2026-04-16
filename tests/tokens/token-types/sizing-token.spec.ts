@@ -88,3 +88,23 @@ mainTest(
     );
   },
 );
+
+mainTest(
+  qase(2197, 'Verifying invalid token values on creation, aborting (cancel)'),
+  async ({ page }) => {
+    const tokensPage: TokensPage = new TokensPage(page);
+
+    const sizingToken: MainToken<TokenClass> = {
+      class: TokenClass.Sizing,
+      name: 'sizingToken',
+      value: undefined,
+    };
+
+    await tokensPage.clickTokensTab();
+    await tokensPage.tokensComp.clickOnAddTokenAndFillData(sizingToken);
+    await tokensPage.tokensComp.clearTokenNameInput();
+    await tokensPage.tokensComp.isErrorHintMessageVisible(
+      'Name should be at least 1 character',
+    );
+  },
+);
