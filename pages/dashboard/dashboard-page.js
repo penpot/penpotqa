@@ -186,6 +186,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.librariesHideButton = page.getByRole('button', {
       name: 'Libraries & Templates Hide',
     });
+    this.librariesShowButton = page.getByRole('button', {
+      name: 'Libraries & Templates Show',
+    });
+    this.librariesCard = page.locator('a[class*="template-card"]');
     this.librariesContainer = page.locator(
       '.main_ui_dashboard_libraries__dashboard-container',
     );
@@ -463,6 +467,23 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     if (await this.librariesHideButton.isVisible()) {
       await this.librariesHideButton.click();
     }
+  }
+
+  async showLibrariesAndTemplatesCarrousel() {
+    if (await this.librariesShowButton.isVisible()) {
+      await this.librariesShowButton.click();
+    }
+  }
+
+  async downloadFromLibrariesAndTemplates(libraryAndTemplateName) {
+    const libraryAndTemplate = this.librariesCard.filter({
+      hasText: libraryAndTemplateName,
+    });
+    await expect(libraryAndTemplate).toBeVisible();
+    await libraryAndTemplate.click();
+    await expect(this.modalTitle).toBeVisible();
+    await this.modalContinueButton.click();
+    await expect(this.modalTitle).not.toBeVisible();
   }
 
   async downloadFileViaRightClick() {
