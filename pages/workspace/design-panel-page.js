@@ -74,11 +74,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .locator(`input[class*="rows_color_row__color-input"]`)
       .last();
     this.fillTokenColor = this.designTabpanel
-      .locator(`[class*="fill-section"] div[class*="color_row__token-name"]`)
+      .locator('div[class*="color_row__token-name"]')
       .last();
     this.searchByTokenNameInput = page.getByRole('textbox', {
       name: 'Search by token name',
     });
+    this.colorPickerTokensButton =
+      this.colorPickerContainer.getByTestId('opt-token-color');
     this.selectedColors = this.designTabpanel.locator(
       '[class*="color_selection__element-set"]',
     );
@@ -250,13 +252,23 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
 
     //Design panel - Blur section
-    this.blurSection = page.getByText('Blur', { exact: true });
-    this.addBlurButton = page.getByRole('button', { name: 'Add blur' });
-    this.blurMoreOptions = page.locator('button[class*="blur__show-more"]');
-    this.blurValueInput = page.locator('#blur-input-sidebar');
-    this.blurHideIcon = page.getByRole('button', { name: 'Toggle blur' });
-    this.blurUnhideIcon = page.getByRole('button', { name: 'Toggle blur' });
-    this.blurRemoveIcon = page.getByRole('button', { name: 'Remove blur' });
+    this.blurSection = page.locator(
+      '.main_ui_workspace_sidebar_options_menus_blur__element-set',
+    );
+    this.addBlurButton = this.blurSection.getByRole('button', { name: 'Add blur' });
+    this.blurMoreOptions = this.blurSection.locator(
+      'button[class*="blur__show-more"]',
+    );
+    this.blurValueInput = this.blurSection.locator('#blur-input-sidebar');
+    this.blurHideIcon = this.blurSection.getByRole('button', {
+      name: 'Toggle blur',
+    });
+    this.blurUnhideIcon = this.blurSection.getByRole('button', {
+      name: 'Toggle blur',
+    });
+    this.blurRemoveIcon = this.blurSection.getByRole('button', {
+      name: 'Remove blur',
+    });
 
     //Design panel - Stroke section
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
@@ -298,6 +310,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textIconRTL = page.getByTestId('rtl-text-direction');
     this.textFontSelector = page.locator('div[class*="typography__font-option"]');
     this.textFontSelectorSearchInput = page.getByPlaceholder('Search font');
+    this.textFontItemResult = page.locator(
+      '.main_ui_workspace_sidebar_options_menus_typography__font-item',
+    );
     this.textFontStyleSelector = page.locator(
       'div[class*="typography__font-variant-options"]',
     );
@@ -386,11 +401,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.discardAnnotationTick = this.componentContent.getByTitle('Discard');
     this.editAnnotationTick = this.componentContent.getByTitle('Edit');
     this.deleteAnnotationTick = this.componentContent.getByTitle('Delete');
-    this.deleteAnnotationPopup = page.locator(
-      'div[class*="modal-container"] h2:text-is("Delete annotation")',
-    );
-    this.deleteAnnotationOkBtn = page.locator(
-      'div[class*="modal-container"] input[value="Ok"]',
+    this.deleteAnnotationModalContainer = page
+      .locator('.main_ui_confirm__modal-container')
+      .filter({ hasText: 'Delete annotation' });
+    this.deleteAnnotationOkBtn = this.deleteAnnotationModalContainer.getByRole(
+      'button',
+      { name: 'Ok', exact: true },
     );
     this.createVariantOptionDesign = page
       .getByRole('listitem')
@@ -595,6 +611,24 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     ).not.toBeVisible();
   }
 
+  async clickColorPickerTokensButton() {
+    await this.colorPickerTokensButton.click();
+  }
+
+  async isColorPickerTokensButtonVisible() {
+    await expect(
+      this.colorPickerTokensButton,
+      'Color picker Tokens switch button is visible',
+    ).toBeVisible();
+  }
+
+  async isSearchByTokenNameInputNotVisible() {
+    await expect(
+      this.searchByTokenNameInput,
+      'Search by token name input is not visible (Colors mode is active)',
+    ).not.toBeVisible();
+  }
+
   async clickAddFillButton() {
     await this.addFillButton.click();
   }
@@ -749,7 +783,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickAddBlurButton() {
     await this.blurSection.waitFor();
-    await this.addBlurButton.click({ delay: 500 });
+    await this.addBlurButton.click();
   }
 
   async changeValueForBlur(value) {
@@ -818,9 +852,33 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
-  async changeTextFont(fontName) {
+  async openTypographyFontDropdown() {
     await this.textFontSelector.click();
+  }
+
+  async searchTypographyFontFromSearch(fontName) {
     await this.textFontSelectorSearchInput.fill(fontName);
+  }
+
+  async clearTypographyFontSearchBar() {
+    await this.textFontSelectorSearchInput.clear();
+  }
+
+  async isTypographyFontItemVisible(fontName) {
+    await expect(
+      this.textFontItemResult.getByText(fontName, { exact: true }),
+    ).toBeVisible();
+  }
+
+  async isTypographyFontItemNotVisible(fontName) {
+    await expect(
+      this.textFontItemResult.getByText(fontName, { exact: true }),
+    ).not.toBeVisible();
+  }
+
+  async changeTextFont(fontName) {
+    await this.openTypographyFontDropdown();
+    await this.searchTypographyFontFromSearch(fontName);
     await this.page
       .locator(`div[class*="font-item"] span:has-text('${fontName}')`)
       .click();
@@ -1170,7 +1228,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clickOnEnter();
   }
 
-  async checkLayoutIndependentPaddingOnGridEdit(type, value) {
+  async verifyLayoutIndependentPaddingValue(type, value) {
     switch (type) {
       case 'Bottom':
         await expect(this.layoutPaddingBottomInput).toHaveValue(value);
@@ -1336,7 +1394,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async clickOnDeleteAnnotation() {
     await this.annotationCreateTitle.hover();
     await this.deleteAnnotationTick.click();
-    await expect(this.deleteAnnotationPopup).toBeVisible();
+    await expect(this.deleteAnnotationModalContainer).toBeVisible();
   }
 
   async confirmDeleteAnnotation() {
@@ -1344,8 +1402,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async createAnnotationRightClick() {
-    const layerSel = this.page.locator('div[class*="viewport"] [id^="shape"]');
-    await layerSel.last().click({ button: 'right', force: true });
+    const layerSel = this.page.getByTestId('layer-row').first();
+    await layerSel.dispatchEvent('contextmenu');
+
     await this.createAnnotationOption.click();
     await expect(this.annotationTextArea).toBeVisible();
   }

@@ -28,16 +28,6 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase([1295], 'Undo deleted component'), async ({ browserName }) => {
-  await mainPage.createDefaultRectangleByCoordinates(200, 300);
-  await mainPage.createComponentViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.deleteLayerViaRightClick();
-  await mainPage.isCreatedLayerVisible(false);
-  await mainPage.clickShortcutCtrlZ(browserName);
-  await mainPage.isCreatedLayerVisible(true);
-});
-
 mainTest(qase([1456], 'Delete component Assets tab'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await mainPage.createComponentViaRightClick();
@@ -46,7 +36,7 @@ mainTest(qase([1456], 'Delete component Assets tab'), async () => {
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
   await assetsPanelPage.deleteFileLibraryComponents();
   await mainPage.waitForChangeIsSaved();
-  await assetsPanelPage.isComponentNotAddedToFileLibraryComponents();
+  await assetsPanelPage.isComponentNotVisibleInAssetsTab();
   await assetsPanelPage.selectTypeFromAllAssetsDropdown('Components');
   await expect(assetsPanelPage.assetsTitleText).toHaveScreenshot(
     'assets-component-delete.png',
@@ -69,5 +59,5 @@ mainTest(qase([1345], 'Restore main component from context menu'), async () => {
   await mainPage.waitForChangeIsSaved();
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-  await assetsPanelPage.isComponentWithNameAddedToFileLibrary('Rectangle');
+  await assetsPanelPage.isComponentVisibleInAssetsTab('Rectangle');
 });

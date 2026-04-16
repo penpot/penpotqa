@@ -131,6 +131,33 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.skipPaymentsDetailsButton = page.locator(
       'input[value="Skip for now and start trial"]',
     );
+
+    // Integrations
+    this.integrationsSidebarOption = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Integrations' });
+    this.integrationsHeader = page.getByRole('heading', { name: 'Integrations' });
+    this.createNewAccessTokenButton = page.getByRole('button', {
+      name: 'Create new access token',
+    });
+    this.createAccessTokenHeaderModalForm = page.getByRole('heading', {
+      name: 'Create access token',
+    });
+    this.accessTokenInputName = page.getByRole('textbox', { name: 'Name' });
+    this.createAccessTokenButtonSubmit = page.getByRole('button', {
+      name: 'Create access token',
+    });
+    this.accessTokenCreatedHeaderModal = page.getByRole('heading', {
+      name: 'Access token created',
+    });
+    this.closeModalButton = page.getByRole('button').filter({ hasText: 'Close' });
+    this.optionItem = page.getByRole('button', { name: 'Options' });
+    this.deleteOption = page.getByTestId('token-delete');
+    this.deleteTokenHeaderModal = page.getByRole('heading', {
+      name: 'Delete token',
+    });
+    this.deleteTokenButton = page.getByRole('button', { name: 'Delete token' });
+    this.noAccessTokensText = page.getByText('You have no tokens so far.');
   }
 
   async openYourAccountPage() {
@@ -409,5 +436,34 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     const popupPromise = this.page.waitForEvent('popup');
     await this.termsOfServiceMenuItem.click();
     return popupPromise;
+  }
+
+  async openIntegrationsPage() {
+    await this.integrationsSidebarOption.click();
+    await expect(this.integrationsHeader).toBeVisible();
+  }
+
+  async createAccessToken(accessTokenName) {
+    await this.createNewAccessTokenButton.click();
+    await expect(this.createAccessTokenHeaderModalForm).toBeVisible();
+    await this.accessTokenInputName.fill(accessTokenName);
+    await this.createAccessTokenButtonSubmit.click();
+    await expect(this.accessTokenCreatedHeaderModal).toBeVisible();
+    await this.closeModalButton.click();
+    const createdAccessToken = this.page.getByText(accessTokenName);
+    await expect(createdAccessToken).toBeVisible();
+  }
+
+  async deleteAccessToken() {
+    await this.optionItem.click();
+    await expect(this.deleteOption).toBeVisible();
+    await this.deleteOption.click();
+    await expect(this.deleteTokenHeaderModal).toBeVisible();
+    await this.deleteTokenButton.click();
+    await this.checkNoAccessTokens();
+  }
+
+  async checkNoAccessTokens() {
+    await expect(this.noAccessTokensText).toBeVisible();
   }
 };

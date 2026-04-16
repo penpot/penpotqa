@@ -15,11 +15,6 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       'div[class*="workspace_sidebar_layer_item__layer-row"]',
     );
     this.createdLayerOnLayersPanelNameInput = this.layersRows.getByRole('textbox');
-    this.searchLayersIcon = page.locator('svg [href="#icon-search"]');
-    this.searchLayersInput = page.getByPlaceholder('Search layers');
-    this.searchedLayerOnLayersPanelNameText = page.locator(
-      'span[class*="element-name"] >> nth=1',
-    );
     this.verticalFlexLayoutIcon = page.getByTestId('icon-flex-vertical');
     this.horizontalFlexLayoutIcon = page.getByTestId('icon-flex-horizontal');
     this.focusModeDiv = page.getByText('Focus mode', { exact: true });
@@ -55,6 +50,22 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.copyComponentLayerToggleCollapse = this.copyComponentLayer.locator(
       'xpath=./../button[contains(@class, "toggle-content")]',
     );
+    this.mainComponentChildrenContainer = page.locator(
+      '[data-testid="layer-row"]:has([data-testid="icon-component"]) + div[data-testid*="children"]',
+    );
+    this.mainComponentChildrenRows =
+      this.mainComponentChildrenContainer.getByTestId('layer-row');
+    this.copyComponentChildrenContainer = page.locator(
+      '[data-testid="layer-row"]:has([data-testid="icon-component-copy"]) + div[data-testid*="children"]',
+    );
+    this.copyComponentChildrenRows =
+      this.copyComponentChildrenContainer.getByTestId('layer-row');
+
+    // Layers Search Bar
+    this.searchLayersIcon = this.layersSidebar.getByRole('button', {
+      name: 'Search',
+    });
+    this.searchLayersInput = this.layersSidebar.getByPlaceholder('Search layers');
   }
 
   /**
@@ -117,11 +128,11 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.getLayerRowsBy(layerName, uncollapsedChildrenOnly).first().click();
   }
 
-  async expandGroupOnLayersTab() {
-    if (!(await this.layerItemToggleExpand.isVisible())) {
-      await this.layerBoardToggleContentCollapse.first().click();
-      await expect(this.layerItemToggleExpand).toBeVisible();
-    }
+  async expandGroupOnLayersTab(groupName) {
+    const groupToggleContent = this.page
+      .getByRole('checkbox', { name: groupName })
+      .getByTestId('toggle-content');
+    await groupToggleContent.click();
   }
 
   async expandBoardOnLayersTab() {
@@ -155,21 +166,47 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.clickOnEnter();
   }
 
-  async renameLayerViaRightClick(layerName) {
+  /**
+   * @param {string} layerName
+   * @param {string | null} newName
+   */
+  async renameLayerViaRightClick(layerName, newName = null) {
     const layerSel = this.layersRows.getByText(layerName);
-    await layerSel.last().click({
+    await layerSel.first().click({
       button: 'right',
       force: true,
     });
+
     await this.renameOption.locator('span').first().click();
+    if (newName) {
+      await this.typeNameCreatedLayerAndEnter(newName);
+    }
   }
 
   async isLayerNameDisplayed(name) {
-    await expect(this.createdLayerOnLayersPanelSpan).toHaveText(name);
+    await expect(
+      this.layersRows.getByText(name, { exact: true }).first(),
+    ).toBeVisible();
+  }
+
+  async isLayerNameNotDisplayed(name) {
+    await expect(
+      this.layersRows.getByText(name, { exact: true }).first(),
+    ).not.toBeVisible();
   }
 
   async isBoardNameDisplayed(name) {
     await expect(this.createdLayerOnLayersPanelSpan).toHaveText(name);
+  }
+
+  async renameSelectedLayerViaDoubleClick(newName) {
+    const selectedLayer = this.page
+      .locator(
+        'div[class*="sidebar_layer_item__selected"] span[class*="element-name"]',
+      )
+      .first();
+    await selectedLayer.dblclick();
+    await this.typeNameCreatedLayerAndEnter(newName);
   }
 
   async doubleClickLayerOnLayersTab(name) {
@@ -193,13 +230,16 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await iconSel.dblclick();
   }
 
-  async searchLayer(name) {
+  async openLayerSearchBar() {
     await this.searchLayersIcon.click();
+  }
+
+  async searchLayer(name) {
     await this.searchLayersInput.fill(name);
   }
 
-  async isLayerSearched(name) {
-    await expect(this.searchedLayerOnLayersPanelNameText).toHaveText(name);
+  async clearLayerSearchBar() {
+    await this.searchLayersInput.clear();
   }
 
   async isVerticalFlexIconVisibleOnLayer(condition = true) {
@@ -310,21 +350,41 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async expandMainComponentOnLayersTab() {
-    if (!(await this.mainComponentLayerToggleExpand.first().isVisible())) {
+    await this.mainComponentLayer.first().waitFor({ state: 'visible' });
+
+    const childrenVisible = await this.mainComponentChildrenContainer
+      .first()
+      .isVisible();
+
+    if (!childrenVisible) {
       if (await this.mainComponentLayerToggleCollapse.first().isVisible()) {
         await this.mainComponentLayerToggleCollapse.first().click({ force: true });
-        await expect(this.mainComponentLayerToggleExpand.first()).toBeVisible();
+        await this.mainComponentChildrenContainer
+          .first()
+          .waitFor({ state: 'visible' });
       }
     }
+
+    await this.mainComponentChildrenRows.first().waitFor({ state: 'visible' });
   }
 
   async expandCopyComponentOnLayersTab() {
-    if (!(await this.copyComponentLayerToggleExpand.first().isVisible())) {
+    await this.copyComponentLayer.first().waitFor({ state: 'visible' });
+
+    const childrenVisible = await this.copyComponentChildrenContainer
+      .first()
+      .isVisible();
+
+    if (!childrenVisible) {
       if (await this.copyComponentLayerToggleCollapse.first().isVisible()) {
         await this.copyComponentLayerToggleCollapse.first().click({ force: true });
-        await expect(this.copyComponentLayerToggleExpand.first()).toBeVisible();
+        await this.copyComponentChildrenContainer
+          .first()
+          .waitFor({ state: 'visible' });
       }
     }
+
+    await this.copyComponentChildrenRows.first().waitFor({ state: 'visible' });
   }
 
   async selectMainComponentChildLayer() {
@@ -333,12 +393,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async clickMainComponentChildLayerOnLayersTab() {
-    const layer = this.page
-      .locator(
-        '*[data-testid="layer-row"]:has([data-testid="icon-component"]) + div[data-testid*="children"]',
-      )
-      .first();
-    await layer.click();
+    await this.mainComponentChildrenRows.first().click();
   }
 
   async selectCopyComponentChildLayer() {
@@ -347,12 +402,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async clickCopyComponentChildLayerOnLayersTab() {
-    const layer = this.page
-      .locator(
-        '*[data-testid="layer-row"]:has([data-testid="icon-component-copy"]) + div[data-testid*="children"]',
-      )
-      .first();
-    await layer.click();
+    await this.copyComponentChildrenRows.first().click();
   }
 
   async isCopyComponentNameDisplayed(name) {

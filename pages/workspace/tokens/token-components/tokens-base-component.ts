@@ -9,7 +9,10 @@ import {
   TypographyTokensComponent,
   TypographyToken,
 } from '@pages/workspace/tokens/token-components/typography-tokens-component';
-import { ShadowTokensComponent, ShadowToken } from './shadow-tokens-component';
+import {
+  ShadowTokensComponent,
+  ShadowToken,
+} from '@pages/workspace/tokens/token-components/shadow-tokens-component';
 
 export enum TokenClass {
   Color = 'Color',
@@ -36,6 +39,23 @@ export interface BasicTokenData {
   description?: string;
 }
 
+/**
+ * Represents a token group node in the token tree.
+ * Extends BasicTokenData so that `name` holds the group path segment (e.g. 'primary').
+ * The optional `parent` field models nested group hierarchies and can be left unset
+ * when the test only needs to reference a top-level group.
+ */
+export interface TokenGroupData extends BasicTokenData {
+  parent?: TokenGroupData;
+}
+
+/**
+ * Builds the full dot-separated path for a token or group segment from the provided
+ * `name` and the `TokenGroupData` parent chain.
+ */
+export const buildTokenPath = (name: string, parent?: TokenGroupData): string =>
+  parent ? `${buildTokenPath(parent.name, parent.parent)}.${name}` : name;
+
 export class TokensComponent {
   readonly page: Page;
   readonly baseComp: BaseComponent;
@@ -45,45 +65,72 @@ export class TokensComponent {
   readonly tokenSideBar: Locator;
   readonly tokenSections: Locator;
   readonly invalidToken: Locator;
+  readonly tokenContextMenu: Locator;
   readonly editTokenMenuItem: Locator;
   readonly tokenDescriptionInput: Locator;
   readonly tokenNameInput: Locator;
   readonly duplicateTokenMenuItem: Locator;
   readonly deleteTokenMenuItem: Locator;
+  readonly deleteTokensGroupMenuItem: Locator;
   readonly expandTokensButton: Locator;
+  readonly remapTokenModal: Locator;
+  readonly remapTokensButton: Locator;
+  readonly dontRemapButton: Locator;
+  readonly tokenGroupName: Locator;
+  readonly tokensPage: TokensPage;
+  readonly createTokenModal: Locator;
 
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
+    this.tokensPage = tokensPage;
     this.baseComp = new BaseComponent(page);
     this.typoTokensComp = new TypographyTokensComponent(page);
     this.mainTokensComp = new MainTokensComponent(page, tokensPage);
     this.shadowTokensComp = new ShadowTokensComponent(page);
     this.tokenSideBar = page.getByTestId('tokens-sidebar');
+    this.createTokenModal = page.getByTestId('token-update-create-modal');
+    this.tokenContextMenu = page.getByTestId('tokens-context-menu-for-token');
     this.tokenSections = this.tokenSideBar.locator('[class*="section-name"]');
     this.invalidToken = page.locator('button[class*="token-pill-invalid-applied"]');
     this.tokenDescriptionInput = page.getByPlaceholder('Description');
     this.tokenNameInput = page.locator('#token-name');
-    this.duplicateTokenMenuItem = page
+    this.duplicateTokenMenuItem = this.tokenContextMenu
       .getByRole('listitem')
       .filter({ hasText: 'Duplicate  token' });
-    this.deleteTokenMenuItem = page
+    this.deleteTokenMenuItem = this.tokenContextMenu
       .getByRole('listitem')
       .filter({ hasText: 'Delete token' });
-
+    this.deleteTokensGroupMenuItem = page
+      .getByTestId('tokens-context-menu-for-token-node')
+      .getByRole('button', { name: 'Delete', exact: true });
     this.expandTokensButton = this.tokenSideBar
       .locator('[class*="layer-button-wrapper"]')
       .getByRole('button');
-
-    this.editTokenMenuItem = page
+    this.editTokenMenuItem = this.tokenContextMenu
       .getByRole('listitem')
       .filter({ hasText: 'Edit token' });
+
+    this.remapTokenModal = page.getByTestId('token-remapping-modal');
+    this.remapTokensButton = this.remapTokenModal.getByRole('button', {
+      name: 'Remap tokens',
+    });
+    this.dontRemapButton = this.remapTokenModal.getByRole('button', {
+      name: "Don't remap",
+    });
+    this.tokenGroupName = this.tokenSideBar.locator('[class*="layer-button-name"]');
   }
 
-  private async getAddTokenButton(tokenClass: TokenClass): Promise<Locator> {
+  getTokenSection(tokenClass: TokenClass): Locator {
+    return this.page.getByTestId(
+      `section-${tokenClass.toLowerCase().replace(/\s+/g, '-')}`,
+    );
+  }
+
+  private getAddTokenButton(tokenClass: TokenClass): Locator {
     return this.page.getByRole('button', { name: `Add token: ${tokenClass}` });
   }
 
-  private async getTokenTreeButton(tokenClass: TokenClass): Promise<Locator> {
+  private getTokenTreeButton(tokenClass: TokenClass): Locator {
     return this.tokenSideBar.getByRole('button', { name: `${tokenClass}` }).first();
   }
 
@@ -131,7 +178,7 @@ export class TokensComponent {
       | ShadowToken<TokenClass>
       | MainToken<TokenClass>,
   ) {
-    const addTokenButton = await this.getAddTokenButton(token.class);
+    const addTokenButton = this.getAddTokenButton(token.class);
     await addTokenButton.click();
     await this.fillTokenData(token);
   }
@@ -157,6 +204,30 @@ export class TokensComponent {
     await this.baseComp.clickOnEnter();
   }
 
+  async isSaveButtonDisabled() {
+    await expect(this.baseComp.modalSaveButton).toBeDisabled();
+  }
+
+  async isCreateTokenModalClosed() {
+    await expect(this.createTokenModal).not.toBeVisible();
+  }
+
+  async rightClickOnTokenGroup(group: TokenGroupData) {
+    await this.page
+      .getByRole('button', { name: group.name, exact: true })
+      .click({ button: 'right' });
+  }
+
+  async isDeleteGroupMenuItemVisible() {
+    await expect(this.deleteTokensGroupMenuItem).toBeVisible();
+  }
+
+  async deleteTokenGroup(group: TokenGroupData) {
+    await this.rightClickOnTokenGroup(group);
+    await this.isDeleteGroupMenuItemVisible();
+    await this.deleteTokensGroupMenuItem.click();
+  }
+
   async clickEditToken(
     updatedToken:
       | TypographyToken<TokenClass>
@@ -173,8 +244,7 @@ export class TokensComponent {
       | ShadowToken<TokenClass>
       | MainToken<TokenClass>,
   ) {
-    await this.rightClickOnTokenWithName(updatedToken.name);
-    await this.editTokenMenuItem.click();
+    await this.clickEditToken(updatedToken);
     await this.fillTokenData(updatedToken);
   }
 
@@ -189,13 +259,12 @@ export class TokensComponent {
   }
 
   async isTokenVisibleWithName(name: string, visible = true) {
+    const token = this.page
+      .getByRole('button')
+      .locator(`span[aria-label="${name}"]`);
     visible
-      ? await expect(
-          this.page.getByRole('button').locator(`span[aria-label="${name}"]`),
-        ).toBeVisible()
-      : await expect(
-          this.page.getByRole('button').locator(`span[aria-label="${name}"]`),
-        ).not.toBeVisible();
+      ? await expect(token).toBeVisible()
+      : await expect(token).not.toBeVisible();
   }
 
   async clickOnTokenWithName(name: string) {
@@ -206,31 +275,21 @@ export class TokensComponent {
   }
 
   async isTokenAppliedWithName(name: string, applied = true) {
+    const token = this.page.locator(
+      `button[class*="token-pill-applied"] span[aria-label="${name}"]`,
+    );
     applied
-      ? await expect(
-          this.page.locator(
-            `button[class*="token-pill-applied"] span[aria-label="${name}"]`,
-          ),
-        ).toBeVisible()
-      : await expect(
-          this.page.locator(
-            `button[class*="token-pill-applied"] span[aria-label="${name}"]`,
-          ),
-        ).not.toBeVisible();
+      ? await expect(token).toBeVisible()
+      : await expect(token).not.toBeVisible();
   }
 
   async isTokenDisabledWithName(name: string, disabled = true) {
+    const token = this.page.locator(
+      `button[class*="token-pill-disabled"] span[aria-label="${name}"]`,
+    );
     disabled
-      ? await expect(
-          this.page.locator(
-            `button[class*="token-pill-disabled"] span[aria-label="${name}"]`,
-          ),
-        ).toBeVisible()
-      : await expect(
-          this.page.locator(
-            `button[class*="token-pill-disabled"] span[aria-label="${name}"]`,
-          ),
-        ).not.toBeVisible();
+      ? await expect(token).toBeVisible()
+      : await expect(token).not.toBeVisible();
   }
 
   async isMenuItemWithNameSelected(tokenName: string, itemName: string) {
@@ -282,7 +341,7 @@ export class TokensComponent {
 
   async isMenuItemVisible(tokenName: string, itemName: string, visible = true) {
     await this.rightClickOnTokenWithName(tokenName);
-    const item = await this.page
+    const item = this.page
       .getByTestId('tokens-context-menu-for-token')
       .getByRole('listitem')
       .locator(`[class*="item-text"]`)
@@ -292,21 +351,24 @@ export class TokensComponent {
       : await expect(item).not.toBeVisible();
   }
 
+  async isDeleteTokenMenuItemVisible() {
+    await expect(this.deleteTokenMenuItem).toBeVisible();
+  }
+
   async deleteToken(tokenName: string) {
     await this.rightClickOnTokenWithName(tokenName);
+    await this.isDeleteTokenMenuItemVisible();
     await this.deleteTokenMenuItem.click();
   }
 
   async checkAppliedTokenTitle(text: string) {
-    const tokenLocator = await this.page.locator(
-      `button[class*="token-pill-applied"]`,
-    );
+    const tokenLocator = this.page.locator(`button[class*="token-pill-applied"]`);
     await tokenLocator.hover();
     await expect(tokenLocator).toHaveAttribute('title', text);
   }
 
   async checkTokenTitle(tokenName: string, text: string) {
-    const tokenLocator = await this.page.locator(
+    const tokenLocator = this.page.locator(
       `button:has(span[aria-label="${tokenName}"])`,
     );
     await tokenLocator.hover();
@@ -338,7 +400,112 @@ export class TokensComponent {
   }
 
   async expandTokenByName(tokenClass: TokenClass) {
-    const tokenName = await this.getTokenTreeButton(tokenClass);
-    await tokenName.click();
+    const tokenTreeButton = this.getTokenTreeButton(tokenClass);
+    const isExpanded = await tokenTreeButton.getAttribute('aria-expanded');
+    if (isExpanded !== 'true') {
+      await tokenTreeButton.click();
+    }
+  }
+
+  async isRemapTokenModalVisible() {
+    await expect(this.remapTokenModal).toBeVisible();
+  }
+
+  async clickRemapTokensButton() {
+    await this.remapTokensButton.click();
+  }
+
+  async clickDontRemapButton() {
+    await this.dontRemapButton.click();
+  }
+
+  async isTokenSingleSegment(name: string) {
+    const nameWrapper = this.page.getByRole('button', { name }).locator('span');
+    await expect(nameWrapper).not.toHaveClass(/divided/);
+    await expect(nameWrapper).toHaveText(name);
+    await expect(nameWrapper.locator('span')).toHaveCount(0);
+  }
+
+  async isTokenGroupVisible(group: TokenGroupData, visible = true) {
+    const groupLocator = this.tokenGroupName.filter({
+      hasText: new RegExp(`^${group.name}$`),
+    });
+    visible
+      ? await expect(groupLocator).toBeVisible()
+      : await expect(groupLocator).not.toBeVisible();
+  }
+
+  async isTokenVisibleInGroup(
+    group: TokenGroupData,
+    tokenName: string,
+    visible = true,
+  ) {
+    const groupButton = this.page.getByRole('button', {
+      name: group.name,
+      exact: true,
+    });
+    await expect(groupButton).toHaveAttribute('aria-controls', /.+/);
+    const childrenContainerId = await groupButton.getAttribute('aria-controls');
+    const token = this.page
+      .locator(`[id="${childrenContainerId}"]`)
+      .getByRole('button', { name: tokenName });
+    visible
+      ? await expect(token).toBeVisible()
+      : await expect(token).not.toBeVisible();
+  }
+
+  async isLastSegmentVisibleInGroup(
+    group: TokenGroupData,
+    segment: string,
+    visible = true,
+  ) {
+    const groupButton = this.page.getByRole('button', {
+      name: group.name,
+      exact: true,
+    });
+    await expect(groupButton).toHaveAttribute('aria-controls', /.+/);
+    const childrenContainerId = await groupButton.getAttribute('aria-controls');
+    const lastSegment = this.page
+      .locator(`[id="${childrenContainerId}"]`)
+      .locator('span[class*="last-name-wrapper"]')
+      .filter({ hasText: segment });
+    visible
+      ? await expect(lastSegment).toBeVisible()
+      : await expect(lastSegment).not.toBeVisible();
+  }
+
+  async isTokenGroupCount(group: TokenGroupData, count: number) {
+    await expect(
+      this.tokenGroupName.filter({ hasText: new RegExp(`^${group.name}$`) }),
+    ).toHaveCount(count);
+  }
+
+  async clickOnTokenGroup(group: TokenGroupData) {
+    await this.page.getByRole('button', { name: group.name, exact: true }).click();
+  }
+
+  async isTokenGroupExpanded(group: TokenGroupData, expanded = true) {
+    const groupButton = this.page.getByRole('button', {
+      name: group.name,
+      exact: true,
+    });
+    await expect(groupButton).toHaveAttribute(
+      'aria-expanded',
+      expanded ? 'true' : 'false',
+    );
+  }
+
+  async renameTokenAndConfirmRemap(
+    originalToken: MainToken<TokenClass>,
+    newName: string,
+  ): Promise<void> {
+    await this.expandTokenByName(originalToken.class);
+    await this.clickEditToken(originalToken);
+    await this.tokenNameInput.fill(newName);
+    await this.baseComp.modalSaveButton.click();
+    await this.isRemapTokenModalVisible();
+    await this.clickRemapTokensButton();
+    await this.tokensPage.waitForChangeIsSaved();
+    await this.isTokenVisibleWithName(newName);
   }
 }

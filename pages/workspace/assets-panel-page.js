@@ -116,6 +116,10 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.textUpperCaseButton = this.assetsTabpanel.getByTitle('Upper Case');
     this.textCapitalizeButton = this.assetsTabpanel.getByTitle('Capitalize');
     this.textLowerCaseButton = this.assetsTabpanel.getByTitle('Lower Case');
+    this.assetsSearchInput = page.getByRole('textbox', { name: 'Search assets' });
+    this.clearSearchButtonInAssetsTab = page.locator(
+      '.main_ui_components_search_bar__clear-icon',
+    );
 
     //Assets panel - Libraries
     this.addAsSharedLibraryButton = page.getByRole('button', {
@@ -128,34 +132,53 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.librariesOpenModalButton = page.getByTestId('libraries');
     this.addSharedLibraryButton = page.getByRole('button', { name: 'Publish' });
     this.cancelSharedLibraryButton = page.getByRole('button', { name: 'Cancel' });
-    this.searchSharedLibrariesInput = page.getByRole('textbox', {
-      name: 'Search shared libraries',
-    });
-    this.searchSharedLibrariesClearButton = page.locator(
-      'button[class*="search_bar__clear"]',
-    );
     this.libraryTitle = page.locator('div[class*="special-title"]');
     this.libraryComponentsTitle = page
       .locator('[class*="library__tool-window"]')
       .last()
       .getByText('Components');
-    this.dismissButton = page.getByRole('button', { name: 'Dismiss' });
-    this.librariesUpdatesTab = page.getByRole('tab', { name: 'UPDATES' });
-    this.librariesUpdateButton = page.getByRole('button', { name: 'Update' });
-    this.librariesMoreInfoButton = page.getByRole('button', { name: 'More info' });
-    this.closeModalButton = page.locator('svg[class*="close-icon"]');
-    this.librariesModal = page.locator('div[class*="libraries__modal-dialog"]');
+
+    // Shared Libraries - Modal
+    this.librariesModal = page.locator('.main_ui_workspace_libraries__modal-dialog');
+    this.librariesUpdatesTab = this.librariesModal.getByRole('tab', {
+      name: 'UPDATES',
+    });
+    this.librariesItem = this.librariesModal.getByTestId('library-item').first();
+    this.librariesUpdateButton = this.librariesModal.getByRole('button', {
+      name: 'Update',
+    });
+    this.librariesComponentSvg = this.librariesModal.locator('[class=fills]');
+    this.librariesSearchInput = this.librariesModal.getByRole('textbox', {
+      name: 'Search shared libraries',
+    });
+    this.librariesSearchClearButton = this.librariesModal.locator(
+      '.main_ui_components_search_bar__clear-icon',
+    );
+    this.closeModalButton = this.librariesModal.getByRole('button', {
+      name: 'Close',
+    });
+    this.emptyResults = this.librariesModal.locator(
+      '.main_ui_workspace_libraries__section-list-empty',
+    );
+
+    // Shared Libraries - Pop up
+    this.wrapperMessage = page.getByTestId('actionable');
+    this.wrapperDismissButton = this.wrapperMessage.getByRole('button', {
+      name: 'Dismiss',
+    });
+    this.wrapperUpdateButton = this.wrapperMessage.getByRole('button', {
+      name: 'Update',
+    });
+    this.wrapperMoreInfoButton = this.wrapperMessage.getByRole('button', {
+      name: 'More info',
+    });
   }
 
   async clickAssetsTab() {
     await this.assetsTab.click();
   }
 
-  async isSecondComponentAddedToFileLibrary() {
-    await expect(this.assetsSecondComponentLabel).toBeVisible();
-  }
-
-  async isComponentNotAddedToFileLibraryComponents() {
+  async isComponentNotVisibleInAssetsTab() {
     await expect(this.assetComponentLabel).not.toBeVisible();
   }
 
@@ -430,10 +453,6 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await expect(this.cancelSharedLibraryButton).toBeVisible();
   }
 
-  async isSharedLibrarySearchInputVisible() {
-    await expect(this.searchSharedLibrariesInput).toBeVisible();
-  }
-
   async clickSharedLibraryImportButton(name) {
     const elem = this.page
       .locator(`div[data-testid="library-item"]:has-text("${name}")`)
@@ -474,7 +493,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async clickDismissButton() {
-    await this.dismissButton.last().click();
+    await this.wrapperDismissButton.click();
   }
 
   async clickUpdatesTab() {
@@ -489,30 +508,22 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.closeModalButton.click();
   }
 
-  async clickLibrariesMoreInfoButton() {
-    await this.librariesMoreInfoButton.click();
-  }
-
-  async isLibrariesUpdateButtonVisible() {
-    await expect(this.librariesUpdateButton.first()).toBeVisible();
-  }
-
   async searchSharedLibraries(name) {
-    await this.searchSharedLibrariesInput.click();
-    await this.searchSharedLibrariesInput.pressSequentially(name);
+    await this.librariesSearchInput.click();
+    await this.librariesSearchInput.pressSequentially(name);
     await this.page.keyboard.press('Enter');
   }
 
   async clearSearchSharedLibraries() {
-    await this.searchSharedLibrariesClearButton.click();
+    await this.librariesSearchClearButton.click();
   }
 
-  async isComponentWithNameAddedToFileLibrary(name) {
+  async isComponentVisibleInAssetsTab(name) {
     await this.assetComponentLabel.first().hover();
     await expect(this.assetComponentLabel.first().getByTitle(name)).toBeVisible();
   }
 
-  async isSecondComponentWithNameAddedToFileLibrary(name) {
+  async isSecondComponentVisibleInAssetsTab(name) {
     await this.assetsSecondComponentLabel.hover();
     await expect(this.assetsSecondComponentLabel.getByTitle(name)).toBeVisible();
   }
@@ -560,5 +571,34 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       await this.clickOnGroupFileLibrary();
     }
     await expect(this.assetComponentLabel).toBeVisible();
+  }
+
+  async isWrapperMessageVisible() {
+    await expect(
+      this.wrapperDismissButton,
+      'Dismiss button is visible',
+    ).toBeVisible();
+    await expect(this.wrapperUpdateButton, 'Update button is visible').toBeVisible();
+  }
+
+  async firstLibraryItemContainsLibraryName(name) {
+    await expect(
+      this.librariesItem,
+      `Library item contains text "${name}"`,
+    ).toContainText(name);
+  }
+
+  async isEmptyLibrarySearchResults() {
+    await expect(this.emptyResults, `No matches found is visible`).toBeVisible();
+  }
+
+  async searchInAssetsTab(assetName) {
+    await this.assetsSearchInput.click();
+    await this.assetsSearchInput.pressSequentially(assetName);
+    await this.page.keyboard.press('Enter');
+  }
+
+  async clearSearchInputInAssetsTab() {
+    await this.clearSearchButtonInAssetsTab.click();
   }
 };

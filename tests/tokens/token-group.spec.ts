@@ -1,0 +1,694 @@
+import { expect } from '@playwright/test';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { mainTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
+import { MainPage } from '@pages/workspace/main-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
+import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
+import {
+  TokenClass,
+  buildTokenPath,
+} from '@pages/workspace/tokens/token-components/tokens-base-component';
+
+const teamName = random().concat('autotest');
+
+let mainPage: MainPage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let tokensPage: TokensPage;
+
+mainTest.beforeEach(async ({ page, browserName }) => {
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  tokensPage = new TokensPage(page);
+
+  await teamPage.createTeam(teamName);
+  await teamPage.isTeamSelected(teamName);
+  await dashboardPage.createFileViaPlaceholder();
+  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
+    ? await dashboardPage.createFileViaPlaceholder()
+    : null;
+  await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
+});
+
+mainTest.afterEach(async () => {
+  await mainPage.backToDashboardFromFileEditor();
+  await teamPage.deleteTeam(teamName);
+});
+
+mainTest.describe(() => {
+  mainTest(
+    qase([2728], 'Display token pill for single-segment token name'),
+    async () => {
+      const singleSegmentToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'big',
+        value: '10',
+      };
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Create a token with single-segment name "${singleSegmentToken.name}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            singleSegmentToken,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify token pill "${singleSegmentToken.name}" is visible with no nested group segments`,
+        async () => {
+          await tokensPage.tokensComp.isTokenVisibleWithName(
+            singleSegmentToken.name,
+          );
+          await tokensPage.tokensComp.isTokenSingleSegment(singleSegmentToken.name);
+        },
+      );
+
+      await mainTest.step(
+        `Open context menu on "${singleSegmentToken.name}" and verify Edit, Duplicate, Delete actions are visible`,
+        async () => {
+          await tokensPage.tokensComp.rightClickOnTokenWithName(
+            singleSegmentToken.name,
+          );
+          await expect(tokensPage.tokensComp.editTokenMenuItem).toBeVisible();
+          await expect(tokensPage.tokensComp.duplicateTokenMenuItem).toBeVisible();
+          await expect(tokensPage.tokensComp.deleteTokenMenuItem).toBeVisible();
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase(
+      [2730],
+      'Tokens with the same path are displayed under the same nested group path',
+    ),
+    async () => {
+      const primarySmallToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'small',
+        value: '4',
+        parent: { name: 'primary' },
+      };
+      const primaryBigToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'big',
+        value: '16',
+        parent: primarySmallToken.parent,
+      };
+
+      const primarySmallFullPath = buildTokenPath(
+        primarySmallToken.name,
+        primarySmallToken.parent,
+      );
+      const primaryBigFullPath = buildTokenPath(
+        primaryBigToken.name,
+        primaryBigToken.parent,
+      );
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Create first token with path name "${primarySmallFullPath}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
+            ...primarySmallToken,
+            name: primarySmallFullPath,
+          });
+        },
+      );
+
+      await mainTest.step(
+        `Verify group "${primarySmallToken.parent!.name}" is visible and pill "${primarySmallFullPath}" appears under it`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(primarySmallToken.parent!);
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            primarySmallToken.parent!,
+            primarySmallFullPath,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            primarySmallToken.parent!,
+            primarySmallToken.name,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Create second token with path name "${primaryBigFullPath}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
+            ...primaryBigToken,
+            name: primaryBigFullPath,
+          });
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${primarySmallToken.parent!.name}" group contains both "${primarySmallFullPath}" and "${primaryBigFullPath}" token pills`,
+        async () => {
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            primarySmallToken.parent!,
+            primarySmallFullPath,
+          );
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            primarySmallToken.parent!,
+            primaryBigFullPath,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            primarySmallToken.parent!,
+            primarySmallToken.name,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            primarySmallToken.parent!,
+            primaryBigToken.name,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify only one "${primarySmallToken.parent!.name}" group exists in the UI`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupCount(
+            primarySmallToken.parent!,
+            1,
+          );
+        },
+      );
+
+      await mainTest.step(
+        'Snapshot of the Border Radius section showing the nested group structure',
+        async () => {
+          await expect(
+            tokensPage.tokensComp.getTokenSection(TokenClass.BorderRadius),
+          ).toHaveScreenshot('token-group-primary-nested.png');
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase(
+      [2735],
+      'Editing token path moves token to an existing group path and unfolds the new path',
+    ),
+    async () => {
+      const foundationBigToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'big',
+        value: '16',
+        parent: { name: 'foundation' },
+      };
+      const primarySmallToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'small',
+        value: '4',
+        parent: { name: 'primary' },
+      };
+      const foundationBigFullPath = buildTokenPath(
+        foundationBigToken.name,
+        foundationBigToken.parent,
+      );
+      const primarySmallFullPath = buildTokenPath(
+        primarySmallToken.name,
+        primarySmallToken.parent,
+      );
+      const renamedTokenName = buildTokenPath(
+        primarySmallToken.name,
+        foundationBigToken.parent,
+      );
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Create token "${foundationBigFullPath}" to ensure the "${foundationBigToken.parent!.name}" group exists`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
+            ...foundationBigToken,
+            name: foundationBigFullPath,
+          });
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${foundationBigToken.parent!.name}" group exists and contains "${foundationBigToken.name}" token pill`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(
+            foundationBigToken.parent!,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            foundationBigToken.parent!,
+            foundationBigToken.name,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Create token "${primarySmallFullPath}" under a different path`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
+            ...primarySmallToken,
+            name: primarySmallFullPath,
+          });
+        },
+      );
+
+      await mainTest.step(
+        `Collapse the "${foundationBigToken.parent!.name}" group to simulate a previously collapsed destination`,
+        async () => {
+          await tokensPage.tokensComp.clickOnTokenGroup(foundationBigToken.parent!);
+          await tokensPage.tokensComp.isTokenGroupExpanded(
+            foundationBigToken.parent!,
+            false,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Edit "${primarySmallFullPath}" and rename it to "${renamedTokenName}"`,
+        async () => {
+          await tokensPage.tokensComp.clickEditToken({
+            ...primarySmallToken,
+            name: primarySmallFullPath,
+          });
+          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenName);
+          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${foundationBigToken.parent!.name}" group is automatically expanded after saving`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupExpanded(
+            foundationBigToken.parent!,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${primarySmallToken.name}" token pill is visible under the "${foundationBigToken.parent!.name}" group without manual expansion`,
+        async () => {
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            foundationBigToken.parent!,
+            renamedTokenName,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            foundationBigToken.parent!,
+            primarySmallToken.name,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${primarySmallToken.parent!.name}" group is removed from the DOM after moving its only token out`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupCount(
+            primarySmallToken.parent!,
+            0,
+          );
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase(
+      [2736],
+      'Editing token path creates missing groups in UI and moves token accordingly',
+    ),
+    async () => {
+      const primaryBigToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'primary.big',
+        value: '16',
+        parent: { name: 'primary' },
+      };
+      const renamedToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'big',
+        value: '16',
+        parent: {
+          name: 'subgroup',
+          parent: { name: 'newgroup' },
+        },
+      };
+      const renamedTokenFullPath = buildTokenPath(
+        renamedToken.name,
+        renamedToken.parent,
+      );
+      const subGroup = renamedToken.parent!;
+      const newGroup = subGroup.parent!;
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Create a token named "${primaryBigToken.name}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            primaryBigToken,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${primaryBigToken.parent!.name}" group exists and contains "${renamedToken.name}" token pill`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(primaryBigToken.parent!);
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            primaryBigToken.parent!,
+            renamedToken.name,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Edit "${primaryBigToken.name}" and rename it to "${renamedTokenFullPath}"`,
+        async () => {
+          await tokensPage.tokensComp.clickEditToken(primaryBigToken);
+          await tokensPage.tokensComp.tokenNameInput.fill(renamedTokenFullPath);
+          await tokensPage.tokensComp.baseComp.modalSaveButton.click();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step(
+        `Verify new groups "${newGroup.name}" and "${subGroup.name}" are created and automatically unfolded`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(newGroup);
+          await tokensPage.tokensComp.isTokenGroupExpanded(newGroup);
+          await tokensPage.tokensComp.isTokenGroupVisible(subGroup);
+          await tokensPage.tokensComp.isTokenGroupExpanded(subGroup);
+        },
+      );
+
+      await mainTest.step(
+        `Verify token pill "${renamedToken.name}" is visible under "${subGroup.name}" group`,
+        async () => {
+          await tokensPage.tokensComp.isTokenVisibleInGroup(
+            subGroup,
+            renamedTokenFullPath,
+          );
+          await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+            subGroup,
+            renamedToken.name,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${primaryBigToken.parent!.name}" group is removed from the DOM after moving its only token out`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupCount(primaryBigToken.parent!, 0);
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase(
+      [2741],
+      'Error handling: Prevent creating token with empty name or invalid path format',
+    ),
+    async () => {
+      const tokenValue = '8';
+      const primaryGroup = { name: 'primary' };
+      const emptyNameToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: '',
+        value: tokenValue,
+      };
+      const doubleDotToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: 'primary..big',
+        value: tokenValue,
+      };
+      const leadingTrailingDotToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: '.primary.big.',
+        value: tokenValue,
+      };
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Attempt to create a token with an empty name "${emptyNameToken.name}" and verify Save button is disabled`,
+        async () => {
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(emptyNameToken);
+          await tokensPage.tokensComp.isSaveButtonDisabled();
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+          await tokensPage.tokensComp.isCreateTokenModalClosed();
+        },
+      );
+
+      await mainTest.step(
+        `Attempt to create a token with a malformed path "${doubleDotToken.name}" and verify Save button is disabled`,
+        async () => {
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(doubleDotToken);
+          await tokensPage.tokensComp.isSaveButtonDisabled();
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+          await tokensPage.tokensComp.isCreateTokenModalClosed();
+        },
+      );
+
+      await mainTest.step(
+        `Verify no "${primaryGroup.name}" group is created after the double-dot path attempt`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+        },
+      );
+
+      await mainTest.step(
+        `Attempt to create a token with leading/trailing separators "${leadingTrailingDotToken.name}" and verify Save button is disabled`,
+        async () => {
+          await tokensPage.tokensComp.clickOnAddTokenAndFillData(
+            leadingTrailingDotToken,
+          );
+          await tokensPage.tokensComp.isSaveButtonDisabled();
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+          await tokensPage.tokensComp.isCreateTokenModalClosed();
+        },
+      );
+
+      await mainTest.step(
+        `Verify no "${primaryGroup.name}" group is created after the leading/trailing separator attempt`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+        },
+      );
+    },
+  );
+
+  mainTest(qase([2742], 'Remove a tokens group'), async () => {
+    const tokenValue = '#000000';
+    const foundationsGroup = { name: 'foundations' };
+    const primaryGroup = { name: 'primary', parent: foundationsGroup };
+
+    const darkToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: buildTokenPath('dark', primaryGroup),
+      value: tokenValue,
+    };
+    const accentToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: buildTokenPath('accent', primaryGroup),
+      value: tokenValue,
+    };
+    const foregroundToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: buildTokenPath('foreground', primaryGroup),
+      value: tokenValue,
+    };
+    const backgroundToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: buildTokenPath('background', primaryGroup),
+      value: tokenValue,
+    };
+
+    await mainTest.step('Open Tokens panel', async () => {
+      await tokensPage.clickTokensTab();
+    });
+
+    await mainTest.step(
+      `Create color tokens "${darkToken.name}", "${accentToken.name}", "${foregroundToken.name}" and "${backgroundToken.name}"`,
+      async () => {
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(darkToken);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(accentToken);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(foregroundToken);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(backgroundToken);
+      },
+    );
+
+    await mainTest.step(
+      `Verify "${foundationsGroup.name}" and "${primaryGroup.name}" groups are visible and contain the expected tokens`,
+      async () => {
+        await tokensPage.tokensComp.isTokenGroupVisible(foundationsGroup);
+        await tokensPage.tokensComp.isTokenGroupVisible(primaryGroup);
+        await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+          primaryGroup,
+          'dark',
+        );
+        await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+          primaryGroup,
+          'accent',
+        );
+        await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+          primaryGroup,
+          'foreground',
+        );
+        await tokensPage.tokensComp.isLastSegmentVisibleInGroup(
+          primaryGroup,
+          'background',
+        );
+      },
+    );
+
+    await mainTest.step(
+      `Delete "${foundationsGroup.name}" group and verify "${foundationsGroup.name}", "${primaryGroup.name}" groups and tokens "${darkToken.name}", "${accentToken.name}", "${foregroundToken.name}", "${backgroundToken.name}" are removed`,
+      async () => {
+        await tokensPage.tokensComp.deleteTokenGroup(foundationsGroup);
+        await tokensPage.tokensComp.isTokenGroupCount(foundationsGroup, 0);
+        await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+        await tokensPage.tokensComp.isTokenVisibleWithName(darkToken.name, false);
+        await tokensPage.tokensComp.isTokenVisibleWithName(accentToken.name, false);
+        await tokensPage.tokensComp.isTokenVisibleWithName(
+          foregroundToken.name,
+          false,
+        );
+        await tokensPage.tokensComp.isTokenVisibleWithName(
+          backgroundToken.name,
+          false,
+        );
+      },
+    );
+  });
+
+  mainTest(
+    qase([2743], 'Remove a token in a tokens group (with only one token)'),
+    async () => {
+      const tokenValue = '#000000';
+      const foundationsGroup = { name: 'foundations' };
+      const primaryGroup = { name: 'primary', parent: foundationsGroup };
+
+      const darkToken: MainToken<TokenClass> = {
+        class: TokenClass.Color,
+        name: buildTokenPath('dark', primaryGroup),
+        value: tokenValue,
+      };
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(`Create color token "${darkToken.name}"`, async () => {
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(darkToken);
+      });
+
+      await mainTest.step(
+        `Verify "${foundationsGroup.name}" and "${primaryGroup.name}" groups are visible`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(foundationsGroup);
+          await tokensPage.tokensComp.isTokenGroupVisible(primaryGroup);
+        },
+      );
+
+      await mainTest.step(
+        `Delete "${darkToken.name}" token and verify it is removed along with "${foundationsGroup.name}" and "${primaryGroup.name}" groups`,
+        async () => {
+          await tokensPage.tokensComp.deleteToken(darkToken.name);
+          await tokensPage.tokensComp.isTokenVisibleWithName(darkToken.name, false);
+          await tokensPage.tokensComp.isTokenGroupCount(foundationsGroup, 0);
+          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase(
+      [2745],
+      'Remove a tokens group (with a token referenced in other tokens group)',
+    ),
+    async () => {
+      const primaryGroup = { name: 'primary' };
+      const secondaryGroup = { name: 'secondary' };
+      const primaryToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: `${primaryGroup.name}.border-radius30`,
+        value: '30',
+      };
+      const secondaryToken: MainToken<TokenClass> = {
+        class: TokenClass.BorderRadius,
+        name: `${secondaryGroup.name}.border-radius60`,
+        value: `{${primaryToken.name}}+2`,
+      };
+
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
+      await mainTest.step(
+        `Create token "${primaryToken.name}" with value "${primaryToken.value}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(primaryToken);
+        },
+      );
+
+      await mainTest.step(
+        `Create token "${secondaryToken.name}" with value "${secondaryToken.value}" referencing "${primaryToken.name}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            secondaryToken,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${primaryGroup.name}" and "${secondaryGroup.name}" groups are visible`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(primaryGroup);
+          await tokensPage.tokensComp.isTokenGroupVisible(secondaryGroup);
+        },
+      );
+
+      await mainTest.step(
+        `Delete "${primaryGroup.name}" group and verify group and token "${primaryToken.name}" are removed`,
+        async () => {
+          await tokensPage.tokensComp.deleteTokenGroup(primaryGroup);
+          await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+          await tokensPage.tokensComp.isTokenVisibleWithName(
+            primaryToken.name,
+            false,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify "${secondaryToken.name}" is highlighted as invalid and shows "Reference is not valid or is not in any active set" tooltip`,
+        async () => {
+          await tokensPage.tokensComp.checkInvalidTokenCount(1);
+          await tokensPage.tokensComp.invalidToken.hover();
+          await expect(tokensPage.tokensComp.invalidToken).toHaveAttribute(
+            'title',
+            'Reference is not valid or is not in any active set',
+          );
+        },
+      );
+    },
+  );
+});

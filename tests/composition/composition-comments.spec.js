@@ -58,20 +58,18 @@ mainTest.describe(() => {
     await commentsPanelPage.isCommentDisplayedInPopUp(comment);
     await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
     await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
-      mask: [
+      mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
         commentsPanelPage.commentsAuthorSection,
-        mainPage.usersSection,
-        mainPage.toolBarWindow,
-      ],
+        commentsPanelPage.commentAvatarImage,
+      ]),
     });
     await mainPage.clickViewportOnce();
     await commentsPanelPage.isCommentThreadIconDisplayed();
     await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
-      mask: [
+      mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
         commentsPanelPage.commentsAuthorSection,
-        mainPage.usersSection,
-        mainPage.toolBarWindow,
-      ],
+        commentsPanelPage.commentAvatarImage,
+      ]),
     });
   });
 
@@ -85,11 +83,10 @@ mainTest.describe(() => {
       await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
       await commentsPanelPage.isCommentReplyDisplayedInCommentsPanel();
       await expect(page).toHaveScreenshot('comment-reply.png', {
-        mask: [
+        mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
           commentsPanelPage.commentsAuthorSection,
-          mainPage.usersSection,
-          mainPage.toolBarWindow,
-        ],
+          commentsPanelPage.commentAvatarImage,
+        ]),
       });
     },
   );
@@ -109,51 +106,50 @@ mainTest.describe(() => {
       await commentsPanelPage.clickCommentThreadIconByNumber('1');
       await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
       await expect(page).toHaveScreenshot('comment-edited.png', {
-        mask: [
+        mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
           commentsPanelPage.commentsAuthorSection,
-          mainPage.usersSection,
-          mainPage.toolBarWindow,
-        ],
+          commentsPanelPage.commentAvatarImage,
+        ]),
       });
     },
   );
 
-  mainTest(qase([1236], 'Delete thread'), async ({ page }) => {
-    await commentsPanelPage.clickCommentHeaderOptionsButton();
-    await commentsPanelPage.clickDeleteCommentOption();
-    await commentsPanelPage.clickDeleteThreadButton();
-    await commentsPanelPage.isCommentThreadIconNotDisplayed();
-    await commentsPanelPage.isCommentsPanelPlaceholderDisplayed(
-      "You're all caught up! New comment notifications will appear here.",
-    );
-    await expect(page).toHaveScreenshot('comment-removed.png', {
-      mask: [
-        commentsPanelPage.commentsAuthorSection,
-        mainPage.usersSection,
-        mainPage.toolBarWindow,
-      ],
-    });
-  });
+  mainTest(
+    qase([1236, 2053], 'Delete thread & Check notification icon with no activity'),
+    async ({ page }) => {
+      await commentsPanelPage.clickCommentHeaderOptionsButton();
+      await commentsPanelPage.clickDeleteCommentOption();
+      await commentsPanelPage.clickDeleteThreadButton();
+      await commentsPanelPage.isCommentThreadIconNotDisplayed();
+      await commentsPanelPage.isCommentsPanelPlaceholderDisplayed(
+        "You're all caught up! New comment notifications will appear here.",
+      );
+      await expect(page).toHaveScreenshot('comment-removed.png', {
+        mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+          commentsPanelPage.commentsAuthorSection,
+          commentsPanelPage.commentAvatarImage,
+        ]),
+      });
+    },
+  );
 
   mainTest(qase([1240], 'Resolve comment'), async ({ page }) => {
     await commentsPanelPage.clickResolveCommentCheckbox();
     await mainPage.clickViewportOnce();
     await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
     await expect(page).toHaveScreenshot('comment-resolved-closed-pop-up.png', {
-      mask: [
+      mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
         commentsPanelPage.commentsAuthorSection,
-        mainPage.usersSection,
-        mainPage.toolBarWindow,
-      ],
+        commentsPanelPage.commentAvatarImage,
+      ]),
     });
     await commentsPanelPage.clickResolvedCommentThreadIcon();
     await commentsPanelPage.isResolveCommentCheckboxSelected();
     await expect(page).toHaveScreenshot('comment-resolved-opened-pop-up.png', {
-      mask: [
+      mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
         commentsPanelPage.commentsAuthorSection,
-        mainPage.usersSection,
-        mainPage.toolBarWindow,
-      ],
+        commentsPanelPage.commentAvatarImage,
+      ]),
     });
   });
 });
@@ -170,20 +166,18 @@ mainTest(
     await commentsPanelPage.isCommentDisplayedInPopUp(comment);
     await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
     await expect(page).toHaveScreenshot('comment-latin-opened-pop-up.png', {
-      mask: [
+      mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
         commentsPanelPage.commentsAuthorSection,
-        mainPage.usersSection,
-        mainPage.toolBarWindow,
-      ],
+        commentsPanelPage.commentAvatarImage,
+      ]),
     });
     await mainPage.clickViewportOnce();
     await commentsPanelPage.isCommentThreadIconDisplayed();
     await expect(page).toHaveScreenshot('comment-latin-closed-pop-up.png', {
-      mask: [
+      mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
         commentsPanelPage.commentsAuthorSection,
-        mainPage.usersSection,
-        mainPage.toolBarWindow,
-      ],
+        commentsPanelPage.commentAvatarImage,
+      ]),
     });
   },
 );

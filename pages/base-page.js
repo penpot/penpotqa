@@ -15,7 +15,6 @@ exports.BasePage = class BasePage {
       'aside[class*="warning"] div[class*="context_notification"]',
     );
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
-    this.wrapperMessage = page.getByTestId('actionable');
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });
     this.savedChangesIcon = page.getByTitle('Saved', { exact: true });
     this.unSavedChangesIcon = page.getByTitle('Saving', { exact: true });
@@ -27,9 +26,7 @@ exports.BasePage = class BasePage {
     this.modalCloseButton = page.getByRole('button', { name: 'Close' });
 
     //Layer right-click menu items
-    this.createdLayer = page.locator(
-      'div[class*="viewport"] [id^="shape"] >> nth=0',
-    );
+    this.createdLayer = page.getByTestId('layer-item').first();
     this.copyLayer = page
       .locator('div[class*="viewport"] [class*="viewport-selrect"]')
       .last();
@@ -292,6 +289,15 @@ exports.BasePage = class BasePage {
     await this.moveButton.click({ force: true });
   }
 
+  async waitForUpdateFileRequest() {
+    await this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/api/main/methods/update-file') &&
+        response.request().method() === 'POST' &&
+        response.status() === 200,
+    );
+  }
+
   async waitForChangeIsSaved() {
     await this.savedChangesIcon.waitFor({ state: 'visible' });
   }
@@ -396,6 +402,13 @@ exports.BasePage = class BasePage {
     await this.createComponentMenuItem.click();
   }
 
+  async createComponentViaRightClickFromLayerByName(name) {
+    const layerSel = this.createdLayer.getByText(name, { exact: true });
+    await layerSel.last().click({ button: 'right' });
+    await this.createComponentMenuItem.waitFor({ state: 'visible' });
+    await this.createComponentMenuItem.click();
+  }
+
   async createVariantViaRightClick() {
     const layerSel = this.page.locator(
       'div[class*="viewport"] [class*="viewport-selrect"]',
@@ -466,10 +479,6 @@ exports.BasePage = class BasePage {
   async resetOverridesViaRightClick() {
     await this.copyLayer.click({ button: 'right', force: true });
     await this.resetOverridesOption.click();
-  }
-
-  async isWrapperMessageVisible() {
-    await expect(this.wrapperMessage).toBeVisible({ timeout: 10000 });
   }
 
   async renameCreatedBoardViaRightClick() {

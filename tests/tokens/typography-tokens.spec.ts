@@ -10,6 +10,7 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 
 const teamName = random().concat('autotest');
 
@@ -40,14 +41,16 @@ mainTest.describe(() => {
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
   let assetsPanelPage: AssetsPanelPage;
+  let layersPanelPage: LayersPanelPage;
 
-  mainTest.beforeEach(async ({ page, browserName }) => {
+  mainTest.beforeEach(async ({ page }) => {
     tokensPage = new TokensPage(page);
     mainPage = new MainPage(page);
     designPanelPage = new DesignPanelPage(page);
     assetsPanelPage = new AssetsPanelPage(page);
+    layersPanelPage = new LayersPanelPage(page);
 
-    await mainPage.createDefaultTextLayerByCoordinates(500, 500, browserName);
+    await mainPage.createDefaultTextLayerByCoordinates(500, 500);
     await tokensPage.tokensTab.click();
   });
 
@@ -270,9 +273,9 @@ mainTest.describe(() => {
             // Apply all atomic typography tokens first
             for (const styleToken of STYLE_TOKENS) {
               await mainPage.clickViewportOnce();
-              // await layersPanelPage.openLayersTab(); -- to navigate to Layers tab in new render
+              await layersPanelPage.openLayersTab();
               await mainPage.clickOnLayerOnCanvas();
-              // await tokensPage.clickTokensTab(); -- to navigate back to Tokens tab in new render
+              await tokensPage.clickTokensTab();
 
               await tokensPage.tokensComp.clickOnTokenWithName(styleToken.name);
               await tokensPage.tokensComp.isTokenAppliedWithName(styleToken.name);
@@ -280,9 +283,9 @@ mainTest.describe(() => {
 
             // Select text layer and then apply the typography token type
             await mainPage.clickViewportOnce();
-            // await layersPanelPage.openLayersTab(); -- to navigate to Layers tab in new render
+            await layersPanelPage.openLayersTab();
             await mainPage.clickOnLayerOnCanvas();
-            // await tokensPage.clickTokensTab(); -- to navigate back to Tokens tab in new render
+            await tokensPage.clickTokensTab();
 
             await tokensPage.tokensComp.clickOnTokenWithName(typoToken.name);
             await tokensPage.tokensComp.isTokenAppliedWithName(typoToken.name);

@@ -4,11 +4,13 @@ import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import {
   TokenClass,
   BasicTokenData,
+  TokenGroupData,
 } from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 export interface MainToken<TokenClass> extends BasicTokenData {
   class: TokenClass;
   value?: string;
+  parent?: TokenGroupData;
 }
 
 const sampleData = new SampleData();

@@ -20,8 +20,12 @@ on:
         options:
           - tests/action-menu
           - tests/assets
+          - tests/assets/shared-libraries
           - tests/color
           - tests/components
+          - tests/components/copy-components
+          - tests/components/main-components
+          - tests/components/variants
           - tests/composition
           - tests/dashboard
           - tests/dashboard/teams

@@ -25,11 +25,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.fileNameTitle = page.locator('div[class*="item-info"] h3');
     this.deleteFileMenuItem = page.getByTestId('file-delete');
-    this.deleteFileButton = page.locator(
-      'input[value="Delete files"],input[value="Delete file"]',
-    );
+    this.deleteFileButton = page.getByRole('button', { name: 'Delete file' });
     this.deleteFileModalWindow = page.locator(
-      'div[class*="delete_shared__modal-container"]',
+      '.main_ui_delete_shared__modal-container',
+    );
+    this.deletedFileSuccessMessage = page.getByText(
+      'Your file has been deleted successfully',
+    );
+    this.deletedSharedElementList = this.deleteFileModalWindow.getByRole('listitem');
+    this.deletedProjectSuccessMessage = page.getByText(
+      'Your project has been deleted successfully',
     );
     this.createFileButtonPlaceholder = page
       .locator('[class*="empty-project-container"]')
@@ -55,6 +60,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.moveToOtherTeamMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Move to other team' });
+    this.draftsContextMenuItem = page.getByRole('menuitem', {
+      name: 'Drafts',
+      exact: true,
+    });
     this.dashboardLibraryItem = page
       .getByRole('button', { name: 'New File 1' })
       .locator(`div[class*="dashboard_grid__library"]`);
@@ -177,6 +186,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.librariesHideButton = page.getByRole('button', {
       name: 'Libraries & Templates Hide',
     });
+    this.librariesShowButton = page.getByRole('button', {
+      name: 'Libraries & Templates Show',
+    });
+    this.librariesCard = page.locator('a[class*="template-card"]');
     this.librariesContainer = page.locator(
       '.main_ui_dashboard_libraries__dashboard-container',
     );
@@ -298,6 +311,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.deleteFileButton.click();
   }
 
+  async isDeletedFileSuccessMessageVisible() {
+    await expect(this.deletedFileSuccessMessage).toBeVisible();
+  }
+
+  async isDeletedFileSuccessMessageNotVisible() {
+    await expect(this.deletedFileSuccessMessage).toBeHidden({ timeout: 15000 });
+  }
+
   async deleteFiles() {
     let counter = 0;
     while (await this.fileTile.count()) {
@@ -328,6 +349,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.projectOptionsMenuButton.first().click({ force: true });
     await this.deleteProjectMenuItem.click();
     await this.deleteProjectButton.click();
+  }
+
+  async isDeletedProjectSuccessMessageVisible() {
+    await expect(this.deletedProjectSuccessMessage).toBeVisible();
+  }
+
+  async isDeletedProjectSuccessMessageNotVisible() {
+    await expect(this.deletedProjectSuccessMessage).toBeHidden({ timeout: 15000 });
   }
 
   async deleteProjectsIfExist() {
@@ -438,6 +467,23 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     if (await this.librariesHideButton.isVisible()) {
       await this.librariesHideButton.click();
     }
+  }
+
+  async showLibrariesAndTemplatesCarrousel() {
+    if (await this.librariesShowButton.isVisible()) {
+      await this.librariesShowButton.click();
+    }
+  }
+
+  async downloadFromLibrariesAndTemplates(libraryAndTemplateName) {
+    const libraryAndTemplate = this.librariesCard.filter({
+      hasText: libraryAndTemplateName,
+    });
+    await expect(libraryAndTemplate).toBeVisible();
+    await libraryAndTemplate.click();
+    await expect(this.modalTitle).toBeVisible();
+    await this.modalContinueButton.click();
+    await expect(this.modalTitle).not.toBeVisible();
   }
 
   async downloadFileViaRightClick() {
@@ -820,20 +866,35 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.deleteFileMenuItem.click();
   }
 
+  async clickOnTeamMenuItem(teamName) {
+    const teamMenuItem = this.page
+      .getByRole('menuitem')
+      .filter({ hasText: teamName })
+      .first();
+    await teamMenuItem.waitFor({ state: 'visible', timeout: 15000 });
+    await teamMenuItem.click();
+  }
+
   async clickDeleteFileButton() {
     await this.deleteFileButton.click();
   }
 
   async moveFileToOtherTeamViaRightClick(fileName, otherTeamName) {
+    await this.waitSuccessMessageHidden();
+
     const elem = this.page.getByRole('button', { name: fileName }).first();
     await elem.click({ button: 'right' });
-    await expect(this.moveToFileMenuItem).toBeVisible();
+
+    await this.moveToFileMenuItem.waitFor({ state: 'visible' });
     await this.moveToFileMenuItem.click();
+
+    await this.moveToOtherTeamMenuItem.waitFor({ state: 'visible' });
     await this.moveToOtherTeamMenuItem.click();
-    await this.page
-      .locator(`//li[@role="menuitem"]/a[text()="${otherTeamName}"]`)
-      .click();
-    await this.page.locator(`//li[@role="menuitem"]/a[text()="Drafts"]`).click();
+
+    await this.clickOnTeamMenuItem(otherTeamName);
+
+    await this.draftsContextMenuItem.waitFor({ state: 'visible' });
+    await this.draftsContextMenuItem.click();
   }
 
   async clickOnMoveButton() {
@@ -1282,5 +1343,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isDeletedTabNotVisible() {
     await expect(this.deletedTab, `DELETED tab is NOT visible`).not.toBeVisible();
+  }
+
+  async isDeletingLibraryWarningVisible(expectedCount, expectedText) {
+    await expect(this.deletedSharedElementList).toHaveCount(expectedCount);
+
+    const items = this.deletedSharedElementList;
+
+    for (let i = 0; i < expectedCount; i++) {
+      await expect(items.nth(i)).toContainText(expectedText);
+    }
   }
 };

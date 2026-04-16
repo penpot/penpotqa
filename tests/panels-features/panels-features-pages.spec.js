@@ -39,7 +39,7 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase(832, 'PF-114 Create new page'), async () => {
+mainTest(qase(832, 'Create new page'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
@@ -48,7 +48,7 @@ mainTest(qase(832, 'PF-114 Create new page'), async () => {
   await expect(mainPage.pagesBlock).toHaveScreenshot('page-1-and-page-2.png');
 });
 
-mainTest(qase(833, 'PF-115 Rename page'), async () => {
+mainTest(qase(833, 'Rename page'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickMoveButton();
@@ -60,16 +60,16 @@ mainTest(qase(833, 'PF-115 Rename page'), async () => {
   await mainPage.isSecondPageNameDisplayed('NewSecondPage');
 });
 
-mainTest(qase(834, 'PF-116 Duplicate page'), async () => {
+mainTest(qase(834, 'Duplicate page'), async () => {
   await mainPage.duplicatePageViaRightClick();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('Page 1');
   await mainPage.isSecondPageNameDisplayed('Page 1 (copy)');
 });
 
-mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
+mainTest(qase(835, 'Switch between pages'), async ({ page }) => {
   await mainPage.clickAddPageButton();
-  await mainPage.clickOnPageOnLayersPanel(false);
+  await mainPage.clickOnPageOnLayersPanel(2);
   await mainPage.clickMoveButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -95,7 +95,7 @@ mainTest(qase(835, 'PF-117 Switch between pages'), async ({ page }) => {
   });
 });
 
-mainTest(qase(836, 'PF-118 Collapse/expand pages list'), async () => {
+mainTest(qase(836, 'Collapse/expand pages list'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickCollapseExpandPagesButton();
@@ -110,7 +110,7 @@ mainTest(qase(836, 'PF-118 Collapse/expand pages list'), async () => {
   await mainPage.isSecondPageNameDisplayed('Page 2');
 });
 
-mainTest(qase(837, 'PF-119 Delete page'), async () => {
+mainTest(qase(837, 'Delete page'), async () => {
   await mainPage.clickAddPageButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.clickAddPageButton();
@@ -119,7 +119,7 @@ mainTest(qase(837, 'PF-119 Delete page'), async () => {
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('Page 1');
   await mainPage.isSecondPageNameDisplayed('Page 3');
-  await mainPage.deleteSecondPageViaTrashIcon();
+  await mainPage.deleteSecondPageViaTrashIcon('Page 3');
   await mainPage.waitForChangeIsSaved();
   await mainPage.isFirstPageNameDisplayed('Page 1');
   await mainPage.isSecondPageAddedToAssetsPanel(false);
@@ -149,7 +149,7 @@ mainTest(
     await mainPage.pressCopyShortcut(browserName);
     await mainPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickOnPageOnLayersPanel(false);
+    await mainPage.clickOnPageOnLayersPanel(2);
     await mainPage.pressPasteShortcut(browserName);
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await basePage.showMainComponentViaRightClick();
@@ -157,7 +157,7 @@ mainTest(
     await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-show-main.png',
       {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        mask: mainPage.maskViewport(),
       },
     );
   },
@@ -174,7 +174,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickOnPageOnLayersPanel(false);
+    await mainPage.clickOnPageOnLayersPanel(2);
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.dragComponentOnCanvas(100, 100);
@@ -184,8 +184,11 @@ mainTest(
     await designPanelPage.changeHeightAndWidthForLayer('100', '150');
     await basePage.resetOverridesViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.createdLayer).toHaveScreenshot(
+    await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-reset-overrides.png',
+      {
+        mask: mainPage.maskViewport(),
+      },
     );
   },
 );
@@ -201,7 +204,7 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickOnPageOnLayersPanel(false);
+    await mainPage.clickOnPageOnLayersPanel(2);
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.dragComponentOnCanvas(500, 500);
@@ -215,9 +218,12 @@ mainTest(
     await layersPanelPage.updateMainComponentViaRightClick();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickOnPageOnLayersPanel(true);
-    await expect(mainPage.createdLayer).toHaveScreenshot(
+    await mainPage.clickOnPageOnLayersPanel(1);
+    await expect(mainPage.viewport).toHaveScreenshot(
       'page-copies-component-update-main.png',
+      {
+        mask: mainPage.maskViewport(),
+      },
     );
   },
 );

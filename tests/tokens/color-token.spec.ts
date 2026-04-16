@@ -71,7 +71,9 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
       await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
-      await expect(mainPage.createdLayer).toHaveScreenshot('board-color-red.png');
+      await expect(mainPage.viewport).toHaveScreenshot('board-color-red.png', {
+        mask: mainPage.maskViewport(),
+      });
       await tokensPage.tokensComp.isMenuItemWithNameSelected(
         colorToken.name,
         'ColorFill',
@@ -88,7 +90,9 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
       await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
-      await expect(mainPage.createdLayer).toHaveScreenshot('board-red-stroke.png');
+      await expect(mainPage.viewport).toHaveScreenshot('board-red-stroke.png', {
+        mask: mainPage.maskViewport(),
+      });
       await tokensPage.tokensComp.isMenuItemWithNameSelected(
         colorToken.name,
         'Stroke',
@@ -97,7 +101,10 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(2670, 'Search and apply color token (filter list and change input color)'),
+    qase(
+      [2669, 2670],
+      'Search and apply color token (filter list and change input color)',
+    ),
     async () => {
       const secondColorToken: MainToken<TokenClass> = {
         class: TokenClass.Color,
@@ -112,6 +119,24 @@ mainTest.describe(() => {
             secondColorToken,
           );
           await tokensPage.tokensComp.isTokenVisibleWithName(secondColorToken.name);
+        },
+      );
+
+      await mainTest.step(
+        '(2669) Open color picker for board with raw fill and verify Colors/Tokens switch is visible with Colors mode selected by default',
+        async () => {
+          await designPanelPage.clickFillColorIcon();
+          await designPanelPage.isColorPickerTokensButtonVisible();
+          await designPanelPage.isSearchByTokenNameInputNotVisible();
+        },
+      );
+
+      await mainTest.step(
+        `(2669) Switch to Tokens mode in color picker and verify "${colorToken.name}" token is visible`,
+        async () => {
+          await designPanelPage.clickColorPickerTokensButton();
+          await designPanelPage.isSearchByTokenNameInputVisible();
+          await designPanelPage.isColorTokenButtonVisible(colorToken.name);
         },
       );
 
