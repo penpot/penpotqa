@@ -37,6 +37,7 @@ on:
           - tests/your-account
           - tests/subscription-plans
           - tests/tokens
+          - tests/tokens/token-types
           - tests/ui-theme
           - tests/view-mode
         default: 'tests/login-signup'
