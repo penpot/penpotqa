@@ -42,6 +42,7 @@ mainTest(qase(2213, 'Import tokens'), async ({ page }) => {
 });
 
 mainTest(qase(2221, 'Import .penpot file with tokens'), async ({ page }) => {
+  const mainPage: MainPage = new MainPage(page);
   const dashboardPage: DashboardPage = new DashboardPage(page);
   const tokensPage: TokensPage = new TokensPage(page);
   await dashboardPage.openSidebarItem('Drafts');
@@ -50,6 +51,7 @@ mainTest(qase(2221, 'Import .penpot file with tokens'), async ({ page }) => {
   );
   await dashboardPage.isFilePresent('⚙️ Design Tokens Starter Set | Edited');
   await dashboardPage.openFileWithName('⚙️ Design Tokens Starter Set | Edited');
+  await mainPage.isMainPageLoaded();
   await tokensPage.clickTokensTab();
   await tokensPage.themesComp.checkSelectedTheme('2 active themes');
   await tokensPage.setsComp.isSetNameVisible('client_theme_template');
