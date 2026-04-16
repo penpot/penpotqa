@@ -578,6 +578,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.lastSelectedColorInput).toHaveValue(value.slice(1));
   }
 
+  async changeSelectedColorHexCode(hexCode, index = 0) {
+    await this.selectedColorInputs.nth(index).clear();
+    await this.selectedColorInputs.nth(index).pressSequentially(hexCode);
+  }
+
+  async isSelectedColorHexCode(hexCode, index = 0) {
+    await expect(this.selectedColorInputs.nth(index)).toHaveValue(hexCode.slice(1));
+  }
+
   async isFillHexCodeSetComponent(value) {
     await expect(this.componentColorInput).toHaveValue(value.slice(1));
   }

@@ -398,6 +398,10 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
+  const hexColor1 = '#092062';
+  const hexColor2 = '#CD0B4B';
+  const hexColor3 = '#0B33A9';
+
   mainTest.beforeEach(async () => {
     await mainTest.slow();
     await mainPage.createDefaultEllipseByCoordinates(200, 200);
@@ -413,13 +417,10 @@ mainTest.describe(() => {
     await designPanelPage.changeAxisXAndYForLayer('50', '400');
 
     await layersPanelPage.clickFirstCopyComponentOnLayersTab();
-    await designPanelPage.clickAddFillButton();
+    await designPanelPage.changeSelectedColorHexCode(hexColor1);
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickFillColorIcon();
-    await colorPalettePage.setHex('#092062');
     await layersPanelPage.clickFirstCopyComponentOnLayersTab();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet('#092062');
+    await designPanelPage.isSelectedColorHexCode(hexColor1);
   });
 
   mainTest(
@@ -431,11 +432,10 @@ mainTest.describe(() => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#CD0B4B');
+      await designPanelPage.changeSelectedColorHexCode(hexColor2);
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isFillHexCodeSet('#CD0B4B');
+      await designPanelPage.isSelectedColorHexCode(hexColor2);
 
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await layersPanelPage.updateMainComponentViaRightClick();
@@ -443,11 +443,11 @@ mainTest.describe(() => {
 
       await layersPanelPage.clickFirstCopyComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isFillHexCodeSet('#092062');
+      await designPanelPage.isSelectedColorHexCode(hexColor1);
 
       await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isFillHexCodeSet('#CD0B4B');
+      await designPanelPage.isSelectedColorHexCode(hexColor2);
 
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-color-update-component.png',
@@ -470,21 +470,18 @@ mainTest.describe(() => {
       await designPanelPage.changeAxisXAndYForLayer('250', '500');
 
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.clickAddFillButton();
+      await designPanelPage.changeSelectedColorHexCode(hexColor3);
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#0B33A9');
       await layersPanelPage.clickMainComponentOnLayersTab();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isFillHexCodeSet('#0B33A9');
+      await designPanelPage.isSelectedColorHexCode(hexColor3);
 
+      await mainPage.waitForChangeIsSaved();
       await layersPanelPage.clickFirstCopyComponentOnLayersTab();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isFillHexCodeSet('#092062');
+      await designPanelPage.isSelectedColorHexCode(hexColor1);
 
-      await layersPanelPage.clickMainComponentOnLayersTab();
       await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isFillHexCodeSet('#0B33A9');
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.isSelectedColorHexCode(hexColor3);
 
       await expect(mainPage.viewport).toHaveScreenshot(
         'main-copies-component-change-color.png',
