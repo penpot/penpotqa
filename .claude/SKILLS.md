@@ -4,7 +4,7 @@ Steps to migrate a `.spec.js` test file to `.spec.ts`:
 
 ## 1. Convert imports
 
-Replace `require` with `import`:
+Replace `require` with `import`. Always use path aliases instead of relative paths for project modules:
 
 ```js
 // Before
@@ -13,12 +13,34 @@ const { qase } = require('playwright-qase-reporter/playwright');
 const { ProfilePage } = require('../../pages/profile-page');
 
 // After
-import { mainTest } from '../../fixtures';
+import { mainTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { ProfilePage } from '../../pages/profile-page';
+import { ProfilePage } from '@pages/profile-page';
 ```
 
-## 2. Migrate local fixture files
+Apply this rule to all imports from project modules: `fixtures`, page objects, helpers, etc. Only third-party packages keep their original import paths.
+
+## 2. Declare page object instances at file scope
+
+Declare page object instances as `let` variables **outside** of `beforeEach`, and assign them inside `beforeEach`:
+
+```typescript
+// Correct
+let profilePage: ProfilePage;
+
+mainTest.beforeEach(async ({ page }) => {
+  profilePage = new ProfilePage(page);
+});
+
+// Incorrect — declaring inside beforeEach makes them unavailable to tests
+mainTest.beforeEach(async ({ page }) => {
+  const profilePage: ProfilePage = new ProfilePage(page);
+});
+```
+
+This applies at every scope level: outer `describe`, inner `describe`, etc.
+
+## 3. Migrate local fixture files
 
 If the spec imports from a local fixture file (e.g. `your-account-fixture.js`), migrate that fixture to `.ts` too. Add a type for custom fixtures and pass it as a generic to `.extend<T>()`:
 
