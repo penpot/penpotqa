@@ -45,8 +45,8 @@ This applies at every scope level: outer `describe`, inner `describe`, etc.
 If the spec imports from a local fixture file (e.g. `your-account-fixture.js`), migrate that fixture to `.ts` too. Add a type for custom fixtures and pass it as a generic to `.extend<T>()`:
 
 ```ts
-import { mainTest } from '../../fixtures';
-import { ProfilePage } from '../../pages/profile-page';
+import { mainTest } from 'fixtures';
+import { ProfilePage } from '@pages/profile-page';
 
 type AccountFixtures = {
   profilePage: ProfilePage;
@@ -63,7 +63,7 @@ export const profileTest = mainTest.extend<AccountFixtures>({
 
 Replace `module.exports = { ... }` with named `export` on each const.
 
-## 3. Add non-null assertion operator (`!`)
+## 4. Add non-null assertion operator (`!`)
 
 When accessing properties on values that could be `null` or `undefined` (e.g. return values from async helpers), add the `!` suffix to suppress TS null/undefined warnings:
 
@@ -79,7 +79,7 @@ await page.goto(changeEmail!.inviteUrl);
 
 Common cases: return values from Gmail helpers (`getRegisterMessage`, `waitMessage`), Stripe helpers, or any function that returns `T | undefined`.
 
-## 4. Rename snapshot folder
+## 5. Rename snapshot folder
 
 If a `<spec-name>.spec.js-snapshots` directory exists next to the spec file, rename it to `<spec-name>.spec.ts-snapshots`:
 
@@ -89,10 +89,10 @@ mv tests/path/to/foo.spec.js-snapshots tests/path/to/foo.spec.ts-snapshots
 
 Do this as part of the migration, before confirming it is complete.
 
-## 5. Keep `.js` originals during migration
+## 6. Keep `.js` originals during migration
 
 Do not delete the original `.js` files until the user confirms the migration is complete.
 
-## 5. Verify
+## 7. Verify
 
 Run `npx playwright test <path-to-new-ts-file> --list` to confirm Playwright resolves all tests correctly.
