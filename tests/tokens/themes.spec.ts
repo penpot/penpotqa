@@ -13,10 +13,18 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 const teamName = random().concat('autotest');
 const sampleData = new SampleData();
 
+let mainPage: MainPage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let tokensPage: TokensPage;
+let designPanelPage: DesignPanelPage;
+
 mainTest.beforeEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const dashboardPage: DashboardPage = new DashboardPage(page);
-  const mainPage: MainPage = new MainPage(page);
+  mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  tokensPage = new TokensPage(page);
+  designPanelPage = new DesignPanelPage(page);
 
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
@@ -26,24 +34,17 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest.afterEach(async ({ page }) => {
-  let mainPage = new MainPage(page);
-  let teamPage = new TeamPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest(qase(2167, 'Create theme via "create one" link'), async ({ page }) => {
-  const tokensPage: TokensPage = new TokensPage(page);
   await tokensPage.clickTokensTab();
   await tokensPage.themesComp.createThemeViaLink('Desktop');
   await tokensPage.themesComp.checkSelectedTheme('No theme active');
 });
 
 mainTest.describe(() => {
-  let tokensPage: TokensPage;
-  let designPanelPage: DesignPanelPage;
-  let mainPage: MainPage;
-
   const colorToken1: MainToken<TokenClass> = {
     class: TokenClass.Color,
     name: 'color',
@@ -66,10 +67,6 @@ mainTest.describe(() => {
   };
 
   mainTest.beforeEach(async ({ page }) => {
-    mainPage = new MainPage(page);
-    tokensPage = new TokensPage(page);
-    designPanelPage = new DesignPanelPage(page);
-
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
 
     await tokensPage.clickTokensTab();
@@ -111,51 +108,74 @@ mainTest.describe(() => {
     await designPanelPage.checkGeneralCornerRadius(radiusToken2.value);
   });
 
-  mainTest(qase(2206, 'Enable themes in different groups'), async () => {
-    await tokensPage.themesComp.createThemeViaLinkWithGroup('App', 'Web');
-    await tokensPage.themesComp.addNewThemeWithGroup('App', 'Mobile');
+  mainTest.describe(() => {
+    mainTest.beforeEach(async ({ page }) => {
+      await tokensPage.themesComp.createThemeViaLinkWithGroup('App', 'Web');
+      await tokensPage.themesComp.addNewThemeWithGroup('App', 'Mobile');
 
-    await tokensPage.themesComp.openEditThemeModalByThemeName('Web');
-    await tokensPage.themesComp.activateSetInTheme('Dark');
-    await tokensPage.themesComp.activateSetInTheme('Light');
-    await tokensPage.themesComp.activateSetInTheme('Desktop');
-    await tokensPage.themesComp.saveTheme();
-    await tokensPage.setsComp.checkActiveSetsCountByThemeName('Web', '3');
+      await tokensPage.themesComp.openEditThemeModalByThemeName('Web');
+      await tokensPage.themesComp.activateSetInTheme('Dark');
+      await tokensPage.themesComp.activateSetInTheme('Light');
+      await tokensPage.themesComp.activateSetInTheme('Desktop');
+      await tokensPage.themesComp.saveTheme();
+      await tokensPage.setsComp.checkActiveSetsCountByThemeName('Web', '3');
 
-    await tokensPage.themesComp.openEditThemeModalByThemeName('Mobile');
-    await tokensPage.themesComp.activateSetInTheme('Light');
-    await tokensPage.themesComp.activateSetInTheme('Mobile');
-    await tokensPage.themesComp.saveTheme();
-    await tokensPage.setsComp.checkActiveSetsCountByThemeName('Mobile', '2');
+      await tokensPage.themesComp.openEditThemeModalByThemeName('Mobile');
+      await tokensPage.themesComp.activateSetInTheme('Light');
+      await tokensPage.themesComp.activateSetInTheme('Mobile');
+      await tokensPage.themesComp.saveTheme();
+      await tokensPage.setsComp.checkActiveSetsCountByThemeName('Mobile', '2');
+    });
 
-    await tokensPage.themesComp.addNewTheme('Brand X');
-    await tokensPage.themesComp.openEditThemeModalByThemeName('Brand X');
-    await tokensPage.themesComp.activateSetInTheme('Light');
-    await tokensPage.themesComp.activateSetInTheme('Dark');
-    await tokensPage.themesComp.activateSetInTheme('Desktop');
-    await tokensPage.themesComp.activateSetInTheme('Mobile');
-    await tokensPage.themesComp.saveTheme();
-    await tokensPage.setsComp.checkActiveSetsCountByThemeName('Brand X', '4');
-    await mainPage.closeModalWindow();
-    await tokensPage.themesComp.checkSelectedTheme('No theme active');
+    mainTest(qase(2206, 'Enable themes in different groups'), async () => {
+      await tokensPage.themesComp.addNewTheme('Brand X');
+      await tokensPage.themesComp.openEditThemeModalByThemeName('Brand X');
+      await tokensPage.themesComp.activateSetInTheme('Light');
+      await tokensPage.themesComp.activateSetInTheme('Dark');
+      await tokensPage.themesComp.activateSetInTheme('Desktop');
+      await tokensPage.themesComp.activateSetInTheme('Mobile');
+      await tokensPage.themesComp.saveTheme();
+      await tokensPage.setsComp.checkActiveSetsCountByThemeName('Brand X', '4');
+      await mainPage.closeModalWindow();
+      await tokensPage.themesComp.checkSelectedTheme('No theme active');
 
-    await tokensPage.themesComp.selectTheme('Web');
-    await tokensPage.themesComp.checkSelectedTheme('App / Web');
-    await tokensPage.setsComp.isSetCheckedByName('Dark');
-    await tokensPage.setsComp.isSetCheckedByName('Light');
-    await tokensPage.setsComp.isSetCheckedByName('Desktop');
+      await tokensPage.themesComp.selectTheme('Web');
+      await tokensPage.themesComp.checkSelectedTheme('App / Web');
+      await tokensPage.setsComp.isSetCheckedByName('Dark');
+      await tokensPage.setsComp.isSetCheckedByName('Light');
+      await tokensPage.setsComp.isSetCheckedByName('Desktop');
 
-    await tokensPage.themesComp.selectTheme('Mobile');
-    await tokensPage.themesComp.checkSelectedTheme('App / Mobile');
-    await tokensPage.setsComp.isSetCheckedByName('Light');
-    await tokensPage.setsComp.isSetCheckedByName('Mobile');
+      await tokensPage.themesComp.selectTheme('Mobile');
+      await tokensPage.themesComp.checkSelectedTheme('App / Mobile');
+      await tokensPage.setsComp.isSetCheckedByName('Light');
+      await tokensPage.setsComp.isSetCheckedByName('Mobile');
 
-    await tokensPage.themesComp.selectTheme('Brand X');
-    await tokensPage.themesComp.checkSelectedTheme('2 active themes');
-    await tokensPage.setsComp.isSetCheckedByName('Dark');
-    await tokensPage.setsComp.isSetCheckedByName('Light');
-    await tokensPage.setsComp.isSetCheckedByName('Mobile');
-    await tokensPage.setsComp.isSetCheckedByName('Desktop');
+      await tokensPage.themesComp.selectTheme('Brand X');
+      await tokensPage.themesComp.checkSelectedTheme('2 active themes');
+      await tokensPage.setsComp.isSetCheckedByName('Dark');
+      await tokensPage.setsComp.isSetCheckedByName('Light');
+      await tokensPage.setsComp.isSetCheckedByName('Mobile');
+      await tokensPage.setsComp.isSetCheckedByName('Desktop');
+    });
+
+    mainTest(
+      qase(
+        2190,
+        'Add new group theme using an existing group name and an existing theme name via select "edit themes"',
+      ),
+      async () => {
+        await tokensPage.themesComp.addNewThemeWithGroup('App', 'Web', true);
+        await mainPage.closeModalWindow();
+      },
+    );
+
+    mainTest(qase(2192, 'Rename a theme'), async () => {
+      const newThemeName: string = 'Tablet';
+      await tokensPage.themesComp.openEditThemeModalByThemeName('Mobile');
+      await tokensPage.themesComp.editThemeName(newThemeName);
+      await tokensPage.setsComp.checkActiveSetsCountByThemeName(newThemeName, '2');
+      await mainPage.closeModalWindow();
+    });
   });
 
   mainTest(qase(2236, 'Create theme with immediately set selection'), async () => {
