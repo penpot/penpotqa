@@ -79,6 +79,7 @@ export class TokensComponent {
   readonly tokenGroupName: Locator;
   readonly tokensPage: TokensPage;
   readonly createTokenModal: Locator;
+  readonly errorHintMessage: Locator;
 
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
@@ -118,6 +119,7 @@ export class TokensComponent {
       name: "Don't remap",
     });
     this.tokenGroupName = this.tokenSideBar.locator('[class*="layer-button-name"]');
+    this.errorHintMessage = page.locator('#token-name-hint');
   }
 
   getTokenSection(tokenClass: TokenClass): Locator {
@@ -507,5 +509,13 @@ export class TokensComponent {
     await this.clickRemapTokensButton();
     await this.tokensPage.waitForChangeIsSaved();
     await this.isTokenVisibleWithName(newName);
+  }
+
+  async clearTokenNameInput() {
+    await this.tokenNameInput.clear();
+  }
+
+  async isErrorHintMessageVisible(message: string) {
+    await expect(this.errorHintMessage).toHaveText(message);
   }
 }
