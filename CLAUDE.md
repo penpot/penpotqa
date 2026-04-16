@@ -52,7 +52,7 @@ All page interactions are abstracted into page objects under `pages/`:
 - **`pages/login-page.js`**, **`register-page.js`**, **`profile-page.js`**, **`forgot-password-page.js`** — Auth flows
 - **`pages/performance-page.js`** — Page object for performance tests
 
-### Test Fixtures (`fixtures.js`)
+### Test Fixtures (`fixtures.ts`)
 
 - **`mainTest`** — Auto-logs in before each test, lands on dashboard. Used by most tests.
 - **`registerTest`** — Creates a fresh account via Gmail API. Provides `name` and `email` fixtures.
@@ -60,7 +60,7 @@ All page interactions are abstracted into page objects under `pages/`:
 
 ### Test Organization (`tests/`)
 
-Tests are grouped by feature area. Each spec file imports from `fixtures.js` and uses the `qase()` wrapper to link tests to Qase test management IDs:
+Tests are grouped by feature area. Each spec file imports from `fixtures` and uses the `qase()` wrapper to link tests to Qase test management IDs:
 
 ```typescript
 import { mainTest } from 'fixtures';
@@ -77,7 +77,7 @@ New spec files must be TypeScript (`.spec.ts`). Legacy files in `.spec.js` are b
 
 ### Visual Regression
 
-Snapshots are stored at `tests/{dir}/{file}-snapshots/linux/{browser}/`. Comparison thresholds differ per browser (Chrome: `0.0001`, WebKit: `0.01`). Snapshots require **Ubuntu 24.04** at **1920x1080** for consistency.
+Snapshots are stored at `tests/{dir}/{file}-snapshots/linux/{browser}/`. Comparison thresholds differ per browser (Chrome: `0.0001`, WebKit: `0.01`). Snapshots require **Ubuntu 24.04** at **1920x969** for consistency.
 
 ### Helpers (`helpers/`)
 
