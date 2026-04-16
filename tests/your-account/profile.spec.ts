@@ -1,16 +1,16 @@
 import { expect } from '@playwright/test';
-import { mainTest, registerTest } from '../../fixtures';
+import { mainTest, registerTest } from 'fixtures';
 import { profileTest } from './your-account-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { random } from '../../helpers/string-generator';
-import { LoginPage } from '../../pages/login-page';
-import { ProfilePage } from '../../pages/profile-page';
+import { random } from 'helpers/string-generator';
+import { LoginPage } from '@pages/login-page';
+import { ProfilePage } from '@pages/profile-page';
 import {
   getRegisterMessage,
   checkNewEmailText,
   waitSecondMessage,
-} from '../../helpers/gmail';
-import { DashboardPage } from '../../pages/dashboard/dashboard-page';
+} from 'helpers/gmail';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 
 profileTest(
   qase(187, 'Edit profile: profile name and image'),
