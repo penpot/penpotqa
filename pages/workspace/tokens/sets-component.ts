@@ -119,6 +119,12 @@ export class SetsComponent {
     await this.baseComponent.clickOnEnter();
   }
 
+  async renameGroupByDoubleClick(groupName: string, newGroupName: string) {
+    await this.groupSetName.filter({ hasText: groupName }).dblclick();
+    await this.setsNameInput.fill(newGroupName);
+    await this.baseComponent.clickOnEnter();
+  }
+
   async renameSetViaContextMenu(oldSetName: string, newSetName: string) {
     await this.rightClickOnSetByName(oldSetName);
     await this.renameContextMenuOption.click();
