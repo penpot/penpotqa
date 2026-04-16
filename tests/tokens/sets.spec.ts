@@ -186,6 +186,27 @@ mainTest.describe(() => {
     await designPanelPage.checkGeneralCornerRadius(radiusToken1.value);
   });
 
+  mainTest(qase(2133, 'Rename a set group using an existing name'), async () => {
+    await mainTest.step(
+      'Rename "Mode" group to "Device" (existing group name)',
+      async () => {
+        await tokensPage.setsComp.renameGroupByDoubleClick('Mode', 'Device');
+      },
+    );
+
+    await mainTest.step('Check "Mode" group is no longer visible', async () => {
+      await tokensPage.setsComp.isGroupSetNameVisible('Mode', false);
+    });
+
+    await mainTest.step(
+      'Check "Dark" and "Light" sets are now visible under "Device" group',
+      async () => {
+        await tokensPage.setsComp.isSetNameVisible('Dark');
+        await tokensPage.setsComp.isSetNameVisible('Light');
+      },
+    );
+  });
+
   mainTest(qase(2139, 'Enable and Disable sets'), async () => {
     await mainTest.step(
       'Disable Light set and check Dark color token is applied',
