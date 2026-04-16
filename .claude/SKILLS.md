@@ -63,21 +63,21 @@ export const profileTest = mainTest.extend<AccountFixtures>({
 
 Replace `module.exports = { ... }` with named `export` on each const.
 
-## 4. Add non-null assertion operator (`!`)
+## 4. Handle nullable return values explicitly
 
-When accessing properties on values that could be `null` or `undefined` (e.g. return values from async helpers), add the `!` suffix to suppress TS null/undefined warnings:
+When an async helper returns `T | null | undefined` (e.g. `getRegisterMessage`, `waitMessage`, Stripe helpers), add an explicit null guard instead of using the non-null assertion operator (`!`). A null guard narrows the type for TypeScript and produces a clear failure message if the value is missing:
 
 ```ts
-// Before
-await checkNewEmailText(changeEmail.inviteText, name, newEmail);
-await page.goto(changeEmail.inviteUrl);
-
-// After
+// Avoid — suppresses the error but crashes at runtime with no useful message
 await checkNewEmailText(changeEmail!.inviteText, name, newEmail);
 await page.goto(changeEmail!.inviteUrl);
-```
 
-Common cases: return values from Gmail helpers (`getRegisterMessage`, `waitMessage`), Stripe helpers, or any function that returns `T | undefined`.
+// Prefer — fails fast with an explicit message and narrows the type
+const changeEmail = await getRegisterMessage(email);
+if (!changeEmail) throw new Error('Email confirmation not received');
+await checkNewEmailText(changeEmail.inviteText, name, newEmail);
+await page.goto(changeEmail.inviteUrl);
+```
 
 ## 5. Rename snapshot folder
 
