@@ -93,6 +93,38 @@ Do this as part of the migration, before confirming it is complete.
 
 Do not delete the original `.js` files until the user confirms the migration is complete.
 
-## 7. Verify
+## 7. Migrate test steps
+
+When migrating a test to TypeScript, **always wrap the test body in `mainTest.step()` calls** grouping actions by logical phase. The step syntax is identical in JS and TS.
+
+If the original JS test already has steps, keep them as-is. If it has no steps, add them during migration using descriptive names that reflect what each group of actions does:
+
+```typescript
+// JS (before) — no steps
+mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
+  await mainPage.addFlexLayoutViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.flexLayoutSection).toBeVisible();
+});
+
+// TS (after) — steps added
+mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
+  await mainTest.step('Add flex layout via right click', async () => {
+    await mainPage.addFlexLayoutViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+  });
+
+  await mainTest.step('Verify flex layout is applied', async () => {
+    await expect(mainPage.flexLayoutSection).toBeVisible();
+  });
+});
+```
+
+**Step naming rules:**
+- Use action-oriented names: `'Add flex layout via right click'`, `'Verify flex layout is applied'`
+- Group setup actions together, assertions together
+- Keep step names short and descriptive — no Qase IDs in the step name unless the original JS had them
+
+## 8. Verify
 
 Run `npx playwright test <path-to-new-ts-file> --list` to confirm Playwright resolves all tests correctly.
