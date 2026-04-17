@@ -1,5 +1,5 @@
-import { giveFeedbackTest } from './your-account-fixture';
-import { qase } from 'playwright-qase-reporter/playwright';
+const { giveFeedbackTest } = require('./your-account-fixture');
+const { qase } = require('playwright-qase-reporter/playwright');
 
 giveFeedbackTest(
   qase([207, 208], 'Send Feedback: validate empty and valid submission'),

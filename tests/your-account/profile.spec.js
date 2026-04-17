@@ -1,16 +1,16 @@
-import { expect } from '@playwright/test';
-import { mainTest, registerTest } from 'fixtures';
-import { profileTest } from './your-account-fixture';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { random } from 'helpers/string-generator';
-import { LoginPage } from '@pages/login-page';
-import { ProfilePage } from '@pages/profile-page';
-import {
+const { mainTest, registerTest } = require('../../fixtures');
+const { profileTest } = require('./your-account-fixture');
+const { qase } = require('playwright-qase-reporter/playwright');
+const { random } = require('../../helpers/string-generator');
+const { LoginPage } = require('../../pages/login-page');
+const { ProfilePage } = require('../../pages/profile-page');
+const { expect } = require('@playwright/test');
+const {
   getRegisterMessage,
   checkNewEmailText,
   waitSecondMessage,
-} from 'helpers/gmail';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+} = require('../../helpers/gmail');
+const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 
 profileTest(
   qase(187, 'Edit profile: profile name and image'),
@@ -66,8 +66,8 @@ registerTest(qase(190, 'Change email to valid'), async ({ page, name, email }) =
   await profilePage.changeEmail(newEmail);
   await waitSecondMessage(page, email, 40);
   const changeEmail = await getRegisterMessage(email);
-  await checkNewEmailText(changeEmail!.inviteText, name, newEmail);
-  await page.goto(changeEmail!.inviteUrl);
+  await checkNewEmailText(changeEmail.inviteText, name, newEmail);
+  await page.goto(changeEmail.inviteUrl);
   await profilePage.logout();
   await loginPage.isLoginPageOpened();
   await loginPage.enterEmailAndClickOnContinue(newEmail);

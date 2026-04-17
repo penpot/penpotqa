@@ -1,5 +1,5 @@
-import { passwordTest } from './your-account-fixture';
-import { qase } from 'playwright-qase-reporter/playwright';
+const { passwordTest } = require('./your-account-fixture');
+const { qase } = require('playwright-qase-reporter/playwright');
 
 passwordTest(qase(198, 'Change password to invalid'), async ({ profilePage }) => {
   const newPassword = '1234567';

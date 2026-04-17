@@ -1,4 +1,4 @@
-import { mainTest } from 'fixtures';
+import { mainTest } from '../../fixtures';
 import { ProfilePage } from '@pages/profile-page';
 
 type YourAccountFixtures = {
