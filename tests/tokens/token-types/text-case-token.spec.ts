@@ -12,10 +12,20 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+let tokensPage: TokensPage;
+let designPanelPage: DesignPanelPage;
+let assetsPanelPage: AssetsPanelPage;
+
 mainTest.beforeEach(async ({ page, browserName }) => {
-  let teamPage: TeamPage = new TeamPage(page);
-  let dashboardPage: DashboardPage = new DashboardPage(page);
-  let mainPage: MainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  tokensPage = new TokensPage(page);
+  designPanelPage = new DesignPanelPage(page);
+  assetsPanelPage = new AssetsPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -26,20 +36,14 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const mainPage: MainPage = new MainPage(page);
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
   qase(2522, 'Apply a capitalize text case token to a uppercase text layer'),
-  async ({ page }) => {
-    const mainPage: MainPage = new MainPage(page);
-    const tokensPage: TokensPage = new TokensPage(page);
-    const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
-
+  async () => {
     const textCaseToken: MainToken<TokenClass> = {
       class: TokenClass.TextCase,
       name: 'text-case-capitalize',
@@ -58,12 +62,7 @@ mainTest(
   },
 );
 
-mainTest(qase(2520, 'Override and re-apply a text case token'), async ({ page }) => {
-  const mainPage: MainPage = new MainPage(page);
-  const tokensPage: TokensPage = new TokensPage(page);
-  const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
-  const assetsPanelPage: AssetsPanelPage = new AssetsPanelPage(page);
-
+mainTest(qase(2520, 'Override and re-apply a text case token'), async () => {
   const textCaseToken: MainToken<TokenClass> = {
     class: TokenClass.TextCase,
     name: 'text-case-capitalize',
