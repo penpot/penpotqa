@@ -24,8 +24,6 @@ mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
   tokensPage = new TokensPage(page);
-  layersPanelPage = new LayersPanelPage(page);
-  designPanelPage = new DesignPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
@@ -120,7 +118,7 @@ mainTest.describe(() => {
       [2723],
       'Rename a token that has been applied to a shape in a main component',
     ),
-    async () => {
+    async ({ page }) => {
       const tokenA: MainToken<TokenClass> = {
         class: TokenClass.Color,
         name: 'base-color',
@@ -136,6 +134,9 @@ mainTest.describe(() => {
         value: '{base-color}',
       };
       const newTokenAValue = '#222222';
+
+      layersPanelPage = new LayersPanelPage(page);
+      designPanelPage = new DesignPanelPage(page);
 
       await mainTest.step('Create board and named rectangle', async () => {
         await mainPage.createDefaultBoardByCoordinates(320, 210);

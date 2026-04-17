@@ -13,14 +13,10 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-
 mainTest.beforeEach(async ({ page, browserName }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+  let teamPage: TeamPage = new TeamPage(page);
+  let dashboardPage: DashboardPage = new DashboardPage(page);
+  let mainPage: MainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -31,7 +27,9 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
+mainTest.afterEach(async ({ page }) => {
+  const teamPage: TeamPage = new TeamPage(page);
+  const mainPage: MainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
@@ -64,7 +62,9 @@ mainTest.describe(() => {
 
   mainTest(
     qase(2125, 'Apply default "all radius" token to a rectangle (by left click)'),
-    async () => {
+    async ({ page }) => {
+      tokensPage = new TokensPage(page);
+
       await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
       await designPanelPage.checkGeneralCornerRadius(radiusToken.value);
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -85,7 +85,9 @@ mainTest.describe(() => {
       2166,
       'Edit a border radius token, already applied to a shape (with warning renaming message)',
     ),
-    async () => {
+    async ({ page }) => {
+      tokensPage = new TokensPage(page);
+
       const radiusToken: MainToken<TokenClass> = {
         class: TokenClass.BorderRadius,
         name: 'border-radius',
@@ -118,7 +120,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase(2136, 'Delete a token and redo deletion'),
-    async ({ browserName }) => {
+    async ({ page, browserName }) => {
+      tokensPage = new TokensPage(page);
       await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
       await tokensPage.tokensComp.deleteToken(radiusToken.name);
       await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, false);

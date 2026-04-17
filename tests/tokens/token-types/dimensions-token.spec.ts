@@ -11,18 +11,10 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-let tokensPage: TokensPage;
-let designPanelPage: DesignPanelPage;
-
 mainTest.beforeEach(async ({ page, browserName }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  tokensPage = new TokensPage(page);
-  designPanelPage = new DesignPanelPage(page);
+  let teamPage: TeamPage = new TeamPage(page);
+  let dashboardPage: DashboardPage = new DashboardPage(page);
+  let mainPage: MainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -33,14 +25,20 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
+mainTest.afterEach(async ({ page }) => {
+  const teamPage: TeamPage = new TeamPage(page);
+  const mainPage: MainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
   qase(2218, 'Apply "X/Y axis" dimension token to a text (by right click)'),
-  async () => {
+  async ({ page }) => {
+    const mainPage: MainPage = new MainPage(page);
+    const tokensPage: TokensPage = new TokensPage(page);
+    const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
+
     const dimensionToken: MainToken<TokenClass> = {
       class: TokenClass.Dimension,
       name: 'dimension',

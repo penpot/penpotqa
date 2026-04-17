@@ -13,16 +13,10 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 const teamName = random().concat('autotest');
 const sampleData = new SampleData();
 
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-let tokensPage: TokensPage;
-
 mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  tokensPage = new TokensPage(page);
+  const teamPage = new TeamPage(page);
+  const dashboardPage = new DashboardPage(page);
+  const mainPage = new MainPage(page);
 
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
@@ -31,12 +25,16 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
+mainTest.afterEach(async ({ page }) => {
+  const teamPage = new TeamPage(page);
+  const mainPage = new MainPage(page);
+
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase(2102, 'Create a set via "create one" link'), async () => {
+mainTest(qase(2102, 'Create a set via "create one" link'), async ({ page }) => {
+  const tokensPage: TokensPage = new TokensPage(page);
   const name = 'Mobile';
 
   await mainTest.step('Open tokens tab', async () => {
@@ -52,7 +50,8 @@ mainTest(qase(2102, 'Create a set via "create one" link'), async () => {
   });
 });
 
-mainTest(qase(2105, 'Create a set using an existing name'), async () => {
+mainTest(qase(2105, 'Create a set using an existing name'), async ({ page }) => {
+  const tokensPage: TokensPage = new TokensPage(page);
   const setName = 'Mobile';
   const colorToken: MainToken<TokenClass> = {
     class: TokenClass.Color,
@@ -83,7 +82,8 @@ mainTest(qase(2105, 'Create a set using an existing name'), async () => {
   );
 });
 
-mainTest(qase(2127, 'Rename a set'), async () => {
+mainTest(qase(2127, 'Rename a set'), async ({ page }) => {
+  const tokensPage: TokensPage = new TokensPage(page);
   const name = 'Mobile';
   const newName1 = 'Mobile-Updated-Double-Click';
   const newName2 = 'Mobile-Updated-Context-Menu';
@@ -273,7 +273,9 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase(2231, 'Duplicate set'), async () => {
+mainTest(qase(2231, 'Duplicate set'), async ({ page }) => {
+  const tokensPage: TokensPage = new TokensPage(page);
+
   const name = 'Mobile';
   const firstSetName = name + '-copy';
   const secondSetName = firstSetName + '-copy';

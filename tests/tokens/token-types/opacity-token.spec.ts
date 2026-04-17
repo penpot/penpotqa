@@ -12,16 +12,10 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-let tokensPage: TokensPage;
-
 mainTest.beforeEach(async ({ page, browserName }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  tokensPage = new TokensPage(page);
+  let teamPage: TeamPage = new TeamPage(page);
+  let dashboardPage: DashboardPage = new DashboardPage(page);
+  let mainPage: MainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -32,14 +26,19 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
+mainTest.afterEach(async ({ page }) => {
+  const teamPage: TeamPage = new TeamPage(page);
+  const mainPage: MainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
   qase(2172, 'Apply default "opacity" token to an image (by left click)'),
-  async () => {
+  async ({ page }) => {
+    const mainPage: MainPage = new MainPage(page);
+    const tokensPage: TokensPage = new TokensPage(page);
+
     const opacityToken: MainToken<TokenClass> = {
       class: TokenClass.Opacity,
       name: 'opacity',

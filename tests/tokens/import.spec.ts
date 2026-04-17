@@ -11,28 +11,26 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-let tokensPage: TokensPage;
-
 mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  tokensPage = new TokensPage(page);
+  const teamPage: TeamPage = new TeamPage(page);
+  const dashboardPage: DashboardPage = new DashboardPage(page);
 
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
-mainTest.afterEach(async () => {
+mainTest.afterEach(async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const teamPage = new TeamPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase(2213, 'Import tokens'), async () => {
+mainTest(qase(2213, 'Import tokens'), async ({ page }) => {
+  const dashboardPage: DashboardPage = new DashboardPage(page);
+  const mainPage: MainPage = new MainPage(page);
+  const tokensPage: TokensPage = new TokensPage(page);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
@@ -43,7 +41,10 @@ mainTest(qase(2213, 'Import tokens'), async () => {
   await tokensPage.setsComp.isSetNameVisible('client_theme_template');
 });
 
-mainTest(qase(2221, 'Import .penpot file with tokens'), async () => {
+mainTest(qase(2221, 'Import .penpot file with tokens'), async ({ page }) => {
+  const mainPage: MainPage = new MainPage(page);
+  const dashboardPage: DashboardPage = new DashboardPage(page);
+  const tokensPage: TokensPage = new TokensPage(page);
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage(
     'documents/penpot-file-with-tokens.penpot',
@@ -56,7 +57,10 @@ mainTest(qase(2221, 'Import .penpot file with tokens'), async () => {
   await tokensPage.setsComp.isSetNameVisible('client_theme_template');
 });
 
-mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
+mainTest(qase(2240, 'Error while importing a tokens file'), async ({ page }) => {
+  const mainPage: MainPage = new MainPage(page);
+  const dashboardPage: DashboardPage = new DashboardPage(page);
+  const tokensPage: TokensPage = new TokensPage(page);
   const errorCount = 1;
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
@@ -86,7 +90,10 @@ mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
 
 mainTest(
   qase(2293, 'Successful import of tokens file with validation errors'),
-  async () => {
+  async ({ page }) => {
+    const mainPage: MainPage = new MainPage(page);
+    const dashboardPage: DashboardPage = new DashboardPage(page);
+    const tokensPage: TokensPage = new TokensPage(page);
     const firstBadTokenName = 'dark-muted';
     const errorCount = 4;
     await dashboardPage.createFileViaPlaceholder();
@@ -101,7 +108,10 @@ mainTest(
   },
 );
 
-mainTest(qase(2252, 'Import tokens multi-file folder'), async () => {
+mainTest(qase(2252, 'Import tokens multi-file folder'), async ({ page }) => {
+  const mainPage: MainPage = new MainPage(page);
+  const dashboardPage: DashboardPage = new DashboardPage(page);
+  const tokensPage: TokensPage = new TokensPage(page);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
@@ -171,6 +181,7 @@ mainTest.describe(() => {
   );
 
   mainTest(qase(2384, 'Import tokens .zip (empty or invalid)'), async ({ page }) => {
+    const tokensPage: TokensPage = new TokensPage(page);
     const baseComp: BaseComponent = new BaseComponent(page);
 
     await tokensPage.toolsComp.importTokensZip('documents/tokens-invalid.zip');

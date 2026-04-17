@@ -9,16 +9,11 @@ import { BaseComponent } from '@pages/base-component';
 
 const teamName = random().concat('autotest');
 
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-let tokensPage: TokensPage;
-
 mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  tokensPage = new TokensPage(page);
+  const teamPage: TeamPage = new TeamPage(page);
+  const dashboardPage: DashboardPage = new DashboardPage(page);
+  const mainPage: MainPage = new MainPage(page);
+  const tokensPage: TokensPage = new TokensPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
@@ -29,14 +24,18 @@ mainTest.beforeEach(async ({ page }) => {
   await tokensPage.toolsComp.clickOnTokenToolsButton();
 });
 
-mainTest.afterEach(async () => {
+mainTest.afterEach(async ({ page }) => {
+  const mainPage = new MainPage(page);
+  const teamPage = new TeamPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
   qase(2266, 'Export tokens multi-file folder (no token, set or theme)'),
-  async () => {
+  async ({ page }) => {
+    const mainPage: MainPage = new MainPage(page);
+    const tokensPage: TokensPage = new TokensPage(page);
     await tokensPage.toolsComp.clickOnExportButton();
     await tokensPage.toolsComp.clickOnMultipleFilesButton();
     await tokensPage.toolsComp.checkEmptyExportTabMessage();
@@ -46,6 +45,7 @@ mainTest(
 );
 
 mainTest(qase(2265, 'Export tokens multi-file folder'), async ({ page }) => {
+  const tokensPage: TokensPage = new TokensPage(page);
   const baseComp: BaseComponent = new BaseComponent(page);
   await tokensPage.toolsComp.importTokensFolder('documents/tokens-folder-example');
   await tokensPage.themesComp.checkSelectedTheme('Mode / Light');

@@ -13,20 +13,10 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-let tokensPage: TokensPage;
-let designPanelPage: DesignPanelPage;
-let layersPanelPage: LayersPanelPage;
-
 mainTest.beforeEach(async ({ page, browserName }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  tokensPage = new TokensPage(page);
-  designPanelPage = new DesignPanelPage(page);
-  layersPanelPage = new LayersPanelPage(page);
+  let teamPage: TeamPage = new TeamPage(page);
+  let dashboardPage: DashboardPage = new DashboardPage(page);
+  let mainPage: MainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -37,14 +27,21 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
+mainTest.afterEach(async ({ page }) => {
+  const teamPage: TeamPage = new TeamPage(page);
+  const mainPage: MainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
   qase(2200, 'Apply "max/min size" token to an image (by right click)'),
-  async () => {
+  async ({ page }) => {
+    const mainPage: MainPage = new MainPage(page);
+    const tokensPage: TokensPage = new TokensPage(page);
+    const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
+    const layersPanelPage: LayersPanelPage = new LayersPanelPage(page);
+
     const sizingToken: MainToken<TokenClass> = {
       class: TokenClass.Sizing,
       name: 'sizing',
@@ -94,7 +91,9 @@ mainTest(
 
 mainTest(
   qase(2197, 'Verifying invalid token values on creation, aborting (cancel)'),
-  async () => {
+  async ({ page }) => {
+    const tokensPage: TokensPage = new TokensPage(page);
+
     const sizingToken: MainToken<TokenClass> = {
       class: TokenClass.Sizing,
       name: 'sizingToken',

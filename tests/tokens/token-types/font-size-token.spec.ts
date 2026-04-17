@@ -16,22 +16,10 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 const teamName = random().concat('autotest');
 const sampleData = new SampleData();
 
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-let tokensPage: TokensPage;
-let designPanelPage: DesignPanelPage;
-let layersPanelPage: LayersPanelPage;
-let colorPalettePage: ColorPalettePage;
-
 mainTest.beforeEach(async ({ page, browserName }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  tokensPage = new TokensPage(page);
-  designPanelPage = new DesignPanelPage(page);
-  layersPanelPage = new LayersPanelPage(page);
-  colorPalettePage = new ColorPalettePage(page);
+  let teamPage: TeamPage = new TeamPage(page);
+  let dashboardPage: DashboardPage = new DashboardPage(page);
+  let mainPage: MainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -42,7 +30,9 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
+mainTest.afterEach(async ({ page }) => {
+  const teamPage: TeamPage = new TeamPage(page);
+  const mainPage: MainPage = new MainPage(page);
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
@@ -114,7 +104,13 @@ mainTest(
     2363,
     'Propagation of (style) changes from a (contained) text component to copies (overriding style by using tokens)',
   ),
-  async ({ browserName }) => {
+  async ({ page, browserName }) => {
+    const mainPage: MainPage = new MainPage(page);
+    const tokensPage: TokensPage = new TokensPage(page);
+    const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
+    const layersPanelPage: LayersPanelPage = new LayersPanelPage(page);
+    const colorPalettePage: ColorPalettePage = new ColorPalettePage(page);
+
     const colorToken1: MainToken<TokenClass> = {
       class: TokenClass.Color,
       name: 'color1',
