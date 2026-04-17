@@ -73,37 +73,71 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(2472, 'Apply a font family token'), async () => {
-    await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
-    await designPanelPage.checkFontName(fontFamilyToken.value);
+    await mainTest.step(
+      `Verify "${fontFamilyToken.name}" token is applied and font name matches`,
+      async () => {
+        await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
+        await designPanelPage.checkFontName(fontFamilyToken.value);
+      },
+    );
   });
 
   mainTest(qase(2475, 'Edit a font family token'), async () => {
-    await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.checkFontName(updatedTokenData.value);
-    await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
-    await tokensPage.tokensComp.checkAppliedTokenTitle(
-      'Token: font-family\n' + 'Original value: Inter\n' + 'Resolved value: Inter',
+    await mainTest.step(
+      `Edit "${fontFamilyToken.name}" token to "${updatedTokenData.value}" and verify font is updated`,
+      async () => {
+        await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkFontName(updatedTokenData.value);
+        await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
+      },
+    );
+
+    await mainTest.step(
+      'Verify applied token title reflects updated value',
+      async () => {
+        await tokensPage.tokensComp.checkAppliedTokenTitle(
+          'Token: font-family\n' +
+            'Original value: Inter\n' +
+            'Resolved value: Inter',
+        );
+      },
     );
   });
 
   mainTest(qase(2506, 'Reference a font family token'), async () => {
-    await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
-    await designPanelPage.checkFontName(fontFamilyToken.value);
+    await mainTest.step(
+      `Verify "${fontFamilyToken.name}" is applied and create reference token "${fontFamilyTokenRef.name}"`,
+      async () => {
+        await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
+        await designPanelPage.checkFontName(fontFamilyToken.value);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+          fontFamilyTokenRef,
+        );
+        await tokensPage.tokensComp.isTokenVisibleWithName(fontFamilyTokenRef.name);
+      },
+    );
 
-    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontFamilyTokenRef);
-    await tokensPage.tokensComp.isTokenVisibleWithName(fontFamilyTokenRef.name);
-    await mainPage.clickViewportOnce();
+    await mainTest.step(
+      `Apply "${fontFamilyTokenRef.name}" token to another layer`,
+      async () => {
+        await mainPage.clickViewportOnce();
+        await layersPanelPage.openLayersTab();
+        await mainPage.clickOnLayerOnCanvas();
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.clickOnTokenWithName(fontFamilyTokenRef.name);
+      },
+    );
 
-    await layersPanelPage.openLayersTab();
-    await mainPage.clickOnLayerOnCanvas();
-    await tokensPage.clickTokensTab();
-
-    await tokensPage.tokensComp.clickOnTokenWithName(fontFamilyTokenRef.name);
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.checkFontName(updatedTokenData.value);
-    await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyTokenRef.name);
+    await mainTest.step(
+      `Edit source token to "${updatedTokenData.value}" and verify font is updated via reference`,
+      async () => {
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkFontName(updatedTokenData.value);
+        await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyTokenRef.name);
+      },
+    );
   });
 });

@@ -65,17 +65,28 @@ mainTest.describe(() => {
   mainTest(
     qase(2125, 'Apply default "all radius" token to a rectangle (by left click)'),
     async () => {
-      await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
-      await designPanelPage.checkGeneralCornerRadius(radiusToken.value);
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'rectangle-border-radius-1.png',
-        {
-          mask: mainPage.maskViewport(),
+      await mainTest.step(
+        `Verify "${radiusToken.name}" token is applied and corner radius matches`,
+        async () => {
+          await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
+          await designPanelPage.checkGeneralCornerRadius(radiusToken.value);
         },
       );
-      await tokensPage.tokensComp.isMenuItemWithNameSelected(
-        radiusToken.name,
-        'RadiusAll',
+
+      await mainTest.step(
+        'Verify screenshot and RadiusAll menu item is selected',
+        async () => {
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'rectangle-border-radius-1.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+          await tokensPage.tokensComp.isMenuItemWithNameSelected(
+            radiusToken.name,
+            'RadiusAll',
+          );
+        },
       );
     },
   );
@@ -99,32 +110,53 @@ mainTest.describe(() => {
         value: newTokenValue,
       };
 
-      await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
-      await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.checkGeneralCornerRadius(updatedTokenData.value);
-      await tokensPage.tokensComp.isTokenAppliedWithName(updatedTokenData.name);
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'rectangle-border-radius-20.png',
-        {
-          mask: mainPage.maskViewport(),
+      await mainTest.step(
+        `Edit "${radiusToken.name}" token to value "${updatedTokenData.value}" and verify it is applied`,
+        async () => {
+          await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(
+            updatedTokenData,
+          );
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGeneralCornerRadius(updatedTokenData.value);
+          await tokensPage.tokensComp.isTokenAppliedWithName(updatedTokenData.name);
         },
       );
-      await tokensPage.tokensComp.checkAppliedTokenTitle(
-        'Token: border-radius\n' + 'Original value: 20\n' + 'Resolved value: 20',
-      );
+
+      await mainTest.step('Verify screenshot and applied token title', async () => {
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'rectangle-border-radius-20.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+        await tokensPage.tokensComp.checkAppliedTokenTitle(
+          'Token: border-radius\n' + 'Original value: 20\n' + 'Resolved value: 20',
+        );
+      });
     },
   );
 
   mainTest(
     qase(2136, 'Delete a token and redo deletion'),
     async ({ browserName }) => {
-      await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
-      await tokensPage.tokensComp.deleteToken(radiusToken.name);
-      await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, false);
-      await mainPage.clickShortcutCtrlZ(browserName);
-      await tokensPage.tokensComp.expandTokenByName(TokenClass.BorderRadius);
-      await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, true);
+      await mainTest.step(
+        `Delete "${radiusToken.name}" token and verify it is removed`,
+        async () => {
+          await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
+          await tokensPage.tokensComp.deleteToken(radiusToken.name);
+          await tokensPage.tokensComp.isTokenVisibleWithName(
+            radiusToken.name,
+            false,
+          );
+        },
+      );
+
+      await mainTest.step('Undo deletion and verify token is restored', async () => {
+        await mainPage.clickShortcutCtrlZ(browserName);
+        await tokensPage.tokensComp.expandTokenByName(TokenClass.BorderRadius);
+        await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, true);
+      });
     },
   );
 });

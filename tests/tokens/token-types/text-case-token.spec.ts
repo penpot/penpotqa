@@ -51,14 +51,22 @@ mainTest(
     };
     const text = 'EXAMPLE TEXT';
 
-    await mainPage.createTextLayerByCoordinates(100, 200, text);
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(textCaseToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(textCaseToken.name);
-    await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name);
-    await designPanelPage.checkTextCase(textCaseToken.value);
+    await mainTest.step('Create text layer and text case token', async () => {
+      await mainPage.createTextLayerByCoordinates(100, 200, text);
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(textCaseToken);
+      await tokensPage.tokensComp.isTokenVisibleWithName(textCaseToken.name);
+    });
+
+    await mainTest.step(
+      `Apply "${textCaseToken.name}" token and verify text case matches`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name);
+        await designPanelPage.checkTextCase(textCaseToken.value);
+      },
+    );
   },
 );
 
@@ -70,38 +78,58 @@ mainTest(qase(2520, 'Override and re-apply a text case token'), async () => {
   };
   const text = 'EXAMPLE TEXT';
 
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.clickAddFileLibraryTypographyButton();
-  await assetsPanelPage.selectTextCase('Upper');
-  await assetsPanelPage.minimizeFileLibraryTypography();
-  await assetsPanelPage.waitForChangeIsSaved();
+  await mainTest.step('Set typography style with Upper text case', async () => {
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.clickAddFileLibraryTypographyButton();
+    await assetsPanelPage.selectTextCase('Upper');
+    await assetsPanelPage.minimizeFileLibraryTypography();
+    await assetsPanelPage.waitForChangeIsSaved();
+  });
 
-  await tokensPage.clickTokensTab();
-  await mainPage.createTextLayerByCoordinates(100, 200, text);
-  await tokensPage.tokensComp.createTokenViaAddButtonAndSave(textCaseToken);
-  await tokensPage.tokensComp.isTokenVisibleWithName(textCaseToken.name);
-  await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
-  await mainPage.waitForChangeIsSaved();
+  await mainTest.step(
+    `Create text layer and apply "${textCaseToken.name}" token`,
+    async () => {
+      await tokensPage.clickTokensTab();
+      await mainPage.createTextLayerByCoordinates(100, 200, text);
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(textCaseToken);
+      await tokensPage.tokensComp.isTokenVisibleWithName(textCaseToken.name);
+      await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
+      await mainPage.waitForChangeIsSaved();
+      await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name);
+      await designPanelPage.checkTextCase(textCaseToken.value);
+    },
+  );
 
-  await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name);
-  await designPanelPage.checkTextCase(textCaseToken.value);
+  await mainTest.step(
+    'Override with typography style and verify token is detached',
+    async () => {
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.clickOnTypographyMenuButton();
+      await designPanelPage.checkTextCase('Upper');
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name, false);
+    },
+  );
 
-  await assetsPanelPage.clickAssetsTab();
-  await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
-  await mainPage.waitForChangeIsSaved();
-  await designPanelPage.clickOnTypographyMenuButton();
-  await designPanelPage.checkTextCase('Upper');
+  await mainTest.step(
+    'Re-apply token and verify it overrides the typography style',
+    async () => {
+      await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
+      await mainPage.waitForChangeIsSaved();
+      await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name);
+      await designPanelPage.checkTextCase(textCaseToken.value);
+    },
+  );
 
-  await tokensPage.clickTokensTab();
-  await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name, false);
-
-  await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
-  await mainPage.waitForChangeIsSaved();
-  await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name);
-  await designPanelPage.checkTextCase(textCaseToken.value);
-
-  await designPanelPage.changeTextCase('Lower');
-  await mainPage.waitForChangeIsSaved();
-  await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name, false);
-  await designPanelPage.checkTextCase('Lower');
+  await mainTest.step(
+    'Override text case manually and verify token is detached',
+    async () => {
+      await designPanelPage.changeTextCase('Lower');
+      await mainPage.waitForChangeIsSaved();
+      await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name, false);
+      await designPanelPage.checkTextCase('Lower');
+    },
+  );
 });

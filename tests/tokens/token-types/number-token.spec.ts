@@ -61,54 +61,73 @@ mainTest(
       value: `5/{${numberToken.name}}`,
     };
 
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
-    await mainPage.waitForChangeIsSaved();
-
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(numberTokenRef);
-    await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      numberTokenRef.name,
-      `Token: ${numberTokenRef.name}\n` +
-        `Original value: 5*{${numberToken.name}}\n` +
-        'Resolved value: 10\n' +
-        'Right click to see options',
+    await mainTest.step(
+      `Create "${numberToken.name}" and "${numberTokenRef.name}" tokens with multiplication reference`,
+      async () => {
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(numberTokenRef);
+        await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.checkTokenTitle(
+          numberTokenRef.name,
+          `Token: ${numberTokenRef.name}\n` +
+            `Original value: 5*{${numberToken.name}}\n` +
+            'Resolved value: 10\n' +
+            'Right click to see options',
+        );
+      },
     );
 
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      numberTokenRef.name,
-      `Token: ${numberTokenRef.name}\n` +
-        `Original value: ${updatedTokenData.value}\n` +
-        'Resolved value: 2.5\n' +
-        'Right click to see options',
+    await mainTest.step(
+      'Edit to division and verify resolved value is 2.5',
+      async () => {
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
+        await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.checkTokenTitle(
+          numberTokenRef.name,
+          `Token: ${numberTokenRef.name}\n` +
+            `Original value: ${updatedTokenData.value}\n` +
+            'Resolved value: 2.5\n' +
+            'Right click to see options',
+        );
+      },
     );
 
-    updatedTokenData.value = `5+{${numberToken.name}}`;
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      numberTokenRef.name,
-      `Token: ${numberTokenRef.name}\n` +
-        `Original value: ${updatedTokenData.value}\n` +
-        'Resolved value: 7\n' +
-        'Right click to see options',
+    await mainTest.step(
+      'Edit to addition and verify resolved value is 7',
+      async () => {
+        updatedTokenData.value = `5+{${numberToken.name}}`;
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
+        await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.checkTokenTitle(
+          numberTokenRef.name,
+          `Token: ${numberTokenRef.name}\n` +
+            `Original value: ${updatedTokenData.value}\n` +
+            'Resolved value: 7\n' +
+            'Right click to see options',
+        );
+      },
     );
 
-    updatedTokenData.value = `5-{${numberToken.name}}`;
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      numberTokenRef.name,
-      `Token: ${numberTokenRef.name}\n` +
-        `Original value: ${updatedTokenData.value}\n` +
-        'Resolved value: 3\n' +
-        'Right click to see options',
+    await mainTest.step(
+      'Edit to subtraction and verify resolved value is 3',
+      async () => {
+        updatedTokenData.value = `5-{${numberToken.name}}`;
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
+        await tokensPage.tokensComp.isTokenVisibleWithName(numberTokenRef.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.checkTokenTitle(
+          numberTokenRef.name,
+          `Token: ${numberTokenRef.name}\n` +
+            `Original value: ${updatedTokenData.value}\n` +
+            'Resolved value: 3\n' +
+            'Right click to see options',
+        );
+      },
     );
   },
 );
@@ -123,24 +142,33 @@ mainTest(
     };
     const newTokenValue = '0';
 
-    await mainPage.createDefaultRectangleByCoordinates(320, 210);
-    await tokensPage.clickTokensTab();
-
-    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(numberToken.name);
-    await tokensPage.tokensComp.selectMenuItem(numberToken.name, 'Rotation');
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(numberToken.name);
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      numberToken.name,
-      'Rotation',
+    await mainTest.step(
+      `Create rectangle and apply "${numberToken.name}" token as Rotation`,
+      async () => {
+        await mainPage.createDefaultRectangleByCoordinates(320, 210);
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
+        await tokensPage.tokensComp.isTokenVisibleWithName(numberToken.name);
+        await tokensPage.tokensComp.selectMenuItem(numberToken.name, 'Rotation');
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(numberToken.name);
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          numberToken.name,
+          'Rotation',
+        );
+        await designPanelPage.checkRotationForLayer(numberToken.value);
+      },
     );
-    await designPanelPage.checkRotationForLayer(numberToken.value);
 
-    await designPanelPage.changeRotationForLayer(newTokenValue);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(numberToken.name, false);
-    await designPanelPage.checkRotationForLayer(newTokenValue);
+    await mainTest.step(
+      `Override rotation to "${newTokenValue}" from Design tab and verify token is detached`,
+      async () => {
+        await designPanelPage.changeRotationForLayer(newTokenValue);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(numberToken.name, false);
+        await designPanelPage.checkRotationForLayer(newTokenValue);
+      },
+    );
   },
 );
 
@@ -157,23 +185,32 @@ mainTest(
     };
     const newTokenValue = '1';
 
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
-    await tokensPage.clickTokensTab();
-
-    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(numberToken.name);
-    await tokensPage.tokensComp.selectMenuItem(numberToken.name, 'Line Height');
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(numberToken.name);
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      numberToken.name,
-      'Line Height',
+    await mainTest.step(
+      `Create text layer and apply "${numberToken.name}" token as Line Height`,
+      async () => {
+        await mainPage.createDefaultTextLayerByCoordinates(100, 200);
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(numberToken);
+        await tokensPage.tokensComp.isTokenVisibleWithName(numberToken.name);
+        await tokensPage.tokensComp.selectMenuItem(numberToken.name, 'Line Height');
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(numberToken.name);
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          numberToken.name,
+          'Line Height',
+        );
+        await designPanelPage.checkTextLineHeight(numberToken.value);
+      },
     );
-    await designPanelPage.checkTextLineHeight(numberToken.value);
 
-    await designPanelPage.changeTextLineHeight(newTokenValue);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(numberToken.name, false);
-    await designPanelPage.checkTextLineHeight(newTokenValue);
+    await mainTest.step(
+      `Override line height to "${newTokenValue}" from Design tab and verify token is detached`,
+      async () => {
+        await designPanelPage.changeTextLineHeight(newTokenValue);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(numberToken.name, false);
+        await designPanelPage.checkTextLineHeight(newTokenValue);
+      },
+    );
   },
 );

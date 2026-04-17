@@ -49,21 +49,35 @@ mainTest(
     };
     const tokenResolvedValue = '315'; // 315 == -45 == -(22.5+22.5)
 
-    await mainPage.createDefaultTextLayerByCoordinates(320, 210);
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(rotationToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(rotationToken.name);
-    await tokensPage.tokensComp.clickOnTokenWithName(rotationToken.name);
-    await tokensPage.tokensComp.isTokenAppliedWithName(rotationToken.name);
-    await designPanelPage.checkRotationForLayer(tokenResolvedValue);
-    browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-315.png', {
-      mask: mainPage.maskViewport(),
+    await mainTest.step('Create text layer and rotation token', async () => {
+      await mainPage.createDefaultTextLayerByCoordinates(320, 210);
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(rotationToken);
+      await tokensPage.tokensComp.isTokenVisibleWithName(rotationToken.name);
     });
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      rotationToken.name,
-      'Rotation',
+
+    await mainTest.step(
+      `Apply "${rotationToken.name}" token and verify rotation value`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(rotationToken.name);
+        await tokensPage.tokensComp.isTokenAppliedWithName(rotationToken.name);
+        await designPanelPage.checkRotationForLayer(tokenResolvedValue);
+        browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
+
+    await mainTest.step(
+      'Verify screenshot and Rotation menu item is selected',
+      async () => {
+        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-315.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          rotationToken.name,
+          'Rotation',
+        );
+      },
     );
   },
 );

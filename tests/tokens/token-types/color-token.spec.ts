@@ -71,16 +71,27 @@ mainTest.describe(() => {
   mainTest(
     qase(2142, 'Apply default "color fill" token to a board (by left click)'),
     async () => {
-      await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
-      await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
-      await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
-      await expect(mainPage.viewport).toHaveScreenshot('board-color-red.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await tokensPage.tokensComp.isMenuItemWithNameSelected(
-        colorToken.name,
-        'ColorFill',
+      await mainTest.step(
+        `Apply "${colorToken.name}" token to board fill and verify it is applied`,
+        async () => {
+          await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
+          await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
+        },
+      );
+
+      await mainTest.step(
+        'Verify screenshot and ColorFill menu item is selected',
+        async () => {
+          await expect(mainPage.viewport).toHaveScreenshot('board-color-red.png', {
+            mask: mainPage.maskViewport(),
+          });
+          await tokensPage.tokensComp.isMenuItemWithNameSelected(
+            colorToken.name,
+            'ColorFill',
+          );
+        },
       );
     },
   );
@@ -88,18 +99,29 @@ mainTest.describe(() => {
   mainTest(
     qase(2147, 'Apply "color stroke" token to a board (by right click)'),
     async () => {
-      await designPanelPage.clickAddStrokeButton();
-      await designPanelPage.setStrokeWidth('10');
-      await tokensPage.tokensComp.selectMenuItem(colorToken.name, 'Stroke');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
-      await expect(mainPage.viewport).toHaveScreenshot('board-red-stroke.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await tokensPage.tokensComp.isMenuItemWithNameSelected(
-        colorToken.name,
-        'Stroke',
+      await mainTest.step(
+        `Add stroke to board and apply "${colorToken.name}" token via right click`,
+        async () => {
+          await designPanelPage.clickAddStrokeButton();
+          await designPanelPage.setStrokeWidth('10');
+          await tokensPage.tokensComp.selectMenuItem(colorToken.name, 'Stroke');
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
+          await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
+        },
+      );
+
+      await mainTest.step(
+        'Verify screenshot and Stroke menu item is selected',
+        async () => {
+          await expect(mainPage.viewport).toHaveScreenshot('board-red-stroke.png', {
+            mask: mainPage.maskViewport(),
+          });
+          await tokensPage.tokensComp.isMenuItemWithNameSelected(
+            colorToken.name,
+            'Stroke',
+          );
+        },
       );
     },
   );

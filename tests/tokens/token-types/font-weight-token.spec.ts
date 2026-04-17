@@ -72,38 +72,52 @@ mainTest.describe(() => {
         value: '500 italic',
       };
 
-      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken1);
-      await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken1.name);
-      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken2);
-      await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken2.name);
+      await mainTest.step('Create font weight tokens', async () => {
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+          fontWeightToken1,
+        );
+        await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken1.name);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+          fontWeightToken2,
+        );
+        await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken2.name);
+      });
 
-      await mainPage.clickViewportOnce();
-      await layersPanelPage.openLayersTab();
-      await mainPage.clickOnLayerOnCanvas();
-      await tokensPage.clickTokensTab();
-
-      await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken1.name);
-      await mainPage.checkImportErrorMessage(
-        `Error setting font weight/style. This font style does not exist in the current font`,
+      await mainTest.step(
+        `Apply "${fontWeightToken1.name}" with non-existing style and verify fallback value "900"`,
+        async () => {
+          await mainPage.clickViewportOnce();
+          await layersPanelPage.openLayersTab();
+          await mainPage.clickOnLayerOnCanvas();
+          await tokensPage.clickTokensTab();
+          await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken1.name);
+          await mainPage.checkImportErrorMessage(
+            `Error setting font weight/style. This font style does not exist in the current font`,
+          );
+          await mainPage.closeModalWindow();
+          await mainPage.isImportErrorMessageVisible(false);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken1.name);
+          await designPanelPage.checkFontStyle('900');
+        },
       );
-      await mainPage.closeModalWindow();
-      await mainPage.isImportErrorMessageVisible(false);
-      await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken1.name);
-      await designPanelPage.checkFontStyle('900');
 
-      await mainPage.clickViewportOnce();
-      await layersPanelPage.openLayersTab();
-      await mainPage.clickOnLayerOnCanvas();
-      await tokensPage.clickTokensTab();
-
-      await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken2.name);
-      await mainPage.checkImportErrorMessage(
-        `Error setting font weight/style. This font style does not exist in the current font`,
+      await mainTest.step(
+        `Apply "${fontWeightToken2.name}" with non-existing style and verify fallback value "400 Italic"`,
+        async () => {
+          await mainPage.clickViewportOnce();
+          await layersPanelPage.openLayersTab();
+          await mainPage.clickOnLayerOnCanvas();
+          await tokensPage.clickTokensTab();
+          await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken2.name);
+          await mainPage.checkImportErrorMessage(
+            `Error setting font weight/style. This font style does not exist in the current font`,
+          );
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken2.name);
+          await designPanelPage.checkFontStyle('400 Italic');
+        },
       );
-      await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken2.name);
-      await designPanelPage.checkFontStyle('400 Italic');
     },
   );
 
@@ -119,17 +133,29 @@ mainTest.describe(() => {
         value: '500',
       };
 
-      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken);
-      await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken.name);
-
-      await designPanelPage.changeTextFont('Splash');
-      await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken.name);
-      await mainPage.checkImportErrorMessage(
-        `Error setting font weight/style. This font style does not exist in the current font`,
+      await mainTest.step(
+        `Create "${fontWeightToken.name}" token and change font to Splash`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            fontWeightToken,
+          );
+          await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken.name);
+          await designPanelPage.changeTextFont('Splash');
+        },
       );
-      await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken.name);
-      await designPanelPage.checkFontStyle('400');
+
+      await mainTest.step(
+        'Apply token and verify error is shown and font style falls back to default',
+        async () => {
+          await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken.name);
+          await mainPage.checkImportErrorMessage(
+            `Error setting font weight/style. This font style does not exist in the current font`,
+          );
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken.name);
+          await designPanelPage.checkFontStyle('400');
+        },
+      );
     },
   );
 
@@ -151,28 +177,43 @@ mainTest.describe(() => {
         value: '200',
       };
 
-      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken);
-      await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken.name);
-      await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken.name);
-      await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken.name);
-      await designPanelPage.checkFontStyle('700 Italic');
+      await mainTest.step(
+        `Create and apply "${fontWeightToken.name}" token to text layer`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
+            fontWeightToken,
+          );
+          await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken.name);
+          await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken.name);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken.name);
+          await designPanelPage.checkFontStyle('700 Italic');
+        },
+      );
 
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.copyLayerViaRightClick();
-      await mainPage.pressPasteShortcut(browserName);
-      await mainPage.waitForChangeIsSaved();
+      await mainTest.step('Create component and duplicate it', async () => {
+        await mainPage.createComponentViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.copyLayerViaRightClick();
+        await mainPage.pressPasteShortcut(browserName);
+        await mainPage.waitForChangeIsSaved();
+      });
 
-      await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-      await mainPage.waitForChangeIsSaved();
-
-      await layersPanelPage.openLayersTab();
-      await layersPanelPage.selectMainComponentChildLayer();
-      await designPanelPage.checkFontStyle(updatedTokenData.value);
-      await mainPage.clickViewportOnce();
-      await layersPanelPage.selectCopyComponentChildLayer();
-      await designPanelPage.checkFontStyle(updatedTokenData.value);
+      await mainTest.step(
+        `Edit token to "${updatedTokenData.value}" and verify new value applies to both component copies`,
+        async () => {
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(
+            updatedTokenData,
+          );
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.openLayersTab();
+          await layersPanelPage.selectMainComponentChildLayer();
+          await designPanelPage.checkFontStyle(updatedTokenData.value);
+          await mainPage.clickViewportOnce();
+          await layersPanelPage.selectCopyComponentChildLayer();
+          await designPanelPage.checkFontStyle(updatedTokenData.value);
+        },
+      );
     },
   );
 });

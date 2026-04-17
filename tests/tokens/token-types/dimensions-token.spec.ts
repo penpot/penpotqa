@@ -50,27 +50,44 @@ mainTest(
     const defaultX = '100';
     const defaultY = '200';
 
-    await mainPage.createDefaultTextLayerByCoordinates(
-      parseInt(defaultX),
-      parseInt(defaultY),
+    await mainTest.step('Create text layer and dimension token', async () => {
+      await mainPage.createDefaultTextLayerByCoordinates(
+        parseInt(defaultX),
+        parseInt(defaultY),
+      );
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionToken);
+      await tokensPage.tokensComp.isTokenVisibleWithName(dimensionToken.name);
+    });
+
+    await mainTest.step(
+      `Apply "${dimensionToken.name}" to X axis and verify X changes, Y stays`,
+      async () => {
+        await designPanelPage.checkXAxis(defaultX);
+        await designPanelPage.checkYAxis(defaultY);
+        await tokensPage.tokensComp.selectMenuItem(dimensionToken.name, 'AxisX');
+        await tokensPage.tokensComp.isTokenAppliedWithName(dimensionToken.name);
+        await designPanelPage.checkXAxis(dimensionToken.value);
+        await designPanelPage.checkYAxis(defaultY);
+      },
     );
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(dimensionToken.name);
-    await designPanelPage.checkXAxis(defaultX);
-    await designPanelPage.checkYAxis(defaultY);
-    await tokensPage.tokensComp.selectMenuItem(dimensionToken.name, 'AxisX');
-    await tokensPage.tokensComp.isTokenAppliedWithName(dimensionToken.name);
-    await designPanelPage.checkXAxis(dimensionToken.value);
-    await designPanelPage.checkYAxis(defaultY);
-    await tokensPage.tokensComp.selectMenuItem(dimensionToken.name, 'Y');
-    await tokensPage.tokensComp.isTokenAppliedWithName(dimensionToken.name);
-    await designPanelPage.checkXAxis(dimensionToken.value);
-    await designPanelPage.checkYAxis(dimensionToken.value);
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      dimensionToken.name,
-      'AxisX',
+
+    await mainTest.step(
+      `Apply "${dimensionToken.name}" to Y axis and verify both X and Y match token value`,
+      async () => {
+        await tokensPage.tokensComp.selectMenuItem(dimensionToken.name, 'Y');
+        await tokensPage.tokensComp.isTokenAppliedWithName(dimensionToken.name);
+        await designPanelPage.checkXAxis(dimensionToken.value);
+        await designPanelPage.checkYAxis(dimensionToken.value);
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          dimensionToken.name,
+          'AxisX',
+        );
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          dimensionToken.name,
+          'Y',
+        );
+      },
     );
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(dimensionToken.name, 'Y');
   },
 );

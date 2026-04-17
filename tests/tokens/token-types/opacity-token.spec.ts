@@ -46,19 +46,33 @@ mainTest(
       value: '0.7',
     };
 
-    await mainPage.uploadImage('images/sample.jpeg');
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(opacityToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(opacityToken.name);
-    await tokensPage.tokensComp.clickOnTokenWithName(opacityToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(opacityToken.name);
-    await expect(mainPage.viewport).toHaveScreenshot('image-opacity-0-7.png', {
-      mask: mainPage.maskViewport(),
+    await mainTest.step('Upload image and create opacity token', async () => {
+      await mainPage.uploadImage('images/sample.jpeg');
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(opacityToken);
+      await tokensPage.tokensComp.isTokenVisibleWithName(opacityToken.name);
     });
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      opacityToken.name,
-      'Opacity',
+
+    await mainTest.step(
+      `Apply "${opacityToken.name}" token and verify it is applied`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(opacityToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(opacityToken.name);
+      },
+    );
+
+    await mainTest.step(
+      'Verify screenshot and Opacity menu item is selected',
+      async () => {
+        await expect(mainPage.viewport).toHaveScreenshot('image-opacity-0-7.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          opacityToken.name,
+          'Opacity',
+        );
+      },
     );
   },
 );

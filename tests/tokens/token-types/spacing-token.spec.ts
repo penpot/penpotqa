@@ -48,26 +48,42 @@ mainTest(
       value: '-20',
     };
 
-    await mainPage.createDefaultBoardByCoordinates(320, 210);
-    await mainPage.addGridLayoutViaRightClick();
-    await designPanelPage.isLayoutRemoveButtonExists();
-    await mainPage.clickViewportOnce();
-    await mainPage.clickCreatedBoardTitleOnCanvas();
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(spacingToken);
+    await mainTest.step(
+      'Create board with grid layout and spacing token',
+      async () => {
+        await mainPage.createDefaultBoardByCoordinates(320, 210);
+        await mainPage.addGridLayoutViaRightClick();
+        await designPanelPage.isLayoutRemoveButtonExists();
+        await mainPage.clickViewportOnce();
+        await mainPage.clickCreatedBoardTitleOnCanvas();
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(spacingToken);
+        await tokensPage.tokensComp.isTokenVisibleWithName(spacingToken.name);
+      },
+    );
 
-    await tokensPage.tokensComp.isTokenVisibleWithName(spacingToken.name);
-    await tokensPage.tokensComp.clickOnTokenWithName(spacingToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(spacingToken.name);
-    await designPanelPage.checkRowGap(spacingToken.value);
-    await designPanelPage.checkColumnGap(spacingToken.value);
-    await expect(mainPage.viewport).toHaveScreenshot('board-spacing-20.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await tokensPage.tokensComp.isAllMenuItemWithSectionNameSelected(
-      spacingToken.name,
-      'Gaps',
+    await mainTest.step(
+      `Apply "${spacingToken.name}" token and verify gap values`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(spacingToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(spacingToken.name);
+        await designPanelPage.checkRowGap(spacingToken.value);
+        await designPanelPage.checkColumnGap(spacingToken.value);
+      },
+    );
+
+    await mainTest.step(
+      'Verify screenshot and Gaps menu items are selected',
+      async () => {
+        await expect(mainPage.viewport).toHaveScreenshot('board-spacing-20.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await tokensPage.tokensComp.isAllMenuItemWithSectionNameSelected(
+          spacingToken.name,
+          'Gaps',
+        );
+      },
     );
   },
 );

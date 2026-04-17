@@ -67,15 +67,28 @@ mainTest.describe(() => {
   mainTest(
     qase(2500, 'Apply a Letter Spacing token and override value from Design tab'),
     async () => {
-      await tokensPage.tokensComp.isTokenAppliedWithName(letterSpacingToken.name);
-      await designPanelPage.checkLetterSpacing(letterSpacingToken.value);
-      await designPanelPage.changeTextLetterSpacing(newTokenValue);
-      await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(
-        letterSpacingToken.name,
-        false,
+      await mainTest.step(
+        `Verify "${letterSpacingToken.name}" token is applied and letter spacing matches`,
+        async () => {
+          await tokensPage.tokensComp.isTokenAppliedWithName(
+            letterSpacingToken.name,
+          );
+          await designPanelPage.checkLetterSpacing(letterSpacingToken.value);
+        },
       );
-      await designPanelPage.checkLetterSpacing(newTokenValue);
+
+      await mainTest.step(
+        `Override letter spacing to "${newTokenValue}" from Design tab and verify token is detached`,
+        async () => {
+          await designPanelPage.changeTextLetterSpacing(newTokenValue);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(
+            letterSpacingToken.name,
+            false,
+          );
+          await designPanelPage.checkLetterSpacing(newTokenValue);
+        },
+      );
     },
   );
 
@@ -85,23 +98,40 @@ mainTest.describe(() => {
       'Letter Spacing token value can be override by Assets > Typography style',
     ),
     async () => {
-      await tokensPage.tokensComp.isTokenAppliedWithName(letterSpacingToken.name);
-      await designPanelPage.checkLetterSpacing(letterSpacingToken.value);
-
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.clickAddFileLibraryTypographyButton();
-      await assetsPanelPage.waitForChangeIsSaved();
-      await assetsPanelPage.selectLetterSpacing(newTokenValue);
-      await designPanelPage.clickOnEnter();
-      await assetsPanelPage.waitForChangeIsSaved();
-
-      await tokensPage.clickTokensTab();
-      await designPanelPage.clickOnTypographyMenuButton();
-      await tokensPage.tokensComp.isTokenAppliedWithName(
-        letterSpacingToken.name,
-        false,
+      await mainTest.step(
+        `Verify "${letterSpacingToken.name}" token is applied and letter spacing matches`,
+        async () => {
+          await tokensPage.tokensComp.isTokenAppliedWithName(
+            letterSpacingToken.name,
+          );
+          await designPanelPage.checkLetterSpacing(letterSpacingToken.value);
+        },
       );
-      await designPanelPage.checkLetterSpacing(newTokenValue);
+
+      await mainTest.step(
+        `Override letter spacing via Assets > Typography style to "${newTokenValue}"`,
+        async () => {
+          await assetsPanelPage.clickAssetsTab();
+          await assetsPanelPage.clickAddFileLibraryTypographyButton();
+          await assetsPanelPage.waitForChangeIsSaved();
+          await assetsPanelPage.selectLetterSpacing(newTokenValue);
+          await designPanelPage.clickOnEnter();
+          await assetsPanelPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step(
+        'Verify token is detached and letter spacing reflects typography style value',
+        async () => {
+          await tokensPage.clickTokensTab();
+          await designPanelPage.clickOnTypographyMenuButton();
+          await tokensPage.tokensComp.isTokenAppliedWithName(
+            letterSpacingToken.name,
+            false,
+          );
+          await designPanelPage.checkLetterSpacing(newTokenValue);
+        },
+      );
     },
   );
 });
@@ -129,49 +159,70 @@ mainTest(
       value: `5px/{${dimensionToken.name}}`,
     };
 
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionToken);
-
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(letterSpacingToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      letterSpacingToken.name,
-      `Token: ${letterSpacingToken.name}\n` +
-        `Original value: ${letterSpacingToken.value}\n` +
-        'Resolved value: 10',
+    await mainTest.step(
+      `Create "${dimensionToken.name}" and "${letterSpacingToken.name}" tokens with multiplication reference`,
+      async () => {
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionToken);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
+          letterSpacingToken,
+        );
+        await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.checkTokenTitle(
+          letterSpacingToken.name,
+          `Token: ${letterSpacingToken.name}\n` +
+            `Original value: ${letterSpacingToken.value}\n` +
+            'Resolved value: 10',
+        );
+      },
     );
 
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      letterSpacingToken.name,
-      `Token: ${letterSpacingToken.name}\n` +
-        `Original value: ${updatedTokenData.value}\n` +
-        'Resolved value: 2.5',
+    await mainTest.step(
+      'Edit to division and verify resolved value is 2.5',
+      async () => {
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
+        await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.checkTokenTitle(
+          letterSpacingToken.name,
+          `Token: ${letterSpacingToken.name}\n` +
+            `Original value: ${updatedTokenData.value}\n` +
+            'Resolved value: 2.5',
+        );
+      },
     );
 
-    updatedTokenData.value = `5px+{${dimensionToken.name}}`;
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      letterSpacingToken.name,
-      `Token: ${letterSpacingToken.name}\n` +
-        `Original value: ${updatedTokenData.value}\n` +
-        'Resolved value: 7',
+    await mainTest.step(
+      'Edit to addition and verify resolved value is 7',
+      async () => {
+        updatedTokenData.value = `5px+{${dimensionToken.name}}`;
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
+        await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.checkTokenTitle(
+          letterSpacingToken.name,
+          `Token: ${letterSpacingToken.name}\n` +
+            `Original value: ${updatedTokenData.value}\n` +
+            'Resolved value: 7',
+        );
+      },
     );
 
-    updatedTokenData.value = `5px-{${dimensionToken.name}}`;
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.checkTokenTitle(
-      letterSpacingToken.name,
-      `Token: ${letterSpacingToken.name}\n` +
-        `Original value: ${updatedTokenData.value}\n` +
-        'Resolved value: 3',
+    await mainTest.step(
+      'Edit to subtraction and verify resolved value is 3',
+      async () => {
+        updatedTokenData.value = `5px-{${dimensionToken.name}}`;
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
+        await tokensPage.tokensComp.isTokenVisibleWithName(letterSpacingToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.checkTokenTitle(
+          letterSpacingToken.name,
+          `Token: ${letterSpacingToken.name}\n` +
+            `Original value: ${updatedTokenData.value}\n` +
+            'Resolved value: 3',
+        );
+      },
     );
   },
 );

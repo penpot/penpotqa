@@ -48,20 +48,37 @@ mainTest(
       value: '5.5',
     };
 
-    await mainPage.createDefaultOpenPath();
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(strokeToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(strokeToken.name);
-    await tokensPage.tokensComp.clickOnTokenWithName(strokeToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(strokeToken.name);
-    await designPanelPage.checkStrokeWidth(strokeToken.value);
-    await expect(mainPage.viewport).toHaveScreenshot('path-stroke-width-5-5.png', {
-      mask: mainPage.maskViewport(),
+    await mainTest.step('Create path and stroke width token', async () => {
+      await mainPage.createDefaultOpenPath();
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(strokeToken);
+      await tokensPage.tokensComp.isTokenVisibleWithName(strokeToken.name);
     });
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      strokeToken.name,
-      'Stroke Width',
+
+    await mainTest.step(
+      `Apply "${strokeToken.name}" token and verify stroke width`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(strokeToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(strokeToken.name);
+        await designPanelPage.checkStrokeWidth(strokeToken.value);
+      },
+    );
+
+    await mainTest.step(
+      'Verify screenshot and Stroke Width menu item is selected',
+      async () => {
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'path-stroke-width-5-5.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          strokeToken.name,
+          'Stroke Width',
+        );
+      },
     );
   },
 );

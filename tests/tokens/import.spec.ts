@@ -33,55 +33,78 @@ mainTest.afterEach(async () => {
 });
 
 mainTest(qase(2213, 'Import tokens'), async () => {
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
-  await mainPage.clickMoveButton();
-  await tokensPage.clickTokensTab();
-  await tokensPage.toolsComp.clickOnTokenToolsButton();
-  await tokensPage.toolsComp.importTokens('documents/tokens-example.json');
-  await tokensPage.themesComp.checkSelectedTheme('2 active themes');
-  await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+  await mainTest.step('Import tokens JSON file', async () => {
+    await dashboardPage.createFileViaPlaceholder();
+    await mainPage.isMainPageLoaded();
+    await mainPage.clickMoveButton();
+    await tokensPage.clickTokensTab();
+    await tokensPage.toolsComp.clickOnTokenToolsButton();
+    await tokensPage.toolsComp.importTokens('documents/tokens-example.json');
+  });
+
+  await mainTest.step('Verify themes and sets are imported', async () => {
+    await tokensPage.themesComp.checkSelectedTheme('2 active themes');
+    await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+  });
 });
 
 mainTest(qase(2221, 'Import .penpot file with tokens'), async () => {
-  await dashboardPage.openSidebarItem('Drafts');
-  await dashboardPage.importFileFromProjectPage(
-    'documents/penpot-file-with-tokens.penpot',
-  );
-  await dashboardPage.isFilePresent('⚙️ Design Tokens Starter Set | Edited');
-  await dashboardPage.openFileWithName('⚙️ Design Tokens Starter Set | Edited');
-  await mainPage.isMainPageLoaded();
-  await tokensPage.clickTokensTab();
-  await tokensPage.themesComp.checkSelectedTheme('2 active themes');
-  await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+  await mainTest.step('Import penpot file and open it', async () => {
+    await dashboardPage.openSidebarItem('Drafts');
+    await dashboardPage.importFileFromProjectPage(
+      'documents/penpot-file-with-tokens.penpot',
+    );
+    await dashboardPage.isFilePresent('⚙️ Design Tokens Starter Set | Edited');
+    await dashboardPage.openFileWithName('⚙️ Design Tokens Starter Set | Edited');
+    await mainPage.isMainPageLoaded();
+    await tokensPage.clickTokensTab();
+  });
+
+  await mainTest.step('Verify themes and sets are imported', async () => {
+    await tokensPage.themesComp.checkSelectedTheme('2 active themes');
+    await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+  });
 });
 
 mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
   const errorCount = 1;
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
-  await mainPage.clickMoveButton();
-  await tokensPage.clickTokensTab();
-  await tokensPage.toolsComp.clickOnTokenToolsButton();
-  await tokensPage.toolsComp.importTokens(
-    'documents/import-tokens-error-format.json',
-  );
-  await tokensPage.checkImportErrorMessage(`Import Error: Could not parse JSON.`);
-  await tokensPage.closeModalWindow();
-  await tokensPage.closeModalWindow();
-  await tokensPage.isImportErrorMessageVisible(false);
 
-  await tokensPage.toolsComp.clickOnTokenToolsButton();
-  await tokensPage.toolsComp.importTokens(
-    'documents/import-tokens-error-naming.json',
+  await mainTest.step(
+    'Import JSON with invalid format and verify parse error',
+    async () => {
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+      await mainPage.clickMoveButton();
+      await tokensPage.clickTokensTab();
+      await tokensPage.toolsComp.clickOnTokenToolsButton();
+      await tokensPage.toolsComp.importTokens(
+        'documents/import-tokens-error-format.json',
+      );
+      await tokensPage.checkImportErrorMessage(
+        `Import Error: Could not parse JSON.`,
+      );
+      await tokensPage.closeModalWindow();
+      await tokensPage.closeModalWindow();
+      await tokensPage.isImportErrorMessageVisible(false);
+    },
   );
-  await tokensPage.checkImportErrorMessage(
-    `Import Error: Invalid token name in JSON.`,
+
+  await mainTest.step(
+    'Import JSON with invalid token naming and verify error with detail count',
+    async () => {
+      await tokensPage.toolsComp.clickOnTokenToolsButton();
+      await tokensPage.toolsComp.importTokens(
+        'documents/import-tokens-error-naming.json',
+      );
+      await tokensPage.checkImportErrorMessage(
+        `Import Error: Invalid token name in JSON.`,
+      );
+      await tokensPage.expandDetailMessage();
+      await tokensPage.toolsComp.checkImportTokenDetailErrorCount(errorCount);
+      await tokensPage.closeModalWindow();
+      await tokensPage.isImportErrorMessageVisible(false);
+    },
   );
-  await tokensPage.expandDetailMessage();
-  await tokensPage.toolsComp.checkImportTokenDetailErrorCount(errorCount);
-  await tokensPage.closeModalWindow();
-  await tokensPage.isImportErrorMessageVisible(false);
 });
 
 mainTest(
@@ -89,28 +112,42 @@ mainTest(
   async () => {
     const firstBadTokenName = 'dark-muted';
     const errorCount = 4;
+
+    await mainTest.step('Import tokens file with validation errors', async () => {
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+      await mainPage.clickMoveButton();
+      await tokensPage.clickTokensTab();
+      await tokensPage.toolsComp.clickOnTokenToolsButton();
+      await tokensPage.toolsComp.importTokens('documents/stitches-tokens.json');
+    });
+
+    await mainTest.step(
+      `Verify "${firstBadTokenName}" token is visible and invalid token count is ${errorCount}`,
+      async () => {
+        await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+        await tokensPage.tokensComp.isTokenVisibleWithName(firstBadTokenName);
+        await tokensPage.tokensComp.checkInvalidTokenCount(errorCount);
+      },
+    );
+  },
+);
+
+mainTest(qase(2252, 'Import tokens multi-file folder'), async () => {
+  await mainTest.step('Import tokens multi-file folder', async () => {
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
     await mainPage.clickMoveButton();
     await tokensPage.clickTokensTab();
     await tokensPage.toolsComp.clickOnTokenToolsButton();
-    await tokensPage.toolsComp.importTokens('documents/stitches-tokens.json');
-    await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-    await tokensPage.tokensComp.isTokenVisibleWithName(firstBadTokenName);
-    await tokensPage.tokensComp.checkInvalidTokenCount(errorCount);
-  },
-);
+    await tokensPage.toolsComp.importTokensFolder('documents/tokens-folder-example');
+  });
 
-mainTest(qase(2252, 'Import tokens multi-file folder'), async () => {
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
-  await mainPage.clickMoveButton();
-  await tokensPage.clickTokensTab();
-  await tokensPage.toolsComp.clickOnTokenToolsButton();
-  await tokensPage.toolsComp.importTokensFolder('documents/tokens-folder-example');
-  await tokensPage.themesComp.checkSelectedTheme('Mode / Light');
-  await tokensPage.setsComp.isSetNameVisible('light');
-  await tokensPage.setsComp.isSetNameVisible('dark');
+  await mainTest.step('Verify theme and sets are imported', async () => {
+    await tokensPage.themesComp.checkSelectedTheme('Mode / Light');
+    await tokensPage.setsComp.isSetNameVisible('light');
+    await tokensPage.setsComp.isSetNameVisible('dark');
+  });
 });
 
 mainTest.describe(() => {
@@ -133,16 +170,28 @@ mainTest.describe(() => {
   mainTest(
     qase(2375, 'Import tokens .zip (with a single file inside)'),
     async () => {
-      await tokensPage.toolsComp.importTokensZip('documents/tokens-single-file.zip');
-      await tokensPage.themesComp.checkSelectedTheme('3 active themes');
-      await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+      await mainTest.step('Import tokens zip with a single file', async () => {
+        await tokensPage.toolsComp.importTokensZip(
+          'documents/tokens-single-file.zip',
+        );
+      });
+
+      await mainTest.step('Verify themes and sets are imported', async () => {
+        await tokensPage.themesComp.checkSelectedTheme('3 active themes');
+        await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+      });
     },
   );
 
   mainTest(qase(2376, 'Import tokens .zip (with a multi-file inside)'), async () => {
-    await tokensPage.toolsComp.importTokensZip('documents/tokens-multifile.zip');
-    await tokensPage.themesComp.checkSelectedTheme('3 active themes');
-    await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+    await mainTest.step('Import tokens zip with multiple files', async () => {
+      await tokensPage.toolsComp.importTokensZip('documents/tokens-multifile.zip');
+    });
+
+    await mainTest.step('Verify themes and sets are imported', async () => {
+      await tokensPage.themesComp.checkSelectedTheme('3 active themes');
+      await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+    });
   });
 
   mainTest(
@@ -153,32 +202,48 @@ mainTest.describe(() => {
     async ({ page }) => {
       const baseComp: BaseComponent = new BaseComponent(page);
 
-      await tokensPage.toolsComp.importTokensZip(
-        'documents/tokens-multifile-with-skipped-tokens.zip',
+      await mainTest.step('Import tokens zip with skipped tokens', async () => {
+        await tokensPage.toolsComp.importTokensZip(
+          'documents/tokens-multifile-with-skipped-tokens.zip',
+        );
+      });
+
+      await mainTest.step(
+        'Verify import warning message and skipped token count',
+        async () => {
+          await tokensPage.checkImportErrorMessage(
+            `Import was successful. Some tokens were not included.`,
+          );
+          await tokensPage.expandDetailMessage();
+          await tokensPage.toolsComp.checkImportTokenDetailErrorCount(2);
+        },
       );
 
-      await tokensPage.checkImportErrorMessage(
-        `Import was successful. Some tokens were not included.`,
+      await mainTest.step(
+        'Close modal and verify import message is hidden',
+        async () => {
+          await baseComp.closeModalWindow();
+          await tokensPage.isImportErrorMessageVisible(false);
+          await page.waitForTimeout(1000);
+        },
       );
-      await tokensPage.expandDetailMessage();
-      await tokensPage.toolsComp.checkImportTokenDetailErrorCount(2);
-
-      await baseComp.closeModalWindow();
-      await tokensPage.isImportErrorMessageVisible(false);
-
-      await page.waitForTimeout(1000);
     },
   );
 
   mainTest(qase(2384, 'Import tokens .zip (empty or invalid)'), async ({ page }) => {
     const baseComp: BaseComponent = new BaseComponent(page);
 
-    await tokensPage.toolsComp.importTokensZip('documents/tokens-invalid.zip');
-    await tokensPage.checkImportErrorMessage(
-      `No tokens, sets, or themes were found in this file.`,
-    );
-    await baseComp.closeModalWindow();
-    await baseComp.closeModalWindow();
-    await tokensPage.isImportErrorMessageVisible(false);
+    await mainTest.step('Import empty or invalid zip file', async () => {
+      await tokensPage.toolsComp.importTokensZip('documents/tokens-invalid.zip');
+    });
+
+    await mainTest.step('Verify error message and close modal', async () => {
+      await tokensPage.checkImportErrorMessage(
+        `No tokens, sets, or themes were found in this file.`,
+      );
+      await baseComp.closeModalWindow();
+      await baseComp.closeModalWindow();
+      await tokensPage.isImportErrorMessageVisible(false);
+    });
   });
 });
