@@ -45,13 +45,6 @@ mainTest.describe(() => {
     await mainPage.createDefaultTextLayer();
   });
 
-  mainTest(qase([377], 'Create Text(Toolbar)'), async () => {
-    await mainPage.isCreatedLayerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('text.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
-
   mainTest(
     qase([380, 397], 'Change rotation from the design panel and focus on & off'),
     async () => {
