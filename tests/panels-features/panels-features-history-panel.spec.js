@@ -148,6 +148,7 @@ mainTest.describe(() => {
           await historyPage.clickOnAutosaveVersionsButton();
           await historyPage.selectSnapshotOption('Pin version');
           await historyPage.renameVersion(versionName);
+          await historyPage.clickHistoryPanelButton();
           await historyPage.checkLastVersionName(versionName);
           await historyPage.checkAutosaveVersionsCount('1');
         },
