@@ -1016,6 +1016,14 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
+  async createDefaultTextLayerViaShortcut() {
+    await this.page.keyboard.press('T');
+    await this.clickViewportByCoordinates(200, 300);
+    await expect(this.textbox).toBeVisible();
+    await this.typeTextFromKeyboard();
+    await this.clickMoveButton();
+  }
+
   async clickOnMainToolBar() {
     await this.mainToolBar.click();
   }
