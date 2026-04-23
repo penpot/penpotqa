@@ -119,7 +119,9 @@ export class TokensComponent {
       name: "Don't remap",
     });
     this.tokenGroupName = this.tokenSideBar.locator('[class*="layer-button-name"]');
-    this.errorHintMessage = page.locator('#token-name-hint');
+    this.errorHintMessage = page.locator(
+      '.main_ui_ds_controls_utilities_hint_message__hint-message-text',
+    );
   }
 
   getTokenSection(tokenClass: TokenClass): Locator {
@@ -142,7 +144,7 @@ export class TokensComponent {
       | ShadowToken<TokenClass>
       | MainToken<TokenClass>,
   ) {
-    await this.tokenNameInput.fill(token.name);
+    await this.fillTokenName(token.name);
 
     if (token.description !== undefined) {
       await this.tokenDescriptionInput.fill(token.description);
@@ -157,6 +159,14 @@ export class TokensComponent {
     } else {
       await this.mainTokensComp.fillTokenData(token);
     }
+  }
+
+  async fillTokenName(name: string) {
+    await this.tokenNameInput.fill(name);
+  }
+
+  async fillTokenValue(value: string) {
+    await this.mainTokensComp.tokenValueInput.fill(value);
   }
 
   async clickOnTokenDescription() {
@@ -180,9 +190,18 @@ export class TokensComponent {
       | ShadowToken<TokenClass>
       | MainToken<TokenClass>,
   ) {
+    await this.clickOnAddTokenButton(token);
+    await this.fillTokenData(token);
+  }
+
+  async clickOnAddTokenButton(
+    token:
+      | TypographyToken<TokenClass>
+      | ShadowToken<TokenClass>
+      | MainToken<TokenClass>,
+  ) {
     const addTokenButton = this.getAddTokenButton(token.class);
     await addTokenButton.click();
-    await this.fillTokenData(token);
   }
 
   async createTokenViaAddButtonAndSave(
@@ -208,6 +227,10 @@ export class TokensComponent {
 
   async isSaveButtonDisabled() {
     await expect(this.baseComp.modalSaveButton).toBeDisabled();
+  }
+
+  async clickCancelButton() {
+    await this.baseComp.clickOnCancelButton();
   }
 
   async isCreateTokenModalClosed() {
@@ -516,6 +539,23 @@ export class TokensComponent {
   }
 
   async isErrorHintMessageVisible(message: string) {
-    await expect(this.errorHintMessage).toHaveText(message);
+    await expect(
+      this.errorHintMessage.getByText(message),
+      `Error hint message "${message}" is visible`,
+    ).toBeVisible();
+  }
+
+  async isErrorHintMessageNotVisible() {
+    await expect(
+      this.errorHintMessage,
+      `Error hint message is NOT visible`,
+    ).not.toBeVisible();
+  }
+
+  async hasTokenNameInputSpecificText(tokenName: string) {
+    await expect(
+      this.tokenNameInput,
+      `Name input contains text "${tokenName}"`,
+    ).toHaveValue(tokenName);
   }
 }
