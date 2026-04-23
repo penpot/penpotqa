@@ -27,12 +27,15 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
+
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
+
   browserName === 'webkit' && !(await mainPage.isMainPageVisible())
     ? await dashboardPage.createFileViaPlaceholder()
     : null;
+
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
@@ -129,22 +132,141 @@ mainTest(
 mainTest(
   qase(2197, 'Verifying invalid token values on creation, aborting (cancel)'),
   async () => {
-    const sizingToken: MainToken<TokenClass> = {
+    const firstSizingToken: MainToken<TokenClass> = {
       class: TokenClass.Sizing,
-      name: 'sizingToken',
-      value: undefined,
+      name: 'existing.token',
+      value: '10',
     };
 
-    await mainTest.step('Open token form and clear name input', async () => {
+    await mainTest.step('Create first sizing token', async () => {
       await tokensPage.clickTokensTab();
-      await tokensPage.tokensComp.clickOnAddTokenAndFillData(sizingToken);
-      await tokensPage.tokensComp.clearTokenNameInput();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(firstSizingToken);
     });
 
-    await mainTest.step('Verify error hint message is visible', async () => {
-      await tokensPage.tokensComp.isErrorHintMessageVisible(
-        'Name should be at least 1 character',
-      );
-    });
+    await mainTest.step(
+      'Fill token name, type a text and clear and assert error message',
+      async () => {
+        const sizingToken: MainToken<TokenClass> = {
+          class: TokenClass.Sizing,
+          name: 'sizingToken',
+          value: undefined,
+        };
+
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.clickOnAddTokenButton(sizingToken);
+        await tokensPage.tokensComp.fillTokenName(sizingToken.name);
+        await tokensPage.tokensComp.clearTokenNameInput();
+
+        await tokensPage.tokensComp.isErrorHintMessageVisible(
+          'Name should be at least 1 character',
+        );
+
+        await tokensPage.tokensComp.clearTokenNameInput();
+      },
+    );
+
+    await mainTest.step(
+      'Fill in token name with a large text (256 chars) and assert is cropped',
+      async () => {
+        const longName =
+          'loremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremipsumloremX';
+
+        await tokensPage.tokensComp.fillTokenName(longName);
+        await tokensPage.tokensComp.hasTokenNameInputSpecificText(
+          longName.slice(0, 255),
+        );
+        await tokensPage.tokensComp.isErrorHintMessageNotVisible();
+        await tokensPage.tokensComp.clearTokenNameInput();
+      },
+    );
+
+    await mainTest.step(
+      'Fill in token name with special characters and assert error message',
+      async () => {
+        const specialCharactersName = '#$&!';
+
+        await tokensPage.tokensComp.fillTokenName(specialCharactersName);
+
+        await tokensPage.tokensComp.isErrorHintMessageVisible(
+          `${specialCharactersName} is not a valid token name. Token names should only contain letters and digits separated by . characters and must not start with a $ sign.`,
+        );
+
+        await tokensPage.tokensComp.clearTokenNameInput();
+      },
+    );
+
+    await mainTest.step(
+      'Fill in token name reusing another existing name and assert error message',
+      async () => {
+        await tokensPage.tokensComp.fillTokenName(firstSizingToken.name);
+
+        await tokensPage.tokensComp.isErrorHintMessageVisible(
+          `A token already exists at the path: ${firstSizingToken.name}`,
+        );
+
+        await tokensPage.tokensComp.clearTokenNameInput();
+      },
+    );
+
+    await mainTest.step(
+      'Fill token value with non-numerical data and assert error message',
+      async () => {
+        const newName = 'new.token';
+        const value = '500a';
+
+        await tokensPage.tokensComp.fillTokenName(newName);
+        await tokensPage.tokensComp.fillTokenValue(value);
+
+        await tokensPage.tokensComp.isErrorHintMessageVisible(
+          `Invalid token value: ${value}`,
+        );
+      },
+    );
+
+    await mainTest.step(
+      'Fill token value with non-numerical equation and assert error message',
+      async () => {
+        const value = '500*a';
+
+        await tokensPage.tokensComp.fillTokenValue(value);
+
+        await tokensPage.tokensComp.isErrorHintMessageVisible(
+          `Invalid token value: ${value}`,
+        );
+      },
+    );
+
+    await mainTest.step(
+      'Fill token value with a wrong alias reference (alias references are case sensitive) and assert error message',
+      async () => {
+        const value = '{existing.TOKEN}';
+
+        await tokensPage.tokensComp.fillTokenValue(value);
+
+        await tokensPage.tokensComp.isErrorHintMessageVisible(
+          `Missing token references: existing.TOKEN`,
+        );
+      },
+    );
+
+    await mainTest.step(
+      'Fill token value with a self alias reference and assert error message',
+      async () => {
+        const value = '{new.token}';
+
+        await tokensPage.tokensComp.fillTokenValue(value);
+
+        await tokensPage.tokensComp.isErrorHintMessageVisible(
+          `Token has self reference`,
+        );
+      },
+    );
+
+    await mainTest.step(
+      'Cancel token creation by clicking on Cancel button',
+      async () => {
+        await tokensPage.tokensComp.clickCancelButton();
+      },
+    );
   },
 );
