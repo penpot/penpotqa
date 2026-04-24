@@ -368,6 +368,26 @@ mainTest.describe(() => {
   });
 });
 
+mainTest(qase([275], 'Create Rectangle (Shortcut R)'), async () => {
+  await mainTest.step(
+    'Press R shortcut and verify rectangle tool is active',
+    async () => {
+      await mainPage.pressRKeyboardShortcut();
+    },
+  );
+
+  await mainTest.step(
+    'Click on canvas and verify rectangle with default size is created',
+    async () => {
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isCreatedLayerVisible();
+      await designPanelPage.checkSizeWidth('100');
+      await designPanelPage.checkSizeHeight('100');
+    },
+  );
+});
+
 mainTest(qase([2255], 'Select and deselect rectangles'), async ({ browserName }) => {
   await mainPage.createDefaultRectangleByCoordinates(400, 800);
   await mainPage.createDefaultRectangleByCoordinates(400, 200, true);
