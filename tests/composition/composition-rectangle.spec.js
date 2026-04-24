@@ -372,7 +372,7 @@ mainTest(qase([275], 'Create Rectangle (Shortcut R)'), async () => {
   await mainTest.step(
     'Press R shortcut and verify rectangle tool is active',
     async () => {
-      await mainPage.pressRKeyboardShortcut();
+      await mainPage.pressKeyboardShortcut('R');
     },
   );
 

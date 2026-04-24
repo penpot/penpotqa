@@ -130,7 +130,7 @@ mainTest.describe(() => {
     await mainPage.clickFifthNode();
     await mainPage.clickSecondNode();
     await mainPage.releaseShiftKeyboardButton();
-    await mainPage.pressJKeyboardShortcut();
+    await mainPage.pressKeyboardShortcut('J');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-joined-nodes-twice.png', {
       mask: mainPage.maskViewport(),
@@ -156,7 +156,7 @@ mainTest.describe(() => {
       await mainPage.holdShiftKeyboardButton();
       await mainPage.clickThirdNode();
       await mainPage.releaseShiftKeyboardButton();
-      await mainPage.pressKKeyboardShortcut();
+      await mainPage.pressKeyboardShortcut('K');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-separated-nodes-twice.png',
@@ -180,7 +180,7 @@ mainTest.describe(() => {
         },
       );
       await mainPage.clickSecondNode();
-      await mainPage.pressXKeyboardShortcut();
+      await mainPage.pressKeyboardShortcut('X');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-to-corner-two-nodes.png',
@@ -208,7 +208,7 @@ mainTest(
       mask: mainPage.maskViewport(),
     });
     await mainPage.clickSecondNode();
-    await mainPage.pressCKeyboardShortcut();
+    await mainPage.pressKeyboardShortcut('C');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-to-curve-two-nodes.png', {
       mask: mainPage.maskViewport(),
