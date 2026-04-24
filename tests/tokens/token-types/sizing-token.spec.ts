@@ -54,54 +54,77 @@ mainTest(
       value: '200',
     };
 
-    await mainPage.uploadImage('images/mini_sample.jpg');
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(sizingToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(sizingToken.name);
-    await tokensPage.tokensComp.selectMenuItem(sizingToken.name, 'Max Width');
-    await tokensPage.tokensComp.selectMenuItem(sizingToken.name, 'Min Height');
-
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(sizingToken.name);
-
-    await expect(mainPage.viewport).toHaveScreenshot('image-max-min-size-200.png', {
-      mask: mainPage.maskViewport(),
-    });
-
-    await mainPage.createDefaultBoardByCoordinates(100, 200, true);
-    await designPanelPage.changeHeightAndWidthForLayer('600', '600');
-    await mainPage.addFlexLayoutViaRightClick();
-
-    await layersPanelPage.openLayersTab();
-    await layersPanelPage.dragAndDropElementToElement('mini_sample', 'Board');
-
-    await mainPage.clickViewportOnce();
-    await layersPanelPage.selectLayerByName('mini_sample');
-
-    await designPanelPage.clickOnFlexElementWidth100Btn();
-    await designPanelPage.clickOnFlexElementHeight100Btn();
-
-    await mainPage.waitForChangeIsSaved();
-
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'image-on-board-max-min-size-200.png',
-      {
-        mask: mainPage.maskViewport(),
+    await mainTest.step(
+      `Upload image and apply "${sizingToken.name}" token to Max Width and Min Height`,
+      async () => {
+        await mainPage.uploadImage('images/mini_sample.jpg');
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(sizingToken);
+        await tokensPage.tokensComp.isTokenVisibleWithName(sizingToken.name);
+        await tokensPage.tokensComp.selectMenuItem(sizingToken.name, 'Max Width');
+        await tokensPage.tokensComp.selectMenuItem(sizingToken.name, 'Min Height');
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(sizingToken.name);
       },
     );
 
-    await designPanelPage.checkFlexElementMinMax('Width', false, sizingToken.value);
-    await designPanelPage.checkFlexElementMinMax('Height', true, sizingToken.value);
-
-    await tokensPage.clickTokensTab();
-
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      sizingToken.name,
-      'Max Width',
+    await mainTest.step(
+      'Verify screenshot of image with max/min size applied',
+      async () => {
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'image-max-min-size-200.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      },
     );
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      sizingToken.name,
-      'Min Height',
+
+    await mainTest.step(
+      'Place image in a flex board and verify min/max values in design panel',
+      async () => {
+        await mainPage.createDefaultBoardByCoordinates(100, 200, true);
+        await designPanelPage.changeHeightAndWidthForLayer('600', '600');
+        await mainPage.addFlexLayoutViaRightClick();
+        await layersPanelPage.openLayersTab();
+        await layersPanelPage.dragAndDropElementToElement('mini_sample', 'Board');
+        await mainPage.clickViewportOnce();
+        await layersPanelPage.selectLayerByName('mini_sample');
+        await designPanelPage.clickOnFlexElementWidth100Btn();
+        await designPanelPage.clickOnFlexElementHeight100Btn();
+        await mainPage.waitForChangeIsSaved();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'image-on-board-max-min-size-200.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+        await designPanelPage.checkFlexElementMinMax(
+          'Width',
+          false,
+          sizingToken.value,
+        );
+        await designPanelPage.checkFlexElementMinMax(
+          'Height',
+          true,
+          sizingToken.value,
+        );
+      },
+    );
+
+    await mainTest.step(
+      'Verify Max Width and Min Height menu items are selected',
+      async () => {
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          sizingToken.name,
+          'Max Width',
+        );
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          sizingToken.name,
+          'Min Height',
+        );
+      },
     );
   },
 );

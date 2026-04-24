@@ -11,10 +11,14 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+
 mainTest.beforeEach(async ({ page, browserName }) => {
-  let teamPage: TeamPage = new TeamPage(page);
-  let dashboardPage: DashboardPage = new DashboardPage(page);
-  let mainPage: MainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -25,9 +29,7 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const mainPage: MainPage = new MainPage(page);
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
@@ -63,29 +65,57 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(2531, 'Edit a Text decoration token'), async () => {
-    await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
-    await designPanelPage.isTextStrikethroughChecked();
+    await mainTest.step(
+      `Edit "${decorationToken.name}" token to "${updatedTokenData.value}"`,
+      async () => {
+        await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
+
+    await mainTest.step(
+      'Verify token is still applied and strikethrough is shown',
+      async () => {
+        await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
+        await designPanelPage.isTextStrikethroughChecked();
+      },
+    );
   });
 
   mainTest(
     qase(2535, 'Re-Apply the token after change the decorator manually'),
     async () => {
-      await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
-      await designPanelPage.isTextUnderlineChecked();
-      await designPanelPage.clickOnTextStrikethroughButton();
-      await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(
-        decorationToken.name,
-        false,
+      await mainTest.step(
+        `Verify "${decorationToken.name}" token is applied with underline`,
+        async () => {
+          await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
+          await designPanelPage.isTextUnderlineChecked();
+        },
       );
-      await designPanelPage.isTextStrikethroughChecked();
-      await tokensPage.tokensComp.clickOnTokenWithName(decorationToken.name);
-      await mainPage.waitForChangeIsSaved();
-      await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
-      await designPanelPage.isTextUnderlineChecked();
+
+      await mainTest.step(
+        'Manually change to strikethrough and verify token is detached',
+        async () => {
+          await designPanelPage.clickOnTextStrikethroughButton();
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(
+            decorationToken.name,
+            false,
+          );
+          await designPanelPage.isTextStrikethroughChecked();
+        },
+      );
+
+      await mainTest.step(
+        'Re-apply token and verify underline is restored',
+        async () => {
+          await tokensPage.tokensComp.clickOnTokenWithName(decorationToken.name);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
+          await designPanelPage.isTextUnderlineChecked();
+        },
+      );
     },
   );
 });

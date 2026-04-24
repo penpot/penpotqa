@@ -39,9 +39,17 @@ mainTest.afterEach(async ({ page }) => {
 });
 
 mainTest(qase(2167, 'Create theme via "create one" link'), async ({ page }) => {
-  await tokensPage.clickTokensTab();
-  await tokensPage.themesComp.createThemeViaLink('Desktop');
-  await tokensPage.themesComp.checkSelectedTheme('No theme active');
+  await mainTest.step('Open Tokens panel', async () => {
+    await tokensPage.clickTokensTab();
+  });
+
+  await mainTest.step('Create theme via "create one" link', async () => {
+    await tokensPage.themesComp.createThemeViaLink('Desktop');
+  });
+
+  await mainTest.step('Verify no theme is active', async () => {
+    await tokensPage.themesComp.checkSelectedTheme('No theme active');
+  });
 });
 
 mainTest.describe(() => {
@@ -128,34 +136,51 @@ mainTest.describe(() => {
     });
 
     mainTest(qase(2206, 'Enable themes in different groups'), async () => {
-      await tokensPage.themesComp.addNewTheme('Brand X');
-      await tokensPage.themesComp.openEditThemeModalByThemeName('Brand X');
-      await tokensPage.themesComp.activateSetInTheme('Light');
-      await tokensPage.themesComp.activateSetInTheme('Dark');
-      await tokensPage.themesComp.activateSetInTheme('Desktop');
-      await tokensPage.themesComp.activateSetInTheme('Mobile');
-      await tokensPage.themesComp.saveTheme();
-      await tokensPage.setsComp.checkActiveSetsCountByThemeName('Brand X', '4');
-      await mainPage.closeModalWindow();
-      await tokensPage.themesComp.checkSelectedTheme('No theme active');
+      await mainTest.step(
+        'Create "Brand X" theme and activate all sets',
+        async () => {
+          await tokensPage.themesComp.addNewTheme('Brand X');
+          await tokensPage.themesComp.openEditThemeModalByThemeName('Brand X');
+          await tokensPage.themesComp.activateSetInTheme('Light');
+          await tokensPage.themesComp.activateSetInTheme('Dark');
+          await tokensPage.themesComp.activateSetInTheme('Desktop');
+          await tokensPage.themesComp.activateSetInTheme('Mobile');
+          await tokensPage.themesComp.saveTheme();
+          await tokensPage.setsComp.checkActiveSetsCountByThemeName('Brand X', '4');
+          await mainPage.closeModalWindow();
+          await tokensPage.themesComp.checkSelectedTheme('No theme active');
+        },
+      );
 
-      await tokensPage.themesComp.selectTheme('Web');
-      await tokensPage.themesComp.checkSelectedTheme('App / Web');
-      await tokensPage.setsComp.isSetCheckedByName('Dark');
-      await tokensPage.setsComp.isSetCheckedByName('Light');
-      await tokensPage.setsComp.isSetCheckedByName('Desktop');
+      await mainTest.step('Select "Web" theme and verify active sets', async () => {
+        await tokensPage.themesComp.selectTheme('Web');
+        await tokensPage.themesComp.checkSelectedTheme('App / Web');
+        await tokensPage.setsComp.isSetCheckedByName('Dark');
+        await tokensPage.setsComp.isSetCheckedByName('Light');
+        await tokensPage.setsComp.isSetCheckedByName('Desktop');
+      });
 
-      await tokensPage.themesComp.selectTheme('Mobile');
-      await tokensPage.themesComp.checkSelectedTheme('App / Mobile');
-      await tokensPage.setsComp.isSetCheckedByName('Light');
-      await tokensPage.setsComp.isSetCheckedByName('Mobile');
+      await mainTest.step(
+        'Select "Mobile" theme and verify active sets',
+        async () => {
+          await tokensPage.themesComp.selectTheme('Mobile');
+          await tokensPage.themesComp.checkSelectedTheme('App / Mobile');
+          await tokensPage.setsComp.isSetCheckedByName('Light');
+          await tokensPage.setsComp.isSetCheckedByName('Mobile');
+        },
+      );
 
-      await tokensPage.themesComp.selectTheme('Brand X');
-      await tokensPage.themesComp.checkSelectedTheme('2 active themes');
-      await tokensPage.setsComp.isSetCheckedByName('Dark');
-      await tokensPage.setsComp.isSetCheckedByName('Light');
-      await tokensPage.setsComp.isSetCheckedByName('Mobile');
-      await tokensPage.setsComp.isSetCheckedByName('Desktop');
+      await mainTest.step(
+        'Select "Brand X" theme and verify multiple themes are active',
+        async () => {
+          await tokensPage.themesComp.selectTheme('Brand X');
+          await tokensPage.themesComp.checkSelectedTheme('2 active themes');
+          await tokensPage.setsComp.isSetCheckedByName('Dark');
+          await tokensPage.setsComp.isSetCheckedByName('Light');
+          await tokensPage.setsComp.isSetCheckedByName('Mobile');
+          await tokensPage.setsComp.isSetCheckedByName('Desktop');
+        },
+      );
     });
 
     mainTest(
@@ -164,26 +189,57 @@ mainTest.describe(() => {
         'Add new group theme using an existing group name and an existing theme name via select "edit themes"',
       ),
       async () => {
-        await tokensPage.themesComp.addNewThemeWithGroup('App', 'Web', true);
-        await mainPage.closeModalWindow();
+        await mainTest.step(
+          'Add theme with existing group "App" and existing name "Web" and verify modal closes',
+          async () => {
+            await tokensPage.themesComp.addNewThemeWithGroup('App', 'Web', true);
+            await mainPage.closeModalWindow();
+          },
+        );
       },
     );
 
     mainTest(qase(2192, 'Rename a theme'), async () => {
       const newThemeName: string = 'Tablet';
-      await tokensPage.themesComp.openEditThemeModalByThemeName('Mobile');
-      await tokensPage.themesComp.editThemeName(newThemeName);
-      await tokensPage.setsComp.checkActiveSetsCountByThemeName(newThemeName, '2');
-      await mainPage.closeModalWindow();
+
+      await mainTest.step(`Rename "Mobile" theme to "${newThemeName}"`, async () => {
+        await tokensPage.themesComp.openEditThemeModalByThemeName('Mobile');
+        await tokensPage.themesComp.editThemeName(newThemeName);
+      });
+
+      await mainTest.step(
+        `Verify active sets count for "${newThemeName}" theme`,
+        async () => {
+          await tokensPage.setsComp.checkActiveSetsCountByThemeName(
+            newThemeName,
+            '2',
+          );
+          await mainPage.closeModalWindow();
+        },
+      );
     });
   });
 
   mainTest(qase(2236, 'Create theme with immediately set selection'), async () => {
-    await tokensPage.clickTokensTab();
-    await tokensPage.themesComp.createThemeViaLinkWithSet('Test', 'Dark');
-    await tokensPage.themesComp.checkSelectedTheme('No theme active');
-    await tokensPage.themesComp.selectTheme('Test');
-    await tokensPage.themesComp.checkSelectedTheme('Test');
-    await tokensPage.setsComp.isSetCheckedByName('Dark');
+    await mainTest.step(
+      'Open Tokens panel and create "Test" theme with "Dark" set pre-selected',
+      async () => {
+        await tokensPage.clickTokensTab();
+        await tokensPage.themesComp.createThemeViaLinkWithSet('Test', 'Dark');
+      },
+    );
+
+    await mainTest.step('Verify no theme is active initially', async () => {
+      await tokensPage.themesComp.checkSelectedTheme('No theme active');
+    });
+
+    await mainTest.step(
+      'Select "Test" theme and verify it is active with "Dark" set checked',
+      async () => {
+        await tokensPage.themesComp.selectTheme('Test');
+        await tokensPage.themesComp.checkSelectedTheme('Test');
+        await tokensPage.setsComp.isSetCheckedByName('Dark');
+      },
+    );
   });
 });
