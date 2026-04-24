@@ -150,7 +150,9 @@ mainTest(
     await mainPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnPageOnLayersPanel(2);
+    await mainPage.isSecondPageNameDisplayed('Page 2');
     await mainPage.pressPasteShortcut(browserName);
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await basePage.showMainComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
