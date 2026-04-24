@@ -863,46 +863,49 @@ mainTest.describe(() => {
       );
     },
   );
-
-  mainTest(
-    qase(
-      [2389],
-      'Create board with a default size preset (Toolbar) allows custom dimension after creation',
-    ),
-    async () => {
-      await mainPage.clickViewportOnce();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.checkSizeWidth('600');
-      await designPanelPage.checkSizeHeight('600');
-    },
-  );
 });
 
 mainTest(
   qase(
-    [2390],
+    [2389, 2390],
     'Create board with a default size preset allow to change frame orientation (Toolbar)',
   ),
   async () => {
     await mainPage.clickCreateBoardButton();
 
-    await designPanelPage.selectSizePresetsOption('Expanded');
-    await designPanelPage.clickOnVerticalOrientationButton();
-    await mainPage.clickViewportByCoordinates(100, 150);
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isVerticalOrientationButtonChecked();
-    await designPanelPage.checkSizeWidth('800');
-    await designPanelPage.checkSizeHeight('1280');
+    await mainTest.step(
+      'Select Expanded preset and change to vertical orientation',
+      async () => {
+        await designPanelPage.selectSizePresetsOption('Expanded');
+        await designPanelPage.clickOnVerticalOrientationButton();
+        await mainPage.clickViewportByCoordinates(100, 150);
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('800');
+        await designPanelPage.checkSizeHeight('1280');
+      },
+    );
 
-    await designPanelPage.selectSizePresetsOption('iPhone 16 ');
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isVerticalOrientationButtonChecked();
-    await designPanelPage.checkSizeWidth('393');
-    await designPanelPage.checkSizeHeight('852');
-    await designPanelPage.clickOnHorizontalOrientationButton();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isHorizontalOrientationButtonChecked();
-    await designPanelPage.checkSizeWidth('852');
-    await designPanelPage.checkSizeHeight('393');
+    await mainTest.step(
+      'Select iPhone 16 preset and change to horizontal orientation',
+      async () => {
+        await designPanelPage.selectSizePresetsOption('iPhone 16 ');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isVerticalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('393');
+        await designPanelPage.checkSizeHeight('852');
+        await designPanelPage.clickOnHorizontalOrientationButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await designPanelPage.checkSizeWidth('852');
+        await designPanelPage.checkSizeHeight('393');
+      },
+    );
+
+    await mainTest.step('Change to custom dimensions after preset', async () => {
+      await designPanelPage.changeHeightAndWidthForLayer('500', '750');
+      await designPanelPage.checkSizeWidth('750');
+      await designPanelPage.checkSizeHeight('500');
+    });
   },
 );
