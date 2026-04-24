@@ -544,40 +544,20 @@ exports.MainPage = class MainPage extends BasePage {
     await this.nodePanelJoinNodesButton.click();
   }
 
-  async pressJKeyboardShortcut() {
-    await this.page.keyboard.press('J');
+  async pressKeyboardShortcut(key) {
+    await this.page.keyboard.press(key);
   }
 
   async clickSeparateNodesButtonOnNodePanel() {
     await this.nodePanelSeparateNodesButton.click();
   }
 
-  async pressKKeyboardShortcut() {
-    await this.page.keyboard.press('K');
-  }
-
   async clickToCornerButtonOnNodePanel() {
     await this.nodePanelToCornerButton.click();
   }
 
-  async pressXKeyboardShortcut() {
-    await this.page.keyboard.press('X');
-  }
-
   async clickToCurveButtonOnNodePanel() {
     await this.nodePanelToCurveButton.click();
-  }
-
-  async pressCKeyboardShortcut() {
-    await this.page.keyboard.press('C');
-  }
-
-  async pressBKeyboardShortcut() {
-    await this.page.keyboard.press('B');
-  }
-
-  async pressRKeyboardShortcut() {
-    await this.page.keyboard.press('R');
   }
 
   async clickMainMenuButton() {
