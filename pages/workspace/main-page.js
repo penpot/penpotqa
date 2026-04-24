@@ -573,7 +573,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressBKeyboardShortcut() {
-    await this.page.keyboard.press('b');
+    await this.page.keyboard.press('B');
   }
 
   async clickMainMenuButton() {
