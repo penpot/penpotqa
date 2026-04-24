@@ -576,6 +576,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press('B');
   }
 
+  async pressRKeyboardShortcut() {
+    await this.page.keyboard.press('R');
+  }
+
   async clickMainMenuButton() {
     await this.mainMenuButton.click();
     await expect(this.mainMenuList).toBeVisible();
