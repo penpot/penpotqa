@@ -866,6 +866,30 @@ mainTest.describe(() => {
 });
 
 mainTest(
+  qase([218], 'Create a board without a default size preset (Shortcut B)'),
+  async () => {
+    await mainTest.step(
+      'Press B shortcut and verify Size presets dropdown appears',
+      async () => {
+        await mainPage.pressBKeyboardShortcut();
+        await designPanelPage.checkSizePresetsDropdownVisible();
+      },
+    );
+
+    await mainTest.step(
+      'Click on canvas and verify board with default size is created',
+      async () => {
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.isCreatedLayerVisible();
+        await designPanelPage.checkSizeWidth('100');
+        await designPanelPage.checkSizeHeight('100');
+      },
+    );
+  },
+);
+
+mainTest(
   qase(
     [2389, 2390],
     'Create board with a default size preset allow to change frame orientation (Toolbar)',
