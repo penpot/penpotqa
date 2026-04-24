@@ -904,7 +904,6 @@ mainTest(
 
     await mainTest.step('Change to custom dimensions after preset', async () => {
       await designPanelPage.changeHeightAndWidthForLayer('500', '750');
-      await mainPage.waitForChangeIsSaved();
       await designPanelPage.checkSizeWidth('750');
       await designPanelPage.checkSizeHeight('500');
     });
