@@ -1,19 +1,12 @@
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-require('dotenv').config();
+import { defineConfig } from '@playwright/test';
+import 'dotenv/config';
 
-/**
- * @see https://playwright.dev/docs/test-configuration
- * @type {import('@playwright/test').PlaywrightTestConfig}
- */
-const config = {
+export default defineConfig({
   snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/linux/{projectName}/{arg}{ext}`,
   testDir: './tests',
   /* Maximum time one test can run for. */
   timeout: process.env.CI ? 120 * 1000 : 80 * 1000,
-  globalTeardown: require.resolve('./tests/global.teardown.ts'),
+  globalTeardown: './tests/global.teardown.ts',
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -125,6 +118,4 @@ const config = {
       },
     },
   ],
-};
-
-module.exports = config;
+});
