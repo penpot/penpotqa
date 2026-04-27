@@ -871,7 +871,7 @@ mainTest(
     await mainTest.step(
       'Press B shortcut and verify Size presets dropdown appears',
       async () => {
-        await mainPage.pressBKeyboardShortcut();
+        await mainPage.pressKeyboardShortcut('B');
         await designPanelPage.checkSizePresetsDropdownVisible();
       },
     );
