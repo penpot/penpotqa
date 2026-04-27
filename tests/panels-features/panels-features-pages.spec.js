@@ -146,12 +146,12 @@ mainTest(
     await mainPage.createDefaultRectangleByCoordinates(300, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.pressCopyShortcut(browserName);
+    await mainPage.copyLayerViaRightClick();
     await mainPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnPageOnLayersPanel(2);
     await mainPage.isSecondPageNameDisplayed('Page 2');
-    await mainPage.pressPasteShortcut(browserName);
+    await mainPage.pasteLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await basePage.showMainComponentViaRightClick();
