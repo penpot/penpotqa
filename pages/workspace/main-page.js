@@ -170,7 +170,7 @@ exports.MainPage = class MainPage extends BasePage {
       .filter({ hasText: 'Zoom to selected' });
 
     //Pages
-    this.addPageButton = page.locator('button[class*="add-page"]');
+    this.addPageButton = page.getByRole('button', { name: 'Add page' });
     this.pagesBlock = page.locator('div.main_ui_workspace_sidebar_sitemap__sitemap');
     this.firstPageListItem = page
       .getByTestId('page-name')
@@ -544,32 +544,21 @@ exports.MainPage = class MainPage extends BasePage {
     await this.nodePanelJoinNodesButton.click();
   }
 
-  async pressJKeyboardShortcut() {
-    await this.page.keyboard.press('J');
+  async pressKeyboardShortcut(key) {
+    const normalizedKey = key.length === 1 ? key.toUpperCase() : key;
+    await this.page.keyboard.press(normalizedKey);
   }
 
   async clickSeparateNodesButtonOnNodePanel() {
     await this.nodePanelSeparateNodesButton.click();
   }
 
-  async pressKKeyboardShortcut() {
-    await this.page.keyboard.press('K');
-  }
-
   async clickToCornerButtonOnNodePanel() {
     await this.nodePanelToCornerButton.click();
   }
 
-  async pressXKeyboardShortcut() {
-    await this.page.keyboard.press('X');
-  }
-
   async clickToCurveButtonOnNodePanel() {
     await this.nodePanelToCurveButton.click();
-  }
-
-  async pressCKeyboardShortcut() {
-    await this.page.keyboard.press('C');
   }
 
   async clickMainMenuButton() {

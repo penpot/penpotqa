@@ -142,15 +142,17 @@ mainTest(
     1519,
     'Copy and paste components from Page 1 to Page 2, on Page 2 right-click component and select "Show main component"',
   ),
-  async ({ browserName }) => {
+  async () => {
     await mainPage.createDefaultRectangleByCoordinates(300, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.pressCopyShortcut(browserName);
+    await mainPage.copyLayerViaRightClick();
     await mainPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnPageOnLayersPanel(2);
-    await mainPage.pressPasteShortcut(browserName);
+    await mainPage.isSecondPageNameDisplayed('Page 2');
+    await mainPage.pasteLayerViaRightClick();
+    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await basePage.showMainComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
