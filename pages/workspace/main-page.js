@@ -545,7 +545,8 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressKeyboardShortcut(key) {
-    await this.page.keyboard.press(key);
+    const normalizedKey = key.length === 1 ? key.toUpperCase() : key;
+    await this.page.keyboard.press(normalizedKey);
   }
 
   async clickSeparateNodesButtonOnNodePanel() {
