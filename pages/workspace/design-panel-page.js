@@ -1664,6 +1664,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  async checkSizePresetsDropdownVisible() {
+    await expect(this.sizePresetsDropdown).toBeVisible();
+  }
+
   async openSizePresetsDropdown() {
     await this.sizePresetsDropdown.click();
   }

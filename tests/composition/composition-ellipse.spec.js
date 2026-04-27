@@ -36,6 +36,27 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
+mainTest(qase([328], 'Create Ellipse (Shortcut E)'), async () => {
+  await mainTest.step(
+    'Press E shortcut and verify ellipse tool is active',
+    async () => {
+      await mainPage.pressKeyboardShortcut('E');
+    },
+  );
+
+  await mainTest.step(
+    'Click on canvas and verify ellipse with default size is created',
+    async () => {
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isCreatedLayerVisible();
+      await layersPanelPage.isLayerNameDisplayed('Ellipse');
+      await designPanelPage.checkSizeWidth('100');
+      await designPanelPage.checkSizeHeight('100');
+    },
+  );
+});
+
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
     mainTest.slow();
