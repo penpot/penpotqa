@@ -142,7 +142,7 @@ mainTest(
     1519,
     'Copy and paste components from Page 1 to Page 2, on Page 2 right-click component and select "Show main component"',
   ),
-  async ({ browserName }) => {
+  async () => {
     await mainPage.createDefaultRectangleByCoordinates(300, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
