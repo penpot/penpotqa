@@ -132,7 +132,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
       'input[value="Skip for now and start trial"]',
     );
 
-    // Integrations
+    // Integrations access token
     this.integrationsSidebarOption = page
       .getByRole('listitem')
       .filter({ hasText: 'Integrations' });
@@ -158,6 +158,32 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     });
     this.deleteTokenButton = page.getByRole('button', { name: 'Delete token' });
     this.noAccessTokensText = page.getByText('You have no tokens so far.');
+    this.tokenCreatedSuccessfullyMessage = page.getByText(
+      'Token created successfully',
+    );
+
+    // Integrations MCP server
+    this.disableMCPWithoutKeyStatusSwitch = page.locator(
+      '.main_ui_settings_integrations__mcp-server-switch-cover',
+    );
+    this.disableMCPWithKeyStatusSwitch = page.locator(
+      '.main_ui_ds_controls_switch__off',
+    );
+    this.enableMCPStatusSwitch = page.locator('.main_ui_ds_controls_switch__on');
+    this.generateMCPKeyModalHeading = page.getByRole('heading', {
+      name: 'Generate MCP key',
+    });
+    this.generateMCPKeySubmitButton = page.getByRole('button', {
+      name: 'Generate MCP key',
+    });
+    this.MCPKeyGeneratedModalHeading = page.getByRole('heading', {
+      name: 'MCP key generated',
+    });
+    this.configurationMCPClientText = page.getByText('Add this configuration to');
+    this.MCPKey = page.getByTitle('MCP key');
+    this.MCPKeyOptions = page.getByRole('button', { name: 'Options' });
+    this.MCPServerDisabledMessage = page.getByText('MCP server disabled');
+    this.MCPServerEnabledMessage = page.getByText('MCP server enabled');
   }
 
   async openYourAccountPage() {
@@ -443,6 +469,8 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await expect(this.integrationsHeader).toBeVisible();
   }
 
+  // Integrations access token
+
   async createAccessToken(accessTokenName) {
     await this.createNewAccessTokenButton.click();
     await expect(this.createAccessTokenHeaderModalForm).toBeVisible();
@@ -465,5 +493,51 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
   async checkNoAccessTokens() {
     await expect(this.noAccessTokensText).toBeVisible();
+  }
+
+  // Integrations MCP server
+
+  async enableMCPServerWithoutKey() {
+    await expect(this.disableMCPWithoutKeyStatusSwitch).toBeVisible();
+    await this.disableMCPWithoutKeyStatusSwitch.click();
+  }
+
+  async generateMCPKey() {
+    await expect(this.generateMCPKeyModalHeading).toBeVisible();
+    await this.generateMCPKeySubmitButton.click();
+    await expect(this.MCPKeyGeneratedModalHeading).toBeVisible();
+    await expect(this.configurationMCPClientText).toBeVisible();
+    await expect(this.tokenCreatedSuccessfullyMessage).toBeVisible();
+    await this.closeModalButton.click();
+    await expect(this.MCPKey).toBeVisible();
+    await expect(this.enableMCPStatusSwitch).toBeVisible();
+  }
+
+  async disableMCPServer() {
+    await expect(this.enableMCPStatusSwitch).toBeVisible();
+    await this.enableMCPStatusSwitch.click();
+    await expect(this.MCPServerDisabledMessage).toBeVisible();
+    await expect(this.disableMCPWithKeyStatusSwitch).toBeVisible();
+  }
+
+  async enableMCPServerWithKey() {
+    await expect(this.disableMCPWithKeyStatusSwitch).toBeVisible();
+    await this.disableMCPWithKeyStatusSwitch.click();
+    await expect(this.MCPServerEnabledMessage).toBeVisible();
+    await expect(this.enableMCPStatusSwitch).toBeVisible();
+  }
+
+  async deleteMCPKey() {
+    await this.MCPKeyOptions.click();
+    await expect(this.deleteOption).toBeVisible();
+    await this.deleteOption.click();
+    await expect(this.deleteTokenHeaderModal).toBeVisible();
+    await this.deleteTokenButton.click();
+  }
+
+  async checkNoMCPKey() {
+    await expect(this.integrationsHeader).toBeVisible();
+    await expect(this.MCPKey).not.toBeVisible();
+    await expect(this.disableMCPWithoutKeyStatusSwitch).toBeVisible();
   }
 };
