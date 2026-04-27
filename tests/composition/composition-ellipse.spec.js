@@ -50,6 +50,7 @@ mainTest(qase([328], 'Create Ellipse (Shortcut E)'), async () => {
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
       await mainPage.isCreatedLayerVisible();
+      await layersPanelPage.isLayerNameDisplayed('Ellipse');
       await designPanelPage.checkSizeWidth('100');
       await designPanelPage.checkSizeHeight('100');
     },
