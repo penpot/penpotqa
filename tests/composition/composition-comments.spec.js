@@ -187,7 +187,7 @@ mainTest(qase([2148], 'Zoom out and check comment bubbles'), async () => {
   const xAxisCommentsCoordinates = [100, 50, 700];
   const yAxisCommentsCoordinates = [150, 50, 700];
 
-  await mainPage.pressCKeyboardShortcut();
+  await mainPage.pressKeyboardShortcut('C');
   for (let i = 0; i < xAxisCommentsCoordinates.length; i++) {
     await mainPage.clickViewportByCoordinates(
       xAxisCommentsCoordinates[i],
