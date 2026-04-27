@@ -170,7 +170,7 @@ exports.MainPage = class MainPage extends BasePage {
       .filter({ hasText: 'Zoom to selected' });
 
     //Pages
-    this.addPageButton = page.locator('button[class*="add-page"]');
+    this.addPageButton = page.getByRole('button', { name: 'Add page' });
     this.pagesBlock = page.locator('div.main_ui_workspace_sidebar_sitemap__sitemap');
     this.firstPageListItem = page
       .getByTestId('page-name')
