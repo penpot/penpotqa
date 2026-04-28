@@ -12,10 +12,18 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+let tokensPage: TokensPage;
+let designPanelPage: DesignPanelPage;
+
 mainTest.beforeEach(async ({ page, browserName }) => {
-  let teamPage: TeamPage = new TeamPage(page);
-  let dashboardPage: DashboardPage = new DashboardPage(page);
-  let mainPage: MainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  tokensPage = new TokensPage(page);
+  designPanelPage = new DesignPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -26,20 +34,14 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const mainPage: MainPage = new MainPage(page);
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
   qase(2175, 'Apply default "rotation" token to a text (by left click)'),
-  async ({ page, browserName }) => {
-    const mainPage: MainPage = new MainPage(page);
-    const tokensPage: TokensPage = new TokensPage(page);
-    const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
-
+  async ({ browserName }) => {
     const rotationToken: MainToken<TokenClass> = {
       class: TokenClass.Rotation,
       name: 'rotation',
@@ -47,21 +49,35 @@ mainTest(
     };
     const tokenResolvedValue = '315'; // 315 == -45 == -(22.5+22.5)
 
-    await mainPage.createDefaultTextLayerByCoordinates(320, 210);
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(rotationToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(rotationToken.name);
-    await tokensPage.tokensComp.clickOnTokenWithName(rotationToken.name);
-    await tokensPage.tokensComp.isTokenAppliedWithName(rotationToken.name);
-    await designPanelPage.checkRotationForLayer(tokenResolvedValue);
-    browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('text-rotated-315.png', {
-      mask: mainPage.maskViewport(),
+    await mainTest.step('Create text layer and rotation token', async () => {
+      await mainPage.createDefaultTextLayerByCoordinates(320, 210);
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(rotationToken);
+      await tokensPage.tokensComp.isTokenVisibleWithName(rotationToken.name);
     });
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      rotationToken.name,
-      'Rotation',
+
+    await mainTest.step(
+      `Apply "${rotationToken.name}" token and verify rotation value`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(rotationToken.name);
+        await tokensPage.tokensComp.isTokenAppliedWithName(rotationToken.name);
+        await designPanelPage.checkRotationForLayer(tokenResolvedValue);
+        browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
+
+    await mainTest.step(
+      'Verify screenshot and Rotation menu item is selected',
+      async () => {
+        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-315.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          rotationToken.name,
+          'Rotation',
+        );
+      },
     );
   },
 );
