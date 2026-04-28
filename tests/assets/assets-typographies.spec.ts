@@ -98,7 +98,7 @@ mainTest.describe(() => {
         await expect(
           mainPage.viewport,
           'Typography should be applied to text layers',
-        ).toHaveScreenshot('apply-typography-to-text_from_assets.png', {
+        ).toHaveScreenshot('apply-typography-to-text-from-assets.png', {
           mask: mainPage.maskViewport(),
         });
       });
@@ -131,7 +131,7 @@ mainTest.describe(() => {
         await expect(
           mainPage.viewport,
           'Edited typography should be reflected on text layers',
-        ).toHaveScreenshot('edited-typography-to-text_from_assets.png', {
+        ).toHaveScreenshot('edited-typography-to-text-from-assets.png', {
           mask: mainPage.maskViewport(),
         });
       });
