@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { mainTest, registerTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { LoginPage } from 'pages/login-page';
@@ -6,8 +6,6 @@ import { RegisterPage } from 'pages/register-page';
 import { ProfilePage } from 'pages/profile-page';
 import { DashboardPage } from 'pages/dashboard/dashboard-page';
 import { TeamPage } from 'pages/dashboard/team-page';
-import { MainPage } from 'pages/workspace/main-page';
-import { LayersPanelPage } from 'pages/workspace/layers-panel-page';
 import { random } from 'helpers/string-generator';
 import {
   getRegisterMessage,
@@ -20,18 +18,14 @@ let teamPage: TeamPage;
 let loginPage: LoginPage;
 let registerPage: RegisterPage;
 let dashboardPage: DashboardPage;
-let layersPanelPage: LayersPanelPage;
 let profilePage: ProfilePage;
-let mainPage: MainPage;
 
 mainTest.beforeEach(async ({ page }: { page: Page }) => {
   teamPage = new TeamPage(page);
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
   dashboardPage = new DashboardPage(page);
-  layersPanelPage = new LayersPanelPage(page);
   profilePage = new ProfilePage(page);
-  mainPage = new MainPage(page);
 });
 
 mainTest(qase(1164, 'Open the form via Invitations tab'), async () => {
@@ -60,18 +54,19 @@ registerTest(
 
 mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () => {
   const team = random().concat('autotest');
+  const email = `${process.env.GMAIL_NAME}+editor+${Date.now()}-${random()}${process.env.GMAIL_DOMAIN}`;
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-  await teamPage.enterEmailToInviteMembersPopUp('testeditor@test.com');
+  await teamPage.enterEmailToInviteMembersPopUp(email);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
   await teamPage.isInvitationRecordDisplayed([
-    { email: 'testeditor@test.com', role: 'Editor', status: 'Pending' },
+    { email: email, role: 'Editor', status: 'Pending' },
   ]);
 
   await teamPage.deleteTeam(team);
@@ -79,6 +74,7 @@ mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () =>
 
 mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => {
   const team = random().concat('autotest');
+  const email = `${process.env.GMAIL_NAME}+admin+${Date.now()}-${random()}${process.env.GMAIL_DOMAIN}`;
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
@@ -87,13 +83,13 @@ mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => 
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
 
   await teamPage.selectInvitationRoleInPopUp('Admin');
-  await teamPage.enterEmailToInviteMembersPopUp('testadmin@test.com');
+  await teamPage.enterEmailToInviteMembersPopUp(email);
 
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
   await teamPage.isInvitationRecordDisplayed([
-    { email: 'testadmin@test.com', role: 'Admin', status: 'Pending' },
+    { email: email, role: 'Admin', status: 'Pending' },
   ]);
 
   await teamPage.deleteTeam(team);
@@ -270,9 +266,9 @@ mainTest.describe(
 
 mainTest(qase(1176, 'Resend multiple invitations via owner'), async () => {
   const team = random().concat('autotest');
-  const email = 'testeditor@test.com';
-  const email2 = 'testeditor2@test.com';
-  const email3 = 'testeditor3@test.com';
+  const email = `${process.env.GMAIL_NAME}+editor1+${Date.now()}-${random()}${process.env.GMAIL_DOMAIN}`;
+  const email2 = `${process.env.GMAIL_NAME}+editor2+${Date.now()}-${random()}${process.env.GMAIL_DOMAIN}`;
+  const email3 = `${process.env.GMAIL_NAME}+editor3+${Date.now()}-${random()}${process.env.GMAIL_DOMAIN}`;
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
@@ -294,9 +290,9 @@ mainTest(qase(1176, 'Resend multiple invitations via owner'), async () => {
 
 mainTest(qase(1178, 'Delete multiple invitations via owner'), async () => {
   const team = random().concat('autotest');
-  const email = 'testeditor@test.com';
-  const email2 = 'testeditor2@test.com';
-  const email3 = 'testeditor3@test.com';
+  const email = `${process.env.GMAIL_NAME}+editor+${Date.now()}-${random()}${process.env.GMAIL_DOMAIN}`;
+  const email2 = `${process.env.GMAIL_NAME}+editor2+${Date.now()}-${random()}${process.env.GMAIL_DOMAIN}`;
+  const email3 = `${process.env.GMAIL_NAME}+editor3+${Date.now()}-${random()}${process.env.GMAIL_DOMAIN}`;
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
@@ -318,21 +314,22 @@ mainTest(qase(1178, 'Delete multiple invitations via owner'), async () => {
 
 mainTest(qase(1181, 'Change role in invitation via owner'), async () => {
   const team = random().concat('autotest');
+  const email = `${process.env.GMAIL_NAME}+role+${Date.now()}-${random()}${process.env.GMAIL_DOMAIN}`;
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-  await teamPage.enterEmailToInviteMembersPopUp('testrole@test.com');
+  await teamPage.enterEmailToInviteMembersPopUp(email);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
   await teamPage.isInvitationRecordDisplayed([
-    { email: 'testrole@test.com', role: 'Editor', status: 'Pending' },
+    { email: email, role: 'Editor', status: 'Pending' },
   ]);
   await teamPage.selectInvitationRoleInInvitationRecord('Admin');
   await teamPage.isInvitationRecordDisplayed([
-    { email: 'testrole@test.com', role: 'Admin', status: 'Pending' },
+    { email: email, role: 'Admin', status: 'Pending' },
   ]);
   await teamPage.deleteTeam(team);
 });
