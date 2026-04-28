@@ -5,19 +5,20 @@ import { LoginPage } from '@pages/login-page';
 import { updateTestResults } from 'helpers/saveTestResults';
 
 let loginPage: LoginPage;
+let dashboardPage: DashboardPage;
 
 test.beforeEach('Go to login and accept cookie', async ({ page }) => {
   loginPage = new LoginPage(page);
+  dashboardPage = new DashboardPage(page);
 
   await loginPage.goto();
   await loginPage.acceptCookie();
 });
 
-test(qase(35, 'Login with an email address'), async ({ page }) => {
+test(qase(35, 'Login with an email address'), async () => {
   await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
   await loginPage.enterPwd(process.env.LOGIN_PWD);
   await loginPage.clickLoginButton();
-  const dashboardPage = new DashboardPage(page);
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
@@ -48,12 +49,11 @@ test(
     2639,
     'Attempt to log in with a Custom SSO email using standard Penpot login form',
   ),
-  async ({ page }) => {
+  async () => {
     await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
     await loginPage.enterEmail(process.env.SSO_LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.SSO_LOGIN_PWD);
     await loginPage.clickLoginButton();
-    const dashboardPage = new DashboardPage(page);
     await dashboardPage.isHeaderDisplayed('Projects');
   },
 );

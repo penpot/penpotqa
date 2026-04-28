@@ -45,7 +45,10 @@ mainTest.afterEach(async () => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
+  let inspectPanelPage: InspectPanelPage;
+
+  mainTest.beforeEach(async ({ page }) => {
+    inspectPanelPage = new InspectPanelPage(page);
     await mainPage.createDefaultRectangleByCoordinates(400, 500);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -97,9 +100,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1618], 'Annotation on Inspect tab'), async ({ page }) => {
-    const inspectPanelPage = new InspectPanelPage(page);
-
+  mainTest(qase([1618], 'Annotation on Inspect tab'), async () => {
     await designPanelPage.createAnnotationRightClick();
     await designPanelPage.addAnnotationForComponent(annotation);
     await designPanelPage.waitForChangeIsSaved();
@@ -112,9 +113,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase([1428], 'Check annotation applies for copies and inspect tab'),
-    async ({ page }) => {
-      const inspectPanelPage = new InspectPanelPage(page);
-
+    async () => {
       await mainPage.duplicateLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
 

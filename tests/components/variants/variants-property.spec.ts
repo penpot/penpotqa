@@ -34,10 +34,7 @@ mainTest.beforeEach(async ({ page }) => {
   await teamPage.createTeam(teamName);
 });
 
-mainTest.afterEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
-
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });

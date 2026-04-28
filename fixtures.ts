@@ -1,19 +1,19 @@
-const base = require('@playwright/test');
-const { LoginPage } = require('./pages/login-page.js');
-const { DashboardPage } = require('./pages/dashboard/dashboard-page.js');
-const { RegisterPage } = require('./pages/register-page');
-const { updateTestResults } = require('./helpers/saveTestResults');
-const { random } = require('./helpers/string-generator');
-const { waitMessage } = require('./helpers/gmail');
+import { test } from '@playwright/test';
+import { LoginPage } from '@pages/login-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { RegisterPage } from '@pages/register-page';
+import { updateTestResults } from './helpers/saveTestResults';
+import { random } from './helpers/string-generator';
+import { waitMessage } from './helpers/gmail';
 
-export const mainTest = base.test.extend({
+export const mainTest = test.extend({
   page: async ({ page }, use, testInfo) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     await loginPage.goto();
     await loginPage.acceptCookie();
-    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL!);
+    await loginPage.enterPwd(process.env.LOGIN_PWD!);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
     await dashboardPage.isHeaderDisplayed('Projects');
@@ -24,36 +24,12 @@ export const mainTest = base.test.extend({
   },
 });
 
-// TODO: Remove these JSDoc type annotations once this file is migrated to TypeScript.
+type RegisterTestFixtures = {
+  name: string;
+  email: string;
+};
 
-/** These annotations are necessary to provide type information for TypeScript test files
- * that import registerTest, allowing them to use fixtures (name, email, page) without
- * TypeScript implicit 'any' errors.
- **/
-
-/**
- * @typedef {Object} RegisterTestFixtures
- * @property {string} name - Generated random name for the test
- * @property {string} email - Generated email for registration
- * @property {import('@playwright/test').Page} page - Playwright page object
- */
-
-/**
- * @typedef {import('@playwright/test').PlaywrightTestArgs &
- *   import('@playwright/test').PlaywrightTestOptions &
- *   RegisterTestFixtures} RegisterTestArgs
- */
-
-/**
- * @typedef {import('@playwright/test').PlaywrightWorkerArgs &
- *   import('@playwright/test').PlaywrightWorkerOptions} RegisterWorkerArgs
- */
-
-/**
- * @type {import('@playwright/test').TestType<RegisterTestArgs, RegisterWorkerArgs>}
- */
-
-export const registerTest = base.test.extend({
+export const registerTest = test.extend<RegisterTestFixtures>({
   name: async ({}, use) => {
     const name = random().concat('autotest');
     await use(name);
@@ -70,17 +46,31 @@ export const registerTest = base.test.extend({
     await loginPage.goto();
     await loginPage.acceptCookie();
     await loginPage.clickOnCreateAccount();
-    await registerPage.registerAccount(name, email, process.env.LOGIN_PWD);
+    await registerPage.registerAccount(name, email, process.env.LOGIN_PWD!);
     await registerPage.isRegisterEmailCorrect(email);
     const invite = await waitMessage(page, email, 40);
-    await page.goto(invite.inviteUrl);
+    await page.goto(invite!.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
     await use(page);
     await updateTestResults(testInfo.status, testInfo.retry);
   },
 });
 
-const performanceTest = base.test.extend({
+type WorkingShapes = {
+  pageId: string;
+  singleId: string;
+  multipleFrameTitleId: string;
+  multipleIds: string[];
+  frameTitleId: string;
+  frameId: string;
+};
+
+type PerformanceTestOptions = {
+  workingFile: string;
+  workingShapes: WorkingShapes;
+};
+
+export const performanceTest = test.extend<PerformanceTestOptions>({
   workingFile: ['documents/Penpot - Design System v2.0.penpot', { option: true }],
   workingShapes: [
     {
@@ -158,8 +148,8 @@ const performanceTest = base.test.extend({
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.acceptCookie();
-    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL!);
+    await loginPage.enterPwd(process.env.LOGIN_PWD!);
     await loginPage.clickLoginButton();
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.waitForPageLoaded();
@@ -170,7 +160,3 @@ const performanceTest = base.test.extend({
     await use(page);
   },
 });
-
-exports.mainTest = mainTest;
-exports.registerTest = registerTest;
-exports.performanceTest = performanceTest;
