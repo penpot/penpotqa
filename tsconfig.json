@@ -28,6 +28,6 @@
     /* Source Maps (optional, for debugging) */
     "sourceMap": true
   },
-  "include": ["tests/**/*", "playwright.config.js", "helpers/**/*"],
+  "include": ["tests/**/*", "playwright.config.ts", "helpers/**/*"],
   "exclude": ["node_modules", "dist"]
 }
