@@ -9,18 +9,20 @@ import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 
 const teamName = random().concat('autotest');
 
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+
 mainTest.beforeEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const dashboardPage: DashboardPage = new DashboardPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
-mainTest.afterEach(async ({ page }) => {
-  const mainPage: MainPage = new MainPage(page);
-  const teamPage: TeamPage = new TeamPage(page);
-
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
@@ -50,94 +52,141 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(2374, 'Rectangle: Check active tokens in token list'), async () => {
-    await tokensPage.createDefaultRectangleByCoordinates(100, 200);
-    await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
-    await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
-    await tokensPage.tokensComp.isTokenDisabledWithName('STROKE-WIDTH-10', false);
+    await mainTest.step(
+      'Create rectangle and verify active/disabled tokens',
+      async () => {
+        await tokensPage.createDefaultRectangleByCoordinates(100, 200);
+        await tokensPage.tokensComp.isTokenDisabledWithName(
+          'BORDER-RADIUS-1',
+          false,
+        );
+        await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName(
+          'STROKE-WIDTH-10',
+          false,
+        );
+      },
+    );
 
-    await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
-    await layersPanelPage.openLayersTab();
-    await mainPage.clickOnLayerOnCanvas();
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
+    await mainTest.step(
+      'Verify Fill and Stroke menu items are visible for COLOR-1',
+      async () => {
+        await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
+        await layersPanelPage.openLayersTab();
+        await mainPage.clickOnLayerOnCanvas();
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
+      },
+    );
   });
 
   mainTest(qase(2382, 'Text layer: Check active tokens in token list'), async () => {
-    await tokensPage.createDefaultTextLayerByCoordinates(100, 200);
-    await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', true);
-    await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
-    await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
-    await tokensPage.tokensComp.isTokenDisabledWithName('STROKE-WIDTH-10', false);
+    await mainTest.step(
+      'Create text layer and verify active/disabled tokens',
+      async () => {
+        await tokensPage.createDefaultTextLayerByCoordinates(100, 200);
+        await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName(
+          'STROKE-WIDTH-10',
+          false,
+        );
+      },
+    );
 
-    await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
-    await layersPanelPage.openLayersTab();
-    await mainPage.clickOnLayerOnCanvas();
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
+    await mainTest.step(
+      'Verify Fill and Stroke menu items are visible for COLOR-1',
+      async () => {
+        await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
+        await layersPanelPage.openLayersTab();
+        await mainPage.clickOnLayerOnCanvas();
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
+      },
+    );
   });
 
   mainTest(
     qase(2383, 'Board (in root): Check active tokens in token list'),
     async () => {
-      await tokensPage.createDefaultBoardByCoordinates(100, 200);
-      await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
-      await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
-      await tokensPage.tokensComp.isTokenDisabledWithName('STROKE-WIDTH-10', false);
+      await mainTest.step(
+        'Create board and verify active/disabled tokens',
+        async () => {
+          await tokensPage.createDefaultBoardByCoordinates(100, 200);
+          await tokensPage.tokensComp.isTokenDisabledWithName(
+            'BORDER-RADIUS-1',
+            false,
+          );
+          await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
+          await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
+          await tokensPage.tokensComp.isTokenDisabledWithName(
+            'STROKE-WIDTH-10',
+            false,
+          );
+        },
+      );
     },
   );
 
-  mainTest(
-    qase(2385, 'Path: Check active tokens in token list'),
-    async ({ page }) => {
-      const mainPage: MainPage = new MainPage(page);
-      const tokensPage: TokensPage = new TokensPage(page);
+  mainTest(qase(2385, 'Path: Check active tokens in token list'), async () => {
+    await mainTest.step(
+      'Create path and verify active/disabled tokens',
+      async () => {
+        await mainPage.createDefaultOpenPath();
+        await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName(
+          'STROKE-WIDTH-10',
+          false,
+        );
+      },
+    );
+  });
 
-      await mainPage.createDefaultOpenPath();
-      await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', true);
-      await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
-      await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
-      await tokensPage.tokensComp.isTokenDisabledWithName('STROKE-WIDTH-10', false);
-    },
-  );
-
-  mainTest(
-    qase(2386, 'Image: Check active tokens in token list'),
-    async ({ page }) => {
-      const mainPage: MainPage = new MainPage(page);
-      const tokensPage: TokensPage = new TokensPage(page);
-
-      await tokensPage.uploadImage('images/images.png');
-      await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
-      await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
-      await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
-      await tokensPage.tokensComp.isTokenDisabledWithName('STROKE-WIDTH-10', false);
-    },
-  );
+  mainTest(qase(2386, 'Image: Check active tokens in token list'), async () => {
+    await mainTest.step(
+      'Upload image and verify active/disabled tokens',
+      async () => {
+        await tokensPage.uploadImage('images/images.png');
+        await tokensPage.tokensComp.isTokenDisabledWithName(
+          'BORDER-RADIUS-1',
+          false,
+        );
+        await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName(
+          'STROKE-WIDTH-10',
+          false,
+        );
+      },
+    );
+  });
 });

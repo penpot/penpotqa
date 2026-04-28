@@ -14,10 +14,14 @@ import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 
 const teamName = random().concat('autotest');
 
+let mainPage: MainPage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+
 mainTest.beforeEach(async ({ page, browserName }) => {
-  let mainPage = new MainPage(page);
-  let teamPage = new TeamPage(page);
-  let dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
 
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
@@ -29,9 +33,7 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async ({ page }) => {
-  let mainPage = new MainPage(page);
-  let teamPage = new TeamPage(page);
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });

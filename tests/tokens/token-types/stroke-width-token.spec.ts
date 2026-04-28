@@ -12,10 +12,18 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+let tokensPage: TokensPage;
+let designPanelPage: DesignPanelPage;
+
 mainTest.beforeEach(async ({ page, browserName }) => {
-  let teamPage: TeamPage = new TeamPage(page);
-  let dashboardPage: DashboardPage = new DashboardPage(page);
-  let mainPage: MainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  tokensPage = new TokensPage(page);
+  designPanelPage = new DesignPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -26,40 +34,51 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const mainPage: MainPage = new MainPage(page);
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
   qase(2215, 'Apply default "stroke width" token to a path (by left click)'),
-  async ({ page }) => {
-    const mainPage: MainPage = new MainPage(page);
-    const tokensPage: TokensPage = new TokensPage(page);
-    const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
-
+  async () => {
     const strokeToken: MainToken<TokenClass> = {
       class: TokenClass.StrokeWidth,
       name: 'stroke-width',
       value: '5.5',
     };
 
-    await mainPage.createDefaultOpenPath();
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(strokeToken);
-    await tokensPage.tokensComp.isTokenVisibleWithName(strokeToken.name);
-    await tokensPage.tokensComp.clickOnTokenWithName(strokeToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(strokeToken.name);
-    await designPanelPage.checkStrokeWidth(strokeToken.value);
-    await expect(mainPage.viewport).toHaveScreenshot('path-stroke-width-5-5.png', {
-      mask: mainPage.maskViewport(),
+    await mainTest.step('Create path and stroke width token', async () => {
+      await mainPage.createDefaultOpenPath();
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(strokeToken);
+      await tokensPage.tokensComp.isTokenVisibleWithName(strokeToken.name);
     });
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      strokeToken.name,
-      'Stroke Width',
+
+    await mainTest.step(
+      `Apply "${strokeToken.name}" token and verify stroke width`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(strokeToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(strokeToken.name);
+        await designPanelPage.checkStrokeWidth(strokeToken.value);
+      },
+    );
+
+    await mainTest.step(
+      'Verify screenshot and Stroke Width menu item is selected',
+      async () => {
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'path-stroke-width-5-5.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          strokeToken.name,
+          'Stroke Width',
+        );
+      },
     );
   },
 );

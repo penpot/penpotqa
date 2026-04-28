@@ -16,10 +16,22 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 const teamName = random().concat('autotest');
 const sampleData = new SampleData();
 
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+let tokensPage: TokensPage;
+let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
+let colorPalettePage: ColorPalettePage;
+
 mainTest.beforeEach(async ({ page, browserName }) => {
-  let teamPage: TeamPage = new TeamPage(page);
-  let dashboardPage: DashboardPage = new DashboardPage(page);
-  let mainPage: MainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  tokensPage = new TokensPage(page);
+  designPanelPage = new DesignPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
+  colorPalettePage = new ColorPalettePage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -30,9 +42,7 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const mainPage: MainPage = new MainPage(page);
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
@@ -65,37 +75,70 @@ mainTest.describe(() => {
   });
 
   mainTest(qase(2358, 'Create a font size token'), async () => {
-    await tokensPage.tokensComp.isTokenVisibleWithName(fontSizeToken.name);
+    await mainTest.step(
+      `Verify "${fontSizeToken.name}" token is visible`,
+      async () => {
+        await tokensPage.tokensComp.isTokenVisibleWithName(fontSizeToken.name);
+      },
+    );
   });
 
   mainTest(qase(2359, 'Apply a font size token'), async () => {
-    await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
-    await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('text-font-size-60.png', {
-      mask: mainPage.maskViewport(),
+    await mainTest.step(
+      `Apply "${fontSizeToken.name}" token and verify it is applied`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
+        await mainPage.waitForResizeHandlerVisible();
+      },
+    );
+
+    await mainTest.step('Verify screenshot matches', async () => {
+      await expect(mainPage.viewport).toHaveScreenshot('text-font-size-60.png', {
+        mask: mainPage.maskViewport(),
+      });
     });
   });
 
   mainTest(qase(2360, 'Detachment font size token'), async () => {
-    await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
-    await mainPage.createDefaultTextLayerByCoordinates(100, 600);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
-    await mainPage.clickViewportByCoordinates(120, 220);
-    await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name, false);
-    await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('texts-size-60-120.png', {
-      mask: mainPage.maskViewport(),
-    });
+    await mainTest.step(
+      `Apply "${fontSizeToken.name}" to first text layer and create second text layer`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
+        await mainPage.createDefaultTextLayerByCoordinates(100, 600);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
+      },
+    );
+
+    await mainTest.step(
+      'Detach token from first layer by re-clicking it',
+      async () => {
+        await mainPage.clickViewportByCoordinates(120, 220);
+        await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(
+          fontSizeToken.name,
+          false,
+        );
+      },
+    );
+
+    await mainTest.step(
+      `Edit token to "${updatedTokenData.value}" and verify screenshot shows both sizes`,
+      async () => {
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
+        await mainPage.waitForChangeIsSaved();
+        await expect(mainPage.viewport).toHaveScreenshot('texts-size-60-120.png', {
+          mask: mainPage.maskViewport(),
+        });
+      },
+    );
   });
 });
 
@@ -104,13 +147,7 @@ mainTest(
     2363,
     'Propagation of (style) changes from a (contained) text component to copies (overriding style by using tokens)',
   ),
-  async ({ page, browserName }) => {
-    const mainPage: MainPage = new MainPage(page);
-    const tokensPage: TokensPage = new TokensPage(page);
-    const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
-    const layersPanelPage: LayersPanelPage = new LayersPanelPage(page);
-    const colorPalettePage: ColorPalettePage = new ColorPalettePage(page);
-
+  async ({ browserName }) => {
     const colorToken1: MainToken<TokenClass> = {
       class: TokenClass.Color,
       name: 'color1',
@@ -127,54 +164,75 @@ mainTest(
       value: sampleData.color.greenHexCode,
     };
 
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(colorToken1);
-    await tokensPage.tokensComp.isTokenVisibleWithName(colorToken1.name);
-    await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken2);
-    await tokensPage.tokensComp.isTokenVisibleWithName(colorToken2.name);
+    await mainTest.step(
+      'Create color tokens and apply first token to text layer',
+      async () => {
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(colorToken1);
+        await tokensPage.tokensComp.isTokenVisibleWithName(colorToken1.name);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken2);
+        await tokensPage.tokensComp.isTokenVisibleWithName(colorToken2.name);
+        await mainPage.createDefaultTextLayerByCoordinates(100, 200);
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.waitForResizeHandlerVisible();
+        await tokensPage.tokensComp.clickOnTokenWithName(colorToken1.name);
+        await tokensPage.tokensComp.isTokenAppliedWithName(colorToken1.name);
+      },
+    );
 
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.waitForResizeHandlerVisible();
-    await tokensPage.tokensComp.clickOnTokenWithName(colorToken1.name);
-    await tokensPage.tokensComp.isTokenAppliedWithName(colorToken1.name);
-    await layersPanelPage.openLayersTab();
-    await mainPage.pressFlexLayoutShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.waitForResizeHandlerVisible();
-    await layersPanelPage.createComponentViaShortcut(browserName, true);
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.copyLayerViaRightClick();
-    await mainPage.pasteLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
+    await mainTest.step(
+      'Create main component with flex layout and duplicate it',
+      async () => {
+        await layersPanelPage.openLayersTab();
+        await mainPage.pressFlexLayoutShortcut();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.waitForResizeHandlerVisible();
+        await layersPanelPage.createComponentViaShortcut(browserName, true);
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.copyLayerViaRightClick();
+        await mainPage.pasteLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-    await layersPanelPage.openLayersTab();
-    await layersPanelPage.selectCopyComponentChildLayer();
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.clickOnTokenWithName(colorToken2.name);
-    await tokensPage.tokensComp.isTokenAppliedWithName(colorToken2.name);
-    await layersPanelPage.openLayersTab();
-    await layersPanelPage.clickMainComponentOnLayersTab();
-    await layersPanelPage.selectMainComponentChildLayer();
+    await mainTest.step(
+      'Override color token in copy component child layer',
+      async () => {
+        await layersPanelPage.openLayersTab();
+        await layersPanelPage.selectCopyComponentChildLayer();
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.clickOnTokenWithName(colorToken2.name);
+        await tokensPage.tokensComp.isTokenAppliedWithName(colorToken2.name);
+      },
+    );
 
-    await designPanelPage.clickFillColorIcon();
-    await colorPalettePage.clickOnColorButton();
-    await colorPalettePage.setHex(colorToken3.value);
-    await layersPanelPage.selectMainComponentChildLayer();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet(colorToken3.value);
+    await mainTest.step(
+      'Change color manually in main component child layer',
+      async () => {
+        await layersPanelPage.openLayersTab();
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await layersPanelPage.selectMainComponentChildLayer();
+        await designPanelPage.clickFillColorIcon();
+        await colorPalettePage.clickOnColorButton();
+        await colorPalettePage.setHex(colorToken3.value);
+        await layersPanelPage.selectMainComponentChildLayer();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isFillHexCodeSet(colorToken3.value);
+      },
+    );
 
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.isTokenAppliedWithName(colorToken1.name, false);
-    await layersPanelPage.openLayersTab();
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await layersPanelPage.selectCopyComponentChildLayer();
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.isTokenAppliedWithName(colorToken2.name, true);
-
-    await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('2-texts-color.png', {
-      mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+    await mainTest.step('Verify token states and screenshot', async () => {
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.isTokenAppliedWithName(colorToken1.name, false);
+      await layersPanelPage.openLayersTab();
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await layersPanelPage.selectCopyComponentChildLayer();
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.isTokenAppliedWithName(colorToken2.name, true);
+      await mainPage.waitForResizeHandlerVisible();
+      await expect(mainPage.viewport).toHaveScreenshot('2-texts-color.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
     });
   },
 );
