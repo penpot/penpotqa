@@ -211,6 +211,27 @@ mainTest(
         await mainPage.isColorsPaletteNotDisplayed();
       },
     );
+
+    await mainTest.step('Create rectangle', async () => {
+      await mainPage.clickCreateRectangleButton();
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+    });
+
+    await mainTest.step(
+      'Open color picker from fill section and type valid color code #FF0000',
+      async () => {
+        await designPanelPage.clickFillColorIcon();
+        await colorPalettePage.isColorPalettePopUpOpened();
+        await colorPalettePage.setHex('#FF0000');
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
+
+    await mainTest.step('Verify rectangle fill color changed to red', async () => {
+      await designPanelPage.isFillHexCodeSet('#FF0000');
+    });
   },
 );
 
