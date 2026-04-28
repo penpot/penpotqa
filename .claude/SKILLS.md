@@ -48,16 +48,24 @@ If the spec imports from a local fixture file (e.g. `your-account-fixture.js`), 
 import { mainTest } from 'fixtures';
 import { ProfilePage } from '@pages/profile-page';
 
-type AccountFixtures = {
+type YourAccountFixtures = {
   profilePage: ProfilePage;
 };
 
-export const profileTest = mainTest.extend<AccountFixtures>({
+export const profileTest = mainTest.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
     // setup...
     await use(profilePage);
   },
+});
+```
+
+Because `profileTest` extends `mainTest`, it automatically inherits all of `mainTest`'s fixtures (e.g. `page`). You only need to declare the **new** fixtures in the generic type. Both base and custom fixtures are available in every test:
+
+```ts
+profileTest(qase(205, 'Logout from Account'), async ({ page, profilePage }) => {
+  // page comes from mainTest, profilePage comes from YourAccountFixtures
 });
 ```
 
