@@ -12,10 +12,18 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 const teamName = random().concat('autotest');
 
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+let tokensPage: TokensPage;
+let designPanelPage: DesignPanelPage;
+
 mainTest.beforeEach(async ({ page, browserName }) => {
-  let teamPage: TeamPage = new TeamPage(page);
-  let dashboardPage: DashboardPage = new DashboardPage(page);
-  let mainPage: MainPage = new MainPage(page);
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
+  tokensPage = new TokensPage(page);
+  designPanelPage = new DesignPanelPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -26,46 +34,56 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async ({ page }) => {
-  const teamPage: TeamPage = new TeamPage(page);
-  const mainPage: MainPage = new MainPage(page);
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
   qase(2202, 'Apply default "all gaps" token to a grid board (by left click)'),
-  async ({ page }) => {
-    const mainPage: MainPage = new MainPage(page);
-    const tokensPage: TokensPage = new TokensPage(page);
-    const designPanelPage: DesignPanelPage = new DesignPanelPage(page);
-
+  async () => {
     const spacingToken: MainToken<TokenClass> = {
       class: TokenClass.Spacing,
       name: 'spacing',
       value: '-20',
     };
 
-    await mainPage.createDefaultBoardByCoordinates(320, 210);
-    await mainPage.addGridLayoutViaRightClick();
-    await designPanelPage.isLayoutRemoveButtonExists();
-    await mainPage.clickViewportOnce();
-    await mainPage.clickCreatedBoardTitleOnCanvas();
-    await tokensPage.clickTokensTab();
-    await tokensPage.tokensComp.createTokenViaAddButtonAndSave(spacingToken);
+    await mainTest.step(
+      'Create board with grid layout and spacing token',
+      async () => {
+        await mainPage.createDefaultBoardByCoordinates(320, 210);
+        await mainPage.addGridLayoutViaRightClick();
+        await designPanelPage.isLayoutRemoveButtonExists();
+        await mainPage.clickViewportOnce();
+        await mainPage.clickCreatedBoardTitleOnCanvas();
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(spacingToken);
+        await tokensPage.tokensComp.isTokenVisibleWithName(spacingToken.name);
+      },
+    );
 
-    await tokensPage.tokensComp.isTokenVisibleWithName(spacingToken.name);
-    await tokensPage.tokensComp.clickOnTokenWithName(spacingToken.name);
-    await mainPage.waitForChangeIsSaved();
-    await tokensPage.tokensComp.isTokenAppliedWithName(spacingToken.name);
-    await designPanelPage.checkRowGap(spacingToken.value);
-    await designPanelPage.checkColumnGap(spacingToken.value);
-    await expect(mainPage.viewport).toHaveScreenshot('board-spacing-20.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await tokensPage.tokensComp.isAllMenuItemWithSectionNameSelected(
-      spacingToken.name,
-      'Gaps',
+    await mainTest.step(
+      `Apply "${spacingToken.name}" token and verify gap values`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(spacingToken.name);
+        await mainPage.waitForChangeIsSaved();
+        await tokensPage.tokensComp.isTokenAppliedWithName(spacingToken.name);
+        await designPanelPage.checkRowGap(spacingToken.value);
+        await designPanelPage.checkColumnGap(spacingToken.value);
+      },
+    );
+
+    await mainTest.step(
+      'Verify screenshot and Gaps menu items are selected',
+      async () => {
+        await expect(mainPage.viewport).toHaveScreenshot('board-spacing-20.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await tokensPage.tokensComp.isAllMenuItemWithSectionNameSelected(
+          spacingToken.name,
+          'Gaps',
+        );
+      },
     );
   },
 );

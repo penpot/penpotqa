@@ -6,8 +6,6 @@ import { RegisterPage } from 'pages/register-page';
 import { ProfilePage } from 'pages/profile-page';
 import { DashboardPage } from 'pages/dashboard/dashboard-page';
 import { TeamPage } from 'pages/dashboard/team-page';
-import { MainPage } from 'pages/workspace/main-page';
-import { LayersPanelPage } from 'pages/workspace/layers-panel-page';
 import { random } from 'helpers/string-generator';
 import {
   getRegisterMessage,
@@ -15,23 +13,20 @@ import {
   waitMessage,
   waitSecondMessage,
 } from 'helpers/gmail';
+import { createInviteEmail } from 'helpers/teams/invite-email';
 
 let teamPage: TeamPage;
 let loginPage: LoginPage;
 let registerPage: RegisterPage;
 let dashboardPage: DashboardPage;
-let layersPanelPage: LayersPanelPage;
 let profilePage: ProfilePage;
-let mainPage: MainPage;
 
 mainTest.beforeEach(async ({ page }: { page: Page }) => {
   teamPage = new TeamPage(page);
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
   dashboardPage = new DashboardPage(page);
-  layersPanelPage = new LayersPanelPage(page);
   profilePage = new ProfilePage(page);
-  mainPage = new MainPage(page);
 });
 
 mainTest(qase(1164, 'Open the form via Invitations tab'), async () => {
@@ -60,18 +55,19 @@ registerTest(
 
 mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () => {
   const team = random().concat('autotest');
+  const email = createInviteEmail('editor');
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-  await teamPage.enterEmailToInviteMembersPopUp('testeditor@test.com');
+  await teamPage.enterEmailToInviteMembersPopUp(email);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
   await teamPage.isInvitationRecordDisplayed([
-    { email: 'testeditor@test.com', role: 'Editor', status: 'Pending' },
+    { email: email, role: 'Editor', status: 'Pending' },
   ]);
 
   await teamPage.deleteTeam(team);
@@ -79,6 +75,7 @@ mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () =>
 
 mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => {
   const team = random().concat('autotest');
+  const email = createInviteEmail('admin');
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
@@ -87,13 +84,13 @@ mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => 
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
 
   await teamPage.selectInvitationRoleInPopUp('Admin');
-  await teamPage.enterEmailToInviteMembersPopUp('testadmin@test.com');
+  await teamPage.enterEmailToInviteMembersPopUp(email);
 
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
   await teamPage.isInvitationRecordDisplayed([
-    { email: 'testadmin@test.com', role: 'Admin', status: 'Pending' },
+    { email: email, role: 'Admin', status: 'Pending' },
   ]);
 
   await teamPage.deleteTeam(team);
@@ -187,8 +184,9 @@ mainTest.describe(
     mainTest(
       qase(1168, 'Invite via owner (multiple invitations, editor)'),
       async ({ page }) => {
-        const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
-        const secondEmail = `${process.env.GMAIL_NAME}+${secondEditor}${process.env.GMAIL_DOMAIN}`;
+        const firstEmail = createInviteEmail('editor', firstEditor);
+        const secondEmail = createInviteEmail('editor', secondEditor);
+
         await teamPage.createTeam(team);
         await teamPage.isTeamSelected(team);
         await teamPage.openInvitationsPageViaOptionsMenu();
@@ -270,69 +268,70 @@ mainTest.describe(
 
 mainTest(qase(1176, 'Resend multiple invitations via owner'), async () => {
   const team = random().concat('autotest');
-  const email = 'testeditor@test.com';
-  const email2 = 'testeditor2@test.com';
-  const email3 = 'testeditor3@test.com';
+  const email1 = createInviteEmail('editor', 'editor1');
+  const email2 = createInviteEmail('editor', 'editor2');
+  const email3 = createInviteEmail('editor', 'editor3');
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-  await teamPage.enterEmailToInviteMembersPopUp([email, email2, email3]);
+  await teamPage.enterEmailToInviteMembersPopUp([email1, email2, email3]);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
   await teamPage.isInvitationRecordDisplayed([
-    { email: email, role: 'Editor', status: 'Pending' },
+    { email: email1, role: 'Editor', status: 'Pending' },
     { email: email2, role: 'Editor', status: 'Pending' },
     { email: email3, role: 'Editor', status: 'Pending' },
   ]);
-  await teamPage.resendInvitation([email, email2, email3]);
+  await teamPage.resendInvitation([email1, email2, email3]);
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
   await teamPage.deleteTeam(team);
 });
 
 mainTest(qase(1178, 'Delete multiple invitations via owner'), async () => {
   const team = random().concat('autotest');
-  const email = 'testeditor@test.com';
-  const email2 = 'testeditor2@test.com';
-  const email3 = 'testeditor3@test.com';
+  const email1 = createInviteEmail('editor', 'editor1');
+  const email2 = createInviteEmail('editor', 'editor2');
+  const email3 = createInviteEmail('editor', 'editor3');
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-  await teamPage.enterEmailToInviteMembersPopUp([email, email2, email3]);
+  await teamPage.enterEmailToInviteMembersPopUp([email1, email2, email3]);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
   await teamPage.isInvitationRecordDisplayed([
-    { email: email, role: 'Editor', status: 'Pending' },
+    { email: email1, role: 'Editor', status: 'Pending' },
     { email: email2, role: 'Editor', status: 'Pending' },
     { email: email3, role: 'Editor', status: 'Pending' },
   ]);
-  await teamPage.deleteInvitation([email, email2, email3]);
-  await teamPage.isInvitationRecordRemoved([email, email2, email3]);
+  await teamPage.deleteInvitation([email1, email2, email3]);
+  await teamPage.isInvitationRecordRemoved([email1, email2, email3]);
   await teamPage.deleteTeam(team);
 });
 
 mainTest(qase(1181, 'Change role in invitation via owner'), async () => {
   const team = random().concat('autotest');
+  const email = createInviteEmail('editor', 'role');
 
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
-  await teamPage.enterEmailToInviteMembersPopUp('testrole@test.com');
+  await teamPage.enterEmailToInviteMembersPopUp(email);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
   await teamPage.isInvitationRecordDisplayed([
-    { email: 'testrole@test.com', role: 'Editor', status: 'Pending' },
+    { email: email, role: 'Editor', status: 'Pending' },
   ]);
   await teamPage.selectInvitationRoleInInvitationRecord('Admin');
   await teamPage.isInvitationRecordDisplayed([
-    { email: 'testrole@test.com', role: 'Admin', status: 'Pending' },
+    { email: email, role: 'Admin', status: 'Pending' },
   ]);
   await teamPage.deleteTeam(team);
 });
