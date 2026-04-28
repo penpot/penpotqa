@@ -1,4 +1,4 @@
-import { expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { mainTest, registerTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { LoginPage } from 'pages/login-page';
