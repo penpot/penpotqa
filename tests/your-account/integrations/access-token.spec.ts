@@ -1,5 +1,5 @@
 import { ProfilePage } from '@pages/profile-page';
-import { integrationsTest } from './your-account-fixture';
+import { integrationsTest } from '../your-account-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 integrationsTest(
