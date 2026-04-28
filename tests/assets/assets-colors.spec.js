@@ -8,8 +8,9 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { qase } = require('playwright-qase-reporter/playwright');
+const { createTeamName } = require('../../helpers/teams/create-team-name');
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 
 let mainPage,
   dashboardPage,
