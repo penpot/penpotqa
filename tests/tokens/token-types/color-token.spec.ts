@@ -36,9 +36,7 @@ mainTest.beforeEach(
   },
 );
 
-mainTest.afterEach(async ({ page }) => {
-  mainPage = new MainPage(page);
-  teamPage = new TeamPage(page);
+mainTest.afterEach(async () => {
   await mainPage.backToDashboardFromFileEditor();
   await teamPage.deleteTeam(teamName);
 });
