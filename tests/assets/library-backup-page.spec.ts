@@ -1,12 +1,12 @@
-import { mainTest } from 'fixtures';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { MainPage } from '@pages/workspace/main-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { createTeamName } from '../../helpers/teams/create-team-name';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { ColorPalettePage } from '@pages/workspace/color-palette-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
+import { MainPage } from '@pages/workspace/main-page';
+import { mainTest } from 'fixtures';
+import { TeamPage } from '@pages/dashboard/team-page';
 
 const teamName = createTeamName();
 

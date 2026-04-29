@@ -1,10 +1,10 @@
-import { mainTest } from 'fixtures';
+import { createTeamName } from '../../helpers/teams/create-team-name';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { expect } from '@playwright/test';
 import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { mainTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { createTeamName } from 'helpers/teams/create-team-name';
+import { TeamPage } from '@pages/dashboard/team-page';
 
 const teamName = createTeamName();
 
