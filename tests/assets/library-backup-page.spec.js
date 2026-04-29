@@ -2,7 +2,6 @@ const { mainTest } = require('../../fixtures');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { MainPage } = require('../../pages/workspace/main-page');
-const { random } = require('../../helpers/string-generator');
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
