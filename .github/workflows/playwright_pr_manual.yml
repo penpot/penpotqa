@@ -28,6 +28,7 @@ on:
           - tests/components/variants
           - tests/composition
           - tests/composition/text
+          - tests/composition/image
           - tests/dashboard
           - tests/dashboard/teams
           - tests/dashboard/trash
