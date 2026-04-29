@@ -1,6 +1,6 @@
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
-import { createTeamName } from '../../helpers/teams/create-team-name';
+import { createTeamName } from 'helpers/teams/create-team-name';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
