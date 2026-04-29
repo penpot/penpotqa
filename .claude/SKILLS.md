@@ -20,6 +20,32 @@ import { ProfilePage } from '@pages/profile-page';
 
 Apply this rule to all imports from project modules: `fixtures`, page objects, helpers, etc. Only third-party packages keep their original import paths.
 
+Sort all import statements alphabetically by module path:
+
+```typescript
+// Correct — sorted alphabetically
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { expect } from '@playwright/test';
+import { mainTest } from 'fixtures';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
+```
+
+Before finishing a migration, remove any import or variable that is not referenced in the file. Common leftovers are page objects imported and instantiated in `beforeEach` but never used in any test:
+
+```typescript
+// Incorrect — imported and instantiated but never used in tests
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+
+let assetsPanelPage: AssetsPanelPage;
+
+mainTest.beforeEach(async ({ page }) => {
+  assetsPanelPage = new AssetsPanelPage(page); // remove this too
+});
+```
+
 ## 2. Declare page object instances at file scope
 
 Declare page object instances as `let` variables **outside** of `beforeEach`, and assign them inside `beforeEach`:
