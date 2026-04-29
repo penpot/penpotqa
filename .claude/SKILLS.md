@@ -13,9 +13,9 @@ const { qase } = require('playwright-qase-reporter/playwright');
 const { ProfilePage } = require('../../pages/profile-page');
 
 // After
+import { ProfilePage } from '@pages/profile-page';
 import { mainTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { ProfilePage } from '@pages/profile-page';
 ```
 
 Apply this rule to all imports from project modules: `fixtures`, page objects, helpers, etc. Only third-party packages keep their original import paths.
