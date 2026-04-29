@@ -1075,6 +1075,14 @@ exports.MainPage = class MainPage extends BasePage {
     await this.duplicateOption.click();
   }
 
+  async duplicateLayerViaRightClickOnCanvas(name) {
+    const boardSel = this.page.locator(
+      `//*[@class='frame-title']//../*[text()='${name}']`,
+    );
+    await boardSel.click({ button: 'right', force: true });
+    await this.duplicateOption.click();
+  }
+
   async duplicateLayerViaLayersTab(name) {
     const layerSel = this.page.locator(
       `div[class*="element-list-body"] span[class*="element-name"]:text-is("${name}") >>nth=0`,
