@@ -820,6 +820,52 @@ mainTest.describe(() => {
       });
     },
   );
+
+  mainTest(
+    qase([253], 'Duplicate Board (From rightclick and Shortcut Ctrl+D)'),
+    async ({ browserName }) => {
+      await mainTest.step('Create the third board and rename it', async () => {
+        const board3 = 'Board #3';
+        await mainPage.clickCreateBoardButton();
+        await mainPage.clickViewportByCoordinates(350, 100);
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.doubleClickBoardTitleOnCanvas('Board');
+        await mainPage.typeNameShapeLabelAndEnter(board3);
+        await mainPage.waitForChangeIsSaved();
+      });
+
+      await mainTest.step(
+        'Duplicate the first board via right click on layer in canvas',
+        async () => {
+          const board1 = 'Board #1';
+          await mainPage.duplicateLayerViaRightClickOnCanvas(board1);
+          await mainPage.waitForChangeIsSaved();
+          await expect(layersPanelPage.sidebarLayerItem).toHaveCount(4);
+        },
+      );
+
+      await mainTest.step(
+        'Duplicate the second board via right click on layer in layers tab',
+        async () => {
+          const board2 = 'Board #2';
+          await mainPage.duplicateLayerViaLayersTab(board2);
+          await mainPage.waitForChangeIsSaved();
+          await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
+        },
+      );
+
+      await mainTest.step(
+        'Duplicate the third board via shortcut (Ctrl+D)',
+        async () => {
+          const board3 = 'Board #3';
+          await layersPanelPage.selectLayerByName(board3);
+          await mainPage.clickShortcutCtrlD(browserName);
+          await mainPage.waitForChangeIsSaved();
+          await expect(layersPanelPage.sidebarLayerItem).toHaveCount(6);
+        },
+      );
+    },
+  );
 });
 
 mainTest.describe(() => {
