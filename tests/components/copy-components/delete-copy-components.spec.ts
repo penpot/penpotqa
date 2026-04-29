@@ -5,10 +5,10 @@ import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { expect } from '@playwright/test';
 import { mainTest } from 'fixtures';
-import { random } from 'helpers/string-generator';
+import { createTeamName } from 'helpers/teams/create-team-name';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName: string = random().concat('autotest');
+const teamName = createTeamName();
 
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
