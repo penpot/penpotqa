@@ -1,4 +1,4 @@
-import { createTeamName } from '../../helpers/teams/create-team-name';
+import { createTeamName } from 'helpers/teams/create-team-name';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { expect } from '@playwright/test';
 import { MainPage } from '@pages/workspace/main-page';
