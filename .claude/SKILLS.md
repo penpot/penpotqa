@@ -66,6 +66,20 @@ mainTest.beforeEach(async ({ page }) => {
 
 This applies at every scope level: outer `describe`, inner `describe`, etc.
 
+Always generate the team name using `createTeamName()` — never `random().concat('autotest')`:
+
+```typescript
+// Correct
+import { createTeamName } from 'helpers/teams/create-team-name';
+
+const teamName = createTeamName();
+
+// Incorrect
+import { random } from 'helpers/string-generator';
+
+const teamName = random().concat('autotest');
+```
+
 ## 3. Migrate local fixture files
 
 If the spec imports from a local fixture file (e.g. `your-account-fixture.js`), migrate that fixture to `.ts` too. Add a type for custom fixtures and pass it as a generic to `.extend<T>()`:
