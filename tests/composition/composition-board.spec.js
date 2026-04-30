@@ -877,6 +877,7 @@ mainTest.describe(() => {
     await mainTest.step('Create group', async () => {
       await mainPage.groupLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isLayerPresentOnLayersTab('Group', true);
     });
 
     await mainTest.step('Rename group', async () => {
@@ -889,6 +890,7 @@ mainTest.describe(() => {
     await mainTest.step('Delete group', async () => {
       const groupName = 'Group boards';
       await mainPage.deleteLayerViaRightClickByName(groupName);
+      await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab(groupName, false);
     });
   });
