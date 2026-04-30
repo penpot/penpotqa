@@ -866,6 +866,32 @@ mainTest.describe(() => {
       );
     },
   );
+
+  mainTest(qase([266], 'Rename and delete group'), async () => {
+    await mainTest.step('Select the two boards', async () => {
+      await mainPage.clickMainMenuButton();
+      await mainPage.clickEditMainMenuItem();
+      await mainPage.clickSelectAllMainMenuSubItem();
+    });
+
+    await mainTest.step('Create group', async () => {
+      await mainPage.groupLayerViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+    });
+
+    await mainTest.step('Rename group', async () => {
+      const groupName = 'Group boards';
+      await layersPanelPage.renameSelectedLayerViaDoubleClick(groupName);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isLayerPresentOnLayersTab(groupName, true);
+    });
+
+    await mainTest.step('Delete group', async () => {
+      const groupName = 'Group boards';
+      await mainPage.deleteLayerViaRightClickByName(groupName);
+      await layersPanelPage.isLayerPresentOnLayersTab(groupName, false);
+    });
+  });
 });
 
 mainTest.describe(() => {
