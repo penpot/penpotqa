@@ -542,4 +542,11 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       }
     }
   }
+
+  async isVisibleLayersCount(count) {
+    await expect(
+      this.layersRows,
+      `Expected ${count} layers to be visible`,
+    ).toHaveCount(count);
+  }
 };

@@ -116,7 +116,7 @@ exports.BasePage = class BasePage {
       .filter({ hasText: 'Paste' })
       .first();
     this.cutOption = page.getByRole('listitem').filter({ hasText: 'Cut' });
-    this.groupOption = page.getByRole('listitem').filter({ hasText: 'Group' });
+    this.groupOption = page.getByRole('listitem').filter({ hasText: 'GroupCtrlG' });
     this.showMainComponentOption = page
       .getByRole('listitem')
       .filter({ hasText: 'Show main component' });
