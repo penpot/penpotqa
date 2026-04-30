@@ -1,6 +1,5 @@
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
@@ -11,7 +10,6 @@ import { qase } from 'playwright-qase-reporter/playwright';
 
 const teamName = createTeamName();
 
-let colorPalettePage: ColorPalettePage;
 let dashboardPage: DashboardPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
@@ -19,7 +17,6 @@ let mainPage: MainPage;
 let teamPage: TeamPage;
 
 mainTest.beforeEach(async ({ page }) => {
-  colorPalettePage = new ColorPalettePage(page);
   dashboardPage = new DashboardPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
@@ -40,6 +37,8 @@ mainTest.afterEach(async () => {
 mainTest.describe('PNG image', () => {
   mainTest.beforeEach(async () => {
     await mainPage.uploadImage('images/images.png');
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
   });
 
   mainTest(qase([440], 'Rename image with valid name'), async () => {
@@ -56,8 +55,6 @@ mainTest.describe('PNG image', () => {
 
   mainTest(qase([482], 'Selection to board'), async () => {
     await mainTest.step('Convert selection to board', async () => {
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
       await mainPage.selectionToBoardViaRightClick();
       await mainPage.waitForChangeIsSaved();
     });
@@ -71,40 +68,41 @@ mainTest.describe('PNG image', () => {
       });
     });
   });
-});
 
-mainTest(qase([457], 'Delete image (From right click)'), async () => {
-  await mainTest.step('Verify image layer is visible', async () => {
-    await mainPage.uploadImage('images/sample.jpeg');
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isCreatedLayerVisible();
+  mainTest(qase([457], 'Delete image (From right click)'), async () => {
+    await mainTest.step('Verify image layer is visible', async () => {
+      await mainPage.isCreatedLayerVisible();
+    });
+
+    await mainTest.step(
+      'Delete image via right click and verify removal',
+      async () => {
+        await mainPage.deleteLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.isCreatedLayerVisible(false);
+      },
+    );
   });
 
-  await mainTest.step(
-    'Delete image via right click and verify removal',
+  mainTest(
+    qase([466], 'Copy and Paste image (from context menu and shortcut)'),
     async () => {
-      await mainPage.deleteLayerViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.isCreatedLayerVisible(false);
-    },
-  );
-});
+      await mainTest.step('Copy and paste image from context menu', async () => {
+        await layersPanelPage.copyLayerViaRightClick('images');
+        await mainPage.clickViewportByCoordinates(300, 300);
+        await layersPanelPage.pasteLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isVisibleLayersCount(2);
+      });
 
-mainTest(qase([2542], 'Delete image (From Keyboard)'), async () => {
-  await mainTest.step('Verify layer is visible', async () => {
-    await mainPage.uploadImage('images/giphy.gif');
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isCreatedLayerVisible();
-  });
-
-  await mainTest.step(
-    'Delete image via keyboard shortcut and verify removal',
-    async () => {
-      await mainPage.deleteLayerViaShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.isCreatedLayerVisible(false);
+      await mainTest.step('Copy and paste image from shortcut', async () => {
+        await layersPanelPage.selectLayerByName('images');
+        await layersPanelPage.pressCopyShortcut();
+        await mainPage.clickViewportByCoordinates(800, 800);
+        await layersPanelPage.pressPasteShortcut();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isVisibleLayersCount(3);
+      });
     },
   );
 });
