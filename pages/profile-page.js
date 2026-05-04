@@ -469,6 +469,12 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await expect(this.integrationsHeader).toBeVisible();
   }
 
+  async openYourAccountIntegrationsPage() {
+    await this.openYourAccountPage();
+    await this.openIntegrationsPage();
+    await this.isHeaderDisplayed('Your account');
+  }
+
   // Integrations access token
 
   async createAccessToken(accessTokenName) {

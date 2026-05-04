@@ -82,6 +82,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.viewMainMenuItem = page.getByRole('menuitem').filter({ hasText: 'View' });
     this.fileMainMenuItem = page.getByRole('menuitem').filter({ hasText: 'File' });
     this.editMainMenuItem = page.getByRole('menuitem').filter({ hasText: 'Edit' });
+    this.mcpServerMainMenuItem = page.getByRole('menuitem', { name: 'MCP server' });
+    this.mcpServerMainMenuActiveStatus = page
+      .getByRole('menuitem')
+      .locator('.main_ui_workspace_main_menu__active');
     this.helpInfoMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Help & info' });
@@ -144,6 +148,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.shortcutsMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Shortcuts' });
+    this.connectMCPServerMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Connect' });
+    this.disconnectMCPServerMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Disconnect' });
     this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
@@ -578,6 +588,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.editMainMenuItem.click();
   }
 
+  async hoverMCPServerMenuItem() {
+    await this.mcpServerMainMenuItem.hover();
+  }
+
   async clickHelpInfoMainMenuItem() {
     await this.helpInfoMenuItem.click();
   }
@@ -716,6 +730,38 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickShortcutsMainMenuSubItem() {
     await this.shortcutsMenuSubItem.click();
+  }
+
+  async isMCPServerStatusIndicatorActive(active = true, timeout = 10000) {
+    active
+      ? await this.mcpServerMainMenuActiveStatus.waitFor({
+          state: 'attached',
+          timeout: timeout,
+        })
+      : await this.mcpServerMainMenuActiveStatus.waitFor({
+          state: 'detached',
+          timeout: timeout,
+        });
+  }
+
+  async clickConnectMCPServerMenuSubItem() {
+    await this.connectMCPServerMenuSubItem.click();
+  }
+
+  async clickDisconnectMCPServerMenuSubItem() {
+    await this.disconnectMCPServerMenuSubItem.click();
+  }
+
+  getManageMCPServerStatusMenuSubItem(status) {
+    return this.page.getByRole('menuitem', { name: `Manage (Status: ${status})` });
+  }
+
+  async openManageMCPServerStatusPage(status) {
+    const manageMCPServerStatusSubItem =
+      this.getManageMCPServerStatusMenuSubItem(status);
+    const popupPromise = this.page.waitForEvent('popup');
+    await manageMCPServerStatusSubItem.click();
+    return popupPromise;
   }
 
   async clickZoomButton() {
