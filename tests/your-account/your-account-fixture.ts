@@ -31,19 +31,8 @@ export const passwordTest = mainTest.extend<YourAccountFixtures>({
 });
 
 // Open Your Account > Integrations section
-export const integrationsTest = mainTest.extend<YourAccountFixtures>({
-  profilePage: async ({ page }, use) => {
-    const profilePage = new ProfilePage(page);
-
-    await profilePage.openYourAccountIntegrationsPage();
-
-    await use(profilePage);
-  },
-});
-
-// Open Your Account > Integrations section
 // NOTE: This fixture involves creating a new Penpot account
-export const mcpServerTest = registerTest.extend<YourAccountFixtures>({
+export const integrationsTest = registerTest.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 
