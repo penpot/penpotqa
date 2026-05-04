@@ -1,4 +1,4 @@
-import { mainTest } from 'fixtures';
+import { mainTest, registerTest } from 'fixtures';
 import { ProfilePage } from '@pages/profile-page';
 
 type YourAccountFixtures = {
@@ -35,9 +35,19 @@ export const integrationsTest = mainTest.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 
-    await profilePage.openYourAccountPage();
-    await profilePage.openIntegrationsPage();
-    await profilePage.isHeaderDisplayed('Your account');
+    await profilePage.openYourAccountIntegrationsPage();
+
+    await use(profilePage);
+  },
+});
+
+// Open Your Account > Integrations section
+// NOTE: This fixture involves creating a new Penpot account
+export const mcpServerTest = registerTest.extend<YourAccountFixtures>({
+  profilePage: async ({ page }, use) => {
+    const profilePage = new ProfilePage(page);
+
+    await profilePage.openYourAccountIntegrationsPage();
 
     await use(profilePage);
   },
