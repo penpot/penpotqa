@@ -816,6 +816,7 @@ mainTest.describe(() => {
       );
       await viewModePage.gotoLink(process.env.BASE_URL);
       await mainPage.isHeaderDisplayed('Projects');
+      await loginPage.acceptCookie();
       await profilePage.logout();
     },
   );
