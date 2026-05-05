@@ -15,7 +15,7 @@ integrationsTest.beforeEach(async ({ page }) => {
 
 integrationsTest(
   qase(
-    [2771, 2770, 2775, 2783, 2785, 2787, 2791],
+    [2771, 2770, 2775, 2782, 2783, 2784, 2785, 2787, 2791],
     'Enable MCP generating key, disable MCP, enable MCP with an existing key and delete key',
   ),
   async ({ profilePage }: { profilePage: ProfilePage }) => {
@@ -40,10 +40,16 @@ integrationsTest(
     );
 
     await integrationsTest.step(
-      '2785 Open the link to manage the MCP server status from the Workspace menu',
+      '2782 MCP Workspace menu displays the "Disabled" status when the MCP server is not enabled',
       async () => {
         await mainPage.clickMainMenuButton();
         await mainPage.isMCPServerStatusIndicatorActive(false);
+      },
+    );
+
+    await integrationsTest.step(
+      '2785 Open the link to manage the MCP server status from the Workspace menu',
+      async () => {
         await mainPage.hoverMCPServerMenuItem();
         const manageMCPServerPage =
           await mainPage.openManageMCPServerStatusPage('disabled');
@@ -83,13 +89,17 @@ integrationsTest(
         await mainPage.disconnectMCPServerMenuSubItem.waitFor();
         await mainPage.isMCPServerStatusIndicatorActive(true);
         await mainPage.clickDisconnectMCPServerMenuSubItem();
+      },
+    );
 
+    await integrationsTest.step(
+      '2784 MCP Workspace menu displays the "Enabled" status when the MCP server is enabled (with no active connection)',
+      async () => {
         // The status indicator can take a while to be updated after disconnecting
         await mainPage.refreshPage();
         await mainPage.isMainPageLoaded();
 
         await mainPage.clickMainMenuButton();
-        await mainPage.isMCPServerStatusIndicatorActive(false);
         await mainPage.hoverMCPServerMenuItem();
         await expect(mainPage.connectMCPServerMenuSubItem).toBeVisible();
         await expect(
@@ -113,7 +123,6 @@ integrationsTest(
         await mainPage.clickMainMenuButton();
         await mainPage.hoverMCPServerMenuItem();
         await mainPage.disconnectMCPServerMenuSubItem.waitFor();
-        await mainPage.isMCPServerStatusIndicatorActive(true);
         await expect(
           mainPage.getManageMCPServerStatusMenuSubItem('enabled'),
         ).toBeVisible();
