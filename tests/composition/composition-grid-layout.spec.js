@@ -505,7 +505,8 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.changeHeightAndWidthForLayer('600', '400');
       await mainPage.clickBoardOnCanvas();
-      await mainPage.doubleClickBoardOnCanvas();
+      await designPanelPage.expandGridLayoutMenu();
+      await designPanelPage.openGridEditModeFromDesignPanel();
       await mainPage.deleteGridRow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -641,7 +642,8 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.changeHeightAndWidthForLayer('600', '400');
       await mainPage.clickBoardOnCanvas();
-      await mainPage.doubleClickBoardOnCanvas();
+      await designPanelPage.expandGridLayoutMenu();
+      await designPanelPage.openGridEditModeFromDesignPanel();
       await mainPage.duplicateGridRow();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
