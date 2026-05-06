@@ -759,8 +759,9 @@ exports.MainPage = class MainPage extends BasePage {
   async openManageMCPServerStatusPage(status) {
     const manageMCPServerStatusSubItem =
       this.getManageMCPServerStatusMenuSubItem(status);
-    const popupPromise = this.page.waitForEvent('popup');
-    await manageMCPServerStatusSubItem.click();
+    await manageMCPServerStatusSubItem.waitFor({ timeout: 15000 });
+    const popupPromise = this.page.waitForEvent('popup', { timeout: 40000 });
+    await manageMCPServerStatusSubItem.click({ timeout: 40000 });
     return popupPromise;
   }
 
