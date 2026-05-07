@@ -54,8 +54,8 @@ async function setupViewerUser(page, role = 'Viewer') {
   await page.goto(invite.inviteUrl);
   await registerPage.registerAccount(userName, userEmail, process.env.LOGIN_PWD);
   await waitSecondMessage(page, userEmail, 40);
-  const verifyMsg = await getVerificationMessage(userEmail);
-  await page.goto(verifyMsg.inviteUrl);
+  const verificationMessage = await getVerificationMessage(userEmail);
+  await page.goto(verificationMessage.inviteUrl);
   await dashboardPage.fillOnboardingQuestions();
   await page.goto(invite.inviteUrl);
   await teamPage.isTeamSelected(teamName);
@@ -248,8 +248,8 @@ mainTest.describe('Viewer Role - Role Changes', () => {
         process.env.LOGIN_PWD,
       );
       await waitSecondMessage(page, adminEmail, 40);
-      const verifyMsgAdmin = await getVerificationMessage(adminEmail);
-      await page.goto(verifyMsgAdmin.inviteUrl);
+      const verificationMessage = await getVerificationMessage(adminEmail);
+      await page.goto(verificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
       await page.goto(invite.inviteUrl);
       await teamPage.isTeamSelected(teamName);

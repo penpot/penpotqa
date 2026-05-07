@@ -99,8 +99,8 @@ mainTest.describe(() => {
             process.env.LOGIN_PWD,
           );
           await waitSecondMessage(page, firstEmail, 40);
-          const verifyMsg = await getVerificationMessage(firstEmail);
-          await page.goto(verifyMsg.inviteUrl);
+          const verificationMessage = await getVerificationMessage(firstEmail);
+          await page.goto(verificationMessage.inviteUrl);
           await dashboardPage.fillOnboardingQuestions();
           await page.goto(firstInvite.inviteUrl);
           await teamPage.isTeamSelected(teamName);

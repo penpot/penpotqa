@@ -223,7 +223,11 @@ mainTest.describe(
           firstEmail,
           process.env.LOGIN_PWD,
         );
+        await waitSecondMessage(page, firstEmail, 40);
+        const firstVerificationMessage = await getVerificationMessage(firstEmail);
+        await page.goto(firstVerificationMessage!.inviteUrl);
         await dashboardPage.fillOnboardingQuestions();
+        await page.goto(firstInvite!.inviteUrl);
         await teamPage.isTeamSelected(team);
         await profilePage.logout();
         await loginPage.isLoginPageOpened();
@@ -233,7 +237,11 @@ mainTest.describe(
           secondEmail,
           process.env.LOGIN_PWD,
         );
+        await waitSecondMessage(page, secondEmail, 40);
+        const secondVerificationMessage = await getVerificationMessage(secondEmail);
+        await page.goto(secondVerificationMessage!.inviteUrl);
         await dashboardPage.fillOnboardingQuestions();
+        await page.goto(secondInvite!.inviteUrl);
         await teamPage.isTeamSelected(team);
 
         await teamPage.openMembersPageViaOptionsMenu();

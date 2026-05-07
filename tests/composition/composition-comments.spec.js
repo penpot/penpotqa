@@ -243,8 +243,8 @@ mainTest.describe(() => {
         process.env.LOGIN_PWD,
       );
       await waitSecondMessage(page, firstEmail, 40);
-      const verifyMsg = await getVerificationMessage(firstEmail);
-      await page.goto(verifyMsg.inviteUrl);
+      const verificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(verificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
       await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(teamName);
@@ -318,8 +318,8 @@ mainTest.describe(() => {
       process.env.LOGIN_PWD,
     );
     await waitSecondMessage(page, firstEmail, 40);
-    const verifyMsg2057 = await getVerificationMessage(firstEmail);
-    await page.goto(verifyMsg2057.inviteUrl);
+    const verificationMessage = await getVerificationMessage(firstEmail);
+    await page.goto(verificationMessage.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
     await page.goto(firstInvite.inviteUrl);
     await teamPage.isTeamSelected(teamName);
@@ -381,8 +381,8 @@ mainTest.describe(() => {
       process.env.LOGIN_PWD,
     );
     await waitSecondMessage(page, firstEmail, 40);
-    const verifyMsg2086 = await getVerificationMessage(firstEmail);
-    await page.goto(verifyMsg2086.inviteUrl);
+    const verificationMessage = await getVerificationMessage(firstEmail);
+    await page.goto(verificationMessage.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
     await page.goto(firstInvite.inviteUrl);
     await teamPage.isTeamSelected(teamName);
@@ -471,8 +471,8 @@ mainTest.describe(() => {
         process.env.LOGIN_PWD,
       );
       await waitSecondMessage(page, firstEmail, 40);
-      const verifyMsg2268 = await getVerificationMessage(firstEmail);
-      await page.goto(verifyMsg2268.inviteUrl);
+      const verificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(verificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
       await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(teamName);
