@@ -11,9 +11,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel
     this.designTabpanel = page.getByRole('tabpanel', { name: 'design' });
-    this.canvasBackgroundColorIcon = page.locator(
-      'div[class*="page__element-set"] div[class*="color-bullet-wrapper"]',
-    );
+    this.canvasBackgroundColorIcon = page
+      .locator('div[class*="page__element-set"] div[class*="color-bullet-wrapper"]')
+      .first();
     this.layerRotationInput = page.locator('div[title="Rotation"] input');
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
