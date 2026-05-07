@@ -6,7 +6,11 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { random } = require('../../helpers/string-generator');
 const { CommentsPanelPage } = require('../../pages/workspace/comments-panel-page');
 const { qase } = require('playwright-qase-reporter/playwright');
-const { waitMessage } = require('../../helpers/gmail');
+const {
+  waitMessage,
+  waitSecondMessage,
+  getRegisterMessage,
+} = require('../../helpers/gmail');
 const { ProfilePage } = require('../../pages/profile-page');
 const { LoginPage } = require('../../pages/login-page');
 const { RegisterPage } = require('../../pages/register-page');
@@ -238,7 +242,11 @@ mainTest.describe(() => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const verifyMsg = await getRegisterMessage(firstEmail);
+      await page.goto(verifyMsg.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(teamName);
 
       await profilePage.logout();
@@ -309,7 +317,11 @@ mainTest.describe(() => {
       firstEmail,
       process.env.LOGIN_PWD,
     );
+    await waitSecondMessage(page, firstEmail, 40);
+    const verifyMsg2057 = await getRegisterMessage(firstEmail);
+    await page.goto(verifyMsg2057.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
+    await page.goto(firstInvite.inviteUrl);
     await teamPage.isTeamSelected(teamName);
 
     await dashboardPage.openFile();
@@ -368,7 +380,11 @@ mainTest.describe(() => {
       firstEmail,
       process.env.LOGIN_PWD,
     );
+    await waitSecondMessage(page, firstEmail, 40);
+    const verifyMsg2086 = await getRegisterMessage(firstEmail);
+    await page.goto(verifyMsg2086.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
+    await page.goto(firstInvite.inviteUrl);
     await teamPage.isTeamSelected(teamName);
 
     await profilePage.logout();
@@ -454,7 +470,11 @@ mainTest.describe(() => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const verifyMsg2268 = await getRegisterMessage(firstEmail);
+      await page.goto(verifyMsg2268.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(teamName);
 
       await profilePage.logout();
