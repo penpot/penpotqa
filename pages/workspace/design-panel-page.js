@@ -29,10 +29,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.bottomRightCornerRadiusInput = page.getByRole('textbox', {
       name: 'Bottom right',
     });
-    this.sizeWidthInput = page.locator('div[title="Width"] input');
-    this.sizeHeightInput = page.locator('div[title="Height"] input');
-    this.xAxisInput = page.locator('div[title="X axis"] input');
-    this.yAxisInput = page.locator('div[title="Y axis"] input');
+    this.sizeWidthInput = page.locator('div[aria-label="Width"] input');
+    this.sizeHeightInput = page.locator('div[aria-label="Height"] input');
+    this.xAxisInput = page.locator('div[aria-label="X axis"] input');
+    this.yAxisInput = page.locator('div[aria-label="Y axis"] input');
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
@@ -374,10 +374,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .getByRole('button')
       .filter({ hasText: 'Use default' });
     this.gridWidthInput = page.locator(
-      'div[title="Width"] input[class*="grid__numeric-input"]',
+      'div[aria-label="Width"] input[class*="grid__numeric-input"]',
     );
     this.gridHeightInput = page.locator(
-      'div[title="Height"] input[class*="grid__numeric-input"]',
+      'div[aria-label="Height"] input[class*="grid__numeric-input"]',
     );
 
     //Design panel - Component section
