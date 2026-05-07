@@ -277,9 +277,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .locator('div[class*="stroke"]')
       .filter({ has: page.getByTestId('stroke.alignment') })
       .last();
-    this.strokeColorBullet = this.strokeElement.locator(
-      'div[class*="color-bullet-wrapper"]',
-    );
+    this.strokeColorBullet = page
+      .locator('div[class*="stroke-data"] div[class*="color-bullet-wrapper"]')
+      .last();
     this.strokeRemoveIcon = this.strokeElement.getByRole('button', {
       name: 'Remove stroke',
     });
