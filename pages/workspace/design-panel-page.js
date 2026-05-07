@@ -18,7 +18,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
     });
-    this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
+    this.generalCornerRadiusInput = page.locator('div[aria-label="Radius"] input');
     this.topLeftCornerRadiusInput = page.getByRole('textbox', { name: 'Top left' });
     this.topRightCornerRadiusInput = page.getByRole('textbox', {
       name: 'Top right',
