@@ -110,7 +110,7 @@ test(qase(36, 'Create demo account'), async () => {
 test(qase(54, 'Sign up with email of existing user'), async () => {
   const email = process.env.LOGIN_EMAIL;
   await registerPage.registerAccount('test', email, process.env.LOGIN_PWD);
-  await registerPage.isRegisterEmailCorrect(email);
+  await registerPage.isEmailAlreadyUsedErrorDisplayed();
 });
 
 test.afterEach(async ({}, testInfo) => {
