@@ -238,6 +238,8 @@ mainTest.describe(() => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      const verificationInvite = await waitMessage(page, firstEmail, 40);
+      await page.goto(verificationInvite.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(teamName);
 
@@ -309,6 +311,8 @@ mainTest.describe(() => {
       firstEmail,
       process.env.LOGIN_PWD,
     );
+    const verificationInvite1 = await waitMessage(page, firstEmail, 40);
+    await page.goto(verificationInvite1.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
     await teamPage.isTeamSelected(teamName);
 
@@ -368,6 +372,8 @@ mainTest.describe(() => {
       firstEmail,
       process.env.LOGIN_PWD,
     );
+    const verificationInvite2 = await waitMessage(page, firstEmail, 40);
+    await page.goto(verificationInvite2.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
     await teamPage.isTeamSelected(teamName);
 
@@ -454,6 +460,8 @@ mainTest.describe(() => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      const verificationInvite3 = await waitMessage(page, firstEmail, 40);
+      await page.goto(verificationInvite3.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(teamName);
 
