@@ -4,7 +4,7 @@ const { RegisterPage } = require('../pages/register-page.js');
 const { ProfilePage } = require('../pages/profile-page.js');
 const { TeamPage } = require('../pages/dashboard/team-page.js');
 const { MainPage } = require('../pages/workspace/main-page.js');
-const { waitMessage } = require('./gmail.js');
+const { waitMessage, waitSecondMessage, getRegisterMessage } = require('./gmail.js');
 const { random } = require('./string-generator.js');
 
 function createTestUserData() {
@@ -76,7 +76,11 @@ async function setupUserWithRole(
   await page.goto(invite.inviteUrl);
 
   await registerPage.registerAccount(userName, userEmail, process.env.LOGIN_PWD);
+  await waitSecondMessage(page, userEmail, 40);
+  const verifyMsg = await getRegisterMessage(userEmail);
+  await page.goto(verifyMsg.inviteUrl);
   await dashboardPage.fillOnboardingQuestions();
+  await page.goto(invite.inviteUrl);
   await teamPage.isTeamSelected(teamName);
 
   return {
