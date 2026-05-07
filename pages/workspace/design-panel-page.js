@@ -214,21 +214,25 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'Justify content space-evenly',
       { exact: true },
     );
-    this.layoutColumnGapInput = page.locator('div[title="Column gap"] input');
-    this.layoutRowGapInput = page.locator('div[title="Row gap"] input');
+    this.layoutColumnGapInput = page.locator('div[aria-label="Column gap"] input');
+    this.layoutRowGapInput = page.locator('div[aria-label="Row gap"] input');
     this.layoutVerticalPaddingInput = page.locator(
-      'div[title="Vertical padding"] input',
+      'div[aria-label="Vertical padding"] input',
     );
     this.layoutHorizontalPaddingInput = page.locator(
-      'div[title="Horizontal padding"] input',
+      'div[aria-label="Horizontal padding"] input',
     );
     this.layoutIndepPaddingsIcon = page.locator('button[class*="padding-toggle"]');
-    this.layoutPaddingTopInput = page.locator('div[title="Top padding"] input');
-    this.layoutPaddingRightInput = page.locator('div[title="Right padding"] input');
-    this.layoutPaddingBottomInput = page.locator(
-      'div[title="Bottom padding"] input',
+    this.layoutPaddingTopInput = page.locator('div[aria-label="Top padding"] input');
+    this.layoutPaddingRightInput = page.locator(
+      'div[aria-label="Right padding"] input',
     );
-    this.layoutPaddingLeftInput = page.locator('div[title="Left padding"] input');
+    this.layoutPaddingBottomInput = page.locator(
+      'div[aria-label="Bottom padding"] input',
+    );
+    this.layoutPaddingLeftInput = page.locator(
+      'div[aria-label="Left padding"] input',
+    );
     this.layoutGridJustifyStartBtn = page.getByTitle('Justify items start', {
       exact: true,
     });
