@@ -9,7 +9,11 @@ const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
 const { ProfilePage } = require('../../pages/profile-page');
 const { LoginPage } = require('../../pages/login-page');
 const { RegisterPage } = require('../../pages/register-page');
-const { waitMessage } = require('../../helpers/gmail');
+const {
+  waitMessage,
+  waitSecondMessage,
+  getVerificationMessage,
+} = require('../../helpers/gmail');
 
 const teamName = random().concat('autotest');
 
@@ -249,7 +253,11 @@ mainTest.describe(() => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const verifyMsg = await getVerificationMessage(firstEmail);
+      await page.goto(verifyMsg.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(teamName);
 
       await dashboardPage.openFile();

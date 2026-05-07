@@ -8,7 +8,7 @@ import { DashboardPage } from 'pages/dashboard/dashboard-page';
 import { TeamPage } from 'pages/dashboard/team-page';
 import { random } from 'helpers/string-generator';
 import {
-  getRegisterMessage,
+  getVerificationMessage,
   checkInviteText,
   waitMessage,
   waitSecondMessage,
@@ -163,7 +163,7 @@ registerTest.describe(
 
         await waitSecondMessage(page, email, 40);
 
-        const invite = await getRegisterMessage(email);
+        const invite = await getVerificationMessage(email);
 
         await page.goto(invite!.inviteUrl);
 

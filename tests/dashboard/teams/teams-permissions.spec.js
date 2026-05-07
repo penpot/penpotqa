@@ -11,7 +11,7 @@ const { random } = require('../../../helpers/string-generator.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { expect } = require('@playwright/test');
 const {
-  getRegisterMessage,
+  getVerificationMessage,
   checkInviteText,
   checkMessagesCount,
   waitMessage,

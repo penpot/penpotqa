@@ -9,7 +9,7 @@ const { qase } = require('playwright-qase-reporter/playwright');
 const {
   waitMessage,
   waitSecondMessage,
-  getRegisterMessage,
+  getVerificationMessage,
 } = require('../../helpers/gmail');
 const { ProfilePage } = require('../../pages/profile-page');
 const { LoginPage } = require('../../pages/login-page');
@@ -243,7 +243,7 @@ mainTest.describe(() => {
         process.env.LOGIN_PWD,
       );
       await waitSecondMessage(page, firstEmail, 40);
-      const verifyMsg = await getRegisterMessage(firstEmail);
+      const verifyMsg = await getVerificationMessage(firstEmail);
       await page.goto(verifyMsg.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
       await page.goto(firstInvite.inviteUrl);
@@ -318,7 +318,7 @@ mainTest.describe(() => {
       process.env.LOGIN_PWD,
     );
     await waitSecondMessage(page, firstEmail, 40);
-    const verifyMsg2057 = await getRegisterMessage(firstEmail);
+    const verifyMsg2057 = await getVerificationMessage(firstEmail);
     await page.goto(verifyMsg2057.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
     await page.goto(firstInvite.inviteUrl);
@@ -381,7 +381,7 @@ mainTest.describe(() => {
       process.env.LOGIN_PWD,
     );
     await waitSecondMessage(page, firstEmail, 40);
-    const verifyMsg2086 = await getRegisterMessage(firstEmail);
+    const verifyMsg2086 = await getVerificationMessage(firstEmail);
     await page.goto(verifyMsg2086.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
     await page.goto(firstInvite.inviteUrl);
@@ -471,7 +471,7 @@ mainTest.describe(() => {
         process.env.LOGIN_PWD,
       );
       await waitSecondMessage(page, firstEmail, 40);
-      const verifyMsg2268 = await getRegisterMessage(firstEmail);
+      const verifyMsg2268 = await getVerificationMessage(firstEmail);
       await page.goto(verifyMsg2268.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
       await page.goto(firstInvite.inviteUrl);

@@ -11,7 +11,7 @@ const { random } = require('../../../helpers/string-generator.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { expect } = require('@playwright/test');
 const {
-  getRegisterMessage,
+  getVerificationMessage,
   checkInviteText,
   checkMessagesCount,
   waitMessage,
@@ -81,7 +81,7 @@ registerTest.describe('Members - As Owner - Change roles', () => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
       await waitSecondMessage(page, email, 40);
-      const invite = await getRegisterMessage(email);
+      const invite = await getVerificationMessage(email);
       await page.goto(invite.inviteUrl);
       await teamPage.switchTeam(team);
       await teamPage.isTeamSelected(team);
@@ -123,7 +123,7 @@ registerTest.describe('Members - As Owner - Change roles', () => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
       await waitSecondMessage(page, email, 40);
-      const invite = await getRegisterMessage(email);
+      const invite = await getVerificationMessage(email);
       await page.goto(invite.inviteUrl);
       await teamPage.switchTeam(team);
       await teamPage.isTeamSelected(team);
@@ -173,7 +173,11 @@ mainTest(qase(1196, 'Team. Members - leave team (as owner)'), async ({ page }) =
 
   await page.goto(firstInvite.inviteUrl);
   await registerPage.registerAccount(firstAdmin, firstEmail, process.env.LOGIN_PWD);
+  await waitSecondMessage(page, firstEmail, 40);
+  const verifyMsg = await getVerificationMessage(firstEmail);
+  await page.goto(verifyMsg.inviteUrl);
   await dashboardPage.fillOnboardingQuestions();
+  await page.goto(firstInvite.inviteUrl);
   await teamPage.isTeamSelected(team);
 
   await profilePage.logout();

@@ -17,7 +17,7 @@ const { RegisterPage } = require('../../pages/register-page');
 const {
   waitMessage,
   waitSecondMessage,
-  getRegisterMessage,
+  getVerificationMessage,
 } = require('../../helpers/gmail');
 
 const teamName = random().concat('autotest');
@@ -867,7 +867,7 @@ mainTest.describe(() => {
         process.env.LOGIN_PWD,
       );
       await waitSecondMessage(page, firstEmail, 40);
-      const verifyMsg = await getRegisterMessage(firstEmail);
+      const verifyMsg = await getVerificationMessage(firstEmail);
       await page.goto(verifyMsg.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
       await page.goto(firstInvite.inviteUrl);

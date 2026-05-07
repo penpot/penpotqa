@@ -7,7 +7,11 @@ const { TeamPage } = require('../../../pages/dashboard/team-page.js');
 const { MainPage } = require('../../../pages/workspace/main-page.js');
 const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page.js');
 const { random } = require('../../../helpers/string-generator.js');
-const { waitMessage } = require('../../../helpers/gmail.js');
+const {
+  waitMessage,
+  waitSecondMessage,
+  getVerificationMessage,
+} = require('../../../helpers/gmail.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 
 // Helper: create a team, invite user, register via Gmail invite
@@ -50,7 +54,11 @@ async function setupInvitedUser(page, role = 'Editor') {
   // Register invited user
   await page.goto(invite.inviteUrl);
   await registerPage.registerAccount(userName, userEmail, process.env.LOGIN_PWD);
+  await waitSecondMessage(page, userEmail, 40);
+  const verifyMsg = await getVerificationMessage(userEmail);
+  await page.goto(verifyMsg.inviteUrl);
   await dashboardPage.fillOnboardingQuestions();
+  await page.goto(invite.inviteUrl);
   await teamPage.isTeamSelected(teamName);
 
   return {

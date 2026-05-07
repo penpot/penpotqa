@@ -9,7 +9,11 @@ const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page.
 const { random } = require('../../../helpers/string-generator.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { expect } = require('@playwright/test');
-const { waitMessage } = require('../../../helpers/gmail.js');
+const {
+  waitMessage,
+  waitSecondMessage,
+  getVerificationMessage,
+} = require('../../../helpers/gmail.js');
 const maxDiffPixelRatio = 0.001;
 
 // Set up Viewer user
@@ -49,7 +53,11 @@ async function setupViewerUser(page, role = 'Viewer') {
   const invite = await waitMessage(page, userEmail, 40);
   await page.goto(invite.inviteUrl);
   await registerPage.registerAccount(userName, userEmail, process.env.LOGIN_PWD);
+  await waitSecondMessage(page, userEmail, 40);
+  const verifyMsg = await getVerificationMessage(userEmail);
+  await page.goto(verifyMsg.inviteUrl);
   await dashboardPage.fillOnboardingQuestions();
+  await page.goto(invite.inviteUrl);
   await teamPage.isTeamSelected(teamName);
 
   return {
@@ -239,7 +247,11 @@ mainTest.describe('Viewer Role - Role Changes', () => {
         adminEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, adminEmail, 40);
+      const verifyMsgAdmin = await getVerificationMessage(adminEmail);
+      await page.goto(verifyMsgAdmin.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(invite.inviteUrl);
       await teamPage.isTeamSelected(teamName);
 
       // Change Admin → Viewer
