@@ -14,7 +14,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.canvasBackgroundColorIcon = page
       .locator('div[class*="page__element-set"] div[class*="color-bullet-wrapper"]')
       .first();
-    this.layerRotationInput = page.locator('div[title="Rotation"] input');
+    this.layerRotationInput = page.locator('div[aria-label="Rotation"] input');
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
     });
@@ -273,12 +273,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Stroke section
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
-    this.strokeElement = page.locator('div[class*="stroke-content"]');
+    this.strokeElement = page
+      .locator('div[class*="stroke"]')
+      .filter({ has: page.getByTestId('stroke.alignment') })
+      .last();
     this.strokeColorBullet = this.strokeElement.locator(
       'div[class*="color-bullet-wrapper"]',
     );
     this.strokeRemoveIcon = this.strokeElement.getByRole('button', {
-      name: 'Remove color',
+      name: 'Remove stroke',
     });
     this.strokeColorInput = page.locator(
       'div[class*="stroke-data"] input[class*="color-input"]',
