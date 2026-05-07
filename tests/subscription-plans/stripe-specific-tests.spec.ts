@@ -4,7 +4,11 @@ import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { ProfilePage } from '@pages/profile-page';
-import { waitMessage, waitSecondMessage, getRegisterMessage } from 'helpers/gmail';
+import {
+  waitMessage,
+  waitSecondMessage,
+  getVerificationMessage,
+} from 'helpers/gmail';
 import { LoginPage } from '@pages/login-page';
 import { RegisterPage } from '@pages/register-page';
 import { StripePage } from '@pages/dashboard/stripe-page';
@@ -211,7 +215,7 @@ registerTest(
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
     await waitSecondMessage(page, secondEmail, 40);
-    const invite = await getRegisterMessage(secondEmail);
+    const invite = await getVerificationMessage(secondEmail);
     await page.goto(invite!.inviteUrl);
     await teamPage.switchTeam(teamName);
     await teamPage.isTeamSelected(teamName);

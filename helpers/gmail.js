@@ -399,9 +399,20 @@ async function waitRequestMessage(page, email, timeoutSec = 40) {
   }
 }
 
+async function getVerificationMessage(email) {
+  const msg = await getRegisterMessage(email);
+  if (!msg?.inviteUrl) {
+    throw new Error(
+      `No verification email with URL found for ${email}. Gmail API may have failed or the email was not delivered.`,
+    );
+  }
+  return msg;
+}
+
 module.exports = {
   checkInviteText,
   getRegisterMessage,
+  getVerificationMessage,
   checkRegisterText,
   checkRecoveryText,
   checkNewEmailText,

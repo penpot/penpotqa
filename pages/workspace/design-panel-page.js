@@ -11,14 +11,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel
     this.designTabpanel = page.getByRole('tabpanel', { name: 'design' });
-    this.canvasBackgroundColorIcon = page.locator(
-      'div[class*="page__element-set"] div[class*="color-bullet-wrapper"]',
-    );
-    this.layerRotationInput = page.locator('div[title="Rotation"] input');
+    this.canvasBackgroundColorIcon = page
+      .locator('div[class*="page__element-set"] div[class*="color-bullet-wrapper"]')
+      .first();
+    this.layerRotationInput = page.locator('div[aria-label="Rotation"] input');
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
     });
-    this.generalCornerRadiusInput = page.locator('div[title="Radius"] input');
+    this.generalCornerRadiusInput = page.locator('div[aria-label="Radius"] input');
     this.topLeftCornerRadiusInput = page.getByRole('textbox', { name: 'Top left' });
     this.topRightCornerRadiusInput = page.getByRole('textbox', {
       name: 'Top right',
@@ -29,10 +29,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.bottomRightCornerRadiusInput = page.getByRole('textbox', {
       name: 'Bottom right',
     });
-    this.sizeWidthInput = page.locator('div[title="Width"] input');
-    this.sizeHeightInput = page.locator('div[title="Height"] input');
-    this.xAxisInput = page.locator('div[title="X axis"] input');
-    this.yAxisInput = page.locator('div[title="Y axis"] input');
+    this.sizeWidthInput = page.locator('div[aria-label="Width"] input');
+    this.sizeHeightInput = page.locator('div[aria-label="Height"] input');
+    this.xAxisInput = page.locator('div[aria-label="X axis"] input');
+    this.yAxisInput = page.locator('div[aria-label="Y axis"] input');
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
@@ -128,10 +128,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementAlignCenterBtn = page.getByTestId('align-self-center');
     this.flexElementAlignEndBtn = page.getByTestId('align-self-end');
     this.flexElementMarginVertInput = page.locator(
-      'div[title="Vertical margin"] input',
+      'div[aria-label="Vertical margin"] input',
     );
     this.flexElementMarginHorizontalInput = page.locator(
-      'div[title="Horizontal margin"] input',
+      'div[aria-label="Horizontal margin"] input',
     );
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
@@ -214,21 +214,25 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'Justify content space-evenly',
       { exact: true },
     );
-    this.layoutColumnGapInput = page.locator('div[title="Column gap"] input');
-    this.layoutRowGapInput = page.locator('div[title="Row gap"] input');
+    this.layoutColumnGapInput = page.locator('div[aria-label="Column gap"] input');
+    this.layoutRowGapInput = page.locator('div[aria-label="Row gap"] input');
     this.layoutVerticalPaddingInput = page.locator(
-      'div[title="Vertical padding"] input',
+      'div[aria-label="Vertical padding"] input',
     );
     this.layoutHorizontalPaddingInput = page.locator(
-      'div[title="Horizontal padding"] input',
+      'div[aria-label="Horizontal padding"] input',
     );
     this.layoutIndepPaddingsIcon = page.locator('button[class*="padding-toggle"]');
-    this.layoutPaddingTopInput = page.locator('div[title="Top padding"] input');
-    this.layoutPaddingRightInput = page.locator('div[title="Right padding"] input');
-    this.layoutPaddingBottomInput = page.locator(
-      'div[title="Bottom padding"] input',
+    this.layoutPaddingTopInput = page.locator('div[aria-label="Top padding"] input');
+    this.layoutPaddingRightInput = page.locator(
+      'div[aria-label="Right padding"] input',
     );
-    this.layoutPaddingLeftInput = page.locator('div[title="Left padding"] input');
+    this.layoutPaddingBottomInput = page.locator(
+      'div[aria-label="Bottom padding"] input',
+    );
+    this.layoutPaddingLeftInput = page.locator(
+      'div[aria-label="Left padding"] input',
+    );
     this.layoutGridJustifyStartBtn = page.getByTitle('Justify items start', {
       exact: true,
     });
@@ -273,19 +277,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Stroke section
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
-    this.strokeElement = page.locator('div[class*="stroke-content"]');
-    this.strokeColorBullet = this.strokeElement.locator(
-      'div[class*="color-bullet-wrapper"]',
-    );
+    this.strokeElement = page.locator('div[class*="stroke-color-actions"]').last();
+    this.strokeColorBullet = this.strokeElement
+      .locator('div[class*="color-bullet-wrapper"]')
+      .last();
     this.strokeRemoveIcon = this.strokeElement.getByRole('button', {
-      name: 'Remove color',
+      name: 'Remove stroke',
     });
-    this.strokeColorInput = page.locator(
-      'div[class*="stroke-data"] input[class*="color-input"]',
+    this.strokeColorInput = this.strokeElement.locator(
+      'input[class*="color-input"]',
     );
-    this.strokeWidthInput = page.getByTitle('Stroke width').locator('input');
-    this.strokeOpacityInput = page.locator(
-      'div[class*="stroke-data"] input[class*="opacity-input"]',
+    this.strokeWidthInput = page.locator('div[aria-label="Stroke width"] input');
+    this.strokeOpacityInput = this.strokeElement.locator(
+      'input[data-testid="opacity-input"]',
     );
     this.strokeAlignmentField = page.getByTestId('stroke.alignment');
     this.strokeTypeField = page.getByTestId('stroke.style');
@@ -374,10 +378,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .getByRole('button')
       .filter({ hasText: 'Use default' });
     this.gridWidthInput = page.locator(
-      'div[title="Width"] input[class*="grid__numeric-input"]',
+      'div[aria-label="Width"] input[class*="grid__numeric-input"]',
     );
     this.gridHeightInput = page.locator(
-      'div[title="Height"] input[class*="grid__numeric-input"]',
+      'div[aria-label="Height"] input[class*="grid__numeric-input"]',
     );
 
     //Design panel - Component section

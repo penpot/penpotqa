@@ -36,6 +36,10 @@ exports.RegisterPage = class RegisterPage extends BasePage {
       '.main_ui_auth_register__notification-text-email',
     );
 
+    this.emailAlreadyUsedError = page
+      .getByRole('alert')
+      .filter({ hasText: 'Email already used' });
+
     // Demo Account (Only PRE)
     this.createDemoAccountButton = page.getByText('Create demo account');
   }
@@ -123,6 +127,13 @@ exports.RegisterPage = class RegisterPage extends BasePage {
       this.regEmailNotification,
       `Verification email sent to has text: "${email}"`,
     ).toHaveText(email);
+  }
+
+  async isEmailAlreadyUsedErrorDisplayed() {
+    await expect(
+      this.emailAlreadyUsedError,
+      'Email already used error is visible',
+    ).toBeVisible();
   }
 
   async clickOnCreateDemoAccountButton() {

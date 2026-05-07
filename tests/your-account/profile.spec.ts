@@ -6,7 +6,7 @@ import { random } from 'helpers/string-generator';
 import { LoginPage } from '@pages/login-page';
 import { ProfilePage } from '@pages/profile-page';
 import {
-  getRegisterMessage,
+  getVerificationMessage,
   checkNewEmailText,
   waitSecondMessage,
 } from 'helpers/gmail';
@@ -97,7 +97,7 @@ registerTest(qase(190, 'Change email to valid'), async ({ page, name, email }) =
   await registerTest.step(
     'Verify confirmation email content and follow the link',
     async () => {
-      const changeEmail = await getRegisterMessage(email);
+      const changeEmail = await getVerificationMessage(email);
       if (!changeEmail) throw new Error('Email confirmation not received');
       await checkNewEmailText(changeEmail.inviteText, name, newEmail);
       await page.goto(changeEmail.inviteUrl);

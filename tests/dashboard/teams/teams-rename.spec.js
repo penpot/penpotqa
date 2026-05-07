@@ -6,7 +6,11 @@ const { DashboardPage } = require('../../../pages/dashboard/dashboard-page.js');
 const { TeamPage } = require('../../../pages/dashboard/team-page.js');
 const { random } = require('../../../helpers/string-generator.js');
 const { qase } = require('playwright-qase-reporter/playwright');
-const { waitMessage } = require('../../../helpers/gmail.js');
+const {
+  waitMessage,
+  waitSecondMessage,
+  getVerificationMessage,
+} = require('../../../helpers/gmail.js');
 
 let teamPage, loginPage, registerPage, dashboardPage, profilePage;
 
@@ -58,7 +62,11 @@ mainTest.describe('Rename a team', () => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const verificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(verificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
       await teamPage.openTeamOptionsMenu();
       await teamPage.assertRenameItemNotVisible();

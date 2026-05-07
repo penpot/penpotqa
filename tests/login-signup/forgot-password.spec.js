@@ -6,7 +6,7 @@ const { qase } = require('playwright-qase-reporter/playwright');
 const { random } = require('../../helpers/string-generator');
 const { RegisterPage } = require('../../pages/register-page');
 const {
-  getRegisterMessage,
+  getVerificationMessage,
   checkRecoveryText,
   waitSecondMessage,
 } = require('../../helpers/gmail');
@@ -53,7 +53,7 @@ registerTest.describe(() => {
       await forgotPasswordPage.enterEmail(email);
       await forgotPasswordPage.clickRecoverPasswordButton();
       await waitSecondMessage(page, email, 60);
-      const forgotPass = await getRegisterMessage(email);
+      const forgotPass = await getVerificationMessage(email);
       await checkRecoveryText(forgotPass.inviteText, name);
       await page.goto(forgotPass.inviteUrl);
       await forgotPasswordPage.enterNewPassword(newPwd);

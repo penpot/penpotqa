@@ -1,7 +1,11 @@
 import { expect } from '@playwright/test';
 import { mainTest } from 'fixtures';
 import { random } from 'helpers/string-generator';
-import { waitMessage } from 'helpers/gmail';
+import {
+  waitMessage,
+  waitSecondMessage,
+  getVerificationMessage,
+} from 'helpers/gmail';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { MainPage } from '@pages/workspace/main-page';
 import { TeamPage } from '@pages/dashboard/team-page';
@@ -94,7 +98,11 @@ mainTest.describe(() => {
             firstEmail,
             process.env.LOGIN_PWD,
           );
+          await waitSecondMessage(page, firstEmail, 40);
+          const verificationMessage = await getVerificationMessage(firstEmail);
+          await page.goto(verificationMessage.inviteUrl);
           await dashboardPage.fillOnboardingQuestions();
+          await page.goto(firstInvite.inviteUrl);
           await teamPage.isTeamSelected(teamName);
           await page.goto(link);
           await mainPage.isMainPageLoaded();

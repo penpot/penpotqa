@@ -11,7 +11,7 @@ const { random } = require('../../../helpers/string-generator.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { expect } = require('@playwright/test');
 const {
-  getRegisterMessage,
+  getVerificationMessage,
   checkInviteText,
   checkMessagesCount,
   waitMessage,
@@ -68,7 +68,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         mainEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, mainEmail, 40);
+      const mainVerificationMessage = await getVerificationMessage(mainEmail);
+      await page.goto(mainVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(mainInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -103,7 +107,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const firstVerificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(firstVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -113,7 +121,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         secondEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, secondEmail, 40);
+      const secondVerificationMessage = await getVerificationMessage(secondEmail);
+      await page.goto(secondVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(secondInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -156,7 +168,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         mainEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, mainEmail, 40);
+      const mainVerificationMessage = await getVerificationMessage(mainEmail);
+      await page.goto(mainVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(mainInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -209,7 +225,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         secondEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, secondEmail, 40);
+      const verificationMessage = await getVerificationMessage(secondEmail);
+      await page.goto(verificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(secondInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await profilePage.logout();
@@ -276,7 +296,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const firstVerificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(firstVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -286,7 +310,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         secondEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, secondEmail, 40);
+      const secondVerificationMessage = await getVerificationMessage(secondEmail);
+      await page.goto(secondVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(secondInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -364,7 +392,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const firstVerificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(firstVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -374,7 +406,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         secondEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, secondEmail, 40);
+      const secondVerificationMessage = await getVerificationMessage(secondEmail);
+      await page.goto(secondVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(secondInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -421,7 +457,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const firstVerificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(firstVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -469,7 +509,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         secondEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, secondEmail, 40);
+      const secondVerificationMessage = await getVerificationMessage(secondEmail);
+      await page.goto(secondVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(secondInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await teamPage.openInvitationsPageViaOptionsMenu();
@@ -508,7 +552,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const firstVerificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(firstVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await profilePage.logout();
@@ -560,7 +608,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const firstVerificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(firstVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -570,7 +622,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         secondEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, secondEmail, 40);
+      const secondVerificationMessage = await getVerificationMessage(secondEmail);
+      await page.goto(secondVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(secondInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -627,7 +683,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const firstVerificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(firstVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
       await loginPage.isLoginPageOpened();
@@ -637,7 +697,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         secondEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, secondEmail, 40);
+      const secondVerificationMessage = await getVerificationMessage(secondEmail);
+      await page.goto(secondVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(secondInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
 
       await teamPage.openMembersPageViaOptionsMenu();
@@ -693,7 +757,11 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
         firstEmail,
         process.env.LOGIN_PWD,
       );
+      await waitSecondMessage(page, firstEmail, 40);
+      const firstVerificationMessage = await getVerificationMessage(firstEmail);
+      await page.goto(firstVerificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
+      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.isMultipleInvitationRecordDisplayed(
