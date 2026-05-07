@@ -277,22 +277,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Stroke section
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
-    this.strokeElement = page
-      .locator('div[class*="stroke"]')
-      .filter({ has: page.getByTestId('stroke.alignment') })
-      .last();
-    this.strokeColorBullet = page
-      .locator('div[class*="stroke-data"] div[class*="color-bullet-wrapper"]')
+    this.strokeElement = page.locator('div[class*="stroke-color-actions"]').last();
+    this.strokeColorBullet = this.strokeElement
+      .locator('div[class*="color-bullet-wrapper"]')
       .last();
     this.strokeRemoveIcon = this.strokeElement.getByRole('button', {
       name: 'Remove stroke',
     });
-    this.strokeColorInput = page.locator(
-      'div[class*="stroke-data"] input[class*="color-input"]',
+    this.strokeColorInput = this.strokeElement.locator(
+      'input[class*="color-input"]',
     );
     this.strokeWidthInput = page.locator('div[aria-label="Stroke width"] input');
-    this.strokeOpacityInput = page.locator(
-      'div[class*="stroke-data"] input[class*="opacity-input"]',
+    this.strokeOpacityInput = this.strokeElement.locator(
+      'input[data-testid="opacity-input"]',
     );
     this.strokeAlignmentField = page.getByTestId('stroke.alignment');
     this.strokeTypeField = page.getByTestId('stroke.style');
