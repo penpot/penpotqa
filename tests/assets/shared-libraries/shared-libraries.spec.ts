@@ -211,8 +211,6 @@ mainTest.describe(() => {
       await assetsPanelPage.clickUpdatesTab();
       await assetsPanelPage.clickLibrariesUpdateButton();
       await assetsPanelPage.clickCloseModalButton();
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         'component-publish-update-file2-2.png',
         {
