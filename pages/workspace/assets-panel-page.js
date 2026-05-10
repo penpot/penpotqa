@@ -71,13 +71,13 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       name: 'Add typography',
     });
     this.minimizeFileLibraryTypographyButton = page.locator(
-      'div[class*="typography__action-btn"]',
+      '[class*="typography__action-btns"] [aria-label="Close"] button',
     );
     this.expandFileLibraryTypographyButton = page.locator(
       'div[class*="typography__element-set-actions"] button',
     );
     this.fileLibraryTypographyRecord = page.locator(
-      'div[class*="typography-entry"]',
+      'div[class*="typography__typography-entry"]',
     );
     this.fontSelector = page.locator('div[class*="typography__font-option"]');
     this.fontSelectorSearchInput = page.getByRole('textbox', {
