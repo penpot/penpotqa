@@ -14,11 +14,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.canvasBackgroundColorIcon = page
       .locator('div[class*="page__element-set"] div[class*="color-bullet-wrapper"]')
       .first();
-    this.layerRotationInput = page.locator('div[aria-label="Rotation"] input');
+    this.layerRotationInput = page.getByRole('textbox', { name: 'Rotation' });
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
     });
-    this.generalCornerRadiusInput = page.locator('div[aria-label="Radius"] input');
+    this.generalCornerRadiusInput = page.getByRole('textbox', { name: 'Radius' });
     this.topLeftCornerRadiusInput = page.getByRole('textbox', { name: 'Top left' });
     this.topRightCornerRadiusInput = page.getByRole('textbox', {
       name: 'Top right',
@@ -127,12 +127,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementAlignStartBtn = page.getByTestId('align-self-start');
     this.flexElementAlignCenterBtn = page.getByTestId('align-self-center');
     this.flexElementAlignEndBtn = page.getByTestId('align-self-end');
-    this.flexElementMarginVertInput = page.locator(
-      'div[aria-label="Vertical margin"] input',
-    );
-    this.flexElementMarginHorizontalInput = page.locator(
-      'div[aria-label="Horizontal margin"] input',
-    );
+    this.flexElementMarginVertInput = page.getByRole('textbox', {
+      name: 'Vertical margin',
+    });
+    this.flexElementMarginHorizontalInput = page.getByRole('textbox', {
+      name: 'Horizontal margin',
+    });
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
@@ -214,25 +214,25 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'Justify content space-evenly',
       { exact: true },
     );
-    this.layoutColumnGapInput = page.locator('div[aria-label="Column gap"] input');
-    this.layoutRowGapInput = page.locator('div[aria-label="Row gap"] input');
-    this.layoutVerticalPaddingInput = page.locator(
-      'div[aria-label="Vertical padding"] input',
-    );
-    this.layoutHorizontalPaddingInput = page.locator(
-      'div[aria-label="Horizontal padding"] input',
-    );
+    this.layoutColumnGapInput = page.getByRole('textbox', { name: 'Column gap' });
+    this.layoutRowGapInput = page.getByRole('textbox', { name: 'Row gap' });
+    this.layoutVerticalPaddingInput = page.getByRole('textbox', {
+      name: 'Vertical padding',
+    });
+    this.layoutHorizontalPaddingInput = page.getByRole('textbox', {
+      name: 'Horizontal padding',
+    });
     this.layoutIndepPaddingsIcon = page.locator('button[class*="padding-toggle"]');
-    this.layoutPaddingTopInput = page.locator('div[aria-label="Top padding"] input');
-    this.layoutPaddingRightInput = page.locator(
-      'div[aria-label="Right padding"] input',
-    );
-    this.layoutPaddingBottomInput = page.locator(
-      'div[aria-label="Bottom padding"] input',
-    );
-    this.layoutPaddingLeftInput = page.locator(
-      'div[aria-label="Left padding"] input',
-    );
+    this.layoutPaddingTopInput = page.getByRole('textbox', { name: 'Top padding' });
+    this.layoutPaddingRightInput = page.getByRole('textbox', {
+      name: 'Right padding',
+    });
+    this.layoutPaddingBottomInput = page.getByRole('textbox', {
+      name: 'Bottom padding',
+    });
+    this.layoutPaddingLeftInput = page.getByRole('textbox', {
+      name: 'Left padding',
+    });
     this.layoutGridJustifyStartBtn = page.getByTitle('Justify items start', {
       exact: true,
     });
@@ -287,7 +287,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeColorInput = this.strokeElement.locator(
       'input[class*="color-input"]',
     );
-    this.strokeWidthInput = page.locator('div[aria-label="Stroke width"] input');
+    this.strokeWidthInput = page.getByRole('textbox', { name: 'Stroke width' });
     this.strokeOpacityInput = this.strokeElement.locator(
       'input[data-testid="opacity-input"]',
     );
