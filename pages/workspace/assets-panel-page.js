@@ -70,9 +70,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.addFileLibraryTypographyButton = page.getByRole('button', {
       name: 'Add typography',
     });
-    this.minimizeFileLibraryTypographyButton = page.locator(
-      '[class*="typography__action-btns"] [aria-label="Close"] button',
-    );
+    this.minimizeFileLibraryTypographyButton = page.getByRole('button', {
+      name: 'Close',
+    });
     this.expandFileLibraryTypographyButton = page.locator(
       'div[class*="typography__element-set-actions"] button',
     );
