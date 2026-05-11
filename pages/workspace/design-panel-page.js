@@ -143,18 +143,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementHeight100Btn = page.getByTitle('Height 100%');
     this.flexElementFixWidthBtn = page.getByTitle('Fix width');
     this.flexElementFixHeightBtn = page.getByTitle('Fix height');
-    this.flexElementMinWidthInput = page
-      .getByTitle('Min width')
-      .getByRole('textbox');
-    this.flexElementMaxWidthInput = page
-      .getByTitle('Max width')
-      .getByRole('textbox');
-    this.flexElementMinHeightInput = page
-      .getByTitle('Min height')
-      .getByRole('textbox');
-    this.flexElementMaxHeightInput = page
-      .getByTitle('Max height')
-      .getByRole('textbox');
+    this.flexElementMinWidthInput = page.locator(
+      'div[aria-label="Min width"] input',
+    );
+    this.flexElementMaxWidthInput = page.locator(
+      'div[aria-label="Max width"] input',
+    );
+    this.flexElementMinHeightInput = page.locator(
+      'div[aria-label="Min height"] input',
+    );
+    this.flexElementMaxHeightInput = page.locator(
+      'div[aria-label="Max height"] input',
+    );
     this.flexAddLayoutButton = page.getByRole('button', { name: 'Flex layout' });
     this.gridAddLayoutButton = page.getByRole('button', { name: 'Grid layout' });
     this.gridEditButton = page.getByRole('button', { name: 'Edit grid' });
@@ -1601,17 +1601,23 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
-  async checkGeneralCornerRadius(value) {
+  async checkTokenField(ariaLabel, value) {
     const tokenPill = this.page.locator(
-      'div[aria-label="Radius"] button[class*="token-field__pill"]',
+      `div[aria-label="${ariaLabel}"] button[class*="token_field__pill"]`,
     );
     await expect(async () => {
       if (await tokenPill.isVisible()) {
-        await expect(tokenPill).toHaveText(value);
+        await expect(tokenPill).toHaveText(value, { timeout: 0 });
       } else {
-        await expect(this.generalCornerRadiusInput).toHaveValue(value);
+        await expect(
+          this.page.locator(`div[aria-label="${ariaLabel}"] input`),
+        ).toHaveValue(value, { timeout: 0 });
       }
     }).toPass({ timeout: 10000 });
+  }
+
+  async checkGeneralCornerRadius(value) {
+    await this.checkTokenField('Radius', value);
   }
 
   async checkRotationForLayer(value) {
@@ -1619,31 +1625,31 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkStrokeWidth(value) {
-    await expect(this.strokeWidthInput).toHaveValue(value);
+    await this.checkTokenField('Stroke width', value);
   }
 
   async checkRowGap(value) {
-    await expect(this.layoutRowGapInput).toHaveValue(value);
+    await this.checkTokenField('Row gap', value);
   }
 
   async checkColumnGap(value) {
-    await expect(this.layoutColumnGapInput).toHaveValue(value);
+    await this.checkTokenField('Column gap', value);
   }
 
   async checkXAxis(value) {
-    await expect(this.xAxisInput).toHaveValue(value);
+    await this.checkTokenField('X axis', value);
   }
 
   async checkYAxis(value) {
-    await expect(this.yAxisInput).toHaveValue(value);
+    await this.checkTokenField('Y axis', value);
   }
 
   async checkSizeWidth(value) {
-    await expect(this.sizeWidthInput).toHaveValue(value);
+    await this.checkTokenField('Width', value);
   }
 
   async checkSizeHeight(value) {
-    await expect(this.sizeHeightInput).toHaveValue(value);
+    await this.checkTokenField('Height', value);
   }
 
   async clickOnFlexElementWidth100Btn() {
@@ -1666,13 +1672,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     switch (type) {
       case 'Width':
         min
-          ? await expect(this.flexElementMinWidthInput).toHaveValue(value)
-          : await expect(this.flexElementMaxWidthInput).toHaveValue(value);
+          ? await this.checkTokenField('Min width', value)
+          : await this.checkTokenField('Max width', value);
         break;
       case 'Height':
         min
-          ? await expect(this.flexElementMinHeightInput).toHaveValue(value)
-          : await expect(this.flexElementMaxHeightInput).toHaveValue(value);
+          ? await this.checkTokenField('Min height', value)
+          : await this.checkTokenField('Max height', value);
         break;
     }
   }
