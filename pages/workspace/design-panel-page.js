@@ -29,10 +29,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.bottomRightCornerRadiusInput = page.getByRole('textbox', {
       name: 'Bottom right',
     });
-    this.sizeWidthInput = page.locator('div[aria-label="Width"] input');
-    this.sizeHeightInput = page.locator('div[aria-label="Height"] input');
-    this.xAxisInput = page.locator('div[aria-label="X axis"] input');
-    this.yAxisInput = page.locator('div[aria-label="Y axis"] input');
+    this.sizeWidthInput = page.getByRole('textbox', { name: 'Width' });
+    this.sizeHeightInput = page.getByRole('textbox', { name: 'Height' });
+    this.xAxisInput = page.getByRole('textbox', { name: 'X axis' });
+    this.yAxisInput = page.getByRole('textbox', { name: 'Y axis' });
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
