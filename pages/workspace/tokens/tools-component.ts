@@ -82,7 +82,7 @@ export class ToolsComponent {
   }
 
   async getTokenErrorDetailText() {
-    const text: string | null = await this.importErrorDetailMessage.textContent();
+    const text: string | null = await this.importErrorDetailMessage.innerText();
     const safeText = text ?? '';
     return safeText
       .split('\n')

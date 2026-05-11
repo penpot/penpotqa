@@ -186,7 +186,9 @@ exports.BasePage = class BasePage {
     this.acceptCookieButton = page.getByRole('button', { name: 'Accept all' });
     this.renameOption = page.getByRole('listitem').filter({ hasText: 'Rename' });
     this.importErrorMessage = page.locator('div[class*="error-message"]');
-    this.detailsButton = page.getByRole('alert').getByText('Details');
+    this.detailsButton = page
+      .getByRole('alert')
+      .getByText('Details', { exact: true });
     this.continueButton = this.page.getByRole('button', {
       name: 'Continue',
     });
