@@ -1602,7 +1602,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkGeneralCornerRadius(value) {
-    await expect(this.generalCornerRadiusInput).toHaveValue(value);
+    const tokenPill = this.page.locator(
+      'div[aria-label="Radius"] button[class*="token-field__pill"]',
+    );
+    await expect(async () => {
+      if (await tokenPill.isVisible()) {
+        await expect(tokenPill).toHaveText(value);
+      } else {
+        await expect(this.generalCornerRadiusInput).toHaveValue(value);
+      }
+    }).toPass({ timeout: 10000 });
   }
 
   async checkRotationForLayer(value) {
