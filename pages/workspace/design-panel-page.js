@@ -1637,11 +1637,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkXAxis(value) {
-    await this.checkTokenField('X axis', value);
+    await expect(this.xAxisInput).toHaveValue(value);
   }
 
   async checkYAxis(value) {
-    await this.checkTokenField('Y axis', value);
+    await expect(this.yAxisInput).toHaveValue(value);
   }
 
   async checkSizeWidth(value) {
