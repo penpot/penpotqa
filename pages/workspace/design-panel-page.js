@@ -329,9 +329,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textAlignOptionsButton = page.getByTestId('text-align-options-button');
     this.textUnderline = page.getByTitle('Underline (Ctrl+U)');
     this.textStrikethrough = page.getByTitle('Strikethrough (Alt+Shift+Ctrl+5)');
-    this.textTypographyMenuButton = this.designTabpanel.locator(
-      'button[class*="typography__menu-btn"]',
-    );
+    this.textTypographyMenuButton = this.designTabpanel
+      .locator('div[class*="element-set-actions"]')
+      .getByRole('button', { name: 'labels.open' });
     this.textTransformMenu = page.locator('[class*="typography__text-transform"]');
     this.textUpperCaseButton = this.textTransformMenu.getByTitle('Upper Case');
     this.textCapitalizeButton = this.textTransformMenu.getByTitle('Capitalize');
@@ -1832,7 +1832,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnTypographyMenuButton() {
-    await this.textTypographyMenuButton.click({ force: true });
+    await this.designTabpanel.locator('div[class*="typography-entry"]').hover();
+    await this.textTypographyMenuButton.click();
   }
 
   async isTypographyAssetAgVisible(visible = true) {
