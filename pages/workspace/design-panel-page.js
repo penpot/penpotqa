@@ -1616,11 +1616,21 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     await expect(async () => {
       if ((await tokenPill.count()) > 0) {
-        await expect(tokenPill).toHaveText(value, { timeout: 0 });
+        const actual = await tokenPill.textContent();
+        expect(
+          actual?.trim(),
+          `"${ariaLabel}" pill: expected "${value}", got "${actual?.trim()}"`,
+        ).toBe(value);
       } else {
-        await expect(
-          this.page.locator(`div[aria-label="${ariaLabel}"] input`),
-        ).toHaveValue(value, { timeout: 0 });
+        const input = this.page.locator(`div[aria-label="${ariaLabel}"] input`);
+        const count = await input.count();
+        if (count === 0)
+          throw new Error(`"${ariaLabel}" field not found (no pill, no input)`);
+        const actual = await input.inputValue();
+        expect(
+          actual,
+          `"${ariaLabel}" input: expected "${value}", got "${actual}"`,
+        ).toBe(value);
       }
     }).toPass({ timeout: 10000 });
   }
