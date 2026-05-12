@@ -884,8 +884,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.openTypographyFontDropdown();
     await this.searchTypographyFontFromSearch(fontName);
     await this.page
-      .locator(`div[class*="font-item"] span:has-text('${fontName}')`)
-      .click();
+      .locator('div[class*="fonts-list"]')
+      .getByText(fontName, { exact: true })
+      .first()
+      .evaluate((el) => el.click());
+    await expect(this.textFontSelector).toBeVisible();
   }
 
   async changeTextFontStyle(fontStyleName) {
