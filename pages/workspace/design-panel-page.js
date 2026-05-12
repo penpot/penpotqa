@@ -143,18 +143,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementHeight100Btn = page.getByTitle('Height 100%');
     this.flexElementFixWidthBtn = page.getByTitle('Fix width');
     this.flexElementFixHeightBtn = page.getByTitle('Fix height');
-    this.flexElementMinWidthInput = page.locator(
-      'div[aria-label="Min width"] input',
-    );
-    this.flexElementMaxWidthInput = page.locator(
-      'div[aria-label="Max width"] input',
-    );
-    this.flexElementMinHeightInput = page.locator(
-      'div[aria-label="Min height"] input',
-    );
-    this.flexElementMaxHeightInput = page.locator(
-      'div[aria-label="Max height"] input',
-    );
+    this.flexElementMinWidthInput = page.getByRole('spinbutton', {
+      name: 'Min width',
+    });
+    this.flexElementMaxWidthInput = page.getByRole('spinbutton', {
+      name: 'Max width',
+    });
+    this.flexElementMinHeightInput = page.getByRole('spinbutton', {
+      name: 'Min height',
+    });
+    this.flexElementMaxHeightInput = page.getByRole('spinbutton', {
+      name: 'Max height',
+    });
     this.flexAddLayoutButton = page.getByRole('button', { name: 'Flex layout' });
     this.gridAddLayoutButton = page.getByRole('button', { name: 'Grid layout' });
     this.gridEditButton = page.getByRole('button', { name: 'Edit grid' });
