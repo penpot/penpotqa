@@ -214,9 +214,9 @@ exports.MainPage = class MainPage extends BasePage {
       name: 'Pages',
       exact: true,
     });
-    this.pageTrashIcon = page.locator(
-      'div[class*="selected"] svg[class="icon-delete"]',
-    );
+    this.pageTrashIcon = page
+      .locator('div[class*="selected"]')
+      .getByRole('button', { name: 'Delete page' });
     this.deletePageOkButton = page.getByRole('button', { name: 'Ok' });
 
     // Bottom palette
