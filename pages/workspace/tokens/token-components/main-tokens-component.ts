@@ -95,6 +95,7 @@ export class MainTokensComponent {
 
   async fillTokenData(mainToken: MainToken<TokenClass>) {
     if (mainToken.value !== undefined) {
+      await this.tokenValueInput.clear();
       await this.tokenValueInput.fill(mainToken.value);
     }
   }
