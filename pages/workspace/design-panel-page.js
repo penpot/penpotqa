@@ -327,8 +327,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textLineHeightInput = page.getByTitle('Line Height').locator('input');
     this.textLetterSpacingInput = page.getByTitle('Letter Spacing').locator('input');
     this.textAlignOptionsButton = page.getByTestId('text-align-options-button');
-    this.textUnderline = page.getByTitle('Underline (Ctrl+U)');
-    this.textStrikethrough = page.getByTitle('Strikethrough (Alt+Shift+Ctrl+5)');
+    this.textUnderline = page.getByTestId('underline-text-decoration');
+    this.textStrikethrough = page.getByTestId('line-through-text-decoration');
     this.textTypographyMenuButton = this.designTabpanel
       .locator('div[class*="element-set-actions"]')
       .getByRole('button', { name: 'labels.open' });
