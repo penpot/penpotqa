@@ -650,6 +650,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async changeRotationForLayer(value) {
+    const detachButton = this.page
+      .locator('div[aria-label="Rotation"]')
+      .getByRole('button', { name: 'Detach token' });
+    if ((await detachButton.count()) > 0) {
+      await detachButton.click({ force: true });
+    }
     await this.layerRotationInput.clear();
     await this.layerRotationInput.pressSequentially(value);
     await this.clickOnEnter();
@@ -1624,7 +1630,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkRotationForLayer(value) {
-    await expect(this.layerRotationInput).toHaveValue(value);
+    await this.checkTokenField('Rotation', value);
   }
 
   async checkStrokeWidth(value) {
