@@ -1606,7 +1606,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       `div[aria-label="${ariaLabel}"] button[class*="token_field__pill"]`,
     );
     await expect(async () => {
-      if (await tokenPill.isVisible()) {
+      if ((await tokenPill.count()) > 0) {
         await expect(tokenPill).toHaveText(value, { timeout: 0 });
       } else {
         await expect(
@@ -1637,11 +1637,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkXAxis(value) {
-    await expect(this.xAxisInput).toHaveValue(value);
+    await this.checkTokenField('X axis', value);
   }
 
   async checkYAxis(value) {
-    await expect(this.yAxisInput).toHaveValue(value);
+    await this.checkTokenField('Y axis', value);
   }
 
   async checkSizeWidth(value) {
