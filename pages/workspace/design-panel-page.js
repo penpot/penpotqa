@@ -275,6 +275,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
 
     //Design panel - Stroke section
+    this.rightSidebar = this.page.getByTestId('right-sidebar');
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
     this.strokeElement = page.locator('div[class*="stroke-color-actions"]').last();
@@ -287,7 +288,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeColorInput = this.strokeElement.locator(
       'input[class*="color-input"]',
     );
-    this.strokeWidthInput = page.locator('div[aria-label="Stroke width"] input');
+    this.strokeWidthInput = this.rightSidebar.getByRole('button', {
+      name: 'stroke-width',
+    });
     this.strokeOpacityInput = this.strokeElement.locator(
       'input[data-testid="opacity-input"]',
     );
@@ -1644,7 +1647,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkStrokeWidth(value) {
-    await this.checkTokenField('Stroke width', value);
+    await expect(this.strokeWidthInput).toHaveText(value);
   }
 
   async checkRowGap(value) {

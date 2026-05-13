@@ -142,7 +142,7 @@ async function checkInviteText(text, team, user = 'k8q6byz') {
   const messageText =
     'Hello!\r\n' +
     '\r\n' +
-    `${user} has invited you to join the team “${team}”.\r\n` +
+    `${user} has invited you to join the team "${team}".\r\n` +
     '\r\n' +
     'Accept invitation using this link:\r\n' +
     '\r\n' +
