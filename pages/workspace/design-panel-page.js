@@ -323,6 +323,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textTypographyMenuButton = this.designTabpanel
       .locator('div[class*="element-set-actions"]')
       .getByRole('button', { name: 'labels.open' });
+    this.typographyEntry = this.designTabpanel.locator(
+      'div[class*="typography-entry"]',
+    );
     this.textTransformMenu = page.locator('[class*="typography__text-transform"]');
     this.textUpperCaseButton = this.textTransformMenu.getByTitle('Upper Case');
     this.textCapitalizeButton = this.textTransformMenu.getByTitle('Capitalize');
@@ -1836,7 +1839,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnTypographyMenuButton() {
-    await this.designTabpanel.locator('div[class*="typography-entry"]').hover();
+    await this.typographyEntry.hover();
     await this.textTypographyMenuButton.click();
   }
 
