@@ -8,7 +8,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   constructor(page) {
     super(page);
 
-    this.layersTab = page.getByRole('tab', { name: 'Layers', exact: true });
+    this.layersTab = page.getByRole('tab', { name: 'layers' });
     this.layersSidebar = page.getByTestId('layer-tree');
     this.layersRows = page.getByTestId('layer-row');
     this.sidebarLayerItem = page.locator(
