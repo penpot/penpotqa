@@ -188,7 +188,7 @@ exports.BasePage = class BasePage {
     this.importErrorMessage = page.locator('div[class*="error-message"]');
     this.detailsButton = page
       .getByRole('alert')
-      .getByRole('button', { name: 'Details', exact: true });
+      .getByText('Details', { exact: true });
     this.continueButton = this.page.getByRole('button', {
       name: 'Continue',
     });
