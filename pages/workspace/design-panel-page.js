@@ -1613,30 +1613,26 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  /**
+   * Asserts that a design field shows the expected token or value.
+   * Checks the token pill text if a token is applied, or the input value otherwise.
+   * @param {string} ariaLabel - Accessible label of the field container (e.g. 'Radius').
+   * @param {string} value - Expected token name or numeric value.
+   */
   async checkTokenField(ariaLabel, value) {
-    const tokenPill = this.page
-      .locator(`[aria-label="${ariaLabel}"]`)
+    const tokenContainer = this.page.locator(`[aria-label="${ariaLabel}"]`);
+    const tokenPill = tokenContainer
       .getByRole('button')
       .and(this.page.locator('[class*="token_field__pill"]'));
-    await expect(async () => {
-      if ((await tokenPill.count()) > 0) {
-        const actual = await tokenPill.textContent();
-        expect(
-          actual?.trim(),
-          `"${ariaLabel}" pill: expected "${value}", got "${actual?.trim()}"`,
-        ).toBe(value);
-      } else {
-        const input = this.page.locator(`div[aria-label="${ariaLabel}"] input`);
-        const count = await input.count();
-        if (count === 0)
-          throw new Error(`"${ariaLabel}" field not found (no pill, no input)`);
-        const actual = await input.inputValue();
-        expect(
-          actual,
-          `"${ariaLabel}" input: expected "${value}", got "${actual}"`,
-        ).toBe(value);
-      }
-    }).toPass({ timeout: 10000 });
+    const input = tokenContainer.locator('input');
+
+    await expect(tokenPill.or(input).first()).toBeVisible();
+
+    if (await tokenPill.isVisible()) {
+      await expect(tokenPill).toHaveText(value);
+    } else {
+      await expect(input).toHaveValue(value);
+    }
   }
 
   async checkGeneralCornerRadius(value) {
