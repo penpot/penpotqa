@@ -14,11 +14,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.canvasBackgroundColorIcon = page
       .locator('div[class*="page__element-set"] div[class*="color-bullet-wrapper"]')
       .first();
-    this.layerRotationInput = page.locator('div[aria-label="Rotation"] input');
+    this.layerRotationInput = page.getByLabel('Rotation');
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
     });
-    this.generalCornerRadiusInput = page.locator('div[aria-label="Radius"] input');
+    this.generalCornerRadiusInput = page.getByLabel('Radius');
     this.topLeftCornerRadiusInput = page.getByRole('textbox', { name: 'Top left' });
     this.topRightCornerRadiusInput = page.getByRole('textbox', {
       name: 'Top right',
@@ -1629,7 +1629,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkRotationForLayer(value) {
-    await this.checkTokenField('Rotation', value);
+    await expect(this.layerRotationInput).toHaveValue(value);
   }
 
   async checkStrokeWidth(value) {
