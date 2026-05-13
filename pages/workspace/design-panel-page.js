@@ -276,9 +276,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeColorInput = this.strokeElement.locator(
       'input[class*="color-input"]',
     );
-    this.strokeWidthInput = this.rightSidebar.getByRole('button', {
-      name: 'stroke-width',
-    });
+    this.strokeWidthInput = page.locator('div[aria-label="Stroke width"] input');
     this.strokeOpacityInput = this.strokeElement.locator(
       'input[data-testid="opacity-input"]',
     );
