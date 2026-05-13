@@ -1614,9 +1614,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkTokenField(ariaLabel, value) {
-    const tokenPill = this.page.locator(
-      `div[aria-label="${ariaLabel}"] button[class*="token_field__pill"]`,
-    );
+    const tokenPill = this.page
+      .locator(`[aria-label="${ariaLabel}"]`)
+      .getByRole('button')
+      .and(this.page.locator('[class*="token_field__pill"]'));
     await expect(async () => {
       if ((await tokenPill.count()) > 0) {
         const actual = await tokenPill.textContent();
