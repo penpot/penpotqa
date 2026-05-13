@@ -212,10 +212,10 @@ mainTest.describe(() => {
         'Verify import warning message and skipped token count',
         async () => {
           await tokensPage.checkImportErrorMessage(
-            `Import was successful. Some tokens were not included.`,
+            `Import was successful, but some tokens were skipped because they use unsupported $type values. Expand details to see which tokens were affected.`,
           );
           await tokensPage.expandDetailMessage();
-          await tokensPage.toolsComp.checkImportTokenDetailErrorCount(2);
+          await tokensPage.toolsComp.checkImportTokenDetailErrorCount(7);
         },
       );
 

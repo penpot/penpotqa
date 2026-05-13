@@ -42,7 +42,9 @@ export class MainTokensComponent {
     this.tokensPage = tokensPage;
 
     // Tokens locators
-    this.tokenValueInput = page.getByPlaceholder('{alias}');
+    this.tokenValueInput = page
+      .getByTestId('token-update-create-modal')
+      .getByPlaceholder('{alias}');
 
     this.addRadiusTokenButton = page.getByRole('button', {
       name: 'Add token: Border Radius',
@@ -93,6 +95,7 @@ export class MainTokensComponent {
 
   async fillTokenData(mainToken: MainToken<TokenClass>) {
     if (mainToken.value !== undefined) {
+      await this.tokenValueInput.clear();
       await this.tokenValueInput.fill(mainToken.value);
     }
   }

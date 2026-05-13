@@ -92,9 +92,11 @@ export class TokensComponent {
     this.createTokenModal = page.getByTestId('token-update-create-modal');
     this.tokenContextMenu = page.getByTestId('tokens-context-menu-for-token');
     this.tokenSections = this.tokenSideBar.locator('[class*="section-name"]');
-    this.invalidToken = page.locator('button[class*="token-pill-invalid-applied"]');
+    this.invalidToken = page
+      .getByRole('button')
+      .and(page.locator('[class*="token-pill-invalid-applied"]'));
     this.tokenDescriptionInput = page.getByPlaceholder('Description');
-    this.tokenNameInput = page.locator('#token-name');
+    this.tokenNameInput = this.createTokenModal.getByLabel('Name', { exact: true });
     this.duplicateTokenMenuItem = this.tokenContextMenu
       .getByRole('listitem')
       .filter({ hasText: 'Duplicate  token' });

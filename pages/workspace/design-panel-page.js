@@ -14,11 +14,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.canvasBackgroundColorIcon = page
       .locator('div[class*="page__element-set"] div[class*="color-bullet-wrapper"]')
       .first();
-    this.layerRotationInput = page.locator('div[aria-label="Rotation"] input');
+    this.layerRotationInput = page.getByLabel('Rotation');
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
     });
-    this.generalCornerRadiusInput = page.locator('div[aria-label="Radius"] input');
+    this.generalCornerRadiusInput = page.getByLabel('Radius');
     this.topLeftCornerRadiusInput = page.getByRole('textbox', { name: 'Top left' });
     this.topRightCornerRadiusInput = page.getByRole('textbox', {
       name: 'Top right',
@@ -143,18 +143,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementHeight100Btn = page.getByTitle('Height 100%');
     this.flexElementFixWidthBtn = page.getByTitle('Fix width');
     this.flexElementFixHeightBtn = page.getByTitle('Fix height');
-    this.flexElementMinWidthInput = page
-      .getByTitle('Min width')
-      .getByRole('textbox');
-    this.flexElementMaxWidthInput = page
-      .getByTitle('Max width')
-      .getByRole('textbox');
-    this.flexElementMinHeightInput = page
-      .getByTitle('Min height')
-      .getByRole('textbox');
-    this.flexElementMaxHeightInput = page
-      .getByTitle('Max height')
-      .getByRole('textbox');
     this.flexAddLayoutButton = page.getByRole('button', { name: 'Flex layout' });
     this.gridAddLayoutButton = page.getByRole('button', { name: 'Grid layout' });
     this.gridEditButton = page.getByRole('button', { name: 'Edit grid' });
@@ -288,9 +276,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeColorInput = this.strokeElement.locator(
       'input[class*="color-input"]',
     );
-    this.strokeWidthInput = this.rightSidebar.getByRole('button', {
-      name: 'stroke-width',
-    });
+    this.strokeWidthInput = page.locator('div[aria-label="Stroke width"] input');
     this.strokeOpacityInput = this.strokeElement.locator(
       'input[data-testid="opacity-input"]',
     );
@@ -330,10 +316,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textLineHeightInput = page.getByTitle('Line Height').locator('input');
     this.textLetterSpacingInput = page.getByTitle('Letter Spacing').locator('input');
     this.textAlignOptionsButton = page.getByTestId('text-align-options-button');
-    this.textUnderline = page.getByTitle('Underline (Ctrl+U)');
-    this.textStrikethrough = page.getByTitle('Strikethrough (Alt+Shift+Ctrl+5)');
-    this.textTypographyMenuButton = this.designTabpanel.locator(
-      'button[class*="typography__menu-btn"]',
+    this.textUnderline = page.getByTestId('underline-text-decoration');
+    this.textStrikethrough = page.getByTestId('line-through-text-decoration');
+    this.textTypographyMenuButton = this.designTabpanel
+      .locator('div[class*="element-set-actions"]')
+      .getByRole('button', { name: 'labels.open' });
+    this.typographyEntry = this.designTabpanel.locator(
+      'div[class*="typography-entry"]',
     );
     this.textTransformMenu = page.locator('[class*="typography__text-transform"]');
     this.textUpperCaseButton = this.textTransformMenu.getByTitle('Upper Case');
@@ -653,6 +642,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async changeRotationForLayer(value) {
+    const detachButton = this.page
+      .locator('div[aria-label="Rotation"]')
+      .getByRole('button', { name: 'Detach token' });
+    if ((await detachButton.count()) > 0) {
+      await detachButton.click({ force: true });
+    }
     await this.layerRotationInput.clear();
     await this.layerRotationInput.pressSequentially(value);
     await this.clickOnEnter();
@@ -887,8 +882,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.openTypographyFontDropdown();
     await this.searchTypographyFontFromSearch(fontName);
     await this.page
-      .locator(`div[class*="font-item"] span:has-text('${fontName}')`)
+      .locator('div[class*="fonts-list"]')
+      .getByText(fontName, { exact: true })
+      .first()
       .click();
+    await expect(this.textFontSelector).toBeVisible();
   }
 
   async changeTextFontStyle(fontStyleName) {
@@ -1604,8 +1602,30 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  /**
+   * Asserts that a design field shows the expected token or value.
+   * Checks the token pill text if a token is applied, or the input value otherwise.
+   * @param {string} ariaLabel - Accessible label of the field container (e.g. 'Radius').
+   * @param {string} value - Expected token name or numeric value.
+   */
+  async checkTokenField(ariaLabel, value) {
+    const tokenContainer = this.page.locator(`[aria-label="${ariaLabel}"]`);
+    const tokenPill = tokenContainer
+      .getByRole('button')
+      .and(this.page.locator('[class*="token_field__pill"]'));
+    const input = tokenContainer.locator('input');
+
+    await expect(tokenPill.or(input).first()).toBeVisible();
+
+    if (await tokenPill.isVisible()) {
+      await expect(tokenPill).toHaveText(value);
+    } else {
+      await expect(input).toHaveValue(value);
+    }
+  }
+
   async checkGeneralCornerRadius(value) {
-    await expect(this.generalCornerRadiusInput).toHaveValue(value);
+    await this.checkTokenField('Radius', value);
   }
 
   async checkRotationForLayer(value) {
@@ -1617,27 +1637,27 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkRowGap(value) {
-    await expect(this.layoutRowGapInput).toHaveValue(value);
+    await this.checkTokenField('Row gap', value);
   }
 
   async checkColumnGap(value) {
-    await expect(this.layoutColumnGapInput).toHaveValue(value);
+    await this.checkTokenField('Column gap', value);
   }
 
   async checkXAxis(value) {
-    await expect(this.xAxisInput).toHaveValue(value);
+    await this.checkTokenField('X axis', value);
   }
 
   async checkYAxis(value) {
-    await expect(this.yAxisInput).toHaveValue(value);
+    await this.checkTokenField('Y axis', value);
   }
 
   async checkSizeWidth(value) {
-    await expect(this.sizeWidthInput).toHaveValue(value);
+    await this.checkTokenField('Width', value);
   }
 
   async checkSizeHeight(value) {
-    await expect(this.sizeHeightInput).toHaveValue(value);
+    await this.checkTokenField('Height', value);
   }
 
   async clickOnFlexElementWidth100Btn() {
@@ -1660,13 +1680,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     switch (type) {
       case 'Width':
         min
-          ? await expect(this.flexElementMinWidthInput).toHaveValue(value)
-          : await expect(this.flexElementMaxWidthInput).toHaveValue(value);
+          ? await this.checkTokenField('Min width', value)
+          : await this.checkTokenField('Max width', value);
         break;
       case 'Height':
         min
-          ? await expect(this.flexElementMinHeightInput).toHaveValue(value)
-          : await expect(this.flexElementMaxHeightInput).toHaveValue(value);
+          ? await this.checkTokenField('Min height', value)
+          : await this.checkTokenField('Max height', value);
         break;
     }
   }
@@ -1817,7 +1837,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnTypographyMenuButton() {
-    await this.textTypographyMenuButton.click({ force: true });
+    await this.typographyEntry.hover();
+    await this.textTypographyMenuButton.click();
   }
 
   async isTypographyAssetAgVisible(visible = true) {

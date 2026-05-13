@@ -26,7 +26,7 @@ exports.BasePage = class BasePage {
     this.modalCloseButton = page.getByRole('button', { name: 'Close' });
 
     //Layer right-click menu items
-    this.createdLayer = page.getByTestId('layer-item').first();
+    this.createdLayer = page.getByTestId('layer-row').first();
     this.copyLayer = page
       .locator('div[class*="viewport"] [class*="viewport-selrect"]')
       .last();
@@ -186,7 +186,9 @@ exports.BasePage = class BasePage {
     this.acceptCookieButton = page.getByRole('button', { name: 'Accept all' });
     this.renameOption = page.getByRole('listitem').filter({ hasText: 'Rename' });
     this.importErrorMessage = page.locator('div[class*="error-message"]');
-    this.detailsButton = page.getByRole('button', { name: 'Details' });
+    this.detailsButton = page
+      .getByRole('alert')
+      .getByText('Details', { exact: true });
     this.continueButton = this.page.getByRole('button', {
       name: 'Continue',
     });
