@@ -324,7 +324,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       .locator('div[class*="fonts-list"]')
       .getByText(fontName, { exact: true })
       .first()
-      .evaluate((el) => el.click());
+      .click();
   }
 
   async selectFontSize(value) {

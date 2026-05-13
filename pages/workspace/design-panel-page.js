@@ -896,7 +896,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .locator('div[class*="fonts-list"]')
       .getByText(fontName, { exact: true })
       .first()
-      .evaluate((el) => el.click());
+      .click();
     await expect(this.textFontSelector).toBeVisible();
   }
 
