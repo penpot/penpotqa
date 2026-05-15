@@ -369,12 +369,17 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.useDefaultGridButton = page
       .getByRole('button')
       .filter({ hasText: 'Use default' });
-    this.gridWidthInput = page.locator(
-      'div[aria-label="Width"] input[class*="grid__numeric-input"]',
+
+    // Design panel - Grid Layout section - Advanced Options
+    this.gridAdvancedOptionsSection = page.locator(
+      '.main_ui_workspace_sidebar_options_common__advanced-options-wrapper',
     );
-    this.gridHeightInput = page.locator(
-      'div[aria-label="Height"] input[class*="grid__numeric-input"]',
-    );
+    this.gridWidthInput = this.gridAdvancedOptionsSection
+      .getByTitle('Width')
+      .getByPlaceholder('Auto');
+    this.gridHeightInput = this.gridAdvancedOptionsSection
+      .getByTitle('Height')
+      .getByPlaceholder('Auto');
 
     //Design panel - Component section
     this.componentContent = page.locator('div[class*="component-content"]');
