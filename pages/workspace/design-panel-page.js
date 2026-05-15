@@ -127,12 +127,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexElementAlignStartBtn = page.getByTestId('align-self-start');
     this.flexElementAlignCenterBtn = page.getByTestId('align-self-center');
     this.flexElementAlignEndBtn = page.getByTestId('align-self-end');
-    this.flexElementMarginVertInput = page.locator(
-      'div[aria-label="Vertical margin"] input',
-    );
-    this.flexElementMarginHorizontalInput = page.locator(
-      'div[aria-label="Horizontal margin"] input',
-    );
+    this.flexElementMarginVertInput = page.getByRole('textbox', {
+      name: 'Vertical margin',
+    });
+    this.flexElementMarginHorizontalInput = page.getByRole('textbox', {
+      name: 'Horizontal margin',
+    });
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
