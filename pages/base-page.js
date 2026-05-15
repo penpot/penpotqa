@@ -27,6 +27,7 @@ exports.BasePage = class BasePage {
 
     //Layer right-click menu items
     this.createdLayer = page.getByTestId('layer-row').first();
+    this.layerItem = page.getByTestId('layer-item').first();
     this.copyLayer = page
       .locator('div[class*="viewport"] [class*="viewport-selrect"]')
       .last();
@@ -405,7 +406,7 @@ exports.BasePage = class BasePage {
   }
 
   async createComponentViaRightClickFromLayerByName(name) {
-    const layerSel = this.createdLayer.getByText(name, { exact: true });
+    const layerSel = this.layerItem.getByText(name, { exact: true });
     await layerSel.last().click({ button: 'right' });
     await this.createComponentMenuItem.waitFor({ state: 'visible' });
     await this.createComponentMenuItem.click();
