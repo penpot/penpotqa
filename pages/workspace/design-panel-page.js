@@ -1634,7 +1634,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkRotationForLayer(value) {
-    await expect(this.layerRotationInput).toHaveValue(value);
+    await this.checkTokenField('Rotation', value);
   }
 
   async checkStrokeWidth(value) {
