@@ -1638,7 +1638,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkStrokeWidth(value) {
-    await expect(this.strokeWidthInput).toHaveText(value);
+    await this.checkTokenField('Stroke width', value);
   }
 
   async checkRowGap(value) {
