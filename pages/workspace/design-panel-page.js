@@ -1614,7 +1614,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
    * @param {string} value - Expected token name or numeric value.
    */
   async checkTokenField(ariaLabel, value) {
-    const tokenContainer = this.page.locator(`[aria-label="${ariaLabel}"]`);
+    const tokenContainer = this.page.getByLabel(ariaLabel, { exact: true });
     const tokenPill = tokenContainer
       .getByRole('button')
       .and(this.page.locator('[class*="token_field__pill"]'));
