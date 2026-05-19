@@ -67,6 +67,7 @@ mainTest(
         await designPanelPage.checkYAxis(defaultY);
         await tokensPage.tokensComp.selectMenuItem(dimensionToken.name, 'AxisX');
         await tokensPage.tokensComp.isTokenAppliedWithName(dimensionToken.name);
+        await mainPage.waitForChangeIsSaved();
         await designPanelPage.checkXAxis(dimensionToken.value);
         await designPanelPage.checkYAxis(defaultY);
       },
