@@ -530,13 +530,11 @@ mainTest.describe(() => {
     await mainTest.step(
       'Detach copy instance from Design tab and resize',
       async () => {
-        await layersPanelPage.clickCopyComponentOnLayersTab();
         await designPanelPage.clickOnComponentMenuButton();
         await designPanelPage.clickOnDetachInstanceOption();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-        await designPanelPage.changeAxisXAndYForLayer('400', '300');
-        await mainPage.waitForChangeIsSaved();
+        await mainPage.waitForResizeHandlerVisible();
       },
     );
 
