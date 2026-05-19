@@ -1614,7 +1614,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
    * @param {string} value - Expected token name or numeric value.
    */
   async checkTokenField(ariaLabel, value) {
-    const tokenContainer = this.page.locator(`[aria-label="${ariaLabel}"]`);
+    const tokenContainer = this.page.getByLabel(ariaLabel, { exact: true });
     const tokenPill = tokenContainer
       .getByRole('button')
       .and(this.page.locator('[class*="token_field__pill"]'));
@@ -1634,11 +1634,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkRotationForLayer(value) {
-    await expect(this.layerRotationInput).toHaveValue(value);
+    await this.checkTokenField('Rotation', value);
   }
 
   async checkStrokeWidth(value) {
-    await expect(this.strokeWidthInput).toHaveText(value);
+    await this.checkTokenField('Stroke width', value);
   }
 
   async checkRowGap(value) {
