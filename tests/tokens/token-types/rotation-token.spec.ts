@@ -47,7 +47,7 @@ mainTest(
       name: 'rotation',
       value: '-(22.5+22.5)',
     };
-    const tokenResolvedValue = '-45'; // 315 == -45 == -(22.5+22.5)
+    const tokenResolvedValue = '-45'; // -45 == -(22.5+22.5)
 
     await mainTest.step('Create text layer and rotation token', async () => {
       await mainPage.createDefaultTextLayerByCoordinates(320, 210);
