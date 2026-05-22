@@ -26,7 +26,7 @@ mainTest.afterEach(async () => {
   await teamPage.deleteTeam(teamName);
 });
 
-mainTest(qase(850, 'PF-132 Zoom via top right menu'), async ({ page }) => {
+mainTest(qase(850, 'Zoom via top right menu'), async ({ page }) => {
   await mainPage.increaseZoom(1);
   await mainPage.clickViewportOnce();
   await expect(page).toHaveScreenshot('canvas-zoom-in.png', {
@@ -49,7 +49,7 @@ mainTest(qase(850, 'PF-132 Zoom via top right menu'), async ({ page }) => {
   });
 });
 
-mainTest(qase(852, 'PF-134 Reset zoom via top right menu'), async ({ page }) => {
+mainTest(qase(852, 'Reset zoom via top right menu'), async ({ page }) => {
   await mainPage.increaseZoom(1);
   await mainPage.clickViewportOnce();
   await expect(page).toHaveScreenshot('canvas-zoom-in.png', {
@@ -71,30 +71,27 @@ mainTest(qase(852, 'PF-134 Reset zoom via top right menu'), async ({ page }) => 
   });
 });
 
-mainTest(
-  qase(854, 'PF-136 Zoom to fit all via top right menu'),
-  async ({ page }) => {
-    await mainPage.clickCreateBoardButton();
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-    await page.mouse.wheel(0, 1000);
-    await mainPage.clickCreateEllipseButton();
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.zoomToFitAll();
-    await mainPage.clickViewportTwice();
-    await expect(page).toHaveScreenshot('canvas-zoom-to-fit-all.png', {
-      mask: [
-        mainPage.usersSection,
-        mainPage.guides,
-        mainPage.guidesFragment,
-        mainPage.toolBarWindow,
-      ],
-    });
-  },
-);
+mainTest(qase(854, 'Zoom to fit all via top right menu'), async ({ page }) => {
+  await mainPage.clickCreateBoardButton();
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await page.mouse.wheel(0, 1000);
+  await mainPage.clickCreateEllipseButton();
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.zoomToFitAll();
+  await mainPage.clickViewportTwice();
+  await expect(page).toHaveScreenshot('canvas-zoom-to-fit-all.png', {
+    mask: [
+      mainPage.usersSection,
+      mainPage.guides,
+      mainPage.guidesFragment,
+      mainPage.toolBarWindow,
+    ],
+  });
+});
 
-mainTest(qase(856, 'PF-138 Zoom to selected via top right menu'), async () => {
+mainTest(qase(856, 'Zoom to selected via top right menu'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportByCoordinates(900, 100);
   await mainPage.waitForChangeIsSaved();
