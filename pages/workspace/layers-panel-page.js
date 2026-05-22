@@ -65,7 +65,9 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.searchLayersIcon = this.layersSidebar.getByRole('button', {
       name: 'Search',
     });
-    this.searchLayersInput = this.layersSidebar.getByPlaceholder('Search layers');
+    this.searchLayersInput = this.layersSidebar.getByRole('textbox', {
+      name: 'Find…',
+    });
   }
 
   /**
