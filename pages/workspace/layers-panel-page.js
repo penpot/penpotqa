@@ -323,7 +323,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.mainComponentLayer.last().click();
   }
 
-  async clickNMainComponentOnLayersTab(index) {
+  async clickOnMainComponentOnLayersTab(index) {
     await this.mainComponentLayer.nth(index).click();
   }
 

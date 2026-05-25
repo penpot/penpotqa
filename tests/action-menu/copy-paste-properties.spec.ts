@@ -147,7 +147,7 @@ mainTest.describe(() => {
       await designPanelPage.changeAxisXAndYForLayer('350', '650');
       await mainPage.waitForChangeIsSaved();
 
-      await layersPanelPage.clickNMainComponentOnLayersTab(1);
+      await layersPanelPage.clickOnMainComponentOnLayersTab(1);
       await mainPage.clickShortcutCtrlAltC();
       await layersPanelPage.clickNCopyComponentOnLayersTab(0);
       await mainPage.clickShortcutCtrlAltV();

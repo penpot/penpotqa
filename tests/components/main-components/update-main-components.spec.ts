@@ -911,7 +911,7 @@ mainTest(
         await designPanelPage.setComponentColor(sampleData.color.greenHexCode1);
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.clickNMainComponentOnLayersTab(-2);
+        await layersPanelPage.clickOnMainComponentOnLayersTab(-2);
         await designPanelPage.setComponentColor(sampleData.color.greenHexCode2);
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
