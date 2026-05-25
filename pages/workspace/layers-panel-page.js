@@ -315,7 +315,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.copyComponentLayer.last().click();
   }
 
-  async clickNCopyComponentOnLayersTab(index) {
+  async clickOnCopyComponentOnLayersTab(index) {
     await this.copyComponentLayer.nth(index).click();
   }
 

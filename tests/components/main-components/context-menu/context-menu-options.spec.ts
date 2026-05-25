@@ -676,7 +676,7 @@ mainTest.describe(() => {
         async () => {
           await mainPage.duplicateLayerViaRightClick();
           await mainPage.waitForChangeIsSaved();
-          await layersPanelPage.clickNCopyComponentOnLayersTab(-2);
+          await layersPanelPage.clickOnCopyComponentOnLayersTab(-2);
           await designPanelPage.changeAxisXAndYForLayer('250', '500');
         },
       );

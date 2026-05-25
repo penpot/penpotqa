@@ -290,7 +290,7 @@ mainTest.describe(() => {
             'Property 1',
             'Value 1',
           );
-          await layersPanelPage.clickNCopyComponentOnLayersTab(0);
+          await layersPanelPage.clickOnCopyComponentOnLayersTab(0);
           await designPanelPage.checkCopyVariantPropertyValue(
             'Property 1',
             'Value 1',
@@ -298,7 +298,7 @@ mainTest.describe(() => {
           await designPanelPage.checkVariantWarning(
             'This component has conflicting variants. Make sure each variation has a unique set of property values.',
           );
-          await layersPanelPage.clickNCopyComponentOnLayersTab(1);
+          await layersPanelPage.clickOnCopyComponentOnLayersTab(1);
           await designPanelPage.checkCopyVariantPropertyValue(
             'Property 1',
             'Value 1',

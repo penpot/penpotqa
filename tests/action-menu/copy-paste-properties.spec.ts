@@ -149,7 +149,7 @@ mainTest.describe(() => {
 
       await layersPanelPage.clickOnMainComponentOnLayersTab(1);
       await mainPage.clickShortcutCtrlAltC();
-      await layersPanelPage.clickNCopyComponentOnLayersTab(0);
+      await layersPanelPage.clickOnCopyComponentOnLayersTab(0);
       await mainPage.clickShortcutCtrlAltV();
 
       await mainPage.waitForChangeIsSaved();
