@@ -451,6 +451,12 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     });
   }
 
+  async copyMainComponentPropertiesViaRightClick(index) {
+    await this.mainComponentLayer.nth(index).click({ button: 'right', force: true });
+    await this.copyPasteAsMenuItem.hover();
+    await this.copyPropertiesMenuItem.click();
+  }
+
   async deleteMainComponentViaRightClick() {
     await this.mainComponentLayer.first().click({ button: 'right', force: true });
     await this.deleteLayerMenuOption.click();

@@ -140,8 +140,10 @@ mainTest.describe(() => {
           await mainPage.createDefaultRectangleByCoordinates(100, 100);
           await mainPage.createComponentViaRightClick();
           await designPanelPage.clickFirstColorIcon();
-          await colorPalettePage.setHex('#0000FF');
-          await mainPage.waitForChangeIsSaved();
+          await Promise.all([
+            mainPage.waitForUpdateFileRequest(),
+            colorPalettePage.setHex('#0000FF'),
+          ]);
           await mainPage.duplicateLayerViaRightClick();
           await designPanelPage.changeAxisXAndYForLayer('300', '150');
         },
@@ -161,9 +163,7 @@ mainTest.describe(() => {
       await mainTest.step(
         'Copy properties from main component 1 and paste on copy component 2',
         async () => {
-          await layersPanelPage.clickOnMainComponentOnLayersTab(1);
-          await layersPanelPage.waitForMainComponentIsSelected();
-          await mainPage.copyLayerPropertyViaRightClick();
+          await layersPanelPage.copyMainComponentPropertiesViaRightClick(1);
           await layersPanelPage.clickOnCopyComponentOnLayersTab(0);
           await mainPage.clickShortcutCtrlAltV();
         },
