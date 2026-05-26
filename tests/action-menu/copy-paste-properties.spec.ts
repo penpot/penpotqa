@@ -1,17 +1,17 @@
-import { expect } from '@playwright/test';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { random } from 'helpers/string-generator';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
-import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { TeamPage } from '@pages/dashboard/team-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { expect } from '@playwright/test';
+import { mainTest } from 'fixtures';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
@@ -134,31 +134,53 @@ mainTest.describe(() => {
   mainTest(
     qase([1975], 'Copy paste Properties on Main component 1 to Copy component 2'),
     async () => {
-      await mainPage.createDefaultRectangleByCoordinates(100, 100);
-      await mainPage.createComponentViaRightClick();
-      await designPanelPage.clickFirstColorIcon();
-      await colorPalettePage.setHex('#0000FF');
-      await mainPage.duplicateLayerViaRightClick();
-      await designPanelPage.changeAxisXAndYForLayer('300', '150');
+      await mainTest.step(
+        'Create main component 1 (rectangle) with blue fill and its copy',
+        async () => {
+          await mainPage.createDefaultRectangleByCoordinates(100, 100);
+          await mainPage.createComponentViaRightClick();
+          await designPanelPage.clickFirstColorIcon();
+          await colorPalettePage.setHex('#0000FF');
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.duplicateLayerViaRightClick();
+          await designPanelPage.changeAxisXAndYForLayer('300', '150');
+        },
+      );
 
-      await mainPage.createDefaultEllipseByCoordinates(100, 700, true);
-      await mainPage.createComponentViaRightClick();
-      await mainPage.duplicateLayerViaRightClick();
-      await designPanelPage.changeAxisXAndYForLayer('350', '650');
-      await mainPage.waitForChangeIsSaved();
+      await mainTest.step(
+        'Create main component 2 (ellipse) and its copy',
+        async () => {
+          await mainPage.createDefaultEllipseByCoordinates(100, 700, true);
+          await mainPage.createComponentViaRightClick();
+          await mainPage.duplicateLayerViaRightClick();
+          await designPanelPage.changeAxisXAndYForLayer('350', '650');
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await mainPage.clickShortcutCtrlAltC();
-      await layersPanelPage.clickOnCopyComponentOnLayersTab(0);
-      await mainPage.clickShortcutCtrlAltV();
+      await mainTest.step(
+        'Copy properties from main component 1 and paste on copy component 2',
+        async () => {
+          await layersPanelPage.clickOnMainComponentOnLayersTab(1);
+          await layersPanelPage.waitForMainComponentIsSelected();
+          await mainPage.copyLayerPropertyViaRightClick();
+          await layersPanelPage.clickOnCopyComponentOnLayersTab(0);
+          await mainPage.clickShortcutCtrlAltV();
+        },
+      );
 
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
+      await mainTest.step(
+        'Verify paste did not change copy component 2',
+        async () => {
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
 
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'paste-property-copy-component.png',
-        {
-          mask: mainPage.maskViewport(),
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'paste-property-copy-component.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
     },
