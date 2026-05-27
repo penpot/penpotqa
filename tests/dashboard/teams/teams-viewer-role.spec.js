@@ -57,7 +57,6 @@ async function setupViewerUser(page, role = 'Viewer') {
   const verificationMessage = await getVerificationMessage(userEmail);
   await page.goto(verificationMessage.inviteUrl);
   await dashboardPage.fillOnboardingQuestions();
-  await page.goto(invite.inviteUrl);
   await teamPage.isTeamSelected(teamName);
 
   return {
@@ -251,7 +250,6 @@ mainTest.describe('Viewer Role - Role Changes', () => {
       const verificationMessage = await getVerificationMessage(adminEmail);
       await page.goto(verificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
-      await page.goto(invite.inviteUrl);
       await teamPage.isTeamSelected(teamName);
 
       // Change Admin → Viewer
