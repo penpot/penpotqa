@@ -8,18 +8,15 @@ import { waitMessage } from './helpers/gmail';
 
 export const mainTest = test.extend({
   page: async ({ page }, use, testInfo) => {
-    const loginPage = new LoginPage(page);
+    await page.goto(process.env.BASE_URL!);
+
     const dashboardPage = new DashboardPage(page);
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL!);
-    await loginPage.enterPwd(process.env.LOGIN_PWD!);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await dashboardPage.isHeaderDisplayed('Projects');
+
     await dashboardPage.skipWhatNewsPopUp();
     await dashboardPage.skipPluginsPopUp();
+
     await use(page);
+
     await updateTestResults(testInfo.status, testInfo.retry);
   },
 });

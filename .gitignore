@@ -51,6 +51,9 @@ npm-debug.log*
 /playwright/.cache/
 .playwright-cli/
 
+# Auth state (Playwright storageState)
+storageState/
+
 # Test results
 /test-results/
 testResults.json
