@@ -1,5 +1,6 @@
 import { defineConfig } from '@playwright/test';
 import 'dotenv/config';
+import { getStorageStatePath } from 'helpers/storageStatePath';
 
 export default defineConfig({
   snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/linux/{projectName}/{arg}{ext}`,
@@ -52,7 +53,7 @@ export default defineConfig({
     baseURL: process.env.BASE_URL,
     headless: true,
     /* Save storageState to be reused in login */
-    storageState: 'storageState/owner.json',
+    storageState: getStorageStatePath(),
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: process.env.CI ? 'on-first-retry' : 'on',
     video: process.env.CI ? 'on-first-retry' : 'on',

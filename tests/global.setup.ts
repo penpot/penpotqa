@@ -1,9 +1,9 @@
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { LoginPage } from '@pages/login-page';
 import { chromium } from '@playwright/test';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
-
-import { LoginPage } from '@pages/login-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { getStorageStatePath } from 'helpers/storageStatePath';
 
 export default async function globalSetup() {
   const runId = randomUUID().slice(0, 8);
@@ -14,34 +14,33 @@ export default async function globalSetup() {
 
   fs.mkdirSync('storageState', { recursive: true });
 
+  const statePath = getStorageStatePath(); // IMPORTANT: inside function
+
   const browser = await chromium.launch();
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
-  try {
-    const context = await browser.newContext({
-      baseURL: process.env.BASE_URL,
-    });
+  const loginPage = new LoginPage(page);
 
-    const page = await context.newPage();
+  await loginPage.goto();
+  await loginPage.acceptCookie();
+  await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL!);
+  await loginPage.enterPwd(process.env.LOGIN_PWD!);
+  await loginPage.clickLoginButton();
 
-    const loginPage = new LoginPage(page);
+  const dashboardPage = new DashboardPage(page);
 
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL!);
-    await loginPage.enterPwd(process.env.LOGIN_PWD!);
-    await loginPage.clickLoginButton();
+  await dashboardPage.isDashboardOpenedAfterLogin();
+  await dashboardPage.isHeaderDisplayed('Projects');
 
-    const dashboardPage = new DashboardPage(page);
+  await context.storageState({ path: statePath });
 
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await dashboardPage.isHeaderDisplayed('Projects');
+  await browser.close();
 
-    await context.storageState({
-      path: 'storageState/owner.json',
-    });
-
-    console.log('✅ Authentication state saved to storageState/owner.json');
-  } finally {
-    await browser.close();
+  // ✅ FIXED VALIDATION
+  if (!fs.existsSync(statePath)) {
+    throw new Error(`storageState not created: ${statePath}`);
   }
+
+  console.log(`✅ storageState successfully created: ${statePath}`);
 }
