@@ -84,7 +84,6 @@ async function setupUserWithRole(
   const verificationMessage = await getVerificationMessage(userEmail);
   await page.goto(verificationMessage.inviteUrl);
   await dashboardPage.fillOnboardingQuestions();
-  await page.goto(invite.inviteUrl);
   await teamPage.isTeamSelected(teamName);
 
   return {

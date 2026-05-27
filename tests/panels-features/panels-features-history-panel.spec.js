@@ -257,7 +257,6 @@ mainTest.describe(() => {
       const verificationMessage = await getVerificationMessage(firstEmail);
       await page.goto(verificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
-      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(teamName);
 
       await dashboardPage.openFile();

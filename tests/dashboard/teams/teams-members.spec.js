@@ -177,7 +177,6 @@ mainTest(qase(1196, 'Team. Members - leave team (as owner)'), async ({ page }) =
   const verificationMessage = await getVerificationMessage(firstEmail);
   await page.goto(verificationMessage.inviteUrl);
   await dashboardPage.fillOnboardingQuestions();
-  await page.goto(firstInvite.inviteUrl);
   await teamPage.isTeamSelected(team);
 
   await profilePage.logout();
