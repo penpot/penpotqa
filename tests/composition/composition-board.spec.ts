@@ -1,22 +1,22 @@
-const { mainTest } = require('../../fixtures');
-const { MainPage } = require('../../pages/workspace/main-page');
-const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
-const { expect } = require('@playwright/test');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
-const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
-const { qase } = require('playwright-qase-reporter/playwright');
+import { mainTest } from 'fixtures';
+import { MainPage } from '@pages/workspace/main-page';
+import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { expect } from '@playwright/test';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 
-let mainPage,
-  teamPage,
-  dashboardPage,
-  colorPalettePage,
-  designPanelPage,
-  layersPanelPage;
+let dashboardPage: DashboardPage;
+let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
+let mainPage: MainPage;
+let teamPage: TeamPage;
+let colorPalettePage: ColorPalettePage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
