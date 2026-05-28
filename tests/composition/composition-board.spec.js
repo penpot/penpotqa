@@ -1007,3 +1007,35 @@ mainTest(
     });
   },
 );
+
+mainTest(qase([2913], 'Copy board as image to clipboard'), async () => {
+  await mainTest.step(
+    'Create a board with an ellipse and rectangle inside',
+    async () => {
+      await mainPage.createDefaultBoardByCoordinates(200, 200);
+      await designPanelPage.changeHeightAndWidthForLayer('250', '250');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultEllipseByCoordinates(210, 210, true);
+      await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
+      await mainPage.clickViewportOnce();
+    },
+  );
+
+  await mainTest.step('Select the board', async () => {
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+  });
+
+  await mainTest.step('Copy board as image', async () => {
+    await mainPage.copyBoardAsImageViaRightClick();
+  });
+
+  await mainTest.step('Paste board in viewport', async () => {
+    await mainPage.clickViewportByCoordinates(600, 200);
+    await layersPanelPage.pasteLayerViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+  });
+
+  await mainTest.step('Check pasted board', async () => {
+    await mainPage.checkCopiedImageFromBoard();
+  });
+});
