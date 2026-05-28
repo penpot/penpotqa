@@ -1273,6 +1273,13 @@ exports.MainPage = class MainPage extends BasePage {
     return svgString.replace(/\s+/g, '').replace(/[\r\n]+/g, '');
   }
 
+  async copyBoardAsImageViaRightClick() {
+    await this.rightClickOnElement();
+    await this.copyPasteAsMenuItem.hover();
+    await this.copyAsImageMenuItem.click();
+    await expect(this.imageCopiedToClipboardMessage).toBeVisible();
+  }
+
   async copyLayerLinkViaRightClick() {
     await this.rightClickOnElement();
     await this.copyLinkMenuItem.click();
