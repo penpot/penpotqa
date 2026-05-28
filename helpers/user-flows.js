@@ -43,19 +43,28 @@ async function loginAsSecondUser(page) {
 }
 
 /**
- * Generic user setup with role
+ * Generic user setup with role.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {object} [options]
+ * @param {'Editor' | 'Viewer' | 'Admin'} [options.role='Editor']
+ * @param {boolean} [options.assertInviteHeader=false]
+ * @param {string} [options.existingTeamName] - When provided, skips team creation and
+ *   invites the new user into this already-existing team instead.
  */
 async function setupUserWithRole(
   page,
-  { role = 'Editor', assertInviteHeader = false } = {},
+  { role = 'Editor', assertInviteHeader = false, existingTeamName } = {},
 ) {
-  const { teamName, userName, userEmail } = createTestUserData();
+  const { userName, userEmail, teamName: newTeamName } = createTestUserData();
+  const teamName = existingTeamName ?? newTeamName;
   const pages = initPages(page);
   const { teamPage, profilePage, registerPage, dashboardPage } = pages;
 
-  // Create team
-  await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
+  if (!existingTeamName) {
+    await teamPage.createTeam(teamName);
+    await teamPage.isTeamSelected(teamName);
+  }
 
   // Invite user
   await teamPage.openInvitationsPageViaOptionsMenu();
@@ -95,12 +104,14 @@ async function setupUserWithRole(
 }
 
 // Role-specific helpers (thin wrappers)
-const setupViewerRoleUser = (page) => setupUserWithRole(page, { role: 'Viewer' });
+const setupViewerRoleUser = (page, opts) =>
+  setupUserWithRole(page, { role: 'Viewer', ...opts });
 
-const setupEditorRoleUser = (page) =>
-  setupUserWithRole(page, { role: 'Editor', assertInviteHeader: true });
+const setupEditorRoleUser = (page, opts) =>
+  setupUserWithRole(page, { role: 'Editor', assertInviteHeader: true, ...opts });
 
-const setupAdminRoleUser = (page) => setupUserWithRole(page, { role: 'Admin' });
+const setupAdminRoleUser = (page, opts) =>
+  setupUserWithRole(page, { role: 'Admin', ...opts });
 
 module.exports = {
   loginAsSecondUser,

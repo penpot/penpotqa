@@ -1,30 +1,24 @@
-const { mainTest } = require('../../fixtures');
-const { MainPage } = require('../../pages/workspace/main-page');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { HistoryPanelPage } = require('../../pages/workspace/history-panel-page');
-const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
-const { ProfilePage } = require('../../pages/profile-page');
-const { LoginPage } = require('../../pages/login-page');
-const { RegisterPage } = require('../../pages/register-page');
-const {
-  waitMessage,
-  waitSecondMessage,
-  getVerificationMessage,
-} = require('../../helpers/gmail');
+import { mainTest } from '../../../fixtures';
+import { MainPage } from '../../../pages/workspace/main-page';
+import { TeamPage } from '../../../pages/dashboard/team-page';
+import { DashboardPage } from '../../../pages/dashboard/dashboard-page';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { HistoryPanelPage } from '../../../pages/workspace/history-panel-page';
+import { LayersPanelPage } from '../../../pages/workspace/layers-panel-page';
+import { ProfilePage } from '../../../pages/profile-page';
+import { LoginPage } from '../../../pages/login-page';
+import { setupAdminRoleUser } from '../../../helpers/user-flows';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 
-let teamPage,
-  dashboardPage,
-  mainPage,
-  historyPage,
-  layersPanelPage,
-  profilePage,
-  loginPage,
-  registerPage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+let historyPage: HistoryPanelPage;
+let layersPanelPage: LayersPanelPage;
+let profilePage: ProfilePage;
+let loginPage: LoginPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
@@ -184,14 +178,13 @@ mainTest(qase(1935, 'Delete version via history panel'), async () => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async ({ page }) => {
-    teamPage = new TeamPage(page);
-    mainPage = new MainPage(page);
-    profilePage = new ProfilePage(page);
-    loginPage = new LoginPage(page);
-    dashboardPage = new DashboardPage(page);
-    registerPage = new RegisterPage(page);
     historyPage = new HistoryPanelPage(page);
     layersPanelPage = new LayersPanelPage(page);
+    loginPage = new LoginPage(page);
+    profilePage = new ProfilePage(page);
+    dashboardPage = new DashboardPage(page);
+    teamPage = new TeamPage(page);
+    mainPage = new MainPage(page);
   });
 
   mainTest.afterEach(async () => {
@@ -216,9 +209,8 @@ mainTest.describe(() => {
     async ({ page }) => {
       const versionName = 'test version';
       await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
 
+      // First user (owner): create a board, save a version, restore it, go back to dashboard
       await historyPage.createDefaultBoardByCoordinates(200, 200);
       await historyPage.waitForChangeIsSaved();
       await historyPage.clickHistoryPanelButton();
@@ -233,58 +225,42 @@ mainTest.describe(() => {
       await layersPanelPage.isLayerPresentOnLayersTab('Board', true);
       await historyPage.backToDashboardFromFileEditor();
 
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
-      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+      // Invite and register a second user as Admin into the same team, then open the file
+      const { dashboardPage: adminDashboardPage } = await setupAdminRoleUser(page, {
+        existingTeamName: teamName,
+      });
+      await adminDashboardPage.openFile();
 
-      await profilePage.logout();
-      await loginPage.isLoginPageOpened();
+      const adminHistoryPage = new HistoryPanelPage(page);
+      const adminLayersPanelPage = new LayersPanelPage(page);
 
-      await page.goto(firstInvite.inviteUrl);
-      await registerPage.registerAccount(
-        firstAdmin,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, firstEmail, 40);
-      const verificationMessage = await getVerificationMessage(firstEmail);
-      await page.goto(verificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(teamName);
+      await adminHistoryPage.waitForViewportVisible();
 
-      await dashboardPage.openFile();
-      await historyPage.waitForViewportVisible();
+      // Second user (admin): create an ellipse, save a version, restore it
+      await adminHistoryPage.createDefaultEllipseByCoordinates(400, 200);
+      await adminHistoryPage.waitForChangeIsSaved();
+      await adminHistoryPage.clickHistoryPanelButton();
+      await adminHistoryPage.clickSaveVersionButton();
+      await adminHistoryPage.renameVersion(versionName);
+      await adminLayersPanelPage.selectLayerByName('Ellipse');
+      await adminHistoryPage.pressDeleteKeyboardButton();
+      await adminHistoryPage.clickHistoryPanelButton();
+      await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', false);
+      await adminHistoryPage.selectVersionOption('Restore');
+      await adminHistoryPage.clickRestoreVersionButton();
+      await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
+      await adminHistoryPage.isHistoryPanelVisible(false);
+      await adminHistoryPage.clickHistoryPanelButton();
 
-      await historyPage.createDefaultEllipseByCoordinates(400, 200);
-      await historyPage.waitForChangeIsSaved();
-      await historyPage.clickHistoryPanelButton();
-      await historyPage.clickSaveVersionButton();
-      await historyPage.renameVersion(versionName);
-      await layersPanelPage.selectLayerByName('Ellipse');
-      await historyPage.pressDeleteKeyboardButton();
-      await historyPage.clickHistoryPanelButton();
-      await layersPanelPage.isLayerPresentOnLayersTab('Ellipse', false);
-      await historyPage.selectVersionOption('Restore');
-      await historyPage.clickRestoreVersionButton();
-      await layersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
-      await historyPage.isHistoryPanelVisible(false);
-      await historyPage.clickHistoryPanelButton();
-
-      await historyPage.isAutosaveVersionsVisible(true);
-      await historyPage.isOtherUserVersionVisible(true);
-      await historyPage.changeVersionFilter('My versions');
-      await historyPage.isAutosaveVersionsVisible(false);
-      await historyPage.isOtherUserVersionVisible(false);
-      await historyPage.changeVersionFilter('All versions');
-      await historyPage.isAutosaveVersionsVisible(true);
-      await historyPage.isOtherUserVersionVisible(true);
+      // Verify version filters
+      await adminHistoryPage.isAutosaveVersionsVisible(true);
+      await adminHistoryPage.isOtherUserVersionVisible(true);
+      await adminHistoryPage.changeVersionFilter('My versions');
+      await adminHistoryPage.isAutosaveVersionsVisible(false);
+      await adminHistoryPage.isOtherUserVersionVisible(false);
+      await adminHistoryPage.changeVersionFilter('All versions');
+      await adminHistoryPage.isAutosaveVersionsVisible(true);
+      await adminHistoryPage.isOtherUserVersionVisible(true);
     },
   );
 });

@@ -1,5 +1,6 @@
 const { expect } = require('@playwright/test');
 const { MainPage } = require('./main-page');
+const { version } = require('prettier');
 
 exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
   /**
@@ -11,18 +12,25 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
     this.emptyVersionMessage = page.getByText('There are no versions yet');
     this.saveVersionButton = page.getByRole('button', { name: 'Save version' });
     this.versionNameInput = page.locator('input[class*="controls_utilities_input"]');
-    this.versionName = page.locator(
-      '[class*="product_milestone__"][data-testid="milestone"] [class*="body-small-typography"]',
-    );
+    this.versionName = page.getByTestId('milestone');
     this.optionsVersionButton = page.getByRole('button', {
       name: 'Open version menu',
     });
     this.renameVersionButton = page.getByRole('button', { name: 'Rename' });
     this.restoreVersionButton = page.getByRole('button', { name: 'Restore' });
     this.deleteVersionButton = page.getByRole('button', { name: 'Delete' });
+    this.previewVersionButton = page.getByRole('button', {
+      name: 'Preview version',
+    });
     this.cancelRestoreVersionButton = page.getByRole('button', { name: 'Dismiss' });
     this.autosaveVersionsButton = page.getByRole('button', {
       name: 'Expand snapshots',
+    });
+
+    // Preview notification message
+    this.previewVersionNotification = page.getByTestId('actionable');
+    this.restoreButton = this.previewVersionNotification.getByRole('button', {
+      name: 'Restore',
     });
 
     this.snapshotElement = page.locator(
@@ -98,6 +106,33 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
       case 'Delete':
         await this.deleteVersionButton.click();
         break;
+      case 'Preview version':
+        await this.previewVersionButton.click();
+        break;
+    }
+  }
+
+  async selectVersionOptionByVersion(versionName, option) {
+    const specificVersion = this.versionName.filter({ hasText: versionName });
+    const specificOptionsButton = specificVersion.getByRole('button', {
+      name: 'Open version menu',
+    });
+
+    await specificVersion.hover();
+    await specificOptionsButton.click();
+    switch (option) {
+      case 'Rename':
+        await this.renameVersionButton.click();
+        break;
+      case 'Restore':
+        await this.restoreVersionButton.click();
+        break;
+      case 'Delete':
+        await this.deleteVersionButton.click();
+        break;
+      case 'Preview version':
+        await this.previewVersionButton.click();
+        break;
     }
   }
 
@@ -170,5 +205,19 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
 
   async clickShortcutCtrlAltH() {
     await this.page.keyboard.press('Control+Alt+H');
+  }
+
+  async isPreviewVersionNotificationVisible(value) {
+    const previewVersionMessage = this.previewVersionNotification.getByText(
+      `Previewing version: ${value}`,
+    );
+    expect(
+      previewVersionMessage,
+      `Preview version notification is visible: ${value}`,
+    ).toBeVisible();
+  }
+
+  async clickRestoreVersionButton() {
+    await this.restoreButton.click();
   }
 };
