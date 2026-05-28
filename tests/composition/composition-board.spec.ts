@@ -1010,13 +1010,14 @@ mainTest(
 
 mainTest(qase([2913], 'Copy board as image to clipboard'), async () => {
   await mainTest.step(
-    'Create a board with an ellipse and rectangle inside',
+    'Create a board with an ellipse, rectangle and text inside',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(200, 200);
       await designPanelPage.changeHeightAndWidthForLayer('250', '250');
       await mainPage.waitForChangeIsSaved();
       await mainPage.createDefaultEllipseByCoordinates(210, 210, true);
       await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
+      await mainPage.createDefaultTextLayerByCoordinates(250, 350);
       await mainPage.clickViewportOnce();
     },
   );
@@ -1038,5 +1039,8 @@ mainTest(qase([2913], 'Copy board as image to clipboard'), async () => {
   await mainTest.step('Check pasted board', async () => {
     const copiedImageName: string = 'blob';
     await layersPanelPage.isLayerNameDisplayed(copiedImageName);
+    await expect(mainPage.viewport).toHaveScreenshot('copied-image-from-board.png', {
+      mask: mainPage.maskViewport(),
+    });
   });
 });
