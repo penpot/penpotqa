@@ -1,11 +1,11 @@
-import { mainTest } from '../../../fixtures';
-import { MainPage } from '../../../pages/workspace/main-page';
-import { TeamPage } from '../../../pages/dashboard/team-page';
-import { DashboardPage } from '../../../pages/dashboard/dashboard-page';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { HistoryPanelPage } from '../../../pages/workspace/history-panel-page';
-import { LayersPanelPage } from '../../../pages/workspace/layers-panel-page';
+import { mainTest } from 'fixtures';
+import { MainPage } from '@pages/workspace/main-page';
+import { HistoryPanelPage } from '@pages/workspace/history-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
 import { expect, test } from 'playwright/test';
 
 const teamName = createTeamName();
@@ -90,6 +90,7 @@ mainTest(
 
     await test.step(`Restore Version ${versionName[0]} and validate snapshot`, async () => {
       await historyPage.clickRestoreVersionButton();
+      await mainPage.waitForChangeIsSaved();
       // TO DO - Add confirmation modal when implemented
       await expect(mainPage.viewport).toHaveScreenshot('restored-version-a.png', {
         mask: mainPage.maskViewport(),

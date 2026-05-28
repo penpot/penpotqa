@@ -1,14 +1,14 @@
-import { mainTest } from '../../../fixtures';
-import { MainPage } from '../../../pages/workspace/main-page';
-import { TeamPage } from '../../../pages/dashboard/team-page';
-import { DashboardPage } from '../../../pages/dashboard/dashboard-page';
+import { mainTest } from 'fixtures';
+import { MainPage } from '@pages/workspace/main-page';
+import { HistoryPanelPage } from '@pages/workspace/history-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { HistoryPanelPage } from '../../../pages/workspace/history-panel-page';
-import { LayersPanelPage } from '../../../pages/workspace/layers-panel-page';
-import { ProfilePage } from '../../../pages/profile-page';
-import { LoginPage } from '../../../pages/login-page';
 import { setupAdminRoleUser } from '../../../helpers/user-flows';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { ProfilePage } from '@pages/profile-page';
+import { LoginPage } from '@pages/login-page';
 
 const teamName = createTeamName();
 
