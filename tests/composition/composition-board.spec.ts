@@ -1036,6 +1036,7 @@ mainTest(qase([2913], 'Copy board as image to clipboard'), async () => {
   });
 
   await mainTest.step('Check pasted board', async () => {
-    await mainPage.checkCopiedImageFromBoard();
+    const copiedImageName: string = 'blob';
+    await layersPanelPage.isLayerNameDisplayed(copiedImageName);
   });
 });

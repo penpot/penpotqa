@@ -1280,10 +1280,6 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.imageCopiedToClipboardMessage).toBeVisible();
   }
 
-  async checkCopiedImageFromBoard() {
-    await expect(this.imageCopiedLayerFromBoard).toBeVisible();
-  }
-
   async copyLayerLinkViaRightClick() {
     await this.rightClickOnElement();
     await this.copyLinkMenuItem.click();

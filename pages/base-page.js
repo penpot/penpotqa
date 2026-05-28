@@ -202,7 +202,6 @@ exports.BasePage = class BasePage {
     this.imageCopiedToClipboardMessage = page.getByText(
       'Image copied to the clipboard',
     );
-    this.imageCopiedLayerFromBoard = page.getByText('Blob');
   }
 
   async clearInput(input, browserName) {
