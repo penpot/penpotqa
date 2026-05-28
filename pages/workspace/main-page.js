@@ -1413,7 +1413,9 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
     await expect(this.textbox).toBeVisible();
-    await this.page.keyboard.type(text);
+    await expect(this.textbox).toBeFocused();
+    await this.page.keyboard.type(text, { delay: 50 });
+    await expect(this.textbox).toHaveText(text);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
@@ -1437,5 +1439,9 @@ exports.MainPage = class MainPage extends BasePage {
       ...(usersSection ? [this.usersSection] : []),
       ...additionalElements,
     ];
+  }
+
+  async openFindAndReplaceViaShortcut() {
+    await this.page.keyboard.press('Control+H');
   }
 };
