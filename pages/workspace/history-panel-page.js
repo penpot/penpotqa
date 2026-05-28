@@ -12,7 +12,9 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
     this.emptyVersionMessage = page.getByText('There are no versions yet');
     this.saveVersionButton = page.getByRole('button', { name: 'Save version' });
     this.versionNameInput = page.locator('input[class*="controls_utilities_input"]');
-    this.versionName = page.getByTestId('milestone');
+    this.versionName = page.locator(
+      '[class*="product_milestone__"][data-testid="milestone"] [class*="body-small-typography"]',
+    );
     this.optionsVersionButton = page.getByRole('button', {
       name: 'Open version menu',
     });
