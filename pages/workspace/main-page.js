@@ -1415,6 +1415,7 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.textbox).toBeVisible();
     await this.page.keyboard.type(text);
     await this.clickMoveButton();
+    await this.waitForChangeIsSaved();
   }
 
   async isCornerHandleVisible(visible = true) {
