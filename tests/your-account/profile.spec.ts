@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { mainTest, registerTest } from 'fixtures';
+import { registerTest } from 'fixtures';
 import { profileTest } from './your-account-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { random } from 'helpers/string-generator';
@@ -33,24 +33,10 @@ profileTest(
 );
 
 profileTest(
-  qase(195, 'Upload profile image and validate'),
+  qase([195, 2958], 'Upload profile image and validate'),
   async ({ profilePage }) => {
     await profileTest.step(
-      'Upload PNG profile image and verify screenshot',
-      async () => {
-        await profilePage.uploadProfileImage('images/images.png');
-        await profilePage.waitInfoMessageHidden();
-        await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
-          'profile-avatar-block-png.png',
-          {
-            mask: [profilePage.profileNameInput, profilePage.profileEmailInput],
-          },
-        );
-      },
-    );
-
-    await profileTest.step(
-      'Upload JPEG profile image and verify screenshot',
+      '(195) Upload JPEG profile image and verify screenshot',
       async () => {
         await profilePage.uploadProfileImage('images/sample.jpeg');
         await profilePage.waitInfoMessageHidden();
@@ -62,6 +48,16 @@ profileTest(
         );
       },
     );
+
+    await profileTest.step('(2958) Delete profile picture', async () => {
+      await profilePage.deleteProfileImage();
+      await expect(profilePage.profileAvatarBlock).toHaveScreenshot(
+        'profile-avatar-deleted.png',
+        {
+          mask: [profilePage.profileNameInput, profilePage.profileEmailInput],
+        },
+      );
+    });
   },
 );
 

@@ -57,6 +57,10 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.profileAvatarBlock = page.locator(
       'div.main_ui_settings_profile__form-container',
     );
+    this.profileImageDelete = page.getByRole('button', { name: 'Delete' });
+    this.confirmDeleteImageButton = page
+      .locator('#portal-container-modal')
+      .getByRole('button', { name: 'Delete' });
     this.changeEmailBtn = page.locator('div[class="change-email"]');
     this.newEmailInput = page.locator('#email-1');
     this.confirmNewEmailInput = page.locator('#email-2');
@@ -313,6 +317,15 @@ exports.ProfilePage = class ProfilePage extends BasePage {
           `${process.env.BASE_URL}api/main/methods/push-audit-events` &&
         response.status() === 204,
     );
+  }
+
+  async clickDeleteProfileImageButton() {
+    await this.profileImageDelete.click();
+  }
+
+  async deleteProfileImage() {
+    await this.clickDeleteProfileImageButton();
+    await this.confirmDeleteImageButton.click();
   }
 
   async backToDashboardFromAccount() {
