@@ -1,13 +1,11 @@
-import { mainTest } from '../../../fixtures';
-import { MainPage } from '../../../pages/workspace/main-page';
-import { TeamPage } from '../../../pages/dashboard/team-page';
-import { DashboardPage } from '../../../pages/dashboard/dashboard-page';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { HistoryPanelPage } from '../../../pages/workspace/history-panel-page';
-import { LayersPanelPage } from '../../../pages/workspace/layers-panel-page';
-import { ProfilePage } from '../../../pages/profile-page';
-import { LoginPage } from '../../../pages/login-page';
+import { mainTest } from 'fixtures';
+import { MainPage } from '@pages/workspace/main-page';
+import { HistoryPanelPage } from '@pages/workspace/history-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
 import { expect, test } from 'playwright/test';
 
 const teamName = createTeamName();
@@ -17,8 +15,6 @@ let dashboardPage: DashboardPage;
 let mainPage: MainPage;
 let historyPage: HistoryPanelPage;
 let layersPanelPage: LayersPanelPage;
-let profilePage: ProfilePage;
-let loginPage: LoginPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
@@ -60,10 +56,7 @@ mainTest(
     });
 
     await test.step(`Open Preview version ${versionName[0]} and validate notification`, async () => {
-      await historyPage.selectVersionOptionByVersion(
-        versionName[0],
-        'Preview version',
-      );
+      await historyPage.selectVersionOption('Preview version', versionName[0]);
       await historyPage.isPreviewVersionNotificationVisible(versionName[0]);
       await expect(mainPage.viewport).toHaveScreenshot(
         'preview-version-snapshot-a.png',
@@ -74,10 +67,7 @@ mainTest(
     });
 
     await test.step(`Open Preview version ${versionName[1]} and validate notification`, async () => {
-      await historyPage.selectVersionOptionByVersion(
-        versionName[1],
-        'Preview version',
-      );
+      await historyPage.selectVersionOption('Preview version', versionName[1]);
       await historyPage.isPreviewVersionNotificationVisible(versionName[1]);
       await expect(mainPage.viewport).toHaveScreenshot(
         'preview-version-snapshot-b.png',
@@ -88,10 +78,7 @@ mainTest(
     });
 
     await test.step(`Open Preview version ${versionName[0]} and validate notification`, async () => {
-      await historyPage.selectVersionOptionByVersion(
-        versionName[0],
-        'Preview version',
-      );
+      await historyPage.selectVersionOption('Preview version', versionName[0]);
       await historyPage.isPreviewVersionNotificationVisible(versionName[0]);
       await expect(mainPage.viewport).toHaveScreenshot(
         'preview-version-snapshot-a.png',
@@ -103,6 +90,7 @@ mainTest(
 
     await test.step(`Restore Version ${versionName[0]} and validate snapshot`, async () => {
       await historyPage.clickRestoreVersionButton();
+      await mainPage.waitForChangeIsSaved();
       // TO DO - Add confirmation modal when implemented
       await expect(mainPage.viewport).toHaveScreenshot('restored-version-a.png', {
         mask: mainPage.maskViewport(),
