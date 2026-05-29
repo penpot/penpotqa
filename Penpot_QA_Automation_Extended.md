@@ -1083,9 +1083,7 @@ await sendMessage({
    - OS: Ubuntu 24.04
 
 2. **playwright_pre_daily.yml** - Daily Chrome tests on PRE
-3. **playwright_pre_firefox.yml** - Firefox tests on PRE
-4. **playwright_pre_webkit.yml** - WebKit tests on PRE
-5. **playwright_tests_manual.yml** - Manual Penpot Tests (TESTS environment)
+3. **playwright_tests_manual.yml** - Manual Penpot Tests (TESTS environment)
    - Options: all tests, changed only, by folder
    - Browser: Chrome
    - OS: Ubuntu 24.04
