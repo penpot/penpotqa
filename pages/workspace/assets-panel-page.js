@@ -160,9 +160,6 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.emptyResults = this.librariesModal.locator(
       '.main_ui_workspace_libraries__section-list-empty',
     );
-    this.connectLibraryButton = this.librariesModal.getByRole('button', {
-      name: 'Connect library',
-    });
 
     // Shared Libraries - Pop up
     this.wrapperMessage = page.getByTestId('actionable');
