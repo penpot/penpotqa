@@ -263,7 +263,7 @@ mainTest(qase(2845, 'Import Tokens from Linked Library'), async () => {
     'documents/tokens/shared-library-rectangle-with-set-themes-tokens.penpot';
   const setsNames = ['Dark', 'Light', 'Desktop', 'Mobile'];
 
-  // Color token created before importing the library, to verify that it is not overridden by the imported tokens and remains applied to the rectangle after the import
+  // Color token created before importing the library, to verify that it is overridden by the imported tokens
   const colorToken: MainToken<TokenClass> = {
     class: TokenClass.Color,
     name: 'color',
