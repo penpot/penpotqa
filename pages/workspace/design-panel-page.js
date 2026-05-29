@@ -33,6 +33,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.sizeHeightInput = page.locator('div[aria-label="Height"] input');
     this.xAxisInput = page.locator('div[aria-label="X axis"] input');
     this.yAxisInput = page.locator('div[aria-label="Y axis"] input');
+    this.openTokenListButton = page.locator(
+      'div[aria-label="Open token list"] button',
+    );
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
@@ -1945,5 +1948,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       await shadowColorButton,
       `Shadow Color Button has expected value: "${color}"`,
     ).toBeVisible();
+  }
+
+  async hoverOnWidthForLayer() {
+    await this.sizeWidthInput.hover();
+  }
+
+  getOpenTokenListButtonByIndex(index) {
+    return this.openTokenListButton.nth(index);
+  }
+
+  async openTokenListByIndex(index) {
+    await expect(this.getOpenTokenListButtonByIndex(index)).toBeVisible();
+    await this.getOpenTokenListButtonByIndex(index).click();
   }
 };
