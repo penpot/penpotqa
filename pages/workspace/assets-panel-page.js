@@ -143,7 +143,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.librariesUpdatesTab = this.librariesModal.getByRole('tab', {
       name: 'UPDATES',
     });
-    this.librariesItem = this.librariesModal.getByTestId('library-item').first();
+    this.librariesItem = this.librariesModal.getByTestId('library-item');
     this.librariesUpdateButton = this.librariesModal.getByRole('button', {
       name: 'Update',
     });
@@ -160,6 +160,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.emptyResults = this.librariesModal.locator(
       '.main_ui_workspace_libraries__section-list-empty',
     );
+    this.connectLibraryButton = this.librariesModal.getByRole('button', {
+      name: 'Connect library',
+    });
 
     // Shared Libraries - Pop up
     this.wrapperMessage = page.getByTestId('actionable');
@@ -172,6 +175,18 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.wrapperMoreInfoButton = this.wrapperMessage.getByRole('button', {
       name: 'More info',
     });
+
+    // Import Tokens Confirmation Modal
+    this.importTokensModal = page.locator(
+      '.main_ui_workspace_tokens_import_from_library__modal-dialog',
+    );
+    this.importTokensButton = this.importTokensModal.getByRole('button', {
+      name: 'Import tokens',
+    });
+  }
+
+  getLibraryItemByName(name) {
+    return this.librariesItem.filter({ hasText: name });
   }
 
   async clickAssetsTab() {
@@ -584,7 +599,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async firstLibraryItemContainsLibraryName(name) {
     await expect(
-      this.librariesItem,
+      this.getLibraryItemByName(name).first(),
       `Library item contains text "${name}"`,
     ).toContainText(name);
   }
@@ -601,5 +616,28 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
   async clearSearchInputInAssetsTab() {
     await this.clearSearchButtonInAssetsTab.click();
+  }
+
+  async connectSharedLibraryByName(name) {
+    await this.getLibraryItemByName(name)
+      .getByRole('button', { name: 'Connect library' })
+      .click();
+  }
+
+  async importTokensFromSharedLibraryByName(name) {
+    await this.getLibraryItemByName(name)
+      .getByRole('button', { name: 'Import tokens' })
+      .click();
+  }
+
+  async clickImportTokensFromSharedLibrary() {
+    await this.importTokensButton.click();
+  }
+
+  async isImportTokensModalVisible() {
+    expect(
+      await this.importTokensModal,
+      'Import tokens modal is visible',
+    ).toBeVisible();
   }
 };
