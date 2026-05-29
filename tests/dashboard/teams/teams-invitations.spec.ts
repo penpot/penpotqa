@@ -227,7 +227,6 @@ mainTest.describe(
         const firstVerificationMessage = await getVerificationMessage(firstEmail);
         await page.goto(firstVerificationMessage!.inviteUrl);
         await dashboardPage.fillOnboardingQuestions();
-        await page.goto(firstInvite!.inviteUrl);
         await teamPage.isTeamSelected(team);
         await profilePage.logout();
         await loginPage.isLoginPageOpened();
@@ -241,7 +240,6 @@ mainTest.describe(
         const secondVerificationMessage = await getVerificationMessage(secondEmail);
         await page.goto(secondVerificationMessage!.inviteUrl);
         await dashboardPage.fillOnboardingQuestions();
-        await page.goto(secondInvite!.inviteUrl);
         await teamPage.isTeamSelected(team);
 
         await teamPage.openMembersPageViaOptionsMenu();

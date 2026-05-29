@@ -66,7 +66,6 @@ mainTest.describe('Rename a team', () => {
       const verificationMessage = await getVerificationMessage(firstEmail);
       await page.goto(verificationMessage.inviteUrl);
       await dashboardPage.fillOnboardingQuestions();
-      await page.goto(firstInvite.inviteUrl);
       await teamPage.isTeamSelected(team);
       await teamPage.openTeamOptionsMenu();
       await teamPage.assertRenameItemNotVisible();

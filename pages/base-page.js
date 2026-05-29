@@ -177,6 +177,9 @@ exports.BasePage = class BasePage {
     this.copyAsSVGMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: /^Copy as SVG$/ });
+    this.copyAsImageMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: /^Copy as image$/ });
     this.copyPropertiesMenuItem = page.getByText('Copy propertiesCtrlAltc');
     this.pastePropertiesMenuItem = page
       .getByRole('listitem')
@@ -195,6 +198,9 @@ exports.BasePage = class BasePage {
     });
     this.addVariantViewportButton = page.locator(
       'g[class*="viewport_widgets__button-add-wrapper"]',
+    );
+    this.imageCopiedToClipboardMessage = page.getByText(
+      'Image copied to the clipboard',
     );
   }
 

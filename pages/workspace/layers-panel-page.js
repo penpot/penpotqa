@@ -68,6 +68,23 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.searchLayersInput = this.layersSidebar.getByRole('textbox', {
       name: 'Find…',
     });
+
+    // Find & Replace wrapper
+    this.findAndReplaceWrapper = page.locator(
+      '.main_ui_workspace_sidebar_layers__replace-wrapper',
+    );
+    this.replaceWithInput = this.findAndReplaceWrapper.getByRole('textbox', {
+      name: 'Replace with...',
+    });
+    this.radioButtonOption = this.findAndReplaceWrapper.locator(
+      '.main_ui_workspace_sidebar_layers__radio-label',
+    );
+    this.textContentRadioButton = this.radioButtonOption.getByText('Text content');
+    this.layerNamesRadioButton = this.radioButtonOption.getByText('Layer names');
+    this.replaceAllButton = this.findAndReplaceWrapper.getByRole('button', {
+      name: 'Replace all',
+      exact: true,
+    });
   }
 
   /**
@@ -188,12 +205,14 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   async isLayerNameDisplayed(name) {
     await expect(
       this.layersRows.getByText(name, { exact: true }).first(),
+      `Layer ${name} is visible`,
     ).toBeVisible();
   }
 
   async isLayerNameNotDisplayed(name) {
     await expect(
       this.layersRows.getByText(name, { exact: true }).first(),
+      `Layer ${name} is not visible`,
     ).not.toBeVisible();
   }
 
@@ -556,5 +575,33 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       this.layersRows,
       `Expected ${count} layers to be visible`,
     ).toHaveCount(count);
+  }
+
+  async selectFindAndReplaceOption(option) {
+    if (option === 'Text content') {
+      if (!(await this.textContentRadioButton.isChecked())) {
+        await this.textContentRadioButton.click();
+        expect(
+          this.textContentRadioButton,
+          'Text content radio button should be checked',
+        ).toBeChecked();
+      }
+    } else if (option === 'Layer names') {
+      if (!(await this.layerNamesRadioButton.isChecked())) {
+        await this.layerNamesRadioButton.click();
+        expect(
+          this.layerNamesRadioButton,
+          'Layer names radio button should be checked',
+        ).toBeChecked();
+      }
+    }
+  }
+
+  async fillReplaceWithInput(value) {
+    await this.replaceWithInput.fill(value);
+  }
+
+  async clickReplaceAllButton() {
+    await this.replaceAllButton.click();
   }
 };

@@ -34,6 +34,8 @@ on:
           - tests/dashboard/trash
           - tests/login-signup
           - tests/panels-features
+          - tests/panels-features/main-menu
+          - tests/panels-features/history
           - tests/performance
           - tests/plugins
           - tests/your-account
