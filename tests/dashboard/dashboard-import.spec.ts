@@ -65,7 +65,7 @@ mainTest(qase(2239, 'Import file to project - file upload error'), async () => {
     'documents/hand-made-icons-by-cocomaterial.penpot',
   );
   await dashboardPage.isImportErrorDisplayed(
-    'The following files have errors:Hand-Made Icons by cocomaterialFiles with errors will not be uploaded.',
+    "The following files have errors:Hand-Made Icons by cocomaterialWe couldn't verify this file.Files with errors will not be uploaded.",
   );
   await dashboardPage.clickOnModalAcceptButton();
 });
