@@ -1,6 +1,8 @@
 const { expect } = require('@playwright/test');
 const { BasePage } = require('../base-page');
 const { mainTest } = require('../../fixtures');
+const { assert } = require('console');
+const exp = require('constants');
 
 exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   /**
@@ -36,6 +38,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.openTokenListButton = page.locator(
       'div[aria-label="Open token list"] button',
     );
+    this.detachTokenButton = page.getByRole('button', { name: 'Detach token' });
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
@@ -1961,5 +1964,38 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async openTokenListByIndex(index) {
     await expect(this.getOpenTokenListButtonByIndex(index)).toBeVisible();
     await this.getOpenTokenListButtonByIndex(index).click();
+  }
+
+  async selectTokenInTokenListByName(name) {
+    const tokenOption = this.page.getByRole('option', { name: name });
+    await expect(tokenOption).toBeVisible();
+    await tokenOption.click();
+  }
+
+  /**
+   * @param {string} ariaLabel - Accessible label of the field container (e.g. 'Width').
+   */
+  async hoverOnTokenPill(ariaLabel) {
+    const tokenContainer = this.page.getByLabel(ariaLabel, { exact: true });
+    const tokenPill = tokenContainer
+      .getByRole('button')
+      .and(this.page.locator('[class*="token_field__pill"]'));
+
+    await expect(tokenPill.first()).toBeVisible();
+    await tokenPill.first().hover();
+  }
+
+  /**
+   * @param {string} value - Token name.
+   */
+  async isTokenPillTooltipVisible(value) {
+    const tokenTooltipValue = this.page.getByText(value, {
+      exact: true,
+    });
+    await expect(tokenTooltipValue).toBeVisible();
+  }
+
+  async isDetachTokenButtonVisible() {
+    await expect(this.detachTokenButton).toBeVisible();
   }
 };
