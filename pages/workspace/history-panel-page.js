@@ -208,6 +208,16 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
     ).toBeVisible();
   }
 
+  async isRestoreConfirmationModalVisible() {
+    const previewVersionMessage = this.previewVersionNotification.getByText(
+      'Do you want to restore this version?',
+    );
+    expect(
+      previewVersionMessage,
+      `Restore confirmation modal is visible`,
+    ).toBeVisible();
+  }
+
   async clickRestoreVersionButton() {
     await this.restoreButton.click();
   }
