@@ -88,10 +88,10 @@ mainTest(
       );
     });
 
-    await test.step(`Restore Version ${versionName[0]} and validate snapshot`, async () => {
+    await test.step(`Click on RESTORE ${versionName[0]}, assert confirmation modal, click to confirm and validate snapshot`, async () => {
       await historyPage.clickRestoreVersionButton();
-      await mainPage.waitForChangeIsSaved();
-      // TO DO - Add confirmation modal when implemented
+      await historyPage.isRestoreConfirmationModalVisible();
+      await historyPage.clickRestoreVersionButton();
       await expect(mainPage.viewport).toHaveScreenshot('restored-version-a.png', {
         mask: mainPage.maskViewport(),
       });
