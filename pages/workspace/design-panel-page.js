@@ -33,6 +33,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.sizeHeightInput = page.locator('div[aria-label="Height"] input');
     this.xAxisInput = page.locator('div[aria-label="X axis"] input');
     this.yAxisInput = page.locator('div[aria-label="Y axis"] input');
+    this.openTokenListButton = page.locator(
+      'div[aria-label="Open token list"] button',
+    );
+    this.detachTokenButton = page.getByRole('button', { name: 'Detach token' });
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
@@ -1945,5 +1949,51 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       await shadowColorButton,
       `Shadow Color Button has expected value: "${color}"`,
     ).toBeVisible();
+  }
+
+  async hoverOnWidthForLayer() {
+    await this.sizeWidthInput.hover();
+  }
+
+  getOpenTokenListButtonByIndex(index) {
+    return this.openTokenListButton.nth(index);
+  }
+
+  async openTokenListByIndex(index) {
+    await expect(this.getOpenTokenListButtonByIndex(index)).toBeVisible();
+    await this.getOpenTokenListButtonByIndex(index).click();
+  }
+
+  async selectTokenInTokenListByName(name) {
+    const tokenOption = this.page.getByRole('option', { name: name });
+    await expect(tokenOption).toBeVisible();
+    await tokenOption.click();
+  }
+
+  /**
+   * @param {string} ariaLabel - Accessible label of the field container (e.g. 'Width').
+   */
+  async hoverOnTokenPill(ariaLabel) {
+    const tokenContainer = this.page.getByLabel(ariaLabel, { exact: true });
+    const tokenPill = tokenContainer
+      .getByRole('button')
+      .and(this.page.locator('[class*="token_field__pill"]'));
+
+    await expect(tokenPill.first()).toBeVisible();
+    await tokenPill.first().hover();
+  }
+
+  /**
+   * @param {string} value - Token name.
+   */
+  async isTokenPillTooltipVisible(value) {
+    const tokenTooltipValue = this.page.getByText(value, {
+      exact: true,
+    });
+    await expect(tokenTooltipValue).toBeVisible();
+  }
+
+  async isDetachTokenButtonVisible() {
+    await expect(this.detachTokenButton).toBeVisible();
   }
 };
