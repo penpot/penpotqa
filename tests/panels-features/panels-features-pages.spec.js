@@ -229,3 +229,71 @@ mainTest(
     );
   },
 );
+
+mainTest(
+  qase(
+    [2804, 2811, 2812],
+    'Create separator page, move by drag & drop and delete it',
+  ),
+  async () => {
+    await mainTest.step(
+      `Create a second page, to have: Page 1 > Page 2`,
+      async () => {
+        await mainPage.clickAddPageButton();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.checkNamedPagesCountIs(2);
+        await mainPage.checkSeparatorPagesCountIs(0);
+      },
+    );
+
+    await mainTest.step(
+      `2804 Render (Page 2) separator as horizontal line for empty page named '---' in sitemap`,
+      async () => {
+        await mainPage.renamePageViaRightClick('---', false);
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.checkNamedPagesCountIs(1);
+        await mainPage.checkSeparatorPagesCountIs(1);
+      },
+    );
+
+    await mainTest.step(
+      `Create another page, to have: Page 1 > --- > Page 2 > Page 3`,
+      async () => {
+        await mainPage.clickAddPageButton();
+        await mainPage.clickAddPageButton();
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
+
+    await mainTest.step(
+      `2811 Drag-and-drop: moving a separator within sitemap (Page 1 > Page 2 > --- > Page 3) preserves separator rendering`,
+      async () => {
+        await mainPage.dragSeparatorWithIndexBeyondPage(0, 'Page 2');
+        await expect(mainPage.pagesBlock).toHaveScreenshot(
+          'separator-between-two-pages.png',
+        );
+        await mainPage.checkNamedPagesCountIs(3);
+        await mainPage.checkSeparatorPagesCountIs(1);
+      },
+    );
+
+    await mainTest.step(
+      `Click a normal page above and below the separator to confirm navigation still works`,
+      async () => {
+        await mainPage.clickOnPageOnLayersPanel(1);
+        await mainPage.isPageNameSelected('Page 1');
+        await mainPage.clickOnPageOnLayersPanel(3);
+        await mainPage.isPageNameSelected('Page 3');
+      },
+    );
+
+    await mainTest.step(
+      `2812 Deleting a separator removes it from sitemap without affecting adjacent pages`,
+      async () => {
+        await mainPage.deleteSeparatorWithIndexViaRightClick(0);
+        await mainPage.checkNamedPagesCountIs(3);
+        await mainPage.checkSeparatorPagesCountIs(0);
+      },
+    );
+  },
+);

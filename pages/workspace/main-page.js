@@ -182,19 +182,16 @@ exports.MainPage = class MainPage extends BasePage {
     //Pages
     this.addPageButton = page.getByRole('button', { name: 'Add page' });
     this.pagesBlock = page.locator('div.main_ui_workspace_sidebar_sitemap__sitemap');
-    this.firstPageListItem = page
-      .getByTestId('page-name')
-      .filter({ hasText: /^Page 1$/ });
+    this.namedPagesList = this.pagesBlock.getByTestId('page-name');
+    this.separatorPagesList = this.pagesBlock.getByTestId('page-separator');
+    this.firstPageListItem = this.namedPagesList.filter({ hasText: /^Page 1$/ });
     this.getPageListItemByName = (name, index = null) => {
-      const pageNameLocator = page.getByTestId('page-name');
       if (index !== null) {
-        return pageNameLocator.nth(index);
+        return this.namedPagesList.nth(index);
       }
-      return pageNameLocator.filter({ hasText: new RegExp(`^${name}$`) });
+      return this.namedPagesList.filter({ hasText: new RegExp(`^${name}$`) });
     };
-    this.secondPageListItem = page
-      .getByTestId('page-name')
-      .filter({ hasText: /^Page 2$/ });
+    this.secondPageListItem = this.namedPagesList.filter({ hasText: /^Page 2$/ });
     this.selectedPage = page.locator(
       'ul[class*="page-list"] li[class*="sitemap__selected"] div[class*="element-list-body"]',
     );
@@ -884,8 +881,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickOnPageOnLayersPanel(pageNumber = 1) {
-    await this.page
-      .getByTestId('page-name')
+    await this.namedPagesList
       .filter({ hasText: new RegExp(`^Page ${pageNumber}$`) })
       .click();
   }
@@ -903,6 +899,33 @@ exports.MainPage = class MainPage extends BasePage {
   async deleteSecondPageViaTrashIcon(name) {
     await this.getPageListItemByName(name).click();
     await this.pageTrashIcon.click();
+    await this.deletePageOkButton.click();
+  }
+
+  async checkNamedPagesCountIs(number) {
+    await expect(this.namedPagesList).toHaveCount(number);
+  }
+
+  async checkSeparatorPagesCountIs(number) {
+    await expect(this.separatorPagesList).toHaveCount(number);
+  }
+
+  async dragSeparatorWithIndexBeyondPage(index, pageName) {
+    const separator = this.separatorPagesList.nth(index);
+    const pageRow = this.getPageListItemByName(pageName);
+    const box = await pageRow.boundingBox();
+
+    await separator.hover();
+    await separator.dragTo(pageRow, {
+      sourcePosition: { x: 10, y: 10 },
+      targetPosition: { x: 10, y: box.height + 10 },
+      force: true,
+    });
+  }
+
+  async deleteSeparatorWithIndexViaRightClick(index) {
+    await this.separatorPagesList.nth(index).click({ button: 'right' });
+    await this.deletePageMenuItem.click();
     await this.deletePageOkButton.click();
   }
 
