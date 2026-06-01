@@ -1996,4 +1996,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async isDetachTokenButtonVisible() {
     await expect(this.detachTokenButton).toBeVisible();
   }
+
+  async clickOnDetachTokenButton() {
+    this.detachTokenButton.click();
+  }
 };
