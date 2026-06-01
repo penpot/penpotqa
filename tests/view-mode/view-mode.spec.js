@@ -884,12 +884,18 @@ mainTest.describe(() => {
       await commentsPanelPage.clickPostCommentButton();
       await commentsPanelPage.isCommentDisplayedInPopUp(comment2);
       await expect(secondPage).toHaveScreenshot('all-users-comments.png', {
-        mask: [commentsPanelPage.commentsAuthorSection],
+        mask: [
+          commentsPanelPage.commentsAuthorSection,
+          commentsPanelPage.commentAvatarImage,
+        ],
       });
       await viewModePage.openCommentsDropdown();
       await viewModePage.selectShowYourCommentsOption();
       await expect(secondPage).toHaveScreenshot('only-your-comments.png', {
-        mask: [commentsPanelPage.commentsAuthorSection],
+        mask: [
+          commentsPanelPage.commentsAuthorSection,
+          commentsPanelPage.commentAvatarImage,
+        ],
       });
       await secondPage.close();
 
