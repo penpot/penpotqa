@@ -1,8 +1,6 @@
 const { expect } = require('@playwright/test');
 const { BasePage } = require('../base-page');
 const { mainTest } = require('../../fixtures');
-const { assert } = require('console');
-const exp = require('constants');
 
 exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   /**
