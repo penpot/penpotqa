@@ -234,7 +234,7 @@ mainTest.describe(() => {
       await mainTest.step('Click on the Mode/Light token set', async () => {
         const setName: string = 'Light';
         await tokensPage.setsComp.isSetNameVisible(setName);
-        await tokensPage.setsComp.clickOnSetName(setName);
+        await tokensPage.setsComp.clickSetItemButton(setName);
       });
 
       await mainTest.step('Change color token value', async () => {

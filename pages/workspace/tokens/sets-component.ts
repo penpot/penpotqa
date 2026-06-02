@@ -64,10 +64,6 @@ export class SetsComponent {
     ).toHaveText(text);
   }
 
-  async clickOnSetName(setName: string) {
-    await this.setName.filter({ hasText: setName }).click();
-  }
-
   async isSetNameVisible(text: string, visible = true) {
     const setItem = this.setName.filter({ hasText: text });
     if (visible) {
