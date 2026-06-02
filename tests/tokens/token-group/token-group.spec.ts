@@ -442,6 +442,10 @@ mainTest.describe(() => {
         value: tokenValue,
       };
 
+      await mainTest.step('Open Tokens panel', async () => {
+        await tokensPage.clickTokensTab();
+      });
+
       await mainTest.step(
         `Attempt to create a token with an empty name "${emptyNameToken.name}" and verify Save button is disabled`,
         async () => {
