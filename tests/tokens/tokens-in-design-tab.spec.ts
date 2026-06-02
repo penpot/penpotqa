@@ -6,9 +6,11 @@ import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 
 const teamName = createTeamName();
+const ariaLabel: string = 'Width';
 
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
@@ -25,6 +27,10 @@ mainTest.beforeEach(async ({ page }) => {
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
+  await tokensPage.clickTokensTab();
 });
 
 mainTest.afterEach(async () => {
@@ -34,10 +40,6 @@ mainTest.afterEach(async () => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-    await mainPage.clickMoveButton();
-    await tokensPage.clickTokensTab();
     await tokensPage.toolsComp.clickOnTokenToolsButton();
     await tokensPage.toolsComp.importTokens(
       'documents/tokens-for-each-category.json',
@@ -60,28 +62,33 @@ mainTest.describe(() => {
           await mainTest.step('Create rectangle', async () => {
             await tokensPage.createDefaultRectangleByCoordinates(100, 200);
           });
+
           await mainTest.step('Hover on Width field in Design tab', async () => {
             await designPanelPage.hoverOnWidthForLayer();
           });
+
           await mainTest.step('Open token list in Width field', async () => {
             const widthFieldIndex = 1;
             await designPanelPage.openTokenListByIndex(widthFieldIndex);
           });
+
           await mainTest.step('Select token in token list by name', async () => {
             await designPanelPage.selectTokenInTokenListByName(tokenName);
           });
+
           await mainTest.step('Check applied token', async () => {
             await designPanelPage.checkSizeWidth(tokenValue);
           });
+
           await mainTest.step(
             'Hover in token value, check tooltip and detach token button',
             async () => {
-              const ariaLabel: string = 'Width';
               await designPanelPage.hoverOnTokenPill(ariaLabel);
               await designPanelPage.isTokenPillTooltipVisible(tokenName);
               await designPanelPage.isDetachTokenButtonVisible();
             },
           );
+
           await mainTest.step('Check applied token in Token tab', async () => {
             await tokensPage.tokensComp.expandTokenByName(TokenClass.Sizing);
             await tokensPage.tokensComp.isTokenAppliedWithName(tokenName);
@@ -95,9 +102,11 @@ mainTest.describe(() => {
             await designPanelPage.clickOnDetachTokenButton();
             await designPanelPage.checkSizeWidth(tokenValue);
           });
+
           await mainTest.step('Check unapplied token in Token tab', async () => {
             await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);
           });
+
           await mainTest.step('Edit width', async () => {
             const newWidthValue: string = '10';
             await designPanelPage.changeWidthForLayer(newWidthValue);
@@ -108,3 +117,74 @@ mainTest.describe(() => {
     },
   );
 });
+
+mainTest(
+  qase(2865, 'Broken token references are clearly displayed with a red dot'),
+  async () => {
+    const dimensionTokenA: MainToken<TokenClass> = {
+      class: TokenClass.Dimension,
+      name: 'dimension-A',
+      value: '550.5',
+    };
+
+    const dimensionTokenB: MainToken<TokenClass> = {
+      class: TokenClass.Dimension,
+      name: 'dimension-B',
+      value: '{dimension-A}',
+    };
+
+    await mainTest.step('Create a dimension token', async () => {
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionTokenA);
+      await tokensPage.tokensComp.isTokenVisibleWithName(dimensionTokenA.name);
+    });
+
+    await mainTest.step(
+      'Create another dimension token referencing the first one',
+      async () => {
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionTokenB);
+        await tokensPage.tokensComp.isTokenVisibleWithName(dimensionTokenB.name);
+      },
+    );
+
+    await mainTest.step('Create rectangle', async () => {
+      await tokensPage.createDefaultRectangleByCoordinates(100, 200);
+    });
+
+    await mainTest.step('Open token list in Width field', async () => {
+      const widthFieldIndex = 0;
+      await designPanelPage.openTokenListByIndex(widthFieldIndex);
+    });
+
+    await mainTest.step(
+      'Select the second token in token list by name',
+      async () => {
+        await designPanelPage.selectTokenInTokenListByName(dimensionTokenB.name);
+      },
+    );
+
+    await mainTest.step('Check applied token', async () => {
+      await designPanelPage.checkSizeWidth(dimensionTokenA.value);
+    });
+
+    await mainTest.step('Delete the referenced token', async () => {
+      await tokensPage.tokensComp.deleteToken(dimensionTokenA.name);
+      await tokensPage.tokensComp.isTokenVisibleWithName(
+        dimensionTokenA.name,
+        false,
+      );
+    });
+
+    await mainTest.step('Check value and not valid reference in input', async () => {
+      await designPanelPage.checkSizeWidth(dimensionTokenA.value);
+      await designPanelPage.isNotValidReferencedButtonVisible();
+    });
+
+    await mainTest.step('Hover in token value and check tooltip', async () => {
+      const errorMessage: string =
+        'Reference is not valid or is not in any active set';
+      await designPanelPage.hoverOnTokenPill(ariaLabel);
+      await designPanelPage.isTokenPillTooltipVisible(errorMessage);
+    });
+  },
+);
