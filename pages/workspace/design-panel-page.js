@@ -51,6 +51,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.horizontalOrientationButton = page.locator('label[for="size-horizontal"]');
 
     //Design panel - Fill section
+    this.fillSection = page.getByLabel('Fill section');
     this.colorPickerContainer = page.getByTestId('colorpicker');
     this.firstColorIcon = page
       .locator(
@@ -1987,7 +1988,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   /**
-   * @param {string} value - Token name or error message
+   * @param {string} value - Token name, message or error message
    */
   async isTokenPillTooltipVisible(value) {
     const tokenTooltipValue = this.page.getByText(value, {
@@ -2006,5 +2007,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async isNotValidReferencedButtonVisible() {
     await expect(this.notValidReferencedButton).toBeVisible();
+  }
+
+  /**
+   * @param {string} hexColor - hexadecimal color
+   */
+  async checkTooltipInFillColorInput(hexColor) {
+    const messageText = `Resolved value: ${hexColor}`;
+    await this.fillSection.getByRole('button', { name: messageText }).hover();
+    await this.isTokenPillTooltipVisible(messageText);
   }
 };
