@@ -1,0 +1,51 @@
+{
+  "Foundations": {
+    "blue": {
+      "500": {
+        "$value": "rgb(34, 0, 255)",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "red": {
+      "500": {
+        "$value": "rgb(500, 0, 0)",
+        "$type": "color",
+        "$description": ""
+      }
+    }
+  },
+  "Light": {
+    "color": {
+      "primary": {
+        "$value": "{blue.500}",
+        "$type": "color",
+        "$description": ""
+      }
+    }
+  },
+  "Light Compact": {
+    "color": {
+      "primary": {
+        "$value": "{blue.500}",
+        "$type": "color",
+        "$description": ""
+      }
+    }
+  },
+  "Dark": {
+    "color": {
+      "primary": {
+        "$value": "{red.500}",
+        "$type": "color",
+        "$description": ""
+      }
+    }
+  },
+  "$themes": [],
+  "$metadata": {
+    "tokenSetOrder": ["Foundations", "Light", "Light Compact", "Dark"],
+    "activeThemes": [],
+    "activeSets": ["Foundations", "Dark", "Light", "Light Compact"]
+  }
+}

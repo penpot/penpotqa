@@ -42,6 +42,10 @@ mainTest.afterEach(async () => {
 });
 
 mainTest.describe('Context menu > Delete', () => {
+  mainTest.beforeEach(async () => {
+    await tokensPage.clickTokensTab();
+  });
+
   mainTest(qase([2742], 'Remove a tokens group'), async () => {
     const tokenValue = '#000000';
     const foundationsGroup = { name: 'foundations' };
@@ -227,6 +231,68 @@ mainTest.describe('Context menu > Delete', () => {
           await tokensPage.tokensComp.isTokenVisibleWithName(darkToken.name, false);
           await tokensPage.tokensComp.isTokenGroupCount(foundationsGroup, 0);
           await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
+        },
+      );
+    },
+  );
+});
+
+mainTest.describe('Context menu > Rename', () => {
+  mainTest.beforeEach(async () => {
+    await mainPage.createDefaultRectangleByCoordinates(320, 210);
+    await tokensPage.clickTokensTab();
+  });
+
+  mainTest(
+    qase(
+      [2839],
+      'Rename a token group with tokens that are being referenced from other token that has several alias (tokens with the same name in different sets)',
+    ),
+    async () => {
+      const colorTokenName = 'color.primary';
+      const colorPrimaryValue = '#ff0000';
+      const colorUpdatedValue = '#2200ff';
+      const set = 'Light';
+      const primaryGroup = { name: 'color' };
+      const newGroupName = 'brandColors';
+
+      await mainTest.step('Import tokens with sets', async () => {
+        await tokensPage.toolsComp.clickOnTokenToolsButton();
+        await tokensPage.toolsComp.importTokens(
+          'documents/tokens/tokens-with-sets.json',
+        );
+      });
+
+      await mainTest.step(
+        `Click set "${set}" and apply "${colorTokenName}" (${colorPrimaryValue}) token to shape`,
+        async () => {
+          await tokensPage.setsComp.clickSetItemButton(set);
+          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+          await tokensPage.tokensComp.clickOnTokenWithName(colorTokenName);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(colorTokenName);
+        },
+      );
+
+      await mainTest.step(
+        `Rename token group "${primaryGroup.name}" to "${newGroupName}"`,
+        async () => {
+          await tokensPage.tokensComp.renameTokenGroup(primaryGroup, newGroupName);
+          await tokensPage.tokensComp.clickRemapTokensButton();
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenGroupVisible({ name: newGroupName });
+        },
+      );
+
+      await mainTest.step(
+        `Assert shape color is updated to ${colorUpdatedValue}`,
+        async () => {
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'token-group-renamed-shape-color.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
     },
