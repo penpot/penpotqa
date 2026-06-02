@@ -38,7 +38,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.detachTokenButton = page.getByRole('button', { name: 'Detach token' });
     this.notValidReferencedButton = page.getByRole('button', {
-      name: 'Reference is not valid or is',
+      name: 'Reference is not valid or is not in any active set',
     });
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
