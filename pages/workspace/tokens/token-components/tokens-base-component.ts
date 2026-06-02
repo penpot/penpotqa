@@ -39,6 +39,8 @@ export interface BasicTokenData {
   description?: string;
 }
 
+export type TokensGroupContextMenuItem = 'Rename' | 'Duplicate' | 'Delete';
+
 /**
  * Represents a token group node in the token tree.
  * Extends BasicTokenData so that `name` holds the group path segment (e.g. 'primary').
@@ -71,7 +73,6 @@ export class TokensComponent {
   readonly tokenNameInput: Locator;
   readonly duplicateTokenMenuItem: Locator;
   readonly deleteTokenMenuItem: Locator;
-  readonly deleteTokensGroupMenuItem: Locator;
   readonly expandTokensButton: Locator;
   readonly remapTokenModal: Locator;
   readonly remapTokensButton: Locator;
@@ -80,6 +81,10 @@ export class TokensComponent {
   readonly tokensPage: TokensPage;
   readonly createTokenModal: Locator;
   readonly errorHintMessage: Locator;
+  readonly tokensGroupContextMenu: Locator;
+  readonly renameModal: Locator;
+  readonly renameButton: Locator;
+  readonly renameInput: Locator;
 
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
@@ -103,16 +108,12 @@ export class TokensComponent {
     this.deleteTokenMenuItem = this.tokenContextMenu
       .getByRole('listitem')
       .filter({ hasText: 'Delete token' });
-    this.deleteTokensGroupMenuItem = page
-      .getByTestId('tokens-context-menu-for-token-node')
-      .getByRole('button', { name: 'Delete', exact: true });
     this.expandTokensButton = this.tokenSideBar
       .locator('[class*="layer-button-wrapper"]')
       .getByRole('button');
     this.editTokenMenuItem = this.tokenContextMenu
       .getByRole('listitem')
       .filter({ hasText: 'Edit token' });
-
     this.remapTokenModal = page.getByTestId('token-remapping-modal');
     this.remapTokensButton = this.remapTokenModal.getByRole('button', {
       name: 'Remap tokens',
@@ -124,6 +125,26 @@ export class TokensComponent {
     this.errorHintMessage = page.locator(
       '.main_ui_ds_controls_utilities_hint_message__hint-message-text',
     );
+
+    // Tokens Group Context Menu
+    this.tokensGroupContextMenu = page.getByTestId(
+      'tokens-context-menu-for-token-node',
+    );
+
+    // Rename Modal Locators
+    this.renameModal = page
+      .getByTestId('token-rename-node-modal')
+      .filter({ hasText: 'Rename tokens group' });
+    this.renameButton = this.renameModal.getByRole('button', { name: 'Rename' });
+    this.renameInput = this.renameModal.getByRole('textbox');
+  }
+
+  private getTokensGroupContextMenuOptions(
+    tokensGroupMenuItem: TokensGroupContextMenuItem,
+  ): Locator {
+    return this.tokensGroupContextMenu.getByRole('button', {
+      name: `${tokensGroupMenuItem}`,
+    });
   }
 
   getTokenSection(tokenClass: TokenClass): Locator {
@@ -245,14 +266,26 @@ export class TokensComponent {
       .click({ button: 'right' });
   }
 
-  async isDeleteGroupMenuItemVisible() {
-    await expect(this.deleteTokensGroupMenuItem).toBeVisible();
+  async deleteTokenGroup(
+    group: TokenGroupData,
+    option: TokensGroupContextMenuItem = 'Delete',
+  ) {
+    await this.rightClickOnTokenGroup(group);
+    await this.getTokensGroupContextMenuOptions(option).click();
   }
 
-  async deleteTokenGroup(group: TokenGroupData) {
+  async selectRenameTokenGroupOption(
+    group: TokenGroupData,
+    option: TokensGroupContextMenuItem = 'Rename',
+  ) {
     await this.rightClickOnTokenGroup(group);
-    await this.isDeleteGroupMenuItemVisible();
-    await this.deleteTokensGroupMenuItem.click();
+    await this.getTokensGroupContextMenuOptions(option).click();
+  }
+
+  async renameTokenGroup(oldGroup: TokenGroupData, newGroupName: string) {
+    await this.selectRenameTokenGroupOption(oldGroup);
+    await this.renameInput.fill(newGroupName);
+    await this.renameButton.click();
   }
 
   async clickEditToken(

@@ -4,6 +4,7 @@ import { BaseComponent } from '@pages/base-component';
 export class SetsComponent {
   readonly page: Page;
   readonly baseComponent: BaseComponent;
+  readonly setsListContainer: Locator;
   readonly createOneSetButton: Locator;
   readonly createSetButton: Locator;
   readonly setsNameInput: Locator;
@@ -18,6 +19,9 @@ export class SetsComponent {
     this.baseComponent = new BaseComponent(page);
 
     // token sets locators
+    this.setsListContainer = page.locator(
+      '.main_ui_workspace_tokens_sets_lists__sets-list',
+    );
     this.createOneSetButton = page
       .locator('[class*="empty-sets-wrapper"]')
       .getByRole('button', { name: 'Create one.' });
@@ -35,6 +39,10 @@ export class SetsComponent {
       'A set with the same name already exists',
       { exact: true },
     );
+  }
+
+  private getSetItemButton(name: string): Locator {
+    return this.setsListContainer.getByRole('button', { name: name, exact: true });
   }
 
   async createSetViaLink(name: string) {
@@ -150,5 +158,9 @@ export class SetsComponent {
       this.duplicateSetNameError,
       'Duplicate set name error notification should be visible',
     ).toBeVisible();
+  }
+
+  async clickSetItemButton(name: string) {
+    await this.getSetItemButton(name).click();
   }
 }
