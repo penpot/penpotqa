@@ -48,10 +48,11 @@ mainTest.describe(() => {
   mainTest(
     qase(
       [2905, 2873],
-      'Selecting a token via the Token Icon and detaching via detach button ',
+      'Selecting a token via the Token Icon and detaching via the detach button ',
     ),
     async () => {
       const tokenName: string = 'SIZING-2';
+      const tokenValue: string = '2';
 
       await mainTest.step(
         '(2905) Selecting a token via the Token Icon updates the input value applied to a shape',
@@ -70,7 +71,6 @@ mainTest.describe(() => {
             await designPanelPage.selectTokenInTokenListByName(tokenName);
           });
           await mainTest.step('Check applied token', async () => {
-            const tokenValue: string = '2';
             await designPanelPage.checkSizeWidth(tokenValue);
           });
           await mainTest.step(
@@ -93,6 +93,7 @@ mainTest.describe(() => {
         async () => {
           await mainTest.step('Detach token', async () => {
             await designPanelPage.clickOnDetachTokenButton();
+            await designPanelPage.checkSizeWidth(tokenValue);
           });
           await mainTest.step('Check unapplied token in Token tab', async () => {
             await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);

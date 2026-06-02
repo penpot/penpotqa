@@ -1998,6 +1998,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnDetachTokenButton() {
-    this.detachTokenButton.click();
+    await this.detachTokenButton.click();
   }
 };
