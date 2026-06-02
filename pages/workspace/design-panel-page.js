@@ -37,6 +37,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[aria-label="Open token list"] button',
     );
     this.detachTokenButton = page.getByRole('button', { name: 'Detach token' });
+    this.notValidReferencedButton = page.getByRole('button', {
+      name: 'Reference is not valid or is not in any active set',
+    });
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
@@ -1984,7 +1987,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   /**
-   * @param {string} value - Token name.
+   * @param {string} value - Token name or error message
    */
   async isTokenPillTooltipVisible(value) {
     const tokenTooltipValue = this.page.getByText(value, {
@@ -1999,5 +2002,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickOnDetachTokenButton() {
     await this.detachTokenButton.click();
+  }
+
+  async isNotValidReferencedButtonVisible() {
+    await expect(this.notValidReferencedButton).toBeVisible();
   }
 };
