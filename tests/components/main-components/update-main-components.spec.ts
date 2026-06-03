@@ -635,6 +635,7 @@ mainTest.describe(() => {
         `Set main component fill color to "${sampleData.color.blueHexCode}"`,
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
+          await mainPage.waitForChangeIsSaved();
           await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
           await layersPanelPage.clickMainComponentOnLayersTab();
           await mainPage.waitForChangeIsSaved();
