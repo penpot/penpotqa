@@ -1038,8 +1038,8 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultTextLayer() {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(200, 300);
-    await expect(this.textbox).toBeFocused();
     await expect(this.textbox).toBeVisible();
+    await expect(this.textbox).toBeFocused();
     await this.typeTextFromKeyboard();
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
