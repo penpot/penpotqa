@@ -10,6 +10,7 @@ import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 
 const teamName = random().concat('autotest');
 
@@ -21,6 +22,7 @@ let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
 let assetsPanelPage: AssetsPanelPage;
 let inspectPanelPage: InspectPanelPage;
+let pagesPanelPage: PagesPanelPage;
 
 mainTest.beforeEach(async ({ page, browserName }) => {
   teamPage = new TeamPage(page);
@@ -31,6 +33,7 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   colorPalettePage = new ColorPalettePage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
+  pagesPanelPage = new PagesPanelPage(page);
   await teamPage.createTeam(teamName);
   browserName === 'webkit' ? await teamPage.waitForTeamBtn(15000) : null;
   await teamPage.isTeamSelected(teamName, browserName);
@@ -96,8 +99,8 @@ mainTest.describe(() => {
       qase([1973], 'Copy paste properties into 3 different layers'),
       async () => {
         await mainPage.copyLayerPropertyViaRightClick();
-        await mainPage.clickAddPageButton();
-        await mainPage.clickOnPageOnLayersPanel(2);
+        await pagesPanelPage.clickAddPageButton();
+        await pagesPanelPage.clickOnPageOnLayersPanel(2);
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
         await mainPage.createDefaultBoardByCoordinates(300, 300, true);
         await mainPage.createDefaultTextLayerByCoordinates(500, 500);

@@ -1,6 +1,9 @@
 const { expect } = require('@playwright/test');
 const { mainTest } = require('../../fixtures');
 const { MainPage } = require('../../pages/workspace/main-page');
+const {
+  PagesPanelPage,
+} = require('../../pages/workspace/panels-features/pages-panel-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
@@ -25,6 +28,7 @@ const teamName = random().concat('autotest');
 let teamPage,
   dashboardPage,
   mainPage,
+  pagesPanelPage,
   viewModePage,
   prototypePanelPage,
   designPanelPage,
@@ -37,6 +41,7 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
+  pagesPanelPage = new PagesPanelPage(page);
   viewModePage = new ViewModePage(page);
   prototypePanelPage = new PrototypePanelPage(page);
   designPanelPage = new DesignPanelPage(page);
@@ -296,7 +301,7 @@ mainTest.describe(() => {
   mainTest(qase([708], 'Page dropdown'), async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickAddPageButton();
+    await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
@@ -672,7 +677,7 @@ mainTest.describe(() => {
     async ({ page, browserName }) => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
-      await mainPage.clickAddPageButton();
+      await pagesPanelPage.clickAddPageButton();
       await mainPage.waitForChangeIsSaved();
       const newPage = await viewModePage.clickViewModeShortcut();
       viewModePage = new ViewModePage(newPage);

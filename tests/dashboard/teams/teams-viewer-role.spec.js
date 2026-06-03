@@ -6,6 +6,9 @@ const { DashboardPage } = require('../../../pages/dashboard/dashboard-page.js');
 const { TeamPage } = require('../../../pages/dashboard/team-page.js');
 const { MainPage } = require('../../../pages/workspace/main-page.js');
 const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page.js');
+const {
+  PagesPanelPage,
+} = require('../../../pages/workspace/panels-features/pages-panel-page');
 const { random } = require('../../../helpers/string-generator.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { expect } = require('@playwright/test');
@@ -28,6 +31,7 @@ async function setupViewerUser(page, role = 'Viewer') {
   const teamPage = new TeamPage(page);
   const profilePage = new ProfilePage(page);
   const mainPage = new MainPage(page);
+  const pagesPanelPage = new PagesPanelPage(page);
   const layersPanelPage = new LayersPanelPage(page);
 
   // Create team & file
@@ -70,6 +74,7 @@ async function setupViewerUser(page, role = 'Viewer') {
     profilePage,
     mainPage,
     layersPanelPage,
+    pagesPanelPage,
   };
 }
 
@@ -89,7 +94,7 @@ mainTest.describe('Viewer Role - Permissions', () => {
       'Viewer permissions on viewport: can not edit layers, use toolbar, page management (creation, duplicate, delete), right click menu, open color palette, open typographies ',
     ),
     async () => {
-      const { dashboardPage, mainPage, layersPanelPage } = setup;
+      const { dashboardPage, mainPage, layersPanelPage, pagesPanelPage } = setup;
 
       await mainTest.step('Open file and wait for viewport', async () => {
         await dashboardPage.openFileWithName('New File 1');
@@ -116,7 +121,7 @@ mainTest.describe('Viewer Role - Permissions', () => {
       await mainTest.step(
         '(1891) Viewer cannot create, duplicate, delete page',
         async () => {
-          await mainPage.isPageRightClickMenuVisible(false);
+          await pagesPanelPage.isPageRightClickMenuVisible(false);
         },
       );
 

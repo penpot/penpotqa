@@ -5,13 +5,13 @@ import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
+import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { expect } from '@playwright/test';
 import { mainTest } from 'fixtures';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName = createTeamName();
-
+let teamName: string;
 let mainPage: MainPage;
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
@@ -19,8 +19,10 @@ let basePage: BasePage;
 let layersPanelPage: LayersPanelPage;
 let assetsPanelPage: AssetsPanelPage;
 let designPanelPage: DesignPanelPage;
+let pagesPanelPage: PagesPanelPage;
 
 mainTest.beforeEach(async ({ page }) => {
+  teamName = createTeamName();
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   basePage = new BasePage(page);
@@ -28,6 +30,8 @@ mainTest.beforeEach(async ({ page }) => {
   assetsPanelPage = new AssetsPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   mainPage = new MainPage(page);
+  pagesPanelPage = new PagesPanelPage(page);
+
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -41,54 +45,56 @@ mainTest.afterEach(async () => {
 
 mainTest(qase(832, 'Create new page'), async () => {
   await mainTest.step('Add a new page', async () => {
-    await mainPage.clickAddPageButton();
+    await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickMoveButton();
   });
 
   await mainTest.step('Verify two pages are shown in the panel', async () => {
-    await mainPage.isFirstPageAddedToAssetsPanel();
-    await mainPage.isSecondPageAddedToAssetsPanel();
-    await expect(mainPage.pagesBlock).toHaveScreenshot('page-1-and-page-2.png');
+    await pagesPanelPage.isFirstPageAddedToAssetsPanel();
+    await pagesPanelPage.isSecondPageAddedToAssetsPanel();
+    await expect(pagesPanelPage.pagesBlock).toHaveScreenshot(
+      'page-1-and-page-2.png',
+    );
   });
 });
 
 mainTest(qase(833, 'Rename page'), async () => {
   await mainTest.step('Add a second page', async () => {
-    await mainPage.clickAddPageButton();
+    await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickMoveButton();
   });
 
   await mainTest.step('Rename first page', async () => {
-    await mainPage.renamePageViaRightClick('NewFirstPage');
+    await pagesPanelPage.renamePageViaRightClick('NewFirstPage');
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isFirstPageNameDisplayed('NewFirstPage');
+    await pagesPanelPage.isFirstPageNameDisplayed('NewFirstPage');
   });
 
   await mainTest.step('Rename second page', async () => {
-    await mainPage.renamePageViaRightClick('NewSecondPage', false);
+    await pagesPanelPage.renamePageViaRightClick('NewSecondPage', false);
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isSecondPageNameDisplayed('NewSecondPage');
+    await pagesPanelPage.isSecondPageNameDisplayed('NewSecondPage');
   });
 });
 
 mainTest(qase(834, 'Duplicate page'), async () => {
   await mainTest.step('Duplicate the first page', async () => {
-    await mainPage.duplicatePageViaRightClick();
+    await pagesPanelPage.duplicatePageViaRightClick();
     await mainPage.waitForChangeIsSaved();
   });
 
   await mainTest.step('Verify duplicated page names', async () => {
-    await mainPage.isFirstPageNameDisplayed('Page 1');
-    await mainPage.isSecondPageNameDisplayed('Page 1 (copy)');
+    await pagesPanelPage.isFirstPageNameDisplayed('Page 1');
+    await pagesPanelPage.isSecondPageNameDisplayed('Page 1 (copy)');
   });
 });
 
 mainTest(qase(835, 'Switch between pages'), async ({ page }) => {
   await mainTest.step('Navigate to second page', async () => {
-    await mainPage.clickAddPageButton();
-    await mainPage.clickOnPageOnLayersPanel(2);
+    await pagesPanelPage.clickAddPageButton();
+    await pagesPanelPage.clickOnPageOnLayersPanel(2);
     await mainPage.clickMoveButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -106,7 +112,7 @@ mainTest(qase(835, 'Switch between pages'), async ({ page }) => {
   });
 
   await mainTest.step('Navigate back to first page', async () => {
-    await mainPage.clickOnPageOnLayersPanel();
+    await pagesPanelPage.clickOnPageOnLayersPanel();
     await mainPage.clickMoveButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -126,50 +132,52 @@ mainTest(qase(835, 'Switch between pages'), async ({ page }) => {
 
 mainTest(qase(836, 'Collapse/expand pages list'), async () => {
   await mainTest.step('Add a second page and collapse the pages list', async () => {
-    await mainPage.clickAddPageButton();
+    await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickCollapseExpandPagesButton();
+    await pagesPanelPage.clickCollapseExpandPagesButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickMoveButton();
   });
 
   await mainTest.step('Verify pages list is collapsed', async () => {
-    await expect(mainPage.pagesBlock).toHaveScreenshot('hidden-pages.png');
+    await expect(pagesPanelPage.pagesBlock).toHaveScreenshot('hidden-pages.png');
   });
 
   await mainTest.step(
     'Expand the pages list and verify both pages are shown',
     async () => {
-      await mainPage.clickCollapseExpandPagesButton();
+      await pagesPanelPage.clickCollapseExpandPagesButton();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.clickMoveButton();
-      await expect(mainPage.pagesBlock).toHaveScreenshot('page-1-and-page-2.png');
-      await mainPage.isFirstPageNameDisplayed('Page 1');
-      await mainPage.isSecondPageNameDisplayed('Page 2');
+      await pagesPanelPage.clickMoveButton();
+      await expect(pagesPanelPage.pagesBlock).toHaveScreenshot(
+        'page-1-and-page-2.png',
+      );
+      await pagesPanelPage.isFirstPageNameDisplayed('Page 1');
+      await pagesPanelPage.isSecondPageNameDisplayed('Page 2');
     },
   );
 });
 
 mainTest(qase(837, 'Delete page'), async () => {
   await mainTest.step('Add two extra pages', async () => {
-    await mainPage.clickAddPageButton();
+    await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickAddPageButton();
+    await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
   });
 
   await mainTest.step('Delete second page via right-click and verify', async () => {
-    await mainPage.deleteSecondPageViaRightClick();
+    await pagesPanelPage.deleteSecondPageViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isFirstPageNameDisplayed('Page 1');
-    await mainPage.isSecondPageNameDisplayed('Page 3');
+    await pagesPanelPage.isFirstPageNameDisplayed('Page 1');
+    await pagesPanelPage.isSecondPageNameDisplayed('Page 3');
   });
 
   await mainTest.step('Delete second page via trash icon and verify', async () => {
-    await mainPage.deleteSecondPageViaTrashIcon('Page 3');
+    await pagesPanelPage.deleteSecondPageViaTrashIcon('Page 3');
     await mainPage.waitForChangeIsSaved();
-    await mainPage.isFirstPageNameDisplayed('Page 1');
-    await mainPage.isSecondPageAddedToAssetsPanel(false);
+    await pagesPanelPage.isFirstPageNameDisplayed('Page 1');
+    await pagesPanelPage.isSecondPageAddedToAssetsPanel(false);
   });
 });
 
@@ -177,15 +185,15 @@ mainTest(
   qase(839, 'Create 3 pages, delete 2nd page, undo delete (CTRL Z)'),
   async ({ browserName }) => {
     await mainTest.step('Create three pages and delete the second', async () => {
-      await mainPage.clickAddPageButton();
-      await mainPage.clickAddPageButton();
-      await mainPage.deleteSecondPageViaRightClick();
-      await mainPage.isSecondPageNameDisplayed('Page 2', false);
+      await pagesPanelPage.clickAddPageButton();
+      await pagesPanelPage.clickAddPageButton();
+      await pagesPanelPage.deleteSecondPageViaRightClick();
+      await pagesPanelPage.isSecondPageNameDisplayed('Page 2', false);
     });
 
     await mainTest.step('Undo deletion and verify page is restored', async () => {
-      await mainPage.clickShortcutCtrlZ(browserName);
-      await mainPage.isSecondPageNameDisplayed('Page 2', true);
+      await pagesPanelPage.clickShortcutCtrlZ(browserName);
+      await pagesPanelPage.isSecondPageNameDisplayed('Page 2', true);
     });
   },
 );
@@ -204,10 +212,10 @@ mainTest(
     });
 
     await mainTest.step('Navigate to Page 2 and paste the component', async () => {
-      await mainPage.clickAddPageButton();
+      await pagesPanelPage.clickAddPageButton();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.clickOnPageOnLayersPanel(2);
-      await mainPage.isSecondPageNameDisplayed('Page 2');
+      await pagesPanelPage.clickOnPageOnLayersPanel(2);
+      await pagesPanelPage.isSecondPageNameDisplayed('Page 2');
       await mainPage.pasteLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
     });
@@ -239,9 +247,9 @@ mainTest(
     });
 
     await mainTest.step('Add component from library to Page 2', async () => {
-      await mainPage.clickAddPageButton();
+      await pagesPanelPage.clickAddPageButton();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.clickOnPageOnLayersPanel(2);
+      await pagesPanelPage.clickOnPageOnLayersPanel(2);
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.dragComponentOnCanvas(100, 100);
@@ -277,9 +285,9 @@ mainTest(
     });
 
     await mainTest.step('Add component from library to Page 2', async () => {
-      await mainPage.clickAddPageButton();
+      await pagesPanelPage.clickAddPageButton();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.clickOnPageOnLayersPanel(2);
+      await pagesPanelPage.clickOnPageOnLayersPanel(2);
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.dragComponentOnCanvas(500, 500);
@@ -304,7 +312,7 @@ mainTest(
     await mainTest.step(
       'Navigate to Page 1 and verify updated component',
       async () => {
-        await mainPage.clickOnPageOnLayersPanel(1);
+        await pagesPanelPage.clickOnPageOnLayersPanel(1);
         await expect(mainPage.viewport).toHaveScreenshot(
           'page-copies-component-update-main.png',
           {

@@ -5,6 +5,7 @@ import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
+import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { expect } from '@playwright/test';
 import { mainTest } from 'fixtures';
 import { createTeamName } from 'helpers/teams/create-team-name';
@@ -19,12 +20,14 @@ let dashboardPage: DashboardPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let mainPage: MainPage;
+let pagesPanelPage: PagesPanelPage;
 let teamPage: TeamPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
+  pagesPanelPage = new PagesPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
@@ -112,8 +115,8 @@ mainTest.describe(() => {
       });
 
       await mainTest.step('Paste component on page 2', async () => {
-        await mainPage.clickAddPageButton();
-        await mainPage.clickOnPageOnLayersPanel(2);
+        await pagesPanelPage.clickAddPageButton();
+        await pagesPanelPage.clickOnPageOnLayersPanel(2);
         await mainPage.clickMoveButton();
         await mainPage.pressPasteShortcut(browserName);
         await mainPage.waitForChangeIsUnsaved();
@@ -123,8 +126,8 @@ mainTest.describe(() => {
       await mainTest.step(
         'Verify component is on page 2 and layers panel',
         async () => {
-          await mainPage.isPageNameSelected('Page 1', false);
-          await mainPage.isPageNameSelected('Page 2', true);
+          await pagesPanelPage.isPageNameSelected('Page 1', false);
+          await pagesPanelPage.isPageNameSelected('Page 2', true);
           await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Board');
           await expect(
             mainPage.viewport,
