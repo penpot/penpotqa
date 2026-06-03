@@ -18,9 +18,12 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.verticalFlexLayoutIcon = page.getByTestId('icon-flex-vertical');
     this.horizontalFlexLayoutIcon = page.getByTestId('icon-flex-horizontal');
     this.focusModeDiv = page.getByText('Focus mode', { exact: true });
-    this.mainComponentLayer = page
-      .getByTestId('icon-component')
-      .locator('//parent::div');
+    // this.mainComponentLayer = page
+    //   .getByTestId('icon-component')
+    //   .locator('//parent::div');
+    this.mainComponentLayer = page.locator(
+      '.main_ui_workspace_sidebar_layer_item__root-board',
+    );
     this.copyComponentLayer = page
       .getByTestId('icon-component-copy')
       .locator('//parent::div');
