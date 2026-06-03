@@ -40,6 +40,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.notValidReferencedButton = page.getByRole('button', {
       name: 'Reference is not valid or is not in any active set',
     });
+    this.notInAnyActiveSetButton = page.getByRole('button', {
+      name: 'This token is not in any active set or has an invalid value',
+    });
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
@@ -2009,11 +2012,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.notValidReferencedButton).toBeVisible();
   }
 
+  async isNotInAnyActiveSetButtonVisible() {
+    await expect(this.notInAnyActiveSetButton).toBeVisible();
+  }
+
   /**
-   * @param {string} hexColor - hexadecimal color
+   * @param {string} messageText - Message text
    */
-  async checkTooltipInFillColorInput(hexColor) {
-    const messageText = `Resolved value: ${hexColor}`;
+  async checkTooltipInFillColorInput(messageText) {
     await this.fillSection.getByRole('button', { name: messageText }).hover();
     await this.isTokenPillTooltipVisible(messageText);
   }

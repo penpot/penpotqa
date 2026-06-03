@@ -203,6 +203,9 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
+  const hexColor: string = '#ec9090';
+  const setName: string = 'Light';
+
   mainTest.beforeEach(async () => {
     await dashboardPage.openSidebarItem('Drafts');
     await dashboardPage.importFileFromProjectPage(
@@ -221,18 +224,17 @@ mainTest.describe(() => {
       'Token pill updates displayed value after token value change in active token set',
     ),
     async () => {
-      const hexColor: string = '#ec9090';
       const newHexColor: string = '#f1d0d0';
 
       await mainTest.step(
         'Hover on fill color input and check token value in tootltip message',
         async () => {
-          await designPanelPage.checkTooltipInFillColorInput(hexColor);
+          const messageText = `Resolved value: ${hexColor}`;
+          await designPanelPage.checkTooltipInFillColorInput(messageText);
         },
       );
 
       await mainTest.step('Click on the Mode/Light token set', async () => {
-        const setName: string = 'Light';
         await tokensPage.setsComp.isSetNameVisible(setName);
         await tokensPage.setsComp.clickSetItemButton(setName);
       });
@@ -251,7 +253,42 @@ mainTest.describe(() => {
       await mainTest.step(
         'Hover on fill color input and check token value in tootltip message',
         async () => {
-          await designPanelPage.checkTooltipInFillColorInput(newHexColor);
+          const messageText = `Resolved value: ${newHexColor}`;
+          await designPanelPage.checkTooltipInFillColorInput(messageText);
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase(2893, 'Token pill shows unresolved state when token set becomes inactive'),
+    async () => {
+      await mainTest.step(
+        'Hover on fill color input and check token value in tootltip message',
+        async () => {
+          const messageText = `Resolved value: ${hexColor}`;
+          await designPanelPage.checkTooltipInFillColorInput(messageText);
+        },
+      );
+
+      await mainTest.step('Deactivate the Mode/Light set', async () => {
+        await tokensPage.setsComp.isSetNameVisible(setName);
+        await tokensPage.setsComp.clickOnSetCheckboxByName(setName);
+      });
+
+      await mainTest.step(
+        'Check not in any active set red dot in input',
+        async () => {
+          await designPanelPage.isNotInAnyActiveSetButtonVisible();
+        },
+      );
+
+      await mainTest.step(
+        'Hover on fill color input and check error in tootltip message',
+        async () => {
+          const messageText: string =
+            'This token is not in any active set or has an invalid value.';
+          await designPanelPage.checkTooltipInFillColorInput(messageText);
         },
       );
     },
