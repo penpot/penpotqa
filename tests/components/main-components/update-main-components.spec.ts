@@ -101,9 +101,8 @@ mainTest(qase([1306], 'Check copy and main component icons'), async () => {
   );
 });
 
-mainTest.describe(() => {
+mainTest.describe('Create a component and 2 copies of it', () => {
   mainTest.beforeEach(async () => {
-    await mainTest.slow();
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
     await mainPage.waitForChangeIsSaved();
@@ -117,13 +116,16 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await designPanelPage.changeAxisXAndYForLayer('50', '400');
+
+    // Click main component from Layers and wait for change to be saved
+    await layersPanelPage.clickMainComponentOnLayersTab();
+    await mainPage.waitForChangeIsSaved();
   });
 
   mainTest(
     qase([1438], 'Create a component and 2 copies of it, change rotation of main'),
     async () => {
       await mainTest.step('Change rotation of main component', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
         await designPanelPage.changeRotationForLayer('20');
         await designPanelPage.waitForChangeIsUnsaved();
         await designPanelPage.waitForChangeIsSaved();
@@ -154,7 +156,6 @@ mainTest.describe(() => {
       await mainTest.step(
         'Change all corners of main component individually',
         async () => {
-          await layersPanelPage.clickMainComponentOnLayersTab();
           await designPanelPage.clickIndividualCornersRadiusButton();
           await designPanelPage.changeTopLeftCornerRadiusForLayer(cornerValue);
           await designPanelPage.changeTopRightCornerRadiusForLayer(cornerValue);
@@ -187,9 +188,7 @@ mainTest.describe(() => {
       await mainTest.step(
         'Change corner radius using "All corners" option on main component',
         async () => {
-          await layersPanelPage.clickMainComponentOnLayersTab();
           await designPanelPage.changeGeneralCornerRadiusForLayer(cornerValue);
-          await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
         },
       );
@@ -214,7 +213,6 @@ mainTest.describe(() => {
       const sampleData = new SampleData();
 
       await mainTest.step('Add stroke to main component and set color', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
         await designPanelPage.clickAddStrokeButton();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.setStrokeColor(sampleData.color.redHexCode);
@@ -241,7 +239,6 @@ mainTest.describe(() => {
       const sampleData = new SampleData();
 
       await mainTest.step('Add fill color to main component', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
         await layersPanelPage.selectMainComponentChildLayer();
         await designPanelPage.changeHeightAndWidthForLayer('50', '50');
         await mainPage.waitForChangeIsSaved();
@@ -273,10 +270,7 @@ mainTest.describe(() => {
     ),
     async () => {
       await mainTest.step('Add default shadow to main component', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickAddShadowButton();
-        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.clickMainComponentOnLayersTab();
         await mainPage.clickViewportByCoordinates(1000, 200, 2);
@@ -322,10 +316,10 @@ mainTest.describe(() => {
     qase([1446], 'Create a component and 2 copies of it, change blur of main'),
     async () => {
       await mainTest.step('Add blur to main component', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
         await designPanelPage.clickAddBlurButton();
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.clickMainComponentOnLayersTab();
+        await mainPage.waitForChangeIsSaved();
         await mainPage.clickViewportByCoordinates(1000, 200, 2);
       });
 
@@ -348,11 +342,9 @@ mainTest.describe(() => {
     ),
     async () => {
       await mainTest.step('Add grid with rows type to main component', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
         await designPanelPage.clickAddGridButton();
         await designPanelPage.selectGridType('Rows');
         await layersPanelPage.clickMainComponentOnLayersTab();
-        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
       });
 
@@ -610,7 +602,6 @@ mainTest.describe(() => {
           await layersPanelPage.clickMainComponentOnLayersTab();
           await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
           await layersPanelPage.clickMainComponentOnLayersTab();
-          await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
           await mainPage.waitForViewportVisible();
         },
