@@ -290,7 +290,8 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async typeTextFromKeyboard() {
-    await this.page.keyboard.type('Hello world!');
+    await this.page.keyboard.type('Hello world!', { delay: 50 });
+    await expect(this.textbox).toHaveText('Hello world!');
   }
 
   async uploadImage(filePath) {
@@ -1038,6 +1039,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(200, 300);
     await expect(this.textbox).toBeVisible();
+    await expect(this.textbox).toBeFocused();
     await this.typeTextFromKeyboard();
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
@@ -1047,6 +1049,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
     await expect(this.textbox).toBeVisible();
+    await expect(this.textbox).toBeFocused();
     await this.typeTextFromKeyboard();
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
@@ -1056,8 +1059,20 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press('T');
     await this.clickViewportByCoordinates(200, 300);
     await expect(this.textbox).toBeVisible();
+    await expect(this.textbox).toBeFocused();
     await this.typeTextFromKeyboard();
     await this.clickMoveButton();
+  }
+
+  async createTextLayerByCoordinates(x, y, text) {
+    await this.clickCreateTextButton();
+    await this.clickViewportByCoordinates(x, y);
+    await expect(this.textbox).toBeVisible();
+    await expect(this.textbox).toBeFocused();
+    await this.page.keyboard.type(text, { delay: 50 });
+    await expect(this.textbox).toHaveText(text);
+    await this.clickMoveButton();
+    await this.waitForChangeIsSaved();
   }
 
   async clickOnMainToolBar() {
@@ -1414,17 +1429,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.mouse.up();
 
     await this.page.keyboard.up('Alt');
-  }
-
-  async createTextLayerByCoordinates(x, y, text) {
-    await this.clickCreateTextButton();
-    await this.clickViewportByCoordinates(x, y);
-    await expect(this.textbox).toBeVisible();
-    await expect(this.textbox).toBeFocused();
-    await this.page.keyboard.type(text, { delay: 50 });
-    await expect(this.textbox).toHaveText(text);
-    await this.clickMoveButton();
-    await this.waitForChangeIsSaved();
   }
 
   async isCornerHandleVisible(visible = true) {
