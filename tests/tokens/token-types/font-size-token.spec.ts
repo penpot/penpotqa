@@ -109,7 +109,6 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
         await mainPage.createDefaultTextLayerByCoordinates(100, 600);
-        await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
@@ -173,7 +172,6 @@ mainTest(
         await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken2);
         await tokensPage.tokensComp.isTokenVisibleWithName(colorToken2.name);
         await mainPage.createDefaultTextLayerByCoordinates(100, 200);
-        await mainPage.waitForChangeIsSaved();
         await mainPage.waitForResizeHandlerVisible();
         await tokensPage.tokensComp.clickOnTokenWithName(colorToken1.name);
         await tokensPage.tokensComp.isTokenAppliedWithName(colorToken1.name);

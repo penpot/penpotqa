@@ -582,7 +582,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultTextLayerByCoordinates(220, 330);
-    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Hello world!');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();

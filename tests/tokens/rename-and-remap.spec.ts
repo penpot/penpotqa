@@ -75,7 +75,6 @@ mainTest.describe(() => {
           await mainPage.createDefaultBoardByCoordinates(320, 210);
           await mainPage.doubleClickCreatedBoardTitleOnCanvas();
           await mainPage.createDefaultTextLayerByCoordinates(350, 250);
-          await mainPage.waitForChangeIsSaved();
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
             borderRadiusToken,
           );
