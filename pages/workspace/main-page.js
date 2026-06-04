@@ -1127,6 +1127,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.pasteOption.click();
   }
 
+  async pasteAndReplaceViaShortcut() {
+    await this.page.keyboard.press('Control+Shift+V');
+  }
+
   async cutLayerViaRightClick() {
     await this.rightClickOnElement();
     await this.cutOption.click();
