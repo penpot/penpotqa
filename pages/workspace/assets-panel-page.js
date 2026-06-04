@@ -47,6 +47,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.ungroupFileLibraryMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Ungroup' });
+    this.deleteGroupFileLibraryMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Delete group' });
     this.combineAsVariantsFileLibraryMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Combine as variants' });
@@ -56,6 +59,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       exact: true,
     });
     this.renameGroupButton = page.getByRole('button', { name: 'Rename' });
+    this.deleteGroupButton = page.getByRole('button', { name: 'Delete' });
     this.fileLibraryGroupTitle = page.locator('[class*="groups__path"]');
     this.fileLibraryListViewButton = page.getByTitle('List view', { exact: true });
     this.fileLibraryGridViewButton = page.getByTitle('Grid view', { exact: true });
@@ -222,6 +226,12 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   async ungroupFileLibrary() {
     await this.fileLibraryGroupTitle.click({ button: 'right' });
     await this.ungroupFileLibraryMenuItem.click();
+  }
+
+  async deleteGroupFileLibrary() {
+    await this.fileLibraryGroupTitle.click({ button: 'right' });
+    await this.deleteGroupFileLibraryMenuItem.click();
+    await this.deleteGroupButton.click();
   }
 
   async clickFileLibraryListViewButton() {
