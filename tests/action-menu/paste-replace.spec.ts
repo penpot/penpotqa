@@ -25,7 +25,9 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.createDefaultRectangleByCoordinates(100, 100);
+  await layersPanelPage.isLayerNameDisplayed('Rectangle');
   await mainPage.createDefaultEllipseByCoordinates(300, 100);
+  await layersPanelPage.isLayerNameDisplayed('Ellipse');
 });
 
 mainTest.afterEach(async () => {
