@@ -179,46 +179,6 @@ exports.MainPage = class MainPage extends BasePage {
       .getByRole('listitem')
       .filter({ hasText: 'Zoom to selected' });
 
-    //Pages
-    this.addPageButton = page.getByRole('button', { name: 'Add page' });
-    this.pagesBlock = page.locator('div.main_ui_workspace_sidebar_sitemap__sitemap');
-    this.firstPageListItem = page
-      .getByTestId('page-name')
-      .filter({ hasText: /^Page 1$/ });
-    this.getPageListItemByName = (name, index = null) => {
-      const pageNameLocator = page.getByTestId('page-name');
-      if (index !== null) {
-        return pageNameLocator.nth(index);
-      }
-      return pageNameLocator.filter({ hasText: new RegExp(`^${name}$`) });
-    };
-    this.secondPageListItem = page
-      .getByTestId('page-name')
-      .filter({ hasText: /^Page 2$/ });
-    this.selectedPage = page.locator(
-      'ul[class*="page-list"] li[class*="sitemap__selected"] div[class*="element-list-body"]',
-    );
-    this.pageNameInput = page.locator(
-      'ul[class*="page-list"] div[class*="element-list-body"] input',
-    );
-    this.renamePageMenuItem = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Rename' });
-    this.duplicatePageMenuItem = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Duplicate' });
-    this.deletePageMenuItem = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Delete' });
-    this.collapseExpandPagesButton = page.getByRole('button', {
-      name: 'Pages',
-      exact: true,
-    });
-    this.pageTrashIcon = page
-      .locator('div[class*="selected"]')
-      .getByRole('button', { name: 'Delete page' });
-    this.deletePageOkButton = page.getByRole('button', { name: 'Ok' });
-
     // Bottom palette
     this.bottomPaletteToolBar = page.locator('.main_ui_workspace_palette__palettes');
     this.typographyButton = page.getByRole('button', { name: 'Typographies' });
@@ -835,77 +795,6 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.page.getByText(`${numBoards} / ${numBoards}`)).toBeVisible();
   }
 
-  async clickAddPageButton() {
-    await this.addPageButton.click();
-  }
-
-  async isFirstPageAddedToAssetsPanel(added = true) {
-    added
-      ? await expect(this.firstPageListItem).toBeVisible()
-      : await expect(this.firstPageListItem).not.toBeVisible();
-  }
-
-  async isFirstPageNameDisplayed(name, displayed = true) {
-    displayed
-      ? await expect(this.getPageListItemByName(name, 0)).toBeVisible()
-      : await expect(this.getPageListItemByName(name)).not.toBeVisible();
-  }
-
-  async isSecondPageAddedToAssetsPanel(added = true) {
-    added
-      ? await expect(this.secondPageListItem).toBeVisible()
-      : await expect(this.secondPageListItem).not.toBeVisible();
-  }
-
-  async isSecondPageNameDisplayed(name, displayed = true) {
-    displayed
-      ? await expect(this.getPageListItemByName(name, 1)).toBeVisible()
-      : await expect(this.getPageListItemByName(name)).not.toBeVisible();
-  }
-
-  async renamePageViaRightClick(newName, isFirstPage = true) {
-    if (isFirstPage) {
-      await this.firstPageListItem.click({ button: 'right' });
-    } else {
-      await this.secondPageListItem.click({ button: 'right' });
-    }
-    await this.renamePageMenuItem.click();
-    await this.pageNameInput.fill(newName);
-    await this.clickViewportTwice();
-  }
-
-  async duplicatePageViaRightClick(isFirstPage = true) {
-    if (isFirstPage) {
-      await this.firstPageListItem.click({ button: 'right' });
-    } else {
-      await this.secondPageListItem.click({ button: 'right' });
-    }
-    await this.duplicatePageMenuItem.click();
-  }
-
-  async clickOnPageOnLayersPanel(pageNumber = 1) {
-    await this.page
-      .getByTestId('page-name')
-      .filter({ hasText: new RegExp(`^Page ${pageNumber}$`) })
-      .click();
-  }
-
-  async clickCollapseExpandPagesButton() {
-    await this.collapseExpandPagesButton.click();
-  }
-
-  async deleteSecondPageViaRightClick() {
-    await this.secondPageListItem.click({ button: 'right' });
-    await this.deletePageMenuItem.click();
-    await this.deletePageOkButton.click();
-  }
-
-  async deleteSecondPageViaTrashIcon(name) {
-    await this.getPageListItemByName(name).click();
-    await this.pageTrashIcon.click();
-    await this.deletePageOkButton.click();
-  }
-
   async clickHistoryPanelButton() {
     await this.historyPanelButton.click();
   }
@@ -1242,13 +1131,6 @@ exports.MainPage = class MainPage extends BasePage {
       : await expect(this.toolBarWindow).not.toBeVisible();
   }
 
-  async isPageRightClickMenuVisible(visible = true) {
-    await this.firstPageListItem.click({ button: 'right' });
-    visible
-      ? await expect(this.renamePageMenuItem).toBeVisible()
-      : await expect(this.renamePageMenuItem).not.toBeVisible();
-  }
-
   async checkViewerRightClickMenu() {
     await this.rightClickOnElement();
     await expect(this.copyOption).not.toBeVisible();
@@ -1298,12 +1180,6 @@ exports.MainPage = class MainPage extends BasePage {
   async copyLayerLinkViaRightClick() {
     await this.rightClickOnElement();
     await this.copyLinkMenuItem.click();
-  }
-
-  async isPageNameSelected(name, selected = true) {
-    selected
-      ? await expect(this.selectedPage.getByTitle(name)).toBeVisible()
-      : await expect(this.selectedPage.getByTitle(name)).not.toBeVisible();
   }
 
   async checkImportErrorMessage(message) {

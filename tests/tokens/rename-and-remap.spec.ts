@@ -2,6 +2,7 @@ import { mainTest } from 'fixtures';
 import { random } from 'helpers/string-generator';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { MainPage } from '@pages/workspace/main-page';
+import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
@@ -13,6 +14,7 @@ import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 const teamName = random().concat('autotest');
 
 let mainPage: MainPage;
+let pagesPanelPage: PagesPanelPage;
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let tokensPage: TokensPage;
@@ -23,6 +25,7 @@ mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
+  pagesPanelPage = new PagesPanelPage(page);
   tokensPage = new TokensPage(page);
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
@@ -183,12 +186,12 @@ mainTest.describe(() => {
         await layersPanelPage.openLayersTab();
         await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
         await mainPage.copyLayerViaRightClick();
-        await mainPage.clickAddPageButton();
-        await mainPage.clickOnPageOnLayersPanel(2);
+        await pagesPanelPage.clickAddPageButton();
+        await pagesPanelPage.clickOnPageOnLayersPanel(2);
         await mainPage.clickViewportTwice();
         await mainPage.pasteLayerViaRightClick();
         await mainPage.waitForChangeIsSaved();
-        await mainPage.clickOnPageOnLayersPanel(1);
+        await pagesPanelPage.clickOnPageOnLayersPanel(1);
         await tokensPage.clickTokensTab();
       });
 
@@ -219,7 +222,7 @@ mainTest.describe(() => {
 
       await mainTest.step('Check Token B still applied on Page 1', async () => {
         await layersPanelPage.openLayersTab();
-        await mainPage.clickOnPageOnLayersPanel(1);
+        await pagesPanelPage.clickOnPageOnLayersPanel(1);
         await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
         await tokensPage.clickTokensTab();
         await designPanelPage.isFillTokenColorSetComponent(tokenB.name);
@@ -229,7 +232,7 @@ mainTest.describe(() => {
         'Navigate to Page 2 and check Token B still applied',
         async () => {
           await layersPanelPage.openLayersTab();
-          await mainPage.clickOnPageOnLayersPanel(2);
+          await pagesPanelPage.clickOnPageOnLayersPanel(2);
           await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
           await tokensPage.clickTokensTab();
           await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
