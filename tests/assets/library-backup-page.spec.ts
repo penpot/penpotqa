@@ -5,6 +5,7 @@ import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
+import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { mainTest } from 'fixtures';
 import { TeamPage } from '@pages/dashboard/team-page';
 
@@ -13,6 +14,7 @@ const teamName = createTeamName();
 let dashboardPage: DashboardPage;
 let teamPage: TeamPage;
 let mainPage: MainPage;
+let pagesPanelPage: PagesPanelPage;
 let assetsPanelPage: AssetsPanelPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
@@ -22,6 +24,7 @@ mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   teamPage = new TeamPage(page);
   mainPage = new MainPage(page);
+  pagesPanelPage = new PagesPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
@@ -56,7 +59,7 @@ mainTest.beforeEach(async ({ page }) => {
 
   await dashboardPage.checkNumberOfFiles('1 file');
   await dashboardPage.openFileWithName('New File 2');
-  await mainPage.isSecondPageNameDisplayed('Main components');
+  await pagesPanelPage.isSecondPageNameDisplayed('Main components');
 });
 
 mainTest.afterEach(async () => {

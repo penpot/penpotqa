@@ -173,26 +173,41 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([953], 'Typographic styles - create group'), async () => {
-    await mainTest.step('Create group for typography', async () => {
-      await assetsPanelPage.createGroupFileLibraryAssets(
-        'Typographies',
-        'Test Group',
-      );
-      await mainPage.waitForChangeIsSaved();
-    });
+  mainTest(
+    qase([953, 2838], 'Typographic styles - create group and delete group'),
+    async () => {
+      await mainTest.step('(953) Typographic styles - create group', async () => {
+        await mainTest.step('Create group for typography', async () => {
+          await assetsPanelPage.createGroupFileLibraryAssets(
+            'Typographies',
+            'Test Group',
+          );
+          await mainPage.waitForChangeIsSaved();
+        });
 
-    await mainTest.step(
-      'Verify group is created and screenshot matches',
-      async () => {
-        await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
-        await expect(
-          assetsPanelPage.assetsPanel,
-          'Grouped typography should match screenshot',
-        ).toHaveScreenshot('group-typographies.png');
-      },
-    );
-  });
+        await mainTest.step(
+          'Verify group is created and screenshot matches',
+          async () => {
+            await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
+            await expect(
+              assetsPanelPage.assetsPanel,
+              'Grouped typography should match screenshot',
+            ).toHaveScreenshot('group-typographies.png');
+          },
+        );
+      });
+
+      await mainTest.step('(2838) Typographic styles - delete group', async () => {
+        await mainTest.step('Delete group', async () => {
+          await assetsPanelPage.deleteGroupFileLibrary();
+        });
+
+        await mainTest.step('Verify group is removed', async () => {
+          await assetsPanelPage.isFileLibraryGroupRemoved();
+        });
+      });
+    },
+  );
 
   mainTest(qase([955], 'Typographic styles - rename group'), async () => {
     await mainTest.step('Create and rename group', async () => {
