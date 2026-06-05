@@ -38,6 +38,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.deleteFileLibraryMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Delete' });
+    this.duplicateFileLibraryMenuItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Duplicate' });
     this.editFileLibraryMenuItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Edit' });
@@ -61,6 +64,14 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     this.renameGroupButton = page.getByRole('button', { name: 'Rename' });
     this.deleteGroupButton = page.getByRole('button', { name: 'Delete' });
     this.fileLibraryGroupTitle = page.locator('[class*="groups__path"]');
+    this.fileLibraryGroupTitleMenu = page.locator(
+      'div[class*="main_ui_workspace_sidebar_assets_groups__title-menu"]',
+    );
+    this.addTypographyToGroupButton = this.fileLibraryGroupTitleMenu.getByRole(
+      'button',
+      { name: 'Add typography' },
+    );
+    this.typographyItemInGroup = page.locator('div[class*="typography-item"]');
     this.fileLibraryListViewButton = page.getByTitle('List view', { exact: true });
     this.fileLibraryGridViewButton = page.getByTitle('Grid view', { exact: true });
     this.addFileLibraryColorButton = page.getByRole('button', { name: 'Add color' });
@@ -228,6 +239,19 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.ungroupFileLibraryMenuItem.click();
   }
 
+  async hoverOnGroupFileLibrary() {
+    await this.fileLibraryGroupTitle.hover();
+  }
+
+  async addTypographyToGroup() {
+    await expect(this.addTypographyToGroupButton).toBeVisible();
+    await this.addTypographyToGroupButton.click();
+  }
+
+  async checkTypographiesInGroupCount(count) {
+    await expect(this.typographyItemInGroup).toHaveCount(count);
+  }
+
   async deleteGroupFileLibrary() {
     await this.fileLibraryGroupTitle.click({ button: 'right' });
     await this.deleteGroupFileLibraryMenuItem.click();
@@ -273,6 +297,17 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   async deleteFileLibraryColor() {
     await this.fileLibraryColorsColorBullet.click({ button: 'right' });
     await this.deleteFileLibraryMenuItem.click();
+  }
+
+  async duplicateFileLibraryColor() {
+    await this.fileLibraryColorsColorBullet.click({ button: 'right' });
+    await this.duplicateFileLibraryMenuItem.click();
+  }
+
+  async checkDuplicatedLibraryColor(colorName, count) {
+    await expect(
+      this.fileLibraryColorsColorTitle.filter({ hasText: colorName }),
+    ).toHaveCount(count);
   }
 
   async clickFileLibraryColorsColorBullet() {
