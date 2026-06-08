@@ -3,6 +3,7 @@ const { readResultsFromFile } = require('./saveTestResults');
 async function generateMessage(
   browserName,
   folderPath = null,
+  repeatEach = null,
   isManualExecution = false,
   username = null,
 ) {
@@ -18,6 +19,10 @@ async function generateMessage(
   // Build the folder line if folderPath is provided
   const folderLine = folderPath
     ? `\n       :file_folder: Folder: ${folderPath}`
+    : '';
+
+  const repeatEachLine = repeatEach
+    ? `\n       :repeat: Repeat: x${repeatEach}`
     : '';
 
   // Build the user mention line with workflow name
@@ -49,7 +54,7 @@ async function generateMessage(
          process.env.GITHUB_RUN_ID
        }
        :computer: Browser: ${browserName}
-       :herb: Branch: ${process.env.GITHUB_REF_NAME || 'N/A'}${folderLine}${userMentionLine}
+       :herb: Branch: ${process.env.GITHUB_REF_NAME || 'N/A'}${folderLine}${repeatEachLine}${userMentionLine}
        :page_facing_up: Check interactive tests results: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${
          process.env.GITHUB_RUN_ID
        }/index.html`;
