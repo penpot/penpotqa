@@ -146,7 +146,7 @@ mainTest.describe(() => {
 
     await mainTest.step('Verify the color is duplicated', async () => {
       const count: number = 2;
-      await assetsPanelPage.checkDuplicatedLibraryColor(hexColor, count);
+      await assetsPanelPage.checkCountLibraryColorWithName(hexColor, count);
     });
   });
 

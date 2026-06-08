@@ -304,7 +304,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.duplicateFileLibraryMenuItem.click();
   }
 
-  async checkDuplicatedLibraryColor(colorName, count) {
+  async checkCountLibraryColorWithName(colorName, count) {
     await expect(
       this.fileLibraryColorsColorTitle.filter({ hasText: colorName }),
     ).toHaveCount(count);
