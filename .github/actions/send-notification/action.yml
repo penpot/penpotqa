@@ -11,6 +11,9 @@ inputs:
   folder-path:
     description: 'Test folder path (optional)'
     required: false
+  repeat-each:
+    description: 'Run each test N times.'
+    required: false
   is-manual-execution:
     description: 'Whether this is a manual execution (true/false)'
     required: false
@@ -29,19 +32,20 @@ runs:
         FOLDER_PATH="${{ inputs.folder-path }}"
         IS_MANUAL="${{ inputs.is-manual-execution }}"
         USERNAME="${{ inputs.username }}"
+        REPEAT_EACH="${{ inputs.repeat-each }}"
 
         # Generate the message content and save to output
         if [ -n "$FOLDER_PATH" ]; then
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', true, '$USERNAME')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', '$REPEAT_EACH', true, '$USERNAME')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', false, null)")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', null, false, null)")
           fi
         else
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, true, '$USERNAME')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, '$REPEAT_EACH', true, '$USERNAME')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, false, null)")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, null, false, null)")
           fi
         fi
 
