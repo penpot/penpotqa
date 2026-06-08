@@ -174,7 +174,10 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([953, 2838], 'Typographic styles - create group and delete group'),
+    qase(
+      [953, 2912, 2838],
+      'Typographic styles - create group, add typography (+) and delete group',
+    ),
     async () => {
       await mainTest.step('(953) Typographic styles - create group', async () => {
         await mainTest.step('Create group for typography', async () => {
@@ -196,6 +199,28 @@ mainTest.describe(() => {
           },
         );
       });
+
+      await mainTest.step(
+        '(2912) Add typography in a group via quick-create (+)',
+        async () => {
+          await mainTest.step('Hover over the group name', async () => {
+            await assetsPanelPage.hoverOnGroupFileLibrary();
+          });
+
+          await mainTest.step('Add typography to the group', async () => {
+            await assetsPanelPage.addTypographyToGroup();
+            await assetsPanelPage.minimizeFileLibraryTypography();
+          });
+
+          await mainTest.step(
+            'Check the number of typographies in the group',
+            async () => {
+              const count: number = 2;
+              await assetsPanelPage.checkTypographiesInGroupCount(count);
+            },
+          );
+        },
+      );
 
       await mainTest.step('(2838) Typographic styles - delete group', async () => {
         await mainTest.step('Delete group', async () => {

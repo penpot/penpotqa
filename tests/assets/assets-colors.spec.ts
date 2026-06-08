@@ -10,6 +10,7 @@ import { qase } from 'playwright-qase-reporter/playwright';
 import { TeamPage } from '@pages/dashboard/team-page';
 
 const teamName = createTeamName();
+const hexColor: string = '#ffff00';
 
 let mainPage: MainPage;
 let dashboardPage: DashboardPage;
@@ -55,7 +56,7 @@ mainTest.describe(() => {
   mainTest.beforeEach(async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickAddFileLibraryColorButton();
-    await colorPalettePopUp.setHex('#ffff00');
+    await colorPalettePopUp.setHex(hexColor);
     await colorPalettePopUp.clickSaveColorStyleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -63,7 +64,7 @@ mainTest.describe(() => {
 
   mainTest(qase([933], 'File library colors - add'), async () => {
     await mainTest.step('Verify color is added to file library', async () => {
-      await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00');
+      await assetsPanelPage.isColorAddedToFileLibraryColors(hexColor);
     });
   });
 
@@ -138,6 +139,17 @@ mainTest.describe(() => {
     );
   });
 
+  mainTest(qase([2909], 'File library colors - duplicate'), async () => {
+    await mainTest.step('Duplicate color', async () => {
+      await assetsPanelPage.duplicateFileLibraryColor();
+    });
+
+    await mainTest.step('Verify the color is duplicated', async () => {
+      const count: number = 2;
+      await assetsPanelPage.checkCountLibraryColorWithName(hexColor, count);
+    });
+  });
+
   mainTest(qase([937], 'File library colors - create group'), async () => {
     await mainTest.step('Create group for color', async () => {
       await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
@@ -182,7 +194,7 @@ mainTest.describe(() => {
       'Verify group is removed and color is restored',
       async () => {
         await assetsPanelPage.isFileLibraryGroupRemoved();
-        await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00');
+        await assetsPanelPage.isColorAddedToFileLibraryColors(hexColor);
       },
     );
   });
