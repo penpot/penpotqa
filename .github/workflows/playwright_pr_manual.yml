@@ -115,11 +115,12 @@ jobs:
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
                 exit 1
               fi
-              npx playwright test --project=chrome --repeat-each=${{ github.event.inputs.repeat_each }} ${{ github.event.inputs.test_folder }}
+              npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' ${{ github.event.inputs.test_folder }}
               ;;
             "by_spec")
               echo "📄 Running test spec: ${{ github.event.inputs.test_spec }}"
-              npx playwright test --project=chrome --repeat-each=${{ github.event.inputs.repeat_each }} ${{ github.event.inputs.test_spec }}
+              npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' '${{ github.event.inputs.test_spec }}'
+              npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' '${{ github.event.inputs.test_spec }}'
               ;;
             *)
               echo "❌ Error: Invalid test mode"
@@ -145,7 +146,7 @@ jobs:
           mattermost-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_PR }}
           browser-name: 'Chrome'
           folder-path: ${{ github.event.inputs.test_mode == 'by_folder' && github.event.inputs.test_folder || github.event.inputs.test_mode == 'by_spec' && github.event.inputs.test_spec || '' }}
-          repeat-each: ${{ github.event.inputs.repeat_each }}
+          repeat-each: ${{ (github.event.inputs.test_mode == 'by_folder' || github.event.inputs.test_mode == 'by_spec') && github.event.inputs.repeat_each || '' }}
           is-manual-execution: 'true'
           username: ${{ github.actor }}
         if: always()

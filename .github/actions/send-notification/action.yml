@@ -39,13 +39,13 @@ runs:
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
             MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', '$REPEAT_EACH', true, '$USERNAME')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', false, null)")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', '$FOLDER_PATH', null, false, null)")
           fi
         else
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
             MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, '$REPEAT_EACH', true, '$USERNAME')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, false, null)")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('${{ inputs.browser-name }}', null, null, false, null)")
           fi
         fi
 
