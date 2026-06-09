@@ -472,6 +472,7 @@ mainTest.describe(() => {
           await layersPanelPage.clickCopyComponentOnLayersTab();
           await layersPanelPage.selectCopyComponentChildLayer();
           await designPanelPage.isFillHexCodeSet('#0EA27A');
+          await mainPage.waitForChangeIsSaved();
         },
       );
 
