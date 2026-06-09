@@ -432,25 +432,26 @@ mainTest.describe(() => {
     async () => {
       await mainTest.step('Set copy component fill color to "#460EA2"', async () => {
         await layersPanelPage.clickCopyComponentOnLayersTab();
+        await layersPanelPage.selectCopyComponentChildLayer();
         await designPanelPage.clickAddFillButton();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickFillColorIcon();
         await colorPalettePage.setHex('#460EA2');
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.clickCopyComponentOnLayersTab();
-        await mainPage.waitForChangeIsSaved();
         await designPanelPage.isFillHexCodeSet('#460EA2');
       });
 
       await mainTest.step('Set main component fill color to "#0EA27A"', async () => {
         await layersPanelPage.clickMainComponentOnLayersTab();
+        await layersPanelPage.selectMainComponentChildLayer();
         await designPanelPage.clickAddFillButton();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickFillColorIcon();
         await colorPalettePage.setHex('#0EA27A');
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.clickMainComponentOnLayersTab();
-        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.selectMainComponentChildLayer();
         await designPanelPage.isFillHexCodeSet('#0EA27A');
       });
 
@@ -462,7 +463,7 @@ mainTest.describe(() => {
           await designPanelPage.clickOnResetOverridesOption();
           await mainPage.waitForChangeIsSaved();
           await layersPanelPage.clickCopyComponentOnLayersTab();
-          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.selectCopyComponentChildLayer();
           await designPanelPage.isFillHexCodeSet('#0EA27A');
         },
       );
