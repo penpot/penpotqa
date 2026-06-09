@@ -459,7 +459,6 @@ mainTest.describe(() => {
           await mainPage.waitForChangeIsSaved();
           await layersPanelPage.selectMainComponentChildLayer();
           await designPanelPage.isFillHexCodeSet('#0EA27A');
-          await mainPage.waitForChangeIsSaved();
         },
       );
 
