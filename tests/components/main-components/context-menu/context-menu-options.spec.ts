@@ -441,6 +441,7 @@ mainTest.describe(() => {
           await colorPalettePage.setHex('#460EA2');
           await mainPage.waitForChangeIsSaved();
           await layersPanelPage.clickCopyComponentOnLayersTab();
+          await layersPanelPage.selectCopyComponentChildLayer();
           await designPanelPage.isFillHexCodeSet('#460EA2');
         },
       );
