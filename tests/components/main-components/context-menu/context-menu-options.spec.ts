@@ -430,33 +430,39 @@ mainTest.describe(() => {
       'Change copy color, change main color, right-click copy and click Reset overrides',
     ),
     async () => {
-      await mainTest.step('Set copy component fill color to "#460EA2"', async () => {
-        await layersPanelPage.clickCopyComponentOnLayersTab();
-        await layersPanelPage.selectCopyComponentChildLayer();
-        await designPanelPage.clickAddFillButton();
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.clickFillColorIcon();
-        await colorPalettePage.setHex('#460EA2');
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.clickCopyComponentOnLayersTab();
-        await designPanelPage.isFillHexCodeSet('#460EA2');
-      });
-
-      await mainTest.step('Set main component fill color to "#0EA27A"', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await layersPanelPage.selectMainComponentChildLayer();
-        await designPanelPage.clickAddFillButton();
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.clickFillColorIcon();
-        await colorPalettePage.setHex('#0EA27A');
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await layersPanelPage.selectMainComponentChildLayer();
-        await designPanelPage.isFillHexCodeSet('#0EA27A');
-      });
+      await mainTest.step(
+        'Set copy component child fill color to "#460EA2"',
+        async () => {
+          await layersPanelPage.clickCopyComponentOnLayersTab();
+          await layersPanelPage.selectCopyComponentChildLayer();
+          await designPanelPage.clickAddFillButton();
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.clickFillColorIcon();
+          await colorPalettePage.setHex('#460EA2');
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.clickCopyComponentOnLayersTab();
+          await designPanelPage.isFillHexCodeSet('#460EA2');
+        },
+      );
 
       await mainTest.step(
-        'Reset overrides on copy component via component menu',
+        'Set main component child fill color to "#0EA27A"',
+        async () => {
+          await layersPanelPage.clickMainComponentOnLayersTab();
+          await layersPanelPage.selectMainComponentChildLayer();
+          await designPanelPage.clickAddFillButton();
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.clickFillColorIcon();
+          await colorPalettePage.setHex('#0EA27A');
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.clickMainComponentOnLayersTab();
+          await layersPanelPage.selectMainComponentChildLayer();
+          await designPanelPage.isFillHexCodeSet('#0EA27A');
+        },
+      );
+
+      await mainTest.step(
+        'Reset overrides on copy component from the design tab and verify main color is applied on copy component child layer',
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();
           await designPanelPage.clickOnComponentMenuButton();
@@ -469,7 +475,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        'Verify copy overrides are reset and main color is applied',
+        'Verify copy component child overrides are reset and main color is applied',
         async () => {
           await expect(
             mainPage.viewport,
