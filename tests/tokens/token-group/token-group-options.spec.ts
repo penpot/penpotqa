@@ -298,3 +298,84 @@ mainTest.describe('Context menu > Rename', () => {
     },
   );
 });
+
+mainTest.describe('Context menu > Duplicate', () => {
+  const tokenValue = '#ff0000';
+
+  // Token nested in the 'button' group
+  const buttonGroup = { name: 'button' };
+  const primaryButtonGroupGroup = { name: 'primary', parent: buttonGroup };
+  const backgroundColorButtonGroupToken: MainToken<TokenClass> = {
+    class: TokenClass.Color,
+    name: buildTokenPath('background-color', primaryButtonGroupGroup),
+    value: tokenValue,
+  };
+
+  // Token nested in the 'button-copy' group
+  const buttonGroupCopy = { name: 'button-copy' };
+  const primaryButtonGroupCopyGroup = { name: 'primary', parent: buttonGroupCopy };
+  const backgroundColorButtonGroupCopyToken: MainToken<TokenClass> = {
+    class: TokenClass.Color,
+    name: buildTokenPath('background-color', primaryButtonGroupCopyGroup),
+    value: tokenValue,
+  };
+
+  mainTest(
+    qase(
+      [2835],
+      'Duplicate 2nd-level token group supports merging new content into an existing token group',
+    ),
+    async () => {
+      await mainTest.step(
+        'Import tokens file with 2nd level token groups',
+        async () => {
+          await tokensPage.toolsComp.clickOnTokenToolsButton();
+          await tokensPage.toolsComp.importTokens(
+            'documents/tokens/duplicating_token_groups.json',
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Expand token group ${TokenClass.Color} and verify groups "${buttonGroup.name}" and "${buttonGroupCopy.name}" are visible with expected tokens`,
+        async () => {
+          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+          await tokensPage.tokensComp.isTokenGroupVisible(buttonGroup);
+          await tokensPage.tokensComp.isTokenGroupCount(buttonGroup, 1);
+          await tokensPage.tokensComp.isTokenGroupVisible(buttonGroupCopy);
+          await tokensPage.tokensComp.isTokenGroupCount(buttonGroupCopy, 1);
+          await tokensPage.tokensComp.isTokenVisibleWithName(
+            backgroundColorButtonGroupToken.name,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Duplicate "${buttonGroup.name}" token group and merge into "${buttonGroupCopy.name}" token group`,
+        async () => {
+          await tokensPage.tokensComp.duplicateTokenGroup(
+            buttonGroup,
+            buttonGroupCopy.name,
+          );
+        },
+      );
+
+      await mainTest.step(
+        `Verify the groups are merged with both of them containing the expected token "${backgroundColorButtonGroupToken.name}" and "${backgroundColorButtonGroupCopyToken.name}" respectively`,
+        async () => {
+          await tokensPage.tokensComp.isTokenGroupVisible(buttonGroup);
+          await tokensPage.tokensComp.isTokenGroupCount(buttonGroup, 1);
+          await tokensPage.tokensComp.isTokenVisibleWithName(
+            backgroundColorButtonGroupToken.name,
+          );
+
+          await tokensPage.tokensComp.isTokenGroupVisible(buttonGroupCopy);
+          await tokensPage.tokensComp.isTokenGroupCount(buttonGroupCopy, 1);
+          await tokensPage.tokensComp.isTokenVisibleWithName(
+            backgroundColorButtonGroupCopyToken.name,
+          );
+        },
+      );
+    },
+  );
+});
