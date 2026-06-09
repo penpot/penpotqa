@@ -1471,15 +1471,23 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.addNewPropertyOptionDesign.click();
   }
 
-  async changeAxisXAndYForLayer(x, y) {
+  async changeXAxisForLayer(newX) {
     await this.xAxisInput.clear();
-    await this.xAxisInput.pressSequentially(x);
+    await this.xAxisInput.pressSequentially(newX);
     await this.clickOnEnter();
     await this.waitForChangeIsSaved();
+  }
+
+  async changeYAxisForLayer(newY) {
     await this.yAxisInput.clear();
-    await this.yAxisInput.pressSequentially(y);
+    await this.yAxisInput.pressSequentially(newY);
     await this.clickOnEnter();
     await this.waitForChangeIsSaved();
+  }
+
+  async changeAxisXAndYForLayer(x, y) {
+    await this.changeXAxisForLayer(x);
+    await this.changeYAxisForLayer(y);
   }
 
   async clickOnResetOverridesOption() {
