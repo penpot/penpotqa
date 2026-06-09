@@ -436,6 +436,7 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickFillColorIcon();
         await colorPalettePage.setHex('#460EA2');
+        await mainPage.waitForChangeIsSaved();
         await layersPanelPage.clickCopyComponentOnLayersTab();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isFillHexCodeSet('#460EA2');
@@ -447,6 +448,7 @@ mainTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickFillColorIcon();
         await colorPalettePage.setHex('#0EA27A');
+        await mainPage.waitForChangeIsSaved();
         await layersPanelPage.clickMainComponentOnLayersTab();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isFillHexCodeSet('#0EA27A');
