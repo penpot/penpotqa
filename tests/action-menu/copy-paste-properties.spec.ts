@@ -142,12 +142,13 @@ mainTest.describe(() => {
       await designPanelPage.clickFirstColorIcon();
       await colorPalettePage.setHex('#0000FF');
       await mainPage.duplicateLayerViaRightClick();
-      await designPanelPage.changeAxisXAndYForLayer('300', '150');
+      await layersPanelPage.clickNCopyComponentOnLayersTab(0);
+      await designPanelPage.changeXAxisForLayer('300');
 
       await mainPage.createDefaultEllipseByCoordinates(100, 700, true);
       await mainPage.createComponentViaRightClick();
       await mainPage.duplicateLayerViaRightClick();
-      await designPanelPage.changeAxisXAndYForLayer('350', '650');
+      await designPanelPage.changeXAxisForLayer('350');
       await mainPage.waitForChangeIsSaved();
 
       await layersPanelPage.clickNMainComponentOnLayersTab(1);
