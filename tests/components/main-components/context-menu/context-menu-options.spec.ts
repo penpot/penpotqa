@@ -527,29 +527,3 @@ mainTest.describe(() => {
     });
   });
 });
-
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    await mainTest.slow();
-    await mainPage.createDefaultEllipseByCoordinates(200, 200);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXAndYForLayer('400', '400');
-    await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXAndYForLayer('50', '400');
-
-    await layersPanelPage.clickFirstCopyComponentOnLayersTab();
-    await designPanelPage.clickAddFillButton();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickFillColorIcon();
-    await colorPalettePage.setHex('#092062');
-    await layersPanelPage.clickFirstCopyComponentOnLayersTab();
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.isFillHexCodeSet('#092062');
-  });
-});
