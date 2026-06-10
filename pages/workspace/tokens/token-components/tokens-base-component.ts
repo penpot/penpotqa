@@ -278,39 +278,27 @@ export class TokensComponent {
       .click({ button: 'right' });
   }
 
-  async deleteTokenGroup(
+  async selectTokenGroupContextMenuItem(
     group: TokenGroupData,
-    option: TokensGroupContextMenuItem = 'Delete',
+    option: TokensGroupContextMenuItem,
   ) {
     await this.rightClickOnTokenGroup(group);
     await this.getTokensGroupContextMenuOptions(option).click();
   }
 
-  async selectRenameTokenGroupOption(
-    group: TokenGroupData,
-    option: TokensGroupContextMenuItem = 'Rename',
-  ) {
-    await this.rightClickOnTokenGroup(group);
-    await this.getTokensGroupContextMenuOptions(option).click();
+  async deleteTokenGroup(group: TokenGroupData) {
+    await this.selectTokenGroupContextMenuItem(group, 'Delete');
   }
 
-  async selectDuplicateTokenGroupOption(
-    group: TokenGroupData,
-    option: TokensGroupContextMenuItem = 'Duplicate',
-  ) {
-    await this.rightClickOnTokenGroup(group);
-    await this.getTokensGroupContextMenuOptions(option).click();
-  }
-
-  async renameTokenGroup(oldGroup: TokenGroupData, newGroupName: string) {
-    await this.selectRenameTokenGroupOption(oldGroup);
-    await this.renameInput.fill(newGroupName);
+  async renameTokenGroup(group: TokenGroupData, newName: string) {
+    await this.selectTokenGroupContextMenuItem(group, 'Rename');
+    await this.renameInput.fill(newName);
     await this.renameButton.click();
   }
 
-  async duplicateTokenGroup(oldGroup: TokenGroupData, newGroupName: string) {
-    await this.selectDuplicateTokenGroupOption(oldGroup);
-    await this.duplicateInput.fill(newGroupName);
+  async duplicateTokenGroup(group: TokenGroupData, newName: string) {
+    await this.selectTokenGroupContextMenuItem(group, 'Duplicate');
+    await this.duplicateInput.fill(newName);
     await this.duplicateButton.click();
   }
 
