@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { mainTest } from 'fixtures';
+import { random } from 'helpers/string-generator';
 import {
   waitMessage,
   waitSecondMessage,
@@ -50,7 +51,7 @@ mainTest.describe(() => {
     qase([2036], 'Share link of two Boards to a user from your team'),
     async ({ page }) => {
       await mainTest.slow();
-      const firstEditor = createTeamName();
+      const firstEditor = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
       let link = '';
 
