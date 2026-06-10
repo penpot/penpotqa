@@ -1,0 +1,28 @@
+{
+  "set": {
+    "button": {
+      "primary": {
+        "background-color": {
+          "$value": "#f00",
+          "$type": "color",
+          "$description": ""
+        }
+      }
+    },
+    "button-copy": {
+      "primary": {
+        "token": {
+          "$value": "rgb(179, 255, 142)",
+          "$type": "color",
+          "$description": ""
+        }
+      }
+    }
+  },
+  "$themes": [],
+  "$metadata": {
+    "tokenSetOrder": ["set"],
+    "activeThemes": [],
+    "activeSets": []
+  }
+}

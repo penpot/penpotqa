@@ -85,6 +85,9 @@ export class TokensComponent {
   readonly renameModal: Locator;
   readonly renameButton: Locator;
   readonly renameInput: Locator;
+  readonly duplicateModal: Locator;
+  readonly duplicateButton: Locator;
+  readonly duplicateInput: Locator;
 
   constructor(page: Page, tokensPage: TokensPage) {
     this.page = page;
@@ -137,6 +140,15 @@ export class TokensComponent {
       .filter({ hasText: 'Rename tokens group' });
     this.renameButton = this.renameModal.getByRole('button', { name: 'Rename' });
     this.renameInput = this.renameModal.getByRole('textbox');
+
+    // Duplicate Modal Locators
+    this.duplicateModal = page
+      .getByTestId('token-rename-node-modal')
+      .filter({ hasText: 'Duplicate tokens group' });
+    this.duplicateButton = this.duplicateModal.getByRole('button', {
+      name: 'Duplicate',
+    });
+    this.duplicateInput = this.duplicateModal.getByRole('textbox');
   }
 
   private getTokensGroupContextMenuOptions(
@@ -266,26 +278,28 @@ export class TokensComponent {
       .click({ button: 'right' });
   }
 
-  async deleteTokenGroup(
+  async selectTokenGroupContextMenuItem(
     group: TokenGroupData,
-    option: TokensGroupContextMenuItem = 'Delete',
+    option: TokensGroupContextMenuItem,
   ) {
     await this.rightClickOnTokenGroup(group);
     await this.getTokensGroupContextMenuOptions(option).click();
   }
 
-  async selectRenameTokenGroupOption(
-    group: TokenGroupData,
-    option: TokensGroupContextMenuItem = 'Rename',
-  ) {
-    await this.rightClickOnTokenGroup(group);
-    await this.getTokensGroupContextMenuOptions(option).click();
+  async deleteTokenGroup(group: TokenGroupData) {
+    await this.selectTokenGroupContextMenuItem(group, 'Delete');
   }
 
-  async renameTokenGroup(oldGroup: TokenGroupData, newGroupName: string) {
-    await this.selectRenameTokenGroupOption(oldGroup);
-    await this.renameInput.fill(newGroupName);
+  async renameTokenGroup(group: TokenGroupData, newName: string) {
+    await this.selectTokenGroupContextMenuItem(group, 'Rename');
+    await this.renameInput.fill(newName);
     await this.renameButton.click();
+  }
+
+  async duplicateTokenGroup(group: TokenGroupData, newName: string) {
+    await this.selectTokenGroupContextMenuItem(group, 'Duplicate');
+    await this.duplicateInput.fill(newName);
+    await this.duplicateButton.click();
   }
 
   async clickEditToken(
@@ -323,8 +337,8 @@ export class TokensComponent {
       .getByRole('button')
       .locator(`span[aria-label="${name}"]`);
     visible
-      ? await expect(token).toBeVisible()
-      : await expect(token).not.toBeVisible();
+      ? await expect(token, `Token "${name}" is visible`).toBeVisible()
+      : await expect(token, `Token "${name}" is not visible`).not.toBeVisible();
   }
 
   async clickOnTokenWithName(name: string) {
@@ -491,8 +505,14 @@ export class TokensComponent {
       hasText: new RegExp(`^${group.name}$`),
     });
     visible
-      ? await expect(groupLocator).toBeVisible()
-      : await expect(groupLocator).not.toBeVisible();
+      ? await expect(
+          groupLocator,
+          `Token group "${group.name}" is visible`,
+        ).toBeVisible()
+      : await expect(
+          groupLocator,
+          `Token group "${group.name}" is not visible`,
+        ).not.toBeVisible();
   }
 
   async isTokenVisibleInGroup(
@@ -537,6 +557,7 @@ export class TokensComponent {
   async isTokenGroupCount(group: TokenGroupData, count: number) {
     await expect(
       this.tokenGroupName.filter({ hasText: new RegExp(`^${group.name}$`) }),
+      `Token group "${group.name}" has ${count}`,
     ).toHaveCount(count);
   }
 
