@@ -216,7 +216,7 @@ mainTest.describe('Viewer Role - Role Changes', () => {
   mainTest(
     qase(1869, 'Change a role of admin to viewer after accepting an invitation'),
     async ({ page }) => {
-      const teamName = `${random()}-viewer-role-autotest`;
+      const team = createTeamName();
       const adminName = `${random()}-viewer-role-autotest`;
       const adminEmail = `${process.env.GMAIL_NAME}+${adminName}${process.env.GMAIL_DOMAIN}`;
 

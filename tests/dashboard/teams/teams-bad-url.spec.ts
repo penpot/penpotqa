@@ -10,6 +10,7 @@ import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
 let teamPage: TeamPage;
 let loginPage: LoginPage;
@@ -26,7 +27,7 @@ const initPages = async ({ page }: { page: Page }) => {
 };
 
 mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
-  const team = `${random()}-bad-url-autotest`;
+  const team = createTeamName();
 
   mainTest.beforeEach('Create a team and a file', async ({ page }) => {
     await initPages({ page });
@@ -130,7 +131,7 @@ mainTest(
   async ({ page }) => {
     await initPages({ page });
 
-    const team = `${random()}-bad-url-autotest`;
+    const team = createTeamName();
     const firstAdmin = `${random()}-bad-url-autotest`;
     const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
 
@@ -184,7 +185,7 @@ mainTest(
   async ({ page }) => {
     await initPages({ page });
 
-    const team = `${random()}-bad-url-autotest`;
+    const team = createTeamName();
 
     const currentURL = await mainPage.getUrl();
     const badURL = await mainPage.makeBadUrl(currentURL);
@@ -217,7 +218,7 @@ mainTest(
   async ({ page }) => {
     await initPages({ page });
 
-    const team = `${random()}-bad-url-autotest`;
+    const team = createTeamName();
 
     await mainTest.step(`Create a team and a file with a board`, async () => {
       await teamPage.createTeam(team);
