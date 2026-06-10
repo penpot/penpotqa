@@ -11,6 +11,7 @@ const {
   waitSecondMessage,
   getVerificationMessage,
 } = require('../../../helpers/gmail.js');
+const { createTeamName } = require('../../../helpers/teams/create-team-name.ts');
 
 let teamPage, loginPage, registerPage, dashboardPage, profilePage;
 
@@ -23,8 +24,8 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest.describe('Rename a team', () => {
-  const team = random().concat('autotest');
-  const teamNew = random().concat('autotest');
+  const team = createTeamName();
+  const teamNew = createTeamName();
 
   mainTest(qase(1205, 'Rename a team via owner'), async () => {
     await teamPage.createTeam(team);

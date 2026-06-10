@@ -6,7 +6,7 @@ const { TeamPage } = require('../../pages/dashboard/team-page');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
 const { qase } = require('playwright-qase-reporter/playwright');
-const { createTeamName } = require('../../../helpers/teams/create-team-name');
+const { createTeamName } = require('../../helpers/teams/create-team-name');
 
 const teamName = createTeamName();
 

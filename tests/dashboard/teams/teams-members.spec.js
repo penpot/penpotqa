@@ -23,6 +23,7 @@ const {
   checkYourPenpotViewModeConfirmAccessText,
   checkSigningText,
 } = require('../../../helpers/gmail.js');
+const { createTeamName } = require('../../../helpers/teams/create-team-name');
 
 const maxDiffPixelRatio = 0.001;
 
@@ -45,7 +46,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 registerTest.describe('Members - As Owner - Change roles', () => {
-  const team = random().concat('autotest');
+  const team = createTeamName();
 
   registerTest.beforeEach(
     'Create new account, logout, login with main account, create team and open invitations page',
@@ -152,7 +153,7 @@ registerTest.describe('Members - As Owner - Change roles', () => {
 });
 
 mainTest(qase(1196, 'Team. Members - leave team (as owner)'), async ({ page }) => {
-  const team = random().concat('autotest');
+  const team = createTeamName();
 
   await mainTest.slow();
   const firstAdmin = random().concat('autotest');

@@ -7,7 +7,7 @@ const { random } = require('../../helpers/string-generator.js');
 const { checkRegisterText, waitMessage } = require('../../helpers/gmail.js');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page.js');
 const { TeamPage } = require('../../pages/dashboard/team-page.js');
-const { createTeamName } = require('../../../helpers/teams/create-team-name');
+const { createTeamName } = require('../../helpers/teams/create-team-name');
 
 let loginPage, registerPage, dashboardPage, teamPage;
 

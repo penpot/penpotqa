@@ -18,6 +18,9 @@ const {
   waitSecondMessage,
   waitRequestMessage,
 } = require('../../../helpers/gmail.js');
+const { createTeamName } = require('../../../helpers/teams/create-team-name');
+
+const team = createTeamName();
 
 let teamPage,
   loginPage,
@@ -38,8 +41,6 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
-  const team = random().concat('autotest');
-
   mainTest(
     qase(1173, 'Team. Invitations - invite via admin (multiple invitations, admin)'),
     async ({ page }) => {

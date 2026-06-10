@@ -45,7 +45,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(qase(1162, 'Create a team'), async () => {
-  const team = random().concat('autotest');
+  const team = createTeamName();
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.deleteTeam(team);
