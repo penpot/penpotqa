@@ -1,6 +1,5 @@
 import { expect } from '@playwright/test';
 import { mainTest } from 'fixtures';
-import { random } from 'helpers/string-generator';
 import {
   waitMessage,
   waitSecondMessage,
@@ -13,8 +12,9 @@ import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { ProfilePage } from '@pages/profile-page';
 import { LoginPage } from '@pages/login-page';
 import { RegisterPage } from '@pages/register-page';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 
 let mainPage: MainPage;
 let teamPage: TeamPage;
@@ -50,7 +50,7 @@ mainTest.describe(() => {
     qase([2036], 'Share link of two Boards to a user from your team'),
     async ({ page }) => {
       await mainTest.slow();
-      const firstEditor = random().concat('autotest');
+      const firstEditor = createTeamName();
       const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
       let link = '';
 

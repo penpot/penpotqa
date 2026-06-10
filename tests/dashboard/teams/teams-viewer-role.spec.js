@@ -17,11 +17,13 @@ const {
   waitSecondMessage,
   getVerificationMessage,
 } = require('../../../helpers/gmail.js');
+const { createTeamName } = require('../../../helpers/teams/create-team-name.js');
+
 const maxDiffPixelRatio = 0.001;
 
 // Set up Viewer user
 async function setupViewerUser(page, role = 'Viewer') {
-  const teamName = `${random()}-viewer-role-autotest`;
+  const teamName = createTeamName();
   const userName = `${random()}-viewer-role-autotest`;
   const userEmail = `${process.env.GMAIL_NAME}+${userName}${process.env.GMAIL_DOMAIN}`;
 
