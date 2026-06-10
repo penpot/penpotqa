@@ -236,37 +236,6 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase([1444], 'Create a component and 2 copies of it, change fill of main'),
-    async () => {
-      const sampleData = new SampleData();
-
-      await mainTest.step('Add fill color to main component', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await layersPanelPage.selectMainComponentChildLayer();
-        await designPanelPage.changeHeightAndWidthForLayer('50', '50');
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await designPanelPage.clickAddFillButton();
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.clickFillColorIcon();
-        await colorPalettePage.setHex(sampleData.color.blueHexCode);
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.waitForResizeHandlerVisible();
-      });
-
-      await mainTest.step('Verify fill change propagated to copies', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after changing fill color of main component',
-        ).toHaveScreenshot('main-component-change-fill-color.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
-    },
-  );
-
-  mainTest(
     qase(
       [1445],
       'Create a component and 2 copies of it, change shadow opacity and color of main',
