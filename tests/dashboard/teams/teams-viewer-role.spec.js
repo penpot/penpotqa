@@ -17,7 +17,7 @@ const {
   waitSecondMessage,
   getVerificationMessage,
 } = require('../../../helpers/gmail.js');
-const { createTeamName } = require('../../../helpers/teams/create-team-name.js');
+const { createTeamName } = require('../../../helpers/teams/create-team-name');
 
 const maxDiffPixelRatio = 0.001;
 
