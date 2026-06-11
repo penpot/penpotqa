@@ -300,7 +300,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async deleteFileViaRightclick() {
     await this.fileTile.click({ button: 'right' });
     await this.deleteFileMenuItem.click();
-    await this.deleteFileButton.click();
+    await this.confirmDeleteFile();
   }
 
   async deleteFileViaOptionsIcon() {
@@ -308,7 +308,19 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fileOptionsMenuButton.first().hover();
     await this.fileOptionsMenuButton.first().click();
     await this.deleteFileMenuItem.click();
-    await this.deleteFileButton.click();
+    await this.confirmDeleteFile();
+  }
+
+  async confirmDeleteFile() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url() === `${process.env.BASE_URL}api/main/methods/delete-file` &&
+          response.request().method() === 'POST' &&
+          response.status() === 204,
+      ),
+      this.deleteFileButton.click(),
+    ]);
   }
 
   async isDeletedFileSuccessMessageVisible() {
@@ -324,7 +336,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     while (await this.fileTile.count()) {
       await this.fileTile.first().click({ button: 'right' });
       await this.deleteFileMenuItem.click();
-      await this.deleteFileButton.click();
+      await this.confirmDeleteFile();
       counter++;
     }
     await expect(this.fileTile).toHaveCount(0);
