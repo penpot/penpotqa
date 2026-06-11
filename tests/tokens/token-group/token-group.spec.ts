@@ -35,11 +35,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe(() => {
   mainTest(
     qase([2728], 'Display token pill for single-segment token name'),
