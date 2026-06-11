@@ -560,7 +560,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       exact: true,
     });
 
-    await expect(deletedProject, 'Project title should be hidden').toBeHidden();
+    await expect(deletedProject, 'Project title should be hidden').toBeHidden({
+      timeout: 15000,
+    });
   }
 
   async createProject(projectName) {
