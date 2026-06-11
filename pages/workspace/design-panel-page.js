@@ -14,7 +14,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.canvasBackgroundColorIcon = page
       .locator('div[class*="page__element-set"] div[class*="color-bullet-wrapper"]')
       .first();
-    this.layerRotationInput = page.getByRole('textbox', { name: 'Rotation' });
+    this.layerRotationInput = page.getByTitle('Rotation').locator('input');
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
     });
@@ -29,10 +29,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.bottomRightCornerRadiusInput = page.getByRole('textbox', {
       name: 'Bottom right',
     });
-    this.sizeWidthInput = page.locator('div[aria-label="Width"] input');
-    this.sizeHeightInput = page.locator('div[aria-label="Height"] input');
-    this.xAxisInput = page.locator('div[aria-label="X axis"] input');
-    this.yAxisInput = page.locator('div[aria-label="Y axis"] input');
+    this.sizeWidthInput = page.locator('div[title="Width"] input');
+    this.sizeHeightInput = page.locator('div[title="Height"] input');
+    this.xAxisInput = page.locator('div[title="X axis"] input');
+    this.yAxisInput = page.locator('div[title="Y axis"] input');
     this.openTokenListButton = page.locator(
       'div[aria-label="Open token list"] button',
     );
@@ -213,25 +213,21 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'Justify content space-evenly',
       { exact: true },
     );
-    this.layoutColumnGapInput = page.locator('div[aria-label="Column gap"] input');
-    this.layoutRowGapInput = page.locator('div[aria-label="Row gap"] input');
+    this.layoutColumnGapInput = page.locator('div[title="Column gap"] input');
+    this.layoutRowGapInput = page.locator('div[title="Row gap"] input');
     this.layoutVerticalPaddingInput = page.locator(
-      'div[aria-label="Vertical padding"] input',
+      'div[title="Vertical padding"] input',
     );
     this.layoutHorizontalPaddingInput = page.locator(
-      'div[aria-label="Horizontal padding"] input',
+      'div[title="Horizontal padding"] input',
     );
     this.layoutIndepPaddingsIcon = page.locator('button[class*="padding-toggle"]');
-    this.layoutPaddingTopInput = page.locator('div[aria-label="Top padding"] input');
-    this.layoutPaddingRightInput = page.locator(
-      'div[aria-label="Right padding"] input',
-    );
+    this.layoutPaddingTopInput = page.locator('div[title="Top padding"] input');
+    this.layoutPaddingRightInput = page.locator('div[title="Right padding"] input');
     this.layoutPaddingBottomInput = page.locator(
-      'div[aria-label="Bottom padding"] input',
+      'div[title="Bottom padding"] input',
     );
-    this.layoutPaddingLeftInput = page.locator(
-      'div[aria-label="Left padding"] input',
-    );
+    this.layoutPaddingLeftInput = page.locator('div[title="Left padding"] input');
     this.layoutGridJustifyStartBtn = page.getByTitle('Justify items start', {
       exact: true,
     });
@@ -287,7 +283,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeColorInput = this.strokeElement.locator(
       'input[class*="color-input"]',
     );
-    this.strokeWidthInput = page.locator('div[aria-label="Stroke width"] input');
+    this.strokeWidthInput = page.locator('div[title="Stroke width"] input');
     this.strokeOpacityInput = this.strokeElement.locator(
       'input[data-testid="opacity-input"]',
     );
@@ -659,7 +655,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async changeRotationForLayer(value) {
     const detachButton = this.page
-      .locator('div[aria-label="Rotation"]')
+      .locator('div[title="Rotation"]')
       .getByRole('button', { name: 'Detach token' });
     if ((await detachButton.count()) > 0) {
       await detachButton.click({ force: true });

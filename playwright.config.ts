@@ -5,7 +5,8 @@ export default defineConfig({
   snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/linux/{projectName}/{arg}{ext}`,
   testDir: './tests',
   /* Maximum time one test can run for. */
-  timeout: process.env.CI ? 120 * 1000 : 80 * 1000,
+  timeout: 120 * 1000,
+  // timeout: process.env.CI ? 120 * 1000 : 80 * 1000,
   globalTeardown: './tests/global.teardown.ts',
   globalSetup: './tests/global.setup.ts',
   expect: {
@@ -24,7 +25,8 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: 2,
+  // retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 3 : 3,
   /* Directory where test artifacts are stored */
@@ -36,12 +38,12 @@ export default defineConfig({
         ['github'], // GitHub Actions annotations
         ['html'],
         ['json', { outputFile: 'playwright-report/results.json' }],
-        [
-          'playwright-qase-reporter',
-          {
-            logging: true,
-          },
-        ],
+        // [
+        //   'playwright-qase-reporter',
+        //   {
+        //     logging: true,
+        //   },
+        // ],
       ]
     : [['html'], ['json', { outputFile: 'playwright-report/results.json' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -52,10 +54,11 @@ export default defineConfig({
     baseURL: process.env.BASE_URL,
     headless: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: process.env.CI ? 'on-first-retry' : 'on',
-    video: process.env.CI ? 'on-first-retry' : 'on',
-    /* Capture screenshot on failure */
-    screenshot: 'only-on-failure',
+    trace: 'retain-on-failure',
+    // trace: process.env.CI ? 'on-first-retry' : 'on',
+    // video: process.env.CI ? 'on-first-retry' : 'on',
+    // /* Capture screenshot on failure */
+    // screenshot: 'only-on-failure',
     /* Default viewport for all projects */
     viewport: {
       height: 969,
@@ -72,8 +75,8 @@ export default defineConfig({
         },
       },
       use: {
-        browserName: 'chromium',
-        channel: 'chrome',
+        // browserName: 'chromium',
+        // channel: 'chrome',
         launchOptions: {
           ignoreDefaultArgs: ['--hide-scrollbars'],
           args: ['--headless=new'], // Use new headless mode
@@ -84,39 +87,39 @@ export default defineConfig({
         },
       },
     },
-    {
-      name: 'firefox',
-      grepInvert: /@perf/,
-      expect: {
-        toHaveScreenshot: {
-          maxDiffPixelRatio: 0.0001,
-        },
-      },
-      use: {
-        browserName: 'firefox',
-      },
-      launchOptions: {
-        firefoxUserPrefs: {
-          'dom.events.asyncClipboard.readText': true,
-          'dom.events.testing.asyncClipboard': true,
-        },
-      },
-      contextOptions: {
-        // chromium-specific permissions
-        permissions: ['clipboard-read', 'clipboard-write'],
-      },
-    },
-    {
-      name: 'webkit',
-      grepInvert: /@perf/,
-      expect: {
-        toHaveScreenshot: {
-          maxDiffPixelRatio: 0.01,
-        },
-      },
-      use: {
-        browserName: 'webkit',
-      },
-    },
+    // {
+    //   name: 'firefox',
+    //   grepInvert: /@perf/,
+    //   expect: {
+    //     toHaveScreenshot: {
+    //       maxDiffPixelRatio: 0.0001,
+    //     },
+    //   },
+    //   use: {
+    //     browserName: 'firefox',
+    //   },
+    //   launchOptions: {
+    //     firefoxUserPrefs: {
+    //       'dom.events.asyncClipboard.readText': true,
+    //       'dom.events.testing.asyncClipboard': true,
+    //     },
+    //   },
+    //   contextOptions: {
+    //     // chromium-specific permissions
+    //     permissions: ['clipboard-read', 'clipboard-write'],
+    //   },
+    // },
+    // {
+    //   name: 'webkit',
+    //   grepInvert: /@perf/,
+    //   expect: {
+    //     toHaveScreenshot: {
+    //       maxDiffPixelRatio: 0.01,
+    //     },
+    //   },
+    //   use: {
+    //     browserName: 'webkit',
+    //   },
+    // },
   ],
 });

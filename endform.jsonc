@@ -1,0 +1,21 @@
+{
+  "additionalFiles": [
+    "images/*",
+    "documents/*",
+    "documents/QA test file v1.penpot",
+    "documents/tokens-folder-example/*",
+    "fonts/*",
+  ],
+  "environmentVariables": [
+    "LOGIN_.*",
+    "SECOND_EMAIL",
+    "BASE_URL",
+    "STRIPE_SK",
+    "GMAIL_.*",
+    "CLIENT_ID",
+    "CLIENT_SECRET",
+    "REFRESH_TOKEN",
+  ],
+  "proxyNetworkPorts": [9001],
+  "concurrentTestLimits": [{ "scope": "within-suite-run", "limit": 50 }],
+}

@@ -1,12 +1,20 @@
 const Stripe = require('stripe');
 const axios = require('axios');
-const stripe = Stripe(process.env.STRIPE_SK);
+let stripe;
+
+function getStripe() {
+  if (!process.env.STRIPE_SK) {
+    throw new Error('STRIPE_SK is required to use Stripe helpers');
+  }
+  stripe ??= Stripe(process.env.STRIPE_SK);
+  return stripe;
+}
 
 const { expect } = require('@playwright/test');
 
 async function getSubscriptionsByCustomerId(customerId) {
   try {
-    const subscriptions = await stripe.subscriptions.list({
+    const subscriptions = await getStripe().subscriptions.list({
       customer: customerId,
       limit: 10,
     });
@@ -21,7 +29,7 @@ async function getSubscriptionsByCustomerId(customerId) {
 
 async function findCustomersByEmail(email) {
   try {
-    const customers = await stripe.customers.search({
+    const customers = await getStripe().customers.search({
       query: `email:"${email}"`,
     });
     return customers.data;
@@ -32,7 +40,7 @@ async function findCustomersByEmail(email) {
 
 async function findCustomersByName(name) {
   try {
-    const customers = await stripe.customers.search({
+    const customers = await getStripe().customers.search({
       query: `name:"${name}"`,
     });
     return customers.data;
@@ -43,7 +51,7 @@ async function findCustomersByName(name) {
 
 async function findCustomersByPenpotId(penpotId) {
   try {
-    const customers = await stripe.customers.search({
+    const customers = await getStripe().customers.search({
       query: `metadata['penpotId']:'${penpotId}'`,
     });
     return customers.data;
@@ -57,7 +65,7 @@ async function findCustomersByPenpotId(penpotId) {
 
 async function updateSubscription(subscriptionId, body) {
   try {
-    return await stripe.subscriptions.update(subscriptionId, body);
+    return await getStripe().subscriptions.update(subscriptionId, body);
   } catch (error) {
     console.error(
       `Error when updating subscription trial period ${subscriptionId}:`,
@@ -157,7 +165,7 @@ async function createCustomerWithTestClock(page, name, email, penpotId) {
 
 async function createCustomer(name, email, testClockId, penpotId) {
   try {
-    return await stripe.customers.create({
+    return await getStripe().customers.create({
       name: name,
       email: email,
       test_clock: testClockId,
@@ -172,7 +180,7 @@ async function createCustomer(name, email, testClockId, penpotId) {
 
 async function createTestClock() {
   try {
-    return await stripe.testHelpers.testClocks.create({
+    return await getStripe().testHelpers.testClocks.create({
       frozen_time: Math.floor(Date.now() / 1000 - 10),
     });
   } catch (error) {
@@ -183,7 +191,7 @@ async function createTestClock() {
 async function advanceTestClock(testClockId, time, maxAttempts = 3) {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      return await stripe.testHelpers.testClocks.advance(testClockId, {
+      return await getStripe().testHelpers.testClocks.advance(testClockId, {
         frozen_time: time,
       });
     } catch (error) {
@@ -259,7 +267,7 @@ async function skipSubscriptionByMonths(
 
 async function createPaymentMethods(token = 'tok_visa') {
   try {
-    return await stripe.paymentMethods.create({
+    return await getStripe().paymentMethods.create({
       type: 'card',
       card: {
         token: token,
@@ -272,7 +280,7 @@ async function createPaymentMethods(token = 'tok_visa') {
 
 async function attachPaymentMethodToCustomer(customerId, paymentMethodId) {
   try {
-    return await stripe.paymentMethods.attach(paymentMethodId, {
+    return await getStripe().paymentMethods.attach(paymentMethodId, {
       customer: customerId,
     });
   } catch (error) {
@@ -282,7 +290,7 @@ async function attachPaymentMethodToCustomer(customerId, paymentMethodId) {
 
 async function setDefaultPaymentMethod(customerId, paymentMethodId) {
   try {
-    return await stripe.customers.update(customerId, {
+    return await getStripe().customers.update(customerId, {
       invoice_settings: {
         default_payment_method: paymentMethodId,
       },
