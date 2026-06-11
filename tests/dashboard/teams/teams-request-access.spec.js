@@ -19,6 +19,7 @@ const {
   checkYourPenpotViewModeConfirmAccessText,
   checkSigningText,
 } = require('../../../helpers/gmail.js');
+const { createTeamName } = require('../../../helpers/teams/create-team-name');
 
 // Set up Team and File
 async function setupTeamAndFile(page, teamName) {
@@ -67,7 +68,7 @@ let invite;
 let secondRandomName = random() + 'autotest';
 let secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}${process.env.GMAIL_DOMAIN}`;
 
-const teamName = `${random()}-request-autotest`;
+const teamName = createTeamName();
 const userName = 'QA Engineer';
 
 registerTest.beforeEach(

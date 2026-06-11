@@ -4,15 +4,15 @@ import { MainPage } from '@pages/workspace/main-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DeletedPage } from '@pages/dashboard/dashboard-deleted-page';
-import { random } from 'helpers/string-generator';
 import { qase } from 'playwright-qase-reporter/playwright';
 import {
   setupViewerRoleUser,
   setupEditorRoleUser,
   setupAdminRoleUser,
 } from 'helpers/user-flows';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName: string = random().concat('autotest');
+const teamName = createTeamName();
 
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;

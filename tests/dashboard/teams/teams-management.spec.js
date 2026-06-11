@@ -23,8 +23,9 @@ const {
   checkYourPenpotViewModeConfirmAccessText,
   checkSigningText,
 } = require('../../../helpers/gmail.js');
+const { createTeamName } = require('../../../helpers/teams/create-team-name');
 
-const maxDiffPixelRatio = 0.001;
+const team = createTeamName();
 
 let teamPage,
   loginPage,
@@ -45,15 +46,14 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(qase(1162, 'Create a team'), async () => {
-  const team = random().concat('autotest');
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.deleteTeam(team);
 });
 
 mainTest(qase(1163, 'Team.Switch between teams'), async () => {
-  const team1 = random().concat('autotest QA Test team 1');
-  const team2 = random().concat('autotest QA Test team 2');
+  const team1 = createTeamName();
+  const team2 = createTeamName();
 
   await teamPage.createTeam(team1);
   await teamPage.isTeamSelected(team1);

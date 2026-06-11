@@ -8,10 +8,13 @@ const { MainPage } = require('../../../pages/workspace/main-page.js');
 const { random } = require('../../../helpers/string-generator.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { expect } = require('@playwright/test');
+const { createTeamName } = require('../../../helpers/teams/create-team-name.ts');
 
 const maxDiffPixelRatio = 0.001;
 
 let teamPage, loginPage, registerPage, dashboardPage, profilePage, mainPage;
+
+const team = createTeamName();
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
@@ -23,8 +26,6 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(qase(1200, 'Team Settings - upload team profile picture'), async () => {
-  const team = random().concat('autotest');
-
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openTeamSettingsPageViaOptionsMenu();
@@ -39,8 +40,6 @@ mainTest(qase(1200, 'Team Settings - upload team profile picture'), async () => 
 });
 
 mainTest(qase(1202, "Team. Settings - check 'Team members' info"), async () => {
-  const team = random().concat('autotest');
-
   await profilePage.openYourAccountPage();
   await profilePage.isHeaderDisplayed('Your account');
   await profilePage.changeProfileName('QA Engineer');
@@ -61,7 +60,6 @@ mainTest(qase(1202, "Team. Settings - check 'Team members' info"), async () => {
 });
 
 mainTest(qase(1203, "Team. Settings - check 'Team projects' info"), async () => {
-  const team = random().concat('autotest');
   const projectFirst = 'QA Project 1';
   const projectSecond = 'QA Project 2';
 
@@ -91,8 +89,6 @@ mainTest(qase(1203, "Team. Settings - check 'Team projects' info"), async () => 
 });
 
 mainTest(qase(1208, 'Delete a team via owner'), async () => {
-  const team = random().concat('autotest');
-
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.deleteTeam(team);

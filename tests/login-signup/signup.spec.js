@@ -7,6 +7,7 @@ const { random } = require('../../helpers/string-generator.js');
 const { checkRegisterText, waitMessage } = require('../../helpers/gmail.js');
 const { DashboardPage } = require('../../pages/dashboard/dashboard-page.js');
 const { TeamPage } = require('../../pages/dashboard/team-page.js');
+const { createTeamName } = require('../../helpers/teams/create-team-name');
 
 let loginPage, registerPage, dashboardPage, teamPage;
 
@@ -24,7 +25,7 @@ test.beforeEach('Navigate to "Create an account page"', async ({ page }) => {
 test.describe('Sign up via email invitation', () => {
   let randomName, email, invite;
   test.beforeEach('Create a new account', async ({ page }) => {
-    randomName = random().concat('autotest');
+    randomName = createTeamName();
     email = `${process.env.GMAIL_NAME}+${randomName}${process.env.GMAIL_DOMAIN}`;
     await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
     await registerPage.isRegisterEmailCorrect(email);

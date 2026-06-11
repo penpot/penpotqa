@@ -22,8 +22,9 @@ const {
   waitSecondMessage,
   getVerificationMessage,
 } = require('../../helpers/gmail');
+const { createTeamName } = require('../../helpers/teams/create-team-name');
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 
 let teamPage,
   dashboardPage,

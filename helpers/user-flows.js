@@ -10,9 +10,10 @@ const {
   getVerificationMessage,
 } = require('./gmail.js');
 const { random } = require('./string-generator.js');
+const { createTeamName } = require('./teams/create-team-name');
 
 function createTestUserData() {
-  const teamName = `${random()}-autotest`;
+  const teamName = createTeamName();
   const userName = `${random()}-autotest`;
   const userEmail = `${process.env.GMAIL_NAME}+${userName}${process.env.GMAIL_DOMAIN}`;
 

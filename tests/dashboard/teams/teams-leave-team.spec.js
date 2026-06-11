@@ -13,10 +13,11 @@ const {
   getVerificationMessage,
 } = require('../../../helpers/gmail.js');
 const { qase } = require('playwright-qase-reporter/playwright');
+const { createTeamName } = require('../../../helpers/teams/create-team-name');
 
 // Helper: create a team, invite user, register via Gmail invite
 async function setupInvitedUser(page, role = 'Editor') {
-  const teamName = `${random()}-leave-team-autotest`;
+  const teamName = createTeamName();
   const userName = `${random()}-leave-team-autotest`;
   const userEmail = `${process.env.GMAIL_NAME}+${userName}${process.env.GMAIL_DOMAIN}`;
 

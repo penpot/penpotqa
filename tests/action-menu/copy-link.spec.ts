@@ -13,8 +13,9 @@ import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { ProfilePage } from '@pages/profile-page';
 import { LoginPage } from '@pages/login-page';
 import { RegisterPage } from '@pages/register-page';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 
 let mainPage: MainPage;
 let teamPage: TeamPage;

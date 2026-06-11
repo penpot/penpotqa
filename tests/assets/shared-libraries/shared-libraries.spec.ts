@@ -4,13 +4,14 @@ import { DashboardPage } from 'pages/dashboard/dashboard-page';
 import { TeamPage } from 'pages/dashboard/team-page';
 import { MainPage } from 'pages/workspace/main-page';
 import { AssetsPanelPage } from 'pages/workspace/assets-panel-page';
-import { random } from 'helpers/string-generator';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
+const teamName2 = createTeamName();
 
 let dashboardPage: DashboardPage;
 let teamPage: TeamPage;
@@ -42,7 +43,7 @@ mainTest.afterEach(async () => {
 
 mainTest.describe(() => {
   const team1 = teamName;
-  const team2 = random().concat('autotest QA Test team 2');
+  const team2 = teamName2;
 
   mainTest(qase([1540], 'Move library to a different team'), async () => {
     mainTest.slow();
@@ -327,7 +328,7 @@ mainTest.describe(() => {
 
 mainTest.describe(() => {
   mainTest.afterEach(async () => {
-    const team2 = random().concat('autotest QA Test team 2');
+    const team2 = teamName2;
     await teamPage.page.waitForTimeout(1000);
     await teamPage.deleteTeam(team2);
   });
