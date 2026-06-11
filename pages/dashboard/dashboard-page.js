@@ -341,14 +341,27 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async deleteProjectViaRightclick() {
     await this.projectNameTitle.first().click({ button: 'right' });
     await this.deleteProjectMenuItem.click();
-    await this.deleteProjectButton.click();
+    await this.confirmDeleteProject();
   }
 
   async deleteProjectViaOptionsIcon() {
     await this.projectNameTitle.first().hover();
     await this.projectOptionsMenuButton.first().click({ force: true });
     await this.deleteProjectMenuItem.click();
-    await this.deleteProjectButton.click();
+    await this.confirmDeleteProject();
+  }
+
+  async confirmDeleteProject() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url() ===
+            `${process.env.BASE_URL}api/main/methods/delete-project` &&
+          response.request().method() === 'POST' &&
+          response.status() === 204,
+      ),
+      this.deleteProjectButton.click(),
+    ]);
   }
 
   async isDeletedProjectSuccessMessageVisible() {
@@ -369,7 +382,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       if (!name.includes('Drafts')) {
         await project.click({ button: 'right' });
         await this.deleteProjectMenuItem.click();
-        await this.deleteProjectButton.click();
+        await this.confirmDeleteProject();
       }
     }
 
