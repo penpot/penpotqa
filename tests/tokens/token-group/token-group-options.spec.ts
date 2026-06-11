@@ -36,11 +36,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await tokensPage.clickTokensTab();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe('Context menu > Delete', () => {
   mainTest.beforeEach(async () => {
     await tokensPage.clickTokensTab();
