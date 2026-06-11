@@ -505,7 +505,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickAddProjectButton() {
-    await this.addProjectButton.click();
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url() ===
+            `${process.env.BASE_URL}api/main/methods/create-project` &&
+          response.request().method() === 'POST' &&
+          response.status() === 200,
+      ),
+      this.addProjectButton.click(),
+    ]);
   }
 
   async setProjectName(projectName) {
