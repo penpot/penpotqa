@@ -173,10 +173,22 @@ export class DeletedPage extends BasePage {
   async deleteForeverDeletedFileViaOptions(projectName: string, fileName: string) {
     await this.openFileOptionsMenu(projectName, fileName);
     await this.deleteFileButton.click();
-    await this.deleteForeverButton.click();
+    await this.confirmDeleteFileForever();
 
     await this.waitForConfirmModalToClose();
     await this.waitForFileToDisappear(projectName, fileName);
+  }
+
+  private async confirmDeleteFileForever() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url() === `${process.env.BASE_URL}api/main/methods/delete-file` &&
+          response.request().method() === 'POST' &&
+          response.status() === 204,
+      ),
+      this.deleteForeverButton.click(),
+    ]);
   }
 
   async restoreDeletedProjectViaOptions(projectName: string) {
@@ -204,10 +216,23 @@ export class DeletedPage extends BasePage {
   async deleteForeverDeletedProjectViaOptions(projectName: string) {
     await this.openProjectOptionsMenu(projectName);
     await this.deleteProjectButton.click();
-    await this.deleteForeverButton.click();
+    await this.confirmDeleteProjectForever();
 
     await this.waitForConfirmModalToClose();
     await this.waitForProjectToDisappear(projectName);
+  }
+
+  private async confirmDeleteProjectForever() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url() ===
+            `${process.env.BASE_URL}api/main/methods/delete-project` &&
+          response.request().method() === 'POST' &&
+          response.status() === 204,
+      ),
+      this.deleteForeverButton.click(),
+    ]);
   }
 
   /* -------------------------------------------------
