@@ -14,8 +14,10 @@ const {
 const { ProfilePage } = require('../../pages/profile-page');
 const { LoginPage } = require('../../pages/login-page');
 const { RegisterPage } = require('../../pages/register-page');
+const { createTeamName } = require('../../helpers/teams/create-team-name');
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
+
 let mainProfileName = '';
 
 let teamPage,

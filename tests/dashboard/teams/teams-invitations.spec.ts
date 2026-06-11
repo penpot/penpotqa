@@ -14,12 +14,15 @@ import {
   waitSecondMessage,
 } from 'helpers/gmail';
 import { createInviteEmail } from 'helpers/teams/invite-email';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
 let teamPage: TeamPage;
 let loginPage: LoginPage;
 let registerPage: RegisterPage;
 let dashboardPage: DashboardPage;
 let profilePage: ProfilePage;
+
+const team = createTeamName();
 
 mainTest.beforeEach(async ({ page }: { page: Page }) => {
   teamPage = new TeamPage(page);
@@ -30,8 +33,6 @@ mainTest.beforeEach(async ({ page }: { page: Page }) => {
 });
 
 mainTest(qase(1164, 'Open the form via Invitations tab'), async () => {
-  const team = random().concat('autotest');
-
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
@@ -43,8 +44,6 @@ mainTest(qase(1164, 'Open the form via Invitations tab'), async () => {
 registerTest(
   qase(1165, 'Open the form via Team Hero ("Invite members" button)'),
   async () => {
-    const team = random().concat('autotest');
-
     await teamPage.createTeam(team);
     await teamPage.isTeamSelected(team);
     await teamPage.clickInviteMembersTeamHeroButton();
@@ -54,7 +53,6 @@ registerTest(
 );
 
 mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () => {
-  const team = random().concat('autotest');
   const email = createInviteEmail('editor');
 
   await teamPage.createTeam(team);
@@ -74,7 +72,6 @@ mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () =>
 });
 
 mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => {
-  const team = random().concat('autotest');
   const email = createInviteEmail('admin');
 
   await teamPage.createTeam(team);
@@ -97,8 +94,6 @@ mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => 
 });
 
 mainTest(qase(1175, 'Fail to send invitation to existing team member'), async () => {
-  const team = random().concat('autotest');
-
   await teamPage.createTeam(team);
   await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
@@ -119,8 +114,6 @@ mainTest(qase(1175, 'Fail to send invitation to existing team member'), async ()
 registerTest.describe(
   'As Owner - Invite Members - Send invite (registered but not team member)',
   () => {
-    const team = random().concat('autotest');
-
     registerTest.beforeEach(
       'Create new account, logout, login with main account, create team and open invitations page',
       async () => {
@@ -177,7 +170,6 @@ registerTest.describe(
 mainTest.describe(
   'As Owner - Invite Members - Send multiple invites (Editor role)',
   () => {
-    const team = random().concat('autotest');
     const firstEditor = random().concat('autotest');
     const secondEditor = random().concat('autotest');
 
@@ -273,7 +265,6 @@ mainTest.describe(
 );
 
 mainTest(qase(1176, 'Resend multiple invitations via owner'), async () => {
-  const team = random().concat('autotest');
   const email1 = createInviteEmail('editor', 'editor1');
   const email2 = createInviteEmail('editor', 'editor2');
   const email3 = createInviteEmail('editor', 'editor3');
@@ -297,7 +288,6 @@ mainTest(qase(1176, 'Resend multiple invitations via owner'), async () => {
 });
 
 mainTest(qase(1178, 'Delete multiple invitations via owner'), async () => {
-  const team = random().concat('autotest');
   const email1 = createInviteEmail('editor', 'editor1');
   const email2 = createInviteEmail('editor', 'editor2');
   const email3 = createInviteEmail('editor', 'editor3');
@@ -321,7 +311,6 @@ mainTest(qase(1178, 'Delete multiple invitations via owner'), async () => {
 });
 
 mainTest(qase(1181, 'Change role in invitation via owner'), async () => {
-  const team = random().concat('autotest');
   const email = createInviteEmail('editor', 'role');
 
   await teamPage.createTeam(team);

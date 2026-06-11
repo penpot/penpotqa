@@ -20,8 +20,9 @@ import {
   addPaymentMethodForCustomer,
   addPaymentMethodForCustomerByCustomerEmail,
 } from 'helpers/stripe';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName: string = random().concat('autotest');
+const teamName = createTeamName();
 
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;

@@ -1,7 +1,6 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { mainTest } from 'fixtures';
-import { random } from 'helpers/string-generator';
 import { MainPage } from '@pages/workspace/main-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
@@ -9,8 +8,9 @@ import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 
 let mainPage: MainPage;
 let dashboardPage: DashboardPage;

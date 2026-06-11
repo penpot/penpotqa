@@ -3,8 +3,9 @@ const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
 const { random } = require('../../helpers/string-generator');
 const { TeamPage } = require('../../pages/dashboard/team-page');
 const { qase } = require('playwright-qase-reporter/playwright');
+const { createTeamName } = require('../../helpers/teams/create-team-name');
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 
 let teamPage, dashboardPage;
 

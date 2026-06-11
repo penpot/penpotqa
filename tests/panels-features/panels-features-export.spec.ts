@@ -1,12 +1,12 @@
 import { mainTest } from 'fixtures';
 import { MainPage } from '@pages/workspace/main-page';
-import { random } from 'helpers/string-generator';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { qase } from 'playwright-qase-reporter/playwright';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName: string = random().concat('autotest');
+const teamName = createTeamName();
 
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;

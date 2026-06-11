@@ -1,7 +1,6 @@
 import { qase } from 'playwright-qase-reporter/playwright';
 import { mainTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
-import { random } from 'helpers/string-generator';
 import { MainPage } from '@pages/workspace/main-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
@@ -9,8 +8,9 @@ import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 import { ShadowToken } from '@pages/workspace/tokens/token-components/shadow-tokens-component';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 const sampleData = new SampleData();
 
 let teamPage: TeamPage;

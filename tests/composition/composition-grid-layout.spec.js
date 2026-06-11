@@ -10,8 +10,9 @@ const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page')
 const { AssetsPanelPage } = require('../../pages/workspace/assets-panel-page');
 const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
 const { qase } = require('playwright-qase-reporter/playwright');
+const { createTeamName } = require('../../helpers/teams/create-team-name');
 
-const teamName = random().concat('autotest');
+const teamName = createTeamName();
 
 let teamPage,
   dashboardPage,

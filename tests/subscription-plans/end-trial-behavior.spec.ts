@@ -1,5 +1,4 @@
 import { registerTest } from 'fixtures';
-import { random } from 'helpers/string-generator';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -11,8 +10,9 @@ import {
   getProfileIdByEmail,
   addPaymentMethodForCustomer,
 } from 'helpers/stripe';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName: string = random().concat('autotest');
+const teamName = createTeamName();
 
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;

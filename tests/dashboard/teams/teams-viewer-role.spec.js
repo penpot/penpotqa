@@ -17,11 +17,14 @@ const {
   waitSecondMessage,
   getVerificationMessage,
 } = require('../../../helpers/gmail.js');
+const { createTeamName } = require('../../../helpers/teams/create-team-name');
+
 const maxDiffPixelRatio = 0.001;
+
+const teamName = createTeamName();
 
 // Set up Viewer user
 async function setupViewerUser(page, role = 'Viewer') {
-  const teamName = `${random()}-viewer-role-autotest`;
   const userName = `${random()}-viewer-role-autotest`;
   const userEmail = `${process.env.GMAIL_NAME}+${userName}${process.env.GMAIL_DOMAIN}`;
 
@@ -214,7 +217,6 @@ mainTest.describe('Viewer Role - Role Changes', () => {
   mainTest(
     qase(1869, 'Change a role of admin to viewer after accepting an invitation'),
     async ({ page }) => {
-      const teamName = `${random()}-viewer-role-autotest`;
       const adminName = `${random()}-viewer-role-autotest`;
       const adminEmail = `${process.env.GMAIL_NAME}+${adminName}${process.env.GMAIL_DOMAIN}`;
 
