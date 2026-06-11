@@ -138,10 +138,23 @@ export class DeletedPage extends BasePage {
   async restoreDeletedFileViaOptions(projectName: string, fileName: string) {
     await this.openFileOptionsMenu(projectName, fileName);
     await this.restoreFileButton.click();
-    await this.continueButton.click();
+    await this.confirmRestoreFile();
 
     await this.waitForConfirmModalToClose();
     await this.waitForFileToDisappear(projectName, fileName);
+  }
+
+  private async confirmRestoreFile() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url() ===
+            `${process.env.BASE_URL}api/main/methods/restore-deleted-team-files` &&
+          response.request().method() === 'POST' &&
+          response.status() === 200,
+      ),
+      this.continueButton.click(),
+    ]);
   }
 
   async deleteForeverDeletedFileViaOptions(projectName: string, fileName: string) {
@@ -156,10 +169,23 @@ export class DeletedPage extends BasePage {
   async restoreDeletedProjectViaOptions(projectName: string) {
     await this.openProjectOptionsMenu(projectName);
     await this.restoreProjectButton.click();
-    await this.continueButton.click();
+    await this.confirmRestoreProject();
 
     await this.waitForConfirmModalToClose();
     await this.waitForProjectToDisappear(projectName);
+  }
+
+  private async confirmRestoreProject() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url() ===
+            `${process.env.BASE_URL}api/main/methods/restore-deleted-team-files` &&
+          response.request().method() === 'POST' &&
+          response.status() === 204,
+      ),
+      this.continueButton.click(),
+    ]);
   }
 
   async deleteForeverDeletedProjectViaOptions(projectName: string) {
