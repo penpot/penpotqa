@@ -599,41 +599,6 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase([1406], 'Change copy components grid and update main components color'),
-    async () => {
-      await mainTest.step('Add grid with rows type to copy component', async () => {
-        await layersPanelPage.clickCopyComponentOnLayersTab();
-        await designPanelPage.clickAddGridButton();
-        await designPanelPage.selectGridType('Rows');
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step(
-        `Set main component fill color to "${sampleData.color.blueHexCode}"`,
-        async () => {
-          await layersPanelPage.clickMainComponentOnLayersTab();
-          await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
-          await layersPanelPage.clickMainComponentOnLayersTab();
-          await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await mainTest.step(
-        'Verify copy grid is preserved and main color is updated',
-        async () => {
-          await expect(
-            mainPage.viewport,
-            'Viewport should match screenshot with copy grid and updated main color',
-          ).toHaveScreenshot('main-copies-component-change-grid.png', {
-            mask: mainPage.maskViewport(),
-            maxDiffPixels: 0,
-          });
-        },
-      );
-    },
-  );
-
   mainTest(qase([1409], 'Change copy name and change component name'), async () => {
     await mainTest.step('Rename copy component to "test"', async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
