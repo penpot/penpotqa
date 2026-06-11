@@ -1,6 +1,6 @@
 import { request } from '@playwright/test';
 
-const AUTOTEST_REGEX = /autotest/i;
+const AUTOTEST_REGEX = /^at-/;
 const CONCURRENCY = 15;
 const MAX_RETRIES = 3;
 
@@ -31,7 +31,8 @@ async function deleteWithRetry(api: any, team: Team): Promise<boolean> {
 }
 
 export default async function globalTeardown() {
-  const { BASE_URL, LOGIN_EMAIL, LOGIN_PWD, TEST_RUN_ID } = process.env;
+  const { BASE_URL, LOGIN_EMAIL, LOGIN_PWD, TEST_RUN_ID, FULL_CLEANUP } =
+    process.env;
   if (!BASE_URL || !LOGIN_EMAIL || !LOGIN_PWD || !TEST_RUN_ID)
     throw new Error(
       'Missing env vars: BASE_URL, LOGIN_EMAIL, LOGIN_PWD, TEST_RUN_ID',
@@ -47,19 +48,34 @@ export default async function globalTeardown() {
       data: { email: LOGIN_EMAIL, password: LOGIN_PWD },
     });
     if (!loginRes.ok()) throw new Error(`Login failed: ${loginRes.status()}`);
-    console.log('🌍 Cleaning autotest teams...');
 
-    const teams: Team[] = await (await api.get(API.GET_TEAMS)).json();
-    const targets = teams.filter(
-      (t) =>
-        !t.isDefault && AUTOTEST_REGEX.test(t.name) && t.name.includes(TEST_RUN_ID),
-    );
+    const isFullCleanup = FULL_CLEANUP === 'true';
     console.log(
-      `🧹 Found ${targets.length} autotest team(s) for run ${TEST_RUN_ID}`,
+      isFullCleanup
+        ? '🌍 Full cleanup mode — deleting ALL autotest teams...'
+        : `🌍 Cleaning autotest teams for run ${TEST_RUN_ID}...`,
+    );
+
+    const teamsRes = await api.get(API.GET_TEAMS);
+    const teams: Team[] = await teamsRes.json();
+
+    const targets = isFullCleanup
+      ? teams.filter((t) => !t.isDefault && AUTOTEST_REGEX.test(t.name))
+      : teams.filter(
+          (t) =>
+            !t.isDefault &&
+            AUTOTEST_REGEX.test(t.name) &&
+            t.name.includes(TEST_RUN_ID),
+        );
+
+    console.log(
+      isFullCleanup
+        ? `🧹 Found ${targets.length} autotest team(s) across all runs`
+        : `🧹 Found ${targets.length} autotest team(s) for run ${TEST_RUN_ID}`,
     );
 
     if (!targets.length) {
-      console.log(`✅ Nothing to clean up for run ${TEST_RUN_ID}`);
+      console.log('✅ Nothing to clean up');
       return;
     }
 
