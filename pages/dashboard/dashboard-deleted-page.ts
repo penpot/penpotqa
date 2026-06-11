@@ -121,10 +121,23 @@ export class DeletedPage extends BasePage {
 
   async restoreAllProjectsAndFiles() {
     await this.restoreAllButton.click();
-    await this.continueButton.click();
+    await this.confirmRestoreAll();
 
     await this.waitForConfirmModalToClose();
     await this.waitUntilTrashIsEmpty();
+  }
+
+  private async confirmRestoreAll() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url() ===
+            `${process.env.BASE_URL}api/main/methods/restore-deleted-team-files` &&
+          response.request().method() === 'POST' &&
+          response.status() === 200,
+      ),
+      this.continueButton.click(),
+    ]);
   }
 
   async deleteAllProjectsAndFilesForever() {
