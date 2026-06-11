@@ -129,10 +129,23 @@ export class DeletedPage extends BasePage {
 
   async deleteAllProjectsAndFilesForever() {
     await this.clearTrashButton.click();
-    await this.deleteForeverButton.click();
+    await this.confirmDeleteAllForever();
 
     await this.waitForConfirmModalToClose();
     await this.waitUntilTrashIsEmpty();
+  }
+
+  private async confirmDeleteAllForever() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url() ===
+            `${process.env.BASE_URL}api/main/methods/permanently-delete-team-files` &&
+          response.request().method() === 'POST' &&
+          response.status() === 200,
+      ),
+      this.deleteForeverButton.click(),
+    ]);
   }
 
   async restoreDeletedFileViaOptions(projectName: string, fileName: string) {
