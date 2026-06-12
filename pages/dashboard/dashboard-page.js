@@ -197,6 +197,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.noLibrariesText = page.getByText('No libraries yet.');
 
     // Onboarding Modal
+    this.onboardingModalContainer = page.locator(
+      '.main_ui_onboarding_questions__modal-container',
+    );
     this.onboardingContinueBtn = page.locator(
       'button[class="main_ui_onboarding_newsletter__accept-btn"]',
     );
@@ -939,6 +942,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
   }
 
+  async isOnboardingModalNotVisible() {
+    await expect(
+      this.onboardingModalContainer,
+      `Onboarding modal should not be visible`,
+    ).not.toBeVisible();
+  }
+
   async clickOnLetsGoBtn() {
     await this.onboardingLetsGoBtn.click();
   }
@@ -1067,6 +1077,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.clickOnNextButton();
     await this.selectGetStartedQuestion('Prototyping');
     await this.clickOnStartButton();
+    await this.isOnboardingModalNotVisible();
   }
 
   async isOnboardingFirstQuestionsVisible() {
