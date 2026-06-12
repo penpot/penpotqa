@@ -321,6 +321,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
           response.url() === `${process.env.BASE_URL}api/main/methods/delete-file` &&
           response.request().method() === 'POST' &&
           response.status() === 204,
+        { timeout: 30000 },
       ),
       this.deleteFileButton.click(),
     ]);
@@ -374,6 +375,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
             `${process.env.BASE_URL}api/main/methods/delete-project` &&
           response.request().method() === 'POST' &&
           response.status() === 204,
+        { timeout: 30000 },
       ),
       this.deleteProjectButton.click(),
     ]);
@@ -540,6 +542,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
             `${process.env.BASE_URL}api/main/methods/create-project` &&
           response.request().method() === 'POST' &&
           response.status() === 200,
+        { timeout: 30000 },
       ),
       this.addProjectButton.click(),
     ]);

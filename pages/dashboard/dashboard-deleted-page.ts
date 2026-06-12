@@ -143,6 +143,7 @@ export class DeletedPage extends BasePage {
             `${process.env.BASE_URL}api/main/methods/restore-deleted-team-files` &&
           response.request().method() === 'POST' &&
           response.status() === 200,
+        { timeout: 30000 },
       ),
       this.continueButton.click(),
     ]);
@@ -156,6 +157,7 @@ export class DeletedPage extends BasePage {
             `${process.env.BASE_URL}api/main/methods/permanently-delete-team-files` &&
           response.request().method() === 'POST' &&
           response.status() === 200,
+        { timeout: 30000 },
       ),
       this.deleteForeverButton.click(),
     ]);
