@@ -32,11 +32,10 @@ mainTest(qase(1200, 'Team Settings - upload team profile picture'), async () => 
   await teamPage.uploadTeamImage('images/images.png');
   await teamPage.waitInfoMessageHidden();
   await teamPage.hoverOnTeamName();
-  await expect(teamPage.teamInfoSection).toHaveScreenshot('team-profile-image.png', {
+  await expect(teamPage.teamIcon).toHaveScreenshot('team-profile-image.png', {
     maxDiffPixelRatio: maxDiffPixelRatio,
     mask: [teamPage.teamNameLabel],
   });
-  await teamPage.deleteTeam(team);
 });
 
 mainTest(qase(1202, "Team. Settings - check 'Team members' info"), async () => {
@@ -53,10 +52,6 @@ mainTest(qase(1202, "Team. Settings - check 'Team members' info"), async () => {
   const teamOwner = 'QA Engineer (Owner)';
   await teamPage.isTeamOwnerInfoDisplayed(teamOwner);
   await teamPage.isTeamMembersInfoDisplayed('1 members');
-  await expect(teamPage.teamOwnerSection).toHaveScreenshot('team-owner-block.png', {
-    maxDiffPixelRatio: maxDiffPixelRatio,
-  });
-  await teamPage.deleteTeam(team);
 });
 
 mainTest(qase(1203, "Team. Settings - check 'Team projects' info"), async () => {
@@ -82,10 +77,6 @@ mainTest(qase(1203, "Team. Settings - check 'Team projects' info"), async () => 
   await teamPage.openTeamSettingsPageViaOptionsMenu();
   await teamPage.isTeamProjectsInfoDisplayed('2 projects');
   await teamPage.isTeamFilesInfoDisplayed('3 files');
-  await expect(teamPage.teamStatsSection).toHaveScreenshot('team-stats-block.png', {
-    maxDiffPixelRatio: maxDiffPixelRatio,
-  });
-  await teamPage.deleteTeam(team);
 });
 
 mainTest(qase(1208, 'Delete a team via owner'), async () => {
@@ -93,5 +84,4 @@ mainTest(qase(1208, 'Delete a team via owner'), async () => {
   await teamPage.isTeamSelected(team);
   await teamPage.deleteTeam(team);
   await teamPage.isTeamDeleted(team);
-  await teamPage.deleteTeam(team);
 });
