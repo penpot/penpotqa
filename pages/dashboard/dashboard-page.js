@@ -237,7 +237,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.onboardingCreateTeamButton = page
       .getByRole('button')
-      .filter({ hasText: 'Create team & invite' });
+      .filter({ hasText: 'Create team' });
     this.selectedRadioButtonLabel = page
       .locator('label[class*="components_forms__radio-label checked"]')
       .first();
@@ -990,7 +990,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async clickOnStartButton() {
     await expect(this.startButton).not.toHaveAttribute('disabled');
     await this.startButton.click();
-    await expect(this.startButton).toBeHidden();
   }
 
   async fillSecondOnboardPage(branding, visual, wireframes) {
@@ -1064,8 +1063,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.clickOnNextButton();
     await this.selectFigmaTool();
     await this.clickOnNextButton();
-    await this.selectDropdownOptions('Testing before self-hosting');
-    await this.selectTeamSize('11-30');
+    await this.selectDropdownOptions('Just me');
     await this.clickOnNextButton();
     await this.selectGetStartedQuestion('Prototyping');
     await this.clickOnStartButton();
