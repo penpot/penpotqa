@@ -318,7 +318,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await Promise.all([
       this.page.waitForResponse(
         (response) =>
-          response.url() === `${process.env.BASE_URL}api/main/methods/delete-file` &&
+          response.url().includes('/api/main/methods/delete-file') &&
           response.request().method() === 'POST' &&
           response.status() === 204,
         { timeout: 30000 },
@@ -371,8 +371,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await Promise.all([
       this.page.waitForResponse(
         (response) =>
-          response.url() ===
-            `${process.env.BASE_URL}api/main/methods/delete-project` &&
+          response.url().includes('/api/main/methods/delete-project') &&
           response.request().method() === 'POST' &&
           response.status() === 204,
         { timeout: 30000 },
@@ -538,8 +537,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await Promise.all([
       this.page.waitForResponse(
         (response) =>
-          response.url() ===
-            `${process.env.BASE_URL}api/main/methods/create-project` &&
+          response.url().includes('/api/main/methods/create-project') &&
           response.request().method() === 'POST' &&
           response.status() === 200,
         { timeout: 30000 },

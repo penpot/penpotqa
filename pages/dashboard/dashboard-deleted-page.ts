@@ -139,8 +139,7 @@ export class DeletedPage extends BasePage {
     await Promise.all([
       this.page.waitForResponse(
         (response) =>
-          response.url() ===
-            `${process.env.BASE_URL}api/main/methods/restore-deleted-team-files` &&
+          response.url().includes('/api/main/methods/restore-deleted-team-files') &&
           response.request().method() === 'POST' &&
           response.status() === 200,
         { timeout: 30000 },
@@ -153,8 +152,9 @@ export class DeletedPage extends BasePage {
     await Promise.all([
       this.page.waitForResponse(
         (response) =>
-          response.url() ===
-            `${process.env.BASE_URL}api/main/methods/permanently-delete-team-files` &&
+          response
+            .url()
+            .includes('/api/main/methods/permanently-delete-team-files') &&
           response.request().method() === 'POST' &&
           response.status() === 200,
         { timeout: 30000 },
