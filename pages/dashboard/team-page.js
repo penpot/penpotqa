@@ -510,19 +510,28 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isTeamOwnerInfoDisplayed(name) {
-    await expect(this.teamOwnerSpan).toHaveText(name);
+    await expect(this.teamOwnerSpan, `Team owner info is "${name}"`).toHaveText(
+      name,
+    );
   }
 
   async isTeamMembersInfoDisplayed(text) {
-    await expect(this.teamMembersSpan).toHaveText(text);
+    await expect(this.teamMembersSpan, `Team members info is "${text}"`).toHaveText(
+      text,
+    );
   }
 
   async isTeamProjectsInfoDisplayed(text) {
-    await expect(this.teamProjectsSpan).toHaveText(text);
+    await expect(
+      this.teamProjectsSpan,
+      `Team projects info is "${text}"`,
+    ).toHaveText(text);
   }
 
   async isTeamFilesInfoDisplayed(text) {
-    await expect(this.teamFilesSpan).toHaveText(text);
+    await expect(this.teamFilesSpan, `Team files info is "${text}"`).toHaveText(
+      text,
+    );
   }
 
   async renameTeam(teamName) {
