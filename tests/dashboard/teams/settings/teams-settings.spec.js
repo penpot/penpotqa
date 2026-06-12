@@ -1,14 +1,14 @@
-const { mainTest } = require('../../../fixtures');
-const { LoginPage } = require('../../../pages/login-page.js');
-const { RegisterPage } = require('../../../pages/register-page.js');
-const { ProfilePage } = require('../../../pages/profile-page.js');
-const { DashboardPage } = require('../../../pages/dashboard/dashboard-page.js');
-const { TeamPage } = require('../../../pages/dashboard/team-page.js');
-const { MainPage } = require('../../../pages/workspace/main-page.js');
-const { random } = require('../../../helpers/string-generator.js');
+const { mainTest } = require('../../../../fixtures');
+const { LoginPage } = require('../../../../pages/login-page.js');
+const { RegisterPage } = require('../../../../pages/register-page.js');
+const { ProfilePage } = require('../../../../pages/profile-page.js');
+const { DashboardPage } = require('../../../../pages/dashboard/dashboard-page.js');
+const { TeamPage } = require('../../../../pages/dashboard/team-page.js');
+const { MainPage } = require('../../../../pages/workspace/main-page.js');
+const { random } = require('../../../../helpers/string-generator.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { expect } = require('@playwright/test');
-const { createTeamName } = require('../../../helpers/teams/create-team-name.ts');
+const { createTeamName } = require('../../../../helpers/teams/create-team-name');
 
 const maxDiffPixelRatio = 0.001;
 
