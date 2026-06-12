@@ -1,25 +1,20 @@
 const { mainTest } = require('../../../../fixtures');
-const { LoginPage } = require('../../../../pages/login-page.js');
-const { RegisterPage } = require('../../../../pages/register-page.js');
 const { ProfilePage } = require('../../../../pages/profile-page.js');
 const { DashboardPage } = require('../../../../pages/dashboard/dashboard-page.js');
 const { TeamPage } = require('../../../../pages/dashboard/team-page.js');
 const { MainPage } = require('../../../../pages/workspace/main-page.js');
-const { random } = require('../../../../helpers/string-generator.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { expect } = require('@playwright/test');
 const { createTeamName } = require('../../../../helpers/teams/create-team-name');
 
 const maxDiffPixelRatio = 0.001;
 
-let teamPage, loginPage, registerPage, dashboardPage, profilePage, mainPage;
+let teamPage, dashboardPage, profilePage, mainPage;
 
 const team = createTeamName();
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
-  loginPage = new LoginPage(page);
-  registerPage = new RegisterPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
   mainPage = new MainPage(page);
