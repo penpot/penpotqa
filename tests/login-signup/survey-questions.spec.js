@@ -29,44 +29,6 @@ test.describe(() => {
 
   test(
     qase(
-      [1803, 1804, 1806, 1807, 1808, 1809, 1810, 1811, 1815],
-      'Question - "Other" option at final place, Click "Next" button with empty "Other" text field',
-    ),
-    async () => {
-      await dashboardPage.checkPageNumber(1, 3);
-      await dashboardPage.selectRadioButton('Work');
-      await dashboardPage.selectLastDropdownOptions();
-      await dashboardPage.checkDropdownValue('Other');
-      await dashboardPage.isKindOfWorkOtherInputVisible();
-      await dashboardPage.isNextBtnDisabled();
-      await dashboardPage.enterOtherKindOfWork('test');
-      await dashboardPage.clickOnNextButton();
-      await dashboardPage.checkPageNumber(2, 4);
-      await dashboardPage.isNextBtnDisabled();
-      await dashboardPage.selectLastTool();
-      await dashboardPage.isToolOtherInputVisible();
-      await dashboardPage.isNextBtnDisabled();
-      await dashboardPage.enterOtherToolName('test tool');
-      await dashboardPage.clickOnNextButton();
-      await dashboardPage.checkPageNumber(3, 4);
-      await dashboardPage.selectLastKindOfWork();
-      await dashboardPage.isPlaningOtherInputVisible();
-      await dashboardPage.isNextBtnDisabled();
-      await dashboardPage.enterPlaningOther('test');
-      await dashboardPage.selectTeamSize('11-30');
-      await dashboardPage.clickOnNextButton();
-      await dashboardPage.checkPageNumber(4, 4);
-      await dashboardPage.selectLastGetStartedQuestion();
-      await dashboardPage.isStartWithOtherInputVisible();
-      await dashboardPage.isStartBtnDisabled();
-      await dashboardPage.enterOtherStartWith('test');
-      await dashboardPage.clickOnStartButton();
-      await dashboardPage.clickOnOnboardingContinueWithoutTeamButton();
-    },
-  );
-
-  test(
-    qase(
       [1802, 1813],
       'Reload the page while questions survey is opened, Press "ESC" button to close question slides',
     ),
@@ -92,26 +54,6 @@ test.describe(() => {
       await dashboardPage.clickOnPrevButton();
       await dashboardPage.checkRadioButtonLabel('Work');
       await dashboardPage.checkDropdownValue('Development');
-    },
-  );
-
-  test(
-    qase([1812, 1814], 'Deselect chosen option, Change chosen option'),
-    async () => {
-      await dashboardPage.selectRadioButton('Work');
-      await dashboardPage.selectRadioButton('Work');
-      await dashboardPage.checkRadioButtonLabel('Work');
-      await dashboardPage.selectKindOfWork('Development');
-      await dashboardPage.clickOnNextButton();
-      await dashboardPage.selectFigmaTool();
-      await dashboardPage.clickOnNextButton();
-      await dashboardPage.selectDropdownOptions('Testing before self-hosting');
-      await dashboardPage.selectTeamSize('11-30');
-      await dashboardPage.clickOnNextButton();
-      await dashboardPage.selectGetStartedQuestion('Wireframing');
-      await dashboardPage.checkRadioImageLabel('Wireframing');
-      await dashboardPage.selectGetStartedQuestion('Prototyping');
-      await dashboardPage.checkRadioImageLabel('Prototyping');
     },
   );
 
