@@ -56,7 +56,6 @@ npm-debug.log*
 
 # Test results
 /test-results/
-testResults.json
 
 # GitHub Copilot chat modes
 .github/chatmodes
