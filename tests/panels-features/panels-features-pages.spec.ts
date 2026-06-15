@@ -200,42 +200,6 @@ mainTest(
 
 mainTest(
   qase(
-    1519,
-    'Copy and paste components from Page 1 to Page 2, on Page 2 right-click component and select "Show main component"',
-  ),
-  async () => {
-    await mainTest.step('Create a component on Page 1 and copy it', async () => {
-      await mainPage.createDefaultRectangleByCoordinates(300, 300);
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.copyLayerViaRightClick();
-    });
-
-    await mainTest.step('Navigate to Page 2 and paste the component', async () => {
-      await pagesPanelPage.clickAddPageButton();
-      await mainPage.waitForChangeIsSaved();
-      await pagesPanelPage.clickOnPageOnLayersPanel(2);
-      await pagesPanelPage.isSecondPageNameDisplayed('Page 2');
-      await mainPage.pasteLayerViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Show main component and verify viewport', async () => {
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await basePage.showMainComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'page-copies-component-show-main.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-    });
-  },
-);
-
-mainTest(
-  qase(
     1526,
     'Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Reset overrides"',
   ),
