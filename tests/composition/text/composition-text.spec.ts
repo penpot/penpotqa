@@ -462,3 +462,56 @@ mainTest.describe(() => {
     },
   );
 });
+
+mainTest(
+  qase([422], 'Change font style, size, letter spacing AV (Design section)'),
+  async () => {
+    const text =
+      'Class aptent taciti sociosqu ad litora torquent\n' +
+      'per conubia nostra, per inceptos himenaeos.\n\n' +
+      'Aliquam eu fringilla augue.\n' +
+      'Mauris eu tempus enim.';
+
+    await mainTest.step('Create long text with paragraphs', async () => {
+      await mainPage.clickCreateTextButton();
+      await mainPage.clickViewportByCoordinates(200, 200);
+      await mainPage.typeTextFromKeyboard(text);
+      await mainPage.clickMoveButton();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.focusLayerViaShortcut();
+      await expect(mainPage.viewport).toHaveScreenshot('text-long-text.png', {
+        mask: mainPage.maskViewport(),
+      });
+      await mainPage.focusLayerViaShortcut();
+    });
+
+    await mainTest.step('Change font style', async () => {
+      await designPanelPage.changeTextFont('Saira Extra Condensed');
+      await designPanelPage.changeTextFontStyle('400');
+      await designPanelPage.changeTextFontSize('9');
+    });
+
+    await mainTest.step('Change AV (letter spacing)', async () => {
+      await designPanelPage.changeTextLetterSpacing('5');
+    });
+
+    await mainTest.step('Change Line Height', async () => {
+      await designPanelPage.changeTextLineHeight('5');
+      await mainPage.waitForChangeIsSaved();
+    });
+
+    await mainTest.step(
+      'Assert changed font style, size, letter spacing AV',
+      async () => {
+        await mainPage.focusLayerViaShortcut();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'text-long-text-with-changed-properties.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+        await mainPage.focusLayerViaShortcut();
+      },
+    );
+  },
+);
