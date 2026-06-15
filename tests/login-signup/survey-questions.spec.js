@@ -1,7 +1,6 @@
 const { test } = require('@playwright/test');
 const { LoginPage } = require('../../pages/login-page.js');
 const { RegisterPage } = require('../../pages/register-page.js');
-const { updateTestResults } = require('../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { random } = require('../../helpers/string-generator.js');
 const { waitMessage } = require('../../helpers/gmail.js');
@@ -68,8 +67,4 @@ test.describe(() => {
       await dashboardPage2.isOnboardingFirstQuestionsVisible();
     },
   );
-});
-
-test.afterEach(async ({ page }, testInfo) => {
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
