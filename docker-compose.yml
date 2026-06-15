@@ -5,11 +5,13 @@ services:
     working_dir: /work
     volumes:
       - .:/work
+      - pw-node-modules:/work/node_modules
       - pw-browsers:/pw-browsers
     environment:
       PLAYWRIGHT_BROWSERS_PATH: /pw-browsers
     command: >
-      bash -c "npx playwright install --with-deps chrome &&
+      bash -c "npm ci &&
+      npx playwright install --with-deps chrome &&
       npx playwright test --project=chrome --grep-invert 'PERF'"
 
   playwright-ui:
@@ -18,8 +20,10 @@ services:
     ports:
       - '8080:8080'
     command: >
-      bash -c "npx playwright install --with-deps chrome &&
-      npx playwright test --ui --ui-host=0.0.0.0 --ui-port=8080"
+      bash -c "npm ci &&
+      npx playwright install --with-deps chrome &&
+      npx playwright test --project=chrome --ui --ui-host=0.0.0.0 --ui-port=8080"
 
 volumes:
   pw-browsers:
+  pw-node-modules:
