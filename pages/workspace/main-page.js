@@ -693,6 +693,14 @@ exports.MainPage = class MainPage extends BasePage {
     await this.shortcutsMenuSubItem.click();
   }
 
+  async isDisconnectMCPServerMenuSubItemVisible() {
+    await expect(this.disconnectMCPServerMenuSubItem).toBeVisible();
+  }
+
+  async isConnectMCPServerMenuSubItemVisible() {
+    await expect(this.connectMCPServerMenuSubItem).toBeVisible();
+  }
+
   async isMCPServerStatusIndicatorActive(active = true, timeout = 10000) {
     active
       ? await this.mcpServerMainMenuActiveStatus.waitFor({
@@ -713,17 +721,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.disconnectMCPServerMenuSubItem.click();
   }
 
-  getManageMCPServerStatusMenuSubItem(status) {
-    return this.page.getByRole('menuitem', { name: `Manage (Status: ${status})` });
-  }
-
-  async openManageMCPServerStatusPage(status) {
-    const manageMCPServerStatusSubItem =
-      this.getManageMCPServerStatusMenuSubItem(status);
-    await manageMCPServerStatusSubItem.waitFor({ timeout: 15000 });
-    const popupPromise = this.page.waitForEvent('popup', { timeout: 40000 });
-    await manageMCPServerStatusSubItem.click({ timeout: 40000 });
-    return popupPromise;
+  async isManageMCPServerStatusMenuSubItemVisible(status) {
+    const manageMCPServerStatusMenuSubItem = this.page.getByRole('menuitem', {
+      name: `Manage (Status: ${status})`,
+    });
+    await expect(manageMCPServerStatusMenuSubItem).toBeVisible();
   }
 
   async clickZoomButton() {

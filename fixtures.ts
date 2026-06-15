@@ -2,12 +2,11 @@ import { test } from '@playwright/test';
 import { LoginPage } from '@pages/login-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { RegisterPage } from '@pages/register-page';
-import { updateTestResults } from './helpers/saveTestResults';
 import { random } from './helpers/string-generator';
 import { waitMessage } from './helpers/gmail';
 
 export const mainTest = test.extend({
-  page: async ({ page }, use, testInfo) => {
+  page: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     await loginPage.goto();
@@ -20,7 +19,6 @@ export const mainTest = test.extend({
     await dashboardPage.skipWhatNewsPopUp();
     await dashboardPage.skipPluginsPopUp();
     await use(page);
-    await updateTestResults(testInfo.status, testInfo.retry);
   },
 });
 
@@ -38,7 +36,7 @@ export const registerTest = test.extend<RegisterTestFixtures>({
     const email = `${process.env.GMAIL_NAME}+${name}${process.env.GMAIL_DOMAIN}`;
     await use(email);
   },
-  page: async ({ page, name, email }, use, testInfo) => {
+  page: async ({ page, name, email }, use) => {
     const loginPage = new LoginPage(page);
     const dashboardPage = new DashboardPage(page);
     const registerPage = new RegisterPage(page);
@@ -52,7 +50,6 @@ export const registerTest = test.extend<RegisterTestFixtures>({
     await page.goto(invite!.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
     await use(page);
-    await updateTestResults(testInfo.status, testInfo.retry);
   },
 });
 
