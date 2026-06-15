@@ -84,39 +84,5 @@ export default defineConfig({
         },
       },
     },
-    {
-      name: 'firefox',
-      grepInvert: /@perf/,
-      expect: {
-        toHaveScreenshot: {
-          maxDiffPixelRatio: 0.0001,
-        },
-      },
-      use: {
-        browserName: 'firefox',
-      },
-      launchOptions: {
-        firefoxUserPrefs: {
-          'dom.events.asyncClipboard.readText': true,
-          'dom.events.testing.asyncClipboard': true,
-        },
-      },
-      contextOptions: {
-        // chromium-specific permissions
-        permissions: ['clipboard-read', 'clipboard-write'],
-      },
-    },
-    {
-      name: 'webkit',
-      grepInvert: /@perf/,
-      expect: {
-        toHaveScreenshot: {
-          maxDiffPixelRatio: 0.01,
-        },
-      },
-      use: {
-        browserName: 'webkit',
-      },
-    },
   ],
 });

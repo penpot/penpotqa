@@ -1033,7 +1033,7 @@ Tracks test outcomes:
 
 ### Result File
 
-**Output:** `testResults.json`
+**Output:** `playwright-report/results.json`
 
 ```json
 {
@@ -1046,11 +1046,7 @@ Tracks test outcomes:
 
 ### Integration
 
-Automatically called in fixtures:
-
-```javascript
-await updateTestResults(testInfo.status, testInfo.retry);
-```
+The reporting summary is now derived directly from Playwright's JSON report.
 
 ### Mattermost Notification
 
