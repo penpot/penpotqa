@@ -2,7 +2,6 @@ import { qase } from 'playwright-qase-reporter/playwright';
 import { test } from '@playwright/test';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { LoginPage } from '@pages/login-page';
-import { updateTestResults } from 'helpers/saveTestResults';
 
 let loginPage: LoginPage;
 let dashboardPage: DashboardPage;
@@ -57,7 +56,3 @@ test(
     await dashboardPage.isHeaderDisplayed('Projects');
   },
 );
-
-test.afterEach(async ({ page }, testInfo) => {
-  await updateTestResults(testInfo.status, testInfo.retry);
-});

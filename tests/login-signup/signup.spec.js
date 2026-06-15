@@ -1,7 +1,6 @@
 const { test } = require('@playwright/test');
 const { LoginPage } = require('../../pages/login-page.js');
 const { RegisterPage } = require('../../pages/register-page.js');
-const { updateTestResults } = require('../../helpers/saveTestResults.js');
 const { qase } = require('playwright-qase-reporter/playwright');
 const { random } = require('../../helpers/string-generator.js');
 const { checkRegisterText, waitMessage } = require('../../helpers/gmail.js');
@@ -112,8 +111,4 @@ test(qase(54, 'Sign up with email of existing user'), async () => {
   const email = process.env.LOGIN_EMAIL;
   await registerPage.registerAccount('test', email, process.env.LOGIN_PWD);
   await registerPage.isEmailAlreadyUsedErrorDisplayed();
-});
-
-test.afterEach(async ({}, testInfo) => {
-  await updateTestResults(testInfo.status, testInfo.retry);
 });
