@@ -121,7 +121,7 @@ export class DeletedPage extends BasePage {
 
   async restoreAllProjectsAndFiles() {
     await this.restoreAllButton.click();
-    await this.continueButton.click();
+    await this.confirmRestore();
 
     await this.waitForConfirmModalToClose();
     await this.waitUntilTrashIsEmpty();
@@ -129,16 +129,44 @@ export class DeletedPage extends BasePage {
 
   async deleteAllProjectsAndFilesForever() {
     await this.clearTrashButton.click();
-    await this.deleteForeverButton.click();
+    await this.confirmDeleteForever();
 
     await this.waitForConfirmModalToClose();
     await this.waitUntilTrashIsEmpty();
   }
 
+  private async confirmRestore() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url().includes('/api/main/methods/restore-deleted-team-files') &&
+          response.request().method() === 'POST' &&
+          response.status() === 200,
+        { timeout: 30000 },
+      ),
+      this.continueButton.click(),
+    ]);
+  }
+
+  private async confirmDeleteForever() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response
+            .url()
+            .includes('/api/main/methods/permanently-delete-team-files') &&
+          response.request().method() === 'POST' &&
+          response.status() === 200,
+        { timeout: 30000 },
+      ),
+      this.deleteForeverButton.click(),
+    ]);
+  }
+
   async restoreDeletedFileViaOptions(projectName: string, fileName: string) {
     await this.openFileOptionsMenu(projectName, fileName);
     await this.restoreFileButton.click();
-    await this.continueButton.click();
+    await this.confirmRestore();
 
     await this.waitForConfirmModalToClose();
     await this.waitForFileToDisappear(projectName, fileName);
@@ -147,7 +175,7 @@ export class DeletedPage extends BasePage {
   async deleteForeverDeletedFileViaOptions(projectName: string, fileName: string) {
     await this.openFileOptionsMenu(projectName, fileName);
     await this.deleteFileButton.click();
-    await this.deleteForeverButton.click();
+    await this.confirmDeleteForever();
 
     await this.waitForConfirmModalToClose();
     await this.waitForFileToDisappear(projectName, fileName);
@@ -156,7 +184,7 @@ export class DeletedPage extends BasePage {
   async restoreDeletedProjectViaOptions(projectName: string) {
     await this.openProjectOptionsMenu(projectName);
     await this.restoreProjectButton.click();
-    await this.continueButton.click();
+    await this.confirmRestore();
 
     await this.waitForConfirmModalToClose();
     await this.waitForProjectToDisappear(projectName);
@@ -165,7 +193,7 @@ export class DeletedPage extends BasePage {
   async deleteForeverDeletedProjectViaOptions(projectName: string) {
     await this.openProjectOptionsMenu(projectName);
     await this.deleteProjectButton.click();
-    await this.deleteForeverButton.click();
+    await this.confirmDeleteForever();
 
     await this.waitForConfirmModalToClose();
     await this.waitForProjectToDisappear(projectName);
