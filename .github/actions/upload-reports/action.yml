@@ -63,7 +63,7 @@ runs:
         # Success percentage and browser setup
         SUCCESS_PERCENT="N/A"; SUCCESS_CLASS="success-medium"
         if [ -f "playwright-report/results.json" ]; then
-          SUCCESS_PERCENT=$(node -e "try { const { stats = {} } = JSON.parse(require('fs').readFileSync('playwright-report/results.json', 'utf8')); const { expected = 0, unexpected = 0, flaky = 0 } = stats; const total = expected + unexpected + flaky; const percent = total ? ((expected + flaky) / total) * 100 : 0; const rounded = Math.round(percent); console.log(Number.isFinite(rounded) ? (rounded + '%') : 'N/A'); } catch (e) { console.log('N/A'); }")
+          SUCCESS_PERCENT=$(node -e "const { readResultsFromFile } = require('./helpers/saveTestResults'); readResultsFromFile().then(r => { if (!r) return console.log('N/A'); const rounded = Math.round(r.PercentPassed || 0); console.log(Number.isFinite(rounded) ? (rounded + '%') : 'N/A'); }).catch(() => console.log('N/A'))")
           if [[ "$SUCCESS_PERCENT" != "N/A" ]]; then
             PERCENT_NUM=$(echo "$SUCCESS_PERCENT" | sed 's/%//')
             if [[ $PERCENT_NUM -ge 90 ]]; then
