@@ -1,0 +1,25 @@
+services:
+  playwright:
+    image: mcr.microsoft.com/playwright:${PLAYWRIGHT_DOCKER_TAG:-v1.60.0-noble}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    working_dir: /work
+    volumes:
+      - .:/work
+      - pw-browsers:/pw-browsers
+    environment:
+      PLAYWRIGHT_BROWSERS_PATH: /pw-browsers
+    command: >
+      bash -c "npx playwright install --with-deps chrome &&
+      npx playwright test --project=chrome --grep-invert 'PERF'"
+
+  playwright-ui:
+    extends:
+      service: playwright
+    ports:
+      - '8080:8080'
+    command: >
+      bash -c "npx playwright install --with-deps chrome &&
+      npx playwright test --ui --ui-host=0.0.0.0 --ui-port=8080"
+
+volumes:
+  pw-browsers:
