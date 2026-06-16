@@ -88,6 +88,7 @@ Notes:
 
 - The project directory is mounted as `/work` inside the container. The `node_modules` folder and the Playwright browsers are kept in separate Docker volumes (`pw-node-modules` and `pw-browsers`) so they don't mix with the host installation.
 - All other variables from `.env` (e.g. `LOGIN_EMAIL`, `LOGIN_PWD`, `BASE_URL`, etc.) are used the same way as for a local run.
+- **Whenever `@playwright/test` is updated, the `PLAYWRIGHT_DOCKER_TAG` default in `docker-compose.yml` must also be updated** to match the new version (e.g. if upgrading to `1.52.0`, set the tag to `v1.52.0-noble`). The resolved version can be checked in `package-lock.json`.
 
 **5. Test run - additional settings.**
 
