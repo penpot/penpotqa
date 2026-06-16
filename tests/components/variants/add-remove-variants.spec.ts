@@ -24,9 +24,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 

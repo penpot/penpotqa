@@ -775,9 +775,7 @@ mainTest.describe(() => {
     await mainPage.pasteLayerViaRightClick();
     await mainPage.pressCopyShortcut(browserName);
     await mainPage.pressPasteShortcut(browserName);
-    browserName === 'firefox'
-      ? await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5)
-      : await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
+    await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
   });
 
   mainTest(

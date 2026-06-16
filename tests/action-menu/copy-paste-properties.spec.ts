@@ -35,12 +35,8 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   inspectPanelPage = new InspectPanelPage(page);
   pagesPanelPage = new PagesPanelPage(page);
   await teamPage.createTeam(teamName);
-  browserName === 'webkit' ? await teamPage.waitForTeamBtn(15000) : null;
   await teamPage.isTeamSelected(teamName, browserName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
   await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();
 });

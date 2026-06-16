@@ -30,9 +30,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
@@ -65,34 +62,29 @@ mainTest(qase([1273], 'Create component shape'), async () => {
 mainTest(
   qase([1312], 'Drag a component from assets tab and drop into workspace'),
   async ({ browserName }) => {
-    if (browserName !== 'webkit') {
-      await mainTest.step('Create ellipse and component', async () => {
-        await mainPage.createDefaultEllipseByCoordinates(200, 300);
-        await mainPage.createComponentViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-      });
+    await mainTest.step('Create ellipse and component', async () => {
+      await mainPage.createDefaultEllipseByCoordinates(200, 300);
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+    });
 
-      await mainTest.step('Drag component to canvas', async () => {
-        await assetsPanelPage.clickAssetsTab();
-        await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-        await assetsPanelPage.dragComponentOnCanvas(50, 100);
-        await layersPanelPage.openLayersTab();
-      });
+    await mainTest.step('Drag component to canvas', async () => {
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+      await assetsPanelPage.dragComponentOnCanvas(50, 100);
+      await layersPanelPage.openLayersTab();
+    });
 
-      await mainTest.step(
-        'Verify component on canvas and layers panel',
-        async () => {
-          await expect(
-            mainPage.viewport,
-            'Viewport should match screenshot with copy of main component on canvas',
-          ).toHaveScreenshot('copy-main-components-on-canvas.png', {
-            mask: mainPage.maskViewport({ useRulers: true }),
-          });
-          await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
-          await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Ellipse');
-        },
-      );
-    }
+    await mainTest.step('Verify component on canvas and layers panel', async () => {
+      await expect(
+        mainPage.viewport,
+        'Viewport should match screenshot with copy of main component on canvas',
+      ).toHaveScreenshot('copy-main-components-on-canvas.png', {
+        mask: mainPage.maskViewport({ useRulers: true }),
+      });
+      await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
+      await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Ellipse');
+    });
   },
 );
 
