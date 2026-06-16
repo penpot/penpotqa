@@ -141,11 +141,11 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase(2484, 'Create a font family token with multiples fonts'), async () => {
+mainTest(qase(2484, 'Create a font family token with multiple fonts'), async () => {
   const fontFamilyToken: MainToken<TokenClass> = {
     class: TokenClass.FontFamily,
     name: 'font-family',
-    value: `'Actor, 'Cinzel' Abel, Aboreto, "Biryani"'`,
+    value: `'Actor, 'Cinzel', Abel, Aboreto, "Biryani"'`,
   };
 
   await mainTest.step('Create default text layer and open tokens tab', async () => {
