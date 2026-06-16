@@ -34,11 +34,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe(() => {
   const fontFamilyToken: MainToken<TokenClass> = {
     class: TokenClass.FontFamily,
@@ -194,7 +189,7 @@ mainTest(qase(2469, 'Check missing name and font family token errors'), async ()
   );
 
   await mainTest.step(
-    'Type something in the token value input, delete it and assert error message',
+    `Type "${fontFamilyToken.value}" in the token value input, clear it and assert error message`,
     async () => {
       await tokensPage.tokensComp.fillTokenValue(fontFamilyToken.value!);
       await tokensPage.tokensComp.clearTokenValue();
@@ -206,7 +201,7 @@ mainTest(qase(2469, 'Check missing name and font family token errors'), async ()
   );
 
   await mainTest.step(
-    'Type something in the token name input, delete it and assert error message',
+    `Type "${fontFamilyToken.name}" in the token name input, clear it and assert error message`,
     async () => {
       await tokensPage.tokensComp.clickOnTokenNameInput();
       await tokensPage.tokensComp.fillTokenName(fontFamilyToken.name);
