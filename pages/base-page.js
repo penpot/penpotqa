@@ -217,7 +217,7 @@ exports.BasePage = class BasePage {
     await this.page.keyboard.press('Control+D');
   }
 
-  async clickShortcutAltN(browserName) {
+  async clickShortcutAltN() {
     await this.page.keyboard.press('Alt+N');
   }
 
@@ -326,14 +326,12 @@ exports.BasePage = class BasePage {
     await this.hideLayerMenuItem.click();
   }
 
-  async focusBoardViaRightClickOnCanvas(title, browserName = 'chromium') {
+  async focusBoardViaRightClickOnCanvas(title) {
     const boardSel = this.page.locator(
       `span[class*="workspace_sidebar_layer_name"]:has-text("${title}")`,
     );
     await boardSel.click({ button: 'right', force: true });
-    browserName === 'chromium'
-      ? await this.focusOnLayerMenuItem.click()
-      : await this.focusOnLayerMenuItem.locator('span').first().click();
+    await this.focusOnLayerMenuItem.click();
   }
 
   async focusLayerViaRightClickOnCanvas() {
