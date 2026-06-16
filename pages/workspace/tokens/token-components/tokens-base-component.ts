@@ -261,7 +261,17 @@ export class TokensComponent {
   }
 
   async isSaveButtonDisabled() {
-    await expect(this.baseComp.modalSaveButton).toBeDisabled();
+    await expect(
+      this.baseComp.modalSaveButton,
+      `Save button is disabled`,
+    ).toBeDisabled();
+  }
+
+  async isSaveButtonEnabled() {
+    await expect(
+      this.baseComp.modalSaveButton,
+      `Save button is enabled`,
+    ).toBeEnabled();
   }
 
   async clickCancelButton() {

@@ -15,17 +15,21 @@ const teamName = createTeamName();
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
+let tokensPage: TokensPage;
+let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
+  tokensPage = new TokensPage(page);
+  designPanelPage = new DesignPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
+
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
@@ -36,11 +40,6 @@ mainTest.afterEach(async () => {
 });
 
 mainTest.describe(() => {
-  let mainPage: MainPage;
-  let tokensPage: TokensPage;
-  let designPanelPage: DesignPanelPage;
-  let layersPanelPage: LayersPanelPage;
-
   const fontFamilyToken: MainToken<TokenClass> = {
     class: TokenClass.FontFamily,
     name: 'font-family',
@@ -139,5 +138,37 @@ mainTest.describe(() => {
         await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyTokenRef.name);
       },
     );
+  });
+});
+
+mainTest(qase(2484, 'Create a font family token with multiple fonts'), async () => {
+  const fontFamilyToken: MainToken<TokenClass> = {
+    class: TokenClass.FontFamily,
+    name: 'font-family',
+    value: `'Actor, 'Cinzel', Abel, Aboreto, "Biryani"'`,
+  };
+
+  await mainTest.step('Create default text layer and open tokens tab', async () => {
+    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
+    await tokensPage.clickTokensTab();
+  });
+
+  await mainTest.step('Click on add token button and fill token name', async () => {
+    await tokensPage.tokensComp.clickOnAddTokenButton(fontFamilyToken);
+    await tokensPage.tokensComp.fillTokenName(fontFamilyToken.name);
+  });
+
+  await mainTest.step(
+    'Fill in the font family field with a set of names of a font family.',
+    async () => {
+      await tokensPage.tokensComp.fillTokenValue(fontFamilyToken.value!);
+      await tokensPage.tokensComp.clickOnTokenDescription();
+      await tokensPage.tokensComp.isSaveButtonEnabled();
+    },
+  );
+
+  await mainTest.step('Click on Save and assert token is visible', async () => {
+    await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+    await tokensPage.tokensComp.isTokenVisibleWithName(fontFamilyToken.name);
   });
 });
