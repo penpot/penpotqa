@@ -1,5 +1,4 @@
 const { expect } = require('@playwright/test');
-const { getPlatformName } = require('../helpers/get-platform');
 
 exports.BasePage = class BasePage {
   /**
@@ -204,42 +203,18 @@ exports.BasePage = class BasePage {
     );
   }
 
-  async clearInput(input, browserName) {
+  async clearInput(input) {
     await input.click();
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+A');
-    } else {
-      if (browserName === 'webkit') {
-        await this.page.keyboard.press('Meta+A');
-      } else {
-        await this.page.keyboard.press('Control+A');
-      }
-    }
+    await this.page.keyboard.press('Control+A');
     await this.page.keyboard.press('Delete');
   }
 
-  async clickShortcutCtrlZ(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+Z');
-    } else {
-      if (browserName !== 'webkit') {
-        await this.page.keyboard.press('Control+Z');
-      } else {
-        await this.page.keyboard.press('Meta+Z');
-      }
-    }
+  async clickShortcutCtrlZ() {
+    await this.page.keyboard.press('Control+Z');
   }
 
-  async clickShortcutCtrlD(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+D');
-    } else {
-      if (browserName !== 'webkit') {
-        await this.page.keyboard.press('Control+D');
-      } else {
-        await this.page.keyboard.press('Meta+D');
-      }
-    }
+  async clickShortcutCtrlD() {
+    await this.page.keyboard.press('Control+D');
   }
 
   async clickShortcutAltN(browserName) {
