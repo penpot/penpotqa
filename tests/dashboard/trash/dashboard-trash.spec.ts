@@ -131,6 +131,10 @@ mainTest.describe('As Owner', () => {
       await dashboardPage.deleteProjectsIfExist();
       await dashboardPage.openDeletedTab();
 
+      for (const { projectName } of projects) {
+        await deletedPage.isDeletedProjectVisible(projectName);
+      }
+
       await deletedPage.deleteAllProjectsAndFilesForever();
       await deletedPage.isEmptyTrashMessageVisible();
     });

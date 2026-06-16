@@ -303,7 +303,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async deleteFileViaRightclick() {
     await this.fileTile.click({ button: 'right' });
     await this.deleteFileMenuItem.click();
-    await this.deleteFileButton.click();
+    await this.confirmDeleteFile();
   }
 
   async deleteFileViaOptionsIcon() {
@@ -311,7 +311,20 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fileOptionsMenuButton.first().hover();
     await this.fileOptionsMenuButton.first().click();
     await this.deleteFileMenuItem.click();
-    await this.deleteFileButton.click();
+    await this.confirmDeleteFile();
+  }
+
+  async confirmDeleteFile() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url().includes('/api/main/methods/delete-file') &&
+          response.request().method() === 'POST' &&
+          response.status() === 204,
+        { timeout: 30000 },
+      ),
+      this.deleteFileButton.click(),
+    ]);
   }
 
   async isDeletedFileSuccessMessageVisible() {
@@ -327,7 +340,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     while (await this.fileTile.count()) {
       await this.fileTile.first().click({ button: 'right' });
       await this.deleteFileMenuItem.click();
-      await this.deleteFileButton.click();
+      await this.confirmDeleteFile();
       counter++;
     }
     await expect(this.fileTile).toHaveCount(0);
@@ -344,14 +357,27 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async deleteProjectViaRightclick() {
     await this.projectNameTitle.first().click({ button: 'right' });
     await this.deleteProjectMenuItem.click();
-    await this.deleteProjectButton.click();
+    await this.confirmDeleteProject();
   }
 
   async deleteProjectViaOptionsIcon() {
     await this.projectNameTitle.first().hover();
     await this.projectOptionsMenuButton.first().click({ force: true });
     await this.deleteProjectMenuItem.click();
-    await this.deleteProjectButton.click();
+    await this.confirmDeleteProject();
+  }
+
+  async confirmDeleteProject() {
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url().includes('/api/main/methods/delete-project') &&
+          response.request().method() === 'POST' &&
+          response.status() === 204,
+        { timeout: 30000 },
+      ),
+      this.deleteProjectButton.click(),
+    ]);
   }
 
   async isDeletedProjectSuccessMessageVisible() {
@@ -372,7 +398,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       if (!name.includes('Drafts')) {
         await project.click({ button: 'right' });
         await this.deleteProjectMenuItem.click();
-        await this.deleteProjectButton.click();
+        await this.confirmDeleteProject();
       }
     }
 
@@ -508,7 +534,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickAddProjectButton() {
-    await this.addProjectButton.click();
+    await Promise.all([
+      this.page.waitForResponse(
+        (response) =>
+          response.url().includes('/api/main/methods/create-project') &&
+          response.request().method() === 'POST' &&
+          response.status() === 200,
+        { timeout: 30000 },
+      ),
+      this.addProjectButton.click(),
+    ]);
   }
 
   async setProjectName(projectName) {
@@ -529,7 +564,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       exact: true,
     });
 
-    await expect(deletedProject, 'Project title should be hidden').toBeHidden();
+    await expect(deletedProject, 'Project title should be hidden').toBeHidden({
+      timeout: 15000,
+    });
   }
 
   async createProject(projectName) {
