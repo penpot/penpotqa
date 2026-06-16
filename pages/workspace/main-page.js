@@ -249,9 +249,17 @@ exports.MainPage = class MainPage extends BasePage {
     await this.createTextButton.click({ delay: 500 });
   }
 
-  async typeTextFromKeyboard() {
+  async typeDefaultTextFromKeyboard() {
+    await expect(this.textbox).toBeVisible();
+    await expect(this.textbox).toBeFocused();
     await this.page.keyboard.type('Hello world!', { delay: 50 });
     await expect(this.textbox).toHaveText('Hello world!');
+  }
+
+  async typeTextFromKeyboard(text) {
+    await expect(this.textbox).toBeVisible();
+    await expect(this.textbox).toBeFocused();
+    await this.page.keyboard.type(text, { delay: 50 });
   }
 
   async uploadImage(filePath) {
@@ -929,9 +937,7 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultTextLayer() {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(200, 300);
-    await expect(this.textbox).toBeVisible();
-    await expect(this.textbox).toBeFocused();
-    await this.typeTextFromKeyboard();
+    await this.typeDefaultTextFromKeyboard();
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
@@ -939,9 +945,7 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultTextLayerByCoordinates(x, y) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
-    await expect(this.textbox).toBeVisible();
-    await expect(this.textbox).toBeFocused();
-    await this.typeTextFromKeyboard();
+    await this.typeDefaultTextFromKeyboard();
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
@@ -949,18 +953,14 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultTextLayerViaShortcut() {
     await this.page.keyboard.press('T');
     await this.clickViewportByCoordinates(200, 300);
-    await expect(this.textbox).toBeVisible();
-    await expect(this.textbox).toBeFocused();
-    await this.typeTextFromKeyboard();
+    await this.typeDefaultTextFromKeyboard();
     await this.clickMoveButton();
   }
 
   async createTextLayerByCoordinates(x, y, text) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
-    await expect(this.textbox).toBeVisible();
-    await expect(this.textbox).toBeFocused();
-    await this.page.keyboard.type(text, { delay: 50 });
+    await this.typeTextFromKeyboard(text);
     await expect(this.textbox).toHaveText(text);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
@@ -1225,8 +1225,7 @@ exports.MainPage = class MainPage extends BasePage {
 
   async editTextLayer(text, browserName = 'chromium') {
     await this.doubleClickTextOnCanvas(browserName);
-    await expect(this.textbox).toBeVisible();
-    await this.page.keyboard.type(text);
+    await this.typeTextFromKeyboard(text);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
   }
