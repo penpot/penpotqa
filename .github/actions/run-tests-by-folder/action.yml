@@ -14,8 +14,6 @@ inputs:
     type: choice
     options:
       - chrome
-      - firefox
-      - webkit
   retries:
     description: 'Number of retries for failed tests'
     required: false
