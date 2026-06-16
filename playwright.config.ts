@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 import 'dotenv/config';
 
 export default defineConfig({
-  snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/linux/{projectName}/{arg}{ext}`,
+  snapshotPathTemplate: `{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}`,
   testDir: './tests',
   /* Maximum time one test can run for. */
   timeout: process.env.CI ? 120 * 1000 : 80 * 1000,
@@ -82,40 +82,6 @@ export default defineConfig({
           // chromium-specific permissions
           permissions: ['clipboard-read', 'clipboard-write'],
         },
-      },
-    },
-    {
-      name: 'firefox',
-      grepInvert: /@perf/,
-      expect: {
-        toHaveScreenshot: {
-          maxDiffPixelRatio: 0.0001,
-        },
-      },
-      use: {
-        browserName: 'firefox',
-      },
-      launchOptions: {
-        firefoxUserPrefs: {
-          'dom.events.asyncClipboard.readText': true,
-          'dom.events.testing.asyncClipboard': true,
-        },
-      },
-      contextOptions: {
-        // chromium-specific permissions
-        permissions: ['clipboard-read', 'clipboard-write'],
-      },
-    },
-    {
-      name: 'webkit',
-      grepInvert: /@perf/,
-      expect: {
-        toHaveScreenshot: {
-          maxDiffPixelRatio: 0.01,
-        },
-      },
-      use: {
-        browserName: 'webkit',
       },
     },
   ],

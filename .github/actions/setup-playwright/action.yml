@@ -19,6 +19,24 @@ runs:
       shell: bash
       run: npm ci
 
-    - name: Install Playwright browsers
+    - name: Get installed Playwright version
+      id: playwright-version
       shell: bash
-      run: npx playwright install --with-deps
+      run: echo "version=$(npx playwright --version | cut -d ' ' -f2)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Playwright browsers
+      id: playwright-cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-browsers-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
+    - name: Install Playwright browsers
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: npx playwright install --with-deps chrome
+
+    - name: Install Playwright OS dependencies
+      if: steps.playwright-cache.outputs.cache-hit == 'true'
+      shell: bash
+      run: npx playwright install-deps chrome

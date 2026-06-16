@@ -129,18 +129,18 @@ await page.goto(changeEmail.inviteUrl);
 
 ## 5. Rename snapshot folder and clean up
 
-If a `<spec-name>.spec.js-snapshots` directory exists next to the spec file, rename it to `<spec-name>.spec.ts-snapshots` and keep only the `linux/chrome` snapshots — delete all other OS and browser directories:
+If a `<spec-name>.spec.js-snapshots` directory exists next to the spec file, rename it to `<spec-name>.spec.ts-snapshots`. Snapshots live directly at the root of that directory (no OS/browser subfolders) — flatten any `linux/chrome` (or other OS/browser) snapshots into the root and delete the rest:
 
 ```bash
 # 1. Rename the folder
 mv tests/path/to/foo.spec.js-snapshots tests/path/to/foo.spec.ts-snapshots
 
-# 2. Keep only linux/chrome — delete all other OS and browser directories
+# 2. Flatten linux/chrome snapshots to the root and delete all other OS/browser directories
 SNAPSHOTS="tests/path/to/foo.spec.ts-snapshots"
-find "$SNAPSHOTS" -mindepth 1 -maxdepth 1 -type d -not -name 'linux' -exec rm -rf {} +
-if [ -d "$SNAPSHOTS/linux" ]; then
-  find "$SNAPSHOTS/linux" -mindepth 1 -maxdepth 1 -type d -not -name 'chrome' -exec rm -rf {} +
+if [ -d "$SNAPSHOTS/linux/chrome" ]; then
+  mv "$SNAPSHOTS/linux/chrome"/* "$SNAPSHOTS/"
 fi
+find "$SNAPSHOTS" -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} +
 ```
 
 Do this as part of the migration, before confirming it is complete.

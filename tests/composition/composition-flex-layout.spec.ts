@@ -349,7 +349,7 @@ mainTest.describe(() => {
         await designPanelPage.changeLayoutPadding('Horizontal', '0');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot(
-          'layout-horizontal_padding-0.png',
+          'layout-horizontal-padding-0.png',
           { mask: mainPage.maskViewport() },
         );
       });
@@ -357,7 +357,7 @@ mainTest.describe(() => {
         await designPanelPage.changeLayoutPadding('Vertical', '0');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot(
-          'layout-vertical_padding-0.png',
+          'layout-vertical-padding-0.png',
           { mask: mainPage.maskViewport() },
         );
       });

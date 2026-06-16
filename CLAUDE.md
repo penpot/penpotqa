@@ -77,7 +77,7 @@ New spec files must be TypeScript (`.spec.ts`). Legacy files in `.spec.js` are b
 
 ### Visual Regression
 
-Snapshots are stored at `tests/{dir}/{file}-snapshots/linux/{browser}/`. Comparison thresholds differ per browser (Chrome: `0.0001`, WebKit: `0.01`). Snapshots require **Ubuntu 24.04** at **1920x969** for consistency.
+Snapshots are stored at `tests/{dir}/{file}-snapshots/`. Comparison threshold for Chrome is `0.0001`. Snapshots require **Ubuntu 24.04** at **1920x969** for consistency.
 
 ### Helpers (`helpers/`)
 
