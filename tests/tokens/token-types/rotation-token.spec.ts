@@ -18,7 +18,7 @@ let mainPage: MainPage;
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -38,7 +38,7 @@ mainTest.afterEach(async () => {
 
 mainTest(
   qase(2175, 'Apply default "rotation" token to a text (by left click)'),
-  async ({ browserName }) => {
+  async () => {
     const rotationToken: MainToken<TokenClass> = {
       class: TokenClass.Rotation,
       name: 'rotation',
@@ -59,7 +59,7 @@ mainTest(
         await tokensPage.tokensComp.clickOnTokenWithName(rotationToken.name);
         await tokensPage.tokensComp.isTokenAppliedWithName(rotationToken.name);
         await designPanelPage.checkRotationForLayer(tokenResolvedValue);
-        browserName === 'chromium' ? await mainPage.waitForChangeIsUnsaved() : null;
+        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
       },
     );
