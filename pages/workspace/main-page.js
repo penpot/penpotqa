@@ -498,7 +498,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.nodePanelMergeNodesButton.click();
   }
 
-  async pressCtrlJKeyboardShortcut(browserName) {
+  async pressCtrlJKeyboardShortcut() {
     await this.page.keyboard.press('Control+J');
   }
 
@@ -588,27 +588,27 @@ exports.MainPage = class MainPage extends BasePage {
     await this.hideColorPaletteMainMenuSubItem.click();
   }
 
-  async pressHideShowRulersShortcut(browserName) {
+  async pressHideShowRulersShortcut() {
     await this.page.keyboard.press('Control+Shift+R');
   }
 
-  async pressHideShowGridsShortcut(browserName) {
+  async pressHideShowGridsShortcut() {
     await this.page.keyboard.press("Control+'");
   }
 
-  async pressSelectAllShortcut(browserName) {
+  async pressSelectAllShortcut() {
     await this.page.keyboard.press('Control+A');
   }
 
-  async pressCopyShortcut(browserName) {
+  async pressCopyShortcut() {
     await this.page.keyboard.press('Control+C');
   }
 
-  async pressPasteShortcut(browserName) {
+  async pressPasteShortcut() {
     await this.page.keyboard.press('Control+V');
   }
 
-  async pressCutShortcut(browserName) {
+  async pressCutShortcut() {
     await this.page.keyboard.press('Control+X');
   }
 
@@ -935,7 +935,7 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
-  async createComponentViaShortcut(browserName, isBoard = false) {
+  async createComponentViaShortcut(isBoard = false) {
     isBoard
       ? await this.clickCreatedBoardTitleOnCanvas()
       : await this.createdLayer.click({ force: true });
@@ -1150,16 +1150,14 @@ exports.MainPage = class MainPage extends BasePage {
     await layerSel.last().click({ button: 'right', force: true });
   }
 
-  async doubleClickTextOnCanvas(browserName) {
+  async doubleClickTextOnCanvas() {
     const textSel = this.page.locator(`rect[class="main viewport-selrect"]`);
     await textSel.dblclick();
-    if (browserName === 'chromium') {
-      await textSel.dblclick();
-    }
+    await textSel.dblclick();
   }
 
-  async editTextLayer(text, browserName = 'chromium') {
-    await this.doubleClickTextOnCanvas(browserName);
+  async editTextLayer(text) {
+    await this.doubleClickTextOnCanvas();
     await this.typeTextFromKeyboard(text);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();
