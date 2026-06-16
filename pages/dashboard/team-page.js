@@ -156,7 +156,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.waitForCreateNewTeamButtonToBeHidden(30000);
   }
 
-  async isTeamSelected(teamName, browserName = 'chrome') {
+  async isTeamSelected(teamName) {
     await expect(this.teamCurrentBtnText).toHaveText(teamName);
   }
 
