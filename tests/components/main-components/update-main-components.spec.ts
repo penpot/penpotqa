@@ -520,7 +520,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase([1403], 'Change copy components color and update main components color'),
-    async ({ browserName }) => {
+    async () => {
       await mainTest.step(
         `Set copy component fill color to "${sampleData.color.blackHexCode}"`,
         async () => {
@@ -538,9 +538,7 @@ mainTest.describe(() => {
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.setComponentColor(sampleData.color.redHexCode);
           await mainPage.clickViewportTwice();
-          browserName === 'chromium'
-            ? await mainPage.waitForChangeIsUnsaved()
-            : null;
+          await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
         },
       );
