@@ -270,13 +270,11 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     await this.widthCopyButton.click();
   }
 
-  async checkBuffer(expectedValue, page, browserName) {
-    if (browserName === 'chromium') {
-      const clipboardText = await page.evaluate(async () => {
-        return await navigator.clipboard.readText();
-      });
-      expect(clipboardText).toBe(expectedValue);
-    }
+  async checkBuffer(expectedValue, page) {
+    const clipboardText = await page.evaluate(async () => {
+      return await navigator.clipboard.readText();
+    });
+    expect(clipboardText).toBe(expectedValue);
   }
 
   async clickEditButton(first = true) {
