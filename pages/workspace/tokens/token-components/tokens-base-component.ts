@@ -204,8 +204,16 @@ export class TokensComponent {
     await this.mainTokensComp.tokenValueInput.fill(value);
   }
 
+  async clearTokenValue() {
+    await this.mainTokensComp.tokenValueInput.clear();
+  }
+
   async clickOnTokenDescription() {
     await this.tokenDescriptionInput.click();
+  }
+
+  async clickOnTokenNameInput() {
+    await this.tokenNameInput.click();
   }
 
   async enterTokenDescription(text: string) {
