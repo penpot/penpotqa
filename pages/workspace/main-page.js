@@ -1,6 +1,5 @@
 const { expect } = require('@playwright/test');
 const { BasePage } = require('../base-page');
-const { getPlatformName } = require('../../helpers/get-platform');
 
 exports.MainPage = class MainPage extends BasePage {
   /**
@@ -500,15 +499,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressCtrlJKeyboardShortcut(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+J');
-    } else {
-      if (browserName === 'webkit') {
-        await this.page.keyboard.press('Meta+J');
-      } else {
-        await this.page.keyboard.press('Control+J');
-      }
-    }
+    await this.page.keyboard.press('Control+J');
   }
 
   async clickDrawNodesButtonOnNodePanel() {
@@ -598,75 +589,27 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressHideShowRulersShortcut(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+Shift+R');
-    } else {
-      if (browserName === 'webkit') {
-        await this.page.keyboard.press('Meta+Shift+R');
-      } else {
-        await this.page.keyboard.press('Control+Shift+R');
-      }
-    }
+    await this.page.keyboard.press('Control+Shift+R');
   }
 
   async pressHideShowGridsShortcut(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press("Meta+'");
-    } else {
-      if (browserName === 'webkit') {
-        await this.page.keyboard.press("Meta+'");
-      } else {
-        await this.page.keyboard.press("Control+'");
-      }
-    }
+    await this.page.keyboard.press("Control+'");
   }
 
   async pressSelectAllShortcut(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+A');
-    } else {
-      if (browserName === 'webkit') {
-        await this.page.keyboard.press('Meta+A');
-      } else {
-        await this.page.keyboard.press('Control+A');
-      }
-    }
+    await this.page.keyboard.press('Control+A');
   }
 
   async pressCopyShortcut(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+C');
-    } else {
-      if (browserName === 'webkit') {
-        await this.page.keyboard.press('Meta+C');
-      } else {
-        await this.page.keyboard.press('Control+C');
-      }
-    }
+    await this.page.keyboard.press('Control+C');
   }
 
   async pressPasteShortcut(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+V');
-    } else {
-      if (browserName === 'webkit') {
-        await this.page.keyboard.press('Meta+V');
-      } else {
-        await this.page.keyboard.press('Control+V');
-      }
-    }
+    await this.page.keyboard.press('Control+V');
   }
 
   async pressCutShortcut(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+X');
-    } else {
-      if (browserName === 'webkit') {
-        await this.page.keyboard.press('Meta+X');
-      } else {
-        await this.page.keyboard.press('Control+X');
-      }
-    }
+    await this.page.keyboard.press('Control+X');
   }
 
   async clickShowBoardNamesMainMenuSubItem() {
@@ -996,15 +939,7 @@ exports.MainPage = class MainPage extends BasePage {
     isBoard
       ? await this.clickCreatedBoardTitleOnCanvas()
       : await this.createdLayer.click({ force: true });
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+K');
-    } else {
-      if (browserName === 'webkit') {
-        await this.page.keyboard.press('Meta+K');
-      } else {
-        await this.page.keyboard.press('Control+K');
-      }
-    }
+    await this.page.keyboard.press('Control+K');
   }
 
   async copyLayerViaRightClick() {
