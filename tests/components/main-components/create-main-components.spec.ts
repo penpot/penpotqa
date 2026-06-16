@@ -328,7 +328,7 @@ mainTest(qase([1291], 'Undo component'), async ({ browserName }) => {
     await expect(
       mainPage.viewport,
       'Viewport should match screenshot after undoing rotation change',
-    ).toHaveScreenshot('component-change_rotation_undo.png', {
+    ).toHaveScreenshot('component-change_rotation-undo.png', {
       mask: mainPage.maskViewport(),
     });
   });
