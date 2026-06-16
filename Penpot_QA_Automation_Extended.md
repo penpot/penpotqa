@@ -564,23 +564,6 @@ BasePage (base-page.js)
 - Headers and messages
 - Modal dialogs
 
-**Platform-Specific Shortcuts:**
-
-```javascript
-async clickShortcutCtrlZ(browserName) {
-  const platform = getPlatformName();
-  if (platform === 'MacOS' || platform === 'darwin') {
-    await this.page.keyboard.press('Meta+z');
-  } else {
-    if (browserName === 'webkit') {
-      await this.page.keyboard.press('Meta+z');
-    } else {
-      await this.page.keyboard.press('Control+z');
-    }
-  }
-}
-```
-
 **Reusable Actions:**
 
 ```javascript
