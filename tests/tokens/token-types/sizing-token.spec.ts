@@ -285,17 +285,12 @@ mainTest(
       value: '{alias1}/2',
     };
 
-    await mainTest.step(
-      'Create an alias token chain (by duplicating), hovering to check the resolved values',
-      async () => {
-        await tokensPage.clickTokensTab();
-        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(firstSizingToken);
-        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
-          secondSizingToken,
-        );
-        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(thirdSizingToken);
-      },
-    );
+    await mainTest.step('Create an alias sizing token chain', async () => {
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(firstSizingToken);
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(secondSizingToken);
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(thirdSizingToken);
+    });
 
     await mainTest.step('Create an ellipse', async () => {
       await mainPage.createDefaultEllipseByCoordinates(200, 200);
