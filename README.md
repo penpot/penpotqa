@@ -64,7 +64,7 @@ As an alternative to installing Node.js and Playwright locally, tests can be run
 
 Prerequisites:
 
-- Docker and Docker Compose installed
+- Docker and Docker Compose installed. You can install Docker from [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/). Select your operating system from the list and follow the installation steps.
 - The `.env` file configured in the root of the project (see section 1)
 
 Available scripts:
