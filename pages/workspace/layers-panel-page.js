@@ -316,14 +316,12 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.layersTab.click();
   }
 
-  async createComponentViaRightClickLayers(browserName = 'chrome') {
+  async createComponentViaRightClickLayers() {
     await this.createdLayerOnLayersPanelSpan.click({
       button: 'right',
       force: true,
     });
-    browserName === 'chromium'
-      ? await this.createComponentMenuItem.click()
-      : await this.createComponentMenuItem.locator('span').first().click();
+    await this.createComponentMenuItem.click();
   }
 
   async clickCopyComponentOnLayersTab() {
@@ -480,15 +478,13 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.detachInstanceOption.click();
   }
 
-  async copyLayerViaRightClick(layerName, browserName = 'chrome') {
+  async copyLayerViaRightClick(layerName) {
     const layerSel = this.page.locator('#layers').getByText(layerName);
     await layerSel.last().click({
       button: 'right',
       force: true,
     });
-    browserName === 'chromium'
-      ? await this.copyOption.click()
-      : await this.copyOption.locator('span').first().click();
+    await this.copyOption.click();
   }
 
   async selectLayerByName(layerName) {
