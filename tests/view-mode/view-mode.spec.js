@@ -52,12 +52,8 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   registerPage = new RegisterPage(page);
   await mainTest.slow();
   await teamPage.createTeam(teamName);
-  browserName === 'webkit' ? await teamPage.waitForTeamBtn(15000) : null;
   await teamPage.isTeamSelected(teamName, browserName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
   await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();
 });
@@ -124,22 +120,18 @@ mainTest.describe(() => {
         'first-board-view-mode-page-image.png',
       );
       await viewModePage.clickNextButton();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'second-board-view-mode-page-image.png',
       );
       await viewModePage.clickPrevButton();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'first-board-view-mode-page-image.png',
       );
       await viewModePage.clickNextButton();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'second-board-view-mode-page-image.png',
       );
       await viewModePage.clickPrevButton();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'first-board-view-mode-page-image.png',
       );
@@ -184,17 +176,14 @@ mainTest.describe(() => {
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
       await viewModePage.clickSelectBoardDropdown();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'board-dropdown-view-mode-page-image.png',
       );
       await viewModePage.selectSecondBoard();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'second-board-selected-view-mode-page-image.png',
       );
       await viewModePage.selectFirstBoard();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'first-board-selected-view-mode-page-image.png',
       );
@@ -240,38 +229,31 @@ mainTest.describe(() => {
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
     await viewModePage.openScaleDropdown();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.scaleDropdownOptions).toHaveScreenshot(
       'scale-dropdown-view-mode-page-image.png',
     );
     await viewModePage.clickDownscaleButton();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'downscale-board-view-mode-page-image.png',
     );
     await viewModePage.clickResetScaleButton();
     await viewModePage.clickUpscaleButton();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'upscale-board-view-mode-page-image.png',
     );
     await viewModePage.selectFitScaleOptions();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'fit-scale-board-view-mode-page-image.png',
     );
     await viewModePage.selectFillScaleOptions();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'fill-scale-board-view-mode-page-image.png',
     );
     await viewModePage.selectFullScreenScaleOptions();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.fullScreenSection).toHaveScreenshot(
       'full-screen-scale-board-view-mode-page-image.png',
     );
     await viewModePage.clickResetScaleButton();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.fullScreenSection).toHaveScreenshot(
       'full-screen-default-scale-board-view-mode-page-image.png',
     );
@@ -287,12 +269,10 @@ mainTest.describe(() => {
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
       await viewModePage.clickOnAdd();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-page-add-button-image.png',
       );
       await viewModePage.clickOnSubtract();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'view-mode-page-subtract-button-image.png',
       );
@@ -394,7 +374,6 @@ mainTest.describe(() => {
     await commentsPanelPage.reloadPage();
     await commentsPanelPage.clickCommentThreadIconByNumber('1');
     await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(newPage).toHaveScreenshot('comment-edited.png', {
       mask: [commentsPanelPage.commentsAuthorSection],
     });
@@ -417,7 +396,6 @@ mainTest.describe(() => {
     await commentsPanelPage.clickDeleteCommentOption();
     await commentsPanelPage.clickDeleteThreadButton();
     await commentsPanelPage.isCommentThreadIconNotDisplayed();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(newPage).toHaveScreenshot('comment-removed.png', {
       mask: [commentsPanelPage.commentsAuthorSection],
     });
@@ -448,14 +426,12 @@ mainTest.describe(() => {
       await viewModePage.openCommentsDropdown();
       await viewModePage.selectHideResolvedCommentsOption();
       await commentsPanelPage.isCommentResolvedThreadIconNotDisplayed();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(newPage).toHaveScreenshot('resolved-comments-hidden.png', {
         mask: [commentsPanelPage.commentsAuthorSection],
       });
       await viewModePage.openCommentsDropdown();
       await viewModePage.selectHideResolvedCommentsOption();
       await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(newPage).toHaveScreenshot('resolved-comments-show.png', {
         mask: [commentsPanelPage.commentsAuthorSection],
       });
@@ -500,12 +476,10 @@ mainTest.describe(() => {
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
     await viewModePage.openInspectTab();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-inspect-page-image.png',
     );
     await viewModePage.openInteractionsTab();
-    browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-interactions-page-image.png',
     );
@@ -644,31 +618,28 @@ mainTest.describe(() => {
   });
 
   mainTest(qase([705], 'Edit file'), async ({ page, browserName }) => {
-    if (browserName === 'webkit') {
-    } else {
-      await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await designPanelPage.changeHeightAndWidthForLayer('200', '200');
-      await mainPage.waitForChangeIsSaved();
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+    await mainPage.waitForChangeIsSaved();
 
-      const newPage = await viewModePage.clickViewModeShortcut();
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(45000);
-      layersPanelPage = new LayersPanelPage(newPage);
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.waitForViewerSection(45000);
+    layersPanelPage = new LayersPanelPage(newPage);
 
-      await viewModePage.clickEditButton();
-      await newPage.waitForTimeout(2000);
-      await viewModePage.isPageSwitched(newPage);
+    await viewModePage.clickEditButton();
+    await newPage.waitForTimeout(2000);
+    await viewModePage.isPageSwitched(newPage);
 
-      await page.close();
-      await viewModePage.clickEditButton();
-      const oldPage = await viewModePage.clickEditButton(false);
-      mainPage = new MainPage(oldPage);
-      teamPage = new TeamPage(oldPage);
-      await mainPage.waitForViewportVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('main-page-opened.png', {
-        mask: mainPage.maskViewport(),
-      });
-    }
+    await page.close();
+    await viewModePage.clickEditButton();
+    const oldPage = await viewModePage.clickEditButton(false);
+    mainPage = new MainPage(oldPage);
+    teamPage = new TeamPage(oldPage);
+    await mainPage.waitForViewportVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('main-page-opened.png', {
+      mask: mainPage.maskViewport(),
+    });
   });
 });
 
@@ -684,7 +655,6 @@ mainTest.describe(() => {
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
       await viewModePage.clickShareButton();
-      browserName === 'webkit' ? await newPage.waitForTimeout(1000) : null;
       await expect(viewModePage.shareLinkDialog).toHaveScreenshot(
         'view-mode-share-window-image.png',
         { mask: [viewModePage.copyLinkField] },
