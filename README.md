@@ -58,7 +58,39 @@ To run the tests in Firefox and Webkit browsers, use `"firefox"` and `"webkit"` 
 `"firefox": "npx playwright test --project=firefox"`
 `"webkit": "npx playwright test --project=webkit"`
 
-**4. Test run - additional settings.**
+**4. Test run via Docker.**
+
+As an alternative to installing Node.js and Playwright locally, tests can be run inside a Docker container using the provided `docker-compose.yml`. This is useful to get a consistent environment without worrying about local Node/browser versions.
+
+Prerequisites:
+
+- Docker installed. You can install Docker from [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/). Select your operating system from the list and follow the installation steps.
+- The `.env` file configured in the root of the project (see section 1)
+
+Available scripts:
+
+- `npm run test:docker` - runs `docker compose run --rm playwright`. It installs the project dependencies, installs Chrome with its OS dependencies inside the container, and runs `npx playwright test --project=chrome --grep-invert 'PERF'` (equivalent to `npm test`, but inside Docker).
+- `npm run test:docker:ui` - runs `docker compose run --rm --service-ports playwright-ui`. Same as above, but launches Playwright in UI mode and exposes it on port `8080`, so it can be opened at `http://localhost:8080`.
+
+The `docker-compose.yml` file accepts the following variables, which can be set in the `.env` file:
+
+- `DOCKER_PLATFORM` - platform used to run the container (default: `linux/amd64`). This default works as-is on Windows and Linux x86_64 (native, no emulation). On an ARM64 host (e.g. Apple Silicon, Windows/Linux ARM), it can be set to `linux/arm64` to run natively instead of emulating amd64, as long as the image tag below has an arm64 build.
+- `PLAYWRIGHT_DOCKER_TAG` - tag of the `mcr.microsoft.com/playwright` image to use (default: `v1.60.0-noble`). It should match the resolved `@playwright/test` version (see `package-lock.json`).
+
+To use them, add (and uncomment) the following lines to your `.env` file:
+
+```
+# DOCKER_PLATFORM=linux/arm64
+# PLAYWRIGHT_DOCKER_TAG=v1.60.0-noble
+```
+
+Notes:
+
+- The project directory is mounted as `/work` inside the container. The `node_modules` folder and the Playwright browsers are kept in separate Docker volumes (`pw-node-modules` and `pw-browsers`) so they don't mix with the host installation.
+- All other variables from `.env` (e.g. `LOGIN_EMAIL`, `LOGIN_PWD`, `BASE_URL`, etc.) are used the same way as for a local run.
+- **Whenever `@playwright/test` is updated, the `PLAYWRIGHT_DOCKER_TAG` default in `docker-compose.yml` must also be updated** to match the new version (e.g. if upgrading to `1.52.0`, set the tag to `v1.52.0-noble`). The resolved version can be checked in `package-lock.json`.
+
+**5. Test run - additional settings.**
 
 Some settings from _playwright.config.js_ may be useful:
 
@@ -67,21 +99,21 @@ Some settings from _playwright.config.js_ may be useful:
 - `use.headless `- change to _false_ to run in headed browser mode
 - `use.channel: "chrome"` - comment out to run tests in Chromium instead of Chrome (for "chrome" project)
 
-**5. Parallel tests execution.**
+**6. Parallel tests execution.**
 
 - All tests should be independent for running them in parallel mode
 - For run tests in parallel mode need to update key `workers` in `playwright.config.js` file
 - `workers`: `process.env.CI ? 6 : 3` - by default 3 workers are used for local run and 6 to run on CI/CD.
 - For disabling parallelism set `workers` to 1.
 
-**6. Tests amount and execution time.**
+**7. Tests amount and execution time.**
 
 - For now there are 531 tests in current repository
 - If parallel execution is enabled with default amount of workers (3) the average time for each browser is the following:
 - Chrome: 72 mins
 - Firefox: 81 mins
 
-**7. Snapshots comparison.**
+**8. Snapshots comparison.**
 
 Expected snapshots are stored in _tests/{spec-name}-snapshots/{project-name}_ folders (where project-name is the browser name).
 In most of the cases, they capture and compare not the whole visible area of the screen but only the single element/section (e.g. created shape or canvas with created board).
@@ -105,7 +137,7 @@ Note 1: there is a known issue that Chrome does render differently in headless a
 `expect.toHaveScreenshot.maxDiffPixelRatio: 0.01` is set in _playwright.config.js_ for "chrome" project , which means that
 an acceptable ratio of pixels that are different to the total amount of pixels is 1% within screenshot comparison.
 
-**8. Performance testing.**
+**9. Performance testing.**
 
 To exclude performance tests from the periodical regression test run the following scripts should be used:
 
@@ -115,7 +147,7 @@ To exclude performance tests from the periodical regression test run the followi
 Note: The above scripts should be executed via the command line. Do not run them directly from the _package.json_,
 because in such way performance tests are not ignored.
 
-**9. Running tests via GitHub Actions.**
+**10. Running tests via GitHub Actions.**
 
 On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:
