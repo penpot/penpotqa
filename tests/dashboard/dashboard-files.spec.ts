@@ -60,6 +60,30 @@ mainTest.describe('Drafts management', () => {
     },
   );
 
+  mainTest(qase(1125, 'Duplicate files (multiselect, Draft)'), async () => {
+    const fileNames = ['New File 1', 'New File 2', 'New File 3'];
+
+    await mainTest.step('Create 3 files', async () => {
+      for (let i = 0; i < 3; i++) {
+        await dashboardPage.createFileViaTitlePanel();
+        await mainPage.clickPencilBoxButton();
+      }
+    });
+
+    await mainTest.step('Multiselect files by clicking SHIFT', async () => {
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await dashboardPage.clickShiftAndSelectFilesByName(fileNames);
+    });
+
+    await mainTest.step(
+      'From context menu, click Duplicate 3 files and assert there are 6 files',
+      async () => {
+        await dashboardPage.duplicateFileViaRightclick();
+        await dashboardPage.checkNumberOfFiles('6 files');
+      },
+    );
+  });
+
   mainTest(
     qase(1913, 'Download Penpot file (.penpot) (in Drafts) via right click'),
     async () => {

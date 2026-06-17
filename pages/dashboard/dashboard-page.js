@@ -17,6 +17,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.deletedTab = page.getByTestId('deleted-tab');
 
     // Files Grid
+    this.dashboardFilesGrid = page.locator(
+      '.main_ui_dashboard_grid__dashboard-grid',
+    );
     this.numberOfFilesText = page.locator(
       'div[class*="project-name-wrapper"] span[class*="projects__info"]',
     );
@@ -46,7 +49,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.createFileButtonTitlePanel = page.getByTestId('project-new-file');
     this.createFileButtonDraftsTab = page.getByTestId('new-file');
     this.renameFileMenuItem = page.getByTestId('file-rename');
-    this.duplicateFileMenuItem = page.getByTestId('file-duplicate');
+    this.duplicateFileMenuItem = page.getByRole('menuitem', { name: 'Duplicate' });
     this.addFileAsSharedLibraryMenuItem = page.getByTestId('file-add-shared');
     this.addFileAsSharedLibraryButton = page.getByRole('button', {
       name: 'Add as Shared Library',
@@ -288,6 +291,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.subscriptionName = page.getByTestId('subscription-name');
   }
 
+  getFileButtonByName(fileName) {
+    return this.dashboardFilesGrid.getByRole('button', { name: fileName });
+  }
+
   async createFileViaPlaceholder() {
     await this.createFileButtonPlaceholder.first().click();
   }
@@ -445,7 +452,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async duplicateFileViaRightclick() {
-    await this.fileTile.click({ button: 'right' });
+    await this.fileTile.first().click({ button: 'right' });
     await this.duplicateFileMenuItem.click();
   }
 
@@ -1399,5 +1406,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     for (let i = 0; i < expectedCount; i++) {
       await expect(items.nth(i)).toContainText(expectedText);
     }
+  }
+
+  async clickShiftAndSelectFilesByName(fileNames) {
+    await this.page.keyboard.down('Shift');
+
+    for (const fileName of fileNames) {
+      await this.getFileButtonByName(fileName).click();
+    }
+
+    await this.page.keyboard.up('Shift');
   }
 };
