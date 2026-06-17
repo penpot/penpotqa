@@ -1,7 +1,6 @@
 const { readResultsFromFile } = require('./saveTestResults');
 
 async function generateMessage(
-  browserName,
   folderPath = null,
   repeatEach = null,
   isManualExecution = false,
@@ -26,17 +25,11 @@ async function generateMessage(
     : '';
 
   // Build the user mention line with workflow name
-  let workflowName = '';
-  if (isManualExecution) {
-    workflowName = 'PR_manual';
-  } else if (browserName && browserName.toLowerCase() === 'chrome') {
-    workflowName = 'PRE_chrome_daily';
-  }
+  const workflowName = isManualExecution ? 'PR_manual' : 'PRE_chrome_daily';
 
-  const userMentionLine =
-    username && workflowName
-      ? `\n       :wave: @${username} your \"${workflowName}\" automated run has finished!`
-      : '';
+  const userMentionLine = username
+    ? `\n       :wave: @${username} your \"${workflowName}\" automated run has finished!`
+    : '';
 
   const messageWithLink = `**Total Tests** : **${
     results.Passed + results.Failed + results.Flaky
@@ -49,7 +42,7 @@ async function generateMessage(
        :cat2: GitRun: https://github.com/penpot/penpotqa/actions/runs/${
          process.env.GITHUB_RUN_ID
        }
-       :computer: Browser: ${browserName}
+       :computer: Browser: Chrome
        :herb: Branch: ${process.env.GITHUB_REF_NAME || 'N/A'}${folderLine}${repeatEachLine}${userMentionLine}
        :page_facing_up: Check interactive tests results: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${
          process.env.GITHUB_RUN_ID
