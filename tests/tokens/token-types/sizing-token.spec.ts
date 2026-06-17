@@ -31,18 +31,8 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
-
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
-
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
-});
-
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
 });
 
 mainTest(
@@ -266,6 +256,69 @@ mainTest(
       'Cancel token creation by clicking on Cancel button',
       async () => {
         await tokensPage.tokensComp.clickCancelButton();
+      },
+    );
+  },
+);
+
+mainTest(
+  qase(
+    2195,
+    "Update the reference of an alias to update the shape where it's applied",
+  ),
+  async () => {
+    const firstSizingToken: MainToken<TokenClass> = {
+      class: TokenClass.Sizing,
+      name: 'sizing',
+      value: '200px',
+    };
+
+    const secondSizingToken: MainToken<TokenClass> = {
+      class: TokenClass.Sizing,
+      name: 'alias1',
+      value: '{sizing}*2',
+    };
+
+    const thirdSizingToken: MainToken<TokenClass> = {
+      class: TokenClass.Sizing,
+      name: 'alias2',
+      value: '{alias1}/2',
+    };
+
+    await mainTest.step('Create an alias sizing token chain', async () => {
+      await tokensPage.clickTokensTab();
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(firstSizingToken);
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(secondSizingToken);
+      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(thirdSizingToken);
+    });
+
+    await mainTest.step('Create an ellipse', async () => {
+      await mainPage.createDefaultEllipseByCoordinates(200, 200);
+    });
+
+    await mainTest.step(
+      `Apply ${thirdSizingToken.name} and assert size`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenWithName(thirdSizingToken.name);
+        await designPanelPage.checkSizeWidth('200');
+        await designPanelPage.checkSizeHeight('200');
+      },
+    );
+
+    await mainTest.step(
+      `Edit ${firstSizingToken.name} and assert size`,
+      async () => {
+        const updatedFirstSizingToken: MainToken<TokenClass> = {
+          class: TokenClass.Sizing,
+          name: 'sizing',
+          value: '50px',
+        };
+
+        await tokensPage.tokensComp.editTokenViaRightClickAndSave(
+          updatedFirstSizingToken,
+        );
+        await designPanelPage.checkSizeWidth('50');
+        await designPanelPage.checkSizeHeight('50');
       },
     );
   },
