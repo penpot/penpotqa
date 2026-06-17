@@ -264,7 +264,7 @@ mainTest(
 mainTest(
   qase(
     2195,
-    'Update the reference of an alias to update the shape where its applied',
+    "Update the reference of an alias to update the shape where it's applied",
   ),
   async () => {
     const firstSizingToken: MainToken<TokenClass> = {
@@ -314,7 +314,6 @@ mainTest(
           value: '50px',
         };
 
-        await tokensPage.tokensComp.clickEditToken(firstSizingToken);
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(
           updatedFirstSizingToken,
         );
