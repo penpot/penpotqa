@@ -80,6 +80,9 @@ mainTest.describe('Drafts management', () => {
       async () => {
         await dashboardPage.duplicateFileViaRightclick();
         await dashboardPage.checkNumberOfFiles('6 files');
+        await dashboardPage.isSuccessMessageDisplayed(
+          'Your files have been duplicated successfully',
+        );
       },
     );
   });
