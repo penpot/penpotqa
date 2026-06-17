@@ -22,10 +22,6 @@ mainTest.beforeEach(async ({ page }) => {
   await dashboardPage.hideLibrariesAndTemplatesCarrousel();
 });
 
-mainTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe('Drafts management', () => {
   mainTest(
     qase(
