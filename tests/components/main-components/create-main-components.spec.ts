@@ -34,11 +34,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([1273], 'Create component shape'), async () => {
   await mainTest.step('Create rectangle and component', async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);

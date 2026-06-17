@@ -32,11 +32,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([1029], 'Open color picker from Stroke menu'), async () => {
   await mainTest.step('Create default closed path', async () => {
     await mainPage.createDefaultClosedPath();

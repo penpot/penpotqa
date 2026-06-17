@@ -37,10 +37,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe(() => {
   const team1 = teamName;
   const team2 = teamName2;
@@ -78,11 +74,6 @@ mainTest.describe(() => {
     await dashboardPage.clickOnMoveButton();
     await teamPage.isTeamSelected(team2);
     await dashboardPage.isSharedLibraryIconDisplayed();
-  });
-
-  mainTest.afterEach(async () => {
-    await teamPage.page.waitForTimeout(1000);
-    await teamPage.deleteTeam(team2);
   });
 });
 
@@ -220,10 +211,6 @@ mainTest.describe(() => {
       );
     },
   );
-
-  mainTest.afterEach(async () => {
-    await mainPage.backToDashboardFromFileEditor();
-  });
 });
 
 mainTest.describe(() => {
@@ -320,10 +307,6 @@ mainTest.describe(() => {
       );
     },
   );
-
-  mainTest.afterEach(async () => {
-    await mainPage.backToDashboardFromFileEditor();
-  });
 });
 
 mainTest.describe(() => {

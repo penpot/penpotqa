@@ -38,11 +38,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(832, 'Create new page'), async () => {
   await mainTest.step('Add a new page', async () => {
     await pagesPanelPage.clickAddPageButton();

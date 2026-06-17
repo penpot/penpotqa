@@ -58,15 +58,7 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe(() => {
-  mainTest.afterEach(async () => {
-    await mainPage.backToDashboardFromFileEditor();
-  });
-
   mainTest(
     qase([685], 'Click view mode (From right top click) - no boards created'),
     async () => {

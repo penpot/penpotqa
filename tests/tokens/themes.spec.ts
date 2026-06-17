@@ -33,11 +33,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(2167, 'Create theme via "create one" link'), async () => {
   await mainTest.step('Open Tokens panel', async () => {
     await tokensPage.clickTokensTab();

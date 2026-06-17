@@ -32,11 +32,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(817, "Hide/show grids via shortcut CTRL '"), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();

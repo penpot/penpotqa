@@ -20,11 +20,6 @@ mainTest.beforeEach(async ({ page }) => {
   await pluginsPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await pluginsPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(
   qase([1837, 1838, 1839, 1842, 1844], 'Install, open and delete a plugin'),
   async () => {

@@ -34,11 +34,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([1275], 'Update main component'), async () => {
   await mainTest.step('Create rectangle component and duplicate it', async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);

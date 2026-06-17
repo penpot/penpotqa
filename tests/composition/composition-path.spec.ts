@@ -1,40 +1,35 @@
-const { mainTest } = require('../../fixtures');
-const { MainPage } = require('../../pages/workspace/main-page');
-const { expect } = require('@playwright/test');
-const { ColorPalettePage } = require('../../pages/workspace/color-palette-page');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
-const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { createTeamName } = require('../../helpers/teams/create-team-name');
+import { mainTest } from 'fixtures';
+import { MainPage } from '@pages/workspace/main-page';
+import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { expect } from '@playwright/test';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 const teamName = createTeamName();
 
-let mainPage,
-  colorPalettePage,
-  teamPage,
-  dashboardPage,
-  layersPanelPage,
-  designPanelPage;
+let dashboardPage: DashboardPage;
+let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
+let mainPage: MainPage;
+let teamPage: TeamPage;
+let colorPalettePage: ColorPalettePage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
-  colorPalettePage = new ColorPalettePage(page);
-  layersPanelPage = new LayersPanelPage(page);
-  designPanelPage = new DesignPanelPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
+  colorPalettePage = new ColorPalettePage(page);
+  designPanelPage = new DesignPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
+
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
-});
-
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
 });
 
 mainTest(qase([487], 'Create Path (Toolbar) - closed'), async () => {
@@ -65,9 +60,65 @@ mainTest(qase([1755], 'Add a cap for path'), async () => {
   });
 });
 
+mainTest(
+  qase([501], 'Add edit and remove Stroke Caps to Path (arrow, marker)'),
+  async () => {
+    await mainTest.step('Create and select Path layer', async () => {
+      await mainPage.createDefaultOpenPath();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.selectLayerByName('Path');
+    });
+
+    await mainTest.step('Add Arrow (first) and Diamond (second) caps', async () => {
+      await designPanelPage.changeCap('Arrow', 'first');
+      await designPanelPage.changeCap('Diamond', 'second');
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.selectLayerByName('Path');
+      await mainPage.focusLayerViaShortcut();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'path-opened-with-arrow-and-diamond.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+      await mainPage.focusLayerViaShortcut();
+    });
+
+    await mainTest.step(
+      'Switch caps and verify Diamond (first) and Arrow (second)',
+      async () => {
+        await designPanelPage.clickSwitchCapButton();
+        await mainPage.clickViewportOnce();
+        await layersPanelPage.selectLayerByName('Path');
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.focusLayerViaShortcut();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'path-opened-with-diamond-and-arrow.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+        await mainPage.focusLayerViaShortcut();
+      },
+    );
+
+    await mainTest.step('Remove caps and verify None on both', async () => {
+      await designPanelPage.changeCap('None', 'first');
+      await designPanelPage.changeCap('None', 'second');
+      await mainPage.clickViewportOnce();
+      await layersPanelPage.selectLayerByName('Path');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.focusLayerViaShortcut();
+      await expect(mainPage.viewport).toHaveScreenshot('path-opened-with-none.png', {
+        mask: mainPage.maskViewport(),
+      });
+      await mainPage.focusLayerViaShortcut();
+    });
+  },
+);
+
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
-    await mainTest.slow();
     await mainPage.createDefaultClosedPath();
   });
 
@@ -248,7 +299,6 @@ mainTest.describe(() => {
 
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
-    await mainTest.slow();
     await mainPage.createDefaultOpenPath();
   });
 

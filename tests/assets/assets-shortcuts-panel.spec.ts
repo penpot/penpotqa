@@ -22,11 +22,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([1020], 'Open panel main menu - help&info'), async () => {
   await mainTest.step('Open shortcuts panel via main menu', async () => {
     await mainPage.clickMainMenuButton();

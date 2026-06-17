@@ -22,11 +22,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([377], 'Create Text(Toolbar)'), async () => {
   await mainPage.createDefaultTextLayer();
   await mainPage.isCreatedLayerVisible();

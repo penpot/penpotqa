@@ -30,11 +30,6 @@ mainTest.beforeEach(async ({ page }) => {
   await layersPanelPage.isLayerNameDisplayed('Ellipse');
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([2940], 'Paste to Replace on single selected shape'), async () => {
   await mainTest.step('Select Rectangle and copy', async () => {
     await layersPanelPage.selectLayerByName('Rectangle');

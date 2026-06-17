@@ -61,8 +61,3 @@ mainTest.beforeEach(async ({ page }) => {
   await dashboardPage.openFileWithName('New File 2');
   await pagesPanelPage.isSecondPageNameDisplayed('Main components');
 });
-
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});

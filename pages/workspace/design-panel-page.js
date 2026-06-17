@@ -275,6 +275,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel - Stroke section
     this.rightSidebar = this.page.getByTestId('right-sidebar');
+    this.strokeSectionContainer = this.rightSidebar.locator(
+      '[aria-label="Stroke section"]',
+    );
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
     this.strokeElement = page.locator('div[class*="stroke-color-actions"]').last();
@@ -296,6 +299,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.strokeCapDropdowns = page
       .locator('div[class*="stroke-caps-options"]')
       .getByRole('combobox');
+    this.strokeCapSwitchButton = this.strokeSectionContainer.getByRole('button', {
+      name: 'Switch',
+    });
 
     //Design panel - Text section
     this.textUpperCaseIcon = page.getByTestId('text-transform-uppercase');
@@ -1575,6 +1581,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         : await this.strokeCapDropdowns.last();
     await dropdown.click();
     await dropdown.getByRole('option', { name: capName }).click();
+  }
+
+  async clickSwitchCapButton() {
+    await this.strokeCapSwitchButton.click();
   }
 
   async clickOnResizeBoardToFitButton() {
