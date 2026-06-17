@@ -22,11 +22,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(850, 'Zoom via top right menu'), async ({ page }) => {
   await mainPage.increaseZoom(1);
   await mainPage.clickViewportOnce();

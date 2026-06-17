@@ -22,10 +22,6 @@ mainTest.beforeEach(async ({ page }) => {
   await dashboardPage.hideLibrariesAndTemplatesCarrousel();
 });
 
-mainTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(71, 'Import file to Drafts .penpot'), async () => {
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage('documents/QA test file v1.penpot');

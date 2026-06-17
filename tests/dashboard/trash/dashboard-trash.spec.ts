@@ -36,10 +36,6 @@ mainTest.describe('As Owner', () => {
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });
 
-  mainTest.afterEach(async () => {
-    await teamPage.deleteTeam(teamName);
-  });
-
   mainTest(
     qase(
       [2692, 2709, 2687],

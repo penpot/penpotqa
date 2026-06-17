@@ -29,11 +29,6 @@ mainTest.beforeEach(async ({ page }) => {
   await tokensPage.toolsComp.clickOnTokenToolsButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(
   qase(2266, 'Export tokens multi-file folder (no token, set or theme)'),
   async () => {

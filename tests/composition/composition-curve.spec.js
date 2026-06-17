@@ -23,11 +23,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe(() => {
   mainTest(qase([483], 'Create curve line (Toolbar)'), async () => {
     await mainPage.clickCreateCurveButton();

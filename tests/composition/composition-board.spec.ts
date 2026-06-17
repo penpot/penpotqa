@@ -32,11 +32,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([216], 'Change color background'), async () => {
   await designPanelPage.clickCanvasBackgroundColorIcon();
   await colorPalettePage.setHex('#304d6a');

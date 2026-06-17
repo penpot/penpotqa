@@ -25,11 +25,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([947], 'Filter Typographies from All Assets drop-down'), async () => {
   await mainTest.step('Open assets tab and filter by Typographies', async () => {
     await assetsPanelPage.clickAssetsTab();

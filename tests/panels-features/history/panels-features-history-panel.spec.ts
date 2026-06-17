@@ -32,11 +32,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(874, 'Check if the status at header is "Saved"'), async () => {
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();

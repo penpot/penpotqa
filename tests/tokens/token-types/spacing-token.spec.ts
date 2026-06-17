@@ -34,11 +34,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(
   qase(2202, 'Apply default "all gaps" token to a grid board (by left click)'),
   async () => {

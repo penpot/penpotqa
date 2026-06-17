@@ -33,11 +33,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(
   qase(2218, 'Apply "X/Y axis" dimension token to a text (by right click)'),
   async () => {

@@ -32,11 +32,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe('PNG image', () => {
   mainTest.beforeEach(async () => {
     await mainPage.uploadImage('images/images.png');

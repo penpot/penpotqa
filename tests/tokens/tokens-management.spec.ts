@@ -33,11 +33,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(
   qase(2224, 'Apply 2 different kind of tokens overriding the same shape property'),
   async () => {

@@ -39,11 +39,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.waitForChangeIsSaved();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([2398], 'Add Variant to a component on the canvas'), async () => {
   await mainPage.clickViewportTwice();
   await mainPage.createDefaultRectangleByCoordinates(600, 300);
