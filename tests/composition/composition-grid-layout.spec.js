@@ -761,7 +761,7 @@ mainTest.describe(() => {
       [1739, 1742],
       'Duplicate vertical and horizontal direction, Undo element duplication',
     ),
-    async ({ browserName }) => {
+    async () => {
       await mainPage.createDefaultRectangleByCoordinates(410, 410, true);
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickViewportOnce();
@@ -778,7 +778,7 @@ mainTest.describe(() => {
           mask: mainPage.maskViewport(),
         },
       );
-      await mainPage.clickShortcutCtrlZ(browserName);
+      await mainPage.clickShortcutCtrlZ();
       await mainPage.clickViewportOnce();
       await mainPage.clickCreatedBoardTitleOnCanvas();
       await mainPage.waitForChangeIsSaved();
@@ -795,7 +795,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1743], 'Undo element editing'), async ({ browserName }) => {
+  mainTest(qase([1743], 'Undo element editing'), async () => {
     await mainPage.createDefaultRectangleByCoordinates(410, 410, true);
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickFillColorIcon();
@@ -806,7 +806,7 @@ mainTest.describe(() => {
       mask: mainPage.maskViewport(),
     });
     await mainPage.clickViewportOnce();
-    await mainPage.clickShortcutCtrlZ(browserName);
+    await mainPage.clickShortcutCtrlZ();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-undo-color.png', {
       mask: mainPage.maskViewport(),
@@ -857,7 +857,7 @@ mainTest(
     [1707, 1741],
     'Add grid lines, and upload the images, Check removed some image',
   ),
-  async ({ browserName }) => {
+  async () => {
     await mainPage.createDefaultBoardByCoordinates(400, 300);
     await designPanelPage.changeHeightAndWidthForLayer('500', '600');
     await mainPage.waitForChangeIsSaved();
@@ -872,9 +872,9 @@ mainTest(
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerPresentOnLayersTab('mini_sample', true);
-    await mainPage.clickShortcutCtrlZ(browserName);
+    await mainPage.clickShortcutCtrlZ();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickShortcutCtrlZ(browserName);
+    await mainPage.clickShortcutCtrlZ();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.isLayerPresentOnLayersTab('mini_sample', false);
   },

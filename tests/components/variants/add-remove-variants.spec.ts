@@ -16,7 +16,7 @@ let teamPage: TeamPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   designPanelPage = new DesignPanelPage(page);
   teamPage = new TeamPage(page);
@@ -103,14 +103,14 @@ mainTest(
     [2409],
     'Add Variants to a component by cutting and pasting the main component',
   ),
-  async ({ browserName }) => {
+  async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 500);
     await mainPage.createComponentViaRightClick();
     await mainPage.cutLayerViaRightClick();
     await mainPage.waitForChangeIsSaved();
 
     await mainPage.clickOnVariantsTitle('Rectangle');
-    await mainPage.pressPasteShortcut(browserName);
+    await mainPage.pressPasteShortcut();
     await layersPanelPage.checkVariantLayerCount(3);
   },
 );
@@ -120,12 +120,12 @@ mainTest(
     [2410],
     'Remove variant from a group cutting and pasting it outside variant component',
   ),
-  async ({ browserName }) => {
+  async () => {
     await layersPanelPage.selectLayerByName('Value 2');
-    await mainPage.pressCutShortcut(browserName);
+    await mainPage.pressCutShortcut();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.pressPasteShortcut(browserName);
+    await mainPage.pressPasteShortcut();
     await layersPanelPage.checkVariantLayerCount(1);
     await layersPanelPage.isLayerWithNameSelected('Rectangle1 / Value 2');
   },

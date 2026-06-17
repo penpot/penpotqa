@@ -403,8 +403,8 @@ mainTest.describe(() => {
 
   mainTest(
     qase([271], "Click 'Focus off' board from shortcut (F)"),
-    async ({ page, browserName }) => {
-      await mainPage.focusBoardViaRightClickOnCanvas('Board', browserName);
+    async ({ page }) => {
+      await mainPage.focusBoardViaRightClickOnCanvas('Board');
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab('Board', true);
       await layersPanelPage.isFocusModeOn();
@@ -767,23 +767,23 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([251], 'Copy and Paste Board'), async ({ browserName }) => {
+  mainTest(qase([251], 'Copy and Paste Board'), async () => {
     const board1 = 'Board #1';
     await mainPage.copyLayerViaRightClick();
     await mainPage.pasteLayerViaRightClick();
-    await layersPanelPage.copyLayerViaRightClick(board1, browserName);
+    await layersPanelPage.copyLayerViaRightClick(board1);
     await mainPage.pasteLayerViaRightClick();
-    await mainPage.pressCopyShortcut(browserName);
-    await mainPage.pressPasteShortcut(browserName);
+    await mainPage.pressCopyShortcut();
+    await mainPage.pressPasteShortcut();
     await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
   });
 
   mainTest(
     qase([268], "Click 'Focus on' board from right click"),
-    async ({ page, browserName }) => {
+    async ({ page }) => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
-      await mainPage.focusBoardViaRightClickOnCanvas(board2, browserName);
+      await mainPage.focusBoardViaRightClickOnCanvas(board2);
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab(board1, false);
       await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
@@ -821,7 +821,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase([253], 'Duplicate Board (From rightclick and Shortcut Ctrl+D)'),
-    async ({ browserName }) => {
+    async () => {
       await mainTest.step('Create the third board and rename it', async () => {
         const board3 = 'Board #3';
         await mainPage.clickCreateBoardButton();
@@ -857,7 +857,7 @@ mainTest.describe(() => {
         async () => {
           const board3 = 'Board #3';
           await layersPanelPage.selectLayerByName(board3);
-          await mainPage.clickShortcutCtrlD(browserName);
+          await mainPage.clickShortcutCtrlD();
           await mainPage.waitForChangeIsSaved();
           await expect(layersPanelPage.sidebarLayerItem).toHaveCount(6);
         },

@@ -20,7 +20,7 @@ let layersPanelPage: LayersPanelPage;
 let mainPage: MainPage;
 let teamPage: TeamPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   teamPage = new TeamPage(page);
   mainPage = new MainPage(page);
@@ -256,43 +256,40 @@ mainTest(qase([1436], 'Create component from path by right-click'), async () => 
   );
 });
 
-mainTest(
-  qase([1437], 'Create component from curve by right-click'),
-  async ({ browserName }) => {
-    await mainTest.step(
-      'Create curve component via right-click on layers tab',
-      async () => {
-        await mainPage.createDefaultCurveLayer();
-        await layersPanelPage.createComponentViaRightClickLayers(browserName);
-        await mainPage.waitForChangeIsSaved();
-      },
-    );
+mainTest(qase([1437], 'Create component from curve by right-click'), async () => {
+  await mainTest.step(
+    'Create curve component via right-click on layers tab',
+    async () => {
+      await mainPage.createDefaultCurveLayer();
+      await layersPanelPage.createComponentViaRightClickLayers();
+      await mainPage.waitForChangeIsSaved();
+    },
+  );
 
-    await mainTest.step(
-      'Verify curve component on canvas, layers panel and assets tab',
-      async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with curve main component',
-        ).toHaveScreenshot('curve-main-component-canvas.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
-        await assetsPanelPage.clickAssetsTab();
-        await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-        await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-        await expect(
-          assetsPanelPage.assetsPanel,
-          'Assets panel should match screenshot with curve component',
-        ).toHaveScreenshot('curve-component-asset.png', {
-          mask: [assetsPanelPage.librariesOpenModalButton],
-        });
-      },
-    );
-  },
-);
+  await mainTest.step(
+    'Verify curve component on canvas, layers panel and assets tab',
+    async () => {
+      await expect(
+        mainPage.viewport,
+        'Viewport should match screenshot with curve main component',
+      ).toHaveScreenshot('curve-main-component-canvas.png', {
+        mask: mainPage.maskViewport(),
+      });
+      await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+      await assetsPanelPage.isComponentAddedToFileLibraryComponents();
+      await expect(
+        assetsPanelPage.assetsPanel,
+        'Assets panel should match screenshot with curve component',
+      ).toHaveScreenshot('curve-component-asset.png', {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      });
+    },
+  );
+});
 
-mainTest(qase([1291], 'Undo component'), async ({ browserName }) => {
+mainTest(qase([1291], 'Undo component'), async () => {
   await mainTest.step('Create rectangle component and change rotation', async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
@@ -312,7 +309,7 @@ mainTest(qase([1291], 'Undo component'), async ({ browserName }) => {
   });
 
   await mainTest.step('Undo rotation change', async () => {
-    await mainPage.clickShortcutCtrlZ(browserName);
+    await mainPage.clickShortcutCtrlZ();
     await mainPage.isCornerHandleVisible();
   });
 

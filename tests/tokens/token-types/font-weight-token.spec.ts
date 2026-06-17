@@ -16,7 +16,7 @@ let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -161,7 +161,7 @@ mainTest.describe(() => {
       2562,
       'Edit the value of a Font Weight token already applied to a component text with duplicated copies',
     ),
-    async ({ browserName }) => {
+    async () => {
       const fontWeightToken: MainToken<TokenClass> = {
         class: TokenClass.FontWeight,
         name: '700-italic-font-weight',
@@ -192,7 +192,7 @@ mainTest.describe(() => {
         await mainPage.createComponentViaRightClick();
         await mainPage.waitForChangeIsSaved();
         await mainPage.copyLayerViaRightClick();
-        await mainPage.pressPasteShortcut(browserName);
+        await mainPage.pressPasteShortcut();
         await mainPage.waitForChangeIsSaved();
       });
 

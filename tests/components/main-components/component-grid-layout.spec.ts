@@ -103,44 +103,41 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase([1729], 'Move a component between pages'),
-    async ({ browserName }) => {
-      await mainTest.step('Create component and copy it', async () => {
-        await mainPage.createComponentViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickViewportOnce();
-        await mainPage.clickCreatedBoardTitleOnCanvas();
-        await mainPage.pressCopyShortcut(browserName);
-      });
+  mainTest(qase([1729], 'Move a component between pages'), async () => {
+    await mainTest.step('Create component and copy it', async () => {
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickViewportOnce();
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+      await mainPage.pressCopyShortcut();
+    });
 
-      await mainTest.step('Paste component on page 2', async () => {
-        await pagesPanelPage.clickAddPageButton();
-        await pagesPanelPage.clickOnPageOnLayersPanel(2);
-        await mainPage.clickMoveButton();
-        await mainPage.pressPasteShortcut(browserName);
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-      });
+    await mainTest.step('Paste component on page 2', async () => {
+      await pagesPanelPage.clickAddPageButton();
+      await pagesPanelPage.clickOnPageOnLayersPanel(2);
+      await mainPage.clickMoveButton();
+      await mainPage.pressPasteShortcut();
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+    });
 
-      await mainTest.step(
-        'Verify component is on page 2 and layers panel',
-        async () => {
-          await pagesPanelPage.isPageNameSelected('Page 1', false);
-          await pagesPanelPage.isPageNameSelected('Page 2', true);
-          await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Board');
-          await expect(
-            mainPage.viewport,
-            'Viewport should match screenshot with component on page 2',
-          ).toHaveScreenshot('board-component-on-page2.png', {
-            mask: mainPage.maskViewport(),
-          });
-        },
-      );
-    },
-  );
+    await mainTest.step(
+      'Verify component is on page 2 and layers panel',
+      async () => {
+        await pagesPanelPage.isPageNameSelected('Page 1', false);
+        await pagesPanelPage.isPageNameSelected('Page 2', true);
+        await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Board');
+        await expect(
+          mainPage.viewport,
+          'Viewport should match screenshot with component on page 2',
+        ).toHaveScreenshot('board-component-on-page2.png', {
+          mask: mainPage.maskViewport(),
+        });
+      },
+    );
+  });
 
-  mainTest(qase([1730], 'Restore main component'), async ({ browserName }) => {
+  mainTest(qase([1730], 'Restore main component'), async () => {
     await mainTest.step('Create component, duplicate and delete main', async () => {
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -171,61 +168,58 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(
-    qase([1731], 'Undo component editing and deleting'),
-    async ({ browserName }) => {
-      await mainTest.step('Create component and change fill color', async () => {
-        await mainPage.createComponentViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.clickFillColorIcon();
-        await colorPalettePage.setHex('#0000FF');
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.waitForResizeHandlerVisible();
-      });
+  mainTest(qase([1731], 'Undo component editing and deleting'), async () => {
+    await mainTest.step('Create component and change fill color', async () => {
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.clickFillColorIcon();
+      await colorPalettePage.setHex('#0000FF');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
+    });
 
-      await mainTest.step('Verify component with blue fill color', async () => {
+    await mainTest.step('Verify component with blue fill color', async () => {
+      await expect(
+        mainPage.viewport,
+        'Viewport should match screenshot with blue fill color on component',
+      ).toHaveScreenshot('board-component-blue-color.png', {
+        mask: mainPage.maskViewport(),
+      });
+    });
+
+    await mainTest.step('Undo fill color change', async () => {
+      await mainPage.clickViewportOnce();
+      await mainPage.clickShortcutCtrlZ();
+    });
+
+    await mainTest.step('Verify component after undoing fill color', async () => {
+      await expect(
+        mainPage.viewport,
+        'Viewport should match screenshot after undoing fill color change',
+      ).toHaveScreenshot('board-component-undo-color.png', {
+        mask: mainPage.maskViewport(),
+      });
+    });
+
+    await mainTest.step('Delete component and undo deletion', async () => {
+      await layersPanelPage.deleteMainComponentViaRightClick();
+      await mainPage.isCreatedLayerVisible(false);
+      await mainPage.clickShortcutCtrlZ();
+      await mainPage.waitForChangeIsSaved();
+    });
+
+    await mainTest.step(
+      'Verify component is restored after undoing deletion',
+      async () => {
         await expect(
           mainPage.viewport,
-          'Viewport should match screenshot with blue fill color on component',
-        ).toHaveScreenshot('board-component-blue-color.png', {
+          'Viewport should match screenshot with component restored after undo',
+        ).toHaveScreenshot('board-component-restored.png', {
           mask: mainPage.maskViewport(),
         });
-      });
-
-      await mainTest.step('Undo fill color change', async () => {
-        await mainPage.clickViewportOnce();
-        await mainPage.clickShortcutCtrlZ(browserName);
-      });
-
-      await mainTest.step('Verify component after undoing fill color', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after undoing fill color change',
-        ).toHaveScreenshot('board-component-undo-color.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
-
-      await mainTest.step('Delete component and undo deletion', async () => {
-        await layersPanelPage.deleteMainComponentViaRightClick();
-        await mainPage.isCreatedLayerVisible(false);
-        await mainPage.clickShortcutCtrlZ(browserName);
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step(
-        'Verify component is restored after undoing deletion',
-        async () => {
-          await expect(
-            mainPage.viewport,
-            'Viewport should match screenshot with component restored after undo',
-          ).toHaveScreenshot('board-component-restored.png', {
-            mask: mainPage.maskViewport(),
-          });
-        },
-      );
-    },
-  );
+      },
+    );
+  });
 
   mainTest(
     qase([1732, 1733], '[Grid layout] Use shared component in another file'),
@@ -303,12 +297,12 @@ mainTest.describe(() => {
 
   mainTest(
     qase([1718], 'Copy-paste component, that was created from grid board'),
-    async ({ browserName }) => {
+    async () => {
       await mainTest.step('Copy and paste component from grid board', async () => {
         await mainPage.clickViewportOnce();
         await mainPage.clickCreatedBoardTitleOnCanvas();
         await mainPage.copyLayerViaRightClick();
-        await mainPage.pressPasteShortcut(browserName);
+        await mainPage.pressPasteShortcut();
         await mainPage.waitForChangeIsSaved();
       });
 
@@ -351,9 +345,9 @@ mainTest.describe(() => {
 
   mainTest(
     qase([1728], 'Duplicate component, that was created from grid board'),
-    async ({ browserName }) => {
+    async () => {
       await mainTest.step('Duplicate component via shortcut', async () => {
-        await mainPage.clickShortcutCtrlD(browserName);
+        await mainPage.clickShortcutCtrlD();
       });
 
       await mainTest.step(
@@ -374,7 +368,7 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ browserName }) => {
+  mainTest.beforeEach(async () => {
     await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(100, 100);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
@@ -386,7 +380,7 @@ mainTest.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickShortcutCtrlD(browserName);
+    await mainPage.clickShortcutCtrlD();
     await designPanelPage.changeAxisXAndYForLayer('500', '100');
   });
 

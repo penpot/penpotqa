@@ -361,10 +361,10 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1864, 'Duplicate board with guide'), async ({ browserName }) => {
+  mainTest(qase(1864, 'Duplicate board with guide'), async () => {
     await designPanelPage.clickAddGridButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickShortcutCtrlD(browserName);
+    await mainPage.clickShortcutCtrlD();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('two-board-with-guide.png', {

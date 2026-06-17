@@ -19,7 +19,7 @@ let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 let assetsPanelPage: AssetsPanelPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);

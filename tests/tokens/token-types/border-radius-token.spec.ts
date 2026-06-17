@@ -16,7 +16,7 @@ let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -133,26 +133,20 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(2136, 'Delete a token and redo deletion'),
-    async ({ browserName }) => {
-      await mainTest.step(
-        `Delete "${radiusToken.name}" token and verify it is removed`,
-        async () => {
-          await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
-          await tokensPage.tokensComp.deleteToken(radiusToken.name);
-          await tokensPage.tokensComp.isTokenVisibleWithName(
-            radiusToken.name,
-            false,
-          );
-        },
-      );
+  mainTest(qase(2136, 'Delete a token and redo deletion'), async () => {
+    await mainTest.step(
+      `Delete "${radiusToken.name}" token and verify it is removed`,
+      async () => {
+        await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
+        await tokensPage.tokensComp.deleteToken(radiusToken.name);
+        await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, false);
+      },
+    );
 
-      await mainTest.step('Undo deletion and verify token is restored', async () => {
-        await mainPage.clickShortcutCtrlZ(browserName);
-        await tokensPage.tokensComp.expandTokenByName(TokenClass.BorderRadius);
-        await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, true);
-      });
-    },
-  );
+    await mainTest.step('Undo deletion and verify token is restored', async () => {
+      await mainPage.clickShortcutCtrlZ();
+      await tokensPage.tokensComp.expandTokenByName(TokenClass.BorderRadius);
+      await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, true);
+    });
+  });
 });

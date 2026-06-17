@@ -216,7 +216,7 @@ mainTest.describe(() => {
 });
 
 mainTest.describe(() => {
-  mainTest.beforeEach(async ({ browserName }) => {
+  mainTest.beforeEach(async () => {
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
     await mainPage.clickMoveButton();
@@ -232,7 +232,7 @@ mainTest.describe(() => {
       'This variant has identical properties and values to another variant. Adjust the values so they can be retrieved.',
     );
     await layersPanelPage.selectLayerByName('Value 1');
-    await mainPage.clickShortcutCtrlD(browserName);
+    await mainPage.clickShortcutCtrlD();
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.checkVariantLayerCount(3);
 
@@ -248,7 +248,7 @@ mainTest.describe(() => {
       [2568, 2569],
       'Conflicting variants with identical properties and values / Changing several conflicting variant copies at once',
     ),
-    async ({ browserName }) => {
+    async () => {
       await mainTest.step(
         '(2568) Conflicting variants with identical properties and values',
         async () => {
@@ -257,10 +257,10 @@ mainTest.describe(() => {
           );
 
           await layersPanelPage.selectLayerByName('Value 1');
-          await mainPage.pressCopyShortcut(browserName);
+          await mainPage.pressCopyShortcut();
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
-          await mainPage.pressPasteShortcut(browserName);
+          await mainPage.pressPasteShortcut();
           await layersPanelPage.isLayerWithNameSelected('Rectangle');
           await designPanelPage.checkVariantWarning(
             'This component has conflicting variants. Make sure each variation has a unique set of property values.',
@@ -272,10 +272,10 @@ mainTest.describe(() => {
         '(2569) Changing several conflicting variant copies at once',
         async () => {
           await layersPanelPage.selectLayerByName('Value 2');
-          await mainPage.pressCopyShortcut(browserName);
+          await mainPage.pressCopyShortcut();
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
-          await mainPage.pressPasteShortcut(browserName);
+          await mainPage.pressPasteShortcut();
           await layersPanelPage.isLayerWithNameSelected('Rectangle');
           await designPanelPage.checkVariantWarning(
             'This component has conflicting variants. Make sure each variation has a unique set of property values.',
@@ -314,7 +314,7 @@ mainTest.describe(() => {
 
 mainTest(
   qase([2615, 2616, 2617], 'Toggle boolean properties from variants'),
-  async ({ browserName }) => {
+  async () => {
     await mainTest.step(
       'Create two component variants, changing fill color to one of them',
       async () => {
@@ -323,7 +323,7 @@ mainTest(
         await mainPage.clickMoveButton();
 
         await mainPage.createDefaultEllipseByCoordinates(200, 300);
-        await mainPage.createComponentViaShortcut(browserName);
+        await mainPage.createComponentViaShortcut();
         await mainPage.waitForChangeIsSaved();
         await mainPage.createVariantViaRightClick();
         await mainPage.waitForChangeIsSaved();
@@ -374,9 +374,9 @@ mainTest(
     }
 
     async function createVariantInstanceAndToggleSwitch() {
-      await mainPage.pressCopyShortcut(browserName);
+      await mainPage.pressCopyShortcut();
       await mainPage.clickViewportByCoordinates(400, 400);
-      await mainPage.pressPasteShortcut(browserName);
+      await mainPage.pressPasteShortcut();
       await mainPage.waitForChangeIsSaved();
 
       await designPanelPage.isSelectedHexCode(sampleData.color.grayHexCode);

@@ -19,7 +19,7 @@ let assetsPanelPage: AssetsPanelPage;
 let colorPalettePopUp: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);

@@ -24,7 +24,7 @@ let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -143,7 +143,7 @@ mainTest(
     2363,
     'Propagation of (style) changes from a (contained) text component to copies (overriding style by using tokens)',
   ),
-  async ({ browserName }) => {
+  async () => {
     const colorToken1: MainToken<TokenClass> = {
       class: TokenClass.Color,
       name: 'color1',
@@ -182,7 +182,7 @@ mainTest(
         await mainPage.pressFlexLayoutShortcut();
         await mainPage.waitForChangeIsSaved();
         await mainPage.waitForResizeHandlerVisible();
-        await layersPanelPage.createComponentViaShortcut(browserName, true);
+        await layersPanelPage.createComponentViaShortcut(true);
         await mainPage.waitForChangeIsSaved();
         await mainPage.copyLayerViaRightClick();
         await mainPage.pasteLayerViaRightClick();

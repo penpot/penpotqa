@@ -18,7 +18,7 @@ let mainPage: MainPage;
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   mainPage = new MainPage(page);
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);

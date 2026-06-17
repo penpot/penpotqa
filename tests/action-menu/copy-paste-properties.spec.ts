@@ -24,7 +24,7 @@ let assetsPanelPage: AssetsPanelPage;
 let inspectPanelPage: InspectPanelPage;
 let pagesPanelPage: PagesPanelPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -35,7 +35,7 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   inspectPanelPage = new InspectPanelPage(page);
   pagesPanelPage = new PagesPanelPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName, browserName);
+  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();

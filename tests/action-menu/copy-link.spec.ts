@@ -24,7 +24,7 @@ let profilePage: ProfilePage;
 let loginPage: LoginPage;
 let registerPage: RegisterPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   mainPage = new MainPage(page);
   teamPage = new TeamPage(page);
   profilePage = new ProfilePage(page);
@@ -32,7 +32,7 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   registerPage = new RegisterPage(page);
   dashboardPage = new DashboardPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName, browserName);
+  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();
