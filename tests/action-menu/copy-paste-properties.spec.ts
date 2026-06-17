@@ -45,15 +45,7 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe(() => {
-  mainTest.afterEach(async () => {
-    await mainPage.backToDashboardFromFileEditor();
-  });
-
   mainTest.describe(() => {
     mainTest.beforeEach(async () => {
       await mainPage.createDefaultRectangleByCoordinates(100, 100);

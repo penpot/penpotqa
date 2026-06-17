@@ -35,11 +35,6 @@ mainTest.beforeEach(async ({ page }) => {
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(2213, 'Import tokens'), async () => {
   await mainTest.step('Import tokens JSON file', async () => {
     await dashboardPage.createFileViaPlaceholder();

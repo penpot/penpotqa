@@ -42,10 +42,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe(() => {
   mainTest(
     qase([2036], 'Share link of two Boards to a user from your team'),

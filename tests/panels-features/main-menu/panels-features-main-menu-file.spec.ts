@@ -25,11 +25,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(1911, 'Download Penpot file (.penpot)'), async () => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();

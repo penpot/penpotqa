@@ -39,13 +39,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async ({ page }) => {
-  const teamPage = new TeamPage(page);
-  const mainPage = new MainPage(page);
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
     await mainPage.createDefaultBoardByCoordinates(200, 300);

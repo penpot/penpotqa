@@ -35,11 +35,6 @@ mainTest.beforeEach('Create a team and a file', async ({ page, browserName }) =>
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach('Back to Dashboard and delete team created', async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe(() => {
   mainTest.beforeEach(
     'Create a rectangle and click on Tokens tab',

@@ -16,10 +16,6 @@ mainTest.beforeEach(async ({ page }) => {
   await teamPage.isTeamSelected(teamName);
 });
 
-mainTest.afterEach(async () => {
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(1152, 'DA-66 Upload single font'), async () => {
   await dashboardPage.openSidebarItem('Fonts');
   await dashboardPage.uploadFont('fonts/Pacifico.ttf');

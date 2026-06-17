@@ -36,11 +36,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([932], 'Filter Colors from All Assets drop-down'), async () => {
   await mainTest.step('Open assets tab and filter by Colors', async () => {
     await assetsPanelPage.clickAssetsTab();

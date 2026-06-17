@@ -30,11 +30,6 @@ mainTest.beforeEach(async ({ page }) => {
   await teamPage.createTeam(teamName);
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(
   qase(
     [2430],

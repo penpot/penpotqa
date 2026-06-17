@@ -32,11 +32,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase([275], 'Create Rectangle (Shortcut R)'), async () => {
   await mainTest.step(
     'Press R shortcut and verify rectangle tool is active',

@@ -24,11 +24,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(897, 'Add export setting via design panel'), async () => {
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();

@@ -34,11 +34,6 @@ mainTest.beforeEach(async ({ page }) => {
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
-mainTest.afterEach(async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
     await dashboardPage.createFileViaPlaceholder();

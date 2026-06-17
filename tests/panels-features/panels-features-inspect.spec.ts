@@ -46,11 +46,6 @@ mainTest.beforeEach(
   },
 );
 
-mainTest.afterEach('Delete team', async () => {
-  await mainPage.backToDashboardFromFileEditor();
-  await teamPage.deleteTeam(teamName);
-});
-
 mainTest(qase(2654, 'Computed panel - Shows raw property values'), async () => {
   const colorToken: MainToken<TokenClass> = {
     class: TokenClass.Color,
