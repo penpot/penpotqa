@@ -247,20 +247,6 @@ mainTest.describe(
         );
       },
     );
-
-    mainTest.afterEach(
-      `Logout, login with main account, switch to to "${team}" and delete it`,
-      async () => {
-        await profilePage.logout();
-        await loginPage.isLoginPageOpened();
-        await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-        await loginPage.enterPwd(process.env.LOGIN_PWD);
-        await loginPage.clickLoginButton();
-        await dashboardPage.isDashboardOpenedAfterLogin();
-        await teamPage.switchTeam(team);
-        await teamPage.deleteTeam(team);
-      },
-    );
   },
 );
 
