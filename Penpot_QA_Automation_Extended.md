@@ -247,7 +247,7 @@ npx playwright test --grep-invert 'PERF'
 ### Snapshot Configuration
 
 ```javascript
-snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/win32/{arg}{ext}';
+snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}';
 maxDiffPixels: 30;
 maxDiffPixelRatio: 0.0001; // Strict tolerance for Chrome
 ```
@@ -255,7 +255,7 @@ maxDiffPixelRatio: 0.0001; // Strict tolerance for Chrome
 **Example path:**
 
 ```
-tests/composition/composition-rectangle.spec.js-snapshots/win32/rectangle.png
+tests/composition/composition-rectangle.spec.js-snapshots/rectangle.png
 ```
 
 ### Reporters
