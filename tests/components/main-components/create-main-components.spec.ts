@@ -61,7 +61,7 @@ mainTest(qase([1273], 'Create component shape'), async () => {
 
 mainTest(
   qase([1312], 'Drag a component from assets tab and drop into workspace'),
-  async ({ browserName }) => {
+  async () => {
     await mainTest.step('Create ellipse and component', async () => {
       await mainPage.createDefaultEllipseByCoordinates(200, 300);
       await mainPage.createComponentViaRightClick();
@@ -90,10 +90,10 @@ mainTest(
 
 mainTest(
   qase([1431], 'Create component from rectangle by clicking CTRL K'),
-  async ({ browserName }) => {
+  async () => {
     await mainTest.step('Create rectangle component via shortcut', async () => {
       await mainPage.createDefaultRectangleByCoordinates(200, 300);
-      await mainPage.createComponentViaShortcut(browserName);
+      await mainPage.createComponentViaShortcut();
       await mainPage.waitForChangeIsSaved();
     });
 
@@ -114,10 +114,10 @@ mainTest(
 
 mainTest(
   qase([1432], 'Create component from ellipse by clicking CTRL K'),
-  async ({ browserName }) => {
+  async () => {
     await mainTest.step('Create ellipse component via shortcut', async () => {
       await mainPage.createDefaultEllipseByCoordinates(200, 300);
-      await mainPage.createComponentViaShortcut(browserName);
+      await mainPage.createComponentViaShortcut();
       await mainPage.waitForChangeIsSaved();
     });
 
@@ -138,10 +138,10 @@ mainTest(
 
 mainTest(
   qase([1433], 'Create component from board by clicking CTRL K'),
-  async ({ browserName }) => {
+  async () => {
     await mainTest.step('Create board component via shortcut', async () => {
       await mainPage.createDefaultBoardByCoordinates(200, 300);
-      await mainPage.createComponentViaShortcut(browserName);
+      await mainPage.createComponentViaShortcut(true);
       await mainPage.waitForChangeIsSaved();
     });
 
