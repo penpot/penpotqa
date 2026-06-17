@@ -65,41 +65,54 @@ mainTest(
   async () => {
     await mainTest.step('Create and select Path layer', async () => {
       await mainPage.createDefaultOpenPath();
-      await mainPage.isCreatedLayerVisible();
+      await mainPage.waitForChangeIsSaved();
       await layersPanelPage.selectLayerByName('Path');
     });
 
     await mainTest.step('Add Arrow (first) and Diamond (second) caps', async () => {
       await designPanelPage.changeCap('Arrow', 'first');
       await designPanelPage.changeCap('Diamond', 'second');
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.selectLayerByName('Path');
+      await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot(
         'path-opened-with-arrow-and-diamond.png',
         {
           mask: mainPage.maskViewport(),
         },
       );
+      await mainPage.focusLayerViaShortcut();
     });
 
     await mainTest.step(
       'Switch caps and verify Diamond (first) and Arrow (second)',
       async () => {
         await designPanelPage.clickSwitchCapButton();
+        await mainPage.clickViewportOnce();
+        await layersPanelPage.selectLayerByName('Path');
         await mainPage.waitForChangeIsSaved();
+        await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
           'path-opened-with-diamond-and-arrow.png',
           {
             mask: mainPage.maskViewport(),
           },
         );
+        await mainPage.focusLayerViaShortcut();
       },
     );
 
     await mainTest.step('Remove caps and verify None on both', async () => {
       await designPanelPage.changeCap('None', 'first');
       await designPanelPage.changeCap('None', 'second');
+      await mainPage.clickViewportOnce();
+      await layersPanelPage.selectLayerByName('Path');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.focusLayerViaShortcut();
       await expect(mainPage.viewport).toHaveScreenshot('path-opened-with-none.png', {
         mask: mainPage.maskViewport(),
       });
+      await mainPage.focusLayerViaShortcut();
     });
   },
 );
