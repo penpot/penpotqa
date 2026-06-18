@@ -975,7 +975,7 @@ mainTest.describe(() => {
       [1739, 1742],
       'Duplicate vertical and horizontal direction, Undo element duplication',
     ),
-    async ({ browserName }) => {
+    async () => {
       await mainTest.step('Add rectangle to board', async () => {
         await mainPage.createDefaultRectangleByCoordinates(410, 410, true);
         await mainPage.waitForChangeIsSaved();
@@ -1003,7 +1003,7 @@ mainTest.describe(() => {
       await mainTest.step(
         'Undo and duplicate rectangle in row direction, verify',
         async () => {
-          await mainPage.clickShortcutCtrlZ(browserName);
+          await mainPage.clickShortcutCtrlZ();
           await mainPage.clickViewportOnce();
           await mainPage.clickCreatedBoardTitleOnCanvas();
           await mainPage.waitForChangeIsSaved();
@@ -1022,7 +1022,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1743], 'Undo element editing'), async ({ browserName }) => {
+  mainTest(qase([1743], 'Undo element editing'), async () => {
     await mainTest.step('Add rectangle and change fill color to green', async () => {
       await mainPage.createDefaultRectangleByCoordinates(410, 410, true);
       await mainPage.waitForChangeIsSaved();
@@ -1040,7 +1040,7 @@ mainTest.describe(() => {
 
     await mainTest.step('Undo color change and verify', async () => {
       await mainPage.clickViewportOnce();
-      await mainPage.clickShortcutCtrlZ(browserName);
+      await mainPage.clickShortcutCtrlZ();
       await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-undo-color.png', {
         mask: mainPage.maskViewport(),
@@ -1108,7 +1108,7 @@ mainTest(
     [1707, 1741],
     'Add grid lines, and upload the images, Check removed some image',
   ),
-  async ({ browserName }) => {
+  async () => {
     await mainTest.step('Create board with grid layout', async () => {
       await mainPage.createDefaultBoardByCoordinates(400, 300);
       await designPanelPage.changeHeightAndWidthForLayer('500', '600');
@@ -1129,9 +1129,9 @@ mainTest(
     });
 
     await mainTest.step('Undo twice and verify image is removed', async () => {
-      await mainPage.clickShortcutCtrlZ(browserName);
+      await mainPage.clickShortcutCtrlZ();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.clickShortcutCtrlZ(browserName);
+      await mainPage.clickShortcutCtrlZ();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab('mini_sample', false);
     });

@@ -521,7 +521,7 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase([2255], 'Select and deselect rectangles'), async ({ browserName }) => {
+mainTest(qase([2255], 'Select and deselect rectangles'), async () => {
   await mainTest.step('Create four rectangles on canvas', async () => {
     await mainPage.createDefaultRectangleByCoordinates(400, 800);
     await mainPage.createDefaultRectangleByCoordinates(400, 200, true);
@@ -534,7 +534,7 @@ mainTest(qase([2255], 'Select and deselect rectangles'), async ({ browserName })
   await mainTest.step(
     'Select all and deselect one, verify three selected',
     async () => {
-      await mainPage.pressSelectAllShortcut(browserName);
+      await mainPage.pressSelectAllShortcut();
       await mainPage.deselectElement();
       await expect(mainPage.viewport).toHaveScreenshot(
         'three-rectangle-selected.png',
