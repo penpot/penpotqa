@@ -200,6 +200,31 @@ mainTest.describe(() => {
     );
   });
 
+  mainTest(qase([383], 'Add 2 Shadows to Text'), async () => {
+    await mainTest.step(
+      'Add a shadow and change its type to Inner shadow',
+      async () => {
+        await designPanelPage.clickAddShadowButton();
+        await designPanelPage.selectTypeForShadow('Inner shadow');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isExpectedShadowTypeOption('Inner shadow');
+      },
+    );
+
+    await mainTest.step('Add a second shadow', async () => {
+      await designPanelPage.clickAddShadowButton();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
+      await designPanelPage.isExpectedShadowTypeOption('Drop shadow');
+      await designPanelPage.isExpectedShadowTypeOption('Inner shadow');
+      await mainPage.focusLayerViaShortcut();
+      await expect(mainPage.viewport).toHaveScreenshot('text-two-shadows.png', {
+        mask: mainPage.maskViewport(),
+      });
+      await mainPage.focusLayerViaShortcut();
+    });
+  });
+
   mainTest(
     qase([384, 385], 'Add, change value, hide, unhide and delete Blur to text'),
     async () => {
