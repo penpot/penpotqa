@@ -1,5 +1,4 @@
 const { expect } = require('@playwright/test');
-const { getPlatformName } = require('../helpers/get-platform');
 
 exports.BasePage = class BasePage {
   /**
@@ -204,45 +203,21 @@ exports.BasePage = class BasePage {
     );
   }
 
-  async clearInput(input, browserName) {
+  async clearInput(input) {
     await input.click();
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+A');
-    } else {
-      if (browserName === 'webkit') {
-        await this.page.keyboard.press('Meta+A');
-      } else {
-        await this.page.keyboard.press('Control+A');
-      }
-    }
+    await this.page.keyboard.press('Control+A');
     await this.page.keyboard.press('Delete');
   }
 
-  async clickShortcutCtrlZ(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+Z');
-    } else {
-      if (browserName !== 'webkit') {
-        await this.page.keyboard.press('Control+Z');
-      } else {
-        await this.page.keyboard.press('Meta+Z');
-      }
-    }
+  async clickShortcutCtrlZ() {
+    await this.page.keyboard.press('Control+Z');
   }
 
-  async clickShortcutCtrlD(browserName) {
-    if (getPlatformName() === 'MacOS' || getPlatformName() === 'darwin') {
-      await this.page.keyboard.press('Meta+D');
-    } else {
-      if (browserName !== 'webkit') {
-        await this.page.keyboard.press('Control+D');
-      } else {
-        await this.page.keyboard.press('Meta+D');
-      }
-    }
+  async clickShortcutCtrlD() {
+    await this.page.keyboard.press('Control+D');
   }
 
-  async clickShortcutAltN(browserName) {
+  async clickShortcutAltN() {
     await this.page.keyboard.press('Alt+N');
   }
 
@@ -351,14 +326,12 @@ exports.BasePage = class BasePage {
     await this.hideLayerMenuItem.click();
   }
 
-  async focusBoardViaRightClickOnCanvas(title, browserName = 'chromium') {
+  async focusBoardViaRightClickOnCanvas(title) {
     const boardSel = this.page.locator(
       `span[class*="workspace_sidebar_layer_name"]:has-text("${title}")`,
     );
     await boardSel.click({ button: 'right', force: true });
-    browserName === 'chromium'
-      ? await this.focusOnLayerMenuItem.click()
-      : await this.focusOnLayerMenuItem.locator('span').first().click();
+    await this.focusOnLayerMenuItem.click();
   }
 
   async focusLayerViaRightClickOnCanvas() {

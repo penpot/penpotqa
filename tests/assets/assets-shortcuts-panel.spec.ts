@@ -12,16 +12,13 @@ let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
   await mainPage.isMainPageLoaded();
 });
 

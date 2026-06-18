@@ -23,7 +23,7 @@ let inspectPanelPage: InspectPanelPage;
 
 mainTest.beforeEach(
   'Create a team, new file and a rectangle shape',
-  async ({ page, browserName }) => {
+  async ({ page }) => {
     teamPage = new TeamPage(page);
     dashboardPage = new DashboardPage(page);
     designPanelPage = new DesignPanelPage(page);
@@ -35,9 +35,6 @@ mainTest.beforeEach(
     await teamPage.isTeamSelected(teamName);
 
     await dashboardPage.createFileViaPlaceholder();
-    browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-      ? await dashboardPage.createFileViaPlaceholder()
-      : null;
     await mainPage.isMainPageLoaded();
 
     await mainPage.clickCreateRectangleButton();
@@ -145,7 +142,7 @@ mainTest(
     2667,
     'Tokens Sets & Themes section - Updates when an active token set is enabled/disabled in Tokens panel',
   ),
-  async ({ browserName }) => {
+  async () => {
     const set1Name = 'set1';
     const set2Name = 'set2';
     const strokeToken: MainToken<TokenClass> = {
@@ -160,9 +157,9 @@ mainTest(
     };
 
     await mainTest.step('Create variants from rectangle', async () => {
-      await mainPage.createComponentViaShortcut(browserName);
+      await mainPage.createComponentViaShortcut();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.createComponentViaShortcut(browserName);
+      await mainPage.createComponentViaShortcut();
       await mainPage.waitForChangeIsSaved();
     });
 

@@ -14,14 +14,14 @@ let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let layersPanelPage: LayersPanelPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   mainPage = new MainPage(page);
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   layersPanelPage = new LayersPanelPage(page);
 
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName, browserName);
+  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.createDefaultRectangleByCoordinates(100, 100);

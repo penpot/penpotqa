@@ -384,14 +384,14 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase([2255], 'Select and deselect rectangles'), async ({ browserName }) => {
+mainTest(qase([2255], 'Select and deselect rectangles'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(400, 800);
   await mainPage.createDefaultRectangleByCoordinates(400, 200, true);
   await mainPage.createDefaultRectangleByCoordinates(100, 600, true);
   await mainPage.createDefaultRectangleByCoordinates(700, 600, true);
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
-  await mainPage.pressSelectAllShortcut(browserName);
+  await mainPage.pressSelectAllShortcut();
   await mainPage.deselectElement();
   await expect(mainPage.viewport).toHaveScreenshot('three-rectangle-selected.png', {
     mask: mainPage.maskViewport(),

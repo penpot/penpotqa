@@ -53,20 +53,17 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(861, 'Add Interaction via Prototype panel'),
-    async ({ page, browserName }) => {
-      await prototypePanelPage.clickAddInteractionButton();
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
-      await prototypePanelPage.checkNumberOfInteractions(2);
-      await expect(mainPage.viewport).toHaveScreenshot('add-interaction.png', {
-        usersSection: true,
-        useRulers: false,
-      });
-    },
-  );
+  mainTest(qase(861, 'Add Interaction via Prototype panel'), async ({ page }) => {
+    await prototypePanelPage.clickAddInteractionButton();
+    await mainPage.waitForChangeIsUnsaved();
+    await mainPage.waitForChangeIsSaved();
+    await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
+    await prototypePanelPage.checkNumberOfInteractions(2);
+    await expect(mainPage.viewport).toHaveScreenshot('add-interaction.png', {
+      usersSection: true,
+      useRulers: false,
+    });
+  });
 
   mainTest(qase(862, 'Remove Interaction via Prototype panel'), async ({ page }) => {
     await prototypePanelPage.clickAddInteractionButton();

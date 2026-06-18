@@ -164,7 +164,7 @@ penpotqa1/
 - **Test files**: 67 spec files
 - **Test categories**: 15 folders
 - **Test code**: ~18,136 lines
-- **Average execution time**: 72 min (Chrome, 3 workers)
+- **Average execution time**: 72 min (Chrome)
 
 ---
 
@@ -192,21 +192,19 @@ npx playwright --version
 
 ### Executing Tests
 
-| Type of Run            | Command                                 | Example                                                                      |
-| ---------------------- | --------------------------------------- | ---------------------------------------------------------------------------- |
-| All Tests              | `npm test`                              | Runs all non-performance tests in Chrome                                     |
-| Single Test (by title) | `npx playwright test -g "<Test Title>"` | `npx playwright test -g "CO-154 Transform ellipse to path" --project=chrome` |
-| Single Test Spec       | `npx playwright test <path>`            | `npx playwright test tests/login.spec.js --project=chrome`                   |
-| Specific Folder        | `npx playwright test <folder>`          | `npx playwright test tests/dashboard --project=chrome`                       |
-| Firefox/Webkit         | Use scripts in package.json             | `npm run firefox` / `npm run webkit`                                         |
-| Changed Tests Only     | `npm run changed`                       | Runs only changed test files                                                 |
-| UI Mode                | `npm run open`                          | Opens Playwright UI mode for debugging                                       |
+| Type of Run            | Command                                 | Example                                                     |
+| ---------------------- | --------------------------------------- | ----------------------------------------------------------- |
+| All Tests              | `npm test`                              | Runs all non-performance tests in Chrome                    |
+| Single Test (by title) | `npx playwright test -g "<Test Title>"` | `npx playwright test -g "CO-154 Transform ellipse to path"` |
+| Single Test Spec       | `npx playwright test <path>`            | `npx playwright test tests/login.spec.js`                   |
+| Specific Folder        | `npx playwright test <folder>`          | `npx playwright test tests/dashboard`                       |
+| Changed Tests Only     | `npm run changed`                       | Runs only changed test files                                |
+| UI Mode                | `npm run open`                          | Opens Playwright UI mode for debugging                      |
 
 **Excluding Performance Tests:**
 
 ```bash
-npx playwright test --project=chrome --grep-invert 'PERF'
-npx playwright test --project=firefox --grep-invert 'PERF'
+npx playwright test --grep-invert 'PERF'
 ```
 
 ---
@@ -246,49 +244,18 @@ npx playwright test --project=firefox --grep-invert 'PERF'
 }
 ```
 
-#### Firefox
-
-```javascript
-{
-  name: 'firefox',
-  browserName: 'firefox',
-  viewport: { width: 1920, height: 969 },
-  permissions: ['clipboard-read', 'clipboard-write'],
-  firefoxUserPrefs: {
-    'dom.events.asyncClipboard.readText': true,
-    'dom.events.testing.asyncClipboard': true
-  },
-  toHaveScreenshot: {
-    maxDiffPixelRatio: 0.0001  // Strict tolerance
-  }
-}
-```
-
-#### WebKit (Safari)
-
-```javascript
-{
-  name: 'webkit',
-  browserName: 'webkit',
-  viewport: { width: 1920, height: 969 },
-  toHaveScreenshot: {
-    maxDiffPixelRatio: 0.01  // More lenient due to rendering differences
-  }
-}
-```
-
 ### Snapshot Configuration
 
 ```javascript
-snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/win32/{projectName}/{arg}{ext}';
+snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}';
 maxDiffPixels: 30;
-maxDiffPixelRatio: 0.001; // Default tolerance
+maxDiffPixelRatio: 0.0001; // Strict tolerance for Chrome
 ```
 
 **Example path:**
 
 ```
-tests/composition/composition-rectangle.spec.js-snapshots/win32/chrome/rectangle.png
+tests/composition/composition-rectangle.spec.js-snapshots/rectangle.png
 ```
 
 ### Reporters
@@ -564,23 +531,6 @@ BasePage (base-page.js)
 - Headers and messages
 - Modal dialogs
 
-**Platform-Specific Shortcuts:**
-
-```javascript
-async clickShortcutCtrlZ(browserName) {
-  const platform = getPlatformName();
-  if (platform === 'MacOS' || platform === 'darwin') {
-    await this.page.keyboard.press('Meta+z');
-  } else {
-    if (browserName === 'webkit') {
-      await this.page.keyboard.press('Meta+z');
-    } else {
-      await this.page.keyboard.press('Control+z');
-    }
-  }
-}
-```
-
 **Reusable Actions:**
 
 ```javascript
@@ -660,13 +610,9 @@ mask: [
 ];
 ```
 
-### Browser-Specific Tolerances
+### Snapshot Tolerance
 
-| Browser | maxDiffPixelRatio | Reason                                         |
-| ------- | ----------------- | ---------------------------------------------- |
-| Chrome  | 0.0001            | Strictest - most consistent rendering          |
-| Firefox | 0.0001            | Strict - consistent rendering                  |
-| WebKit  | 0.01              | More lenient - rendering differences in Safari |
+Chrome uses a strict tolerance of **0.0001** for maximum consistency in visual regression testing.
 
 ### Updating Snapshots
 
@@ -1075,13 +1021,11 @@ await sendMessage({
 
 1. **playwright_pr_manual.yml** - Manual test execution for PRs
    - Options: all tests, changed only, by folder
-   - Browser: Chrome
    - OS: Ubuntu 24.04
 
 2. **playwright_pre_daily.yml** - Daily Chrome tests on PRE
 3. **playwright_tests_manual.yml** - Manual Penpot Tests (TESTS environment)
    - Options: all tests, changed only, by folder
-   - Browser: Chrome
    - OS: Ubuntu 24.04
 
 ### Custom GitHub Actions
@@ -1288,20 +1232,6 @@ await mainPage.createCopyViaRightClick();
 await mainPage.deleteLayerViaRightClick();
 ```
 
-### Pattern 4: Cross-Browser Conditionals
-
-```javascript
-mainTest('Test name', async ({ browserName }) => {
-  if (browserName !== 'webkit') {
-    // WebKit has known issues with drag and drop
-    await assetsPanelPage.dragComponentOnCanvas(50, 100);
-  }
-
-  // Platform-specific shortcuts
-  await mainPage.clickShortcutCtrlZ(browserName);
-});
-```
-
 ### Pattern 5: Chainable Actions
 
 ```javascript
@@ -1468,7 +1398,6 @@ contextOptions: {
 
 #### Weekly
 
-- Check Firefox test results (every Friday)
 - Review test execution trends
 
 #### As Needed
@@ -1504,8 +1433,7 @@ npm update
 3. **Clean up in afterEach:** Delete team and resources
 4. **Add Qase ID:** Use `qase(id, 'test name')`
 5. **Add snapshots:** Use element-level snapshots
-6. **Test in all browsers:** Run with chrome, firefox, webkit
-7. **Verify in CI:** Check GitHub Actions pass
+6. **Verify in CI:** Check GitHub Actions pass
 
 ---
 
@@ -1543,15 +1471,6 @@ args: ['--headless=new'];
 permissions: ['clipboard-read', 'clipboard-write'];
 ```
 
-**Firefox requires additional prefs:**
-
-```javascript
-firefoxUserPrefs: {
-  'dom.events.asyncClipboard.readText': true,
-  'dom.events.testing.asyncClipboard': true
-}
-```
-
 ### Force Click
 
 **Used for potentially obscured elements:**
@@ -1586,11 +1505,7 @@ All emails go to same inbox, but Penpot treats them as different users.
 Performance tests must be excluded from regular regression runs:
 
 ```bash
-# Chrome (excluding PERF)
-npx playwright test --project=chrome --grep-invert 'PERF'
-
-# Firefox (excluding PERF)
-npx playwright test --project=firefox --grep-invert 'PERF'
+npx playwright test --grep-invert 'PERF'
 ```
 
 ### Running Performance Tests Only (Not Recommended)
@@ -1603,7 +1518,6 @@ npm run performance
 
 - Timeout: 555,550,000ms (very long)
 - Retries: 1
-- Browser: Chrome only
 
 ⚠️ **Warning:** These tests are not actively maintained and may not work correctly
 
@@ -1616,6 +1530,14 @@ npm run performance
 1. **mainTest**: Fast (no registration), most common use case
 2. **registerTest**: Full control, email verification, slower
 3. **performanceTest**: Pre-loaded large files, specialized
+
+### Why Chrome Only?
+
+- ✅ Most consistent rendering
+- ✅ Strict snapshot tolerance (0.0001)
+- ✅ Better performance in CI
+- ✅ Industry standard for E2E testing
+- ✅ Simplifies maintenance and debugging
 
 ### Why Page Object Model?
 

@@ -178,7 +178,7 @@ mainTest(qase(837, 'Delete page'), async () => {
 
 mainTest(
   qase(839, 'Create 3 pages, delete 2nd page, undo delete (CTRL Z)'),
-  async ({ browserName }) => {
+  async () => {
     await mainTest.step('Create three pages and delete the second', async () => {
       await pagesPanelPage.clickAddPageButton();
       await pagesPanelPage.clickAddPageButton();
@@ -187,7 +187,7 @@ mainTest(
     });
 
     await mainTest.step('Undo deletion and verify page is restored', async () => {
-      await pagesPanelPage.clickShortcutCtrlZ(browserName);
+      await pagesPanelPage.clickShortcutCtrlZ();
       await pagesPanelPage.isSecondPageNameDisplayed('Page 2', true);
     });
   },

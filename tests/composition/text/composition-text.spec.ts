@@ -160,7 +160,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([382], 'Add and edit Shadow to text'), async ({ browserName }) => {
+  mainTest(qase([382], 'Add and edit Shadow to text'), async () => {
     await designPanelPage.clickFillColorIcon();
     await colorPalettePage.setHex('#de1b1b');
     await mainPage.waitForChangeIsSaved();

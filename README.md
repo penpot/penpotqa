@@ -54,10 +54,6 @@ To run the specific test/tests, change the test script in _package.js_ in the ne
 - Run single test spec (file) - e.g. `"npx playwright test tests/login.spec.js --project=chrome"`
 - Run specific tests package (folder) - e.g. `"npx playwright test tests/dashboard --project=chrome"`
 
-To run the tests in Firefox and Webkit browsers, use `"firefox"` and `"webkit"` scripts accordingly:
-`"firefox": "npx playwright test --project=firefox"`
-`"webkit": "npx playwright test --project=webkit"`
-
 **4. Test run via Docker.**
 
 As an alternative to installing Node.js and Playwright locally, tests can be run inside a Docker container using the provided `docker-compose.yml`. This is useful to get a consistent environment without worrying about local Node/browser versions.
@@ -111,7 +107,6 @@ Some settings from _playwright.config.js_ may be useful:
 - For now there are 531 tests in current repository
 - If parallel execution is enabled with default amount of workers (3) the average time for each browser is the following:
 - Chrome: 72 mins
-- Firefox: 81 mins
 
 **8. Snapshots comparison.**
 
@@ -142,7 +137,6 @@ an acceptable ratio of pixels that are different to the total amount of pixels i
 To exclude performance tests from the periodical regression test run the following scripts should be used:
 
 - for Chrome: `"npx playwright test --project=chrome --grep-invert  'PERF'"`
-- for Firefox: `"npx playwright test --project=firefox --grep-invert  'PERF'"`
 
 Note: The above scripts should be executed via the command line. Do not run them directly from the _package.json_,
 because in such way performance tests are not ignored.

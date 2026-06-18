@@ -76,22 +76,10 @@ runs:
           fi
         fi
 
-        if [[ "${{ inputs.browser-name }}" = "Firefox" ]]; then
-          BROWSER_ICON="🦊"
-          BROWSER_LABEL="Firefox"
-        elif [[ "${{ inputs.browser-name }}" = "Webkit" ]]; then
-          BROWSER_ICON="🦎"
-          BROWSER_LABEL="WebKit"
-        else
-          BROWSER_ICON="🌐"
-          BROWSER_LABEL="Chrome"
-        fi
+        BROWSER_ICON="🌐"
+        BROWSER_LABEL="Chrome"
         if [[ "$WORKFLOW_NAME" == "Manual Penpot Tests for PR" ]]; then
           WORKFLOW_LABEL="PR_manual"
-        elif [[ "$WORKFLOW_NAME" =~ firefox ]] || [[ "$WORKFLOW_NAME" =~ Firefox ]]; then
-          WORKFLOW_LABEL="PRE_firefox"
-        elif [[ "$WORKFLOW_NAME" =~ webkit ]] || [[ "$WORKFLOW_NAME" =~ Webkit ]]; then
-          WORKFLOW_LABEL="PRE_webkit"
         else
           WORKFLOW_LABEL="PRE_chrome_daily"
         fi
