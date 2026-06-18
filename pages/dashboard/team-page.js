@@ -10,9 +10,6 @@ exports.TeamPage = class TeamPage extends BasePage {
 
     // Teams
     this.teamCurrentBtn = page.locator('button[class*="current-team"]');
-    this.teamCurrentBtnWebkit = page
-      .locator('button[class*="current-team"] div span')
-      .first();
     this.teamList = page.locator('ul[class*="teams-dropdown"]');
     this.createNewTeamMenuItem = page.getByRole('menuitem', {
       name: 'Create new team',
@@ -159,14 +156,12 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.waitForCreateNewTeamButtonToBeHidden(30000);
   }
 
-  async isTeamSelected(teamName, browserName = 'chrome') {
-    browserName === 'webkit'
-      ? await expect(this.teamCurrentBtnWebkit).toHaveText(teamName)
-      : await expect(this.teamCurrentBtnText).toHaveText(teamName);
+  async isTeamSelected(teamName) {
+    await expect(this.teamCurrentBtnText).toHaveText(teamName);
   }
 
   async waitForTeamBtn(timeout = 10000) {
-    await this.teamCurrentBtnWebkit.waitFor({ state: 'visible', timeout: timeout });
+    await this.teamCurrentBtnText.waitFor({ state: 'visible', timeout: timeout });
   }
 
   async waitForCreateNewTeamButtonToBeHidden(timeout = 10000) {

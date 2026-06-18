@@ -27,11 +27,7 @@ npm run changed
 # Run in UI mode (interactive)
 npm run open
 
-# Other browsers
-npm run firefox
-npm run webkit
-
-# Update visual snapshots (Chrome + Firefox)
+# Update visual snapshots (Chrome)
 npm run updateSnapshots
 
 # Format code

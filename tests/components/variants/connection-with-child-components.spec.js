@@ -66,13 +66,10 @@ mainTest(
 
 mainTest(
   qase([2433], 'Creating a child component by copying a variant'),
-  async ({ browserName }) => {
+  async () => {
     const sampleData = new SampleData();
 
     await dashboardPage.createFileViaPlaceholder();
-    browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-      ? await dashboardPage.createFileViaPlaceholder()
-      : null;
     await mainPage.isMainPageLoaded();
     await mainPage.clickMoveButton();
 
@@ -83,10 +80,10 @@ mainTest(
     await mainPage.waitForChangeIsSaved();
 
     await layersPanelPage.selectLayerByName('Value 2');
-    await mainPage.pressCopyShortcut(browserName);
+    await mainPage.pressCopyShortcut();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.pressPasteShortcut(browserName);
+    await mainPage.pressPasteShortcut();
     await layersPanelPage.checkVariantLayerCount(2);
     await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Rectangle');
 

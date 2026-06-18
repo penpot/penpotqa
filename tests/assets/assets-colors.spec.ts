@@ -19,7 +19,7 @@ let assetsPanelPage: AssetsPanelPage;
 let colorPalettePopUp: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -29,9 +29,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });

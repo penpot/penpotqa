@@ -18,23 +18,17 @@ let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
 
-mainTest.beforeEach(
-  'Create a team and a new file',
-  async ({ page, browserName }) => {
-    teamPage = new TeamPage(page);
-    dashboardPage = new DashboardPage(page);
-    mainPage = new MainPage(page);
+mainTest.beforeEach('Create a team and a new file', async ({ page }) => {
+  teamPage = new TeamPage(page);
+  dashboardPage = new DashboardPage(page);
+  mainPage = new MainPage(page);
 
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
-    await dashboardPage.createFileViaPlaceholder();
-    browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-      ? await dashboardPage.createFileViaPlaceholder()
-      : null;
-    await mainPage.isMainPageLoaded();
-    await mainPage.clickMoveButton();
-  },
-);
+  await teamPage.createTeam(teamName);
+  await teamPage.isTeamSelected(teamName);
+  await dashboardPage.createFileViaPlaceholder();
+  await mainPage.isMainPageLoaded();
+  await mainPage.clickMoveButton();
+});
 
 mainTest.describe(() => {
   let mainPage: MainPage;

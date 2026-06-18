@@ -20,7 +20,7 @@ let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
 let layersPanelPage: LayersPanelPage;
 
-mainTest.beforeEach(async ({ page, browserName }) => {
+mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   teamPage = new TeamPage(page);
   mainPage = new MainPage(page);
@@ -30,9 +30,6 @@ mainTest.beforeEach(async ({ page, browserName }) => {
   layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
   await dashboardPage.createFileViaPlaceholder();
-  browserName === 'webkit' && !(await mainPage.isMainPageVisible())
-    ? await dashboardPage.createFileViaPlaceholder()
-    : null;
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
@@ -72,15 +69,15 @@ mainTest(qase([2396], 'Creating variants from a component group'), async () => {
 
 mainTest(
   qase([2425], 'Create variants by copying an existing component'),
-  async ({ browserName }) => {
+  async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
-    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.createComponentViaShortcut();
     await mainPage.waitForChangeIsSaved();
     await mainPage.createVariantViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickOnVariantsTitle('Rectangle');
     await mainPage.copyLayerViaRightClick();
-    await mainPage.pressPasteShortcut(browserName);
+    await mainPage.pressPasteShortcut();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickViewportTwice();
     await expect(mainPage.viewport).toHaveScreenshot('copy-paste-variants.png', {
@@ -91,9 +88,9 @@ mainTest(
 
 mainTest(
   qase([2570], 'Create a variant by "+" button on Viewport (Component selected)'),
-  async ({ browserName }) => {
+  async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
-    await mainPage.createComponentViaShortcut(browserName);
+    await mainPage.createComponentViaShortcut();
     await mainPage.waitForChangeIsSaved();
     await mainPage.createVariantViaRightClick();
     await mainPage.waitForChangeIsSaved();

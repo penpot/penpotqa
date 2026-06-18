@@ -27,7 +27,7 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest(qase(1496, 'Undo deleted component'), async ({ browserName }) => {
+mainTest(qase(1496, 'Undo deleted component'), async () => {
   await mainTest.step('Create rectangle and copy component', async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
@@ -52,7 +52,7 @@ mainTest(qase(1496, 'Undo deleted component'), async ({ browserName }) => {
   });
 
   await mainTest.step('Undo deletion', async () => {
-    await mainPage.clickShortcutCtrlZ(browserName);
+    await mainPage.clickShortcutCtrlZ();
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
   });
