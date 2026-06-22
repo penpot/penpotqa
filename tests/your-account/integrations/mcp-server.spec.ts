@@ -147,13 +147,14 @@ integrationsTest(
           'Click MCP button from toolbar and click Connect here',
           async () => {
             await mainPage.connectMCPButtonFromToolbar();
-            await mainPage.clickMCPButtonFromToolbar();
           },
         );
 
         await integrationsTest.step(
           'Assert MCP Connected message is visible',
           async () => {
+            await mainPage.reloadPage();
+            await mainPage.clickMCPButtonFromToolbar();
             await mainPage.isMCPConnectedButtonVisible();
           },
         );
