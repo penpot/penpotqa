@@ -1283,9 +1283,6 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async isMCPConnectedButtonVisible() {
-    await expect(
-      this.connectedMCPButton,
-      `MCP Connected button is visible`,
-    ).toBeVisible();
+    await this.connectedMCPButton.waitFor({ state: 'visible' });
   }
 };
