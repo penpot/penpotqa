@@ -14,7 +14,7 @@ integrationsTest.beforeEach(async ({ page }) => {
 
 integrationsTest(
   qase(
-    [2771, 2770, 2775, 2782, 2783, 2784, 2787, 2791],
+    [2771, 2770, 2775, 2782, 2783, 2784, 2787, 2791, 3065],
     'Enable MCP generating key, disable MCP, enable MCP with an existing key and delete key',
   ),
   async ({ profilePage }: { profilePage: ProfilePage }) => {
@@ -130,6 +130,34 @@ integrationsTest(
         await mainPage.hoverMCPServerMenuItem();
         await mainPage.isDisconnectMCPServerMenuSubItemVisible();
         await mainPage.isManageMCPServerStatusMenuSubItemVisible('enabled');
+      },
+    );
+
+    await integrationsTest.step(
+      '3065 Connect with the MCP Server from the MCP button in workspace toolbar',
+      async () => {
+        await integrationsTest.step(
+          'Disconnect from the MCP Workspace menu',
+          async () => {
+            await mainPage.clickDisconnectMCPServerMenuSubItem();
+          },
+        );
+
+        await integrationsTest.step(
+          'Click MCP button from toolbar and click Connect here',
+          async () => {
+            await mainPage.connectMCPButtonFromToolbar();
+          },
+        );
+
+        await integrationsTest.step(
+          'Assert MCP Connected message is visible',
+          async () => {
+            await mainPage.reloadPage();
+            await mainPage.clickMCPButtonFromToolbar();
+            await mainPage.isMCPConnectedButtonVisible();
+          },
+        );
       },
     );
 

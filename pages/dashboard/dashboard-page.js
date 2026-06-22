@@ -235,9 +235,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingContinueCreateTeamBtn = page
       .getByRole('button')
       .filter({ hasText: 'Create team' });
-    this.onboardingContinueWithoutTeamBtn = page
-      .getByRole('button')
-      .filter({ hasText: 'Continue without team' });
+    this.onboardingContinueWithoutTeamBtn = page.getByText('Continue without team');
     this.onboardingInviteInput = page.locator(
       'input[class*="components_forms__inside-input"]',
     );
