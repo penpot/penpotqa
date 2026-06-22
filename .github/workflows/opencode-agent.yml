@@ -30,7 +30,6 @@ jobs:
       - name: Run OpenCode Agent
         uses: anomalyco/opencode/github@latest
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENCODE_MODEL: >-
             ${{ contains(github.event.comment.body, '--model deepseek') && 'opencode/deepseek-v4-flash-free' ||
                 contains(github.event.comment.body, '--model mimo') && 'opencode/mimo-v2.5-free' ||
