@@ -133,6 +133,33 @@ integrationsTest(
       },
     );
 
+    await integrationsTest.step(
+      '3065 Connect with the MCP Server from the MCP button in workspace toolbar',
+      async () => {
+        await integrationsTest.step(
+          'Disconnect from the MCP Workspace menu',
+          async () => {
+            await mainPage.clickDisconnectMCPServerMenuSubItem();
+          },
+        );
+
+        await integrationsTest.step(
+          'Click MCP button from toolbar and click Connect here',
+          async () => {
+            await mainPage.connectMCPButtonFromToolbar();
+            await mainPage.clickMCPButtonFromToolbar();
+          },
+        );
+
+        await integrationsTest.step(
+          'Assert MCP Connected message is visible',
+          async () => {
+            await mainPage.isMCPConnectedButtonVisible();
+          },
+        );
+      },
+    );
+
     await integrationsTest.step('2775 Delete MCP key', async () => {
       await integrationsTest.step(
         'Go back to the integrations page from file editor',

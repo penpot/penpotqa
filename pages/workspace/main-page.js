@@ -18,6 +18,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.uploadImageSelector = page.locator('#image-upload');
     this.createCurveButton = page.getByTestId('curve-btn');
     this.createPathButton = page.getByTestId('path-btn');
+    this.MCPButton = page.getByRole('button', { name: 'MCP' });
+    this.connectHereMCPButton = page.getByRole('menuitem', { name: 'Connect here' });
+    this.connectedMCPButton = page.getByText('MCP connected');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
     this.mainToolBar = page.locator(
       '[class*="main-toolbar"] button[class*="toolbar-handler"]',
@@ -1268,5 +1271,21 @@ exports.MainPage = class MainPage extends BasePage {
 
   async openFindAndReplaceViaShortcut() {
     await this.page.keyboard.press('Control+H');
+  }
+
+  async clickMCPButtonFromToolbar() {
+    await this.MCPButton.click();
+  }
+
+  async connectMCPButtonFromToolbar() {
+    await this.clickMCPButtonFromToolbar();
+    await this.connectHereMCPButton.click();
+  }
+
+  async isMCPConnectedButtonVisible() {
+    await expect(
+      this.connectedMCPButton,
+      `MCP Connected button is visible`,
+    ).toBeVisible();
   }
 };
