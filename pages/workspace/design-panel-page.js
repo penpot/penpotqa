@@ -52,6 +52,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.verticalOrientationButton = page.locator('label[for="size-vertical"]');
     this.horizontalOrientationButton = page.locator('label[for="size-horizontal"]');
+    this.alignLeftButton = page.getByTitle('Align left');
+    this.alignHorizontalCenterButton = page.getByTitle('Align horizontal center');
+    this.alignRightButton = page.getByTitle('Align right');
+    this.alignTopButton = page.getByTitle('Align top');
+    this.alignVerticalCenterButton = page.getByTitle('Align vertical center');
+    this.alignBottomButton = page.getByTitle('Align bottom');
 
     //Design panel - Fill section
     this.fillSection = page.getByLabel('Fill section');
@@ -734,6 +740,29 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeHeightAndWidthForLayer(height, width) {
     await this.changeWidthForLayer(width);
     await this.changeHeightForLayer(height);
+  }
+
+  async alignObjects(alignment) {
+    switch (alignment) {
+      case 'Left':
+        await this.alignLeftButton.click();
+        break;
+      case 'Horizontal center':
+        await this.alignHorizontalCenterButton.click();
+        break;
+      case 'Right':
+        await this.alignRightButton.click();
+        break;
+      case 'Top':
+        await this.alignTopButton.click();
+        break;
+      case 'Vertical center':
+        await this.alignVerticalCenterButton.click();
+        break;
+      case 'Bottom':
+        await this.alignBottomButton.click();
+        break;
+    }
   }
 
   async clickAddShadowButton() {
