@@ -1283,6 +1283,6 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async isMCPConnectedButtonVisible() {
-    await this.connectedMCPButton.waitFor({ state: 'visible' });
+    await this.connectedMCPButton.waitFor({ state: 'visible', timeout: 30000 });
   }
 };
