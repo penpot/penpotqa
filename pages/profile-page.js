@@ -533,17 +533,17 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   }
 
   async disableMCPServer() {
-    await expect(this.enableMCPStatusSwitch).toBeVisible();
+    await this.enableMCPStatusSwitch.waitFor({ state: 'visible' });
     await this.disableMCPfromToggleSwitch();
     await expect(this.MCPServerDisabledMessage).toBeVisible();
-    await expect(this.disableMCPWithKeyStatusSwitch).toBeVisible();
+    await this.disableMCPWithKeyStatusSwitch.waitFor({ state: 'visible' });
   }
 
   async enableMCPServerWithKey() {
-    await expect(this.disableMCPWithKeyStatusSwitch).toBeVisible();
+    await this.disableMCPWithKeyStatusSwitch.waitFor({ state: 'visible' });
     await this.enableMCPfromToggleSwitch();
     await expect(this.MCPServerEnabledMessage).toBeVisible();
-    await expect(this.enableMCPStatusSwitch).toBeVisible();
+    await this.enableMCPStatusSwitch.waitFor({ state: 'visible' });
   }
 
   async deleteMCPKey() {

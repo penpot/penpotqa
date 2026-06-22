@@ -14,7 +14,7 @@ integrationsTest.beforeEach(async ({ page }) => {
 
 integrationsTest(
   qase(
-    [2771, 2770, 2775, 2782, 2783, 2784, 2787, 2791],
+    [2771, 2770, 2775, 2782, 2783, 2784, 2787, 2791, 3065],
     'Enable MCP generating key, disable MCP, enable MCP with an existing key and delete key',
   ),
   async ({ profilePage }: { profilePage: ProfilePage }) => {
