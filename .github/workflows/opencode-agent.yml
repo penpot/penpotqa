@@ -31,12 +31,9 @@ jobs:
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_MODEL: >-
-            ${{ contains(github.event.comment.body, '--model deepseek') && 'opencode/deepseek-v4-flash-free' ||
-                contains(github.event.comment.body, '--model mimo') && 'opencode/mimo-v2.5-free' ||
+            ${{ contains(github.event.comment.body, '--model mimo') && 'opencode/mimo-v2.5-free' ||
                 contains(github.event.comment.body, '--model nemotron') && 'opencode/nemotron-3-ultra-free' ||
-                contains(github.event.comment.body, '--model big-pickle') && 'opencode/big-pickle' ||
-                contains(github.event.comment.body, '--model north') && 'opencode/north-mini-code-free' ||
-                'opencode/mimo-v2.5-free' }}
+                'opencode/deepseek-v4-flash-free' }}
         with:
           model: ${{ env.OPENCODE_MODEL }}
           use_github_token: true
