@@ -534,14 +534,14 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
   async disableMCPServer() {
     await expect(this.enableMCPStatusSwitch).toBeVisible();
-    await this.enableMCPStatusSwitch.click();
+    await this.disableMCPfromToggleSwitch();
     await expect(this.MCPServerDisabledMessage).toBeVisible();
     await expect(this.disableMCPWithKeyStatusSwitch).toBeVisible();
   }
 
   async enableMCPServerWithKey() {
     await expect(this.disableMCPWithKeyStatusSwitch).toBeVisible();
-    await this.disableMCPWithKeyStatusSwitch.click();
+    await this.enableMCPfromToggleSwitch();
     await expect(this.MCPServerEnabledMessage).toBeVisible();
     await expect(this.enableMCPStatusSwitch).toBeVisible();
   }
@@ -558,5 +558,57 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await expect(this.integrationsHeader).toBeVisible();
     await expect(this.MCPKey).not.toBeVisible();
     await expect(this.disableMCPWithoutKeyStatusSwitch).toBeVisible();
+  }
+
+  /**
+   * Waits for the profile-props POST that specifically toggles mcp-enabled
+   * to the expected boolean value. Whitespace/quoting-tolerant match.
+   */
+  _waitForMCPPropsUpdate(expectedValue) {
+    const pattern = new RegExp(`~?:?mcp-enabled["']?\\s*:\\s*${expectedValue}`);
+
+    return this.page.waitForResponse((res) => {
+      if (
+        !res.url().includes('/api/main/methods/update-profile-props') ||
+        res.request().method() !== 'POST'
+      ) {
+        return false;
+      }
+
+      const postData = res.request().postData() || '';
+      return pattern.test(postData);
+    });
+  }
+
+  /**
+   * Ensures MCP ends up ON. No-ops if already on.
+   */
+  async enableMCPfromToggleSwitch() {
+    if (await this.enableMCPStatusSwitch.isVisible()) {
+      return;
+    }
+
+    await expect(this.disableMCPWithKeyStatusSwitch).toBeVisible();
+
+    await Promise.all([
+      this._waitForMCPPropsUpdate(true),
+      this.disableMCPWithKeyStatusSwitch.click(),
+    ]);
+  }
+
+  /**
+   * Ensures MCP ends up OFF. No-ops if already off.
+   */
+  async disableMCPfromToggleSwitch() {
+    if (await this.disableMCPWithKeyStatusSwitch.isVisible()) {
+      return;
+    }
+
+    await expect(this.enableMCPStatusSwitch).toBeVisible();
+
+    await Promise.all([
+      this._waitForMCPPropsUpdate(false),
+      this.enableMCPStatusSwitch.click(),
+    ]);
   }
 };
