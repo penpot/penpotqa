@@ -766,7 +766,7 @@ mainTest.describe(() => {
     const board1 = 'Board #1';
     await mainPage.copyLayerViaRightClick();
     await mainPage.pasteLayerViaRightClick();
-    await layersPanelPage.copyLayerViaRightClick(board1);
+    await layersPanelPage.clickOnLayerOptionViaRightClickForLayer(board1, 'copy');
     await mainPage.pasteLayerViaRightClick();
     await mainPage.pressCopyShortcut();
     await mainPage.pressPasteShortcut();
