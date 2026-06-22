@@ -564,7 +564,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
    * Waits for the profile-props POST that specifically toggles mcp-enabled
    * to the expected boolean value. Whitespace/quoting-tolerant match.
    */
-  _waitForMCPPropsUpdate(expectedValue) {
+  waitForMCPPropsUpdate(expectedValue) {
     const pattern = new RegExp(`~?:?mcp-enabled["']?\\s*:\\s*${expectedValue}`);
 
     return this.page.waitForResponse((res) => {
@@ -591,7 +591,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await expect(this.disableMCPWithKeyStatusSwitch).toBeVisible();
 
     await Promise.all([
-      this._waitForMCPPropsUpdate(true),
+      this.waitForMCPPropsUpdate(true),
       this.disableMCPWithKeyStatusSwitch.click(),
     ]);
   }
@@ -607,7 +607,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await expect(this.enableMCPStatusSwitch).toBeVisible();
 
     await Promise.all([
-      this._waitForMCPPropsUpdate(false),
+      this.waitForMCPPropsUpdate(false),
       this.enableMCPStatusSwitch.click(),
     ]);
   }
