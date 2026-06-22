@@ -244,6 +244,13 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await layer.click();
   }
 
+  async shiftSelectLayersOnLayersTabByName(names) {
+    for (let i = 0; i < names.length; i++) {
+      const layer = this.layersSidebar.getByText(names[i], { exact: true });
+      i === 0 ? await layer.click() : await layer.click({ modifiers: ['Shift'] });
+    }
+  }
+
   async doubleClickLayerIconOnLayersTab(layer) {
     const iconSel = this.page.locator(
       `//*[text()="${layer}"]//parent::div//div[contains(@class, "icon-shape")]`,
