@@ -1,0 +1,32 @@
+name: OpenCode Agent
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  opencode:
+    if: contains(github.event.comment.body, 'opencode')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run OpenCode Agent
+        uses: anomalyco/opencode/github@main
+        with:
+          model: ${{ env.OPENCODE_MODEL }}
+          use_github_token: true
+        env:
+          OPENCODE_MODEL: >-
+            ${{ contains(github.event.comment.body, '--model deepseek') && 'opencode/deepseek-v4-flash-free' ||
+                contains(github.event.comment.body, '--model mimo') && 'opencode/mimo-v2.5-free' ||
+                contains(github.event.comment.body, '--model nemotron') && 'opencode/nemotron-3-ultra-free' ||
+                contains(github.event.comment.body, '--model big-pickle') && 'opencode/big-pickle' ||
+                contains(github.event.comment.body, '--model north') && 'opencode/north-mini-code-free' ||
+                'opencode/mimo-v2.5-free' }}
