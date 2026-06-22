@@ -7,6 +7,7 @@ import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
 
 const teamName = createTeamName();
@@ -17,12 +18,14 @@ let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let designPanelPage: DesignPanelPage;
 let inspectPanelPage: InspectPanelPage;
+let layersPanelPage: LayersPanelPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
@@ -544,5 +547,79 @@ mainTest(
         await mainPage.focusLayerViaShortcut();
       },
     );
+  },
+);
+
+mainTest(
+  qase([418], 'Select 2 texts and change alignment (via Design panel)'),
+  async () => {
+    const firstText = 'First text';
+    const secondText = 'Second text';
+
+    await mainTest.step('Create two text layers', async () => {
+      await mainPage.createTextLayerByCoordinates(200, 200, firstText);
+      await mainPage.createTextLayerByCoordinates(600, 500, secondText);
+    });
+
+    await mainTest.step('Select 2 texts', async () => {
+      await layersPanelPage.shiftSelectLayersOnLayersTabByName([
+        firstText,
+        secondText,
+      ]);
+    });
+
+    await mainTest.step('Align left', async () => {
+      await designPanelPage.alignObjects('Left');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('layers-align-left.png', {
+        mask: mainPage.maskViewport(),
+      });
+    });
+
+    await mainTest.step('Align horizontal center', async () => {
+      await designPanelPage.alignObjects('Horizontal center');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'layers-align-horizontal-center.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+    });
+
+    await mainTest.step('Align right', async () => {
+      await designPanelPage.alignObjects('Right');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('layers-align-right.png', {
+        mask: mainPage.maskViewport(),
+      });
+    });
+
+    await mainTest.step('Align top', async () => {
+      await designPanelPage.alignObjects('Top');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('layers-align-top.png', {
+        mask: mainPage.maskViewport(),
+      });
+    });
+
+    await mainTest.step('Align vertical center', async () => {
+      await designPanelPage.alignObjects('Vertical center');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'layers-align-vertical-center.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+    });
+
+    await mainTest.step('Align bottom', async () => {
+      await designPanelPage.alignObjects('Bottom');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('layers-align-bottom.png', {
+        mask: mainPage.maskViewport(),
+      });
+    });
   },
 );
