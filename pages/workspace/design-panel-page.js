@@ -261,14 +261,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
 
     //Design panel - Blur section
-    this.blurSection = page.locator(
-      '.main_ui_workspace_sidebar_options_menus_blur__element-set',
-    );
+    this.blurSection = page.getByRole('region', {
+      name: 'Blur effects',
+      exact: true,
+    });
     this.addBlurButton = this.blurSection.getByRole('button', { name: 'Add blur' });
     this.blurMoreOptions = this.blurSection.locator(
       'button[class*="blur__show-more"]',
     );
-    this.blurValueInput = this.blurSection.locator('#blur-input-sidebar');
+    this.blurValueInput = this.blurSection.getByRole('textbox');
     this.blurHideIcon = this.blurSection.getByRole('button', {
       name: 'Toggle blur',
     });
