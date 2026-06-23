@@ -77,9 +77,7 @@ mainTest.describe(() => {
     });
 
     await mainTest.step('Verify layer has the new name', async () => {
-      await layersPanelPage.isLayerNameDisplayed('renamed ellipse', {
-        mask: [mainPage.guides, mainPage.guidesFragment],
-      });
+      await layersPanelPage.isLayerNameDisplayed('renamed ellipse');
     });
   });
 
