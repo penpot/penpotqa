@@ -261,7 +261,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
 
     //Design panel - Blur section
-    this.blurSection = page.getByRole('region', { name: 'Blur' });
+    this.blurSection = page.getByRole('region', {
+      name: 'Blur effects',
+      exact: true,
+    });
     this.addBlurButton = this.blurSection.getByRole('button', { name: 'Add blur' });
     this.blurMoreOptions = this.blurSection.locator(
       'button[class*="blur__show-more"]',
