@@ -80,24 +80,63 @@ mainTest.describe('PNG image', () => {
   });
 
   mainTest(
-    qase([466], 'Copy and Paste image (from context menu and shortcut)'),
+    qase(
+      [466, 468],
+      'Copy/Paste and Cut/Paste image (from context menu and shortcut)',
+    ),
     async () => {
-      await mainTest.step('Copy and paste image from context menu', async () => {
-        await layersPanelPage.copyLayerViaRightClick('images');
-        await mainPage.clickViewportByCoordinates(300, 300);
-        await layersPanelPage.pasteLayerViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.isVisibleLayersCount(2);
-      });
+      await mainTest.step(
+        '466 Copy and Paste image (from context menu and shortcut)',
+        async () => {
+          await mainTest.step('Copy and paste image from context menu', async () => {
+            await layersPanelPage.clickOnLayerOptionViaRightClickForLayer(
+              'images',
+              'copy',
+              0,
+            );
+            await layersPanelPage.pasteLayerViaRightClick();
+            await mainPage.waitForChangeIsSaved();
+            await layersPanelPage.isVisibleLayersCount(2);
+          });
 
-      await mainTest.step('Copy and paste image from shortcut', async () => {
-        await layersPanelPage.selectLayerByName('images');
-        await layersPanelPage.pressCopyShortcut();
-        await mainPage.clickViewportByCoordinates(800, 800);
-        await layersPanelPage.pressPasteShortcut();
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.isVisibleLayersCount(3);
-      });
+          await mainTest.step('Copy and paste image from shortcut', async () => {
+            await layersPanelPage.selectLayerByName('images');
+            await layersPanelPage.pressCopyShortcut();
+            await mainPage.clickViewportByCoordinates(800, 800);
+            await layersPanelPage.pressPasteShortcut();
+            await mainPage.waitForChangeIsSaved();
+            await layersPanelPage.isVisibleLayersCount(3);
+          });
+        },
+      );
+      await mainTest.step(
+        '468 Cut image (From rightclick and Shortcut Ctrl+X)',
+        async () => {
+          await mainTest.step('Cut and paste image from context menu', async () => {
+            await layersPanelPage.clickOnLayerOptionViaRightClickForLayer(
+              'images',
+              'cut',
+              1,
+            );
+            await layersPanelPage.isVisibleLayersCount(2);
+            await mainPage.clickViewportByCoordinates(800, 600);
+            await layersPanelPage.pasteLayerViaRightClick();
+            await mainPage.waitForChangeIsSaved();
+            await layersPanelPage.isVisibleLayersCount(3);
+          });
+          await mainTest.step(
+            'Cut & paste image by shortcuts (Ctrl+X / Ctrl+V)',
+            async () => {
+              await layersPanelPage.pressCutShortcut();
+              await layersPanelPage.isVisibleLayersCount(2);
+              await mainPage.clickViewportByCoordinates(800, 300);
+              await layersPanelPage.pressPasteShortcut();
+              await mainPage.waitForChangeIsSaved();
+              await layersPanelPage.isVisibleLayersCount(3);
+            },
+          );
+        },
+      );
     },
   );
 });
