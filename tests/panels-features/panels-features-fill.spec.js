@@ -33,7 +33,7 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase(786, 'PF-68 Add fill to board'), async () => {
+  mainTest(qase(786, 'Add fill to board'), async () => {
     await designPanelPage.isFillHexCodeSet('#FFFFFF');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.viewport).toHaveScreenshot('board-fill.png', {
@@ -41,7 +41,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(791, 'PF-73 Change fill color for board'), async () => {
+  mainTest(qase(791, 'Change fill color for board'), async () => {
     await designPanelPage.clickFillColorIcon();
     await colorPalettePage.modalSetHex('FF0000');
     await mainPage.clickViewportTwice();
@@ -53,7 +53,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(796, 'PF-78 Change fill opacity for board'), async () => {
+  mainTest(qase(796, 'Change fill opacity for board'), async () => {
     await designPanelPage.changeOpacityForFill('70');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -64,7 +64,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(811, 'PF-93 Remove fill for board'), async () => {
+  mainTest(qase(811, 'Remove fill for board'), async () => {
     await designPanelPage.clickRemoveFillButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-removed-fill.png', {
@@ -79,7 +79,7 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase(790, 'PF-72 Add fill to path'), async () => {
+  mainTest(qase(790, 'Add fill to path'), async () => {
     await designPanelPage.clickAddFillButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.isFillHexCodeSet('#B1B2B5');
@@ -90,7 +90,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(795, 'PF-77 Change fill color for path'), async () => {
+  mainTest(qase(795, 'Change fill color for path'), async () => {
     await designPanelPage.clickAddFillButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickFillColorIcon();
@@ -104,7 +104,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(800, 'PF-82 Change fill opacity for path'), async () => {
+  mainTest(qase(800, 'Change fill opacity for path'), async () => {
     await designPanelPage.clickAddFillButton();
     await designPanelPage.changeOpacityForFill('70');
     await mainPage.clickOnDesignTab();
@@ -117,7 +117,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(815, 'PF-97 Remove fill for path'), async () => {
+  mainTest(qase(815, 'Remove fill for path'), async () => {
     await designPanelPage.clickAddFillButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickRemoveFillButton();
@@ -137,7 +137,7 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase(787, 'PF-69 Add fill to shape'), async () => {
+  mainTest(qase(787, 'Add fill to shape'), async () => {
     await designPanelPage.isFillHexCodeSet('#B1B2B5');
     await designPanelPage.isFillOpacitySet('100');
     await expect(mainPage.viewport).toHaveScreenshot('rectangle-fill.png', {
@@ -145,7 +145,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(797, 'PF-79 Change fill opacity for shape'), async () => {
+  mainTest(qase(797, 'Change fill opacity for shape'), async () => {
     await designPanelPage.changeOpacityForFill('70');
     await mainPage.clickViewportTwice();
     await designPanelPage.isFillHexCodeSet('#B1B2B5');
@@ -159,7 +159,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(812, 'PF-94 Remove fill for shape'), async () => {
+  mainTest(qase(812, 'Remove fill for shape'), async () => {
     await designPanelPage.clickRemoveFillButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rectangle--removed-fill.png', {
@@ -167,7 +167,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(792, 'PF-74 Change fill color for shape'), async () => {
+  mainTest(qase(792, 'Change fill color for shape'), async () => {
     await designPanelPage.clickFillColorIcon();
     await colorPalettePage.setHex('#FF0000');
     await mainPage.clickViewportTwice();
