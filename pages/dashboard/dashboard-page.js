@@ -203,6 +203,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingModalContainer = page.locator(
       '.main_ui_onboarding_questions__modal-container',
     );
+    this.onboardingTeamModalContainer = page.locator(
+      '.main_ui_onboarding_team_choice__modal-container',
+    );
     this.onboardingContinueBtn = page.locator(
       'button[class="main_ui_onboarding_newsletter__accept-btn"]',
     );
@@ -991,6 +994,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     ).not.toBeVisible();
   }
 
+  async isOnboardingTeamModalNotVisible() {
+    await expect(
+      this.onboardingTeamModalContainer,
+      `Onboarding team modal should not be visible`,
+    ).not.toBeVisible();
+  }
+
   async clickOnLetsGoBtn() {
     await this.onboardingLetsGoBtn.click();
   }
@@ -1087,6 +1097,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async clickOnOnboardingCreateEmptyTeamButton() {
     await this.onboardingContinueCreateTeamBtn.click();
+  }
+
+  async isOnboardingCreateTeamButtonActive() {
+    await expect(this.onboardingContinueCreateTeamBtn).not.toHaveAttribute(
+      'disabled',
+    );
   }
 
   async enterOnboardingTeamName(name) {

@@ -62,7 +62,9 @@ test.describe('Sign up via email invitation', () => {
       await dashboardPage.fillOnboardingFirstQuestions();
       await dashboardPage.skipWhatNewsPopUp();
       await dashboardPage.enterOnboardingTeamName(randomName);
+      await dashboardPage.isOnboardingCreateTeamButtonActive();
       await dashboardPage.clickOnOnboardingCreateEmptyTeamButton();
+      await dashboardPage.isOnboardingTeamModalNotVisible();
       await teamPage.isTeamSelected(randomName);
     },
   );
