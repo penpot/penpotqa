@@ -155,15 +155,17 @@ async function checkInviteText(text, team, user = 'k8q6byz') {
 
 async function checkRegisterText(text, name) {
   const messageText =
-    `Hello ${name}!\r\n` +
+    `Hi ${name},\r\n` +
     '\r\n' +
-    'Thanks for signing up for your Penpot account! Please verify your email using the\r\n' +
-    'link below and get started building mockups and prototypes today!\r\n' +
+    'Welcome to Penpot!\r\n' +
+    '\r\n' +
+    'Please verify your email to get started with your first design and collaboration.\r\n' +
     '\r\n' +
     '\r\n' +
     '\r\n' +
     'Enjoy!\r\n' +
-    'The Penpot team.';
+    '\r\n' +
+    'The Penpot team';
   await expect(text).toBe(messageText);
 }
 
