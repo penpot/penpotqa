@@ -235,14 +235,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.onboardingNewsCheckbox = page.locator('label[for="newsletter-news"]');
     this.onboardingCreateTeamInput = page.getByPlaceholder('Team name');
-    this.onboardingContinueCreateTeamBtn = page
+    this.onboardingCreateTeamButton = page
       .getByRole('button')
       .filter({ hasText: 'Create team' });
     this.onboardingContinueWithoutTeamBtn = page.getByText('Continue without team');
     this.onboardingInviteInput = page.getByPlaceholder('Emails, comma separated');
-    this.onboardingCreateTeamButton = page
-      .getByRole('button')
-      .filter({ hasText: 'Create team' });
     this.selectedRadioButtonLabel = page
       .locator('label[class*="components_forms__radio-label checked"]')
       .first();
@@ -1094,13 +1091,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickOnOnboardingCreateEmptyTeamButton() {
-    await this.onboardingContinueCreateTeamBtn.click();
+    await this.onboardingCreateTeamButton.click();
   }
 
   async isOnboardingCreateTeamButtonActive() {
-    await expect(this.onboardingContinueCreateTeamBtn).not.toHaveAttribute(
-      'disabled',
-    );
+    await expect(this.onboardingCreateTeamButton).not.toHaveAttribute('disabled');
   }
 
   async enterOnboardingTeamName(name) {
