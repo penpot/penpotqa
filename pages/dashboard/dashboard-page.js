@@ -239,9 +239,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .getByRole('button')
       .filter({ hasText: 'Create team' });
     this.onboardingContinueWithoutTeamBtn = page.getByText('Continue without team');
-    this.onboardingInviteInput = page.locator(
-      'input[class*="components_forms__inside-input"]',
-    );
+    this.onboardingInviteInput = page.getByPlaceholder('Emails, comma separated');
     this.onboardingCreateTeamButton = page
       .getByRole('button')
       .filter({ hasText: 'Create team' });
@@ -1110,7 +1108,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async enterOnboardingInviteEmails(name) {
-    await this.onboardingInviteInput.fill(name);
+    await this.onboardingInviteInput.pressSequentially(name);
   }
 
   async clickOnOnboardingCreateTeamButton() {
