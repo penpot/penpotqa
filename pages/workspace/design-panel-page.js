@@ -1,4 +1,4 @@
-const { expect } = require('@playwright/test');
+const { expect, test } = require('@playwright/test');
 const { BasePage } = require('../base-page');
 const { mainTest } = require('../../fixtures');
 
@@ -1937,54 +1937,46 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     } = {},
   ) {
     const typographyModal = this.getTypographyTokenModal(name);
-
     await this.hoverTypographyToken();
 
-    if (fontFamily !== undefined) {
-      await expect(
-        typographyModal.getByText(`- font-family: "${fontFamily}"`, { exact: true }),
-        `Font Family is: ${fontFamily}`,
-      ).toBeVisible();
-    }
-    if (fontSize !== undefined) {
-      await expect(
-        typographyModal.getByText(`- font-size: ${fontSize}`, { exact: true }),
-        `Font Size is: ${fontSize}`,
-      ).toBeVisible();
-    }
-    if (fontWeight !== undefined) {
-      await expect(
-        typographyModal.getByText(`- font-weight: ${fontWeight}`, { exact: true }),
-        `Font Weight is: ${fontWeight}`,
-      ).toBeVisible();
-    }
-    if (letterSpacing !== undefined) {
-      await expect(
-        typographyModal.getByText(`- letter-spacing: ${letterSpacing}`, {
-          exact: true,
-        }),
-        `Letter Spacing is: ${letterSpacing}`,
-      ).toBeVisible();
-    }
-    if (textCase !== undefined) {
-      await expect(
-        typographyModal.getByText(`- text-case: ${textCase}`, { exact: true }),
-        `Text Case is: ${textCase}`,
-      ).toBeVisible();
-    }
-    if (textDecoration !== undefined) {
-      await expect(
-        typographyModal.getByText(`- text-decoration: ${textDecoration}`, {
-          exact: true,
-        }),
-        `Text Decoration is: ${textDecoration}`,
-      ).toBeVisible();
-    }
-    if (lineHeight !== undefined) {
-      await expect(
-        typographyModal.getByText(`- line-height: ${lineHeight}`, { exact: true }),
-        `Line Height is: ${lineHeight}`,
-      ).toBeVisible();
+    const tokenValues = [
+      {
+        label: 'Font Family',
+        value: fontFamily,
+        line: (v) => `- font-family: "${v}"`,
+      },
+      { label: 'Font Size', value: fontSize, line: (v) => `- font-size: ${v}` },
+      {
+        label: 'Font Weight',
+        value: fontWeight,
+        line: (v) => `- font-weight: ${v}`,
+      },
+      {
+        label: 'Letter Spacing',
+        value: letterSpacing,
+        line: (v) => `- letter-spacing: ${v}`,
+      },
+      { label: 'Text Case', value: textCase, line: (v) => `- text-case: ${v}` },
+      {
+        label: 'Text Decoration',
+        value: textDecoration,
+        line: (v) => `- text-decoration: ${v}`,
+      },
+      {
+        label: 'Line Height',
+        value: lineHeight,
+        line: (v) => `- line-height: ${v}`,
+      },
+    ];
+
+    for (const { label, value, line } of tokenValues) {
+      if (value === undefined) continue;
+
+      await test.step(`Assert ${label} is: ${value}`, async () => {
+        await expect(
+          typographyModal.getByText(line(value), { exact: true }),
+        ).toBeVisible();
+      });
     }
   }
 
