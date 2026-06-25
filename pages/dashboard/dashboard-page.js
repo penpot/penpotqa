@@ -203,6 +203,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.onboardingModalContainer = page.locator(
       '.main_ui_onboarding_questions__modal-container',
     );
+    this.onboardingTeamModalContainer = page.locator(
+      '.main_ui_onboarding_team_choice__modal-container',
+    );
     this.onboardingContinueBtn = page.locator(
       'button[class="main_ui_onboarding_newsletter__accept-btn"]',
     );
@@ -232,16 +235,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     );
     this.onboardingNewsCheckbox = page.locator('label[for="newsletter-news"]');
     this.onboardingCreateTeamInput = page.getByPlaceholder('Team name');
-    this.onboardingContinueCreateTeamBtn = page
-      .getByRole('button')
-      .filter({ hasText: 'Create team' });
-    this.onboardingContinueWithoutTeamBtn = page.getByText('Continue without team');
-    this.onboardingInviteInput = page.locator(
-      'input[class*="components_forms__inside-input"]',
-    );
     this.onboardingCreateTeamButton = page
       .getByRole('button')
       .filter({ hasText: 'Create team' });
+    this.onboardingContinueWithoutTeamBtn = page.getByText('Continue without team');
+    this.onboardingInviteInput = page.getByPlaceholder('Emails, comma separated');
     this.selectedRadioButtonLabel = page
       .locator('label[class*="components_forms__radio-label checked"]')
       .first();
@@ -991,6 +989,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     ).not.toBeVisible();
   }
 
+  async isOnboardingTeamModalNotVisible() {
+    await expect(
+      this.onboardingTeamModalContainer,
+      `Onboarding team modal should not be visible`,
+    ).not.toBeVisible();
+  }
+
   async clickOnLetsGoBtn() {
     await this.onboardingLetsGoBtn.click();
   }
@@ -1086,7 +1091,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async clickOnOnboardingCreateEmptyTeamButton() {
-    await this.onboardingContinueCreateTeamBtn.click();
+    await this.onboardingCreateTeamButton.click();
+  }
+
+  async isOnboardingCreateTeamButtonActive() {
+    await expect(
+      this.onboardingCreateTeamButton,
+      'Onboarding create team button should be active',
+    ).not.toHaveAttribute('disabled');
   }
 
   async enterOnboardingTeamName(name) {
@@ -1094,7 +1106,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async enterOnboardingInviteEmails(name) {
-    await this.onboardingInviteInput.fill(name);
+    await this.onboardingInviteInput.pressSequentially(name);
   }
 
   async clickOnOnboardingCreateTeamButton() {
