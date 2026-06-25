@@ -956,15 +956,22 @@ mainTest.describe(() => {
       },
     );
 
+    await mainTest.step('Hide rulers before taking the snapshot', async () => {
+      await mainPage.clickMainMenuButton();
+      await mainPage.clickViewMainMenuItem();
+      await mainPage.clickHideRulersMainMenuSubItem();
+      await mainPage.clickViewportOnce();
+    });
+
     await mainTest.step(
       'Verify board is not visible, then click locate',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot('board-not-visible.png', {
-          mask: mainPage.maskViewport({ gridEditorToolbar: true, useRulers: true }),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         });
         await designPanelPage.clickGridLocateButton();
         await expect(mainPage.viewport).toHaveScreenshot('board-visible.png', {
-          mask: mainPage.maskViewport({ gridEditorToolbar: true, useRulers: true }),
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         });
       },
     );
