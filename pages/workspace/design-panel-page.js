@@ -344,7 +344,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textStrikethrough = page.getByTestId('line-through-text-decoration');
     this.textTypographyMenuButton = this.designTabpanel
       .locator('div[class*="element-set-actions"]')
-      .getByRole('button', { name: 'labels.open' });
+      .getByRole('button', { name: 'Open' });
     this.typographyEntry = this.designTabpanel.locator(
       'div[class*="typography-entry"]',
     );
