@@ -78,28 +78,29 @@ mainTest.describe(() => {
         },
       );
 
-      const UPDATED_TOKEN: TypographyToken<TokenClass> = {
-        class: TokenClass.Typography,
-        name: TYPO_TOKEN.name,
-        fontWeight: 'thin',
-        fontSize: '16',
-        textDecoration: 'underline',
-        lineHeight: '24',
-      };
-      const THIN_FONT_WEIGHT_VALUE = '200';
-
       await mainTest.step('2586 Edit a typography token', async () => {
+        const UPDATED_TOKEN: TypographyToken<TokenClass> = {
+          class: TokenClass.Typography,
+          name: TYPO_TOKEN.name,
+          fontWeight: 'Medium',
+          fontSize: '16',
+          textDecoration: 'underline',
+          lineHeight: '24',
+        };
+
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(UPDATED_TOKEN);
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.isTokenAppliedWithName(UPDATED_TOKEN.name);
+        await designPanelPage.hoverAndAssertTypographyTokenValues(TYPO_TOKEN.name, {
+          fontFamily: TYPO_TOKEN.fontFamily,
+          fontSize: UPDATED_TOKEN.fontSize,
+          fontWeight: UPDATED_TOKEN.fontWeight,
+          letterSpacing: TYPO_TOKEN.letterSpacing,
+          textCase: TYPO_TOKEN.textCase,
+          textDecoration: UPDATED_TOKEN.textDecoration,
+          lineHeight: UPDATED_TOKEN.lineHeight,
+        });
 
-        await designPanelPage.checkTextCase(TYPO_TOKEN.textCase);
-        await designPanelPage.checkLetterSpacing(TYPO_TOKEN.letterSpacing);
-        await designPanelPage.checkFontName(TYPO_TOKEN.fontFamily);
-
-        await designPanelPage.checkFontSize(UPDATED_TOKEN.fontSize);
-        await designPanelPage.checkTextLineHeight(UPDATED_TOKEN.lineHeight);
-        await designPanelPage.checkFontStyle(THIN_FONT_WEIGHT_VALUE);
         await designPanelPage.clickOnTextAlignOptionsButton();
         await designPanelPage.isTextUnderlineChecked();
       });
@@ -112,6 +113,7 @@ mainTest.describe(() => {
       };
       const RESOLVED_FONT_SIZE_1 = '120';
       const RESOLVED_LINE_HEIGHT_1 = '1.5';
+
       const TOKEN_2: TypographyToken<TokenClass> = {
         class: TokenClass.Typography,
         name: TYPO_TOKEN.name,
@@ -119,6 +121,7 @@ mainTest.describe(() => {
         lineHeight: '103px%',
       };
       const RESOLVED_LINE_HEIGHT_2 = '1.03';
+
       const TOKEN_3: TypographyToken<TokenClass> = {
         class: TokenClass.Typography,
         name: TYPO_TOKEN.name,
@@ -126,6 +129,7 @@ mainTest.describe(() => {
         lineHeight: '17px',
       };
       const RESOLVED_LINE_HEIGHT_3 = '0.94';
+
       const TOKEN_4: TypographyToken<TokenClass> = {
         class: TokenClass.Typography,
         name: TYPO_TOKEN.name,
@@ -137,8 +141,10 @@ mainTest.describe(() => {
       await mainTest.step('2592 Validate Typography Token Units', async () => {
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_1);
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.checkFontSize(RESOLVED_FONT_SIZE_1);
-        await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_1);
+        await designPanelPage.hoverAndAssertTypographyTokenValues(TYPO_TOKEN.name, {
+          fontSize: RESOLVED_FONT_SIZE_1,
+          lineHeight: RESOLVED_LINE_HEIGHT_1,
+        });
       });
 
       await mainTest.step(
@@ -146,13 +152,30 @@ mainTest.describe(() => {
         async () => {
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_2);
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_2);
+          await designPanelPage.hoverAndAssertTypographyTokenValues(
+            TYPO_TOKEN.name,
+            {
+              lineHeight: RESOLVED_LINE_HEIGHT_2,
+            },
+          );
+
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_3);
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_3);
+          await designPanelPage.hoverAndAssertTypographyTokenValues(
+            TYPO_TOKEN.name,
+            {
+              lineHeight: RESOLVED_LINE_HEIGHT_3,
+            },
+          );
+
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_4);
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.checkTextLineHeight(RESOLVED_LINE_HEIGHT_4);
+          await designPanelPage.hoverAndAssertTypographyTokenValues(
+            TYPO_TOKEN.name,
+            {
+              lineHeight: RESOLVED_LINE_HEIGHT_4,
+            },
+          );
         },
       );
     },
@@ -218,8 +241,13 @@ mainTest.describe(() => {
           await tokensPage.tokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
           // Validates assets are detached after applying the typography token
           await designPanelPage.isTypographyAssetAgVisible(false);
-          await designPanelPage.checkFontName(TYPO_TOKEN.fontFamily);
-          await designPanelPage.checkLetterSpacing(TYPO_TOKEN.letterSpacing);
+          await designPanelPage.hoverAndAssertTypographyTokenValues(
+            TYPO_TOKEN.name,
+            {
+              fontFamily: TYPO_TOKEN.fontFamily,
+              letterSpacing: TYPO_TOKEN.letterSpacing,
+            },
+          );
         },
       );
 
