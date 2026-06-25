@@ -1095,7 +1095,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async isOnboardingCreateTeamButtonActive() {
-    await expect(this.onboardingCreateTeamButton).not.toHaveAttribute('disabled');
+    await expect(
+      this.onboardingCreateTeamButton,
+      'Onboarding create team button should be active',
+    ).not.toHaveAttribute('disabled');
   }
 
   async enterOnboardingTeamName(name) {
