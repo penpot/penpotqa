@@ -128,7 +128,7 @@ mainTest.describe(() => {
         fontSize: '18px',
         lineHeight: '17px',
       };
-      const RESOLVED_LINE_HEIGHT_3 = '0.94';
+      const RESOLVED_LINE_HEIGHT_3 = '0.9444444444444444';
 
       const TOKEN_4: TypographyToken<TokenClass> = {
         class: TokenClass.Typography,
