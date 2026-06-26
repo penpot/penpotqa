@@ -56,9 +56,7 @@ mainTest(qase(817, "Hide/show grids via shortcut CTRL '"), async () => {
 });
 
 mainTest(qase(816, 'Hide/show rulers via main menu'), async () => {
-  await mainPage.clickMainMenuButton();
-  await mainPage.clickViewMainMenuItem();
-  await mainPage.clickHideRulersMainMenuSubItem();
+  await mainPage.hideRulersViaMainMenu();
   await mainPage.clickViewportOnce();
   await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
     mask: mainPage.maskViewport(),

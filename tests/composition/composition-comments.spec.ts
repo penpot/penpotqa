@@ -58,19 +58,12 @@ mainTest.describe(() => {
     const comment = 'Test Comment';
 
     await mainTest.step(
-      'Hide rulers to avoid masking issues in the snapshots',
-      async () => {
-        await mainPage.clickMainMenuButton();
-        await mainPage.clickViewMainMenuItem();
-        await mainPage.clickHideRulersMainMenuSubItem();
-      },
-    );
-
-    await mainTest.step(
       'Verify comment is displayed in pop-up and panel',
       async () => {
         await commentsPanelPage.isCommentDisplayedInPopUp(comment);
         await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
+
+        await mainPage.hideRulersViaMainMenu();
         await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
           mask: mainPage.maskViewport({ usersSection: true }, [
             commentsPanelPage.commentsAuthorSection,
@@ -101,15 +94,6 @@ mainTest.describe(() => {
       const replyComment =
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
 
-      await mainTest.step(
-        'Hide rulers to avoid masking issues in the snapshots',
-        async () => {
-          await mainPage.clickMainMenuButton();
-          await mainPage.clickViewMainMenuItem();
-          await mainPage.clickHideRulersMainMenuSubItem();
-        },
-      );
-
       await mainTest.step('Enter and post a reply', async () => {
         await commentsPanelPage.enterReplyText(replyComment);
         await commentsPanelPage.clickPostCommentButton();
@@ -120,6 +104,7 @@ mainTest.describe(() => {
         async () => {
           await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
           await commentsPanelPage.isCommentReplyDisplayedInCommentsPanel();
+          await mainPage.hideRulersViaMainMenu();
           await expect(page).toHaveScreenshot('comment-reply.png', {
             mask: mainPage.maskViewport({ usersSection: true }, [
               commentsPanelPage.commentsAuthorSection,
@@ -144,22 +129,14 @@ mainTest.describe(() => {
         await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
       });
 
-      await mainTest.step(
-        'Hide rulers to avoid masking issues in the snapshots',
-        async () => {
-          await mainPage.clickMainMenuButton();
-          await mainPage.clickViewMainMenuItem();
-          await mainPage.clickHideRulersMainMenuSubItem();
-          await mainPage.clickViewportOnce();
-        },
-      );
-
       await mainTest.step('Reload and verify edited comment persists', async () => {
         await mainPage.reloadPage();
         await commentsPanelPage.clickCreateCommentButton();
         await commentsPanelPage.isCommentDisplayedInCommentsPanel(editedComment);
         await commentsPanelPage.clickCommentThreadIconByNumber('1');
         await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
+
+        await mainPage.hideRulersViaMainMenu();
         await expect(page).toHaveScreenshot('comment-edited.png', {
           mask: mainPage.maskViewport({ usersSection: true }, [
             commentsPanelPage.commentsAuthorSection,
@@ -180,21 +157,13 @@ mainTest.describe(() => {
       });
 
       await mainTest.step(
-        'Hide rulers to avoid masking issues in the snapshots',
-        async () => {
-          await mainPage.clickMainMenuButton();
-          await mainPage.clickViewMainMenuItem();
-          await mainPage.clickHideRulersMainMenuSubItem();
-        },
-      );
-
-      await mainTest.step(
         'Verify thread is removed and placeholder is shown',
         async () => {
           await commentsPanelPage.isCommentThreadIconNotDisplayed();
           await commentsPanelPage.isCommentsPanelPlaceholderDisplayed(
             "You're all caught up! New comment notifications will appear here.",
           );
+          await mainPage.hideRulersViaMainMenu();
           await expect(page).toHaveScreenshot('comment-removed.png', {
             mask: mainPage.maskViewport({ usersSection: true }, [
               commentsPanelPage.commentsAuthorSection,
@@ -211,18 +180,10 @@ mainTest.describe(() => {
       await commentsPanelPage.clickResolveCommentCheckbox();
     });
 
-    await mainTest.step(
-      'Hide rulers to avoid masking issues in the snapshots',
-      async () => {
-        await mainPage.clickMainMenuButton();
-        await mainPage.clickViewMainMenuItem();
-        await mainPage.clickHideRulersMainMenuSubItem();
-        await mainPage.clickViewportOnce();
-      },
-    );
-
     await mainTest.step('Verify resolved thread icon is shown', async () => {
       await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
+      await mainPage.hideRulersViaMainMenu();
+      await mainPage.clickViewportOnce();
       await expect(page).toHaveScreenshot('comment-resolved-closed-pop-up.png', {
         mask: mainPage.maskViewport({ usersSection: true }, [
           commentsPanelPage.commentsAuthorSection,
@@ -253,15 +214,6 @@ mainTest(
     const comment =
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.';
 
-    await mainTest.step(
-      'Hide rulers to avoid masking issues in the snapshots',
-      async () => {
-        await mainPage.clickMainMenuButton();
-        await mainPage.clickViewMainMenuItem();
-        await mainPage.clickHideRulersMainMenuSubItem();
-      },
-    );
-
     await mainTest.step('Create and post a Latin text comment', async () => {
       await commentsPanelPage.clickCreateCommentButton();
       await mainPage.clickViewportTwice();
@@ -272,6 +224,7 @@ mainTest(
     await mainTest.step('Verify comment in pop-up and panel (open)', async () => {
       await commentsPanelPage.isCommentDisplayedInPopUp(comment);
       await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
+      await mainPage.hideRulersViaMainMenu();
       await expect(page).toHaveScreenshot('comment-latin-opened-pop-up.png', {
         mask: mainPage.maskViewport({ usersSection: true }, [
           commentsPanelPage.commentsAuthorSection,
