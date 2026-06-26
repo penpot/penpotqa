@@ -1,4 +1,4 @@
-const { expect } = require('@playwright/test');
+const { expect, test } = require('@playwright/test');
 const { BasePage } = require('../base-page');
 const { mainTest } = require('../../fixtures');
 
@@ -10,6 +10,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     super(page);
 
     //Design panel
+    this.rightSidebar = this.page.getByTestId('right-sidebar');
     this.designTabpanel = page.getByRole('tabpanel', { name: 'design' });
     this.canvasBackgroundColorIcon = page
       .locator('div[class*="page__element-set"] div[class*="color-bullet-wrapper"]')
@@ -281,7 +282,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
 
     //Design panel - Stroke section
-    this.rightSidebar = this.page.getByTestId('right-sidebar');
     this.strokeSectionContainer = this.rightSidebar.locator(
       '[aria-label="Stroke section"]',
     );
@@ -355,6 +355,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.typographyAssetAg = this.designTabpanel.getByText('Ag', {
       exact: true,
     });
+    this.typographyTokenButton = this.rightSidebar.getByLabel('typography');
 
     //Design panel - Export section
     this.exportSection = page.getByText('Export', { exact: true });
@@ -466,6 +467,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       exact: true,
     });
     this.variantPropertySwitch = this.componentBlockOnDesignTab.getByRole('switch');
+  }
+
+  getTypographyTokenModal(tokenName) {
+    return this.page.getByRole('tooltip').getByText(`Name: ${tokenName}`);
   }
 
   async isFlexElementSectionOpened() {
@@ -1909,6 +1914,70 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     visible
       ? await expect(this.typographyAssetAg).toBeVisible(visible)
       : await expect(this.typographyAssetAg).not.toBeVisible(visible);
+  }
+
+  async hoverTypographyToken() {
+    await this.typographyTokenButton.hover();
+  }
+
+  async isTypographyTokenModalByNameVisible(name) {
+    await expect(this.getTypographyTokenModal(name)).toBeVisible();
+  }
+
+  async hoverAndAssertTypographyTokenValues(
+    name,
+    {
+      fontFamily,
+      fontSize,
+      fontWeight,
+      letterSpacing,
+      textCase,
+      textDecoration,
+      lineHeight,
+    } = {},
+  ) {
+    const typographyModal = this.getTypographyTokenModal(name);
+    await this.hoverTypographyToken();
+
+    const tokenValues = [
+      {
+        label: 'Font Family',
+        value: fontFamily,
+        line: (v) => `- font-family: "${v}"`,
+      },
+      { label: 'Font Size', value: fontSize, line: (v) => `- font-size: ${v}` },
+      {
+        label: 'Font Weight',
+        value: fontWeight,
+        line: (v) => `- font-weight: ${v}`,
+      },
+      {
+        label: 'Letter Spacing',
+        value: letterSpacing,
+        line: (v) => `- letter-spacing: ${v}`,
+      },
+      { label: 'Text Case', value: textCase, line: (v) => `- text-case: ${v}` },
+      {
+        label: 'Text Decoration',
+        value: textDecoration,
+        line: (v) => `- text-decoration: ${v}`,
+      },
+      {
+        label: 'Line Height',
+        value: lineHeight,
+        line: (v) => `- line-height: ${v}`,
+      },
+    ];
+
+    for (const { label, value, line } of tokenValues) {
+      if (value === undefined) continue;
+
+      await test.step(`Assert ${label} is: ${value}`, async () => {
+        await expect(
+          typographyModal.getByText(line(value), { exact: true }),
+        ).toBeVisible();
+      });
+    }
   }
 
   async checkTextCase(value) {
