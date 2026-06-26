@@ -7,7 +7,7 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
    */
   constructor(page) {
     super(page);
-    this.popUp = page.locator('div[class*="colorpicker-tooltip"]');
+    this.colorPicker = page.getByTestId('colorpicker');
     this.hexInput = page.locator('#hex-value');
     this.modalHexInput = page
       .locator(
@@ -24,12 +24,6 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.colorsFileLibraryOptions = page.getByText('File library', { exact: true });
     this.colorPaletteActionsBtn = page.locator('button[class*="palette-actions"]');
     this.colorPaletteMenu = page.locator('ul[class*="palette-menu"]');
-    this.colorPaletteFileLibraryOpt = page
-      .getByRole('listitem')
-      .filter({ hasText: 'File library' });
-    this.colorPaletteRecentColorsOpt = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Recent colors' });
     this.colorPaletteSolidDropdown = page.getByText('Solid', { exact: true });
     this.colorPaletteGradientOpt = page
       .getByRole('option')
@@ -38,7 +32,16 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.colorPaletteRemoveStopButton = page
       .locator('[class*="gradient-stops-list"]')
       .getByRole('button', { name: 'Remove color' });
-    this.colorButton = this.popUp.getByTitle('Color', { exact: true });
+    this.colorButton = this.colorPicker.getByTitle('Color', { exact: true });
+
+    // File Library / Recent Colors section
+    this.colorPaletteFileLibraryOpt = page
+      .getByRole('listitem')
+      .filter({ hasText: 'File library' });
+    this.colorPaletteRecentColorsOpt = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Recent colors' });
+    this.colorsSection = this.colorPicker.getByLabel('Colors');
   }
 
   async setHex(value) {
@@ -56,17 +59,13 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   }
 
   async isColorPalettePopUpOpened() {
-    await expect(this.popUp).toBeVisible();
+    await expect(this.colorPicker).toBeVisible();
   }
 
-  async clickColorBullet(isFileLibrary = true, value = 0) {
-    const classAttr = isFileLibrary
-      ? 'color_bullet__is-library-color'
-      : 'color_bullet__is-not-library-color';
-    const selector = this.page.locator(
-      `div[class*="selected-colors"] div[class*="${classAttr}"] >> nth=${value}`,
-    );
-    await selector.click();
+  async clickColorBullet(color) {
+    const colorBullet = this.colorsSection.getByRole('button', { name: color });
+
+    await colorBullet.click();
   }
 
   async selectFileLibraryColors() {
