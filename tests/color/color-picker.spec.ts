@@ -95,7 +95,7 @@ mainTest(qase([1035], 'Use Recent colors'), async () => {
 
   await mainTest.step(`Apply recent color and verify board appearance`, async () => {
     await designPanelPage.clickFillColorIcon();
-    await colorPalettePage.clickColorBullet(false, 0);
+    await colorPalettePage.clickColorBullet(color1);
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(
@@ -106,10 +106,12 @@ mainTest(qase([1035], 'Use Recent colors'), async () => {
 });
 
 mainTest(qase([1036], 'Use colors from File library'), async () => {
+  const color = '#ffff00';
+
   await mainTest.step('Add color to file library', async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickAddFileLibraryColorButton();
-    await colorPalettePage.setHex('#ffff00');
+    await colorPalettePage.setHex(color);
     await colorPalettePage.clickSaveColorStyleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -119,7 +121,7 @@ mainTest(qase([1036], 'Use colors from File library'), async () => {
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.clickFillColorIcon();
     await colorPalettePage.selectFileLibraryColors();
-    await colorPalettePage.clickColorBullet();
+    await colorPalettePage.clickColorBullet(color);
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
   });
