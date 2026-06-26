@@ -259,7 +259,7 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async enterEmailToInviteMembersPopUp(emails) {
     const emailString = Array.isArray(emails) ? emails.join(', ') : emails;
-    await this.inviteMembersToTeamEmailInput.fill(emailString);
+    await this.inviteMembersToTeamEmailInput.type(emailString, { delay: 50 });
   }
 
   async clickSendInvitationButton() {
