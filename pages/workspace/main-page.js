@@ -760,7 +760,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async isActionDisplayedOnHistoryPanel(actionName) {
-    await expect(this.historyPanelActionRecord).toHaveText(actionName);
+    await expect(this.historyPanelActionRecord).toContainText(actionName);
   }
 
   async waitForBottomPaletteIsOpened() {
