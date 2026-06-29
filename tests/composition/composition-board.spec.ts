@@ -443,6 +443,7 @@ mainTest.describe(() => {
     await layersPanelPage.dragAndDropElementToElement('Board', 'Main Board');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.setFlexElementPositionAbsolute();
+    await mainPage.pressHideShowRulersShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board.png', {
       mask: mainPage.maskViewport(),
     });
