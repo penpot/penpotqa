@@ -228,10 +228,10 @@ mainTest.describe(() => {
       await designPanelPage.changeOpacityForShadow('50');
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickOnLayerOnCanvas();
-      await mainPage.waitForResizeHandlerVisible();
       await designPanelPage.isExpectedShadowTypeOption('Drop shadow');
       await designPanelPage.isExpectedShadowTypeOption('Inner shadow');
       await mainPage.focusLayerViaShortcut();
+      await mainPage.clickOnLayerOnCanvas();
       await expect(mainPage.viewport).toHaveScreenshot('text-two-shadows.png', {
         mask: mainPage.maskViewport(),
       });
