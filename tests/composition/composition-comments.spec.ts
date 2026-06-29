@@ -62,8 +62,10 @@ mainTest.describe(() => {
       async () => {
         await commentsPanelPage.isCommentDisplayedInPopUp(comment);
         await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
+
+        await mainPage.hideRulersViaMainMenu();
         await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
-          mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+          mask: mainPage.maskViewport({ usersSection: true }, [
             commentsPanelPage.commentsAuthorSection,
             commentsPanelPage.commentAvatarImage,
           ]),
@@ -77,7 +79,7 @@ mainTest.describe(() => {
         await mainPage.clickViewportOnce();
         await commentsPanelPage.isCommentThreadIconDisplayed();
         await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
-          mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+          mask: mainPage.maskViewport({ usersSection: true }, [
             commentsPanelPage.commentsAuthorSection,
             commentsPanelPage.commentAvatarImage,
           ]),
@@ -102,8 +104,9 @@ mainTest.describe(() => {
         async () => {
           await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
           await commentsPanelPage.isCommentReplyDisplayedInCommentsPanel();
+          await mainPage.hideRulersViaMainMenu();
           await expect(page).toHaveScreenshot('comment-reply.png', {
-            mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+            mask: mainPage.maskViewport({ usersSection: true }, [
               commentsPanelPage.commentsAuthorSection,
               commentsPanelPage.commentAvatarImage,
             ]),
@@ -132,8 +135,10 @@ mainTest.describe(() => {
         await commentsPanelPage.isCommentDisplayedInCommentsPanel(editedComment);
         await commentsPanelPage.clickCommentThreadIconByNumber('1');
         await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
+
+        await mainPage.hideRulersViaMainMenu();
         await expect(page).toHaveScreenshot('comment-edited.png', {
-          mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+          mask: mainPage.maskViewport({ usersSection: true }, [
             commentsPanelPage.commentsAuthorSection,
             commentsPanelPage.commentAvatarImage,
           ]),
@@ -158,8 +163,9 @@ mainTest.describe(() => {
           await commentsPanelPage.isCommentsPanelPlaceholderDisplayed(
             "You're all caught up! New comment notifications will appear here.",
           );
+          await mainPage.hideRulersViaMainMenu();
           await expect(page).toHaveScreenshot('comment-removed.png', {
-            mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+            mask: mainPage.maskViewport({ usersSection: true }, [
               commentsPanelPage.commentsAuthorSection,
               commentsPanelPage.commentAvatarImage,
             ]),
@@ -172,13 +178,14 @@ mainTest.describe(() => {
   mainTest(qase([1240], 'Resolve comment'), async ({ page }) => {
     await mainTest.step('Resolve the comment and close pop-up', async () => {
       await commentsPanelPage.clickResolveCommentCheckbox();
-      await mainPage.clickViewportOnce();
     });
 
     await mainTest.step('Verify resolved thread icon is shown', async () => {
       await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
+      await mainPage.hideRulersViaMainMenu();
+      await mainPage.clickViewportOnce();
       await expect(page).toHaveScreenshot('comment-resolved-closed-pop-up.png', {
-        mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+        mask: mainPage.maskViewport({ usersSection: true }, [
           commentsPanelPage.commentsAuthorSection,
           commentsPanelPage.commentAvatarImage,
         ]),
@@ -191,7 +198,7 @@ mainTest.describe(() => {
         await commentsPanelPage.clickResolvedCommentThreadIcon();
         await commentsPanelPage.isResolveCommentCheckboxSelected();
         await expect(page).toHaveScreenshot('comment-resolved-opened-pop-up.png', {
-          mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+          mask: mainPage.maskViewport({ usersSection: true }, [
             commentsPanelPage.commentsAuthorSection,
             commentsPanelPage.commentAvatarImage,
           ]),
@@ -217,8 +224,9 @@ mainTest(
     await mainTest.step('Verify comment in pop-up and panel (open)', async () => {
       await commentsPanelPage.isCommentDisplayedInPopUp(comment);
       await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
+      await mainPage.hideRulersViaMainMenu();
       await expect(page).toHaveScreenshot('comment-latin-opened-pop-up.png', {
-        mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+        mask: mainPage.maskViewport({ usersSection: true }, [
           commentsPanelPage.commentsAuthorSection,
           commentsPanelPage.commentAvatarImage,
         ]),
@@ -229,7 +237,7 @@ mainTest(
       await mainPage.clickViewportOnce();
       await commentsPanelPage.isCommentThreadIconDisplayed();
       await expect(page).toHaveScreenshot('comment-latin-closed-pop-up.png', {
-        mask: mainPage.maskViewport({ usersSection: true, useRulers: true }, [
+        mask: mainPage.maskViewport({ usersSection: true }, [
           commentsPanelPage.commentsAuthorSection,
           commentsPanelPage.commentAvatarImage,
         ]),
