@@ -41,17 +41,17 @@ mainTest(qase(817, "Hide/show guides via shortcut CTRL '"), async () => {
   await designPanelPage.clickAddGuidesButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.hideRulersViaMainMenu();
-  await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+  await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
     mask: mainPage.maskViewport(),
   });
   await mainPage.pressHideShowGuidesShortcut();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot('square-grid-hide.png', {
+  await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
     mask: mainPage.maskViewport(),
   });
   await mainPage.pressHideShowGuidesShortcut();
   await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+  await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
     mask: mainPage.maskViewport(),
   });
 });

@@ -34,7 +34,7 @@ mainTest.describe(() => {
   mainTest(qase(719, 'PF-1 Set square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
       mask: mainPage.maskViewport(),
     });
   });
@@ -46,7 +46,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      'square-grid-changed-size.png',
+      'square-guide-changed-size.png',
       {
         mask: mainPage.maskViewport(),
       },
@@ -61,7 +61,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      'square-grid-changed-opacity.png',
+      'square-guide-changed-opacity.png',
       {
         mask: mainPage.maskViewport(),
       },
@@ -77,7 +77,7 @@ mainTest.describe(() => {
     await designPanelPage.clickGuidesActionsButton();
     await designPanelPage.clickUseDefaultGuidesButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
       mask: mainPage.maskViewport(),
     });
   });
@@ -87,17 +87,17 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
         mask: mainPage.maskViewport(),
       });
       await designPanelPage.clickHideGuidesButton();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('square-grid-hide.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
         mask: mainPage.maskViewport(),
       });
       await designPanelPage.clickUnhideGuidesButton();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('square-grid-unhide.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('square-guide-unhide.png', {
         mask: mainPage.maskViewport(),
       });
     },
@@ -108,21 +108,21 @@ mainTest.describe(() => {
     async () => {
       await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
         mask: mainPage.maskViewport(),
       });
       await mainPage.clickMainMenuButton();
       await mainPage.clickViewMainMenuItem();
       await mainPage.clickHideGridsMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('square-grid-hide.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
         mask: mainPage.maskViewport(),
       });
       await mainPage.clickMainMenuButton();
       await mainPage.clickViewMainMenuItem();
       await mainPage.clickShowGridsMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('square-grid-unhide.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('square-guide-unhide.png', {
         mask: mainPage.maskViewport(),
       });
     },
@@ -133,7 +133,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickRemoveGuidesButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-without-grid.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('board-without-guide.png', {
       mask: mainPage.maskViewport(),
     });
   });
@@ -142,7 +142,7 @@ mainTest.describe(() => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('columns-guide-default.png', {
       mask: mainPage.maskViewport(),
     });
   });
@@ -155,7 +155,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      'columns-grid-changed-columns.png',
+      'columns-guide-changed-columns.png',
       {
         mask: mainPage.maskViewport(),
       },
@@ -173,7 +173,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      'columns-grid-changed-width.png',
+      'columns-guide-changed-width.png',
       {
         mask: mainPage.maskViewport(),
       },
@@ -184,21 +184,24 @@ mainTest.describe(() => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('columns-guide-default.png', {
       mask: mainPage.maskViewport(),
     });
     await designPanelPage.clickGuidesActionsButton();
     await designPanelPage.changeOpacityForGuides('50');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('columns-grid-opacity-50.png', {
-      mask: mainPage.maskViewport(),
-    });
+    await expect(mainPage.viewport).toHaveScreenshot(
+      'columns-guide-opacity-50.png',
+      {
+        mask: mainPage.maskViewport(),
+      },
+    );
     await designPanelPage.changeOpacityForGuides('100');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      'columns-grid-opacity-100.png',
+      'columns-guide-opacity-100.png',
       { mask: mainPage.maskViewport() },
     );
   });
@@ -212,7 +215,7 @@ mainTest.describe(() => {
     await designPanelPage.clickUseDefaultGuidesButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('columns-guide-default.png', {
       mask: mainPage.maskViewport(),
     });
   });
@@ -223,17 +226,17 @@ mainTest.describe(() => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('columns-guide-default.png', {
         mask: mainPage.maskViewport(),
       });
       await designPanelPage.clickHideGuidesButton();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('columns-grid-hide.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('columns-guide-hide.png', {
         mask: mainPage.maskViewport(),
       });
       await designPanelPage.clickUnhideGuidesButton();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('columns-grid-unhide.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('columns-guide-unhide.png', {
         mask: mainPage.maskViewport(),
       });
     },
@@ -245,7 +248,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickRemoveGuidesButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-without-grid.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('board-without-guide.png', {
       mask: mainPage.maskViewport(),
     });
   });
@@ -254,7 +257,7 @@ mainTest.describe(() => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('rows-guide-default.png', {
       mask: mainPage.maskViewport(),
     });
   });
@@ -266,7 +269,7 @@ mainTest.describe(() => {
     await designPanelPage.changeColumnsOrRowsNumberForGuides('12');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rows-grid-changed-rows.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('rows-guide-changed-rows.png', {
       mask: mainPage.maskViewport(),
     });
   });
@@ -282,7 +285,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
-      'rows-grid-changed-height.png',
+      'rows-guide-changed-height.png',
       {
         mask: mainPage.maskViewport(),
       },
@@ -293,20 +296,20 @@ mainTest.describe(() => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('rows-guide-default.png', {
       mask: mainPage.maskViewport(),
     });
     await designPanelPage.clickGuidesActionsButton();
     await designPanelPage.changeOpacityForGuides('50');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rows-grid-opacity-50.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('rows-guide-opacity-50.png', {
       mask: mainPage.maskViewport(),
     });
     await designPanelPage.changeOpacityForGuides('100');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rows-grid-opacity-100.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('rows-guide-opacity-100.png', {
       mask: mainPage.maskViewport(),
     });
   });
@@ -320,7 +323,7 @@ mainTest.describe(() => {
     await designPanelPage.clickUseDefaultGuidesButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('rows-guide-default.png', {
       mask: mainPage.maskViewport(),
     });
   });
@@ -331,21 +334,21 @@ mainTest.describe(() => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Rows');
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('rows-guide-default.png', {
         mask: mainPage.maskViewport(),
       });
       await mainPage.clickMainMenuButton();
       await mainPage.clickViewMainMenuItem();
       await mainPage.clickHideGridsMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('rows-grid-hide.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('rows-guide-hide.png', {
         mask: mainPage.maskViewport(),
       });
       await mainPage.clickMainMenuButton();
       await mainPage.clickViewMainMenuItem();
       await mainPage.clickShowGridsMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('rows-grid-unhide.png', {
+      await expect(mainPage.viewport).toHaveScreenshot('rows-guide-unhide.png', {
         mask: mainPage.maskViewport(),
       });
     },
@@ -357,7 +360,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickRemoveGuidesButton();
     await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-without-grid.png', {
+    await expect(mainPage.viewport).toHaveScreenshot('board-without-guide.png', {
       mask: mainPage.maskViewport(),
     });
   });
