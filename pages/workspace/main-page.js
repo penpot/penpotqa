@@ -102,10 +102,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.hideRulersMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Hide rulers' });
-    this.hideGridsMainMenuSubItem = page
+    this.hideGuidesMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Hide pixel grid' });
-    this.showGridsMainMenuSubItem = page
+    this.showGuidesMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Show pixel grid' });
     this.selectAllMainMenuSubItem = page
@@ -577,12 +577,12 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickHideRulersMainMenuSubItem();
   }
 
-  async clickHideGridsMainMenuSubItem() {
-    await this.hideGridsMainMenuSubItem.click();
+  async clickHideGuidesMainMenuSubItem() {
+    await this.hideGuidesMainMenuSubItem.click();
   }
 
-  async clickShowGridsMainMenuSubItem() {
-    await this.showGridsMainMenuSubItem.click();
+  async clickShowGuidesMainMenuSubItem() {
+    await this.showGuidesMainMenuSubItem.click();
   }
 
   async clickSelectAllMainMenuSubItem() {
@@ -601,8 +601,20 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press('Control+Shift+R');
   }
 
-  async pressHideShowGridsShortcut() {
-    await this.page.keyboard.press("Control+'");
+  async pressHideShowGuidesShortcut() {
+    // page.keyboard.press("Control+'") fails on Spanish keyboards: Chrome translates
+    // the physical 'Quote' key code through the OS layout even for CDP synthetic events,
+    // producing the wrong character. Dispatching directly to the viewport element with
+    // an explicit key:"'" bypasses that translation.
+    const opts = {
+      key: "'",
+      code: 'Quote',
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    };
+    await this.viewport.dispatchEvent('keydown', opts);
+    await this.viewport.dispatchEvent('keyup', { ...opts, ctrlKey: false });
   }
 
   async pressSelectAllShortcut() {
