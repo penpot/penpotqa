@@ -450,6 +450,7 @@ mainTest.describe(() => {
     await mainPage.clickViewportByCoordinates(300, 100, 2);
     await layersPanelPage.selectBoardChildLayer('Board');
     await designPanelPage.changeAxisXAndYForLayer('100', '100');
+    await mainPage.clickOnLayerOnCanvas();
     await layersPanelPage.selectBoardChildLayer('Board');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
