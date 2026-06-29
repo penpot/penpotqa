@@ -71,6 +71,7 @@ mainTest(
     });
 
     await mainTest.step('Verify component on canvas and layers panel', async () => {
+      await mainPage.hideRulersViaMainMenu();
       await expect(
         mainPage.viewport,
         'Viewport should match screenshot with copy of main component on canvas',

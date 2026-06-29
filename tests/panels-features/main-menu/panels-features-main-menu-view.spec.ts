@@ -40,6 +40,7 @@ mainTest(qase(817, "Hide/show grids via shortcut CTRL '"), async () => {
 
   await designPanelPage.clickAddGridButton();
   await mainPage.waitForChangeIsSaved();
+  await mainPage.hideRulersViaMainMenu();
   await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
     mask: mainPage.maskViewport(),
   });

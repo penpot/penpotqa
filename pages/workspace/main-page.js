@@ -602,7 +602,19 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async pressHideShowGridsShortcut() {
-    await this.page.keyboard.press("Control+'");
+    // page.keyboard.press("Control+'") fails on Spanish keyboards: Chrome translates
+    // the physical 'Quote' key code through the OS layout even for CDP synthetic events,
+    // producing the wrong character. Dispatching directly to the viewport element with
+    // an explicit key:"'" bypasses that translation.
+    const opts = {
+      key: "'",
+      code: 'Quote',
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    };
+    await this.viewport.dispatchEvent('keydown', opts);
+    await this.viewport.dispatchEvent('keyup', { ...opts, ctrlKey: false });
   }
 
   async pressSelectAllShortcut() {
