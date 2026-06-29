@@ -443,12 +443,14 @@ mainTest.describe(() => {
     await layersPanelPage.dragAndDropElementToElement('Board', 'Main Board');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.setFlexElementPositionAbsolute();
+    await mainPage.pressHideShowRulersShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board.png', {
       mask: mainPage.maskViewport(),
     });
     await mainPage.clickViewportByCoordinates(300, 100, 2);
     await layersPanelPage.selectBoardChildLayer('Board');
     await designPanelPage.changeAxisXAndYForLayer('100', '100');
+    await layersPanelPage.selectBoardChildLayer('Board');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-in-flex-board-moved.png',
