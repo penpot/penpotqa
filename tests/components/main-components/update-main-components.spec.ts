@@ -311,14 +311,17 @@ mainTest.describe(() => {
       'Create a component and 2 copies of it, change grid style and size of main',
     ),
     async () => {
-      await mainTest.step('Add grid with rows type to main component', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await designPanelPage.clickAddGridButton();
-        await designPanelPage.selectGridType('Rows');
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-      });
+      await mainTest.step(
+        'Add guides with rows type to main component',
+        async () => {
+          await layersPanelPage.clickMainComponentOnLayersTab();
+          await designPanelPage.clickAddGuidesButton();
+          await designPanelPage.selectGuidesType('Rows');
+          await layersPanelPage.clickMainComponentOnLayersTab();
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
       await mainTest.step('Verify default grid propagated to copies', async () => {
         await expect(
@@ -330,9 +333,9 @@ mainTest.describe(() => {
         });
       });
 
-      await mainTest.step('Change grid size', async () => {
-        await designPanelPage.changeSizeForGrid('4');
-        await designPanelPage.gridTypeField.click();
+      await mainTest.step('Change guides size', async () => {
+        await designPanelPage.changeSizeForGuides('4');
+        await designPanelPage.guidesTypeField.click();
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
       });

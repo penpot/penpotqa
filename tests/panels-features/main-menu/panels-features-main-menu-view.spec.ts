@@ -32,24 +32,24 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest(qase(817, "Hide/show grids via shortcut CTRL '"), async () => {
+mainTest(qase(817, "Hide/show guides via shortcut CTRL '"), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
 
-  await designPanelPage.clickAddGridButton();
+  await designPanelPage.clickAddGuidesButton();
   await mainPage.waitForChangeIsSaved();
   await mainPage.hideRulersViaMainMenu();
   await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
     mask: mainPage.maskViewport(),
   });
-  await mainPage.pressHideShowGridsShortcut();
+  await mainPage.pressHideShowGuidesShortcut();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('square-grid-hide.png', {
     mask: mainPage.maskViewport(),
   });
-  await mainPage.pressHideShowGridsShortcut();
+  await mainPage.pressHideShowGuidesShortcut();
   await mainPage.waitForChangeIsSaved();
   await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
     mask: mainPage.maskViewport(),

@@ -31,18 +31,18 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase(719, 'PF-1 Set square grid'), async () => {
-    await designPanelPage.clickAddGridButton();
+  mainTest(qase(719, 'PF-1 Set square guides'), async () => {
+    await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
       mask: mainPage.maskViewport(),
     });
   });
 
-  mainTest(qase(720, 'PF-2 Square grid - change size'), async () => {
-    await designPanelPage.clickAddGridButton();
+  mainTest(qase(720, 'PF-2 Square guides - change size'), async () => {
+    await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeSizeForGrid('8');
+    await designPanelPage.changeSizeForGuides('8');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -53,11 +53,11 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(721, 'PF-3 Square grid - change opacity'), async () => {
-    await designPanelPage.clickAddGridButton();
+  mainTest(qase(721, 'PF-3 Square guides - change opacity'), async () => {
+    await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickGridActionsButton();
-    await designPanelPage.changeOpacityForGrid('70');
+    await designPanelPage.clickGuidesActionsButton();
+    await designPanelPage.changeOpacityForGuides('70');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -68,14 +68,14 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(722, 'PF-4 Use default square grid'), async () => {
-    await designPanelPage.clickAddGridButton();
+  mainTest(qase(722, 'PF-4 Use default square guides'), async () => {
+    await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeSizeForGrid('8');
+    await designPanelPage.changeSizeForGuides('8');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickGridActionsButton();
-    await designPanelPage.clickUseDefaultGridButton();
+    await designPanelPage.clickGuidesActionsButton();
+    await designPanelPage.clickUseDefaultGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
       mask: mainPage.maskViewport(),
@@ -83,19 +83,19 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(724, 'PF-6 Hide and unhide square grid via Design panel'),
+    qase(724, 'PF-6 Hide and unhide square guides via Design panel'),
     async () => {
-      await designPanelPage.clickAddGridButton();
+      await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
         mask: mainPage.maskViewport(),
       });
-      await designPanelPage.clickHideGridButton();
+      await designPanelPage.clickHideGuidesButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('square-grid-hide.png', {
         mask: mainPage.maskViewport(),
       });
-      await designPanelPage.clickUnhideGridButton();
+      await designPanelPage.clickUnhideGuidesButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('square-grid-unhide.png', {
         mask: mainPage.maskViewport(),
@@ -103,52 +103,55 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(725, 'PF-7 Hide and unhide square grid via Main menu'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickViewMainMenuItem();
-    await mainPage.clickHideGridsMainMenuSubItem();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('square-grid-hide.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickViewMainMenuItem();
-    await mainPage.clickShowGridsMainMenuSubItem();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('square-grid-unhide.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
+  mainTest(
+    qase(725, 'PF-7 Hide and unhide square guides via Main menu'),
+    async () => {
+      await designPanelPage.clickAddGuidesButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('square-grid-default.png', {
+        mask: mainPage.maskViewport(),
+      });
+      await mainPage.clickMainMenuButton();
+      await mainPage.clickViewMainMenuItem();
+      await mainPage.clickHideGridsMainMenuSubItem();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('square-grid-hide.png', {
+        mask: mainPage.maskViewport(),
+      });
+      await mainPage.clickMainMenuButton();
+      await mainPage.clickViewMainMenuItem();
+      await mainPage.clickShowGridsMainMenuSubItem();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('square-grid-unhide.png', {
+        mask: mainPage.maskViewport(),
+      });
+    },
+  );
 
-  mainTest(qase(729, 'PF-11 Remove square grid'), async () => {
-    await designPanelPage.clickAddGridButton();
+  mainTest(qase(729, 'PF-11 Remove square guides'), async () => {
+    await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickRemoveGridButton();
+    await designPanelPage.clickRemoveGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-without-grid.png', {
       mask: mainPage.maskViewport(),
     });
   });
 
-  mainTest(qase(730, 'PF-12 Set columns grid'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Columns');
+  mainTest(qase(730, 'PF-12 Set columns guides'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
       mask: mainPage.maskViewport(),
     });
   });
 
-  mainTest(qase(731, 'PF-13 Columns grid - change columns number'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Columns');
+  mainTest(qase(731, 'PF-13 Columns guides - change columns number'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeColumnsOrRowsNumberForGrid('8');
+    await designPanelPage.changeColumnsOrRowsNumberForGuides('8');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -159,13 +162,13 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(732, 'PF-14 Columns grid - change width'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Columns');
+  mainTest(qase(732, 'PF-14 Columns guides - change width'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeColumnsOrRowsNumberForGrid('3');
+    await designPanelPage.changeColumnsOrRowsNumberForGuides('3');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickGridActionsButton();
+    await designPanelPage.clickGuidesActionsButton();
     await designPanelPage.changeWidthForGrid('10');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -177,21 +180,21 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(735, 'PF-17 Columns grid - change opacity'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Columns');
+  mainTest(qase(735, 'PF-17 Columns guides - change opacity'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
       mask: mainPage.maskViewport(),
     });
-    await designPanelPage.clickGridActionsButton();
-    await designPanelPage.changeOpacityForGrid('50');
+    await designPanelPage.clickGuidesActionsButton();
+    await designPanelPage.changeOpacityForGuides('50');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('columns-grid-opacity-50.png', {
       mask: mainPage.maskViewport(),
     });
-    await designPanelPage.changeOpacityForGrid('100');
+    await designPanelPage.changeOpacityForGuides('100');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -200,13 +203,13 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(736, 'PF-18 Use default columns grid'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Columns');
+  mainTest(qase(736, 'PF-18 Use default columns guides'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeColumnsOrRowsNumberForGrid('3');
-    await designPanelPage.clickGridActionsButton();
-    await designPanelPage.clickUseDefaultGridButton();
+    await designPanelPage.changeColumnsOrRowsNumberForGuides('3');
+    await designPanelPage.clickGuidesActionsButton();
+    await designPanelPage.clickUseDefaultGuidesButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
@@ -215,20 +218,20 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(738, 'PF-20 Hide and unhide columns grid via Design panel'),
+    qase(738, 'PF-20 Hide and unhide columns guides via Design panel'),
     async () => {
-      await designPanelPage.clickAddGridButton();
-      await designPanelPage.selectGridType('Columns');
+      await designPanelPage.clickAddGuidesButton();
+      await designPanelPage.selectGuidesType('Columns');
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('columns-grid-default.png', {
         mask: mainPage.maskViewport(),
       });
-      await designPanelPage.clickHideGridButton();
+      await designPanelPage.clickHideGuidesButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('columns-grid-hide.png', {
         mask: mainPage.maskViewport(),
       });
-      await designPanelPage.clickUnhideGridButton();
+      await designPanelPage.clickUnhideGuidesButton();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('columns-grid-unhide.png', {
         mask: mainPage.maskViewport(),
@@ -236,31 +239,31 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(743, 'PF-25 Remove columns grid'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Columns');
+  mainTest(qase(743, 'PF-25 Remove columns guides'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickRemoveGridButton();
+    await designPanelPage.clickRemoveGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-without-grid.png', {
       mask: mainPage.maskViewport(),
     });
   });
 
-  mainTest(qase(744, 'PF-26 Set rows grid'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Rows');
+  mainTest(qase(744, 'PF-26 Set rows guides'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
       mask: mainPage.maskViewport(),
     });
   });
 
-  mainTest(qase(745, 'PF-27 Rows grid - change rows number'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Rows');
+  mainTest(qase(745, 'PF-27 Rows guides - change rows number'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeColumnsOrRowsNumberForGrid('12');
+    await designPanelPage.changeColumnsOrRowsNumberForGuides('12');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-changed-rows.png', {
@@ -268,13 +271,13 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(746, 'PF-28 Rows grid - change height'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Rows');
+  mainTest(qase(746, 'PF-28 Rows guides - change height'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeColumnsOrRowsNumberForGrid('3');
+    await designPanelPage.changeColumnsOrRowsNumberForGuides('3');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickGridActionsButton();
+    await designPanelPage.clickGuidesActionsButton();
     await designPanelPage.changeHeightForGrid('20');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -286,21 +289,21 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(749, 'PF-31 Rows grid - change opacity'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Rows');
+  mainTest(qase(749, 'PF-31 Rows guides - change opacity'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
       mask: mainPage.maskViewport(),
     });
-    await designPanelPage.clickGridActionsButton();
-    await designPanelPage.changeOpacityForGrid('50');
+    await designPanelPage.clickGuidesActionsButton();
+    await designPanelPage.changeOpacityForGuides('50');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-opacity-50.png', {
       mask: mainPage.maskViewport(),
     });
-    await designPanelPage.changeOpacityForGrid('100');
+    await designPanelPage.changeOpacityForGuides('100');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-opacity-100.png', {
@@ -308,13 +311,13 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(750, 'PF-32 Use default rows grid'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Rows');
+  mainTest(qase(750, 'PF-32 Use default rows guides'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.changeColumnsOrRowsNumberForGrid('3');
-    await designPanelPage.clickGridActionsButton();
-    await designPanelPage.clickUseDefaultGridButton();
+    await designPanelPage.changeColumnsOrRowsNumberForGuides('3');
+    await designPanelPage.clickGuidesActionsButton();
+    await designPanelPage.clickUseDefaultGuidesButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
@@ -322,42 +325,45 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(753, 'PF-35 Hide and unhide rows grid via Main menu'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Rows');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickViewMainMenuItem();
-    await mainPage.clickHideGridsMainMenuSubItem();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rows-grid-hide.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickViewMainMenuItem();
-    await mainPage.clickShowGridsMainMenuSubItem();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('rows-grid-unhide.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
+  mainTest(
+    qase(753, 'PF-35 Hide and unhide rows guides via Main menu'),
+    async () => {
+      await designPanelPage.clickAddGuidesButton();
+      await designPanelPage.selectGuidesType('Rows');
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('rows-grid-default.png', {
+        mask: mainPage.maskViewport(),
+      });
+      await mainPage.clickMainMenuButton();
+      await mainPage.clickViewMainMenuItem();
+      await mainPage.clickHideGridsMainMenuSubItem();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('rows-grid-hide.png', {
+        mask: mainPage.maskViewport(),
+      });
+      await mainPage.clickMainMenuButton();
+      await mainPage.clickViewMainMenuItem();
+      await mainPage.clickShowGridsMainMenuSubItem();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('rows-grid-unhide.png', {
+        mask: mainPage.maskViewport(),
+      });
+    },
+  );
 
-  mainTest(qase(757, 'PF-39 Remove rows grid'), async () => {
-    await designPanelPage.clickAddGridButton();
-    await designPanelPage.selectGridType('Columns');
+  mainTest(qase(757, 'PF-39 Remove rows guides'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickRemoveGridButton();
+    await designPanelPage.clickRemoveGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('board-without-grid.png', {
       mask: mainPage.maskViewport(),
     });
   });
 
-  mainTest(qase(1864, 'Duplicate board with guide'), async () => {
-    await designPanelPage.clickAddGridButton();
+  mainTest(qase(1864, 'Duplicate board with guides'), async () => {
+    await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickShortcutCtrlD();
     await mainPage.waitForChangeIsUnsaved();

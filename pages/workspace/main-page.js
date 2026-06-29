@@ -601,7 +601,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press('Control+Shift+R');
   }
 
-  async pressHideShowGridsShortcut() {
+  async pressHideShowGuidesShortcut() {
     // page.keyboard.press("Control+'") fails on Spanish keyboards: Chrome translates
     // the physical 'Quote' key code through the OS layout even for CDP synthetic events,
     // producing the wrong character. Dispatching directly to the viewport element with

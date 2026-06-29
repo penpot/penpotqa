@@ -368,30 +368,32 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       name: /Export \d+ element/,
     });
 
-    //Design panel - Grid section
-    this.gridSection = page.getByText('Guides', { exact: true });
-    this.addGridButton = page.getByRole('button', { name: 'Add guide' });
-    this.removeGridButton = page.getByRole('button', { name: 'Remove guide' });
-    this.hideGridButton = page.getByRole('button', { name: 'Toggle guide' });
-    this.unhideGridButton = page.getByRole('button', { name: 'Toggle guide' });
-    this.gridTypeField = page.locator(
+    //Design panel - Guides section
+    this.guidesSection = page.getByText('Guides', { exact: true });
+    this.addGuidesButton = page.getByRole('button', { name: 'Add guide' });
+    this.removeGuidesButton = page.getByRole('button', { name: 'Remove guide' });
+    this.hideGuidesButton = page.getByRole('button', { name: 'Toggle guide' });
+    this.unhideGuidesButton = page.getByRole('button', { name: 'Toggle guide' });
+    this.guidesTypeField = page.locator(
       'div[class*="grid__option-row"] div[class*="type-select-wrapper"]',
     );
-    this.gridTypeSelectorSquareOption = page.getByText('Square', { exact: true });
-    this.gridTypeSelectorColumnsOption = page.getByText('Columns', { exact: true });
-    this.gridTypeSelectorRowsOption = page.getByText('Rows', { exact: true });
-    this.gridSizeInput = page.locator(`input[class*='grid__numeric-input']`);
-    this.gridColumnsRowsInput = page.locator(
+    this.guidesTypeSelectorSquareOption = page.getByText('Square', { exact: true });
+    this.guidesTypeSelectorColumnsOption = page.getByText('Columns', {
+      exact: true,
+    });
+    this.guidesTypeSelectorRowsOption = page.getByText('Rows', { exact: true });
+    this.guidesSizeInput = page.locator(`input[class*='grid__numeric-input']`);
+    this.guidesColumnsRowsInput = page.locator(
       'div[class*="grid__column-select"] input',
     );
-    this.gridActionsButton = page.locator('button[class*="grid__show-options"]');
-    this.gridOpacityInput = page.locator(
+    this.guidesActionsButton = page.locator('button[class*="grid__show-options"]');
+    this.guidesOpacityInput = page.locator(
       'div[class*="grid__advanced-row"] input[class*="opacity-input"]',
     );
-    this.gridMoreOptionsButton = page.locator(
+    this.guidesMoreOptionsButton = page.locator(
       'div[class*="grid__advanced-row"] button[class*="show-more-options"]',
     );
-    this.useDefaultGridButton = page
+    this.useDefaultGuidesButton = page
       .getByRole('button')
       .filter({ hasText: 'Use default' });
 
@@ -1334,60 +1336,60 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await page.waitForEvent('download');
   }
 
-  async clickAddGridButton() {
-    await this.gridSection.waitFor();
-    await this.addGridButton.click();
+  async clickAddGuidesButton() {
+    await this.guidesSection.waitFor();
+    await this.addGuidesButton.click();
   }
 
-  async clickRemoveGridButton() {
-    await this.removeGridButton.click();
+  async clickRemoveGuidesButton() {
+    await this.removeGuidesButton.click();
   }
 
-  async clickHideGridButton() {
-    await this.hideGridButton.click();
+  async clickHideGuidesButton() {
+    await this.hideGuidesButton.click();
   }
 
-  async clickUnhideGridButton() {
-    await this.unhideGridButton.click();
+  async clickUnhideGuidesButton() {
+    await this.unhideGuidesButton.click();
   }
 
-  async changeSizeForGrid(value) {
-    await this.gridSizeInput.clear();
-    await this.gridSizeInput.pressSequentially(value);
+  async changeSizeForGuides(value) {
+    await this.guidesSizeInput.clear();
+    await this.guidesSizeInput.pressSequentially(value);
   }
 
-  async clickGridActionsButton() {
-    await this.gridActionsButton.click();
+  async clickGuidesActionsButton() {
+    await this.guidesActionsButton.click();
   }
 
-  async changeOpacityForGrid(value) {
-    await this.gridOpacityInput.clear();
-    await this.gridOpacityInput.pressSequentially(value);
+  async changeOpacityForGuides(value) {
+    await this.guidesOpacityInput.clear();
+    await this.guidesOpacityInput.pressSequentially(value);
   }
 
-  async clickUseDefaultGridButton() {
-    await this.gridMoreOptionsButton.click();
-    await this.useDefaultGridButton.click();
+  async clickUseDefaultGuidesButton() {
+    await this.guidesMoreOptionsButton.click();
+    await this.useDefaultGuidesButton.click();
   }
 
-  async selectGridType(type) {
-    await this.gridTypeField.click();
+  async selectGuidesType(type) {
+    await this.guidesTypeField.click();
     switch (type) {
       case 'Square':
-        await this.gridTypeSelectorSquareOption.click();
+        await this.guidesTypeSelectorSquareOption.click();
         break;
       case 'Columns':
-        await this.gridTypeSelectorColumnsOption.click();
+        await this.guidesTypeSelectorColumnsOption.click();
         break;
       case 'Rows':
-        await this.gridTypeSelectorRowsOption.click();
+        await this.guidesTypeSelectorRowsOption.click();
         break;
     }
   }
 
-  async changeColumnsOrRowsNumberForGrid(value) {
-    await this.gridColumnsRowsInput.clear();
-    await this.gridColumnsRowsInput.pressSequentially(value);
+  async changeColumnsOrRowsNumberForGuides(value) {
+    await this.guidesColumnsRowsInput.clear();
+    await this.guidesColumnsRowsInput.pressSequentially(value);
   }
 
   async changeWidthForGrid(value) {
