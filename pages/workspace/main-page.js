@@ -102,10 +102,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.hideRulersMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Hide rulers' });
-    this.hideGridsMainMenuSubItem = page
+    this.hideGuidesMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Hide pixel grid' });
-    this.showGridsMainMenuSubItem = page
+    this.showGuidesMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Show pixel grid' });
     this.selectAllMainMenuSubItem = page
@@ -577,12 +577,12 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickHideRulersMainMenuSubItem();
   }
 
-  async clickHideGridsMainMenuSubItem() {
-    await this.hideGridsMainMenuSubItem.click();
+  async clickHideGuidesMainMenuSubItem() {
+    await this.hideGuidesMainMenuSubItem.click();
   }
 
-  async clickShowGridsMainMenuSubItem() {
-    await this.showGridsMainMenuSubItem.click();
+  async clickShowGuidesMainMenuSubItem() {
+    await this.showGuidesMainMenuSubItem.click();
   }
 
   async clickSelectAllMainMenuSubItem() {

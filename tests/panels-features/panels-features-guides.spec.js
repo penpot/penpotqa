@@ -113,14 +113,14 @@ mainTest.describe(() => {
       });
       await mainPage.clickMainMenuButton();
       await mainPage.clickViewMainMenuItem();
-      await mainPage.clickHideGridsMainMenuSubItem();
+      await mainPage.clickHideGuidesMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
         mask: mainPage.maskViewport(),
       });
       await mainPage.clickMainMenuButton();
       await mainPage.clickViewMainMenuItem();
-      await mainPage.clickShowGridsMainMenuSubItem();
+      await mainPage.clickShowGuidesMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('square-guide-unhide.png', {
         mask: mainPage.maskViewport(),
@@ -169,7 +169,7 @@ mainTest.describe(() => {
     await designPanelPage.changeColumnsOrRowsNumberForGuides('3');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickGuidesActionsButton();
-    await designPanelPage.changeWidthForGrid('10');
+    await designPanelPage.changeWidthForGuides('10');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -281,7 +281,7 @@ mainTest.describe(() => {
     await designPanelPage.changeColumnsOrRowsNumberForGuides('3');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickGuidesActionsButton();
-    await designPanelPage.changeHeightForGrid('20');
+    await designPanelPage.changeHeightForGuides('20');
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
@@ -339,14 +339,14 @@ mainTest.describe(() => {
       });
       await mainPage.clickMainMenuButton();
       await mainPage.clickViewMainMenuItem();
-      await mainPage.clickHideGridsMainMenuSubItem();
+      await mainPage.clickHideGuidesMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('rows-guide-hide.png', {
         mask: mainPage.maskViewport(),
       });
       await mainPage.clickMainMenuButton();
       await mainPage.clickViewMainMenuItem();
-      await mainPage.clickShowGridsMainMenuSubItem();
+      await mainPage.clickShowGuidesMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('rows-guide-unhide.png', {
         mask: mainPage.maskViewport(),

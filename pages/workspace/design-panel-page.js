@@ -397,14 +397,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .getByRole('button')
       .filter({ hasText: 'Use default' });
 
-    // Design panel - Grid Layout section - Advanced Options
-    this.gridAdvancedOptionsSection = page.locator(
+    // Design panel - Guides section - Advanced Options
+    this.guidesAdvancedOptionsSection = page.locator(
       '.main_ui_workspace_sidebar_options_common__advanced-options-wrapper',
     );
-    this.gridWidthInput = this.gridAdvancedOptionsSection
+    this.guidesWidthInput = this.guidesAdvancedOptionsSection
       .getByTitle('Width')
       .getByPlaceholder('Auto');
-    this.gridHeightInput = this.gridAdvancedOptionsSection
+    this.guidesHeightInput = this.guidesAdvancedOptionsSection
       .getByTitle('Height')
       .getByPlaceholder('Auto');
 
@@ -1392,14 +1392,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.guidesColumnsRowsInput.pressSequentially(value);
   }
 
-  async changeWidthForGrid(value) {
-    await this.gridWidthInput.clear();
-    await this.gridWidthInput.pressSequentially(value);
+  async changeWidthForGuides(value) {
+    await this.guidesWidthInput.clear();
+    await this.guidesWidthInput.pressSequentially(value);
   }
 
-  async changeHeightForGrid(value) {
-    await this.gridHeightInput.clear();
-    await this.gridHeightInput.pressSequentially(value);
+  async changeHeightForGuides(value) {
+    await this.guidesHeightInput.clear();
+    await this.guidesHeightInput.pressSequentially(value);
   }
 
   async clickOnComponentMenuButton() {
