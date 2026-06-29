@@ -431,6 +431,7 @@ mainTest.describe(() => {
     await designPanelPage.changeHeightAndWidthForLayer('400', '500');
     await mainPage.pressFlexLayoutShortcut();
     await mainPage.waitForChangeIsSaved();
+    await mainPage.pressHideShowRulersShortcut();
     await layersPanelPage.doubleClickLayerOnLayersTab('Board');
     await layersPanelPage.typeNameCreatedLayerAndEnter('Main Board');
     await mainPage.createDefaultBoardByCoordinates(200, 200);
@@ -443,15 +444,12 @@ mainTest.describe(() => {
     await layersPanelPage.dragAndDropElementToElement('Board', 'Main Board');
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.setFlexElementPositionAbsolute();
-    await mainPage.pressHideShowRulersShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board.png', {
       mask: mainPage.maskViewport(),
     });
     await mainPage.clickViewportByCoordinates(300, 100, 2);
     await layersPanelPage.selectBoardChildLayer('Board');
     await designPanelPage.changeAxisXAndYForLayer('100', '100');
-    await mainPage.clickOnLayerOnCanvas();
-    await layersPanelPage.selectBoardChildLayer('Board');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot(
       'board-in-flex-board-moved.png',
