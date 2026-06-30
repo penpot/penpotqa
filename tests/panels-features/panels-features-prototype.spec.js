@@ -59,9 +59,10 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
     await prototypePanelPage.checkNumberOfInteractions(2);
+    await mainPage.hideRulersViaMainMenu();
     await expect(mainPage.viewport).toHaveScreenshot('add-interaction.png', {
+      mask: mainPage.maskViewport(),
       usersSection: true,
-      useRulers: false,
     });
   });
 
