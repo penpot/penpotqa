@@ -147,6 +147,7 @@ mainTest(
 mainTest(
   qase([2419], 'Changing the component frame in the design panel'),
   async () => {
+    await mainPage.pressHideShowRulersShortcut();
     await mainPage.clickOnVariantsTitle('Rectangle1');
     await layersPanelPage.isLayerWithNameSelected('Rectangle1');
     await designPanelPage.isFlexElementWidth100BtnVisible(false);
