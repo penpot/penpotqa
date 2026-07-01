@@ -38,12 +38,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'div[aria-label="Open token list"] button',
     );
     this.detachTokenButton = page.getByRole('button', { name: 'Detach token' });
-    this.notValidReferencedButton = page.getByRole('button', {
-      name: 'Reference is not valid or is not in any active set',
-    });
-    this.notInAnyActiveSetButton = page.getByRole('button', {
-      name: 'This token is not in any active set or has an invalid value',
-    });
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
@@ -2127,12 +2121,24 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.detachTokenButton.click();
   }
 
-  async isNotValidReferencedButtonVisible() {
+  /**
+   * @param {string} tokenName - Token name
+   */
+  async isNotTokenValidReferencedButtonVisible(tokenName) {
+    const notValidReferencedButton = this.page.getByRole('button', {
+      name: `Reference in {${tokenName}} is not valid or is not in any active set`,
+    });
     await expect(this.notValidReferencedButton).toBeVisible();
   }
 
-  async isNotInAnyActiveSetButtonVisible() {
-    await expect(this.notInAnyActiveSetButton).toBeVisible();
+  /**
+   * @param {string} tokenName - Token name
+   */
+  async isNotTokenInAnyActiveSetButtonVisible(tokenName) {
+    const notInAnyActiveSetButton = this.page.getByRole('button', {
+      name: `{${tokenName}} is not in any active set or has an invalid value`,
+    });
+    await expect(notInAnyActiveSetButton).toBeVisible();
   }
 
   /**

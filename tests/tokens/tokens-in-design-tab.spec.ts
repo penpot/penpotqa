@@ -183,13 +183,14 @@ mainTest.describe(() => {
         'Check value and not valid reference in input',
         async () => {
           await designPanelPage.checkSizeWidth(dimensionTokenA.value);
-          await designPanelPage.isNotValidReferencedButtonVisible();
+          await designPanelPage.isNotTokenValidReferencedButtonVisible(
+            dimensionTokenB.name,
+          );
         },
       );
 
       await mainTest.step('Hover in token value and check tooltip', async () => {
-        const errorMessage: string =
-          'Reference is not valid or is not in any active set';
+        const errorMessage: string = `Reference in {${dimensionTokenB.name}} is not valid or is not in any active set`;
         await designPanelPage.hoverOnTokenPill(ariaLabel);
         await designPanelPage.isTokenPillTooltipVisible(errorMessage);
       });
@@ -258,6 +259,8 @@ mainTest.describe(() => {
   mainTest(
     qase(2893, 'Token pill shows unresolved state when token set becomes inactive'),
     async () => {
+      const tokenName: string = 'red';
+
       await mainTest.step(
         'Hover on fill color input and check token value in tootltip message',
         async () => {
@@ -274,15 +277,14 @@ mainTest.describe(() => {
       await mainTest.step(
         'Check not in any active set red dot in input',
         async () => {
-          await designPanelPage.isNotInAnyActiveSetButtonVisible();
+          await designPanelPage.isNotTokenInAnyActiveSetButtonVisible(tokenName);
         },
       );
 
       await mainTest.step(
         'Hover on fill color input and check error in tootltip message',
         async () => {
-          const messageText: string =
-            'This token is not in any active set or has an invalid value.';
+          const messageText: string = `{${tokenName}} is not in any active set or has an invalid value.`;
           await designPanelPage.checkTooltipInFillColorInput(messageText);
         },
       );
