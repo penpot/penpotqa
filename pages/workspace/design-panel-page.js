@@ -2136,7 +2136,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
    */
   async isNotTokenInAnyActiveSetButtonVisible(tokenName) {
     const notInAnyActiveSetButton = this.page.getByRole('button', {
-      name: `{${tokenName}} is not in any active set or has an invalid value`,
+      name: `{${tokenName}} token is not in any active set or has an invalid value`,
     });
     await expect(notInAnyActiveSetButton).toBeVisible();
   }
