@@ -31,7 +31,7 @@ mainTest.beforeEach(async ({ page }) => {
 mainTest(
   qase(
     [2901, 2903, 2904, 3001],
-    'Preview version: restore history preview version and validate snapshot information and prompt confirmation' +
+    'Preview version: restore history preview version, validate snapshot information and prompt confirmation' +
       ' and validate pinned version preview banner matches History sidebar label',
   ),
   async () => {
