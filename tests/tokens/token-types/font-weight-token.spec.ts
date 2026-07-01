@@ -95,7 +95,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step(
-        `Apply "${fontWeightToken2.name}" with non-existing style and verify fallback value "400 Italic"`,
+        `Apply "${fontWeightToken2.name}" with non-existing style and verify fallback value "600 Italic"`,
         async () => {
           await mainPage.clickViewportOnce();
           await layersPanelPage.openLayersTab();
@@ -107,7 +107,7 @@ mainTest.describe(() => {
           );
           await mainPage.waitForChangeIsSaved();
           await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken2.name);
-          await designPanelPage.checkFontStyle('400 Italic');
+          await designPanelPage.checkFontStyle('600 Italic');
         },
       );
     },
