@@ -37,6 +37,7 @@ on:
           - tests/panels-features
           - tests/panels-features/main-menu
           - tests/panels-features/history
+          - tests/panels-features/stroke
           - tests/performance
           - tests/plugins
           - tests/your-account
