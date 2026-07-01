@@ -18,10 +18,9 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.saveColorStyleButton = page.getByRole('button', {
       name: 'Save color style',
     });
-    this.colorsLibrariesSelect = page.locator(
-      'div[class*="colorpicker_libraries__select-wrapper"]',
-    );
-    this.colorsFileLibraryOptions = page.getByText('File library', { exact: true });
+    this.colorButton = this.colorPicker.getByTitle('Color', { exact: true });
+
+    // Color Palette
     this.colorPaletteActionsBtn = page.locator('button[class*="palette-actions"]');
     this.colorPaletteMenu = page.locator('ul[class*="palette-menu"]');
     this.colorPaletteSolidDropdown = page.getByText('Solid', { exact: true });
@@ -32,17 +31,32 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.colorPaletteRemoveStopButton = page
       .locator('[class*="gradient-stops-list"]')
       .getByRole('button', { name: 'Remove color' });
-    this.colorButton = this.colorPicker.getByTitle('Color', { exact: true });
-
-    // File Library / Recent Colors section
     this.colorPaletteFileLibraryOpt = page
       .getByRole('listitem')
       .filter({ hasText: 'File library' });
     this.colorPaletteRecentColorsOpt = page
       .getByRole('listitem')
       .filter({ hasText: 'Recent colors' });
-    this.colorsSection = this.colorPicker.getByLabel('Colors');
-    this.colorsSectionDropdown = this.colorPicker.getByRole('combobox');
+
+    // File Library / Recent Colors section
+    this.librariesSection = this.colorPicker.locator(
+      '.main_ui_workspace_colorpicker_libraries__libraries',
+    );
+    this.colorsSection = this.librariesSection.getByLabel('Colors');
+    this.selectColorsDropdown = this.librariesSection.getByRole('combobox');
+    this.recentColorsOption = this.librariesSection.getByRole('option', {
+      name: 'Recent colors',
+    });
+    this.fileLibraryOption = this.librariesSection.getByRole('option', {
+      name: 'File library',
+    });
+    this.listViewButton = this.librariesSection.getByRole('button', {
+      name: 'List view',
+    });
+  }
+
+  getColorBullet(color) {
+    return this.colorsSection.getByRole('button', { name: color });
   }
 
   async setHex(value) {
@@ -64,32 +78,33 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   }
 
   async clickColorBullet(color) {
-    const colorBullet = this.colorsSection.getByRole('button', { name: color });
-
-    await colorBullet.click();
+    await this.getColorBullet(color).click();
   }
 
-  async selectFileLibraryColors() {
-    await this.colorsLibrariesSelect.click();
-    await this.colorsFileLibraryOptions.click();
+  async clickOnColorButton() {
+    await this.colorButton.click();
   }
 
-  async selectFileLibraryColorsOptionFromDropdown(option) {
-    await this.colorsSectionDropdown.click();
-
-    const libraryColorsDropdownOption = this.colorsSectionDropdown.getByText(
-      option,
-      { exact: true },
-    );
+  async selectRecentColorsOption() {
+    await this.selectColorsDropdown.click();
     const isChecked =
-      (await libraryColorsDropdownOption.getAttribute('aria-checked')) === 'true';
-
+      (await this.recentColorsOption.getAttribute('aria-checked')) === 'true';
     if (isChecked) {
-      await this.colorsSectionDropdown.click();
+      await this.selectColorsDropdown.click();
       return;
     }
+    await this.recentColorsOption.click();
+  }
 
-    await libraryColorsDropdownOption.click();
+  async selectFileLibraryOption() {
+    await this.selectColorsDropdown.click();
+    const isChecked =
+      (await this.fileLibraryOption.getAttribute('aria-checked')) === 'true';
+    if (isChecked) {
+      await this.selectColorsDropdown.click();
+      return;
+    }
+    await this.fileLibraryOption.click();
   }
 
   async openColorPaletteMenu() {
@@ -135,7 +150,16 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     await expect(this.colorPaletteRemoveStopButton).toHaveCount(index);
   }
 
-  async clickOnColorButton() {
-    await this.colorButton.click();
+  async areFileLibraryColorBulletsVisible(colors) {
+    for (const color of colors) {
+      await expect(
+        this.getColorBullet(color),
+        `Color bullet for ${color} is visible`,
+      ).toBeVisible();
+    }
+  }
+
+  async clickListViewButton() {
+    await this.listViewButton.click();
   }
 };
