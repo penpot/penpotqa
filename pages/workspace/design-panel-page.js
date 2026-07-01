@@ -276,9 +276,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
 
     //Design panel - Stroke section
-    this.strokeSectionContainer = this.rightSidebar.locator(
-      '[aria-label="Stroke section"]',
-    );
+    this.strokeSectionContainer = this.rightSidebar.getByRole('region', {
+      name: 'Stroke',
+    });
     this.addStrokeButton = page.getByRole('button', { name: 'Add stroke color' });
     this.strokeSection = page.getByText('Stroke', { exact: true });
     this.strokeElement = page.locator('div[class*="stroke-color-actions"]').last();
@@ -302,6 +302,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .getByRole('combobox');
     this.strokeCapSwitchButton = this.strokeSectionContainer.getByRole('button', {
       name: 'Switch',
+    });
+    this.strokeDashInput = this.strokeSectionContainer.getByRole('textbox', {
+      name: 'Dash',
+    });
+    this.strokeGapInput = this.strokeSectionContainer.getByRole('textbox', {
+      name: 'Gap',
     });
 
     //Design panel - Text section
@@ -2147,5 +2153,21 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async checkTooltipInFillColorInput(messageText) {
     await this.fillSection.getByRole('button', { name: messageText }).hover();
     await this.isTokenPillTooltipVisible(messageText);
+  }
+
+  async setStrokeDashValue(value) {
+    await this.strokeDashInput.fill(value);
+  }
+
+  async setStrokeGapValue(value) {
+    await this.strokeGapInput.fill(value);
+  }
+
+  async hasStrokeDashInputValue(value) {
+    await expect(this.strokeDashInput).toHaveValue(value);
+  }
+
+  async hasStrokeGapInputValue(value) {
+    await expect(this.strokeGapInput).toHaveValue(value);
   }
 };
