@@ -30,8 +30,9 @@ mainTest.beforeEach(async ({ page }) => {
 
 mainTest(
   qase(
-    [2901, 2903, 2904],
-    'Preview version: restore history preview version and validate snapshot information and prompt confirmation',
+    [2901, 2903, 2904, 3001],
+    'Preview version: restore history preview version and validate snapshot information and prompt confirmation' +
+      ' and validate pinned version preview banner matches History sidebar label',
   ),
   async () => {
     const versionName = ['Version A', 'Version B'];
@@ -90,6 +91,19 @@ mainTest(
       await expect(mainPage.viewport).toHaveScreenshot('restored-version-a.png', {
         mask: mainPage.maskViewport(),
       });
+    });
+
+    await test.step('Pin autosaved version and rename it', async () => {
+      await historyPage.clickHistoryPanelButton();
+      await historyPage.clickOnAutosaveVersionsButton();
+      await historyPage.selectSnapshotOption('Pin version');
+      await historyPage.renameVersion('Pinned Version');
+      await historyPage.clickHistoryPanelButton();
+    });
+
+    await test.step('Open preview of pinned version and verify banner matches sidebar label', async () => {
+      await historyPage.selectVersionOption('Preview version', 'Pinned Version');
+      await historyPage.isPreviewVersionNotificationVisible('Pinned Version');
     });
   },
 );

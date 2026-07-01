@@ -202,7 +202,7 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
     const previewVersionMessage = this.previewVersionNotification.getByText(
       `Previewing version: ${value}`,
     );
-    expect(
+    await expect(
       previewVersionMessage,
       `Preview version notification is visible: ${value}`,
     ).toBeVisible();
