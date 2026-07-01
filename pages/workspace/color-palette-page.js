@@ -42,6 +42,7 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
       .getByRole('listitem')
       .filter({ hasText: 'Recent colors' });
     this.colorsSection = this.colorPicker.getByLabel('Colors');
+    this.colorsSectionDropdown = this.colorPicker.getByRole('combobox');
   }
 
   async setHex(value) {
@@ -71,6 +72,24 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   async selectFileLibraryColors() {
     await this.colorsLibrariesSelect.click();
     await this.colorsFileLibraryOptions.click();
+  }
+
+  async selectFileLibraryColorsOptionFromDropdown(option) {
+    await this.colorsSectionDropdown.click();
+
+    const libraryColorsDropdownOption = this.colorsSectionDropdown.getByText(
+      option,
+      { exact: true },
+    );
+    const isChecked =
+      (await libraryColorsDropdownOption.getAttribute('aria-checked')) === 'true';
+
+    if (isChecked) {
+      await this.colorsSectionDropdown.click();
+      return;
+    }
+
+    await libraryColorsDropdownOption.click();
   }
 
   async openColorPaletteMenu() {
