@@ -284,7 +284,7 @@ mainTest.describe(() => {
       await mainTest.step(
         'Hover on fill color input and check error in tootltip message',
         async () => {
-          const messageText: string = `{${tokenName}} is not in any active set or has an invalid value.`;
+          const messageText: string = `{${tokenName}} token is not in any active set or has an invalid value.`;
           await designPanelPage.checkTooltipInFillColorInput(messageText);
         },
       );
