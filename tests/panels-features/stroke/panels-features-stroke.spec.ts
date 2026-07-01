@@ -6,6 +6,7 @@ import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { expect } from 'playwright/test';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 
 const teamName = createTeamName();
 
@@ -13,12 +14,15 @@ let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let designPanelPage: DesignPanelPage;
 let mainPage: MainPage;
+let layersPanelPage: LayersPanelPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   designPanelPage = new DesignPanelPage(page);
   mainPage = new MainPage(page);
+  layersPanelPage = new LayersPanelPage(page);
+
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -60,12 +64,16 @@ mainTest(
         await designPanelPage.setStrokeDashValue(dashValue);
         await designPanelPage.hasStrokeDashInputValue(dashValue);
         await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.selectLayerByName('Rectangle');
+        await mainPage.focusLayerViaShortcut();
+        await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot(
           `rectangle-stroke-outside-dashed-${dashValue}.png`,
           {
             mask: mainPage.maskViewport(),
           },
         );
+        await mainPage.focusLayerViaShortcut();
       },
     );
 
@@ -73,12 +81,16 @@ mainTest(
       await designPanelPage.setStrokeGapValue(gapValue);
       await designPanelPage.hasStrokeGapInputValue(gapValue);
       await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.selectLayerByName('Rectangle');
+      await mainPage.focusLayerViaShortcut();
+      await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
         `rectangle-stroke-outside-dashed-${dashValue}-gap-${gapValue}.png`,
         {
           mask: mainPage.maskViewport(),
         },
       );
+      await mainPage.focusLayerViaShortcut();
     });
   },
 );
