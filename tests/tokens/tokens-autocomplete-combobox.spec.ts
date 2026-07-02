@@ -30,7 +30,7 @@ mainTest.beforeEach(async ({ page }) => {
   await tokensPage.setsComp.isSetNameVisible('Global');
 });
 
-mainTest(qase(3055, 'Select a token from the value input dropdown'), async () => {
+mainTest(qase([3055], 'Select a token from the value input dropdown'), async () => {
   const spacingToken: MainToken<TokenClass> = {
     class: TokenClass.Spacing,
     name: 'combobox-spacing',
