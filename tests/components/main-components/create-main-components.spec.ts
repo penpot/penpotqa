@@ -67,10 +67,11 @@ mainTest(
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.dragComponentOnCanvas(50, 100);
-      await layersPanelPage.openLayersTab();
+      await mainPage.waitForChangeIsSaved();
     });
 
     await mainTest.step('Verify component on canvas and layers panel', async () => {
+      await layersPanelPage.openLayersTab();
       await mainPage.hideRulersViaMainMenu();
       await expect(
         mainPage.viewport,
