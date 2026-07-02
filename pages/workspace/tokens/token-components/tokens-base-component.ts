@@ -170,7 +170,9 @@ export class TokensComponent {
   }
 
   private getTokenTreeButton(tokenClass: TokenClass): Locator {
-    return this.tokenSideBar.getByRole('button', { name: `${tokenClass}` }).first();
+    return this.tokenSideBar
+      .getByRole('button', { name: new RegExp(`^${tokenClass} \\d+$`) })
+      .first();
   }
 
   private async fillTokenData(
