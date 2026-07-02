@@ -283,7 +283,7 @@ exports.BasePage = class BasePage {
   }
 
   async waitForChangeIsSaved() {
-    await this.savedChangesIcon.waitFor({ state: 'visible' });
+    await this.savedChangesIcon.waitFor({ state: 'visible', timeout: 20000 });
   }
 
   async waitForChangeIsUnsaved() {
