@@ -32,7 +32,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(719, 'Set square guides'), async () => {
+  mainTest(qase([719], 'Set square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
@@ -41,7 +41,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(720, 'Square guides - change size'), async () => {
+  mainTest(qase([720], 'Square guides - change size'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeSizeForGuides('8');
@@ -56,7 +56,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(721, 'Square guides - change opacity'), async () => {
+  mainTest(qase([721], 'Square guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickGuidesActionsButton();
@@ -71,7 +71,7 @@ mainTest.describe(() => {
     );
   });
   // TODO: Does not exist in Qase
-  mainTest(qase(722, 'Use default square guides'), async () => {
+  mainTest(qase([722], 'Use default square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeSizeForGuides('8');
@@ -86,40 +86,41 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(724, 'Hide and unhide square guides via Design panel'), async () => {
-    await designPanelPage.clickAddGuidesButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await designPanelPage.clickHideGuidesButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await designPanelPage.clickUnhideGuidesButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('square-guide-unhide.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
+  mainTest(
+    qase([724], 'Hide and unhide square guides via Design panel'),
+    async () => {
+      await designPanelPage.clickAddGuidesButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
+        mask: mainPage.maskViewport(),
+      });
+      await designPanelPage.clickHideGuidesButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
+        mask: mainPage.maskViewport(),
+      });
+      await designPanelPage.clickUnhideGuidesButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot('square-guide-unhide.png', {
+        mask: mainPage.maskViewport(),
+      });
+    },
+  );
 
   // TODO: Does not exist in Qase
-  mainTest(qase(725, 'Hide and unhide square guides via Main menu'), async () => {
+  mainTest(qase([725], 'Hide and unhide square guides via Main menu'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
       mask: mainPage.maskViewport(),
     });
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickViewMainMenuItem();
+    await mainPage.clickOnMainThenViewMenuItem();
     await mainPage.clickHideGuidesMainMenuSubItem();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
       mask: mainPage.maskViewport(),
     });
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickViewMainMenuItem();
+    await mainPage.clickOnMainThenViewMenuItem();
     await mainPage.clickShowGuidesMainMenuSubItem();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-guide-unhide.png', {
@@ -128,7 +129,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(729, 'Remove square guides'), async () => {
+  mainTest(qase([729], 'Remove square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickRemoveGuidesButton();
@@ -139,7 +140,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(730, 'Set columns guides'), async () => {
+  mainTest(qase([730], 'Set columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -149,7 +150,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(731, 'Columns guides - change columns number'), async () => {
+  mainTest(qase([731], 'Columns guides - change columns number'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -165,7 +166,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(732, 'Columns guides - change width'), async () => {
+  mainTest(qase([732], 'Columns guides - change width'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -184,7 +185,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(735, 'Columns guides - change opacity'), async () => {
+  mainTest(qase([735], 'Columns guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -211,7 +212,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(736, 'Use default columns guides'), async () => {
+  mainTest(qase([736], 'Use default columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -227,7 +228,7 @@ mainTest.describe(() => {
 
   // TODO: Does not exist in Qase
   mainTest(
-    qase(738, 'Hide and unhide columns guides via Design panel'),
+    qase([738], 'Hide and unhide columns guides via Design panel'),
     async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
@@ -249,7 +250,7 @@ mainTest.describe(() => {
   );
 
   // TODO: Does not exist in Qase
-  mainTest(qase(743, 'Remove columns guides'), async () => {
+  mainTest(qase([743], 'Remove columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -261,7 +262,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(744, 'Set rows guides'), async () => {
+  mainTest(qase([744], 'Set rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
@@ -271,7 +272,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(745, 'Rows guides - change rows number'), async () => {
+  mainTest(qase([745], 'Rows guides - change rows number'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
@@ -284,7 +285,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(746, 'Rows guides - change height'), async () => {
+  mainTest(qase([746], 'Rows guides - change height'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
@@ -303,7 +304,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(749, 'Rows guides - change opacity'), async () => {
+  mainTest(qase([749], 'Rows guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
@@ -326,7 +327,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(750, 'Use default rows guides'), async () => {
+  mainTest(qase([750], 'Use default rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
@@ -341,22 +342,20 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(753, 'Hide and unhide rows guides via Main menu'), async () => {
+  mainTest(qase([753], 'Hide and unhide rows guides via Main menu'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-guide-default.png', {
       mask: mainPage.maskViewport(),
     });
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickViewMainMenuItem();
+    await mainPage.clickOnMainThenViewMenuItem();
     await mainPage.clickHideGuidesMainMenuSubItem();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-guide-hide.png', {
       mask: mainPage.maskViewport(),
     });
-    await mainPage.clickMainMenuButton();
-    await mainPage.clickViewMainMenuItem();
+    await mainPage.clickOnMainThenViewMenuItem();
     await mainPage.clickShowGuidesMainMenuSubItem();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('rows-guide-unhide.png', {
@@ -365,7 +364,7 @@ mainTest.describe(() => {
   });
 
   // TODO: Does not exist in Qase
-  mainTest(qase(757, 'Remove rows guides'), async () => {
+  mainTest(qase([757], 'Remove rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -376,7 +375,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1864, 'Duplicate board with guides'), async () => {
+  mainTest(qase([1864], 'Duplicate board with guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickShortcutCtrlD();
@@ -387,7 +386,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(2842, 'Clear guides for a given board'), async () => {
+  mainTest(qase([2842], 'Clear guides for a given board'), async () => {
     const viewportBox = await mainPage.viewport.boundingBox();
     const dropX = viewportBox.x + viewportBox.width / 2;
     const dropY = viewportBox.y + viewportBox.height / 2;
