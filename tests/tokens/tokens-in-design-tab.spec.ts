@@ -190,7 +190,7 @@ mainTest.describe(() => {
       );
 
       await mainTest.step('Hover in token value and check tooltip', async () => {
-        const errorMessage: string = `Reference in {${dimensionTokenB.name}} is not valid or is not in any active set`;
+        const errorMessage: string = `Reference in {${dimensionTokenB.name}} is not valid or is not in any active set.`;
         await designPanelPage.hoverOnTokenPill(ariaLabel);
         await designPanelPage.isTokenPillTooltipVisible(errorMessage);
       });

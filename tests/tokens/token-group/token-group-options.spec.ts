@@ -174,13 +174,13 @@ mainTest.describe('Context menu > Delete', () => {
       );
 
       await mainTest.step(
-        `Verify "${secondaryToken.name}" is highlighted as invalid and shows "Reference is not valid or is not in any active set" tooltip`,
+        `Verify "${secondaryToken.name}" is highlighted as invalid and shows correct tooltip`,
         async () => {
           await tokensPage.tokensComp.checkInvalidTokenCount(1);
           await tokensPage.tokensComp.invalidToken.hover();
           await expect(tokensPage.tokensComp.invalidToken).toHaveAttribute(
             'title',
-            'Reference is not valid or is not in any active set',
+            `Reference in {${secondaryToken.name}} is not valid or is not in any active set.`,
           );
         },
       );
