@@ -98,6 +98,9 @@ exports.BasePage = class BasePage {
     this.restoreVariantMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Restore variant' });
+    this.clearBoardGuidesMenuItem = page
+      .getByRole('listitem')
+      .filter({ hasText: 'Clear board guides' });
     this.showInAssetsPanelOption = page
       .getByRole('listitem')
       .filter({ hasText: 'Show in assets panel' });
@@ -310,6 +313,11 @@ exports.BasePage = class BasePage {
   async deleteLayerViaRightClick() {
     await this.createdLayer.click({ button: 'right', force: true });
     await this.deleteLayerMenuItem.click();
+  }
+
+  async clearBoardGuidesViaRightClick() {
+    await this.createdLayer.click({ button: 'right', force: true });
+    await this.clearBoardGuidesMenuItem.click();
   }
 
   async deleteLayerViaRightClickByName(layerName) {
