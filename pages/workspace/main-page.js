@@ -38,6 +38,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.textbox = this.viewport.getByRole('textbox').first();
     this.guides = page.locator('.guides .new-guides');
     this.rulers = page.locator('.rulers');
+    this.horizontalRulerTrack = page.locator(
+      'g.new-guides rect[class*="cursor-resize-ns"]',
+    );
+    this.verticalRulerTrack = page.locator(
+      'g.new-guides rect[class*="cursor-resize-ew"]',
+    );
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
     this.gridEditorButton = page.locator('button[class*="grid-editor-button"]');
@@ -403,6 +409,30 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.mouse.down();
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.move(x2, y2);
+    await this.page.mouse.up();
+  }
+
+  async dragHorizontalGuideFromRuler(dropX, dropY) {
+    const box = await this.horizontalRulerTrack.boundingBox();
+    await this.page.mouse.move(box.x + 5, box.y + 5);
+    await this.page.mouse.down();
+    await this.page.waitForTimeout(150);
+    await this.page.mouse.move(box.x + 5, dropY, { steps: 15 });
+    await this.page.waitForTimeout(150);
+    await this.page.mouse.move(dropX, dropY, { steps: 15 });
+    await this.page.waitForTimeout(300);
+    await this.page.mouse.up();
+  }
+
+  async dragVerticalGuideFromRuler(dropX, dropY) {
+    const box = await this.verticalRulerTrack.boundingBox();
+    await this.page.mouse.move(box.x + 5, box.y + 5);
+    await this.page.mouse.down();
+    await this.page.waitForTimeout(150);
+    await this.page.mouse.move(dropX, box.y + 5, { steps: 15 });
+    await this.page.waitForTimeout(150);
+    await this.page.mouse.move(dropX, dropY, { steps: 15 });
+    await this.page.waitForTimeout(300);
     await this.page.mouse.up();
   }
 
