@@ -345,6 +345,7 @@ mainTest(
         await designPanelPage.checkSizeWidth('300');
         await designPanelPage.checkSizeHeight('200');
         await mainPage.isCornerHandleVisible();
+        await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot(
           'resized-board-with-rectangle.png',
           {
