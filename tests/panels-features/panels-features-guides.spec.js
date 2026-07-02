@@ -31,7 +31,7 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(719, 'Set square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -40,7 +40,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(720, 'Square guides - change size'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -55,7 +55,7 @@ mainTest.describe(() => {
     );
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(721, 'Square guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -70,7 +70,7 @@ mainTest.describe(() => {
       },
     );
   });
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(722, 'Use default square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -85,7 +85,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(724, 'Hide and unhide square guides via Design panel'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -104,7 +104,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(725, 'Hide and unhide square guides via Main menu'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -127,7 +127,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(729, 'Remove square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -138,7 +138,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(730, 'Set columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -148,7 +148,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(731, 'Columns guides - change columns number'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -164,7 +164,7 @@ mainTest.describe(() => {
     );
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(732, 'Columns guides - change width'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -183,7 +183,7 @@ mainTest.describe(() => {
     );
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(735, 'Columns guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -210,7 +210,7 @@ mainTest.describe(() => {
     );
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(736, 'Use default columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -225,7 +225,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(
     qase(738, 'Hide and unhide columns guides via Design panel'),
     async () => {
@@ -248,7 +248,7 @@ mainTest.describe(() => {
     },
   );
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(743, 'Remove columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -260,7 +260,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(744, 'Set rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -270,7 +270,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(745, 'Rows guides - change rows number'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -283,7 +283,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(746, 'Rows guides - change height'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -302,7 +302,7 @@ mainTest.describe(() => {
     );
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(749, 'Rows guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -325,7 +325,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(750, 'Use default rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -340,7 +340,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(753, 'Hide and unhide rows guides via Main menu'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -364,7 +364,7 @@ mainTest.describe(() => {
     });
   });
 
-  // Don't exists in Qase
+  // TODO: Do not exists in Qase
   mainTest(qase(757, 'Remove rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
