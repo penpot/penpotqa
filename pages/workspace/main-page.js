@@ -583,8 +583,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async hideRulersViaMainMenu() {
-    await this.clickMainMenuButton();
-    await this.clickViewMainMenuItem();
+    await this.clickOnMainThenViewMenuItem();
     await this.clickHideRulersMainMenuSubItem();
   }
 
