@@ -2132,9 +2132,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
    */
   async isNotTokenValidReferencedButtonVisible(tokenName) {
     const notValidReferencedButton = this.page.getByRole('button', {
-      name: `Reference in {${tokenName}} is not valid or is not in any active set`,
+      name: `Reference in {${tokenName}} is not valid or is not in any active set.`,
     });
-    await expect(this.notValidReferencedButton).toBeVisible();
+    await expect(notValidReferencedButton).toBeVisible();
   }
 
   /**
