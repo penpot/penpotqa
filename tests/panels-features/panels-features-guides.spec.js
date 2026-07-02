@@ -375,4 +375,36 @@ mainTest.describe(() => {
       mask: mainPage.maskViewport(),
     });
   });
+
+  mainTest(qase(2842, 'Clear guides for a given board'), async () => {
+    const viewportBox = await mainPage.viewport.boundingBox();
+    const dropX = viewportBox.x + viewportBox.width / 2;
+    const dropY = viewportBox.y + viewportBox.height / 2;
+
+    await mainTest.step('Drag ruler guides onto the board', async () => {
+      await mainPage.dragHorizontalGuideFromRuler(dropX, dropY);
+      await mainPage.dragVerticalGuideFromRuler(dropX, dropY);
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'board-with-ruler-guides.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+    });
+
+    await mainTest.step(
+      'Clear board guides via right-click context menu',
+      async () => {
+        await mainPage.clearBoardGuidesViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'board-without-ruler-guides.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      },
+    );
+  });
 });
