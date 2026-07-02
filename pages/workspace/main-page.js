@@ -108,6 +108,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.showGuidesMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Show pixel grid' });
+    this.hideCommentsMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Hide comments' });
+    this.showCommentsMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Show comments' });
     this.selectAllMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Select all' });
@@ -543,6 +549,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.viewMainMenuItem.click();
   }
 
+  async clickOnMainThenViewMenuItem() {
+    await this.clickMainMenuButton();
+    await this.clickViewMainMenuItem();
+  }
+
   async clickFileMainMenuItem() {
     await this.fileMainMenuItem.click();
   }
@@ -572,8 +583,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async hideRulersViaMainMenu() {
-    await this.clickMainMenuButton();
-    await this.clickViewMainMenuItem();
+    await this.clickOnMainThenViewMenuItem();
     await this.clickHideRulersMainMenuSubItem();
   }
 
@@ -583,6 +593,23 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickShowGuidesMainMenuSubItem() {
     await this.showGuidesMainMenuSubItem.click();
+  }
+
+  async clickOnHideCommentsFromMainMenu() {
+    await this.clickOnMainThenViewMenuItem();
+    await this.hideCommentsMainMenuSubItem.click();
+  }
+
+  async clickOnShowCommentsFromMainMenu() {
+    await this.clickOnMainThenViewMenuItem();
+    await this.showCommentsMainMenuSubItem.click();
+  }
+
+  async isCommentVisibilityToastVisible(toastMessage) {
+    const commentsVisibilityToast = this.page.getByText(toastMessage, {
+      exact: true,
+    });
+    await expect(commentsVisibilityToast).toBeVisible();
   }
 
   async clickSelectAllMainMenuSubItem() {

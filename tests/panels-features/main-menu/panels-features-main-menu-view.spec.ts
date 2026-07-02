@@ -62,8 +62,7 @@ mainTest(qase(816, 'Hide/show rulers via main menu'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
     mask: mainPage.maskViewport(),
   });
-  await mainPage.clickMainMenuButton();
-  await mainPage.clickViewMainMenuItem();
+  await mainPage.clickOnMainThenViewMenuItem();
   await mainPage.clickShowRulersMainMenuSubItem();
   await mainPage.clickViewportOnce();
   await expect(mainPage.viewport).toHaveScreenshot('viewport-default.png', {
@@ -91,8 +90,7 @@ mainTest(qase(819, 'Hide/show color palette - file library check'), async () => 
   await mainPage.clickViewportOnce();
   await mainPage.waitForChangeIsSaved();
 
-  await mainPage.clickMainMenuButton();
-  await mainPage.clickViewMainMenuItem();
+  await mainPage.clickOnMainThenViewMenuItem();
   await mainPage.clickShowColorPaletteMainMenuSubItem();
   await mainPage.isColorsPaletteDisplayed();
   await colorPalettePage.openColorPaletteMenu();
@@ -100,8 +98,7 @@ mainTest(qase(819, 'Hide/show color palette - file library check'), async () => 
   await expect(mainPage.typographiesColorsBottomPanel).toHaveScreenshot(
     'colors-file-library.png',
   );
-  await mainPage.clickMainMenuButton();
-  await mainPage.clickViewMainMenuItem();
+  await mainPage.clickOnMainThenViewMenuItem();
   await mainPage.clickHideColorPaletteMainMenuSubItem();
   await mainPage.isColorsPaletteNotDisplayed();
 });
@@ -111,14 +108,12 @@ mainTest(qase(820, 'Hide/show board names'), async () => {
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
   await mainPage.isCreatedLayerVisible();
-  await mainPage.clickMainMenuButton();
-  await mainPage.clickViewMainMenuItem();
+  await mainPage.clickOnMainThenViewMenuItem();
   await mainPage.clickHideBoardNamesMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('board-hide-name.png', {
     mask: mainPage.maskViewport(),
   });
-  await mainPage.clickMainMenuButton();
-  await mainPage.clickViewMainMenuItem();
+  await mainPage.clickOnMainThenViewMenuItem();
   await mainPage.clickShowBoardNamesMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('board-show-name.png', {
     mask: mainPage.maskViewport(),
@@ -131,14 +126,12 @@ mainTest(qase(821, 'Hide/show pixel grid via main menu'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
     mask: mainPage.maskViewport(),
   });
-  await mainPage.clickMainMenuButton();
-  await mainPage.clickViewMainMenuItem();
+  await mainPage.clickOnMainThenViewMenuItem();
   await mainPage.clickHidePixelGridMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-pixel-grid.png', {
     mask: mainPage.maskViewport(),
   });
-  await mainPage.clickMainMenuButton();
-  await mainPage.clickViewMainMenuItem();
+  await mainPage.clickOnMainThenViewMenuItem();
   await mainPage.clickShowPixelGridMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
     mask: mainPage.maskViewport(),
@@ -165,8 +158,7 @@ mainTest(qase(822, 'Hide/show UI via main menu and shortcut "/"'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot('canvas-show-ui.png', {
     mask: mainPage.maskViewport(),
   });
-  await mainPage.clickMainMenuButton();
-  await mainPage.clickViewMainMenuItem();
+  await mainPage.clickOnMainThenViewMenuItem();
   await mainPage.clickShowHideUIMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-ui.png', {
     mask: mainPage.maskViewport(),

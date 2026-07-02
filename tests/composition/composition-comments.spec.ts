@@ -54,39 +54,66 @@ mainTest.describe(() => {
     await commentsPanelPage.isCommentDisplayedInPopUp(commentText);
   });
 
-  mainTest(qase([1219], 'Create comment (Toolbar)'), async ({ page }) => {
-    const comment = 'Test Comment';
+  mainTest(
+    qase([1219, 3069], 'Create comment (Toolbar) and Hide/Show it from Main Menu'),
+    async ({ page }) => {
+      await mainTest.step('1219, Create comment (Toolbar)', async () => {
+        const comment = 'Test Comment';
 
-    await mainTest.step(
-      'Verify comment is displayed in pop-up and panel',
-      async () => {
-        await commentsPanelPage.isCommentDisplayedInPopUp(comment);
-        await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
+        await mainTest.step(
+          'Verify comment is displayed in pop-up and panel',
+          async () => {
+            await commentsPanelPage.isCommentDisplayedInPopUp(comment);
+            await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
 
-        await mainPage.hideRulersViaMainMenu();
-        await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
-          mask: mainPage.maskViewport({ usersSection: true }, [
-            commentsPanelPage.commentsAuthorSection,
-            commentsPanelPage.commentAvatarImage,
-          ]),
+            await mainPage.hideRulersViaMainMenu();
+            await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
+              mask: mainPage.maskViewport({ usersSection: true }, [
+                commentsPanelPage.commentsAuthorSection,
+                commentsPanelPage.commentAvatarImage,
+              ]),
+            });
+          },
+        );
+
+        await mainTest.step(
+          'Close pop-up and verify thread icon is displayed',
+          async () => {
+            await mainPage.clickViewportOnce();
+            await commentsPanelPage.isCommentThreadIconDisplayed();
+            await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
+              mask: mainPage.maskViewport({ usersSection: true }, [
+                commentsPanelPage.commentsAuthorSection,
+                commentsPanelPage.commentAvatarImage,
+              ]),
+            });
+          },
+        );
+      });
+
+      await mainTest.step('3069, Hide/show comments via main menu', async () => {
+        await mainTest.step('Exit from the comments panel', async () => {
+          await commentsPanelPage.clickCreateCommentButton();
         });
-      },
-    );
 
-    await mainTest.step(
-      'Close pop-up and verify thread icon is displayed',
-      async () => {
-        await mainPage.clickViewportOnce();
-        await commentsPanelPage.isCommentThreadIconDisplayed();
-        await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
-          mask: mainPage.maskViewport({ usersSection: true }, [
-            commentsPanelPage.commentsAuthorSection,
-            commentsPanelPage.commentAvatarImage,
-          ]),
+        await mainTest.step('Click on Main menu/View/Hide comments', async () => {
+          await commentsPanelPage.isCommentAvatarImageVisible(true);
+
+          await mainPage.clickOnHideCommentsFromMainMenu();
+          await mainPage.clickViewportByCoordinates(800, 800);
+          await mainPage.isCommentVisibilityToastVisible('Comments hidden');
+          await commentsPanelPage.isCommentAvatarImageVisible(false);
         });
-      },
-    );
-  });
+
+        await mainTest.step('Click on Main menu/View/Show comments', async () => {
+          await mainPage.clickOnShowCommentsFromMainMenu();
+          await mainPage.clickViewportByCoordinates(800, 800);
+          await mainPage.isCommentVisibilityToastVisible('Comments visible');
+          await commentsPanelPage.isCommentAvatarImageVisible(true);
+        });
+      });
+    },
+  );
 
   mainTest(
     qase([1226], 'Reply comment with valid text using Latin alphabet'),

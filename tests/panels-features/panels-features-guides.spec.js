@@ -111,15 +111,13 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
         mask: mainPage.maskViewport(),
       });
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickViewMainMenuItem();
+      await mainPage.clickOnMainThenViewMenuItem();
       await mainPage.clickHideGuidesMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
         mask: mainPage.maskViewport(),
       });
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickViewMainMenuItem();
+      await mainPage.clickOnMainThenViewMenuItem();
       await mainPage.clickShowGuidesMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('square-guide-unhide.png', {
@@ -337,15 +335,13 @@ mainTest.describe(() => {
       await expect(mainPage.viewport).toHaveScreenshot('rows-guide-default.png', {
         mask: mainPage.maskViewport(),
       });
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickViewMainMenuItem();
+      await mainPage.clickOnMainThenViewMenuItem();
       await mainPage.clickHideGuidesMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('rows-guide-hide.png', {
         mask: mainPage.maskViewport(),
       });
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickViewMainMenuItem();
+      await mainPage.clickOnMainThenViewMenuItem();
       await mainPage.clickShowGuidesMainMenuSubItem();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('rows-guide-unhide.png', {
