@@ -103,3 +103,71 @@ mainTest(
     );
   },
 );
+
+mainTest(
+  qase([3064], 'Token dropdown only lists tokens of allowed reference types'),
+  async () => {
+    const borderRadiusToken: MainToken<TokenClass> = {
+      class: TokenClass.BorderRadius,
+      name: 'BORDER-RADIUS-1',
+    };
+    const spacingToken: MainToken<TokenClass> = {
+      class: TokenClass.Spacing,
+      name: 'SPACING-5',
+    };
+    const colorTokenName = 'COLOR-1';
+
+    await mainTest.step(
+      `Edit "${borderRadiusToken.name}" and open its value dropdown`,
+      async () => {
+        await tokensPage.tokensComp.expandTokenByName(TokenClass.BorderRadius);
+        await tokensPage.tokensComp.clickEditToken(borderRadiusToken);
+        await tokensPage.mainTokensComp.openValueDropdown();
+      },
+    );
+
+    await mainTest.step(
+      `Check the dropdown lists Dimension tokens but not the Color token "${colorTokenName}"`,
+      async () => {
+        await tokensPage.mainTokensComp.checkValueDropdownOptionVisible(
+          'DIMENSIONS-1',
+        );
+        await tokensPage.mainTokensComp.checkValueDropdownOptionVisible(
+          colorTokenName,
+          false,
+        );
+      },
+    );
+
+    await mainTest.step('Close the Border Radius edit form', async () => {
+      await tokensPage.clickOnESC();
+      await tokensPage.tokensComp.clickCancelButton();
+    });
+
+    await mainTest.step(
+      `Edit "${spacingToken.name}" and open its value dropdown`,
+      async () => {
+        await tokensPage.tokensComp.expandTokenByName(TokenClass.Spacing);
+        await tokensPage.tokensComp.clickEditToken(spacingToken);
+        await tokensPage.mainTokensComp.openValueDropdown();
+      },
+    );
+
+    await mainTest.step(
+      `Check the dropdown lists the Dimension token but not the Sizing or Color tokens ("${colorTokenName}")`,
+      async () => {
+        await tokensPage.mainTokensComp.checkValueDropdownOptionVisible(
+          'DIMENSIONS-1',
+        );
+        await tokensPage.mainTokensComp.checkValueDropdownOptionVisible(
+          'SIZING-2',
+          false,
+        );
+        await tokensPage.mainTokensComp.checkValueDropdownOptionVisible(
+          colorTokenName,
+          false,
+        );
+      },
+    );
+  },
+);
