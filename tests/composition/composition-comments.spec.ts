@@ -55,11 +55,14 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([1219, 3069], 'Create comment (Toolbar) and Hide/Show it from Main Menu'),
+    qase(
+      [1219, 3069, 3074],
+      'Create comment (Toolbar) and Hide/Show it from Main Menu/Shortkey',
+    ),
     async ({ page }) => {
-      await mainTest.step('1219, Create comment (Toolbar)', async () => {
-        const comment = 'Test Comment';
+      const comment = 'Test Comment';
 
+      await mainTest.step('1219, Create comment (Toolbar)', async () => {
         await mainTest.step(
           'Verify comment is displayed in pop-up and panel',
           async () => {
@@ -112,6 +115,24 @@ mainTest.describe(() => {
           await commentsPanelPage.isCommentAvatarImageVisible(true);
         });
       });
+
+      await mainTest.step(
+        "3074, Pressing 'C' shows comments from hidden state",
+        async () => {
+          await mainTest.step('Hide comments using the shortcut', async () => {
+            await commentsPanelPage.pressHideCommentsShortcut();
+
+            await mainPage.isCommentVisibilityToastVisible('Comments hidden');
+            await commentsPanelPage.isCommentAvatarImageVisible(false);
+          });
+
+          await mainTest.step("Press the 'C' key", async () => {
+            await commentsPanelPage.pressCommentsPanelShortcut();
+
+            await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
+          });
+        },
+      );
     },
   );
 
