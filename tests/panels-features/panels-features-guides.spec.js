@@ -31,7 +31,8 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase(719, 'PF-1 Set square guides'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([719], 'Set square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
@@ -39,7 +40,8 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(720, 'PF-2 Square guides - change size'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([720], 'Square guides - change size'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeSizeForGuides('8');
@@ -53,7 +55,8 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(721, 'PF-3 Square guides - change opacity'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([721], 'Square guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickGuidesActionsButton();
@@ -67,8 +70,8 @@ mainTest.describe(() => {
       },
     );
   });
-
-  mainTest(qase(722, 'PF-4 Use default square guides'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([722], 'Use default square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeSizeForGuides('8');
@@ -82,8 +85,9 @@ mainTest.describe(() => {
     });
   });
 
+  // TODO: Does not exist in Qase
   mainTest(
-    qase(724, 'PF-6 Hide and unhide square guides via Design panel'),
+    qase([724], 'Hide and unhide square guides via Design panel'),
     async () => {
       await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
@@ -103,32 +107,29 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase(725, 'PF-7 Hide and unhide square guides via Main menu'),
-    async () => {
-      await designPanelPage.clickAddGuidesButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickViewMainMenuItem();
-      await mainPage.clickHideGuidesMainMenuSubItem();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickViewMainMenuItem();
-      await mainPage.clickShowGuidesMainMenuSubItem();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('square-guide-unhide.png', {
-        mask: mainPage.maskViewport(),
-      });
-    },
-  );
+  // TODO: Does not exist in Qase
+  mainTest(qase([725], 'Hide and unhide square guides via Main menu'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
+      mask: mainPage.maskViewport(),
+    });
+    await mainPage.clickOnMainThenViewMenuItem();
+    await mainPage.clickHideGuidesMainMenuSubItem();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
+      mask: mainPage.maskViewport(),
+    });
+    await mainPage.clickOnMainThenViewMenuItem();
+    await mainPage.clickShowGuidesMainMenuSubItem();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('square-guide-unhide.png', {
+      mask: mainPage.maskViewport(),
+    });
+  });
 
-  mainTest(qase(729, 'PF-11 Remove square guides'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([729], 'Remove square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickRemoveGuidesButton();
@@ -138,7 +139,8 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(730, 'PF-12 Set columns guides'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([730], 'Set columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -147,7 +149,8 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(731, 'PF-13 Columns guides - change columns number'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([731], 'Columns guides - change columns number'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -162,7 +165,8 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(732, 'PF-14 Columns guides - change width'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([732], 'Columns guides - change width'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -180,7 +184,8 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(735, 'PF-17 Columns guides - change opacity'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([735], 'Columns guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -206,7 +211,8 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(736, 'PF-18 Use default columns guides'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([736], 'Use default columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -220,8 +226,9 @@ mainTest.describe(() => {
     });
   });
 
+  // TODO: Does not exist in Qase
   mainTest(
-    qase(738, 'PF-20 Hide and unhide columns guides via Design panel'),
+    qase([738], 'Hide and unhide columns guides via Design panel'),
     async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
@@ -242,7 +249,8 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(743, 'PF-25 Remove columns guides'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([743], 'Remove columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -253,7 +261,8 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(744, 'PF-26 Set rows guides'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([744], 'Set rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
@@ -262,7 +271,8 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(745, 'PF-27 Rows guides - change rows number'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([745], 'Rows guides - change rows number'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
@@ -274,7 +284,8 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(746, 'PF-28 Rows guides - change height'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([746], 'Rows guides - change height'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
@@ -292,7 +303,8 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(749, 'PF-31 Rows guides - change opacity'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([749], 'Rows guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
@@ -314,7 +326,8 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(750, 'PF-32 Use default rows guides'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([750], 'Use default rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
     await mainPage.waitForChangeIsSaved();
@@ -328,33 +341,30 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(
-    qase(753, 'PF-35 Hide and unhide rows guides via Main menu'),
-    async () => {
-      await designPanelPage.clickAddGuidesButton();
-      await designPanelPage.selectGuidesType('Rows');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('rows-guide-default.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickViewMainMenuItem();
-      await mainPage.clickHideGuidesMainMenuSubItem();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('rows-guide-hide.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickViewMainMenuItem();
-      await mainPage.clickShowGuidesMainMenuSubItem();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('rows-guide-unhide.png', {
-        mask: mainPage.maskViewport(),
-      });
-    },
-  );
+  // TODO: Does not exist in Qase
+  mainTest(qase([753], 'Hide and unhide rows guides via Main menu'), async () => {
+    await designPanelPage.clickAddGuidesButton();
+    await designPanelPage.selectGuidesType('Rows');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('rows-guide-default.png', {
+      mask: mainPage.maskViewport(),
+    });
+    await mainPage.clickOnMainThenViewMenuItem();
+    await mainPage.clickHideGuidesMainMenuSubItem();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('rows-guide-hide.png', {
+      mask: mainPage.maskViewport(),
+    });
+    await mainPage.clickOnMainThenViewMenuItem();
+    await mainPage.clickShowGuidesMainMenuSubItem();
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('rows-guide-unhide.png', {
+      mask: mainPage.maskViewport(),
+    });
+  });
 
-  mainTest(qase(757, 'PF-39 Remove rows guides'), async () => {
+  // TODO: Does not exist in Qase
+  mainTest(qase([757], 'Remove rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
     await mainPage.waitForChangeIsSaved();
@@ -365,7 +375,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1864, 'Duplicate board with guides'), async () => {
+  mainTest(qase([1864], 'Duplicate board with guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickShortcutCtrlD();
@@ -374,5 +384,37 @@ mainTest.describe(() => {
     await expect(mainPage.viewport).toHaveScreenshot('two-board-with-guide.png', {
       mask: mainPage.maskViewport(),
     });
+  });
+
+  mainTest(qase([2842], 'Clear guides for a given board'), async () => {
+    const viewportBox = await mainPage.viewport.boundingBox();
+    const dropX = viewportBox.x + viewportBox.width / 2;
+    const dropY = viewportBox.y + viewportBox.height / 2;
+
+    await mainTest.step('Drag ruler guides onto the board', async () => {
+      await mainPage.dragHorizontalGuideFromRuler(dropX, dropY);
+      await mainPage.dragVerticalGuideFromRuler(dropX, dropY);
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'board-with-ruler-guides.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+    });
+
+    await mainTest.step(
+      'Clear board guides via right-click context menu',
+      async () => {
+        await mainPage.clearBoardGuidesViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'board-without-ruler-guides.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      },
+    );
   });
 });

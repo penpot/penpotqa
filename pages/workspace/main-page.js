@@ -38,6 +38,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.textbox = this.viewport.getByRole('textbox').first();
     this.guides = page.locator('.guides .new-guides');
     this.rulers = page.locator('.rulers');
+    this.horizontalRulerTrack = page.locator(
+      'g.new-guides rect[class*="cursor-resize-ns"]',
+    );
+    this.verticalRulerTrack = page.locator(
+      'g.new-guides rect[class*="cursor-resize-ew"]',
+    );
     this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
     this.gridEditorButton = page.locator('button[class*="grid-editor-button"]');
@@ -108,6 +114,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.showGuidesMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Show pixel grid' });
+    this.hideCommentsMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Hide comments' });
+    this.showCommentsMainMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Show comments' });
     this.selectAllMainMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Select all' });
@@ -406,6 +418,30 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.mouse.up();
   }
 
+  async dragHorizontalGuideFromRuler(dropX, dropY) {
+    const box = await this.horizontalRulerTrack.boundingBox();
+    await this.page.mouse.move(box.x + 5, box.y + 5);
+    await this.page.mouse.down();
+    await this.page.waitForTimeout(150);
+    await this.page.mouse.move(box.x + 5, dropY, { steps: 15 });
+    await this.page.waitForTimeout(150);
+    await this.page.mouse.move(dropX, dropY, { steps: 15 });
+    await this.page.waitForTimeout(300);
+    await this.page.mouse.up();
+  }
+
+  async dragVerticalGuideFromRuler(dropX, dropY) {
+    const box = await this.verticalRulerTrack.boundingBox();
+    await this.page.mouse.move(box.x + 5, box.y + 5);
+    await this.page.mouse.down();
+    await this.page.waitForTimeout(150);
+    await this.page.mouse.move(dropX, box.y + 5, { steps: 15 });
+    await this.page.waitForTimeout(150);
+    await this.page.mouse.move(dropX, dropY, { steps: 15 });
+    await this.page.waitForTimeout(300);
+    await this.page.mouse.up();
+  }
+
   async clickPencilBoxButton() {
     await this.pencilBoxButton.click();
   }
@@ -543,6 +579,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.viewMainMenuItem.click();
   }
 
+  async clickOnMainThenViewMenuItem() {
+    await this.clickMainMenuButton();
+    await this.clickViewMainMenuItem();
+  }
+
   async clickFileMainMenuItem() {
     await this.fileMainMenuItem.click();
   }
@@ -572,8 +613,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async hideRulersViaMainMenu() {
-    await this.clickMainMenuButton();
-    await this.clickViewMainMenuItem();
+    await this.clickOnMainThenViewMenuItem();
     await this.clickHideRulersMainMenuSubItem();
   }
 
@@ -583,6 +623,23 @@ exports.MainPage = class MainPage extends BasePage {
 
   async clickShowGuidesMainMenuSubItem() {
     await this.showGuidesMainMenuSubItem.click();
+  }
+
+  async clickOnHideCommentsFromMainMenu() {
+    await this.clickOnMainThenViewMenuItem();
+    await this.hideCommentsMainMenuSubItem.click();
+  }
+
+  async clickOnShowCommentsFromMainMenu() {
+    await this.clickOnMainThenViewMenuItem();
+    await this.showCommentsMainMenuSubItem.click();
+  }
+
+  async isCommentVisibilityToastVisible(toastMessage) {
+    const commentsVisibilityToast = this.page.getByText(toastMessage, {
+      exact: true,
+    });
+    await expect(commentsVisibilityToast).toBeVisible();
   }
 
   async clickSelectAllMainMenuSubItem() {
