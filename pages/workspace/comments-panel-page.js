@@ -191,6 +191,12 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await expect(this.commentResolvedThreadIcon).not.toBeVisible();
   }
 
+  async isCommentAvatarImageVisible(visible = true) {
+    visible
+      ? await expect(this.commentAvatarImage).toBeVisible()
+      : await expect(this.commentAvatarImage).not.toBeVisible();
+  }
+
   async isCommentUnreadThreadIconVisible(visible = true) {
     visible
       ? await expect(this.commentUnreadThreadIcon.first()).toBeVisible()
