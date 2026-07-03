@@ -95,13 +95,6 @@ export class ToolsComponent {
     expect(text.length).toBe(count);
   }
 
-  async checkImportTokenDetailErrorFormat(regex: RegExp) {
-    const text = await this.getTokenErrorDetailText();
-    for (const [index, line] of text.entries()) {
-      expect(line).toMatch(regex);
-    }
-  }
-
   async clickOnExportButton() {
     await this.exportButton.click();
   }
