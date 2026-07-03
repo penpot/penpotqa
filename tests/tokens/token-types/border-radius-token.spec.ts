@@ -54,7 +54,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(2125, 'Apply default "all radius" token to a rectangle (by left click)'),
+    qase([2125], 'Apply default "all radius" token to a rectangle (by left click)'),
     async () => {
       await mainTest.step(
         `Verify "${radiusToken.name}" token is applied and corner radius matches`,
@@ -84,7 +84,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      2166,
+      [2166],
       'Edit a border radius token, already applied to a shape (with warning renaming message)',
     ),
     async () => {
@@ -128,7 +128,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(2136, 'Delete a token and redo deletion'), async () => {
+  mainTest(qase([2136], 'Delete a token and redo deletion'), async () => {
     await mainTest.step(
       `Delete "${radiusToken.name}" token and verify it is removed`,
       async () => {

@@ -32,7 +32,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2215, 'Apply default "stroke width" token to a path (by left click)'),
+  qase([2215], 'Apply default "stroke width" token to a path (by left click)'),
   async () => {
     const strokeToken: MainToken<TokenClass> = {
       class: TokenClass.StrokeWidth,

@@ -48,7 +48,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      2558,
+      [2558],
       'Apply a Font Weight token to a text not matching a family font style, but with a fallback value',
     ),
     async () => {
@@ -115,7 +115,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      2559,
+      [2559],
       'Apply a Font Weight token to a text not matching a family font style, with no fallback value',
     ),
     async () => {
@@ -153,7 +153,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      2562,
+      [2562],
       'Edit the value of a Font Weight token already applied to a component text with duplicated copies',
     ),
     async () => {

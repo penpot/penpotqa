@@ -249,7 +249,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(2685, 'Create token with Single reference shadow values'),
+    qase([2685], 'Create token with Single reference shadow values'),
     async () => {
       const SHADOW_TOKEN: ShadowToken<TokenClass> = {
         class: TokenClass.Shadow,

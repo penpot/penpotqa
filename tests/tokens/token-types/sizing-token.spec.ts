@@ -36,7 +36,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2200, 'Apply "max/min size" token to an image (by right click)'),
+  qase([2200], 'Apply "max/min size" token to an image (by right click)'),
   async () => {
     const sizingToken: MainToken<TokenClass> = {
       class: TokenClass.Sizing,
@@ -120,7 +120,7 @@ mainTest(
 );
 
 mainTest(
-  qase(2197, 'Verifying invalid token values on creation, aborting (cancel)'),
+  qase([2197], 'Verifying invalid token values on creation, aborting (cancel)'),
   async () => {
     const firstSizingToken: MainToken<TokenClass> = {
       class: TokenClass.Sizing,
@@ -263,7 +263,7 @@ mainTest(
 
 mainTest(
   qase(
-    2195,
+    [2195],
     "Update the reference of an alias to update the shape where it's applied",
   ),
   async () => {

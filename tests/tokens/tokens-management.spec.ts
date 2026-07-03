@@ -31,7 +31,10 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2224, 'Apply 2 different kind of tokens overriding the same shape property'),
+  qase(
+    [2224],
+    'Apply 2 different kind of tokens overriding the same shape property',
+  ),
   async () => {
     const sizingToken: MainToken<TokenClass> = {
       class: TokenClass.Sizing,

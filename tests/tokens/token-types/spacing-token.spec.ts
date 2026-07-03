@@ -32,7 +32,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2202, 'Apply default "all gaps" token to a grid board (by left click)'),
+  qase([2202], 'Apply default "all gaps" token to a grid board (by left click)'),
   async () => {
     const spacingToken: MainToken<TokenClass> = {
       class: TokenClass.Spacing,

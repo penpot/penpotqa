@@ -56,7 +56,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(2142, 'Apply default "color fill" token to a board (by left click)'),
+    qase([2142], 'Apply default "color fill" token to a board (by left click)'),
     async () => {
       await mainTest.step(
         `Apply "${colorToken.name}" token to board fill and verify it is applied`,
@@ -84,7 +84,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(2147, 'Apply "color stroke" token to a board (by right click)'),
+    qase([2147], 'Apply "color stroke" token to a board (by right click)'),
     async () => {
       await mainTest.step(
         `Add stroke to board and apply "${colorToken.name}" token via right click`,
