@@ -92,7 +92,7 @@ export class TokensComponent {
     this.tokensPage = tokensPage;
     this.baseComp = new BaseComponent(page);
     this.typoTokensComp = new TypographyTokensComponent(page);
-    this.mainTokensComp = new MainTokensComponent(page, tokensPage);
+    this.mainTokensComp = new MainTokensComponent(page);
     this.shadowTokensComp = new ShadowTokensComponent(page);
     this.tokenSideBar = page.getByTestId('tokens-sidebar');
     this.createTokenModal = page.getByTestId('token-update-create-modal');
@@ -164,8 +164,9 @@ export class TokensComponent {
   }
 
   private getTokenTreeButton(tokenClass: TokenClass): Locator {
+    // the token count suffix (e.g. " 3") is only rendered once the section has tokens
     return this.tokenSideBar
-      .getByRole('button', { name: new RegExp(`^${tokenClass} \\d+$`) })
+      .getByRole('button', { name: new RegExp(`^${tokenClass}( \\d+)?$`) })
       .first();
   }
 
