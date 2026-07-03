@@ -107,10 +107,6 @@ export class MainTokensComponent {
     }
   }
 
-  async enterTokenValue(value: string) {
-    await this.tokenValueInput.fill(value);
-  }
-
   getValueDropdownOption(tokenName: string): Locator {
     return this.valueDropdownList.getByRole('option', { name: tokenName });
   }
