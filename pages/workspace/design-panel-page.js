@@ -261,6 +261,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       exact: true,
     });
     this.addBlurButton = this.blurSection.getByRole('button', { name: 'Add blur' });
+    this.blurTypeSelect = this.blurSection.getByRole('combobox', {
+      name: 'Blur type select',
+    });
     this.blurMoreOptions = this.blurSection.locator(
       'button[class*="blur__show-more"]',
     );
@@ -845,6 +848,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async clickAddBlurButton() {
     await this.blurSection.waitFor();
     await this.addBlurButton.click();
+  }
+
+  async selectTypeForBlurEffects(type) {
+    await this.blurTypeSelect.click();
+    const typeOptionSel = this.page.getByRole('option', { name: type, exact: true });
+    await typeOptionSel.click();
   }
 
   async changeValueForBlur(value) {
