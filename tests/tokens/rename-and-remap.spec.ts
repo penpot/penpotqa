@@ -209,7 +209,7 @@ mainTest.describe(() => {
         `Change renamed Token A value to "${newTokenAValue}"`,
         async () => {
           await tokensPage.tokensComp.clickEditToken(renamedTokenA);
-          await tokensPage.tokensComp.mainTokensComp.enterTokenValue(newTokenAValue);
+          await tokensPage.tokensComp.fillTokenValue(newTokenAValue);
           await tokensPage.tokensComp.baseComp.modalSaveButton.click();
           await mainPage.waitForChangeIsSaved();
         },
