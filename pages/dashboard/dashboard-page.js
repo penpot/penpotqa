@@ -164,11 +164,17 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       name: 'Upload',
       exact: true,
     });
-    this.fontNameTableCell = page.locator(
-      'div[class*="installed-fonts"] div[class*="table-row"] div[class*="dashboard_fonts__family"]',
+    this.uploadAllFontsButton = page.getByRole('button', {
+      name: 'Upload all',
+      exact: true,
+    });
+    this.installedFontsTable = page.getByText('Installed fontsFont');
+
+    this.fontNameTableCell = this.installedFontsTable.locator(
+      'div[class*="table-row"] div[class*="dashboard_fonts__family"]',
     );
-    this.fontStyleTableCell = page.locator(
-      'div[class*="installed-fonts"] div[class*="table-row"] div[class*="dashboard_fonts__variants"]',
+    this.fontStyleTableCell = this.installedFontsTable.locator(
+      'div[class*="table-row"] div[class*="dashboard_fonts__variants"]',
     );
     this.fontOptionsMenuButton = page.locator(
       'div[class*="fonts__options"] svg[class="icon-menu"]',
@@ -763,6 +769,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.uploadFontButton.waitFor({ state: 'hidden' });
   }
 
+  async uploadAllFonts(filePaths) {
+    await this.uploadFontSelector.setInputFiles(filePaths);
+    await this.uploadAllFontsButton.click();
+    await this.uploadAllFontsButton.waitFor({ state: 'hidden' });
+  }
+
   async uploadFontWithInvalidFormat(filePath) {
     const fontName = filePath.split('/')[1];
     const warning = `The font '${fontName}' could not be loaded`;
@@ -773,6 +785,17 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   async isFontExists(fontName, fontStyle) {
     await expect(this.fontNameTableCell).toHaveText(fontName);
     await expect(this.fontStyleTableCell).toHaveText(fontStyle);
+  }
+
+  async fontExistsAtIndex(index, fontName, fontStyle) {
+    await expect(this.fontNameTableCell.nth(index)).toContainText(fontName);
+    await expect(this.fontStyleTableCell.nth(index)).toContainText(fontStyle);
+  }
+
+  async areFontsListed(fonts) {
+    for (const [index, { fontName, fontStyle }] of fonts.entries()) {
+      await this.fontExistsAtIndex(index, fontName, fontStyle);
+    }
   }
 
   async isFontNotExist(fontName) {
