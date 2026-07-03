@@ -1,6 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
 import { SampleData } from 'helpers/sample-data';
-import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import {
   TokenClass,
   BasicTokenData,
@@ -17,7 +16,6 @@ const sampleData = new SampleData();
 
 export class MainTokensComponent {
   readonly page: Page;
-  readonly tokensPage: TokensPage;
 
   // locators
   readonly addRadiusTokenButton: Locator;
@@ -40,9 +38,8 @@ export class MainTokensComponent {
   readonly valueDropdownList: Locator;
   readonly createTokenModal: Locator;
 
-  constructor(page: Page, tokensPage: TokensPage) {
+  constructor(page: Page) {
     this.page = page;
-    this.tokensPage = tokensPage;
 
     // Tokens locators
     this.createTokenModal = page.getByTestId('token-update-create-modal');
