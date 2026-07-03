@@ -10,7 +10,6 @@ export class ThemesComponent {
   readonly themeNameInput: Locator;
   readonly groupThemeNameInput: Locator;
   readonly themesDropdown: Locator;
-  readonly themeNameErrorForm: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -31,7 +30,6 @@ export class ThemesComponent {
     this.themeNameInput = page.getByPlaceholder('Add a theme (i.e. Light)');
     this.groupThemeNameInput = page.getByPlaceholder('Add group (i.e. Mode)');
     this.themesDropdown = page.getByTestId('theme-select');
-    this.themeNameErrorForm = page.getByText('Theme Option with the same');
   }
 
   async createThemeViaLinkWithSet(name: string, setName: string) {
