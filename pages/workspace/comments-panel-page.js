@@ -95,6 +95,14 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       .filter({ hasText: 'Show only your mentions' });
   }
 
+  async pressCommentsPanelShortcut() {
+    await this.page.keyboard.press('C');
+  }
+
+  async pressHideCommentsShortcut() {
+    await this.page.keyboard.press('Control+Shift+C');
+  }
+
   async clickCreateCommentButton() {
     await this.commentsButton.click();
   }
