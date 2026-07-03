@@ -82,7 +82,7 @@ mainTest(
     await mainTest.step(
       `Type an out-of-range value "${outOfRangeValue}" and blur the field`,
       async () => {
-        await tokensPage.mainTokensComp.enterTokenValue(outOfRangeValue);
+        await tokensPage.tokensComp.fillTokenValue(outOfRangeValue);
         await tokensPage.tokensComp.clickOnTokenNameInput();
       },
     );
