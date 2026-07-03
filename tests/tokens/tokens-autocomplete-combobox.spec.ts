@@ -140,7 +140,7 @@ mainTest(
     );
 
     await mainTest.step('Close the Border Radius edit form', async () => {
-      await tokensPage.clickOnESC();
+      await tokensPage.mainTokensComp.closeValueDropdown();
       await tokensPage.tokensComp.clickCancelButton();
     });
 

@@ -19,10 +19,6 @@ export class ThemesComponent {
     this.themeUpdateCreateModal = page.getByTestId(
       'token-theme-update-create-modal',
     );
-
-    this.themeUpdateCreateModal = page.getByTestId(
-      'token-theme-update-create-modal',
-    );
     this.createOneThemeButton = page
       .locator('[class*="empty-theme-wrapper"]')
       .getByText('Create one.');

@@ -112,6 +112,10 @@ export class MainTokensComponent {
     await this.valueDropdownButton.click();
   }
 
+  async closeValueDropdown() {
+    await this.page.keyboard.press('Escape');
+  }
+
   async checkValueDropdownListVisible(visible = true) {
     visible
       ? await expect(

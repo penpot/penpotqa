@@ -95,7 +95,7 @@ export class TokensComponent {
     this.mainTokensComp = new MainTokensComponent(page);
     this.shadowTokensComp = new ShadowTokensComponent(page);
     this.tokenSideBar = page.getByTestId('tokens-sidebar');
-    this.createTokenModal = page.getByTestId('token-update-create-modal');
+    this.createTokenModal = this.mainTokensComp.createTokenModal;
     this.tokenContextMenu = page.getByTestId('tokens-context-menu-for-token');
     this.invalidToken = page
       .getByRole('button')
