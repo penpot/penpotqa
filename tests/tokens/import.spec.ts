@@ -35,7 +35,7 @@ mainTest.beforeEach(async ({ page }) => {
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
-mainTest(qase(2213, 'Import tokens'), async () => {
+mainTest(qase([2213], 'Import tokens'), async () => {
   await mainTest.step('Import tokens JSON file', async () => {
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
@@ -51,7 +51,7 @@ mainTest(qase(2213, 'Import tokens'), async () => {
   });
 });
 
-mainTest(qase(2221, 'Import .penpot file with tokens'), async () => {
+mainTest(qase([2221], 'Import .penpot file with tokens'), async () => {
   await mainTest.step('Import penpot file and open it', async () => {
     await dashboardPage.openSidebarItem('Drafts');
     await dashboardPage.importFileFromProjectPage(
@@ -69,7 +69,7 @@ mainTest(qase(2221, 'Import .penpot file with tokens'), async () => {
   });
 });
 
-mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
+mainTest(qase([2240], 'Error while importing a tokens file'), async () => {
   const errorCount = 1;
 
   await mainTest.step(
@@ -111,7 +111,7 @@ mainTest(qase(2240, 'Error while importing a tokens file'), async () => {
 });
 
 mainTest(
-  qase(2293, 'Successful import of tokens file with validation errors'),
+  qase([2293], 'Successful import of tokens file with validation errors'),
   async () => {
     const firstBadTokenName = 'dark-muted';
     const errorCount = 4;
@@ -136,7 +136,7 @@ mainTest(
   },
 );
 
-mainTest(qase(2252, 'Import tokens multi-file folder'), async () => {
+mainTest(qase([2252], 'Import tokens multi-file folder'), async () => {
   await mainTest.step('Import tokens multi-file folder', async () => {
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
@@ -171,7 +171,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(2375, 'Import tokens .zip (with a single file inside)'),
+    qase([2375], 'Import tokens .zip (with a single file inside)'),
     async () => {
       await mainTest.step('Import tokens zip with a single file', async () => {
         await tokensPage.toolsComp.importTokensZip(
@@ -186,20 +186,23 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(2376, 'Import tokens .zip (with a multi-file inside)'), async () => {
-    await mainTest.step('Import tokens zip with multiple files', async () => {
-      await tokensPage.toolsComp.importTokensZip('documents/tokens-multifile.zip');
-    });
+  mainTest(
+    qase([2376], 'Import tokens .zip (with a multi-file inside)'),
+    async () => {
+      await mainTest.step('Import tokens zip with multiple files', async () => {
+        await tokensPage.toolsComp.importTokensZip('documents/tokens-multifile.zip');
+      });
 
-    await mainTest.step('Verify themes and sets are imported', async () => {
-      await tokensPage.themesComp.checkSelectedTheme('3 active themes');
-      await tokensPage.setsComp.isSetNameVisible('client_theme_template');
-    });
-  });
+      await mainTest.step('Verify themes and sets are imported', async () => {
+        await tokensPage.themesComp.checkSelectedTheme('3 active themes');
+        await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+      });
+    },
+  );
 
   mainTest(
     qase(
-      2377,
+      [2377],
       'Import tokens .zip (with a multi-file inside) skipping not yet supported tokens',
     ),
     async ({ page }) => {
@@ -233,25 +236,28 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(2384, 'Import tokens .zip (empty or invalid)'), async ({ page }) => {
-    const baseComp: BaseComponent = new BaseComponent(page);
+  mainTest(
+    qase([2384], 'Import tokens .zip (empty or invalid)'),
+    async ({ page }) => {
+      const baseComp: BaseComponent = new BaseComponent(page);
 
-    await mainTest.step('Import empty or invalid zip file', async () => {
-      await tokensPage.toolsComp.importTokensZip('documents/tokens-invalid.zip');
-    });
+      await mainTest.step('Import empty or invalid zip file', async () => {
+        await tokensPage.toolsComp.importTokensZip('documents/tokens-invalid.zip');
+      });
 
-    await mainTest.step('Verify error message and close modal', async () => {
-      await tokensPage.checkImportErrorMessage(
-        `No tokens, sets, or themes were found in this file.`,
-      );
-      await baseComp.closeModalWindow();
-      await baseComp.closeModalWindow();
-      await tokensPage.isImportErrorMessageVisible(false);
-    });
-  });
+      await mainTest.step('Verify error message and close modal', async () => {
+        await tokensPage.checkImportErrorMessage(
+          `No tokens, sets, or themes were found in this file.`,
+        );
+        await baseComp.closeModalWindow();
+        await baseComp.closeModalWindow();
+        await tokensPage.isImportErrorMessageVisible(false);
+      });
+    },
+  );
 });
 
-mainTest(qase(2845, 'Import Tokens from Linked Library'), async () => {
+mainTest(qase([2845], 'Import Tokens from Linked Library'), async () => {
   // Data from imported shared library
   const linkedLibraryName = 'Rectangle with set and theme tokens';
   const linkedLibraryFilePath =
