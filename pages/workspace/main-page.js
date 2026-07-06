@@ -1020,6 +1020,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press('Control+K');
   }
 
+  async detachInstanceViaShortcut() {
+    await this.page.keyboard.press('Control+Shift+K');
+  }
+
   async copyLayerViaRightClick() {
     await this.rightClickOnElement();
     await this.copyOption.click();
