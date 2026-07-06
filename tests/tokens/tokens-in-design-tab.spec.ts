@@ -451,7 +451,7 @@ mainTest.describe('Typography token', () => {
             await designPanelPage.checkFontStyle(TYPO_TOKEN_2.fontWeight);
             await designPanelPage.checkFontSize(TYPO_TOKEN_2.fontSize);
             await designPanelPage.checkLetterSpacing(TYPO_TOKEN_2.letterSpacing);
-            await designPanelPage.checkTextCase(TYPO_TOKEN_2.textCase);
+            await designPanelPage.checkTextCase('Upper');
             await designPanelPage.checkTextLineHeight(TYPO_TOKEN_2.lineHeight);
             await designPanelPage.isTextUnderlineChecked();
           },
