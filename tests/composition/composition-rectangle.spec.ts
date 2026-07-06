@@ -523,7 +523,7 @@ mainTest.describe(() => {
   mainTest(
     qase(
       [324],
-      'Create component and detach instance (Rightclick and shortcut Ctrl+Shift+K)',
+      'Create component and detach instance (Right click and shortcut Ctrl+Shift+K)',
     ),
     async () => {
       await mainTest.step(
