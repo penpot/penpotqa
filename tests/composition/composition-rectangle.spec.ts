@@ -519,6 +519,65 @@ mainTest.describe(() => {
       });
     });
   });
+
+  mainTest(
+    qase(
+      [324],
+      'Create component and detach instance (Rightclick and shortcut Ctrl+Shift+K)',
+    ),
+    async () => {
+      await mainTest.step(
+        'Create component from rectangle via right click',
+        async () => {
+          await mainPage.createComponentViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step(
+        'Verify component appears with included rectangle',
+        async () => {
+          await layersPanelPage.isMainComponentOnLayersTabVisibleWithName(
+            'Rectangle',
+          );
+        },
+      );
+
+      await mainTest.step('Copy created rectangle component twice', async () => {
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.checkCopyComponentLayerCount(1);
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.checkCopyComponentLayerCount(2);
+      });
+
+      await mainTest.step(
+        'Select 1st rectangle copy and detach instance via right click',
+        async () => {
+          await layersPanelPage.detachInstanceFirstCopyComponentViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step('Verify 1st rectangle copy changes to board', async () => {
+        await layersPanelPage.checkCopyComponentLayerCount(1);
+      });
+
+      await mainTest.step(
+        'Select 2nd rectangle copy and detach instance via shortcut',
+        async () => {
+          await layersPanelPage.clickCopyComponentOnLayersTab();
+          await mainPage.detachInstanceViaShortcut();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step('Verify 2nd rectangle copy changes to board', async () => {
+        await layersPanelPage.checkCopyComponentLayerCount(0);
+      });
+    },
+  );
 });
 
 mainTest(qase([2255], 'Select and deselect rectangles'), async () => {
