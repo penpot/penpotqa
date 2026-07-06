@@ -37,7 +37,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.openTokenListButton = page.locator(
       'div[aria-label="Open token list"] button',
     );
-    this.detachTokenButton = page.getByRole('button', { name: 'Detach token' });
+    this.detachTokenButton = this.rightSidebar.getByRole('button', {
+      name: 'Detach token',
+    });
     this.resizeBoardToFitButton = page.getByRole('button', {
       name: 'Resize board to fit content',
     });
@@ -314,6 +316,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
 
     //Design panel - Text section
+    this.textSectionRegion = this.rightSidebar.getByRole('region', {
+      name: 'Text section',
+    });
+    this.textOptionsFull = this.textSectionRegion.locator(
+      '.main_ui_workspace_sidebar_options_menus_typography__text-options-full-size',
+    );
     this.textUpperCaseIcon = page.getByTestId('text-transform-uppercase');
     this.textLowerCaseIcon = page.getByTestId('text-transform-lowercase');
     this.textTitleCaseIcon = page.getByTestId('text-transform-capitalize');
@@ -359,6 +367,17 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       exact: true,
     });
     this.typographyTokenButton = this.rightSidebar.getByLabel('typography');
+    this.typographyErrorDot = this.textSectionRegion.locator(
+      '.main_ui_workspace_sidebar_options_menus_token_typography_row__error-dot',
+    );
+    this.typographyOpenTokenListButton = this.textSectionRegion.getByRole('button', {
+      name: 'Open token list',
+    });
+    this.typographyListBox = this.textSectionRegion.getByRole('listbox');
+    this.typographySearchTokenListInput = this.typographyListBox.getByRole(
+      'textbox',
+      { name: 'Search by token name' },
+    );
 
     //Design panel - Export section
     this.exportSection = page.getByText('Export', { exact: true });
@@ -1928,7 +1947,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async hoverTypographyToken() {
-    await this.typographyTokenButton.hover();
+    await this.typographyTokenButton.first().hover();
   }
 
   async isTypographyTokenModalByNameVisible(name) {
@@ -2011,10 +2030,34 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       : await expect(await this.textUnderline).not.toBeChecked();
   }
 
+  async isTextUnderlineDisabled(disabled = true) {
+    disabled
+      ? await expect(
+          await this.textUnderline,
+          `Text underline is disabled`,
+        ).toBeDisabled()
+      : await expect(
+          await this.textUnderline,
+          `Text underline is not disabled`,
+        ).not.toBeDisabled();
+  }
+
   async isTextStrikethroughChecked(checked = true) {
     checked
       ? await expect(await this.textStrikethrough).toBeChecked()
       : await expect(await this.textStrikethrough).not.toBeChecked();
+  }
+
+  async isTextStrikethroughDisabled(disabled = true) {
+    disabled
+      ? await expect(
+          await this.textStrikethrough,
+          `Text strikethrough is disabled`,
+        ).toBeDisabled()
+      : await expect(
+          await this.textStrikethrough,
+          `Text strikethrough is not disabled`,
+        ).not.toBeDisabled();
   }
 
   async isFlexElementWidth100BtnVisible(visible = true) {
@@ -2157,6 +2200,24 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   /**
+   * @param {string} tokenName - Token name
+   */
+  async isTokenNotExistOrDeletedTooltipVisible(tokenName) {
+    const tooltipError = this.rightSidebar.getByLabel(
+      `{${tokenName}} token does not exist or has been deleted.`,
+    );
+
+    await expect(
+      this.typographyErrorDot,
+      `Error dot for token ${tokenName} is visible`,
+    ).toBeVisible();
+    await expect(
+      tooltipError,
+      `Tooltip for token ${tokenName} is visible`,
+    ).toBeVisible();
+  }
+
+  /**
    * @param {string} messageText - Message text
    */
   async checkTooltipInFillColorInput(messageText) {
@@ -2178,5 +2239,54 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async hasStrokeGapInputValue(value) {
     await expect(this.strokeGapInput).toHaveValue(value);
+  }
+
+  getTypographyTokenOptionFromListByName(tokenName) {
+    return this.typographyListBox.getByRole('option', {
+      name: tokenName,
+      exact: true,
+    });
+  }
+
+  async openTypographyTokenList(value) {
+    await this.typographyOpenTokenListButton.click();
+    await expect(this.typographyListBox).toBeVisible();
+  }
+
+  async searchTypographyTokens(value) {
+    await this.openTypographyTokenList(value);
+    await this.typographySearchTokenListInput.type(value);
+  }
+
+  async areTypographyTokenFromListVisible(values) {
+    for (const value of values) {
+      const token = this.getTypographyTokenOptionFromListByName(value);
+      await expect(
+        token,
+        `Token ${value} is visible in typography token list`,
+      ).toBeVisible();
+    }
+  }
+
+  async searchAndApplyTypographyTokenFromTokensList(value) {
+    await this.searchTypographyTokens(value);
+    const token = this.getTypographyTokenOptionFromListByName(value);
+    await expect(
+      token,
+      `Token ${value} is visible in typography token list`,
+    ).toBeVisible();
+    await token.click();
+  }
+
+  async textOptionsAreVisible(visible = true) {
+    visible
+      ? await expect(
+          await this.textOptionsFull,
+          `Text options are visible`,
+        ).toBeVisible()
+      : await expect(
+          await this.textOptionsFull,
+          `Text options are not visible`,
+        ).not.toBeVisible();
   }
 };
