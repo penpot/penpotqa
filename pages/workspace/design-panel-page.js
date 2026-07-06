@@ -2248,13 +2248,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
   }
 
-  async openTypographyTokenList(value) {
+  async openTypographyTokenList() {
     await this.typographyOpenTokenListButton.click();
     await expect(this.typographyListBox).toBeVisible();
   }
 
   async searchTypographyTokens(value) {
-    await this.openTypographyTokenList(value);
+    await this.openTypographyTokenList();
     await this.typographySearchTokenListInput.type(value);
   }
 

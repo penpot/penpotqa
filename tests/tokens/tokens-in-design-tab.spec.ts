@@ -354,7 +354,7 @@ mainTest.describe('Typography token', () => {
       });
 
       await mainTest.step(
-        'Reselect layer and assert design tab displays an unresolved token state',
+        'Assert design tab displays an unresolved token state',
         async () => {
           await designPanelPage.hoverTypographyToken();
           await designPanelPage.isTokenNotExistOrDeletedTooltipVisible(
@@ -377,17 +377,12 @@ mainTest.describe('Typography token', () => {
           await mainTest.step(
             'Create two typography tokens and select layer',
             async () => {
-              await mainTest.step(
-                'Create a FIRST typography token and apply it to a text layer',
-                async () => {
-                  await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
-                  await tokensPage.tokensComp.baseComp.clickOnSaveButton();
-                  await mainPage.waitForChangeIsSaved();
-                  await tokensPage.tokensComp.isTokenVisibleWithName(
-                    TYPO_TOKEN.name,
-                  );
-                },
-              );
+              await mainTest.step('Create a FIRST typography token', async () => {
+                await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
+                await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+                await mainPage.waitForChangeIsSaved();
+                await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
+              });
 
               await mainTest.step(
                 'Create a SECOND typography token and apply it to a text layer',
@@ -444,13 +439,10 @@ mainTest.describe('Typography token', () => {
       );
 
       await mainTest.step('(3021) Detach typography token', async () => {
-        await mainTest.step(
-          `Hover over typography token and click detach button`,
-          async () => {
-            await designPanelPage.clickOnDetachTokenButton();
-            await designPanelPage.textOptionsAreVisible();
-          },
-        );
+        await mainTest.step(`Click on detach button`, async () => {
+          await designPanelPage.clickOnDetachTokenButton();
+          await designPanelPage.textOptionsAreVisible();
+        });
 
         await mainTest.step(
           `Assert typography values have not changed`,
