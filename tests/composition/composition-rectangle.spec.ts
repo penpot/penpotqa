@@ -573,7 +573,7 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Verify 2nd rectangle copy changes to board', async () => {
+      await mainTest.step('Verify all copy instances were detached (copy count is 0)', async () => {
         await layersPanelPage.checkCopyComponentLayerCount(0);
       });
     },
