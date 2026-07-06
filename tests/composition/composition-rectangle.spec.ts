@@ -565,7 +565,7 @@ mainTest.describe(() => {
       });
 
       await mainTest.step(
-        'Select 2nd rectangle copy and detach instance via shortcut',
+        'Select remaining rectangle copy and detach instance via shortcut',
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();
           await mainPage.detachInstanceViaShortcut();
