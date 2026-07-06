@@ -485,6 +485,11 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.detachInstanceOption.click();
   }
 
+  async detachInstanceFirstCopyComponentViaRightClick() {
+    await this.copyComponentLayer.last().click({ button: 'right', force: true });
+    await this.detachInstanceOption.click();
+  }
+
   /**
    * This method clicks on a layer option via right click for a given layer name and index.
    *
@@ -555,6 +560,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
 
   async checkVariantLayerCount(expectedCount) {
     await expect(this.variantLayer).toHaveCount(expectedCount);
+  }
+
+  async checkCopyComponentLayerCount(expectedCount) {
+    await expect(this.copyComponentLayer).toHaveCount(expectedCount);
   }
 
   async isVariantLayerVisible(visible = true) {
