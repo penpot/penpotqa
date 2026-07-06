@@ -66,7 +66,7 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase(2472, 'Apply a font family token'), async () => {
+  mainTest(qase([2472], 'Apply a font family token'), async () => {
     await mainTest.step(
       `Verify "${fontFamilyToken.name}" token is applied and font name matches`,
       async () => {
@@ -76,7 +76,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(2475, 'Edit a font family token'), async () => {
+  mainTest(qase([2475], 'Edit a font family token'), async () => {
     await mainTest.step(
       `Edit "${fontFamilyToken.name}" token to "${updatedTokenData.value}" and verify font is updated`,
       async () => {
@@ -100,7 +100,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(2506, 'Reference a font family token'), async () => {
+  mainTest(qase([2506], 'Reference a font family token'), async () => {
     await mainTest.step(
       `Verify "${fontFamilyToken.name}" is applied and create reference token "${fontFamilyTokenRef.name}"`,
       async () => {
@@ -136,80 +136,95 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase(2484, 'Create a font family token with multiple fonts'), async () => {
-  const fontFamilyToken: MainToken<TokenClass> = {
-    class: TokenClass.FontFamily,
-    name: 'font-family',
-    value: `'Actor, 'Cinzel', Abel, Aboreto, "Biryani"'`,
-  };
+mainTest(
+  qase([2484], 'Create a font family token with multiple fonts'),
+  async () => {
+    const fontFamilyToken: MainToken<TokenClass> = {
+      class: TokenClass.FontFamily,
+      name: 'font-family',
+      value: `'Actor, 'Cinzel', Abel, Aboreto, "Biryani"'`,
+    };
 
-  await mainTest.step('Create default text layer and open tokens tab', async () => {
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
-    await tokensPage.clickTokensTab();
-  });
+    await mainTest.step(
+      'Create default text layer and open tokens tab',
+      async () => {
+        await mainPage.createDefaultTextLayerByCoordinates(100, 200);
+        await tokensPage.clickTokensTab();
+      },
+    );
 
-  await mainTest.step('Click on add token button and fill token name', async () => {
-    await tokensPage.tokensComp.clickOnAddTokenButton(fontFamilyToken);
-    await tokensPage.tokensComp.fillTokenName(fontFamilyToken.name);
-  });
+    await mainTest.step(
+      'Click on add token button and fill token name',
+      async () => {
+        await tokensPage.tokensComp.clickOnAddTokenButton(fontFamilyToken);
+        await tokensPage.tokensComp.fillTokenName(fontFamilyToken.name);
+      },
+    );
 
-  await mainTest.step(
-    'Fill in the font family field with a set of names of a font family.',
-    async () => {
-      await tokensPage.tokensComp.fillTokenValue(fontFamilyToken.value!);
-      await tokensPage.tokensComp.clickOnTokenDescription();
-      await tokensPage.tokensComp.isSaveButtonEnabled();
-    },
-  );
+    await mainTest.step(
+      'Fill in the font family field with a set of names of a font family.',
+      async () => {
+        await tokensPage.tokensComp.fillTokenValue(fontFamilyToken.value!);
+        await tokensPage.tokensComp.clickOnTokenDescription();
+        await tokensPage.tokensComp.isSaveButtonEnabled();
+      },
+    );
 
-  await mainTest.step('Click on Save and assert token is visible', async () => {
-    await tokensPage.tokensComp.baseComp.clickOnSaveButton();
-    await tokensPage.tokensComp.isTokenVisibleWithName(fontFamilyToken.name);
-  });
-});
+    await mainTest.step('Click on Save and assert token is visible', async () => {
+      await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+      await tokensPage.tokensComp.isTokenVisibleWithName(fontFamilyToken.name);
+    });
+  },
+);
 
-mainTest(qase(2469, 'Check missing name and font family token errors'), async () => {
-  const fontFamilyToken: MainToken<TokenClass> = {
-    class: TokenClass.FontFamily,
-    name: 'font-family',
-    value: `Actor`,
-  };
+mainTest(
+  qase([2469], 'Check missing name and font family token errors'),
+  async () => {
+    const fontFamilyToken: MainToken<TokenClass> = {
+      class: TokenClass.FontFamily,
+      name: 'font-family',
+      value: `Actor`,
+    };
 
-  await mainTest.step('Create default text layer and open Tokens tab', async () => {
-    await mainPage.createDefaultTextLayerByCoordinates(100, 200);
-    await tokensPage.clickTokensTab();
-  });
+    await mainTest.step(
+      'Create default text layer and open Tokens tab',
+      async () => {
+        await mainPage.createDefaultTextLayerByCoordinates(100, 200);
+        await tokensPage.clickTokensTab();
+      },
+    );
 
-  await mainTest.step(
-    'Click on add token button, leave name field empty and assert save is disabled',
-    async () => {
-      await tokensPage.tokensComp.clickOnAddTokenButton(fontFamilyToken);
-      await tokensPage.tokensComp.isSaveButtonDisabled();
-    },
-  );
+    await mainTest.step(
+      'Click on add token button, leave name field empty and assert save is disabled',
+      async () => {
+        await tokensPage.tokensComp.clickOnAddTokenButton(fontFamilyToken);
+        await tokensPage.tokensComp.isSaveButtonDisabled();
+      },
+    );
 
-  await mainTest.step(
-    `Type "${fontFamilyToken.value}" in the token value input, clear it and assert error message`,
-    async () => {
-      await tokensPage.tokensComp.fillTokenValue(fontFamilyToken.value!);
-      await tokensPage.tokensComp.clearTokenValue();
-      await tokensPage.tokensComp.isErrorHintMessageVisible(
-        'Token value cannot be empty',
-      );
-      await tokensPage.tokensComp.isSaveButtonDisabled();
-    },
-  );
+    await mainTest.step(
+      `Type "${fontFamilyToken.value}" in the token value input, clear it and assert error message`,
+      async () => {
+        await tokensPage.tokensComp.fillTokenValue(fontFamilyToken.value!);
+        await tokensPage.tokensComp.clearTokenValue();
+        await tokensPage.tokensComp.isErrorHintMessageVisible(
+          'Token value cannot be empty',
+        );
+        await tokensPage.tokensComp.isSaveButtonDisabled();
+      },
+    );
 
-  await mainTest.step(
-    `Type "${fontFamilyToken.name}" in the token name input, clear it and assert error message`,
-    async () => {
-      await tokensPage.tokensComp.clickOnTokenNameInput();
-      await tokensPage.tokensComp.fillTokenName(fontFamilyToken.name);
-      await tokensPage.tokensComp.clearTokenNameInput();
-      await tokensPage.tokensComp.isErrorHintMessageVisible(
-        'Name should be at least 1 character',
-      );
-      await tokensPage.tokensComp.isSaveButtonDisabled();
-    },
-  );
-});
+    await mainTest.step(
+      `Type "${fontFamilyToken.name}" in the token name input, clear it and assert error message`,
+      async () => {
+        await tokensPage.tokensComp.clickOnTokenNameInput();
+        await tokensPage.tokensComp.fillTokenName(fontFamilyToken.name);
+        await tokensPage.tokensComp.clearTokenNameInput();
+        await tokensPage.tokensComp.isErrorHintMessageVisible(
+          'Name should be at least 1 character',
+        );
+        await tokensPage.tokensComp.isSaveButtonDisabled();
+      },
+    );
+  },
+);

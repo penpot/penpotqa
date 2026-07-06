@@ -66,7 +66,7 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.isTokenVisibleWithName(fontSizeToken.name);
   });
 
-  mainTest(qase(2358, 'Create a font size token'), async () => {
+  mainTest(qase([2358], 'Create a font size token'), async () => {
     await mainTest.step(
       `Verify "${fontSizeToken.name}" token is visible`,
       async () => {
@@ -75,7 +75,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(2359, 'Apply a font size token'), async () => {
+  mainTest(qase([2359], 'Apply a font size token'), async () => {
     await mainTest.step(
       `Apply "${fontSizeToken.name}" token and verify it is applied`,
       async () => {
@@ -93,7 +93,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(2360, 'Detachment font size token'), async () => {
+  mainTest(qase([2360], 'Detachment font size token'), async () => {
     await mainTest.step(
       `Apply "${fontSizeToken.name}" to first text layer and create second text layer`,
       async () => {
@@ -135,7 +135,7 @@ mainTest.describe(() => {
 
 mainTest(
   qase(
-    2363,
+    [2363],
     'Propagation of (style) changes from a (contained) text component to copies (overriding style by using tokens)',
   ),
   async () => {

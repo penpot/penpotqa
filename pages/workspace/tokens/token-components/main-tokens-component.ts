@@ -1,6 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
 import { SampleData } from 'helpers/sample-data';
-import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import {
   TokenClass,
   BasicTokenData,
@@ -17,7 +16,6 @@ const sampleData = new SampleData();
 
 export class MainTokensComponent {
   readonly page: Page;
-  readonly tokensPage: TokensPage;
 
   // locators
   readonly addRadiusTokenButton: Locator;
@@ -36,15 +34,21 @@ export class MainTokensComponent {
   readonly addTextCaseTokenButton: Locator;
   readonly addTextDecorationTokenButton: Locator;
   readonly tokenValueInput: Locator;
+  readonly valueDropdownButton: Locator;
+  readonly valueDropdownList: Locator;
+  readonly createTokenModal: Locator;
 
-  constructor(page: Page, tokensPage: TokensPage) {
+  constructor(page: Page) {
     this.page = page;
-    this.tokensPage = tokensPage;
 
     // Tokens locators
-    this.tokenValueInput = page
-      .getByTestId('token-update-create-modal')
-      .getByPlaceholder('{alias}');
+    this.createTokenModal = page.getByTestId('token-update-create-modal');
+    this.tokenValueInput = this.createTokenModal.getByPlaceholder('{alias}');
+    this.valueDropdownButton = this.createTokenModal.getByRole('button', {
+      name: 'Open token list',
+    });
+    // the dropdown list is portaled outside the create/edit modal
+    this.valueDropdownList = page.getByRole('listbox');
 
     this.addRadiusTokenButton = page.getByRole('button', {
       name: 'Add token: Border Radius',
@@ -100,7 +104,54 @@ export class MainTokensComponent {
     }
   }
 
-  async enterTokenValue(value: string) {
-    await this.tokenValueInput.fill(value);
+  getValueDropdownOption(tokenName: string): Locator {
+    return this.valueDropdownList.getByRole('option', { name: tokenName });
+  }
+
+  async openValueDropdown() {
+    await this.valueDropdownButton.click();
+  }
+
+  async closeValueDropdown() {
+    await this.page.keyboard.press('Escape');
+  }
+
+  async checkValueDropdownListVisible(visible = true) {
+    visible
+      ? await expect(
+          this.valueDropdownList,
+          `Value dropdown list is visible`,
+        ).toBeVisible()
+      : await expect(
+          this.valueDropdownList,
+          `Value dropdown list is not visible`,
+        ).not.toBeVisible();
+  }
+
+  async checkValueDropdownOptionVisible(tokenName: string, visible = true) {
+    const option = this.getValueDropdownOption(tokenName);
+    visible
+      ? await expect(
+          option,
+          `Dropdown option "${tokenName}" is visible`,
+        ).toBeVisible()
+      : await expect(
+          option,
+          `Dropdown option "${tokenName}" is not visible`,
+        ).not.toBeVisible();
+  }
+
+  async checkTokenValueInputText(value: string) {
+    await expect(
+      this.tokenValueInput,
+      `Value input contains text "${value}"`,
+    ).toHaveValue(value);
+  }
+
+  async checkResolvedValueText(text: string) {
+    await expect(
+      this.createTokenModal.getByText(text, { exact: true }),
+      `Resolved value hint shows "${text}"`,
+    ).toBeVisible();
   }
 }

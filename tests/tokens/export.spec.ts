@@ -30,7 +30,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2266, 'Export tokens multi-file folder (no token, set or theme)'),
+  qase([2266], 'Export tokens multi-file folder (no token, set or theme)'),
   async () => {
     await mainTest.step(
       'Open export multi-file modal and verify empty message',
@@ -51,7 +51,7 @@ mainTest(
   },
 );
 
-mainTest(qase(2265, 'Export tokens multi-file folder'), async ({ page }) => {
+mainTest(qase([2265], 'Export tokens multi-file folder'), async ({ page }) => {
   const baseComp: BaseComponent = new BaseComponent(page);
 
   await mainTest.step(

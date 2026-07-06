@@ -31,7 +31,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2218, 'Apply "X/Y axis" dimension token to a text (by right click)'),
+  qase([2218], 'Apply "X/Y axis" dimension token to a text (by right click)'),
   async () => {
     const dimensionToken: MainToken<TokenClass> = {
       class: TokenClass.Dimension,

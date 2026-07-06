@@ -65,7 +65,6 @@ export class TokensComponent {
   readonly typoTokensComp: TypographyTokensComponent;
   readonly shadowTokensComp: ShadowTokensComponent;
   readonly tokenSideBar: Locator;
-  readonly tokenSections: Locator;
   readonly invalidToken: Locator;
   readonly tokenContextMenu: Locator;
   readonly editTokenMenuItem: Locator;
@@ -76,7 +75,6 @@ export class TokensComponent {
   readonly expandTokensButton: Locator;
   readonly remapTokenModal: Locator;
   readonly remapTokensButton: Locator;
-  readonly dontRemapButton: Locator;
   readonly tokenGroupName: Locator;
   readonly tokensPage: TokensPage;
   readonly createTokenModal: Locator;
@@ -94,12 +92,11 @@ export class TokensComponent {
     this.tokensPage = tokensPage;
     this.baseComp = new BaseComponent(page);
     this.typoTokensComp = new TypographyTokensComponent(page);
-    this.mainTokensComp = new MainTokensComponent(page, tokensPage);
+    this.mainTokensComp = new MainTokensComponent(page);
     this.shadowTokensComp = new ShadowTokensComponent(page);
     this.tokenSideBar = page.getByTestId('tokens-sidebar');
-    this.createTokenModal = page.getByTestId('token-update-create-modal');
+    this.createTokenModal = this.mainTokensComp.createTokenModal;
     this.tokenContextMenu = page.getByTestId('tokens-context-menu-for-token');
-    this.tokenSections = this.tokenSideBar.locator('[class*="section-name"]');
     this.invalidToken = page
       .getByRole('button')
       .and(page.locator('[class*="token-pill-invalid-applied"]'));
@@ -120,9 +117,6 @@ export class TokensComponent {
     this.remapTokenModal = page.getByTestId('token-remapping-modal');
     this.remapTokensButton = this.remapTokenModal.getByRole('button', {
       name: 'Remap tokens',
-    });
-    this.dontRemapButton = this.remapTokenModal.getByRole('button', {
-      name: "Don't remap",
     });
     this.tokenGroupName = this.tokenSideBar.locator('[class*="layer-button-name"]');
     this.errorHintMessage = page.locator(
@@ -170,7 +164,10 @@ export class TokensComponent {
   }
 
   private getTokenTreeButton(tokenClass: TokenClass): Locator {
-    return this.tokenSideBar.getByRole('button', { name: `${tokenClass}` }).first();
+    // the token count suffix (e.g. " 3") is only rendered once the section has tokens
+    return this.tokenSideBar
+      .getByRole('button', { name: new RegExp(`^${tokenClass}( \\d+)?$`) })
+      .first();
   }
 
   private async fillTokenData(
@@ -214,10 +211,6 @@ export class TokensComponent {
 
   async clickOnTokenNameInput() {
     await this.tokenNameInput.click();
-  }
-
-  async enterTokenDescription(text: string) {
-    await this.tokenDescriptionInput.fill(text);
   }
 
   async rightClickOnTokenWithName(name: string) {
@@ -476,10 +469,6 @@ export class TokensComponent {
       .click();
   }
 
-  async expandSectionByName(name: string) {
-    await this.tokenSections.filter({ hasText: name }).click();
-  }
-
   async checkInvalidTokenCount(count: number) {
     await expect(this.invalidToken).toHaveCount(count);
   }
@@ -505,10 +494,6 @@ export class TokensComponent {
 
   async clickRemapTokensButton() {
     await this.remapTokensButton.click();
-  }
-
-  async clickDontRemapButton() {
-    await this.dontRemapButton.click();
   }
 
   async isTokenSingleSegment(name: string) {

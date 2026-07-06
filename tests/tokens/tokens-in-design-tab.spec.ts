@@ -121,7 +121,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(2865, 'Broken token references are clearly displayed with a red dot'),
+    qase([2865], 'Broken token references are clearly displayed with a red dot'),
     async () => {
       const dimensionTokenA: MainToken<TokenClass> = {
         class: TokenClass.Dimension,
@@ -216,7 +216,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      2891,
+      [2891],
       'Token pill updates displayed value after token value change in active token set',
     ),
     async () => {
@@ -257,7 +257,10 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(2893, 'Token pill shows unresolved state when token set becomes inactive'),
+    qase(
+      [2893],
+      'Token pill shows unresolved state when token set becomes inactive',
+    ),
     async () => {
       const tokenName: string = 'red';
 

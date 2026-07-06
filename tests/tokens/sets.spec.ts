@@ -32,7 +32,7 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest(qase(2102, 'Create a set via "create one" link'), async () => {
+mainTest(qase([2102], 'Create a set via "create one" link'), async () => {
   const name = 'Mobile';
 
   await mainTest.step('Open tokens tab', async () => {
@@ -48,7 +48,7 @@ mainTest(qase(2102, 'Create a set via "create one" link'), async () => {
   });
 });
 
-mainTest(qase(2105, 'Create a set using an existing name'), async () => {
+mainTest(qase([2105], 'Create a set using an existing name'), async () => {
   const setName = 'Mobile';
   const colorToken: MainToken<TokenClass> = {
     class: TokenClass.Color,
@@ -79,7 +79,7 @@ mainTest(qase(2105, 'Create a set using an existing name'), async () => {
   );
 });
 
-mainTest(qase(2127, 'Rename a set'), async () => {
+mainTest(qase([2127], 'Rename a set'), async () => {
   const name = 'Mobile';
   const newName1 = 'Mobile-Updated-Double-Click';
   const newName2 = 'Mobile-Updated-Context-Menu';
@@ -182,7 +182,7 @@ mainTest.describe(() => {
     await designPanelPage.checkGeneralCornerRadius(radiusToken1.value);
   });
 
-  mainTest(qase(2133, 'Rename a set group using an existing name'), async () => {
+  mainTest(qase([2133], 'Rename a set group using an existing name'), async () => {
     await mainTest.step(
       'Rename "Mode" group to "Device" (existing group name)',
       async () => {
@@ -203,7 +203,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(2139, 'Enable and Disable sets'), async () => {
+  mainTest(qase([2139], 'Enable and Disable sets'), async () => {
     await mainTest.step(
       'Disable Light set and check Dark color token is applied',
       async () => {
@@ -237,7 +237,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(2141, 'Add set to this group'), async () => {
+  mainTest(qase([2141], 'Add set to this group'), async () => {
     await mainTest.step('Add Tablet set to Device group', async () => {
       await tokensPage.setsComp.addSetToGroupByName('Device', 'Tablet');
     });
@@ -250,7 +250,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(2146, 'Delete a set group'), async () => {
+  mainTest(qase([2146], 'Delete a set group'), async () => {
     await mainTest.step('Delete Device set group', async () => {
       await tokensPage.setsComp.deleteSetsGroupByName('Device');
     });
@@ -269,7 +269,7 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase(2231, 'Duplicate set'), async () => {
+mainTest(qase([2231], 'Duplicate set'), async () => {
   const name = 'Mobile';
   const firstSetName = name + '-copy';
   const secondSetName = firstSetName + '-copy';

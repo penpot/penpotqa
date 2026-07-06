@@ -46,75 +46,87 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.expandAllTokens();
   });
 
-  mainTest(qase(2374, 'Rectangle: Check active tokens in token list'), async () => {
-    await mainTest.step(
-      'Create rectangle and verify active/disabled tokens',
-      async () => {
-        await tokensPage.createDefaultRectangleByCoordinates(100, 200);
-        await tokensPage.tokensComp.isTokenDisabledWithName(
-          'BORDER-RADIUS-1',
-          false,
-        );
-        await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
-        await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
-        await tokensPage.tokensComp.isTokenDisabledWithName(
-          'STROKE-WIDTH-10',
-          false,
-        );
-      },
-    );
+  mainTest(
+    qase([2374], 'Rectangle: Check active tokens in token list'),
+    async () => {
+      await mainTest.step(
+        'Create rectangle and verify active/disabled tokens',
+        async () => {
+          await tokensPage.createDefaultRectangleByCoordinates(100, 200);
+          await tokensPage.tokensComp.isTokenDisabledWithName(
+            'BORDER-RADIUS-1',
+            false,
+          );
+          await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
+          await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
+          await tokensPage.tokensComp.isTokenDisabledWithName(
+            'STROKE-WIDTH-10',
+            false,
+          );
+        },
+      );
 
-    await mainTest.step(
-      'Verify Fill and Stroke menu items are visible for COLOR-1',
-      async () => {
-        await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
-        await layersPanelPage.openLayersTab();
-        await mainPage.clickOnLayerOnCanvas();
-        await tokensPage.clickTokensTab();
-        await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
-      },
-    );
-  });
-
-  mainTest(qase(2382, 'Text layer: Check active tokens in token list'), async () => {
-    await mainTest.step(
-      'Create text layer and verify active/disabled tokens',
-      async () => {
-        await tokensPage.createDefaultTextLayerByCoordinates(100, 200);
-        await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', true);
-        await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
-        await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
-        await tokensPage.tokensComp.isTokenDisabledWithName(
-          'STROKE-WIDTH-10',
-          false,
-        );
-      },
-    );
-
-    await mainTest.step(
-      'Verify Fill and Stroke menu items are visible for COLOR-1',
-      async () => {
-        await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
-        await layersPanelPage.openLayersTab();
-        await mainPage.clickOnLayerOnCanvas();
-        await tokensPage.clickTokensTab();
-        await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
-      },
-    );
-  });
+      await mainTest.step(
+        'Verify Fill and Stroke menu items are visible for COLOR-1',
+        async () => {
+          await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
+          await layersPanelPage.openLayersTab();
+          await mainPage.clickOnLayerOnCanvas();
+          await tokensPage.clickTokensTab();
+          await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
+        },
+      );
+    },
+  );
 
   mainTest(
-    qase(2383, 'Board (in root): Check active tokens in token list'),
+    qase([2382], 'Text layer: Check active tokens in token list'),
+    async () => {
+      await mainTest.step(
+        'Create text layer and verify active/disabled tokens',
+        async () => {
+          await tokensPage.createDefaultTextLayerByCoordinates(100, 200);
+          await tokensPage.tokensComp.isTokenDisabledWithName(
+            'BORDER-RADIUS-1',
+            true,
+          );
+          await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName(
+            'FONT-SIZE-100',
+            false,
+          );
+          await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
+          await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
+          await tokensPage.tokensComp.isTokenDisabledWithName(
+            'STROKE-WIDTH-10',
+            false,
+          );
+        },
+      );
+
+      await mainTest.step(
+        'Verify Fill and Stroke menu items are visible for COLOR-1',
+        async () => {
+          await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
+          await layersPanelPage.openLayersTab();
+          await mainPage.clickOnLayerOnCanvas();
+          await tokensPage.clickTokensTab();
+          await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Stroke');
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase([2383], 'Board (in root): Check active tokens in token list'),
     async () => {
       await mainTest.step(
         'Create board and verify active/disabled tokens',
@@ -140,7 +152,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase(2385, 'Path: Check active tokens in token list'), async () => {
+  mainTest(qase([2385], 'Path: Check active tokens in token list'), async () => {
     await mainTest.step(
       'Create path and verify active/disabled tokens',
       async () => {
@@ -161,7 +173,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(2386, 'Image: Check active tokens in token list'), async () => {
+  mainTest(qase([2386], 'Image: Check active tokens in token list'), async () => {
     await mainTest.step(
       'Upload image and verify active/disabled tokens',
       async () => {

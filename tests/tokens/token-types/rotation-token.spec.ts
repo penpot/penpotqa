@@ -32,7 +32,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2175, 'Apply default "rotation" token to a text (by left click)'),
+  qase([2175], 'Apply default "rotation" token to a text (by left click)'),
   async () => {
     const rotationToken: MainToken<TokenClass> = {
       class: TokenClass.Rotation,

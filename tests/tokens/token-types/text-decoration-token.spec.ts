@@ -84,7 +84,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(2535, 'Re-Apply the token after change the decorator manually'),
+    qase([2535], 'Re-Apply the token after change the decorator manually'),
     async () => {
       await mainTest.step(
         `Apply "${decorationToken.name}" token to a text layer`,

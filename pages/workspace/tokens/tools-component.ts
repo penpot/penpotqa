@@ -15,7 +15,6 @@ export class ToolsComponent {
   readonly exportTokensMessage: Locator;
   readonly confirmExportButton: Locator;
   readonly exportFileItem: Locator;
-  readonly jsonOption: Locator;
   readonly folderOption: Locator;
   readonly zipOption: Locator;
   readonly importErrorDetailMessage: Locator;
@@ -42,9 +41,6 @@ export class ToolsComponent {
     );
     this.confirmExportButton = page.getByRole('button', { name: 'Export' });
     this.exportFileItem = page.locator('[class*="export_modal__file-name"]');
-    this.jsonOption = page
-      .getByRole('option')
-      .filter({ hasText: 'Single JSON file' });
     this.folderOption = page.getByRole('option').filter({ hasText: 'Folder' });
     this.zipOption = page.getByRole('option').filter({ hasText: 'ZIP file' });
   }
@@ -93,13 +89,6 @@ export class ToolsComponent {
   async checkImportTokenDetailErrorCount(count: number) {
     const text = await this.getTokenErrorDetailText();
     expect(text.length).toBe(count);
-  }
-
-  async checkImportTokenDetailErrorFormat(regex: RegExp) {
-    const text = await this.getTokenErrorDetailText();
-    for (const [index, line] of text.entries()) {
-      expect(line).toMatch(regex);
-    }
   }
 
   async clickOnExportButton() {

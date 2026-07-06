@@ -57,7 +57,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(2500, 'Apply a Letter Spacing token and override value from Design tab'),
+    qase([2500], 'Apply a Letter Spacing token and override value from Design tab'),
     async () => {
       await mainTest.step(
         `Verify "${letterSpacingToken.name}" token is applied and letter spacing matches`,
@@ -86,7 +86,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      2501,
+      [2501],
       'Letter Spacing token value can be override by Assets > Typography style',
     ),
     async () => {
@@ -130,7 +130,7 @@ mainTest.describe(() => {
 
 mainTest(
   qase(
-    2536,
+    [2536],
     'Reference a dimension-type token as an operand (math operation / Dimensions token)',
   ),
   async () => {
