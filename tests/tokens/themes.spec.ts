@@ -33,7 +33,7 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest(qase(2167, 'Create theme via "create one" link'), async () => {
+mainTest(qase([2167], 'Create theme via "create one" link'), async () => {
   await mainTest.step('Open Tokens panel', async () => {
     await tokensPage.clickTokensTab();
   });
@@ -130,7 +130,7 @@ mainTest.describe(() => {
       await tokensPage.setsComp.checkActiveSetsCountByThemeName('Mobile', '2');
     });
 
-    mainTest(qase(2206, 'Enable themes in different groups'), async () => {
+    mainTest(qase([2206], 'Enable themes in different groups'), async () => {
       await mainTest.step(
         'Create "Brand X" theme and activate all sets',
         async () => {
@@ -180,7 +180,7 @@ mainTest.describe(() => {
 
     mainTest(
       qase(
-        2190,
+        [2190],
         'Add new group theme using an existing group name and an existing theme name via select "edit themes"',
       ),
       async () => {
@@ -194,7 +194,7 @@ mainTest.describe(() => {
       },
     );
 
-    mainTest(qase(2192, 'Rename a theme'), async () => {
+    mainTest(qase([2192], 'Rename a theme'), async () => {
       const newThemeName: string = 'Tablet';
 
       await mainTest.step(`Rename "Mobile" theme to "${newThemeName}"`, async () => {
@@ -215,7 +215,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(2236, 'Create theme with immediately set selection'), async () => {
+  mainTest(qase([2236], 'Create theme with immediately set selection'), async () => {
     await mainTest.step(
       'Open Tokens panel and create "Test" theme with "Dark" set pre-selected',
       async () => {

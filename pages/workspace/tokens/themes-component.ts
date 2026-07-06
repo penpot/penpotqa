@@ -10,18 +10,12 @@ export class ThemesComponent {
   readonly themeNameInput: Locator;
   readonly groupThemeNameInput: Locator;
   readonly themesDropdown: Locator;
-  readonly backToThemeListButton: Locator;
-  readonly themeNameErrorForm: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.baseComponent = new BaseComponent(page);
 
     // Themes locators
-    this.themeUpdateCreateModal = page.getByTestId(
-      'token-theme-update-create-modal',
-    );
-
     this.themeUpdateCreateModal = page.getByTestId(
       'token-theme-update-create-modal',
     );
@@ -32,10 +26,6 @@ export class ThemesComponent {
     this.themeNameInput = page.getByPlaceholder('Add a theme (i.e. Light)');
     this.groupThemeNameInput = page.getByPlaceholder('Add group (i.e. Mode)');
     this.themesDropdown = page.getByTestId('theme-select');
-    this.backToThemeListButton = page.getByRole('button', {
-      name: 'Back to theme list',
-    });
-    this.themeNameErrorForm = page.getByText('Theme Option with the same');
   }
 
   async createThemeViaLinkWithSet(name: string, setName: string) {
@@ -102,10 +92,6 @@ export class ThemesComponent {
 
   async activateSetInTheme(name: string) {
     await this.themeUpdateCreateModal.getByRole('button', { name: name }).click();
-  }
-
-  async backToThemeList() {
-    await this.backToThemeListButton.click();
   }
 
   async saveTheme() {

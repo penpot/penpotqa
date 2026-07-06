@@ -29,7 +29,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2172, 'Apply default "opacity" token to an image (by left click)'),
+  qase([2172], 'Apply default "opacity" token to an image (by left click)'),
   async () => {
     const opacityToken: MainToken<TokenClass> = {
       class: TokenClass.Opacity,

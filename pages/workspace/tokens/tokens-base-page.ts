@@ -36,7 +36,7 @@ export class TokensPage extends MainPage {
     this.toolsComp = new ToolsComponent(page);
     this.tokensComp = new TokensComponent(page, this);
     this.typoTokensComp = new TypographyTokensComponent(page);
-    this.mainTokensComp = new MainTokensComponent(page, this);
+    this.mainTokensComp = new MainTokensComponent(page);
     this.shadowTokensComp = new ShadowTokensComponent(page);
 
     // locators

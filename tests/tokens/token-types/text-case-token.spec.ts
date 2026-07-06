@@ -34,7 +34,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2522, 'Apply a capitalize text case token to a uppercase text layer'),
+  qase([2522], 'Apply a capitalize text case token to a uppercase text layer'),
   async () => {
     const textCaseToken: MainToken<TokenClass> = {
       class: TokenClass.TextCase,
@@ -62,7 +62,7 @@ mainTest(
   },
 );
 
-mainTest(qase(2520, 'Override and re-apply a text case token'), async () => {
+mainTest(qase([2520], 'Override and re-apply a text case token'), async () => {
   const textCaseToken: MainToken<TokenClass> = {
     class: TokenClass.TextCase,
     name: 'text-case-capitalize',

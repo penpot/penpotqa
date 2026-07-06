@@ -32,7 +32,7 @@ mainTest.beforeEach(async ({ page }) => {
 
 mainTest(
   qase(
-    2485,
+    [2485],
     'Reference a Number token as an operand (math operation / Number token)',
   ),
   async () => {
@@ -125,7 +125,7 @@ mainTest(
 );
 
 mainTest(
-  qase(2477, 'Apply a Number token (Rotation) and override value from Design tab'),
+  qase([2477], 'Apply a Number token (Rotation) and override value from Design tab'),
   async () => {
     const numberToken: MainToken<TokenClass> = {
       class: TokenClass.Number,
@@ -166,7 +166,7 @@ mainTest(
 
 mainTest(
   qase(
-    2492,
+    [2492],
     'Apply a Number token (Line Height) and override value from Design tab',
   ),
   async () => {
