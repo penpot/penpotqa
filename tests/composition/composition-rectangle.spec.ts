@@ -553,7 +553,7 @@ mainTest.describe(() => {
       });
 
       await mainTest.step(
-        'Select 1st rectangle copy and detach instance via right click',
+        'Detach a rectangle copy instance via right click',
         async () => {
           await layersPanelPage.detachInstanceFirstCopyComponentViaRightClick();
           await mainPage.waitForChangeIsSaved();
