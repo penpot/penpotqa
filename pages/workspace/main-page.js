@@ -22,9 +22,6 @@ exports.MainPage = class MainPage extends BasePage {
     this.connectHereMCPButton = page.getByRole('menuitem', { name: 'Connect here' });
     this.connectedMCPButton = page.getByText('MCP connected');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
-    this.mainToolBar = page.locator(
-      '[class*="main-toolbar"] button[class*="toolbar-handler"]',
-    );
     this.toolBarWindow = page.locator('aside[class*="main-toolbar"]').first();
     this.designTab = page.getByRole('tab', { name: 'design' });
     this.createPathPointer = page
@@ -147,9 +144,6 @@ exports.MainPage = class MainPage extends BasePage {
     this.downloadPenpotFileMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Download Penpot file (.penpot)' });
-    this.downloadStandardFileMenuSubItem = page
-      .getByRole('menuitem')
-      .filter({ hasText: 'Download standard file (.svg + .json)' });
     this.exportBoardsAsPDFFileMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Export boards as PDF' });
@@ -358,14 +352,6 @@ exports.MainPage = class MainPage extends BasePage {
       : await expect(this.createdLayer).not.toBeVisible();
   }
 
-  async isCopyLayerVisible() {
-    await expect(this.copyLayer).toBeVisible();
-  }
-
-  async isSelectLayerHidden() {
-    await expect(this.copyLayer).toBeHidden();
-  }
-
   async doubleClickCreatedBoardTitleOnCanvas() {
     await this.createdBoardTitle.dblclick();
   }
@@ -449,16 +435,6 @@ exports.MainPage = class MainPage extends BasePage {
   async isMainPageLoaded() {
     await this.waitForViewportVisible();
     await expect(this.viewport).toBeVisible();
-  }
-
-  async isMainPageVisible() {
-    try {
-      await this.viewport.waitFor({ state: 'visible', timeout: 8000 });
-      return true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
   }
 
   async isProjectAndFileNameExistInFile(projectName, fileName) {
@@ -809,13 +785,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.downloadFileCloseButton.click();
   }
 
-  async downloadStandardFileViaMenu() {
-    await this.downloadStandardFileMenuSubItem.click();
-    await this.page.waitForEvent('download');
-    await expect(this.downloadFileTickIcon).toBeVisible();
-    await this.downloadFileCloseButton.click();
-  }
-
   async exportBoardsAsPDFViaMenu(numBoards) {
     await this.exportBoardsAsPDFFileMenuSubItem.click();
     await expect(this.exportAsPDFModalTitle).toBeVisible();
@@ -987,10 +956,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  async clickOnMainToolBar() {
-    await this.mainToolBar.click();
-  }
-
   async clickOnDesignTab() {
     await this.designTab.click();
   }
@@ -1018,6 +983,10 @@ exports.MainPage = class MainPage extends BasePage {
       ? await this.clickCreatedBoardTitleOnCanvas()
       : await this.createdLayer.click({ force: true });
     await this.page.keyboard.press('Control+K');
+  }
+
+  async detachInstanceViaShortcut() {
+    await this.page.keyboard.press('Control+Shift+K');
   }
 
   async copyLayerViaRightClick() {
@@ -1131,17 +1100,6 @@ exports.MainPage = class MainPage extends BasePage {
       `rect[class*="grid-cell-outline"] >>nth=${cell - 1}`,
     );
     await cellLocator.click();
-  }
-
-  async dragAndDropComponentToAnotherFraction(cellNumber) {
-    const selectedElement = this.page.locator(
-      `rect[class*="main viewport-selrect"]`,
-    );
-    const board = this.page.locator(
-      `rect[class*="grid-cell-outline"] >>nth=${cellNumber - 1}`,
-    );
-    await selectedElement.hover();
-    await selectedElement.dragTo(board);
   }
 
   async isToolBarVisible(visible = true) {

@@ -16,7 +16,6 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     );
     this.createdLayerOnLayersPanelNameInput = this.layersRows.getByRole('textbox');
     this.verticalFlexLayoutIcon = page.getByTestId('icon-flex-vertical');
-    this.horizontalFlexLayoutIcon = page.getByTestId('icon-flex-horizontal');
     this.focusModeDiv = page.getByText('Focus mode', { exact: true });
     this.mainComponentLayer = page
       .getByTestId('icon-component')
@@ -278,14 +277,6 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     }
   }
 
-  async isHorizontalFlexIconVisibleOnLayer(condition = true) {
-    if (condition === true) {
-      await expect(this.horizontalFlexLayoutIcon).toBeVisible();
-    } else {
-      await expect(this.horizontalFlexLayoutIcon).toBeHidden();
-    }
-  }
-
   async isFocusModeOn() {
     await expect(this.focusModeDiv).toBeVisible();
   }
@@ -485,6 +476,11 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.detachInstanceOption.click();
   }
 
+  async detachInstanceFirstCopyComponentViaRightClick() {
+    await this.copyComponentLayer.last().click({ button: 'right', force: true });
+    await this.detachInstanceOption.click();
+  }
+
   /**
    * This method clicks on a layer option via right click for a given layer name and index.
    *
@@ -555,6 +551,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
 
   async checkVariantLayerCount(expectedCount) {
     await expect(this.variantLayer).toHaveCount(expectedCount);
+  }
+
+  async checkCopyComponentLayerCount(expectedCount) {
+    await expect(this.copyComponentLayer).toHaveCount(expectedCount);
   }
 
   async isVariantLayerVisible(visible = true) {

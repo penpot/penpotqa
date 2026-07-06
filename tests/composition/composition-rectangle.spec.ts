@@ -519,6 +519,65 @@ mainTest.describe(() => {
       });
     });
   });
+
+  mainTest(
+    qase(
+      [324],
+      'Create component and detach instance (Right click and shortcut Ctrl+Shift+K)',
+    ),
+    async () => {
+      await mainTest.step(
+        'Create component from rectangle via right click',
+        async () => {
+          await mainPage.createComponentViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step(
+        'Verify component appears with included rectangle',
+        async () => {
+          await layersPanelPage.isMainComponentOnLayersTabVisibleWithName(
+            'Rectangle',
+          );
+        },
+      );
+
+      await mainTest.step('Copy created rectangle component twice', async () => {
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.checkCopyComponentLayerCount(1);
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.checkCopyComponentLayerCount(2);
+      });
+
+      await mainTest.step(
+        'Detach a rectangle copy instance via right click',
+        async () => {
+          await layersPanelPage.detachInstanceFirstCopyComponentViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step('Verify one copy instance was detached (copy count is 1)', async () => {
+        await layersPanelPage.checkCopyComponentLayerCount(1);
+      });
+
+      await mainTest.step(
+        'Select remaining rectangle copy and detach instance via shortcut',
+        async () => {
+          await layersPanelPage.clickCopyComponentOnLayersTab();
+          await mainPage.detachInstanceViaShortcut();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step('Verify all copy instances were detached (copy count is 0)', async () => {
+        await layersPanelPage.checkCopyComponentLayerCount(0);
+      });
+    },
+  );
 });
 
 mainTest(qase([2255], 'Select and deselect rectangles'), async () => {
