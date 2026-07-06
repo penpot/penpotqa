@@ -16,7 +16,6 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     );
     this.createdLayerOnLayersPanelNameInput = this.layersRows.getByRole('textbox');
     this.verticalFlexLayoutIcon = page.getByTestId('icon-flex-vertical');
-    this.horizontalFlexLayoutIcon = page.getByTestId('icon-flex-horizontal');
     this.focusModeDiv = page.getByText('Focus mode', { exact: true });
     this.mainComponentLayer = page
       .getByTestId('icon-component')
@@ -275,14 +274,6 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       await expect(this.verticalFlexLayoutIcon).toBeVisible();
     } else {
       await expect(this.verticalFlexLayoutIcon).toBeHidden();
-    }
-  }
-
-  async isHorizontalFlexIconVisibleOnLayer(condition = true) {
-    if (condition === true) {
-      await expect(this.horizontalFlexLayoutIcon).toBeVisible();
-    } else {
-      await expect(this.horizontalFlexLayoutIcon).toBeHidden();
     }
   }
 
