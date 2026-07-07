@@ -1,7 +1,7 @@
 name: Daily Penpot Regression Tests on PRE
 on:
-  schedule: ## run tests at 01:00am UTC on every day-of-week from Monday through Friday
-    - cron: '00 1 * * 1-5'
+  schedule: ## run tests at 20:50 UTC (22:50 UTC+2) on every day-of-week from Monday through Friday
+    - cron: '50 20 * * 1-5'
   workflow_dispatch:
 
 permissions:
