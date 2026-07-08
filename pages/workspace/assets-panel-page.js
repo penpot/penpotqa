@@ -1,5 +1,6 @@
 const { BasePage } = require('../base-page');
 const { expect } = require('@playwright/test');
+const { dragAndDropOnCanvas } = require('helpers/drag-and-drop');
 
 exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   /**
@@ -439,9 +440,13 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async dragComponentOnCanvas(x, y) {
-    await this.assetComponentLabel.dragTo(this.viewport, {
-      targetPosition: { x: x, y: y },
-    });
+    await dragAndDropOnCanvas(
+      this.page,
+      this.assetComponentLabel,
+      this.viewport,
+      x,
+      y,
+    );
   }
 
   async expandComponentsBlockOnAssetsTab() {
