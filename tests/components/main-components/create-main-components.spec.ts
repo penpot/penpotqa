@@ -73,6 +73,7 @@ mainTest(
     await mainTest.step('Verify component on canvas and layers panel', async () => {
       await layersPanelPage.openLayersTab();
       await mainPage.hideRulersViaMainMenu();
+      await mainPage.waitForChangeIsSaved();
       await expect(
         mainPage.viewport,
         'Viewport should match screenshot with copy of main component on canvas',
