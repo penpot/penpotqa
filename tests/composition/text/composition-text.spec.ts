@@ -623,3 +623,51 @@ mainTest(
     });
   },
 );
+
+mainTest(qase([423], 'Change text centering, align (Design section)'), async () => {
+  const text =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ' +
+    'tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, ' +
+    'quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo ' +
+    'consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse ' +
+    'cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat ' +
+    'non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
+  await mainTest.step('Create large text with several lines', async () => {
+    await mainPage.createTextLayerByCoordinates(200, 200, text);
+    await designPanelPage.changeWidthForLayer('400');
+    await mainPage.waitForChangeIsSaved();
+  });
+
+  await mainTest.step('Align left', async () => {
+    await designPanelPage.changeTextHorizontalAlignment('Left');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-left.png', {
+      mask: mainPage.maskViewport(),
+    });
+  });
+
+  await mainTest.step('Align center', async () => {
+    await designPanelPage.changeTextHorizontalAlignment('Center');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-center.png', {
+      mask: mainPage.maskViewport(),
+    });
+  });
+
+  await mainTest.step('Align right', async () => {
+    await designPanelPage.changeTextHorizontalAlignment('Right');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-right.png', {
+      mask: mainPage.maskViewport(),
+    });
+  });
+
+  await mainTest.step('Justify', async () => {
+    await designPanelPage.changeTextHorizontalAlignment('Justify');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-justify.png', {
+      mask: mainPage.maskViewport(),
+    });
+  });
+});

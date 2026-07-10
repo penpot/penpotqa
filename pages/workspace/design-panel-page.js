@@ -322,6 +322,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textOptionsFull = this.textSectionRegion.locator(
       '.main_ui_workspace_sidebar_options_menus_typography__text-options-full-size',
     );
+    this.textAlignLeft = page.getByTestId('text-align-left');
+    this.textAlignCenter = page.getByTestId('text-align-center');
+    this.textAlignRight = page.getByTestId('text-align-right');
+    this.textAlignJustify = page.getByTestId('text-align-justify');
     this.textUpperCaseIcon = page.getByTestId('text-transform-uppercase');
     this.textLowerCaseIcon = page.getByTestId('text-transform-lowercase');
     this.textTitleCaseIcon = page.getByTestId('text-transform-capitalize');
@@ -925,6 +929,23 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         break;
       case 'Bottom':
         await this.textAlignBottom.click();
+        break;
+    }
+  }
+
+  async changeTextHorizontalAlignment(value) {
+    switch (value) {
+      case 'Left':
+        await this.textAlignLeft.click();
+        break;
+      case 'Center':
+        await this.textAlignCenter.click();
+        break;
+      case 'Right':
+        await this.textAlignRight.click();
+        break;
+      case 'Justify':
+        await this.textAlignJustify.click();
         break;
     }
   }
