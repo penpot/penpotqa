@@ -634,7 +634,7 @@ mainTest(qase([423], 'Change text centering, align (Design section)'), async () 
     'non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
   await mainTest.step('Create large text with several lines', async () => {
-    await mainPage.createTextLayerByCoordinates(200, 200, text);
+    await mainPage.createTextLayerByCoordinatesViaPaste(200, 200, text);
     await designPanelPage.changeWidthForLayer('400');
     await mainPage.waitForChangeIsSaved();
   });
