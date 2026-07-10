@@ -1,6 +1,6 @@
 services:
   playwright:
-    image: mcr.microsoft.com/playwright:${PLAYWRIGHT_DOCKER_TAG:-v1.60.0-noble}
+    image: mcr.microsoft.com/playwright:${PLAYWRIGHT_DOCKER_TAG:-v1.61.1-noble}
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     working_dir: /work
     volumes:

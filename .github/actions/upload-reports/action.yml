@@ -29,6 +29,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Install AWS CLI
+      shell: bash
+      run: |
+        command -v aws >/dev/null 2>&1 || (apt-get update && apt-get install -y awscli)
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
