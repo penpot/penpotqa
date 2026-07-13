@@ -493,7 +493,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .first();
     this.createAnnotationTick = this.componentContent.getByTitle('Create');
     this.saveAnnotationTick = this.componentContent.getByTitle('Save');
-    this.discardAnnotationTick = this.componentContent.getByTitle('Discard');
     this.editAnnotationTick = this.componentContent.getByTitle('Edit');
     this.deleteAnnotationTick = this.componentContent.getByTitle('Delete');
     this.deleteAnnotationModalContainer = page
@@ -516,9 +515,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.componentTypeOnDesignPanel = page.locator(
       '[class*="component-title-bar-type"]',
     );
-    this.resetOverridesOptionDesign = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Reset overrides' });
     this.detachInstanceOptionDesign = page
       .getByRole('listitem')
       .filter({ hasText: 'Detach instance' });
@@ -1299,12 +1295,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.layoutColumnGapInput.click();
   }
 
-  async changeLayoutColumnGapOnGridEdit(value) {
-    await this.layoutColumnGapInput.clear();
-    await this.layoutColumnGapInput.pressSequentially(value);
-    await this.clickOnEnter();
-  }
-
   async changeLayoutRowGap(value, flex = true) {
     flex ? await this.expandFlexLayoutMenu() : await this.expandGridLayoutMenu();
     await this.layoutRowGapInput.clear();
@@ -1523,11 +1513,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.submitAnnotationEditing();
   }
 
-  async cancelAddAnnotationForComponent(value) {
-    await this.enterTextIntoAnnotationField(value);
-    await this.discardAnnotationCreation();
-  }
-
   async clickOnCreateAnnotationOption() {
     await this.createAnnotationOptionDesign.click();
     await expect(this.annotationTextArea).toBeVisible();
@@ -1546,11 +1531,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async submitAnnotationEditing() {
     await this.annotationCreateTitle.hover();
     await this.saveAnnotationTick.click();
-  }
-
-  async discardAnnotationCreation() {
-    await this.annotationCreateTitle.hover();
-    await this.discardAnnotationTick.click();
   }
 
   async clickOnEditAnnotation() {
@@ -1634,10 +1614,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeAxisXAndYForLayer(x, y) {
     await this.changeXAxisForLayer(x);
     await this.changeYAxisForLayer(y);
-  }
-
-  async clickOnResetOverridesOption() {
-    await this.resetOverridesOptionDesign.click();
   }
 
   async clickOnDetachInstanceOption() {
@@ -2025,10 +2001,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.typographyTokenButton.first().hover();
   }
 
-  async isTypographyTokenModalByNameVisible(name) {
-    await expect(this.getTypographyTokenModal(name)).toBeVisible();
-  }
-
   async hoverAndAssertTypographyTokenValues(
     name,
     {
@@ -2331,16 +2303,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async searchTypographyTokens(value) {
     await this.openTypographyTokenList();
     await this.typographySearchTokenListInput.type(value);
-  }
-
-  async areTypographyTokenFromListVisible(values) {
-    for (const value of values) {
-      const token = this.getTypographyTokenOptionFromListByName(value);
-      await expect(
-        token,
-        `Token ${value} is visible in typography token list`,
-      ).toBeVisible();
-    }
   }
 
   async searchAndApplyTypographyTokenFromTokensList(value) {
