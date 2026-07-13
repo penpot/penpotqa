@@ -384,8 +384,7 @@ mainTest.describe('Text', () => {
           await designPanelPage.changeTextFontStyle('300 Italic');
           await designPanelPage.changeTextFontSize('9');
           await designPanelPage.changeTextLetterSpacing('4');
-          await designPanelPage.clickOnTextAlignOptionsButton();
-          await designPanelPage.clickOnTextStrikethroughButton();
+          await designPanelPage.changeTextOption('Strikethrough');
           await designPanelPage.clickFillColorIcon();
           await colorPalettePage.setHex(sampleData.color.redHexCode);
           await mainPage.clickViewportTwice();

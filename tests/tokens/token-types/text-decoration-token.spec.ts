@@ -109,7 +109,7 @@ mainTest.describe(() => {
       await mainTest.step(
         'Manually change to strikethrough and verify token is detached',
         async () => {
-          await designPanelPage.clickOnTextStrikethroughButton();
+          await designPanelPage.changeTextOption('Strikethrough');
           await mainPage.waitForChangeIsSaved();
           await tokensPage.tokensComp.isTokenAppliedWithName(
             decorationToken.name,
