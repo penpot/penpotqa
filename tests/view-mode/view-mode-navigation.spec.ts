@@ -225,7 +225,7 @@ mainTest(qase([691], 'Change scale'), async () => {
   );
 });
 
-// TODO: The reference do not exists in qase.
+// TODO: The reference does not exist in Qase.
 mainTest(qase([713], 'CO-392 Zoom by pressing + and - keys'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await mainPage.waitForChangeIsSaved();
