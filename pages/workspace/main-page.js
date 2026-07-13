@@ -270,6 +270,17 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.type(text, { delay: 50 });
   }
 
+  async setClipboardText(text) {
+    await this.page.evaluate((value) => navigator.clipboard.writeText(value), text);
+  }
+
+  async pasteTextFromKeyboard(text) {
+    await expect(this.textbox).toBeVisible();
+    await expect(this.textbox).toBeFocused();
+    await this.setClipboardText(text);
+    await this.pressPasteShortcut();
+  }
+
   async uploadImage(filePath) {
     await this.uploadImageSelector.setInputFiles(filePath);
   }
@@ -951,6 +962,15 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
     await this.typeTextFromKeyboard(text);
+    await expect(this.textbox).toHaveText(text);
+    await this.clickMoveButton();
+    await this.waitForChangeIsSaved();
+  }
+
+  async createTextLayerByCoordinatesViaPaste(x, y, text) {
+    await this.clickCreateTextButton();
+    await this.clickViewportByCoordinates(x, y);
+    await this.pasteTextFromKeyboard(text);
     await expect(this.textbox).toHaveText(text);
     await this.clickMoveButton();
     await this.waitForChangeIsSaved();

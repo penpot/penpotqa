@@ -322,20 +322,68 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textOptionsFull = this.textSectionRegion.locator(
       '.main_ui_workspace_sidebar_options_menus_typography__text-options-full-size',
     );
+    // Design panel - Text element menu (align, grow, vertical align, decoration, direction)
+    this.textElementMenu = this.textSectionRegion.locator(
+      'div[class*="text__element-content"]',
+    );
+    this.textAlignLeft = this.textElementMenu.getByRole('button', {
+      name: 'Align left',
+      exact: true,
+    });
+    this.textAlignCenter = this.textElementMenu.getByRole('button', {
+      name: 'Align center',
+      exact: true,
+    });
+    this.textAlignRight = this.textElementMenu.getByRole('button', {
+      name: 'Align right',
+      exact: true,
+    });
+    this.textAlignJustify = this.textElementMenu.getByRole('button', {
+      name: 'Justify',
+      exact: true,
+    });
+    this.textGrowFixed = this.textElementMenu.getByRole('button', {
+      name: 'Fixed',
+      exact: true,
+    });
+    this.textGrowAutoWidth = this.textElementMenu.getByRole('button', {
+      name: 'Auto width',
+      exact: true,
+    });
+    this.textGrowAutoHeight = this.textElementMenu.getByRole('button', {
+      name: 'Auto height',
+      exact: true,
+    });
     this.textUpperCaseIcon = page.getByTestId('text-transform-uppercase');
     this.textLowerCaseIcon = page.getByTestId('text-transform-lowercase');
     this.textTitleCaseIcon = page.getByTestId('text-transform-capitalize');
-    this.textMoreOptionsIcon = page
-      .locator('div[class*="text__element-content"]')
-      .getByRole('button', { name: 'Options' });
+    this.textMoreOptionsIcon = this.textElementMenu.getByRole('button', {
+      name: 'Options',
+      exact: true,
+    });
     this.textVerticalOptionsBlock = page.locator(
       'div[class*="vertical-align-options"]',
     );
-    this.textAlignTop = page.getByTestId('vertical-text-align-top');
-    this.textAlignMiddle = page.getByTestId('vertical-text-align-center');
-    this.textAlignBottom = page.getByTestId('vertical-text-align-bottom');
-    this.textIconLTR = page.getByTestId('ltr-text-direction');
-    this.textIconRTL = page.getByTestId('rtl-text-direction');
+    this.textAlignTop = this.textElementMenu.getByRole('button', {
+      name: 'Align top',
+      exact: true,
+    });
+    this.textAlignMiddle = this.textElementMenu.getByRole('button', {
+      name: 'Align middle',
+      exact: true,
+    });
+    this.textAlignBottom = this.textElementMenu.getByRole('button', {
+      name: 'Align bottom',
+      exact: true,
+    });
+    this.textIconLTR = this.textElementMenu.getByRole('button', {
+      name: 'LTR',
+      exact: true,
+    });
+    this.textIconRTL = this.textElementMenu.getByRole('button', {
+      name: 'RTL',
+      exact: true,
+    });
     this.textFontSelector = page.locator('div[class*="typography__font-option"]');
     this.textFontSelectorSearchInput = page.getByPlaceholder('Search font');
     this.textFontItemResult = page.locator(
@@ -350,7 +398,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
     this.textLineHeightInput = page.getByTitle('Line Height').locator('input');
     this.textLetterSpacingInput = page.getByTitle('Letter Spacing').locator('input');
-    this.textAlignOptionsButton = page.getByTestId('text-align-options-button');
     this.textUnderline = page.getByTestId('underline-text-decoration');
     this.textStrikethrough = page.getByTestId('line-through-text-decoration');
     this.textTypographyMenuButton = this.designTabpanel
@@ -448,7 +495,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .first();
     this.createAnnotationTick = this.componentContent.getByTitle('Create');
     this.saveAnnotationTick = this.componentContent.getByTitle('Save');
-    this.discardAnnotationTick = this.componentContent.getByTitle('Discard');
     this.editAnnotationTick = this.componentContent.getByTitle('Edit');
     this.deleteAnnotationTick = this.componentContent.getByTitle('Delete');
     this.deleteAnnotationModalContainer = page
@@ -471,9 +517,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.componentTypeOnDesignPanel = page.locator(
       '[class*="component-title-bar-type"]',
     );
-    this.resetOverridesOptionDesign = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Reset overrides' });
     this.detachInstanceOptionDesign = page
       .getByRole('listitem')
       .filter({ hasText: 'Detach instance' });
@@ -914,9 +957,38 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.textVerticalOptionsBlock).toBeVisible();
   }
 
-  async changeTextAlignment(value) {
-    await this.openTextMoreOptionsBlock();
+  /**
+   * Clicks a button in the text element menu (horizontal/vertical align, grow
+   * type, direction). Vertical align and direction live behind the "Options"
+   * toggle, so the block is opened first when needed.
+   * @param {'Left'|'Center'|'Right'|'Justify'|'Top'|'Middle'|'Bottom'|'LTR'|'RTL'|'Underline'|'Strikethrough'|'Fixed'|'Auto width'|'Auto height'} value
+   */
+  async changeTextOption(value) {
+    const behindOptionsToggle = [
+      'Top',
+      'Middle',
+      'Bottom',
+      'LTR',
+      'RTL',
+      'Underline',
+      'Strikethrough',
+    ];
+    if (behindOptionsToggle.includes(value)) {
+      await this.openTextMoreOptionsBlock();
+    }
     switch (value) {
+      case 'Left':
+        await this.textAlignLeft.click();
+        break;
+      case 'Center':
+        await this.textAlignCenter.click();
+        break;
+      case 'Right':
+        await this.textAlignRight.click();
+        break;
+      case 'Justify':
+        await this.textAlignJustify.click();
+        break;
       case 'Top':
         await this.textAlignTop.click();
         break;
@@ -926,18 +998,29 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       case 'Bottom':
         await this.textAlignBottom.click();
         break;
-    }
-  }
-
-  async changeTextDirection(value) {
-    await this.openTextMoreOptionsBlock();
-    switch (value) {
-      case 'RTL':
-        await this.textIconRTL.click();
-        break;
       case 'LTR':
         await this.textIconLTR.click();
         break;
+      case 'RTL':
+        await this.textIconRTL.click();
+        break;
+      case 'Underline':
+        await this.textUnderline.click();
+        break;
+      case 'Strikethrough':
+        await this.textStrikethrough.click();
+        break;
+      case 'Fixed':
+        await this.textGrowFixed.click();
+        break;
+      case 'Auto width':
+        await this.textGrowAutoWidth.click();
+        break;
+      case 'Auto height':
+        await this.textGrowAutoHeight.click();
+        break;
+      default:
+        throw new Error(`Unsupported text option: ${value}`);
     }
   }
 
@@ -999,15 +1082,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnTextAlignOptionsButton() {
-    await this.textAlignOptionsButton.click();
-  }
-
-  async clickOnTextUnderlineButton() {
-    await this.textUnderline.click();
-  }
-
-  async clickOnTextStrikethroughButton() {
-    await this.textStrikethrough.click();
+    await this.openTextMoreOptionsBlock();
   }
 
   async isLayoutRemoveButtonExists(condition = true) {
@@ -1222,12 +1297,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickLayoutColumnGapField() {
     await this.layoutColumnGapInput.click();
-  }
-
-  async changeLayoutColumnGapOnGridEdit(value) {
-    await this.layoutColumnGapInput.clear();
-    await this.layoutColumnGapInput.pressSequentially(value);
-    await this.clickOnEnter();
   }
 
   async changeLayoutRowGap(value, flex = true) {
@@ -1448,11 +1517,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.submitAnnotationEditing();
   }
 
-  async cancelAddAnnotationForComponent(value) {
-    await this.enterTextIntoAnnotationField(value);
-    await this.discardAnnotationCreation();
-  }
-
   async clickOnCreateAnnotationOption() {
     await this.createAnnotationOptionDesign.click();
     await expect(this.annotationTextArea).toBeVisible();
@@ -1471,11 +1535,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async submitAnnotationEditing() {
     await this.annotationCreateTitle.hover();
     await this.saveAnnotationTick.click();
-  }
-
-  async discardAnnotationCreation() {
-    await this.annotationCreateTitle.hover();
-    await this.discardAnnotationTick.click();
   }
 
   async clickOnEditAnnotation() {
@@ -1559,10 +1618,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeAxisXAndYForLayer(x, y) {
     await this.changeXAxisForLayer(x);
     await this.changeYAxisForLayer(y);
-  }
-
-  async clickOnResetOverridesOption() {
-    await this.resetOverridesOptionDesign.click();
   }
 
   async clickOnDetachInstanceOption() {
@@ -1950,10 +2005,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.typographyTokenButton.first().hover();
   }
 
-  async isTypographyTokenModalByNameVisible(name) {
-    await expect(this.getTypographyTokenModal(name)).toBeVisible();
-  }
-
   async hoverAndAssertTypographyTokenValues(
     name,
     {
@@ -2256,16 +2307,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async searchTypographyTokens(value) {
     await this.openTypographyTokenList();
     await this.typographySearchTokenListInput.type(value);
-  }
-
-  async areTypographyTokenFromListVisible(values) {
-    for (const value of values) {
-      const token = this.getTypographyTokenOptionFromListByName(value);
-      await expect(
-        token,
-        `Token ${value} is visible in typography token list`,
-      ).toBeVisible();
-    }
   }
 
   async searchAndApplyTypographyTokenFromTokensList(value) {

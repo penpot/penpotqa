@@ -425,7 +425,7 @@ mainTest.describe(() => {
   mainTest(qase([425], 'Change alignment (Design section)'), async () => {
     await mainTest.step('Change alignment to Middle', async () => {
       await designPanelPage.changeHeightAndWidthForLayer('200', '200');
-      await designPanelPage.changeTextAlignment('Middle');
+      await designPanelPage.changeTextOption('Middle');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-middle.png', {
@@ -434,7 +434,7 @@ mainTest.describe(() => {
     });
 
     await mainTest.step('Change alignment to Bottom', async () => {
-      await designPanelPage.changeTextAlignment('Bottom');
+      await designPanelPage.changeTextOption('Bottom');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-bottom.png', {
@@ -443,7 +443,7 @@ mainTest.describe(() => {
     });
 
     await mainTest.step('Change alignment to Top', async () => {
-      await designPanelPage.changeTextAlignment('Top');
+      await designPanelPage.changeTextOption('Top');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-top.png', {
@@ -453,7 +453,7 @@ mainTest.describe(() => {
   });
 
   mainTest(qase([427], 'Change RTL/LTR (Design section)'), async () => {
-    await designPanelPage.changeTextDirection('RTL');
+    await designPanelPage.changeTextOption('RTL');
     await mainPage.waitForChangeIsSaved();
     await mainPage.focusLayerViaShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('text-rtl.png', {
@@ -462,7 +462,7 @@ mainTest.describe(() => {
     });
     await mainPage.focusLayerViaShortcut();
 
-    await designPanelPage.changeTextDirection('LTR');
+    await designPanelPage.changeTextOption('LTR');
     await mainPage.waitForChangeIsSaved();
     await mainPage.focusLayerViaShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('text-ltr.png', {
@@ -623,3 +623,51 @@ mainTest(
     });
   },
 );
+
+mainTest(qase([423], 'Change text centering, align (Design section)'), async () => {
+  const text =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ' +
+    'tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, ' +
+    'quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo ' +
+    'consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse ' +
+    'cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat ' +
+    'non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
+  await mainTest.step('Create large text with several lines', async () => {
+    await mainPage.createTextLayerByCoordinatesViaPaste(200, 200, text);
+    await designPanelPage.changeWidthForLayer('400');
+    await mainPage.waitForChangeIsSaved();
+  });
+
+  await mainTest.step('Align left', async () => {
+    await designPanelPage.changeTextOption('Left');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-left.png', {
+      mask: mainPage.maskViewport(),
+    });
+  });
+
+  await mainTest.step('Align center', async () => {
+    await designPanelPage.changeTextOption('Center');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-center.png', {
+      mask: mainPage.maskViewport(),
+    });
+  });
+
+  await mainTest.step('Align right', async () => {
+    await designPanelPage.changeTextOption('Right');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-right.png', {
+      mask: mainPage.maskViewport(),
+    });
+  });
+
+  await mainTest.step('Justify', async () => {
+    await designPanelPage.changeTextOption('Justify');
+    await mainPage.waitForChangeIsSaved();
+    await expect(mainPage.viewport).toHaveScreenshot('text-align-justify.png', {
+      mask: mainPage.maskViewport(),
+    });
+  });
+});
