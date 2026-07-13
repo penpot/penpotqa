@@ -1019,6 +1019,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       case 'Auto height':
         await this.textGrowAutoHeight.click();
         break;
+      default:
+        throw new Error(`Unsupported text option: ${value}`);
     }
   }
 
