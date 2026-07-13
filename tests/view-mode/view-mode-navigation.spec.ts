@@ -284,7 +284,6 @@ mainTest(qase([705], 'Edit file'), async ({ page }) => {
   await page.close();
   await viewModePage.clickEditButton();
   const oldPage = await viewModePage.clickEditButton(false);
-  if (!oldPage) throw new Error('Edit button did not open the workspace popup');
   mainPage = new MainPage(oldPage);
   teamPage = new TeamPage(oldPage);
   await mainPage.waitForViewportVisible();
