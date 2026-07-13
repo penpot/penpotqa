@@ -1,42 +1,40 @@
-const { expect } = require('@playwright/test');
-const { mainTest } = require('../../fixtures');
-const { MainPage } = require('../../pages/workspace/main-page');
-const {
-  PagesPanelPage,
-} = require('../../pages/workspace/panels-features/pages-panel-page');
-const { random } = require('../../helpers/string-generator');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { ViewModePage } = require('../../pages/workspace/view-mode-page');
-const { PrototypePanelPage } = require('../../pages/workspace/prototype-panel-page');
-const { CommentsPanelPage } = require('../../pages/workspace/comments-panel-page');
-const { DesignPanelPage } = require('../../pages/workspace/design-panel-page');
-const { LayersPanelPage } = require('../../pages/workspace/layers-panel-page');
-const { InspectPanelPage } = require('../../pages/workspace/inspect-panel-page');
-const { ProfilePage } = require('../../pages/profile-page');
-const { LoginPage } = require('../../pages/login-page');
-const { RegisterPage } = require('../../pages/register-page');
-const {
+import { expect } from '@playwright/test';
+import { mainTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { random } from 'helpers/string-generator';
+import {
   waitMessage,
   waitSecondMessage,
   getVerificationMessage,
-} = require('../../helpers/gmail');
-const { createTeamName } = require('../../helpers/teams/create-team-name');
+} from 'helpers/gmail';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { LoginPage } from '@pages/login-page';
+import { RegisterPage } from '@pages/register-page';
+import { ProfilePage } from '@pages/profile-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
+import { ViewModePage } from '@pages/workspace/view-mode-page';
+import { PrototypePanelPage } from '@pages/workspace/prototype-panel-page';
+import { CommentsPanelPage } from '@pages/workspace/comments-panel-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 
 const teamName = createTeamName();
 
-let teamPage,
-  dashboardPage,
-  mainPage,
-  pagesPanelPage,
-  viewModePage,
-  prototypePanelPage,
-  designPanelPage,
-  layersPanelPage,
-  profilePage,
-  loginPage,
-  registerPage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
+let mainPage: MainPage;
+let pagesPanelPage: PagesPanelPage;
+let viewModePage: ViewModePage;
+let prototypePanelPage: PrototypePanelPage;
+let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
+let profilePage: ProfilePage;
+let loginPage: LoginPage;
+let registerPage: RegisterPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
@@ -522,7 +520,7 @@ mainTest.describe(() => {
     await designPanelPage.clickExportElementButton(newPage);
   });
 
-  mainTest(qase(1785, 'Switch between layers from left menu'), async () => {
+  mainTest(qase([1785], 'Switch between layers from left menu'), async () => {
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('500', '700');
     await mainPage.waitForChangeIsSaved();
@@ -617,6 +615,7 @@ mainTest.describe(() => {
     await page.close();
     await viewModePage.clickEditButton();
     const oldPage = await viewModePage.clickEditButton(false);
+    if (!oldPage) throw new Error('Edit button did not open the workspace popup');
     mainPage = new MainPage(oldPage);
     teamPage = new TeamPage(oldPage);
     await mainPage.waitForViewportVisible();
@@ -781,7 +780,7 @@ mainTest.describe(() => {
   );
 
   mainTest(
-    qase(702, 'Comments dropdown (All and Only your comments)'),
+    qase([702], 'Comments dropdown (All and Only your comments)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
