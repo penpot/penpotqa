@@ -322,24 +322,66 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textOptionsFull = this.textSectionRegion.locator(
       '.main_ui_workspace_sidebar_options_menus_typography__text-options-full-size',
     );
-    this.textAlignLeft = page.getByTestId('text-align-left');
-    this.textAlignCenter = page.getByTestId('text-align-center');
-    this.textAlignRight = page.getByTestId('text-align-right');
-    this.textAlignJustify = page.getByTestId('text-align-justify');
+    // Design panel - Text element menu (align, grow, vertical align, decoration, direction)
+    this.textElementMenu = page.locator('div[class*="text__element-content"]');
+    this.textAlignLeft = this.textElementMenu.getByRole('button', {
+      name: 'Align left',
+      exact: true,
+    });
+    this.textAlignCenter = this.textElementMenu.getByRole('button', {
+      name: 'Align center',
+      exact: true,
+    });
+    this.textAlignRight = this.textElementMenu.getByRole('button', {
+      name: 'Align right',
+      exact: true,
+    });
+    this.textAlignJustify = this.textElementMenu.getByRole('button', {
+      name: 'Justify',
+      exact: true,
+    });
+    this.textGrowFixed = this.textElementMenu.getByRole('button', {
+      name: 'Fixed',
+      exact: true,
+    });
+    this.textGrowAutoWidth = this.textElementMenu.getByRole('button', {
+      name: 'Auto width',
+      exact: true,
+    });
+    this.textGrowAutoHeight = this.textElementMenu.getByRole('button', {
+      name: 'Auto height',
+      exact: true,
+    });
     this.textUpperCaseIcon = page.getByTestId('text-transform-uppercase');
     this.textLowerCaseIcon = page.getByTestId('text-transform-lowercase');
     this.textTitleCaseIcon = page.getByTestId('text-transform-capitalize');
-    this.textMoreOptionsIcon = page
-      .locator('div[class*="text__element-content"]')
-      .getByRole('button', { name: 'Options' });
+    this.textMoreOptionsIcon = this.textElementMenu.getByRole('button', {
+      name: 'Options',
+      exact: true,
+    });
     this.textVerticalOptionsBlock = page.locator(
       'div[class*="vertical-align-options"]',
     );
-    this.textAlignTop = page.getByTestId('vertical-text-align-top');
-    this.textAlignMiddle = page.getByTestId('vertical-text-align-center');
-    this.textAlignBottom = page.getByTestId('vertical-text-align-bottom');
-    this.textIconLTR = page.getByTestId('ltr-text-direction');
-    this.textIconRTL = page.getByTestId('rtl-text-direction');
+    this.textAlignTop = this.textElementMenu.getByRole('button', {
+      name: 'Align top',
+      exact: true,
+    });
+    this.textAlignMiddle = this.textElementMenu.getByRole('button', {
+      name: 'Align middle',
+      exact: true,
+    });
+    this.textAlignBottom = this.textElementMenu.getByRole('button', {
+      name: 'Align bottom',
+      exact: true,
+    });
+    this.textIconLTR = this.textElementMenu.getByRole('button', {
+      name: 'LTR',
+      exact: true,
+    });
+    this.textIconRTL = this.textElementMenu.getByRole('button', {
+      name: 'RTL',
+      exact: true,
+    });
     this.textFontSelector = page.locator('div[class*="typography__font-option"]');
     this.textFontSelectorSearchInput = page.getByPlaceholder('Search font');
     this.textFontItemResult = page.locator(
@@ -354,7 +396,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
     this.textLineHeightInput = page.getByTitle('Line Height').locator('input');
     this.textLetterSpacingInput = page.getByTitle('Letter Spacing').locator('input');
-    this.textAlignOptionsButton = page.getByTestId('text-align-options-button');
     this.textUnderline = page.getByTestId('underline-text-decoration');
     this.textStrikethrough = page.getByTestId('line-through-text-decoration');
     this.textTypographyMenuButton = this.designTabpanel
@@ -918,22 +959,25 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.textVerticalOptionsBlock).toBeVisible();
   }
 
-  async changeTextAlignment(value) {
-    await this.openTextMoreOptionsBlock();
-    switch (value) {
-      case 'Top':
-        await this.textAlignTop.click();
-        break;
-      case 'Middle':
-        await this.textAlignMiddle.click();
-        break;
-      case 'Bottom':
-        await this.textAlignBottom.click();
-        break;
+  /**
+   * Clicks a button in the text element menu (horizontal/vertical align, grow
+   * type, direction). Vertical align and direction live behind the "Options"
+   * toggle, so the block is opened first when needed.
+   * @param {'Left'|'Center'|'Right'|'Justify'|'Top'|'Middle'|'Bottom'|'LTR'|'RTL'|'Underline'|'Strikethrough'|'Fixed'|'Auto width'|'Auto height'} value
+   */
+  async changeTextOption(value) {
+    const behindOptionsToggle = [
+      'Top',
+      'Middle',
+      'Bottom',
+      'LTR',
+      'RTL',
+      'Underline',
+      'Strikethrough',
+    ];
+    if (behindOptionsToggle.includes(value)) {
+      await this.openTextMoreOptionsBlock();
     }
-  }
-
-  async changeTextHorizontalAlignment(value) {
     switch (value) {
       case 'Left':
         await this.textAlignLeft.click();
@@ -947,17 +991,35 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       case 'Justify':
         await this.textAlignJustify.click();
         break;
-    }
-  }
-
-  async changeTextDirection(value) {
-    await this.openTextMoreOptionsBlock();
-    switch (value) {
-      case 'RTL':
-        await this.textIconRTL.click();
+      case 'Top':
+        await this.textAlignTop.click();
+        break;
+      case 'Middle':
+        await this.textAlignMiddle.click();
+        break;
+      case 'Bottom':
+        await this.textAlignBottom.click();
         break;
       case 'LTR':
         await this.textIconLTR.click();
+        break;
+      case 'RTL':
+        await this.textIconRTL.click();
+        break;
+      case 'Underline':
+        await this.textUnderline.click();
+        break;
+      case 'Strikethrough':
+        await this.textStrikethrough.click();
+        break;
+      case 'Fixed':
+        await this.textGrowFixed.click();
+        break;
+      case 'Auto width':
+        await this.textGrowAutoWidth.click();
+        break;
+      case 'Auto height':
+        await this.textGrowAutoHeight.click();
         break;
     }
   }
@@ -1020,15 +1082,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnTextAlignOptionsButton() {
-    await this.textAlignOptionsButton.click();
-  }
-
-  async clickOnTextUnderlineButton() {
-    await this.textUnderline.click();
-  }
-
-  async clickOnTextStrikethroughButton() {
-    await this.textStrikethrough.click();
+    await this.openTextMoreOptionsBlock();
   }
 
   async isLayoutRemoveButtonExists(condition = true) {
