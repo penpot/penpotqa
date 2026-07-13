@@ -3,7 +3,7 @@ name: Quality Dashboard
 on:
   schedule:
     # Daily at 06:00 UTC — after the nightly Playwright runs finish.
-    - cron: '0 6 * * *'
+    - cron: '30 2 * * *'
   workflow_dispatch: {}
   push:
     paths:
