@@ -323,7 +323,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       '.main_ui_workspace_sidebar_options_menus_typography__text-options-full-size',
     );
     // Design panel - Text element menu (align, grow, vertical align, decoration, direction)
-    this.textElementMenu = page.locator('div[class*="text__element-content"]');
+    this.textElementMenu = this.textSectionRegion.locator(
+      'div[class*="text__element-content"]',
+    );
     this.textAlignLeft = this.textElementMenu.getByRole('button', {
       name: 'Align left',
       exact: true,
