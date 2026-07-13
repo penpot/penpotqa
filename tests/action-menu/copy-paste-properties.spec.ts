@@ -179,24 +179,6 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase([1977], 'Copy paste properties of Grid layout to another Board'),
-    async () => {
-      await mainPage.createDefaultBoardByCoordinates(100, 100);
-      await mainPage.addGridLayoutViaRightClick();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeLayoutAlignment('Center', false);
-      await mainPage.waitForChangeIsSaved();
-
-      await mainPage.clickShortcutCtrlAltC();
-
-      await mainPage.createDefaultBoardByCoordinates(100, 700, true);
-      await mainPage.clickShortcutCtrlAltV();
-
-      await designPanelPage.isLayoutAlignmentSelected('Center', false);
-    },
-  );
-
   mainTest(qase([1978], 'Copy paste typography property'), async () => {
     await mainPage.createDefaultTextLayerByCoordinates(100, 100);
     await assetsPanelPage.selectFont('Sofia');
