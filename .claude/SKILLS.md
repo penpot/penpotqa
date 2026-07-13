@@ -1,6 +1,6 @@
 # JS to TS Migration Guide
 
-Steps to migrate a `.spec.js` test file to `.spec.ts`:
+Steps to migrate a `.spec.js` test file to `.spec.ts`.
 
 ## 1. Convert imports
 
@@ -46,9 +46,9 @@ mainTest.beforeEach(async ({ page }) => {
 });
 ```
 
-## 2. Declare page object instances at file scope
+## 2. Declare page objects and variables at file scope
 
-Declare page object instances as `let` variables **outside** of `beforeEach`, and assign them inside `beforeEach`:
+Declare page object instances as `let` variables **outside** of `beforeEach`, and assign them inside `beforeEach`. This applies at every scope level: outer `describe`, inner `describe`, etc.
 
 ```typescript
 // Correct
@@ -63,8 +63,6 @@ mainTest.beforeEach(async ({ page }) => {
   const profilePage: ProfilePage = new ProfilePage(page);
 });
 ```
-
-This applies at every scope level: outer `describe`, inner `describe`, etc.
 
 Always generate the team name using `createTeamName()` — never `random().concat('autotest')`:
 
@@ -82,11 +80,11 @@ const teamName = random().concat('autotest');
 
 ## 3. Migrate local fixture files
 
-If the spec imports from a local fixture file (e.g. `your-account-fixture.js`), migrate that fixture to `.ts` too. Add a type for custom fixtures and pass it as a generic to `.extend<T>()`:
+If the spec imports from a local fixture file (e.g. `your-account-fixture.js`), migrate that fixture to `.ts` too. Add a type for the **new** fixtures only and pass it as a generic to `.extend<T>()`:
 
 ```ts
-import { mainTest } from 'fixtures';
 import { ProfilePage } from '@pages/profile-page';
+import { mainTest } from 'fixtures';
 
 type YourAccountFixtures = {
   profilePage: ProfilePage;
@@ -104,7 +102,7 @@ export const profileTest = mainTest.extend<YourAccountFixtures>({
 Because `profileTest` extends `mainTest`, it automatically inherits all of `mainTest`'s fixtures (e.g. `page`). You only need to declare the **new** fixtures in the generic type. Both base and custom fixtures are available in every test:
 
 ```ts
-profileTest(qase(205, 'Logout from Account'), async ({ page, profilePage }) => {
+profileTest(qase([205], 'Logout from Account'), async ({ page, profilePage }) => {
   // page comes from mainTest, profilePage comes from YourAccountFixtures
 });
 ```
@@ -127,29 +125,7 @@ await checkNewEmailText(changeEmail.inviteText, name, newEmail);
 await page.goto(changeEmail.inviteUrl);
 ```
 
-## 5. Rename snapshot folder and clean up
-
-If a `<spec-name>.spec.js-snapshots` directory exists next to the spec file, rename it to `<spec-name>.spec.ts-snapshots`. Snapshots live directly at the root of that directory (no OS/browser subfolders) — flatten any `linux/chrome` (or other OS/browser) snapshots into the root and delete the rest:
-
-```bash
-# 1. Rename the folder
-mv tests/path/to/foo.spec.js-snapshots tests/path/to/foo.spec.ts-snapshots
-
-# 2. Flatten linux/chrome snapshots to the root and delete all other OS/browser directories
-SNAPSHOTS="tests/path/to/foo.spec.ts-snapshots"
-if [ -d "$SNAPSHOTS/linux/chrome" ]; then
-  mv "$SNAPSHOTS/linux/chrome"/* "$SNAPSHOTS/"
-fi
-find "$SNAPSHOTS" -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} +
-```
-
-Do this as part of the migration, before confirming it is complete.
-
-## 6. Keep `.js` originals during migration
-
-Do not delete the original `.js` files until the user confirms the migration is complete.
-
-## 7. Migrate test steps
+## 5. Migrate test steps
 
 When migrating a test to TypeScript, **always wrap the test body in `mainTest.step()` calls** grouping actions by logical phase. The step syntax is identical in JS and TS.
 
@@ -180,6 +156,39 @@ mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
 - Use action-oriented names: `'Add flex layout via right click'`, `'Verify flex layout is applied'`
 - Group setup actions together, assertions together
 - Keep step names short and descriptive — no Qase IDs in the step name unless the original JS had them
+
+**Qase IDs:** always wrap the Qase ID(s) in an array, even for a single ID — never pass a bare number:
+
+```typescript
+// Correct
+qase([607], 'Add flex layout to board from right click')
+qase([2905, 2873], 'Selecting via the Token Icon and detaching via the detach button')
+
+// Incorrect — bare number, not wrapped in an array
+qase(607, 'Add flex layout to board from right click')
+```
+
+## 6. Rename snapshot folder and clean up
+
+If a `<spec-name>.spec.js-snapshots` directory exists next to the spec file, rename it to `<spec-name>.spec.ts-snapshots`. Snapshots live directly at the root of that directory (no OS/browser subfolders) — flatten any `linux/chrome` (or other OS/browser) snapshots into the root and delete the rest:
+
+```bash
+# 1. Rename the folder
+mv tests/path/to/foo.spec.js-snapshots tests/path/to/foo.spec.ts-snapshots
+
+# 2. Flatten linux/chrome snapshots to the root and delete all other OS/browser directories
+SNAPSHOTS="tests/path/to/foo.spec.ts-snapshots"
+if [ -d "$SNAPSHOTS/linux/chrome" ]; then
+  mv "$SNAPSHOTS/linux/chrome"/* "$SNAPSHOTS/"
+fi
+find "$SNAPSHOTS" -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} +
+```
+
+Do this as part of the migration, before confirming it is complete.
+
+## 7. Keep `.js` originals during migration
+
+Do not delete the original `.js` files until the user confirms the migration is complete.
 
 ## 8. Verify
 
