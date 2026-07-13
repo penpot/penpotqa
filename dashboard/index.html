@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Penpot · Quality Radar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+      :root {
+        --bg: #131316;
+        --surface: #1b1b1f;
+        --surface-2: #222227;
+        --line: #2c2c33;
+        --ink: #e9eaec;
+        --muted: #8f919b;
+        --mint: #7efff5; /* Penpot's signature accent */
+        --mint-dim: rgba(126, 255, 245, 0.16);
+        --pink: #ff6b9d;
+        --amber: #ffb86b;
+        --violet: #bb97d8;
+        --good: #6ee7a0;
+        --font-display: 'Sora', system-ui, sans-serif;
+        --font-body: 'Inter', system-ui, sans-serif;
+        --font-data: 'IBM Plex Mono', ui-monospace, monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 14px;
+        line-height: 1.5;
+        padding: 0 clamp(16px, 4vw, 48px) 64px;
+      }
+      a {
+        color: var(--mint);
+        text-decoration: none;
+      }
+      a:hover,
+      a:focus-visible {
+        text-decoration: underline;
+      }
+      :focus-visible {
+        outline: 2px solid var(--mint);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      /* ---------- header ---------- */
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 12px 20px;
+        padding: 28px 0 8px;
+      }
+      header h1 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(22px, 3vw, 30px);
+        letter-spacing: -0.02em;
+      }
+      header h1 .accent {
+        color: var(--mint);
+      }
+      .meta {
+        color: var(--muted);
+        font-family: var(--font-data);
+        font-size: 12px;
+      }
+      .badge {
+        font-family: var(--font-data);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+      .badge.sample {
+        border-color: var(--amber);
+        color: var(--amber);
+      }
+
+      /* ---------- pulse strip (signature) ---------- */
+      .pulse {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: linear-gradient(180deg, var(--surface) 0%, #17171b 100%);
+        overflow: hidden;
+        margin-top: 16px;
+      }
+      .pulse canvas {
+        display: block;
+        width: 100%;
+        height: 120px;
+      }
+      .pulse .pulse-label {
+        position: absolute;
+        top: 12px;
+        left: 16px;
+        color: var(--muted);
+        font-family: var(--font-data);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .pulse .pulse-value {
+        position: absolute;
+        top: 26px;
+        left: 16px;
+        font-family: var(--font-data);
+        font-size: 30px;
+        font-weight: 600;
+        color: var(--mint);
+      }
+
+      /* ---------- KPI strip ---------- */
+      .kpis {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+      .kpi {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px 16px;
+      }
+      .kpi .label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .kpi .value {
+        font-family: var(--font-data);
+        font-size: 26px;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+      .kpi .sub {
+        font-family: var(--font-data);
+        font-size: 12px;
+        margin-top: 2px;
+        color: var(--muted);
+      }
+      .kpi .sub.good {
+        color: var(--good);
+      }
+      .kpi .sub.bad {
+        color: var(--pink);
+      }
+      .kpi.alert .value {
+        color: var(--pink);
+      }
+
+      /* ---------- panels ---------- */
+      .grid {
+        display: grid;
+        gap: 16px;
+        margin-top: 20px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 980px) {
+        .grid.two {
+          grid-template-columns: 3fr 2fr;
+        }
+        .grid.halves {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px 18px 14px;
+        min-width: 0;
+      }
+      .panel h2 {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .panel .hint {
+        color: var(--muted);
+        font-size: 12px;
+        margin: 2px 0 12px;
+      }
+      .chart-wrap {
+        position: relative;
+        height: 320px;
+      }
+      .chart-wrap.tall {
+        height: 420px;
+      }
+      .chart-wrap.short {
+        height: 240px;
+      }
+
+      /* ---------- table ---------- */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      th {
+        color: var(--muted);
+        font-weight: 500;
+        font-size: 12px;
+      }
+      td.num {
+        font-family: var(--font-data);
+        white-space: nowrap;
+      }
+      .chip {
+        display: inline-block;
+        font-size: 11px;
+        font-family: var(--font-data);
+        padding: 1px 8px;
+        border-radius: 999px;
+        background: var(--surface-2);
+        color: var(--violet);
+      }
+      .chip.blocker {
+        color: var(--pink);
+        border: 1px solid var(--pink);
+        background: transparent;
+      }
+
+      .error-box {
+        margin-top: 24px;
+        padding: 18px;
+        border: 1px dashed var(--amber);
+        border-radius: 14px;
+        color: var(--amber);
+        font-family: var(--font-data);
+        font-size: 13px;
+        display: none;
+      }
+      footer {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Penpot <span class="accent">Quality Radar</span></h1>
+      <span class="badge" id="repo-badge">penpot/penpot</span>
+      <span class="badge sample" id="sample-badge" style="display: none"
+        >sample data</span
+      >
+      <span class="meta" id="generated-at"></span>
+    </header>
+
+    <div class="pulse" aria-label="Open bug backlog over the last 52 weeks">
+      <span class="pulse-label">Open bug backlog · 52 weeks</span>
+      <span class="pulse-value" id="pulse-value">–</span>
+      <canvas id="pulseChart" height="120"></canvas>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="grid two">
+      <section class="panel">
+        <h2>Bug density by feature</h2>
+        <p class="hint">
+          Open bugs per feature area — where to concentrate exploratory and automated
+          coverage. Faded bar = all-time total.
+        </p>
+        <div class="chart-wrap tall"><canvas id="featureChart"></canvas></div>
+      </section>
+      <section class="panel">
+        <h2>90-day churn by feature</h2>
+        <p class="hint">
+          Bugs opened vs. closed in the last 90 days. Features opening faster than
+          they close are regressing.
+        </p>
+        <div class="chart-wrap tall"><canvas id="churnChart"></canvas></div>
+      </section>
+    </div>
+
+    <div class="grid halves">
+      <section class="panel">
+        <h2>Bug flow · weekly</h2>
+        <p class="hint">Opened vs. closed per week over the last 12 months.</p>
+        <div class="chart-wrap"><canvas id="flowChart"></canvas></div>
+      </section>
+      <section class="panel">
+        <h2>Time to close · monthly median</h2>
+        <p class="hint">
+          Median days from report to close, for bugs closed in each month.
+        </p>
+        <div class="chart-wrap"><canvas id="mttrChart"></canvas></div>
+      </section>
+    </div>
+
+    <div class="grid halves">
+      <section class="panel">
+        <h2>Open bug age</h2>
+        <p class="hint">How stale is the open backlog?</p>
+        <div class="chart-wrap short"><canvas id="agingChart"></canvas></div>
+      </section>
+      <section class="panel">
+        <h2>Oldest open bugs</h2>
+        <p class="hint">
+          Long-lived defects worth re-triaging or covering with a regression test.
+        </p>
+        <div style="overflow-x: auto">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Feature</th>
+                <th style="text-align: right">Age</th>
+              </tr>
+            </thead>
+            <tbody id="oldest-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div class="error-box" id="error-box"></div>
+
+    <footer>
+      Generated by <code>scripts/collect-metrics.mjs</code> · data source: GitHub
+      Issues · feature attribution rules: <code>scripts/feature-map.json</code>
+    </footer>
+
+    <script>
+      const FALLBACK = {
+        generatedAt: '2026-07-13T06:00:00.000Z',
+        repo: 'penpot/penpot',
+        sample: true,
+        totals: {
+          openBugs: 286,
+          totalBugsAllTime: 1468,
+          opened30d: 47,
+          closed30d: 52,
+          netChange30d: -5,
+          medianDaysToClose90d: 11.5,
+          regressionShare90d: 14.2,
+          releaseBlockersOpen: 6,
+          needsTriageOpen: 38,
+          unclassifiedShare: 5.9,
+        },
+        byFeature: [
+          {
+            feature: 'Workspace & Canvas',
+            openBugs: 68,
+            totalBugs: 412,
+            opened90d: 28,
+            closed90d: 23,
+            medianDaysToClose: 25,
+            oldestOpenDays: 302,
+          },
+          {
+            feature: 'Components & Variants',
+            openBugs: 41,
+            totalBugs: 178,
+            opened90d: 14,
+            closed90d: 17,
+            medianDaysToClose: 7.8,
+            oldestOpenDays: 330,
+          },
+          {
+            feature: 'Text & Fonts',
+            openBugs: 29,
+            totalBugs: 143,
+            opened90d: 11,
+            closed90d: 11,
+            medianDaysToClose: 11.3,
+            oldestOpenDays: 286,
+          },
+          {
+            feature: 'Layout (Flex/Grid)',
+            openBugs: 24,
+            totalBugs: 131,
+            opened90d: 14,
+            closed90d: 15,
+            medianDaysToClose: 4.5,
+            oldestOpenDays: 365,
+          },
+          {
+            feature: 'Design Tokens',
+            openBugs: 22,
+            totalBugs: 97,
+            opened90d: 12,
+            closed90d: 10,
+            medianDaysToClose: 7.8,
+            oldestOpenDays: 310,
+          },
+          {
+            feature: 'Dashboard & Teams',
+            openBugs: 17,
+            totalBugs: 88,
+            opened90d: 6,
+            closed90d: 11,
+            medianDaysToClose: 15.8,
+            oldestOpenDays: 83,
+          },
+          {
+            feature: 'Export / Import',
+            openBugs: 14,
+            totalBugs: 92,
+            opened90d: 10,
+            closed90d: 8,
+            medianDaysToClose: 11.6,
+            oldestOpenDays: 301,
+          },
+          {
+            feature: 'Render Engine',
+            openBugs: 12,
+            totalBugs: 44,
+            opened90d: 5,
+            closed90d: 7,
+            medianDaysToClose: 10.1,
+            oldestOpenDays: 229,
+          },
+          {
+            feature: 'Libraries & Assets',
+            openBugs: 11,
+            totalBugs: 71,
+            opened90d: 12,
+            closed90d: 5,
+            medianDaysToClose: 23.9,
+            oldestOpenDays: 390,
+          },
+          {
+            feature: 'Prototyping',
+            openBugs: 9,
+            totalBugs: 64,
+            opened90d: 10,
+            closed90d: 5,
+            medianDaysToClose: 14.7,
+            oldestOpenDays: 186,
+          },
+          {
+            feature: 'Plugins & API',
+            openBugs: 8,
+            totalBugs: 39,
+            opened90d: 5,
+            closed90d: 3,
+            medianDaysToClose: 32.7,
+            oldestOpenDays: 538,
+          },
+          {
+            feature: 'Versions & History',
+            openBugs: 6,
+            totalBugs: 31,
+            opened90d: 7,
+            closed90d: 6,
+            medianDaysToClose: 18.7,
+            oldestOpenDays: 286,
+          },
+          {
+            feature: 'Auth & Profile',
+            openBugs: 5,
+            totalBugs: 42,
+            opened90d: 5,
+            closed90d: 5,
+            medianDaysToClose: 16.3,
+            oldestOpenDays: 331,
+          },
+          {
+            feature: 'Comments',
+            openBugs: 4,
+            totalBugs: 28,
+            opened90d: 4,
+            closed90d: 4,
+            medianDaysToClose: 7.3,
+            oldestOpenDays: 540,
+          },
+          {
+            feature: 'Inspect / View Mode',
+            openBugs: 3,
+            totalBugs: 22,
+            opened90d: 5,
+            closed90d: 1,
+            medianDaysToClose: 14.5,
+            oldestOpenDays: 406,
+          },
+          {
+            feature: 'Unclassified',
+            openBugs: 13,
+            totalBugs: 86,
+            opened90d: 7,
+            closed90d: 12,
+            medianDaysToClose: 31.4,
+            oldestOpenDays: 705,
+          },
+        ],
+        weekly: [
+          { week: '2025-07-21', opened: 8, closed: 14, netOpen: 222 },
+          { week: '2025-07-28', opened: 18, closed: 11, netOpen: 229 },
+          { week: '2025-08-04', opened: 13, closed: 10, netOpen: 232 },
+          { week: '2025-08-11', opened: 22, closed: 14, netOpen: 240 },
+          { week: '2025-08-18', opened: 15, closed: 11, netOpen: 244 },
+          { week: '2025-08-25', opened: 9, closed: 18, netOpen: 235 },
+          { week: '2025-09-01', opened: 21, closed: 13, netOpen: 243 },
+          { week: '2025-09-08', opened: 11, closed: 10, netOpen: 244 },
+          { week: '2025-09-15', opened: 11, closed: 12, netOpen: 243 },
+          { week: '2025-09-22', opened: 9, closed: 18, netOpen: 234 },
+          { week: '2025-09-29', opened: 15, closed: 19, netOpen: 230 },
+          { week: '2025-10-06', opened: 18, closed: 8, netOpen: 240 },
+          { week: '2025-10-13', opened: 16, closed: 9, netOpen: 247 },
+          { week: '2025-10-20', opened: 20, closed: 14, netOpen: 253 },
+          { week: '2025-10-27', opened: 15, closed: 13, netOpen: 255 },
+          { week: '2025-11-03', opened: 11, closed: 7, netOpen: 259 },
+          { week: '2025-11-10', opened: 8, closed: 21, netOpen: 246 },
+          { week: '2025-11-17', opened: 21, closed: 18, netOpen: 249 },
+          { week: '2025-11-24', opened: 16, closed: 18, netOpen: 247 },
+          { week: '2025-12-01', opened: 17, closed: 12, netOpen: 252 },
+          { week: '2025-12-08', opened: 13, closed: 11, netOpen: 254 },
+          { week: '2025-12-15', opened: 13, closed: 16, netOpen: 251 },
+          { week: '2025-12-22', opened: 13, closed: 8, netOpen: 256 },
+          { week: '2025-12-29', opened: 15, closed: 9, netOpen: 262 },
+          { week: '2026-01-05', opened: 14, closed: 12, netOpen: 264 },
+          { week: '2026-01-12', opened: 11, closed: 8, netOpen: 267 },
+          { week: '2026-01-19', opened: 22, closed: 15, netOpen: 274 },
+          { week: '2026-01-26', opened: 9, closed: 21, netOpen: 262 },
+          { week: '2026-02-02', opened: 14, closed: 17, netOpen: 259 },
+          { week: '2026-02-09', opened: 11, closed: 15, netOpen: 255 },
+          { week: '2026-02-16', opened: 22, closed: 10, netOpen: 267 },
+          { week: '2026-02-23', opened: 18, closed: 13, netOpen: 272 },
+          { week: '2026-03-02', opened: 14, closed: 17, netOpen: 269 },
+          { week: '2026-03-09', opened: 10, closed: 18, netOpen: 261 },
+          { week: '2026-03-16', opened: 19, closed: 8, netOpen: 272 },
+          { week: '2026-03-23', opened: 8, closed: 9, netOpen: 271 },
+          { week: '2026-03-30', opened: 17, closed: 12, netOpen: 276 },
+          { week: '2026-04-06', opened: 11, closed: 14, netOpen: 273 },
+          { week: '2026-04-13', opened: 15, closed: 8, netOpen: 280 },
+          { week: '2026-04-20', opened: 22, closed: 12, netOpen: 290 },
+          { week: '2026-04-27', opened: 19, closed: 11, netOpen: 298 },
+          { week: '2026-05-04', opened: 21, closed: 20, netOpen: 299 },
+          { week: '2026-05-11', opened: 19, closed: 13, netOpen: 305 },
+          { week: '2026-05-18', opened: 25, closed: 14, netOpen: 316 },
+          { week: '2026-05-25', opened: 26, closed: 11, netOpen: 331 },
+          { week: '2026-06-01', opened: 23, closed: 24, netOpen: 330 },
+          { week: '2026-06-08', opened: 22, closed: 20, netOpen: 332 },
+          { week: '2026-06-15', opened: 24, closed: 19, netOpen: 337 },
+          { week: '2026-06-22', opened: 16, closed: 17, netOpen: 336 },
+          { week: '2026-06-29', opened: 16, closed: 18, netOpen: 334 },
+          { week: '2026-07-06', opened: 20, closed: 21, netOpen: 333 },
+          { week: '2026-07-13', opened: 13, closed: 19, netOpen: 327 },
+        ],
+        monthlyMTTR: [
+          { month: '2025-08', medianDays: 20.1, closed: 38 },
+          { month: '2025-09', medianDays: 16.1, closed: 37 },
+          { month: '2025-10', medianDays: 21.2, closed: 58 },
+          { month: '2025-11', medianDays: 22.8, closed: 42 },
+          { month: '2025-12', medianDays: 17.8, closed: 54 },
+          { month: '2026-01', medianDays: 21.5, closed: 34 },
+          { month: '2026-02', medianDays: 18.5, closed: 65 },
+          { month: '2026-03', medianDays: 22.7, closed: 35 },
+          { month: '2026-04', medianDays: 14.2, closed: 31 },
+          { month: '2026-05', medianDays: 13.6, closed: 36 },
+          { month: '2026-06', medianDays: 13.1, closed: 35 },
+          { month: '2026-07', medianDays: 17.1, closed: 39 },
+        ],
+        aging: { '0-7d': 21, '8-30d': 44, '31-90d': 67, '91-365d': 98, '>1y': 56 },
+        oldestOpen: [
+          {
+            number: 2189,
+            title:
+              'Path editing loses precision after boolean union on complex shapes',
+            feature: 'Workspace & Canvas',
+            ageDays: 934,
+            releaseBlocker: false,
+          },
+          {
+            number: 3011,
+            title: 'Shared library colors desync between files after rename',
+            feature: 'Libraries & Assets',
+            ageDays: 812,
+            releaseBlocker: false,
+          },
+          {
+            number: 3877,
+            title: 'Exported PDF renders wrong font weight for custom fonts',
+            feature: 'Export / Import',
+            ageDays: 701,
+            releaseBlocker: false,
+          },
+          {
+            number: 4502,
+            title: 'Component overrides lost when detaching nested instances',
+            feature: 'Components & Variants',
+            ageDays: 645,
+            releaseBlocker: false,
+          },
+          {
+            number: 5120,
+            title: 'Flex layout: auto height ignored inside 100% width container',
+            feature: 'Layout (Flex/Grid)',
+            ageDays: 590,
+            releaseBlocker: true,
+          },
+          {
+            number: 5764,
+            title: 'Undo after paste-in-place duplicates shapes on slow connections',
+            feature: 'Workspace & Canvas',
+            ageDays: 502,
+            releaseBlocker: false,
+          },
+          {
+            number: 6320,
+            title: 'Prototype overlay position wrong when board is scaled',
+            feature: 'Prototyping',
+            ageDays: 433,
+            releaseBlocker: false,
+          },
+          {
+            number: 7018,
+            title: 'Token sets panel scroll resets after applying a token',
+            feature: 'Design Tokens',
+            ageDays: 361,
+            releaseBlocker: false,
+          },
+          {
+            number: 7715,
+            title: 'History restore drops comments added after snapshot',
+            feature: 'Versions & History',
+            ageDays: 290,
+            releaseBlocker: false,
+          },
+          {
+            number: 8404,
+            title: 'Team invitation email not sent for LDAP-provisioned accounts',
+            feature: 'Auth & Profile',
+            ageDays: 219,
+            releaseBlocker: false,
+          },
+        ],
+      };
+
+      const css = (v) =>
+        getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+      const MINT = css('--mint'),
+        PINK = css('--pink'),
+        AMBER = css('--amber'),
+        VIOLET = css('--violet'),
+        GOOD = css('--good'),
+        MUTED = css('--muted'),
+        LINE = css('--line');
+
+      Chart.defaults.font.family = getComputedStyle(document.body).getPropertyValue(
+        '--font-data',
+      );
+      Chart.defaults.font.size = 11;
+      Chart.defaults.color = MUTED;
+      Chart.defaults.borderColor = LINE;
+      Chart.defaults.plugins.legend.labels.boxWidth = 10;
+      Chart.defaults.plugins.legend.labels.boxHeight = 10;
+
+      async function loadMetrics() {
+        try {
+          const res = await fetch('data/metrics.json?ts=' + Date.now());
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return await res.json();
+        } catch (e) {
+          if (FALLBACK) return FALLBACK;
+          const box = document.getElementById('error-box');
+          box.style.display = 'block';
+          box.textContent =
+            'Could not load data/metrics.json (' +
+            e.message +
+            '). Run: GITHUB_TOKEN=… node scripts/collect-metrics.mjs — or serve this folder over HTTP (npx serve dashboard).';
+          throw e;
+        }
+      }
+
+      function kpi(label, value, sub, cls = '', subCls = '') {
+        return `<div class="kpi ${cls}"><div class="label">${label}</div>
+    <div class="value">${value}</div>${sub ? `<div class="sub ${subCls}">${sub}</div>` : ''}</div>`;
+      }
+
+      loadMetrics().then((m) => {
+        document.getElementById('repo-badge').textContent = m.repo;
+        document.getElementById('generated-at').textContent =
+          'updated ' + new Date(m.generatedAt).toUTCString();
+        if (m.sample) document.getElementById('sample-badge').style.display = '';
+
+        // ---- KPI strip ----
+        const t = m.totals;
+        const net = t.netChange30d;
+        document.getElementById('kpis').innerHTML =
+          kpi(
+            'Open bugs',
+            t.openBugs,
+            (net <= 0 ? '▼ ' : '▲ +') + Math.abs(net) + ' last 30d',
+            '',
+            net <= 0 ? 'good' : 'bad',
+          ) +
+          kpi('Opened · 30d', t.opened30d, 'vs ' + t.closed30d + ' closed') +
+          kpi('Median close · 90d', t.medianDaysToClose90d ?? '–', 'days') +
+          kpi('Regression share · 90d', t.regressionShare90d + '%', 'of new bugs') +
+          kpi(
+            'Release blockers',
+            t.releaseBlockersOpen,
+            'open now',
+            t.releaseBlockersOpen > 0 ? 'alert' : '',
+          ) +
+          kpi('Needs triage', t.needsTriageOpen, 'awaiting review');
+
+        // ---- Pulse (signature sparkline) ----
+        const last = m.weekly[m.weekly.length - 1];
+        document.getElementById('pulse-value').textContent = last
+          ? last.netOpen
+          : '–';
+        const pulseCtx = document.getElementById('pulseChart').getContext('2d');
+        const grad = pulseCtx.createLinearGradient(0, 0, 0, 120);
+        grad.addColorStop(0, 'rgba(126,255,245,.28)');
+        grad.addColorStop(1, 'rgba(126,255,245,0)');
+        new Chart(pulseCtx, {
+          type: 'line',
+          data: {
+            labels: m.weekly.map((w) => w.week),
+            datasets: [
+              {
+                data: m.weekly.map((w) => w.netOpen),
+                borderColor: MINT,
+                borderWidth: 1.5,
+                backgroundColor: grad,
+                fill: true,
+                pointRadius: 0,
+                tension: 0.35,
+              },
+            ],
+          },
+          options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: { intersect: false, mode: 'index' },
+            },
+            scales: { x: { display: false }, y: { display: false } },
+            layout: { padding: { top: 56 } },
+          },
+        });
+
+        // ---- Bug density by feature ----
+        const f = m.byFeature;
+        new Chart(document.getElementById('featureChart'), {
+          type: 'bar',
+          data: {
+            labels: f.map((x) => x.feature),
+            datasets: [
+              {
+                label: 'Open bugs',
+                data: f.map((x) => x.openBugs),
+                backgroundColor: MINT,
+                borderRadius: 4,
+                barPercentage: 0.55,
+              },
+              {
+                label: 'All-time total',
+                data: f.map((x) => x.totalBugs),
+                backgroundColor: 'rgba(126,255,245,.12)',
+                borderRadius: 4,
+                barPercentage: 0.9,
+              },
+            ],
+          },
+          options: {
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            scales: {
+              x: { grid: { color: LINE } },
+              y: { grid: { display: false } },
+            },
+          },
+        });
+
+        // ---- 90d churn ----
+        const churn = [...f]
+          .sort((a, b) => b.opened90d + b.closed90d - (a.opened90d + a.closed90d))
+          .slice(0, 10);
+        new Chart(document.getElementById('churnChart'), {
+          type: 'bar',
+          data: {
+            labels: churn.map((x) => x.feature),
+            datasets: [
+              {
+                label: 'Opened 90d',
+                data: churn.map((x) => x.opened90d),
+                backgroundColor: PINK,
+                borderRadius: 4,
+              },
+              {
+                label: 'Closed 90d',
+                data: churn.map((x) => x.closed90d),
+                backgroundColor: GOOD,
+                borderRadius: 4,
+              },
+            ],
+          },
+          options: {
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            scales: {
+              x: { grid: { color: LINE } },
+              y: { grid: { display: false } },
+            },
+          },
+        });
+
+        // ---- Weekly flow ----
+        new Chart(document.getElementById('flowChart'), {
+          type: 'bar',
+          data: {
+            labels: m.weekly.map((w) => w.week),
+            datasets: [
+              {
+                label: 'Opened',
+                data: m.weekly.map((w) => w.opened),
+                backgroundColor: PINK,
+                borderRadius: 2,
+              },
+              {
+                label: 'Closed',
+                data: m.weekly.map((w) => w.closed),
+                backgroundColor: 'rgba(110,231,160,.75)',
+                borderRadius: 2,
+              },
+            ],
+          },
+          options: {
+            maintainAspectRatio: false,
+            interaction: { intersect: false, mode: 'index' },
+            scales: {
+              x: { ticks: { maxTicksLimit: 8 }, grid: { display: false } },
+              y: { grid: { color: LINE } },
+            },
+          },
+        });
+
+        // ---- Monthly MTTR ----
+        new Chart(document.getElementById('mttrChart'), {
+          type: 'line',
+          data: {
+            labels: m.monthlyMTTR.map((x) => x.month),
+            datasets: [
+              {
+                label: 'Median days to close',
+                data: m.monthlyMTTR.map((x) => x.medianDays),
+                borderColor: VIOLET,
+                backgroundColor: VIOLET,
+                pointRadius: 3,
+                tension: 0.3,
+              },
+            ],
+          },
+          options: {
+            maintainAspectRatio: false,
+            scales: {
+              x: { grid: { display: false } },
+              y: { beginAtZero: true, grid: { color: LINE } },
+            },
+          },
+        });
+
+        // ---- Aging ----
+        const agingKeys = Object.keys(m.aging);
+        new Chart(document.getElementById('agingChart'), {
+          type: 'bar',
+          data: {
+            labels: agingKeys,
+            datasets: [
+              {
+                label: 'Open bugs',
+                data: agingKeys.map((k) => m.aging[k]),
+                backgroundColor: [GOOD, MINT, AMBER, PINK, '#c2415f'],
+                borderRadius: 4,
+              },
+            ],
+          },
+          options: {
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { display: false } },
+              y: { grid: { color: LINE } },
+            },
+          },
+        });
+
+        // ---- Oldest open bugs table ----
+        document.getElementById('oldest-body').innerHTML = m.oldestOpen
+          .map(
+            (b) => `
+    <tr>
+      <td class="num"><a href="https://github.com/${m.repo}/issues/${b.number}" target="_blank" rel="noopener">#${b.number}</a></td>
+      <td>${b.title}${b.releaseBlocker ? ' <span class="chip blocker">blocker</span>' : ''}</td>
+      <td><span class="chip">${b.feature}</span></td>
+      <td class="num" style="text-align:right">${b.ageDays}d</td>
+    </tr>`,
+          )
+          .join('');
+      });
+    </script>
+  </body>
+</html>

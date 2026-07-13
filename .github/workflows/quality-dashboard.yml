@@ -1,0 +1,64 @@
+name: Quality Dashboard
+
+on:
+  schedule:
+    # Daily at 06:00 UTC — after the nightly Playwright runs finish.
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+  push:
+    paths:
+      - 'dashboard/**'
+      - 'scripts/collect-metrics.mjs'
+      - 'scripts/feature-map.json'
+      - '.github/workflows/quality-dashboard.yml'
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: quality-dashboard
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Collect metrics from penpot/penpot issues
+        env:
+          # Default token is enough: the source repo is public and we only read.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/collect-metrics.mjs --repo penpot/penpot --out dashboard/data/metrics.json
+
+      # Keep a daily snapshot so long-term history survives beyond what
+      # issue timestamps can reconstruct (label changes, reclassification…).
+      - name: Archive daily snapshot
+        run: |
+          mkdir -p dashboard/data/history
+          cp dashboard/data/metrics.json "dashboard/data/history/$(date -u +%F).json"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dashboard
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

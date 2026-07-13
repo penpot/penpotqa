@@ -1,0 +1,160 @@
+{
+  "comment": "Feature attribution rules for penpot/penpot issues. Evaluated top to bottom; first match wins. 'labels' matches exact GitHub label names (case-insensitive). 'title' entries are case-insensitive regex fragments tested against the issue title. Issues matching nothing fall into 'Unclassified'.",
+  "features": [
+    {
+      "name": "Design Tokens",
+      "labels": ["IOP tokens"],
+      "title": ["design token", "\\btokens?\\b"]
+    },
+    {
+      "name": "Components & Variants",
+      "labels": ["IOP components", "IOP variants"],
+      "title": ["component", "variant", "main instance", "copy instance"]
+    },
+    {
+      "name": "Plugins & API",
+      "labels": ["IOP plugins", "IOP MCP"],
+      "title": ["plugin", "penpotutils", "\\bapi\\b", "\\bmcp\\b", "access token"]
+    },
+    {
+      "name": "Render Engine",
+      "labels": ["IOP render"],
+      "title": ["render", "wasm", "rasteriz"]
+    },
+    {
+      "name": "Text & Fonts",
+      "labels": [],
+      "title": [
+        "\\btext\\b",
+        "font",
+        "typograph",
+        "paragraph",
+        "line height",
+        "letter spacing"
+      ]
+    },
+    {
+      "name": "Layout (Flex/Grid)",
+      "labels": [],
+      "title": [
+        "flex",
+        "\\bgrid\\b",
+        "layout",
+        "auto height",
+        "auto width",
+        "\\bgap\\b",
+        "padding",
+        "margin",
+        "align",
+        "justify"
+      ]
+    },
+    {
+      "name": "Prototyping",
+      "labels": [],
+      "title": ["prototype", "interaction", "\\bflow\\b", "trigger", "overlay"]
+    },
+    {
+      "name": "Libraries & Assets",
+      "labels": [],
+      "title": ["librar", "asset", "shared", "color palette", "swatch"]
+    },
+    {
+      "name": "Export / Import",
+      "labels": [],
+      "title": [
+        "export",
+        "import",
+        "binfile",
+        "\\bpdf\\b",
+        "\\bpng\\b",
+        "\\bsvg export\\b",
+        "\\.penpot"
+      ]
+    },
+    {
+      "name": "Comments",
+      "labels": [],
+      "title": ["comment"]
+    },
+    {
+      "name": "Versions & History",
+      "labels": [],
+      "title": ["history", "version", "snapshot", "restore", "autosave"]
+    },
+    {
+      "name": "Inspect / View Mode",
+      "labels": [],
+      "title": ["inspect", "view mode", "code mode", "handoff"]
+    },
+    {
+      "name": "Dashboard & Teams",
+      "labels": [],
+      "title": [
+        "dashboard",
+        "\\bteam\\b",
+        "invitation",
+        "project",
+        "webhook",
+        "member"
+      ]
+    },
+    {
+      "name": "Auth & Profile",
+      "labels": [],
+      "title": [
+        "login",
+        "log in",
+        "sign ?up",
+        "signin",
+        "auth",
+        "password",
+        "profile",
+        "onboarding",
+        "ldap",
+        "oidc",
+        "\\bsso\\b"
+      ]
+    },
+    {
+      "name": "Workspace & Canvas",
+      "labels": [],
+      "title": [
+        "canvas",
+        "viewport",
+        "zoom",
+        "selection",
+        "select",
+        "board",
+        "artboard",
+        "shape",
+        "path",
+        "stroke",
+        "fill",
+        "color picker",
+        "gradient",
+        "\\bpen\\b",
+        "bool",
+        "mask",
+        "\\blayer",
+        "guide",
+        "ruler",
+        "snap",
+        "drag",
+        "resize",
+        "rotate",
+        "undo",
+        "redo",
+        "copy",
+        "paste",
+        "workspace",
+        "toolbar",
+        "panel",
+        "shortcut",
+        "pixel grid",
+        "image"
+      ]
+    }
+  ],
+  "fallback": "Unclassified"
+}

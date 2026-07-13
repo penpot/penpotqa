@@ -1,0 +1,618 @@
+{
+  "generatedAt": "2026-07-13T06:00:00.000Z",
+  "repo": "penpot/penpot",
+  "sample": true,
+  "totals": {
+    "openBugs": 286,
+    "totalBugsAllTime": 1468,
+    "opened30d": 47,
+    "closed30d": 52,
+    "netChange30d": -5,
+    "medianDaysToClose90d": 11.5,
+    "regressionShare90d": 14.2,
+    "releaseBlockersOpen": 6,
+    "needsTriageOpen": 38,
+    "unclassifiedShare": 5.9
+  },
+  "byFeature": [
+    {
+      "feature": "Workspace & Canvas",
+      "openBugs": 68,
+      "totalBugs": 412,
+      "opened90d": 28,
+      "closed90d": 23,
+      "medianDaysToClose": 25,
+      "oldestOpenDays": 302
+    },
+    {
+      "feature": "Components & Variants",
+      "openBugs": 41,
+      "totalBugs": 178,
+      "opened90d": 14,
+      "closed90d": 17,
+      "medianDaysToClose": 7.8,
+      "oldestOpenDays": 330
+    },
+    {
+      "feature": "Text & Fonts",
+      "openBugs": 29,
+      "totalBugs": 143,
+      "opened90d": 11,
+      "closed90d": 11,
+      "medianDaysToClose": 11.3,
+      "oldestOpenDays": 286
+    },
+    {
+      "feature": "Layout (Flex/Grid)",
+      "openBugs": 24,
+      "totalBugs": 131,
+      "opened90d": 14,
+      "closed90d": 15,
+      "medianDaysToClose": 4.5,
+      "oldestOpenDays": 365
+    },
+    {
+      "feature": "Design Tokens",
+      "openBugs": 22,
+      "totalBugs": 97,
+      "opened90d": 12,
+      "closed90d": 10,
+      "medianDaysToClose": 7.8,
+      "oldestOpenDays": 310
+    },
+    {
+      "feature": "Dashboard & Teams",
+      "openBugs": 17,
+      "totalBugs": 88,
+      "opened90d": 6,
+      "closed90d": 11,
+      "medianDaysToClose": 15.8,
+      "oldestOpenDays": 83
+    },
+    {
+      "feature": "Export / Import",
+      "openBugs": 14,
+      "totalBugs": 92,
+      "opened90d": 10,
+      "closed90d": 8,
+      "medianDaysToClose": 11.6,
+      "oldestOpenDays": 301
+    },
+    {
+      "feature": "Render Engine",
+      "openBugs": 12,
+      "totalBugs": 44,
+      "opened90d": 5,
+      "closed90d": 7,
+      "medianDaysToClose": 10.1,
+      "oldestOpenDays": 229
+    },
+    {
+      "feature": "Libraries & Assets",
+      "openBugs": 11,
+      "totalBugs": 71,
+      "opened90d": 12,
+      "closed90d": 5,
+      "medianDaysToClose": 23.9,
+      "oldestOpenDays": 390
+    },
+    {
+      "feature": "Prototyping",
+      "openBugs": 9,
+      "totalBugs": 64,
+      "opened90d": 10,
+      "closed90d": 5,
+      "medianDaysToClose": 14.7,
+      "oldestOpenDays": 186
+    },
+    {
+      "feature": "Plugins & API",
+      "openBugs": 8,
+      "totalBugs": 39,
+      "opened90d": 5,
+      "closed90d": 3,
+      "medianDaysToClose": 32.7,
+      "oldestOpenDays": 538
+    },
+    {
+      "feature": "Versions & History",
+      "openBugs": 6,
+      "totalBugs": 31,
+      "opened90d": 7,
+      "closed90d": 6,
+      "medianDaysToClose": 18.7,
+      "oldestOpenDays": 286
+    },
+    {
+      "feature": "Auth & Profile",
+      "openBugs": 5,
+      "totalBugs": 42,
+      "opened90d": 5,
+      "closed90d": 5,
+      "medianDaysToClose": 16.3,
+      "oldestOpenDays": 331
+    },
+    {
+      "feature": "Comments",
+      "openBugs": 4,
+      "totalBugs": 28,
+      "opened90d": 4,
+      "closed90d": 4,
+      "medianDaysToClose": 7.3,
+      "oldestOpenDays": 540
+    },
+    {
+      "feature": "Inspect / View Mode",
+      "openBugs": 3,
+      "totalBugs": 22,
+      "opened90d": 5,
+      "closed90d": 1,
+      "medianDaysToClose": 14.5,
+      "oldestOpenDays": 406
+    },
+    {
+      "feature": "Unclassified",
+      "openBugs": 13,
+      "totalBugs": 86,
+      "opened90d": 7,
+      "closed90d": 12,
+      "medianDaysToClose": 31.4,
+      "oldestOpenDays": 705
+    }
+  ],
+  "weekly": [
+    {
+      "week": "2025-07-21",
+      "opened": 8,
+      "closed": 14,
+      "netOpen": 222
+    },
+    {
+      "week": "2025-07-28",
+      "opened": 18,
+      "closed": 11,
+      "netOpen": 229
+    },
+    {
+      "week": "2025-08-04",
+      "opened": 13,
+      "closed": 10,
+      "netOpen": 232
+    },
+    {
+      "week": "2025-08-11",
+      "opened": 22,
+      "closed": 14,
+      "netOpen": 240
+    },
+    {
+      "week": "2025-08-18",
+      "opened": 15,
+      "closed": 11,
+      "netOpen": 244
+    },
+    {
+      "week": "2025-08-25",
+      "opened": 9,
+      "closed": 18,
+      "netOpen": 235
+    },
+    {
+      "week": "2025-09-01",
+      "opened": 21,
+      "closed": 13,
+      "netOpen": 243
+    },
+    {
+      "week": "2025-09-08",
+      "opened": 11,
+      "closed": 10,
+      "netOpen": 244
+    },
+    {
+      "week": "2025-09-15",
+      "opened": 11,
+      "closed": 12,
+      "netOpen": 243
+    },
+    {
+      "week": "2025-09-22",
+      "opened": 9,
+      "closed": 18,
+      "netOpen": 234
+    },
+    {
+      "week": "2025-09-29",
+      "opened": 15,
+      "closed": 19,
+      "netOpen": 230
+    },
+    {
+      "week": "2025-10-06",
+      "opened": 18,
+      "closed": 8,
+      "netOpen": 240
+    },
+    {
+      "week": "2025-10-13",
+      "opened": 16,
+      "closed": 9,
+      "netOpen": 247
+    },
+    {
+      "week": "2025-10-20",
+      "opened": 20,
+      "closed": 14,
+      "netOpen": 253
+    },
+    {
+      "week": "2025-10-27",
+      "opened": 15,
+      "closed": 13,
+      "netOpen": 255
+    },
+    {
+      "week": "2025-11-03",
+      "opened": 11,
+      "closed": 7,
+      "netOpen": 259
+    },
+    {
+      "week": "2025-11-10",
+      "opened": 8,
+      "closed": 21,
+      "netOpen": 246
+    },
+    {
+      "week": "2025-11-17",
+      "opened": 21,
+      "closed": 18,
+      "netOpen": 249
+    },
+    {
+      "week": "2025-11-24",
+      "opened": 16,
+      "closed": 18,
+      "netOpen": 247
+    },
+    {
+      "week": "2025-12-01",
+      "opened": 17,
+      "closed": 12,
+      "netOpen": 252
+    },
+    {
+      "week": "2025-12-08",
+      "opened": 13,
+      "closed": 11,
+      "netOpen": 254
+    },
+    {
+      "week": "2025-12-15",
+      "opened": 13,
+      "closed": 16,
+      "netOpen": 251
+    },
+    {
+      "week": "2025-12-22",
+      "opened": 13,
+      "closed": 8,
+      "netOpen": 256
+    },
+    {
+      "week": "2025-12-29",
+      "opened": 15,
+      "closed": 9,
+      "netOpen": 262
+    },
+    {
+      "week": "2026-01-05",
+      "opened": 14,
+      "closed": 12,
+      "netOpen": 264
+    },
+    {
+      "week": "2026-01-12",
+      "opened": 11,
+      "closed": 8,
+      "netOpen": 267
+    },
+    {
+      "week": "2026-01-19",
+      "opened": 22,
+      "closed": 15,
+      "netOpen": 274
+    },
+    {
+      "week": "2026-01-26",
+      "opened": 9,
+      "closed": 21,
+      "netOpen": 262
+    },
+    {
+      "week": "2026-02-02",
+      "opened": 14,
+      "closed": 17,
+      "netOpen": 259
+    },
+    {
+      "week": "2026-02-09",
+      "opened": 11,
+      "closed": 15,
+      "netOpen": 255
+    },
+    {
+      "week": "2026-02-16",
+      "opened": 22,
+      "closed": 10,
+      "netOpen": 267
+    },
+    {
+      "week": "2026-02-23",
+      "opened": 18,
+      "closed": 13,
+      "netOpen": 272
+    },
+    {
+      "week": "2026-03-02",
+      "opened": 14,
+      "closed": 17,
+      "netOpen": 269
+    },
+    {
+      "week": "2026-03-09",
+      "opened": 10,
+      "closed": 18,
+      "netOpen": 261
+    },
+    {
+      "week": "2026-03-16",
+      "opened": 19,
+      "closed": 8,
+      "netOpen": 272
+    },
+    {
+      "week": "2026-03-23",
+      "opened": 8,
+      "closed": 9,
+      "netOpen": 271
+    },
+    {
+      "week": "2026-03-30",
+      "opened": 17,
+      "closed": 12,
+      "netOpen": 276
+    },
+    {
+      "week": "2026-04-06",
+      "opened": 11,
+      "closed": 14,
+      "netOpen": 273
+    },
+    {
+      "week": "2026-04-13",
+      "opened": 15,
+      "closed": 8,
+      "netOpen": 280
+    },
+    {
+      "week": "2026-04-20",
+      "opened": 22,
+      "closed": 12,
+      "netOpen": 290
+    },
+    {
+      "week": "2026-04-27",
+      "opened": 19,
+      "closed": 11,
+      "netOpen": 298
+    },
+    {
+      "week": "2026-05-04",
+      "opened": 21,
+      "closed": 20,
+      "netOpen": 299
+    },
+    {
+      "week": "2026-05-11",
+      "opened": 19,
+      "closed": 13,
+      "netOpen": 305
+    },
+    {
+      "week": "2026-05-18",
+      "opened": 25,
+      "closed": 14,
+      "netOpen": 316
+    },
+    {
+      "week": "2026-05-25",
+      "opened": 26,
+      "closed": 11,
+      "netOpen": 331
+    },
+    {
+      "week": "2026-06-01",
+      "opened": 23,
+      "closed": 24,
+      "netOpen": 330
+    },
+    {
+      "week": "2026-06-08",
+      "opened": 22,
+      "closed": 20,
+      "netOpen": 332
+    },
+    {
+      "week": "2026-06-15",
+      "opened": 24,
+      "closed": 19,
+      "netOpen": 337
+    },
+    {
+      "week": "2026-06-22",
+      "opened": 16,
+      "closed": 17,
+      "netOpen": 336
+    },
+    {
+      "week": "2026-06-29",
+      "opened": 16,
+      "closed": 18,
+      "netOpen": 334
+    },
+    {
+      "week": "2026-07-06",
+      "opened": 20,
+      "closed": 21,
+      "netOpen": 333
+    },
+    {
+      "week": "2026-07-13",
+      "opened": 13,
+      "closed": 19,
+      "netOpen": 327
+    }
+  ],
+  "monthlyMTTR": [
+    {
+      "month": "2025-08",
+      "medianDays": 20.1,
+      "closed": 38
+    },
+    {
+      "month": "2025-09",
+      "medianDays": 16.1,
+      "closed": 37
+    },
+    {
+      "month": "2025-10",
+      "medianDays": 21.2,
+      "closed": 58
+    },
+    {
+      "month": "2025-11",
+      "medianDays": 22.8,
+      "closed": 42
+    },
+    {
+      "month": "2025-12",
+      "medianDays": 17.8,
+      "closed": 54
+    },
+    {
+      "month": "2026-01",
+      "medianDays": 21.5,
+      "closed": 34
+    },
+    {
+      "month": "2026-02",
+      "medianDays": 18.5,
+      "closed": 65
+    },
+    {
+      "month": "2026-03",
+      "medianDays": 22.7,
+      "closed": 35
+    },
+    {
+      "month": "2026-04",
+      "medianDays": 14.2,
+      "closed": 31
+    },
+    {
+      "month": "2026-05",
+      "medianDays": 13.6,
+      "closed": 36
+    },
+    {
+      "month": "2026-06",
+      "medianDays": 13.1,
+      "closed": 35
+    },
+    {
+      "month": "2026-07",
+      "medianDays": 17.1,
+      "closed": 39
+    }
+  ],
+  "aging": {
+    "0-7d": 21,
+    "8-30d": 44,
+    "31-90d": 67,
+    "91-365d": 98,
+    ">1y": 56
+  },
+  "oldestOpen": [
+    {
+      "number": 2189,
+      "title": "Path editing loses precision after boolean union on complex shapes",
+      "feature": "Workspace & Canvas",
+      "ageDays": 934,
+      "releaseBlocker": false
+    },
+    {
+      "number": 3011,
+      "title": "Shared library colors desync between files after rename",
+      "feature": "Libraries & Assets",
+      "ageDays": 812,
+      "releaseBlocker": false
+    },
+    {
+      "number": 3877,
+      "title": "Exported PDF renders wrong font weight for custom fonts",
+      "feature": "Export / Import",
+      "ageDays": 701,
+      "releaseBlocker": false
+    },
+    {
+      "number": 4502,
+      "title": "Component overrides lost when detaching nested instances",
+      "feature": "Components & Variants",
+      "ageDays": 645,
+      "releaseBlocker": false
+    },
+    {
+      "number": 5120,
+      "title": "Flex layout: auto height ignored inside 100% width container",
+      "feature": "Layout (Flex/Grid)",
+      "ageDays": 590,
+      "releaseBlocker": true
+    },
+    {
+      "number": 5764,
+      "title": "Undo after paste-in-place duplicates shapes on slow connections",
+      "feature": "Workspace & Canvas",
+      "ageDays": 502,
+      "releaseBlocker": false
+    },
+    {
+      "number": 6320,
+      "title": "Prototype overlay position wrong when board is scaled",
+      "feature": "Prototyping",
+      "ageDays": 433,
+      "releaseBlocker": false
+    },
+    {
+      "number": 7018,
+      "title": "Token sets panel scroll resets after applying a token",
+      "feature": "Design Tokens",
+      "ageDays": 361,
+      "releaseBlocker": false
+    },
+    {
+      "number": 7715,
+      "title": "History restore drops comments added after snapshot",
+      "feature": "Versions & History",
+      "ageDays": 290,
+      "releaseBlocker": false
+    },
+    {
+      "number": 8404,
+      "title": "Team invitation email not sent for LDAP-provisioned accounts",
+      "feature": "Auth & Profile",
+      "ageDays": 219,
+      "releaseBlocker": false
+    }
+  ]
+}

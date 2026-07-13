@@ -26,7 +26,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 3 : 3,
+  workers: process.env.CI ? 3 : 12,
   /* Directory where test artifacts are stored */
   outputDir: 'test-results',
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -76,7 +76,7 @@ export default defineConfig({
         channel: 'chrome',
         launchOptions: {
           ignoreDefaultArgs: ['--hide-scrollbars'],
-          args: ['--headless=new'], // Use new headless mode
+          args: [], // Use new headless mode
         },
         contextOptions: {
           // chromium-specific permissions
