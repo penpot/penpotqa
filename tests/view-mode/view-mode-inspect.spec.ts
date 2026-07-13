@@ -77,7 +77,7 @@ mainTest(
   },
 );
 
-mainTest(qase([717], 'Inspect functionality- Export'), async () => {
+mainTest(qase([717], 'Inspect functionality - Export'), async () => {
   await mainPage.createDefaultBoardByCoordinates(300, 300);
   await designPanelPage.changeHeightAndWidthForLayer('200', '200');
   await mainPage.waitForChangeIsSaved();
