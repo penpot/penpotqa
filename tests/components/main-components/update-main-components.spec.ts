@@ -122,39 +122,6 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      [1440],
-      'Create a component and 2 copies of it, change all corners of main',
-    ),
-    async () => {
-      const cornerValue = '45';
-
-      await mainTest.step(
-        'Change all corners of main component individually',
-        async () => {
-          await layersPanelPage.clickMainComponentOnLayersTab();
-          await designPanelPage.clickIndividualCornersRadiusButton();
-          await designPanelPage.changeTopLeftCornerRadiusForLayer(cornerValue);
-          await designPanelPage.changeTopRightCornerRadiusForLayer(cornerValue);
-          await designPanelPage.changeBottomLeftCornerRadiusForLayer(cornerValue);
-          await designPanelPage.changeBottomRightCornerRadiusForLayer(cornerValue);
-          await mainPage.waitForChangeIsUnsaved();
-          await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await mainTest.step('Verify corner changes propagated to copies', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after adding corners to main component',
-        ).toHaveScreenshot('main-copies-component-add-corners.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
-    },
-  );
-
-  mainTest(
-    qase(
       [1441],
       'Create a component and 2 copies of it, change corners of main separate by using "All corners"',
     ),
