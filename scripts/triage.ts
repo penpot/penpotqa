@@ -162,11 +162,35 @@ function normalizeError(msg: string): string {
     .slice(0, 400);
 }
 
+/** Visual-comparison failures are debugged per spec file; their messages carry little identity. */
+function isSnapshotError(msg: string): boolean {
+  return /toHaveScreenshot|toMatchSnapshot|Screenshot comparison failed|snapshot/i.test(
+    msg,
+  );
+}
+
 function fingerprint(fail: Failure): string {
-  // Error shape + file (not test title): same broken selector across
-  // 5 tests in one spec = one cluster, one task.
-  const basis = `${normalizeError(fail.error)}|${fail.file}`;
+  // Hybrid clustering:
+  // - snapshot/visual errors: per spec file (generic message, and visual diffs are
+  //   debugged file by file against the spec's snapshots folder)
+  // - functional errors: cross-file, keyed by error shape + locator. The locator's
+  //   quoted text ('Select' vs 'Cancel subscription') IS the identity, so it is kept
+  //   verbatim — only dynamic fragments (hex ids, numbers) inside it are neutralized.
+  const basis = isSnapshotError(fail.error)
+    ? `${normalizeError(fail.error)}|${fail.file}`
+    : `${normalizeError(fail.error)}|${locatorKey(fail.error)}`;
   return crypto.createHash('sha1').update(basis).digest('hex').slice(0, 12);
+}
+
+/** Locator with dynamic fragments neutralized but quoted text preserved. */
+function locatorKey(msg: string): string {
+  const m = msg.match(/(?:Locator:|waiting for)\s+(.+)/);
+  if (!m) return '';
+  return m[1]
+    .trim()
+    .replace(/\b[0-9a-f]{6,40}\b/gi, '<hex>')
+    .replace(/\b\d+\b/g, 'N')
+    .slice(0, 200);
 }
 
 // ---------- Clustering ----------
