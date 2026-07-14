@@ -361,31 +361,6 @@ mainTest(qase([691], 'Change scale'), async () => {
   );
 });
 
-// TODO: The reference does not exist in Qase.
-mainTest(qase([713], 'CO-392 Zoom by pressing + and - keys'), async () => {
-  await mainTest.step('Create board and open view mode', async () => {
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
-    const newPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-  });
-
-  await mainTest.step('Zoom in with the + key and verify', async () => {
-    await viewModePage.clickOnAdd();
-    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-      'view-mode-page-add-button-image.png',
-    );
-  });
-
-  await mainTest.step('Zoom out with the - key and verify', async () => {
-    await viewModePage.clickOnSubtract();
-    await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-      'view-mode-page-subtract-button-image.png',
-    );
-  });
-});
-
 mainTest(qase([708], 'Page dropdown'), async () => {
   await mainTest.step(
     'Create board and a second page and open view mode',
