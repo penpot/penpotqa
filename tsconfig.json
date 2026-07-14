@@ -1,33 +1,39 @@
 {
   "compilerOptions": {
     /* Language and Environment */
-    "target": "ESNext", // Modern JS output
-    "lib": ["DOM", "ESNext"], // Include DOM & modern JS APIs
-    "module": "CommonJS", // Playwright typically runs in Node.js
-    "moduleResolution": "Node", // Resolve Node-style imports
-    "types": ["node", "playwright"], // Include typings for Node & Playwright
+    "target": "ES2022", // Stable modern target; Node 18/20 supports all of it
+    "lib": ["DOM", "ES2022"], // DOM kept for page.evaluate() callbacks
+
+    /* Modules */
+    "module": "NodeNext", // Correct CJS/ESM semantics for Node, understands node: imports
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true, // Safe default imports from CommonJS deps
+    "resolveJsonModule": true,
+    "types": ["node"], // "playwright" removed: deprecated stub; real types ship inside @playwright/test
 
     /* JavaScript Support */
-    "allowJs": true, // Allow JS files
-    "checkJs": false, // Skip type checking .js files (set true if you want it)
-    "resolveJsonModule": true, // Allow importing JSON files
+    "allowJs": true,
+    "checkJs": false,
 
     /* Type Checking */
-    "strict": true, // Enable all strict type checks
-    "noEmit": true, // Don’t output JS — Playwright only needs type-checking
-    "skipLibCheck": true, // Skip type checks on dependencies
+    "strict": true,
+    "noEmit": true, // Type-check only; Playwright and tsx do their own transpiling
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true, // Avoids case-sensitivity surprises between macOS and Linux CI
 
-    /* File and Path Management */
-    "rootDir": ".", // Root of your project or tests
-    "baseUrl": ".", // Allows relative imports from project root
+    /* Paths */
+    "baseUrl": ".",
     "paths": {
-      "@tests/*": ["tests/*"], // Example alias for test folder
+      "@tests/*": ["tests/*"],
       "@pages/*": ["pages/*"]
-    },
-
-    /* Source Maps (optional, for debugging) */
-    "sourceMap": true
+    }
   },
-  "include": ["tests/**/*", "playwright.config.ts", "helpers/**/*", "pages/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "tests/**/*",
+    "playwright.config.ts",
+    "helpers/**/*",
+    "pages/**/*",
+    "scripts/**/*"
+  ],
+  "exclude": ["node_modules", "dist", "playwright-report", "test-results"]
 }
