@@ -1,0 +1,109 @@
+# .github/workflows/release-triage.yml
+#
+# Manual triage for freeze week / release promotions.
+# Actions tab -> "Release triage" -> Run workflow -> type the release tag.
+# Creates ONE Taiga user story tagged "release-<tag>" containing one task
+# per failure cluster. Re-running with the same tag adds only NEW clusters
+# to the SAME story (no duplicates) thanks to the per-release state file.
+
+name: Release triage
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag (e.g. 26.07) — story will be tagged release-<tag>'
+        required: true
+      report_run_id:
+        description: 'Override: specific run id to triage (default: last scheduled daily run on main)'
+        required: false
+      group_by:
+        description: 'Task granularity inside the release story'
+        required: false
+        default: 'cluster'
+        type: choice
+        options:
+          - cluster
+          - file
+
+permissions:
+  contents: read
+  actions: read # required for gh run list
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Resolve report to triage
+        id: report
+        run: |
+          if [ -n "${{ inputs.report_run_id }}" ]; then
+            RUN_ID="${{ inputs.report_run_id }}"
+            echo "Using manually provided run: $RUN_ID"
+          else
+            # Last finished *scheduled* daily run on main (completed, not success:
+            # the test step fails the workflow on failing nights by design)
+            RUN_ID=$(gh run list \
+              --workflow "$DAILY_WORKFLOW" \
+              --branch main \
+              --event schedule \
+              --status completed \
+              --limit 1 \
+              --json databaseId \
+              --jq '.[0].databaseId')
+            if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+              echo "No completed scheduled daily run found on main"; exit 1
+            fi
+            echo "Using last scheduled daily run on main: $RUN_ID"
+          fi
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          aws s3 cp "s3://kaleidos-qa-reports/run-$RUN_ID/results.json" results.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DAILY_WORKFLOW: playwright_pre_daily.yml # "Daily Penpot Regression Tests on PRE"
+
+      - name: Pull per-release triage state
+        run: |
+          mkdir -p .triage
+          aws s3 cp "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json" \
+            .triage/state.json || echo "first triage for this release"
+
+      - name: Run release triage
+        run: |
+          npx tsx scripts/triage.ts \
+            --results results.json \
+            --state .triage/state.json \
+            --release "${{ inputs.release_tag }}" \
+            --group-by "${{ inputs.group_by || 'cluster' }}" \
+            --report-url "https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ steps.report.outputs.run_id }}/index.html"
+        env:
+          TAIGA_URL: ${{ secrets.TAIGA_URL }}
+          TAIGA_USERNAME: ${{ secrets.TAIGA_USERNAME }}
+          TAIGA_PASSWORD: ${{ secrets.TAIGA_PASSWORD }}
+          TAIGA_PROJECT: ${{ vars.TAIGA_PROJECT }}
+          TAIGA_TAGS: 'needs-triage' # release-<tag> is added automatically
+          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }}
+          DRY_RUN: '1'
+
+      - name: Push per-release triage state
+        if: always()
+        run: |
+          aws s3 cp .triage/state.json \
+            "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json"
+
+      - name: Digest to job summary
+        if: always()
+        run: cat .triage/digest.md >> "$GITHUB_STEP_SUMMARY"
