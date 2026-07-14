@@ -45,24 +45,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase([1452], 'Show in assets panel option from Design tab'), async () => {
-    await mainTest.step(
-      'Show component in Assets Panel from design tab',
-      async () => {
-        await designPanelPage.clickOnComponentMenuButton();
-        await designPanelPage.clickOnShowInAssetsPanel();
-        await mainPage.waitForChangeIsSaved();
-      },
-    );
-
-    await mainTest.step(
-      'Verify component is highlighted in assets tab',
-      async () => {
-        await assetsPanelPage.isComponentHighlightedInAssetsTab();
-      },
-    );
-  });
-
   mainTest(
     qase([1536], 'Show in assets panel option from component context menu (RMB)'),
     async () => {

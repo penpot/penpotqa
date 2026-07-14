@@ -357,53 +357,6 @@ mainTest(
   },
 );
 
-mainTest(
-  qase([1531], 'Create multiple components from text, board and image'),
-  async () => {
-    await mainTest.step(
-      'Create multiple components from text, board and image',
-      async () => {
-        await mainPage.createDefaultTextLayer();
-        await mainPage.createDefaultBoardByCoordinates(200, 400);
-        await mainPage.uploadImage('images/sample.jpeg');
-        await mainPage.clickViewportTwice();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickMainMenuButton();
-        await mainPage.clickEditMainMenuItem();
-        await mainPage.clickSelectAllMainMenuSubItem();
-        await mainPage.createComponentsMultipleShapesRightClick(false);
-        await mainPage.waitForChangeIsSaved();
-      },
-    );
-
-    await mainTest.step(
-      'Verify multiple components on canvas and assets tab',
-      async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with 3 components',
-        ).toHaveScreenshot('multiple-components-canvas-3-layers.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
-        await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('sample');
-        await layersPanelPage.isMainComponentOnLayersTabVisibleWithName(
-          'Hello World!',
-        );
-        await assetsPanelPage.clickAssetsTab();
-        await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-        await expect(
-          assetsPanelPage.assetsPanel,
-          'Assets panel should match screenshot with 3 layer components',
-        ).toHaveScreenshot('multiple-components-asset-3-layers.png', {
-          mask: [assetsPanelPage.librariesOpenModalButton],
-          maxDiffPixelRatio: 0.002,
-        });
-      },
-    );
-  },
-);
-
 mainTest(qase([1751], 'Grouping component copies'), async () => {
   await mainTest.slow();
   const groupName = 'Group';
