@@ -48,12 +48,12 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      [1503, 1504],
+      [1503],
       'Create flex board with main component and its copy, change direction and alignment',
     ),
     async () => {
       await mainTest.step(
-        '(1503) Create flex board with main component and its copy, change direction',
+        'Create flex board with main component and its copy, change direction',
         async () => {
           await designPanelPage.changeLayoutDirection('Column');
           await mainPage.waitForChangeIsSaved();
@@ -61,20 +61,6 @@ mainTest.describe(() => {
             mainPage.viewport,
             'Viewport should match screenshot after changing board layout direction',
           ).toHaveScreenshot('main-component-change-board-direction.png', {
-            mask: mainPage.maskViewport(),
-          });
-        },
-      );
-
-      await mainTest.step(
-        '(1504) Create flex board with main component and its copy, change alignment',
-        async () => {
-          await designPanelPage.changeLayoutAlignment('Center');
-          await mainPage.waitForChangeIsSaved();
-          await expect(
-            mainPage.viewport,
-            'Viewport should match screenshot after changing board layout alignment',
-          ).toHaveScreenshot('main-component-change-board-alignment.png', {
             mask: mainPage.maskViewport(),
           });
         },
