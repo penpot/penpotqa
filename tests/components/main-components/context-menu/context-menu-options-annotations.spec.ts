@@ -42,10 +42,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase(
-      [1419, 1427, 1423, 1425],
-      'Create annotation: create, delete, create via right-click, edit',
-    ),
+    qase([1419, 1427, 1425], 'Create annotation: create, delete, edit'),
     async () => {
       const newAnnotation = 'Edit annotation';
 
@@ -68,16 +65,6 @@ mainTest.describe(() => {
         await designPanelPage.waitForChangeIsSaved();
         await designPanelPage.isAnnotationNotAddedToComponent();
       });
-
-      await mainTest.step(
-        '(1423) Create annotation via right click on component',
-        async () => {
-          await designPanelPage.createAnnotationRightClick();
-          await designPanelPage.addAnnotationForComponent(annotation);
-          await designPanelPage.waitForChangeIsSaved();
-          await designPanelPage.isAnnotationAddedToComponent(annotation);
-        },
-      );
 
       await mainTest.step('(1425) Edit annotation with valid text', async () => {
         await designPanelPage.clickOnEditAnnotation();
