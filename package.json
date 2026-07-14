@@ -29,8 +29,10 @@
   "homepage": "https://github.com/penpot/penpotqa#readme",
   "devDependencies": {
     "@playwright/test": "^1.61.1",
+    "@types/node": "^26.1.1",
     "dotenv": "^17.4.2",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "tsx": "^4.23.1"
   },
   "dependencies": {
     "axios": "^1.18.1",
