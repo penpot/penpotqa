@@ -573,7 +573,7 @@ async function main() {
     for (const c of newClusters) {
       const ref = state[c.fingerprint].taigaRef;
       digest.push(
-        `- ${ref ? `${taigaLink(ref)} — ` : ''}\`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`,
+        `- ${ref ? `${taigaLink(ref)} — ` : ''}\`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})${qaseList(c)}`,
       );
     }
     digest.push('');
@@ -583,7 +583,7 @@ async function main() {
     for (const c of knownClusters) {
       const e = state[c.fingerprint];
       digest.push(
-        `- ${taigaLink(e.taigaRef)} — \`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''}, failing ${e.consecutiveRuns} runs in a row)`,
+        `- ${taigaLink(e.taigaRef)} — \`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''}, failing ${e.consecutiveRuns} runs in a row)${qaseList(c)}`,
       );
     }
     digest.push('');
@@ -618,6 +618,11 @@ async function main() {
 
 function shortError(msg: string): string {
   return msg.split('\n')[0].slice(0, 90);
+}
+
+function qaseList(c: Cluster): string {
+  const ids = c.tests.map((t) => t.qaseId).filter(Boolean);
+  return ids.length ? ` [Qase: ${ids.join(', ')}]` : '';
 }
 
 /**
