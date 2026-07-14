@@ -700,7 +700,11 @@ function conciseError(msg: string): string {
 
 function taigaLink(ref?: number): string {
   if (!ref) return 'Taiga #?';
-  const base = process.env.TAIGA_URL;
+  // Links must use the web UI host (tree.taiga.io on cloud), not the API host.
+  // Also: TAIGA_URL is a GitHub *secret*, so any link built from it gets masked
+  // to *** in job summaries — TAIGA_PUBLIC_URL is a plain variable and doesn't.
+  // `||` not `??`: GitHub Actions passes unset vars as empty strings.
+  const base = process.env.TAIGA_PUBLIC_URL || process.env.TAIGA_URL;
   const project = process.env.TAIGA_PROJECT;
   return base && project
     ? `[Taiga #${ref}](${base}/project/${project}/us/${ref})`
