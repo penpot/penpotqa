@@ -141,7 +141,24 @@ To exclude performance tests from the periodical regression test run the followi
 Note: The above scripts should be executed via the command line. Do not run them directly from the _package.json_,
 because in such way performance tests are not ignored.
 
-**10. Running tests via GitHub Actions.**
+**10. Check Qase non-regression tests.**
+
+A script is available to check which test cases in Qase are non-regression:
+
+1. Get your Qase API token from [Qase API Tokens](https://app.qase.io/user/api/token) and add it to `.env`:
+
+   ```
+   QASE_TOKEN=your_token_here
+   ```
+
+2. Edit `helpers/check-qase-non-regression.ts` and add your test case IDs to the `IDS` array.
+
+3. Run:
+   ```
+   npx ts-node helpers/check-qase-non-regression.ts
+   ```
+
+**11. Running tests via GitHub Actions.**
 
 On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:
