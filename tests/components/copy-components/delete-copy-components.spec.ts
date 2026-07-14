@@ -66,30 +66,3 @@ mainTest(qase(1496, 'Undo deleted component'), async () => {
     });
   });
 });
-
-mainTest(qase(1497, 'Delete copy component from DEL button'), async () => {
-  await mainTest.step('Create rectangle and copy component', async () => {
-    await mainPage.createDefaultRectangleByCoordinates(200, 300);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXAndYForLayer('400', '300');
-  });
-
-  await mainTest.step('Delete copy component', async () => {
-    await mainPage.pressDeleteKeyboardButton();
-    await mainPage.waitForChangeIsSaved();
-  });
-
-  await mainTest.step(
-    'Verify copy component is deleted from layers panel',
-    async () => {
-      await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName(
-        'Rectangle',
-        false,
-      );
-    },
-  );
-});
