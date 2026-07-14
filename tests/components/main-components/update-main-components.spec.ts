@@ -256,7 +256,7 @@ mainTest.describe(() => {
 
   mainTest(
     qase(
-      [1447],
+      [3256],
       'Create a component and 2 copies of it, change grid style and size of main',
     ),
     async () => {
