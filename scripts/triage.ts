@@ -36,6 +36,7 @@ const STATE_PATH = arg('state', '.triage/state.json');
 const REPORT_URL = arg('report-url', '');
 const RELEASE = arg('release', ''); // e.g. "26.07" -> single story tagged release-26.07 with one task per cluster
 const GROUP_BY = arg('group-by', 'cluster'); // release-mode tasks: 'cluster' (one per root cause) or 'file' (one per spec file)
+const EPIC_REF = arg('epic-ref', ''); // optional: Taiga epic ref (#number) to link created stories under
 const DRY_RUN = process.env.DRY_RUN === '1';
 
 // ---------- Types ----------
@@ -266,6 +267,28 @@ class Taiga {
     });
   }
 
+  async epicIdByRef(ref: string): Promise<number> {
+    const e = await this.get(
+      `/api/v1/epics/by_ref?ref=${encodeURIComponent(ref)}&project=${this.projectId}`,
+    );
+    return e.id;
+  }
+
+  async linkStoryToEpic(epicId: number, storyId: number) {
+    // 400 here usually means "already linked" (re-runs) — tolerated.
+    const r = await this.request(
+      'POST',
+      `/api/v1/epics/${epicId}/related_userstories`,
+      { epic: epicId, user_story: storyId },
+      true,
+      true,
+    );
+    if (!r.ok && r.status !== 400)
+      throw new Error(
+        `Linking story to epic failed -> ${r.status} ${await r.text()}`,
+      );
+  }
+
   async commentTask(taskId: number, comment: string) {
     const task = await this.get(`/api/v1/tasks/${taskId}`);
     await this.patch(`/api/v1/tasks/${taskId}`, { version: task.version, comment });
@@ -446,9 +469,13 @@ async function main() {
         seenInLastNRuns: [1],
       };
       console.log(`Created release user story #${ref} [${releaseTag}]`);
+      if (EPIC_REF) {
+        await taiga.linkStoryToEpic(await taiga.epicIdByRef(EPIC_REF), id);
+        console.log(`Linked story #${ref} under epic #${EPIC_REF}`);
+      }
     } else if (!taiga) {
       console.log(
-        `[dry-run] Would create/reuse release user story: [release ${RELEASE}] Daily failures triage [tags: ${[...storyTags, releaseTag].join(', ')}]`,
+        `[dry-run] Would create/reuse release user story: [release ${RELEASE}] Daily failures triage [tags: ${[...storyTags, releaseTag].join(', ')}]${EPIC_REF ? ` under epic #${EPIC_REF}` : ''}`,
       );
     }
 
@@ -539,6 +566,8 @@ async function main() {
         state[c.fingerprint].taigaId = id;
         state[c.fingerprint].taigaRef = ref;
         console.log(`Created Taiga user story #${ref} for cluster ${c.fingerprint}`);
+        if (EPIC_REF)
+          await taiga.linkStoryToEpic(await taiga.epicIdByRef(EPIC_REF), id);
         for (const t of c.tests) {
           await taiga.createTask(
             id,
@@ -679,22 +708,28 @@ function taigaLink(ref?: number): string {
 }
 
 function clusterDescription(c: Cluster): string {
+  const qaseIds = c.tests.map((t: Failure) => t.qaseId).filter(Boolean);
   const lines = [
-    `**Error signature** \`${c.fingerprint}\``,
+    `**Error:** \`${conciseError(c.errorSample)}\``,
     '',
-    '```',
-    c.errorSample,
-    '```',
+    `**Spec files affected (${c.files.size}):**`,
+    ...[...c.files].map((f: string) => `- \`${f}\``),
+    '',
+    `**Qase IDs affected:** ${qaseIds.length ? qaseIds.map((q) => `\`${q}\``).join(', ') : '_none linked_'}`,
     '',
     `**Affected tests (${c.tests.length}):**`,
     ...c.tests.map(
       (t: Failure) =>
-        `- \`${t.testId}\`${t.retries ? ` (${t.retries} retries)` : ''}`,
+        `- \`${t.title}\`${t.qaseId ? ` (Qase: ${t.qaseId})` : ''} — \`${t.file}\`${t.retries ? ` (${t.retries} retries)` : ''}`,
     ),
     '',
-    REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
+    '**Full error:**',
+    '```',
+    c.errorSample,
+    '```',
     '',
-    '_Auto-created by daily triage. Classify: real bug vs test to update._',
+    REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
+    `_Cluster \`${c.fingerprint}\` — auto-created by daily triage. Classify: real bug vs test to update._`,
   ];
   return lines.join('\n');
 }
