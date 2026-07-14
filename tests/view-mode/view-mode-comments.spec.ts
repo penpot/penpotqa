@@ -51,7 +51,10 @@ mainTest(qase([701], 'Create comment'), async () => {
       await commentsPanelPage.clickPostCommentButton();
       await commentsPanelPage.isCommentDisplayedInPopUp(comment);
       await expect(newPage).toHaveScreenshot('comment-opened-pop-up.png', {
-        mask: [commentsPanelPage.commentsAuthorSection],
+        mask: [
+          commentsPanelPage.commentsAuthorSection,
+          commentsPanelPage.commentAvatarImage,
+        ],
       });
     },
   );
@@ -60,7 +63,10 @@ mainTest(qase([701], 'Create comment'), async () => {
     await viewModePage.clickOnViewport();
     await commentsPanelPage.isCommentThreadIconDisplayed();
     await expect(newPage).toHaveScreenshot('comment-closed-pop-up.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
+      mask: [
+        commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
+      ],
     });
   });
 });
@@ -94,7 +100,10 @@ mainTest(qase([709], 'Reply comment'), async () => {
       await commentsPanelPage.clickPostCommentButton();
       await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
       await expect(newPage).toHaveScreenshot('comment-reply.png', {
-        mask: [commentsPanelPage.commentsAuthorSection],
+        mask: [
+          commentsPanelPage.commentsAuthorSection,
+          commentsPanelPage.commentAvatarImage,
+        ],
       });
     },
   );
@@ -134,7 +143,10 @@ mainTest(qase([710], 'Edit comment'), async () => {
     await commentsPanelPage.clickCommentThreadIconByNumber('1');
     await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
     await expect(newPage).toHaveScreenshot('comment-edited.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
+      mask: [
+        commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
+      ],
     });
   });
 });
@@ -165,7 +177,10 @@ mainTest(qase([711], 'Delete thread'), async () => {
     await commentsPanelPage.clickDeleteThreadButton();
     await commentsPanelPage.isCommentThreadIconNotDisplayed();
     await expect(newPage).toHaveScreenshot('comment-removed.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
+      mask: [
+        commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
+      ],
     });
   });
 });
@@ -206,7 +221,10 @@ mainTest(qase([703], 'Comments dropdown (Hide resolved comments)'), async () => 
     await viewModePage.selectHideResolvedCommentsOption();
     await commentsPanelPage.isCommentResolvedThreadIconNotDisplayed();
     await expect(newPage).toHaveScreenshot('resolved-comments-hidden.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
+      mask: [
+        commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
+      ],
     });
   });
 
@@ -215,7 +233,10 @@ mainTest(qase([703], 'Comments dropdown (Hide resolved comments)'), async () => 
     await viewModePage.selectHideResolvedCommentsOption();
     await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
     await expect(newPage).toHaveScreenshot('resolved-comments-show.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
+      mask: [
+        commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
+      ],
     });
   });
 });
@@ -249,7 +270,10 @@ mainTest(qase([704], 'Comments dropdown (Show comments list)'), async () => {
     await expect(viewModePage.commentsRightPanel).toHaveScreenshot(
       'comments-list.png',
       {
-        mask: [commentsPanelPage.commentsAuthorSection],
+        mask: [
+          commentsPanelPage.commentsAuthorSection,
+          commentsPanelPage.commentAvatarImage,
+        ],
       },
     );
   });
@@ -259,7 +283,10 @@ mainTest(qase([704], 'Comments dropdown (Show comments list)'), async () => {
     await viewModePage.selectShowCommentsListOption();
     await viewModePage.isCommentInListVisible(false);
     await expect(newPage).toHaveScreenshot('comments-list-hidden.png', {
-      mask: [commentsPanelPage.commentsAuthorSection],
+      mask: [
+        commentsPanelPage.commentsAuthorSection,
+        commentsPanelPage.commentAvatarImage,
+      ],
     });
   });
 });
