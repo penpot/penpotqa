@@ -99,7 +99,7 @@ function walkSuites(suite: any, file: string, out: Failure[]) {
         file: f,
         title: spec.title,
         qaseId: extractQaseId(spec.title, test.annotations ?? []),
-        error: message.split('\n').slice(0, 6).join('\n'),
+        error: message.split('\n').slice(0, 14).join('\n'),
         snippet: frame,
         retries: results.length - 1,
         flaky: isFlaky && !isFailure,
@@ -435,7 +435,7 @@ async function main() {
       for (const [file, tests] of byFile) {
         const lines = tests.map(
           (t) =>
-            `- \`${t.title}\`${t.qaseId ? ` (Qase: ${t.qaseId})` : ''}${t.retries ? ` — ${t.retries} retries` : ''}\n  \`\`\`\n  ${shortError(t.error)}\n  \`\`\``,
+            `- \`${t.title}\`${t.qaseId ? ` (Qase: ${t.qaseId})` : ''}${t.retries ? ` — ${t.retries} retries` : ''}\n  \`\`\`\n  ${conciseError(t.error)}\n  \`\`\``,
         );
         if (taiga && storyId) {
           if (fileTasks[file]) {
@@ -477,7 +477,7 @@ async function main() {
       }
     } else {
       for (const c of newClusters) {
-        const taskSubject = `${shortError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
+        const taskSubject = `${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
         if (taiga && storyId) {
           await taiga.createTask(storyId, taskSubject, clusterDescription(c));
           state[c.fingerprint].taigaId = storyId;
@@ -497,7 +497,7 @@ async function main() {
   } else {
     // ----- Daily mode: one user story per cluster, one task per test -----
     for (const c of newClusters) {
-      const subject = `[daily] ${shortError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
+      const subject = `[daily] ${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
       const description = clusterDescription(c);
       if (taiga) {
         const { id, ref } = await taiga.createUserStory(
@@ -545,8 +545,14 @@ async function main() {
     }
   }
 
-  fs.mkdirSync(path.dirname(STATE_PATH), { recursive: true });
-  fs.writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
+  if (DRY_RUN) {
+    console.log(
+      '[dry-run] state NOT saved — dry runs leave no trace, so a later real run still sees these failures as new',
+    );
+  } else {
+    fs.mkdirSync(path.dirname(STATE_PATH), { recursive: true });
+    fs.writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
+  }
 
   // ----- Digest (markdown, printed to stdout for Slack/summary step) -----
   const digest: string[] = [`## Daily triage — ${today}`, ''];
@@ -560,7 +566,7 @@ async function main() {
     for (const c of newClusters) {
       const ref = state[c.fingerprint].taigaRef;
       digest.push(
-        `- ${ref ? `${taigaLink(ref)} — ` : ''}\`${shortError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} tests)`,
+        `- ${ref ? `${taigaLink(ref)} — ` : ''}\`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`,
       );
     }
     digest.push('');
@@ -570,7 +576,7 @@ async function main() {
     for (const c of knownClusters) {
       const e = state[c.fingerprint];
       digest.push(
-        `- ${taigaLink(e.taigaRef)} — ${c.tests.length} tests, failing ${e.consecutiveRuns} runs in a row`,
+        `- ${taigaLink(e.taigaRef)} — \`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''}, failing ${e.consecutiveRuns} runs in a row)`,
       );
     }
     digest.push('');
@@ -581,6 +587,7 @@ async function main() {
   }
   const digestText = digest.join('\n');
   console.log('\n' + digestText);
+  fs.mkdirSync('.triage', { recursive: true });
   fs.writeFileSync('.triage/digest.md', digestText);
 
   // ----- Mattermost -----
@@ -604,6 +611,26 @@ async function main() {
 
 function shortError(msg: string): string {
   return msg.split('\n')[0].slice(0, 90);
+}
+
+/**
+ * Playwright's first error line is generic ("expect(locator).toBeVisible() failed");
+ * the concrete facts (which element, expected vs received) are on later lines.
+ * Build a one-line summary that includes them.
+ */
+function conciseError(msg: string): string {
+  const first = msg.split('\n')[0].slice(0, 90);
+  const parts: string[] = [];
+  const loc = msg.match(/(?:Locator:|waiting for)\s+(.+)/);
+  if (loc) parts.push(`@ ${loc[1].trim().slice(0, 70)}`);
+  const exp = msg.match(/Expected(?: string| pattern)?:\s+(.+)/);
+  const rec = msg.match(/Received(?: string)?:\s+(.+)/);
+  if (exp && rec)
+    parts.push(
+      `expected ${exp[1].trim().slice(0, 40)}, got ${rec[1].trim().slice(0, 40)}`,
+    );
+  else if (exp) parts.push(`expected ${exp[1].trim().slice(0, 40)}`);
+  return parts.length ? `${first} — ${parts.join(' — ')}` : first;
 }
 
 function taigaLink(ref?: number): string {
