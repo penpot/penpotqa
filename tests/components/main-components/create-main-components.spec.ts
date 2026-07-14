@@ -254,7 +254,7 @@ mainTest(qase([1436], 'Create component from path by right-click'), async () => 
   );
 });
 
-mainTest(qase([1437], 'Create component from curve by right-click'), async () => {
+mainTest(qase([3255], 'Create component from curve by right-click'), async () => {
   await mainTest.step(
     'Create curve component via right-click on layers tab',
     async () => {
