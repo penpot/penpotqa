@@ -15,7 +15,8 @@
  * - 10: Integration
  * - 11: Exploratory
  *
- * Usage: npx ts-node check-qase-non-regression.ts.
+ * Usage: npx ts-node helpers/check-qase-non-regression.ts
+ * from the root of the project.
  *
  * After running the script you will see the output in the console,
  * showing the test case IDs and their status (NON-REGRESSION or NOT FOUND).
