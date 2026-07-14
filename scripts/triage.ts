@@ -331,8 +331,11 @@ async function main() {
     if (state[fp]) {
       knownClusters.push(c);
       state[fp].lastSeen = today;
-      state[fp].consecutiveRuns += 1;
-      state[fp].seenInLastNRuns = [1, ...state[fp].seenInLastNRuns].slice(0, 10);
+      state[fp].consecutiveRuns = (state[fp].consecutiveRuns ?? 0) + 1;
+      state[fp].seenInLastNRuns = [1, ...(state[fp].seenInLastNRuns ?? [])].slice(
+        0,
+        10,
+      );
     } else {
       newClusters.push(c);
       state[fp] = {
@@ -344,8 +347,12 @@ async function main() {
     }
   }
   for (const fp of Object.keys(state)) {
+    if (fp.startsWith('__')) continue; // internal bookkeeping (release story, file->task map), not a cluster
     if (!clusters.has(fp)) {
-      state[fp].seenInLastNRuns = [0, ...state[fp].seenInLastNRuns].slice(0, 10);
+      state[fp].seenInLastNRuns = [0, ...(state[fp].seenInLastNRuns ?? [])].slice(
+        0,
+        10,
+      );
       state[fp].consecutiveRuns = 0;
       if (
         state[fp].seenInLastNRuns.slice(0, 3).every((x) => x === 0) &&
