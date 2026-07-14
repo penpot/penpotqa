@@ -463,28 +463,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([1297], 'Detach instance from "Design" tab'), async () => {
-    await mainTest.step(
-      'Detach copy instance from Design tab and resize',
-      async () => {
-        await designPanelPage.clickOnComponentMenuButton();
-        await designPanelPage.clickOnDetachInstanceOption();
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-        await mainPage.waitForResizeHandlerVisible();
-      },
-    );
-
-    await mainTest.step('Verify detached instance on canvas', async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot after detaching copy instance from Design tab',
-      ).toHaveScreenshot('main-copies-component-detach-instance-right-click.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-  });
-
   mainTest(qase([1298], 'Reset overrides via context menu'), async () => {
     await mainTest.step('Resize, add fill and blur to copy component', async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();

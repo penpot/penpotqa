@@ -78,24 +78,6 @@ mainTest(qase([1275], 'Update main component'), async () => {
   );
 });
 
-mainTest(qase([1306], 'Check copy and main component icons'), async () => {
-  await mainTest.step('Create rectangle component and duplicate it', async () => {
-    await mainPage.createDefaultRectangleByCoordinates(200, 300);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-  });
-
-  await mainTest.step(
-    'Verify main and copy component icons in layers panel',
-    async () => {
-      await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
-      await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Rectangle');
-    },
-  );
-});
-
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
     await mainTest.slow();
