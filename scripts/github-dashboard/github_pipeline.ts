@@ -52,11 +52,13 @@ const MAPPING: Mapping = JSON.parse(
   fs.readFileSync(path.join(HERE, 'mapping.json'), 'utf-8'),
 );
 
+// Logs a fatal error and exits the process.
 function die(msg: string): never {
   console.error(`ERROR: ${msg}`);
   process.exit(1);
 }
 
+// Promise-based delay, used to throttle paginated requests.
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // ---------------------------------------------------------------------------
@@ -100,6 +102,7 @@ const QASE_REG_AUTO_FILTERS = new Map<string, string>([
   ['automation', 'automated'],
 ]);
 
+// Fetches all pages of a Qase entity (suite, case, ...) in batches of 100.
 async function qaseGetPaginated(
   entity: string,
   params: Record<string, string> = {},
@@ -124,6 +127,7 @@ async function qaseGetPaginated(
   }
 }
 
+// Removes duplicate entities (by id) that can appear across paginated pages.
 const dedupeById = <T extends { id: number }>(arr: T[]): T[] => {
   const seen = new Map<number, T>();
   for (const x of arr) if (!seen.has(x.id)) seen.set(x.id, x);
@@ -134,6 +138,7 @@ const dedupeById = <T extends { id: number }>(arr: T[]): T[] => {
   return [...seen.values()];
 };
 
+// Downloads and dedupes Qase test cases matching the given filters (e.g. regression/automated).
 async function fetchQaseCases(filters: Map<string, string>): Promise<TestCase[]> {
   console.log(`• Qase: downloading test cases ${[...filters.values()].join(', ')}…`);
   const cases: TestCase[] = dedupeById(
@@ -148,6 +153,7 @@ async function fetchQaseCases(filters: Map<string, string>): Promise<TestCase[]>
   return cases;
 }
 
+// Downloads all suites plus regression and regression+automated test cases from Qase.
 async function fetchQase(): Promise<{
   suites: Suite[];
   regCases: TestCase[];
@@ -169,6 +175,8 @@ async function fetchQase(): Promise<{
   return { suites, regCases, regAutoCases };
 }
 
+// Walks each suite's parent chain to find its top-level root, and tallies case
+// counts per root (the "area" used throughout the dashboard).
 function resolveRoots(suites: Suite[]): {
   rootOf: Map<number, string>;
   inventory: Map<string, number>;
@@ -226,9 +234,11 @@ query($org: String!, $number: Int!, $cursor: String) {
   }
 }`;
 
+// Paginates through the GitHub Project v2 GraphQL API to collect all issue
+// items (bugs, features and enhancements) along with their Status/Type project fields.
 async function fetchGithubProject(): Promise<Issue[]> {
   console.log('• GitHub: downloading project items…');
-  const rows: Issue[] = [];
+  const githubIssues: Issue[] = [];
   let cursor: string | null = null;
   for (;;) {
     const res = await fetch('https://api.github.com/graphql', {
@@ -259,7 +269,7 @@ async function fetchGithubProject(): Promise<Issue[]> {
       for (const fv of node.fieldValues.nodes) {
         if (fv?.field?.name) fields[fv.field.name] = fv.name;
       }
-      rows.push({
+      githubIssues.push({
         number: issue.number,
         Title: issue.title,
         URL: issue.url,
@@ -274,13 +284,15 @@ async function fetchGithubProject(): Promise<Issue[]> {
     if (!project.items.pageInfo.hasNextPage) break;
     cursor = project.items.pageInfo.endCursor;
   }
-  console.log(`  ${rows.length} items`);
-  return rows;
+  console.log(`  ${githubIssues.length} items`);
+  return githubIssues;
 }
 
 // ---------------------------------------------------------------------------
 // 3. Issue -> area mapping
 // ---------------------------------------------------------------------------
+// Maps an issue to a dashboard area, first by label then by title keyword,
+// falling back to the configured fallback area.
 function mapIssue(title: string, labels: string): [string, string] {
   const labs = (labels || '')
     .split(',')
@@ -299,6 +311,7 @@ function mapIssue(title: string, labels: string): [string, string] {
 // ---------------------------------------------------------------------------
 // Utilities: CSV, aggregation, median
 // ---------------------------------------------------------------------------
+// Serializes rows to CSV, quoting values that contain commas, quotes, or newlines.
 function toCsv(rows: Record<string, unknown>[], columns?: string[]): string {
   if (rows.length === 0) return '';
   const cols = columns ?? Object.keys(rows[0]);
@@ -314,12 +327,14 @@ function toCsv(rows: Record<string, unknown>[], columns?: string[]): string {
   );
 }
 
+// Counts items grouped by a derived key.
 function countBy<T>(items: T[], key: (x: T) => string): Map<string, number> {
   const m = new Map<string, number>();
   for (const it of items) m.set(key(it), (m.get(key(it)) ?? 0) + 1);
   return m;
 }
 
+// Buckets items into arrays grouped by a derived key.
 function groupBy<T>(items: T[], key: (x: T) => string): Map<string, T[]> {
   const m = new Map<string, T[]>();
   for (const it of items) {
@@ -331,12 +346,14 @@ function groupBy<T>(items: T[], key: (x: T) => string): Map<string, T[]> {
   return m;
 }
 
+// Computes the median of a numeric array.
 function median(values: number[]): number {
   const s = [...values].sort((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
   return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
 
+// Rounds a number to d decimal places.
 const round = (v: number, d: number) => Math.round(v * 10 ** d) / 10 ** d;
 
 // ---------------------------------------------------------------------------
@@ -400,34 +417,55 @@ const CONSIDERED_TYPES: Record<'bug' | 'feature', string[]> = {
   feature: ['Feature', 'Enhancement'],
 };
 
-export function build(
-  suites: Suite[],
-  regCases: TestCase[],
-  regAutoCases: TestCase[],
-  projectItems: Issue[],
-) {
-  const { rootOf, inventory, rootNames } = resolveRoots(suites);
+type RegressionTest = TestCase & { area: string; is_automated: boolean };
+type AutomatedTest = TestCase & { area: string };
+interface AreaCounts {
+  allAreas: Set<string>;
+  bugsBy: Map<string, number>;
+  openBy: Map<string, number>;
+  featsBy: Map<string, number>;
+  testsBy: Map<string, number>;
+  autoBy: Map<string, number>;
+}
 
-  const tests = regCases.map((c) => ({
+// Attaches an `area` (derived from the suite tree) to each regression test case,
+// plus an `is_automated` flag based on the Qase automation status.
+function enrichTestCases(
+  qaseRegrCases: TestCase[],
+  qaseRegrAutoCases: TestCase[],
+  rootOf: Map<number, string>,
+): { tests: RegressionTest[]; autoTests: AutomatedTest[] } {
+  const tests = qaseRegrCases.map((c) => ({
     ...c,
     area: rootOf.get(c.suite_id) ?? '(unknown suite)',
     is_automated: ['automated', '2'].includes(String(c.automation)),
   }));
-  const autoTests = regAutoCases.map((c) => ({
+  const autoTests = qaseRegrAutoCases.map((c) => ({
     ...c,
     area: rootOf.get(c.suite_id) ?? '(unknown suite)',
   }));
+  return { tests, autoTests };
+}
 
-  // Split the project by type, applying the filters defined above
-  const ignore = new RegExp(EXCLUDED.titlePatterns.join('|') || '$^', 'i');
-  const excludedLabels = new Set(EXCLUDED.labels.map((l) => l.toLowerCase()));
+// Drops excluded titles/labels, splits the remaining GitHub items into bugs vs.
+// features (per CONSIDERED_TYPES/EXCLUDED_STATUSES), and tags each with an area via mapIssue().
+function classifyIssues(githubIssues: Issue[]): { bugs: Issue[]; feats: Issue[] } {
+  const excludedTitleRegExpr = new RegExp(
+    EXCLUDED.titlePatterns.join('|') || '$^',
+    'i',
+  );
+  const excludedLabels = new Set(
+    EXCLUDED.labels.map((label) => label.toLowerCase()),
+  );
   const hasExcludedLabel = (labels: string) =>
     labels
       .split(',')
-      .map((l) => l.trim().toLowerCase())
-      .some((l) => excludedLabels.has(l));
-  const items = projectItems.filter(
-    (i) => i.Type && !ignore.test(i.Title) && !hasExcludedLabel(i.Labels),
+      .map((label) => label.trim().toLowerCase())
+      .some((label) => excludedLabels.has(label));
+
+  const items = githubIssues.filter(
+    (i) =>
+      i.Type && !excludedTitleRegExpr.test(i.Title) && !hasExcludedLabel(i.Labels),
   );
   const bugs = items.filter(
     (i) =>
@@ -439,14 +477,24 @@ export function build(
       CONSIDERED_TYPES.feature.includes(i.Type!) &&
       !EXCLUDED_STATUSES.feature.includes(i.Status ?? ''),
   );
-  for (const df of [bugs, feats])
-    for (const issue of df) {
+  for (const issues of [bugs, feats])
+    for (const issue of issues) {
       const [area, method] = mapIssue(issue.Title, issue.Labels);
       issue.area = area;
       issue.map_method = method;
     }
+  return { bugs, feats };
+}
 
-  // Matrix by area
+// Tallies bugs/open-bugs/features/tests/automated-tests per area, and the full
+// set of areas (suite roots plus any area only referenced by an issue).
+function buildAreaCounts(
+  bugs: Issue[],
+  feats: Issue[],
+  tests: RegressionTest[],
+  autoTests: AutomatedTest[],
+  rootNames: string[],
+): AreaCounts {
   const bugsBy = countBy(bugs, (b) => b.area!);
   const openBy = countBy(
     bugs.filter((b) => !b.Closed),
@@ -455,22 +503,29 @@ export function build(
   const featsBy = countBy(feats, (f) => f.area!);
   const testsBy = countBy(tests, (t) => t.area);
   const autoBy = countBy(autoTests, (t) => t.area);
-
   const allAreas = new Set<string>([
     ...rootNames,
     ...bugsBy.keys(),
     ...featsBy.keys(),
   ]);
-  const fallback = MAPPING.fallback_area;
+  return { allAreas, bugsBy, openBy, featsBy, testsBy, autoBy };
+}
 
-  // Per-area issue/test references for the "check from here" links in the HTML report.
+// Builds the per-area bug/feature/test references shown as "check from here"
+// links in the HTML report.
+function buildAreaLinks(
+  allAreas: Set<string>,
+  bugs: Issue[],
+  feats: Issue[],
+  tests: RegressionTest[],
+): Map<string, AreaLinks> {
   const toIssueRef = (i: Issue): IssueRef => ({
     number: i.number,
     title: i.Title,
     url: i.URL,
     closed: !!i.Closed,
   });
-  const toTestRef = (t: (typeof tests)[number]): TestRef => ({
+  const toTestRef = (t: RegressionTest): TestRef => ({
     id: t.id,
     title: t.title,
     automated: t.is_automated,
@@ -478,7 +533,7 @@ export function build(
   const bugsByArea = groupBy(bugs, (b) => b.area!);
   const featsByArea = groupBy(feats, (f) => f.area!);
   const testsByArea = groupBy(tests, (t) => t.area);
-  const linksByArea = new Map<string, AreaLinks>(
+  return new Map(
     [...allAreas].map((area) => [
       area,
       {
@@ -488,6 +543,17 @@ export function build(
       },
     ]),
   );
+}
+
+// Builds one decision-matrix row per area, then assigns each a COVER/REINFORCE/
+// MAINTAIN/... decision based on its bug and automated-test counts relative to
+// the cross-area medians. Rows are returned sorted by bug count, descending.
+function buildAreaRows(
+  counts: AreaCounts,
+  inventory: Map<string, number>,
+): { rows: AreaRow[]; medBugs: number; medTests: number } {
+  const { allAreas, bugsBy, openBy, featsBy, testsBy, autoBy } = counts;
+  const fallback = MAPPING.fallback_area;
 
   const rows: AreaRow[] = [...allAreas].map((area) => {
     const automated = autoBy.get(area) ?? 0;
@@ -523,7 +589,11 @@ export function build(
   }
   rows.sort((a, b) => b.bugs - a.bugs);
 
-  // Monthly trend
+  return { rows, medBugs, medTests };
+}
+
+// Counts bugs by created/closed month to drive the trend chart in the HTML report.
+function buildMonthlyTrend(bugs: Issue[]) {
   const month = (iso: string) => iso.slice(0, 7);
   const createdBy = countBy(bugs, (b) => month(b.Created));
   const closedBy = countBy(
@@ -531,13 +601,22 @@ export function build(
     (b) => month(b.Closed!),
   );
   const months = [...new Set([...createdBy.keys(), ...closedBy.keys()])].sort();
-  const trend = months.map((month) => ({
+  return months.map((month) => ({
     month,
     created: createdBy.get(month) ?? 0,
     closed: closedBy.get(month) ?? 0,
   }));
+}
 
-  // Outputs
+// Writes the decision matrix, mapped bugs/features, monthly trend, and
+// regression tests CSVs to out/.
+function writeCsvOutputs(
+  rows: AreaRow[],
+  bugs: Issue[],
+  feats: Issue[],
+  trend: ReturnType<typeof buildMonthlyTrend>,
+  tests: RegressionTest[],
+) {
   fs.mkdirSync(OUT, { recursive: true });
   fs.writeFileSync(path.join(OUT, 'decision-matrix.csv'), toCsv(rows as any[]));
   fs.writeFileSync(path.join(OUT, 'mapped-bugs.csv'), toCsv(bugs as any[]));
@@ -554,7 +633,21 @@ export function build(
       'is_automated',
     ]),
   );
+}
 
+// Assembles the dashboard JSON payload and writes the self-contained,
+// date-stamped HTML report (one snapshot per day).
+function writeDashboardHtml(
+  rows: AreaRow[],
+  bugs: Issue[],
+  feats: Issue[],
+  autoTests: AutomatedTest[],
+  inventory: Map<string, number>,
+  trend: ReturnType<typeof buildMonthlyTrend>,
+  medBugs: number,
+  medTests: number,
+  linksByArea: Map<string, AreaLinks>,
+) {
   const now = new Date();
   const dateStamp = now.toISOString().slice(0, 10); // YYYY-MM-DD, used as a filename prefix for daily runs
   const data = {
@@ -582,7 +675,10 @@ export function build(
     path.join(OUT, dashboardFilename),
     template.replace('__DATA__', JSON.stringify(data)),
   );
+}
 
+// Prints a one-line-per-area summary table to the console.
+function logSummary(rows: AreaRow[]) {
   console.log(`\n✔ Generated in ${OUT}/`);
   const w = Math.max(...rows.map((r) => r.area.length));
   for (const r of rows)
@@ -591,14 +687,52 @@ export function build(
     );
 }
 
+// Cross-references Qase test inventory with GitHub bugs/features per area,
+// computes the decision matrix and monthly trend, and writes the CSVs and
+// self-contained HTML dashboard to out/.
+export function build(
+  qaseSuites: Suite[],
+  qaseRegrCases: TestCase[],
+  qaseRegrAutoCases: TestCase[],
+  githubIssues: Issue[],
+) {
+  const { rootOf, inventory, rootNames } = resolveRoots(qaseSuites);
+  const { tests, autoTests } = enrichTestCases(
+    qaseRegrCases,
+    qaseRegrAutoCases,
+    rootOf,
+  );
+  const { bugs, feats } = classifyIssues(githubIssues);
+
+  const counts = buildAreaCounts(bugs, feats, tests, autoTests, rootNames);
+  const linksByArea = buildAreaLinks(counts.allAreas, bugs, feats, tests);
+  const { rows, medBugs, medTests } = buildAreaRows(counts, inventory);
+  const trend = buildMonthlyTrend(bugs);
+
+  writeCsvOutputs(rows, bugs, feats, trend, tests);
+  writeDashboardHtml(
+    rows,
+    bugs,
+    feats,
+    autoTests,
+    inventory,
+    trend,
+    medBugs,
+    medTests,
+    linksByArea,
+  );
+  logSummary(rows);
+}
+
 // ---------------------------------------------------------------------------
+// Entry point: validates env vars, fetches Qase + GitHub data, and builds the dashboard.
 async function main() {
   if (!QASE_TOKEN) die('Missing QASE_TOKEN environment variable');
   if (!GH_TOKEN)
     die('Missing GITHUB_TOKEN environment variable (PAT with read:project scope)');
   const { suites, regCases, regAutoCases } = await fetchQase();
-  const items = await fetchGithubProject();
-  build(suites, regCases, regAutoCases, items);
+  const githubIssues = await fetchGithubProject();
+  build(suites, regCases, regAutoCases, githubIssues);
 }
 
 // Only run main() when invoked directly (allows importing build() in tests)
