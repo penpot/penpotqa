@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release tag (e.g. 26.07) — story will be tagged release-<tag>'
+        description: 'Release tag (e.g. 2.17) — story will be tagged release-<tag>'
         required: true
       report_run_id:
         description: 'Override: specific run id to triage (default: last scheduled daily run on main)'
@@ -25,6 +25,9 @@ on:
         options:
           - cluster
           - file
+      epic_ref:
+        description: 'Optional: Taiga epic ref (number only, e.g. 118) to link the story under'
+        required: false
 
 permissions:
   contents: read
@@ -33,6 +36,7 @@ permissions:
 jobs:
   triage:
     runs-on: ubuntu-latest
+    environment: PRE # grants access to MATTERMOST_WEBHOOK_DAILY_REPORT (environment secret)
     steps:
       - uses: actions/checkout@v4
 
@@ -75,6 +79,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           DAILY_WORKFLOW: playwright_pre_daily.yml # "Daily Penpot Regression Tests on PRE"
 
+      - name: Fetch app version for this run
+        id: appver
+        run: |
+          VERSION=$(aws s3 cp "s3://kaleidos-qa-reports/run-${{ steps.report.outputs.run_id }}/app-version.txt" - 2>/dev/null || echo "")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "App version for this run: ${VERSION:-<not recorded>}"
+
       - name: Pull per-release triage state
         run: |
           mkdir -p .triage
@@ -88,21 +99,30 @@ jobs:
             --state .triage/state.json \
             --release "${{ inputs.release_tag }}" \
             --group-by "${{ inputs.group_by || 'cluster' }}" \
+            --epic-ref "${{ inputs.epic_ref }}" \
+            --app-version "${{ steps.appver.outputs.version }}" \
             --report-url "https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ steps.report.outputs.run_id }}/index.html"
         env:
-          TAIGA_URL: ${{ secrets.TAIGA_URL }}
+          GITHUB_TOKEN: ${{ github.token }} # raises GitHub API rate limit for the app-repo changelog fetch
+          # APP_REPO: penpot/penpot                            # default; override if the app repo moves
+          TAIGA_URL: ${{ secrets.TAIGA_URL }} # https://api.taiga.io on Taiga cloud
+          TAIGA_PUBLIC_URL: ${{ vars.TAIGA_PUBLIC_URL }} # https://tree.taiga.io — used for links in the digest
           TAIGA_USERNAME: ${{ secrets.TAIGA_USERNAME }}
           TAIGA_PASSWORD: ${{ secrets.TAIGA_PASSWORD }}
           TAIGA_PROJECT: ${{ vars.TAIGA_PROJECT }}
           TAIGA_TAGS: 'needs-triage' # release-<tag> is added automatically
-          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }}
-          DRY_RUN: '1'
+          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }} # PRE environment secret -> Autotests Reports channel
+          # DRY_RUN: "1"
 
       - name: Push per-release triage state
         if: always()
         run: |
-          aws s3 cp .triage/state.json \
-            "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json"
+          if [ -f .triage/state.json ]; then
+            aws s3 cp .triage/state.json \
+              "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json"
+          else
+            echo "No state file to push (dry run leaves no trace)"
+          fi
 
       - name: Digest to job summary
         if: always()

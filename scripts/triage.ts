@@ -34,8 +34,10 @@ function arg(name: string, fallback?: string): string {
 const RESULTS_PATH = arg('results', 'playwright-report/results.json');
 const STATE_PATH = arg('state', '.triage/state.json');
 const REPORT_URL = arg('report-url', '');
-const RELEASE = arg('release', ''); // e.g. "26.07" -> single story tagged release-26.07 with one task per cluster
+const RELEASE = arg('release', ''); // e.g. "2.17" -> single story tagged release-2.17 with one task per cluster
 const GROUP_BY = arg('group-by', 'cluster'); // release-mode tasks: 'cluster' (one per root cause) or 'file' (one per spec file)
+const EPIC_REF = arg('epic-ref', ''); // optional: Taiga epic ref (#number) to link created stories under
+const APP_VERSION = arg('app-version', ''); // optional: deployed app version this report ran against
 const DRY_RUN = process.env.DRY_RUN === '1';
 
 // ---------- Types ----------
@@ -99,7 +101,7 @@ function walkSuites(suite: any, file: string, out: Failure[]) {
         file: f,
         title: spec.title,
         qaseId: extractQaseId(spec.title, test.annotations ?? []),
-        error: message.split('\n').slice(0, 6).join('\n'),
+        error: message.split('\n').slice(0, 14).join('\n'),
         snippet: frame,
         retries: results.length - 1,
         flaky: isFlaky && !isFailure,
@@ -162,11 +164,35 @@ function normalizeError(msg: string): string {
     .slice(0, 400);
 }
 
+/** Visual-comparison failures are debugged per spec file; their messages carry little identity. */
+function isSnapshotError(msg: string): boolean {
+  return /toHaveScreenshot|toMatchSnapshot|Screenshot comparison failed|snapshot/i.test(
+    msg,
+  );
+}
+
 function fingerprint(fail: Failure): string {
-  // Error shape + file (not test title): same broken selector across
-  // 5 tests in one spec = one cluster, one task.
-  const basis = `${normalizeError(fail.error)}|${fail.file}`;
+  // Hybrid clustering:
+  // - snapshot/visual errors: per spec file (generic message, and visual diffs are
+  //   debugged file by file against the spec's snapshots folder)
+  // - functional errors: cross-file, keyed by error shape + locator. The locator's
+  //   quoted text ('Select' vs 'Cancel subscription') IS the identity, so it is kept
+  //   verbatim — only dynamic fragments (hex ids, numbers) inside it are neutralized.
+  const basis = isSnapshotError(fail.error)
+    ? `${normalizeError(fail.error)}|${fail.file}`
+    : `${normalizeError(fail.error)}|${locatorKey(fail.error)}`;
   return crypto.createHash('sha1').update(basis).digest('hex').slice(0, 12);
+}
+
+/** Locator with dynamic fragments neutralized but quoted text preserved. */
+function locatorKey(msg: string): string {
+  const m = msg.match(/(?:Locator:|waiting for)\s+(.+)/);
+  if (!m) return '';
+  return m[1]
+    .trim()
+    .replace(/\b[0-9a-f]{6,40}\b/gi, '<hex>')
+    .replace(/\b\d+\b/g, 'N')
+    .slice(0, 200);
 }
 
 // ---------- Clustering ----------
@@ -240,6 +266,28 @@ class Taiga {
       version: story.version,
       comment,
     });
+  }
+
+  async epicIdByRef(ref: string): Promise<number> {
+    const e = await this.get(
+      `/api/v1/epics/by_ref?ref=${encodeURIComponent(ref)}&project=${this.projectId}`,
+    );
+    return e.id;
+  }
+
+  async linkStoryToEpic(epicId: number, storyId: number) {
+    // 400 here usually means "already linked" (re-runs) — tolerated.
+    const r = await this.request(
+      'POST',
+      `/api/v1/epics/${epicId}/related_userstories`,
+      { epic: epicId, user_story: storyId },
+      true,
+      true,
+    );
+    if (!r.ok && r.status !== 400)
+      throw new Error(
+        `Linking story to epic failed -> ${r.status} ${await r.text()}`,
+      );
   }
 
   async commentTask(taskId: number, comment: string) {
@@ -323,6 +371,24 @@ async function main() {
     : {};
 
   const today = new Date().toISOString().slice(0, 10);
+
+  // ----- App version tracking -----
+  const prevVersion = (state as any)['__app_version__'] as
+    { version: string; date: string } | undefined;
+  const versionChanged = !!(
+    APP_VERSION &&
+    prevVersion?.version &&
+    prevVersion.version !== APP_VERSION
+  );
+  if (APP_VERSION && !DRY_RUN) {
+    (state as any)['__app_version__'] = { version: APP_VERSION, date: today };
+  }
+  const versionLine = APP_VERSION
+    ? `App version: **${APP_VERSION}**${versionChanged ? ` — changed from ${prevVersion!.version} (recorded ${prevVersion!.date})` : prevVersion ? ' (unchanged since last triage)' : ''}`
+    : '';
+  const changelog = versionChanged
+    ? await fetchChangelog(prevVersion!.version, APP_VERSION)
+    : null;
   const newClusters: Cluster[] = [];
   const knownClusters: Cluster[] = [];
   const resolved: string[] = [];
@@ -331,8 +397,11 @@ async function main() {
     if (state[fp]) {
       knownClusters.push(c);
       state[fp].lastSeen = today;
-      state[fp].consecutiveRuns += 1;
-      state[fp].seenInLastNRuns = [1, ...state[fp].seenInLastNRuns].slice(0, 10);
+      state[fp].consecutiveRuns = (state[fp].consecutiveRuns ?? 0) + 1;
+      state[fp].seenInLastNRuns = [1, ...(state[fp].seenInLastNRuns ?? [])].slice(
+        0,
+        10,
+      );
     } else {
       newClusters.push(c);
       state[fp] = {
@@ -344,8 +413,12 @@ async function main() {
     }
   }
   for (const fp of Object.keys(state)) {
+    if (fp.startsWith('__')) continue; // internal bookkeeping (release story, file->task map), not a cluster
     if (!clusters.has(fp)) {
-      state[fp].seenInLastNRuns = [0, ...state[fp].seenInLastNRuns].slice(0, 10);
+      state[fp].seenInLastNRuns = [0, ...(state[fp].seenInLastNRuns ?? [])].slice(
+        0,
+        10,
+      );
       state[fp].consecutiveRuns = 0;
       if (
         state[fp].seenInLastNRuns.slice(0, 3).every((x) => x === 0) &&
@@ -399,6 +472,13 @@ async function main() {
         REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
         '',
         'Each task below is one failure cluster (one root cause). Classify each as real bug or test to update.',
+        ...(changelog
+          ? [
+              '',
+              `**App changes since last triage (${changelog.total} commits, [compare](${changelog.compareUrl})):**`,
+              ...changelog.lines,
+            ]
+          : []),
       ].join('\n');
       const { id, ref } = await taiga.createUserStory(subject, description, [
         ...storyTags,
@@ -415,9 +495,13 @@ async function main() {
         seenInLastNRuns: [1],
       };
       console.log(`Created release user story #${ref} [${releaseTag}]`);
+      if (EPIC_REF) {
+        await taiga.linkStoryToEpic(await taiga.epicIdByRef(EPIC_REF), id);
+        console.log(`Linked story #${ref} under epic #${EPIC_REF}`);
+      }
     } else if (!taiga) {
       console.log(
-        `[dry-run] Would create/reuse release user story: [release ${RELEASE}] Daily failures triage [tags: ${[...storyTags, releaseTag].join(', ')}]`,
+        `[dry-run] Would create/reuse release user story: [release ${RELEASE}] Daily failures triage [tags: ${[...storyTags, releaseTag].join(', ')}]${EPIC_REF ? ` under epic #${EPIC_REF}` : ''}`,
       );
     }
 
@@ -435,7 +519,7 @@ async function main() {
       for (const [file, tests] of byFile) {
         const lines = tests.map(
           (t) =>
-            `- \`${t.title}\`${t.qaseId ? ` (Qase: ${t.qaseId})` : ''}${t.retries ? ` — ${t.retries} retries` : ''}\n  \`\`\`\n  ${shortError(t.error)}\n  \`\`\``,
+            `- \`${t.title}\`${t.qaseId ? ` (Qase: ${t.qaseId})` : ''}${t.retries ? ` — ${t.retries} retries` : ''}\n  \`\`\`\n  ${conciseError(t.error)}\n  \`\`\``,
         );
         if (taiga && storyId) {
           if (fileTasks[file]) {
@@ -477,7 +561,7 @@ async function main() {
       }
     } else {
       for (const c of newClusters) {
-        const taskSubject = `${shortError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
+        const taskSubject = `${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
         if (taiga && storyId) {
           await taiga.createTask(storyId, taskSubject, clusterDescription(c));
           state[c.fingerprint].taigaId = storyId;
@@ -494,10 +578,20 @@ async function main() {
         `Re-run on ${today}: ${knownClusters.length} cluster(s) still failing, ${newClusters.length} new. Report: ${REPORT_URL}`,
       );
     }
+    if (taiga && storyId && changelog && !!storyState?.taigaId) {
+      // story pre-existed and the app changed since -> post the changelog as a comment
+      await taiga.commentStory(
+        storyId,
+        [
+          `App changed: \`${prevVersion!.version}\` -> \`${APP_VERSION}\` (${changelog.total} commits, [compare](${changelog.compareUrl}))`,
+          ...changelog.lines,
+        ].join('\n'),
+      );
+    }
   } else {
     // ----- Daily mode: one user story per cluster, one task per test -----
     for (const c of newClusters) {
-      const subject = `[daily] ${shortError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
+      const subject = `[daily] ${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
       const description = clusterDescription(c);
       if (taiga) {
         const { id, ref } = await taiga.createUserStory(
@@ -508,6 +602,8 @@ async function main() {
         state[c.fingerprint].taigaId = id;
         state[c.fingerprint].taigaRef = ref;
         console.log(`Created Taiga user story #${ref} for cluster ${c.fingerprint}`);
+        if (EPIC_REF)
+          await taiga.linkStoryToEpic(await taiga.epicIdByRef(EPIC_REF), id);
         for (const t of c.tests) {
           await taiga.createTask(
             id,
@@ -545,14 +641,26 @@ async function main() {
     }
   }
 
-  fs.mkdirSync(path.dirname(STATE_PATH), { recursive: true });
-  fs.writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
+  if (DRY_RUN) {
+    console.log(
+      '[dry-run] state NOT saved — dry runs leave no trace, so a later real run still sees these failures as new',
+    );
+  } else {
+    fs.mkdirSync(path.dirname(STATE_PATH), { recursive: true });
+    fs.writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
+  }
 
-  // ----- Digest (markdown, printed to stdout for Slack/summary step) -----
+  // ----- Digest (markdown: stdout, job summary, and .triage/digest.md) -----
   const digest: string[] = [`## Daily triage — ${today}`, ''];
   digest.push(
     `**${hardFailures.length} failures** in **${clusters.size} clusters** · ${flakyTests.length} flaky · ${resolved.length} resolved`,
   );
+  if (versionLine) digest.push(versionLine);
+  if (changelog) {
+    digest.push(
+      `App changes since last triage: **${changelog.total} commits** — [compare](${changelog.compareUrl})`,
+    );
+  }
   if (REPORT_URL) digest.push(`[Full HTML report](${REPORT_URL})`);
   digest.push('');
   if (newClusters.length) {
@@ -560,7 +668,7 @@ async function main() {
     for (const c of newClusters) {
       const ref = state[c.fingerprint].taigaRef;
       digest.push(
-        `- ${ref ? `${taigaLink(ref)} — ` : ''}\`${shortError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} tests)`,
+        `- ${ref ? `${taigaLink(ref)} — ` : ''}\`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})${qaseList(c)}`,
       );
     }
     digest.push('');
@@ -570,7 +678,7 @@ async function main() {
     for (const c of knownClusters) {
       const e = state[c.fingerprint];
       digest.push(
-        `- ${taigaLink(e.taigaRef)} — ${c.tests.length} tests, failing ${e.consecutiveRuns} runs in a row`,
+        `- ${taigaLink(e.taigaRef)} — \`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''}, failing ${e.consecutiveRuns} runs in a row)${qaseList(c)}`,
       );
     }
     digest.push('');
@@ -581,9 +689,40 @@ async function main() {
   }
   const digestText = digest.join('\n');
   console.log('\n' + digestText);
+  fs.mkdirSync('.triage', { recursive: true });
   fs.writeFileSync('.triage/digest.md', digestText);
 
-  // ----- Mattermost -----
+  // ----- Mattermost (compressed: verdict + new clusters + resolved; details live in Taiga) -----
+  const releaseStoryRef = RELEASE
+    ? ((state as any)['__release_story__'] as StateEntry | undefined)?.taigaRef
+    : undefined;
+  const mm: string[] = [];
+  const verdict = `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — ${newClusters.length} new · ${knownClusters.length} known · ${resolved.length} resolved${releaseStoryRef ? ` · ${taigaLink(releaseStoryRef)}` : ''}${APP_VERSION ? `\napp \`${APP_VERSION}\`${versionChanged ? ` :warning: changed from \`${prevVersion!.version}\`${changelog ? ` ([${changelog.total} commits](${changelog.compareUrl}))` : ''}` : ''}` : ''}`;
+  mm.push(verdict);
+  if (newClusters.length) {
+    mm.push('', '**New:**');
+    for (const c of newClusters) {
+      mm.push(
+        `- \`${conciseError(c.errorSample)}\` — ${c.tests.length} test${c.tests.length > 1 ? 's' : ''}${qaseList(c)}`,
+      );
+    }
+  }
+  if (resolved.length) {
+    mm.push(
+      '',
+      `**Resolved (close?):** ${resolved.map((fp) => taigaLink(state[fp].taigaRef)).join(', ')}`,
+    );
+  }
+  mm.push(
+    '',
+    `${hardFailures.length} failures · ${flakyTests.length} flaky${REPORT_URL ? ` · [HTML report](${REPORT_URL})` : ''}`,
+  );
+  const nothingChanged =
+    newClusters.length === 0 && resolved.length === 0 && knownClusters.length > 0;
+  const mmText = nothingChanged
+    ? `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — re-run: nothing new, ${knownClusters.length} known cluster${knownClusters.length > 1 ? 's' : ''} still failing.${releaseStoryRef ? ` ${taigaLink(releaseStoryRef)}` : ''}`
+    : mm.join('\n');
+
   const mmWebhook = process.env.MATTERMOST_WEBHOOK_URL;
   if (mmWebhook && !DRY_RUN) {
     const r = await fetch(mmWebhook, {
@@ -592,13 +731,18 @@ async function main() {
       body: JSON.stringify({
         username: 'Daily Triage',
         icon_emoji: ':test_tube:',
-        // channel: 'qa-daily',  // optional override; defaults to the webhook's channel
-        text: digestText,
+        text: mmText,
       }),
     });
     if (!r.ok)
       console.error(`Mattermost post failed: ${r.status} ${await r.text()}`);
     else console.log('Digest posted to Mattermost');
+  } else if (DRY_RUN) {
+    console.log(
+      '\n----- MATTERMOST PREVIEW -----\n' +
+        mmText +
+        '\n------------------------------',
+    );
   }
 }
 
@@ -606,9 +750,98 @@ function shortError(msg: string): string {
   return msg.split('\n')[0].slice(0, 90);
 }
 
+function qaseList(c: Cluster): string {
+  const ids = c.tests.map((t) => t.qaseId).filter(Boolean);
+  return ids.length ? ` [Qase: ${ids.join(', ')}]` : '';
+}
+
+/**
+ * Playwright's first error line is generic ("expect(locator).toBeVisible() failed");
+ * the concrete facts (which element, expected vs received) are on later lines.
+ * Build a one-line summary that includes them.
+ */
+function conciseError(msg: string): string {
+  const first = msg.split('\n')[0].slice(0, 90);
+  const parts: string[] = [];
+  const loc = msg.match(/(?:Locator:|waiting for)\s+(.+)/);
+  if (loc) parts.push(`@ ${loc[1].trim().slice(0, 70)}`);
+  const exp = msg.match(/Expected(?: string| pattern)?:\s+(.+)/);
+  const rec = msg.match(/Received(?: string)?:\s+(.+)/);
+  if (exp && rec)
+    parts.push(
+      `expected ${exp[1].trim().slice(0, 40)}, got ${rec[1].trim().slice(0, 40)}`,
+    );
+  else if (exp) parts.push(`expected ${exp[1].trim().slice(0, 40)}`);
+  return parts.length ? `${first} — ${parts.join(' — ')}` : first;
+}
+
+// ---------- App changelog (public repo compare) ----------
+
+/** Extract the commit hash from a git-describe style version: 2.17.0-RC3-18-g85dbf14344 -> 85dbf14344 */
+function commitFromVersion(v?: string): string | undefined {
+  return v?.match(/-g([0-9a-f]{7,40})$/i)?.[1];
+}
+
+interface Changelog {
+  compareUrl: string;
+  total: number;
+  lines: string[];
+}
+
+/**
+ * List commits between two deployed versions via the app repo's public compare API.
+ * Never throws — changelog is enrichment, not a dependency.
+ */
+async function fetchChangelog(
+  prevVersion: string,
+  currVersion: string,
+): Promise<Changelog | null> {
+  const repo = process.env.APP_REPO || 'penpot/penpot';
+  const oldSha = commitFromVersion(prevVersion);
+  const newSha = commitFromVersion(currVersion);
+  if (!oldSha || !newSha) return null;
+  try {
+    const headers: Record<string, string> = {
+      'Accept': 'application/vnd.github+json',
+      'User-Agent': 'qa-triage',
+    };
+    if (process.env.GITHUB_TOKEN)
+      headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+    const r = await fetch(
+      `https://api.github.com/repos/${repo}/compare/${oldSha}...${newSha}`,
+      { headers },
+    );
+    if (!r.ok) {
+      console.log(`Changelog fetch skipped: compare API -> ${r.status}`);
+      return null;
+    }
+    const data = await r.json();
+    const commits: Array<{ sha: string; commit: { message: string } }> =
+      data.commits ?? [];
+    const lines = commits
+      .map(
+        (c) =>
+          `- \`${c.sha.slice(0, 10)}\` ${c.commit.message.split('\n')[0].slice(0, 100)}`,
+      )
+      .slice(-30); // most recent 30
+    return {
+      compareUrl: `https://github.com/${repo}/compare/${oldSha}...${newSha}`,
+      total: data.total_commits ?? commits.length,
+      lines,
+    };
+  } catch (e) {
+    console.log(`Changelog fetch skipped: ${e instanceof Error ? e.message : e}`);
+    return null;
+  }
+}
+
 function taigaLink(ref?: number): string {
   if (!ref) return 'Taiga #?';
-  const base = process.env.TAIGA_URL;
+  // Links must use the web UI host (tree.taiga.io on cloud), not the API host.
+  // Also: TAIGA_URL is a GitHub *secret*, so any link built from it gets masked
+  // to *** in job summaries — TAIGA_PUBLIC_URL is a plain variable and doesn't.
+  // `||` not `??`: GitHub Actions passes unset vars as empty strings.
+  const base = process.env.TAIGA_PUBLIC_URL || process.env.TAIGA_URL;
   const project = process.env.TAIGA_PROJECT;
   return base && project
     ? `[Taiga #${ref}](${base}/project/${project}/us/${ref})`
@@ -616,22 +849,28 @@ function taigaLink(ref?: number): string {
 }
 
 function clusterDescription(c: Cluster): string {
+  const qaseIds = c.tests.map((t: Failure) => t.qaseId).filter(Boolean);
   const lines = [
-    `**Error signature** \`${c.fingerprint}\``,
+    `**Error:** \`${conciseError(c.errorSample)}\``,
     '',
-    '```',
-    c.errorSample,
-    '```',
+    `**Spec files affected (${c.files.size}):**`,
+    ...[...c.files].map((f: string) => `- \`${f}\``),
+    '',
+    `**Qase IDs affected:** ${qaseIds.length ? qaseIds.map((q) => `\`${q}\``).join(', ') : '_none linked_'}`,
     '',
     `**Affected tests (${c.tests.length}):**`,
     ...c.tests.map(
       (t: Failure) =>
-        `- \`${t.testId}\`${t.retries ? ` (${t.retries} retries)` : ''}`,
+        `- \`${t.title}\`${t.qaseId ? ` (Qase: ${t.qaseId})` : ''} — \`${t.file}\`${t.retries ? ` (${t.retries} retries)` : ''}`,
     ),
     '',
-    REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
+    '**Full error:**',
+    '```',
+    c.errorSample,
+    '```',
     '',
-    '_Auto-created by daily triage. Classify: real bug vs test to update._',
+    REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
+    `_Cluster \`${c.fingerprint}\` — auto-created by daily triage. Classify: real bug vs test to update._`,
   ];
   return lines.join('\n');
 }
