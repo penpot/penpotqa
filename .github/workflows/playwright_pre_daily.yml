@@ -29,6 +29,9 @@ jobs:
       - name: Run Playwright tests
         id: run-tests
         env:
+          QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
+          QASE_MODE: testops
+          QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
@@ -42,7 +45,16 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: npx playwright test --project=chrome
+        run: npx playwright test --project=chrome 2>&1 | tee test-output.log
+
+      - name: Add Qase run link to summary
+        if: always()
+        run: |
+          QASE_LINK=$(grep -oP 'https://app\.qase\.io/run/[A-Z0-9]+/dashboard/\d+' test-output.log | head -1)
+          if [ -n "$QASE_LINK" ]; then
+            echo "## Qase Report" >> $GITHUB_STEP_SUMMARY
+            echo "🔗 [View run in Qase]($QASE_LINK)" >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports

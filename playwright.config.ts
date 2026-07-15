@@ -16,8 +16,8 @@ export default defineConfig({
     timeout: 15000,
     toMatchSnapshot: {
       maxDiffPixelRatio: 0.001,
+      maxDiffPixels: 30,
     },
-    maxDiffPixels: 30,
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -39,7 +39,29 @@ export default defineConfig({
         [
           'playwright-qase-reporter',
           {
-            logging: true,
+            mode: process.env.QASE_MODE ?? 'off',
+            environment: 'PRE',
+            testops: {
+              api: {
+                token: process.env.QASE_API_TOKEN,
+              },
+              project: process.env.QASE_PROJECT_CODE,
+              run: {
+                title: `[Automated] PRE Chrome Daily - ${new Date().toISOString().split('T')[0]}`,
+                description: 'PRE_chrome_daily',
+                complete: true,
+                tags: ['automated'],
+              },
+              uploadAttachments: true,
+              showPublicReportLink: true,
+            },
+            framework: {
+              browser: {
+                addAsParameter: true,
+                parameterName: 'Browser',
+              },
+              markAsFlaky: true,
+            },
           },
         ],
       ]
