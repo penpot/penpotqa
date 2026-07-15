@@ -58,6 +58,21 @@
         color: var(--faint);
         margin-left: auto;
       }
+      header .src a {
+        color: var(--teal);
+        text-decoration: none;
+      }
+      header .src a:hover {
+        text-decoration: underline;
+      }
+      header .src select {
+        font: inherit;
+        color: var(--faint);
+        background: transparent;
+        border: 1px solid var(--faint);
+        border-radius: 3px;
+        padding: 1px 2px;
+      }
       .kpis {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -276,8 +291,15 @@
     <header>
       <h1>Penpot QA <b>/ automated coverage × real bugs</b></h1>
       <span class="src"
-        >qase regression + github project #8 · generated <span id="gen"></span
-      ></span>
+        >qase regression + github project #8 · generated <span id="gen"></span> ·
+        <a id="zip" href="#" target="_blank" rel="noopener"
+          >download raw data (.zip)</a
+        >
+        ·
+        <select id="history" onchange="if (this.value) location.href = this.value;">
+          <option value="">past runs ▾</option>
+        </select></span
+      >
     </header>
 
     <div class="kpis" id="kpis"></div>
@@ -384,6 +406,22 @@
       /* KPIs */
       const k = DATA.kpi;
       document.getElementById('gen').textContent = DATA.generated_at || '';
+      if (DATA.zip_url) document.getElementById('zip').href = DATA.zip_url;
+
+      /* Past runs — populated from the sibling history.json published by the
+         workflow (same folder as this page, both under latest/ and <date>/). */
+      fetch('history.json')
+        .then((r) => (r.ok ? r.json() : []))
+        .then((history) => {
+          const sel = document.getElementById('history');
+          for (const h of [...history].reverse()) {
+            const opt = document.createElement('option');
+            opt.value = h.url;
+            opt.textContent = h.date;
+            sel.appendChild(opt);
+          }
+        })
+        .catch(() => {});
       document.getElementById('kpis').innerHTML = [
         [k.automated_tests, 'automated tests'],
         [k.total_inventory, 'total case inventory'],

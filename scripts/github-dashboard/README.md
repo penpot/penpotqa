@@ -33,11 +33,15 @@ npx tsx scripts/pipeline.ts
 
 ## Output (`out/`)
 
-- `penpot-qa-dashboard.html` — Self-contained dashboard (no external dependencies)
+- `YYYY-MM-DD-github-dashboard.html` — Self-contained dashboard (no external dependencies)
 - `decision-matrix.csv` — Area × (inventory, tests, bugs, decision)
 - `mapped-bugs.csv` / `mapped-features.csv` — Each issue mapped to an `area` and `map_method`
 - `monthly-trend.csv`
 - `regression-tests.csv`
+
+The `.github/workflows/github-dashboard.yml` workflow additionally bundles this
+whole directory (inputs + `out/`) into a `YYYY-MM-DD-github-dashboard.zip`,
+published next to the HTML and linked from its "download raw data" link.
 
 ## Maintaining the Issue-to-Area Mapping
 
@@ -55,12 +59,13 @@ Cron (every Monday at 08:00):
 0 8 * * 1 cd /path/to/qa-dashboard-pipeline && QASE_API_TOKEN=... GITHUB_TOKEN=... python pipeline.py
 ```
 
-Or using GitHub Actions (store the tokens as repository secrets):
+Or using GitHub Actions — see `.github/workflows/github-dashboard.yml` for the
+actual workflow (store the tokens as repository secrets):
 
 ```yaml
-name: qa-dashboard
+name: github-dashboard
 on:
-  schedule: [{ cron: '0 8 * * 1' }]
+  schedule: [{ cron: '30 4 * * 1' }]
   workflow_dispatch:
 
 jobs:
@@ -76,15 +81,15 @@ jobs:
 
       - run: npm ci || npm install
 
-      - run: npx tsx scripts/pipeline.ts
+      - run: npx tsx scripts/github-dashboard/github_dashboard
         env:
-          QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
+          QASE_TOKEN: ${{ secrets.QASE_API_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.QA_GH_PROJECT_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: qa-dashboard
-          path: out/
+          name: github-dashboard
+          path: scripts/github-dashboard/out/
 ```
 
 > **Note:** The default `GITHUB_TOKEN` provided by GitHub Actions cannot access organization Projects. A Personal Access Token (PAT) stored as a repository secret is required.

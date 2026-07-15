@@ -2,26 +2,29 @@
 /**
  * Penpot QA GitHub Pipeline: Automated Test Coverage vs. Real Bugs
  *
- * TypeScript port of github_pipeline.py — same logic, same outputs.
+ * TypeScript port of github_dashboard.ts — same logic, same outputs.
  * No runtime dependencies: uses the native fetch API (Node >= 18) and fs.
  *
  * Usage:
  *   export QASE_TOKEN=xxxx
  *   export GITHUB_TOKEN=ghp_xxxx   // Classic PAT with the read:project scope
- *   npx tsx scripts/github-dashboard/github_pipeline
+ *   npx tsx scripts/github-dashboard/github_dashboard
  *
  * Retrieves:
  *   - Test suites and test cases from Qase (API v1, paginated in batches of 100)
  *   - Issues from the GitHub Project v2 (GraphQL, including the Status and Type fields)
  *
- * Generates the following files in out/ (run daily via cron, so the dashboard
- * filename is date-prefixed to keep one snapshot per day):
+ * Generates the following files in out/ (run weekly via cron, so the dashboard
+ * filename is date-prefixed to keep one snapshot per run):
  *   - decision-matrix.csv
  *   - mapped-bugs.csv
  *   - mapped-features.csv
  *   - monthly-trend.csv
  *   - regression-tests.csv
- *   - YYYY-MM-DD-penpot-qa-dashboard.html (self-contained)
+ *   - YYYY-MM-DD-github-dashboard.html (self-contained)
+ *   - YYYY-MM-DD-github-dashboard.zip (added by the workflow: this directory's
+ *     input files + out/, so a run's raw data can be pulled straight from the
+ *     dashboard's own "download raw data" link)
  */
 
 import * as fs from 'node:fs';
@@ -37,6 +40,9 @@ const GH_PROJECT_NUMBER = 8;
 
 const QASE_TOKEN = process.env.QASE_TOKEN;
 const GH_TOKEN = process.env.GITHUB_TOKEN;
+// S3 prefix the workflow publishes under (see .github/workflows/github-dashboard.yml);
+// only used to build the "download raw data" zip link embedded in the HTML.
+const S3_PREFIX = process.env.S3_PREFIX || 'github-dashboard';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(HERE, 'out');
@@ -665,12 +671,15 @@ function writeDashboardHtml(
     trend,
     medians: { bugs: medBugs, tests: medTests },
     generated_at: now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC',
+    // Stable pointer (see the workflow's "Publish to S3" step): the zip is
+    // republished under this fixed name on every run, so the link never breaks.
+    zip_url: `https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/${S3_PREFIX}/latest/github-dashboard.zip`,
   };
   const template = fs.readFileSync(
     path.join(HERE, 'dashboard_template.html'),
     'utf-8',
   );
-  const dashboardFilename = `${dateStamp}-penpot-qa-dashboard.html`;
+  const dashboardFilename = `${dateStamp}-github-dashboard.html`;
   fs.writeFileSync(
     path.join(OUT, dashboardFilename),
     template.replace('__DATA__', JSON.stringify(data)),
