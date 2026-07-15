@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release tag (e.g. 26.07) — story will be tagged release-<tag>'
+        description: 'Release tag (e.g. 2.17) — story will be tagged release-<tag>'
         required: true
       report_run_id:
         description: 'Override: specific run id to triage (default: last scheduled daily run on main)'
@@ -36,6 +36,7 @@ permissions:
 jobs:
   triage:
     runs-on: ubuntu-latest
+    environment: PRE # grants access to MATTERMOST_WEBHOOK_DAILY_REPORT (environment secret)
     steps:
       - uses: actions/checkout@v4
 
@@ -100,7 +101,7 @@ jobs:
           TAIGA_PASSWORD: ${{ secrets.TAIGA_PASSWORD }}
           TAIGA_PROJECT: ${{ vars.TAIGA_PROJECT }}
           TAIGA_TAGS: 'needs-triage' # release-<tag> is added automatically
-          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }}
+          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }} # PRE environment secret -> Autotests Reports channel
           # DRY_RUN: "1"
 
       - name: Push per-release triage state

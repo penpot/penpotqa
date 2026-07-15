@@ -34,7 +34,7 @@ function arg(name: string, fallback?: string): string {
 const RESULTS_PATH = arg('results', 'playwright-report/results.json');
 const STATE_PATH = arg('state', '.triage/state.json');
 const REPORT_URL = arg('report-url', '');
-const RELEASE = arg('release', ''); // e.g. "26.07" -> single story tagged release-26.07 with one task per cluster
+const RELEASE = arg('release', ''); // e.g. "2.17" -> single story tagged release-2.17 with one task per cluster
 const GROUP_BY = arg('group-by', 'cluster'); // release-mode tasks: 'cluster' (one per root cause) or 'file' (one per spec file)
 const EPIC_REF = arg('epic-ref', ''); // optional: Taiga epic ref (#number) to link created stories under
 const DRY_RUN = process.env.DRY_RUN === '1';
@@ -614,7 +614,7 @@ async function main() {
     fs.writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
   }
 
-  // ----- Digest (markdown, printed to stdout for Slack/summary step) -----
+  // ----- Digest (markdown: stdout, job summary, and .triage/digest.md) -----
   const digest: string[] = [`## Daily triage — ${today}`, ''];
   digest.push(
     `**${hardFailures.length} failures** in **${clusters.size} clusters** · ${flakyTests.length} flaky · ${resolved.length} resolved`,
@@ -650,7 +650,37 @@ async function main() {
   fs.mkdirSync('.triage', { recursive: true });
   fs.writeFileSync('.triage/digest.md', digestText);
 
-  // ----- Mattermost -----
+  // ----- Mattermost (compressed: verdict + new clusters + resolved; details live in Taiga) -----
+  const releaseStoryRef = RELEASE
+    ? ((state as any)['__release_story__'] as StateEntry | undefined)?.taigaRef
+    : undefined;
+  const mm: string[] = [];
+  const verdict = `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — ${newClusters.length} new · ${knownClusters.length} known · ${resolved.length} resolved${releaseStoryRef ? ` · ${taigaLink(releaseStoryRef)}` : ''}`;
+  mm.push(verdict);
+  if (newClusters.length) {
+    mm.push('', '**New:**');
+    for (const c of newClusters) {
+      mm.push(
+        `- \`${conciseError(c.errorSample)}\` — ${c.tests.length} test${c.tests.length > 1 ? 's' : ''}${qaseList(c)}`,
+      );
+    }
+  }
+  if (resolved.length) {
+    mm.push(
+      '',
+      `**Resolved (close?):** ${resolved.map((fp) => taigaLink(state[fp].taigaRef)).join(', ')}`,
+    );
+  }
+  mm.push(
+    '',
+    `${hardFailures.length} failures · ${flakyTests.length} flaky${REPORT_URL ? ` · [HTML report](${REPORT_URL})` : ''}`,
+  );
+  const nothingChanged =
+    newClusters.length === 0 && resolved.length === 0 && knownClusters.length > 0;
+  const mmText = nothingChanged
+    ? `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — re-run: nothing new, ${knownClusters.length} known cluster${knownClusters.length > 1 ? 's' : ''} still failing.${releaseStoryRef ? ` ${taigaLink(releaseStoryRef)}` : ''}`
+    : mm.join('\n');
+
   const mmWebhook = process.env.MATTERMOST_WEBHOOK_URL;
   if (mmWebhook && !DRY_RUN) {
     const r = await fetch(mmWebhook, {
@@ -659,13 +689,18 @@ async function main() {
       body: JSON.stringify({
         username: 'Daily Triage',
         icon_emoji: ':test_tube:',
-        // channel: 'qa-daily',  // optional override; defaults to the webhook's channel
-        text: digestText,
+        text: mmText,
       }),
     });
     if (!r.ok)
       console.error(`Mattermost post failed: ${r.status} ${await r.text()}`);
     else console.log('Digest posted to Mattermost');
+  } else if (DRY_RUN) {
+    console.log(
+      '\n----- MATTERMOST PREVIEW -----\n' +
+        mmText +
+        '\n------------------------------',
+    );
   }
 }
 
