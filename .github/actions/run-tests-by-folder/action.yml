@@ -29,11 +29,6 @@ inputs:
     required: false
     default: ''
     type: string
-  grep-invert:
-    description: 'Invert grep pattern (exclude tests matching pattern)'
-    required: false
-    default: 'PERF'
-    type: string
 
 runs:
   using: 'composite'
@@ -75,11 +70,6 @@ runs:
         # Add grep pattern if specified
         if [ -n "${{ inputs.grep-pattern }}" ]; then
           CMD="$CMD -g '${{ inputs.grep-pattern }}'"
-        fi
-
-        # Add grep invert if specified
-        if [ -n "${{ inputs.grep-invert }}" ]; then
-          CMD="$CMD --grep-invert  '${{ inputs.grep-invert }}'"
         fi
 
         # Add the test folder

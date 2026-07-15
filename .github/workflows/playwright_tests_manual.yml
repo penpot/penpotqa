@@ -32,7 +32,6 @@ on:
           - tests/dashboard/trash
           - tests/login-signup
           - tests/panels-features
-          - tests/performance
           - tests/plugins
           - tests/your-account
           - tests/subscription-plans
