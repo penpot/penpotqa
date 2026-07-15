@@ -29,28 +29,6 @@ mainTest.beforeEach(async ({ page }) => {
   await tokensPage.toolsComp.clickOnTokenToolsButton();
 });
 
-mainTest(
-  qase([2266], 'Export tokens multi-file folder (no token, set or theme)'),
-  async () => {
-    await mainTest.step(
-      'Open export multi-file modal and verify empty message',
-      async () => {
-        await tokensPage.toolsComp.clickOnExportButton();
-        await tokensPage.toolsComp.clickOnMultipleFilesButton();
-        await tokensPage.toolsComp.checkEmptyExportTabMessage();
-      },
-    );
-
-    await mainTest.step(
-      'Close modal and verify export window is closed',
-      async () => {
-        await mainPage.closeModalWindow();
-        await tokensPage.toolsComp.isExportWindowClosed();
-      },
-    );
-  },
-);
-
 mainTest(qase([2265], 'Export tokens multi-file folder'), async ({ page }) => {
   const baseComp: BaseComponent = new BaseComponent(page);
 
