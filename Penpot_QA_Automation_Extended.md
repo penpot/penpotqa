@@ -386,47 +386,6 @@ registerTest('Verify invitation email', async ({ page, email, name }) => {
 });
 ```
 
-### 5.3 performanceTest - Performance Measurement Tests
-
-**Use Case:** Performance testing with pre-loaded large files
-
-**Features:**
-
-- ✅ Imports large design file (`Penpot - Design System v2.0.penpot`, 9.8 MB)
-- ✅ Pre-configured shape IDs for testing
-- ✅ Cleanup before tests
-- ✅ Configurable working file and shapes
-
-**Code Structure:**
-
-```javascript
-const performanceTest = base.test.extend({
-  workingFile: ['documents/Penpot - Design System v2.0.penpot', { option: true }],
-  workingShapes: [
-    {
-      pageId: '582296a0-d6b1-11ec-a04a-cf2544e40df7',
-      singleId: '#shape-5bb9c720-d6b1-11ec-a04a-cf2544e40df7',
-      multipleIds: [/* array of shape IDs */],
-    },
-    { option: true },
-  ],
-
-  page: async ({ page, workingFile }, use) => {
-    // Login and import file
-    await dashboardPage.importAndOpenFile(workingFile);
-    await use(page);
-  },
-});
-```
-
-**Usage:**
-
-```javascript
-performanceTest('PERF Render shapes with blur', async ({ page, workingShapes }) => {
-  // Test runs with large file already loaded
-});
-```
-
 ---
 
 ## 6. Test Isolation Strategy - Parallel Execution Without Conflicts
