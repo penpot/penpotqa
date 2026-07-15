@@ -65,7 +65,6 @@ export default defineConfig({
   projects: [
     {
       name: 'chrome',
-      grepInvert: /@perf/,
       expect: {
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.0001,

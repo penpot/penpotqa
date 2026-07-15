@@ -12,7 +12,7 @@ Playwright E2E test suite for [Penpot](https://penpot.app), an open-source UI/UX
 # Install
 nvm use && npm install && npx playwright install
 
-# Run all tests (Chrome, excludes performance)
+# Run all tests (Chrome)
 npm test
 
 # Run a single test file
@@ -46,13 +46,11 @@ All page interactions are abstracted into page objects under `pages/`:
 - **`pages/workspace/tokens/`** — Design tokens feature (TypeScript). Uses `BaseComponent` as base class with a component composition pattern: `TokensBasePage` composes `SetsComponent`, `ThemesComponent`, `ToolsComponent`, and token-type components.
 - **`pages/dashboard/`** — Dashboard and team management: `dashboard-page.js`, `team-page.js`, `dashboard-deleted-page.ts`
 - **`pages/login-page.js`**, **`register-page.js`**, **`profile-page.js`**, **`forgot-password-page.js`** — Auth flows
-- **`pages/performance-page.js`** — Page object for performance tests
 
 ### Test Fixtures (`fixtures.ts`)
 
 - **`mainTest`** — Auto-logs in before each test, lands on dashboard. Used by most tests.
 - **`registerTest`** — Creates a fresh account via Gmail API. Provides `name` and `email` fixtures.
-- **`performanceTest`** — Logs in and imports a large `.penpot` file for perf benchmarks.
 
 ### Test Organization (`tests/`)
 

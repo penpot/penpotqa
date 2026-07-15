@@ -65,7 +65,7 @@ Prerequisites:
 
 Available scripts:
 
-- `npm run test:docker` - runs `docker compose run --rm playwright`. It installs the project dependencies, installs Chrome with its OS dependencies inside the container, and runs `npx playwright test --project=chrome --grep-invert 'PERF'` (equivalent to `npm test`, but inside Docker).
+- `npm run test:docker` - runs `docker compose run --rm playwright`. It installs the project dependencies, installs Chrome with its OS dependencies inside the container, and runs `npx playwright test --project=chrome` (equivalent to `npm test`, but inside Docker).
 - `npm run test:docker:ui` - runs `docker compose run --rm --service-ports playwright-ui`. Same as above, but launches Playwright in UI mode and exposes it on port `8080`, so it can be opened at `http://localhost:8080`.
 
 The `docker-compose.yml` file accepts the following variables, which can be set in the `.env` file:
@@ -132,16 +132,7 @@ Note 1: there is a known issue that Chrome does render differently in headless a
 `expect.toHaveScreenshot.maxDiffPixelRatio: 0.01` is set in _playwright.config.js_ for "chrome" project , which means that
 an acceptable ratio of pixels that are different to the total amount of pixels is 1% within screenshot comparison.
 
-**9. Performance testing.**
-
-To exclude performance tests from the periodical regression test run the following scripts should be used:
-
-- for Chrome: `"npx playwright test --project=chrome --grep-invert  'PERF'"`
-
-Note: The above scripts should be executed via the command line. Do not run them directly from the _package.json_,
-because in such way performance tests are not ignored.
-
-**10. Check Qase non-regression tests.**
+**9. Check Qase non-regression tests.**
 
 A script is available to check which test cases in Qase are non-regression:
 

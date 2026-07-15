@@ -5,14 +5,12 @@
   "main": "index.js",
   "scripts": {
     "open": " npx playwright test --ui",
-    "test": "npx playwright test --project=chrome --grep-invert  'PERF'",
+    "test": "npx playwright test --project=chrome",
     "changed": "npx playwright test --project=chrome --only-changed",
-    "testLogin": "npx playwright test --project=chrome --grep-invert  'PERF' ./tests/panels-features/panels-features-fill.spec.js",
+    "testLogin": "npx playwright test --project=chrome ./tests/panels-features/panels-features-fill.spec.js",
     "updateSnapshots": "npx playwright test --project=chrome --update-snapshots",
     "test:docker": "docker compose run --rm playwright",
     "test:docker:ui": "docker compose run --rm --service-ports playwright-ui",
-    "performance": "npx playwright test --retries=1 --timeout=555550000 --project=chrome -g 'PERF'",
-    "performance:debug": "npx playwright test --debug --timeout=555550000 --project=chrome -g 'PERF'",
     "prettier": "npx prettier --write .",
     "prepare": "husky"
   },
