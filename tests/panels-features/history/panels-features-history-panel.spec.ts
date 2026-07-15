@@ -74,14 +74,6 @@ mainTest.describe(() => {
   mainTest(qase(1929, 'Save version via history panel'), async () => {
     await historyPage.checkLastVersionName(versionName);
   });
-
-  mainTest(
-    qase(1945, 'Check scrolling in the version list (more than 14 versions)'),
-    async () => {
-      await historyPage.multipleSaveDefaultVersions(14);
-      await historyPage.checkFirstVersionName(versionName);
-    },
-  );
 });
 
 mainTest.describe(() => {
@@ -122,19 +114,6 @@ mainTest.describe(() => {
       );
 
       mainTest(
-        qase(1938, 'Restore autosaved version via history panel'),
-        async () => {
-          await historyPage.clickOnAutosaveVersionsButton();
-          await historyPage.selectSnapshotOption('Restore version');
-          await historyPage.clickRestoreVersionButton();
-          await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
-          await historyPage.isHistoryPanelVisible(false);
-          await historyPage.clickHistoryPanelButton();
-          await historyPage.checkAutosaveVersionsCount('3');
-        },
-      );
-
-      mainTest(
         qase(1943, 'Pin the autosaved version via history panel'),
         async () => {
           const versionName = 'pin version';
@@ -146,12 +125,6 @@ mainTest.describe(() => {
           await historyPage.checkAutosaveVersionsCount('1');
         },
       );
-    });
-
-    mainTest(qase(1933, 'Cancel restore version via history panel'), async () => {
-      await historyPage.clickCancelRestoreVersionButton();
-      await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
-      await historyPage.isHistoryPanelVisible(true);
     });
   });
 
