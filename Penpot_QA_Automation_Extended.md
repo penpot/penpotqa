@@ -46,7 +46,6 @@ This document contains comprehensive information about the Penpot QA automation 
 
 - [20. Maintenance Guidelines](#20-maintenance-guidelines)
 - [21. Important Technical Details](#21-important-technical-details)
-- [22. Performance Testing (Legacy Feature)](#22-performance-testing-legacy-feature)
 
 ### 🎯 Architecture Decisions
 
@@ -143,7 +142,6 @@ penpotqa1/
 │   ├── dashboard/
 │   ├── login-signup/
 │   ├── panels-features/
-│   ├── performance/      # (Excluded from regular runs)
 │   ├── plugins/
 │   ├── profile/
 │   ├── subscription-plans/
@@ -194,18 +192,12 @@ npx playwright --version
 
 | Type of Run            | Command                                 | Example                                                     |
 | ---------------------- | --------------------------------------- | ----------------------------------------------------------- |
-| All Tests              | `npm test`                              | Runs all non-performance tests in Chrome                    |
+| All Tests              | `npm test`                              | Runs all tests in Chrome                                    |
 | Single Test (by title) | `npx playwright test -g "<Test Title>"` | `npx playwright test -g "CO-154 Transform ellipse to path"` |
 | Single Test Spec       | `npx playwright test <path>`            | `npx playwright test tests/login.spec.js`                   |
 | Specific Folder        | `npx playwright test <folder>`          | `npx playwright test tests/dashboard`                       |
 | Changed Tests Only     | `npm run changed`                       | Runs only changed test files                                |
 | UI Mode                | `npm run open`                          | Opens Playwright UI mode for debugging                      |
-
-**Excluding Performance Tests:**
-
-```bash
-npx playwright test --grep-invert 'PERF'
-```
 
 ---
 
@@ -414,9 +406,7 @@ const performanceTest = base.test.extend({
     {
       pageId: '582296a0-d6b1-11ec-a04a-cf2544e40df7',
       singleId: '#shape-5bb9c720-d6b1-11ec-a04a-cf2544e40df7',
-      multipleIds: [
-        /* array of shape IDs */
-      ],
+      multipleIds: [/* array of shape IDs */],
     },
     { option: true },
   ],
@@ -1428,7 +1418,7 @@ npm update
 
 ### Adding New Tests
 
-1. **Choose appropriate fixture:** mainTest, registerTest, or performanceTest
+1. **Choose appropriate fixture:** mainTest or registerTest
 2. **Create team in beforeEach:** Use random team name
 3. **Clean up in afterEach:** Delete team and resources
 4. **Add Qase ID:** Use `qase(id, 'test name')`
@@ -1492,44 +1482,14 @@ All emails go to same inbox, but Penpot treats them as different users.
 
 ---
 
-## 22. Performance Testing (Legacy Feature)
-
-### Important Notes
-
-**Note 1:** The Performance Testing functionality ('PERF') is a legacy feature and has not been supported for a long time. These commands are only needed to ensure these tests are excluded from the general regression run.
-
-**Note 2:** Importantly, the names of regular regression tests must **not** contain the substring `PERF`, as this will cause them to be excluded from the run due to the use of `--grep-invert 'PERF'`.
-
-### Exclusion Commands
-
-Performance tests must be excluded from regular regression runs:
-
-```bash
-npx playwright test --grep-invert 'PERF'
-```
-
-### Running Performance Tests Only (Not Recommended)
-
-```bash
-npm run performance
-```
-
-**Configuration:**
-
-- Timeout: 555,550,000ms (very long)
-- Retries: 1
-
-⚠️ **Warning:** These tests are not actively maintained and may not work correctly
-
 ---
 
-## 23. Key Architecture Decisions
+## 22. Key Architecture Decisions
 
 ### Why Three Fixtures?
 
 1. **mainTest**: Fast (no registration), most common use case
 2. **registerTest**: Full control, email verification, slower
-3. **performanceTest**: Pre-loaded large files, specialized
 
 ### Why Chrome Only?
 
