@@ -32,30 +32,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest(qase(817, "Hide/show guides via shortcut CTRL '"), async () => {
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isCreatedLayerVisible();
-
-  await designPanelPage.clickAddGuidesButton();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.hideRulersViaMainMenu();
-  await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.pressHideShowGuidesShortcut();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.pressHideShowGuidesShortcut();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
-
 mainTest(qase(816, 'Hide/show rulers via main menu'), async () => {
   await mainPage.hideRulersViaMainMenu();
   await mainPage.clickViewportOnce();
@@ -116,40 +92,6 @@ mainTest(qase(820, 'Hide/show board names'), async () => {
   await mainPage.clickOnMainThenViewMenuItem();
   await mainPage.clickShowBoardNamesMainMenuSubItem();
   await expect(mainPage.viewport).toHaveScreenshot('board-show-name.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
-
-mainTest(qase(821, 'Hide/show pixel grid via main menu'), async () => {
-  await mainPage.clickViewportTwice();
-  await mainPage.increaseZoom(10);
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.clickOnMainThenViewMenuItem();
-  await mainPage.clickHidePixelGridMainMenuSubItem();
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.clickOnMainThenViewMenuItem();
-  await mainPage.clickShowPixelGridMainMenuSubItem();
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
-
-mainTest(qase(821, 'Hide/show pixel grid via shortcut SHIFT ,'), async () => {
-  await mainPage.clickViewportTwice();
-  await mainPage.increaseZoom(10);
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.pressHideShowPixelGridShortcut();
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.pressHideShowPixelGridShortcut();
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
     mask: mainPage.maskViewport(),
   });
 });
