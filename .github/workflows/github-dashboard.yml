@@ -1,0 +1,91 @@
+# .github/workflows/github-dashboard.yml
+#
+# Regenerates the QA coverage dashboard (Qase suites/cases × GitHub Project
+# bugs/features) and publishes the output to S3.
+#
+# Runs every Monday 08:00 UTC. Can also be launched manually from the
+# Actions tab ("GitHub dashboard" -> Run workflow), where you can pick ANY
+# branch — that is the mechanism to verify changes before merging to main.
+#
+# Stable URL after each run:
+#   https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/qa-dashboard/latest/penpot-qa-dashboard.html
+
+name: GitHub dashboard
+
+on:
+  schedule:
+    - cron: '0 8 * * 1' # Mondays 08:00 UTC — note: cron is ALWAYS evaluated on the default branch
+  workflow_dispatch:
+    inputs:
+      s3_prefix:
+        description: 'S3 prefix to publish under (use e.g. qa-dashboard-test when verifying from a branch)'
+        required: false
+        default: 'qa-dashboard'
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Run github_pipeline
+        run: npx tsx scripts/github-dashboard/github_pipeline
+        env:
+          QASE_TOKEN: ${{ secrets.QASE_TOKEN }}
+          # Must be a classic PAT with read:project. The workflow's own
+          # github.token CANNOT read organization Projects v2.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Publish to S3
+        run: |
+          PREFIX="${{ inputs.s3_prefix || 'qa-dashboard' }}"
+          STAMP=$(date -u +%F)
+          DASHBOARD="$STAMP-penpot-qa-dashboard.html"
+          # dated snapshot (keeps history for trend-over-time analysis; the
+          # dashboard filename is already date-prefixed by the github_pipeline)
+          aws s3 sync scripts/github-dashboard/out/ "s3://kaleidos-qa-reports/$PREFIX/$STAMP/"
+          # stable pointer: CSVs keep their names, but the dated dashboard is
+          # also republished under a fixed name so the bookmarked URL never changes
+          aws s3 sync scripts/github-dashboard/out/ "s3://kaleidos-qa-reports/$PREFIX/latest/" --delete --exclude "$DASHBOARD"
+          aws s3 cp "scripts/github-dashboard/out/$DASHBOARD" "s3://kaleidos-qa-reports/$PREFIX/latest/penpot-qa-dashboard.html"
+          echo "Published: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$PREFIX/latest/penpot-qa-dashboard.html"
+
+      - name: Keep artifact as backup
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-dashboard
+          path: scripts/github-dashboard/out/
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          PREFIX="${{ inputs.s3_prefix || 'qa-dashboard' }}"
+          {
+            echo "### QA dashboard"
+            echo ""
+            echo "[Dashboard](https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$PREFIX/latest/penpot-qa-dashboard.html)"
+            echo ""
+            echo '```'
+            column -s, -t scripts/github-dashboard/out/decision-matrix.csv || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
