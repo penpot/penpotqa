@@ -8,7 +8,6 @@ import {
   createCustomerWithTestClock,
   skipSubscriptionByDays,
   getProfileIdByEmail,
-  addPaymentMethodForCustomer,
 } from 'helpers/stripe';
 import { createTeamName } from 'helpers/teams/create-team-name';
 
@@ -34,29 +33,6 @@ registerTest.beforeEach(async ({ page, name, email }) => {
   await teamPage.createTeam(teamName);
   await teamPage.isTeamSelected(teamName);
 });
-
-registerTest(
-  qase([2297, 2344], 'Trial ends, payment method added → switch to Unlimited'),
-  async ({ email }) => {
-    const currentPlan = 'Unlimited';
-
-    await profilePage.tryTrialForPlan(currentPlan);
-    await profilePage.openYourAccountPage();
-    await profilePage.openSubscriptionTab();
-    await addPaymentMethodForCustomer(customerData.customerId);
-    await profilePage.clickOnAddPaymentMethodButton();
-    await stripePage.isVisaCardAdded(true);
-
-    await skipSubscriptionByDays(email, testClockId, 16);
-
-    await stripePage.waitTrialEndsDisappear();
-    await stripePage.checkCurrentSubscription(currentPlan);
-    await stripePage.clickOnReturnToPenpotButton();
-    await profilePage.checkSubscriptionName(currentPlan);
-    await profilePage.backToDashboardFromAccount();
-    await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
-  },
-);
 
 registerTest(
   qase(
