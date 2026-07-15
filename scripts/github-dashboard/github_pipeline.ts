@@ -94,7 +94,8 @@ interface Issue {
 // 1. Qase (REST, paginated in batches of 100)
 // ---------------------------------------------------------------------------
 const QASE_BASE = 'https://api.qase.io/v1';
-const QASE_FILTERS = new Map<string, string>([
+const QASE_REG_FILTERS = new Map<string, string>([['type', 'regression']]);
+const QASE_REG_AUTO_FILTERS = new Map<string, string>([
   ['type', 'regression'],
   ['automation', 'automated'],
 ]);
@@ -133,7 +134,25 @@ const dedupeById = <T extends { id: number }>(arr: T[]): T[] => {
   return [...seen.values()];
 };
 
-async function fetchQase(): Promise<{ suites: Suite[]; cases: TestCase[] }> {
+async function fetchQaseCases(filters: Map<string, string>): Promise<TestCase[]> {
+  console.log(`• Qase: downloading test cases ${[...filters.values()].join(', ')}…`);
+  const cases: TestCase[] = dedupeById(
+    (await qaseGetPaginated('case', Object.fromEntries(filters))).map((c) => ({
+      id: c.id,
+      title: c.title,
+      suite_id: c.suite_id,
+      automation: c.automation,
+    })),
+  );
+  console.log(`  ${cases.length} ${[...filters.values()].join(', ')} cases`);
+  return cases;
+}
+
+async function fetchQase(): Promise<{
+  suites: Suite[];
+  regCases: TestCase[];
+  regAutoCases: TestCase[];
+}> {
   console.log('• Qase: downloading suites…');
   const suites: Suite[] = dedupeById(
     (await qaseGetPaginated('suite')).map((s) => ({
@@ -145,19 +164,9 @@ async function fetchQase(): Promise<{ suites: Suite[]; cases: TestCase[] }> {
   );
   console.log(`  ${suites.length} suites`);
 
-  console.log(
-    `• Qase: downloading test cases ${[...QASE_FILTERS.values()].join(', ')}…`,
-  );
-  const cases: TestCase[] = dedupeById(
-    (await qaseGetPaginated('case', Object.fromEntries(QASE_FILTERS))).map((c) => ({
-      id: c.id,
-      title: c.title,
-      suite_id: c.suite_id,
-      automation: c.automation,
-    })),
-  );
-  console.log(`  ${cases.length} ${[...QASE_FILTERS.values()].join(', ')} cases`);
-  return { suites, cases };
+  const regCases = await fetchQaseCases(QASE_REG_FILTERS);
+  const regAutoCases = await fetchQaseCases(QASE_REG_AUTO_FILTERS);
+  return { suites, regCases, regAutoCases };
 }
 
 function resolveRoots(suites: Suite[]): {
@@ -311,6 +320,17 @@ function countBy<T>(items: T[], key: (x: T) => string): Map<string, number> {
   return m;
 }
 
+function groupBy<T>(items: T[], key: (x: T) => string): Map<string, T[]> {
+  const m = new Map<string, T[]>();
+  for (const it of items) {
+    const k = key(it);
+    const arr = m.get(k);
+    if (arr) arr.push(it);
+    else m.set(k, [it]);
+  }
+  return m;
+}
+
 function median(values: number[]): number {
   const s = [...values].sort((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
@@ -333,6 +353,24 @@ interface AreaRow {
   bugs_per_test: number | null;
   pct_inv_automated: number | null;
   decision: string;
+}
+
+// Per-area references shown as links in the HTML report (not part of the CSVs).
+interface IssueRef {
+  number: number;
+  title: string;
+  url: string;
+  closed: boolean;
+}
+interface TestRef {
+  id: number;
+  title: string;
+  automated: boolean;
+}
+interface AreaLinks {
+  bugs: IssueRef[];
+  features: IssueRef[];
+  tests: TestRef[];
 }
 
 // ---------------------------------------------------------------------------
@@ -362,13 +400,22 @@ const CONSIDERED_TYPES: Record<'bug' | 'feature', string[]> = {
   feature: ['Feature', 'Enhancement'],
 };
 
-export function build(suites: Suite[], cases: TestCase[], projectItems: Issue[]) {
+export function build(
+  suites: Suite[],
+  regCases: TestCase[],
+  regAutoCases: TestCase[],
+  projectItems: Issue[],
+) {
   const { rootOf, inventory, rootNames } = resolveRoots(suites);
 
-  const tests = cases.map((c) => ({
+  const tests = regCases.map((c) => ({
     ...c,
     area: rootOf.get(c.suite_id) ?? '(unknown suite)',
     is_automated: ['automated', '2'].includes(String(c.automation)),
+  }));
+  const autoTests = regAutoCases.map((c) => ({
+    ...c,
+    area: rootOf.get(c.suite_id) ?? '(unknown suite)',
   }));
 
   // Split the project by type, applying the filters defined above
@@ -407,10 +454,7 @@ export function build(suites: Suite[], cases: TestCase[], projectItems: Issue[])
   );
   const featsBy = countBy(feats, (f) => f.area!);
   const testsBy = countBy(tests, (t) => t.area);
-  const autoBy = countBy(
-    tests.filter((t) => t.is_automated),
-    (t) => t.area,
-  );
+  const autoBy = countBy(autoTests, (t) => t.area);
 
   const allAreas = new Set<string>([
     ...rootNames,
@@ -418,6 +462,32 @@ export function build(suites: Suite[], cases: TestCase[], projectItems: Issue[])
     ...featsBy.keys(),
   ]);
   const fallback = MAPPING.fallback_area;
+
+  // Per-area issue/test references for the "check from here" links in the HTML report.
+  const toIssueRef = (i: Issue): IssueRef => ({
+    number: i.number,
+    title: i.Title,
+    url: i.URL,
+    closed: !!i.Closed,
+  });
+  const toTestRef = (t: (typeof tests)[number]): TestRef => ({
+    id: t.id,
+    title: t.title,
+    automated: t.is_automated,
+  });
+  const bugsByArea = groupBy(bugs, (b) => b.area!);
+  const featsByArea = groupBy(feats, (f) => f.area!);
+  const testsByArea = groupBy(tests, (t) => t.area);
+  const linksByArea = new Map<string, AreaLinks>(
+    [...allAreas].map((area) => [
+      area,
+      {
+        bugs: (bugsByArea.get(area) ?? []).map(toIssueRef),
+        features: (featsByArea.get(area) ?? []).map(toIssueRef),
+        tests: (testsByArea.get(area) ?? []).map(toTestRef),
+      },
+    ]),
+  );
 
   const rows: AreaRow[] = [...allAreas].map((area) => {
     const automated = autoBy.get(area) ?? 0;
@@ -489,13 +559,16 @@ export function build(suites: Suite[], cases: TestCase[], projectItems: Issue[])
   const dateStamp = now.toISOString().slice(0, 10); // YYYY-MM-DD, used as a filename prefix for daily runs
   const data = {
     kpi: {
-      automated_tests: tests.filter((t) => t.is_automated).length,
+      automated_tests: autoTests.length,
       total_inventory: [...inventory.values()].reduce((a, b) => a + b, 0),
       bugs: bugs.length,
       open_bugs: bugs.filter((b) => !b.Closed).length,
       features: feats.length,
     },
-    areas: rows,
+    areas: rows.map((r) => ({
+      ...r,
+      links: linksByArea.get(r.area) ?? { bugs: [], features: [], tests: [] },
+    })),
     trend,
     medians: { bugs: medBugs, tests: medTests },
     generated_at: now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC',
@@ -523,9 +596,9 @@ async function main() {
   if (!QASE_TOKEN) die('Missing QASE_TOKEN environment variable');
   if (!GH_TOKEN)
     die('Missing GITHUB_TOKEN environment variable (PAT with read:project scope)');
-  const { suites, cases } = await fetchQase();
+  const { suites, regCases, regAutoCases } = await fetchQase();
   const items = await fetchGithubProject();
-  build(suites, cases, items);
+  build(suites, regCases, regAutoCases, items);
 }
 
 // Only run main() when invoked directly (allows importing build() in tests)

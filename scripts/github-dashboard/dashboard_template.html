@@ -208,6 +208,59 @@
         z-index: 9;
         max-width: 260px;
       }
+      .linkable {
+        cursor: pointer;
+        text-decoration: underline dotted var(--faint);
+        text-underline-offset: 2px;
+      }
+      .linkable:hover {
+        color: var(--teal);
+      }
+      .popover {
+        position: fixed;
+        background: #0a0c10;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 6px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--ink);
+        display: none;
+        z-index: 10;
+        width: 320px;
+        max-height: 280px;
+        overflow-y: auto;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      }
+      .popover .ph {
+        color: var(--dim);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-size: 10px;
+        padding: 4px 6px 6px;
+      }
+      .popover a {
+        display: block;
+        color: var(--ink);
+        text-decoration: none;
+        padding: 5px 6px;
+        border-radius: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .popover a:hover {
+        background: var(--panel2);
+        color: var(--teal);
+      }
+      .popover a.closed {
+        color: var(--faint);
+        text-decoration: line-through;
+      }
+      .popover .empty {
+        color: var(--faint);
+        padding: 5px 6px;
+      }
       footer {
         font-family: var(--mono);
         font-size: 11px;
@@ -270,6 +323,10 @@
 
     <section>
       <h2>Detail and decision by area</h2>
+      <p class="sub">
+        Click a bug, test, or feature count to open the underlying GitHub issues /
+        Qase cases.
+      </p>
       <table id="tbl">
         <thead>
           <tr>
@@ -299,6 +356,7 @@
     </footer>
 
     <div class="tip" id="tip"></div>
+    <div class="popover" id="popover"></div>
 
     <script>
       const DATA = __DATA__;
@@ -463,12 +521,99 @@
             (order[a.decision.split(/[ :]/)[0]] ?? 9) -
               (order[b.decision.split(/[ :]/)[0]] ?? 9) || b.bugs - a.bugs,
         );
+
+        const esc = (s) =>
+          String(s).replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;',
+              })[c],
+          );
+
+        const linkCell = (area, kind, n) =>
+          n > 0
+            ? `<span class="linkable" data-area="${esc(area)}" data-kind="${kind}">${n}</span>`
+            : n;
+
         tb.innerHTML = rows
           .map(
             (a) =>
-              `<tr><td>${a.area}</td><td>${a.total_inventory}</td><td>${a.regression_tests}</td><td>${a.automated}</td><td>${a.pct_inv_automated != null ? a.pct_inv_automated + '%' : '—'}</td><td>${a.bugs}</td><td>${a.open_bugs}</td><td>${a.features}</td><td>${a.bugs_per_test ?? '—'}</td><td style="text-align:left"><span class="tag ${cls(a.decision)}">${a.decision}</span></td></tr>`,
+              `<tr><td>${a.area}</td><td>${a.total_inventory}</td><td>${linkCell(a.area, 'tests', a.regression_tests)}</td><td>${linkCell(a.area, 'autoTests', a.automated)}</td><td>${a.pct_inv_automated != null ? a.pct_inv_automated + '%' : '—'}</td><td>${linkCell(a.area, 'bugs', a.bugs)}</td><td>${linkCell(a.area, 'openBugs', a.open_bugs)}</td><td>${linkCell(a.area, 'features', a.features)}</td><td>${a.bugs_per_test ?? '—'}</td><td style="text-align:left"><span class="tag ${cls(a.decision)}">${a.decision}</span></td></tr>`,
           )
           .join('');
+
+        /* Link popover: click a linkable count to list its GitHub issues / Qase cases */
+        const popover = document.getElementById('popover');
+        const LABELS = {
+          bugs: 'Bugs',
+          openBugs: 'Open bugs',
+          features: 'Features',
+          tests: 'Regression tests',
+          autoTests: 'Automated tests',
+        };
+        const itemsFor = (area, kind) => {
+          const row = DATA.areas.find((r) => r.area === area);
+          const links = (row && row.links) || { bugs: [], features: [], tests: [] };
+          switch (kind) {
+            case 'bugs':
+              return links.bugs;
+            case 'openBugs':
+              return links.bugs.filter((b) => !b.closed);
+            case 'features':
+              return links.features;
+            case 'tests':
+              return links.tests;
+            case 'autoTests':
+              return links.tests.filter((t) => t.automated);
+            default:
+              return [];
+          }
+        };
+        const renderItems = (kind, items) => {
+          if (items.length === 0) return '<div class="empty">none</div>';
+          if (kind === 'tests' || kind === 'autoTests')
+            return items
+              .map(
+                (t) =>
+                  `<a href="https://app.qase.io/case/PENPOT-${t.id}" target="_blank" rel="noopener">PENPOT-${t.id} ${esc(t.title)}</a>`,
+              )
+              .join('');
+          return items
+            .map(
+              (i) =>
+                `<a href="${esc(i.url)}" target="_blank" rel="noopener" class="${i.closed ? 'closed' : ''}">#${i.number} ${esc(i.title)}</a>`,
+            )
+            .join('');
+        };
+
+        tb.querySelectorAll('.linkable').forEach((el) => {
+          el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const { area, kind } = el.dataset;
+            const items = itemsFor(area, kind);
+            popover.innerHTML = `<div class="ph">${esc(area)} · ${LABELS[kind]} (${items.length})</div>${renderItems(kind, items)}`;
+            popover.style.display = 'block';
+            const r = el.getBoundingClientRect();
+            const top = Math.max(
+              Math.min(r.bottom + 6, window.innerHeight - 290),
+              8,
+            );
+            const left = Math.max(Math.min(r.left, window.innerWidth - 336), 8);
+            popover.style.top = `${top}px`;
+            popover.style.left = `${left}px`;
+          });
+        });
+        document.addEventListener('click', (e) => {
+          if (!popover.contains(e.target)) popover.style.display = 'none';
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') popover.style.display = 'none';
+        });
       })();
     </script>
   </body>
