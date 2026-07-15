@@ -3,7 +3,6 @@
 
   "label_map": {
     "IOP tokens": "Tokens",
-    "IOP render": "WASM renderer",
     "IOP components": "Components V2",
     "IOP variants": "Components V2",
     "IOP plugins": "Plugins",
@@ -13,7 +12,7 @@
 
   "keyword_map": [
     ["\\btoken", "Tokens"],
-    ["\\bwasm|webgl|render(er|ing)?\\b", "WASM renderer"],
+    ["\\bwasm|webgl|wasm|render(er|ing)?\\b", "WASM renderer"],
     ["\\bvariant|component", "Components V2"],
     ["\\bswap\\b", "Swap functionality"],
     ["\\bplugin", "Plugins"],
