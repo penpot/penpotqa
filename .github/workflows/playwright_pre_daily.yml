@@ -55,6 +55,21 @@ jobs:
           testdino_api_key: ${{ secrets.TDPW_API_KEY }}
         if: always()
 
+      - name: Record deployed app version
+        if: always()
+        continue-on-error: true
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+        run: |
+          # Penpot embeds its version directly in the page:
+          #   globalThis.penpotVersion = "2.17.0-...";
+          # (verified against penpot/penpot frontend/resources/templates/index.mustache)
+          VERSION=$(curl -sL "$BASE_URL" | grep -oE 'penpotVersion = "[^"]+"' | head -1 | sed 's/penpotVersion = "//; s/"$//')
+          VERSION=${VERSION:-unknown}
+          echo "Deployed app version: $VERSION"
+          echo "$VERSION" > app-version.txt
+          aws s3 cp app-version.txt "s3://kaleidos-qa-reports/run-${{ github.run_id }}/app-version.txt"
+
       - name: Send Mattermost Notification
         uses: ./.github/actions/send-notification
         with:

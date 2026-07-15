@@ -37,6 +37,7 @@ const REPORT_URL = arg('report-url', '');
 const RELEASE = arg('release', ''); // e.g. "2.17" -> single story tagged release-2.17 with one task per cluster
 const GROUP_BY = arg('group-by', 'cluster'); // release-mode tasks: 'cluster' (one per root cause) or 'file' (one per spec file)
 const EPIC_REF = arg('epic-ref', ''); // optional: Taiga epic ref (#number) to link created stories under
+const APP_VERSION = arg('app-version', ''); // optional: deployed app version this report ran against
 const DRY_RUN = process.env.DRY_RUN === '1';
 
 // ---------- Types ----------
@@ -370,6 +371,24 @@ async function main() {
     : {};
 
   const today = new Date().toISOString().slice(0, 10);
+
+  // ----- App version tracking -----
+  const prevVersion = (state as any)['__app_version__'] as
+    { version: string; date: string } | undefined;
+  const versionChanged = !!(
+    APP_VERSION &&
+    prevVersion?.version &&
+    prevVersion.version !== APP_VERSION
+  );
+  if (APP_VERSION && !DRY_RUN) {
+    (state as any)['__app_version__'] = { version: APP_VERSION, date: today };
+  }
+  const versionLine = APP_VERSION
+    ? `App version: **${APP_VERSION}**${versionChanged ? ` — changed from ${prevVersion!.version} (recorded ${prevVersion!.date})` : prevVersion ? ' (unchanged since last triage)' : ''}`
+    : '';
+  const changelog = versionChanged
+    ? await fetchChangelog(prevVersion!.version, APP_VERSION)
+    : null;
   const newClusters: Cluster[] = [];
   const knownClusters: Cluster[] = [];
   const resolved: string[] = [];
@@ -453,6 +472,13 @@ async function main() {
         REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
         '',
         'Each task below is one failure cluster (one root cause). Classify each as real bug or test to update.',
+        ...(changelog
+          ? [
+              '',
+              `**App changes since last triage (${changelog.total} commits, [compare](${changelog.compareUrl})):**`,
+              ...changelog.lines,
+            ]
+          : []),
       ].join('\n');
       const { id, ref } = await taiga.createUserStory(subject, description, [
         ...storyTags,
@@ -552,6 +578,16 @@ async function main() {
         `Re-run on ${today}: ${knownClusters.length} cluster(s) still failing, ${newClusters.length} new. Report: ${REPORT_URL}`,
       );
     }
+    if (taiga && storyId && changelog && !!storyState?.taigaId) {
+      // story pre-existed and the app changed since -> post the changelog as a comment
+      await taiga.commentStory(
+        storyId,
+        [
+          `App changed: \`${prevVersion!.version}\` -> \`${APP_VERSION}\` (${changelog.total} commits, [compare](${changelog.compareUrl}))`,
+          ...changelog.lines,
+        ].join('\n'),
+      );
+    }
   } else {
     // ----- Daily mode: one user story per cluster, one task per test -----
     for (const c of newClusters) {
@@ -619,6 +655,12 @@ async function main() {
   digest.push(
     `**${hardFailures.length} failures** in **${clusters.size} clusters** · ${flakyTests.length} flaky · ${resolved.length} resolved`,
   );
+  if (versionLine) digest.push(versionLine);
+  if (changelog) {
+    digest.push(
+      `App changes since last triage: **${changelog.total} commits** — [compare](${changelog.compareUrl})`,
+    );
+  }
   if (REPORT_URL) digest.push(`[Full HTML report](${REPORT_URL})`);
   digest.push('');
   if (newClusters.length) {
@@ -655,7 +697,7 @@ async function main() {
     ? ((state as any)['__release_story__'] as StateEntry | undefined)?.taigaRef
     : undefined;
   const mm: string[] = [];
-  const verdict = `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — ${newClusters.length} new · ${knownClusters.length} known · ${resolved.length} resolved${releaseStoryRef ? ` · ${taigaLink(releaseStoryRef)}` : ''}`;
+  const verdict = `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — ${newClusters.length} new · ${knownClusters.length} known · ${resolved.length} resolved${releaseStoryRef ? ` · ${taigaLink(releaseStoryRef)}` : ''}${APP_VERSION ? `\napp \`${APP_VERSION}\`${versionChanged ? ` :warning: changed from \`${prevVersion!.version}\`${changelog ? ` ([${changelog.total} commits](${changelog.compareUrl}))` : ''}` : ''}` : ''}`;
   mm.push(verdict);
   if (newClusters.length) {
     mm.push('', '**New:**');
@@ -731,6 +773,66 @@ function conciseError(msg: string): string {
     );
   else if (exp) parts.push(`expected ${exp[1].trim().slice(0, 40)}`);
   return parts.length ? `${first} — ${parts.join(' — ')}` : first;
+}
+
+// ---------- App changelog (public repo compare) ----------
+
+/** Extract the commit hash from a git-describe style version: 2.17.0-RC3-18-g85dbf14344 -> 85dbf14344 */
+function commitFromVersion(v?: string): string | undefined {
+  return v?.match(/-g([0-9a-f]{7,40})$/i)?.[1];
+}
+
+interface Changelog {
+  compareUrl: string;
+  total: number;
+  lines: string[];
+}
+
+/**
+ * List commits between two deployed versions via the app repo's public compare API.
+ * Never throws — changelog is enrichment, not a dependency.
+ */
+async function fetchChangelog(
+  prevVersion: string,
+  currVersion: string,
+): Promise<Changelog | null> {
+  const repo = process.env.APP_REPO || 'penpot/penpot';
+  const oldSha = commitFromVersion(prevVersion);
+  const newSha = commitFromVersion(currVersion);
+  if (!oldSha || !newSha) return null;
+  try {
+    const headers: Record<string, string> = {
+      'Accept': 'application/vnd.github+json',
+      'User-Agent': 'qa-triage',
+    };
+    if (process.env.GITHUB_TOKEN)
+      headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+    const r = await fetch(
+      `https://api.github.com/repos/${repo}/compare/${oldSha}...${newSha}`,
+      { headers },
+    );
+    if (!r.ok) {
+      console.log(`Changelog fetch skipped: compare API -> ${r.status}`);
+      return null;
+    }
+    const data = await r.json();
+    const commits: Array<{ sha: string; commit: { message: string } }> =
+      data.commits ?? [];
+    const lines = commits
+      .map(
+        (c) =>
+          `- \`${c.sha.slice(0, 10)}\` ${c.commit.message.split('\n')[0].slice(0, 100)}`,
+      )
+      .slice(-30); // most recent 30
+    return {
+      compareUrl: `https://github.com/${repo}/compare/${oldSha}...${newSha}`,
+      total: data.total_commits ?? commits.length,
+      lines,
+    };
+  } catch (e) {
+    console.log(`Changelog fetch skipped: ${e instanceof Error ? e.message : e}`);
+    return null;
+  }
 }
 
 function taigaLink(ref?: number): string {
