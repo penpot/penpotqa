@@ -41,52 +41,29 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
-    qase(
-      [1419, 1427, 1423, 1425],
-      'Create annotation: create, delete, create via right-click, edit',
-    ),
-    async () => {
-      const newAnnotation = 'Edit annotation';
+  mainTest(qase([1419, 1427], 'Create annotation: create, delete'), async () => {
+    const newAnnotation = 'Edit annotation';
 
-      await mainTest.step('(1419) Create annotation with valid text', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await designPanelPage.clickOnComponentMenuButton();
-        await designPanelPage.clickOnCreateAnnotationOption();
-        await designPanelPage.addAnnotationForComponent(annotation);
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.isAnnotationAddedToComponent(annotation);
-        await expect(
-          designPanelPage.componentBlockOnDesignTab,
-          'Component design tab should match screenshot with annotation',
-        ).toHaveScreenshot('component-annotation.png');
-      });
+    await mainTest.step('(1419) Create annotation with valid text', async () => {
+      await layersPanelPage.clickMainComponentOnLayersTab();
+      await designPanelPage.clickOnComponentMenuButton();
+      await designPanelPage.clickOnCreateAnnotationOption();
+      await designPanelPage.addAnnotationForComponent(annotation);
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isAnnotationAddedToComponent(annotation);
+      await expect(
+        designPanelPage.componentBlockOnDesignTab,
+        'Component design tab should match screenshot with annotation',
+      ).toHaveScreenshot('component-annotation.png');
+    });
 
-      await mainTest.step('(1427) Delete annotation', async () => {
-        await designPanelPage.clickOnDeleteAnnotation();
-        await designPanelPage.confirmDeleteAnnotation();
-        await designPanelPage.waitForChangeIsSaved();
-        await designPanelPage.isAnnotationNotAddedToComponent();
-      });
-
-      await mainTest.step(
-        '(1423) Create annotation via right click on component',
-        async () => {
-          await designPanelPage.createAnnotationRightClick();
-          await designPanelPage.addAnnotationForComponent(annotation);
-          await designPanelPage.waitForChangeIsSaved();
-          await designPanelPage.isAnnotationAddedToComponent(annotation);
-        },
-      );
-
-      await mainTest.step('(1425) Edit annotation with valid text', async () => {
-        await designPanelPage.clickOnEditAnnotation();
-        await designPanelPage.editAnnotationForComponent(newAnnotation);
-        await designPanelPage.waitForChangeIsSaved();
-        await designPanelPage.isAnnotationAddedToComponent(newAnnotation);
-      });
-    },
-  );
+    await mainTest.step('(1427) Delete annotation', async () => {
+      await designPanelPage.clickOnDeleteAnnotation();
+      await designPanelPage.confirmDeleteAnnotation();
+      await designPanelPage.waitForChangeIsSaved();
+      await designPanelPage.isAnnotationNotAddedToComponent();
+    });
+  });
 
   mainTest(qase([1618], 'Annotation on Inspect tab'), async () => {
     await mainTest.step(

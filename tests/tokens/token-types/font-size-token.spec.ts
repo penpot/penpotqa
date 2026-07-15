@@ -66,15 +66,6 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.isTokenVisibleWithName(fontSizeToken.name);
   });
 
-  mainTest(qase([2358], 'Create a font size token'), async () => {
-    await mainTest.step(
-      `Verify "${fontSizeToken.name}" token is visible`,
-      async () => {
-        await tokensPage.tokensComp.isTokenVisibleWithName(fontSizeToken.name);
-      },
-    );
-  });
-
   mainTest(qase([2359], 'Apply a font size token'), async () => {
     await mainTest.step(
       `Apply "${fontSizeToken.name}" token and verify it is applied`,

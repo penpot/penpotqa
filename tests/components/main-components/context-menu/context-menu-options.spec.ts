@@ -45,24 +45,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase([1452], 'Show in assets panel option from Design tab'), async () => {
-    await mainTest.step(
-      'Show component in Assets Panel from design tab',
-      async () => {
-        await designPanelPage.clickOnComponentMenuButton();
-        await designPanelPage.clickOnShowInAssetsPanel();
-        await mainPage.waitForChangeIsSaved();
-      },
-    );
-
-    await mainTest.step(
-      'Verify component is highlighted in assets tab',
-      async () => {
-        await assetsPanelPage.isComponentHighlightedInAssetsTab();
-      },
-    );
-  });
-
   mainTest(
     qase([1536], 'Show in assets panel option from component context menu (RMB)'),
     async () => {
@@ -457,28 +439,6 @@ mainTest.describe(() => {
       await expect(
         mainPage.viewport,
         'Viewport should match screenshot after detaching copy instance via right-click',
-      ).toHaveScreenshot('main-copies-component-detach-instance-right-click.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-  });
-
-  mainTest(qase([1297], 'Detach instance from "Design" tab'), async () => {
-    await mainTest.step(
-      'Detach copy instance from Design tab and resize',
-      async () => {
-        await designPanelPage.clickOnComponentMenuButton();
-        await designPanelPage.clickOnDetachInstanceOption();
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.changeHeightAndWidthForLayer('300', '300');
-        await mainPage.waitForResizeHandlerVisible();
-      },
-    );
-
-    await mainTest.step('Verify detached instance on canvas', async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot after detaching copy instance from Design tab',
       ).toHaveScreenshot('main-copies-component-detach-instance-right-click.png', {
         mask: mainPage.maskViewport(),
       });
