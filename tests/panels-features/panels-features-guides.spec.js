@@ -39,7 +39,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([720], 'Square guides - change size'), async () => {
+  mainTest(qase([3259], 'Square guides - change size'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.changeSizeForGuides('8');
