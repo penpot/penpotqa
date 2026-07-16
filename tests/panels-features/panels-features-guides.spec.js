@@ -53,7 +53,7 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([721], 'Square guides - change opacity'), async () => {
+  mainTest(qase([3260], 'Square guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await designPanelPage.clickGuidesActionsButton();
