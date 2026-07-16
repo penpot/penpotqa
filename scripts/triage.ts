@@ -61,8 +61,11 @@ interface Cluster {
 }
 
 interface StateEntry {
-  taigaRef?: number; // Taiga issue ref
-  taigaId?: number; // Taiga issue id
+  taigaRef?: number; // Taiga story ref (release story in release mode)
+  taigaId?: number; // Taiga story id
+  taskRef?: number; // this cluster's own task ref (release cluster mode)
+  taskId?: number; // this cluster's own task id
+  subject?: string; // task subject, kept so resolved/known lines stay meaningful
   firstSeen: string;
   lastSeen: string;
   consecutiveRuns: number;
@@ -290,6 +293,39 @@ class Taiga {
       );
   }
 
+  async userIdByUsername(username: string): Promise<number | null> {
+    const users = (await this.get(
+      `/api/v1/users?project=${this.projectId}`,
+    )) as Array<{ id: number; username: string }>;
+    return users.find((u) => u.username === username)?.id ?? null;
+  }
+
+  async taskStatusIdByName(name: string): Promise<number | null> {
+    const statuses = (await this.get(
+      `/api/v1/task-statuses?project=${this.projectId}`,
+    )) as Array<{ id: number; name: string }>;
+    return (
+      statuses.find((s) => (s.name ?? '').toLowerCase() === name.toLowerCase())
+        ?.id ?? null
+    );
+  }
+
+  async closeTask(
+    taskId: number,
+    statusId: number,
+    assigneeId: number | null,
+    comment: string,
+  ) {
+    const task = await this.get(`/api/v1/tasks/${taskId}`);
+    const body: Record<string, unknown> = {
+      version: task.version,
+      status: statusId,
+      comment,
+    };
+    if (assigneeId) body.assigned_to = assigneeId;
+    await this.patch(`/api/v1/tasks/${taskId}`, body);
+  }
+
   async commentTask(taskId: number, comment: string) {
     const task = await this.get(`/api/v1/tasks/${taskId}`);
     await this.patch(`/api/v1/tasks/${taskId}`, { version: task.version, comment });
@@ -429,9 +465,19 @@ async function main() {
     }
   }
 
+  // Snapshot resolved entries now — closing may delete them from state below.
+  const resolvedInfo = resolved.map((fp) => ({
+    fp,
+    taskRef: state[fp].taskRef,
+    taskId: state[fp].taskId,
+    storyRef: state[fp].taigaRef,
+    subject: state[fp].subject,
+    closed: false,
+  }));
+
   // ----- Taiga -----
   let taiga: Taiga | null = null;
-  if (!DRY_RUN && newClusters.length + knownClusters.length > 0) {
+  if (!DRY_RUN && newClusters.length + knownClusters.length + resolved.length > 0) {
     taiga = new Taiga(requiredEnv('TAIGA_URL'));
     await taiga.login(
       requiredEnv('TAIGA_USERNAME'),
@@ -563,10 +609,17 @@ async function main() {
       for (const c of newClusters) {
         const taskSubject = `${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
         if (taiga && storyId) {
-          await taiga.createTask(storyId, taskSubject, clusterDescription(c));
+          const { id: taskId, ref: taskRef } = await taiga.createTask(
+            storyId,
+            taskSubject,
+            clusterDescription(c),
+          );
           state[c.fingerprint].taigaId = storyId;
           state[c.fingerprint].taigaRef = storyRef;
-          console.log(`  + task: ${taskSubject}`);
+          state[c.fingerprint].taskId = taskId;
+          state[c.fingerprint].taskRef = taskRef;
+          state[c.fingerprint].subject = taskSubject.slice(0, 120);
+          console.log(`  + task #${taskRef}: ${taskSubject}`);
         } else {
           console.log(`[dry-run]   + task: ${taskSubject}`);
         }
@@ -641,6 +694,50 @@ async function main() {
     }
   }
 
+  // ----- Auto-close resolved tasks (green 3 consecutive triaged runs) -----
+  if (taiga && resolvedInfo.length) {
+    const assigneeName = process.env.TAIGA_CLOSE_ASSIGNEE || 'qa.integrations.bot';
+    const statusName = process.env.TAIGA_CLOSED_STATUS || 'Closed';
+    let statusId: number | null = null;
+    let assigneeId: number | null = null;
+    try {
+      statusId = await taiga.taskStatusIdByName(statusName);
+      assigneeId = await taiga.userIdByUsername(assigneeName);
+      if (!statusId)
+        console.log(
+          `Auto-close skipped: task status "${statusName}" not found in project`,
+        );
+      if (!assigneeId)
+        console.log(
+          `Auto-close: user "${assigneeName}" not found in project — closing without reassigning`,
+        );
+    } catch (e) {
+      console.log(`Auto-close skipped: ${e instanceof Error ? e.message : e}`);
+    }
+    if (statusId) {
+      for (const r of resolvedInfo) {
+        if (!r.taskId) continue; // no own task recorded (file mode / pre-upgrade state) -> stays a manual candidate
+        try {
+          await taiga.closeTask(
+            r.taskId,
+            statusId,
+            assigneeId,
+            `Auto-closed by triage: green for 3 consecutive triaged runs (${today}).`,
+          );
+          r.closed = true;
+          delete state[r.fp]; // if it ever fails again it is a new cluster -> new task
+          console.log(
+            `Closed task #${r.taskRef}${assigneeId ? ` and assigned to ${assigneeName}` : ''}: ${r.subject ?? r.fp}`,
+          );
+        } catch (e) {
+          console.log(
+            `Could not close task #${r.taskRef}: ${e instanceof Error ? e.message : e}`,
+          );
+        }
+      }
+    }
+  }
+
   if (DRY_RUN) {
     console.log(
       '[dry-run] state NOT saved — dry runs leave no trace, so a later real run still sees these failures as new',
@@ -666,9 +763,9 @@ async function main() {
   if (newClusters.length) {
     digest.push(`### New clusters (${newClusters.length})`);
     for (const c of newClusters) {
-      const ref = state[c.fingerprint].taigaRef;
+      const entry = state[c.fingerprint];
       digest.push(
-        `- ${ref ? `${taigaLink(ref)} — ` : ''}\`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})${qaseList(c)}`,
+        `- ${entry?.taigaRef || entry?.taskRef ? `${entryLink(entry)} — ` : ''}\`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})${qaseList(c)}`,
       );
     }
     digest.push('');
@@ -678,14 +775,20 @@ async function main() {
     for (const c of knownClusters) {
       const e = state[c.fingerprint];
       digest.push(
-        `- ${taigaLink(e.taigaRef)} — \`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''}, failing ${e.consecutiveRuns} runs in a row)${qaseList(c)}`,
+        `- ${entryLink(e)} — \`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''}, failing ${e.consecutiveRuns} runs in a row)${qaseList(c)}`,
       );
     }
     digest.push('');
   }
-  if (resolved.length) {
-    digest.push(`### resolved (green 3 runs) — consider closing`);
-    for (const fp of resolved) digest.push(`- ${taigaLink(state[fp].taigaRef)}`);
+  if (resolvedInfo.length) {
+    digest.push(`### resolved (green 3 runs)`);
+    for (const r of resolvedInfo) {
+      const link = r.taskRef ? taigaTaskLink(r.taskRef) : taigaLink(r.storyRef);
+      const label = r.subject ? ` — \`${r.subject}\`` : '';
+      digest.push(
+        `- ${link}${label}${r.closed ? ' → auto-closed & assigned' : r.taskId ? ' → pending auto-close' : ' → close manually (no task recorded)'}`,
+      );
+    }
   }
   const digestText = digest.join('\n');
   console.log('\n' + digestText);
@@ -707,11 +810,19 @@ async function main() {
       );
     }
   }
-  if (resolved.length) {
-    mm.push(
-      '',
-      `**Resolved (close?):** ${resolved.map((fp) => taigaLink(state[fp].taigaRef)).join(', ')}`,
-    );
+  if (resolvedInfo.length) {
+    const closed = resolvedInfo.filter((r) => r.closed);
+    const manual = resolvedInfo.filter((r) => !r.closed);
+    if (closed.length)
+      mm.push(
+        '',
+        `**Auto-closed (green 3 runs):** ${closed.map((r) => taigaTaskLink(r.taskRef)).join(', ')}`,
+      );
+    if (manual.length)
+      mm.push(
+        '',
+        `**Resolved — close manually:** ${manual.map((r) => (r.taskRef ? taigaTaskLink(r.taskRef) : taigaLink(r.storyRef))).join(', ')}`,
+      );
   }
   mm.push(
     '',
@@ -833,6 +944,21 @@ async function fetchChangelog(
     console.log(`Changelog fetch skipped: ${e instanceof Error ? e.message : e}`);
     return null;
   }
+}
+
+function taigaTaskLink(ref?: number): string {
+  if (!ref) return 'Taiga task #?';
+  const base = process.env.TAIGA_PUBLIC_URL || process.env.TAIGA_URL;
+  const project = process.env.TAIGA_PROJECT;
+  return base && project
+    ? `[Task #${ref}](${base}/project/${project}/task/${ref})`
+    : `Task #${ref}`;
+}
+
+/** Prefer the cluster's own task link; fall back to the story link. */
+function entryLink(e?: StateEntry): string {
+  if (e?.taskRef) return taigaTaskLink(e.taskRef);
+  return taigaLink(e?.taigaRef);
 }
 
 function taigaLink(ref?: number): string {
