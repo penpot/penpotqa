@@ -32,14 +32,14 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest(qase(874, 'Check if the status at header is "Saved"'), async () => {
+mainTest(qase([874], 'Check if the status at header is "Saved"'), async () => {
   await mainPage.clickCreateEllipseButton();
   await mainPage.clickViewportTwice();
   await mainPage.isUnSavedChangesDisplayed();
   await mainPage.waitForChangeIsSaved();
 });
 
-mainTest(qase(890, 'Open history panel with recent changes'), async () => {
+mainTest(qase([890], 'Open history panel with recent changes'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -48,14 +48,14 @@ mainTest(qase(890, 'Open history panel with recent changes'), async () => {
   await mainPage.isActionDisplayedOnHistoryPanel('New board');
 });
 
-mainTest(qase(1931, 'Open history version panel (via main menu)'), async () => {
+mainTest(qase([1931], 'Open history version panel (via main menu)'), async () => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();
   await mainPage.clickShowVersionsMainMenuSubItem();
   await historyPage.isVersionListEmpty();
 });
 
-mainTest(qase(1930, 'Open history version panel (shortcut Alt+H)'), async () => {
+mainTest(qase([1930], 'Open history version panel (shortcut Alt+H)'), async () => {
   await historyPage.clickShortcutCtrlAltH();
   await historyPage.isVersionListEmpty();
 });
@@ -71,7 +71,7 @@ mainTest.describe(() => {
     await historyPage.renameVersion(versionName);
   });
 
-  mainTest(qase(1929, 'Save version via history panel'), async () => {
+  mainTest(qase([1929], 'Save version via history panel'), async () => {
     await historyPage.checkLastVersionName(versionName);
   });
 });
@@ -114,7 +114,7 @@ mainTest.describe(() => {
       );
 
       mainTest(
-        qase(1943, 'Pin the autosaved version via history panel'),
+        qase([1943], 'Pin the autosaved version via history panel'),
         async () => {
           const versionName = 'pin version';
           await historyPage.clickOnAutosaveVersionsButton();
@@ -128,7 +128,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase(1934, 'Rename version via history panel'), async () => {
+  mainTest(qase([1934], 'Rename version via history panel'), async () => {
     const versionName = 'renamed version';
     await historyPage.selectVersionOption('Rename');
     await historyPage.renameVersion(versionName);
@@ -136,7 +136,7 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase(1935, 'Delete version via history panel'), async () => {
+mainTest(qase([1935], 'Delete version via history panel'), async () => {
   await historyPage.clickHistoryPanelButton();
   await historyPage.clickSaveVersionButton();
   await historyPage.clickViewportTwice();

@@ -32,7 +32,7 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.openFindAndReplaceViaShortcut();
 });
 
-mainTest(qase(2882, 'Replace All updates text content on canvas'), async () => {
+mainTest(qase([2882], 'Replace All updates text content on canvas'), async () => {
   const contentText = 'Test';
   const replaceContentText = 'Bar';
 
@@ -71,7 +71,7 @@ mainTest(qase(2882, 'Replace All updates text content on canvas'), async () => {
   });
 });
 
-mainTest(qase(2883, 'Replace All updates layer names'), async () => {
+mainTest(qase([2883], 'Replace All updates layer names'), async () => {
   const layerName = 'Test';
   const replaceLayerName = 'Final';
 

@@ -33,7 +33,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(816, 'Hide/show rulers via main menu and shortcut CTRL SHIFT R'),
+  qase([816], 'Hide/show rulers via main menu and shortcut CTRL SHIFT R'),
   async () => {
     await mainPage.pressHideShowRulersShortcut();
     await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
@@ -46,7 +46,7 @@ mainTest(
   },
 );
 
-mainTest(qase(819, 'Hide/show color palette - file library check'), async () => {
+mainTest(qase([819], 'Hide/show color palette - file library check'), async () => {
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.clickAddFileLibraryColorButton();
   await colorPalettePage.setHex('#ffff00');
@@ -67,7 +67,7 @@ mainTest(qase(819, 'Hide/show color palette - file library check'), async () => 
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest(qase(820, 'Hide/show board names'), async () => {
+mainTest(qase([820], 'Hide/show board names'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -84,7 +84,7 @@ mainTest(qase(820, 'Hide/show board names'), async () => {
   });
 });
 
-mainTest(qase(822, 'Hide/show UI via main menu and shortcut "/"'), async () => {
+mainTest(qase([822], 'Hide/show UI via main menu and shortcut "/"'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot('canvas-show-ui.png', {
     mask: mainPage.maskViewport(),
   });
@@ -99,7 +99,7 @@ mainTest(qase(822, 'Hide/show UI via main menu and shortcut "/"'), async () => {
   });
 });
 
-mainTest(qase(827, 'Select all via main menu and shortcut CTRL A'), async () => {
+mainTest(qase([827], 'Select all via main menu and shortcut CTRL A'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(250, 350);
   await mainPage.createDefaultEllipseByCoordinates(100, 600);
   await mainPage.clickViewportTwice();
