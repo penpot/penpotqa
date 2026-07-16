@@ -1,33 +1,44 @@
-const { mainTest } = require('../../../fixtures');
-const { LoginPage } = require('../../../pages/login-page.js');
-const { RegisterPage } = require('../../../pages/register-page.js');
-const { ProfilePage } = require('../../../pages/profile-page.js');
-const { DashboardPage } = require('../../../pages/dashboard/dashboard-page.js');
-const { TeamPage } = require('../../../pages/dashboard/team-page.js');
-const { MainPage } = require('../../../pages/workspace/main-page.js');
-const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page.js');
-const { random } = require('../../../helpers/string-generator.js');
-const {
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { ProfilePage } from '@pages/profile-page';
+import { RegisterPage } from '@pages/register-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { Page } from '@playwright/test';
+import { mainTest } from 'fixtures';
+import {
+  getVerificationMessage,
   waitMessage,
   waitSecondMessage,
-  getVerificationMessage,
-} = require('../../../helpers/gmail.js');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { createTeamName } = require('../../../helpers/teams/create-team-name');
+} from 'helpers/gmail';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { random } from 'helpers/string-generator';
+import { qase } from 'playwright-qase-reporter/playwright';
+
+type SetupResult = {
+  dashboardPage: DashboardPage;
+  teamName: string;
+  teamPage: TeamPage;
+};
+
+const teamName = createTeamName();
+
+let setup: SetupResult;
 
 // Helper: create a team, invite user, register via Gmail invite
-async function setupInvitedUser(page, role = 'Editor') {
-  const teamName = createTeamName();
+async function setupInvitedUser(
+  page: Parameters<typeof mainTest.beforeEach>[1] extends (
+    ...args: infer T
+  ) => unknown
+    ? Page
+    : never,
+  role = 'Editor',
+) {
   const userName = `${random()}-leave-team-autotest`;
   const userEmail = `${process.env.GMAIL_NAME}+${userName}${process.env.GMAIL_DOMAIN}`;
 
-  const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   const dashboardPage = new DashboardPage(page);
   const teamPage = new TeamPage(page);
   const profilePage = new ProfilePage(page);
-  const mainPage = new MainPage(page);
-  const layersPanelPage = new LayersPanelPage(page);
 
   // Create team
   await teamPage.createTeam(teamName);
@@ -51,31 +62,30 @@ async function setupInvitedUser(page, role = 'Editor') {
 
   // Retrieve invite email
   const invite = await waitMessage(page, userEmail, 40);
+  if (!invite) {
+    throw new Error('Team invitation email was not received');
+  }
 
   // Register invited user
   await page.goto(invite.inviteUrl);
   await registerPage.registerAccount(userName, userEmail, process.env.LOGIN_PWD);
   await waitSecondMessage(page, userEmail, 40);
+
   const verificationMessage = await getVerificationMessage(userEmail);
+  if (!verificationMessage) {
+    throw new Error('Verification email was not received');
+  }
+
   await page.goto(verificationMessage.inviteUrl);
   await dashboardPage.fillOnboardingQuestions();
   await teamPage.isTeamSelected(teamName);
 
   return {
-    teamName,
-    userName,
-    userEmail,
-    loginPage,
-    registerPage,
     dashboardPage,
+    teamName,
     teamPage,
-    profilePage,
-    mainPage,
-    layersPanelPage,
   };
 }
-
-let setup;
 
 // BeforeEach: set up invited user with correct role based on test title
 mainTest.beforeEach(
@@ -95,7 +105,7 @@ const roles = [
 roles.forEach(({ role, qaseId }) => {
   mainTest(
     qase(
-      qaseId,
+      [qaseId],
       `Team Members: ${role} can leave team and return to onboarding (${role.toLowerCase()})`,
     ),
     async () => {
