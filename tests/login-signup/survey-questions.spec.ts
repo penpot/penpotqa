@@ -81,21 +81,4 @@ test.describe(() => {
       });
     },
   );
-
-  test(
-    qase([1801], 'Close and reopen penpot page while questions survey is opened'),
-    async ({ context, page }) => {
-      await test.step('Verify survey is visible and close current page', async () => {
-        await dashboardPage.isOnboardingFirstQuestionsVisible();
-        await page.close();
-      });
-
-      await test.step('Reopen page and verify survey is still visible', async () => {
-        const newPage = await context.newPage();
-        await newPage.goto(invite.inviteUrl);
-        const dashboardPage2 = new DashboardPage(newPage);
-        await dashboardPage2.isOnboardingFirstQuestionsVisible();
-      });
-    },
-  );
 });

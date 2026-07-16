@@ -1,15 +1,15 @@
-const { registerTest } = require('../../../fixtures');
-const { LoginPage } = require('../../../pages/login-page.js');
-const { RegisterPage } = require('../../../pages/register-page.js');
-const { ProfilePage } = require('../../../pages/profile-page.js');
-const { DashboardPage } = require('../../../pages/dashboard/dashboard-page.js');
-const { TeamPage } = require('../../../pages/dashboard/team-page.js');
-const { MainPage } = require('../../../pages/workspace/main-page.js');
-const { ViewModePage } = require('../../../pages/workspace/view-mode-page.js');
-const { random } = require('../../../helpers/string-generator.js');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { expect } = require('@playwright/test');
-const {
+import { Page } from '@playwright/test';
+import { registerTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
+import { LoginPage } from '@pages/login-page';
+import { RegisterPage } from '@pages/register-page';
+import { ProfilePage } from '@pages/profile-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { ViewModePage } from '@pages/workspace/view-mode-page';
+import { random } from 'helpers/string-generator';
+import {
   waitMessage,
   waitSecondMessage,
   waitRequestMessage,
@@ -18,11 +18,40 @@ const {
   checkYourPenpotConfirmAccessText,
   checkYourPenpotViewModeConfirmAccessText,
   checkSigningText,
-} = require('../../../helpers/gmail.js');
-const { createTeamName } = require('../../../helpers/teams/create-team-name');
+} from 'helpers/gmail';
+import { createTeamName } from 'helpers/teams/create-team-name';
+
+type SetupTeamAndFileResult = {
+  loginPage: LoginPage;
+  registerPage: RegisterPage;
+  dashboardPage: DashboardPage;
+  teamPage: TeamPage;
+  profilePage: ProfilePage;
+  mainPage: MainPage;
+};
+
+let viewModePage: ViewModePage;
+let secondRandomName = random() + 'autotest';
+let secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}${process.env.GMAIL_DOMAIN}`;
+const loginPassword = process.env.LOGIN_PWD;
+const secondAccountEmail = process.env.SECOND_EMAIL;
+
+const teamName = createTeamName();
+const userName = 'QA Engineer';
+
+function requireMessage<T>(message: T | undefined, errorMessage: string): T {
+  if (!message) {
+    throw new Error(errorMessage);
+  }
+
+  return message;
+}
 
 // Set up Team and File
-async function setupTeamAndFile(page, teamName) {
+async function setupTeamAndFile(
+  page: Page,
+  teamName: string,
+): Promise<SetupTeamAndFileResult> {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   const dashboardPage = new DashboardPage(page);
@@ -39,7 +68,7 @@ async function setupTeamAndFile(page, teamName) {
 }
 
 // Setup ONLY a file (for Your Penpot workspace)
-async function setupFileOnly(page) {
+async function setupFileOnly(page: Page): Promise<SetupTeamAndFileResult> {
   const loginPage = new LoginPage(page);
   const registerPage = new RegisterPage(page);
   const dashboardPage = new DashboardPage(page);
@@ -55,21 +84,19 @@ async function setupFileOnly(page) {
 }
 
 // Login as specific user helper
-async function loginAs({ profilePage, loginPage, dashboardPage }, email) {
+async function loginAs(
+  {
+    loginPage,
+    dashboardPage,
+  }: Pick<SetupTeamAndFileResult, 'loginPage' | 'dashboardPage'>,
+  email: string,
+) {
   await loginPage.isEmailInputVisible();
   await loginPage.enterEmailAndClickOnContinue(email);
-  await loginPage.enterPwd(process.env.LOGIN_PWD);
+  await loginPage.enterPwd(loginPassword);
   await loginPage.clickLoginButton();
   await dashboardPage.isDashboardOpenedAfterLogin();
 }
-
-let viewModePage;
-let invite;
-let secondRandomName = random() + 'autotest';
-let secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}${process.env.GMAIL_DOMAIN}`;
-
-const teamName = createTeamName();
-const userName = 'QA Engineer';
 
 registerTest.beforeEach(
   'Create a new account, login and complete onboarding modal',
@@ -80,13 +107,13 @@ registerTest.beforeEach(
 
 registerTest(
   qase(
-    1827,
+    [1827],
     "Request access from Workspace URL (Not Your Penpot): 'You don't have access to this file'",
   ),
   async ({ page, email }) => {
     // Create a team, a new file and navigate to Dasboard (as owner)
     const setup = await setupTeamAndFile(page, teamName);
-    const { mainPage, teamPage, loginPage, dashboardPage, profilePage } = setup;
+    const { mainPage, teamPage, profilePage, dashboardPage } = setup;
 
     // Get Workspace URL and navigate to Dashboard
     const currentURL = await mainPage.getUrl();
@@ -94,7 +121,7 @@ registerTest(
 
     // Login as SECOND_EMAIL and navigate to URL
     await profilePage.logout();
-    await loginAs(setup, process.env.SECOND_EMAIL);
+    await loginAs(setup, secondAccountEmail);
     await page.goto(currentURL);
 
     // Request access as SECOND_EMAIL from dialog and return home
@@ -110,12 +137,15 @@ registerTest(
     await loginAs(setup, email);
 
     await waitSecondMessage(page, email, 40);
-    const requestMessage = await waitRequestMessage(page, email, 40);
+    const requestMessage = requireMessage(
+      await waitRequestMessage(page, email, 40),
+      'Request access message was not received',
+    );
 
     await checkConfirmAccessText(
       requestMessage.inviteText,
       userName,
-      process.env.SECOND_EMAIL,
+      secondAccountEmail,
       teamName,
     );
 
@@ -130,13 +160,13 @@ registerTest(
 
 registerTest(
   qase(
-    1829,
+    [1829],
     "Request access from Dashboard URL (Not Your Penpot): You don't have access to this project",
   ),
   async ({ page, email }) => {
     // Create a team, a new file and navigate to Dasboard (as owner)
     const setup = await setupTeamAndFile(page, teamName);
-    const { mainPage, teamPage, dashboardPage, loginPage, profilePage } = setup;
+    const { mainPage, teamPage, dashboardPage, profilePage } = setup;
 
     // Navigate to Dashboard and get Dashboard URL
     await mainPage.clickPencilBoxButton();
@@ -144,7 +174,7 @@ registerTest(
 
     // Login as SECOND_EMAIL and navigate to Dashboard URL
     await profilePage.logout();
-    await loginAs(setup, process.env.SECOND_EMAIL);
+    await loginAs(setup, secondAccountEmail);
     await page.goto(currentURL);
 
     // Request access as SECOND_EMAIL from dialog and return home
@@ -159,12 +189,15 @@ registerTest(
     await loginAs(setup, email);
 
     await waitSecondMessage(page, email, 40);
-    const requestMessage = await waitRequestMessage(page, email, 40);
+    const requestMessage = requireMessage(
+      await waitRequestMessage(page, email, 40),
+      'Request access message was not received',
+    );
 
     await checkDashboardConfirmAccessText(
       requestMessage.inviteText,
       userName,
-      process.env.SECOND_EMAIL,
+      secondAccountEmail,
       teamName,
     );
   },
@@ -172,7 +205,7 @@ registerTest(
 
 registerTest(
   qase(
-    1830,
+    [1830],
     "Request access from Workspace (Your Penpot): 'You don't have access to this file'",
   ),
   async ({ page, email }) => {
@@ -186,7 +219,7 @@ registerTest(
 
     // Login as SECOND_EMAIL
     await profilePage.logout();
-    await loginAs(setup, process.env.SECOND_EMAIL);
+    await loginAs(setup, secondAccountEmail);
 
     // Navigate to Workspace URL
     await page.goto(currentURL);
@@ -204,19 +237,22 @@ registerTest(
     await loginAs(setup, email);
 
     await waitSecondMessage(page, email, 40);
-    const requestMessage = await waitRequestMessage(page, email, 40);
+    const requestMessage = requireMessage(
+      await waitRequestMessage(page, email, 40),
+      'Request access message was not received',
+    );
 
     await checkYourPenpotConfirmAccessText(
       requestMessage.inviteText,
       userName,
-      process.env.SECOND_EMAIL,
+      secondAccountEmail,
     );
   },
 );
 
 registerTest(
   qase(
-    1831,
+    [1831],
     "Request access from View mode (Your Penpot): 'You don't have access to this file'",
   ),
   async ({ page, email }) => {
@@ -239,7 +275,7 @@ registerTest(
     await profilePage.logout();
 
     // Login as SECOND_EMAIL
-    await loginAs(setup, process.env.SECOND_EMAIL);
+    await loginAs(setup, secondAccountEmail);
     await page.goto(currentURL);
 
     // Request access as SECOND_EMAIL from dialog and return home
@@ -255,88 +291,108 @@ registerTest(
     await loginAs(setup, email);
 
     await waitSecondMessage(page, email, 40);
-    const requestMessage = await waitRequestMessage(page, email, 40);
+    const requestMessage = requireMessage(
+      await waitRequestMessage(page, email, 40),
+      'Request access message was not received',
+    );
 
     await checkYourPenpotViewModeConfirmAccessText(
       requestMessage.inviteText,
       userName,
-      process.env.SECOND_EMAIL,
-      teamName,
+      secondAccountEmail,
     );
   },
 );
 
-registerTest(qase(1833, 'Auto Join to the team'), async ({ page, name, email }) => {
-  // Set up team and file
-  const setup = await setupTeamAndFile(page, teamName);
-  const { mainPage, teamPage, registerPage, dashboardPage, loginPage, profilePage } =
-    setup;
+registerTest(
+  qase([1833], 'Auto Join to the team'),
+  async ({ page, name, email }) => {
+    // Set up team and file
+    const setup = await setupTeamAndFile(page, teamName);
+    const {
+      mainPage,
+      teamPage,
+      registerPage,
+      dashboardPage,
+      loginPage,
+      profilePage,
+    } = setup;
 
-  // Get Workspace URL and go back to Dashboard
-  const currentURL = await mainPage.getUrl();
-  await mainPage.clickPencilBoxButton();
+    // Get Workspace URL and go back to Dashboard
+    const currentURL = await mainPage.getUrl();
+    await mainPage.clickPencilBoxButton();
 
-  // Register a second user (fresh session required)
-  await profilePage.logout();
-  await loginPage.isEmailInputVisible();
-  await page.context().clearCookies();
-  await mainPage.reloadPage();
-  await loginPage.isLoginPageOpened();
-  await loginPage.acceptCookie();
-  await loginPage.clickOnCreateAccount();
+    // Register a second user (fresh session required)
+    await profilePage.logout();
+    await loginPage.isEmailInputVisible();
+    await page.context().clearCookies();
+    await mainPage.reloadPage();
+    await loginPage.isLoginPageOpened();
+    await loginPage.acceptCookie();
+    await loginPage.clickOnCreateAccount();
 
-  await registerPage.registerAccount(
-    secondRandomName,
-    secondEmail,
-    process.env.LOGIN_PWD,
-  );
-  await registerPage.isRegisterEmailCorrect(secondEmail);
+    await registerPage.registerAccount(
+      secondRandomName,
+      secondEmail,
+      process.env.LOGIN_PWD,
+    );
+    await registerPage.isRegisterEmailCorrect(secondEmail);
 
-  const invite = await waitMessage(page, secondEmail, 40);
-  await page.goto(invite.inviteUrl);
+    const invite = requireMessage(
+      await waitMessage(page, secondEmail, 40),
+      'Invitation message was not received for second account',
+    );
+    await page.goto(invite.inviteUrl);
 
-  await dashboardPage.fillOnboardingQuestions();
-  await dashboardPage.isDashboardOpenedAfterLogin();
+    await dashboardPage.fillOnboardingQuestions();
+    await dashboardPage.isDashboardOpenedAfterLogin();
 
-  // Second user requests access to file
-  await page.goto(currentURL);
+    // Second user requests access to file
+    await page.goto(currentURL);
 
-  await teamPage.isRequestFileAccessDialogVisible();
-  await teamPage.clickOnRequestAccessButton();
-  await teamPage.isRequestAccessButtonVisible(false);
-  await teamPage.checkRequestSentCorrectlyDialog();
-  await teamPage.clickReturnHomeButton();
-  await dashboardPage.isDashboardOpenedAfterLogin();
+    await teamPage.isRequestFileAccessDialogVisible();
+    await teamPage.clickOnRequestAccessButton();
+    await teamPage.isRequestAccessButtonVisible(false);
+    await teamPage.checkRequestSentCorrectlyDialog();
+    await teamPage.clickReturnHomeButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
 
-  // Log out & clean session before OWNER login
-  await profilePage.logout();
-  await loginPage.isEmailInputVisible();
-  await page.context().clearCookies();
-  await mainPage.reloadPage();
-  await loginPage.isLoginPageOpened();
-  await loginPage.acceptCookie();
+    // Log out & clean session before OWNER login
+    await profilePage.logout();
+    await loginPage.isEmailInputVisible();
+    await page.context().clearCookies();
+    await mainPage.reloadPage();
+    await loginPage.isLoginPageOpened();
+    await loginPage.acceptCookie();
 
-  // Login back as OWNER
-  await loginPage.enterEmailAndClickOnContinue(email);
-  await loginPage.enterPwd(process.env.LOGIN_PWD);
-  await loginPage.clickLoginButton();
-  await dashboardPage.isDashboardOpenedAfterLogin();
+    // Login back as OWNER
+    await loginPage.enterEmailAndClickOnContinue(email);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
 
-  // Must switch back to the created team
-  await teamPage.switchTeam(teamName);
+    // Must switch back to the created team
+    await teamPage.switchTeam(teamName);
 
-  // OWNER receives request email & sends invitation
-  await waitSecondMessage(page, email, 40);
-  const requestMessage = await waitRequestMessage(page, email, 40);
+    // OWNER receives request email & sends invitation
+    await waitSecondMessage(page, email, 40);
+    const requestMessage = requireMessage(
+      await waitRequestMessage(page, email, 40),
+      'Request access message was not received',
+    );
 
-  await page.goto(requestMessage.inviteUrl[0]);
-  await teamPage.checkFirstInvitedEmail(secondEmail);
-  await teamPage.waitForInvitationButtonEnabled(10000);
-  await teamPage.clickSendInvitationButton();
+    await page.goto(requestMessage.inviteUrl[0]);
+    await teamPage.checkFirstInvitedEmail(secondEmail);
+    await teamPage.waitForInvitationButtonEnabled(10000);
+    await teamPage.clickSendInvitationButton();
 
-  // SECOND user receives the invitation signing email
-  await waitSecondMessage(page, secondEmail, 40);
-  const secondRequestMessage = await waitRequestMessage(page, secondEmail, 40);
+    // SECOND user receives the invitation signing email
+    await waitSecondMessage(page, secondEmail, 40);
+    const secondRequestMessage = requireMessage(
+      await waitRequestMessage(page, secondEmail, 40),
+      'Signing invitation message was not received',
+    );
 
-  await checkSigningText(secondRequestMessage.inviteText, name, teamName);
-});
+    await checkSigningText(secondRequestMessage.inviteText, name, teamName);
+  },
+);

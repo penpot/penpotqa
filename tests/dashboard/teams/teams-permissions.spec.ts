@@ -1,34 +1,32 @@
-const { mainTest, registerTest } = require('../../../fixtures');
-const { LoginPage } = require('../../../pages/login-page.js');
-const { RegisterPage } = require('../../../pages/register-page.js');
-const { ProfilePage } = require('../../../pages/profile-page.js');
-const { DashboardPage } = require('../../../pages/dashboard/dashboard-page.js');
-const { TeamPage } = require('../../../pages/dashboard/team-page.js');
-const { MainPage } = require('../../../pages/workspace/main-page.js');
-const { ViewModePage } = require('../../../pages/workspace/view-mode-page.js');
-const { LayersPanelPage } = require('../../../pages/workspace/layers-panel-page.js');
-const { random } = require('../../../helpers/string-generator.js');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { expect } = require('@playwright/test');
-const {
+import { mainTest } from 'fixtures';
+import { LoginPage } from '@pages/login-page';
+import { RegisterPage } from '@pages/register-page';
+import { ProfilePage } from '@pages/profile-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page.js';
+import { random } from 'helpers/string-generator';
+import { qase } from 'playwright-qase-reporter/playwright';
+
+import {
   getVerificationMessage,
   checkInviteText,
   checkMessagesCount,
   waitMessage,
   waitSecondMessage,
-  waitRequestMessage,
-} = require('../../../helpers/gmail.js');
-const { createTeamName } = require('../../../helpers/teams/create-team-name');
+} from 'helpers/gmail';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
 const team = createTeamName();
 
-let teamPage,
-  loginPage,
-  registerPage,
-  dashboardPage,
-  layersPanelPage,
-  profilePage,
-  mainPage;
+let dashboardPage: DashboardPage;
+let loginPage: LoginPage;
+let profilePage: ProfilePage;
+let registerPage: RegisterPage;
+let teamPage: TeamPage;
+let layersPanelPage: LayersPanelPage;
+let mainPage: MainPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
@@ -42,7 +40,10 @@ mainTest.beforeEach(async ({ page }) => {
 
 mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   mainTest(
-    qase(1173, 'Team. Invitations - invite via admin (multiple invitations, admin)'),
+    qase(
+      [1173],
+      'Team. Invitations - invite via admin (multiple invitations, admin)',
+    ),
     async ({ page }) => {
       await mainTest.slow();
       const mainAdmin = random().concat('autotest');
@@ -141,7 +142,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(1177, 'Team. Invitations - resend invitation via admin'),
+    qase([1177], 'Team. Invitations - resend invitation via admin'),
     async ({ page }) => {
       await mainTest.slow();
       const mainAdmin = random().concat('autotest');
@@ -196,7 +197,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(1184, 'Team. Members - change role via owner (editor to admin)'),
+    qase([1184], 'Team. Members - change role via owner (editor to admin)'),
     async ({ page }) => {
       await mainTest.slow();
       const secondUser = random().concat('autotest');
@@ -262,7 +263,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(1187, 'Team. Members - change role via admin(admin to editor)'),
+    qase([1187], 'Team. Members - change role via admin(admin to editor)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -348,7 +349,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(1191, 'Team. Members - unable to change roles via editor'),
+    qase([1191], 'Team. Members - unable to change roles via editor'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -421,7 +422,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(1190, 'Team. Members - unable to change role of owner via admin'),
+    qase([1190], 'Team. Members - unable to change role of owner via admin'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -462,7 +463,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(1183, 'Unable to create, edit, resend and delete invitations via editor'),
+    qase([1183], 'Unable to create, edit, resend and delete invitations via editor'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -515,7 +516,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(1192, 'Team. Members - delete team member (as owner)'),
+    qase([1192], 'Team. Members - delete team member (as owner)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -567,7 +568,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(1193, 'Team. Members - delete team member (as admin)'),
+    qase([1193], 'Team. Members - delete team member (as admin)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -632,7 +633,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(1194, 'Team. Members - unable to delete team member (as editor)'),
+    qase([1194], 'Team. Members - unable to delete team member (as editor)'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
@@ -705,7 +706,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
   );
 
   mainTest(
-    qase(1182, 'Team. Invitations - change role in invitation via admin'),
+    qase([1182], 'Team. Invitations - change role in invitation via admin'),
     async ({ page }) => {
       await mainTest.slow();
       const firstAdmin = random().concat('autotest');
