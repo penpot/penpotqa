@@ -9,12 +9,20 @@
 # Refuses to run if flaky-history.json already exists on S3, so it can't clobber
 # real accumulated history — safe to leave in the repo (or delete after first use).
 #
-# Actions tab -> "Seed flaky-test history" -> Run workflow.
+# Actions tab -> "Seed flaky-test history" -> Run workflow. Also runs on its own
+# PR: workflow_dispatch only lists workflows that already exist on the default
+# branch, so a brand-new workflow_dispatch-only file can't be triggered from the
+# web UI before it's merged — the pull_request trigger below is what lets it run
+# from this branch in the meantime.
 
 name: Seed flaky-test history
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/seed-flaky-history.yml'
+      - 'scripts/github-dashboard/flaky-history.seed.json'
 
 permissions:
   contents: read
