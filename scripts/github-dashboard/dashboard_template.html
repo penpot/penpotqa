@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Penpot QA · Coverage vs Bugs</title>
+    <style>
+      :root {
+        --bg: #0d0f14;
+        --panel: #151821;
+        --panel2: #1b1f2b;
+        --line: #262b3a;
+        --ink: #e8ebf2;
+        --dim: #8b93a7;
+        --faint: #5a6175;
+        --teal: #5eead4;
+        --violet: #a78bfa;
+        --amber: #fbbf24;
+        --rose: #fb7185;
+        --green: #4ade80;
+        --mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+        --sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 14px;
+        line-height: 1.5;
+        padding: 28px clamp(16px, 4vw, 48px) 64px;
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 14px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 18px;
+        margin-bottom: 24px;
+      }
+      header h1 {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+      }
+      header h1 b {
+        color: var(--teal);
+        font-weight: 600;
+      }
+      header .src {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--faint);
+        margin-left: auto;
+      }
+      header .src a {
+        color: var(--teal);
+        text-decoration: none;
+      }
+      header .src a:hover {
+        text-decoration: underline;
+      }
+      header .src select {
+        font: inherit;
+        color: var(--faint);
+        background: transparent;
+        border: 1px solid var(--faint);
+        border-radius: 3px;
+        padding: 1px 2px;
+      }
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      .kpi {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 16px;
+      }
+      .kpi .n {
+        font-family: var(--mono);
+        font-size: 26px;
+        font-weight: 600;
+      }
+      .kpi .l {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--dim);
+        margin-top: 2px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 960px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      section {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px 20px;
+        margin-bottom: 16px;
+      }
+      section h2 {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--dim);
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      section p.sub {
+        font-size: 12px;
+        color: var(--faint);
+        margin-bottom: 12px;
+      }
+      svg text {
+        font-family: var(--mono);
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--dim);
+        margin-top: 8px;
+      }
+      .legend i {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+        margin-right: 5px;
+        vertical-align: -1px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--dim);
+        text-align: right;
+        padding: 6px 8px;
+        border-bottom: 1px solid var(--line);
+        font-weight: 600;
+      }
+      th:first-child,
+      td:first-child {
+        text-align: left;
+      }
+      td {
+        padding: 7px 8px;
+        border-bottom: 1px solid #1d2230;
+        font-family: var(--mono);
+        font-size: 12px;
+        text-align: right;
+      }
+      td:first-child {
+        font-family: var(--sans);
+        font-size: 13px;
+      }
+      tr:hover td {
+        background: var(--panel2);
+      }
+      .tag {
+        display: inline-block;
+        font-family: var(--mono);
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        border: 1px solid;
+        white-space: nowrap;
+      }
+      .t-cover {
+        color: var(--rose);
+        border-color: var(--rose);
+      }
+      .t-reinforce {
+        color: var(--amber);
+        border-color: var(--amber);
+      }
+      .t-prune {
+        color: var(--violet);
+        border-color: var(--violet);
+      }
+      .t-maintain {
+        color: var(--teal);
+        border-color: var(--teal);
+      }
+      .t-ok {
+        color: var(--faint);
+        border-color: var(--faint);
+      }
+      .tip {
+        position: fixed;
+        pointer-events: none;
+        background: #0a0c10;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 8px 10px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--ink);
+        display: none;
+        z-index: 9;
+        max-width: 260px;
+      }
+      .linkable {
+        cursor: pointer;
+        text-decoration: underline dotted var(--faint);
+        text-underline-offset: 2px;
+      }
+      .linkable:hover {
+        color: var(--teal);
+      }
+      .popover {
+        position: fixed;
+        background: #0a0c10;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 6px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--ink);
+        display: none;
+        z-index: 10;
+        width: 320px;
+        max-height: 280px;
+        overflow-y: auto;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      }
+      .popover .ph {
+        color: var(--dim);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-size: 10px;
+        padding: 4px 6px 6px;
+      }
+      .popover a {
+        display: block;
+        color: var(--ink);
+        text-decoration: none;
+        padding: 5px 6px;
+        border-radius: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .popover a:hover {
+        background: var(--panel2);
+        color: var(--teal);
+      }
+      .popover a.closed {
+        color: var(--faint);
+        text-decoration: line-through;
+      }
+      .popover .empty {
+        color: var(--faint);
+        padding: 5px 6px;
+      }
+      footer {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--faint);
+        margin-top: 28px;
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+        line-height: 1.8;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Penpot QA <b>/ automated coverage × real bugs</b></h1>
+      <span class="src"
+        >qase regression + github project #8 · generated <span id="gen"></span> ·
+        <a id="zip" href="#" target="_blank" rel="noopener"
+          >download raw data (.zip)</a
+        >
+        ·
+        <select id="history" onchange="if (this.value) location.href = this.value;">
+          <option value="">past runs ▾</option>
+        </select></span
+      >
+    </header>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="grid">
+      <section>
+        <h2>Decision matrix</h2>
+        <p class="sub">
+          Each point is a functional area (Qase root suite). X axis: automated tests
+          · Y axis: reported bugs. Dashed lines = medians.
+        </p>
+        <div id="scatter"></div>
+        <div class="legend">
+          <span><i style="background: var(--rose)"></i>cover</span>
+          <span><i style="background: var(--amber)"></i>reinforce</span>
+          <span><i style="background: var(--violet)"></i>review pruning</span>
+          <span><i style="background: var(--teal)"></i>maintain</span>
+          <span><i style="background: var(--faint)"></i>ok / low risk</span>
+        </div>
+      </section>
+      <section>
+        <h2>Bug trend</h2>
+        <p class="sub">
+          Created vs closed per month. Most of the history enters the project from
+          2026-04 onward.
+        </p>
+        <div id="trend"></div>
+        <div class="legend">
+          <span><i style="background: var(--rose)"></i>created</span>
+          <span><i style="background: var(--green)"></i>closed</span>
+        </div>
+      </section>
+    </div>
+
+    <section>
+      <h2>Bugs vs automated tests by area</h2>
+      <p class="sub">
+        Top bar: bugs (GitHub project, excluding Rejected) · bottom bar: automated
+        tests (Qase regression).
+      </p>
+      <div id="bars"></div>
+    </section>
+
+    <section>
+      <h2>Detail and decision by area</h2>
+      <p class="sub">
+        Click a bug, test, or feature count to open the underlying GitHub issues /
+        Qase cases.
+      </p>
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th>Area (Qase root suite)</th>
+            <th>Inventory</th>
+            <th>Reg. tests</th>
+            <th>Automated</th>
+            <th>% inv. auto</th>
+            <th>Bugs</th>
+            <th>Open</th>
+            <th>Features</th>
+            <th>Bugs/test</th>
+            <th>Decision</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <footer>
+      sources: qase api /suite and /case (paginated in batches of 100) · github
+      project #8 via graphql · issue→area mapping: IOP labels (46%) + title keywords
+      (52%) — pending manual validation · note: the features export returns exactly
+      100 rows (possible export cap) and the bugs view only covers issues managed in
+      the project · suite hierarchy: canonical data from the API (paginated in
+      batches of 100)
+    </footer>
+
+    <div class="tip" id="tip"></div>
+    <div class="popover" id="popover"></div>
+
+    <script>
+      const DATA = __DATA__;
+
+      const COLORS = {
+        COVER: 'var(--rose)',
+        REINFORCE: 'var(--amber)',
+        REVIEW: 'var(--violet)',
+        MAINTAIN: 'var(--teal)',
+        OK: 'var(--faint)',
+        Out: 'var(--faint)',
+      };
+      const col = (d) => COLORS[d.split(/[ :]/)[0]] || 'var(--faint)';
+      const cls = (d) =>
+        d.startsWith('COVER')
+          ? 't-cover'
+          : d.startsWith('REINFORCE')
+            ? 't-reinforce'
+            : d.startsWith('REVIEW')
+              ? 't-prune'
+              : d.startsWith('MAINTAIN')
+                ? 't-maintain'
+                : 't-ok';
+
+      /* KPIs */
+      const k = DATA.kpi;
+      document.getElementById('gen').textContent = DATA.generated_at || '';
+      if (DATA.zip_url) document.getElementById('zip').href = DATA.zip_url;
+
+      /* Past runs — populated from the sibling history.json published by the
+         workflow (same folder as this page, both under latest/ and <date>/). */
+      fetch('history.json')
+        .then((r) => (r.ok ? r.json() : []))
+        .then((history) => {
+          const sel = document.getElementById('history');
+          for (const h of [...history].reverse()) {
+            const opt = document.createElement('option');
+            opt.value = h.url;
+            opt.textContent = h.date;
+            sel.appendChild(opt);
+          }
+        })
+        .catch(() => {});
+      document.getElementById('kpis').innerHTML = [
+        [k.automated_tests, 'automated tests'],
+        [k.total_inventory, 'total case inventory'],
+        [k.bugs, 'bugs (not rejected)'],
+        [k.open_bugs, 'open bugs'],
+        [k.features, 'features / enhancements'],
+      ]
+        .map(
+          ([n, l]) =>
+            `<div class="kpi"><div class="n">${n}</div><div class="l">${l}</div></div>`,
+        )
+        .join('');
+
+      const tip = document.getElementById('tip');
+      function showTip(e, html) {
+        tip.innerHTML = html;
+        tip.style.display = 'block';
+        tip.style.left = e.clientX + 14 + 'px';
+        tip.style.top = e.clientY + 10 + 'px';
+      }
+      function hideTip() {
+        tip.style.display = 'none';
+      }
+
+      /* Scatter: sqrt scale so 0..224 fits */
+      (function () {
+        const areas = DATA.areas.filter((a) => !a.decision.startsWith('Out'));
+        const W = 520,
+          H = 360,
+          P = { l: 44, r: 14, t: 14, b: 34 };
+        const mx = Math.max(...areas.map((a) => a.automated)),
+          my = Math.max(...areas.map((a) => a.bugs));
+        const sx = (v) => P.l + Math.sqrt(v / mx) * (W - P.l - P.r),
+          sy = (v) => H - P.b - Math.sqrt(v / my) * (H - P.t - P.b);
+        let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%">`;
+        // medians
+        s += `<line x1="${sx(DATA.medians.tests)}" y1="${P.t}" x2="${sx(DATA.medians.tests)}" y2="${H - P.b}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
+        s += `<line x1="${P.l}" y1="${sy(DATA.medians.bugs)}" x2="${W - P.r}" y2="${sy(DATA.medians.bugs)}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
+        // axes
+        [0, 10, 50, 100, 200]
+          .filter((v) => v <= mx)
+          .forEach((v) => {
+            s += `<text x="${sx(v)}" y="${H - 14}" font-size="10" fill="var(--faint)" text-anchor="middle">${v}</text>`;
+          });
+        [0, 5, 20, 60]
+          .filter((v) => v <= my)
+          .forEach((v) => {
+            s += `<text x="${P.l - 8}" y="${sy(v) + 3}" font-size="10" fill="var(--faint)" text-anchor="end">${v}</text>`;
+          });
+        s += `<text x="${W - P.r}" y="${H - 2}" font-size="10" fill="var(--faint)" text-anchor="end">automated tests →</text>`;
+        s += `<text x="12" y="${P.t + 2}" font-size="10" fill="var(--faint)">bugs ↑</text>`;
+        areas.forEach((a, i) => {
+          const r = 5 + Math.sqrt(a.bugs) * 1.1;
+          s += `<circle data-i="${i}" cx="${sx(a.automated)}" cy="${sy(a.bugs)}" r="${r}" fill="${col(a.decision)}" fill-opacity=".78" stroke="${col(a.decision)}"/>`;
+          if (a.bugs >= 12 || a.automated >= 90)
+            s += `<text x="${sx(a.automated)}" y="${sy(a.bugs) - r - 4}" font-size="10" fill="var(--dim)" text-anchor="middle">${a.area.replace(' (Enterprise Plan)', '')}</text>`;
+        });
+        s += '</svg>';
+        const el = document.getElementById('scatter');
+        el.innerHTML = s;
+        el.querySelectorAll('circle').forEach((c) => {
+          const a = areas[+c.dataset.i];
+          c.addEventListener('mousemove', (e) =>
+            showTip(
+              e,
+              `<b>${a.area}</b><br>auto tests: ${a.automated} · bugs: ${a.bugs} (${a.open_bugs} open)<br>${a.decision}`,
+            ),
+          );
+          c.addEventListener('mouseleave', hideTip);
+        });
+      })();
+
+      /* Trend */
+      (function () {
+        const t = DATA.trend.filter((r) => r.month >= '2026-01');
+        const W = 520,
+          H = 360,
+          P = { l: 40, r: 14, t: 16, b: 34 };
+        const mx = Math.max(...t.map((r) => Math.max(r.created, r.closed)));
+        const bw = (W - P.l - P.r) / t.length;
+        const sy = (v) => H - P.b - (v / mx) * (H - P.t - P.b);
+        let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%">`;
+        [0, 50, 100, 150]
+          .filter((v) => v <= mx + 10)
+          .forEach((v) => {
+            s += `<line x1="${P.l}" y1="${sy(v)}" x2="${W - P.r}" y2="${sy(v)}" stroke="var(--line)"/><text x="${P.l - 6}" y="${sy(v) + 3}" font-size="10" fill="var(--faint)" text-anchor="end">${v}</text>`;
+          });
+        t.forEach((r, i) => {
+          const x = P.l + i * bw;
+          s += `<rect x="${x + bw * 0.14}" y="${sy(r.created)}" width="${bw * 0.32}" height="${H - P.b - sy(r.created)}" fill="var(--rose)" fill-opacity=".85"><title>${r.month} created: ${r.created}</title></rect>`;
+          s += `<rect x="${x + bw * 0.52}" y="${sy(r.closed)}" width="${bw * 0.32}" height="${H - P.b - sy(r.closed)}" fill="var(--green)" fill-opacity=".85"><title>${r.month} closed: ${r.closed}</title></rect>`;
+          s += `<text x="${x + bw / 2}" y="${H - 14}" font-size="10" fill="var(--faint)" text-anchor="middle">${r.month.slice(2)}</text>`;
+        });
+        s += '</svg>';
+        document.getElementById('trend').innerHTML = s;
+      })();
+
+      /* Paired horizontal bars */
+      (function () {
+        const areas = [...DATA.areas]
+          .filter((a) => !a.decision.startsWith('Out'))
+          .sort((x, y) => y.bugs - x.bugs);
+        const rowH = 34,
+          W = 980,
+          P = { l: 230, r: 60 },
+          H = areas.length * rowH + 10;
+        const mx = Math.max(...areas.map((a) => Math.max(a.bugs, a.automated)));
+        const sx = (v) => Math.sqrt(v / mx) * (W - P.l - P.r);
+        let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%">`;
+        areas.forEach((a, i) => {
+          const y = i * rowH + 6;
+          s += `<text x="${P.l - 10}" y="${y + 15}" font-size="12" fill="var(--ink)" text-anchor="end" font-family="var(--sans)">${a.area}</text>`;
+          s += `<rect x="${P.l}" y="${y}" width="${Math.max(sx(a.bugs), 1)}" height="10" rx="2" fill="var(--rose)" fill-opacity=".9"/>`;
+          s += `<text x="${P.l + Math.max(sx(a.bugs), 1) + 6}" y="${y + 9}" font-size="10" fill="var(--rose)">${a.bugs}</text>`;
+          s += `<rect x="${P.l}" y="${y + 12}" width="${Math.max(sx(a.automated), 1)}" height="10" rx="2" fill="var(--teal)" fill-opacity=".85"/>`;
+          s += `<text x="${P.l + Math.max(sx(a.automated), 1) + 6}" y="${y + 21}" font-size="10" fill="var(--teal)">${a.automated}</text>`;
+        });
+        s += '</svg>';
+        document.getElementById('bars').innerHTML = s;
+      })();
+
+      /* Table */
+      (function () {
+        const tb = document.querySelector('#tbl tbody');
+        const order = {
+          COVER: 0,
+          REINFORCE: 1,
+          REVIEW: 2,
+          MAINTAIN: 3,
+          OK: 4,
+          Out: 5,
+        };
+        const rows = [...DATA.areas].sort(
+          (a, b) =>
+            (order[a.decision.split(/[ :]/)[0]] ?? 9) -
+              (order[b.decision.split(/[ :]/)[0]] ?? 9) || b.bugs - a.bugs,
+        );
+
+        const esc = (s) =>
+          String(s).replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;',
+              })[c],
+          );
+
+        const linkCell = (area, kind, n) =>
+          n > 0
+            ? `<span class="linkable" data-area="${esc(area)}" data-kind="${kind}">${n}</span>`
+            : n;
+
+        tb.innerHTML = rows
+          .map(
+            (a) =>
+              `<tr><td>${a.area}</td><td>${a.total_inventory}</td><td>${linkCell(a.area, 'tests', a.regression_tests)}</td><td>${linkCell(a.area, 'autoTests', a.automated)}</td><td>${a.pct_inv_automated != null ? a.pct_inv_automated + '%' : '—'}</td><td>${linkCell(a.area, 'bugs', a.bugs)}</td><td>${linkCell(a.area, 'openBugs', a.open_bugs)}</td><td>${linkCell(a.area, 'features', a.features)}</td><td>${a.bugs_per_test ?? '—'}</td><td style="text-align:left"><span class="tag ${cls(a.decision)}">${a.decision}</span></td></tr>`,
+          )
+          .join('');
+
+        /* Link popover: click a linkable count to list its GitHub issues / Qase cases */
+        const popover = document.getElementById('popover');
+        const LABELS = {
+          bugs: 'Bugs',
+          openBugs: 'Open bugs',
+          features: 'Features',
+          tests: 'Regression tests',
+          autoTests: 'Automated tests',
+        };
+        const itemsFor = (area, kind) => {
+          const row = DATA.areas.find((r) => r.area === area);
+          const links = (row && row.links) || { bugs: [], features: [], tests: [] };
+          switch (kind) {
+            case 'bugs':
+              return links.bugs;
+            case 'openBugs':
+              return links.bugs.filter((b) => !b.closed);
+            case 'features':
+              return links.features;
+            case 'tests':
+              return links.tests;
+            case 'autoTests':
+              return links.tests.filter((t) => t.automated);
+            default:
+              return [];
+          }
+        };
+        const renderItems = (kind, items) => {
+          if (items.length === 0) return '<div class="empty">none</div>';
+          if (kind === 'tests' || kind === 'autoTests')
+            return items
+              .map(
+                (t) =>
+                  `<a href="https://app.qase.io/case/PENPOT-${t.id}" target="_blank" rel="noopener">PENPOT-${t.id} ${esc(t.title)}</a>`,
+              )
+              .join('');
+          return items
+            .map(
+              (i) =>
+                `<a href="${esc(i.url)}" target="_blank" rel="noopener" class="${i.closed ? 'closed' : ''}">#${i.number} ${esc(i.title)}</a>`,
+            )
+            .join('');
+        };
+
+        tb.querySelectorAll('.linkable').forEach((el) => {
+          el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const { area, kind } = el.dataset;
+            const items = itemsFor(area, kind);
+            popover.innerHTML = `<div class="ph">${esc(area)} · ${LABELS[kind]} (${items.length})</div>${renderItems(kind, items)}`;
+            popover.style.display = 'block';
+            const r = el.getBoundingClientRect();
+            const top = Math.max(
+              Math.min(r.bottom + 6, window.innerHeight - 290),
+              8,
+            );
+            const left = Math.max(Math.min(r.left, window.innerWidth - 336), 8);
+            popover.style.top = `${top}px`;
+            popover.style.left = `${left}px`;
+          });
+        });
+        document.addEventListener('click', (e) => {
+          if (!popover.contains(e.target)) popover.style.display = 'none';
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') popover.style.display = 'none';
+        });
+      })();
+    </script>
+  </body>
+</html>
