@@ -1,0 +1,142 @@
+# .github/workflows/github-dashboard.yml
+#
+# Regenerates the QA coverage dashboard (Qase suites/cases × GitHub Project
+# bugs/features) and publishes the output to S3.
+#
+# Runs every Monday 04:30 UTC. Can also be launched manually from the
+# Actions tab ("GitHub dashboard" -> Run workflow), where you can pick ANY
+# branch — that is the mechanism to verify changes before merging to main.
+#
+# Stable URLs after each run:
+#   https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/github-dashboard/latest/github-dashboard.html
+#   https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/github-dashboard/latest/github-dashboard.zip
+
+name: GitHub dashboard
+
+on:
+  schedule: # Runs every Monday at 04:30 UTC — note: cron is ALWAYS evaluated on the default branch
+    - cron: '30 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      s3_prefix:
+        description: 'S3 prefix to publish under (use e.g. github-dashboard-test when verifying from a branch)'
+        required: false
+        default: 'github-dashboard'
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment: PRE # grants access to MATTERMOST_WEBHOOK_DAILY_REPORT (environment secret)
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Run github_dashboard
+        run: npx tsx scripts/github-dashboard/github_dashboard.ts
+        env:
+          QASE_TOKEN: ${{ secrets.QASE_API_TOKEN }}
+          # Must be a classic PAT with read:project (Settings -> Secrets and
+          # variables -> Actions -> New repository secret). Cannot be named
+          # GITHUB_TOKEN — GitHub reserves that name for the auto-generated
+          # token, which CANNOT read organization Projects v2.
+          GITHUB_TOKEN: ${{ secrets.QA_GH_PROJECT_TOKEN }}
+          # Used only to embed the "download raw data" zip link in the HTML
+          # (see "Publish to S3" below, which publishes the zip at that URL).
+          S3_PREFIX: ${{ inputs.s3_prefix || 'github-dashboard' }}
+
+      - name: Create dashboard bundle zip
+        run: |
+          STAMP=$(date -u +%F)
+          ZIP="$STAMP-github-dashboard.zip"
+          # Zipped outside out/ so the archive doesn't try to include itself,
+          # then moved in so it's synced to S3 alongside the CSVs and HTML.
+          zip -rq "/tmp/$ZIP" scripts/github-dashboard
+          mv "/tmp/$ZIP" "scripts/github-dashboard/out/$ZIP"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Update run history
+        run: |
+          PREFIX="${{ inputs.s3_prefix || 'github-dashboard' }}"
+          STAMP=$(date -u +%F)
+          DASHBOARD_URL="https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$PREFIX/$STAMP/$STAMP-github-dashboard.html"
+          ZIP_URL="https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$PREFIX/$STAMP/$STAMP-github-dashboard.zip"
+          # No listing UI in S3 without a bucket we don't have access to browse,
+          # so this file is how the dashboard's "past runs" dropdown finds every
+          # previous week (fetched at page-load time, see dashboard_template.html).
+          aws s3 cp "s3://kaleidos-qa-reports/$PREFIX/latest/history.json" /tmp/history.json \
+            || echo '[]' > /tmp/history.json
+          jq --arg date "$STAMP" --arg url "$DASHBOARD_URL" --arg zip "$ZIP_URL" \
+            '(map(select(.date != $date))) + [{date: $date, url: $url, zip: $zip}] | sort_by(.date)' \
+            /tmp/history.json > scripts/github-dashboard/out/history.json
+
+      - name: Publish to S3
+        run: |
+          PREFIX="${{ inputs.s3_prefix || 'github-dashboard' }}"
+          STAMP=$(date -u +%F)
+          DASHBOARD="$STAMP-github-dashboard.html"
+          ZIP="$STAMP-github-dashboard.zip"
+          # dated snapshot (keeps history for trend-over-time analysis; the
+          # dashboard/zip filenames are already date-prefixed by github_dashboard
+          # and the "Create dashboard bundle zip" step)
+          aws s3 sync scripts/github-dashboard/out/ "s3://kaleidos-qa-reports/$PREFIX/$STAMP/"
+          # stable pointers: CSVs keep their names, but the dated dashboard and
+          # zip are also republished under fixed names so bookmarked/embedded
+          # URLs never change
+          aws s3 sync scripts/github-dashboard/out/ "s3://kaleidos-qa-reports/$PREFIX/latest/" --delete --exclude "$DASHBOARD" --exclude "$ZIP"
+          aws s3 cp "scripts/github-dashboard/out/$DASHBOARD" "s3://kaleidos-qa-reports/$PREFIX/latest/github-dashboard.html"
+          aws s3 cp "scripts/github-dashboard/out/$ZIP" "s3://kaleidos-qa-reports/$PREFIX/latest/github-dashboard.zip"
+          echo "Published: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$PREFIX/latest/github-dashboard.html"
+
+      - name: Keep artifact as backup
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-dashboard
+          path: scripts/github-dashboard/out/
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          PREFIX="${{ inputs.s3_prefix || 'github-dashboard' }}"
+          {
+            echo "### QA dashboard"
+            echo ""
+            echo "[Dashboard](https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$PREFIX/latest/github-dashboard.html) · [Raw data (.zip)](https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$PREFIX/latest/github-dashboard.zip)"
+            echo ""
+            echo '```'
+            column -s, -t scripts/github-dashboard/out/decision-matrix.csv || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Notify Mattermost
+        if: always()
+        continue-on-error: true
+        env:
+          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }}
+        run: |
+          PREFIX="${{ inputs.s3_prefix || 'github-dashboard' }}"
+          if [ "${{ job.status }}" = "success" ]; then
+            TEXT="**:bar_chart: GitHub QA Dashboard updated** — [dashboard](https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$PREFIX/latest/github-dashboard.html) · [raw data (.zip)](https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$PREFIX/latest/github-dashboard.zip)"
+          else
+            TEXT="**:warning: GitHub QA Dashboard run failed** — [check the run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          fi
+          curl -sf -X POST -H 'Content-Type: application/json' \
+            -d "$(jq -n --arg text "$TEXT" '{username:"QA Dashboard", icon_emoji:":bar_chart:", text:$text}')" \
+            "$MATTERMOST_WEBHOOK_URL"
