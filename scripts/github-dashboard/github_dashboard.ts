@@ -97,6 +97,15 @@ interface Issue {
   area?: string;
   map_method?: string;
 }
+interface FlakyOccurrence {
+  date: string;
+  run_id: string;
+  status: 'flaky' | 'failed';
+}
+interface FlakyTestHistory {
+  title: string;
+  occurrences: FlakyOccurrence[];
+}
 
 // ---------------------------------------------------------------------------
 // 1. Qase (REST, paginated in batches of 100)
@@ -295,6 +304,47 @@ async function fetchGithubProject(): Promise<Issue[]> {
 }
 
 // ---------------------------------------------------------------------------
+// 2b. Flaky-test history (rolling aggregate fed daily by playwright_pre_daily.yml
+// / scripts/github-dashboard/flaky-tally.ts, published to a public S3 URL — no
+// AWS credentials needed here, just a plain GET, so this stays a no-dependency script).
+// ---------------------------------------------------------------------------
+const FLAKY_HISTORY_URL =
+  'https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/flaky-history.json';
+
+const DEFAULT_RELIABILITY_WINDOW_DAYS = 30;
+
+// Best-effort fetch: a missing or unreachable aggregate shouldn't fail the whole
+// dashboard build, since it's a supplementary dimension on top of the Qase/GitHub data.
+async function fetchFlakyHistory(): Promise<{
+  tests: Record<string, FlakyTestHistory>;
+  windowDays: number;
+}> {
+  console.log('• Fetching flaky-test history…');
+  try {
+    const res = await fetch(FLAKY_HISTORY_URL);
+    if (!res.ok) {
+      console.log(`  (no flaky history yet: HTTP ${res.status})`);
+      return { tests: {}, windowDays: DEFAULT_RELIABILITY_WINDOW_DAYS };
+    }
+    const payload = (await res.json()) as {
+      tests: Record<string, FlakyTestHistory>;
+      window_days?: number;
+    };
+    const tests = payload.tests ?? {};
+    console.log(
+      `  ${Object.keys(tests).length} tests with flaky/failed occurrences`,
+    );
+    return {
+      tests,
+      windowDays: payload.window_days ?? DEFAULT_RELIABILITY_WINDOW_DAYS,
+    };
+  } catch (e) {
+    console.log(`  (flaky history unavailable: ${e})`);
+    return { tests: {}, windowDays: DEFAULT_RELIABILITY_WINDOW_DAYS };
+  }
+}
+
+// ---------------------------------------------------------------------------
 // 3. Issue -> area mapping
 // ---------------------------------------------------------------------------
 // Maps an issue to a dashboard area, first by label then by title keyword,
@@ -451,6 +501,55 @@ function enrichTestCases(
     area: rootOf.get(c.suite_id) ?? '(unknown suite)',
   }));
   return { tests, autoTests };
+}
+
+interface ReliabilityRow {
+  id: string;
+  title: string;
+  area: string;
+  flaky: number;
+  failed: number;
+  total: number;
+  last_seen: string;
+  last_seen_run_id: string;
+}
+
+// Joins the flaky-test history (keyed by Qase id, fed daily) against the known
+// regression tests, so every occurrence can be attributed to its area. Tests
+// that flaked/failed but aren't in the current regression export (removed,
+// re-suited, or not automation-tagged in Qase) still show up with area "—"
+// rather than being silently dropped. Sorted by most failed first, ties
+// broken by most flaky (the dashboard's columns are also click-to-sort).
+function buildReliabilityRows(
+  tests: RegressionTest[],
+  flakyHistory: Record<string, FlakyTestHistory>,
+): ReliabilityRow[] {
+  const areaByTestId = new Map(tests.map((test) => [String(test.id), test.area]));
+  const rows = Object.entries(flakyHistory).map(([qaseId, testHistory]) => {
+    const flakyCount = testHistory.occurrences.filter(
+      (occurrence) => occurrence.status === 'flaky',
+    ).length;
+    const failedCount = testHistory.occurrences.filter(
+      (occurrence) => occurrence.status === 'failed',
+    ).length;
+    const lastOccurrence = testHistory.occurrences.reduce((latest, occurrence) =>
+      occurrence.date > latest.date ? occurrence : latest,
+    );
+    return {
+      id: qaseId,
+      title: testHistory.title,
+      area: areaByTestId.get(qaseId) ?? '—',
+      flaky: flakyCount,
+      failed: failedCount,
+      total: flakyCount + failedCount,
+      last_seen: lastOccurrence.date,
+      // The run's raw report on S3 expires after ~10 days (see README), so this
+      // link is best-effort — it's most likely to still resolve for recent runs.
+      last_seen_run_id: lastOccurrence.run_id,
+    };
+  });
+  rows.sort((a, b) => b.failed - a.failed || b.flaky - a.flaky);
+  return rows;
 }
 
 // Drops excluded titles/labels, splits the remaining GitHub items into bugs vs.
@@ -622,6 +721,7 @@ function writeCsvOutputs(
   feats: Issue[],
   trend: ReturnType<typeof buildMonthlyTrend>,
   tests: RegressionTest[],
+  reliability: ReliabilityRow[],
 ) {
   fs.mkdirSync(OUT, { recursive: true });
   fs.writeFileSync(path.join(OUT, 'decision-matrix.csv'), toCsv(rows as any[]));
@@ -639,6 +739,7 @@ function writeCsvOutputs(
       'is_automated',
     ]),
   );
+  fs.writeFileSync(path.join(OUT, 'flaky-tests.csv'), toCsv(reliability as any[]));
 }
 
 // Assembles the dashboard JSON payload and writes the self-contained,
@@ -653,6 +754,8 @@ function writeDashboardHtml(
   medBugs: number,
   medTests: number,
   linksByArea: Map<string, AreaLinks>,
+  reliability: ReliabilityRow[],
+  reliabilityWindowDays: number,
 ) {
   const now = new Date();
   const dateStamp = now.toISOString().slice(0, 10); // YYYY-MM-DD, used as a filename prefix for daily runs
@@ -663,6 +766,7 @@ function writeDashboardHtml(
       bugs: bugs.length,
       open_bugs: bugs.filter((b) => !b.Closed).length,
       features: feats.length,
+      flaky_tests: reliability.length,
     },
     areas: rows.map((r) => ({
       ...r,
@@ -670,6 +774,8 @@ function writeDashboardHtml(
     })),
     trend,
     medians: { bugs: medBugs, tests: medTests },
+    reliability,
+    reliability_window_days: reliabilityWindowDays,
     generated_at: now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC',
     // Stable pointer (see the workflow's "Publish to S3" step): the zip is
     // republished under this fixed name on every run, so the link never breaks.
@@ -704,6 +810,8 @@ export function build(
   qaseRegrCases: TestCase[],
   qaseRegrAutoCases: TestCase[],
   githubIssues: Issue[],
+  flakyHistory: Record<string, FlakyTestHistory> = {},
+  reliabilityWindowDays: number = DEFAULT_RELIABILITY_WINDOW_DAYS,
 ) {
   const { rootOf, inventory, rootNames } = resolveRoots(qaseSuites);
   const { tests, autoTests } = enrichTestCases(
@@ -717,8 +825,9 @@ export function build(
   const linksByArea = buildAreaLinks(counts.allAreas, bugs, feats, tests);
   const { rows, medBugs, medTests } = buildAreaRows(counts, inventory);
   const trend = buildMonthlyTrend(bugs);
+  const reliability = buildReliabilityRows(tests, flakyHistory);
 
-  writeCsvOutputs(rows, bugs, feats, trend, tests);
+  writeCsvOutputs(rows, bugs, feats, trend, tests, reliability);
   writeDashboardHtml(
     rows,
     bugs,
@@ -729,6 +838,8 @@ export function build(
     medBugs,
     medTests,
     linksByArea,
+    reliability,
+    reliabilityWindowDays,
   );
   logSummary(rows);
 }
@@ -741,7 +852,8 @@ async function main() {
     die('Missing GITHUB_TOKEN environment variable (PAT with read:project scope)');
   const { suites, regCases, regAutoCases } = await fetchQase();
   const githubIssues = await fetchGithubProject();
-  build(suites, regCases, regAutoCases, githubIssues);
+  const { tests: flakyHistory, windowDays } = await fetchFlakyHistory();
+  build(suites, regCases, regAutoCases, githubIssues, flakyHistory, windowDays);
 }
 
 // Only run main() when invoked directly (allows importing build() in tests)

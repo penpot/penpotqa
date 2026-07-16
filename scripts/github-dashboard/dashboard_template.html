@@ -180,6 +180,13 @@
       tr:hover td {
         background: var(--panel2);
       }
+      td a {
+        color: var(--teal);
+        text-decoration: none;
+      }
+      td a:hover {
+        text-decoration: underline;
+      }
       .tag {
         display: inline-block;
         font-family: var(--mono);
@@ -208,6 +215,40 @@
       .t-ok {
         color: var(--faint);
         border-color: var(--faint);
+      }
+      .count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 20px;
+        font-family: var(--mono);
+        font-variant-numeric: tabular-nums;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 20px;
+        border: 1px solid;
+      }
+      .count-flaky {
+        color: var(--amber);
+        border-color: var(--amber);
+      }
+      .count-failed {
+        color: var(--rose);
+        border-color: var(--rose);
+      }
+      th[data-key] {
+        cursor: pointer;
+        user-select: none;
+      }
+      th[data-key]:hover {
+        color: var(--ink);
+      }
+      th[data-key] .arrow {
+        display: inline-block;
+        width: 9px;
+        margin-left: 3px;
+        color: var(--teal);
       }
       .tip {
         position: fixed;
@@ -368,6 +409,32 @@
       </table>
     </section>
 
+    <section id="reliability-section" style="display: none">
+      <h2>Test reliability — flaky &amp; failing</h2>
+      <p class="sub">
+        Automated regression tests that flaked or failed in CI at least once in the
+        last <span id="reliability-window"></span> days, tallied per Qase ID from the
+        daily run's <code>results.json</code> (see <code>flaky-tally.ts</code>).
+        Click a column to sort — defaults to most failed first, ties broken by most
+        flaky. This is frequency, not a rate (no denominator of clean runs). "Last
+        seen" links to that run's report where available — raw reports expire off S3
+        after ~10 days, so older links may 404.
+      </p>
+      <table id="reliability-tbl">
+        <thead>
+          <tr>
+            <th data-key="title" style="text-align: left">Test</th>
+            <th data-key="area" style="text-align: left">Area</th>
+            <th data-key="flaky">Flaky</th>
+            <th data-key="failed">Failed</th>
+            <th data-key="total">Total</th>
+            <th data-key="last_seen">Last seen</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
     <footer>
       sources: qase api /suite and /case (paginated in batches of 100) · github
       project #8 via graphql · issue→area mapping: IOP labels (46%) + title keywords
@@ -428,6 +495,10 @@
         [k.bugs, 'bugs (not rejected)'],
         [k.open_bugs, 'open bugs'],
         [k.features, 'features / enhancements'],
+        [
+          k.flaky_tests,
+          `flaky/failing tests (${DATA.reliability_window_days || 30}d)`,
+        ],
       ]
         .map(
           ([n, l]) =>
@@ -652,6 +723,98 @@
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') popover.style.display = 'none';
         });
+      })();
+
+      /* Test reliability (flaky/failing) — fed by the daily
+         flaky-tally.ts aggregate, empty until that history builds up */
+      (function () {
+        const reliability = DATA.reliability || [];
+        if (reliability.length === 0) return;
+        document.getElementById('reliability-window').textContent =
+          DATA.reliability_window_days || 30;
+        document.getElementById('reliability-section').style.display = '';
+
+        const esc = (s) =>
+          String(s).replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;',
+              })[c],
+          );
+
+        const reliabilityBody = document.querySelector('#reliability-tbl tbody');
+        const reliabilityHeaders = document.querySelectorAll(
+          '#reliability-tbl th[data-key]',
+        );
+
+        // Default: most failed first, ties broken by most flaky (matches the
+        // server-side default in buildReliabilityRows).
+        let sortKey = 'failed';
+        let sortDescending = true;
+
+        function sortedReliabilityRows() {
+          const sorted = [...reliability];
+          sorted.sort((testA, testB) => {
+            const valueA = testA[sortKey];
+            const valueB = testB[sortKey];
+            const comparison =
+              typeof valueA === 'number'
+                ? valueA - valueB
+                : String(valueA).localeCompare(String(valueB));
+            const directed = sortDescending ? -comparison : comparison;
+            if (directed !== 0) return directed;
+            if (sortKey !== 'failed' && testB.failed !== testA.failed)
+              return testB.failed - testA.failed;
+            return testB.flaky - testA.flaky;
+          });
+          return sorted;
+        }
+
+        // The raw run report expires off S3 after ~10 days, so this link is
+        // best-effort (most reliable for the most recent occurrence).
+        const lastSeenCell = (test) =>
+          test.last_seen_run_id
+            ? `<a href="https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${esc(test.last_seen_run_id)}/index.html" target="_blank" rel="noopener" title="That run's report — may have expired (~10 day retention)">${esc(test.last_seen)}</a>`
+            : esc(test.last_seen);
+
+        function renderReliabilityTable() {
+          reliabilityBody.innerHTML = sortedReliabilityRows()
+            .map(
+              (test) =>
+                `<tr><td><a href="https://app.qase.io/case/PENPOT-${test.id}" target="_blank" rel="noopener">PENPOT-${test.id}</a> ${esc(test.title)}</td><td>${esc(test.area)}</td><td><span class="count count-flaky">${test.flaky}</span></td><td><span class="count count-failed">${test.failed}</span></td><td>${test.total}</td><td>${lastSeenCell(test)}</td></tr>`,
+            )
+            .join('');
+          reliabilityHeaders.forEach((header) => {
+            const arrow = header.querySelector('.arrow');
+            if (arrow) arrow.remove();
+            if (header.dataset.key === sortKey) {
+              const span = document.createElement('span');
+              span.className = 'arrow';
+              span.textContent = sortDescending ? '▼' : '▲';
+              header.appendChild(span);
+            }
+          });
+        }
+
+        reliabilityHeaders.forEach((header) => {
+          header.addEventListener('click', () => {
+            const key = header.dataset.key;
+            if (key === sortKey) sortDescending = !sortDescending;
+            else {
+              sortKey = key;
+              sortDescending =
+                key !== 'title' && key !== 'area' && key !== 'last_seen';
+            }
+            renderReliabilityTable();
+          });
+        });
+
+        renderReliabilityTable();
       })();
     </script>
   </body>
