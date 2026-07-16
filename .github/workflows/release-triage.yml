@@ -1,12 +1,12 @@
 # .github/workflows/release-triage.yml
 #
 # Manual triage for freeze week / release promotions.
-# Actions tab -> "Release triage" -> Run workflow -> type the release tag.
+# Actions tab -> "Report triage" -> Run workflow -> type the release tag.
 # Creates ONE Taiga user story tagged "release-<tag>" containing one task
 # per failure cluster. Re-running with the same tag adds only NEW clusters
 # to the SAME story (no duplicates) thanks to the per-release state file.
 
-name: Release triage
+name: Report triage
 
 on:
   workflow_dispatch:
@@ -28,6 +28,11 @@ on:
       epic_ref:
         description: 'Optional: Taiga epic ref (number only, e.g. 118) to link the story under'
         required: false
+      reset_state:
+        description: 'Reset this release tag: forget all previous triage state (delete the old story in Taiga yourself first)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -86,13 +91,19 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "App version for this run: ${VERSION:-<not recorded>}"
 
+      - name: Reset per-release triage state
+        if: ${{ inputs.reset_state == true }}
+        run: |
+          aws s3 rm "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json" || echo "no state to delete"
+          echo "State for release ${{ inputs.release_tag }} reset — all failures will be treated as new."
+
       - name: Pull per-release triage state
         run: |
           mkdir -p .triage
           aws s3 cp "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json" \
             .triage/state.json || echo "first triage for this release"
 
-      - name: Run release triage
+      - name: Run report triage
         run: |
           npx tsx scripts/triage.ts \
             --results results.json \
@@ -105,6 +116,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }} # raises GitHub API rate limit for the app-repo changelog fetch
           # APP_REPO: penpot/penpot                            # default; override if the app repo moves
+          TAIGA_CLOSE_ASSIGNEE: qa.integrations.bot # resolved tasks are assigned to this user when auto-closed
+          # TAIGA_CLOSED_STATUS: Closed                       # default; override if the project's closed task status is named differently
           TAIGA_URL: ${{ secrets.TAIGA_URL }} # https://api.taiga.io on Taiga cloud
           TAIGA_PUBLIC_URL: ${{ vars.TAIGA_PUBLIC_URL }} # https://tree.taiga.io — used for links in the digest
           TAIGA_USERNAME: ${{ secrets.TAIGA_USERNAME }}
