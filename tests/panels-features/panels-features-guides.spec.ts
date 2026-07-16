@@ -178,7 +178,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([732], 'Columns guides - change width'), async () => {
+  mainTest(qase([3268], 'Columns guides - change width'), async () => {
     await mainTest.step('Change columns guides width', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
@@ -201,7 +201,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([735], 'Columns guides - change opacity'), async () => {
+  mainTest(qase([3269], 'Columns guides - change opacity'), async () => {
     await mainTest.step('Change columns guides opacity to 50', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
@@ -232,7 +232,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([736], 'Use default columns guides'), async () => {
+  mainTest(qase([3270], 'Use default columns guides'), async () => {
     await mainTest.step('Reset columns guides to default values', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
