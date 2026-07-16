@@ -104,7 +104,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([725], 'Hide and unhide square guides via Main menu'), async () => {
+  mainTest(qase([3262], 'Hide and unhide square guides via Main menu'), async () => {
     await mainTest.step('Hide square guides from main menu', async () => {
       await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
