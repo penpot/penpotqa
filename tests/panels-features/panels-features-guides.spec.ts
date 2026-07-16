@@ -144,7 +144,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([730], 'Set columns guides'), async () => {
+  mainTest(qase([3264], 'Set columns guides'), async () => {
     await mainTest.step('Add columns guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
@@ -158,7 +158,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([731], 'Columns guides - change columns number'), async () => {
+  mainTest(qase([3267], 'Columns guides - change columns number'), async () => {
     await mainTest.step('Change columns guides count', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
