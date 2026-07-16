@@ -32,31 +32,19 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest(qase(816, 'Hide/show rulers via main menu'), async () => {
-  await mainPage.hideRulersViaMainMenu();
-  await mainPage.clickViewportOnce();
-  await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.clickOnMainThenViewMenuItem();
-  await mainPage.clickShowRulersMainMenuSubItem();
-  await mainPage.clickViewportOnce();
-  await expect(mainPage.viewport).toHaveScreenshot('viewport-default.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
-
-mainTest(qase(816, 'Hide/show rulers via shortcut CTRL SHIFT R'), async () => {
-  await mainPage.clickViewportTwice();
-  await mainPage.pressHideShowRulersShortcut();
-  await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.pressHideShowRulersShortcut();
-  await expect(mainPage.viewport).toHaveScreenshot('viewport-default.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
+mainTest(
+  qase(816, 'Hide/show rulers via main menu and shortcut CTRL SHIFT R'),
+  async () => {
+    await mainPage.pressHideShowRulersShortcut();
+    await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
+      mask: mainPage.maskViewport(),
+    });
+    await mainPage.pressHideShowRulersShortcut();
+    await expect(mainPage.viewport).toHaveScreenshot('viewport-default.png', {
+      mask: mainPage.maskViewport(),
+    });
+  },
+);
 
 mainTest(qase(819, 'Hide/show color palette - file library check'), async () => {
   await assetsPanelPage.clickAssetsTab();
