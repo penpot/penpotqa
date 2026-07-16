@@ -1,14 +1,15 @@
-const { mainTest } = require('../../fixtures');
-const { expect } = require('@playwright/test');
-const { TeamPage } = require('../../pages/dashboard/team-page');
-const { DashboardPage } = require('../../pages/dashboard/dashboard-page');
-const { PluginsPage } = require('../../pages/workspace/plugins-page');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { createTeamName } = require('helpers/teams/create-team-name');
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { PluginsPage } from '@pages/workspace/plugins-page';
+import { mainTest } from 'fixtures';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 const teamName = createTeamName();
 
-let pluginsPage, teamPage, dashboardPage;
+let pluginsPage: PluginsPage;
+let teamPage: TeamPage;
+let dashboardPage: DashboardPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
