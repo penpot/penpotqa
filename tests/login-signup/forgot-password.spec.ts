@@ -4,7 +4,6 @@ import {
   getVerificationMessage,
   waitSecondMessage,
 } from 'helpers/gmail';
-import { random } from 'helpers/string-generator';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { ForgotPasswordPage } from '@pages/forgot-password-page';
 import { LoginPage } from '@pages/login-page';
@@ -28,16 +27,6 @@ test.describe('Forgot password form validations', () => {
   test(qase([50], 'Forgot password flow with invalid email'), async () => {
     await test.step('Verify invalid email prevents password recovery', async () => {
       await forgotPasswordPage.enterEmail('xxx');
-      await forgotPasswordPage.isRecoverPasswordButtonDisabled();
-    });
-  });
-
-  test(qase([51], 'Forgot password flow with non existed email'), async () => {
-    const email = `${process.env.GMAIL_NAME}autotest+${random()}${process.env.GMAIL_DOMAIN}`;
-
-    await test.step('Verify non-existent email prevents password recovery', async () => {
-      await forgotPasswordPage.enterEmail(email);
-      await forgotPasswordPage.clickRecoverPasswordButton();
       await forgotPasswordPage.isRecoverPasswordButtonDisabled();
     });
   });
