@@ -1,27 +1,22 @@
 {
   "compilerOptions": {
-    /* Language and Environment */
-    "target": "ES2022", // Stable modern target; Node 18/20 supports all of it
-    "lib": ["DOM", "ES2022"], // DOM kept for page.evaluate() callbacks
+    "target": "ES2022",
+    "lib": ["DOM", "ES2022"],
 
-    /* Modules */
-    "module": "NodeNext", // Correct CJS/ESM semantics for Node, understands node: imports
+    "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "esModuleInterop": true, // Safe default imports from CommonJS deps
+    "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": ["node"], // "playwright" removed: deprecated stub; real types ship inside @playwright/test
+    "types": ["node"],
 
-    /* JavaScript Support */
     "allowJs": true,
     "checkJs": false,
 
-    /* Type Checking */
     "strict": true,
-    "noEmit": true, // Type-check only; Playwright and tsx do their own transpiling
+    "noEmit": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true, // Avoids case-sensitivity surprises between macOS and Linux CI
+    "forceConsistentCasingInFileNames": true,
 
-    /* Paths */
     "baseUrl": ".",
     "paths": {
       "@tests/*": ["tests/*"],
