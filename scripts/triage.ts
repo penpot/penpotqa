@@ -326,6 +326,24 @@ class Taiga {
     await this.patch(`/api/v1/tasks/${taskId}`, body);
   }
 
+  /** null = could not determine (deleted task, API hiccup) */
+  async taskStatus(
+    taskId: number,
+  ): Promise<{ isClosed: boolean; name: string } | null> {
+    const r = await this.request(
+      'GET',
+      `/api/v1/tasks/${taskId}`,
+      undefined,
+      true,
+      true,
+    );
+    if (!r.ok) return null;
+    const task = await r.json();
+    const info = task?.status_extra_info;
+    if (!info) return null;
+    return { isClosed: !!info.is_closed, name: info.name ?? '' };
+  }
+
   async commentTask(taskId: number, comment: string) {
     const task = await this.get(`/api/v1/tasks/${taskId}`);
     await this.patch(`/api/v1/tasks/${taskId}`, { version: task.version, comment });
@@ -377,6 +395,22 @@ class Taiga {
         console.log(`Taiga throttled (429), retrying in ${wait}ms...`);
         await new Promise((res) => setTimeout(res, wait));
         continue;
+      }
+      // Intermittent edge/WAF blocks (Cloudflare in front of api.taiga.io) return
+      // an HTML 403 page. Retry a couple of times with a pause before giving up.
+      if (r.status === 403 && attempt < 2) {
+        const peek = await r.clone().text();
+        if (
+          peek.trimStart().toLowerCase().startsWith('<!doctype') ||
+          peek.trimStart().startsWith('<html')
+        ) {
+          const wait = 5000 * (attempt + 1);
+          console.log(
+            `Taiga request blocked at the edge (HTML 403), retrying in ${wait}ms...`,
+          );
+          await new Promise((res) => setTimeout(res, wait));
+          continue;
+        }
       }
       if (!r.ok && !allowFail) {
         let body = await r.text();
@@ -479,6 +513,8 @@ async function main() {
     }
   }
 
+  const acknowledged = new Map<string, string>(); // fingerprint -> 'triaged' (task closed per team convention)
+
   // Snapshot resolved entries now — closing may delete them from state below.
   const resolvedInfo = resolved.map((fp) => ({
     fp,
@@ -515,12 +551,16 @@ async function main() {
     let storyRef = storyState?.taigaRef;
 
     // Someone may have deleted the story in Taiga since the last run — recreate if so.
+    // Its tasks died with it, so known clusters need their tasks rebuilt too.
+    let storyRecreated = false;
     if (taiga && storyId && !(await taiga.storyExists(storyId))) {
       console.log(
-        `Stored release story ${storyId} no longer exists in Taiga — recreating.`,
+        `Stored release story ${storyId} no longer exists in Taiga — rebuilding story and tasks.`,
       );
       storyId = undefined;
       storyRef = undefined;
+      storyRecreated = true;
+      delete (state as any)['__file_tasks__']; // file-mode task map died with the story
     }
 
     if (taiga && !storyId) {
@@ -568,7 +608,9 @@ async function main() {
     if (GROUP_BY === 'file') {
       // One task per spec file, listing all its failing tests (from new clusters).
       const byFile = new Map<string, Failure[]>();
-      for (const c of newClusters) {
+      for (const c of storyRecreated
+        ? [...newClusters, ...knownClusters]
+        : newClusters) {
         for (const t of c.tests) {
           byFile.set(t.file, [...(byFile.get(t.file) ?? []), t]);
         }
@@ -620,7 +662,14 @@ async function main() {
         state[c.fingerprint].taigaRef = storyRef;
       }
     } else {
-      for (const c of newClusters) {
+      const clustersNeedingTasks = storyRecreated
+        ? [...newClusters, ...knownClusters]
+        : newClusters;
+      if (storyRecreated && knownClusters.length)
+        console.log(
+          `Rebuilding tasks for ${knownClusters.length} known cluster(s) in the new story.`,
+        );
+      for (const c of clustersNeedingTasks) {
         const taskSubject = `${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
         if (taiga && storyId) {
           const { id: taskId, ref: taskRef } = await taiga.createTask(
@@ -645,6 +694,22 @@ async function main() {
         `Re-run on ${today}: ${knownClusters.length} cluster(s) still failing, ${newClusters.length} new. Report: ${REPORT_URL}`,
       );
     }
+    // Team convention: closing a task (with a result comment) = TRIAGED.
+    // Known cluster + closed task -> acknowledged: reviewed, fix pending. No noise.
+    // Known cluster + open task   -> still needs triage.
+    if (taiga) {
+      for (const c of knownClusters) {
+        const e = state[c.fingerprint];
+        if (!e?.taskId) continue;
+        const st = await taiga.taskStatus(e.taskId);
+        if (st?.isClosed) acknowledged.set(c.fingerprint, 'triaged');
+      }
+      if (acknowledged.size)
+        console.log(
+          `${acknowledged.size} known cluster(s) already triaged (task closed).`,
+        );
+    }
+
     if (taiga && storyId && changelog && !!storyState?.taigaId) {
       // story pre-existed and the app changed since -> post the changelog as a comment
       await taiga.commentStory(
@@ -732,17 +797,29 @@ async function main() {
       for (const r of resolvedInfo) {
         if (!r.taskId) continue; // no own task recorded (file mode / pre-upgrade state) -> stays a manual candidate
         try {
-          await taiga.closeTask(
-            r.taskId,
-            statusId,
-            assigneeId,
-            `Auto-closed by triage: green for 3 consecutive triaged runs (${today}).`,
-          );
+          const st = await taiga.taskStatus(r.taskId);
+          if (st?.isClosed) {
+            // already triaged & closed by a human — just record the verification
+            await taiga.commentTask(
+              r.taskId,
+              `Verified by triage: green for 3 consecutive triaged runs (${today}).`,
+            );
+            console.log(
+              `Task #${r.taskRef} already closed (triaged) — added verification comment: ${r.subject ?? r.fp}`,
+            );
+          } else {
+            await taiga.closeTask(
+              r.taskId,
+              statusId,
+              assigneeId,
+              `Auto-closed by triage: green for 3 consecutive triaged runs (${today}).`,
+            );
+            console.log(
+              `Closed task #${r.taskRef}${assigneeId ? ` and assigned to ${assigneeName}` : ''}: ${r.subject ?? r.fp}`,
+            );
+          }
           r.closed = true;
           delete state[r.fp]; // if it ever fails again it is a new cluster -> new task
-          console.log(
-            `Closed task #${r.taskRef}${assigneeId ? ` and assigned to ${assigneeName}` : ''}: ${r.subject ?? r.fp}`,
-          );
         } catch (e) {
           console.log(
             `Could not close task #${r.taskRef}: ${e instanceof Error ? e.message : e}`,
@@ -788,8 +865,11 @@ async function main() {
     digest.push(`### known clusters still failing (${knownClusters.length})`);
     for (const c of knownClusters) {
       const e = state[c.fingerprint];
+      const closedFlag = acknowledged.has(c.fingerprint)
+        ? ' _(triaged)_'
+        : ' — **needs triage**';
       digest.push(
-        `- ${entryLink(e)} — \`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''}, failing ${e.consecutiveRuns} runs in a row)${qaseList(c)}`,
+        `- ${entryLink(e)}${closedFlag} — \`${conciseError(c.errorSample)}\` in ${[...c.files].join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''}, failing ${e.consecutiveRuns} runs in a row)${qaseList(c)}`,
       );
     }
     digest.push('');
@@ -814,7 +894,7 @@ async function main() {
     ? ((state as any)['__release_story__'] as StateEntry | undefined)?.taigaRef
     : undefined;
   const mm: string[] = [];
-  const verdict = `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — ${newClusters.length} new · ${knownClusters.length} known · ${resolved.length} resolved${releaseStoryRef ? ` · ${taigaLink(releaseStoryRef)}` : ''}${APP_VERSION ? `\napp \`${APP_VERSION}\`${versionChanged ? ` :warning: changed from \`${prevVersion!.version}\`${changelog ? ` ([${changelog.total} commits](${changelog.compareUrl}))` : ''}` : ''}` : ''}`;
+  const verdict = `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — ${newClusters.length} new · ${knownClusters.length} known${acknowledged.size ? ` (${acknowledged.size} triaged)` : ''} · ${resolved.length} resolved${releaseStoryRef ? ` · ${taigaLink(releaseStoryRef)}` : ''}${APP_VERSION ? `\napp \`${APP_VERSION}\`${versionChanged ? ` :warning: changed from \`${prevVersion!.version}\`${changelog ? ` ([${changelog.total} commits](${changelog.compareUrl}))` : ''}` : ''}` : ''}`;
   mm.push(verdict);
   if (newClusters.length) {
     mm.push('', '**New:**');
@@ -845,7 +925,7 @@ async function main() {
   const nothingChanged =
     newClusters.length === 0 && resolved.length === 0 && knownClusters.length > 0;
   const mmText = nothingChanged
-    ? `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — re-run: nothing new, ${knownClusters.length} known cluster${knownClusters.length > 1 ? 's' : ''} still failing.${releaseStoryRef ? ` ${taigaLink(releaseStoryRef)}` : ''}`
+    ? `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — re-run: nothing new, ${knownClusters.length} known cluster${knownClusters.length > 1 ? 's' : ''} still failing${acknowledged.size ? ` (${acknowledged.size} triaged)` : ''}.${releaseStoryRef ? ` ${taigaLink(releaseStoryRef)}` : ''}`
     : mm.join('\n');
 
   const mmWebhook = process.env.MATTERMOST_WEBHOOK_URL;
