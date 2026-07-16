@@ -28,6 +28,11 @@ on:
       epic_ref:
         description: 'Optional: Taiga epic ref (number only, e.g. 118) to link the story under'
         required: false
+      reset_state:
+        description: 'Reset this release tag: forget all previous triage state (delete the old story in Taiga yourself first)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -85,6 +90,12 @@ jobs:
           VERSION=$(aws s3 cp "s3://kaleidos-qa-reports/run-${{ steps.report.outputs.run_id }}/app-version.txt" - 2>/dev/null || echo "")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "App version for this run: ${VERSION:-<not recorded>}"
+
+      - name: Reset per-release triage state
+        if: ${{ inputs.reset_state == true }}
+        run: |
+          aws s3 rm "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json" || echo "no state to delete"
+          echo "State for release ${{ inputs.release_tag }} reset — all failures will be treated as new."
 
       - name: Pull per-release triage state
         run: |
