@@ -31,7 +31,7 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase([719], 'Set square guides'), async () => {
+  mainTest(qase([3258], 'Set square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
