@@ -391,6 +391,7 @@ mainTest.describe(() => {
 
   mainTest(qase([2842], 'Clear guides for a given board'), async () => {
     const viewportBox = await mainPage.viewport.boundingBox();
+    if (!viewportBox) throw new Error('Could not get bounding box for viewport');
     const dropX = viewportBox.x + viewportBox.width / 2;
     const dropY = viewportBox.y + viewportBox.height / 2;
 
