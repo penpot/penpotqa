@@ -267,7 +267,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([744], 'Set rows guides'), async () => {
+  mainTest(qase([3272], 'Set rows guides'), async () => {
     await mainTest.step('Add rows guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Rows');
@@ -281,7 +281,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([745], 'Rows guides - change rows number'), async () => {
+  mainTest(qase([3273], 'Rows guides - change rows number'), async () => {
     await mainTest.step('Change rows guides count', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Rows');
@@ -301,7 +301,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([746], 'Rows guides - change height'), async () => {
+  mainTest(qase([3274], 'Rows guides - change height'), async () => {
     await mainTest.step('Change rows guides height', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Rows');
@@ -324,7 +324,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([749], 'Rows guides - change opacity'), async () => {
+  mainTest(qase([3275], 'Rows guides - change opacity'), async () => {
     await mainTest.step('Change rows guides opacity to 50', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Rows');
@@ -354,7 +354,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([750], 'Use default rows guides'), async () => {
+  mainTest(qase([3276], 'Use default rows guides'), async () => {
     await mainTest.step('Reset rows guides to default values', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Rows');
