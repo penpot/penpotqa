@@ -85,7 +85,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([722], 'Use default square guides'), async () => {
+  mainTest(qase([3261], 'Use default square guides'), async () => {
     await mainTest.step('Reset square guides to default values', async () => {
       await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
