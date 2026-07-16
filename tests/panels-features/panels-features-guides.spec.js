@@ -31,7 +31,6 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible();
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([719], 'Set square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -40,7 +39,6 @@ mainTest.describe(() => {
     });
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([720], 'Square guides - change size'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -55,7 +53,6 @@ mainTest.describe(() => {
     );
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([721], 'Square guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -70,7 +67,7 @@ mainTest.describe(() => {
       },
     );
   });
-  // TODO: Does not exist in Qase
+
   mainTest(qase([722], 'Use default square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -85,7 +82,6 @@ mainTest.describe(() => {
     });
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([725], 'Hide and unhide square guides via Main menu'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -106,7 +102,6 @@ mainTest.describe(() => {
     });
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([729], 'Remove square guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
@@ -117,7 +112,6 @@ mainTest.describe(() => {
     });
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([730], 'Set columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -127,7 +121,6 @@ mainTest.describe(() => {
     });
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([731], 'Columns guides - change columns number'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -143,7 +136,6 @@ mainTest.describe(() => {
     );
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([732], 'Columns guides - change width'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -162,7 +154,6 @@ mainTest.describe(() => {
     );
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([735], 'Columns guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -189,7 +180,6 @@ mainTest.describe(() => {
     );
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([736], 'Use default columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -204,7 +194,6 @@ mainTest.describe(() => {
     });
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([743], 'Remove columns guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Columns');
@@ -216,7 +205,6 @@ mainTest.describe(() => {
     });
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([744], 'Set rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -226,7 +214,6 @@ mainTest.describe(() => {
     });
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([745], 'Rows guides - change rows number'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -239,7 +226,6 @@ mainTest.describe(() => {
     });
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([746], 'Rows guides - change height'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -258,7 +244,6 @@ mainTest.describe(() => {
     );
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([749], 'Rows guides - change opacity'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -281,7 +266,6 @@ mainTest.describe(() => {
     });
   });
 
-  // TODO: Does not exist in Qase
   mainTest(qase([750], 'Use default rows guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await designPanelPage.selectGuidesType('Rows');
@@ -296,7 +280,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([1864], 'Duplicate board with guides'), async () => {
+  mainTest(qase([3257], 'Duplicate board with guides'), async () => {
     await designPanelPage.clickAddGuidesButton();
     await mainPage.waitForChangeIsSaved();
     await mainPage.clickShortcutCtrlD();
