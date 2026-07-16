@@ -136,13 +136,17 @@ flaked once. A future iteration could walk every test in `results.json`
 ### Bootstrapping the history
 
 `flaky-history.json` starts empty and takes a few weeks to become useful on
-its own. `scripts/github-dashboard/flaky-history.seed.json` is a one-time
-backfill (built by replaying the daily runs still on S3 through
-`flaky-tally.ts` chronologically) — publish it with the **"Seed flaky-test
-history"** workflow (Actions tab -> Run workflow). It refuses to run if
-`flaky-history.json` already exists on S3, so it can't clobber real
-accumulated data; delete the seed file and workflow once it's no longer
-needed.
+its own. It was originally bootstrapped by replaying the daily runs still on
+S3 at the time through `flaky-tally.ts` chronologically, then publishing the
+result directly to S3 — the one-off script and seed data used for that are
+gone now that the object exists; `playwright_pre_daily.yml`'s daily step
+maintains it from here.
+
+If `flaky-history.json` is ever lost or needs reseeding (e.g. after an S3
+incident), rebuild it the same way: run `flaky-tally.ts` once per historical
+`run-<id>/results.json` still available on S3, oldest first, chaining
+`--history`/`--out` to the same file each time, then `aws s3 cp` the result
+to `s3://kaleidos-qa-reports/flaky-history.json`.
 
 ## Possible Enhancements
 
