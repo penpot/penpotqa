@@ -344,7 +344,12 @@ class Taiga {
   }
 
   private headers(auth = true): Record<string, string> {
-    const h: Record<string, string> = { 'Content-Type': 'application/json' };
+    // User-Agent matters: api.taiga.io sits behind Cloudflare, which can 403
+    // UA-less requests with an HTML block page.
+    const h: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'User-Agent': 'qa-triage/1.0 (+github-actions)',
+    };
     if (auth) h['Authorization'] = `Bearer ${this.token}`;
     return h;
   }
@@ -373,8 +378,17 @@ class Taiga {
         await new Promise((res) => setTimeout(res, wait));
         continue;
       }
-      if (!r.ok && !allowFail)
-        throw new Error(`${method} ${p} -> ${r.status} ${await r.text()}`);
+      if (!r.ok && !allowFail) {
+        let body = await r.text();
+        if (
+          body.trimStart().toLowerCase().startsWith('<!doctype') ||
+          body.trimStart().startsWith('<html')
+        ) {
+          body =
+            '[HTML page instead of API JSON — request was blocked before reaching Taiga (WAF/edge) or the host is wrong. Check TAIGA_URL is https://api.taiga.io]';
+        }
+        throw new Error(`${method} ${p} -> ${r.status} ${body.slice(0, 500)}`);
+      }
       return r;
     }
   }
