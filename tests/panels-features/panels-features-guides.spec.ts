@@ -129,7 +129,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([729], 'Remove square guides'), async () => {
+  mainTest(qase([3263], 'Remove square guides'), async () => {
     await mainTest.step('Remove square guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
