@@ -67,6 +67,24 @@ jobs:
           testdino_api_key: ${{ secrets.TDPW_API_KEY }}
         if: always()
 
+      - name: Update flaky-test history
+        if: always()
+        continue-on-error: true
+        run: |
+          if [ ! -f playwright-report/results.json ]; then
+            echo "No results.json produced, skipping flaky history update"
+            exit 0
+          fi
+          aws s3 cp s3://kaleidos-qa-reports/flaky-history.json /tmp/flaky-history.json \
+            || echo '{"tests":{}}' > /tmp/flaky-history.json
+          npx tsx scripts/github-dashboard/flaky-tally.ts \
+            --results playwright-report/results.json \
+            --history /tmp/flaky-history.json \
+            --run-id "${{ github.run_id }}" \
+            --date "$(date -u +%F)" \
+            --out /tmp/flaky-history.json
+          aws s3 cp /tmp/flaky-history.json s3://kaleidos-qa-reports/flaky-history.json
+
       - name: Record deployed app version
         if: always()
         continue-on-error: true
