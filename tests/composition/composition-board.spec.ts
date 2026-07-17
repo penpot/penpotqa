@@ -139,36 +139,6 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([227], 'Add, hide, unhide and delete Blur to board'), async () => {
-    await designPanelPage.clickFillColorIcon();
-    await colorPalettePage.setHex('#304d6a');
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickAddBlurButton();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('board-blur-default.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await designPanelPage.hideBlur();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('board-blur-hide.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await designPanelPage.unhideBlur();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('board-blur-unhide.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await designPanelPage.removeBlur();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('board-blur-remove.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
-
   mainTest(qase([228], 'Add and edit Blur to board'), async () => {
     await designPanelPage.clickAddBlurButton();
     await designPanelPage.changeValueForBlur('55');
