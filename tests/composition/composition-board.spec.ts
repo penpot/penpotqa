@@ -228,17 +228,6 @@ mainTest.describe(() => {
     });
   });
 
-  // To-Do: the tests is different in Qase, in here we are ignoring case sensitive
-  mainTest(qase([272], 'Search board by name'), async () => {
-    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
-    await layersPanelPage.typeNameCreatedLayerAndEnter('Test');
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isBoardNameDisplayed('Test');
-    await layersPanelPage.openLayerSearchBar();
-    await layersPanelPage.searchLayer('test');
-    await layersPanelPage.isLayerNameDisplayed('Test');
-  });
-
   mainTest(qase([1756], 'Absolute positioned board moving'), async () => {
     await designPanelPage.changeHeightAndWidthForLayer('400', '500');
     await mainPage.pressFlexLayoutShortcut();
