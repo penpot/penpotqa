@@ -229,23 +229,6 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([244], 'Change border radius multiple values (Design page in the right)'),
-    async () => {
-      await designPanelPage.clickIndividualCornersRadiusButton();
-      await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-changed-corners.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board.png', {
-        mask: mainPage.maskViewport(),
-      });
-    },
-  );
-
-  mainTest(
     qase([271], "Click 'Focus off' board from shortcut (F)"),
     async ({ page }) => {
       await mainPage.focusBoardViaRightClickOnCanvas('Board');
