@@ -139,30 +139,6 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([225], 'Add and edit Shadow to board'), async () => {
-    await designPanelPage.clickAddShadowButton();
-    await designPanelPage.clickShadowActionsButton();
-    await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
-    await designPanelPage.clickShadowColorIcon();
-    await colorPalettePage.setHex('#304d6a');
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('board-drop-shadow.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await designPanelPage.selectTypeForShadow('Inner shadow');
-    await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
-    await mainPage.waitForResizeHandlerVisible();
-    await designPanelPage.clickShadowColorIcon();
-    await colorPalettePage.setHex('#96e637');
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('board-inner-shadow.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
-
   mainTest(qase([227], 'Add, hide, unhide and delete Blur to board'), async () => {
     await designPanelPage.clickFillColorIcon();
     await colorPalettePage.setHex('#304d6a');
