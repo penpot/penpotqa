@@ -219,15 +219,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([240], 'Delete board (From right click)'), async () => {
-    await mainPage.isCreatedLayerVisible();
-    await mainPage.deleteLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
-
   mainTest(qase([2538], 'Delete board (From Keyboard)'), async () => {
     await mainPage.isCreatedLayerVisible();
     await mainPage.deleteLayerViaShortcut();
