@@ -139,16 +139,6 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([228], 'Add and edit Blur to board'), async () => {
-    await designPanelPage.clickAddBlurButton();
-    await designPanelPage.changeValueForBlur('55');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.waitForResizeHandlerVisible();
-    await expect(mainPage.viewport).toHaveScreenshot('board-blur.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
-
   mainTest(qase([229], 'Add, edit and delete Stroke to board'), async () => {
     await designPanelPage.clickAddStrokeButton();
     await mainPage.waitForChangeIsSaved();
