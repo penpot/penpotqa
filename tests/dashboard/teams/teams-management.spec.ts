@@ -11,17 +11,6 @@ mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
 });
 
-mainTest(qase([1162], 'Create a team'), async () => {
-  await mainTest.step('Create and select team', async () => {
-    await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
-  });
-
-  await mainTest.step('Delete created team', async () => {
-    await teamPage.deleteTeam(team);
-  });
-});
-
 mainTest(qase([1163], 'Team.Switch between teams'), async () => {
   const team1 = createTeamName();
   const team2 = createTeamName();

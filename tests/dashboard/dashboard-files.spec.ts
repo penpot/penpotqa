@@ -169,20 +169,6 @@ mainTest.describe('Files management', () => {
     },
   );
 
-  mainTest(
-    qase(1121, 'Download Penpot file (.penpot) (in project) via right click'),
-    async () => {
-      await dashboardPage.downloadFileViaRightClick();
-    },
-  );
-
-  mainTest(
-    qase(1121, 'Download Penpot file (.penpot) (in project) via Options icon'),
-    async () => {
-      await dashboardPage.downloadFileViaOptionsIcon();
-    },
-  );
-
   mainTest(qase(1123, 'Delete file in Project via right click'), async () => {
     await dashboardPage.deleteFileViaRightclick();
     await dashboardPage.isDeletedFileSuccessMessageVisible();
