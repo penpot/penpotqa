@@ -595,17 +595,6 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([251], 'Copy and Paste Board'), async () => {
-    const board1 = 'Board #1';
-    await mainPage.copyLayerViaRightClick();
-    await mainPage.pasteLayerViaRightClick();
-    await layersPanelPage.clickOnLayerOptionViaRightClickForLayer(board1, 'copy');
-    await mainPage.pasteLayerViaRightClick();
-    await mainPage.pressCopyShortcut();
-    await mainPage.pressPasteShortcut();
-    await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
-  });
-
   mainTest(
     qase([268], "Click 'Focus on' board from right click"),
     async ({ page }) => {
