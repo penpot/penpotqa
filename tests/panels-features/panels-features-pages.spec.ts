@@ -38,7 +38,7 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest(qase(832, 'Create new page'), async () => {
+mainTest(qase([832], 'Create new page'), async () => {
   await mainTest.step('Add a new page', async () => {
     await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
@@ -54,7 +54,7 @@ mainTest(qase(832, 'Create new page'), async () => {
   });
 });
 
-mainTest(qase(833, 'Rename page'), async () => {
+mainTest(qase([833], 'Rename page'), async () => {
   await mainTest.step('Add a second page', async () => {
     await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
@@ -74,7 +74,7 @@ mainTest(qase(833, 'Rename page'), async () => {
   });
 });
 
-mainTest(qase(834, 'Duplicate page'), async () => {
+mainTest(qase([834], 'Duplicate page'), async () => {
   await mainTest.step('Duplicate the first page', async () => {
     await pagesPanelPage.duplicatePageViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -86,7 +86,7 @@ mainTest(qase(834, 'Duplicate page'), async () => {
   });
 });
 
-mainTest(qase(835, 'Switch between pages'), async ({ page }) => {
+mainTest(qase([835], 'Switch between pages'), async ({ page }) => {
   await mainTest.step('Navigate to second page', async () => {
     await pagesPanelPage.clickAddPageButton();
     await pagesPanelPage.clickOnPageOnLayersPanel(2);
@@ -125,7 +125,7 @@ mainTest(qase(835, 'Switch between pages'), async ({ page }) => {
   });
 });
 
-mainTest(qase(836, 'Collapse/expand pages list'), async () => {
+mainTest(qase([836], 'Collapse/expand pages list'), async () => {
   await mainTest.step('Add a second page and collapse the pages list', async () => {
     await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
@@ -153,7 +153,7 @@ mainTest(qase(836, 'Collapse/expand pages list'), async () => {
   );
 });
 
-mainTest(qase(837, 'Delete page'), async () => {
+mainTest(qase([837], 'Delete page'), async () => {
   await mainTest.step('Add two extra pages', async () => {
     await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
@@ -177,7 +177,7 @@ mainTest(qase(837, 'Delete page'), async () => {
 });
 
 mainTest(
-  qase(839, 'Create 3 pages, delete 2nd page, undo delete (CTRL Z)'),
+  qase([839], 'Create 3 pages, delete 2nd page, undo delete (CTRL Z)'),
   async () => {
     await mainTest.step('Create three pages and delete the second', async () => {
       await pagesPanelPage.clickAddPageButton();
@@ -195,7 +195,7 @@ mainTest(
 
 mainTest(
   qase(
-    1526,
+    [1526],
     'Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Reset overrides"',
   ),
   async () => {
@@ -233,7 +233,7 @@ mainTest(
 
 mainTest(
   qase(
-    1527,
+    [1527],
     'Add a component from local library to Page 1 and Page 2, edit component on Page 2 and click "Update main component"',
   ),
   async () => {

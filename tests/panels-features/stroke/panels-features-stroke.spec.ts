@@ -30,7 +30,7 @@ mainTest.beforeEach(async ({ page }) => {
 });
 
 mainTest(
-  qase(2971, 'Live preview updates when adjusting both Dash and Gap sequentially'),
+  qase([2971], 'Live preview updates when adjusting both Dash and Gap sequentially'),
   async () => {
     const dashValue = '5';
     const gapValue = '2';
