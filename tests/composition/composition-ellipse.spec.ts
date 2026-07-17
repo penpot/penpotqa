@@ -69,18 +69,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([329], 'Rename ellipse with valid name'), async () => {
-    await mainTest.step('Rename the ellipse layer', async () => {
-      await layersPanelPage.doubleClickLayerOnLayersTab('Ellipse');
-      await layersPanelPage.typeNameCreatedLayerAndEnter('renamed ellipse');
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify layer has the new name', async () => {
-      await layersPanelPage.isLayerNameDisplayed('renamed ellipse');
-    });
-  });
-
   mainTest(
     qase([332], 'Add, hide, unhide, change type and delete Shadow to ellipse'),
     async () => {

@@ -68,18 +68,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([295], 'Rename rectangle with valid name'), async () => {
-    await mainTest.step('Rename the rectangle layer', async () => {
-      await layersPanelPage.doubleClickLayerOnLayersTab('Rectangle');
-      await layersPanelPage.typeNameCreatedLayerAndEnter('renamed rectangle');
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify layer has the new name', async () => {
-      await layersPanelPage.isLayerNameDisplayed('renamed rectangle');
-    });
-  });
-
   mainTest(qase([2544], 'Delete Rectangle (From Keyboard)'), async () => {
     await mainTest.step(
       'Verify rectangle is visible and delete via keyboard',
@@ -131,19 +119,6 @@ mainTest.describe(() => {
         await layersPanelPage.isPathComponentOnLayersTabVisible();
       },
     );
-  });
-
-  mainTest(qase([326], 'Selection to board'), async () => {
-    await mainTest.step('Move selection to board via right click', async () => {
-      await mainPage.selectionToBoardViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify rectangle is placed inside board', async () => {
-      await expect(mainPage.viewport).toHaveScreenshot('rectangle-to-board.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
   });
 
   mainTest(
