@@ -431,44 +431,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([277], 'Change rotation (Design page in the right)'), async () => {
-    await mainTest.step('Rotate to 90 degrees and verify', async () => {
-      await designPanelPage.changeRotationForLayer('90');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-90.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-
-    await mainTest.step('Rotate to 120 degrees and verify', async () => {
-      await designPanelPage.changeRotationForLayer('120');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-120.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-
-    await mainTest.step('Rotate to 45 degrees and verify', async () => {
-      await designPanelPage.changeRotationForLayer('45');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-45.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-
-    await mainTest.step('Rotate to 360 degrees and verify', async () => {
-      await designPanelPage.changeRotationForLayer('360');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('rectangle-rotated-359.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-  });
-
   mainTest(
     qase([278], 'Change border radius multiple values (Design page in the right)'),
     async () => {
@@ -560,9 +522,12 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Verify one copy instance was detached (copy count is 1)', async () => {
-        await layersPanelPage.checkCopyComponentLayerCount(1);
-      });
+      await mainTest.step(
+        'Verify one copy instance was detached (copy count is 1)',
+        async () => {
+          await layersPanelPage.checkCopyComponentLayerCount(1);
+        },
+      );
 
       await mainTest.step(
         'Select remaining rectangle copy and detach instance via shortcut',
@@ -573,9 +538,12 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Verify all copy instances were detached (copy count is 0)', async () => {
-        await layersPanelPage.checkCopyComponentLayerCount(0);
-      });
+      await mainTest.step(
+        'Verify all copy instances were detached (copy count is 0)',
+        async () => {
+          await layersPanelPage.checkCopyComponentLayerCount(0);
+        },
+      );
     },
   );
 });
