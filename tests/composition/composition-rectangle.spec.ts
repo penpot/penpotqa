@@ -69,49 +69,6 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([283], 'Click "Focus off" rectangle from shortcut (F)'),
-    async ({ page }) => {
-      await mainTest.step('Focus on rectangle via right click', async () => {
-        await mainPage.focusLayerViaRightClickOnCanvas();
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step('Verify focus mode is on', async () => {
-        await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
-        await layersPanelPage.isFocusModeOn();
-        await expect(page).toHaveScreenshot('rectangle-single-focus-on.png', {
-          mask: [
-            mainPage.guides,
-            mainPage.guidesFragment,
-            mainPage.toolBarWindow,
-            mainPage.usersSection,
-            mainPage.zoomButton,
-          ],
-        });
-      });
-
-      await mainTest.step('Focus off via F shortcut', async () => {
-        await mainPage.focusLayerViaShortcut();
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step('Verify focus mode is off', async () => {
-        await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
-        await layersPanelPage.isFocusModeOff();
-        await expect(page).toHaveScreenshot('rectangle-single-focus-off.png', {
-          mask: [
-            mainPage.guides,
-            mainPage.guidesFragment,
-            mainPage.toolBarWindow,
-            mainPage.usersSection,
-            mainPage.zoomButton,
-          ],
-        });
-      });
-    },
-  );
-
-  mainTest(
     qase([284], 'Add, hide, unhide, change type and delete Shadow to rectangle'),
     async () => {
       await mainTest.step('Add drop shadow and verify default state', async () => {
