@@ -24,7 +24,7 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest(qase(897, 'Add export setting via design panel'), async () => {
+mainTest(qase([897], 'Add export setting via design panel'), async () => {
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -32,7 +32,7 @@ mainTest(qase(897, 'Add export setting via design panel'), async () => {
   await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
 });
 
-mainTest(qase(899, 'Remove export setting via design panel'), async () => {
+mainTest(qase([899], 'Remove export setting via design panel'), async () => {
   await mainPage.clickCreateRectangleButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -42,7 +42,7 @@ mainTest(qase(899, 'Remove export setting via design panel'), async () => {
   await designPanelPage.isExportElementButtonNotDisplayed();
 });
 
-mainTest(qase(905, 'Export boards to PDF (via main menu)'), async () => {
+mainTest(qase([905], 'Export boards to PDF (via main menu)'), async () => {
   const numBoards: number = 2;
 
   await mainTest.step('Create two boards', async () => {

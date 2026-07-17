@@ -25,13 +25,13 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest(qase(1911, 'Download Penpot file (.penpot)'), async () => {
+mainTest(qase([1911], 'Download Penpot file (.penpot)'), async () => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();
   await mainPage.downloadPenpotFileViaMenu();
 });
 
-mainTest(qase(831, 'Add/Remove as shared library'), async () => {
+mainTest(qase([831], 'Add/Remove as shared library'), async () => {
   await mainPage.clickMainMenuButton();
   await mainPage.clickFileMainMenuItem();
   await mainPage.clickAddAsSharedLibraryMainMenuSubItem();

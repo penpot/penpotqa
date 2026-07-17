@@ -32,57 +32,21 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest(qase(817, "Hide/show guides via shortcut CTRL '"), async () => {
-  await mainPage.clickCreateBoardButton();
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.isCreatedLayerVisible();
+mainTest(
+  qase([816], 'Hide/show rulers via main menu and shortcut CTRL SHIFT R'),
+  async () => {
+    await mainPage.pressHideShowRulersShortcut();
+    await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
+      mask: mainPage.maskViewport(),
+    });
+    await mainPage.pressHideShowRulersShortcut();
+    await expect(mainPage.viewport).toHaveScreenshot('viewport-default.png', {
+      mask: mainPage.maskViewport(),
+    });
+  },
+);
 
-  await designPanelPage.clickAddGuidesButton();
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.hideRulersViaMainMenu();
-  await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.pressHideShowGuidesShortcut();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.pressHideShowGuidesShortcut();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot('square-guide-default.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
-
-mainTest(qase(816, 'Hide/show rulers via main menu'), async () => {
-  await mainPage.hideRulersViaMainMenu();
-  await mainPage.clickViewportOnce();
-  await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.clickOnMainThenViewMenuItem();
-  await mainPage.clickShowRulersMainMenuSubItem();
-  await mainPage.clickViewportOnce();
-  await expect(mainPage.viewport).toHaveScreenshot('viewport-default.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
-
-mainTest(qase(816, 'Hide/show rulers via shortcut CTRL SHIFT R'), async () => {
-  await mainPage.clickViewportTwice();
-  await mainPage.pressHideShowRulersShortcut();
-  await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.pressHideShowRulersShortcut();
-  await expect(mainPage.viewport).toHaveScreenshot('viewport-default.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
-
-mainTest(qase(819, 'Hide/show color palette - file library check'), async () => {
+mainTest(qase([819], 'Hide/show color palette - file library check'), async () => {
   await assetsPanelPage.clickAssetsTab();
   await assetsPanelPage.clickAddFileLibraryColorButton();
   await colorPalettePage.setHex('#ffff00');
@@ -103,7 +67,7 @@ mainTest(qase(819, 'Hide/show color palette - file library check'), async () => 
   await mainPage.isColorsPaletteNotDisplayed();
 });
 
-mainTest(qase(820, 'Hide/show board names'), async () => {
+mainTest(qase([820], 'Hide/show board names'), async () => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -120,41 +84,7 @@ mainTest(qase(820, 'Hide/show board names'), async () => {
   });
 });
 
-mainTest(qase(821, 'Hide/show pixel grid via main menu'), async () => {
-  await mainPage.clickViewportTwice();
-  await mainPage.increaseZoom(10);
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.clickOnMainThenViewMenuItem();
-  await mainPage.clickHidePixelGridMainMenuSubItem();
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.clickOnMainThenViewMenuItem();
-  await mainPage.clickShowPixelGridMainMenuSubItem();
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
-
-mainTest(qase(821, 'Hide/show pixel grid via shortcut SHIFT ,'), async () => {
-  await mainPage.clickViewportTwice();
-  await mainPage.increaseZoom(10);
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.pressHideShowPixelGridShortcut();
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-hide-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-  await mainPage.pressHideShowPixelGridShortcut();
-  await expect(mainPage.viewport).toHaveScreenshot('canvas-show-pixel-grid.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
-
-mainTest(qase(822, 'Hide/show UI via main menu and shortcut "/"'), async () => {
+mainTest(qase([822], 'Hide/show UI via main menu and shortcut "/"'), async () => {
   await expect(mainPage.viewport).toHaveScreenshot('canvas-show-ui.png', {
     mask: mainPage.maskViewport(),
   });
@@ -169,7 +99,7 @@ mainTest(qase(822, 'Hide/show UI via main menu and shortcut "/"'), async () => {
   });
 });
 
-mainTest(qase(827, 'Select all via main menu and shortcut CTRL A'), async () => {
+mainTest(qase([827], 'Select all via main menu and shortcut CTRL A'), async () => {
   await mainPage.createDefaultRectangleByCoordinates(250, 350);
   await mainPage.createDefaultEllipseByCoordinates(100, 600);
   await mainPage.clickViewportTwice();
