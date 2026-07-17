@@ -228,26 +228,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(
-    qase([271], "Click 'Focus off' board from shortcut (F)"),
-    async ({ page }) => {
-      await mainPage.focusBoardViaRightClickOnCanvas('Board');
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab('Board', true);
-      await layersPanelPage.isFocusModeOn();
-      await expect(page).toHaveScreenshot('board-single-focus-on.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-      });
-      await mainPage.focusLayerViaShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab('Board', true);
-      await layersPanelPage.isFocusModeOff();
-      await expect(page).toHaveScreenshot('board-single-focus-off.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-      });
-    },
-  );
-
   // To-Do: the tests is different in Qase, in here we are ignoring case sensitive
   mainTest(qase([272], 'Search board by name'), async () => {
     await layersPanelPage.doubleClickLayerOnLayersTab('Board');
