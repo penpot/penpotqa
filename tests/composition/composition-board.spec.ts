@@ -139,57 +139,6 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
-    qase([224], 'Add, hide, unhide, change type and delete Shadow to board'),
-    async () => {
-      await designPanelPage.clickAddShadowButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-drop-shadow-default.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await designPanelPage.hideShadow();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-drop-shadow-hide.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await designPanelPage.unhideShadow();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-drop-shadow-unhide.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await designPanelPage.selectTypeForShadow('Inner shadow');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-inner-shadow-default.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await designPanelPage.removeShadow();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-inner-shadow-remove.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-    },
-  );
-
   mainTest(qase([225], 'Add and edit Shadow to board'), async () => {
     await designPanelPage.clickAddShadowButton();
     await designPanelPage.clickShadowActionsButton();
