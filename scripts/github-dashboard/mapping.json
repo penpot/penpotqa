@@ -1,0 +1,60 @@
+{
+  "_doc": "Maps GitHub issues to functional areas (Qase root suites). label_map (exact labels, highest confidence) is evaluated first, then keyword_map in order (regex against the title, case-insensitive). If nothing matches, the issue falls back to fallback_area. Issues carrying any label listed in exclude_labels (case-insensitive) are dropped from the matrix entirely, before area mapping runs.",
+
+  "label_map": {
+    "IOP tokens": "Tokens",
+    "IOP components": "Components V2",
+    "IOP variants": "Components V2",
+    "IOP plugins": "Plugins",
+    "IOP nitrate": "Nitrate (Enterprise Plan)",
+    "IOP MCP": "Dashboard"
+  },
+
+  "keyword_map": [
+    ["\\btoken", "Tokens"],
+    ["\\bwasm|webgl|wasm|render(er|ing)?\\b", "WASM renderer"],
+    ["\\bvariant|component", "Components V2"],
+    ["\\bswap\\b", "Swap functionality"],
+    ["\\bplugin", "Plugins"],
+    ["\\bflex\\b", "Flex Layout"],
+    ["\\bgrid (layout|board|cell|row|column)", "Grid Layout"],
+    ["\\bmigrat|v1 file", "Migration"],
+    [
+      "\\bsubscription|billing|stripe|\\bplan\\b|trial|seat|payment",
+      "Subscription Plans"
+    ],
+    [
+      "\\borg(anization)?\\b|admin console|nitrate|control center",
+      "Nitrate (Enterprise Plan)"
+    ],
+    [
+      "\\blogin|log in|sign ?up|password|auth|sso|oidc|onboarding|regist(er|ration)|verification email",
+      "Login/Signup"
+    ],
+    ["\\bcookie", "Cookies"],
+    ["\\bview mode|viewer\\b|prototype|interaction|overlay", "View mode"],
+    [
+      "\\bmcp|dashboard|project|draft|trash\\b|team|invitation|font (upload|parsing|manag)|settings|account|profile|locale|language|contact us",
+      "Dashboard"
+    ],
+    ["\\basset|librar(y|ies)|shared", "Assets"],
+    ["\\bcolor picker|gradient|palette", "Color"],
+    [
+      "\\bhistory|version|sitemap|\\bpage(s)?\\b|find & replace|access token|integration|shortcut|panel\\b",
+      "Panels & Features"
+    ],
+    ["\\bresize", "Resize of layers inside boards"],
+    ["\\btheme\\b|dark mode|light mode", "Light Theme"],
+    ["\\baction menu|context menu|right.?click", "Action menu"],
+    [
+      "\\bshape|board|text|guide|ruler|zoom|canvas|layer|comment|image|thumbnail|stroke|shadow|blur|path|ellipse|rectangle|margin|padding|select|copy|paste|undo|redo|scroll|snap|align|export|pixel|rotat|numeric input|formula|arrow keys|font\\b|color\\b",
+      "Composition"
+    ]
+  ],
+
+  "fallback_area": "Backend/Infra (sin suite)",
+
+  "ignore_title_patterns": ["IGNORAR"],
+
+  "exclude_labels": ["self-hosted", "no qa"]
+}

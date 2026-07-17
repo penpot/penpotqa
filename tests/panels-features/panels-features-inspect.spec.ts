@@ -43,7 +43,7 @@ mainTest.beforeEach(
   },
 );
 
-mainTest(qase(2654, 'Computed panel - Shows raw property values'), async () => {
+mainTest(qase([2654], 'Computed panel - Shows raw property values'), async () => {
   const colorToken: MainToken<TokenClass> = {
     class: TokenClass.Color,
     name: 'color',
@@ -98,7 +98,7 @@ mainTest(qase(2654, 'Computed panel - Shows raw property values'), async () => {
 });
 
 mainTest(
-  qase(2661, 'Stroke width token copy button and tooltip with computed value'),
+  qase([2661], 'Stroke width token copy button and tooltip with computed value'),
   async () => {
     const strokeToken: MainToken<TokenClass> = {
       class: TokenClass.StrokeWidth,
@@ -139,7 +139,7 @@ mainTest(
 
 mainTest(
   qase(
-    2667,
+    [2667],
     'Tokens Sets & Themes section - Updates when an active token set is enabled/disabled in Tokens panel',
   ),
   async () => {
