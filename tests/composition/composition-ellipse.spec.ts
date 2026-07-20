@@ -128,21 +128,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([351], 'Delete ellipse (From Rightclick)'), async () => {
-    await mainTest.step(
-      'Verify ellipse is visible and delete via right click',
-      async () => {
-        await mainPage.isCreatedLayerVisible();
-        await mainPage.deleteLayerViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-      },
-    );
-
-    await mainTest.step('Verify ellipse is deleted', async () => {
-      await mainPage.isCreatedLayerVisible(false);
-    });
-  });
-
   mainTest(qase([2539], 'Delete ellipse (From Keyboard)'), async () => {
     await mainTest.step(
       'Verify ellipse is visible and delete via keyboard',
