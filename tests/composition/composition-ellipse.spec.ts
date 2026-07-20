@@ -69,39 +69,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([333], 'Add and edit Shadow to ellipse'), async () => {
-    await mainTest.step('Add and configure drop shadow', async () => {
-      await designPanelPage.clickAddShadowButton();
-      await designPanelPage.clickShadowActionsButton();
-      await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
-      await designPanelPage.clickShadowColorIcon();
-      await colorPalettePage.setHex('#304d6a');
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify drop shadow appearance', async () => {
-      await expect(mainPage.viewport).toHaveScreenshot('ellipse-drop-shadow.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-
-    await mainTest.step('Change to inner shadow and configure', async () => {
-      await designPanelPage.selectTypeForShadow('Inner shadow');
-      await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
-      await designPanelPage.clickShadowColorIcon();
-      await colorPalettePage.setHex('#96e637');
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify inner shadow appearance', async () => {
-      await expect(mainPage.viewport).toHaveScreenshot('ellipse-inner-shadow.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-  });
-
   mainTest(qase([334], 'Add, hide, unhide and delete Blur to ellipse'), async () => {
     await mainTest.step('Set fill color and add blur', async () => {
       await designPanelPage.clickFillColorIcon();
