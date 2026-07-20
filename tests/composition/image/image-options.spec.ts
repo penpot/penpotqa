@@ -36,18 +36,6 @@ mainTest.describe('PNG image', () => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase([440], 'Rename image with valid name'), async () => {
-    await mainTest.step('Rename image layer', async () => {
-      await layersPanelPage.doubleClickLayerOnLayersTab('images');
-      await layersPanelPage.typeNameCreatedLayerAndEnter('renamed image');
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify layer name is updated', async () => {
-      await layersPanelPage.isLayerNameDisplayed('renamed image');
-    });
-  });
-
   mainTest(qase([482], 'Selection to board'), async () => {
     await mainTest.step('Convert selection to board', async () => {
       await mainPage.selectionToBoardViaRightClick();

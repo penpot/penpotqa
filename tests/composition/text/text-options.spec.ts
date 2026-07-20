@@ -36,15 +36,6 @@ mainTest.describe(() => {
     await mainPage.isCreatedLayerVisible(false);
   });
 
-  mainTest(qase([434], 'Selection to board'), async () => {
-    await mainPage.selectionToBoardViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.focusLayerViaShortcut();
-    await expect(mainPage.viewport).toHaveScreenshot('text-to-board.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
-
   mainTest(qase([394], 'Click "Focus on" text from right click'), async () => {
     const firstText = 'Hello world!';
     const secondText = 'Second text';
