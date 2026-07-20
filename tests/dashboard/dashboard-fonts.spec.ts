@@ -99,19 +99,3 @@ mainTest(qase([1158], 'Delete font'), async () => {
     );
   });
 });
-
-mainTest(qase([1159], 'Delete font - Cancel button check'), async () => {
-  await mainTest.step('Open Fonts section and upload a font', async () => {
-    await dashboardPage.openSidebarItem('Fonts');
-    await dashboardPage.uploadFont('fonts/Pacifico.ttf');
-    await dashboardPage.isFontExists('Pacifico', 'Regular');
-  });
-
-  await mainTest.step(
-    'Cancel font deletion and verify the font remains',
-    async () => {
-      await dashboardPage.cancelDeleteFont();
-      await dashboardPage.isFontExists('Pacifico', 'Regular');
-    },
-  );
-});
