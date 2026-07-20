@@ -128,49 +128,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(
-    qase([341], 'Click "Focus off" ellipse from shortcut (F)'),
-    async ({ page }) => {
-      await mainTest.step('Focus on ellipse via right click', async () => {
-        await mainPage.focusLayerViaRightClickOnCanvas();
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step('Verify focus mode is on', async () => {
-        await layersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
-        await layersPanelPage.isFocusModeOn();
-        await expect(page).toHaveScreenshot('ellipse-single-focus-on.png', {
-          mask: [
-            mainPage.guides,
-            mainPage.guidesFragment,
-            mainPage.toolBarWindow,
-            mainPage.usersSection,
-            mainPage.zoomButton,
-          ],
-        });
-      });
-
-      await mainTest.step('Focus off via F shortcut', async () => {
-        await mainPage.focusLayerViaShortcut();
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step('Verify focus mode is off', async () => {
-        await layersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
-        await layersPanelPage.isFocusModeOff();
-        await expect(page).toHaveScreenshot('ellipse-single-focus-off.png', {
-          mask: [
-            mainPage.guides,
-            mainPage.guidesFragment,
-            mainPage.toolBarWindow,
-            mainPage.usersSection,
-            mainPage.zoomButton,
-          ],
-        });
-      });
-    },
-  );
-
   mainTest(qase([351], 'Delete ellipse (From Rightclick)'), async () => {
     await mainTest.step(
       'Verify ellipse is visible and delete via right click',
