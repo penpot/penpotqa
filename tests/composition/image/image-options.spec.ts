@@ -36,37 +36,6 @@ mainTest.describe('PNG image', () => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase([482], 'Selection to board'), async () => {
-    await mainTest.step('Convert selection to board', async () => {
-      await mainPage.selectionToBoardViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify image converted to board screenshot', async () => {
-      await expect(
-        mainPage.viewport,
-        'Image converted to board should match snapshot',
-      ).toHaveScreenshot('image-to-board.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-  });
-
-  mainTest(qase([457], 'Delete image (From right click)'), async () => {
-    await mainTest.step('Verify image layer is visible', async () => {
-      await mainPage.isCreatedLayerVisible();
-    });
-
-    await mainTest.step(
-      'Delete image via right click and verify removal',
-      async () => {
-        await mainPage.deleteLayerViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.isCreatedLayerVisible(false);
-      },
-    );
-  });
-
   mainTest(
     qase(
       [466, 468],

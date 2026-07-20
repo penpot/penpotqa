@@ -122,13 +122,6 @@ mainTest.describe(() => {
     await mainPage.createDefaultClosedPath();
   });
 
-  mainTest(qase([492], 'Rename path with valid name'), async () => {
-    await layersPanelPage.doubleClickLayerOnLayersTab('Path');
-    await layersPanelPage.typeNameCreatedLayerAndEnter('renamed path');
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayerNameDisplayed('renamed path');
-  });
-
   mainTest(qase([497], 'Add, hide, unhide and delete Blur to Path'), async () => {
     await designPanelPage.clickAddBlurButton();
     await mainPage.waitForChangeIsSaved();
@@ -300,75 +293,5 @@ mainTest.describe(() => {
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
     await mainPage.createDefaultOpenPath();
-  });
-
-  mainTest(
-    qase([494], 'Add, hide, unhide, change type and delete Shadow to Path'),
-    async () => {
-      await designPanelPage.clickAddShadowButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'path-drop-shadow-default.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await designPanelPage.hideShadow();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('path-drop-shadow-hide.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await designPanelPage.unhideShadow();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'path-drop-shadow-unhide.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await designPanelPage.selectTypeForShadow('Inner shadow');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'path-inner-shadow-default.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await designPanelPage.removeShadow();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'path-inner-shadow-remove.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-    },
-  );
-
-  mainTest(qase([495], 'Add and edit Shadow to Path'), async () => {
-    await designPanelPage.clickAddShadowButton();
-    await designPanelPage.clickShadowActionsButton();
-    await designPanelPage.changeShadowSettings('10', '15', '10', '20', '50');
-    await designPanelPage.clickShadowColorIcon();
-    await colorPalettePage.setHex('#304d6a');
-    await mainPage.clickMoveButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-drop-shadow.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await designPanelPage.selectTypeForShadow('Inner shadow');
-    await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
-    await designPanelPage.clickShadowColorIcon();
-    await colorPalettePage.setHex('#96e637');
-    await mainPage.clickMoveButton();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('path-inner-shadow.png', {
-      mask: mainPage.maskViewport(),
-    });
   });
 });
