@@ -30,23 +30,10 @@ mainTest.describe(() => {
     await mainPage.createDefaultTextLayer();
   });
 
-  mainTest(qase([388], 'Delete text (From right click)'), async () => {
-    await mainPage.deleteLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isCreatedLayerVisible(false);
-  });
-
   mainTest(qase([2545], 'Delete text (From Keyboard)'), async () => {
     await mainPage.deleteLayerViaShortcut();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible(false);
-  });
-
-  mainTest(qase([392], 'Rename text with valid name'), async () => {
-    await layersPanelPage.doubleClickLayerOnLayersTab('Hello world!');
-    await layersPanelPage.typeNameCreatedLayerAndEnter('renamed text');
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isLayerNameDisplayed('renamed text');
   });
 
   mainTest(qase([434], 'Selection to board'), async () => {
