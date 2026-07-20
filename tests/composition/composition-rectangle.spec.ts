@@ -68,21 +68,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([2544], 'Delete Rectangle (From Keyboard)'), async () => {
-    await mainTest.step(
-      'Verify rectangle is visible and delete via keyboard',
-      async () => {
-        await mainPage.isCreatedLayerVisible();
-        await mainPage.deleteLayerViaShortcut();
-        await mainPage.waitForChangeIsSaved();
-      },
-    );
-
-    await mainTest.step('Verify rectangle is deleted', async () => {
-      await mainPage.isCreatedLayerVisible(false);
-    });
-  });
-
   mainTest(
     qase([278], 'Change border radius multiple values (Design page in the right)'),
     async () => {

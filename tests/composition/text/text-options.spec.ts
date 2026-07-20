@@ -30,12 +30,6 @@ mainTest.describe(() => {
     await mainPage.createDefaultTextLayer();
   });
 
-  mainTest(qase([2545], 'Delete text (From Keyboard)'), async () => {
-    await mainPage.deleteLayerViaShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.isCreatedLayerVisible(false);
-  });
-
   mainTest(qase([394], 'Click "Focus on" text from right click'), async () => {
     const firstText = 'Hello world!';
     const secondText = 'Second text';

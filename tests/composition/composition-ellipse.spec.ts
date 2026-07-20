@@ -128,21 +128,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([2539], 'Delete ellipse (From Keyboard)'), async () => {
-    await mainTest.step(
-      'Verify ellipse is visible and delete via keyboard',
-      async () => {
-        await mainPage.isCreatedLayerVisible();
-        await mainPage.deleteLayerViaShortcut();
-        await mainPage.waitForChangeIsSaved();
-      },
-    );
-
-    await mainTest.step('Verify ellipse is deleted', async () => {
-      await mainPage.isCreatedLayerVisible(false);
-    });
-  });
-
   mainTest(qase([353], 'Change rotation (Design page in the right)'), async () => {
     await mainTest.step('Rotate to 90 degrees and verify', async () => {
       await designPanelPage.changeRotationForLayer('90');

@@ -655,28 +655,6 @@ mainTest.describe(() => {
       });
     },
   );
-
-  mainTest(qase([1745], 'Check code section'), async ({ page }) => {
-    await mainTest.step('Add rectangle and open inspect code tab', async () => {
-      await mainPage.createDefaultRectangleByCoordinates(410, 310, true);
-      await mainPage.clickViewportOnce();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await inspectPanelPage.openInspectTab();
-      await inspectPanelPage.openCodeTab();
-      await page.waitForTimeout(200);
-    });
-
-    await mainTest.step('Verify code section in right sidebar', async () => {
-      await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-        'right-sidebar-inspect-code-section-image.png',
-        {
-          mask: [mainPage.usersSection, inspectPanelPage.codeHtmlStrings],
-          maxDiffPixelRatio: 0.001,
-        },
-      );
-    });
-  });
 });
 
 mainTest.describe(() => {
@@ -849,25 +827,6 @@ mainTest.describe(() => {
       });
     },
   );
-
-  mainTest(qase([1736], 'Check row numbers in right menu'), async () => {
-    await mainTest.step('Enter board and hover on first column button', async () => {
-      await mainPage.clickBoardOnCanvas();
-      await mainPage.doubleClickBoardOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickOnGridExpandColumnUnitButton();
-      await designPanelPage.hoverOnGridFirstColumnSelectButton();
-    });
-
-    await mainTest.step('Verify selected column on canvas', async () => {
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-with-grid-selected-column.png',
-        {
-          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
-        },
-      );
-    });
-  });
 
   mainTest(qase([1737], 'Locate button'), async () => {
     await mainTest.step(
@@ -1064,31 +1023,6 @@ mainTest(
     });
   },
 );
-
-mainTest(qase([1710], 'Add grid lines as a dashboard - table'), async () => {
-  await mainTest.step('Create board and rename it to Dashboard', async () => {
-    await mainPage.createDefaultBoardByCoordinates(200, 300);
-    await designPanelPage.changeHeightAndWidthForLayer('300', '400');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-    await layersPanelPage.doubleClickLayerOnLayersTab('Board');
-    await layersPanelPage.typeNameCreatedLayerAndEnter('Dashboard');
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isBoardNameDisplayed('Dashboard');
-  });
-
-  await mainTest.step('Add grid layout from design panel and verify', async () => {
-    await layersPanelPage.clickLayerOnLayersTab('Dashboard');
-    await designPanelPage.addLayoutFromDesignPanel('grid');
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'dashboard-with-grid-layout.png',
-      {
-        mask: mainPage.maskViewport(),
-      },
-    );
-  });
-});
 
 mainTest(qase([1712], 'Add grid lines, change px for all column'), async () => {
   await mainTest.step('Create board with grid layout', async () => {

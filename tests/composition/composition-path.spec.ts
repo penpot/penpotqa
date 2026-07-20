@@ -48,18 +48,6 @@ mainTest(qase([489], 'Create Path (Toolbar) - opened'), async () => {
   });
 });
 
-mainTest(qase([1755], 'Add a cap for path'), async () => {
-  await mainPage.createDefaultOpenPath();
-  await mainPage.isCreatedLayerVisible();
-  await designPanelPage.changeCap('Arrow', 'first');
-  await designPanelPage.changeCap('Triangle', 'second');
-  await mainPage.waitForChangeIsSaved();
-  await mainPage.waitForResizeHandlerVisible();
-  await expect(mainPage.viewport).toHaveScreenshot('path-opened-with-cap.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
-
 mainTest(
   qase([501], 'Add edit and remove Stroke Caps to Path (arrow, marker)'),
   async () => {

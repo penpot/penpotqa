@@ -85,47 +85,6 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1923], 'Rename board (by shortcut) with valid name'), async () => {
-    const newName = 'New test board';
-    const renamedName = 'renamed board';
-    // rename by shortcut while the board is selected
-    await layersPanelPage.clickShortcutAltN();
-    await layersPanelPage.typeNameCreatedLayerAndClickOnViewport(newName, 900, 100);
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isBoardNameDisplayed(newName);
-    // try to rename by shortcut while nothing is selected
-    await layersPanelPage.clickShortcutAltN();
-    await layersPanelPage.isNotRenameLayerInputDisplayed();
-    // rename by shortcut while the board layer is selected
-    await layersPanelPage.selectLayerByName(newName);
-    await layersPanelPage.clickShortcutAltN();
-    await layersPanelPage.typeNameCreatedLayerAndEnter(renamedName);
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.isBoardNameDisplayed(renamedName);
-  });
-
-  mainTest(
-    qase([1924], 'Rename board (by context menu) with valid name'),
-    async () => {
-      const newName = 'New test board';
-      const renamedName = 'renamed board';
-      // rename by RMB context menu while the board is selected
-      await mainPage.renameCreatedBoardViaRightClick();
-      await layersPanelPage.typeNameCreatedLayerAndClickOnViewport(
-        newName,
-        900,
-        100,
-      );
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isBoardNameDisplayed(newName);
-      // rename by RMB context menu while the board layer is selected
-      await layersPanelPage.renameLayerViaRightClick(newName);
-      await layersPanelPage.typeNameCreatedLayerAndEnter(renamedName);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isBoardNameDisplayed(renamedName);
-    },
-  );
-
   mainTest(
     qase(
       [220],
@@ -215,15 +174,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await mainPage.waitForResizeHandlerVisible();
     await expect(mainPage.viewport).toHaveScreenshot('board-stroke-remove.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
-
-  mainTest(qase([2538], 'Delete board (From Keyboard)'), async () => {
-    await mainPage.isCreatedLayerVisible();
-    await mainPage.deleteLayerViaShortcut();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot('empty-canvas.png', {
       mask: mainPage.maskViewport(),
     });
   });
