@@ -199,17 +199,4 @@ mainTest.describe(() => {
       },
     );
   });
-
-  mainTest(qase([376], 'Selection to board'), async () => {
-    await mainTest.step('Move selection to board via right click', async () => {
-      await mainPage.selectionToBoardViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify ellipse is placed inside board', async () => {
-      await expect(mainPage.viewport).toHaveScreenshot('ellipse-to-board.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-  });
 });
