@@ -40,7 +40,7 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([380, 397], 'Change rotation from the design panel and focus on & off'),
+    qase([397], 'Change rotation from the design panel and focus on & off'),
     async () => {
       await mainTest.step('Change rotation to 90', async () => {
         await designPanelPage.changeRotationForLayer('90');
