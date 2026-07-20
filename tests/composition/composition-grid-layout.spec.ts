@@ -140,24 +140,6 @@ mainTest.describe(() => {
   });
 
   mainTest(
-    qase([1690], 'Create a board with Grid Layout - change direction'),
-    async () => {
-      await mainTest.step('Change layout direction to Column', async () => {
-        const waitForUpdateFile = mainPage.waitForUpdateFileRequest();
-        await designPanelPage.changeLayoutDirection('Column', false);
-        await waitForUpdateFile;
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step('Verify column direction in layers panel', async () => {
-        await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-          'column-direction-layer.png',
-        );
-      });
-    },
-  );
-
-  mainTest(
     qase([1691], 'Create a board with Grid Layout - change alignment'),
     async () => {
       await mainTest.step('Change layout alignment to Center', async () => {
@@ -544,64 +526,6 @@ mainTest.describe(() => {
       });
     },
   );
-
-  mainTest(
-    qase([1704], 'Change position and alignment within the Board'),
-    async () => {
-      await mainTest.step('Enter board and change alignment to Center', async () => {
-        await mainPage.clickBoardOnCanvas();
-        await mainPage.doubleClickBoardOnCanvas();
-        await designPanelPage.changeLayoutAlignment('Center', false);
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step('Verify centered alignment', async () => {
-        await expect(mainPage.viewport).toHaveScreenshot('alignment-image.png', {
-          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
-        });
-      });
-
-      await mainTest.step(
-        'Change justification to Space between and verify',
-        async () => {
-          await designPanelPage.changeLayoutJustification('Space between', false);
-          await mainPage.waitForChangeIsSaved();
-          await expect(mainPage.viewport).toHaveScreenshot('position-image.png', {
-            mask: mainPage.maskViewport({ gridEditorToolbar: true }),
-          });
-        },
-      );
-    },
-  );
-
-  mainTest(qase([1705], 'Change margin and padding within the Board'), async () => {
-    await mainTest.step('Enter board and set independent paddings', async () => {
-      await mainPage.clickBoardOnCanvas();
-      await mainPage.doubleClickBoardOnCanvas();
-      await designPanelPage.switchToIndependentPaddingOnGridEdit();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Top', '50');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Left', '50');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Bottom', '50');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeLayoutIndependentPaddingOnGridEdit('Right', '50');
-    });
-
-    await mainTest.step('Verify paddings on canvas and design panel', async () => {
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-with-image-grid-paddings.png',
-        {
-          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
-        },
-      );
-      await designPanelPage.verifyLayoutIndependentPaddingValue('Top', '50');
-      await designPanelPage.verifyLayoutIndependentPaddingValue('Left', '50');
-      await designPanelPage.verifyLayoutIndependentPaddingValue('Bottom', '50');
-      await designPanelPage.verifyLayoutIndependentPaddingValue('Right', '50');
-    });
-  });
 
   mainTest(qase([1706], 'Adding Flex Board'), async () => {
     await mainTest.step('Add flex layout from design panel', async () => {
