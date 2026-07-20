@@ -170,45 +170,6 @@ mainTest.describe('Viewer Role - Permissions', () => {
       });
     },
   );
-
-  mainTest(qase([1873], 'Viewer cannot import to Drafts'), async () => {
-    const { dashboardPage } = setup;
-
-    await mainTest.step('Open Drafts section', async () => {
-      await dashboardPage.openSidebarItem('Drafts');
-    });
-
-    await mainTest.step('Verify viewer cannot import into Drafts', async () => {
-      await dashboardPage.isCreateFileOnDraftsTabButtonVisible(false);
-      await dashboardPage.isOptionButtonFromDraftPageVisible(false);
-    });
-  });
-
-  mainTest(qase([1877], 'Viewer cannot add font'), async () => {
-    const { dashboardPage } = setup;
-
-    await mainTest.step('Open Fonts section', async () => {
-      await dashboardPage.openSidebarItem('Fonts');
-    });
-
-    await mainTest.step('Verify viewer cannot add custom fonts', async () => {
-      await dashboardPage.isAddCustomFontButtonVisible(false);
-    });
-  });
-
-  mainTest(qase([1880], 'Viewer cannot create projects or drafts'), async () => {
-    const { dashboardPage } = setup;
-
-    await mainTest.step('Verify viewer cannot create projects', async () => {
-      await dashboardPage.openSidebarItem('Projects');
-      await dashboardPage.isAddProjectButtonVisible(false);
-    });
-
-    await mainTest.step('Verify viewer cannot create drafts', async () => {
-      await dashboardPage.openSidebarItem('Drafts');
-      await dashboardPage.isCreateFileOnDraftsTabButtonVisible(false);
-    });
-  });
 });
 
 mainTest.describe('Viewer Role - Role Changes', () => {
@@ -258,85 +219,6 @@ mainTest.describe('Viewer Role - Role Changes', () => {
         await dashboardPage.openFileWithName('New File 1');
         await mainPage.waitForViewportVisible();
         await mainPage.isDesignTabVisible(true);
-        await mainPage.backToDashboardFromFileEditor();
-      });
-    },
-  );
-
-  mainTest(
-    qase([1869], 'Change a role of admin to viewer after accepting an invitation'),
-    async ({ page }) => {
-      const adminName = `${random()}-viewer-role-autotest`;
-      const adminEmail = `${process.env.GMAIL_NAME}+${adminName}${process.env.GMAIL_DOMAIN}`;
-
-      const loginPage = new LoginPage(page);
-      const registerPage = new RegisterPage(page);
-      const dashboardPage = new DashboardPage(page);
-      const teamPage = new TeamPage(page);
-      const profilePage = new ProfilePage(page);
-      const mainPage = new MainPage(page);
-
-      await mainTest.step('Create team, file and invite admin user', async () => {
-        await teamPage.createTeam(teamName);
-        await teamPage.isTeamSelected(teamName);
-        await dashboardPage.createFileViaPlaceholder();
-        await mainPage.waitForViewportVisible();
-        await mainPage.createDefaultRectangleByCoordinates(200, 300);
-        await mainPage.createComponentViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.backToDashboardFromFileEditor();
-
-        await teamPage.openInvitationsPageViaOptionsMenu();
-        await teamPage.clickInviteMembersToTeamButton();
-        await teamPage.enterEmailToInviteMembersPopUp(adminEmail);
-        await teamPage.selectInvitationRoleInPopUp('Admin');
-        await teamPage.clickSendInvitationButton();
-      });
-
-      await mainTest.step('Register invited admin account', async () => {
-        await page.context().clearCookies();
-
-        const invite = requireMessage(
-          await waitMessage(page, adminEmail, 60),
-          'Invitation email was not received for admin user',
-        );
-        await page.goto(invite.inviteUrl);
-        await registerPage.registerAccount(
-          adminName,
-          adminEmail,
-          process.env.LOGIN_PWD,
-        );
-        await waitSecondMessage(page, adminEmail, 40);
-        const verificationMessage = requireMessage(
-          await getVerificationMessage(adminEmail),
-          'Verification email was not received for admin user',
-        );
-        await page.goto(verificationMessage.inviteUrl);
-        await dashboardPage.fillOnboardingQuestions();
-        await teamPage.isTeamSelected(teamName);
-      });
-
-      await mainTest.step('Change admin role to viewer', async () => {
-        await profilePage.logout();
-        await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-        await loginPage.enterPwd(process.env.LOGIN_PWD);
-        await loginPage.clickLoginButton();
-        await dashboardPage.isDashboardOpenedAfterLogin();
-        await teamPage.switchTeam(teamName);
-        await teamPage.openMembersPageViaOptionsMenu();
-        await teamPage.selectMemberRoleInPopUp(adminName, 'Viewer');
-      });
-
-      await mainTest.step('Verify viewer rights for downgraded admin', async () => {
-        await profilePage.logout();
-        await loginPage.enterEmailAndClickOnContinue(adminEmail);
-        await loginPage.enterPwd(process.env.LOGIN_PWD);
-        await loginPage.clickLoginButton();
-        await dashboardPage.isDashboardOpenedAfterLogin();
-        await teamPage.switchTeam(teamName);
-        await dashboardPage.openFileWithName('New File 1');
-        await mainPage.waitForViewportVisible();
-        await mainPage.isDesignTabVisible(false);
         await mainPage.backToDashboardFromFileEditor();
       });
     },

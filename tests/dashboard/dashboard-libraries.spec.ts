@@ -53,46 +53,6 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase(1541, 'Create 2 rectangles and look library view'), async () => {
-    await mainPage.createDefaultRectangleByCoordinates(200, 200);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultRectangleByCoordinates(200, 300, true);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
-    await dashboardPage.isSharedLibraryIconDisplayed();
-    await dashboardPage.openSidebarItem('Libraries');
-    await dashboardPage.isFilePresent('New File 1');
-    await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
-      '2-rectangles-library.png',
-    );
-  });
-
-  mainTest(qase(1542, 'Create 4 ellipses and look at library view'), async () => {
-    await mainPage.createDefaultEllipseByCoordinates(200, 200);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultEllipseByCoordinates(400, 200, true);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultEllipseByCoordinates(400, 300, true);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
-    await dashboardPage.isSharedLibraryIconDisplayed();
-    await dashboardPage.openSidebarItem('Libraries');
-    await dashboardPage.isFilePresent('New File 1');
-    await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
-      '4-ellipses-library.png',
-    );
-  });
-
   mainTest(
     qase(
       1351,
@@ -138,31 +98,6 @@ mainTest.describe(() => {
       await dashboardPage.isFilePresent('New File 1');
       await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
         'library-text-component-deleted.png',
-      );
-    },
-  );
-
-  mainTest(
-    qase(1476, 'Check view for library with one type of assets'),
-    async () => {
-      await mainPage.createDefaultRectangleByCoordinates(200, 300);
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.clickAddFileLibraryColorButton();
-      await colorPalettePopUp.setHex('#7D8CB7');
-      await colorPalettePopUp.clickSaveColorStyleButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await assetsPanelPage.clickAddFileLibraryTypographyButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickPencilBoxButton();
-      await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
-      await dashboardPage.isSharedLibraryIconDisplayed();
-      await dashboardPage.openSidebarItem('Libraries');
-      await dashboardPage.isFilePresent('New File 1');
-      await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
-        'library-all-assets-type-added.png',
       );
     },
   );

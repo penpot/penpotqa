@@ -7,6 +7,7 @@ Regenerates the analysis CSV files and the HTML dashboard (`out/penpot-qa-dashbo
 | Qase `/v1/suite/PENPOT`                                     | REST API, paginated in batches of 100 | Suite hierarchy and complete test inventory (`cases_count`)           |
 | Qase `/v1/case/PENPOT?type=regression&automation=automated` | REST API, paginated in batches of 100 | Regression test cases and automation status                           |
 | GitHub Project v2 #8 (penpot organization)                  | GraphQL                               | Issues with Type (Bug/Feature/Enhancement), Status, labels, and dates |
+| `flaky-history.json` (public S3 object, plain GET)          | HTTPS                                 | Per-Qase-ID flaky/failed occurrences, fed daily by `flaky-tally.ts`   |
 
 > The GraphQL API is the only way to retrieve the **Status** field from the Project (used by the `-status:Rejected` filter in View 10). The REST Issues API does not expose this information.
 
@@ -38,6 +39,7 @@ npx tsx scripts/pipeline.ts
 - `mapped-bugs.csv` / `mapped-features.csv` — Each issue mapped to an `area` and `map_method`
 - `monthly-trend.csv`
 - `regression-tests.csv`
+- `flaky-tests.csv` — Regression tests that flaked or failed in CI at least once in the last `window_days` (see below), tallied per Qase ID
 
 The `.github/workflows/github-dashboard.yml` workflow additionally bundles this
 whole directory (inputs + `out/`) into a `YYYY-MM-DD-github-dashboard.zip`,
@@ -94,10 +96,63 @@ jobs:
 
 > **Note:** The default `GITHUB_TOKEN` provided by GitHub Actions cannot access organization Projects. A Personal Access Token (PAT) stored as a repository secret is required.
 
+## Test reliability (flaky / failing tests)
+
+`playwright_pre_daily.yml`'s "Update flaky-test history" step runs
+`flaky-tally.ts` right after each daily regression run, tallying flaky/failed
+occurrences per Qase ID from that run's `results.json` and merging them into a
+rolling `flaky-history.json` aggregate on S3 (public GET, no credentials
+needed to read it):
+
+```bash
+npx tsx scripts/github-dashboard/flaky-tally.ts \
+  --results playwright-report/results.json \
+  --history /tmp/flaky-history.json \
+  --run-id "$GITHUB_RUN_ID" \
+  --date "$(date -u +%F)" \
+  --out /tmp/flaky-history.json
+```
+
+Only tests that actually flaked or failed get an entry, so the file stays
+proportional to the tests that are a problem, not the full Qase inventory.
+Occurrences older than `--window-days` (default 30) are dropped on every
+merge, and a test drops out entirely once it has no occurrences left in the
+window. `github_dashboard.ts` fetches this aggregate, joins it against the
+regression tests by Qase ID (`buildReliabilityRows`), and writes
+`flaky-tests.csv` plus the "Test reliability" section in the HTML dashboard.
+
+This is a **count of occurrences, not a rate** — there's no denominator of
+clean runs, since only failing/flaky tests are recorded. A test that has run
+20 times and flaked once looks the same as one that has run 3 times and
+flaked once. A future iteration could walk every test in `results.json`
+(not just failures) to get a proper flake-rate denominator.
+
+> **Note:** the raw `run-<id>/` folders on S3 (which hold each day's
+> `results.json`) appear to expire after roughly 10 days — check with
+> `curl -I .../run-<id>/results.json` before assuming an old run is still
+> fetchable. `flaky-history.json` itself has no such expiry since it's a
+> small aggregate file, not a full report.
+
+### Bootstrapping the history
+
+`flaky-history.json` starts empty and takes a few weeks to become useful on
+its own. It was originally bootstrapped by replaying the daily runs still on
+S3 at the time through `flaky-tally.ts` chronologically, then publishing the
+result directly to S3 — the one-off script and seed data used for that are
+gone now that the object exists; `playwright_pre_daily.yml`'s daily step
+maintains it from here.
+
+If `flaky-history.json` is ever lost or needs reseeding (e.g. after an S3
+incident), rebuild it the same way: run `flaky-tally.ts` once per historical
+`run-<id>/results.json` still available on S3, oldest first, chaining
+`--history`/`--out` to the same file each time, then `aws s3 cp` the result
+to `s3://kaleidos-qa-reports/flaky-history.json`.
+
 ## Possible Enhancements
 
 - Cross-reference the `penpotqa` repository by extracting `qase([ids])` annotations from `.spec.js` files to distinguish between **tests marked as automated in Qase** and **tests actually implemented in Playwright**.
 - Keep a historical archive of `decision-matrix.csv` snapshots to visualize coverage trends over time, rather than only the current state.
+- Walk every test (not just failures) in `results.json` to compute a real flake **rate** per Qase ID, not just raw occurrence counts.
 
 ## Data Quality Notes
 
