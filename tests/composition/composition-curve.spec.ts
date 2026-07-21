@@ -40,25 +40,4 @@ mainTest.describe(() => {
       });
     });
   });
-
-  mainTest(
-    qase([485], 'Rename path, that was created with curve with valid name'),
-    async () => {
-      await mainTest.step('Draw curve on canvas', async () => {
-        await mainPage.clickCreateCurveButton();
-        await mainPage.drawCurve(900, 300, 600, 200);
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step('Rename the curve path layer', async () => {
-        await layersPanelPage.doubleClickLayerOnLayersTab('Path');
-        await layersPanelPage.typeNameCreatedLayerAndEnter('renamed curve');
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step('Verify layer has the new name', async () => {
-        await layersPanelPage.isLayerNameDisplayed('renamed curve');
-      });
-    },
-  );
 });

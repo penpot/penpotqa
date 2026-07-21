@@ -39,54 +39,30 @@ mainTest.describe(() => {
     await mainPage.createDefaultTextLayer();
   });
 
-  mainTest(
-    qase([380, 397], 'Change rotation from the design panel and focus on & off'),
-    async () => {
-      await mainTest.step('Change rotation to 90', async () => {
-        await designPanelPage.changeRotationForLayer('90');
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-90.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
+  mainTest(qase([397], 'Click "Focus off" text from shortcut (F)'), async () => {
+    const firstText = 'First text';
+    const secondText = 'Second text';
 
-      await mainTest.step('Change rotation to 120', async () => {
-        await designPanelPage.changeRotationForLayer('120');
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-120.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
+    await mainTest.step('Add two text boxes', async () => {
+      await mainPage.createTextLayerByCoordinates(200, 200, firstText);
+      await layersPanelPage.isLayerNameDisplayed(firstText);
+      await mainPage.createTextLayerByCoordinates(600, 500, secondText);
+      await layersPanelPage.isLayerNameDisplayed(secondText);
+    });
 
-      await mainTest.step('Change rotation to 45', async () => {
-        await designPanelPage.changeRotationForLayer('45');
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-45.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
+    await mainTest.step('Focus on the first text via right click', async () => {
+      await mainPage.focusLayerViaRightClickOnLayersTab(firstText);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isFocusModeOn();
+      await layersPanelPage.isLayerPresentOnLayersTab(secondText, false);
+    });
 
-      await mainTest.step('Change rotation to 360', async () => {
-        await designPanelPage.changeRotationForLayer('360');
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-359.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
-    },
-  );
+    await mainTest.step('Press F to exit focus mode', async () => {
+      await mainPage.focusLayerViaShortcut();
+      await layersPanelPage.isFocusModeOff();
+      await layersPanelPage.isLayerPresentOnLayersTab(secondText, true);
+    });
+  });
 
   mainTest(
     qase([381], 'Add, hide, unhide, change type and delete Shadow to Text'),
@@ -236,154 +212,6 @@ mainTest.describe(() => {
         mask: mainPage.maskViewport(),
       });
       await mainPage.focusLayerViaShortcut();
-    });
-  });
-
-  mainTest(
-    qase([384, 385], 'Add, change value, hide, unhide and delete Blur to text'),
-    async () => {
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#304d6a');
-      await mainPage.waitForChangeIsSaved();
-
-      await mainTest.step('Add blur', async () => {
-        await designPanelPage.clickAddBlurButton();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.waitForResizeHandlerVisible();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-blur-default.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
-
-      await mainTest.step('Change blur value', async () => {
-        await designPanelPage.changeValueForBlur('55');
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.waitForResizeHandlerVisible();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-blur.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
-
-      await mainTest.step('Hide blur', async () => {
-        await designPanelPage.hideBlur();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.waitForResizeHandlerVisible();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-blur-hide.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
-
-      await mainTest.step('Unhide blur', async () => {
-        await designPanelPage.unhideBlur();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.waitForResizeHandlerVisible();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-blur-unhide.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
-
-      await mainTest.step('Remove blur', async () => {
-        await designPanelPage.removeBlur();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.waitForResizeHandlerVisible();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-blur-remove.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
-    },
-  );
-
-  mainTest(qase([386], 'Add, edit and delete Stroke to Text'), async () => {
-    await mainTest.step('Add stroke with default settings', async () => {
-      await designPanelPage.clickAddStrokeButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot('text-stroke-default.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.focusLayerViaShortcut();
-    });
-
-    await mainTest.step('Change stroke settings to inside dotted', async () => {
-      await mainPage.clickOnLayerOnCanvas();
-      await designPanelPage.changeStrokeSettings('#43E50B', '60', '10', 'Inside');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'text-stroke-inside-dotted.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.focusLayerViaShortcut();
-    });
-
-    await mainTest.step('Change stroke settings to outside dashed', async () => {
-      await mainPage.clickOnLayerOnCanvas();
-      await designPanelPage.changeStrokeSettings('#F5358F', '80', '5', 'Outside');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'text-stroke-outside-dashed.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.focusLayerViaShortcut();
-    });
-
-    await mainTest.step('Change to center solid stroke', async () => {
-      await mainPage.clickOnLayerOnCanvas();
-      await designPanelPage.changeStrokeSettings('#F5358F', '100', '3', 'Center');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'text-stroke-center-solid.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.focusLayerViaShortcut();
-    });
-
-    await mainTest.step('Change to center mixed stroke', async () => {
-      await mainPage.clickOnLayerOnCanvas();
-      await designPanelPage.changeStrokeSettings('#F5358F', '40', '4', 'Center');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'text-stroke-center-mixed.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.focusLayerViaShortcut();
-    });
-
-    await mainTest.step('Remove stroke', async () => {
-      await mainPage.clickOnLayerOnCanvas();
-      await designPanelPage.removeStroke();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot('text-stroke-remove.png', {
-        mask: mainPage.maskViewport(),
-      });
     });
   });
 

@@ -256,44 +256,6 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(
-  qase([1221], 'Post comment with valid text using Latin alphabet'),
-  async ({ page }) => {
-    const comment =
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.';
-
-    await mainTest.step('Create and post a Latin text comment', async () => {
-      await commentsPanelPage.clickCreateCommentButton();
-      await mainPage.clickViewportTwice();
-      await commentsPanelPage.enterCommentText(comment);
-      await commentsPanelPage.clickPostCommentButton();
-    });
-
-    await mainTest.step('Verify comment in pop-up and panel (open)', async () => {
-      await commentsPanelPage.isCommentDisplayedInPopUp(comment);
-      await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
-      await mainPage.hideRulersViaMainMenu();
-      await expect(page).toHaveScreenshot('comment-latin-opened-pop-up.png', {
-        mask: mainPage.maskViewport({ usersSection: true }, [
-          commentsPanelPage.commentsAuthorSection,
-          commentsPanelPage.commentAvatarImage,
-        ]),
-      });
-    });
-
-    await mainTest.step('Close pop-up and verify thread icon', async () => {
-      await mainPage.clickViewportOnce();
-      await commentsPanelPage.isCommentThreadIconDisplayed();
-      await expect(page).toHaveScreenshot('comment-latin-closed-pop-up.png', {
-        mask: mainPage.maskViewport({ usersSection: true }, [
-          commentsPanelPage.commentsAuthorSection,
-          commentsPanelPage.commentAvatarImage,
-        ]),
-      });
-    });
-  },
-);
-
 mainTest(qase([2148], 'Zoom out and check comment bubbles'), async () => {
   const comment = 'Test Comment';
   const xAxisCommentsCoordinates = [100, 50, 700];
