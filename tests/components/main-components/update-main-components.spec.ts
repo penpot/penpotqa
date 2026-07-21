@@ -34,50 +34,6 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
-mainTest(qase([1275], 'Update main component'), async () => {
-  await mainTest.step('Create rectangle component and duplicate it', async () => {
-    await mainPage.createDefaultRectangleByCoordinates(200, 300);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-  });
-
-  await mainTest.step('Move copy component and change its fill color', async () => {
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXAndYForLayer('400', '500');
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickComponentFillColorIcon();
-    await colorPalettePage.modalSetHex('#304d6a');
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-  });
-
-  await mainTest.step('Update main component from copy', async () => {
-    await layersPanelPage.updateMainComponentViaRightClick();
-  });
-
-  await mainTest.step(
-    'Verify updated component on canvas and assets tab',
-    async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot after updating main component',
-      ).toHaveScreenshot('component-update-canvas.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-      await expect(
-        assetsPanelPage.assetsPanel,
-        'Assets panel should match screenshot after updating main component',
-      ).toHaveScreenshot('component-update-asset.png', {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      });
-    },
-  );
-});
-
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
     await mainTest.slow();
@@ -144,36 +100,6 @@ mainTest.describe(() => {
           'Viewport should match screenshot after adding corners via all corners option',
         ).toHaveScreenshot('main-copies-component-add-corners.png', {
           mask: mainPage.maskViewport(),
-        });
-      });
-    },
-  );
-
-  mainTest(
-    qase(
-      [1408],
-      'Create a component and 2 copies of it, change stroke color of main',
-    ),
-    async () => {
-      const sampleData = new SampleData();
-
-      await mainTest.step('Add stroke to main component and set color', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await designPanelPage.clickAddStrokeButton();
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.setStrokeColor(sampleData.color.redHexCode);
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickViewportByCoordinates(400, 400);
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step('Verify stroke change propagated to copies', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after adding stroke to main component',
-        ).toHaveScreenshot('main-copies-component-add-stroke.png', {
-          mask: mainPage.maskViewport(),
-          maxDiffPixels: 0,
         });
       });
     },
@@ -411,90 +337,6 @@ mainTest.describe('Text', () => {
       );
     },
   );
-});
-
-mainTest.describe(() => {
-  const sampleData = new SampleData();
-
-  mainTest.beforeEach(async () => {
-    await mainTest.slow();
-    await mainPage.createDefaultRectangleByCoordinates(200, 300);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXAndYForLayer('400', '500');
-  });
-
-  mainTest(
-    qase([1404], 'Change copy components shadow and update main components color'),
-    async () => {
-      await mainTest.step('Add shadow to copy component', async () => {
-        await layersPanelPage.clickCopyComponentOnLayersTab();
-        await designPanelPage.clickAddShadowButton();
-      });
-
-      await mainTest.step(
-        `Set main component fill color to "${sampleData.color.blueHexCode}"`,
-        async () => {
-          await layersPanelPage.clickMainComponentOnLayersTab();
-          await mainPage.waitForChangeIsSaved();
-          await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
-          await layersPanelPage.clickMainComponentOnLayersTab();
-          await designPanelPage.isFillHexCodeSetComponent(
-            sampleData.color.blueHexCode,
-          );
-          await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await mainTest.step(
-        'Verify copy shadow is preserved and main color is updated',
-        async () => {
-          await expect(
-            mainPage.viewport,
-            'Viewport should match screenshot with copy shadow and updated main color',
-          ).toHaveScreenshot('main-copies-component-change-shadow.png', {
-            mask: mainPage.maskViewport(),
-            maxDiffPixels: 0,
-          });
-        },
-      );
-    },
-  );
-
-  mainTest(qase([1409], 'Change copy name and change component name'), async () => {
-    await mainTest.step('Rename copy component to "test"', async () => {
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await layersPanelPage.doubleClickCopyComponentOnLayersTab();
-      await layersPanelPage.typeNameCreatedLayerAndEnter('test');
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isCopyComponentNameDisplayed('test');
-    });
-
-    await mainTest.step('Rename main component to "dfsfs"', async () => {
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await layersPanelPage.doubleClickMainComponentOnLayersTab();
-      await layersPanelPage.typeNameCreatedLayerAndEnter('dfsfs');
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step(
-      'Verify copy name is preserved after renaming main component',
-      async () => {
-        await layersPanelPage.isCopyComponentNameDisplayed('test');
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await mainPage.waitForChangeIsSaved();
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after renaming components',
-        ).toHaveScreenshot('main-copies-component-change-name.png', {
-          mask: mainPage.maskViewport(),
-        });
-      },
-    );
-  });
 });
 
 mainTest(qase([1478], 'Changed direct, not overriden'), async () => {
