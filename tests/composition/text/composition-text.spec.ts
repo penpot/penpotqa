@@ -39,54 +39,30 @@ mainTest.describe(() => {
     await mainPage.createDefaultTextLayer();
   });
 
-  mainTest(
-    qase([397], 'Change rotation from the design panel and focus on & off'),
-    async () => {
-      await mainTest.step('Change rotation to 90', async () => {
-        await designPanelPage.changeRotationForLayer('90');
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-90.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
+  mainTest(qase([397], 'Click "Focus off" text from shortcut (F)'), async () => {
+    const firstText = 'First text';
+    const secondText = 'Second text';
 
-      await mainTest.step('Change rotation to 120', async () => {
-        await designPanelPage.changeRotationForLayer('120');
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-120.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
+    await mainTest.step('Add two text boxes', async () => {
+      await mainPage.createTextLayerByCoordinates(200, 200, firstText);
+      await layersPanelPage.isLayerNameDisplayed(firstText);
+      await mainPage.createTextLayerByCoordinates(600, 500, secondText);
+      await layersPanelPage.isLayerNameDisplayed(secondText);
+    });
 
-      await mainTest.step('Change rotation to 45', async () => {
-        await designPanelPage.changeRotationForLayer('45');
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-45.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
+    await mainTest.step('Focus on the first text via right click', async () => {
+      await mainPage.focusLayerViaRightClickOnLayersTab(firstText);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isFocusModeOn();
+      await layersPanelPage.isLayerPresentOnLayersTab(secondText, false);
+    });
 
-      await mainTest.step('Change rotation to 360', async () => {
-        await designPanelPage.changeRotationForLayer('360');
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-rotated-359.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
-    },
-  );
+    await mainTest.step('Press F to exit focus mode', async () => {
+      await mainPage.focusLayerViaShortcut();
+      await layersPanelPage.isFocusModeOff();
+      await layersPanelPage.isLayerPresentOnLayersTab(secondText, true);
+    });
+  });
 
   mainTest(
     qase([381], 'Add, hide, unhide, change type and delete Shadow to Text'),
