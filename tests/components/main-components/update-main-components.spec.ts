@@ -34,6 +34,50 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.isMainPageLoaded();
 });
 
+mainTest(qase([1275], 'Update main component'), async () => {
+  await mainTest.step('Create rectangle component and duplicate it', async () => {
+    await mainPage.createDefaultRectangleByCoordinates(200, 300);
+    await mainPage.createComponentViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+    await mainPage.duplicateLayerViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+  });
+
+  await mainTest.step('Move copy component and change its fill color', async () => {
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.changeAxisXAndYForLayer('400', '500');
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickComponentFillColorIcon();
+    await colorPalettePage.modalSetHex('#304d6a');
+    await mainPage.clickViewportTwice();
+    await mainPage.waitForChangeIsSaved();
+  });
+
+  await mainTest.step('Update main component from copy', async () => {
+    await layersPanelPage.updateMainComponentViaRightClick();
+  });
+
+  await mainTest.step(
+    'Verify updated component on canvas and assets tab',
+    async () => {
+      await expect(
+        mainPage.viewport,
+        'Viewport should match screenshot after updating main component',
+      ).toHaveScreenshot('component-update-canvas.png', {
+        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+      });
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+      await expect(
+        assetsPanelPage.assetsPanel,
+        'Assets panel should match screenshot after updating main component',
+      ).toHaveScreenshot('component-update-asset.png', {
+        mask: [assetsPanelPage.librariesOpenModalButton],
+      });
+    },
+  );
+});
+
 mainTest.describe(() => {
   mainTest.beforeEach(async () => {
     await mainTest.slow();
