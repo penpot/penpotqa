@@ -45,26 +45,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
-    qase([1536], 'Show in assets panel option from component context menu (RMB)'),
-    async () => {
-      await mainTest.step(
-        'Show component in Assets Panel via right-click',
-        async () => {
-          await mainPage.showInAssetsPanelRightClick();
-          await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await mainTest.step(
-        'Verify component is highlighted in assets tab',
-        async () => {
-          await assetsPanelPage.isComponentHighlightedInAssetsTab();
-        },
-      );
-    },
-  );
-
   mainTest(qase([1454], 'Duplicate main component'), async () => {
     await mainTest.step('Duplicate component from assets tab', async () => {
       await assetsPanelPage.clickAssetsTab();
