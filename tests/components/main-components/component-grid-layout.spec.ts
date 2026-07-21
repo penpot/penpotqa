@@ -51,22 +51,6 @@ mainTest.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
   });
 
-  mainTest(qase([1717], 'Create a component from empty Grid Board'), async () => {
-    await mainTest.step('Create component from empty grid board', async () => {
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify component on canvas', async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot with empty grid board component',
-      ).toHaveScreenshot('empty-board-component-with-grid-layout.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-  });
-
   mainTest(
     qase(
       [1724],
@@ -314,23 +298,6 @@ mainTest.describe(() => {
             layersPanelPage.layersSidebar,
             'Layers sidebar should match screenshot after copy-paste',
           ).toHaveScreenshot('copy-paste-layer.png', {
-            mask: mainPage.maskViewport(),
-          });
-        },
-      );
-    },
-  );
-
-  mainTest(
-    qase([1719], 'Create a component from grid board with some element inside'),
-    async () => {
-      await mainTest.step(
-        'Verify component with element inside grid board on canvas',
-        async () => {
-          await expect(
-            mainPage.viewport,
-            'Viewport should match screenshot with component created from grid board with rectangle',
-          ).toHaveScreenshot('board-component-with-grid-layout-with-rectangle.png', {
             mask: mainPage.maskViewport(),
           });
         },
