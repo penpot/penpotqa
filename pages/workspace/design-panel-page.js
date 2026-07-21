@@ -302,9 +302,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.strokeAlignmentField = page.getByTestId('stroke.alignment');
     this.strokeTypeField = page.getByTestId('stroke.style');
-    this.strokeCapDropdowns = page
-      .locator('div[class*="stroke-caps-options"]')
-      .getByRole('combobox');
+    this.strokeCapStartDropdown =
+      this.strokeSectionContainer.getByTestId('stroke.cap-start');
+    this.strokeCapEndDropdown =
+      this.strokeSectionContainer.getByTestId('stroke.cap-end');
     this.strokeCapSwitchButton = this.strokeSectionContainer.getByRole('button', {
       name: 'Switch',
     });
@@ -1697,10 +1698,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async changeCap(capName, firstSecond = 'first') {
     const dropdown =
       firstSecond === 'first'
-        ? await this.strokeCapDropdowns.first()
-        : await this.strokeCapDropdowns.last();
+        ? this.strokeCapStartDropdown
+        : this.strokeCapEndDropdown;
     await dropdown.click();
-    await dropdown.getByRole('option', { name: capName }).click();
+    await this.strokeSectionContainer.getByRole('option', { name: capName }).click();
   }
 
   async clickSwitchCapButton() {

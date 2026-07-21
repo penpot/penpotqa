@@ -32,6 +32,8 @@ mainTest(qase([1837, 1839, 1844], 'Install, open and delete a plugin'), async ()
       await pluginsPage.clickOnAllowPluginButton();
       await pluginsPage.isInstalledPluginsCount(1);
       await pluginsPage.isOpenPluginButtonVisible();
+      await pluginsPage.clickClosePluginPanelButton();
+      await pluginsPage.isPluginManagerModalNotVisible();
     },
   );
 
