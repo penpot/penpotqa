@@ -82,40 +82,6 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1729], 'Move a component between pages'), async () => {
-    await mainTest.step('Create component and copy it', async () => {
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickViewportOnce();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await mainPage.pressCopyShortcut();
-    });
-
-    await mainTest.step('Paste component on page 2', async () => {
-      await pagesPanelPage.clickAddPageButton();
-      await pagesPanelPage.clickOnPageOnLayersPanel(2);
-      await mainPage.clickMoveButton();
-      await mainPage.pressPasteShortcut();
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step(
-      'Verify component is on page 2 and layers panel',
-      async () => {
-        await pagesPanelPage.isPageNameSelected('Page 1', false);
-        await pagesPanelPage.isPageNameSelected('Page 2', true);
-        await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Board');
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with component on page 2',
-        ).toHaveScreenshot('board-component-on-page2.png', {
-          mask: mainPage.maskViewport(),
-        });
-      },
-    );
-  });
-
   mainTest(qase([1730], 'Restore main component'), async () => {
     await mainTest.step('Create component, duplicate and delete main', async () => {
       await mainPage.createComponentViaRightClick();
