@@ -41,19 +41,23 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase([1427], 'Delete annotation'), async () => {
+  mainTest(qase([1419, 1427], 'Create annotation: create, delete'), async () => {
     const newAnnotation = 'Edit annotation';
 
-    await mainTest.step('Create annotation with valid text', async () => {
+    await mainTest.step('(1419) Create annotation with valid text', async () => {
       await layersPanelPage.clickMainComponentOnLayersTab();
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.clickOnCreateAnnotationOption();
       await designPanelPage.addAnnotationForComponent(annotation);
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.isAnnotationAddedToComponent(annotation);
+      await expect(
+        designPanelPage.componentBlockOnDesignTab,
+        'Component design tab should match screenshot with annotation',
+      ).toHaveScreenshot('component-annotation.png');
     });
 
-    await mainTest.step('Delete annotation', async () => {
+    await mainTest.step('(1427) Delete annotation', async () => {
       await designPanelPage.clickOnDeleteAnnotation();
       await designPanelPage.confirmDeleteAnnotation();
       await designPanelPage.waitForChangeIsSaved();
