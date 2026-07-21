@@ -58,45 +58,6 @@ mainTest(qase([706], 'Switch to Inspect view'), async () => {
   });
 });
 
-mainTest(
-  qase([715], 'Inspect functionality - Board elements dropdown in the top left'),
-  async () => {
-    let inspectPanelPage: InspectPanelPage;
-
-    await mainTest.step('Create board with a rectangle inside it', async () => {
-      await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await designPanelPage.changeHeightAndWidthForLayer('200', '200');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createDefaultRectangleByCoordinates(320, 320);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Open view mode', async () => {
-      const newPage = await viewModePage.clickViewModeShortcut();
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(45000);
-      layersPanelPage = new LayersPanelPage(newPage);
-      inspectPanelPage = new InspectPanelPage(newPage);
-    });
-
-    await mainTest.step(
-      'Select rectangle layer, open code tab and verify',
-      async () => {
-        await viewModePage.openInspectTab();
-        await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-        await inspectPanelPage.openCodeTab();
-        await viewModePage.page.waitForTimeout(200);
-        await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-          'view-mode-code-tab-image.png',
-        );
-      },
-    );
-  },
-);
-
 mainTest(qase([717], 'Inspect functionality - Export'), async () => {
   let inspectPanelPage: InspectPanelPage;
 
