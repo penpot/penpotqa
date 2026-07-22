@@ -65,27 +65,6 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([1618], 'Annotation on Inspect tab'), async () => {
-    await mainTest.step(
-      `Create annotation "${annotation}" via right-click`,
-      async () => {
-        await designPanelPage.createAnnotationRightClick();
-        await designPanelPage.addAnnotationForComponent(annotation);
-        await designPanelPage.waitForChangeIsSaved();
-      },
-    );
-
-    await mainTest.step(
-      `Verify annotation "${annotation}" is visible on Inspect tab`,
-      async () => {
-        await inspectPanelPage.openInspectTab();
-        await inspectPanelPage.openComputedTab();
-        await inspectPanelPage.isAnnotationExistOnInspectTab();
-        await inspectPanelPage.isAnnotationTextExistOnInspectTab(annotation);
-      },
-    );
-  });
-
   mainTest(
     qase([1428], 'Check annotation applies for copies and inspect tab'),
     async () => {
