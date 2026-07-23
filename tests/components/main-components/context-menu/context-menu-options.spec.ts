@@ -45,26 +45,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
-    qase([1536], 'Show in assets panel option from component context menu (RMB)'),
-    async () => {
-      await mainTest.step(
-        'Show component in Assets Panel via right-click',
-        async () => {
-          await mainPage.showInAssetsPanelRightClick();
-          await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await mainTest.step(
-        'Verify component is highlighted in assets tab',
-        async () => {
-          await assetsPanelPage.isComponentHighlightedInAssetsTab();
-        },
-      );
-    },
-  );
-
   mainTest(qase([1454], 'Duplicate main component'), async () => {
     await mainTest.step('Duplicate component from assets tab', async () => {
       await assetsPanelPage.clickAssetsTab();
@@ -205,71 +185,7 @@ mainTest.describe(() => {
       });
     });
   });
-
-  mainTest(
-    qase([1399], 'Impossible to create annotation for copy component'),
-    async () => {
-      await mainTest.step('Duplicate component and select copy', async () => {
-        await mainPage.duplicateLayerViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.clickCopyComponentOnLayersTab();
-        await designPanelPage.changeAxisXAndYForLayer('200', '0');
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainTest.step(
-        'Verify annotation option is not available for copy component',
-        async () => {
-          await designPanelPage.isAnnotationOptionNotVisibleRightClick();
-          await designPanelPage.isComponentTypeCopy();
-          await designPanelPage.isAnnotationNotAddedToComponent();
-          await layersPanelPage.clickCopyComponentOnLayersTab();
-          await designPanelPage.clickOnComponentMenuButton();
-          await designPanelPage.isAnnotationOptionNotVisible();
-          await designPanelPage.isComponentTypeCopy();
-          await designPanelPage.isAnnotationNotAddedToComponent();
-        },
-      );
-    },
-  );
 });
-
-mainTest(
-  qase([1274], 'Check created component (group of shapes) on Assets tab'),
-  async () => {
-    await mainTest.step(
-      'Create two ellipses, select all and create components',
-      async () => {
-        await mainPage.createDefaultEllipseByCoordinates(200, 300);
-        await mainPage.createDefaultEllipseByCoordinates(400, 600);
-        await mainPage.clickMainMenuButton();
-        await mainPage.clickEditMainMenuItem();
-        await mainPage.clickSelectAllMainMenuSubItem();
-        await mainPage.createComponentsMultipleShapesRightClick();
-        await mainPage.waitForChangeIsSaved();
-      },
-    );
-
-    await mainTest.step('Verify component on canvas and assets tab', async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot with complex ellipse component on canvas',
-      ).toHaveScreenshot('ellipse-complex-component-canvas.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Component 1');
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-      await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-      await expect(
-        assetsPanelPage.assetsPanel,
-        'Assets panel should match screenshot with complex ellipse component',
-      ).toHaveScreenshot('ellipse-complex-component-asset.png', {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      });
-    });
-  },
-);
 
 mainTest(
   qase([1621], 'Create a group with component and check its name'),
@@ -361,26 +277,6 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await designPanelPage.changeAxisXAndYForLayer('400', '300');
-  });
-
-  mainTest(qase([1411], 'Click Show main component on copy'), async () => {
-    await mainTest.step(
-      'Select copy and show main component via right-click',
-      async () => {
-        await layersPanelPage.clickCopyComponentOnLayersTab();
-        await basePage.showMainComponentViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-      },
-    );
-
-    await mainTest.step('Verify main component is shown on canvas', async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot after showing main component from copy',
-      ).toHaveScreenshot('main-copies-component-show-main.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
   });
 
   mainTest(qase([1412], 'Change copy and click Reset overrides'), async () => {

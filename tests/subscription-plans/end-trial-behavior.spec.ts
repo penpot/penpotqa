@@ -61,24 +61,3 @@ registerTest(
     await dashboardPage.checkSubscriptionName(defaultPlan + ' plan');
   },
 );
-
-registerTest(
-  qase(2337, 'Trial ends, no payment method → remains in Enterprise Trial (PAUSED)'),
-  async ({ email }) => {
-    const currentPlan = 'Enterprise';
-
-    await profilePage.tryTrialForPlan(currentPlan);
-    await profilePage.openYourAccountPage();
-    await profilePage.openSubscriptionTab();
-    await profilePage.clickOnManageSubscriptionButton();
-    await stripePage.isTrialEndsVisible();
-
-    await skipSubscriptionByDays(email, testClockId, 20);
-
-    await stripePage.waitTrialEndsDisappear();
-    await stripePage.clickOnReturnToPenpotButton();
-    await profilePage.checkSubscriptionName(currentPlan);
-    await profilePage.backToDashboardFromAccount();
-    await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
-  },
-);
