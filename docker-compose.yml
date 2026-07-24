@@ -12,7 +12,7 @@ services:
     command: >
       bash -c "npm ci &&
       npx playwright install --with-deps chrome &&
-      npx playwright test --project=chrome"
+      npx playwright test --project=chrome ${PW_ARGS:-}"
 
   playwright-ui:
     extends:
