@@ -73,9 +73,9 @@ mainTest.describe(() => {
               mask: mainPage.maskViewport(),
             },
           );
-          await tokensPage.tokensComp.isMenuItemWithNameSelected(
+          await tokensPage.tokensComp.isAllMenuItemWithSectionNameSelected(
             radiusToken.name,
-            'RadiusAll',
+            'Radius',
           );
         },
       );
