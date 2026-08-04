@@ -386,11 +386,37 @@ export class TokensComponent {
   ) {
     await this.rightClickOnTokenWithName(tokenName);
     await expect(
-      this.page.locator('[class*="menu-item-selected"]:has-text("All")', {
-        hasText: sectionName,
-      }),
+      this.page
+        .getByRole('listitem')
+        .filter({ hasText: sectionName })
+        .getByText('All', { exact: true }),
     ).toBeVisible();
   }
+
+  /**
+   * Verifies that the "All" option is selected for a given section within a
+   * token's right-click context submenu.
+   *
+   * Flow:
+   * 1. Right-clicks the token identified by `tokenName` to open its context menu.
+   * 2. Hovers the submenu item identified by `subMenuName` to reveal its nested submenu.
+   * 3. Locates the section (identified by `sectionName`, e.g. "Size", "Min. size")
+   *    within that submenu and asserts its containing <li> has the `selected` class.
+   *
+   * Note on selectors: section labels can be substrings of each other
+   * (e.g. "Size" vs "Min. size" vs "Max. size" vs "Sizing"), and the menu
+   * structure is nested, so naive text/role filters can match multiple or
+   * incorrect elements. See inline comments below for how each pitfall is avoided.
+   *
+   * @param tokenName - Display name of the token to right-click, to open its context menu.
+   * @param subMenuName - Display name of the top-level submenu item to hover
+   *   (e.g. a category like "Sizing") in order to reveal its nested section list.
+   * @param sectionName - Exact display name of the section to check
+   *   (e.g. "Size", "Min. size", "Max. size"). Matched exactly, not as a substring.
+   *
+   * @throws Fails the test (via `expect`) if the "All" option's <li> for the
+   *   given section does not have the `selected` class within the timeout.
+   */
 
   async isAllSubMenuItemWithSectionNameSelected(
     tokenName: string,
@@ -399,11 +425,19 @@ export class TokensComponent {
   ) {
     await this.rightClickOnTokenWithName(tokenName);
     await this.page.getByRole('listitem').filter({ hasText: subMenuName }).hover();
+
+    const escaped = sectionName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    const hintSpan = this.page
+      .locator('.main_ui_workspace_tokens_management_context_menu__menu-item-hint')
+      .filter({ hasText: new RegExp(`^${escaped}$`) });
+
+    const sectionItem = hintSpan.locator('xpath=ancestor::li[1]');
+
     await expect(
-      this.page.locator('[class*="menu-item-selected"]:has-text("All")', {
-        hasText: sectionName,
-      }),
-    ).toBeVisible();
+      sectionItem,
+      `All is selected for section item "${sectionName}"`,
+    ).toHaveClass(/selected/);
   }
 
   async isMenuItemVisible(tokenName: string, itemName: string, visible = true) {
