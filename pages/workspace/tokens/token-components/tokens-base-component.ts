@@ -172,9 +172,7 @@ export class TokensComponent {
 
   private async fillTokenData(
     token:
-      | TypographyToken<TokenClass>
-      | ShadowToken<TokenClass>
-      | MainToken<TokenClass>,
+      TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
   ) {
     await this.fillTokenName(token.name);
 
@@ -222,9 +220,7 @@ export class TokensComponent {
 
   async clickOnAddTokenAndFillData(
     token:
-      | TypographyToken<TokenClass>
-      | ShadowToken<TokenClass>
-      | MainToken<TokenClass>,
+      TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
   ) {
     await this.clickOnAddTokenButton(token);
     await this.fillTokenData(token);
@@ -232,9 +228,7 @@ export class TokensComponent {
 
   async clickOnAddTokenButton(
     token:
-      | TypographyToken<TokenClass>
-      | ShadowToken<TokenClass>
-      | MainToken<TokenClass>,
+      TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
   ) {
     const addTokenButton = this.getAddTokenButton(token.class);
     await addTokenButton.click();
@@ -242,9 +236,7 @@ export class TokensComponent {
 
   async createTokenViaAddButtonAndSave(
     token:
-      | TypographyToken<TokenClass>
-      | ShadowToken<TokenClass>
-      | MainToken<TokenClass>,
+      TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
   ) {
     await this.clickOnAddTokenAndFillData(token);
     await this.baseComp.modalSaveButton.click();
@@ -252,9 +244,7 @@ export class TokensComponent {
 
   async createTokenViaAddButtonAndEnter(
     token:
-      | TypographyToken<TokenClass>
-      | ShadowToken<TokenClass>
-      | MainToken<TokenClass>,
+      TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
   ) {
     await this.clickOnAddTokenAndFillData(token);
     await expect(this.baseComp.modalSaveButton).toBeEnabled();
@@ -315,9 +305,7 @@ export class TokensComponent {
 
   async clickEditToken(
     updatedToken:
-      | TypographyToken<TokenClass>
-      | ShadowToken<TokenClass>
-      | MainToken<TokenClass>,
+      TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
   ) {
     await this.rightClickOnTokenWithName(updatedToken.name);
     await this.editTokenMenuItem.click();
@@ -325,9 +313,7 @@ export class TokensComponent {
 
   async editTokenViaRightClickByName(
     updatedToken:
-      | TypographyToken<TokenClass>
-      | ShadowToken<TokenClass>
-      | MainToken<TokenClass>,
+      TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
   ) {
     await this.clickEditToken(updatedToken);
     await this.fillTokenData(updatedToken);
@@ -335,9 +321,7 @@ export class TokensComponent {
 
   async editTokenViaRightClickAndSave(
     updatedToken:
-      | TypographyToken<TokenClass>
-      | ShadowToken<TokenClass>
-      | MainToken<TokenClass>,
+      TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
   ) {
     await this.editTokenViaRightClickByName(updatedToken);
     await this.baseComp.modalSaveButton.click();
@@ -380,9 +364,7 @@ export class TokensComponent {
   async isMenuItemWithNameSelected(tokenName: string, itemName: string) {
     await this.rightClickOnTokenWithName(tokenName);
     await expect(
-      this.page.locator('[class*="menu-item-selected"]', {
-        hasText: new RegExp(`^${itemName}$`),
-      }),
+      this.page.getByRole('listitem').getByText(itemName, { exact: true }),
     ).toBeVisible();
   }
 
@@ -394,7 +376,7 @@ export class TokensComponent {
     await this.rightClickOnTokenWithName(tokenName);
     await this.page.getByRole('listitem').filter({ hasText: subMenuName }).hover();
     await expect(
-      this.page.locator('[class*="menu-item-selected"]', { hasText: itemName }),
+      this.page.getByRole('listitem').getByText(itemName, { exact: true }),
     ).toBeVisible();
   }
 
