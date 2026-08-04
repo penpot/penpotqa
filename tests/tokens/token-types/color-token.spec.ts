@@ -76,7 +76,7 @@ mainTest.describe(() => {
           });
           await tokensPage.tokensComp.isMenuItemWithNameSelected(
             colorToken.name,
-            'ColorFill',
+            'Fill',
           );
         },
       );

@@ -70,9 +70,9 @@ mainTest(
           dimensionToken.name,
           false,
         );
-        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+        await tokensPage.tokensComp.isAllMenuItemWithSectionNameSelected(
           sizingToken.name,
-          'SizeAll',
+          'Size',
         );
         await mainPage.clickBoardOnCanvas();
       },
