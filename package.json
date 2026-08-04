@@ -10,6 +10,7 @@
     "testLogin": "npx playwright test --project=chrome ./tests/panels-features/panels-features-fill.spec.js",
     "updateSnapshots": "npx playwright test --project=chrome --update-snapshots",
     "test:docker": "docker compose run --rm playwright",
+    "test:docker:updateSnapshots": "PW_ARGS=--update-snapshots docker compose run --rm playwright",
     "test:docker:ui": "docker compose run --rm --service-ports playwright-ui",
     "prettier": "npx prettier --write .",
     "prepare": "husky"
