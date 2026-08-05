@@ -301,9 +301,7 @@ mainTest.describe(() => {
 
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
-        await teamPage.isInviteMembersPopUpHeaderDisplayed(
-          'Invite members to the team',
-        );
+        await teamPage.isInviteMembersPopUpHeaderVisible();
         await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
         await teamPage.selectInvitationRoleInPopUp('Viewer');
         await teamPage.clickSendInvitationButton();
@@ -392,9 +390,7 @@ mainTest.describe(() => {
     await mainTest.step('Invite editor to team', async () => {
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
@@ -463,9 +459,7 @@ mainTest.describe(() => {
 
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
@@ -564,9 +558,7 @@ mainTest.describe(() => {
 
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
-        await teamPage.isInviteMembersPopUpHeaderDisplayed(
-          'Invite members to the team',
-        );
+        await teamPage.isInviteMembersPopUpHeaderVisible();
         await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
         await teamPage.selectInvitationRoleInPopUp('Editor');
         await teamPage.clickSendInvitationButton();

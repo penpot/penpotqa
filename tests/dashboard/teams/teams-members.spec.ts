@@ -186,7 +186,7 @@ mainTest(qase([1196], 'Team. Members - leave team (as owner)'), async ({ page })
     await teamPage.isTeamSelected(team);
     await teamPage.openInvitationsPageViaOptionsMenu();
     await teamPage.clickInviteMembersToTeamButton();
-    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+    await teamPage.isInviteMembersPopUpHeaderVisible();
     await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
     await teamPage.selectInvitationRoleInPopUp('Admin');
     await teamPage.clickSendInvitationButton();

@@ -254,9 +254,7 @@ mainTest.describe(() => {
       await mainTest.step('Invite a second admin to the team', async () => {
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
-        await teamPage.isInviteMembersPopUpHeaderDisplayed(
-          'Invite members to the team',
-        );
+        await teamPage.isInviteMembersPopUpHeaderVisible();
         await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
         await teamPage.selectInvitationRoleInPopUp('Admin');
         await teamPage.clickSendInvitationButton();

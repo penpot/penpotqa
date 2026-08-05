@@ -51,15 +51,13 @@ exports.TeamPage = class TeamPage extends BasePage {
     //Invitations
     this.invitationsMenuItem = page.getByRole('menuitem', { name: 'Invitations' });
     this.inviteMembersToTeamButton = page.getByTestId('invite-member');
-    this.inviteMembersPopUpHeader = page.locator(
-      'div[class*="modal-team-container"] div[class*="title"]',
-    );
+    this.inviteMembersPopUpHeader = page.getByRole('heading', {
+      name: 'Invite members to the team',
+    });
     this.inviteMembersTeamHeroButton = page.getByRole('button', {
       name: 'Invite members',
     });
-    this.inviteMembersToTeamRoleSelectorButton = page.locator(
-      'div[class*="custom-select"]',
-    );
+    this.inviteMembersToTeamRoleSelector = page.getByRole('combobox');
     this.adminRoleSelector = page.locator('li').filter({ hasText: 'Admin' });
     this.editorRoleSelector = page.locator('li').filter({ hasText: 'Editor' });
     this.viewerRoleSelector = page.locator('li').filter({ hasText: 'Viewer' });
@@ -217,7 +215,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isTeamDeleted(teamName) {
-    await expect(this.page.getByText('Your Penpot')).toBeVisible({ timeout: 8000 });
+    await expect(this.page.getByText('My Files')).toBeVisible({ timeout: 8000 });
     await this.openTeamsListIfClosed();
     for (const el of await this.teamCurrentNameDiv.elementHandles()) {
       const text = (await el.innerText()).valueOf();
@@ -249,8 +247,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.inviteMembersToTeamButton).not.toBeVisible();
   }
 
-  async isInviteMembersPopUpHeaderDisplayed(title) {
-    await expect(this.inviteMembersPopUpHeader).toHaveText(title);
+  async isInviteMembersPopUpHeaderVisible() {
+    await expect(this.inviteMembersPopUpHeader).toBeVisible();
   }
 
   async clickInviteMembersTeamHeroButton() {
@@ -333,7 +331,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async selectInvitationRoleInPopUp(role) {
-    await this.inviteMembersToTeamRoleSelectorButton.click();
+    await this.inviteMembersToTeamRoleSelector.click();
     switch (role) {
       case 'Admin':
         await this.adminRoleSelector.click();
@@ -463,7 +461,7 @@ exports.TeamPage = class TeamPage extends BasePage {
       ? await this.selectMember(name)
       : await this.clickOnLeaveTeamButton();
     await expect(this.teamCurrentBtn).not.toHaveText(teamName);
-    await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
+    await expect(this.teamCurrentBtn).toHaveText('My Files');
   }
 
   /**

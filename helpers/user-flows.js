@@ -72,7 +72,7 @@ async function setupUserWithRole(
   await teamPage.clickInviteMembersToTeamButton();
 
   if (assertInviteHeader) {
-    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+    await teamPage.isInviteMembersPopUpHeaderVisible();
   }
 
   await teamPage.enterEmailToInviteMembersPopUp(userEmail);

@@ -144,9 +144,7 @@ mainTest(
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
 
-        await teamPage.isInviteMembersPopUpHeaderDisplayed(
-          'Invite members to the team',
-        );
+        await teamPage.isInviteMembersPopUpHeaderVisible();
 
         await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
         await teamPage.selectInvitationRoleInPopUp('Admin');
