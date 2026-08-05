@@ -202,7 +202,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.disconnectMCPServerMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Disconnect' });
-    this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
+    this.downloadFileTickIcon = page.locator('use[href="#icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
     // Export as PDF

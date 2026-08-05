@@ -54,7 +54,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.addFileAsSharedLibraryButton = page.getByRole('button', {
       name: 'Add as Shared Library',
     });
-    this.sharedLibraryIcon = page.locator('svg[class="icon-library"]');
+    this.sharedLibraryIcon = page.locator('use[href="#icon-library"]');
     this.delFileAsSharedLibraryMenuItem = page.getByTestId('file-del-shared');
     this.delFileAsSharedLibraryButton = page.getByRole('button', {
       name: 'Unpublish',
@@ -72,7 +72,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .locator(`div[class*="dashboard_grid__library"]`);
     this.downloadFilePenpotMenuItem = page.getByTestId('download-binary-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
-    this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
+    this.downloadFileTickIcon = page.locator('use[href="#icon-tick"]');
     this.downloadFileCloseButton = page
       .getByRole('button', { name: 'Close' })
       .getByText('Close', { exact: true });
