@@ -73,9 +73,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
 
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(secondEmail);
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
@@ -105,9 +103,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(secondEmail);
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
@@ -172,9 +168,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}, ${secondEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
@@ -258,17 +252,13 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${secondEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
@@ -329,9 +319,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
@@ -372,17 +360,13 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${secondEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
@@ -423,9 +407,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
@@ -477,9 +459,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}, ${secondEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
@@ -542,17 +522,13 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${secondEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
@@ -615,17 +591,13 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Admin');
       await teamPage.clickSendInvitationButton();
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
       await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderDisplayed(
-        'Invite members to the team',
-      );
+      await teamPage.isInviteMembersPopUpHeaderVisible();
       await teamPage.enterEmailToInviteMembersPopUp(`${secondEmail}`);
       await teamPage.selectInvitationRoleInPopUp('Editor');
       await teamPage.clickSendInvitationButton();
