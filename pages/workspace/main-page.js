@@ -81,7 +81,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.verticalRulerTrack = page.locator(
       'g.new-guides rect[class*="cursor-resize-ew"]',
     );
-    this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
+    this.guidesFragment = page.locator(
+      '.main_ui_workspace_sidebar__left-sidebar-resize-area',
+    );
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
     this.gridEditorButton = page.locator('button[class*="grid-editor-button"]');
     this.gridEditorCell = page.locator('rect[class*="grid-cell-outline"]');
