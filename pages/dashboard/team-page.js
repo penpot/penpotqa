@@ -122,7 +122,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.requestSentCorrectlyDescribe = this.requestAccessDialog.getByText(
       "Remember that, if the owner allows it, you're going to be invited to the team.",
     );
-    this.closeModalButton = page.locator('svg[class*="icon-close"]');
+    this.closeModalButton = page.getByRole('button', { name: 'Close' });
     this.requestFileAccessText = this.requestAccessDialog.getByText(
       "You don't have access to this file.",
     );
