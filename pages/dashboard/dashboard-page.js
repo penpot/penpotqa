@@ -77,7 +77,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .getByRole('button', { name: 'Close' })
       .getByText('Close', { exact: true });
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
-    this.fileOptionsMenuButton = page.locator('div[class*="project-th-icon"] svg');
+    this.fileOptionsMenuButton = page
+      .locator('li[class*="grid-item"]')
+      .getByRole('button', { name: 'Options' });
     this.headerOptionsMenuButton = page.locator(
       'div[title="Options"] svg[class*="files__menu-icon"]',
     );
