@@ -35,6 +35,7 @@ mainTest.beforeEach(async ({ page }) => {
 mainTest(qase([487], 'Create Path (Toolbar) - closed'), async () => {
   await mainPage.createDefaultClosedPath();
   await mainPage.isCreatedLayerVisible();
+  await layersPanelPage.selectLayerByName('Path');
   await expect(mainPage.viewport).toHaveScreenshot('path-closed.png', {
     mask: mainPage.maskViewport(),
   });
@@ -43,6 +44,7 @@ mainTest(qase([487], 'Create Path (Toolbar) - closed'), async () => {
 mainTest(qase([489], 'Create Path (Toolbar) - opened'), async () => {
   await mainPage.createDefaultOpenPath();
   await mainPage.isCreatedLayerVisible();
+  await layersPanelPage.selectLayerByName('Path');
   await expect(mainPage.viewport).toHaveScreenshot('path-opened.png', {
     mask: mainPage.maskViewport(),
   });
