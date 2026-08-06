@@ -481,7 +481,7 @@ mainTest.describe(() => {
     await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('500', '500');
-    await mainPage.createDefaultEllipseByCoordinates(200, 300);
+    await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
     await mainPage.clickCreatedBoardTitleOnCanvas();
