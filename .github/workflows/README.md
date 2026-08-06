@@ -37,7 +37,7 @@ During **freeze week / release promotion**, once there's a scheduled daily PRE r
    - Creates the release story in Taiga if it doesn't exist yet (subject `[release <tag>] Daily failures triage`, tagged `needs-triage` + `release-<tag>`, optionally linked under `epic_ref`).
    - Adds **one task per new cluster** (or per file, if `group_by: file`) — see "What's in a task" below.
    - For clusters already known and still failing, comments on the story instead of creating a new task, so it doesn't spam duplicates.
-   - **Auto-closes tasks for clusters that go green for 3 consecutive triaged runs** — closed status, assigned to `qa.integrations.bot`, with a comment explaining why. If someone already closed the task manually (see "Triage convention" below), it just adds a verification comment instead.
+   - **Auto-closes tasks for clusters whose error is no longer seen in the next triaged run** — closed status, assigned to `qa.integrations.bot`, with a comment explaining why. If someone already closed the task manually (see "Triage convention" below), it just adds a verification comment instead.
 5. **Saves the updated state** back to S3 so the next run knows what's open, closed, and how many consecutive runs each cluster has failed/passed.
 6. **Posts a digest** (new clusters / still-failing clusters / resolved clusters, plus flaky count and app version) to the job summary and to Mattermost.
 
