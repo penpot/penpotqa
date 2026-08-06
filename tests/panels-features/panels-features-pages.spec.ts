@@ -58,7 +58,6 @@ mainTest(qase([833], 'Rename page'), async () => {
   await mainTest.step('Add a second page', async () => {
     await pagesPanelPage.clickAddPageButton();
     await mainPage.waitForChangeIsSaved();
-    await mainPage.clickMoveButton();
   });
 
   await mainTest.step('Rename first page', async () => {
