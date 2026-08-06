@@ -505,10 +505,10 @@ async function main() {
       );
       state[fp].consecutiveRuns = 0;
       if (
-        state[fp].seenInLastNRuns.slice(0, 3).every((x) => x === 0) &&
+        state[fp].seenInLastNRuns.slice(0, 1).every((x) => x === 0) &&
         state[fp].taigaRef
       ) {
-        resolved.push(fp); // green 3 runs in a row -> candidate for closing
+        resolved.push(fp); // gone in the next run -> candidate for closing
       }
     }
   }
@@ -773,7 +773,7 @@ async function main() {
     }
   }
 
-  // ----- Auto-close resolved tasks (green 3 consecutive triaged runs) -----
+  // ----- Auto-close resolved tasks (error gone in the next triaged run) -----
   if (taiga && resolvedInfo.length) {
     const assigneeName = process.env.TAIGA_CLOSE_ASSIGNEE || 'qa.integrations.bot';
     const statusName = process.env.TAIGA_CLOSED_STATUS || 'Closed';
@@ -802,7 +802,7 @@ async function main() {
             // already triaged & closed by a human — just record the verification
             await taiga.commentTask(
               r.taskId,
-              `Verified by triage: green for 3 consecutive triaged runs (${today}).`,
+              `Verified by triage: not seen in the next triaged run (${today}).`,
             );
             console.log(
               `Task #${r.taskRef} already closed (triaged) — added verification comment: ${r.subject ?? r.fp}`,
@@ -812,7 +812,7 @@ async function main() {
               r.taskId,
               statusId,
               assigneeId,
-              `Auto-closed by triage: green for 3 consecutive triaged runs (${today}).`,
+              `Auto-closed by triage: not seen in the next triaged run (${today}).`,
             );
             console.log(
               `Closed task #${r.taskRef}${assigneeId ? ` and assigned to ${assigneeName}` : ''}: ${r.subject ?? r.fp}`,
@@ -875,7 +875,7 @@ async function main() {
     digest.push('');
   }
   if (resolvedInfo.length) {
-    digest.push(`### resolved (green 3 runs)`);
+    digest.push(`### resolved (gone next run)`);
     for (const r of resolvedInfo) {
       const link = r.taskRef ? taigaTaskLink(r.taskRef) : taigaLink(r.storyRef);
       const label = r.subject ? ` — \`${r.subject}\`` : '';
@@ -910,7 +910,7 @@ async function main() {
     if (closed.length)
       mm.push(
         '',
-        `**Auto-closed (green 3 runs):** ${closed.map((r) => taigaTaskLink(r.taskRef)).join(', ')}`,
+        `**Auto-closed (gone next run):** ${closed.map((r) => taigaTaskLink(r.taskRef)).join(', ')}`,
       );
     if (manual.length)
       mm.push(
