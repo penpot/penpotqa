@@ -201,7 +201,7 @@ mainTest.describe(
         );
         const firstInvite = await waitMessage(page, firstEmail, 40);
         const secondInvite = await waitMessage(page, secondEmail, 40);
-        const user = process.env.CI ? 'QA Engineer' : 'QA Engineer'; //'k8q6byz';
+        const user = process.env.CI ? 'QA Engineer' : 'QA Engineer';
         await checkInviteText(firstInvite!.inviteText, team, user);
         await checkInviteText(secondInvite!.inviteText, team, user);
         await profilePage.logout();

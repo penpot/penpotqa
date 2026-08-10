@@ -7,12 +7,13 @@ exports.BasePage = class BasePage {
   constructor(page) {
     this.page = page;
     this.header = page.locator('div[class*="dashboard-title"] h1');
+    this.teamModalContainer = page.locator(
+      '.main_ui_dashboard_team__modal-team-container',
+    );
     this.successMessage = page.locator(
       'div[class*="shared_notification_pill__type-toast"]',
     );
-    this.warningMessageText = page.locator(
-      'aside[class*="warning"] div[class*="context_notification"]',
-    );
+    this.warningMessageText = this.teamModalContainer.getByRole('alert');
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });
     this.savedChangesIcon = page.getByTitle('Saved', { exact: true });
