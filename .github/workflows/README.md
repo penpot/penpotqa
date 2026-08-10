@@ -45,10 +45,17 @@ During **freeze week / release promotion**, once there's a scheduled daily PRE r
 
 ### Ad-hoc closing
 
-Two flags let you close resolved tasks without running (and filing) a full triage:
+Two ways to close resolved tasks without filing a full triage:
 
-- `--close-only` — runs the normal parse → cluster → detect-resolved pipeline but skips creating any new story/task; it only sweeps and closes tasks whose error is no longer present in the given `results.json`. Writes `.triage/digest.md` as usual (a trimmed version: what got closed, nothing about "new"/"known" since nothing was filed). Useful for clearing a backlog of resolved tasks on demand.
-- `--close-ref <taskRef> [--close-ref <taskRef> ...]` — force-closes specific Taiga tasks by their visible ref number (`#1234`), bypassing `results.json`/state entirely. Escape hatch for one-off closes or tasks that predate this tracking (e.g. old `group_by: file` tasks created before per-file tracking existed). Purely a manual CLI action: it does **not** write `.triage/digest.md` or post to Mattermost, so don't wire it into a step that `cat`s the digest afterward expecting fresh output.
+- **`close_only` workflow input** — tick it when running "Report triage" from the Actions tab. Runs the same pipeline (finds the report, pulls state) but skips creating any new story/task; it only sweeps and closes tasks whose error is no longer present in the given run. Do not combine with `reset_state` — the workflow rejects that combination outright, since resetting state right before a close-only sweep would wipe out the very data it needs to know what's resolved.
+- **`--close-ref <taskRef> [--close-ref <taskRef> ...]`** — CLI only (not wired into the workflow), force-closes specific Taiga tasks by their visible ref number (`#1234`), bypassing `results.json`/state entirely. Escape hatch for one-off closes or tasks that predate this tracking (e.g. old `group_by: file` tasks created before per-file tracking existed). Does **not** write `.triage/digest.md` or post to Mattermost.
+
+Running `--close-only` by hand from a checkout works the same way, with the same Taiga env vars as the scheduled workflow:
+
+```bash
+TAIGA_URL=... TAIGA_USERNAME=... TAIGA_PASSWORD=... TAIGA_PROJECT=... \
+  npx tsx scripts/triage.ts --results results.json --state .triage/state.json --close-only
+```
 
 ### Debugging a run
 
@@ -82,6 +89,7 @@ In `group_by: file` mode, tasks are per spec file instead, listing every failing
 | `group_by`      | ❌       | `cluster` (default) or `file` — controls task granularity in the story.                                                                            |
 | `epic_ref`      | ❌       | Taiga epic number to link the story under.                                                                                                         |
 | `reset_state`   | ❌       | `true` to forget all prior triage state for this tag (treats every failure as new). **Delete the old Taiga story yourself first** if you use this. |
+| `close_only`    | ❌       | `true` to sweep and close resolved tasks only — files nothing new. Cannot be combined with `reset_state` (the run fails fast if both are ticked).  |
 
 ### Good to know
 
