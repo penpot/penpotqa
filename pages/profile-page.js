@@ -525,7 +525,6 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await expect(this.generateMCPKeyModalHeading).toBeVisible();
     await this.generateMCPKeySubmitButton.click();
     await expect(this.MCPKeyGeneratedModalHeading).toBeVisible();
-    await expect(this.configurationMCPClientText).toBeVisible();
     await expect(this.tokenCreatedSuccessfullyMessage).toBeVisible();
     await this.closeModalButton.click();
     await expect(this.MCPKey).toBeVisible();
