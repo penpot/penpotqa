@@ -19,13 +19,14 @@ on:
         description: 'Override: specific run id to triage (default: last scheduled daily run on main)'
         required: false
       group_by:
-        description: 'Task granularity inside the release story'
+        description: 'Task granularity inside the release story. folder: snapshot failures bundled per immediate parent folder (claimable per-folder for splitting snapshot-update work); functional bugs stay one-per-cluster'
         required: false
         default: 'cluster'
         type: choice
         options:
           - cluster
           - file
+          - folder
       epic_ref:
         description: 'Optional: Taiga epic ref (number only, e.g. 118) to link the story under'
         required: false

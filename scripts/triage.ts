@@ -45,7 +45,7 @@ const RESULTS_PATH = arg('results', 'playwright-report/results.json');
 const STATE_PATH = arg('state', '.triage/state.json');
 const REPORT_URL = arg('report-url', '');
 const RELEASE = arg('release', ''); // e.g. "2.17" -> single story tagged release-2.17 with one task per cluster
-const GROUP_BY = arg('group-by', 'cluster'); // release-mode tasks: 'cluster' (one per root cause) or 'file' (one per spec file)
+const GROUP_BY = arg('group-by', 'cluster'); // release-mode tasks: 'cluster' (one per root cause), 'file' (one per spec file), or 'folder' (one per immediate parent folder, snapshot failures only — functional clusters stay one-per-cluster)
 const EPIC_REF = arg('epic-ref', ''); // optional: Taiga epic ref (#number) to link created stories under
 const APP_VERSION = arg('app-version', ''); // optional: deployed app version this report ran against
 // Debug: which run's results.json this triage was executed over. Falls back to parsing it out of
@@ -586,7 +586,8 @@ async function main() {
     }
   }
   for (const fp of Object.keys(state)) {
-    if (fp.startsWith('__') || fp.startsWith('file::')) continue; // internal bookkeeping / per-file tracking (below), not a cluster
+    if (fp.startsWith('__') || fp.startsWith('file::') || fp.startsWith('folder::'))
+      continue; // internal bookkeeping / per-file / per-folder tracking (below), not a cluster
     if (!clusters.has(fp)) {
       state[fp].seenInLastNRuns = [0, ...(state[fp].seenInLastNRuns ?? [])].slice(
         0,
@@ -645,6 +646,56 @@ async function main() {
           state[key].taskId
         ) {
           resolved.push(key); // file has no failing tests in this run -> candidate for closing
+        }
+      }
+    }
+  }
+
+  // ----- Release + group-by=folder: same idea as file-mode, but scoped to snapshot/visual-diff
+  // failures only, bucketed by immediate parent folder — the "claim this and update snapshots"
+  // unit when one shared cause (e.g. a viewport change) invalidates screenshots across many spec
+  // files at once. Functional (non-snapshot) clusters are untouched by this block — they keep
+  // one-task-per-cluster treatment below, since each is a distinct bug, not a shared visual cause.
+  const folderStateKey = (folder: string) => `folder::${folder}`;
+  if (RELEASE && GROUP_BY === 'folder') {
+    const failingFolders = new Set<string>();
+    for (const c of clusters.values()) {
+      if (!isSnapshotError(c.errorSample)) continue;
+      for (const t of c.tests) failingFolders.add(path.dirname(t.file));
+    }
+
+    for (const folder of failingFolders) {
+      const key = folderStateKey(folder);
+      if (state[key]) {
+        state[key].lastSeen = today;
+        state[key].consecutiveRuns = (state[key].consecutiveRuns ?? 0) + 1;
+        state[key].seenInLastNRuns = [
+          1,
+          ...(state[key].seenInLastNRuns ?? []),
+        ].slice(0, 10);
+      } else {
+        state[key] = {
+          firstSeen: today,
+          lastSeen: today,
+          consecutiveRuns: 1,
+          seenInLastNRuns: [1],
+        };
+      }
+    }
+    for (const key of Object.keys(state)) {
+      if (!key.startsWith('folder::')) continue;
+      const folder = key.slice('folder::'.length);
+      if (!failingFolders.has(folder)) {
+        state[key].seenInLastNRuns = [
+          0,
+          ...(state[key].seenInLastNRuns ?? []),
+        ].slice(0, 10);
+        state[key].consecutiveRuns = 0;
+        if (
+          state[key].seenInLastNRuns.slice(0, 1).every((x) => x === 0) &&
+          state[key].taskId
+        ) {
+          resolved.push(key); // folder has no failing snapshot tests in this run -> candidate for closing
         }
       }
     }
@@ -723,8 +774,8 @@ async function main() {
         storyRef = undefined;
         storyRecreated = true;
         for (const key of Object.keys(state)) {
-          if (key.startsWith('file::')) {
-            delete state[key].taskId; // file tasks died with the story — rebuilt below
+          if (key.startsWith('file::') || key.startsWith('folder::')) {
+            delete state[key].taskId; // file/folder tasks died with the story — rebuilt below
             delete state[key].taskRef;
           }
         }
@@ -836,6 +887,113 @@ async function main() {
         for (const c of newClusters) {
           state[c.fingerprint].taigaId = storyId;
           state[c.fingerprint].taigaRef = storyRef;
+        }
+      } else if (GROUP_BY === 'folder') {
+        // Snapshot clusters get bundled by immediate parent folder (one claimable task covering
+        // every spec file in it); functional clusters keep the usual one-task-per-cluster treatment,
+        // since they're distinct bugs rather than a shared visual cause.
+        const clustersInScope = storyRecreated
+          ? [...newClusters, ...knownClusters]
+          : newClusters;
+        const snapshotClusters = clustersInScope.filter((c) =>
+          isSnapshotError(c.errorSample),
+        );
+        const functionalClusters = clustersInScope.filter(
+          (c) => !isSnapshotError(c.errorSample),
+        );
+        if (storyRecreated && knownClusters.length)
+          console.log(
+            `Rebuilding tasks for ${knownClusters.length} known cluster(s) in the new story.`,
+          );
+
+        for (const c of functionalClusters) {
+          const taskSubject = `${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
+          if (taiga && storyId) {
+            const { id: taskId, ref: taskRef } = await taiga.createTask(
+              storyId,
+              taskSubject,
+              clusterDescription(c),
+            );
+            state[c.fingerprint].taigaId = storyId;
+            state[c.fingerprint].taigaRef = storyRef;
+            state[c.fingerprint].taskId = taskId;
+            state[c.fingerprint].taskRef = taskRef;
+            state[c.fingerprint].subject = taskSubject.slice(0, 120);
+            console.log(`  + task #${taskRef}: ${taskSubject}`);
+          } else {
+            console.log(`[dry-run]   + task: ${taskSubject}`);
+          }
+        }
+
+        const byFolder = new Map<string, Failure[]>();
+        for (const c of snapshotClusters) {
+          for (const t of c.tests) {
+            const folder = path.dirname(t.file);
+            byFolder.set(folder, [...(byFolder.get(folder) ?? []), t]);
+          }
+        }
+        for (const [folder, tests] of byFolder) {
+          const byFile = new Map<string, Failure[]>();
+          for (const t of tests)
+            byFile.set(t.file, [...(byFile.get(t.file) ?? []), t]);
+          const fileSections = [...byFile.entries()].map(
+            ([file, fileTests]) =>
+              `**${path.basename(file)}** (${fileTests.length}):\n` +
+              fileTests
+                .map(
+                  (t) => `- \`${t.title}\`${t.qaseId ? ` (Qase: ${t.qaseId})` : ''}`,
+                )
+                .join('\n'),
+          );
+          const folderKey = folderStateKey(folder);
+          const folderEntry = state[folderKey]; // created above by the folder-tracking block
+          const subject = `${folder}/ — ${tests.length} screenshot diff${tests.length > 1 ? 's' : ''} across ${byFile.size} file${byFile.size > 1 ? 's' : ''}`;
+          if (taiga && storyId) {
+            if (folderEntry?.taskId) {
+              await taiga.commentTask(
+                folderEntry.taskId,
+                [`New/updated diffs on ${today}:`, ...fileSections].join('\n\n'),
+              );
+              if (folderEntry) folderEntry.subject = subject.slice(0, 120);
+              console.log(
+                `  ~ appended ${tests.length} test(s) to existing folder task for ${folder}/`,
+              );
+            } else {
+              const { id, ref } = await taiga.createTask(
+                storyId,
+                subject,
+                [
+                  `**Folder:** \`${folder}/\``,
+                  '',
+                  `Screenshot diffs across ${byFile.size} spec file${byFile.size > 1 ? 's' : ''} — claim this task to update snapshots for the whole folder.`,
+                  '',
+                  ...fileSections,
+                  '',
+                  RUN_ID ? `Run: ${RUN_ID}` : '',
+                  REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
+                ].join('\n'),
+              );
+              if (state[folderKey]) {
+                state[folderKey].taskId = id;
+                state[folderKey].taskRef = ref;
+                state[folderKey].subject = subject.slice(0, 120);
+                state[folderKey].taigaId = storyId;
+                state[folderKey].taigaRef = storyRef;
+              }
+              console.log(`  + task #${ref}: ${subject}`);
+            }
+          } else {
+            console.log(`[dry-run]   + task: ${subject}`);
+          }
+        }
+        // Cluster fingerprints still track new/known/resolved against the release story. Functional
+        // clusters already got their own taigaId/taigaRef above; snapshot clusters need the same
+        // fallback link (their real task lives under folder::, not their own fingerprint).
+        for (const c of newClusters) {
+          if (isSnapshotError(c.errorSample)) {
+            state[c.fingerprint].taigaId = storyId;
+            state[c.fingerprint].taigaRef = storyRef;
+          }
         }
       } else {
         const clustersNeedingTasks = storyRecreated
