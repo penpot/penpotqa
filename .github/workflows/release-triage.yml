@@ -112,6 +112,7 @@ jobs:
             --group-by "${{ inputs.group_by || 'cluster' }}" \
             --epic-ref "${{ inputs.epic_ref }}" \
             --app-version "${{ steps.appver.outputs.version }}" \
+            --run-id "${{ steps.report.outputs.run_id }}" \
             --report-url "https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ steps.report.outputs.run_id }}/index.html"
         env:
           GITHUB_TOKEN: ${{ github.token }} # raises GitHub API rate limit for the app-repo changelog fetch
