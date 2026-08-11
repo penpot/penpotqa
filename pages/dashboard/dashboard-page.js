@@ -533,18 +533,22 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async downloadFileViaRightClick() {
     await this.fileTile.click({ button: 'right' });
-    await this.downloadFilePenpotMenuItem.click();
 
-    await this.page.waitForEvent('download');
+    await Promise.all([
+      this.page.waitForEvent('download'),
+      this.downloadFilePenpotMenuItem.click(),
+    ]);
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
 
   async downloadFileViaOptionsIcon() {
     await this.clickOnFileOptions();
-    await this.downloadFilePenpotMenuItem.click();
 
-    await this.page.waitForEvent('download');
+    await Promise.all([
+      this.page.waitForEvent('download'),
+      this.downloadFilePenpotMenuItem.click(),
+    ]);
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }

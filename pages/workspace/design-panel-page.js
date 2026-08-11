@@ -1430,8 +1430,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickExportElementButton(page) {
-    await this.exportElementButton.click();
-    await page.waitForEvent('download');
+    page.waitForEvent('download');
+    this.exportElementButton.click();
   }
 
   async clickAddGuidesButton() {

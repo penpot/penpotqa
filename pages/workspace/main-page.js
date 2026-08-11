@@ -851,8 +851,10 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async downloadPenpotFileViaMenu() {
-    await this.downloadPenpotFileMenuSubItem.click();
-    await this.page.waitForEvent('download');
+    await Promise.all([
+      this.page.waitForEvent('download'),
+      this.downloadPenpotFileMenuSubItem.click(),
+    ]);
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
@@ -861,8 +863,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.exportBoardsAsPDFFileMenuSubItem.click();
     await expect(this.exportAsPDFModalTitle).toBeVisible();
     await expect(this.exportAsPDFModalButton).toBeVisible();
-    await this.exportAsPDFModalButton.click();
-    await this.page.waitForEvent('download');
+    await Promise.all([
+      this.page.waitForEvent('download'),
+      this.exportAsPDFModalButton.click(),
+    ]);
     await expect(this.exportAsPDFCompleteToastText).toBeVisible();
     await expect(this.page.getByText(`${numBoards} / ${numBoards}`)).toBeVisible();
   }
