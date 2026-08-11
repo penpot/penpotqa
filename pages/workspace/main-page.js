@@ -619,7 +619,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickMainMenuButton() {
-    await this.mainMenuButton.click();
+    await this.mainMenuButton.first().click();
     await expect(this.mainMenuList).toBeVisible();
   }
 
