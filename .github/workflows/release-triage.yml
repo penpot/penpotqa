@@ -5,6 +5,7 @@
 # Creates ONE Taiga user story tagged "release-<tag>" containing one task
 # per failure cluster. Re-running with the same tag adds only NEW clusters
 # to the SAME story (no duplicates) thanks to the per-release state file.
+# Tick close_only to sweep and close resolved tasks instead, without filing anything new.
 
 name: Report triage
 
@@ -18,18 +19,24 @@ on:
         description: 'Override: specific run id to triage (default: last scheduled daily run on main)'
         required: false
       group_by:
-        description: 'Task granularity inside the release story'
+        description: 'Task granularity inside the release story. folder: snapshot failures bundled per immediate parent folder (claimable per-folder for splitting snapshot-update work); functional bugs stay one-per-cluster'
         required: false
         default: 'cluster'
         type: choice
         options:
           - cluster
           - file
+          - folder
       epic_ref:
         description: 'Optional: Taiga epic ref (number only, e.g. 118) to link the story under'
         required: false
       reset_state:
         description: 'Reset this release tag: forget all previous triage state (delete the old story in Taiga yourself first)'
+        required: false
+        default: false
+        type: boolean
+      close_only:
+        description: 'Close-only sweep: close tasks whose error is no longer failing — files nothing new. Do not combine with reset_state.'
         required: false
         default: false
         type: boolean
@@ -43,6 +50,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: PRE # grants access to MATTERMOST_WEBHOOK_DAILY_REPORT (environment secret)
     steps:
+      - name: Reject reset_state + close_only together
+        if: ${{ inputs.reset_state == true && inputs.close_only == true }}
+        run: |
+          echo "reset_state wipes triage state right before close_only would need it to find what's resolved — pick one." >&2
+          exit 1
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
@@ -105,6 +118,11 @@ jobs:
 
       - name: Run report triage
         run: |
+          CLOSE_ONLY_FLAG=""
+          if [ "${{ inputs.close_only }}" = "true" ]; then
+            CLOSE_ONLY_FLAG="--close-only"
+            echo "Close-only sweep: closing resolved tasks, filing nothing new."
+          fi
           npx tsx scripts/triage.ts \
             --results results.json \
             --state .triage/state.json \
@@ -113,7 +131,8 @@ jobs:
             --epic-ref "${{ inputs.epic_ref }}" \
             --app-version "${{ steps.appver.outputs.version }}" \
             --run-id "${{ steps.report.outputs.run_id }}" \
-            --report-url "https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ steps.report.outputs.run_id }}/index.html"
+            --report-url "https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ steps.report.outputs.run_id }}/index.html" \
+            $CLOSE_ONLY_FLAG
         env:
           GITHUB_TOKEN: ${{ github.token }} # raises GitHub API rate limit for the app-repo changelog fetch
           # APP_REPO: penpot/penpot                            # default; override if the app repo moves

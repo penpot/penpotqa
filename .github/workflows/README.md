@@ -35,9 +35,9 @@ During **freeze week / release promotion**, once there's a scheduled daily PRE r
    - Parses the Playwright results and separates real failures from flaky tests (failed then passed on retry — flaky ones are counted in the digest but not filed).
    - **Clusters failures by root cause**, not by test: it normalizes each error message (strips timestamps, ids, line numbers, etc.) so the same underlying bug filed from different tests/runs hashes to the same cluster. Screenshot/visual-diff failures are clustered **strictly per spec file** instead — the error text (snapshot name, diff stats) is never part of that fingerprint, so every `toHaveScreenshot` failure in one file collapses into a single cluster/task no matter how many different diffs it covers.
    - Creates the release story in Taiga if it doesn't exist yet (subject `[release <tag>] Daily failures triage`, tagged `needs-triage` + `release-<tag>`, optionally linked under `epic_ref`).
-   - Adds **one task per new cluster** (or per file, if `group_by: file`) — see "What's in a task" below.
+   - Adds **one task per new cluster** (or per file with `group_by: file`, or per folder for screenshot failures with `group_by: folder` — functional bugs still get their own task) — see "What's in a task" below.
    - For clusters already known and still failing, comments on the story instead of creating a new task, so it doesn't spam duplicates.
-   - **Auto-closes tasks for clusters whose error is no longer seen in the next triaged run** — closed status, assigned to `qa.integrations.bot`, with a comment explaining why. If someone already closed the task manually (see "Triage convention" below), it just adds a verification comment instead. This tracks every task it creates (in both `group_by: cluster` and `group_by: file` mode) so nothing is silently un-closeable — see "Ad-hoc closing" below for sweeping a backlog or fixing a stray task by hand.
+   - **Auto-closes tasks for clusters whose error is no longer seen in the next triaged run** — closed status, assigned to `qa.integrations.bot`, with a comment explaining why. If someone already closed the task manually (see "Triage convention" below), it just adds a verification comment instead. This tracks every task it creates in all three `group_by` modes so nothing is silently un-closeable — see "Ad-hoc closing" below for sweeping a backlog or fixing a stray task by hand.
 5. **Saves the updated state** back to S3 so the next run knows what's open, closed, and how many consecutive runs each cluster has failed/passed. State is saved even if the run throws partway through (a Taiga hiccup, a network blip), so a failed run doesn't strand already-created tasks out of state and cause duplicates on the next run.
 6. **Posts a digest** (new clusters / still-failing clusters / resolved clusters, plus flaky count, run id, and app version) to the job summary and to Mattermost.
 
@@ -45,26 +45,37 @@ During **freeze week / release promotion**, once there's a scheduled daily PRE r
 
 ### Ad-hoc closing
 
-Two flags let you close resolved tasks without running (and filing) a full triage:
+Two ways to close resolved tasks without filing a full triage:
 
-- `--close-only` — runs the normal parse → cluster → detect-resolved pipeline but skips creating any new story/task; it only sweeps and closes tasks whose error is no longer present in the given `results.json`. Writes `.triage/digest.md` as usual (a trimmed version: what got closed, nothing about "new"/"known" since nothing was filed). Useful for clearing a backlog of resolved tasks on demand.
-- `--close-ref <taskRef> [--close-ref <taskRef> ...]` — force-closes specific Taiga tasks by their visible ref number (`#1234`), bypassing `results.json`/state entirely. Escape hatch for one-off closes or tasks that predate this tracking (e.g. old `group_by: file` tasks created before per-file tracking existed). Purely a manual CLI action: it does **not** write `.triage/digest.md` or post to Mattermost, so don't wire it into a step that `cat`s the digest afterward expecting fresh output.
+- **`close_only` workflow input** — tick it when running "Report triage" from the Actions tab. Runs the same pipeline (finds the report, pulls state) but skips creating any new story/task; it only sweeps and closes tasks whose error is no longer present in the given run. Do not combine with `reset_state` — the workflow rejects that combination outright, since resetting state right before a close-only sweep would wipe out the very data it needs to know what's resolved.
+- **`--close-ref <taskRef> [--close-ref <taskRef> ...]`** — CLI only (not wired into the workflow), force-closes specific Taiga tasks by their visible ref number (`#1234`), bypassing `results.json`/state entirely. Escape hatch for one-off closes or tasks that predate this tracking (e.g. old `group_by: file` tasks created before per-file tracking existed). Does **not** write `.triage/digest.md` or post to Mattermost.
+
+Running `--close-only` by hand from a checkout works the same way, with the same Taiga env vars as the scheduled workflow:
+
+```bash
+TAIGA_URL=... TAIGA_USERNAME=... TAIGA_PASSWORD=... TAIGA_PROJECT=... \
+  npx tsx scripts/triage.ts --results results.json --state .triage/state.json --close-only
+```
 
 ### Debugging a run
 
 Every run logs a one-line summary of its inputs (results path, state path, mode, run id, app version, flags) at the top of the job log. The run id of the `results.json` being triaged (the daily regression run, not the triage workflow's own run) is also stamped into the digest, Taiga story/task descriptions, and the Mattermost post, so it's always traceable back to its source without decoding the report URL.
 
+If the job log shows `⚠️ Fingerprint scheme changed since this state was last saved`, the script itself changed how it identifies a failure (e.g. a clustering fix) since the last run. To avoid mistaking "this failure's identity just changed" for "this is fixed," the run **skips auto-closing anything** that one time — still-failing clusters simply refile as "new" under their updated fingerprint, so dedupe the new task against the old one by hand. This self-resolves on the very next run; no action needed unless you also want to manually `--close-ref` any old entries you've confirmed are genuinely fixed (they're no longer auto-closeable once their fingerprint scheme is stale).
+
 ### What's in a task
 
 Each task represents one failure cluster and includes:
 
-- A one-line subject: the concise error + affected spec file(s) + test count, e.g. `expect(locator).toBeVisible() failed @ Cancel subscription — checkout.spec.ts (3 tests)`
+- A one-line subject: the first Qase ID among the cluster's tests (if any are tagged), then the concise error + affected spec file(s) + test count, e.g. `Qase 1234 — expect(locator).toBeVisible() failed @ Cancel subscription — checkout.spec.ts (3 tests)`
 - Spec files affected, and a **Qase IDs affected** summary line aggregating every Qase ID across the cluster's tests — including tests tagged with more than one ID (`qase([1234, 1235], ...)`), which are listed in full rather than truncated to the first
 - The full list of failing tests in that cluster, each with its own Qase ID(s) (if tagged) and retry count
 - The raw error for the cluster
 - The run id and a link to the full HTML report for the triaged run
 
 In `group_by: file` mode, tasks are per spec file instead, listing every failing test in that file (Qase IDs appear inline per test rather than as a separate summary line).
+
+In `group_by: folder` mode, **screenshot/visual-diff failures** are bundled into one task per immediate parent folder (e.g. `dashboard/`), listing every affected spec file and its failing tests underneath — meant to be claimed as one unit of work when a shared cause (a viewport or theme change, say) invalidates snapshots across many files at once, so the update work can be split by folder without people stepping on each other. Repeated runs append newly-diffing files to the same folder task rather than opening a new one. **Functional (non-screenshot) failures are unaffected** — they still get their own one-task-per-cluster treatment, since each is a distinct bug rather than part of a shared visual cause.
 
 ### Triage convention
 
@@ -79,9 +90,10 @@ In `group_by: file` mode, tasks are per spec file instead, listing every failing
 | --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `release_tag`   | ✅       | e.g. `2.17`. Taiga story gets tagged `release-2.17`.                                                                                               |
 | `report_run_id` | ❌       | Only set if you want to triage a specific run instead of the latest scheduled daily run.                                                           |
-| `group_by`      | ❌       | `cluster` (default) or `file` — controls task granularity in the story.                                                                            |
+| `group_by`      | ❌       | `cluster` (default), `file`, or `folder` — controls task granularity in the story. See "What's in a task" for what `folder` mode does.             |
 | `epic_ref`      | ❌       | Taiga epic number to link the story under.                                                                                                         |
 | `reset_state`   | ❌       | `true` to forget all prior triage state for this tag (treats every failure as new). **Delete the old Taiga story yourself first** if you use this. |
+| `close_only`    | ❌       | `true` to sweep and close resolved tasks only — files nothing new. Cannot be combined with `reset_state` (the run fails fast if both are ticked).  |
 
 ### Good to know
 
