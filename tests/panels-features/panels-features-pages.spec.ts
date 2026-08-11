@@ -208,6 +208,7 @@ mainTest(
       await pagesPanelPage.clickAddPageButton();
       await mainPage.waitForChangeIsSaved();
       await pagesPanelPage.clickOnPageOnLayersPanel(2);
+      await mainPage.waitForChangeIsSaved();
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.dragComponentOnCanvas(100, 100);
