@@ -81,7 +81,6 @@ mainTest(qase([1345], 'Restore main component from context menu'), async () => {
     'Verify restored component is visible in assets tab',
     async () => {
       await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.isComponentVisibleInAssetsTab('Rectangle');
     },
   );
