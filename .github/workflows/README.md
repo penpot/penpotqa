@@ -61,11 +61,13 @@ TAIGA_URL=... TAIGA_USERNAME=... TAIGA_PASSWORD=... TAIGA_PROJECT=... \
 
 Every run logs a one-line summary of its inputs (results path, state path, mode, run id, app version, flags) at the top of the job log. The run id of the `results.json` being triaged (the daily regression run, not the triage workflow's own run) is also stamped into the digest, Taiga story/task descriptions, and the Mattermost post, so it's always traceable back to its source without decoding the report URL.
 
+If the job log shows `⚠️ Fingerprint scheme changed since this state was last saved`, the script itself changed how it identifies a failure (e.g. a clustering fix) since the last run. To avoid mistaking "this failure's identity just changed" for "this is fixed," the run **skips auto-closing anything** that one time — still-failing clusters simply refile as "new" under their updated fingerprint, so dedupe the new task against the old one by hand. This self-resolves on the very next run; no action needed unless you also want to manually `--close-ref` any old entries you've confirmed are genuinely fixed (they're no longer auto-closeable once their fingerprint scheme is stale).
+
 ### What's in a task
 
 Each task represents one failure cluster and includes:
 
-- A one-line subject: the concise error + affected spec file(s) + test count, e.g. `expect(locator).toBeVisible() failed @ Cancel subscription — checkout.spec.ts (3 tests)`
+- A one-line subject: the first Qase ID among the cluster's tests (if any are tagged), then the concise error + affected spec file(s) + test count, e.g. `Qase 1234 — expect(locator).toBeVisible() failed @ Cancel subscription — checkout.spec.ts (3 tests)`
 - Spec files affected, and a **Qase IDs affected** summary line aggregating every Qase ID across the cluster's tests — including tests tagged with more than one ID (`qase([1234, 1235], ...)`), which are listed in full rather than truncated to the first
 - The full list of failing tests in that cluster, each with its own Qase ID(s) (if tagged) and retry count
 - The raw error for the cluster
