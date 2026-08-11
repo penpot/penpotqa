@@ -208,16 +208,18 @@ mainTest(
       await pagesPanelPage.clickAddPageButton();
       await mainPage.waitForChangeIsSaved();
       await pagesPanelPage.clickOnPageOnLayersPanel(2);
+      await mainPage.waitForChangeIsSaved();
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.dragComponentOnCanvas(100, 100);
-      await layersPanelPage.openLayersTab();
       await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.openLayersTab();
     });
 
     await mainTest.step('Edit component and reset overrides', async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
       await designPanelPage.changeHeightAndWidthForLayer('100', '150');
+      await mainPage.waitForChangeIsSaved();
       await basePage.resetOverridesViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await expect(mainPage.viewport).toHaveScreenshot(
@@ -249,8 +251,8 @@ mainTest(
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.dragComponentOnCanvas(500, 500);
-      await layersPanelPage.openLayersTab();
       await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.openLayersTab();
     });
 
     await mainTest.step(
@@ -259,10 +261,10 @@ mainTest(
         await layersPanelPage.clickCopyComponentOnLayersTab();
         await designPanelPage.clickComponentFillColorIcon();
         await designPanelPage.setComponentColor('#243E8E');
+        await mainPage.waitForChangeIsSaved();
         await layersPanelPage.clickCopyComponentOnLayersTab();
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.updateMainComponentViaRightClick();
-        await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
       },
     );
@@ -331,12 +333,12 @@ mainTest(
           `Drag-and-drop the separator page after Page 2, to have: Page 1 > Page 2 > --- > Page 3`,
           async () => {
             await pagesPanelPage.dragSeparatorWithIndexBeyondPage(0, 'Page 2');
-
+            await mainPage.waitForChangeIsSaved();
+            await pagesPanelPage.checkNamedPagesCountIs(3);
+            await pagesPanelPage.checkSeparatorPagesCountIs(1);
             await expect(pagesPanelPage.pagesBlock).toHaveScreenshot(
               'separator-between-two-pages.png',
             );
-            await pagesPanelPage.checkNamedPagesCountIs(3);
-            await pagesPanelPage.checkSeparatorPagesCountIs(1);
           },
         );
 
