@@ -77,7 +77,7 @@ mainTest.describe('As Owner', () => {
           await deletedPage.isEmptyTrashMessageVisible();
 
           await dashboardPage.openSidebarItem('Projects');
-          await dashboardPage.isFilePresent(fileName);
+          await dashboardPage.isFilePresentWithName(fileName);
         },
       );
     },
@@ -178,7 +178,7 @@ mainTest.describe('As Editor', () => {
           await dashboardPage.isRestoreAlertMessageVisible(fileName);
 
           await dashboardPage.openSidebarItem('Projects');
-          await dashboardPage.isFilePresent(fileName);
+          await dashboardPage.isFilePresentWithName(fileName);
         },
       );
 

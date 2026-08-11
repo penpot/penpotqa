@@ -47,7 +47,7 @@ mainTest.describe(() => {
     await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
     await dashboardPage.isSharedLibraryIconDisplayed();
     await dashboardPage.openSidebarItem('Libraries');
-    await dashboardPage.isFilePresent('New File 1');
+    await dashboardPage.isFilePresentWithName('New File 1');
     await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
       'empty-library.png',
     );
@@ -66,7 +66,7 @@ mainTest.describe(() => {
       await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
       await dashboardPage.isSharedLibraryIconDisplayed();
       await dashboardPage.openSidebarItem('Libraries');
-      await dashboardPage.isFilePresent('New File 1');
+      await dashboardPage.isFilePresentWithName('New File 1');
       await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
         'library-text-component-added.png',
       );
@@ -82,7 +82,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickPencilBoxButton();
       await dashboardPage.openSidebarItem('Libraries');
-      await dashboardPage.isFilePresent('New File 1');
+      await dashboardPage.isFilePresentWithName('New File 1');
       await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
         'library-text-component-changed-color.png',
       );
@@ -95,7 +95,7 @@ mainTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickPencilBoxButton();
       await dashboardPage.openSidebarItem('Libraries');
-      await dashboardPage.isFilePresent('New File 1');
+      await dashboardPage.isFilePresentWithName('New File 1');
       await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
         'library-text-component-deleted.png',
       );
@@ -108,12 +108,12 @@ mainTest.describe(() => {
       await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
       await dashboardPage.isSharedLibraryIconDisplayed();
       await dashboardPage.openSidebarItem('Libraries');
-      await dashboardPage.isFilePresent('New File 1');
+      await dashboardPage.isFilePresentWithName('New File 1');
     });
 
     mainTest(qase(1057, 'Rename file from Libraries tab'), async () => {
-      await dashboardPage.renameFile('Renamed Test File');
-      await dashboardPage.isFilePresent('Renamed Test File');
+      await dashboardPage.renameFile('New File 1', 'Renamed Test File');
+      await dashboardPage.isFilePresentWithName('Renamed Test File');
     });
 
     mainTest(qase(1058, 'Duplicate file from Libraries tab'), async () => {

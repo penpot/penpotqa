@@ -57,7 +57,9 @@ mainTest(qase([2221], 'Import .penpot file with tokens'), async () => {
     await dashboardPage.importFileFromProjectPage(
       'documents/penpot-file-with-tokens.penpot',
     );
-    await dashboardPage.isFilePresent('⚙️ Design Tokens Starter Set | Edited');
+    await dashboardPage.isFilePresentWithName(
+      '⚙️ Design Tokens Starter Set | Edited',
+    );
     await dashboardPage.openFileWithName('⚙️ Design Tokens Starter Set | Edited');
     await mainPage.isMainPageLoaded();
     await tokensPage.clickTokensTab();
@@ -276,7 +278,7 @@ mainTest(qase([2845], 'Import Tokens from Linked Library'), async () => {
     async () => {
       await dashboardPage.openSidebarItem('Drafts');
       await dashboardPage.importFileFromProjectPage(linkedLibraryFilePath);
-      await dashboardPage.isFilePresent(linkedLibraryName);
+      await dashboardPage.isFilePresentWithName(linkedLibraryName);
     },
   );
 

@@ -430,10 +430,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.numberOfFilesText.first()).toHaveText(numberOfFiles);
   }
 
-  async renameFile(newFileName, byRightClick = true) {
-    let text = await this.fileNameTitle.textContent();
+  async renameFile(oldFileName, newFileName, byRightClick = true) {
+    const fileTitle = this.page.getByRole('button', { name: oldFileName }).first();
+    let text = await fileTitle.textContent();
+
     if (byRightClick) {
-      await this.fileTile.click({ button: 'right' });
+      await fileTitle.click({ button: 'right' });
     } else {
       await this.clickOnFileOptions();
     }
@@ -444,11 +446,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     }
     await this.fileNameInput.pressSequentially(newFileName);
     await this.page.keyboard.press('Enter');
-    await this.isFilePresent(newFileName);
+    await this.isFilePresentWithName(newFileName);
   }
 
-  async isFilePresent(fileName) {
-    await expect(this.fileNameTitle).toHaveText(fileName);
+  async isFilePresentWithName(fileName) {
+    const fileNameTitle = this.page
+      .getByRole('button', { name: fileName })
+      .locator(`div[class*="item-info"] h3`);
+    await expect(fileNameTitle).toHaveText(fileName);
   }
 
   async isFileNotVisible(fileName) {
@@ -974,27 +979,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await elem.click({ button: 'right' });
     await this.addFileAsSharedLibraryMenuItem.click();
     await this.addFileAsSharedLibraryButton.click();
-  }
-
-  async isFilePresentWithName(fileName) {
-    const fileNameTitle = this.page
-      .getByRole('button', { name: fileName })
-      .locator(`div[class*="item-info"] h3`);
-    await expect(fileNameTitle).toHaveText(fileName);
-  }
-
-  async renameFileWithNameViaRightClick(oldFileName, newFileName) {
-    const fileTitle = this.page.getByRole('button', { name: oldFileName }).first();
-    let text = await fileTitle.textContent();
-    await fileTitle.click({ button: 'right' });
-    await this.renameFileMenuItem.click();
-    await this.fileNameInput.click();
-    for (let i = 0; i <= text.length; i++) {
-      await this.page.keyboard.press('Backspace');
-    }
-    await this.fileNameInput.pressSequentially(newFileName);
-    await this.page.keyboard.press('Enter');
-    await this.isFilePresentWithName(newFileName);
   }
 
   async clickOnOnboardingContinueBtn() {

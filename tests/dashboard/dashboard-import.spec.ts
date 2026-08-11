@@ -25,7 +25,7 @@ mainTest.beforeEach(async ({ page }) => {
 mainTest(qase(71, 'Import file to Drafts .penpot'), async () => {
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage('documents/QA test file v1.penpot');
-  await dashboardPage.isFilePresent('QA test file v1');
+  await dashboardPage.isFilePresentWithName('QA test file v1');
 });
 
 mainTest(qase(1145, 'Import file to project - fail invalid format'), async () => {
@@ -38,7 +38,7 @@ mainTest(qase(1919, 'Import file to project - new .penpot format'), async () => 
   await dashboardPage.setProjectName('Test Project');
   await dashboardPage.isProjectTitleDisplayed('Test Project');
   await dashboardPage.importFile('documents/QA new test file.penpot');
-  await dashboardPage.isFilePresent('QA new test file');
+  await dashboardPage.isFilePresentWithName('QA new test file');
 });
 
 mainTest(qase(2091, 'Import library from the web (by URL)'), async () => {
@@ -50,7 +50,7 @@ mainTest(qase(2091, 'Import library from the web (by URL)'), async () => {
     useLibraryInPenpotURL + penpotFilesURL + libraryFileName,
   );
   await dashboardPage.confirmFileImport();
-  await dashboardPage.isFilePresent('tutorial-for-beginners v.2.0');
+  await dashboardPage.isFilePresentWithName('tutorial-for-beginners v.2.0');
 });
 
 mainTest(qase(2239, 'Import file to project - file upload error'), async () => {
