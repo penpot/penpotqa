@@ -260,7 +260,7 @@ mainTest(
     await mainTest.step('Import penpot file and open Tokens panel', async () => {
       await dashboardPage.openSidebarItem('Drafts');
       await dashboardPage.importFileFromProjectPage('documents/2721.penpot');
-      await dashboardPage.isFilePresent(importedFileName);
+      await dashboardPage.isFilePresentWithName(importedFileName);
       await dashboardPage.openFileWithName(importedFileName);
       await tokensPage.clickTokensTab();
     });

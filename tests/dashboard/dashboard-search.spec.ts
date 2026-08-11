@@ -25,9 +25,9 @@ mainTest.beforeEach(async ({ page }) => {
 mainTest(qase(1148, 'Search file from Drafts'), async () => {
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.clickPencilBoxButton();
-  await dashboardPage.renameFile('qwe');
+  await dashboardPage.renameFile('New File 1', 'qwe');
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.search('qwe');
   await dashboardPage.isHeaderDisplayed('Search results');
-  await dashboardPage.isFilePresent('qwe');
+  await dashboardPage.isFilePresentWithName('qwe');
 });

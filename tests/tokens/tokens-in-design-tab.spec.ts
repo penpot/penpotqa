@@ -211,7 +211,7 @@ mainTest.describe('Numeric inputs', () => {
       await dashboardPage.importFileFromProjectPage(
         'documents/num-inputs-in-set-themes.penpot',
       );
-      await dashboardPage.isFilePresent('num inputs in set/themes');
+      await dashboardPage.isFilePresentWithName('num inputs in set/themes');
       await dashboardPage.openFileWithName('num inputs in set/themes');
       await mainPage.isMainPageLoaded();
       await layersPanelPage.selectLayerByName('Rectangle');
