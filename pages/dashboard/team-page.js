@@ -49,6 +49,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.membersMenuItem = page.getByRole('menuitem', { name: 'Members' });
 
     //Invitations
+    this.teamModalContainer = page.locator(
+      '.main_ui_dashboard_team__modal-team-container',
+    );
     this.invitationsMenuItem = page.getByRole('menuitem', { name: 'Invitations' });
     this.inviteMembersToTeamButton = page.getByTestId('invite-member');
     this.inviteMembersPopUpHeader = page.getByRole('heading', {
@@ -115,7 +118,6 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.requestAccessDialog = page.locator('.main_ui_static__dialog').first();
     this.requestAccessButton = page.getByRole('button', { name: 'REQUEST ACCESS' });
     this.returnHomeButton = page.getByRole('button', { name: 'GO TO YOUR PENPOT' });
-    this.firstInvitedEmail = page.locator('span[class*="forms__text"]').first();
     this.requestSentCorrectlyText = this.requestAccessDialog.getByText(
       'Your request has been sent correctly!',
     );
@@ -606,7 +608,9 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async checkFirstInvitedEmail(email) {
-    await expect(this.firstInvitedEmail).toHaveText(email);
+    await expect(
+      this.teamModalContainer.getByText(email, { exact: true }),
+    ).toBeVisible();
   }
 
   async waitForInvitationButtonEnabled(timeout) {
