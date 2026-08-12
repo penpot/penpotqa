@@ -61,7 +61,6 @@ async function setupViewerUser(
 
   // Create team & file
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.waitForViewportVisible();
   await mainPage.createDefaultRectangleByCoordinates(200, 300);

@@ -31,7 +31,6 @@ mainTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
 
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 

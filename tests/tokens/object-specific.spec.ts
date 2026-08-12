@@ -18,7 +18,6 @@ mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 

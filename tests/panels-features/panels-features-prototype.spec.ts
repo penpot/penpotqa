@@ -23,7 +23,6 @@ mainTest.beforeEach(async ({ page }) => {
   prototypePanelPage = new PrototypePanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();

@@ -154,6 +154,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.teamNameInput.fill(teamName);
     await this.createNewTeamButton.click();
     await this.waitForCreateNewTeamButtonToBeHidden(30000);
+    await this.isTeamSelected(teamName);
   }
 
   async isTeamSelected(teamName) {

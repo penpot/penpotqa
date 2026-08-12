@@ -33,7 +33,6 @@ mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
     await initPages({ page });
 
     await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
   });
@@ -139,7 +138,6 @@ mainTest(
       `Create a team, and invite "${firstEmail}" to the team as Admin`,
       async () => {
         await teamPage.createTeam(team);
-        await teamPage.isTeamSelected(team);
 
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
@@ -190,7 +188,6 @@ mainTest(
 
     await mainTest.step(`Create a team and a file`, async () => {
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
 
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.isMainPageLoaded();
@@ -220,7 +217,6 @@ mainTest(
 
     await mainTest.step(`Create a team and a file with a board`, async () => {
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
 
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.isMainPageLoaded();

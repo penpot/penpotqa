@@ -24,7 +24,6 @@ mainTest.beforeEach('Create a team and a new file', async ({ page }) => {
   mainPage = new MainPage(page);
 
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();

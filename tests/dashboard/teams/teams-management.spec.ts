@@ -17,9 +17,7 @@ mainTest(qase([1163], 'Team.Switch between teams'), async () => {
 
   await mainTest.step('Create two teams and switch between them', async () => {
     await teamPage.createTeam(team1);
-    await teamPage.isTeamSelected(team1);
     await teamPage.createTeam(team2);
-    await teamPage.isTeamSelected(team2);
     await teamPage.switchTeam(team1);
     await teamPage.switchTeam(team2);
   });

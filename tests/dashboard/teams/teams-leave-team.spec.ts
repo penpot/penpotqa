@@ -42,7 +42,6 @@ async function setupInvitedUser(
 
   // Create team
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
 
   // Send invite
   await teamPage.openInvitationsPageViaOptionsMenu();

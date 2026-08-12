@@ -49,7 +49,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
 
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
       await teamPage.selectInvitationRoleInPopUp('Admin');
@@ -100,7 +99,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const secondEmail = `${process.env.GMAIL_NAME}+${secondUser}${process.env.GMAIL_DOMAIN}`;
 
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
       await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -165,7 +163,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
       await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -249,7 +246,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
       await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -316,7 +312,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
       await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -357,7 +352,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
       await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -404,7 +398,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
       await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -456,7 +449,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
       await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -519,7 +511,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
       await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -588,7 +579,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
       await teamPage.isInviteMembersPopUpHeaderVisible();
