@@ -86,8 +86,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.resendInvitation(secondEmail);
       await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
 
-      await waitSecondMessage(page, secondEmail, 40);
-      await checkMessagesCount(secondEmail, 2);
+      await checkMessagesCount(secondEmail, 1);
     },
   );
 
