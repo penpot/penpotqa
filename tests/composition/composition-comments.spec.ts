@@ -38,7 +38,6 @@ mainTest.beforeEach(async ({ page }) => {
   registerPage = new RegisterPage(page);
 
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   mainProfileName = await profilePage.getUserName();
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();

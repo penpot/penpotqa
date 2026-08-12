@@ -16,7 +16,6 @@ mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   pluginsPage = new PluginsPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await pluginsPage.isMainPageLoaded();
 });

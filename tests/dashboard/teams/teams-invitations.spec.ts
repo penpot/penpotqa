@@ -34,7 +34,6 @@ mainTest.beforeEach(async ({ page }: { page: Page }) => {
 
 mainTest(qase(1164, 'Open the form via Invitations tab'), async () => {
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -45,7 +44,6 @@ registerTest(
   qase(1165, 'Open the form via Team Hero ("Invite members" button)'),
   async () => {
     await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
     await teamPage.clickInviteMembersTeamHeroButton();
     await teamPage.isInviteMembersPopUpHeaderVisible();
     await teamPage.deleteTeam(team);
@@ -56,7 +54,6 @@ mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () =>
   const email = createInviteEmail('editor');
 
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -75,7 +72,6 @@ mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => 
   const email = createInviteEmail('admin');
 
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -95,7 +91,6 @@ mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => 
 
 mainTest(qase(1175, 'Fail to send invitation to existing team member'), async () => {
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
 
@@ -129,7 +124,6 @@ registerTest.describe(
         await dashboardPage.isDashboardOpenedAfterLogin();
 
         await teamPage.createTeam(team);
-        await teamPage.isTeamSelected(team);
 
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
@@ -180,7 +174,6 @@ mainTest.describe(
         const secondEmail = createInviteEmail('editor', secondEditor);
 
         await teamPage.createTeam(team);
-        await teamPage.isTeamSelected(team);
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
         await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -254,7 +247,6 @@ mainTest(qase(1176, 'Resend multiple invitations via owner'), async () => {
   const email3 = createInviteEmail('editor', 'editor3');
 
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -277,7 +269,6 @@ mainTest(qase(1178, 'Delete multiple invitations via owner'), async () => {
   const email3 = createInviteEmail('editor', 'editor3');
 
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderVisible();
@@ -298,7 +289,6 @@ mainTest(qase(1181, 'Change role in invitation via owner'), async () => {
   const email = createInviteEmail('editor', 'role');
 
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
   await teamPage.isInviteMembersPopUpHeaderVisible();

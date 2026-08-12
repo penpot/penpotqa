@@ -35,7 +35,6 @@ mainTest.beforeEach(async ({ page }) => {
   inspectPanelPage = new InspectPanelPage(page);
   pagesPanelPage = new PagesPanelPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();

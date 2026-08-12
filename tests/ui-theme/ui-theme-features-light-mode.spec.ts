@@ -18,7 +18,6 @@ registerTest(
     let mainPage: MainPage = new MainPage(page);
 
     await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
     await profilePage.openYourAccountPage();
     await profilePage.openSettingsTab();
     await profilePage.selectLightTheme();

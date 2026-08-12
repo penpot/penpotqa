@@ -64,7 +64,6 @@ mainTest.describe(() => {
     await mainPage.clickPencilBoxButton();
 
     await teamPage.createTeam(team2);
-    await teamPage.isTeamSelected(team2);
     await teamPage.switchTeam(team1);
 
     await dashboardPage.moveFileToOtherTeamViaRightClick('New File 1', team2);

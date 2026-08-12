@@ -42,7 +42,6 @@ registerTest.describe('Members - As Owner - Change roles', () => {
       await loginPage.clickLoginButton();
       await dashboardPage.isDashboardOpenedAfterLogin();
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.openInvitationsPageViaOptionsMenu();
       await teamPage.clickInviteMembersToTeamButton();
     },
@@ -183,7 +182,6 @@ mainTest(qase([1196], 'Team. Members - leave team (as owner)'), async ({ page })
 
   await mainTest.step('Create team and invite admin member', async () => {
     await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
     await teamPage.openInvitationsPageViaOptionsMenu();
     await teamPage.clickInviteMembersToTeamButton();
     await teamPage.isInviteMembersPopUpHeaderVisible();

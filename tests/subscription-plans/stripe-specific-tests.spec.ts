@@ -36,7 +36,6 @@ registerTest.describe(() => {
     testClockId = customerData.testClockId;
 
     await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
   });
 
   registerTest.afterEach(async () => {

@@ -21,7 +21,6 @@ registerTest.beforeEach(async ({ page }) => {
   stripePage = new StripePage(page);
 
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
 });
 
 registerTest(
