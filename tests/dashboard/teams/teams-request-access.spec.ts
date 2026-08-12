@@ -120,7 +120,7 @@ registerTest(
 
     // Login as SECOND_EMAIL and navigate to URL
     await profilePage.logout();
-    await loginAs(setup, secondAccountEmail);
+    await loginAs(setup, secondAccountEmail!);
     await page.goto(currentURL);
 
     // Request access as SECOND_EMAIL from dialog and return home
@@ -173,7 +173,7 @@ registerTest(
 
     // Login as SECOND_EMAIL and navigate to Dashboard URL
     await profilePage.logout();
-    await loginAs(setup, secondAccountEmail);
+    await loginAs(setup, secondAccountEmail!);
     await page.goto(currentURL);
 
     // Request access as SECOND_EMAIL from dialog and return home
@@ -218,7 +218,7 @@ registerTest(
 
     // Login as SECOND_EMAIL
     await profilePage.logout();
-    await loginAs(setup, secondAccountEmail);
+    await loginAs(setup, secondAccountEmail!);
 
     // Navigate to Workspace URL
     await page.goto(currentURL);
@@ -274,8 +274,23 @@ registerTest(
     await profilePage.logout();
 
     // Login as SECOND_EMAIL
-    await loginAs(setup, secondAccountEmail);
-    await page.goto(currentURL);
+    await loginAs(setup, secondAccountEmail!);
+
+    // Navigate to View Mode URL
+    // Wait for the specific responses to occur, but don't fail if they don't happen
+    await Promise.all([
+      page.waitForResponse(
+        (response) =>
+          response.url().includes('get-view-only-bundle') &&
+          response.status() === 404,
+      ),
+      page.waitForResponse(
+        (response) =>
+          response.url().includes('get-file-info') && response.status() === 404,
+      ),
+    ]).catch(() => {});
+
+    await page.goto(currentURL, { waitUntil: 'networkidle' });
 
     // Request access as SECOND_EMAIL from dialog and return home
     await teamPage.isRequestFileAccessDialogVisible();

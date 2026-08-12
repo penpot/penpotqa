@@ -433,8 +433,8 @@ mainTest(qase([705], 'Edit file'), async ({ page }) => {
       await page.close();
       await viewModePage.clickEditButton();
       const oldPage = await viewModePage.clickEditButton(false);
-      mainPage = new MainPage(oldPage);
-      teamPage = new TeamPage(oldPage);
+      mainPage = new MainPage(oldPage!);
+      teamPage = new TeamPage(oldPage!);
       await mainPage.waitForViewportVisible();
     },
   );
