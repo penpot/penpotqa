@@ -94,6 +94,19 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await designPanelPage.changeAxisXAndYForLayer('50', '400');
+
+    // These tests verify propagation of changes from the main component to its
+    // component copies and they all start by selecting the main component.
+    // But selecting it by a direct click from the layers panel isn't enough to
+    // retarget Penpot's edit state after the last edit operation on the copy.
+    // Clicking on "Clip content" twice is a harmless no-op edit (no children,
+    // no visual effect) to force that edit state onto the main component.
+    await layersPanelPage.clickMainComponentOnLayersTab();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickOnClipContentButton();
+    await mainPage.waitForChangeIsSaved();
+    await designPanelPage.clickOnClipContentButton();
+    await mainPage.waitForChangeIsSaved();
   });
 
   mainTest(
@@ -177,7 +190,9 @@ mainTest.describe(() => {
     async () => {
       await mainTest.step('Add blur to main component', async () => {
         await layersPanelPage.clickMainComponentOnLayersTab();
+        await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickAddBlurButton();
+        await mainPage.waitForChangeIsUnsaved(30000);
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.clickMainComponentOnLayersTab();
         await mainPage.clickViewportByCoordinates(1000, 200, 2);
