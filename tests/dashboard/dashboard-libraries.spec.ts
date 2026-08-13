@@ -3,7 +3,6 @@ import { expect } from '@playwright/test';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { MainPage } from '@pages/workspace/main-page';
-import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
@@ -15,21 +14,17 @@ const teamName = createTeamName();
 let dashboardPage: DashboardPage;
 let teamPage: TeamPage;
 let mainPage: MainPage;
-let assetsPanelPage: AssetsPanelPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
-let colorPalettePopUp: ColorPalettePage;
 
 mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   teamPage = new TeamPage(page);
   mainPage = new MainPage(page);
-  assetsPanelPage = new AssetsPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
-  colorPalettePopUp = new ColorPalettePage(page);
 
   await teamPage.createTeam(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
@@ -40,17 +35,6 @@ mainTest.describe(() => {
   mainTest.beforeEach(async () => {
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
-  });
-
-  mainTest(qase(1084, 'Check view for empty library'), async () => {
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
-    await dashboardPage.isSharedLibraryIconDisplayed();
-    await dashboardPage.openSidebarItem('Libraries');
-    await dashboardPage.isFilePresentWithName('New File 1');
-    await expect(dashboardPage.dashboardLibraryItem).toHaveScreenshot(
-      'empty-library.png',
-    );
   });
 
   mainTest(

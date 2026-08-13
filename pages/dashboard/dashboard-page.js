@@ -23,9 +23,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.numberOfFilesText = page.locator(
       'div[class*="project-name-wrapper"] span[class*="projects__info"]',
     );
-    this.fileTile = page.locator(
-      'div[class*="dashboard-grid"] div[class*="grid-item-th"]',
-    );
+    this.fileTile = this.dashboardFilesGrid.getByRole('button');
     this.fileNameTitle = page.locator('div[class*="item-info"] h3');
     this.deleteFileMenuItem = page.getByTestId('file-delete');
     this.deleteFileButton = page.getByRole('button', { name: 'Delete file' });
@@ -67,9 +65,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       name: 'Drafts',
       exact: true,
     });
-    this.dashboardLibraryItem = page
-      .getByRole('button', { name: 'New File 1' })
-      .locator(`div[class*="dashboard_grid__library"]`);
+    this.dashboardLibraryItem = this.dashboardFilesGrid
+      .getByRole('button')
+      .locator('.main_ui_dashboard_grid__library-thumbnail');
     this.downloadFilePenpotMenuItem = page.getByTestId('download-binary-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
     this.downloadFileTickIcon = page.locator('use[href="#icon-tick"]');
@@ -312,7 +310,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async deleteFileViaRightclick() {
-    await this.fileTile.click({ button: 'right' });
+    await this.fileTile.first().click({ button: 'right' });
     await this.deleteFileMenuItem.click();
     await this.confirmDeleteFile();
   }
@@ -471,7 +469,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async addFileAsSharedLibraryViaRightclick() {
-    await this.fileTile.click({ button: 'right' });
+    await this.fileTile.first().click({ button: 'right' });
     await this.addFileAsSharedLibraryMenuItem.click();
     await this.addFileAsSharedLibraryButton.click();
   }
@@ -489,7 +487,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async deleteFileAsSharedLibraryViaRightclick() {
-    await this.fileTile.click({ button: 'right' });
+    await this.fileTile.first().click({ button: 'right' });
     await this.delFileAsSharedLibraryMenuItem.click();
     await this.delFileAsSharedLibraryButton.click();
   }
@@ -532,7 +530,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async downloadFileViaRightClick() {
-    await this.fileTile.click({ button: 'right' });
+    await this.fileTile.first().click({ button: 'right' });
 
     await Promise.all([
       this.page.waitForEvent('download'),
@@ -842,7 +840,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async openFile() {
-    await this.fileTile.dblclick();
+    await this.fileTile.first().dblclick();
   }
 
   async importFileProcessingSuccess(file) {
