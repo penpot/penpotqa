@@ -484,27 +484,21 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   /**
    * This method clicks on a layer option via right click for a given layer name and index.
    *
-   * Allowed options (resolved as `*Option` then `*MenuItem`) are:
-   *   'copy', 'cut', 'paste', 'delete', 'duplicate', 'rename',
-   *   'detachInstance', 'showMainComponent', 'resetOverrides',
-   *   'showInAssetsPanel', 'createAnnotation',
-   *   'createComponent', 'updateMainComponent', 'restoreMainComponent',
-   *   'createMultipleComponents', 'createVariant', 'restoreVariant',
-   *   'hide', 'show', 'focusOnLayer', 'transformToPath', 'selectionToBoard',
-   *   'flipVertical', 'flipHorizontal', 'editPath', 'deleteLayer'
    * @param {string} layerName Name of the layer
-   * @param {string} option Name of the option to click
+   * @param {string} optionText Display text of the option to click
    * @param {number} index Index of the layer (for multiple layers with the same name)
    */
-  async clickOnLayerOptionViaRightClickForLayer(layerName, option, index = 0) {
+  async clickOnLayerOptionViaRightClickForLayer(layerName, optionText, index = 0) {
     const layerSel = this.page.locator('#layers').getByText(layerName);
     await layerSel.nth(index).click({
       button: 'right',
       force: true,
     });
-    const locator = this[`${option}Option`] ?? this[`${option}MenuItem`];
-    if (!locator) throw new Error(`No locator found for option: "${option}"`);
-    await locator.click();
+
+    await this.page
+      .getByRole('listitem')
+      .getByText(optionText, { exact: true })
+      .click();
   }
 
   async selectLayerByName(layerName) {
