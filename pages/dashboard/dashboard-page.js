@@ -12,6 +12,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.addProjectButton = page.getByRole('button', { name: 'New project' });
     this.alertMessage = page.getByRole('alert');
 
+    // Dashboard Header > Layout View
+    this.layoutListViewButton = page.getByRole('button', { name: 'List view' });
+    this.layoutGridViewButton = page.getByRole('button', { name: 'Grid view' });
+
     // Deleted Navigation
     this.recentTab = page.getByTestId('recent-tab');
     this.deletedTab = page.getByTestId('deleted-tab');
@@ -75,12 +79,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .getByRole('button', { name: 'Close' })
       .getByText('Close', { exact: true });
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
-    this.fileOptionsMenuButton = page
-      .locator('li[class*="grid-item"]')
+    this.fileOptionsMenuButton = this.fileTile
+      .first()
       .getByRole('button', { name: 'Options' });
+    this.fileOptionsMenu = page.getByRole('menu');
     this.headerOptionsMenuButton = page.locator(
       'div[title="Options"] svg[class*="files__menu-icon"]',
     );
+    this.dashboardFilesItemDate = page.locator('[class*="list-item-date"]');
 
     // Projects Section
     this.projectsContainer = page.locator(
@@ -932,7 +938,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isFileVisibleByName(name) {
     const elem = this.page.getByRole('button', { name: name });
-    await expect(elem.first()).toBeVisible();
+    await expect(
+      elem.first(),
+      `File with name ${name} should be visible`,
+    ).toBeVisible();
   }
 
   async deleteFileWithNameViaRightClick(name) {
@@ -1437,5 +1446,41 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     }
 
     await this.page.keyboard.up('Shift');
+  }
+
+  // Layout view option is saved per browser session and across teams
+  async switchLayoutView(viewType) {
+    switch (viewType) {
+      case 'List View':
+        await this.layoutListViewButton.click();
+        break;
+      case 'Grid View':
+        await this.layoutGridViewButton.click();
+        break;
+    }
+  }
+
+  async hasFileTileListClass() {
+    await expect(this.fileTile.first(), `File item has list view class`).toHaveClass(
+      /list-item/,
+    );
+  }
+
+  async isFileItemDateVisible() {
+    await expect(
+      this.dashboardFilesItemDate.first(),
+      `File item date is visible`,
+    ).toBeVisible();
+  }
+
+  async isFileOptionsMenuButtonVisible() {
+    await expect(
+      this.fileOptionsMenuButton,
+      `File options menu button is visible`,
+    ).toBeVisible();
+  }
+
+  async isFileOptionsMenuVisible() {
+    await expect(this.fileOptionsMenu, `File options menu is visible`).toBeVisible();
   }
 };
