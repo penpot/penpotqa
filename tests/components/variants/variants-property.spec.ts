@@ -162,6 +162,7 @@ mainTest.describe(() => {
     await layersPanelPage.selectLayerByName('Ellipse, Green');
     await designPanelPage.clickOnComponentMenuButton();
     await designPanelPage.clickOnAddNewPropertyOption();
+    await assetsPanelPage.waitForChangeIsSaved();
     await layersPanelPage.selectLayerByName('Arrow, Blue, Value 1');
     await designPanelPage.checkVariantPropertyValue('Property 3', 'Value 1');
 
@@ -169,10 +170,12 @@ mainTest.describe(() => {
     await layersPanelPage.typeNameCreatedLayerAndEnter(
       'Property 1=Rectangle, Property 2=Blue, Property 3=Value 1, Test=TestValue',
     );
+    await assetsPanelPage.waitForChangeIsSaved();
     await designPanelPage.checkVariantPropertyValue('Test', 'TestValue');
 
     await layersPanelPage.selectLayerByName('Ellipse, Green');
     await designPanelPage.enterVariantPropertyValue('Test', 'TestValue2');
+    await assetsPanelPage.waitForChangeIsSaved();
     await designPanelPage.checkVariantPropertyValue('Test', 'TestValue2');
     await layersPanelPage.isLayerWithNameSelected(
       'Ellipse, Green, Value 1, TestValue2',
