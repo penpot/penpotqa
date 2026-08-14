@@ -88,7 +88,21 @@ mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
       });
 
       await mainTest.step('Go to bad URL and validate error message', async () => {
-        await page.goto(badURL);
+        // Wait for the specific responses to occur, but don't fail if they don't happen
+        await Promise.all([
+          page.waitForResponse(
+            (response) =>
+              response.url().includes('get-view-only-bundle') &&
+              response.status() === 404,
+          ),
+          page.waitForResponse(
+            (response) =>
+              response.url().includes('get-file-info') && response.status() === 404,
+          ),
+        ]).catch(() => {});
+
+        await page.goto(badURL, { waitUntil: 'networkidle' });
+
         await teamPage.isInviteMessageDisplayed('Oops!');
         await teamPage.isErrorMessageDisplayed("This page doesn't exist");
         await teamPage.isGoToPenpotButtonVisible();
