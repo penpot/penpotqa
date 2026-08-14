@@ -910,7 +910,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickAddBlurButton() {
     await this.blurSection.waitFor();
-    await this.addBlurButton.click({ noWaitAfter: true });
+    await this.addBlurButton.click();
   }
 
   async selectTypeForBlurEffects(type) {

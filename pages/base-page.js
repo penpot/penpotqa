@@ -295,8 +295,8 @@ exports.BasePage = class BasePage {
     await this.savedChangesIcon.waitFor({ state: 'visible', timeout: 20000 });
   }
 
-  async waitForChangeIsUnsaved(timeout = 15000) {
-    await this.unSavedChangesIcon.waitFor({ state: 'visible', timeout });
+  async waitForChangeIsUnsaved() {
+    await this.unSavedChangesIcon.waitFor({ state: 'visible' });
   }
 
   async waitForResizeHandlerVisible() {

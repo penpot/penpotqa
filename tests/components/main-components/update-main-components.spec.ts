@@ -192,9 +192,9 @@ mainTest.describe(() => {
         await layersPanelPage.clickMainComponentOnLayersTab();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickAddBlurButton();
-        await mainPage.waitForChangeIsUnsaved(30000);
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.clickMainComponentOnLayersTab();
+        await mainPage.waitForChangeIsSaved();
         await mainPage.clickViewportByCoordinates(1000, 200, 2);
       });
 
