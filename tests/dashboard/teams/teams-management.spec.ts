@@ -21,8 +21,4 @@ mainTest(qase([1163], 'Team.Switch between teams'), async () => {
     await teamPage.switchTeam(team1);
     await teamPage.switchTeam(team2);
   });
-
-  await mainTest.step('Delete both teams', async () => {
-    await teamPage.deleteTeams([team1, team2]);
-  });
 });
