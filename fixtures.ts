@@ -53,7 +53,9 @@ export const registerTest = test.extend<RegisterTestFixtures>({
   },
 });
 
-export const demoTest = test.extend({
+// Fixture for demo account, used for tests that require a new account bypassing the registration process.
+// This fixture will create a demo account and log in to it before each test.
+export const demoAccountFixture = test.extend({
   page: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
     const registerPage = new RegisterPage(page);

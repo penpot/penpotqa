@@ -82,6 +82,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fileOptionsMenuButton = this.fileTile
       .first()
       .getByRole('button', { name: 'Options' });
+    this.fileOptionsMenu = page.getByRole('menu');
     this.headerOptionsMenuButton = page.locator(
       'div[title="Options"] svg[class*="files__menu-icon"]',
     );
@@ -937,7 +938,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isFileVisibleByName(name) {
     const elem = this.page.getByRole('button', { name: name });
-    await expect(elem.first()).toBeVisible();
+    await expect(
+      elem.first(),
+      `File with name ${name} should be visible`,
+    ).toBeVisible();
   }
 
   async deleteFileWithNameViaRightClick(name) {
@@ -1469,10 +1473,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     ).toBeVisible();
   }
 
-  async isFileOptionsMenuVisible() {
+  async isFileOptionsMenuButtonVisible() {
     await expect(
       this.fileOptionsMenuButton,
-      `File options menu is visible`,
+      `File options menu button is visible`,
     ).toBeVisible();
+  }
+
+  async isFileOptionsMenuVisible() {
+    await expect(this.fileOptionsMenu, `File options menu is visible`).toBeVisible();
   }
 };
