@@ -431,7 +431,6 @@ mainTest(qase([705], 'Edit file'), async ({ page }) => {
     'Close workspace tab and reopen it from view mode',
     async () => {
       await page.close();
-      await viewModePage.clickEditButton();
       const oldPage = await viewModePage.clickEditButton(false);
       mainPage = new MainPage(oldPage!);
       teamPage = new TeamPage(oldPage!);
