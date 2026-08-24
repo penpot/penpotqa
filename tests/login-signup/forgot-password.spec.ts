@@ -47,7 +47,7 @@ registerTest.describe(() => {
       dashboardPage = new DashboardPage(page);
       profilePage = new ProfilePage(page);
       forgotPasswordPage = new ForgotPasswordPage(page);
-      newPwd = 'TestForgotPassword123';
+      newPwd = 'TestForgotPassword123#';
 
       await profilePage.logout();
       await loginPage.isLoginPageOpened();

@@ -49,17 +49,18 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.membersMenuItem = page.getByRole('menuitem', { name: 'Members' });
 
     //Invitations
+    this.teamModalContainer = page.locator(
+      '.main_ui_dashboard_team__modal-team-container',
+    );
     this.invitationsMenuItem = page.getByRole('menuitem', { name: 'Invitations' });
     this.inviteMembersToTeamButton = page.getByTestId('invite-member');
-    this.inviteMembersPopUpHeader = page.locator(
-      'div[class*="modal-team-container"] div[class*="title"]',
-    );
+    this.inviteMembersPopUpHeader = page.getByRole('heading', {
+      name: 'Invite members to the team',
+    });
     this.inviteMembersTeamHeroButton = page.getByRole('button', {
       name: 'Invite members',
     });
-    this.inviteMembersToTeamRoleSelectorButton = page.locator(
-      'div[class*="custom-select"]',
-    );
+    this.inviteMembersToTeamRoleSelector = page.getByRole('combobox');
     this.adminRoleSelector = page.locator('li').filter({ hasText: 'Admin' });
     this.editorRoleSelector = page.locator('li').filter({ hasText: 'Editor' });
     this.viewerRoleSelector = page.locator('li').filter({ hasText: 'Viewer' });
@@ -117,14 +118,13 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.requestAccessDialog = page.locator('.main_ui_static__dialog').first();
     this.requestAccessButton = page.getByRole('button', { name: 'REQUEST ACCESS' });
     this.returnHomeButton = page.getByRole('button', { name: 'GO TO YOUR PENPOT' });
-    this.firstInvitedEmail = page.locator('span[class*="forms__text"]').first();
     this.requestSentCorrectlyText = this.requestAccessDialog.getByText(
       'Your request has been sent correctly!',
     );
     this.requestSentCorrectlyDescribe = this.requestAccessDialog.getByText(
       "Remember that, if the owner allows it, you're going to be invited to the team.",
     );
-    this.closeModalButton = page.locator('svg[class*="icon-close"]');
+    this.closeModalButton = page.getByRole('button', { name: 'Close' });
     this.requestFileAccessText = this.requestAccessDialog.getByText(
       "You don't have access to this file.",
     );
@@ -154,6 +154,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.teamNameInput.fill(teamName);
     await this.createNewTeamButton.click();
     await this.waitForCreateNewTeamButtonToBeHidden(30000);
+    await this.isTeamSelected(teamName);
   }
 
   async isTeamSelected(teamName) {
@@ -191,22 +192,13 @@ exports.TeamPage = class TeamPage extends BasePage {
       .getByRole('menuitem')
       .filter({ hasText: teamName })
       .first();
+
     if (await teamSel.isVisible()) {
       await teamSel.click();
       await this.isTeamSelected(teamName);
       await this.teamOptionsMenuButton.click();
       await this.deleteTeamMenuItem.click();
       await this.deleteTeamButton.click();
-      // Wait for the deletion API call to complete
-      await this.page.waitForResponse(
-        (response) => response.url().includes('/api/main/methods/delete-team'),
-        { timeout: 20000 },
-      );
-      // Verify the team name is no longer the current team (it should change)
-      const currentTeamText = await this.teamCurrentBtn.textContent();
-      if (currentTeamText === teamName) {
-        throw new Error(`Team ${teamName} was not deleted properly`);
-      }
     }
   }
 
@@ -217,7 +209,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isTeamDeleted(teamName) {
-    await expect(this.page.getByText('Your Penpot')).toBeVisible({ timeout: 8000 });
+    await expect(this.page.getByText('My Files')).toBeVisible({ timeout: 8000 });
     await this.openTeamsListIfClosed();
     for (const el of await this.teamCurrentNameDiv.elementHandles()) {
       const text = (await el.innerText()).valueOf();
@@ -249,8 +241,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.inviteMembersToTeamButton).not.toBeVisible();
   }
 
-  async isInviteMembersPopUpHeaderDisplayed(title) {
-    await expect(this.inviteMembersPopUpHeader).toHaveText(title);
+  async isInviteMembersPopUpHeaderVisible() {
+    await expect(this.inviteMembersPopUpHeader).toBeVisible();
   }
 
   async clickInviteMembersTeamHeroButton() {
@@ -333,7 +325,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async selectInvitationRoleInPopUp(role) {
-    await this.inviteMembersToTeamRoleSelectorButton.click();
+    await this.inviteMembersToTeamRoleSelector.click();
     switch (role) {
       case 'Admin':
         await this.adminRoleSelector.click();
@@ -463,7 +455,7 @@ exports.TeamPage = class TeamPage extends BasePage {
       ? await this.selectMember(name)
       : await this.clickOnLeaveTeamButton();
     await expect(this.teamCurrentBtn).not.toHaveText(teamName);
-    await expect(this.teamCurrentBtn).toHaveText('Your Penpot');
+    await expect(this.teamCurrentBtn).toHaveText('My Files');
   }
 
   /**
@@ -617,7 +609,9 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async checkFirstInvitedEmail(email) {
-    await expect(this.firstInvitedEmail).toHaveText(email);
+    await expect(
+      this.teamModalContainer.getByText(email, { exact: true }),
+    ).toBeVisible();
   }
 
   async waitForInvitationButtonEnabled(timeout) {

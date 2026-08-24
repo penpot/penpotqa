@@ -32,7 +32,6 @@ mainTest.beforeEach(
     tokensPage = new TokensPage(page);
 
     await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
 
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
@@ -61,10 +60,7 @@ mainTest(qase([2654], 'Computed panel - Shows raw property values'), async () =>
     await mainPage.waitForChangeIsSaved();
     await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
     await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
-    await tokensPage.tokensComp.isMenuItemWithNameSelected(
-      colorToken.name,
-      'ColorFill',
-    );
+    await tokensPage.tokensComp.isMenuItemWithNameSelected(colorToken.name, 'Fill');
   });
 
   await mainTest.step('Check Inspect tab (Styles)', async () => {

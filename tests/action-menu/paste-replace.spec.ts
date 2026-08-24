@@ -21,7 +21,6 @@ mainTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
 
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.createDefaultRectangleByCoordinates(100, 100);

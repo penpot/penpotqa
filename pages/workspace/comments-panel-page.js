@@ -65,7 +65,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       name: 'Delete conversation',
     });
     this.resolveCommentCheckbox = page.locator(
-      'div[class*="thread-header"] span[class*="comments__checkbox"]',
+      'div[class*="thread-header"] div[class*="checkbox-box"]',
     );
     this.commentsPanelPlaceholderText = page.locator(
       '.main_ui_workspace_comments__thread-group-placeholder',
@@ -129,7 +129,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   }
 
   async clickCommentThreadIconByNumber(number) {
-    await this.commentThreadBubbleByIndex(number).hover();
+    await this.commentThreadBubbleByIndex(number).click();
     await this.commentThreadPreview.click();
   }
 
@@ -222,8 +222,8 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   }
 
   async isResolveCommentCheckboxSelected() {
-    await expect(this.resolveCommentCheckbox).toHaveClass(
-      'main_ui_comments__checkbox checked',
+    await expect(this.resolveCommentCheckbox).toContainClass(
+      'main_ui_ds_controls_checkbox__checked',
     );
   }
 

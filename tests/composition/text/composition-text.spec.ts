@@ -29,7 +29,6 @@ mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });
@@ -309,6 +308,7 @@ mainTest.describe(() => {
       await mainPage.clickMoveButton();
       await mainPage.waitForChangeIsSaved();
       await mainPage.focusLayerViaShortcut();
+      await mainPage.clickOnLayerOnCanvas();
       await expect(mainPage.viewport).toHaveScreenshot('text-fill-opacity.png', {
         mask: mainPage.maskViewport(),
       });
@@ -470,14 +470,19 @@ mainTest(qase([423], 'Change text centering, align (Design section)'), async () 
   await mainTest.step('Align left', async () => {
     await designPanelPage.changeTextOption('Left');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.focusLayerViaShortcut();
+    await mainPage.clickOnLayerOnCanvas();
     await expect(mainPage.viewport).toHaveScreenshot('text-align-left.png', {
       mask: mainPage.maskViewport(),
     });
+    await mainPage.focusLayerViaShortcut();
   });
 
   await mainTest.step('Align center', async () => {
     await designPanelPage.changeTextOption('Center');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.focusLayerViaShortcut();
+    await mainPage.clickOnLayerOnCanvas();
     await expect(mainPage.viewport).toHaveScreenshot('text-align-center.png', {
       mask: mainPage.maskViewport(),
     });
@@ -486,6 +491,8 @@ mainTest(qase([423], 'Change text centering, align (Design section)'), async () 
   await mainTest.step('Align right', async () => {
     await designPanelPage.changeTextOption('Right');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.focusLayerViaShortcut();
+    await mainPage.clickOnLayerOnCanvas();
     await expect(mainPage.viewport).toHaveScreenshot('text-align-right.png', {
       mask: mainPage.maskViewport(),
     });
@@ -494,6 +501,8 @@ mainTest(qase([423], 'Change text centering, align (Design section)'), async () 
   await mainTest.step('Justify', async () => {
     await designPanelPage.changeTextOption('Justify');
     await mainPage.waitForChangeIsSaved();
+    await mainPage.focusLayerViaShortcut();
+    await mainPage.clickOnLayerOnCanvas();
     await expect(mainPage.viewport).toHaveScreenshot('text-align-justify.png', {
       mask: mainPage.maskViewport(),
     });

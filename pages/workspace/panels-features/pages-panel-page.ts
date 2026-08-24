@@ -37,12 +37,8 @@ export class PagesPanelPage extends MainPage {
       return this.pagesList.filter({ hasText: new RegExp(`^${name}$`) });
     };
     this.secondPageListItem = this.pagesList.filter({ hasText: /^Page 2$/ });
-    this.selectedPage = page.locator(
-      'ul[class*="page-list"] li[class*="sitemap__selected"] div[class*="element-list-body"]',
-    );
-    this.pageNameInput = page.locator(
-      'ul[class*="page-list"] div[class*="element-list-body"] input',
-    );
+    this.selectedPage = page.locator('.main_ui_workspace_sidebar_sitemap__selected');
+    this.pageNameInput = this.pagesBlock.getByRole('textbox');
     this.renamePageMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Rename' });

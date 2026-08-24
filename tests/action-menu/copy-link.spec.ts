@@ -32,7 +32,6 @@ mainTest.beforeEach(async ({ page }) => {
   registerPage = new RegisterPage(page);
   dashboardPage = new DashboardPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();
@@ -67,9 +66,7 @@ mainTest.describe(() => {
           async () => {
             await teamPage.openInvitationsPageViaOptionsMenu();
             await teamPage.clickInviteMembersToTeamButton();
-            await teamPage.isInviteMembersPopUpHeaderDisplayed(
-              'Invite members to the team',
-            );
+            await teamPage.isInviteMembersPopUpHeaderVisible();
             await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
             await teamPage.selectInvitationRoleInPopUp('Editor');
             await teamPage.clickSendInvitationButton();

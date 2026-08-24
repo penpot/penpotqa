@@ -10,23 +10,63 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Main Toolbar
     this.pencilBoxButton = page.locator('a[class*="header__main-icon"]');
-    this.moveButton = page.getByRole('button', { name: 'Move (V)' });
-    this.createBoardButton = page.getByTestId('artboard-btn');
-    this.createRectangleButton = page.getByTestId('rect-btn');
-    this.createEllipseButton = page.getByTestId('ellipse-btn');
-    this.createTextButton = page.getByRole('button', { name: 'Text (T)' });
+
+    this.toolBarWindow = page.getByRole('toolbar');
+
+    // Toolbar - Static buttons
+    this.moveButton = this.toolBarWindow.getByRole('button', { name: 'Move (V)' });
+    this.createBoardButton = this.toolBarWindow.getByRole('button', {
+      name: 'Board (B)',
+    });
+    this.createTextButton = this.toolBarWindow.getByRole('button', {
+      name: 'Text (T)',
+    });
     this.uploadImageSelector = page.locator('#image-upload');
-    this.createCurveButton = page.getByTestId('curve-btn');
-    this.createPathButton = page.getByTestId('path-btn');
-    this.MCPButton = page.getByRole('button', { name: 'MCP' });
+
+    // Toolbar - Shape tools
+    this.shapeToolGroup = this.toolBarWindow.getByRole('group', {
+      name: /Options: (Rectangle|Ellipse|Line|Arrow)/,
+    });
+    this.shapeToolButton = this.shapeToolGroup.getByRole('button', {
+      name: /Rectangle|Ellipse|Line|Arrow/,
+    });
+    this.shapeToolMenu = page.getByRole('menu', {
+      name: /Options: (Rectangle|Ellipse|Line|Arrow)/,
+    });
+    this.createRectangleButton = this.shapeToolMenu.getByRole('menuitemradio', {
+      name: /Rectangle/,
+    });
+    this.createEllipseButton = this.shapeToolMenu.getByRole('menuitemradio', {
+      name: /Ellipse/,
+    });
+    this.createLineButton = this.shapeToolMenu.getByRole('menuitemradio', {
+      name: /Line/,
+    });
+    this.createArrowButton = this.shapeToolMenu.getByRole('menuitemradio', {
+      name: /Arrow/,
+    });
+
+    // Toolbar - Path group (Path/Curve)
+    this.pathToolGroup = this.toolBarWindow.getByRole('group', {
+      name: /Options: (Path|Curve)/,
+    });
+    this.pathToolButton = this.pathToolGroup.getByRole('button', {
+      name: /Path|Curve/,
+    });
+    this.pathToolMenu = page.getByRole('menu', { name: /Options: (Path|Curve)/ });
+    this.createPathButton = this.pathToolMenu.getByRole('menuitemradio', {
+      name: /Path/,
+    });
+    this.createCurveButton = this.pathToolMenu.getByRole('menuitemradio', {
+      name: /Curve/,
+    });
+
+    this.MCPButton = this.toolBarWindow.getByRole('button', { name: 'MCP' });
     this.connectHereMCPButton = page.getByRole('menuitem', { name: 'Connect here' });
     this.connectedMCPButton = page.getByText('MCP connected');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
-    this.toolBarWindow = page.locator('aside[class*="main-toolbar"]').first();
     this.designTab = page.getByRole('tab', { name: 'design' });
-    this.createPathPointer = page
-      .getByTestId('viewport')
-      .locator('[class*="viewport-controls cursor-pen drawing"]');
+    this.createPathPointer = page.locator('#viewport-controls.cursor-pen.drawing');
 
     //Grid editor Toolbar
     this.gridEditorToolBar = page.getByText('Editing grid').locator('..');
@@ -41,7 +81,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.verticalRulerTrack = page.locator(
       'g.new-guides rect[class*="cursor-resize-ew"]',
     );
-    this.guidesFragment = page.locator('.main_ui_workspace_sidebar__resize-area');
+    this.guidesFragment = page.locator(
+      '.main_ui_workspace_sidebar__left-sidebar-resize-area',
+    );
     this.gridEditorLabel = page.locator('input[class*="grid-editor-label"]');
     this.gridEditorButton = page.locator('button[class*="grid-editor-button"]');
     this.gridEditorCell = page.locator('rect[class*="grid-cell-outline"]');
@@ -162,7 +204,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.disconnectMCPServerMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Disconnect' });
-    this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
+    this.downloadFileTickIcon = page.locator('use[href="#icon-tick"]');
     this.downloadFileCloseButton = page.locator('input[value="Close"]');
 
     // Export as PDF
@@ -237,24 +279,53 @@ exports.MainPage = class MainPage extends BasePage {
     );
   }
 
-  async clickMoveButton() {
-    await this.moveButton.click({ delay: 500 });
-  }
-
-  async clickCreateBoardButton() {
-    await this.createBoardButton.click({ delay: 500 });
+  async openFlyout(triggerButton, menu) {
+    await triggerButton.click();
+    await menu.waitFor({ state: 'visible' });
   }
 
   async clickCreateRectangleButton() {
-    await this.createRectangleButton.click({ delay: 500 });
+    await this.shapeToolButton.click();
   }
 
   async clickCreateEllipseButton() {
-    await this.createEllipseButton.click({ delay: 500 });
+    await this.openFlyout(this.shapeToolButton, this.shapeToolMenu);
+    await this.createEllipseButton.click();
+  }
+
+  async clickCreateLineButton() {
+    await this.openFlyout(this.shapeToolButton, this.shapeToolMenu);
+    await this.createLineButton.click();
+  }
+
+  async clickCreateArrowButton() {
+    await this.openFlyout(this.shapeToolButton, this.shapeToolMenu);
+    await this.createArrowButton.click();
+  }
+
+  async clickCreatePathButton() {
+    await this.viewport.click();
+    await this.pathToolButton.click();
+    await this.viewport.hover();
+    await expect(this.createPathPointer).toBeVisible();
+  }
+
+  async clickCreateCurveButton() {
+    await this.viewport.click();
+    await this.openFlyout(this.pathToolButton, this.pathToolMenu);
+    await this.createCurveButton.click();
+  }
+
+  async clickMoveButton() {
+    await this.moveButton.click();
+  }
+
+  async clickCreateBoardButton() {
+    await this.createBoardButton.click();
   }
 
   async clickCreateTextButton() {
-    await this.createTextButton.click({ delay: 500 });
+    await this.createTextButton.click();
   }
 
   async typeDefaultTextFromKeyboard() {
@@ -290,16 +361,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.pressUploadImageShortcut();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(filePath);
-  }
-
-  async clickCreateCurveButton() {
-    await this.createCurveButton.click({ delay: 500 });
-  }
-
-  async clickCreatePathButton() {
-    await this.viewport.click();
-    await this.createPathButton.click({ delay: 500 });
-    await expect(this.createPathPointer).toBeVisible();
   }
 
   async clickViewportOnce() {
@@ -558,7 +619,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickMainMenuButton() {
-    await this.mainMenuButton.click();
+    await this.mainMenuButton.first().click();
     await expect(this.mainMenuList).toBeVisible();
   }
 
@@ -790,8 +851,10 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async downloadPenpotFileViaMenu() {
-    await this.downloadPenpotFileMenuSubItem.click();
-    await this.page.waitForEvent('download');
+    await Promise.all([
+      this.page.waitForEvent('download'),
+      this.downloadPenpotFileMenuSubItem.click(),
+    ]);
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
@@ -800,8 +863,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.exportBoardsAsPDFFileMenuSubItem.click();
     await expect(this.exportAsPDFModalTitle).toBeVisible();
     await expect(this.exportAsPDFModalButton).toBeVisible();
-    await this.exportAsPDFModalButton.click();
-    await this.page.waitForEvent('download');
+    await Promise.all([
+      this.page.waitForEvent('download'),
+      this.exportAsPDFModalButton.click(),
+    ]);
     await expect(this.exportAsPDFCompleteToastText).toBeVisible();
     await expect(this.page.getByText(`${numBoards} / ${numBoards}`)).toBeVisible();
   }

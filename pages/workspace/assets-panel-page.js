@@ -379,9 +379,8 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.fontSelector.click();
     await this.fontSelectorSearchInput.fill(fontName);
     await this.page
-      .locator('div[class*="fonts-list"]')
-      .getByText(fontName, { exact: true })
-      .first()
+      .getByRole('grid')
+      .getByRole('img', { name: fontName, exact: true })
       .click();
   }
 

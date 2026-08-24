@@ -34,10 +34,9 @@ mainTest.beforeEach(async ({ page }: { page: Page }) => {
 
 mainTest(qase(1164, 'Open the form via Invitations tab'), async () => {
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.isInviteMembersPopUpHeaderVisible();
   await teamPage.deleteTeam(team);
 });
 
@@ -45,9 +44,8 @@ registerTest(
   qase(1165, 'Open the form via Team Hero ("Invite members" button)'),
   async () => {
     await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
     await teamPage.clickInviteMembersTeamHeroButton();
-    await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+    await teamPage.isInviteMembersPopUpHeaderVisible();
     await teamPage.deleteTeam(team);
   },
 );
@@ -56,10 +54,9 @@ mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () =>
   const email = createInviteEmail('editor');
 
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.isInviteMembersPopUpHeaderVisible();
   await teamPage.enterEmailToInviteMembersPopUp(email);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
@@ -75,10 +72,9 @@ mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => 
   const email = createInviteEmail('admin');
 
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.isInviteMembersPopUpHeaderVisible();
 
   await teamPage.selectInvitationRoleInPopUp('Admin');
   await teamPage.enterEmailToInviteMembersPopUp(email);
@@ -95,11 +91,10 @@ mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => 
 
 mainTest(qase(1175, 'Fail to send invitation to existing team member'), async () => {
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
 
-  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.isInviteMembersPopUpHeaderVisible();
 
   await teamPage.enterEmailToInviteMembersPopUp(process.env.LOGIN_EMAIL);
   await teamPage.isSendInvitationBtnDisabled();
@@ -129,7 +124,6 @@ registerTest.describe(
         await dashboardPage.isDashboardOpenedAfterLogin();
 
         await teamPage.createTeam(team);
-        await teamPage.isTeamSelected(team);
 
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
@@ -180,12 +174,9 @@ mainTest.describe(
         const secondEmail = createInviteEmail('editor', secondEditor);
 
         await teamPage.createTeam(team);
-        await teamPage.isTeamSelected(team);
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
-        await teamPage.isInviteMembersPopUpHeaderDisplayed(
-          'Invite members to the team',
-        );
+        await teamPage.isInviteMembersPopUpHeaderVisible();
         await teamPage.enterEmailToInviteMembersPopUp(
           `${firstEmail}, ${secondEmail}`,
         );
@@ -203,7 +194,7 @@ mainTest.describe(
         );
         const firstInvite = await waitMessage(page, firstEmail, 40);
         const secondInvite = await waitMessage(page, secondEmail, 40);
-        const user = process.env.CI ? 'QA Engineer' : 'QA Engineer'; //'k8q6byz';
+        const user = process.env.CI ? 'QA Engineer' : 'QA Engineer';
         await checkInviteText(firstInvite!.inviteText, team, user);
         await checkInviteText(secondInvite!.inviteText, team, user);
         await profilePage.logout();
@@ -256,10 +247,9 @@ mainTest(qase(1176, 'Resend multiple invitations via owner'), async () => {
   const email3 = createInviteEmail('editor', 'editor3');
 
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.isInviteMembersPopUpHeaderVisible();
   await teamPage.enterEmailToInviteMembersPopUp([email1, email2, email3]);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
@@ -279,10 +269,9 @@ mainTest(qase(1178, 'Delete multiple invitations via owner'), async () => {
   const email3 = createInviteEmail('editor', 'editor3');
 
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.isInviteMembersPopUpHeaderVisible();
   await teamPage.enterEmailToInviteMembersPopUp([email1, email2, email3]);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
@@ -300,10 +289,9 @@ mainTest(qase(1181, 'Change role in invitation via owner'), async () => {
   const email = createInviteEmail('editor', 'role');
 
   await teamPage.createTeam(team);
-  await teamPage.isTeamSelected(team);
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.isInviteMembersPopUpHeaderVisible();
   await teamPage.enterEmailToInviteMembersPopUp(email);
   await teamPage.clickSendInvitationButton();
   await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');

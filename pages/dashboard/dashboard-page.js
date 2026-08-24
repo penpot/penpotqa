@@ -12,6 +12,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.addProjectButton = page.getByRole('button', { name: 'New project' });
     this.alertMessage = page.getByRole('alert');
 
+    // Dashboard Header > Layout View
+    this.layoutListViewButton = page.getByRole('button', { name: 'List view' });
+    this.layoutGridViewButton = page.getByRole('button', { name: 'Grid view' });
+
     // Deleted Navigation
     this.recentTab = page.getByTestId('recent-tab');
     this.deletedTab = page.getByTestId('deleted-tab');
@@ -23,9 +27,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.numberOfFilesText = page.locator(
       'div[class*="project-name-wrapper"] span[class*="projects__info"]',
     );
-    this.fileTile = page.locator(
-      'div[class*="dashboard-grid"] div[class*="grid-item-th"]',
-    );
+    this.fileTile = this.dashboardFilesGrid.getByRole('button');
     this.fileNameTitle = page.locator('div[class*="item-info"] h3');
     this.deleteFileMenuItem = page.getByTestId('file-delete');
     this.deleteFileButton = page.getByRole('button', { name: 'Delete file' });
@@ -54,7 +56,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.addFileAsSharedLibraryButton = page.getByRole('button', {
       name: 'Add as Shared Library',
     });
-    this.sharedLibraryIcon = page.locator('svg[class="icon-library"]');
+    this.sharedLibraryIcon = page.locator('use[href="#icon-library"]');
     this.delFileAsSharedLibraryMenuItem = page.getByTestId('file-del-shared');
     this.delFileAsSharedLibraryButton = page.getByRole('button', {
       name: 'Unpublish',
@@ -67,20 +69,24 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       name: 'Drafts',
       exact: true,
     });
-    this.dashboardLibraryItem = page
-      .getByRole('button', { name: 'New File 1' })
-      .locator(`div[class*="dashboard_grid__library"]`);
+    this.dashboardLibraryItem = this.dashboardFilesGrid
+      .getByRole('button')
+      .locator('.main_ui_dashboard_grid__library-thumbnail');
     this.downloadFilePenpotMenuItem = page.getByTestId('download-binary-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
-    this.downloadFileTickIcon = page.locator('svg[class="icon-tick"]');
+    this.downloadFileTickIcon = page.locator('use[href="#icon-tick"]');
     this.downloadFileCloseButton = page
       .getByRole('button', { name: 'Close' })
       .getByText('Close', { exact: true });
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
-    this.fileOptionsMenuButton = page.locator('div[class*="project-th-icon"] svg');
+    this.fileOptionsMenuButton = this.fileTile
+      .first()
+      .getByRole('button', { name: 'Options' });
+    this.fileOptionsMenu = page.getByRole('menu');
     this.headerOptionsMenuButton = page.locator(
       'div[title="Options"] svg[class*="files__menu-icon"]',
     );
+    this.dashboardFilesItemDate = page.locator('[class*="list-item-date"]');
 
     // Projects Section
     this.projectsContainer = page.locator(
@@ -310,7 +316,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async deleteFileViaRightclick() {
-    await this.fileTile.click({ button: 'right' });
+    await this.fileTile.first().click({ button: 'right' });
     await this.deleteFileMenuItem.click();
     await this.confirmDeleteFile();
   }
@@ -428,10 +434,12 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.numberOfFilesText.first()).toHaveText(numberOfFiles);
   }
 
-  async renameFile(newFileName, byRightClick = true) {
-    let text = await this.fileNameTitle.textContent();
+  async renameFile(oldFileName, newFileName, byRightClick = true) {
+    const fileTitle = this.page.getByRole('button', { name: oldFileName }).first();
+    let text = await fileTitle.textContent();
+
     if (byRightClick) {
-      await this.fileTile.click({ button: 'right' });
+      await fileTitle.click({ button: 'right' });
     } else {
       await this.clickOnFileOptions();
     }
@@ -442,11 +450,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     }
     await this.fileNameInput.pressSequentially(newFileName);
     await this.page.keyboard.press('Enter');
-    await this.isFilePresent(newFileName);
+    await this.isFilePresentWithName(newFileName);
   }
 
-  async isFilePresent(fileName) {
-    await expect(this.fileNameTitle).toHaveText(fileName);
+  async isFilePresentWithName(fileName) {
+    const fileNameTitle = this.page
+      .getByRole('button', { name: fileName })
+      .locator(`div[class*="item-info"] h3`);
+    await expect(fileNameTitle).toHaveText(fileName);
   }
 
   async isFileNotVisible(fileName) {
@@ -464,7 +475,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async addFileAsSharedLibraryViaRightclick() {
-    await this.fileTile.click({ button: 'right' });
+    await this.fileTile.first().click({ button: 'right' });
     await this.addFileAsSharedLibraryMenuItem.click();
     await this.addFileAsSharedLibraryButton.click();
   }
@@ -482,7 +493,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async deleteFileAsSharedLibraryViaRightclick() {
-    await this.fileTile.click({ button: 'right' });
+    await this.fileTile.first().click({ button: 'right' });
     await this.delFileAsSharedLibraryMenuItem.click();
     await this.delFileAsSharedLibraryButton.click();
   }
@@ -525,19 +536,23 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async downloadFileViaRightClick() {
-    await this.fileTile.click({ button: 'right' });
-    await this.downloadFilePenpotMenuItem.click();
+    await this.fileTile.first().click({ button: 'right' });
 
-    await this.page.waitForEvent('download');
+    await Promise.all([
+      this.page.waitForEvent('download'),
+      this.downloadFilePenpotMenuItem.click(),
+    ]);
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
 
   async downloadFileViaOptionsIcon() {
     await this.clickOnFileOptions();
-    await this.downloadFilePenpotMenuItem.click();
 
-    await this.page.waitForEvent('download');
+    await Promise.all([
+      this.page.waitForEvent('download'),
+      this.downloadFilePenpotMenuItem.click(),
+    ]);
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
@@ -831,7 +846,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async openFile() {
-    await this.fileTile.dblclick();
+    await this.fileTile.first().dblclick();
   }
 
   async importFileProcessingSuccess(file) {
@@ -860,7 +875,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await fileChooser.setFiles(file);
     await expect(this.modalTitle).toBeVisible();
     await expect(this.modalTitle).toHaveText('Import Penpot files');
-    await expect(this.warningMessageText).toHaveText(
+    await expect(this.importWarningMessageText).toHaveText(
       'Some files containted invalid objects that have been removed.',
     );
     await this.modalCancelButton.click();
@@ -923,7 +938,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
 
   async isFileVisibleByName(name) {
     const elem = this.page.getByRole('button', { name: name });
-    await expect(elem.first()).toBeVisible();
+    await expect(
+      elem.first(),
+      `File with name ${name} should be visible`,
+    ).toBeVisible();
   }
 
   async deleteFileWithNameViaRightClick(name) {
@@ -972,27 +990,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await elem.click({ button: 'right' });
     await this.addFileAsSharedLibraryMenuItem.click();
     await this.addFileAsSharedLibraryButton.click();
-  }
-
-  async isFilePresentWithName(fileName) {
-    const fileNameTitle = this.page
-      .getByRole('button', { name: fileName })
-      .locator(`div[class*="item-info"] h3`);
-    await expect(fileNameTitle).toHaveText(fileName);
-  }
-
-  async renameFileWithNameViaRightClick(oldFileName, newFileName) {
-    const fileTitle = this.page.getByRole('button', { name: oldFileName }).first();
-    let text = await fileTitle.textContent();
-    await fileTitle.click({ button: 'right' });
-    await this.renameFileMenuItem.click();
-    await this.fileNameInput.click();
-    for (let i = 0; i <= text.length; i++) {
-      await this.page.keyboard.press('Backspace');
-    }
-    await this.fileNameInput.pressSequentially(newFileName);
-    await this.page.keyboard.press('Enter');
-    await this.isFilePresentWithName(newFileName);
   }
 
   async clickOnOnboardingContinueBtn() {
@@ -1449,5 +1446,41 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     }
 
     await this.page.keyboard.up('Shift');
+  }
+
+  // Layout view option is saved per browser session and across teams
+  async switchLayoutView(viewType) {
+    switch (viewType) {
+      case 'List View':
+        await this.layoutListViewButton.click();
+        break;
+      case 'Grid View':
+        await this.layoutGridViewButton.click();
+        break;
+    }
+  }
+
+  async hasFileTileListClass() {
+    await expect(this.fileTile.first(), `File item has list view class`).toHaveClass(
+      /list-item/,
+    );
+  }
+
+  async isFileItemDateVisible() {
+    await expect(
+      this.dashboardFilesItemDate.first(),
+      `File item date is visible`,
+    ).toBeVisible();
+  }
+
+  async isFileOptionsMenuButtonVisible() {
+    await expect(
+      this.fileOptionsMenuButton,
+      `File options menu button is visible`,
+    ).toBeVisible();
+  }
+
+  async isFileOptionsMenuVisible() {
+    await expect(this.fileOptionsMenu, `File options menu is visible`).toBeVisible();
   }
 };

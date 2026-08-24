@@ -25,7 +25,6 @@ mainTest.beforeEach(async ({ page }) => {
 mainTest(qase([1200], 'Team Settings - upload team profile picture'), async () => {
   await mainTest.step('Create a team and open team settings', async () => {
     await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
     await teamPage.openTeamSettingsPageViaOptionsMenu();
   });
 
@@ -54,7 +53,6 @@ mainTest(qase([1202], "Team. Settings - check 'Team members' info"), async () =>
     await profilePage.waitInfoMessageHidden();
     await profilePage.backToDashboardFromAccount();
     await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
     await teamPage.openTeamSettingsPageViaOptionsMenu();
   });
 
@@ -70,7 +68,6 @@ mainTest(qase([1203], "Team. Settings - check 'Team projects' info"), async () =
 
   await mainTest.step('Create projects and files for the team', async () => {
     await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
     await dashboardPage.createProject(projectFirst);
     await dashboardPage.pinProjectByName(projectFirst);
     await dashboardPage.createProject(projectSecond);
@@ -99,7 +96,6 @@ mainTest(qase([1203], "Team. Settings - check 'Team projects' info"), async () =
 mainTest(qase([1208], 'Delete a team via owner'), async () => {
   await mainTest.step('Create and delete the team', async () => {
     await teamPage.createTeam(team);
-    await teamPage.isTeamSelected(team);
     await teamPage.deleteTeam(team);
     await teamPage.isTeamDeleted(team);
   });

@@ -26,7 +26,6 @@ mainTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
 
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });

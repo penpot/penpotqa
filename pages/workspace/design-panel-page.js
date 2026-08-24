@@ -387,9 +387,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
     this.textFontSelector = page.locator('div[class*="typography__font-option"]');
     this.textFontSelectorSearchInput = page.getByPlaceholder('Search font');
-    this.textFontItemResult = page.locator(
-      '.main_ui_workspace_sidebar_options_menus_typography__font-item',
-    );
+    this.textFontItemResult = page.getByRole('grid');
     this.textFontStyleSelector = page.locator(
       'div[class*="typography__font-variant-options"]',
     );
@@ -1039,13 +1037,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async isTypographyFontItemVisible(fontName) {
     await expect(
-      this.textFontItemResult.getByText(fontName, { exact: true }),
+      this.textFontItemResult.getByRole('img', { name: fontName, exact: true }),
     ).toBeVisible();
   }
 
   async isTypographyFontItemNotVisible(fontName) {
     await expect(
-      this.textFontItemResult.getByText(fontName, { exact: true }),
+      this.textFontItemResult.getByRole('img', { name: fontName, exact: true }),
     ).not.toBeVisible();
   }
 
@@ -1053,9 +1051,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.openTypographyFontDropdown();
     await this.searchTypographyFontFromSearch(fontName);
     await this.page
-      .locator('div[class*="fonts-list"]')
-      .getByText(fontName, { exact: true })
-      .first()
+      .getByRole('grid')
+      .getByRole('img', { name: fontName, exact: true })
       .click();
     await expect(this.textFontSelector).toBeVisible();
   }
@@ -1430,8 +1427,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickExportElementButton(page) {
-    await this.exportElementButton.click();
-    await page.waitForEvent('download');
+    await Promise.all([
+      page.waitForEvent('download'),
+      this.exportElementButton.click(),
+    ]);
   }
 
   async clickAddGuidesButton() {

@@ -17,7 +17,6 @@ mainTest.beforeEach(async ({ page }) => {
   mainPage = new MainPage(page);
 
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
   await dashboardPage.hideLibrariesAndTemplatesCarrousel();
 });
@@ -116,8 +115,8 @@ mainTest.describe('Files management', () => {
   );
 
   mainTest(qase(1114, 'Rename file in Project'), async () => {
-    await dashboardPage.renameFile('test_panel', false);
-    await dashboardPage.renameFile('test_rightclick');
+    await dashboardPage.renameFile('New File 1', 'test_panel', false);
+    await dashboardPage.renameFile('test_panel', 'test_rightclick');
   });
 
   mainTest(qase(1115, 'Duplicate file in Project'), async () => {
@@ -281,8 +280,8 @@ mainTest(
         await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
         await dashboardPage.isSharedLibraryIconDisplayed();
         await dashboardPage.openSidebarItem('Libraries');
-        await dashboardPage.isFilePresent('New File 1');
-        await dashboardPage.renameFile(longName250);
+        await dashboardPage.isFilePresentWithName('New File 1');
+        await dashboardPage.renameFile('New File 1', longName250);
         await dashboardPage.isLibraryItemNameTruncated(longName250);
       },
     );

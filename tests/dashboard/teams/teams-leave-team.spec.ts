@@ -42,12 +42,11 @@ async function setupInvitedUser(
 
   // Create team
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
 
   // Send invite
   await teamPage.openInvitationsPageViaOptionsMenu();
   await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderDisplayed('Invite members to the team');
+  await teamPage.isInviteMembersPopUpHeaderVisible();
   await teamPage.enterEmailToInviteMembersPopUp(userEmail);
 
   if (role !== 'Editor') {

@@ -31,14 +31,42 @@ function arg(name: string, fallback?: string): string {
   process.exit(1);
 }
 
+/** Collects every occurrence of a repeatable flag, e.g. --close-ref 1 --close-ref 2. */
+function argAll(name: string): string[] {
+  const out: string[] = [];
+  for (let i = 0; i < process.argv.length; i++) {
+    if (process.argv[i] === `--${name}` && process.argv[i + 1])
+      out.push(process.argv[i + 1]);
+  }
+  return out;
+}
+
 const RESULTS_PATH = arg('results', 'playwright-report/results.json');
 const STATE_PATH = arg('state', '.triage/state.json');
 const REPORT_URL = arg('report-url', '');
 const RELEASE = arg('release', ''); // e.g. "2.17" -> single story tagged release-2.17 with one task per cluster
-const GROUP_BY = arg('group-by', 'cluster'); // release-mode tasks: 'cluster' (one per root cause) or 'file' (one per spec file)
+const GROUP_BY = arg('group-by', 'cluster'); // release-mode tasks: 'cluster' (one per root cause), 'file' (one per spec file), or 'folder' (one per immediate parent folder, snapshot failures only — functional clusters stay one-per-cluster)
 const EPIC_REF = arg('epic-ref', ''); // optional: Taiga epic ref (#number) to link created stories under
 const APP_VERSION = arg('app-version', ''); // optional: deployed app version this report ran against
+// Debug: which run's results.json this triage was executed over. Falls back to parsing it out of
+// REPORT_URL (every report URL this repo builds embeds it as /run-<id>/) so old callers that only
+// pass --report-url still get it for free.
+const RUN_ID = arg('run-id', '') || REPORT_URL.match(/run-(\d+)/)?.[1] || '';
 const DRY_RUN = process.env.DRY_RUN === '1';
+
+// --close-ref: bypass the whole parse/cluster/create pipeline and force-close specific Taiga task
+// ids directly. Escape hatch for tasks orphaned before per-file/per-test tracking existed, or any
+// one-off manual close.
+const CLOSE_REFS = argAll('close-ref');
+const CLOSE_COMMENT = arg(
+  'close-comment',
+  'Manually closed via triage --close-ref: error no longer occurring.',
+);
+
+// --close-only: run the resolved-detection + auto-close steps only — no new stories/tasks are
+// created, no "new clusters" Mattermost post. Lets a backlog of resolved tasks be swept and closed
+// on demand without needing to run (and file) a full triage.
+const CLOSE_ONLY = process.argv.includes('--close-only');
 
 // ---------- Types ----------
 
@@ -65,6 +93,8 @@ interface StateEntry {
   taigaId?: number; // Taiga story id
   taskRef?: number; // this cluster's own task ref (release cluster mode)
   taskId?: number; // this cluster's own task id
+  taskIds?: number[]; // daily mode: one task per test inside the cluster's story — every one of them, so auto-close can close them all
+  taskRefs?: number[]; // same order as taskIds, for building digest/Mattermost links
   subject?: string; // task subject, kept so resolved/known lines stay meaningful
   firstSeen: string;
   lastSeen: string;
@@ -123,11 +153,14 @@ function extractQaseId(
   annotations: Array<{ type?: string; description?: string }>,
 ): string | undefined {
   const ann = annotations.find((a) => /qase/i.test(a?.type ?? ''));
-  if (ann?.description) return String(ann.description);
+  if (ann?.description) return String(ann.description).replace(/\s+/g, '');
+  // qase([1234, 1235], 'title') renders as "... (Qase ID: 1234,1235)" — capture
+  // the whole comma-separated list, not just the first id ([\w-]+ used to stop at
+  // the comma and silently drop every id after the first).
   const m =
-    title.match(/\(\s*Qase(?:\s*ID)?\s*[:=]?\s*([\w-]+)\s*\)/i) ??
+    title.match(/\(\s*Qase(?:\s*ID)?\s*[:=]?\s*([\w,\s-]+?)\s*\)/i) ??
     title.match(/^([A-Z][A-Z0-9]+-\d+)\s*[:.]/);
-  return m?.[1];
+  return m?.[1]?.replace(/\s+/g, '');
 }
 
 function stripAnsi(s: string): string {
@@ -174,18 +207,31 @@ function isSnapshotError(msg: string): boolean {
   );
 }
 
+// Changing this function's output for any input that used to hash differently requires bumping
+// FINGERPRINT_SCHEMA_VERSION below — see there for why.
 function fingerprint(fail: Failure): string {
   // Hybrid clustering:
-  // - snapshot/visual errors: per spec file (generic message, and visual diffs are
-  //   debugged file by file against the spec's snapshots folder)
+  // - snapshot/visual errors: per spec file, full stop. The error message carries
+  //   the snapshot name and diff stats, which vary per screenshot — including any
+  //   of it in the basis would split one file's diffs into many clusters/tasks, so
+  //   the error text is deliberately NOT part of the basis here.
   // - functional errors: cross-file, keyed by error shape + locator. The locator's
   //   quoted text ('Select' vs 'Cancel subscription') IS the identity, so it is kept
   //   verbatim — only dynamic fragments (hex ids, numbers) inside it are neutralized.
   const basis = isSnapshotError(fail.error)
-    ? `${normalizeError(fail.error)}|${fail.file}`
+    ? `snapshot|${fail.file}`
     : `${normalizeError(fail.error)}|${locatorKey(fail.error)}`;
   return crypto.createHash('sha1').update(basis).digest('hex').slice(0, 12);
 }
+
+// Bump whenever fingerprint(), normalizeError(), or locatorKey() changes what hash an existing
+// failure produces. Resolved-detection treats fingerprint absence as "fixed" — a silent hash
+// change makes every previously-tracked cluster look resolved and auto-closes it, whether or not
+// anything was actually fixed. This happened for real: v1 -> v2 dropped the error text from the
+// snapshot basis (keying on file alone), and every already-tracked screenshot task got wrongly
+// closed on the first run after that shipped. The version-gate in main() is the fix — it skips
+// resolved-detection for one run when this doesn't match the state file's recorded version.
+const FINGERPRINT_SCHEMA_VERSION = 2;
 
 /** Locator with dynamic fragments neutralized but quoted text preserved. */
 function locatorKey(msg: string): string {
@@ -276,6 +322,14 @@ class Taiga {
       `/api/v1/epics/by_ref?ref=${encodeURIComponent(ref)}&project=${this.projectId}`,
     );
     return e.id;
+  }
+
+  /** --close-ref takes the human-visible task ref (#1234); the rest of the API wants the internal id. */
+  async taskIdByRef(ref: number): Promise<number> {
+    const t = await this.get(
+      `/api/v1/tasks/by_ref?ref=${ref}&project=${this.projectId}`,
+    );
+    return t.id;
   }
 
   async linkStoryToEpic(epicId: number, storyId: number) {
@@ -441,6 +495,49 @@ class Taiga {
 // ---------- Main ----------
 
 async function main() {
+  if (CLOSE_REFS.length) {
+    console.log(
+      `[close-ref] Closing ${CLOSE_REFS.length} task(s) directly: ${CLOSE_REFS.join(', ')}`,
+    );
+    if (DRY_RUN) {
+      console.log('[dry-run] Would close the above and exit — no Taiga calls made.');
+      return;
+    }
+    const taiga = new Taiga(requiredEnv('TAIGA_URL'));
+    await taiga.login(
+      requiredEnv('TAIGA_USERNAME'),
+      requiredEnv('TAIGA_PASSWORD'),
+      requiredEnv('TAIGA_PROJECT'),
+    );
+    const assigneeName = process.env.TAIGA_CLOSE_ASSIGNEE || 'qa.integrations.bot';
+    const statusName = process.env.TAIGA_CLOSED_STATUS || 'Closed';
+    const statusId = await taiga.taskStatusIdByName(statusName);
+    const assigneeId = await taiga.userIdByUsername(assigneeName);
+    if (!statusId) {
+      console.error(`Task status "${statusName}" not found in project — aborting.`);
+      process.exit(1);
+    }
+    for (const refStr of CLOSE_REFS) {
+      const ref = Number(refStr);
+      try {
+        const taskId = await taiga.taskIdByRef(ref);
+        await taiga.closeTask(taskId, statusId, assigneeId, CLOSE_COMMENT);
+        console.log(
+          `Closed task #${ref}${assigneeId ? ` and assigned to ${assigneeName}` : ''}.`,
+        );
+      } catch (e) {
+        console.error(
+          `Could not close task #${ref}: ${e instanceof Error ? e.message : e}`,
+        );
+      }
+    }
+    return;
+  }
+
+  console.log(
+    `[triage] results=${RESULTS_PATH} state=${STATE_PATH}${RELEASE ? ` release=${RELEASE} group-by=${GROUP_BY}` : ' mode=daily'}${RUN_ID ? ` run-id=${RUN_ID}` : ''}${APP_VERSION ? ` app-version=${APP_VERSION}` : ''}${CLOSE_ONLY ? ' close-only=1' : ''}${DRY_RUN ? ' dry-run=1' : ''}`,
+  );
+
   const raw = JSON.parse(fs.readFileSync(RESULTS_PATH, 'utf8'));
   const failures: Failure[] = [];
   for (const suite of raw.suites ?? [])
@@ -453,6 +550,22 @@ async function main() {
   const state: State = fs.existsSync(STATE_PATH)
     ? JSON.parse(fs.readFileSync(STATE_PATH, 'utf8'))
     : {};
+
+  // Missing version = state predates this check entirely (schema v1, the original scheme).
+  const storedFingerprintVersion = (state as any)['__fingerprint_version__'] ?? 1;
+  const fingerprintSchemaChanged =
+    storedFingerprintVersion !== FINGERPRINT_SCHEMA_VERSION;
+  if (fingerprintSchemaChanged) {
+    console.log(
+      `⚠️  Fingerprint scheme changed since this state was last saved (v${storedFingerprintVersion} -> v${FINGERPRINT_SCHEMA_VERSION}). ` +
+        `Skipping resolved-detection for this run only, so tasks whose identity just changed aren't ` +
+        `mistaken for fixed and auto-closed. Still-failing clusters will refile as "new" under their ` +
+        `updated fingerprint — dedupe against the old task by hand. Genuinely-resolved old entries ` +
+        `won't be auto-closeable anymore; close them with --close-ref once confirmed.`,
+    );
+  }
+  if (!DRY_RUN)
+    (state as any)['__fingerprint_version__'] = FINGERPRINT_SCHEMA_VERSION;
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -497,7 +610,8 @@ async function main() {
     }
   }
   for (const fp of Object.keys(state)) {
-    if (fp.startsWith('__')) continue; // internal bookkeeping (release story, file->task map), not a cluster
+    if (fp.startsWith('__') || fp.startsWith('file::') || fp.startsWith('folder::'))
+      continue; // internal bookkeeping / per-file / per-folder tracking (below), not a cluster
     if (!clusters.has(fp)) {
       state[fp].seenInLastNRuns = [0, ...(state[fp].seenInLastNRuns ?? [])].slice(
         0,
@@ -505,10 +619,109 @@ async function main() {
       );
       state[fp].consecutiveRuns = 0;
       if (
-        state[fp].seenInLastNRuns.slice(0, 3).every((x) => x === 0) &&
-        state[fp].taigaRef
+        state[fp].seenInLastNRuns.slice(0, 1).every((x) => x === 0) &&
+        state[fp].taigaRef &&
+        !fingerprintSchemaChanged
       ) {
-        resolved.push(fp); // green 3 runs in a row -> candidate for closing
+        resolved.push(fp); // gone in the next run -> candidate for closing
+      }
+    }
+  }
+
+  // ----- Release + group-by=file: track each spec file's own task, independently of cluster
+  // fingerprints. Non-snapshot clusters can span multiple files, and a file's failures can bounce
+  // between fingerprints run to run, so "is this file still failing?" has to be asked directly —
+  // otherwise (the bug this replaces) file tasks were never linked back into state at all, and
+  // auto-close could never find them.
+  const fileStateKey = (file: string) => `file::${file}`;
+  if (RELEASE && GROUP_BY === 'file') {
+    const failingFiles = new Set<string>();
+    for (const c of clusters.values())
+      for (const t of c.tests) failingFiles.add(t.file);
+
+    for (const file of failingFiles) {
+      const key = fileStateKey(file);
+      if (state[key]) {
+        state[key].lastSeen = today;
+        state[key].consecutiveRuns = (state[key].consecutiveRuns ?? 0) + 1;
+        state[key].seenInLastNRuns = [
+          1,
+          ...(state[key].seenInLastNRuns ?? []),
+        ].slice(0, 10);
+      } else {
+        state[key] = {
+          firstSeen: today,
+          lastSeen: today,
+          consecutiveRuns: 1,
+          seenInLastNRuns: [1],
+        };
+      }
+    }
+    for (const key of Object.keys(state)) {
+      if (!key.startsWith('file::')) continue;
+      const file = key.slice('file::'.length);
+      if (!failingFiles.has(file)) {
+        state[key].seenInLastNRuns = [
+          0,
+          ...(state[key].seenInLastNRuns ?? []),
+        ].slice(0, 10);
+        state[key].consecutiveRuns = 0;
+        if (
+          state[key].seenInLastNRuns.slice(0, 1).every((x) => x === 0) &&
+          state[key].taskId
+        ) {
+          resolved.push(key); // file has no failing tests in this run -> candidate for closing
+        }
+      }
+    }
+  }
+
+  // ----- Release + group-by=folder: same idea as file-mode, but scoped to snapshot/visual-diff
+  // failures only, bucketed by immediate parent folder — the "claim this and update snapshots"
+  // unit when one shared cause (e.g. a viewport change) invalidates screenshots across many spec
+  // files at once. Functional (non-snapshot) clusters are untouched by this block — they keep
+  // one-task-per-cluster treatment below, since each is a distinct bug, not a shared visual cause.
+  const folderStateKey = (folder: string) => `folder::${folder}`;
+  if (RELEASE && GROUP_BY === 'folder') {
+    const failingFolders = new Set<string>();
+    for (const c of clusters.values()) {
+      if (!isSnapshotError(c.errorSample)) continue;
+      for (const t of c.tests) failingFolders.add(path.dirname(t.file));
+    }
+
+    for (const folder of failingFolders) {
+      const key = folderStateKey(folder);
+      if (state[key]) {
+        state[key].lastSeen = today;
+        state[key].consecutiveRuns = (state[key].consecutiveRuns ?? 0) + 1;
+        state[key].seenInLastNRuns = [
+          1,
+          ...(state[key].seenInLastNRuns ?? []),
+        ].slice(0, 10);
+      } else {
+        state[key] = {
+          firstSeen: today,
+          lastSeen: today,
+          consecutiveRuns: 1,
+          seenInLastNRuns: [1],
+        };
+      }
+    }
+    for (const key of Object.keys(state)) {
+      if (!key.startsWith('folder::')) continue;
+      const folder = key.slice('folder::'.length);
+      if (!failingFolders.has(folder)) {
+        state[key].seenInLastNRuns = [
+          0,
+          ...(state[key].seenInLastNRuns ?? []),
+        ].slice(0, 10);
+        state[key].consecutiveRuns = 0;
+        if (
+          state[key].seenInLastNRuns.slice(0, 1).every((x) => x === 0) &&
+          state[key].taskId
+        ) {
+          resolved.push(key); // folder has no failing snapshot tests in this run -> candidate for closing
+        }
       }
     }
   }
@@ -516,330 +729,518 @@ async function main() {
   const acknowledged = new Map<string, string>(); // fingerprint -> 'triaged' (task closed per team convention)
 
   // Snapshot resolved entries now — closing may delete them from state below.
-  const resolvedInfo = resolved.map((fp) => ({
-    fp,
-    taskRef: state[fp].taskRef,
-    taskId: state[fp].taskId,
-    storyRef: state[fp].taigaRef,
-    subject: state[fp].subject,
-    closed: false,
-  }));
-
-  // ----- Taiga -----
-  let taiga: Taiga | null = null;
-  if (!DRY_RUN && newClusters.length + knownClusters.length + resolved.length > 0) {
-    taiga = new Taiga(requiredEnv('TAIGA_URL'));
-    await taiga.login(
-      requiredEnv('TAIGA_USERNAME'),
-      requiredEnv('TAIGA_PASSWORD'),
-      requiredEnv('TAIGA_PROJECT'),
+  const resolvedInfo = resolved.map((fp) => {
+    // Every task tracked against this entry: the single taskId (release/cluster mode, file mode)
+    // plus taskIds[] (daily mode's one-task-per-test/bundle). Deduplicated, order preserved.
+    const ids = [state[fp].taskId, ...(state[fp].taskIds ?? [])].filter(
+      (v): v is number => v != null,
     );
-  }
+    const refs = [state[fp].taskRef, ...(state[fp].taskRefs ?? [])].filter(
+      (v): v is number => v != null,
+    );
+    return {
+      fp,
+      taskIds: [...new Set(ids)],
+      taskRefs: [...new Set(refs)],
+      taskRef: state[fp].taskRef, // kept for the single-task-per-entry call sites (digest/mm links)
+      taskId: state[fp].taskId,
+      storyRef: state[fp].taigaRef,
+      subject: state[fp].subject,
+      closed: false,
+    };
+  });
 
-  const storyTags = (process.env.TAIGA_TAGS ?? 'daily,needs-triage')
-    .split(',')
-    .map((t: string) => t.trim())
-    .filter((t: string) => t.length > 0);
-
-  if (RELEASE) {
-    // ----- Release mode: ONE user story for the whole release, one task per cluster -----
-    const releaseTag = `release-${RELEASE}`.toLowerCase();
-    const storyKey = '__release_story__';
-    const storyState = (state as any)[storyKey] as StateEntry | undefined;
-
-    let storyId = storyState?.taigaId;
-    let storyRef = storyState?.taigaRef;
-
-    // Someone may have deleted the story in Taiga since the last run — recreate if so.
-    // Its tasks died with it, so known clusters need their tasks rebuilt too.
-    let storyRecreated = false;
-    if (taiga && storyId && !(await taiga.storyExists(storyId))) {
-      console.log(
-        `Stored release story ${storyId} no longer exists in Taiga — rebuilding story and tasks.`,
-      );
-      storyId = undefined;
-      storyRef = undefined;
-      storyRecreated = true;
-      delete (state as any)['__file_tasks__']; // file-mode task map died with the story
-    }
-
-    if (taiga && !storyId) {
-      const subject = `[release ${RELEASE}] Daily failures triage`;
-      const description = [
-        `Triage of daily test failures for release **${RELEASE}**.`,
-        '',
-        `Run date: ${today}`,
-        REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
-        '',
-        'Each task below is one failure cluster (one root cause). Classify each as real bug or test to update.',
-        ...(changelog
-          ? [
-              '',
-              `**App changes since last triage (${changelog.total} commits, [compare](${changelog.compareUrl})):**`,
-              ...changelog.lines,
-            ]
-          : []),
-      ].join('\n');
-      const { id, ref } = await taiga.createUserStory(subject, description, [
-        ...storyTags,
-        releaseTag,
-      ]);
-      storyId = id;
-      storyRef = ref;
-      (state as any)[storyKey] = {
-        taigaId: id,
-        taigaRef: ref,
-        firstSeen: today,
-        lastSeen: today,
-        consecutiveRuns: 1,
-        seenInLastNRuns: [1],
-      };
-      console.log(`Created release user story #${ref} [${releaseTag}]`);
-      if (EPIC_REF) {
-        await taiga.linkStoryToEpic(await taiga.epicIdByRef(EPIC_REF), id);
-        console.log(`Linked story #${ref} under epic #${EPIC_REF}`);
-      }
-    } else if (!taiga) {
-      console.log(
-        `[dry-run] Would create/reuse release user story: [release ${RELEASE}] Daily failures triage [tags: ${[...storyTags, releaseTag].join(', ')}]${EPIC_REF ? ` under epic #${EPIC_REF}` : ''}`,
+  // Everything from here through auto-close mutates Taiga. Wrapped in try/finally so a mid-run
+  // throw (a Taiga 500, a network blip) still saves whatever was already created/closed instead of
+  // discarding it — otherwise the next run recreates those entities as duplicates.
+  let taiga: Taiga | null = null;
+  try {
+    // ----- Taiga -----
+    if (
+      !DRY_RUN &&
+      newClusters.length + knownClusters.length + resolved.length > 0
+    ) {
+      taiga = new Taiga(requiredEnv('TAIGA_URL'));
+      await taiga.login(
+        requiredEnv('TAIGA_USERNAME'),
+        requiredEnv('TAIGA_PASSWORD'),
+        requiredEnv('TAIGA_PROJECT'),
       );
     }
 
-    if (GROUP_BY === 'file') {
-      // One task per spec file, listing all its failing tests (from new clusters).
-      const byFile = new Map<string, Failure[]>();
-      for (const c of storyRecreated
-        ? [...newClusters, ...knownClusters]
-        : newClusters) {
-        for (const t of c.tests) {
-          byFile.set(t.file, [...(byFile.get(t.file) ?? []), t]);
-        }
-      }
-      const fileTasks: Record<string, number> =
-        (state as any)['__file_tasks__'] ?? {};
+    const storyTags = (process.env.TAIGA_TAGS ?? 'daily,needs-triage')
+      .split(',')
+      .map((t: string) => t.trim())
+      .filter((t: string) => t.length > 0);
 
-      for (const [file, tests] of byFile) {
-        const lines = tests.map(
-          (t) =>
-            `- \`${t.title}\`${t.qaseId ? ` (Qase: ${t.qaseId})` : ''}${t.retries ? ` — ${t.retries} retries` : ''}\n  \`\`\`\n  ${conciseError(t.error)}\n  \`\`\``,
-        );
-        if (taiga && storyId) {
-          if (fileTasks[file]) {
-            await taiga.commentTask(
-              fileTasks[file],
-              [`New failures on ${today}:`, ...lines].join('\n'),
-            );
-            console.log(
-              `  ~ appended ${tests.length} test(s) to existing task for ${file}`,
-            );
-          } else {
-            const { id } = await taiga.createTask(
-              storyId,
-              `${path.basename(file)} — ${tests.length} failing test${tests.length > 1 ? 's' : ''}`,
-              [
-                `**Spec file:** \`${file}\``,
-                '',
-                `**Failing tests (${tests.length}):**`,
-                ...lines,
-                '',
-                REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
-              ].join('\n'),
-            );
-            fileTasks[file] = id;
-            console.log(`  + task: ${path.basename(file)} (${tests.length} tests)`);
-          }
-        } else {
-          const qase = tests.map((t) => t.qaseId).filter(Boolean);
-          console.log(
-            `[dry-run]   + task: ${path.basename(file)} — ${tests.length} failing test(s)${qase.length ? ` [Qase: ${qase.join(', ')}]` : ''}`,
-          );
-        }
-      }
-      (state as any)['__file_tasks__'] = fileTasks;
-      // Cluster fingerprints still track new/known/resolved against the release story.
-      for (const c of newClusters) {
-        state[c.fingerprint].taigaId = storyId;
-        state[c.fingerprint].taigaRef = storyRef;
-      }
-    } else {
-      const clustersNeedingTasks = storyRecreated
-        ? [...newClusters, ...knownClusters]
-        : newClusters;
-      if (storyRecreated && knownClusters.length)
+    // --close-only: sweep and close resolved tasks (below), but file nothing new — new/known
+    // clusters stay untouched in state so a later normal run still files them.
+    if (CLOSE_ONLY) {
+      console.log(
+        `[close-only] Skipping story/task creation — ${newClusters.length} new, ${knownClusters.length} known cluster(s) left untouched.`,
+      );
+    } else if (RELEASE) {
+      // ----- Release mode: ONE user story for the whole release, one task per cluster -----
+      const releaseTag = `release-${RELEASE}`.toLowerCase();
+      const storyKey = '__release_story__';
+      const storyState = (state as any)[storyKey] as StateEntry | undefined;
+
+      let storyId = storyState?.taigaId;
+      let storyRef = storyState?.taigaRef;
+
+      // Someone may have deleted the story in Taiga since the last run — recreate if so.
+      // Its tasks died with it, so known clusters need their tasks rebuilt too.
+      let storyRecreated = false;
+      if (taiga && storyId && !(await taiga.storyExists(storyId))) {
         console.log(
-          `Rebuilding tasks for ${knownClusters.length} known cluster(s) in the new story.`,
+          `Stored release story ${storyId} no longer exists in Taiga — rebuilding story and tasks.`,
         );
-      for (const c of clustersNeedingTasks) {
-        const taskSubject = `${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
-        if (taiga && storyId) {
-          const { id: taskId, ref: taskRef } = await taiga.createTask(
-            storyId,
-            taskSubject,
-            clusterDescription(c),
+        storyId = undefined;
+        storyRef = undefined;
+        storyRecreated = true;
+        for (const key of Object.keys(state)) {
+          if (key.startsWith('file::') || key.startsWith('folder::')) {
+            delete state[key].taskId; // file/folder tasks died with the story — rebuilt below
+            delete state[key].taskRef;
+          }
+        }
+      }
+
+      if (taiga && !storyId) {
+        const subject = `[release ${RELEASE}] Daily failures triage`;
+        const description = [
+          `Triage of daily test failures for release **${RELEASE}**.`,
+          '',
+          `Run date: ${today}`,
+          RUN_ID ? `Run: ${RUN_ID}` : '',
+          REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
+          '',
+          'Each task below is one failure cluster (one root cause). Classify each as real bug or test to update.',
+          ...(changelog
+            ? [
+                '',
+                `**App changes since last triage (${changelog.total} commits, [compare](${changelog.compareUrl})):**`,
+                ...changelog.lines,
+              ]
+            : []),
+        ].join('\n');
+        const { id, ref } = await taiga.createUserStory(subject, description, [
+          ...storyTags,
+          releaseTag,
+        ]);
+        storyId = id;
+        storyRef = ref;
+        (state as any)[storyKey] = {
+          taigaId: id,
+          taigaRef: ref,
+          firstSeen: today,
+          lastSeen: today,
+          consecutiveRuns: 1,
+          seenInLastNRuns: [1],
+        };
+        console.log(`Created release user story #${ref} [${releaseTag}]`);
+        if (EPIC_REF) {
+          await taiga.linkStoryToEpic(await taiga.epicIdByRef(EPIC_REF), id);
+          console.log(`Linked story #${ref} under epic #${EPIC_REF}`);
+        }
+      } else if (!taiga) {
+        console.log(
+          `[dry-run] Would create/reuse release user story: [release ${RELEASE}] Daily failures triage [tags: ${[...storyTags, releaseTag].join(', ')}]${EPIC_REF ? ` under epic #${EPIC_REF}` : ''}`,
+        );
+      }
+
+      if (GROUP_BY === 'file') {
+        // One task per spec file, listing all its failing tests (from new clusters).
+        const byFile = new Map<string, Failure[]>();
+        for (const c of storyRecreated
+          ? [...newClusters, ...knownClusters]
+          : newClusters) {
+          for (const t of c.tests) {
+            byFile.set(t.file, [...(byFile.get(t.file) ?? []), t]);
+          }
+        }
+
+        for (const [file, tests] of byFile) {
+          const lines = tests.map(
+            (t) =>
+              `- \`${t.title}\`${t.qaseId ? ` (Qase: ${t.qaseId})` : ''}${t.retries ? ` — ${t.retries} retries` : ''}\n  \`\`\`\n  ${conciseError(t.error)}\n  \`\`\``,
           );
+          const fileKey = fileStateKey(file);
+          const fileEntry = state[fileKey]; // created above by the file-tracking block
+          const subject = `${qaseSubjectPrefix(tests)}${path.basename(file)} — ${tests.length} failing test${tests.length > 1 ? 's' : ''}`;
+          if (taiga && storyId) {
+            if (fileEntry?.taskId) {
+              await taiga.commentTask(
+                fileEntry.taskId,
+                [`New failures on ${today}:`, ...lines].join('\n'),
+              );
+              if (fileEntry) fileEntry.subject = subject.slice(0, 120);
+              console.log(
+                `  ~ appended ${tests.length} test(s) to existing task for ${file}`,
+              );
+            } else {
+              const { id, ref } = await taiga.createTask(
+                storyId,
+                subject,
+                [
+                  `**Spec file:** \`${file}\``,
+                  '',
+                  `**Failing tests (${tests.length}):**`,
+                  ...lines,
+                  '',
+                  RUN_ID ? `Run: ${RUN_ID}` : '',
+                  REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
+                ].join('\n'),
+              );
+              if (state[fileKey]) {
+                state[fileKey].taskId = id;
+                state[fileKey].taskRef = ref;
+                state[fileKey].subject = subject.slice(0, 120);
+                state[fileKey].taigaId = storyId;
+                state[fileKey].taigaRef = storyRef;
+              }
+              console.log(`  + task #${ref}: ${subject}`);
+            }
+          } else {
+            console.log(
+              `[dry-run]   + task: ${qaseSubjectPrefix(tests)}${path.basename(file)} — ${tests.length} failing test(s)`,
+            );
+          }
+        }
+        // Cluster fingerprints still track new/known/resolved against the release story.
+        for (const c of newClusters) {
           state[c.fingerprint].taigaId = storyId;
           state[c.fingerprint].taigaRef = storyRef;
-          state[c.fingerprint].taskId = taskId;
-          state[c.fingerprint].taskRef = taskRef;
-          state[c.fingerprint].subject = taskSubject.slice(0, 120);
-          console.log(`  + task #${taskRef}: ${taskSubject}`);
-        } else {
-          console.log(`[dry-run]   + task: ${taskSubject}`);
         }
-      }
-    }
-    if (taiga && storyId && knownClusters.length) {
-      await taiga.commentStory(
-        storyId,
-        `Re-run on ${today}: ${knownClusters.length} cluster(s) still failing, ${newClusters.length} new. Report: ${REPORT_URL}`,
-      );
-    }
-    // Team convention: closing a task (with a result comment) = TRIAGED.
-    // Known cluster + closed task -> acknowledged: reviewed, fix pending. No noise.
-    // Known cluster + open task   -> still needs triage.
-    if (taiga) {
-      for (const c of knownClusters) {
-        const e = state[c.fingerprint];
-        if (!e?.taskId) continue;
-        const st = await taiga.taskStatus(e.taskId);
-        if (st?.isClosed) acknowledged.set(c.fingerprint, 'triaged');
-      }
-      if (acknowledged.size)
-        console.log(
-          `${acknowledged.size} known cluster(s) already triaged (task closed).`,
+      } else if (GROUP_BY === 'folder') {
+        // Snapshot clusters get bundled by immediate parent folder (one claimable task covering
+        // every spec file in it); functional clusters keep the usual one-task-per-cluster treatment,
+        // since they're distinct bugs rather than a shared visual cause.
+        const clustersInScope = storyRecreated
+          ? [...newClusters, ...knownClusters]
+          : newClusters;
+        const snapshotClusters = clustersInScope.filter((c) =>
+          isSnapshotError(c.errorSample),
         );
-    }
-
-    if (taiga && storyId && changelog && !!storyState?.taigaId) {
-      // story pre-existed and the app changed since -> post the changelog as a comment
-      await taiga.commentStory(
-        storyId,
-        [
-          `App changed: \`${prevVersion!.version}\` -> \`${APP_VERSION}\` (${changelog.total} commits, [compare](${changelog.compareUrl}))`,
-          ...changelog.lines,
-        ].join('\n'),
-      );
-    }
-  } else {
-    // ----- Daily mode: one user story per cluster, one task per test -----
-    for (const c of newClusters) {
-      const subject = `[daily] ${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
-      const description = clusterDescription(c);
-      if (taiga) {
-        const { id, ref } = await taiga.createUserStory(
-          subject,
-          description,
-          storyTags,
+        const functionalClusters = clustersInScope.filter(
+          (c) => !isSnapshotError(c.errorSample),
         );
-        state[c.fingerprint].taigaId = id;
-        state[c.fingerprint].taigaRef = ref;
-        console.log(`Created Taiga user story #${ref} for cluster ${c.fingerprint}`);
-        if (EPIC_REF)
-          await taiga.linkStoryToEpic(await taiga.epicIdByRef(EPIC_REF), id);
-        for (const t of c.tests) {
-          await taiga.createTask(
-            id,
-            `Review: ${t.title}`,
-            [
-              `File: \`${t.file}\``,
-              t.qaseId ? `Qase: ${t.qaseId}` : '',
-              t.retries ? `Retries: ${t.retries}` : '',
-              '```',
-              t.error,
-              '```',
-            ]
-              .filter(Boolean)
-              .join('\n'),
+        if (storyRecreated && knownClusters.length)
+          console.log(
+            `Rebuilding tasks for ${knownClusters.length} known cluster(s) in the new story.`,
           );
-        }
-        console.log(`  + ${c.tests.length} task(s) inside`);
-      } else {
-        console.log(
-          `[dry-run] Would create user story: ${subject} [tags: ${storyTags.join(', ')}]`,
-        );
-        for (const t of c.tests)
-          console.log(`[dry-run]   + task: Review: ${t.title}`);
-      }
-    }
 
-    for (const c of knownClusters) {
-      const entry = state[c.fingerprint];
-      if (taiga && entry.taigaId) {
-        await taiga.commentStory(
-          entry.taigaId,
-          `Still failing on ${today} (${c.tests.length} tests, ${entry.consecutiveRuns} consecutive runs). Report: ${REPORT_URL}`,
-        );
-      }
-    }
-  }
-
-  // ----- Auto-close resolved tasks (green 3 consecutive triaged runs) -----
-  if (taiga && resolvedInfo.length) {
-    const assigneeName = process.env.TAIGA_CLOSE_ASSIGNEE || 'qa.integrations.bot';
-    const statusName = process.env.TAIGA_CLOSED_STATUS || 'Closed';
-    let statusId: number | null = null;
-    let assigneeId: number | null = null;
-    try {
-      statusId = await taiga.taskStatusIdByName(statusName);
-      assigneeId = await taiga.userIdByUsername(assigneeName);
-      if (!statusId)
-        console.log(
-          `Auto-close skipped: task status "${statusName}" not found in project`,
-        );
-      if (!assigneeId)
-        console.log(
-          `Auto-close: user "${assigneeName}" not found in project — closing without reassigning`,
-        );
-    } catch (e) {
-      console.log(`Auto-close skipped: ${e instanceof Error ? e.message : e}`);
-    }
-    if (statusId) {
-      for (const r of resolvedInfo) {
-        if (!r.taskId) continue; // no own task recorded (file mode / pre-upgrade state) -> stays a manual candidate
-        try {
-          const st = await taiga.taskStatus(r.taskId);
-          if (st?.isClosed) {
-            // already triaged & closed by a human — just record the verification
-            await taiga.commentTask(
-              r.taskId,
-              `Verified by triage: green for 3 consecutive triaged runs (${today}).`,
+        for (const c of functionalClusters) {
+          const taskSubject = `${qaseSubjectPrefix(c.tests)}${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
+          if (taiga && storyId) {
+            const { id: taskId, ref: taskRef } = await taiga.createTask(
+              storyId,
+              taskSubject,
+              clusterDescription(c),
             );
+            state[c.fingerprint].taigaId = storyId;
+            state[c.fingerprint].taigaRef = storyRef;
+            state[c.fingerprint].taskId = taskId;
+            state[c.fingerprint].taskRef = taskRef;
+            state[c.fingerprint].subject = taskSubject.slice(0, 120);
+            console.log(`  + task #${taskRef}: ${taskSubject}`);
+          } else {
+            console.log(`[dry-run]   + task: ${taskSubject}`);
+          }
+        }
+
+        const byFolder = new Map<string, Failure[]>();
+        for (const c of snapshotClusters) {
+          for (const t of c.tests) {
+            const folder = path.dirname(t.file);
+            byFolder.set(folder, [...(byFolder.get(folder) ?? []), t]);
+          }
+        }
+        for (const [folder, tests] of byFolder) {
+          const byFile = new Map<string, Failure[]>();
+          for (const t of tests)
+            byFile.set(t.file, [...(byFile.get(t.file) ?? []), t]);
+          const fileSections = [...byFile.entries()].map(
+            ([file, fileTests]) =>
+              `**${path.basename(file)}** (${fileTests.length}):\n` +
+              fileTests
+                .map(
+                  (t) => `- \`${t.title}\`${t.qaseId ? ` (Qase: ${t.qaseId})` : ''}`,
+                )
+                .join('\n'),
+          );
+          const folderKey = folderStateKey(folder);
+          const folderEntry = state[folderKey]; // created above by the folder-tracking block
+          const subject = `${qaseSubjectPrefix(tests)}${folder}/ — ${tests.length} screenshot diff${tests.length > 1 ? 's' : ''} across ${byFile.size} file${byFile.size > 1 ? 's' : ''}`;
+          if (taiga && storyId) {
+            if (folderEntry?.taskId) {
+              await taiga.commentTask(
+                folderEntry.taskId,
+                [`New/updated diffs on ${today}:`, ...fileSections].join('\n\n'),
+              );
+              if (folderEntry) folderEntry.subject = subject.slice(0, 120);
+              console.log(
+                `  ~ appended ${tests.length} test(s) to existing folder task for ${folder}/`,
+              );
+            } else {
+              const { id, ref } = await taiga.createTask(
+                storyId,
+                subject,
+                [
+                  `**Folder:** \`${folder}/\``,
+                  '',
+                  `Screenshot diffs across ${byFile.size} spec file${byFile.size > 1 ? 's' : ''} — claim this task to update snapshots for the whole folder.`,
+                  '',
+                  ...fileSections,
+                  '',
+                  RUN_ID ? `Run: ${RUN_ID}` : '',
+                  REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
+                ].join('\n'),
+              );
+              if (state[folderKey]) {
+                state[folderKey].taskId = id;
+                state[folderKey].taskRef = ref;
+                state[folderKey].subject = subject.slice(0, 120);
+                state[folderKey].taigaId = storyId;
+                state[folderKey].taigaRef = storyRef;
+              }
+              console.log(`  + task #${ref}: ${subject}`);
+            }
+          } else {
+            console.log(`[dry-run]   + task: ${subject}`);
+          }
+        }
+        // Cluster fingerprints still track new/known/resolved against the release story. Functional
+        // clusters already got their own taigaId/taigaRef above; snapshot clusters need the same
+        // fallback link (their real task lives under folder::, not their own fingerprint).
+        for (const c of newClusters) {
+          if (isSnapshotError(c.errorSample)) {
+            state[c.fingerprint].taigaId = storyId;
+            state[c.fingerprint].taigaRef = storyRef;
+          }
+        }
+      } else {
+        const clustersNeedingTasks = storyRecreated
+          ? [...newClusters, ...knownClusters]
+          : newClusters;
+        if (storyRecreated && knownClusters.length)
+          console.log(
+            `Rebuilding tasks for ${knownClusters.length} known cluster(s) in the new story.`,
+          );
+        for (const c of clustersNeedingTasks) {
+          const taskSubject = `${qaseSubjectPrefix(c.tests)}${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
+          if (taiga && storyId) {
+            const { id: taskId, ref: taskRef } = await taiga.createTask(
+              storyId,
+              taskSubject,
+              clusterDescription(c),
+            );
+            state[c.fingerprint].taigaId = storyId;
+            state[c.fingerprint].taigaRef = storyRef;
+            state[c.fingerprint].taskId = taskId;
+            state[c.fingerprint].taskRef = taskRef;
+            state[c.fingerprint].subject = taskSubject.slice(0, 120);
+            console.log(`  + task #${taskRef}: ${taskSubject}`);
+          } else {
+            console.log(`[dry-run]   + task: ${taskSubject}`);
+          }
+        }
+      }
+      if (taiga && storyId && knownClusters.length) {
+        await taiga.commentStory(
+          storyId,
+          `Re-run on ${today}${RUN_ID ? ` (run ${RUN_ID})` : ''}: ${knownClusters.length} cluster(s) still failing, ${newClusters.length} new. Report: ${REPORT_URL}`,
+        );
+      }
+      // Team convention: closing a task (with a result comment) = TRIAGED.
+      // Known cluster + closed task -> acknowledged: reviewed, fix pending. No noise.
+      // Known cluster + open task   -> still needs triage.
+      if (taiga) {
+        for (const c of knownClusters) {
+          const e = state[c.fingerprint];
+          if (!e?.taskId) continue;
+          const st = await taiga.taskStatus(e.taskId);
+          if (st?.isClosed) acknowledged.set(c.fingerprint, 'triaged');
+        }
+        if (acknowledged.size)
+          console.log(
+            `${acknowledged.size} known cluster(s) already triaged (task closed).`,
+          );
+      }
+
+      if (taiga && storyId && changelog && !!storyState?.taigaId) {
+        // story pre-existed and the app changed since -> post the changelog as a comment
+        await taiga.commentStory(
+          storyId,
+          [
+            `App changed: \`${prevVersion!.version}\` -> \`${APP_VERSION}\` (${changelog.total} commits, [compare](${changelog.compareUrl}))`,
+            ...changelog.lines,
+          ].join('\n'),
+        );
+      }
+    } else {
+      // ----- Daily mode: one user story per cluster. One task per test, EXCEPT snapshot
+      // clusters (post-fingerprint-fix, a snapshot cluster = one spec file's worth of diffs,
+      // which are debugged together) get a single bundled task instead of N per-test ones.
+      for (const c of newClusters) {
+        const subject = `[daily] ${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
+        const description = clusterDescription(c);
+        const snapshotCluster = isSnapshotError(c.errorSample);
+        if (taiga) {
+          const { id, ref } = await taiga.createUserStory(
+            subject,
+            description,
+            storyTags,
+          );
+          state[c.fingerprint].taigaId = id;
+          state[c.fingerprint].taigaRef = ref;
+          console.log(
+            `Created Taiga user story #${ref} for cluster ${c.fingerprint}`,
+          );
+          if (EPIC_REF)
+            await taiga.linkStoryToEpic(await taiga.epicIdByRef(EPIC_REF), id);
+          const taskIds: number[] = [];
+          const taskRefs: number[] = [];
+          if (snapshotCluster) {
+            const { id: taskId, ref: taskRef } = await taiga.createTask(
+              id,
+              `${qaseSubjectPrefix(c.tests)}${path.basename(c.tests[0].file)} — ${c.tests.length} screenshot diff${c.tests.length > 1 ? 's' : ''}`,
+              clusterDescription(c),
+            );
+            taskIds.push(taskId);
+            taskRefs.push(taskRef);
+          } else {
+            for (const t of c.tests) {
+              const { id: taskId, ref: taskRef } = await taiga.createTask(
+                id,
+                `Review: ${t.title}`,
+                [
+                  `File: \`${t.file}\``,
+                  t.qaseId ? `Qase: ${t.qaseId}` : '',
+                  t.retries ? `Retries: ${t.retries}` : '',
+                  '```',
+                  t.error,
+                  '```',
+                ]
+                  .filter(Boolean)
+                  .join('\n'),
+              );
+              taskIds.push(taskId);
+              taskRefs.push(taskRef);
+            }
+          }
+          state[c.fingerprint].taskIds = taskIds; // so auto-close can find and close every one of them
+          state[c.fingerprint].taskRefs = taskRefs;
+          console.log(`  + ${taskIds.length} task(s) inside`);
+        } else {
+          console.log(
+            `[dry-run] Would create user story: ${subject} [tags: ${storyTags.join(', ')}]`,
+          );
+          if (snapshotCluster) {
             console.log(
-              `Task #${r.taskRef} already closed (triaged) — added verification comment: ${r.subject ?? r.fp}`,
+              `[dry-run]   + task: ${qaseSubjectPrefix(c.tests)}${path.basename(c.tests[0].file)} — ${c.tests.length} screenshot diff(s)`,
             );
           } else {
-            await taiga.closeTask(
-              r.taskId,
-              statusId,
-              assigneeId,
-              `Auto-closed by triage: green for 3 consecutive triaged runs (${today}).`,
-            );
-            console.log(
-              `Closed task #${r.taskRef}${assigneeId ? ` and assigned to ${assigneeName}` : ''}: ${r.subject ?? r.fp}`,
-            );
+            for (const t of c.tests)
+              console.log(`[dry-run]   + task: Review: ${t.title}`);
           }
-          r.closed = true;
-          delete state[r.fp]; // if it ever fails again it is a new cluster -> new task
-        } catch (e) {
-          console.log(
-            `Could not close task #${r.taskRef}: ${e instanceof Error ? e.message : e}`,
+        }
+      }
+
+      for (const c of knownClusters) {
+        const entry = state[c.fingerprint];
+        if (taiga && entry.taigaId) {
+          await taiga.commentStory(
+            entry.taigaId,
+            `Still failing on ${today}${RUN_ID ? ` (run ${RUN_ID})` : ''} (${c.tests.length} tests, ${entry.consecutiveRuns} consecutive runs). Report: ${REPORT_URL}`,
           );
         }
       }
     }
-  }
 
-  if (DRY_RUN) {
-    console.log(
-      '[dry-run] state NOT saved — dry runs leave no trace, so a later real run still sees these failures as new',
-    );
-  } else {
-    fs.mkdirSync(path.dirname(STATE_PATH), { recursive: true });
-    fs.writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
+    // ----- Auto-close resolved tasks (error gone in the next triaged run) -----
+    if (taiga && resolvedInfo.length) {
+      const assigneeName = process.env.TAIGA_CLOSE_ASSIGNEE || 'qa.integrations.bot';
+      const statusName = process.env.TAIGA_CLOSED_STATUS || 'Closed';
+      let statusId: number | null = null;
+      let assigneeId: number | null = null;
+      try {
+        statusId = await taiga.taskStatusIdByName(statusName);
+        assigneeId = await taiga.userIdByUsername(assigneeName);
+        if (!statusId)
+          console.log(
+            `Auto-close skipped: task status "${statusName}" not found in project`,
+          );
+        if (!assigneeId)
+          console.log(
+            `Auto-close: user "${assigneeName}" not found in project — closing without reassigning`,
+          );
+      } catch (e) {
+        console.log(`Auto-close skipped: ${e instanceof Error ? e.message : e}`);
+      }
+      if (statusId) {
+        for (const r of resolvedInfo) {
+          if (!r.taskIds.length) continue; // no own task recorded (pre-upgrade state) -> stays a manual candidate
+          let allOk = true;
+          // A resolved entry can carry several tasks (daily mode: one per test, or a bundled
+          // snapshot task) — close every one of them, not just the first.
+          for (let i = 0; i < r.taskIds.length; i++) {
+            const taskId = r.taskIds[i];
+            const taskRef = r.taskRefs[i];
+            try {
+              const st = await taiga.taskStatus(taskId);
+              if (st?.isClosed) {
+                // already triaged & closed by a human — just record the verification
+                await taiga.commentTask(
+                  taskId,
+                  `Verified by triage: not seen in the next triaged run (${today}).`,
+                );
+                console.log(
+                  `Task #${taskRef ?? taskId} already closed (triaged) — added verification comment: ${r.subject ?? r.fp}`,
+                );
+              } else {
+                await taiga.closeTask(
+                  taskId,
+                  statusId,
+                  assigneeId,
+                  `Auto-closed by triage: not seen in the next triaged run (${today}).`,
+                );
+                console.log(
+                  `Closed task #${taskRef ?? taskId}${assigneeId ? ` and assigned to ${assigneeName}` : ''}: ${r.subject ?? r.fp}`,
+                );
+              }
+            } catch (e) {
+              allOk = false;
+              console.log(
+                `Could not close task #${taskRef ?? taskId}: ${e instanceof Error ? e.message : e}`,
+              );
+            }
+          }
+          if (allOk) {
+            r.closed = true;
+            delete state[r.fp]; // if it ever fails again it is a new cluster -> new task
+          }
+        }
+      }
+    }
+  } finally {
+    // Runs even if the Taiga section above threw partway through — saves every id already
+    // created/closed so far instead of losing it.
+    if (DRY_RUN) {
+      console.log(
+        '[dry-run] state NOT saved — dry runs leave no trace, so a later real run still sees these failures as new',
+      );
+    } else {
+      fs.mkdirSync(path.dirname(STATE_PATH), { recursive: true });
+      fs.writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
+    }
   }
 
   // ----- Digest (markdown: stdout, job summary, and .triage/digest.md) -----
-  const digest: string[] = [`## Daily triage — ${today}`, ''];
+  const digest: string[] = [
+    `## Triage${RELEASE ? ` — release ${RELEASE}` : ' — daily'}${CLOSE_ONLY ? ' (close-only sweep)' : ''} — ${today}`,
+    '',
+  ];
   digest.push(
     `**${hardFailures.length} failures** in **${clusters.size} clusters** · ${flakyTests.length} flaky · ${resolved.length} resolved`,
   );
@@ -849,9 +1250,15 @@ async function main() {
       `App changes since last triage: **${changelog.total} commits** — [compare](${changelog.compareUrl})`,
     );
   }
+  if (RUN_ID) digest.push(`Run: \`${RUN_ID}\``);
   if (REPORT_URL) digest.push(`[Full HTML report](${REPORT_URL})`);
+  if (CLOSE_ONLY)
+    digest.push(
+      '',
+      `_--close-only sweep: nothing new was filed (${newClusters.length + knownClusters.length} cluster(s) left untouched for the next full triage)._`,
+    );
   digest.push('');
-  if (newClusters.length) {
+  if (newClusters.length && !CLOSE_ONLY) {
     digest.push(`### New clusters (${newClusters.length})`);
     for (const c of newClusters) {
       const entry = state[c.fingerprint];
@@ -861,7 +1268,7 @@ async function main() {
     }
     digest.push('');
   }
-  if (knownClusters.length) {
+  if (knownClusters.length && !CLOSE_ONLY) {
     digest.push(`### known clusters still failing (${knownClusters.length})`);
     for (const c of knownClusters) {
       const e = state[c.fingerprint];
@@ -875,12 +1282,14 @@ async function main() {
     digest.push('');
   }
   if (resolvedInfo.length) {
-    digest.push(`### resolved (green 3 runs)`);
+    digest.push(`### resolved (gone next run)`);
     for (const r of resolvedInfo) {
-      const link = r.taskRef ? taigaTaskLink(r.taskRef) : taigaLink(r.storyRef);
+      const link = r.taskRefs.length
+        ? r.taskRefs.map((ref) => taigaTaskLink(ref)).join(', ')
+        : taigaLink(r.storyRef);
       const label = r.subject ? ` — \`${r.subject}\`` : '';
       digest.push(
-        `- ${link}${label}${r.closed ? ' → auto-closed & assigned' : r.taskId ? ' → pending auto-close' : ' → close manually (no task recorded)'}`,
+        `- ${link}${label}${r.closed ? ' → auto-closed & assigned' : r.taskIds.length ? ' → pending auto-close' : ' → close manually (no task recorded — run with --close-ref)'}`,
       );
     }
   }
@@ -894,9 +1303,9 @@ async function main() {
     ? ((state as any)['__release_story__'] as StateEntry | undefined)?.taigaRef
     : undefined;
   const mm: string[] = [];
-  const verdict = `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}** — ${newClusters.length} new · ${knownClusters.length} known${acknowledged.size ? ` (${acknowledged.size} triaged)` : ''} · ${resolved.length} resolved${releaseStoryRef ? ` · ${taigaLink(releaseStoryRef)}` : ''}${APP_VERSION ? `\napp \`${APP_VERSION}\`${versionChanged ? ` :warning: changed from \`${prevVersion!.version}\`${changelog ? ` ([${changelog.total} commits](${changelog.compareUrl}))` : ''}` : ''}` : ''}`;
+  const verdict = `**:mag: Triage${RELEASE ? ` release ${RELEASE}` : ''}${CLOSE_ONLY ? ' (close-only sweep)' : ''}** — ${CLOSE_ONLY ? `${newClusters.length + knownClusters.length} cluster(s) left untouched` : `${newClusters.length} new · ${knownClusters.length} known${acknowledged.size ? ` (${acknowledged.size} triaged)` : ''}`} · ${resolved.length} resolved${releaseStoryRef ? ` · ${taigaLink(releaseStoryRef)}` : ''}${APP_VERSION ? `\napp \`${APP_VERSION}\`${versionChanged ? ` :warning: changed from \`${prevVersion!.version}\`${changelog ? ` ([${changelog.total} commits](${changelog.compareUrl}))` : ''}` : ''}` : ''}`;
   mm.push(verdict);
-  if (newClusters.length) {
+  if (newClusters.length && !CLOSE_ONLY) {
     mm.push('', '**New:**');
     for (const c of newClusters) {
       mm.push(
@@ -910,17 +1319,17 @@ async function main() {
     if (closed.length)
       mm.push(
         '',
-        `**Auto-closed (green 3 runs):** ${closed.map((r) => taigaTaskLink(r.taskRef)).join(', ')}`,
+        `**Auto-closed (gone next run):** ${closed.map((r) => r.taskRefs.map((ref) => taigaTaskLink(ref)).join(', ')).join(', ')}`,
       );
     if (manual.length)
       mm.push(
         '',
-        `**Resolved — close manually:** ${manual.map((r) => (r.taskRef ? taigaTaskLink(r.taskRef) : taigaLink(r.storyRef))).join(', ')}`,
+        `**Resolved — close manually:** ${manual.map((r) => (r.taskRefs.length ? r.taskRefs.map((ref) => taigaTaskLink(ref)).join(', ') : taigaLink(r.storyRef))).join(', ')}`,
       );
   }
   mm.push(
     '',
-    `${hardFailures.length} failures · ${flakyTests.length} flaky${REPORT_URL ? ` · [HTML report](${REPORT_URL})` : ''}`,
+    `${hardFailures.length} failures · ${flakyTests.length} flaky${RUN_ID ? ` · run \`${RUN_ID}\`` : ''}${REPORT_URL ? ` · [HTML report](${REPORT_URL})` : ''}`,
   );
   const nothingChanged =
     newClusters.length === 0 && resolved.length === 0 && knownClusters.length > 0;
@@ -958,6 +1367,17 @@ function shortError(msg: string): string {
 function qaseList(c: Cluster): string {
   const ids = c.tests.map((t) => t.qaseId).filter(Boolean);
   return ids.length ? ` [Qase: ${ids.join(', ')}]` : '';
+}
+
+/**
+ * First Qase ID among a set of failing tests, to prepend to a task subject that bundles several
+ * tests — so a Taiga task list is scannable for "which Qase case is this" without opening each
+ * one. The existing "(N tests)"-style count elsewhere in the same subject already covers how many
+ * others are failing, so this deliberately doesn't repeat that count.
+ */
+function qaseSubjectPrefix(tests: Failure[]): string {
+  const first = tests.map((t) => t.qaseId).find(Boolean);
+  return first ? `Qase ${first} — ` : '';
 }
 
 /**
@@ -1089,6 +1509,7 @@ function clusterDescription(c: Cluster): string {
     c.errorSample,
     '```',
     '',
+    RUN_ID ? `Run: ${RUN_ID}` : '',
     REPORT_URL ? `[HTML report](${REPORT_URL})` : '',
     `_Cluster \`${c.fingerprint}\` — auto-created by daily triage. Classify: real bug vs test to update._`,
   ];

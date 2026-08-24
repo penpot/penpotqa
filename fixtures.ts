@@ -5,6 +5,11 @@ import { RegisterPage } from '@pages/register-page';
 import { random } from './helpers/string-generator';
 import { waitMessage } from './helpers/gmail';
 
+type RegisterTestFixtures = {
+  name: string;
+  email: string;
+};
+
 export const mainTest = test.extend({
   page: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
@@ -21,11 +26,6 @@ export const mainTest = test.extend({
     await use(page);
   },
 });
-
-type RegisterTestFixtures = {
-  name: string;
-  email: string;
-};
 
 export const registerTest = test.extend<RegisterTestFixtures>({
   name: async ({}, use) => {
@@ -49,6 +49,25 @@ export const registerTest = test.extend<RegisterTestFixtures>({
     const invite = await waitMessage(page, email, 40);
     await page.goto(invite!.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
+    await use(page);
+  },
+});
+
+// Fixture for demo account, used for tests that require a new account bypassing the registration process.
+// This fixture will create a demo account and log in to it before each test.
+export const demoAccountFixture = test.extend({
+  page: async ({ page }, use) => {
+    const loginPage = new LoginPage(page);
+    const registerPage = new RegisterPage(page);
+    const dashboardPage = new DashboardPage(page);
+
+    await loginPage.goto();
+    await loginPage.acceptCookie();
+    await loginPage.clickOnCreateAccount();
+    await registerPage.isRegisterPageOpened();
+    await registerPage.clickOnCreateDemoAccountButton();
+    await dashboardPage.fillOnboardingQuestions();
+    await dashboardPage.isHeaderDisplayed('Projects');
     await use(page);
   },
 });

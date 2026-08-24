@@ -29,7 +29,6 @@ mainTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
 });
 
@@ -211,7 +210,7 @@ mainTest.describe('Numeric inputs', () => {
       await dashboardPage.importFileFromProjectPage(
         'documents/num-inputs-in-set-themes.penpot',
       );
-      await dashboardPage.isFilePresent('num inputs in set/themes');
+      await dashboardPage.isFilePresentWithName('num inputs in set/themes');
       await dashboardPage.openFileWithName('num inputs in set/themes');
       await mainPage.isMainPageLoaded();
       await layersPanelPage.selectLayerByName('Rectangle');

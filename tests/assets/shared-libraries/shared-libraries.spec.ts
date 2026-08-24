@@ -64,7 +64,6 @@ mainTest.describe(() => {
     await mainPage.clickPencilBoxButton();
 
     await teamPage.createTeam(team2);
-    await teamPage.isTeamSelected(team2);
     await teamPage.switchTeam(team1);
 
     await dashboardPage.moveFileToOtherTeamViaRightClick('New File 1', team2);
@@ -322,20 +321,14 @@ mainTest.describe(() => {
     await mainPage.clickPencilBoxButton();
     await dashboardPage.addFileAsSharedLibraryViaRightclick();
     await dashboardPage.isSharedLibraryIconDisplayed();
-    await dashboardPage.renameFileWithNameViaRightClick(
-      'New File 1',
-      'Whiteboarding & mapping kit',
-    );
+    await dashboardPage.renameFile('New File 1', 'Whiteboarding & mapping kit');
     await dashboardPage.createFileViaTitlePanel();
     await mainPage.clickPencilBoxButton();
     await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.isFileVisibleByName('New File 1');
     await dashboardPage.checkNumberOfFiles('2 files');
     await dashboardPage.addFileWithNameAsSharedLibraryViaRightClick('New File 1');
-    await dashboardPage.renameFileWithNameViaRightClick(
-      'New File 1',
-      'Circum Icons pack',
-    );
+    await dashboardPage.renameFile('New File 1', 'Circum Icons pack');
     await dashboardPage.createFileViaTitlePanel();
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickLibrariesButton();

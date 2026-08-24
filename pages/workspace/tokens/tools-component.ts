@@ -112,8 +112,10 @@ export class ToolsComponent {
   }
 
   async exportToken() {
-    await this.confirmExportButton.click();
-    await this.page.waitForEvent('download');
+    await Promise.all([
+      this.page.waitForEvent('download'),
+      this.confirmExportButton.click(),
+    ]);
   }
 
   async checkExportFileItemCount(expectedCount: number) {

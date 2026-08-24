@@ -23,7 +23,6 @@ mainTest.beforeEach(async ({ page }) => {
   mainPage = new MainPage(page);
   teamPage = new TeamPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
@@ -48,8 +47,7 @@ mainTest.describe('PNG image', () => {
           await mainTest.step('Copy and paste image from context menu', async () => {
             await layersPanelPage.clickOnLayerOptionViaRightClickForLayer(
               'images',
-              'copy',
-              0,
+              'Copy',
             );
             await layersPanelPage.pasteLayerViaRightClick();
             await mainPage.waitForChangeIsSaved();
@@ -72,7 +70,7 @@ mainTest.describe('PNG image', () => {
           await mainTest.step('Cut and paste image from context menu', async () => {
             await layersPanelPage.clickOnLayerOptionViaRightClickForLayer(
               'images',
-              'cut',
+              'Cut',
               1,
             );
             await layersPanelPage.isVisibleLayersCount(2);

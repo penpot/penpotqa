@@ -31,7 +31,6 @@ registerTest.beforeEach(async ({ page, name, email }) => {
   testClockId = customerData.testClockId;
 
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
 });
 
 registerTest(

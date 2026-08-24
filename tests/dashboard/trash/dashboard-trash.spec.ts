@@ -31,7 +31,6 @@ mainTest.describe('As Owner', () => {
     deletedPage = new DeletedPage(page);
 
     await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
     await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });
@@ -77,7 +76,7 @@ mainTest.describe('As Owner', () => {
           await deletedPage.isEmptyTrashMessageVisible();
 
           await dashboardPage.openSidebarItem('Projects');
-          await dashboardPage.isFilePresent(fileName);
+          await dashboardPage.isFilePresentWithName(fileName);
         },
       );
     },
@@ -178,7 +177,7 @@ mainTest.describe('As Editor', () => {
           await dashboardPage.isRestoreAlertMessageVisible(fileName);
 
           await dashboardPage.openSidebarItem('Projects');
-          await dashboardPage.isFilePresent(fileName);
+          await dashboardPage.isFilePresentWithName(fileName);
         },
       );
 

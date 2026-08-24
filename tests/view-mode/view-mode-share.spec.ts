@@ -17,6 +17,7 @@ import {
 } from 'helpers/gmail';
 import { random } from 'helpers/string-generator';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { loginAsSecondUser } from 'helpers/user-flows';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const teamName = createTeamName();
@@ -41,7 +42,6 @@ mainTest.beforeEach(async ({ page }) => {
   registerPage = new RegisterPage(page);
   await mainTest.slow();
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.waitForViewportVisible();
   await mainPage.isMainPageLoaded();
@@ -116,20 +116,33 @@ mainTest.describe(() => {
             { mask: [viewModePage.copyLinkField] },
           );
           await newPage.close();
+          await mainPage.clickPencilBoxButton();
+          await profilePage.logout();
         },
       );
 
       await mainTest.step(
         'Log in as the second user and open the shared link',
         async () => {
-          await mainPage.clickPencilBoxButton();
-          await profilePage.logout();
-          await loginPage.isLoginPageOpened();
-          await loginPage.enterEmailAndClickOnContinue(process.env.SECOND_EMAIL);
-          await loginPage.enterPwd(process.env.LOGIN_PWD);
-          await loginPage.clickLoginButton();
-          await dashboardPage.isDashboardOpenedAfterLogin();
-          await profilePage.gotoLink(shareLink);
+          await loginAsSecondUser(page);
+
+          // Navigate to View Mode URL
+          // Wait for the specific responses to occur, but don't fail if they don't happen
+          await Promise.all([
+            page.waitForResponse(
+              (response) =>
+                response.url().includes('get-view-only-bundle') &&
+                response.status() === 200,
+            ),
+            page.waitForResponse(
+              (response) =>
+                response.url().includes('get-comments-threads') &&
+                response.status() === 200,
+            ),
+          ]).catch(() => {});
+
+          await page.goto(shareLink, { waitUntil: 'networkidle' });
+
           viewModePage = new ViewModePage(page);
           await viewModePage.isViewerSectionVisible();
         },
@@ -179,21 +192,34 @@ mainTest.describe(() => {
             { mask: [viewModePage.copyLinkField] },
           );
           await newPage.close();
+          await mainPage.clickPencilBoxButton();
+          await profilePage.logout();
         },
       );
 
       await mainTest.step(
         'Log in as the second user and open the shared link',
         async () => {
-          await mainPage.clickPencilBoxButton();
-          await profilePage.logout();
           await page.context().clearCookies();
-          await loginPage.isLoginPageOpened();
-          await loginPage.enterEmailAndClickOnContinue(process.env.SECOND_EMAIL);
-          await loginPage.enterPwd(process.env.LOGIN_PWD);
-          await loginPage.clickLoginButton();
-          await dashboardPage.isDashboardOpenedAfterLogin();
-          await profilePage.gotoLink(shareLink);
+          await loginAsSecondUser(page);
+
+          // Navigate to View Mode URL
+          // Wait for the specific responses to occur, but don't fail if they don't happen
+          await Promise.all([
+            page.waitForResponse(
+              (response) =>
+                response.url().includes('get-view-only-bundle') &&
+                response.status() === 200,
+            ),
+            page.waitForResponse(
+              (response) =>
+                response.url().includes('get-comments-threads') &&
+                response.status() === 200,
+            ),
+          ]).catch(() => {});
+
+          await page.goto(shareLink, { waitUntil: 'networkidle' });
+
           viewModePage = new ViewModePage(page);
           await viewModePage.isViewerSectionVisible();
         },
@@ -254,9 +280,7 @@ mainTest.describe(() => {
       await mainTest.step('Invite a second admin to the team', async () => {
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
-        await teamPage.isInviteMembersPopUpHeaderDisplayed(
-          'Invite members to the team',
-        );
+        await teamPage.isInviteMembersPopUpHeaderVisible();
         await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
         await teamPage.selectInvitationRoleInPopUp('Admin');
         await teamPage.clickSendInvitationButton();
@@ -267,7 +291,7 @@ mainTest.describe(() => {
       await mainTest.step('Register the invited admin account', async () => {
         await profilePage.logout();
         await loginPage.isLoginPageOpened();
-        await page.goto(firstInvite.inviteUrl);
+        await page.goto(firstInvite!.inviteUrl);
         await registerPage.registerAccount(
           firstAdmin,
           firstEmail,

@@ -23,7 +23,6 @@ mainTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   mainPage = new MainPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });
@@ -481,7 +480,7 @@ mainTest.describe(() => {
     await mainTest.slow();
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('500', '500');
-    await mainPage.createDefaultEllipseByCoordinates(200, 300);
+    await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
     await mainPage.clickCreatedBoardTitleOnCanvas();

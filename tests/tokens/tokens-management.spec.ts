@@ -24,7 +24,6 @@ mainTest.beforeEach(async ({ page }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
@@ -70,9 +69,9 @@ mainTest(
           dimensionToken.name,
           false,
         );
-        await tokensPage.tokensComp.isMenuItemWithNameSelected(
+        await tokensPage.tokensComp.isAllMenuItemWithSectionNameSelected(
           sizingToken.name,
-          'SizeAll',
+          'Size',
         );
         await mainPage.clickBoardOnCanvas();
       },

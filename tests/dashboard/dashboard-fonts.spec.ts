@@ -14,7 +14,6 @@ mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
 
   await teamPage.createTeam(teamName);
-  await teamPage.isTeamSelected(teamName);
 });
 
 mainTest(qase([1152], 'Upload single font'), async () => {

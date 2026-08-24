@@ -34,7 +34,6 @@ mainTest.describe('Rename a team', () => {
   mainTest(qase([1205], 'Rename a team via owner'), async () => {
     await mainTest.step('Create and rename the team as owner', async () => {
       await teamPage.createTeam(team);
-      await teamPage.isTeamSelected(team);
       await teamPage.renameTeam(teamNew);
       await teamPage.isTeamSelected(teamNew);
     });
@@ -52,12 +51,9 @@ mainTest.describe('Rename a team', () => {
 
       await mainTest.step('Create team and invite editor user', async () => {
         await teamPage.createTeam(team);
-        await teamPage.isTeamSelected(team);
         await teamPage.openInvitationsPageViaOptionsMenu();
         await teamPage.clickInviteMembersToTeamButton();
-        await teamPage.isInviteMembersPopUpHeaderDisplayed(
-          'Invite members to the team',
-        );
+        await teamPage.isInviteMembersPopUpHeaderVisible();
         await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
         await teamPage.clickSendInvitationButton();
         await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
