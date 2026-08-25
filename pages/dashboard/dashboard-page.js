@@ -296,7 +296,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'Marked all notifications as read',
       { exact: true },
     );
-    this.subscriptionName = page.getByTestId('subscription-name');
+    this.subscriptionName = page
+      .locator('[class*="nitrate-current-plan"]')
+      .getByRole('button');
   }
 
   getFileButtonByName(fileName) {

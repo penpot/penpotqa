@@ -57,6 +57,6 @@ registerTest(
 
     await profilePage.checkSubscriptionName(defaultPlan);
     await profilePage.backToDashboardFromAccount();
-    await dashboardPage.checkSubscriptionName(defaultPlan + ' plan');
+    await dashboardPage.checkSubscriptionName(defaultPlan);
   },
 );
