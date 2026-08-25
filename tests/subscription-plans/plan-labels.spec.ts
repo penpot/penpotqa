@@ -34,7 +34,7 @@ registerTest(qase(2283, 'Display & Info for Professional Plan'), async () => {
   await profilePage.openSubscriptionTab();
   await profilePage.checkSubscriptionName(currentPlan);
   await profilePage.backToDashboardFromAccount();
-  await dashboardPage.checkSubscriptionName(currentPlan + ' plan');
+  await dashboardPage.checkSubscriptionName(currentPlan);
   await teamPage.isSubscriptionIconNotVisible();
   await teamPage.isSubscriptionIconVisibleInTeamDropdown(false);
   await teamPage.openTeamSettingsPageViaOptionsMenu();
