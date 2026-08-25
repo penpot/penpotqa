@@ -23,7 +23,9 @@ registerTest.beforeEach(async ({ page }) => {
   await teamPage.createTeam(teamName);
 });
 
-registerTest(
+// TODO: Re-do with the new Enterprise subscription flow (nitrate)
+// A payment method is now required to start the trial.
+registerTest.skip(
   qase(2294, 'Verify Trial Label Behavior (for the Enterprise plan)'),
   async ({ page, email }) => {
     const currentPlan = 'Enterprise';
@@ -34,7 +36,7 @@ registerTest(
     await profilePage.checkSubscriptionName(currentPlan + ' (trial)');
     await updateSubscriptionTrialEnd(page, email);
     await profilePage.backToDashboardFromAccount();
-    await dashboardPage.checkSubscriptionName(currentPlan + ' plan (trial)');
+    await dashboardPage.checkSubscriptionName(currentPlan + ' (trial)');
     await profilePage.openYourAccountPage();
     await profilePage.openSubscriptionTab();
     await profilePage.checkSubscriptionName(currentPlan + ' (trial)');

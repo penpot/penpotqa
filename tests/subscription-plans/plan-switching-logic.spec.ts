@@ -53,7 +53,7 @@ registerTest(
     await stripePage.clickOnReturnToPenpotButton();
     await profilePage.checkSubscriptionName(newPlan);
     await profilePage.backToDashboardFromAccount();
-    await dashboardPage.checkSubscriptionName(newPlan + ' plan');
+    await dashboardPage.checkSubscriptionName(newPlan);
   },
 );
 
@@ -93,6 +93,6 @@ registerTest(
 
     await profilePage.checkSubscriptionName(defaultPlan);
     await profilePage.backToDashboardFromAccount();
-    await dashboardPage.checkSubscriptionName(defaultPlan + ' plan');
+    await dashboardPage.checkSubscriptionName(defaultPlan);
   },
 );
