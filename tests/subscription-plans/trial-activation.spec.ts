@@ -34,7 +34,7 @@ registerTest(
     await profilePage.checkSubscriptionName(currentPlan + ' (trial)');
     await updateSubscriptionTrialEnd(page, email);
     await profilePage.backToDashboardFromAccount();
-    await dashboardPage.checkSubscriptionName(currentPlan + ' plan (trial)');
+    await dashboardPage.checkSubscriptionName(currentPlan + ' (trial)');
     await profilePage.openYourAccountPage();
     await profilePage.openSubscriptionTab();
     await profilePage.checkSubscriptionName(currentPlan + ' (trial)');
