@@ -57,7 +57,8 @@ registerTest(
   },
 );
 
-registerTest(
+// TODO: Re-do following the updated test case in Qase
+registerTest.skip(
   qase(2304, 'Switch from Unlimited → Professional'),
   async ({ page, name, email }) => {
     const currentPlan = 'Unlimited';
