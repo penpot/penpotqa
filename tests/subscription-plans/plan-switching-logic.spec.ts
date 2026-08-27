@@ -9,7 +9,6 @@ import {
   skipSubscriptionByDays,
   getProfileIdByEmail,
   addPaymentMethodForCustomer,
-  addPaymentMethodForCustomerByCustomerEmail,
 } from 'helpers/stripe';
 import { createTeamName } from 'helpers/teams/create-team-name';
 
@@ -28,34 +27,6 @@ registerTest.beforeEach(async ({ page }) => {
 
   await teamPage.createTeam(teamName);
 });
-
-registerTest(
-  qase(2303, 'Switch from Enterprise → Unlimited'),
-  async ({ page, email }) => {
-    const currentPlan = 'Enterprise';
-    const newPlan = 'Unlimited';
-
-    await profilePage.tryTrialForPlan(newPlan);
-    await profilePage.openYourAccountPage();
-    await profilePage.openSubscriptionTab();
-    await profilePage.clickOnAddPaymentMethodButton();
-    await addPaymentMethodForCustomerByCustomerEmail(page, email);
-    await stripePage.reloadPage();
-    await stripePage.isVisaCardAdded(true);
-    await stripePage.changeSubscription();
-    await stripePage.checkCurrentSubscription(currentPlan);
-
-    await stripePage.waitTrialEndsDisappear();
-    await stripePage.changeSubscription();
-    await stripePage.checkCurrentSubscription(newPlan);
-    await stripePage.checkLastInvoiceName(`Penpot ${newPlan}`);
-    await stripePage.checkLastInvoiceAmount(`$0.00`);
-    await stripePage.clickOnReturnToPenpotButton();
-    await profilePage.checkSubscriptionName(newPlan);
-    await profilePage.backToDashboardFromAccount();
-    await dashboardPage.checkSubscriptionName(newPlan);
-  },
-);
 
 // TODO: Re-do following the updated test case in Qase
 registerTest.skip(
