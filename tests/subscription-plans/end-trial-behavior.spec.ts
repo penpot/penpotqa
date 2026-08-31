@@ -33,7 +33,8 @@ registerTest.beforeEach(async ({ page, name, email }) => {
   await teamPage.createTeam(teamName);
 });
 
-registerTest(
+// TODO: Re-do with the new Enterprise subscription flow (nitrate)
+registerTest.skip(
   qase(
     2301,
     'Trial ends, no payment method ever added → switch to Professional (CANCELLED)',
