@@ -34,7 +34,6 @@ registerTest.beforeEach(async ({ page, name, email }) => {
 });
 
 // TODO: Re-do with the new Enterprise subscription flow (nitrate)
-// A payment method is now required to start the trial.
 registerTest.skip(
   qase(
     2301,
