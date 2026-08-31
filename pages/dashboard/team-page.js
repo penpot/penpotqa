@@ -111,13 +111,15 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.inviteMessage = page.locator('div[class*="main-message"]');
     this.errorMessage = page.locator('div[class*="desc-message"]').last();
     this.goToYourPenpotButton = page.getByRole('button', {
-      name: 'Go to your Penpot',
+      name: 'Go to Personal Projects',
     });
 
     // Request Access dialog Locators
     this.requestAccessDialog = page.locator('.main_ui_static__dialog').first();
     this.requestAccessButton = page.getByRole('button', { name: 'REQUEST ACCESS' });
-    this.returnHomeButton = page.getByRole('button', { name: 'GO TO YOUR PENPOT' });
+    this.returnHomeButton = page.getByRole('button', {
+      name: 'Go to Personal Projects',
+    });
     this.requestSentCorrectlyText = this.requestAccessDialog.getByText(
       'Your request has been sent correctly!',
     );
