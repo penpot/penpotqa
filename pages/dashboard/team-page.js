@@ -211,7 +211,9 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isTeamDeleted(teamName) {
-    await expect(this.page.getByText('My Files')).toBeVisible({ timeout: 8000 });
+    await expect(this.page.getByText('Personal Projects')).toBeVisible({
+      timeout: 8000,
+    });
     await this.openTeamsListIfClosed();
     for (const el of await this.teamCurrentNameDiv.elementHandles()) {
       const text = (await el.innerText()).valueOf();
@@ -457,7 +459,7 @@ exports.TeamPage = class TeamPage extends BasePage {
       ? await this.selectMember(name)
       : await this.clickOnLeaveTeamButton();
     await expect(this.teamCurrentBtn).not.toHaveText(teamName);
-    await expect(this.teamCurrentBtn).toHaveText('My Files');
+    await expect(this.teamCurrentBtn).toHaveText('Personal Projects');
   }
 
   /**
