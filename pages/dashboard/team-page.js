@@ -111,13 +111,15 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.inviteMessage = page.locator('div[class*="main-message"]');
     this.errorMessage = page.locator('div[class*="desc-message"]').last();
     this.goToYourPenpotButton = page.getByRole('button', {
-      name: 'Go to your Penpot',
+      name: 'Go to Personal Projects',
     });
 
     // Request Access dialog Locators
     this.requestAccessDialog = page.locator('.main_ui_static__dialog').first();
     this.requestAccessButton = page.getByRole('button', { name: 'REQUEST ACCESS' });
-    this.returnHomeButton = page.getByRole('button', { name: 'GO TO YOUR PENPOT' });
+    this.returnHomeButton = page.getByRole('button', {
+      name: 'Go to Personal Projects',
+    });
     this.requestSentCorrectlyText = this.requestAccessDialog.getByText(
       'Your request has been sent correctly!',
     );
@@ -209,7 +211,9 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isTeamDeleted(teamName) {
-    await expect(this.page.getByText('My Files')).toBeVisible({ timeout: 8000 });
+    await expect(this.page.getByText('Personal Projects')).toBeVisible({
+      timeout: 8000,
+    });
     await this.openTeamsListIfClosed();
     for (const el of await this.teamCurrentNameDiv.elementHandles()) {
       const text = (await el.innerText()).valueOf();
@@ -455,7 +459,7 @@ exports.TeamPage = class TeamPage extends BasePage {
       ? await this.selectMember(name)
       : await this.clickOnLeaveTeamButton();
     await expect(this.teamCurrentBtn).not.toHaveText(teamName);
-    await expect(this.teamCurrentBtn).toHaveText('My Files');
+    await expect(this.teamCurrentBtn).toHaveText('Personal Projects');
   }
 
   /**
