@@ -280,7 +280,7 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async openFlyout(triggerButton, menu) {
-    await triggerButton.click();
+    await triggerButton.hover();
     await menu.waitFor({ state: 'visible' });
   }
 
