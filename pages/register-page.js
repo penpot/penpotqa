@@ -33,7 +33,7 @@ exports.RegisterPage = class RegisterPage extends BasePage {
 
     // Check your email page notification
     this.regEmailNotification = page.locator(
-      '.main_ui_auth_register__notification-text-email',
+      '.main_ui_auth_register__notification-email',
     );
 
     this.emailAlreadyUsedError = page
