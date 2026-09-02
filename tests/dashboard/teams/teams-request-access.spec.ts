@@ -252,7 +252,7 @@ registerTest(
 registerTest(
   qase(
     [1831],
-    "Request access from View mode (Your Penpot): 'You don't have access to this file'",
+    "Request access from View mode (Personal Projects): 'You don't have access to this file'",
   ),
   async ({ page, email }) => {
     // Create a new file in Your Penpot (as owner)
