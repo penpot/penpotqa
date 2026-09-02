@@ -107,7 +107,7 @@ registerTest.beforeEach(
 registerTest(
   qase(
     [1827],
-    "Request access from Workspace URL (Not Your Penpot): 'You don't have access to this file'",
+    "Request access from Workspace URL (Not Personal Projects): 'You don't have access to this file'",
   ),
   async ({ page, email }) => {
     // Create a team, a new file and navigate to Dasboard (as owner)
