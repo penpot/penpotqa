@@ -40,7 +40,7 @@ mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
   mainTest(
     qase(
       1822,
-      'Workspace: Navigate to invalid URL logged in and display error page',
+      'Workspace: Navigate to an invalid URL, log in, and display the error page',
     ),
     async ({ page }) => {
       const currentURL = await mainPage.getUrl();
@@ -64,7 +64,7 @@ mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
   mainTest(
     qase(
       1824,
-      'View Mode: Navigate to invalid URL logged in and display error page',
+      'View Mode: Navigate to an invalid URL, log in, and display the error page',
     ),
     async ({ page }) => {
       let viewModePage = new ViewModePage(page);
@@ -113,7 +113,7 @@ mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
   mainTest(
     qase(
       1826,
-      'Dashboard: Navigate to invalid URL logged in and display error page',
+      'Dashboard: Navigate to an invalid URL while logged in and display the error page',
     ),
     async ({ page }) => {
       await mainPage.clickPencilBoxButton();
