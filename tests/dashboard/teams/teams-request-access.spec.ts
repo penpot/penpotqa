@@ -107,7 +107,7 @@ registerTest.beforeEach(
 registerTest(
   qase(
     [1827],
-    "Request access from Workspace URL (Not Your Penpot): 'You don't have access to this file'",
+    "Request access from Workspace URL (Not Personal Projects): 'You don't have access to this file'",
   ),
   async ({ page, email }) => {
     // Create a team, a new file and navigate to Dasboard (as owner)
@@ -205,7 +205,7 @@ registerTest(
 registerTest(
   qase(
     [1830],
-    "Request access from Workspace (Your Penpot): 'You don't have access to this file'",
+    "Request access from Workspace (Personal Projects): 'You don't have access to this file'",
   ),
   async ({ page, email }) => {
     // Create a new file in Your Penpot (as owner)
@@ -252,7 +252,7 @@ registerTest(
 registerTest(
   qase(
     [1831],
-    "Request access from View mode (Your Penpot): 'You don't have access to this file'",
+    "Request access from View mode (Personal Projects): 'You don't have access to this file'",
   ),
   async ({ page, email }) => {
     // Create a new file in Your Penpot (as owner)
