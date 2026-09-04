@@ -189,4 +189,25 @@ mainTest.describe(() => {
       );
     },
   );
+
+  mainTest(
+    qase([3547], 'Color tokens are displayed only from the active sets'),
+    async () => {
+      await mainTest.step(
+        'Create a default rectangle with default fill color',
+        async () => {
+          await mainPage.clickCreateRectangleButton();
+        },
+      );
+
+      await mainTest.step('Import the token test file', async () => {
+        await dashboardPage.createFileViaPlaceholder();
+        await mainPage.isMainPageLoaded();
+        await mainPage.clickMoveButton();
+        await tokensPage.clickTokensTab();
+        await tokensPage.toolsComp.clickOnTokenToolsButton();
+        await tokensPage.toolsComp.importTokens('documents/tokens-example.json');
+      });
+    },
+  );
 });
