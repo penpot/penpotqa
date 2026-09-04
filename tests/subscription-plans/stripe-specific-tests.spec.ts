@@ -43,42 +43,6 @@ registerTest.describe(() => {
     await profilePage.backToDashboardFromAccount();
   });
 
-  // TODO: Re-do following the updated test case in Qase
-  registerTest.skip(
-    qase(2346, 'Invoices capped at $7 (Unlimited)'),
-    async ({ email }) => {
-      const currentPlan = 'Unlimited';
-      const date = new Date();
-
-      await profilePage.tryTrialForPlan(currentPlan);
-      await profilePage.openYourAccountPage();
-      await profilePage.openSubscriptionTab();
-      await profilePage.clickOnAddPaymentMethodButton();
-      await addPaymentMethodForCustomer(customerData.customerId);
-      await stripePage.reloadPage();
-      await stripePage.isVisaCardAdded(true);
-      await skipSubscriptionByDays(email, testClockId, 15, date);
-
-      await stripePage.waitTrialEndsDisappear();
-      await profilePage.reloadPage();
-      await stripePage.checkCurrentSubscription(currentPlan);
-      await stripePage.checkLastInvoiceName(`Penpot ${currentPlan} (per editors)`);
-      await stripePage.checkLastInvoiceAmount(`$7.00`);
-
-      await skipSubscriptionByMonths(email, testClockId, 1, date);
-      await profilePage.reloadPage();
-
-      await skipSubscriptionByMonths(email, testClockId, 1, date);
-      await profilePage.reloadPage();
-
-      await skipSubscriptionByMonths(email, testClockId, 1, date);
-      await profilePage.reloadPage();
-
-      await stripePage.checkLastInvoiceStatus(`Paid`);
-      await stripePage.waitInvoiceAmountCount(`$7.00`, 3);
-    },
-  );
-
   // TODO: Re-do following the updated test case in Qase (now simplified)
   registerTest.skip(
     qase(2514, 'Maximum billing $175 (Unlimited)'),
