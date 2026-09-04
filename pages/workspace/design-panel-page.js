@@ -391,6 +391,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.textFontStyleSelector = page.locator(
       'div[class*="typography__font-variant-options"]',
     );
+    this.textFontDropdownFullSize = page.locator(
+      'div[class*="font-selector-dropdown-full-size"]',
+    );
 
     this.textFontSizeInput = this.designTabpanel.getByRole('textbox', {
       name: 'Font Size',
@@ -1045,6 +1048,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(
       this.textFontItemResult.getByRole('img', { name: fontName, exact: true }),
     ).not.toBeVisible();
+  }
+
+  async isTypographyFontDropdownFullSizeVisible() {
+    await expect(
+      this.textFontDropdownFullSize,
+      'Font Dropdown Full Size is visible',
+    ).toBeVisible();
   }
 
   async changeTextFont(fontName) {

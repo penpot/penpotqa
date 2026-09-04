@@ -38,6 +38,7 @@ on:
           - tests/panels-features/main-menu
           - tests/panels-features/history
           - tests/panels-features/stroke
+          - tests/panels-features/text
           - tests/plugins
           - tests/your-account
           - tests/your-account/integrations
