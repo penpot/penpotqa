@@ -233,6 +233,68 @@ mainTest.describe('Single comment thread actions', () => {
       },
     );
   });
+
+  mainTest(
+    qase([3559], 'Comments remain visible on canvas after leaving Comments mode'),
+    async () => {
+      await mainTest.step(
+        'Close comment pop-up and confirm the bubble is visible in Comments mode',
+        async () => {
+          await mainPage.clickViewportOnce();
+          await commentsPanelPage.isCommentThreadIconDisplayed();
+        },
+      );
+
+      await mainTest.step('Exit Comments mode via a design tool', async () => {
+        await mainPage.clickMoveButton();
+      });
+
+      await mainTest.step(
+        'Verify the comment bubble remains visible on the canvas',
+        async () => {
+          await commentsPanelPage.isCommentThreadIconDisplayed();
+        },
+      );
+    },
+  );
+
+  mainTest(
+    qase(
+      [3560],
+      'Perform full comment CRUD on canvas while a design tool is active',
+    ),
+    async () => {
+      const replyComment = 'Reply while design tool is active';
+
+      await mainTest.step(
+        'Close pop-up, add a shape and exit Comments mode',
+        async () => {
+          await mainPage.clickViewportOnce();
+          await mainPage.createDefaultRectangleByCoordinates(800, 800);
+          await mainPage.clickMoveButton();
+        },
+      );
+
+      await mainTest.step('Hover and expand the comment thread', async () => {
+        await commentsPanelPage.hoverCommentThreadBubbleByIndex('1');
+        await commentsPanelPage.clickCommentThreadIconByNumber('1');
+      });
+
+      await mainTest.step('Reply to the thread', async () => {
+        await commentsPanelPage.enterReplyText(replyComment);
+        await commentsPanelPage.clickPostCommentButton();
+        await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
+      });
+
+      await mainTest.step('Delete the comment thread', async () => {
+        await commentsPanelPage.clickCommentHeaderOptionsButton();
+        await commentsPanelPage.clickDeleteCommentOption();
+        await commentsPanelPage.clickDeleteThreadButton();
+        await commentsPanelPage.isDeleteConversationModalNotVisible();
+        await commentsPanelPage.isCommentThreadIconNotDisplayed();
+      });
+    },
+  );
 });
 
 mainTest(qase([2148], 'Zoom out and check comment bubbles'), async () => {
@@ -262,6 +324,51 @@ mainTest(qase([2148], 'Zoom out and check comment bubbles'), async () => {
     await commentsPanelPage.areCommentBubblesVisible(['1-2-3']);
   });
 });
+
+mainTest(
+  qase(
+    [3638],
+    'Hover over an avatar in an expanded comment cluster shows a comment preview',
+  ),
+  async () => {
+    const comment = 'Test Comment';
+    const xAxisCommentsCoordinates = [100, 50];
+    const yAxisCommentsCoordinates = [150, 50];
+
+    await mainTest.step('Create two comments close together', async () => {
+      await mainPage.pressKeyboardShortcut('C');
+      for (let i = 0; i < xAxisCommentsCoordinates.length; i++) {
+        await mainPage.clickViewportByCoordinates(
+          xAxisCommentsCoordinates[i],
+          yAxisCommentsCoordinates[i],
+          2,
+        );
+        await commentsPanelPage.enterCommentText(comment);
+        await commentsPanelPage.clickPostCommentButton();
+        await commentsPanelPage.checkCommentCountInList(i + 1);
+      }
+    });
+
+    await mainTest.step('Zoom out until the comments form a cluster', async () => {
+      await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
+      await mainPage.zoom(100, 100, 3);
+      await commentsPanelPage.areCommentBubblesVisible(['1-2']);
+    });
+
+    await mainTest.step('Expand the cluster by clicking its indicator', async () => {
+      await commentsPanelPage.clickCommentThreadBubbleByIndex('1-2');
+      await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
+    });
+
+    await mainTest.step(
+      'Hover an avatar and verify the comment preview is displayed',
+      async () => {
+        await commentsPanelPage.hoverCommentThreadBubbleByIndex('1');
+        await commentsPanelPage.isCommentClusterPreviewDisplayed();
+      },
+    );
+  },
+);
 
 mainTest.describe('Notifications and mentions', () => {
   mainTest(
