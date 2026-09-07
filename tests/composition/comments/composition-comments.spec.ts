@@ -330,7 +330,7 @@ mainTest(
     [3638],
     'Hover over an avatar in an expanded comment cluster shows a comment preview',
   ),
-  async () => {
+  async ({ page }) => {
     const comment = 'Test Comment';
     const xAxisCommentsCoordinates = [100, 50];
     const yAxisCommentsCoordinates = [150, 50];
@@ -353,11 +353,20 @@ mainTest(
       await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
       await mainPage.zoom(100, 100, 3);
       await commentsPanelPage.areCommentBubblesVisible(['1-2']);
+
+      await mainPage.hideRulersViaMainMenu();
+      await expect(page).toHaveScreenshot('comment-cluster-merged.png', {
+        mask: commentScreenshotMask(),
+      });
     });
 
     await mainTest.step('Expand the cluster by clicking its indicator', async () => {
       await commentsPanelPage.clickCommentThreadBubbleByIndex('1-2');
       await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
+
+      await expect(page).toHaveScreenshot('comment-cluster-expanded.png', {
+        mask: commentScreenshotMask(),
+      });
     });
 
     await mainTest.step(
@@ -365,6 +374,9 @@ mainTest(
       async () => {
         await commentsPanelPage.hoverCommentThreadBubbleByIndex('1');
         await commentsPanelPage.isCommentClusterPreviewDisplayed();
+        await expect(page).toHaveScreenshot('comment-cluster-preview.png', {
+          mask: commentScreenshotMask(),
+        });
       },
     );
   },
