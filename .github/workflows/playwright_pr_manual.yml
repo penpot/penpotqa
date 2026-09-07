@@ -29,6 +29,7 @@ on:
           - tests/composition
           - tests/composition/text
           - tests/composition/image
+          - tests/composition/comments
           - tests/dashboard
           - tests/dashboard/teams
           - tests/dashboard/teams/settings

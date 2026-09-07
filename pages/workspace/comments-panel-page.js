@@ -31,6 +31,9 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentThreadPreview = page.locator(
       'div[class*="comments-container"] [class*="floating-thread-item-wrapper"]',
     );
+    this.commentClusterPreviewCard = page.locator(
+      '[class*="floating-preview-hover-card"]',
+    );
     this.commentResolvedThreadIcon = page.locator(
       'div[class*="comments-container"] div.main_ui_comments__avatar-solved',
     );
@@ -64,6 +67,9 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.deleteThreadButton = page.getByRole('button', {
       name: 'Delete conversation',
     });
+    this.deleteConversationModalHeading = page
+      .locator('.main_ui_confirm__modal-container')
+      .getByRole('heading', { name: 'Delete conversation' });
     this.resolveCommentCheckbox = page.locator(
       'div[class*="thread-header"] div[class*="checkbox-box"]',
     );
@@ -133,6 +139,32 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.commentThreadPreview.click();
   }
 
+  /**
+   * Click a comment thread bubble without opening its thread pop-up
+   * (unlike clickCommentThreadIconByNumber). Used e.g. to expand a merged
+   * cluster bubble (index "1-2") into its individual avatars.
+   * @param {string} index ("1", "2", "1-2", "1-2-3")
+   */
+  async clickCommentThreadBubbleByIndex(index) {
+    const bubble = this.commentThreadBubbleByIndex(index);
+    await bubble.waitFor({ state: 'visible' });
+    await bubble.hover();
+    await bubble.click({ force: true });
+  }
+
+  /**
+   * @param {string} index ("1", "2", "1-2", "1-2-3")
+   */
+  async hoverCommentThreadBubbleByIndex(index) {
+    await this.commentThreadBubbleByIndex(index).hover();
+  }
+
+  async isCommentClusterPreviewDisplayed(visible = true) {
+    visible
+      ? await expect(this.commentClusterPreviewCard).toBeVisible()
+      : await expect(this.commentClusterPreviewCard).not.toBeVisible();
+  }
+
   async clickResolvedCommentThreadIcon() {
     await this.commentResolvedThreadIcon.waitFor({ state: 'visible' });
     await this.commentResolvedThreadIcon.hover();
@@ -161,6 +193,10 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
 
   async clickDeleteThreadButton() {
     await this.deleteThreadButton.click();
+  }
+
+  async isDeleteConversationModalNotVisible() {
+    await expect(this.deleteConversationModalHeading).not.toBeVisible();
   }
 
   async clickResolveCommentCheckbox() {

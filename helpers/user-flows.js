@@ -44,6 +44,36 @@ async function loginAsSecondUser(page) {
 }
 
 /**
+ * Log in as an already-registered user (e.g. one created via
+ * setupEditorRoleUser/setupViewerRoleUser) and optionally switch to a team.
+ * Assumes the caller has already logged out of any previous session.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} email
+ * @param {object} [options]
+ * @param {string} [options.teamName] - Switch to this team after login.
+ */
+async function loginAsUser(page, email, { teamName } = {}) {
+  const { loginPage, dashboardPage, teamPage } = initPages(page);
+
+  await loginPage.isLoginPageOpened();
+  await loginPage.enterEmailAndClickOnContinue(email);
+  await loginPage.enterPwd(process.env.LOGIN_PWD);
+  await loginPage.clickLoginButton();
+  await dashboardPage.isDashboardOpenedAfterLogin();
+
+  if (teamName) {
+    await teamPage.switchTeam(teamName);
+  }
+}
+
+// Log in as the MAIN user (LOGIN_EMAIL / LOGIN_PWD .env variables) and
+// optionally switch to a team. Assumes the caller has already logged out.
+async function loginAsMainUser(page, options) {
+  await loginAsUser(page, process.env.LOGIN_EMAIL, options);
+}
+
+/**
  * Generic user setup with role.
  *
  * @param {import('@playwright/test').Page} page
@@ -116,6 +146,8 @@ const setupAdminRoleUser = (page, opts) =>
 
 module.exports = {
   loginAsSecondUser,
+  loginAsUser,
+  loginAsMainUser,
   setupViewerRoleUser,
   setupEditorRoleUser,
   setupAdminRoleUser,
