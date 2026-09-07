@@ -1,19 +1,17 @@
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { LoginPage } from '@pages/login-page';
 import { ProfilePage } from '@pages/profile-page';
-import { RegisterPage } from '@pages/register-page';
 import { CommentsPanelPage } from '@pages/workspace/comments-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { expect } from '@playwright/test';
 import { mainTest } from 'fixtures';
-import {
-  getVerificationMessage,
-  waitMessage,
-  waitSecondMessage,
-} from 'helpers/gmail';
-import { random } from 'helpers/string-generator';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import {
+  loginAsMainUser,
+  loginAsUser,
+  setupEditorRoleUser,
+  setupViewerRoleUser,
+} from 'helpers/user-flows';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const teamName = createTeamName();
@@ -22,11 +20,16 @@ let mainProfileName = '';
 
 let commentsPanelPage: CommentsPanelPage;
 let dashboardPage: DashboardPage;
-let loginPage: LoginPage;
 let mainPage: MainPage;
 let profilePage: ProfilePage;
-let registerPage: RegisterPage;
 let teamPage: TeamPage;
+
+function commentScreenshotMask() {
+  return mainPage.maskViewport({ usersSection: true }, [
+    commentsPanelPage.commentsAuthorSection,
+    commentsPanelPage.commentAvatarImage,
+  ]);
+}
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
@@ -34,16 +37,14 @@ mainTest.beforeEach(async ({ page }) => {
   profilePage = new ProfilePage(page);
   mainPage = new MainPage(page);
   commentsPanelPage = new CommentsPanelPage(page);
-  loginPage = new LoginPage(page);
-  registerPage = new RegisterPage(page);
 
   await teamPage.createTeam(teamName);
-  mainProfileName = await profilePage.getUserName();
+  mainProfileName = (await profilePage.getUserName()) ?? '';
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 });
 
-mainTest.describe(() => {
+mainTest.describe('Single comment thread actions', () => {
   mainTest.beforeEach(async () => {
     const commentText = 'Test Comment';
     await commentsPanelPage.clickCreateCommentButton();
@@ -70,10 +71,7 @@ mainTest.describe(() => {
 
             await mainPage.hideRulersViaMainMenu();
             await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
-              mask: mainPage.maskViewport({ usersSection: true }, [
-                commentsPanelPage.commentsAuthorSection,
-                commentsPanelPage.commentAvatarImage,
-              ]),
+              mask: commentScreenshotMask(),
             });
           },
         );
@@ -84,10 +82,7 @@ mainTest.describe(() => {
             await mainPage.clickViewportOnce();
             await commentsPanelPage.isCommentThreadIconDisplayed();
             await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
-              mask: mainPage.maskViewport({ usersSection: true }, [
-                commentsPanelPage.commentsAuthorSection,
-                commentsPanelPage.commentAvatarImage,
-              ]),
+              mask: commentScreenshotMask(),
             });
           },
         );
@@ -153,10 +148,7 @@ mainTest.describe(() => {
           await commentsPanelPage.isCommentReplyDisplayedInCommentsPanel();
           await mainPage.hideRulersViaMainMenu();
           await expect(page).toHaveScreenshot('comment-reply.png', {
-            mask: mainPage.maskViewport({ usersSection: true }, [
-              commentsPanelPage.commentsAuthorSection,
-              commentsPanelPage.commentAvatarImage,
-            ]),
+            mask: commentScreenshotMask(),
           });
         },
       );
@@ -185,10 +177,7 @@ mainTest.describe(() => {
 
         await mainPage.hideRulersViaMainMenu();
         await expect(page).toHaveScreenshot('comment-edited.png', {
-          mask: mainPage.maskViewport({ usersSection: true }, [
-            commentsPanelPage.commentsAuthorSection,
-            commentsPanelPage.commentAvatarImage,
-          ]),
+          mask: commentScreenshotMask(),
         });
       });
     },
@@ -212,10 +201,7 @@ mainTest.describe(() => {
           );
           await mainPage.hideRulersViaMainMenu();
           await expect(page).toHaveScreenshot('comment-removed.png', {
-            mask: mainPage.maskViewport({ usersSection: true }, [
-              commentsPanelPage.commentsAuthorSection,
-              commentsPanelPage.commentAvatarImage,
-            ]),
+            mask: commentScreenshotMask(),
           });
         },
       );
@@ -232,10 +218,7 @@ mainTest.describe(() => {
       await mainPage.hideRulersViaMainMenu();
       await mainPage.clickViewportOnce();
       await expect(page).toHaveScreenshot('comment-resolved-closed-pop-up.png', {
-        mask: mainPage.maskViewport({ usersSection: true }, [
-          commentsPanelPage.commentsAuthorSection,
-          commentsPanelPage.commentAvatarImage,
-        ]),
+        mask: commentScreenshotMask(),
       });
     });
 
@@ -245,10 +228,7 @@ mainTest.describe(() => {
         await commentsPanelPage.clickResolvedCommentThreadIcon();
         await commentsPanelPage.isResolveCommentCheckboxSelected();
         await expect(page).toHaveScreenshot('comment-resolved-opened-pop-up.png', {
-          mask: mainPage.maskViewport({ usersSection: true }, [
-            commentsPanelPage.commentsAuthorSection,
-            commentsPanelPage.commentAvatarImage,
-          ]),
+          mask: commentScreenshotMask(),
         });
       },
     );
@@ -283,7 +263,7 @@ mainTest(qase([2148], 'Zoom out and check comment bubbles'), async () => {
   });
 });
 
-mainTest.describe(() => {
+mainTest.describe('Notifications and mentions', () => {
   mainTest(
     qase(
       [2052, 2097],
@@ -291,48 +271,25 @@ mainTest.describe(() => {
     ),
     async ({ page }) => {
       await mainTest.slow();
-      const firstViewer = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstViewer}${process.env.GMAIL_DOMAIN}`;
+      let firstViewer: string;
+      let firstEmail: string;
       const numberOfComments = 10;
 
-      await mainTest.step('Invite viewer to team', async () => {
+      await mainTest.step('Invite and register viewer via invite link', async () => {
         await mainPage.backToDashboardFromFileEditor();
 
-        await teamPage.openInvitationsPageViaOptionsMenu();
-        await teamPage.clickInviteMembersToTeamButton();
-        await teamPage.isInviteMembersPopUpHeaderVisible();
-        await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
-        await teamPage.selectInvitationRoleInPopUp('Viewer');
-        await teamPage.clickSendInvitationButton();
-        await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      });
-
-      await mainTest.step('Register viewer account via invite link', async () => {
-        const firstInvite = await waitMessage(page, firstEmail, 40);
-        await profilePage.logout();
-        await loginPage.isLoginPageOpened();
-        await page.goto(firstInvite.inviteUrl);
-        await registerPage.registerAccount(
-          firstViewer,
-          firstEmail,
-          process.env.LOGIN_PWD,
-        );
-        await waitSecondMessage(page, firstEmail, 40);
-        const verificationMessage = await getVerificationMessage(firstEmail);
-        await page.goto(verificationMessage.inviteUrl);
-        await dashboardPage.fillOnboardingQuestions();
-        await teamPage.isTeamSelected(teamName);
+        ({ userEmail: firstEmail, userName: firstViewer } =
+          await setupViewerRoleUser(page, {
+            existingTeamName: teamName,
+            assertInviteHeader: true,
+          }));
       });
 
       await mainTest.step(
         'Log back as main user and post 10 mention comments',
         async () => {
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
-          await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-          await loginPage.enterPwd(process.env.LOGIN_PWD);
-          await loginPage.clickLoginButton();
-          await teamPage.switchTeam(teamName);
+          await loginAsMainUser(page, { teamName });
           await dashboardPage.openFile();
           await mainPage.isMainPageLoaded();
 
@@ -352,11 +309,7 @@ mainTest.describe(() => {
       await mainTest.step(
         'Log in as viewer and mark all notifications as read',
         async () => {
-          await loginPage.isLoginPageOpened();
-          await loginPage.enterEmailAndClickOnContinue(firstEmail);
-          await loginPage.enterPwd(process.env.LOGIN_PWD);
-          await loginPage.clickLoginButton();
-          await teamPage.switchTeam(teamName);
+          await loginAsUser(page, firstEmail, { teamName });
           // PENPOT-2052
           await dashboardPage.isUnreadNotificationVisible();
           // PENPOT-2097
@@ -373,8 +326,6 @@ mainTest.describe(() => {
 
   mainTest(qase([2057], 'Click Notification in the pop-up'), async ({ page }) => {
     await mainTest.slow();
-    const firstEditor = random().concat('autotest');
-    const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
     const comment = 'Test Comment (main user)';
     const replyComment = 'Lorem Ipsum (editor user)';
 
@@ -386,32 +337,11 @@ mainTest.describe(() => {
       await mainPage.backToDashboardFromFileEditor();
     });
 
-    await mainTest.step('Invite editor to team', async () => {
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
-      await teamPage.selectInvitationRoleInPopUp('Editor');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+    await mainTest.step('Invite and register editor via invite link', async () => {
+      await setupEditorRoleUser(page, { existingTeamName: teamName });
     });
 
-    await mainTest.step('Register editor and reply to comment', async () => {
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      await profilePage.logout();
-      await loginPage.isLoginPageOpened();
-      await page.goto(firstInvite.inviteUrl);
-      await registerPage.registerAccount(
-        firstEditor,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, firstEmail, 40);
-      const verificationMessage = await getVerificationMessage(firstEmail);
-      await page.goto(verificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(teamName);
-
+    await mainTest.step('Reply to comment as editor', async () => {
       await dashboardPage.openFile();
       await mainPage.isMainPageLoaded();
 
@@ -427,11 +357,7 @@ mainTest.describe(() => {
       'Log back as main user and verify notification',
       async () => {
         await profilePage.logout();
-        await loginPage.isLoginPageOpened();
-        await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-        await loginPage.enterPwd(process.env.LOGIN_PWD);
-        await loginPage.clickLoginButton();
-        await teamPage.switchTeam(teamName);
+        await loginAsMainUser(page, { teamName });
 
         await dashboardPage.isUnreadNotificationVisible();
         await dashboardPage.clickOnNotificationButton();
@@ -449,48 +375,24 @@ mainTest.describe(() => {
 
   mainTest(qase([2086], '"Only your mentions" filter'), async ({ page }) => {
     await mainTest.slow();
-    const firstEditor = random().concat('autotest');
-    const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
+    let firstEditor: string;
+    let firstEmail: string;
     const comment = 'Test Comment (main user)';
 
-    await mainTest.step('Invite editor to team', async () => {
+    await mainTest.step('Invite and register editor via invite link', async () => {
       await mainPage.backToDashboardFromFileEditor();
 
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
-      await teamPage.selectInvitationRoleInPopUp('Editor');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-    });
-
-    await mainTest.step('Register editor account via invite link', async () => {
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      await profilePage.logout();
-      await loginPage.isLoginPageOpened();
-      await page.goto(firstInvite.inviteUrl);
-      await registerPage.registerAccount(
-        firstEditor,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, firstEmail, 40);
-      const verificationMessage = await getVerificationMessage(firstEmail);
-      await page.goto(verificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(teamName);
+      ({ userEmail: firstEmail, userName: firstEditor } = await setupEditorRoleUser(
+        page,
+        { existingTeamName: teamName },
+      ));
     });
 
     await mainTest.step(
       'Log back as main user and post four comments (one with mention)',
       async () => {
         await profilePage.logout();
-        await loginPage.isLoginPageOpened();
-        await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-        await loginPage.enterPwd(process.env.LOGIN_PWD);
-        await loginPage.clickLoginButton();
-        await teamPage.switchTeam(teamName);
+        await loginAsMainUser(page, { teamName });
         await dashboardPage.openFile();
         await mainPage.isMainPageLoaded();
 
@@ -524,11 +426,7 @@ mainTest.describe(() => {
 
     await mainTest.step('Log in as editor and filter by own mentions', async () => {
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
-      await loginPage.enterEmailAndClickOnContinue(firstEmail);
-      await loginPage.enterPwd(process.env.LOGIN_PWD);
-      await loginPage.clickLoginButton();
-      await teamPage.switchTeam(teamName);
+      await loginAsUser(page, firstEmail, { teamName });
       await dashboardPage.openFile();
       await mainPage.isMainPageLoaded();
 
@@ -548,48 +446,22 @@ mainTest.describe(() => {
     qase([2268], 'Notification icon after mention in the comments in the workspace'),
     async ({ page }) => {
       await mainTest.slow();
-      const firstEditor = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
+      let firstEditor: string;
+      let firstEmail: string;
       const comment = 'Test Comment (main user)';
 
-      await mainTest.step('Invite editor to team', async () => {
+      await mainTest.step('Invite and register editor via invite link', async () => {
         await mainPage.backToDashboardFromFileEditor();
 
-        await teamPage.openInvitationsPageViaOptionsMenu();
-        await teamPage.clickInviteMembersToTeamButton();
-        await teamPage.isInviteMembersPopUpHeaderVisible();
-        await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
-        await teamPage.selectInvitationRoleInPopUp('Editor');
-        await teamPage.clickSendInvitationButton();
-        await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      });
-
-      await mainTest.step('Register editor account via invite link', async () => {
-        const firstInvite = await waitMessage(page, firstEmail, 40);
-        await profilePage.logout();
-        await loginPage.isLoginPageOpened();
-        await page.goto(firstInvite.inviteUrl);
-        await registerPage.registerAccount(
-          firstEditor,
-          firstEmail,
-          process.env.LOGIN_PWD,
-        );
-        await waitSecondMessage(page, firstEmail, 40);
-        const verificationMessage = await getVerificationMessage(firstEmail);
-        await page.goto(verificationMessage.inviteUrl);
-        await dashboardPage.fillOnboardingQuestions();
-        await teamPage.isTeamSelected(teamName);
+        ({ userEmail: firstEmail, userName: firstEditor } =
+          await setupEditorRoleUser(page, { existingTeamName: teamName }));
       });
 
       await mainTest.step(
         'Log back as main user and post two mention comments',
         async () => {
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
-          await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-          await loginPage.enterPwd(process.env.LOGIN_PWD);
-          await loginPage.clickLoginButton();
-          await teamPage.switchTeam(teamName);
+          await loginAsMainUser(page, { teamName });
           await dashboardPage.openFile();
           await mainPage.isMainPageLoaded();
 
@@ -617,11 +489,7 @@ mainTest.describe(() => {
         'Log in as editor and verify unread comment notifications',
         async () => {
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
-          await loginPage.enterEmailAndClickOnContinue(firstEmail);
-          await loginPage.enterPwd(process.env.LOGIN_PWD);
-          await loginPage.clickLoginButton();
-          await teamPage.switchTeam(teamName);
+          await loginAsUser(page, firstEmail, { teamName });
           await dashboardPage.openFile();
           await mainPage.isMainPageLoaded();
 
@@ -649,15 +517,9 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.afterEach(async () => {
+  mainTest.afterEach(async ({ page }) => {
     await profilePage.logout();
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await teamPage.switchTeam(teamName);
-
+    await loginAsMainUser(page, { teamName });
     await dashboardPage.openFile();
     await mainPage.isMainPageLoaded();
   });
