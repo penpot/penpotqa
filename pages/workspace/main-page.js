@@ -957,6 +957,27 @@ exports.MainPage = class MainPage extends BasePage {
       : await this.waitForChangeIsSaved();
   }
 
+  async dragOnViewport(x1, y1, x2, y2) {
+    const box = await this.viewport.boundingBox();
+    if (!box) throw new Error('Viewport is not visible');
+    await this.page.mouse.move(box.x + x1, box.y + y1);
+    await this.page.mouse.down();
+    await this.page.mouse.move(box.x + x2, box.y + y2, { steps: 3 });
+    await this.page.mouse.up();
+  }
+
+  async createLineByCoordinates(x1, y1, x2, y2) {
+    await this.clickCreateLineButton();
+    await this.dragOnViewport(x1, y1, x2, y2);
+    await this.waitForChangeIsSaved();
+  }
+
+  async createArrowByCoordinates(x1, y1, x2, y2) {
+    await this.clickCreateArrowButton();
+    await this.dragOnViewport(x1, y1, x2, y2);
+    await this.waitForChangeIsSaved();
+  }
+
   async createDefaultClosedPath() {
     await this.clickCreatePathButton();
     await this.clickViewportByCoordinates(500, 200);
