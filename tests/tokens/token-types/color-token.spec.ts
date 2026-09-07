@@ -17,11 +17,15 @@ const sampleData = new SampleData();
 let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
+let tokensPage: TokensPage;
+let designPanelPage: DesignPanelPage;
 
 mainTest.beforeEach('Create a team and a new file', async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
+  tokensPage = new TokensPage(page);
+  designPanelPage = new DesignPanelPage(page);
 
   await teamPage.createTeam(teamName);
   await dashboardPage.createFileViaPlaceholder();
@@ -30,10 +34,6 @@ mainTest.beforeEach('Create a team and a new file', async ({ page }) => {
 });
 
 mainTest.describe(() => {
-  let mainPage: MainPage;
-  let tokensPage: TokensPage;
-  let designPanelPage: DesignPanelPage;
-
   const colorToken: MainToken<TokenClass> = {
     class: TokenClass.Color,
     name: 'color',
@@ -43,10 +43,6 @@ mainTest.describe(() => {
   mainTest.beforeEach(
     `Create a default board and a color token: "${colorToken.name}"`,
     async ({ page }) => {
-      mainPage = new MainPage(page);
-      tokensPage = new TokensPage(page);
-      designPanelPage = new DesignPanelPage(page);
-
       await mainPage.createDefaultBoardByCoordinates(320, 210);
       await tokensPage.clickTokensTab();
       await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken);
@@ -185,6 +181,48 @@ mainTest.describe(() => {
           await designPanelPage.clickColorTokenButton(secondColorToken.name);
           await mainPage.waitForChangeIsSaved();
           await tokensPage.tokensComp.isTokenAppliedWithName(secondColorToken.name);
+        },
+      );
+    },
+  );
+});
+
+mainTest.describe(() => {
+  const globalColorSetName = 'global (color)';
+  const aliasColorDarkSetName = 'alias (color-dark)';
+
+  mainTest(
+    qase([3547], 'Color tokens are displayed only from the active sets'),
+    async () => {
+      await mainTest.step(
+        'Create a default rectangle with default fill color',
+        async () => {
+          await mainPage.clickCreateRectangleButton();
+          await mainPage.clickViewportTwice();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await mainTest.step('Import the token test file', async () => {
+        await tokensPage.clickTokensTab();
+        await tokensPage.toolsComp.clickOnTokenToolsButton();
+        await tokensPage.toolsComp.importTokens('documents/tokens-example.json');
+      });
+
+      await mainTest.step(
+        'Open color picker for rectangle and assert token sets are listed in reverse order',
+        async () => {
+          await designPanelPage.clickFillColorIcon();
+          await designPanelPage.clickColorPickerTokensButton();
+          await designPanelPage.isTogglePanelSetButtonsCount(2);
+          await designPanelPage.isTogglePanelSetButtonTextByIndex(
+            0,
+            aliasColorDarkSetName,
+          );
+          await designPanelPage.isTogglePanelSetButtonTextByIndex(
+            1,
+            globalColorSetName,
+          );
         },
       );
     },

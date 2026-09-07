@@ -95,6 +95,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
     this.colorPickerTokensButton =
       this.colorPickerContainer.getByTestId('opt-token-color');
+
+    this.colorPickerTogglePanelSetButtons = this.colorPickerContainer.getByRole(
+      'button',
+      { name: 'Toggle panel' },
+    );
     this.selectedColors = this.designTabpanel.locator(
       '[class*="color_selection__element-set"]',
     );
@@ -726,6 +731,24 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       this.searchByTokenNameInput,
       'Search by token name input is not visible (Colors mode is active)',
     ).not.toBeVisible();
+  }
+
+  getTogglePanelSetButtonByIndex(index) {
+    return this.colorPickerTogglePanelSetButtons.nth(index);
+  }
+
+  async isTogglePanelSetButtonsCount(count) {
+    await expect(
+      this.colorPickerTogglePanelSetButtons,
+      `Toggle panel set buttons count is ${count}`,
+    ).toHaveCount(count);
+  }
+
+  async isTogglePanelSetButtonTextByIndex(index, text) {
+    await expect(
+      this.getTogglePanelSetButtonByIndex(index),
+      `Toggle panel set button at index ${index} should contain text "${text}"`,
+    ).toContainText(text);
   }
 
   async clickAddFillButton() {
