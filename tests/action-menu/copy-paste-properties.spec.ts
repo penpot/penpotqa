@@ -1,22 +1,13 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { mainAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
@@ -24,25 +15,18 @@ let assetsPanelPage: AssetsPanelPage;
 let inspectPanelPage: InspectPanelPage;
 let pagesPanelPage: PagesPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
   pagesPanelPage = new PagesPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.waitForViewportVisible();
-  await mainPage.isMainPageLoaded();
 });
 
-mainTest.describe(() => {
-  mainTest.describe(() => {
-    mainTest.beforeEach(async () => {
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.describe(() => {
+    mainAccountFileTest.beforeEach(async ({ mainPage }) => {
       await mainPage.createDefaultRectangleByCoordinates(100, 100);
       await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
@@ -65,9 +49,9 @@ mainTest.describe(() => {
       await layersPanelPage.selectLayerByName('Rectangle');
     });
 
-    mainTest(
+    mainAccountFileTest(
       qase([1964], 'Copy paste properties from rectangle to ellipse'),
-      async () => {
+      async ({ mainPage }) => {
         await mainPage.copyLayerPropertyViaRightClick();
 
         await mainPage.createDefaultEllipseByCoordinates(100, 300, true);
@@ -82,9 +66,9 @@ mainTest.describe(() => {
       },
     );
 
-    mainTest(
+    mainAccountFileTest(
       qase([1973], 'Copy paste properties into 3 different layers'),
-      async () => {
+      async ({ mainPage }) => {
         await mainPage.copyLayerPropertyViaRightClick();
         await pagesPanelPage.clickAddPageButton();
         await pagesPanelPage.clickOnPageOnLayersPanel(2);
@@ -121,9 +105,9 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase([1975], 'Copy paste Properties on Main component 1 to Copy component 2'),
-    async () => {
+    async ({ mainPage }) => {
       await mainPage.createDefaultRectangleByCoordinates(100, 100);
       await mainPage.createComponentViaRightClick();
       await designPanelPage.clickFirstColorIcon();
@@ -155,9 +139,9 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase([1976], 'Copy paste properties of Flex layout to another Board'),
-    async () => {
+    async ({ mainPage }) => {
       await mainPage.createDefaultBoardByCoordinates(100, 100);
       await mainPage.addFlexLayoutViaRightClick();
       await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -178,26 +162,29 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1978], 'Copy paste typography property'), async () => {
-    await mainPage.createDefaultTextLayerByCoordinates(100, 100);
-    await assetsPanelPage.selectFont('Sofia');
-    await assetsPanelPage.selectFontSize('20');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickShortcutCtrlAltC();
+  mainAccountFileTest(
+    qase([1978], 'Copy paste typography property'),
+    async ({ mainPage }) => {
+      await mainPage.createDefaultTextLayerByCoordinates(100, 100);
+      await assetsPanelPage.selectFont('Sofia');
+      await assetsPanelPage.selectFontSize('20');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickShortcutCtrlAltC();
 
-    await mainPage.createDefaultTextLayerByCoordinates(500, 500);
-    await mainPage.clickShortcutCtrlAltV();
+      await mainPage.createDefaultTextLayerByCoordinates(500, 500);
+      await mainPage.clickShortcutCtrlAltV();
 
-    await assetsPanelPage.checkFont('Sofia');
-    await assetsPanelPage.checkFontSize('20');
-  });
+      await assetsPanelPage.checkFont('Sofia');
+      await assetsPanelPage.checkFontSize('20');
+    },
+  );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2020],
       'Compare copied CSS properties with CSS properties in "Inspect" tab',
     ),
-    async () => {
+    async ({ mainPage }) => {
       await mainPage.createDefaultEllipseByCoordinates(100, 100);
       const cssCode = await mainPage.copyLayerCSSViaRightClick();
 
@@ -210,12 +197,12 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2256],
       'Compare "Copy as SVG" code with the SVG code on the "Inspect" panel',
     ),
-    async () => {
+    async ({ mainPage }) => {
       await mainPage.createDefaultEllipseByCoordinates(100, 100);
       const svgCode = await mainPage.copyLayerSVGViaRightClick();
       await inspectPanelPage.openInspectTab();
@@ -227,9 +214,9 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase([2257], '"Copy as SVG" a simple path, pasting the code on Penpot'),
-    async () => {
+    async ({ mainPage }) => {
       await mainPage.createDefaultOpenPath();
       await mainPage.copyLayerSVGViaRightClick();
       await Promise.all([

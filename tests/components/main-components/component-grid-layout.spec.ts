@@ -1,45 +1,31 @@
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { MainPage } from '@pages/workspace/main-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { expect } from '@playwright/test';
-import { mainTest } from 'fixtures';
-import { createTeamName } from 'helpers/teams/create-team-name';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName = createTeamName();
 const annotation = 'Test annotation for automation';
 
 let assetsPanelPage: AssetsPanelPage;
 let colorPalettePage: ColorPalettePage;
-let dashboardPage: DashboardPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
-let mainPage: MainPage;
 let pagesPanelPage: PagesPanelPage;
-let teamPage: TeamPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page }) => {
   pagesPanelPage = new PagesPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    await mainTest.slow();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await mainAccountFileTest.slow();
     await mainPage.createDefaultBoardByCoordinates(400, 400);
     await designPanelPage.changeHeightAndWidthForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
@@ -50,125 +36,155 @@ mainTest.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [1724],
       'Create a component from grid board with some element inside, edit component in grid layout section',
     ),
-    async () => {
-      await mainTest.step('Create component from grid board', async () => {
-        await mainPage.createComponentViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.clickViewportOnce();
-        await mainPage.clickCreatedBoardTitleOnCanvas();
-        await mainPage.clickBoardOnCanvas();
-        await mainPage.doubleClickBoardOnCanvas();
-      });
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Create component from grid board',
+        async () => {
+          await mainPage.createComponentViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.clickViewportOnce();
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await mainPage.clickBoardOnCanvas();
+          await mainPage.doubleClickBoardOnCanvas();
+        },
+      );
 
-      await mainTest.step('Edit grid row label to "100 PX"', async () => {
+      await mainAccountFileTest.step('Edit grid row label to "100 PX"', async () => {
         await mainPage.changeGridRowLabel('100 PX');
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainTest.step('Verify grid row label change on canvas', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after editing grid row label to px',
-        ).toHaveScreenshot('board-component-with-px-row.png', {
-          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify grid row label change on canvas',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot after editing grid row label to px',
+          ).toHaveScreenshot('board-component-with-px-row.png', {
+            mask: mainPage.maskViewport({ gridEditorToolbar: true }),
+          });
+        },
+      );
     },
   );
 
-  mainTest(qase([1730], 'Restore main component'), async () => {
-    await mainTest.step('Create component, duplicate and delete main', async () => {
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.duplicateLayerViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await layersPanelPage.deleteMainComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-    });
+  mainAccountFileTest(
+    qase([1730], 'Restore main component'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Create component, duplicate and delete main',
+        async () => {
+          await mainPage.createComponentViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.duplicateLayerViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.clickMainComponentOnLayersTab();
+          await layersPanelPage.deleteMainComponentViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-    await mainTest.step(
-      'Restore main component from copy via right-click',
-      async () => {
-        await layersPanelPage.clickCopyComponentOnLayersTab();
-        await layersPanelPage.restoreMainComponentViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.waitForMainComponentIsSelected();
-      },
-    );
+      await mainAccountFileTest.step(
+        'Restore main component from copy via right-click',
+        async () => {
+          await layersPanelPage.clickCopyComponentOnLayersTab();
+          await layersPanelPage.restoreMainComponentViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.waitForMainComponentIsSelected();
+        },
+      );
 
-    await mainTest.step('Verify restored main component on canvas', async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot with restored main component',
-      ).toHaveScreenshot('board-component-with-grid-layout-main-restore.png', {
-        mask: mainPage.maskViewport(),
+      await mainAccountFileTest.step(
+        'Verify restored main component on canvas',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot with restored main component',
+          ).toHaveScreenshot('board-component-with-grid-layout-main-restore.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+    },
+  );
+
+  mainAccountFileTest(
+    qase([1731], 'Undo component editing and deleting'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Create component and change fill color',
+        async () => {
+          await mainPage.createComponentViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.clickFillColorIcon();
+          await colorPalettePage.setHex('#0000FF');
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
+        },
+      );
+
+      await mainAccountFileTest.step(
+        'Verify component with blue fill color',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot with blue fill color on component',
+          ).toHaveScreenshot('board-component-blue-color.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+
+      await mainAccountFileTest.step('Undo fill color change', async () => {
+        await mainPage.clickViewportOnce();
+        await mainPage.clickShortcutCtrlZ();
       });
-    });
-  });
 
-  mainTest(qase([1731], 'Undo component editing and deleting'), async () => {
-    await mainTest.step('Create component and change fill color', async () => {
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#0000FF');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-    });
+      await mainAccountFileTest.step(
+        'Verify component after undoing fill color',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot after undoing fill color change',
+          ).toHaveScreenshot('board-component-undo-color.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
 
-    await mainTest.step('Verify component with blue fill color', async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot with blue fill color on component',
-      ).toHaveScreenshot('board-component-blue-color.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
+      await mainAccountFileTest.step(
+        'Delete component and undo deletion',
+        async () => {
+          await layersPanelPage.deleteMainComponentViaRightClick();
+          await mainPage.isCreatedLayerVisible(false);
+          await mainPage.clickShortcutCtrlZ();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-    await mainTest.step('Undo fill color change', async () => {
-      await mainPage.clickViewportOnce();
-      await mainPage.clickShortcutCtrlZ();
-    });
+      await mainAccountFileTest.step(
+        'Verify component is restored after undoing deletion',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot with component restored after undo',
+          ).toHaveScreenshot('board-component-restored.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+    },
+  );
 
-    await mainTest.step('Verify component after undoing fill color', async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot after undoing fill color change',
-      ).toHaveScreenshot('board-component-undo-color.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-
-    await mainTest.step('Delete component and undo deletion', async () => {
-      await layersPanelPage.deleteMainComponentViaRightClick();
-      await mainPage.isCreatedLayerVisible(false);
-      await mainPage.clickShortcutCtrlZ();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step(
-      'Verify component is restored after undoing deletion',
-      async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with component restored after undo',
-        ).toHaveScreenshot('board-component-restored.png', {
-          mask: mainPage.maskViewport(),
-        });
-      },
-    );
-  });
-
-  mainTest(
+  mainAccountFileTest(
     qase([1732, 1733], '[Grid layout] Use shared component in another file'),
-    async () => {
-      await mainTest.step(
+    async ({ dashboardPage, mainPage }) => {
+      await mainAccountFileTest.step(
         'Create component and add file as shared library',
         async () => {
           await mainPage.createComponentViaRightClick();
@@ -179,17 +195,20 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Create new file and import shared library', async () => {
-        await dashboardPage.createFileViaTitlePanel();
-        await assetsPanelPage.clickAssetsTab();
-        await assetsPanelPage.clickLibrariesButton();
-        await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
-        await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-        await assetsPanelPage.clickCloseModalButton();
-        await dashboardPage.reloadPage();
-      });
+      await mainAccountFileTest.step(
+        'Create new file and import shared library',
+        async () => {
+          await dashboardPage.createFileViaTitlePanel();
+          await assetsPanelPage.clickAssetsTab();
+          await assetsPanelPage.clickLibrariesButton();
+          await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
+          await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
+          await assetsPanelPage.clickCloseModalButton();
+          await dashboardPage.reloadPage();
+        },
+      );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Drag component from shared library to canvas',
         async () => {
           await assetsPanelPage.clickAssetsTab();
@@ -201,7 +220,7 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify component from shared library on canvas',
         async () => {
           await expect(
@@ -216,9 +235,9 @@ mainTest.describe(() => {
   );
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    await mainTest.slow();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await mainAccountFileTest.slow();
     await mainPage.createDefaultBoardByCoordinates(400, 400);
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
     await mainPage.waitForChangeIsSaved();
@@ -239,18 +258,21 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase([1718], 'Copy-paste component, that was created from grid board'),
-    async () => {
-      await mainTest.step('Copy and paste component from grid board', async () => {
-        await mainPage.clickViewportOnce();
-        await mainPage.clickCreatedBoardTitleOnCanvas();
-        await mainPage.copyLayerViaRightClick();
-        await mainPage.pressPasteShortcut();
-        await mainPage.waitForChangeIsSaved();
-      });
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Copy and paste component from grid board',
+        async () => {
+          await mainPage.clickViewportOnce();
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await mainPage.copyLayerViaRightClick();
+          await mainPage.pressPasteShortcut();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify copy-pasted component on canvas and layers panel',
         async () => {
           await expect(
@@ -270,14 +292,17 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase([1728], 'Duplicate component, that was created from grid board'),
-    async () => {
-      await mainTest.step('Duplicate component via shortcut', async () => {
-        await mainPage.clickShortcutCtrlD();
-      });
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Duplicate component via shortcut',
+        async () => {
+          await mainPage.clickShortcutCtrlD();
+        },
+      );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify duplicated component on canvas and layers panel',
         async () => {
           await expect(
@@ -294,9 +319,9 @@ mainTest.describe(() => {
   );
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    await mainTest.slow();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await mainAccountFileTest.slow();
     await mainPage.createDefaultBoardByCoordinates(100, 100);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await mainPage.waitForChangeIsSaved();
@@ -311,31 +336,37 @@ mainTest.describe(() => {
     await designPanelPage.changeAxisXAndYForLayer('500', '100');
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase([1720], 'Change the copy component and click "Update main component"'),
-    async () => {
-      await mainTest.step('Resize copy component and update main', async () => {
-        await designPanelPage.changeHeightAndWidthForLayer('25', '25');
-        await layersPanelPage.updateMainComponentViaRightClick();
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-      });
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Resize copy component and update main',
+        async () => {
+          await designPanelPage.changeHeightAndWidthForLayer('25', '25');
+          await layersPanelPage.updateMainComponentViaRightClick();
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-      await mainTest.step('Verify updated main component on canvas', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after updating main component from copy',
-        ).toHaveScreenshot('board-component-with-grid-layout-main-updated.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify updated main component on canvas',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot after updating main component from copy',
+          ).toHaveScreenshot('board-component-with-grid-layout-main-updated.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase([1721], 'Change the copy component and click "Show main component"'),
-    async () => {
-      await mainTest.step(
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
         'Change copy fill color and show main component',
         async () => {
           await designPanelPage.clickFillColorIcon();
@@ -346,51 +377,66 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Verify main component is shown on canvas', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after showing main component',
-        ).toHaveScreenshot('board-component-with-grid-layout-main-show.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify main component is shown on canvas',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot after showing main component',
+          ).toHaveScreenshot('board-component-with-grid-layout-main-show.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase([1722], 'Change the copy component and click "Reset overrides"'),
-    async () => {
-      await mainTest.step('Change copy fill color and reset overrides', async () => {
-        await designPanelPage.clickFillColorIcon();
-        await colorPalettePage.setHex('#000000');
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.resetOverridesViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-      });
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Change copy fill color and reset overrides',
+        async () => {
+          await designPanelPage.clickFillColorIcon();
+          await colorPalettePage.setHex('#000000');
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.resetOverridesViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-      await mainTest.step('Verify overrides are reset on canvas', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after resetting copy component overrides',
-        ).toHaveScreenshot('board-component-with-grid-layout-reset-overrides.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify overrides are reset on canvas',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot after resetting copy component overrides',
+          ).toHaveScreenshot(
+            'board-component-with-grid-layout-reset-overrides.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase([1723], 'Change the copy component and click "Detach instance"'),
-    async () => {
-      await mainTest.step('Resize copy component and detach instance', async () => {
-        await designPanelPage.changeHeightAndWidthForLayer('25', '25');
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.detachInstanceCopyComponentViaRightClick();
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-      });
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Resize copy component and detach instance',
+        async () => {
+          await designPanelPage.changeHeightAndWidthForLayer('25', '25');
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.detachInstanceCopyComponentViaRightClick();
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify detached instance on canvas and layers panel',
         async () => {
           await expect(
@@ -412,9 +458,9 @@ mainTest.describe(() => {
   );
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    await mainTest.slow();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await mainAccountFileTest.slow();
     await mainPage.createDefaultBoardByCoordinates(400, 400);
     await designPanelPage.changeHeightAndWidthForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
@@ -431,13 +477,13 @@ mainTest.describe(() => {
     await designPanelPage.waitForChangeIsSaved();
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [1725, 1752],
       'Create annotation for component, that already has annotation',
     ),
-    async () => {
-      await mainTest.step(
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
         `Verify annotation "${annotation}" is added to component`,
         async () => {
           await designPanelPage.isAnnotationAddedToComponent(annotation);
@@ -445,7 +491,7 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify annotation option is not available in right-click menu or component menu',
         async () => {
           await designPanelPage.isAnnotationOptionNotVisibleRightClick();
@@ -456,8 +502,8 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([1726], 'Edit annotation for component'), async () => {
-    await mainTest.step(
+  mainAccountFileTest(qase([1726], 'Edit annotation for component'), async () => {
+    await mainAccountFileTest.step(
       `Edit annotation from "${annotation}" to "Edit annotation"`,
       async () => {
         await designPanelPage.clickOnEditAnnotation();
@@ -466,13 +512,16 @@ mainTest.describe(() => {
       },
     );
 
-    await mainTest.step('Verify edited annotation is displayed', async () => {
-      await designPanelPage.isAnnotationAddedToComponent('Edit annotation');
-    });
+    await mainAccountFileTest.step(
+      'Verify edited annotation is displayed',
+      async () => {
+        await designPanelPage.isAnnotationAddedToComponent('Edit annotation');
+      },
+    );
   });
 
-  mainTest(qase([1727], 'Delete annotation for component'), async () => {
-    await mainTest.step(
+  mainAccountFileTest(qase([1727], 'Delete annotation for component'), async () => {
+    await mainAccountFileTest.step(
       `Delete annotation "${annotation}" from component`,
       async () => {
         await designPanelPage.clickOnDeleteAnnotation();
@@ -481,8 +530,11 @@ mainTest.describe(() => {
       },
     );
 
-    await mainTest.step('Verify annotation is removed from component', async () => {
-      await designPanelPage.isAnnotationNotAddedToComponent();
-    });
+    await mainAccountFileTest.step(
+      'Verify annotation is removed from component',
+      async () => {
+        await designPanelPage.isAnnotationNotAddedToComponent();
+      },
+    );
   });
 });

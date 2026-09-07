@@ -1,40 +1,25 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { mainAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
-mainTest(
+mainAccountFileTest(
   qase(
     [2485],
     'Reference a Number token as an operand (math operation / Number token)',
   ),
-  async () => {
+  async ({ mainPage }) => {
     const numberToken: MainToken<TokenClass> = {
       class: TokenClass.Number,
       name: 'numberToken',
@@ -52,7 +37,7 @@ mainTest(
       value: `5/{${numberToken.name}}`,
     };
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Create "${numberToken.name}" and "${numberTokenRef.name}" tokens with multiplication reference`,
       async () => {
         await tokensPage.clickTokensTab();
@@ -71,7 +56,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Edit to division and verify resolved value is 2.5',
       async () => {
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
@@ -87,7 +72,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Edit to addition and verify resolved value is 7',
       async () => {
         updatedTokenData.value = `5+{${numberToken.name}}`;
@@ -104,7 +89,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Edit to subtraction and verify resolved value is 3',
       async () => {
         updatedTokenData.value = `5-{${numberToken.name}}`;
@@ -123,9 +108,9 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase([2477], 'Apply a Number token (Rotation) and override value from Design tab'),
-  async () => {
+  async ({ mainPage }) => {
     const numberToken: MainToken<TokenClass> = {
       class: TokenClass.Number,
       name: 'number',
@@ -133,7 +118,7 @@ mainTest(
     };
     const newTokenValue = '0';
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Create rectangle and apply "${numberToken.name}" token as Rotation`,
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(320, 210);
@@ -151,7 +136,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Override rotation to "${newTokenValue}" from Design tab and verify token is detached`,
       async () => {
         await designPanelPage.changeRotationForLayer(newTokenValue);
@@ -163,12 +148,12 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase(
     [2492],
     'Apply a Number token (Line Height) and override value from Design tab',
   ),
-  async () => {
+  async ({ mainPage }) => {
     const numberToken: MainToken<TokenClass> = {
       class: TokenClass.Number,
       name: 'number',
@@ -176,7 +161,7 @@ mainTest(
     };
     const newTokenValue = '1';
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Create text layer and apply "${numberToken.name}" token as Line Height`,
       async () => {
         await mainPage.createDefaultTextLayerByCoordinates(100, 200);
@@ -194,7 +179,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Override line height to "${newTokenValue}" from Design tab and verify token is detached`,
       async () => {
         await designPanelPage.changeTextLineHeight(newTokenValue);

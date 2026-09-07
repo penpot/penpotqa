@@ -1,63 +1,54 @@
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { MainPage } from '@pages/workspace/main-page';
 import { expect } from '@playwright/test';
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
-import { createTeamName } from 'helpers/teams/create-team-name';
 import { qase } from 'playwright-qase-reporter/playwright';
-
-const teamName = createTeamName();
 
 let assetsPanelPage: AssetsPanelPage;
 let colorPalettePage: ColorPalettePage;
-let dashboardPage: DashboardPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
-let mainPage: MainPage;
-let teamPage: TeamPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
-  teamPage = new TeamPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
   assetsPanelPage = new AssetsPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
 });
 
-mainTest(qase([1275], 'Update main component'), async () => {
-  await mainTest.step('Create rectangle component and duplicate it', async () => {
-    await mainPage.createDefaultRectangleByCoordinates(200, 300);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-  });
+mainAccountFileTest(qase([1275], 'Update main component'), async ({ mainPage }) => {
+  await mainAccountFileTest.step(
+    'Create rectangle component and duplicate it',
+    async () => {
+      await mainPage.createDefaultRectangleByCoordinates(200, 300);
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.duplicateLayerViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+    },
+  );
 
-  await mainTest.step('Move copy component and change its fill color', async () => {
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXAndYForLayer('400', '500');
-    await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickComponentFillColorIcon();
-    await colorPalettePage.modalSetHex('#304d6a');
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-  });
+  await mainAccountFileTest.step(
+    'Move copy component and change its fill color',
+    async () => {
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.changeAxisXAndYForLayer('400', '500');
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.clickComponentFillColorIcon();
+      await colorPalettePage.modalSetHex('#304d6a');
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+    },
+  );
 
-  await mainTest.step('Update main component from copy', async () => {
+  await mainAccountFileTest.step('Update main component from copy', async () => {
     await layersPanelPage.updateMainComponentViaRightClick();
   });
 
-  await mainTest.step(
+  await mainAccountFileTest.step(
     'Verify updated component on canvas and assets tab',
     async () => {
       await expect(
@@ -78,9 +69,9 @@ mainTest(qase([1275], 'Update main component'), async () => {
   );
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    await mainTest.slow();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await mainAccountFileTest.slow();
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
     await mainPage.waitForChangeIsSaved();
@@ -109,17 +100,20 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase([1438], 'Create a component and 2 copies of it, change rotation of main'),
-    async () => {
-      await mainTest.step('Change rotation of main component', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await designPanelPage.changeRotationForLayer('20');
-        await designPanelPage.waitForChangeIsUnsaved();
-        await designPanelPage.waitForChangeIsSaved();
-      });
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Change rotation of main component',
+        async () => {
+          await layersPanelPage.clickMainComponentOnLayersTab();
+          await designPanelPage.changeRotationForLayer('20');
+          await designPanelPage.waitForChangeIsUnsaved();
+          await designPanelPage.waitForChangeIsSaved();
+        },
+      );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify rotation change propagated to copies',
         async () => {
           await expect(
@@ -133,23 +127,26 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [1445],
       'Create a component and 2 copies of it, change shadow opacity and color of main',
     ),
-    async () => {
-      await mainTest.step('Add default shadow to main component', async () => {
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.clickAddShadowButton();
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.clickMainComponentOnLayersTab();
-        await mainPage.clickViewportByCoordinates(1000, 200, 2);
-      });
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Add default shadow to main component',
+        async () => {
+          await layersPanelPage.clickMainComponentOnLayersTab();
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.clickAddShadowButton();
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.clickMainComponentOnLayersTab();
+          await mainPage.clickViewportByCoordinates(1000, 200, 2);
+        },
+      );
 
-      await mainTest.step('Verify default shadow on canvas', async () => {
+      await mainAccountFileTest.step('Verify default shadow on canvas', async () => {
         await expect(
           mainPage.viewport,
           'Viewport should match screenshot with default shadow on main component',
@@ -159,7 +156,7 @@ mainTest.describe(() => {
         });
       });
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Change shadow opacity and color of main component',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -173,22 +170,25 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Verify updated shadow propagated to copies', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with updated shadow on main component',
-        ).toHaveScreenshot('main-copies-component-shadow-updated.png', {
-          mask: mainPage.maskViewport(),
-          maxDiffPixels: 0,
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify updated shadow propagated to copies',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot with updated shadow on main component',
+          ).toHaveScreenshot('main-copies-component-shadow-updated.png', {
+            mask: mainPage.maskViewport(),
+            maxDiffPixels: 0,
+          });
+        },
+      );
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase([1446], 'Create a component and 2 copies of it, change blur of main'),
-    async () => {
-      await mainTest.step('Add blur to main component', async () => {
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Add blur to main component', async () => {
         await layersPanelPage.clickMainComponentOnLayersTab();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickAddBlurButton();
@@ -198,25 +198,28 @@ mainTest.describe(() => {
         await mainPage.clickViewportByCoordinates(1000, 200, 2);
       });
 
-      await mainTest.step('Verify blur change propagated to copies', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after adding blur to main component',
-        ).toHaveScreenshot('main-copies-component-blur.png', {
-          mask: mainPage.maskViewport(),
-          maxDiffPixels: 0,
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify blur change propagated to copies',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot after adding blur to main component',
+          ).toHaveScreenshot('main-copies-component-blur.png', {
+            mask: mainPage.maskViewport(),
+            maxDiffPixels: 0,
+          });
+        },
+      );
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [3256],
       'Create a component and 2 copies of it, change grid style and size of main',
     ),
-    async () => {
-      await mainTest.step(
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
         'Add guides with rows type to main component',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -228,24 +231,27 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Verify default grid propagated to copies', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with default grid on main component',
-        ).toHaveScreenshot('main-copies-component-grid-default.png', {
-          mask: mainPage.maskViewport(),
-          maxDiffPixels: 0,
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify default grid propagated to copies',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot with default grid on main component',
+          ).toHaveScreenshot('main-copies-component-grid-default.png', {
+            mask: mainPage.maskViewport(),
+            maxDiffPixels: 0,
+          });
+        },
+      );
 
-      await mainTest.step('Change guides size', async () => {
+      await mainAccountFileTest.step('Change guides size', async () => {
         await designPanelPage.changeSizeForGuides('4');
         await designPanelPage.guidesTypeField.click();
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify updated grid size propagated to copies',
         async () => {
           await expect(
@@ -261,9 +267,9 @@ mainTest.describe(() => {
   );
 });
 
-mainTest.describe('Text', () => {
-  mainTest.beforeEach(async () => {
-    await mainTest.slow();
+mainAccountFileTest.describe('Text', () => {
+  mainAccountFileTest.beforeEach(async ({ dashboardPage, mainPage }) => {
+    await mainAccountFileTest.slow();
     await mainPage.backToDashboardFromFileEditor();
     await dashboardPage.clickAddProjectButton();
     await dashboardPage.setProjectName('Test Project');
@@ -272,15 +278,15 @@ mainTest.describe('Text', () => {
     await dashboardPage.openFileWithName('Propagation of text components I');
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2261],
       'Propagation of (style and content) changes from a text component to copies (overriding style or content)',
     ),
-    async () => {
+    async ({ mainPage }) => {
       const sampleData = new SampleData();
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Change text style properties of main component child layer',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -297,7 +303,7 @@ mainTest.describe('Text', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Edit text content of main component child layer',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -308,7 +314,7 @@ mainTest.describe('Text', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify style and content propagation to copies',
         async () => {
           await expect(
@@ -323,15 +329,15 @@ mainTest.describe('Text', () => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2263],
       'Propagation of (independent) changes from a text component to (all) copies',
     ),
-    async () => {
+    async ({ mainPage }) => {
       const sampleData = new SampleData();
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Apply stroke, rotation and width changes to main component child layer',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -353,7 +359,7 @@ mainTest.describe('Text', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify independent changes propagated to all copies',
         async () => {
           await expect(
@@ -369,190 +375,208 @@ mainTest.describe('Text', () => {
   );
 });
 
-mainTest(qase([1478], 'Changed direct, not overriden'), async () => {
-  const sampleData = new SampleData();
+mainAccountFileTest(
+  qase([1478], 'Changed direct, not overriden'),
+  async ({ mainPage }) => {
+    const sampleData = new SampleData();
 
-  await mainTest.step('Create rectangle component and duplicate it', async () => {
-    await mainPage.createDefaultRectangleByCoordinates(200, 300);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.duplicateLayerViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.changeAxisXAndYForLayer('400', '500');
-    await mainPage.waitForChangeIsSaved();
-  });
+    await mainAccountFileTest.step(
+      'Create rectangle component and duplicate it',
+      async () => {
+        await mainPage.createDefaultRectangleByCoordinates(200, 300);
+        await mainPage.createComponentViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.clickCopyComponentOnLayersTab();
+        await designPanelPage.changeAxisXAndYForLayer('400', '500');
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-  await mainTest.step(
-    `Set main component fill color to "${sampleData.color.blueHexCode}"`,
-    async () => {
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    },
-  );
+    await mainAccountFileTest.step(
+      `Set main component fill color to "${sampleData.color.blueHexCode}"`,
+      async () => {
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-  await mainTest.step('Verify direct color change on canvas', async () => {
-    await expect(
-      mainPage.viewport,
-      'Viewport should match screenshot with direct color change not overridden in copy',
-    ).toHaveScreenshot('1478-component-update-canvas.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
-});
+    await mainAccountFileTest.step(
+      'Verify direct color change on canvas',
+      async () => {
+        await expect(
+          mainPage.viewport,
+          'Viewport should match screenshot with direct color change not overridden in copy',
+        ).toHaveScreenshot('1478-component-update-canvas.png', {
+          mask: mainPage.maskViewport(),
+        });
+      },
+    );
+  },
+);
 
-mainTest(qase([1479], 'Changed remote, not overriden'), async () => {
-  const sampleData = new SampleData();
+mainAccountFileTest(
+  qase([1479], 'Changed remote, not overriden'),
+  async ({ mainPage }) => {
+    const sampleData = new SampleData();
 
-  await mainTest.step(
-    'Create component with copy and create a second nested component',
-    async () => {
-      await mainPage.createDefaultRectangleByCoordinates(200, 300);
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.duplicateLayerViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.changeAxisXAndYForLayer('400', '500');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createComponentViaRightClick();
-      await mainPage.duplicateLayerViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.changeAxisXAndYForLayer('200', '500');
-      await mainPage.waitForChangeIsSaved();
-    },
-  );
+    await mainAccountFileTest.step(
+      'Create component with copy and create a second nested component',
+      async () => {
+        await mainPage.createDefaultRectangleByCoordinates(200, 300);
+        await mainPage.createComponentViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.clickCopyComponentOnLayersTab();
+        await designPanelPage.changeAxisXAndYForLayer('400', '500');
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.createComponentViaRightClick();
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.clickCopyComponentOnLayersTab();
+        await designPanelPage.changeAxisXAndYForLayer('200', '500');
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-  await mainTest.step(
-    `Set main component fill color to "${sampleData.color.pinkHexCode}"`,
-    async () => {
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    },
-  );
+    await mainAccountFileTest.step(
+      `Set main component fill color to "${sampleData.color.pinkHexCode}"`,
+      async () => {
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-  await mainTest.step(
-    'Verify remote color change on canvas and assets panel',
-    async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot with remote color change not overridden in copy',
-      ).toHaveScreenshot('1479-component-update-canvas.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-      await expect(
-        assetsPanelPage.assetsPanel,
-        'Assets panel should match screenshot with remote color change',
-      ).toHaveScreenshot('1479-component-update-asset.png', {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      });
-    },
-  );
-});
+    await mainAccountFileTest.step(
+      'Verify remote color change on canvas and assets panel',
+      async () => {
+        await expect(
+          mainPage.viewport,
+          'Viewport should match screenshot with remote color change not overridden in copy',
+        ).toHaveScreenshot('1479-component-update-canvas.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await assetsPanelPage.clickAssetsTab();
+        await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+        await expect(
+          assetsPanelPage.assetsPanel,
+          'Assets panel should match screenshot with remote color change',
+        ).toHaveScreenshot('1479-component-update-asset.png', {
+          mask: [assetsPanelPage.librariesOpenModalButton],
+        });
+      },
+    );
+  },
+);
 
-mainTest(qase([1480], 'Changed direct, overriden in copy'), async () => {
-  const sampleData = new SampleData();
+mainAccountFileTest(
+  qase([1480], 'Changed direct, overriden in copy'),
+  async ({ mainPage }) => {
+    const sampleData = new SampleData();
 
-  await mainTest.step(
-    'Create component with copy and override copy color',
-    async () => {
-      await mainPage.createDefaultRectangleByCoordinates(200, 300);
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.duplicateLayerViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.changeAxisXAndYForLayer('400', '500');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    },
-  );
+    await mainAccountFileTest.step(
+      'Create component with copy and override copy color',
+      async () => {
+        await mainPage.createDefaultRectangleByCoordinates(200, 300);
+        await mainPage.createComponentViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.clickCopyComponentOnLayersTab();
+        await designPanelPage.changeAxisXAndYForLayer('400', '500');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-  await mainTest.step(
-    `Set main component fill color to "${sampleData.color.purpleHexCode}"`,
-    async () => {
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.setComponentColor(sampleData.color.purpleHexCode);
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    },
-  );
+    await mainAccountFileTest.step(
+      `Set main component fill color to "${sampleData.color.purpleHexCode}"`,
+      async () => {
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await designPanelPage.setComponentColor(sampleData.color.purpleHexCode);
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-  await mainTest.step(
-    'Verify copy color override is preserved while main color is updated',
-    async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot with direct change overridden in copy',
-      ).toHaveScreenshot('1480-component-update-canvas.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-      await expect(
-        assetsPanelPage.assetsPanel,
-        'Assets panel should match screenshot with direct change overridden in copy',
-      ).toHaveScreenshot('1480-component-update-asset.png', {
-        mask: [assetsPanelPage.librariesOpenModalButton],
-      });
-    },
-  );
-});
+    await mainAccountFileTest.step(
+      'Verify copy color override is preserved while main color is updated',
+      async () => {
+        await expect(
+          mainPage.viewport,
+          'Viewport should match screenshot with direct change overridden in copy',
+        ).toHaveScreenshot('1480-component-update-canvas.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await assetsPanelPage.clickAssetsTab();
+        await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+        await expect(
+          assetsPanelPage.assetsPanel,
+          'Assets panel should match screenshot with direct change overridden in copy',
+        ).toHaveScreenshot('1480-component-update-asset.png', {
+          mask: [assetsPanelPage.librariesOpenModalButton],
+        });
+      },
+    );
+  },
+);
 
-mainTest(qase([1482], 'Changed remote, overriden in copy'), async () => {
-  const sampleData = new SampleData();
+mainAccountFileTest(
+  qase([1482], 'Changed remote, overriden in copy'),
+  async ({ mainPage }) => {
+    const sampleData = new SampleData();
 
-  await mainTest.step(
-    'Create component with copy, create nested component and override copy color',
-    async () => {
-      await mainPage.createDefaultRectangleByCoordinates(200, 300);
-      await mainPage.createComponentViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.duplicateLayerViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.changeAxisXAndYForLayer('400', '500');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createComponentViaRightClick();
-      await mainPage.duplicateLayerViaRightClick();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await designPanelPage.changeAxisXAndYForLayer('200', '500');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.setComponentColor(sampleData.color.greenHexCode1);
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    },
-  );
+    await mainAccountFileTest.step(
+      'Create component with copy, create nested component and override copy color',
+      async () => {
+        await mainPage.createDefaultRectangleByCoordinates(200, 300);
+        await mainPage.createComponentViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.clickCopyComponentOnLayersTab();
+        await designPanelPage.changeAxisXAndYForLayer('400', '500');
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.createComponentViaRightClick();
+        await mainPage.duplicateLayerViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.clickCopyComponentOnLayersTab();
+        await designPanelPage.changeAxisXAndYForLayer('200', '500');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.setComponentColor(sampleData.color.greenHexCode1);
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-  await mainTest.step(
-    `Set main component fill color to "${sampleData.color.pinkHexCode}"`,
-    async () => {
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    },
-  );
+    await mainAccountFileTest.step(
+      `Set main component fill color to "${sampleData.color.pinkHexCode}"`,
+      async () => {
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await designPanelPage.setComponentColor(sampleData.color.pinkHexCode);
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-  await mainTest.step(
-    'Verify copy color override is preserved while remote change is applied',
-    async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot with remote change overridden in copy',
-      ).toHaveScreenshot('1482-component-update-canvas.png', {
-        mask: mainPage.maskViewport(),
-      });
-    },
-  );
-});
+    await mainAccountFileTest.step(
+      'Verify copy color override is preserved while remote change is applied',
+      async () => {
+        await expect(
+          mainPage.viewport,
+          'Viewport should match screenshot with remote change overridden in copy',
+        ).toHaveScreenshot('1482-component-update-canvas.png', {
+          mask: mainPage.maskViewport(),
+        });
+      },
+    );
+  },
+);

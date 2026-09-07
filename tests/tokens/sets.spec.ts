@@ -1,84 +1,72 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
 import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
-
-const teamName = createTeamName();
 
 const sampleData = new SampleData();
 
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let tokensPage: TokensPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
-
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
-mainTest(qase([2102], 'Create a set via "create one" link'), async () => {
+mainAccountFileTest(qase([2102], 'Create a set via "create one" link'), async () => {
   const name = 'Mobile';
 
-  await mainTest.step('Open tokens tab', async () => {
+  await mainAccountFileTest.step('Open tokens tab', async () => {
     await tokensPage.clickTokensTab();
   });
 
-  await mainTest.step('Create set via "create one" link', async () => {
+  await mainAccountFileTest.step('Create set via "create one" link', async () => {
     await tokensPage.setsComp.createSetViaLink(name);
   });
 
-  await mainTest.step('Check first set name is correct', async () => {
+  await mainAccountFileTest.step('Check first set name is correct', async () => {
     await tokensPage.setsComp.checkFirstSetName(name);
   });
 });
 
-mainTest(qase([2105], 'Create a set using an existing name'), async () => {
-  const setName = 'Mobile';
-  const colorToken: MainToken<TokenClass> = {
-    class: TokenClass.Color,
-    name: 'color',
-    value: sampleData.color.getRandomHexCode(),
-  };
+mainAccountFileTest(
+  qase([2105], 'Create a set using an existing name'),
+  async () => {
+    const setName = 'Mobile';
+    const colorToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: 'color',
+      value: sampleData.color.getRandomHexCode(),
+    };
 
-  await mainTest.step(`Create set "${setName}"`, async () => {
-    await tokensPage.clickTokensTab();
-    await tokensPage.setsComp.createSetViaButton(setName);
-    await tokensPage.setsComp.checkFirstSetName(setName);
-  });
-
-  await mainTest.step(
-    `Create color token "${colorToken.name}" in the set`,
-    async () => {
-      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(colorToken);
-      await tokensPage.tokensComp.isTokenVisibleWithName(colorToken.name);
-    },
-  );
-
-  await mainTest.step(
-    `Try to create a set with the existing name "${setName}" and check error is shown`,
-    async () => {
+    await mainAccountFileTest.step(`Create set "${setName}"`, async () => {
+      await tokensPage.clickTokensTab();
       await tokensPage.setsComp.createSetViaButton(setName);
-      await tokensPage.setsComp.checkSetNameAlreadyExistsError();
-    },
-  );
-});
+      await tokensPage.setsComp.checkFirstSetName(setName);
+    });
 
-mainTest(qase([2127], 'Rename a set'), async () => {
+    await mainAccountFileTest.step(
+      `Create color token "${colorToken.name}" in the set`,
+      async () => {
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(colorToken);
+        await tokensPage.tokensComp.isTokenVisibleWithName(colorToken.name);
+      },
+    );
+
+    await mainAccountFileTest.step(
+      `Try to create a set with the existing name "${setName}" and check error is shown`,
+      async () => {
+        await tokensPage.setsComp.createSetViaButton(setName);
+        await tokensPage.setsComp.checkSetNameAlreadyExistsError();
+      },
+    );
+  },
+);
+
+mainAccountFileTest(qase([2127], 'Rename a set'), async () => {
   const name = 'Mobile';
   const newName1 = 'Mobile-Updated-Double-Click';
   const newName2 = 'Mobile-Updated-Context-Menu';
@@ -88,28 +76,34 @@ mainTest(qase([2127], 'Rename a set'), async () => {
     value: sampleData.color.getRandomHexCode(),
   };
 
-  await mainTest.step('Create a set', async () => {
+  await mainAccountFileTest.step('Create a set', async () => {
     await tokensPage.clickTokensTab();
     await tokensPage.setsComp.createSetViaButton(name);
     await tokensPage.setsComp.checkFirstSetName(name);
   });
 
-  await mainTest.step('Create a color token', async () => {
+  await mainAccountFileTest.step('Create a color token', async () => {
     await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken);
   });
 
-  await mainTest.step('Rename set double click and assert name', async () => {
-    await tokensPage.setsComp.renameSetByDoubleClick(newName1);
-    await tokensPage.setsComp.checkFirstSetName(newName1);
-  });
+  await mainAccountFileTest.step(
+    'Rename set double click and assert name',
+    async () => {
+      await tokensPage.setsComp.renameSetByDoubleClick(newName1);
+      await tokensPage.setsComp.checkFirstSetName(newName1);
+    },
+  );
 
-  await mainTest.step('Rename set via context menu and assert name', async () => {
-    await tokensPage.setsComp.renameSetViaContextMenu(newName1, newName2);
-    await tokensPage.setsComp.checkFirstSetName(newName2);
-  });
+  await mainAccountFileTest.step(
+    'Rename set via context menu and assert name',
+    async () => {
+      await tokensPage.setsComp.renameSetViaContextMenu(newName1, newName2);
+      await tokensPage.setsComp.checkFirstSetName(newName2);
+    },
+  );
 });
 
-mainTest.describe(() => {
+mainAccountFileTest.describe(() => {
   let mainPage: MainPage;
   let designPanelPage: DesignPanelPage;
   let tokensPage: TokensPage;
@@ -135,7 +129,7 @@ mainTest.describe(() => {
     value: '50',
   };
 
-  mainTest.beforeEach(async ({ page }) => {
+  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     mainPage = new MainPage(page);
     designPanelPage = new DesignPanelPage(page);
     tokensPage = new TokensPage(page);
@@ -181,29 +175,35 @@ mainTest.describe(() => {
     await designPanelPage.checkGeneralCornerRadius(radiusToken1.value);
   });
 
-  mainTest(qase([2133], 'Rename a set group using an existing name'), async () => {
-    await mainTest.step(
-      'Rename "Mode" group to "Device" (existing group name)',
-      async () => {
-        await tokensPage.setsComp.renameGroupByDoubleClick('Mode', 'Device');
-      },
-    );
+  mainAccountFileTest(
+    qase([2133], 'Rename a set group using an existing name'),
+    async () => {
+      await mainAccountFileTest.step(
+        'Rename "Mode" group to "Device" (existing group name)',
+        async () => {
+          await tokensPage.setsComp.renameGroupByDoubleClick('Mode', 'Device');
+        },
+      );
 
-    await mainTest.step('Check "Mode" group is no longer visible', async () => {
-      await tokensPage.setsComp.isGroupSetNameVisible('Mode', false);
-    });
+      await mainAccountFileTest.step(
+        'Check "Mode" group is no longer visible',
+        async () => {
+          await tokensPage.setsComp.isGroupSetNameVisible('Mode', false);
+        },
+      );
 
-    await mainTest.step(
-      'Check "Dark" and "Light" sets are still visible after the merge',
-      async () => {
-        await tokensPage.setsComp.isSetNameVisible('Dark');
-        await tokensPage.setsComp.isSetNameVisible('Light');
-      },
-    );
-  });
+      await mainAccountFileTest.step(
+        'Check "Dark" and "Light" sets are still visible after the merge',
+        async () => {
+          await tokensPage.setsComp.isSetNameVisible('Dark');
+          await tokensPage.setsComp.isSetNameVisible('Light');
+        },
+      );
+    },
+  );
 
-  mainTest(qase([2139], 'Enable and Disable sets'), async () => {
-    await mainTest.step(
+  mainAccountFileTest(qase([2139], 'Enable and Disable sets'), async () => {
+    await mainAccountFileTest.step(
       'Disable Light set and check Dark color token is applied',
       async () => {
         await tokensPage.setsComp.clickOnSetCheckboxByName('Light');
@@ -211,7 +211,7 @@ mainTest.describe(() => {
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Disable Mobile set and check Desktop radius is applied',
       async () => {
         await tokensPage.setsComp.clickOnSetCheckboxByName('Mobile');
@@ -219,7 +219,7 @@ mainTest.describe(() => {
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Enable Light set and check Light color token is applied',
       async () => {
         await tokensPage.setsComp.clickOnSetCheckboxByName('Light');
@@ -227,7 +227,7 @@ mainTest.describe(() => {
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Enable Mobile set and check Mobile radius is applied',
       async () => {
         await tokensPage.setsComp.clickOnSetCheckboxByName('Mobile');
@@ -236,12 +236,12 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([2141], 'Add set to this group'), async () => {
-    await mainTest.step('Add Tablet set to Device group', async () => {
+  mainAccountFileTest(qase([2141], 'Add set to this group'), async () => {
+    await mainAccountFileTest.step('Add Tablet set to Device group', async () => {
       await tokensPage.setsComp.addSetToGroupByName('Device', 'Tablet');
     });
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Check Tablet set is visible inside Device group',
       async () => {
         await tokensPage.setsComp.isSetNameVisible('Tablet', true);
@@ -249,16 +249,19 @@ mainTest.describe(() => {
     );
   });
 
-  mainTest(qase([2146], 'Delete a set group'), async () => {
-    await mainTest.step('Delete Device set group', async () => {
+  mainAccountFileTest(qase([2146], 'Delete a set group'), async () => {
+    await mainAccountFileTest.step('Delete Device set group', async () => {
       await tokensPage.setsComp.deleteSetsGroupByName('Device');
     });
 
-    await mainTest.step('Check Device group is no longer visible', async () => {
-      await tokensPage.setsComp.isGroupSetNameVisible('Device', false);
-    });
+    await mainAccountFileTest.step(
+      'Check Device group is no longer visible',
+      async () => {
+        await tokensPage.setsComp.isGroupSetNameVisible('Device', false);
+      },
+    );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Check Desktop and Mobile sets are no longer visible',
       async () => {
         await tokensPage.setsComp.isSetNameVisible('Desktop', false);
@@ -268,19 +271,19 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(qase([2231], 'Duplicate set'), async () => {
+mainAccountFileTest(qase([2231], 'Duplicate set'), async () => {
   const name = 'Mobile';
   const firstSetName = name + '-copy';
   const secondSetName = firstSetName + '-copy';
   const thirdSetName = secondSetName + '-copy';
 
-  await mainTest.step('Create initial set', async () => {
+  await mainAccountFileTest.step('Create initial set', async () => {
     await tokensPage.clickTokensTab();
     await tokensPage.setsComp.createSetViaButton(name);
     await tokensPage.setsComp.checkFirstSetName(name);
   });
 
-  await mainTest.step(
+  await mainAccountFileTest.step(
     'Duplicate set for the first time and check copy is visible',
     async () => {
       await tokensPage.setsComp.duplicateSetByName(name);
@@ -288,7 +291,7 @@ mainTest(qase([2231], 'Duplicate set'), async () => {
     },
   );
 
-  await mainTest.step(
+  await mainAccountFileTest.step(
     'Duplicate set for the second time and check copy is visible',
     async () => {
       await tokensPage.setsComp.duplicateSetByName(firstSetName);
@@ -296,7 +299,7 @@ mainTest(qase([2231], 'Duplicate set'), async () => {
     },
   );
 
-  await mainTest.step(
+  await mainAccountFileTest.step(
     'Duplicate set for the third time and check copy is visible',
     async () => {
       await tokensPage.setsComp.duplicateSetByName(secondSetName);
@@ -304,7 +307,7 @@ mainTest(qase([2231], 'Duplicate set'), async () => {
     },
   );
 
-  await mainTest.step('Duplicate set for the fourth time', async () => {
+  await mainAccountFileTest.step('Duplicate set for the fourth time', async () => {
     await tokensPage.setsComp.duplicateSetByName(thirdSetName);
   });
 });

@@ -1,32 +1,15 @@
-import { MainPage } from '@pages/workspace/main-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-
-  await teamPage.createTeam(teamName);
-  await dashboardPage.isHeaderDisplayed('Projects');
-  await dashboardPage.hideLibrariesAndTemplatesCarrousel();
-});
-
-mainTest(qase(1148, 'Search file from Drafts'), async () => {
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.clickPencilBoxButton();
-  await dashboardPage.renameFile('New File 1', 'qwe');
-  await dashboardPage.openSidebarItem('Drafts');
-  await dashboardPage.search('qwe');
-  await dashboardPage.isHeaderDisplayed('Search results');
-  await dashboardPage.isFilePresentWithName('qwe');
-});
+mainAccountFileTest(
+  qase(1148, 'Search file from Drafts'),
+  async ({ mainPage, dashboardPage }) => {
+    await mainPage.clickPencilBoxButton();
+    await dashboardPage.hideLibrariesAndTemplatesCarrousel();
+    await dashboardPage.renameFile('New File 1', 'qwe');
+    await dashboardPage.openSidebarItem('Drafts');
+    await dashboardPage.search('qwe');
+    await dashboardPage.isHeaderDisplayed('Search results');
+    await dashboardPage.isFilePresentWithName('qwe');
+  },
+);

@@ -1,93 +1,87 @@
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { MainPage } from '@pages/workspace/main-page';
 import { expect } from '@playwright/test';
-import { mainTest } from 'fixtures';
-import { createTeamName } from 'helpers/teams/create-team-name';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let mainPage: MainPage;
 let colorPalettePage: ColorPalettePage;
-let dashboardPage: DashboardPage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
+mainAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
-  mainPage = new MainPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase([786], 'Add fill to board'), async () => {
-    await mainTest.step('Verify default board fill values', async () => {
+  mainAccountFileTest(qase([786], 'Add fill to board'), async ({ mainPage }) => {
+    await mainAccountFileTest.step('Verify default board fill values', async () => {
       await designPanelPage.isFillHexCodeSet('#FFFFFF');
       await designPanelPage.isFillOpacitySet('100');
     });
 
-    await mainTest.step('Verify board fill screenshot', async () => {
+    await mainAccountFileTest.step('Verify board fill screenshot', async () => {
       await expect(mainPage.viewport).toHaveScreenshot('board-fill.png', {
         mask: mainPage.maskViewport(),
       });
     });
   });
 
-  mainTest(qase([791], 'Change fill color for board'), async () => {
-    await mainTest.step('Change board fill color', async () => {
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.modalSetHex('FF0000');
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify changed board fill', async () => {
-      await designPanelPage.isFillHexCodeSet('#ff0000');
-      await designPanelPage.isFillOpacitySet('100');
-      await expect(mainPage.viewport).toHaveScreenshot('board-changed-fill.png', {
-        mask: mainPage.maskViewport(),
+  mainAccountFileTest(
+    qase([791], 'Change fill color for board'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Change board fill color', async () => {
+        await designPanelPage.clickFillColorIcon();
+        await colorPalettePage.modalSetHex('FF0000');
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
       });
-    });
-  });
 
-  mainTest(qase([796], 'Change fill opacity for board'), async () => {
-    await mainTest.step('Change board fill opacity', async () => {
-      await designPanelPage.changeOpacityForFill('70');
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify changed board opacity', async () => {
-      await designPanelPage.isFillHexCodeSet('#FFFFFF');
-      await designPanelPage.isFillOpacitySet('70');
-      await expect(mainPage.viewport).toHaveScreenshot('board-changed-opacity.png', {
-        mask: mainPage.maskViewport(),
+      await mainAccountFileTest.step('Verify changed board fill', async () => {
+        await designPanelPage.isFillHexCodeSet('#ff0000');
+        await designPanelPage.isFillOpacitySet('100');
+        await expect(mainPage.viewport).toHaveScreenshot('board-changed-fill.png', {
+          mask: mainPage.maskViewport(),
+        });
       });
-    });
-  });
+    },
+  );
 
-  mainTest(qase([811], 'Remove fill for board'), async () => {
-    await mainTest.step('Remove board fill', async () => {
+  mainAccountFileTest(
+    qase([796], 'Change fill opacity for board'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Change board fill opacity', async () => {
+        await designPanelPage.changeOpacityForFill('70');
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+      });
+
+      await mainAccountFileTest.step('Verify changed board opacity', async () => {
+        await designPanelPage.isFillHexCodeSet('#FFFFFF');
+        await designPanelPage.isFillOpacitySet('70');
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'board-changed-opacity.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      });
+    },
+  );
+
+  mainAccountFileTest(qase([811], 'Remove fill for board'), async ({ mainPage }) => {
+    await mainAccountFileTest.step('Remove board fill', async () => {
       await designPanelPage.clickRemoveFillButton();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainTest.step('Verify removed board fill', async () => {
+    await mainAccountFileTest.step('Verify removed board fill', async () => {
       await expect(mainPage.viewport).toHaveScreenshot('board-removed-fill.png', {
         mask: mainPage.maskViewport(),
       });
@@ -95,67 +89,79 @@ mainTest.describe(() => {
   });
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultClosedPath();
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase([790], 'Add fill to path'), async () => {
-    await mainTest.step('Add fill to path', async () => {
+  mainAccountFileTest(qase([790], 'Add fill to path'), async ({ mainPage }) => {
+    await mainAccountFileTest.step('Add fill to path', async () => {
       await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainTest.step('Verify path fill values and screenshot', async () => {
-      await designPanelPage.isFillHexCodeSet('#B1B2B5');
-      await designPanelPage.isFillOpacitySet('100');
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('path-fill.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
+    await mainAccountFileTest.step(
+      'Verify path fill values and screenshot',
+      async () => {
+        await designPanelPage.isFillHexCodeSet('#B1B2B5');
+        await designPanelPage.isFillOpacitySet('100');
+        await mainPage.waitForResizeHandlerVisible();
+        await expect(mainPage.viewport).toHaveScreenshot('path-fill.png', {
+          mask: mainPage.maskViewport(),
+        });
+      },
+    );
   });
 
-  mainTest(qase([795], 'Change fill color for path'), async () => {
-    await mainTest.step('Change path fill color', async () => {
-      await designPanelPage.clickAddFillButton();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#FF0000');
-      await mainPage.clickOnDesignTab();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify changed path fill', async () => {
-      await designPanelPage.isFillHexCodeSet('#FF0000');
-      await designPanelPage.isFillOpacitySet('100');
-      await expect(mainPage.viewport).toHaveScreenshot('path-changed-fill.png', {
-        mask: mainPage.maskViewport(),
+  mainAccountFileTest(
+    qase([795], 'Change fill color for path'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Change path fill color', async () => {
+        await designPanelPage.clickAddFillButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.clickFillColorIcon();
+        await colorPalettePage.setHex('#FF0000');
+        await mainPage.clickOnDesignTab();
+        await mainPage.waitForChangeIsSaved();
       });
-    });
-  });
 
-  mainTest(qase([800], 'Change fill opacity for path'), async () => {
-    await mainTest.step('Change path fill opacity', async () => {
-      await designPanelPage.clickAddFillButton();
-      await designPanelPage.changeOpacityForFill('70');
-      await mainPage.clickOnDesignTab();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify changed path opacity', async () => {
-      await designPanelPage.isFillHexCodeSet('#B1B2B5');
-      await designPanelPage.isFillOpacitySet('70');
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('path-changed-opacity.png', {
-        mask: mainPage.maskViewport(),
+      await mainAccountFileTest.step('Verify changed path fill', async () => {
+        await designPanelPage.isFillHexCodeSet('#FF0000');
+        await designPanelPage.isFillOpacitySet('100');
+        await expect(mainPage.viewport).toHaveScreenshot('path-changed-fill.png', {
+          mask: mainPage.maskViewport(),
+        });
       });
-    });
-  });
+    },
+  );
 
-  mainTest(qase([815], 'Remove fill for path'), async () => {
-    await mainTest.step('Remove path fill', async () => {
+  mainAccountFileTest(
+    qase([800], 'Change fill opacity for path'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Change path fill opacity', async () => {
+        await designPanelPage.clickAddFillButton();
+        await designPanelPage.changeOpacityForFill('70');
+        await mainPage.clickOnDesignTab();
+        await mainPage.waitForChangeIsSaved();
+      });
+
+      await mainAccountFileTest.step('Verify changed path opacity', async () => {
+        await designPanelPage.isFillHexCodeSet('#B1B2B5');
+        await designPanelPage.isFillOpacitySet('70');
+        await mainPage.waitForResizeHandlerVisible();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'path-changed-opacity.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      });
+    },
+  );
+
+  mainAccountFileTest(qase([815], 'Remove fill for path'), async ({ mainPage }) => {
+    await mainAccountFileTest.step('Remove path fill', async () => {
       await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickRemoveFillButton();
@@ -163,7 +169,7 @@ mainTest.describe(() => {
       await mainPage.clickOnDesignTab();
     });
 
-    await mainTest.step('Verify removed path fill', async () => {
+    await mainAccountFileTest.step('Verify removed path fill', async () => {
       await expect(mainPage.viewport).toHaveScreenshot('path-removed-fill.png', {
         mask: mainPage.maskViewport(),
       });
@@ -171,53 +177,56 @@ mainTest.describe(() => {
   });
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainTest(qase([787], 'Add fill to shape'), async () => {
-    await mainTest.step('Verify default shape fill values', async () => {
+  mainAccountFileTest(qase([787], 'Add fill to shape'), async ({ mainPage }) => {
+    await mainAccountFileTest.step('Verify default shape fill values', async () => {
       await designPanelPage.isFillHexCodeSet('#B1B2B5');
       await designPanelPage.isFillOpacitySet('100');
     });
 
-    await mainTest.step('Verify shape fill screenshot', async () => {
+    await mainAccountFileTest.step('Verify shape fill screenshot', async () => {
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-fill.png', {
         mask: mainPage.maskViewport(),
       });
     });
   });
 
-  mainTest(qase([797], 'Change fill opacity for shape'), async () => {
-    await mainTest.step('Change shape fill opacity', async () => {
-      await designPanelPage.changeOpacityForFill('70');
-      await mainPage.clickViewportTwice();
-    });
+  mainAccountFileTest(
+    qase([797], 'Change fill opacity for shape'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Change shape fill opacity', async () => {
+        await designPanelPage.changeOpacityForFill('70');
+        await mainPage.clickViewportTwice();
+      });
 
-    await mainTest.step('Verify changed shape opacity', async () => {
-      await designPanelPage.isFillHexCodeSet('#B1B2B5');
-      await designPanelPage.isFillOpacitySet('70');
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'rectangle-changed-opacity.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-    });
-  });
+      await mainAccountFileTest.step('Verify changed shape opacity', async () => {
+        await designPanelPage.isFillHexCodeSet('#B1B2B5');
+        await designPanelPage.isFillOpacitySet('70');
+        await mainPage.waitForResizeHandlerVisible();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'rectangle-changed-opacity.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      });
+    },
+  );
 
-  mainTest(qase([812], 'Remove fill for shape'), async () => {
-    await mainTest.step('Remove shape fill', async () => {
+  mainAccountFileTest(qase([812], 'Remove fill for shape'), async ({ mainPage }) => {
+    await mainAccountFileTest.step('Remove shape fill', async () => {
       await designPanelPage.clickRemoveFillButton();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainTest.step('Verify removed shape fill', async () => {
+    await mainAccountFileTest.step('Verify removed shape fill', async () => {
       await expect(mainPage.viewport).toHaveScreenshot(
         'rectangle--removed-fill.png',
         {
@@ -227,23 +236,26 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([792], 'Change fill color for shape'), async () => {
-    await mainTest.step('Change shape fill color', async () => {
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#FF0000');
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    });
+  mainAccountFileTest(
+    qase([792], 'Change fill color for shape'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Change shape fill color', async () => {
+        await designPanelPage.clickFillColorIcon();
+        await colorPalettePage.setHex('#FF0000');
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+      });
 
-    await mainTest.step('Verify changed shape fill', async () => {
-      await designPanelPage.isFillHexCodeSet('#FF0000');
-      await designPanelPage.isFillOpacitySet('100');
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'rectangle-changed-fill.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-    });
-  });
+      await mainAccountFileTest.step('Verify changed shape fill', async () => {
+        await designPanelPage.isFillHexCodeSet('#FF0000');
+        await designPanelPage.isFillOpacitySet('100');
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'rectangle-changed-fill.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      });
+    },
+  );
 });

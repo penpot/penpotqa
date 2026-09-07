@@ -1,39 +1,24 @@
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { MainPage } from '@pages/workspace/main-page';
-import { mainTest } from 'fixtures';
-import { createTeamName } from 'helpers/teams/create-team-name';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName = createTeamName();
-
-let dashboardPage: DashboardPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
-let mainPage: MainPage;
-let teamPage: TeamPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
-  mainPage = new MainPage(page);
-  teamPage = new TeamPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
-mainTest(
+mainAccountFileTest(
   qase(
     [2286],
     'Import rotated Exif JPEG images from toolbar and from shortcut (Shift+K)',
   ),
-  async () => {
-    await mainTest.step(
+  async ({ mainPage }) => {
+    await mainAccountFileTest.step(
       'Upload exif_top_left.jpg and verify dimensions',
       async () => {
         await mainPage.uploadImage('images/exif_top_left.jpg');
@@ -44,7 +29,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Upload exif_top_right.jpg via shortcut and verify dimensions',
       async () => {
         await mainPage.uploadImageViaShortcut('images/exif_top_right.jpg');

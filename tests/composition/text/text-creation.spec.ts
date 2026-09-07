@@ -1,27 +1,8 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
+import { mainAccountFileTest } from 'fixtures';
 
-const teamName = createTeamName();
-
-let mainPage: MainPage;
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
-});
-
-mainTest(qase([377], 'Create Text(Toolbar)'), async () => {
+mainAccountFileTest(qase([377], 'Create Text(Toolbar)'), async ({ mainPage }) => {
   await mainPage.createDefaultTextLayer();
   await mainPage.isCreatedLayerVisible();
   await expect(mainPage.viewport).toHaveScreenshot('text-creation-toolbar.png', {
@@ -29,10 +10,13 @@ mainTest(qase([377], 'Create Text(Toolbar)'), async () => {
   });
 });
 
-mainTest(qase([378], 'Create Text (Shortcut T)'), async () => {
-  await mainPage.createDefaultTextLayerViaShortcut();
-  await mainPage.isCreatedLayerVisible();
-  await expect(mainPage.viewport).toHaveScreenshot('text-creation-shortcut.png', {
-    mask: mainPage.maskViewport(),
-  });
-});
+mainAccountFileTest(
+  qase([378], 'Create Text (Shortcut T)'),
+  async ({ mainPage }) => {
+    await mainPage.createDefaultTextLayerViaShortcut();
+    await mainPage.isCreatedLayerVisible();
+    await expect(mainPage.viewport).toHaveScreenshot('text-creation-shortcut.png', {
+      mask: mainPage.maskViewport(),
+    });
+  },
+);

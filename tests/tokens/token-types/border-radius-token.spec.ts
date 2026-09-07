@@ -1,32 +1,17 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.clickMoveButton();
 });
 
-mainTest.describe(() => {
+mainAccountFileTest.describe(() => {
   let tokensPage: TokensPage;
   let mainPage: MainPage;
   let designPanelPage: DesignPanelPage;
@@ -39,7 +24,7 @@ mainTest.describe(() => {
   };
   const newTokenValue = '20';
 
-  mainTest.beforeEach(async ({ page }) => {
+  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     tokensPage = new TokensPage(page);
     mainPage = new MainPage(page);
     designPanelPage = new DesignPanelPage(page);
@@ -52,10 +37,10 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase([2125], 'Apply default "all radius" token to a rectangle (by left click)'),
-    async () => {
-      await mainTest.step(
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
         `Verify "${radiusToken.name}" token is applied and corner radius matches`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
@@ -63,7 +48,7 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify screenshot and RadiusAll menu item is selected',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -81,12 +66,12 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2166],
       'Edit a border radius token, already applied to a shape (with warning renaming message)',
     ),
-    async () => {
+    async ({ mainPage }) => {
       const radiusToken: MainToken<TokenClass> = {
         class: TokenClass.BorderRadius,
         name: 'border-radius',
@@ -100,7 +85,7 @@ mainTest.describe(() => {
         value: newTokenValue,
       };
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Edit "${radiusToken.name}" token to value "${updatedTokenData.value}" and verify it is applied`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
@@ -113,34 +98,46 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Verify screenshot and applied token title', async () => {
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'rectangle-border-radius-20.png',
-          {
-            mask: mainPage.maskViewport(),
-          },
-        );
-        await tokensPage.tokensComp.checkAppliedTokenTitle(
-          'Token: border-radius\n' + 'Original value: 20\n' + 'Resolved value: 20',
-        );
-      });
+      await mainAccountFileTest.step(
+        'Verify screenshot and applied token title',
+        async () => {
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'rectangle-border-radius-20.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+          await tokensPage.tokensComp.checkAppliedTokenTitle(
+            'Token: border-radius\n' + 'Original value: 20\n' + 'Resolved value: 20',
+          );
+        },
+      );
     },
   );
 
-  mainTest(qase([2136], 'Delete a token and redo deletion'), async () => {
-    await mainTest.step(
-      `Delete "${radiusToken.name}" token and verify it is removed`,
-      async () => {
-        await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
-        await tokensPage.tokensComp.deleteToken(radiusToken.name);
-        await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, false);
-      },
-    );
+  mainAccountFileTest(
+    qase([2136], 'Delete a token and redo deletion'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        `Delete "${radiusToken.name}" token and verify it is removed`,
+        async () => {
+          await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
+          await tokensPage.tokensComp.deleteToken(radiusToken.name);
+          await tokensPage.tokensComp.isTokenVisibleWithName(
+            radiusToken.name,
+            false,
+          );
+        },
+      );
 
-    await mainTest.step('Undo deletion and verify token is restored', async () => {
-      await mainPage.clickShortcutCtrlZ();
-      await tokensPage.tokensComp.expandTokenByName(TokenClass.BorderRadius);
-      await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, true);
-    });
-  });
+      await mainAccountFileTest.step(
+        'Undo deletion and verify token is restored',
+        async () => {
+          await mainPage.clickShortcutCtrlZ();
+          await tokensPage.tokensComp.expandTokenByName(TokenClass.BorderRadius);
+          await tokensPage.tokensComp.isTokenVisibleWithName(radiusToken.name, true);
+        },
+      );
+    },
+  );
 });

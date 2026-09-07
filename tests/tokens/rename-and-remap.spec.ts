@@ -1,4 +1,4 @@
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest, mainTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { MainPage } from '@pages/workspace/main-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
@@ -11,41 +11,26 @@ import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let mainPage: MainPage;
 let pagesPanelPage: PagesPanelPage;
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
 let tokensPage: TokensPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  pagesPanelPage = new PagesPanelPage(page);
-  tokensPage = new TokensPage(page);
-  layersPanelPage = new LayersPanelPage(page);
-  designPanelPage = new DesignPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.isHeaderDisplayed('Projects');
-});
-
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+    pagesPanelPage = new PagesPanelPage(page);
+    tokensPage = new TokensPage(page);
+    layersPanelPage = new LayersPanelPage(page);
+    designPanelPage = new DesignPanelPage(page);
     await mainPage.clickMoveButton();
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2719],
       'Rename a token that is being referenced from other tokens as part of an expression',
     ),
-    async () => {
+    async ({ mainPage }) => {
       const borderRadiusToken: MainToken<TokenClass> = {
         class: TokenClass.BorderRadius,
         name: 'border-radius',
@@ -61,12 +46,12 @@ mainTest.describe(() => {
         name: 'border-radius-new',
       };
 
-      await mainTest.step('Open Tokens panel', async () => {
+      await mainAccountFileTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
         await tokensPage.toolsComp.clickOnTokenToolsButton();
       });
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Create board with text layer and define tokens',
         async () => {
           await mainPage.createDefaultBoardByCoordinates(320, 210);
@@ -79,25 +64,28 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Apply font-size token to the text layer', async () => {
-        await mainPage.clickViewportByCoordinates(350, 250);
-        await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-        await mainPage.waitForChangeIsSaved();
-      });
+      await mainAccountFileTest.step(
+        'Apply font-size token to the text layer',
+        async () => {
+          await mainPage.clickViewportByCoordinates(350, 250);
+          await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
       await tokensPage.tokensComp.renameTokenAndConfirmRemap(
         borderRadiusToken,
         renamedBorderRadiusToken.name,
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Check "${fontSizeToken.name}" token is still applied with the updated reference`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Check applied token title reflects new name and correct reference',
         async () => {
           const expectedTitle = [
@@ -111,12 +99,12 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2723],
       'Rename a token that has been applied to a shape in a main component',
     ),
-    async () => {
+    async ({ mainPage }) => {
       const tokenA: MainToken<TokenClass> = {
         class: TokenClass.Color,
         name: 'base-color',
@@ -133,20 +121,23 @@ mainTest.describe(() => {
       };
       const newTokenAValue = '#222222';
 
-      await mainTest.step('Create board and named rectangle', async () => {
-        await mainPage.createDefaultBoardByCoordinates(320, 210);
-        await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-        await mainPage.createDefaultRectangleByCoordinates(350, 250);
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.openLayersTab();
-        await layersPanelPage.renameLayerViaRightClick(
-          'Rectangle',
-          'main-rectangle',
-        );
-        await mainPage.waitForChangeIsSaved();
-      });
+      await mainAccountFileTest.step(
+        'Create board and named rectangle',
+        async () => {
+          await mainPage.createDefaultBoardByCoordinates(320, 210);
+          await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+          await mainPage.createDefaultRectangleByCoordinates(350, 250);
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.openLayersTab();
+          await layersPanelPage.renameLayerViaRightClick(
+            'Rectangle',
+            'main-rectangle',
+          );
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Create tokens and apply Token B to the rectangle',
         async () => {
           await tokensPage.clickTokensTab();
@@ -160,41 +151,54 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Create main component from the rectangle', async () => {
-        await mainPage.createComponentsMultipleShapesRightClick(true);
-        await mainPage.waitForChangeIsSaved();
-      });
+      await mainAccountFileTest.step(
+        'Create main component from the rectangle',
+        async () => {
+          await mainPage.createComponentsMultipleShapesRightClick(true);
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-      await mainTest.step('Copy the component twice (3 total)', async () => {
-        await mainPage.duplicateLayerViaRightClick();
-        await layersPanelPage.openLayersTab();
-        await layersPanelPage.renameSelectedLayerViaDoubleClick('copy-rectangle-1');
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.duplicateLayerViaRightClick();
-        await layersPanelPage.openLayersTab();
-        await layersPanelPage.renameSelectedLayerViaDoubleClick('copy-rectangle-2');
-        await mainPage.waitForChangeIsSaved();
-      });
+      await mainAccountFileTest.step(
+        'Copy the component twice (3 total)',
+        async () => {
+          await mainPage.duplicateLayerViaRightClick();
+          await layersPanelPage.openLayersTab();
+          await layersPanelPage.renameSelectedLayerViaDoubleClick(
+            'copy-rectangle-1',
+          );
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.duplicateLayerViaRightClick();
+          await layersPanelPage.openLayersTab();
+          await layersPanelPage.renameSelectedLayerViaDoubleClick(
+            'copy-rectangle-2',
+          );
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-      await mainTest.step('Copy the component to a new Page 2', async () => {
-        await layersPanelPage.openLayersTab();
-        await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
-        await mainPage.copyLayerViaRightClick();
-        await pagesPanelPage.clickAddPageButton();
-        await pagesPanelPage.clickOnPageOnLayersPanel(2);
-        await mainPage.clickViewportTwice();
-        await mainPage.pasteLayerViaRightClick();
-        await mainPage.waitForChangeIsSaved();
-        await pagesPanelPage.clickOnPageOnLayersPanel(1);
-        await tokensPage.clickTokensTab();
-      });
+      await mainAccountFileTest.step(
+        'Copy the component to a new Page 2',
+        async () => {
+          await layersPanelPage.openLayersTab();
+          await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
+          await mainPage.copyLayerViaRightClick();
+          await pagesPanelPage.clickAddPageButton();
+          await pagesPanelPage.clickOnPageOnLayersPanel(2);
+          await mainPage.clickViewportTwice();
+          await mainPage.pasteLayerViaRightClick();
+          await mainPage.waitForChangeIsSaved();
+          await pagesPanelPage.clickOnPageOnLayersPanel(1);
+          await tokensPage.clickTokensTab();
+        },
+      );
 
       await tokensPage.tokensComp.renameTokenAndConfirmRemap(
         tokenA,
         renamedTokenA.name,
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Check Token B is still applied and references new Token A name',
         async () => {
           await layersPanelPage.openLayersTab();
@@ -204,7 +208,7 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Change renamed Token A value to "${newTokenAValue}"`,
         async () => {
           await tokensPage.tokensComp.clickEditToken(renamedTokenA);
@@ -214,15 +218,18 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Check Token B still applied on Page 1', async () => {
-        await layersPanelPage.openLayersTab();
-        await pagesPanelPage.clickOnPageOnLayersPanel(1);
-        await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
-        await tokensPage.clickTokensTab();
-        await designPanelPage.isFillTokenColorSetComponent(tokenB.name);
-      });
+      await mainAccountFileTest.step(
+        'Check Token B still applied on Page 1',
+        async () => {
+          await layersPanelPage.openLayersTab();
+          await pagesPanelPage.clickOnPageOnLayersPanel(1);
+          await layersPanelPage.clickLayerOnLayersTab('main-rectangle');
+          await tokensPage.clickTokensTab();
+          await designPanelPage.isFillTokenColorSetComponent(tokenB.name);
+        },
+      );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Navigate to Page 2 and check Token B still applied',
         async () => {
           await layersPanelPage.openLayersTab();
@@ -242,7 +249,13 @@ mainTest(
     [2721],
     'Rename a token that has been applied to some attribute of one shape.',
   ),
-  async () => {
+  async ({ page }) => {
+    const teamName = createTeamName();
+    const teamPage = new TeamPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const mainPage = new MainPage(page);
+    const tokensPage = new TokensPage(page);
+
     const originalTokenName = 'blue-500';
     const renamedTokenName = 'blue-600';
     const newColorValue = '#0080ff';
@@ -255,6 +268,11 @@ mainTest(
       class: TokenClass.Color,
       name: renamedTokenName,
     };
+
+    await mainTest.step('Create team', async () => {
+      await teamPage.createTeam(teamName);
+      await dashboardPage.isHeaderDisplayed('Projects');
+    });
 
     await mainTest.step('Import penpot file and open Tokens panel', async () => {
       await dashboardPage.openSidebarItem('Drafts');

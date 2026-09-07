@@ -1,39 +1,24 @@
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
+import { mainAccountFileTest } from 'fixtures';
 import { HistoryPanelPage } from '@pages/workspace/history-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { expect, test } from 'playwright/test';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let historyPage: HistoryPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page }) => {
   historyPage = new HistoryPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
 });
 
-mainTest(
+mainAccountFileTest(
   qase(
     [2901, 2903, 2904, 3001],
     'Preview version: restore history preview version, validate snapshot information and prompt confirmation' +
       ' and validate pinned version preview banner matches History sidebar label',
   ),
-  async () => {
+  async ({ mainPage }) => {
     const versionName = ['Version A', 'Version B'];
 
     await test.step(`Create version and Save ${versionName[0]}`, async () => {

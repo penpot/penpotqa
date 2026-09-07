@@ -1,45 +1,30 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { mainAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
-mainTest(
+mainAccountFileTest(
   qase([2202], 'Apply default "all gaps" token to a grid board (by left click)'),
-  async () => {
+  async ({ mainPage }) => {
     const spacingToken: MainToken<TokenClass> = {
       class: TokenClass.Spacing,
       name: 'spacing',
       value: '-20',
     };
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Create board with grid layout and spacing token',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(320, 210);
@@ -53,7 +38,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Apply "${spacingToken.name}" token and verify gap values`,
       async () => {
         await tokensPage.tokensComp.clickOnTokenWithName(spacingToken.name);
@@ -64,7 +49,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Verify screenshot and Gaps menu items are selected',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot('board-spacing-20.png', {
