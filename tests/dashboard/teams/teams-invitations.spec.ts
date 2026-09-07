@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { mainTest, registerTest } from 'fixtures';
+import { demoAccountApiFixture, mainTest, registerTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { LoginPage } from 'pages/login-page';
 import { RegisterPage } from 'pages/register-page';
@@ -40,7 +40,7 @@ mainTest(qase(1164, 'Open the form via Invitations tab'), async () => {
   await teamPage.deleteTeam(team);
 });
 
-registerTest(
+demoAccountApiFixture(
   qase(1165, 'Open the form via Team Hero ("Invite members" button)'),
   async () => {
     await teamPage.createTeam(team);

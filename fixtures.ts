@@ -4,6 +4,7 @@ import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { RegisterPage } from '@pages/register-page';
 import { random } from './helpers/string-generator';
 import { waitMessage } from './helpers/gmail';
+import { createDemoUser } from './helpers/demo-user';
 
 type RegisterTestFixtures = {
   name: string;
@@ -68,6 +69,26 @@ export const demoAccountFixture = test.extend({
     await registerPage.clickOnCreateDemoAccountButton();
     await dashboardPage.fillOnboardingQuestions();
     await dashboardPage.isHeaderDisplayed('Projects');
+    await use(page);
+  },
+});
+
+// Fixture for demo account, created directly via the API. Faster than
+// demoAccountFixture (no UI registration/onboarding flow) — use it for tests
+// that just need to be logged in as a fresh demo account and don't care how
+// it was created.
+export const demoAccountApiFixture = test.extend({
+  page: async ({ page }, use) => {
+    const dashboardPage = new DashboardPage(page);
+
+    await createDemoUser(page.context().request);
+
+    await page.goto('/');
+    await dashboardPage.isDashboardOpenedAfterLogin();
+    await dashboardPage.acceptCookie();
+    await dashboardPage.isHeaderDisplayed('Projects');
+    await dashboardPage.skipWhatNewsPopUp();
+    await dashboardPage.skipPluginsPopUp();
     await use(page);
   },
 });

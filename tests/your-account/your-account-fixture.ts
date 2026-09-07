@@ -1,4 +1,4 @@
-import { mainTest, registerTest } from 'fixtures';
+import { demoAccountApiFixture, mainTest } from 'fixtures';
 import { ProfilePage } from '@pages/profile-page';
 
 type YourAccountFixtures = {
@@ -31,8 +31,8 @@ export const passwordTest = mainTest.extend<YourAccountFixtures>({
 });
 
 // Open Your Account > Integrations section
-// NOTE: This fixture involves creating a new Penpot account
-export const integrationsTest = registerTest.extend<YourAccountFixtures>({
+// NOTE: This fixture involves creating a new Penpot account (via the API, as a demo account)
+export const integrationsTest = demoAccountApiFixture.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 

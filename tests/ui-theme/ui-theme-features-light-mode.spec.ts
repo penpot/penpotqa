@@ -1,4 +1,4 @@
-import { registerTest } from '../../fixtures';
+import { demoAccountApiFixture } from '../../fixtures';
 import { expect, Page } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter';
 import { MainPage } from '../../pages/workspace/main-page';
@@ -9,7 +9,7 @@ import { TeamPage } from '../../pages/dashboard/team-page';
 
 const teamName: string = random().concat('autotest');
 
-registerTest(
+demoAccountApiFixture(
   qase(1677, 'Check Light UI theme in Projects page'),
   async ({ page }: { page: Page }) => {
     let teamPage: TeamPage = new TeamPage(page);
@@ -17,7 +17,6 @@ registerTest(
     let dashboardPage: DashboardPage = new DashboardPage(page);
     let mainPage: MainPage = new MainPage(page);
 
-    await teamPage.createTeam(teamName);
     await profilePage.openYourAccountPage();
     await profilePage.openSettingsTab();
     await profilePage.selectLightTheme();
