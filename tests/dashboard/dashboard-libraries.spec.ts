@@ -1,52 +1,35 @@
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest, mainTest } from 'fixtures';
 import { expect } from '@playwright/test';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { MainPage } from '@pages/workspace/main-page';
-import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let dashboardPage: DashboardPage;
-let teamPage: TeamPage;
-let mainPage: MainPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-mainTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
-  teamPage = new TeamPage(page);
-  mainPage = new MainPage(page);
-  designPanelPage = new DesignPanelPage(page);
-  layersPanelPage = new LayersPanelPage(page);
-  colorPalettePage = new ColorPalettePage(page);
-
-  await teamPage.createTeam(teamName);
-  await dashboardPage.isHeaderDisplayed('Projects');
-  await dashboardPage.hideLibrariesAndTemplatesCarrousel();
-});
-
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ page }) => {
+    layersPanelPage = new LayersPanelPage(page);
+    designPanelPage = new DesignPanelPage(page);
+    colorPalettePage = new ColorPalettePage(page);
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       1351,
       'Check actual library view after adding / updating / removing assets',
     ),
-    async () => {
+    async ({ mainPage, dashboardPage }) => {
       await mainPage.createDefaultTextLayer();
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await mainPage.clickPencilBoxButton();
+      await dashboardPage.hideLibrariesAndTemplatesCarrousel();
       await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
       await dashboardPage.isSharedLibraryIconDisplayed();
       await dashboardPage.openSidebarItem('Libraries');
@@ -86,25 +69,32 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.describe(() => {
-    mainTest.beforeEach(async () => {
+  mainAccountFileTest.describe(() => {
+    mainAccountFileTest.beforeEach(async ({ mainPage, dashboardPage }) => {
       await mainPage.clickPencilBoxButton();
+      await dashboardPage.hideLibrariesAndTemplatesCarrousel();
       await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
       await dashboardPage.isSharedLibraryIconDisplayed();
       await dashboardPage.openSidebarItem('Libraries');
       await dashboardPage.isFilePresentWithName('New File 1');
     });
 
-    mainTest(qase(1057, 'Rename file from Libraries tab'), async () => {
-      await dashboardPage.renameFile('New File 1', 'Renamed Test File');
-      await dashboardPage.isFilePresentWithName('Renamed Test File');
-    });
+    mainAccountFileTest(
+      qase(1057, 'Rename file from Libraries tab'),
+      async ({ dashboardPage }) => {
+        await dashboardPage.renameFile('New File 1', 'Renamed Test File');
+        await dashboardPage.isFilePresentWithName('Renamed Test File');
+      },
+    );
 
-    mainTest(qase(1058, 'Duplicate file from Libraries tab'), async () => {
-      await dashboardPage.duplicateFileViaRightclick();
-      await dashboardPage.openSidebarItem('Projects');
-      await dashboardPage.checkNumberOfFiles('2 files');
-    });
+    mainAccountFileTest(
+      qase(1058, 'Duplicate file from Libraries tab'),
+      async ({ dashboardPage }) => {
+        await dashboardPage.duplicateFileViaRightclick();
+        await dashboardPage.openSidebarItem('Projects');
+        await dashboardPage.checkNumberOfFiles('2 files');
+      },
+    );
   });
 });
 
@@ -113,9 +103,17 @@ mainTest(
     1088,
     'Check view for Penpot libraries (imported from Libraries & Templates carousel)',
   ),
-  async () => {
+  async ({ page }) => {
+    const teamName = createTeamName();
+    const teamPage = new TeamPage(page);
+    const dashboardPage = new DashboardPage(page);
     const libraryAndTemplateName1 = 'Wireframe library';
     const libraryImportedName = 'Wireframing kit v1.1';
+
+    await mainTest.step('Create team', async () => {
+      await teamPage.createTeam(teamName);
+      await dashboardPage.isHeaderDisplayed('Projects');
+    });
 
     await mainTest.step('Import library from Libraries & Templates', async () => {
       await dashboardPage.showLibrariesAndTemplatesCarrousel();

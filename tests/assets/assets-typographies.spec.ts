@@ -1,103 +1,112 @@
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { expect } from '@playwright/test';
-import { MainPage } from '@pages/workspace/main-page';
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { TeamPage } from '@pages/dashboard/team-page';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let assetsPanelPage: AssetsPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page }) => {
   assetsPanelPage = new AssetsPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
 });
 
-mainTest(qase([947], 'Filter Typographies from All Assets drop-down'), async () => {
-  await mainTest.step('Open assets tab and filter by Typographies', async () => {
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.selectTypeFromAllAssetsDropdown('Typographies');
-  });
+mainAccountFileTest(
+  qase([947], 'Filter Typographies from All Assets drop-down'),
+  async () => {
+    await mainAccountFileTest.step(
+      'Open assets tab and filter by Typographies',
+      async () => {
+        await assetsPanelPage.clickAssetsTab();
+        await assetsPanelPage.selectTypeFromAllAssetsDropdown('Typographies');
+      },
+    );
 
-  await mainTest.step('Verify Typographies section shows 0 items', async () => {
-    await assetsPanelPage.isAssetsSectionNameDisplayed('Typographies', '0');
-  });
-});
+    await mainAccountFileTest.step(
+      'Verify Typographies section shows 0 items',
+      async () => {
+        await assetsPanelPage.isAssetsSectionNameDisplayed('Typographies', '0');
+      },
+    );
+  },
+);
 
-mainTest(qase([948], 'Typographic styles - add from Assets panel'), async () => {
-  await mainTest.step('Add typography from assets panel', async () => {
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickAddFileLibraryTypographyButton();
-    await mainPage.waitForChangeIsSaved();
-  });
-
-  await mainTest.step('Verify typography added in expanded state', async () => {
-    await expect(
-      assetsPanelPage.assetsPanel,
-      'Added typography should be visible in expanded state',
-    ).toHaveScreenshot('typographies-add-typography-expanded.png', {
-      maxDiffPixels: 10,
+mainAccountFileTest(
+  qase([948], 'Typographic styles - add from Assets panel'),
+  async ({ mainPage }) => {
+    await mainAccountFileTest.step('Add typography from assets panel', async () => {
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.clickAddFileLibraryTypographyButton();
+      await mainPage.waitForChangeIsSaved();
     });
-  });
 
-  await mainTest.step('Minimize, expand and verify screenshots match', async () => {
-    await assetsPanelPage.minimizeFileLibraryTypography();
-    await mainPage.clickViewportTwice();
-    await expect(
-      assetsPanelPage.assetsPanel,
-      'Minimized typography should match screenshot',
-    ).toHaveScreenshot('typographies-add-typography-minimized.png');
-    await assetsPanelPage.expandFileLibraryTypography();
-    await mainPage.clickViewportTwice();
-    await expect(
-      assetsPanelPage.assetsPanel,
-      'Expanded typography should match screenshot',
-    ).toHaveScreenshot('typographies-add-typography-expanded.png');
-  });
-});
+    await mainAccountFileTest.step(
+      'Verify typography added in expanded state',
+      async () => {
+        await expect(
+          assetsPanelPage.assetsPanel,
+          'Added typography should be visible in expanded state',
+        ).toHaveScreenshot('typographies-add-typography-expanded.png', {
+          maxDiffPixels: 10,
+        });
+      },
+    );
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
+    await mainAccountFileTest.step(
+      'Minimize, expand and verify screenshots match',
+      async () => {
+        await assetsPanelPage.minimizeFileLibraryTypography();
+        await mainPage.clickViewportTwice();
+        await expect(
+          assetsPanelPage.assetsPanel,
+          'Minimized typography should match screenshot',
+        ).toHaveScreenshot('typographies-add-typography-minimized.png');
+        await assetsPanelPage.expandFileLibraryTypography();
+        await mainPage.clickViewportTwice();
+        await expect(
+          assetsPanelPage.assetsPanel,
+          'Expanded typography should match screenshot',
+        ).toHaveScreenshot('typographies-add-typography-expanded.png');
+      },
+    );
+  },
+);
+
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickAddFileLibraryTypographyButton();
     await mainPage.waitForChangeIsSaved();
     await assetsPanelPage.minimizeFileLibraryTypography();
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase([950], 'Edit Typography Asset After Applying to Element'),
-    async () => {
-      await mainTest.step('Create text layers and apply typography', async () => {
-        await mainPage.createDefaultTextLayerByCoordinates(200, 200);
-        await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
-        await mainPage.clickViewportTwice();
-        await mainPage.createDefaultTextLayerByCoordinates(200, 400);
-        await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
-        await mainPage.clickViewportTwice();
-        await mainPage.waitForChangeIsSaved();
-      });
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        'Create text layers and apply typography',
+        async () => {
+          await mainPage.createDefaultTextLayerByCoordinates(200, 200);
+          await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
+          await mainPage.clickViewportTwice();
+          await mainPage.createDefaultTextLayerByCoordinates(200, 400);
+          await assetsPanelPage.clickFileLibraryTypographiesTypographyRecord();
+          await mainPage.clickViewportTwice();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-      await mainTest.step('Verify typography applied to text layers', async () => {
-        await expect(
-          mainPage.viewport,
-          'Typography should be applied to text layers',
-        ).toHaveScreenshot('apply-typography-to-text-from-assets.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify typography applied to text layers',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Typography should be applied to text layers',
+          ).toHaveScreenshot('apply-typography-to-text-from-assets.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
 
-      await mainTest.step('Edit typography font and size', async () => {
+      await mainAccountFileTest.step('Edit typography font and size', async () => {
         await assetsPanelPage.editFileLibraryTypography();
         await assetsPanelPage.selectFont('Bellefair');
         await assetsPanelPage.selectFontSize('12');
@@ -105,108 +114,123 @@ mainTest.describe(() => {
         await mainPage.clickViewportTwice();
       });
 
-      await mainTest.step('Verify edited typography screenshots', async () => {
-        await expect(
-          assetsPanelPage.assetsPanel,
-          'Edited typography should match expanded screenshot',
-        ).toHaveScreenshot('typographies-edit-typography-expanded.png');
-        await assetsPanelPage.minimizeFileLibraryTypography();
+      await mainAccountFileTest.step(
+        'Verify edited typography screenshots',
+        async () => {
+          await expect(
+            assetsPanelPage.assetsPanel,
+            'Edited typography should match expanded screenshot',
+          ).toHaveScreenshot('typographies-edit-typography-expanded.png');
+          await assetsPanelPage.minimizeFileLibraryTypography();
+          await mainPage.clickViewportTwice();
+          await expect(
+            assetsPanelPage.assetsPanel,
+            'Edited typography should match minimized screenshot',
+          ).toHaveScreenshot('typographies-edit-typography-minimized.png');
+          await assetsPanelPage.expandFileLibraryTypography();
+          await mainPage.clickViewportTwice();
+          await expect(
+            assetsPanelPage.assetsPanel,
+            'Edited typography should match expanded screenshot',
+          ).toHaveScreenshot('typographies-edit-typography-expanded.png');
+          await expect(
+            mainPage.viewport,
+            'Edited typography should be reflected on text layers',
+          ).toHaveScreenshot('edited-typography-to-text-from-assets.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+    },
+  );
+
+  mainAccountFileTest(
+    qase([951], 'Typographic styles - rename'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Rename typography and save', async () => {
+        await assetsPanelPage.renameFileLibraryTypography('Test Font');
+        await mainPage.waitForChangeIsSaved();
         await mainPage.clickViewportTwice();
+      });
+
+      await mainAccountFileTest.step(
+        'Verify renamed typography screenshots',
+        async () => {
+          await expect(
+            assetsPanelPage.assetsPanel,
+            'Renamed typography should match minimized screenshot',
+          ).toHaveScreenshot('typographies-rename-typography-minimized.png');
+          await assetsPanelPage.expandFileLibraryTypography();
+          await mainPage.waitForChangeIsSaved();
+          await expect(
+            assetsPanelPage.assetsPanel,
+            'Renamed typography should match expanded screenshot',
+          ).toHaveScreenshot('typographies-rename-typography-expanded.png');
+        },
+      );
+    },
+  );
+
+  mainAccountFileTest(
+    qase([952], 'Typographic styles - delete'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Delete typography and save', async () => {
+        await assetsPanelPage.deleteFileLibraryTypography();
+        await mainPage.waitForChangeIsSaved();
+      });
+
+      await mainAccountFileTest.step('Verify typography is deleted', async () => {
         await expect(
           assetsPanelPage.assetsPanel,
-          'Edited typography should match minimized screenshot',
-        ).toHaveScreenshot('typographies-edit-typography-minimized.png');
-        await assetsPanelPage.expandFileLibraryTypography();
-        await mainPage.clickViewportTwice();
-        await expect(
-          assetsPanelPage.assetsPanel,
-          'Edited typography should match expanded screenshot',
-        ).toHaveScreenshot('typographies-edit-typography-expanded.png');
-        await expect(
-          mainPage.viewport,
-          'Edited typography should be reflected on text layers',
-        ).toHaveScreenshot('edited-typography-to-text-from-assets.png', {
-          mask: mainPage.maskViewport(),
-        });
+          'Assets panel should show empty typographies',
+        ).toHaveScreenshot('typographies-deleted-typography.png');
       });
     },
   );
 
-  mainTest(qase([951], 'Typographic styles - rename'), async () => {
-    await mainTest.step('Rename typography and save', async () => {
-      await assetsPanelPage.renameFileLibraryTypography('Test Font');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickViewportTwice();
-    });
-
-    await mainTest.step('Verify renamed typography screenshots', async () => {
-      await expect(
-        assetsPanelPage.assetsPanel,
-        'Renamed typography should match minimized screenshot',
-      ).toHaveScreenshot('typographies-rename-typography-minimized.png');
-      await assetsPanelPage.expandFileLibraryTypography();
-      await mainPage.waitForChangeIsSaved();
-      await expect(
-        assetsPanelPage.assetsPanel,
-        'Renamed typography should match expanded screenshot',
-      ).toHaveScreenshot('typographies-rename-typography-expanded.png');
-    });
-  });
-
-  mainTest(qase([952], 'Typographic styles - delete'), async () => {
-    await mainTest.step('Delete typography and save', async () => {
-      await assetsPanelPage.deleteFileLibraryTypography();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify typography is deleted', async () => {
-      await expect(
-        assetsPanelPage.assetsPanel,
-        'Assets panel should show empty typographies',
-      ).toHaveScreenshot('typographies-deleted-typography.png');
-    });
-  });
-
-  mainTest(
+  mainAccountFileTest(
     qase(
       [953, 2912, 2838],
       'Typographic styles - create group, add typography (+) and delete group',
     ),
-    async () => {
-      await mainTest.step('(953) Typographic styles - create group', async () => {
-        await mainTest.step('Create group for typography', async () => {
-          await assetsPanelPage.createGroupFileLibraryAssets(
-            'Typographies',
-            'Test Group',
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        '(953) Typographic styles - create group',
+        async () => {
+          await mainAccountFileTest.step('Create group for typography', async () => {
+            await assetsPanelPage.createGroupFileLibraryAssets(
+              'Typographies',
+              'Test Group',
+            );
+            await mainPage.waitForChangeIsSaved();
+          });
+
+          await mainAccountFileTest.step(
+            'Verify group is created and screenshot matches',
+            async () => {
+              await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
+              await expect(
+                assetsPanelPage.assetsPanel,
+                'Grouped typography should match screenshot',
+              ).toHaveScreenshot('group-typographies.png');
+            },
           );
-          await mainPage.waitForChangeIsSaved();
-        });
+        },
+      );
 
-        await mainTest.step(
-          'Verify group is created and screenshot matches',
-          async () => {
-            await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
-            await expect(
-              assetsPanelPage.assetsPanel,
-              'Grouped typography should match screenshot',
-            ).toHaveScreenshot('group-typographies.png');
-          },
-        );
-      });
-
-      await mainTest.step(
+      await mainAccountFileTest.step(
         '(2912) Add typography in a group via quick-create (+)',
         async () => {
-          await mainTest.step('Hover over the group name', async () => {
+          await mainAccountFileTest.step('Hover over the group name', async () => {
             await assetsPanelPage.hoverOnGroupFileLibrary();
           });
 
-          await mainTest.step('Add typography to the group', async () => {
+          await mainAccountFileTest.step('Add typography to the group', async () => {
             await assetsPanelPage.addTypographyToGroup();
             await assetsPanelPage.minimizeFileLibraryTypography();
           });
 
-          await mainTest.step(
+          await mainAccountFileTest.step(
             'Check the number of typographies in the group',
             async () => {
               const count: number = 2;
@@ -216,62 +240,74 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('(2838) Typographic styles - delete group', async () => {
-        await mainTest.step('Delete group', async () => {
-          await assetsPanelPage.deleteGroupFileLibrary();
-        });
+      await mainAccountFileTest.step(
+        '(2838) Typographic styles - delete group',
+        async () => {
+          await mainAccountFileTest.step('Delete group', async () => {
+            await assetsPanelPage.deleteGroupFileLibrary();
+          });
 
-        await mainTest.step('Verify group is removed', async () => {
-          await assetsPanelPage.isFileLibraryGroupRemoved();
-        });
+          await mainAccountFileTest.step('Verify group is removed', async () => {
+            await assetsPanelPage.isFileLibraryGroupRemoved();
+          });
+        },
+      );
+    },
+  );
+
+  mainAccountFileTest(
+    qase([955], 'Typographic styles - rename group'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Create and rename group', async () => {
+        await assetsPanelPage.createGroupFileLibraryAssets(
+          'Typographies',
+          'Test Group',
+        );
+        await mainPage.waitForChangeIsSaved();
+        await assetsPanelPage.renameGroupFileLibrary('New Group');
+        await mainPage.waitForChangeIsSaved();
+      });
+
+      await mainAccountFileTest.step(
+        'Verify renamed group and screenshot',
+        async () => {
+          await assetsPanelPage.isFileLibraryGroupCreated('New Group');
+          await expect(
+            assetsPanelPage.assetsPanel,
+            'Renamed group typography should match screenshot',
+          ).toHaveScreenshot('group-typographies-renamed.png');
+        },
+      );
+    },
+  );
+
+  mainAccountFileTest(
+    qase([958], 'Typographic styles - ungroup'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Create group and ungroup', async () => {
+        await assetsPanelPage.createGroupFileLibraryAssets(
+          'Typographies',
+          'Test Group',
+        );
+        await mainPage.waitForChangeIsSaved();
+        await assetsPanelPage.ungroupFileLibrary();
+        await mainPage.waitForChangeIsSaved();
+      });
+
+      await mainAccountFileTest.step('Verify group is removed', async () => {
+        await assetsPanelPage.isFileLibraryGroupRemoved();
+        await expect(
+          assetsPanelPage.assetsPanel,
+          'Assets panel should show ungrouped typography',
+        ).toHaveScreenshot('typographies-add-typography-minimized.png');
       });
     },
   );
 
-  mainTest(qase([955], 'Typographic styles - rename group'), async () => {
-    await mainTest.step('Create and rename group', async () => {
-      await assetsPanelPage.createGroupFileLibraryAssets(
-        'Typographies',
-        'Test Group',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await assetsPanelPage.renameGroupFileLibrary('New Group');
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify renamed group and screenshot', async () => {
-      await assetsPanelPage.isFileLibraryGroupCreated('New Group');
-      await expect(
-        assetsPanelPage.assetsPanel,
-        'Renamed group typography should match screenshot',
-      ).toHaveScreenshot('group-typographies-renamed.png');
-    });
-  });
-
-  mainTest(qase([958], 'Typographic styles - ungroup'), async () => {
-    await mainTest.step('Create group and ungroup', async () => {
-      await assetsPanelPage.createGroupFileLibraryAssets(
-        'Typographies',
-        'Test Group',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await assetsPanelPage.ungroupFileLibrary();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await mainTest.step('Verify group is removed', async () => {
-      await assetsPanelPage.isFileLibraryGroupRemoved();
-      await expect(
-        assetsPanelPage.assetsPanel,
-        'Assets panel should show ungrouped typography',
-      ).toHaveScreenshot('typographies-add-typography-minimized.png');
-    });
-  });
-
-  mainTest(
+  mainAccountFileTest(
     qase([964], 'Typographic styles - apply style to text from Typographies panel'),
-    async () => {
-      await mainTest.step('Edit typography font and size', async () => {
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Edit typography font and size', async () => {
         await assetsPanelPage.editFileLibraryTypography();
         await assetsPanelPage.selectFont('Bad Script');
         await assetsPanelPage.selectFontSize('36');
@@ -279,7 +315,7 @@ mainTest.describe(() => {
         await assetsPanelPage.minimizeFileLibraryTypography();
       });
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Create text layer and apply typography from bottom panel',
         async () => {
           await mainPage.createDefaultTextLayer();
@@ -290,19 +326,22 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Verify typography applied to text', async () => {
-        await expect(
-          mainPage.viewport,
-          'Typography should be applied to text layer',
-        ).toHaveScreenshot('apply-typography-to-text.png', {
-          mask: [
-            mainPage.guides,
-            mainPage.guidesFragment,
-            mainPage.toolBarWindow,
-            mainPage.typographiesColorsBottomPanel,
-          ],
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify typography applied to text',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Typography should be applied to text layer',
+          ).toHaveScreenshot('apply-typography-to-text.png', {
+            mask: [
+              mainPage.guides,
+              mainPage.guidesFragment,
+              mainPage.toolBarWindow,
+              mainPage.typographiesColorsBottomPanel,
+            ],
+          });
+        },
+      );
     },
   );
 });

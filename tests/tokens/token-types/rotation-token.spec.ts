@@ -1,38 +1,23 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { mainAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
-mainTest(
+mainAccountFileTest(
   qase([2175], 'Apply default "rotation" token to a text (by left click)'),
-  async () => {
+  async ({ mainPage }) => {
     const rotationToken: MainToken<TokenClass> = {
       class: TokenClass.Rotation,
       name: 'rotation',
@@ -40,14 +25,17 @@ mainTest(
     };
     const tokenResolvedValue = '-45'; // -45 == -(22.5+22.5)
 
-    await mainTest.step('Create text layer and rotation token', async () => {
-      await mainPage.createDefaultTextLayerByCoordinates(320, 210);
-      await tokensPage.clickTokensTab();
-      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(rotationToken);
-      await tokensPage.tokensComp.isTokenVisibleWithName(rotationToken.name);
-    });
+    await mainAccountFileTest.step(
+      'Create text layer and rotation token',
+      async () => {
+        await mainPage.createDefaultTextLayerByCoordinates(320, 210);
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(rotationToken);
+        await tokensPage.tokensComp.isTokenVisibleWithName(rotationToken.name);
+      },
+    );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Apply "${rotationToken.name}" token and verify rotation value`,
       async () => {
         await tokensPage.tokensComp.clickOnTokenWithName(rotationToken.name);
@@ -58,7 +46,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Verify screenshot and Rotation menu item is selected',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot('text-rotated-315.png', {

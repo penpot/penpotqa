@@ -1,8 +1,5 @@
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { expect } from 'playwright/test';
-import { DashboardPage } from 'pages/dashboard/dashboard-page';
-import { TeamPage } from 'pages/dashboard/team-page';
-import { MainPage } from 'pages/workspace/main-page';
 import { AssetsPanelPage } from 'pages/workspace/assets-panel-page';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
@@ -10,76 +7,66 @@ import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
 const teamName2 = createTeamName();
 
-let dashboardPage: DashboardPage;
-let teamPage: TeamPage;
-let mainPage: MainPage;
 let assetsPanelPage: AssetsPanelPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-mainTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
-  teamPage = new TeamPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page }) => {
   assetsPanelPage = new AssetsPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
-
-  await teamPage.createTeam(teamName);
-  await dashboardPage.isHeaderDisplayed('Projects');
-  await dashboardPage.hideLibrariesAndTemplatesCarrousel();
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
 });
 
-mainTest.describe(() => {
-  const team1 = teamName;
-  const team2 = teamName2;
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest(
+    qase([1540], 'Move library to a different team'),
+    async ({ page, mainPage, dashboardPage, teamPage, teamName }) => {
+      const team1 = teamName;
+      const team2 = teamName2;
 
-  mainTest(qase([1540], 'Move library to a different team'), async () => {
-    mainTest.slow();
-    await mainPage.createDefaultEllipseByCoordinates(200, 200);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.addFileAsSharedLibraryViaRightclick();
-    await dashboardPage.isSharedLibraryIconDisplayed();
+      mainAccountFileTest.slow();
+      await mainPage.createDefaultEllipseByCoordinates(200, 200);
+      await mainPage.createComponentViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickPencilBoxButton();
+      await dashboardPage.addFileAsSharedLibraryViaRightclick();
+      await dashboardPage.isSharedLibraryIconDisplayed();
 
-    await dashboardPage.createFileViaTitlePanel();
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibrariesButton();
-    await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
-    await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-    await assetsPanelPage.clickCloseModalButton();
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
-    await assetsPanelPage.clickLibraryComponentsTitle();
-    await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickPencilBoxButton();
+      await dashboardPage.createFileViaTitlePanel();
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.clickLibrariesButton();
+      await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
+      await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
+      await assetsPanelPage.clickCloseModalButton();
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.clickLibraryTitleWithName('New File 1');
+      await assetsPanelPage.clickLibraryComponentsTitle();
+      await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickPencilBoxButton();
 
-    await teamPage.createTeam(team2);
-    await teamPage.switchTeam(team1);
+      await teamPage.createTeam(team2);
+      await teamPage.switchTeam(team1);
 
-    await dashboardPage.moveFileToOtherTeamViaRightClick('New File 1', team2);
-    await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
-      'library-move-to-other-team-warning.png',
-    );
-    await dashboardPage.clickOnMoveButton();
-    await teamPage.isTeamSelected(team2);
-    await dashboardPage.isSharedLibraryIconDisplayed();
-  });
+      await dashboardPage.moveFileToOtherTeamViaRightClick('New File 1', team2);
+      await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
+        'library-move-to-other-team-warning.png',
+      );
+      await dashboardPage.clickOnMoveButton();
+      await teamPage.isTeamSelected(team2);
+      await dashboardPage.isSharedLibraryIconDisplayed();
+    },
+  );
 });
 
-mainTest.describe(() => {
-  mainTest(
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest(
     qase([1457], 'Publish Shared Library from the Libraries popup (with assets)'),
-    async () => {
+    async ({ mainPage }) => {
       await mainPage.createDefaultRectangleByCoordinates(200, 200);
       await mainPage.waitForChangeIsSaved();
       await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
@@ -98,7 +85,7 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest.afterEach(async () => {
+  mainAccountFileTest.afterEach(async ({ mainPage }) => {
     await mainPage.clickMainMenuButton();
     await mainPage.clickFileMainMenuItem();
     await mainPage.clickRemoveAsSharedLibraryMainMenuSubItem();
@@ -108,9 +95,9 @@ mainTest.describe(() => {
   });
 });
 
-mainTest(
+mainAccountFileTest(
   qase([1458], 'Publish Shared Library from the dashboard (RMB) (with assets)'),
-  async () => {
+  async ({ mainPage, dashboardPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
@@ -128,8 +115,8 @@ mainTest(
   },
 );
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage, dashboardPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -180,12 +167,12 @@ mainTest.describe(() => {
     await dashboardPage.checkNumberOfFiles('2 files');
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [1365],
       'Apply updates from Libraries → Updates (after dismissing at the beginning)',
     ),
-    async () => {
+    async ({ mainPage, dashboardPage }) => {
       await dashboardPage.openFileWithName('New File 2');
       await assetsPanelPage.isWrapperMessageVisible();
       await assetsPanelPage.clickDismissButton();
@@ -212,9 +199,9 @@ mainTest.describe(() => {
   );
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    mainTest.slow();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage, dashboardPage }) => {
+    mainAccountFileTest.slow();
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -273,12 +260,12 @@ mainTest.describe(() => {
     await dashboardPage.checkNumberOfFiles('3 files');
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [1092],
       'Delete library which is used by a few files ( 1 library in a few files)',
     ),
-    async () => {
+    async ({ mainPage, dashboardPage }) => {
       await dashboardPage.deleteFileWithNameViaRightClick('New File 1');
       await dashboardPage.isDeletingLibraryWarningVisible(2, /New File [2-3]/);
 
@@ -308,17 +295,10 @@ mainTest.describe(() => {
   );
 });
 
-mainTest.describe(() => {
-  mainTest.afterEach(async () => {
-    const team2 = teamName2;
-    await teamPage.page.waitForTimeout(1000);
-    await teamPage.deleteTeam(team2);
-  });
-});
-
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage, dashboardPage }) => {
     await mainPage.clickPencilBoxButton();
+    await dashboardPage.hideLibrariesAndTemplatesCarrousel();
     await dashboardPage.addFileAsSharedLibraryViaRightclick();
     await dashboardPage.isSharedLibraryIconDisplayed();
     await dashboardPage.renameFile('New File 1', 'Whiteboarding & mapping kit');
@@ -334,22 +314,25 @@ mainTest.describe(() => {
     await assetsPanelPage.clickLibrariesButton();
   });
 
-  mainTest(qase([1004], 'Search shared library (LIBRARIES pop-up)'), async () => {
-    const libraryName1 = 'Whiteboarding & mapping kit';
-    const libraryName2 = 'Circum Icons pack';
+  mainAccountFileTest(
+    qase([1004], 'Search shared library (LIBRARIES pop-up)'),
+    async () => {
+      const libraryName1 = 'Whiteboarding & mapping kit';
+      const libraryName2 = 'Circum Icons pack';
 
-    await assetsPanelPage.searchSharedLibraries(libraryName1);
-    await assetsPanelPage.firstLibraryItemContainsLibraryName(libraryName1);
-    await assetsPanelPage.clearSearchSharedLibraries();
-    await assetsPanelPage.searchSharedLibraries('Circ');
-    await assetsPanelPage.firstLibraryItemContainsLibraryName(libraryName2);
-    await assetsPanelPage.clearSearchSharedLibraries();
-    await assetsPanelPage.searchSharedLibraries('qwer');
-    await assetsPanelPage.isEmptyLibrarySearchResults();
-    await assetsPanelPage.clearSearchSharedLibraries();
-  });
+      await assetsPanelPage.searchSharedLibraries(libraryName1);
+      await assetsPanelPage.firstLibraryItemContainsLibraryName(libraryName1);
+      await assetsPanelPage.clearSearchSharedLibraries();
+      await assetsPanelPage.searchSharedLibraries('Circ');
+      await assetsPanelPage.firstLibraryItemContainsLibraryName(libraryName2);
+      await assetsPanelPage.clearSearchSharedLibraries();
+      await assetsPanelPage.searchSharedLibraries('qwer');
+      await assetsPanelPage.isEmptyLibrarySearchResults();
+      await assetsPanelPage.clearSearchSharedLibraries();
+    },
+  );
 
-  mainTest.afterEach(async () => {
+  mainAccountFileTest.afterEach(async ({ mainPage }) => {
     await assetsPanelPage.clickCloseModalButton();
     await mainPage.backToDashboardFromFileEditor();
   });

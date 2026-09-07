@@ -1,73 +1,64 @@
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { MainPage } from '@pages/workspace/main-page';
 import { expect } from '@playwright/test';
-import { mainTest } from 'fixtures';
-import { createTeamName } from 'helpers/teams/create-team-name';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName = createTeamName();
 const annotation = 'Test annotation for automation';
 
-let dashboardPage: DashboardPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
-let mainPage: MainPage;
-let teamPage: TeamPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
-  teamPage = new TeamPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
-
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
 });
 
-mainTest.describe(() => {
+mainAccountFileTest.describe(() => {
   let inspectPanelPage: InspectPanelPage;
 
-  mainTest.beforeEach(async ({ page }) => {
+  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     inspectPanelPage = new InspectPanelPage(page);
     await mainPage.createDefaultRectangleByCoordinates(400, 500);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(qase([1419, 1427], 'Create annotation: create, delete'), async () => {
-    const newAnnotation = 'Edit annotation';
+  mainAccountFileTest(
+    qase([1419, 1427], 'Create annotation: create, delete'),
+    async ({ mainPage }) => {
+      const newAnnotation = 'Edit annotation';
 
-    await mainTest.step('(1419) Create annotation with valid text', async () => {
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await designPanelPage.clickOnComponentMenuButton();
-      await designPanelPage.clickOnCreateAnnotationOption();
-      await designPanelPage.addAnnotationForComponent(annotation);
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.isAnnotationAddedToComponent(annotation);
-      await expect(
-        designPanelPage.componentBlockOnDesignTab,
-        'Component design tab should match screenshot with annotation',
-      ).toHaveScreenshot('component-annotation.png');
-    });
+      await mainAccountFileTest.step(
+        '(1419) Create annotation with valid text',
+        async () => {
+          await layersPanelPage.clickMainComponentOnLayersTab();
+          await designPanelPage.clickOnComponentMenuButton();
+          await designPanelPage.clickOnCreateAnnotationOption();
+          await designPanelPage.addAnnotationForComponent(annotation);
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isAnnotationAddedToComponent(annotation);
+          await expect(
+            designPanelPage.componentBlockOnDesignTab,
+            'Component design tab should match screenshot with annotation',
+          ).toHaveScreenshot('component-annotation.png');
+        },
+      );
 
-    await mainTest.step('(1427) Delete annotation', async () => {
-      await designPanelPage.clickOnDeleteAnnotation();
-      await designPanelPage.confirmDeleteAnnotation();
-      await designPanelPage.waitForChangeIsSaved();
-      await designPanelPage.isAnnotationNotAddedToComponent();
-    });
-  });
+      await mainAccountFileTest.step('(1427) Delete annotation', async () => {
+        await designPanelPage.clickOnDeleteAnnotation();
+        await designPanelPage.confirmDeleteAnnotation();
+        await designPanelPage.waitForChangeIsSaved();
+        await designPanelPage.isAnnotationNotAddedToComponent();
+      });
+    },
+  );
 
-  mainTest(
+  mainAccountFileTest(
     qase([1428], 'Check annotation applies for copies and inspect tab'),
-    async () => {
-      await mainTest.step(
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
         'Duplicate layer and create annotation on main component',
         async () => {
           await mainPage.duplicateLayerViaRightClick();
@@ -80,7 +71,7 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Verify annotation "${annotation}" is visible on copy and Inspect tab`,
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();

@@ -5,10 +5,20 @@ import { RegisterPage } from '@pages/register-page';
 import { random } from './helpers/string-generator';
 import { waitMessage } from './helpers/gmail';
 import { createDemoUser } from './helpers/demo-user';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { createTeamName } from 'helpers/teams/create-team-name';
 
 type RegisterTestFixtures = {
   name: string;
   email: string;
+};
+
+type WorkspaceFixtures = {
+  teamName: string;
+  teamPage: TeamPage;
+  dashboardPage: DashboardPage;
+  mainPage: MainPage;
 };
 
 // Fixture for logging in with an existing account. Use it for tests that don't
@@ -76,4 +86,34 @@ export const demoAccountApiFixture = test.extend({
     await dashboardPage.skipPluginsPopUp();
     await use(page);
   },
+});
+
+// Fixture for tests that need an isolated team with a blank file already
+// open in the editor. Use it for tests that draw on the canvas rather than
+// just the dashboard.
+export const mainAccountFileTest = mainTest.extend<WorkspaceFixtures>({
+  teamName: async ({}, use) => {
+    await use(createTeamName());
+  },
+  teamPage: async ({ page }, use) => {
+    await use(new TeamPage(page));
+  },
+  dashboardPage: async ({ page }, use) => {
+    await use(new DashboardPage(page));
+  },
+  // `auto: true` makes this run for every mainAccountFileTest-based test, whether or
+  // not it destructures mainPage/teamPage/dashboardPage. Fixtures are
+  // otherwise lazy, so a test that only touches another page object (e.g.
+  // historyPage) would silently skip team/file creation and run against an
+  // empty dashboard instead.
+  mainPage: [
+    async ({ page, teamPage, dashboardPage, teamName }, use) => {
+      const mainPage = new MainPage(page);
+      await teamPage.createTeam(teamName);
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+      await use(mainPage);
+    },
+    { auto: true },
+  ],
 });

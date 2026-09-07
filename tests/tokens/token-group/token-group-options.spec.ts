@@ -1,43 +1,27 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { mainAccountFileTest } from 'fixtures';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import {
   TokenClass,
   buildTokenPath,
 } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let mainPage: MainPage;
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
 let tokensPage: TokensPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
-
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
   await tokensPage.clickTokensTab();
 });
 
-mainTest.describe('Context menu > Delete', () => {
-  mainTest.beforeEach(async () => {
+mainAccountFileTest.describe('Context menu > Delete', () => {
+  mainAccountFileTest.beforeEach(async () => {
     await tokensPage.clickTokensTab();
   });
 
-  mainTest(qase([2742], 'Remove a tokens group'), async () => {
+  mainAccountFileTest(qase([2742], 'Remove a tokens group'), async () => {
     const tokenValue = '#000000';
     const foundationsGroup = { name: 'foundations' };
     const primaryGroup = { name: 'primary', parent: foundationsGroup };
@@ -63,7 +47,7 @@ mainTest.describe('Context menu > Delete', () => {
       value: tokenValue,
     };
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Create color tokens "${darkToken.name}", "${accentToken.name}", "${foregroundToken.name}" and "${backgroundToken.name}"`,
       async () => {
         await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(darkToken);
@@ -73,7 +57,7 @@ mainTest.describe('Context menu > Delete', () => {
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Verify "${foundationsGroup.name}" and "${primaryGroup.name}" groups are visible and contain the expected tokens`,
       async () => {
         await tokensPage.tokensComp.isTokenGroupVisible(foundationsGroup);
@@ -97,7 +81,7 @@ mainTest.describe('Context menu > Delete', () => {
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Delete "${foundationsGroup.name}" group and verify "${foundationsGroup.name}", "${primaryGroup.name}" groups and tokens "${darkToken.name}", "${accentToken.name}", "${foregroundToken.name}", "${backgroundToken.name}" are removed`,
       async () => {
         await tokensPage.tokensComp.deleteTokenGroup(foundationsGroup);
@@ -117,7 +101,7 @@ mainTest.describe('Context menu > Delete', () => {
     );
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2745],
       'Remove a tokens group (with a token referenced in other tokens group)',
@@ -136,14 +120,14 @@ mainTest.describe('Context menu > Delete', () => {
         value: `{${primaryToken.name}}+2`,
       };
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Create token "${primaryToken.name}" with value "${primaryToken.value}"`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(primaryToken);
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Create token "${secondaryToken.name}" with value "${secondaryToken.value}" referencing "${primaryToken.name}"`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
@@ -152,7 +136,7 @@ mainTest.describe('Context menu > Delete', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Verify "${primaryGroup.name}" and "${secondaryGroup.name}" groups are visible`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupVisible(primaryGroup);
@@ -160,7 +144,7 @@ mainTest.describe('Context menu > Delete', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Delete "${primaryGroup.name}" group and verify group and token "${primaryToken.name}" are removed`,
         async () => {
           await tokensPage.tokensComp.deleteTokenGroup(primaryGroup);
@@ -172,7 +156,7 @@ mainTest.describe('Context menu > Delete', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Verify "${secondaryToken.name}" is highlighted as invalid and shows correct tooltip`,
         async () => {
           await tokensPage.tokensComp.checkInvalidTokenCount(1);
@@ -186,7 +170,7 @@ mainTest.describe('Context menu > Delete', () => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase([2743], 'Remove a token in a tokens group (with only one token)'),
     async () => {
       const tokenValue = '#000000';
@@ -199,15 +183,18 @@ mainTest.describe('Context menu > Delete', () => {
         value: tokenValue,
       };
 
-      await mainTest.step('Open Tokens panel', async () => {
+      await mainAccountFileTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
       });
 
-      await mainTest.step(`Create color token "${darkToken.name}"`, async () => {
-        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(darkToken);
-      });
+      await mainAccountFileTest.step(
+        `Create color token "${darkToken.name}"`,
+        async () => {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(darkToken);
+        },
+      );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Verify "${foundationsGroup.name}" and "${primaryGroup.name}" groups are visible`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupVisible(foundationsGroup);
@@ -215,7 +202,7 @@ mainTest.describe('Context menu > Delete', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Delete "${darkToken.name}" token and verify it is removed along with "${foundationsGroup.name}" and "${primaryGroup.name}" groups`,
         async () => {
           await tokensPage.tokensComp.deleteToken(darkToken.name);
@@ -228,18 +215,18 @@ mainTest.describe('Context menu > Delete', () => {
   );
 });
 
-mainTest.describe('Context menu > Rename', () => {
-  mainTest.beforeEach(async () => {
+mainAccountFileTest.describe('Context menu > Rename', () => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(320, 210);
     await tokensPage.clickTokensTab();
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2839],
       'Rename a token group with tokens that are being referenced from other token that has several alias (tokens with the same name in different sets)',
     ),
-    async () => {
+    async ({ mainPage }) => {
       const colorTokenName = 'color.primary';
       const colorPrimaryValue = '#ff0000';
       const colorUpdatedValue = '#2200ff';
@@ -247,14 +234,14 @@ mainTest.describe('Context menu > Rename', () => {
       const primaryGroup = { name: 'color' };
       const newGroupName = 'brandColors';
 
-      await mainTest.step('Import tokens with sets', async () => {
+      await mainAccountFileTest.step('Import tokens with sets', async () => {
         await tokensPage.toolsComp.clickOnTokenToolsButton();
         await tokensPage.toolsComp.importTokens(
           'documents/tokens/tokens-with-sets.json',
         );
       });
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Click set "${set}" and apply "${colorTokenName}" (${colorPrimaryValue}) token to shape`,
         async () => {
           await tokensPage.setsComp.clickSetItemButton(set);
@@ -265,7 +252,7 @@ mainTest.describe('Context menu > Rename', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Rename token group "${primaryGroup.name}" to "${newGroupName}"`,
         async () => {
           await tokensPage.tokensComp.renameTokenGroup(primaryGroup, newGroupName);
@@ -275,7 +262,7 @@ mainTest.describe('Context menu > Rename', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Assert shape color is updated to ${colorUpdatedValue}`,
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -290,7 +277,7 @@ mainTest.describe('Context menu > Rename', () => {
   );
 });
 
-mainTest.describe('Context menu > Duplicate', () => {
+mainAccountFileTest.describe('Context menu > Duplicate', () => {
   const tokenValue = '#ff0000';
 
   // Token nested in the 'button' group
@@ -311,13 +298,13 @@ mainTest.describe('Context menu > Duplicate', () => {
     value: tokenValue,
   };
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2835],
       'Duplicate 2nd-level token group supports merging new content into an existing token group',
     ),
     async () => {
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Import tokens file with 2nd level token groups',
         async () => {
           await tokensPage.toolsComp.clickOnTokenToolsButton();
@@ -327,7 +314,7 @@ mainTest.describe('Context menu > Duplicate', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Expand token group ${TokenClass.Color} and verify groups "${buttonGroup.name}" and "${buttonGroupCopy.name}" are visible with expected tokens`,
         async () => {
           await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
@@ -341,7 +328,7 @@ mainTest.describe('Context menu > Duplicate', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Duplicate "${buttonGroup.name}" token group and merge into "${buttonGroupCopy.name}" token group`,
         async () => {
           await tokensPage.tokensComp.duplicateTokenGroup(
@@ -351,7 +338,7 @@ mainTest.describe('Context menu > Duplicate', () => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Verify the groups are merged with both of them containing the expected token "${backgroundColorButtonGroupToken.name}" and "${backgroundColorButtonGroupCopyToken.name}" respectively`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupVisible(buttonGroup);

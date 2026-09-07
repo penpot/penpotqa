@@ -1,52 +1,40 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { mainAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
-mainTest(
+mainAccountFileTest(
   qase([2215], 'Apply default "stroke width" token to a path (by left click)'),
-  async () => {
+  async ({ mainPage }) => {
     const strokeToken: MainToken<TokenClass> = {
       class: TokenClass.StrokeWidth,
       name: 'stroke-width',
       value: '5.5',
     };
 
-    await mainTest.step('Create path and stroke width token', async () => {
-      await mainPage.createDefaultOpenPath();
-      await tokensPage.clickTokensTab();
-      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(strokeToken);
-      await tokensPage.tokensComp.isTokenVisibleWithName(strokeToken.name);
-    });
+    await mainAccountFileTest.step(
+      'Create path and stroke width token',
+      async () => {
+        await mainPage.createDefaultOpenPath();
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(strokeToken);
+        await tokensPage.tokensComp.isTokenVisibleWithName(strokeToken.name);
+      },
+    );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Apply "${strokeToken.name}" token and verify stroke width`,
       async () => {
         await tokensPage.tokensComp.clickOnTokenWithName(strokeToken.name);
@@ -56,7 +44,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Verify screenshot and Stroke Width menu item is selected',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot(

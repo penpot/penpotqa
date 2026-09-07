@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest, mainTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { random } from 'helpers/string-generator';
 import { waitMessage } from 'helpers/gmail';
@@ -26,47 +26,46 @@ const initPages = async ({ page }: { page: Page }) => {
   mainPage = new MainPage(page);
 };
 
-mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
-  const team = createTeamName();
+mainAccountFileTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
+  let badUrlProfilePage: ProfilePage;
 
-  mainTest.beforeEach('Create a team and a file', async ({ page }) => {
-    await initPages({ page });
-
-    await teamPage.createTeam(team);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
+  mainAccountFileTest.beforeEach(async ({ page }) => {
+    badUrlProfilePage = new ProfilePage(page);
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       1822,
       'Workspace: Navigate to an invalid URL, log in, and display the error page',
     ),
-    async ({ page }) => {
+    async ({ page, mainPage, teamPage }) => {
       const currentURL = await mainPage.getUrl();
       const badURL = await mainPage.makeBadUrl(currentURL);
 
-      await mainTest.step('Logout & login as SECOND_EMAIL', async () => {
+      await mainAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
         await mainPage.clickPencilBoxButton();
-        await profilePage.logout();
+        await badUrlProfilePage.logout();
         await loginAsSecondUser(page);
       });
 
-      await mainTest.step('Go to bad URL and validate error message', async () => {
-        await page.goto(badURL);
-        await teamPage.isInviteMessageDisplayed('Oops!');
-        await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-        await teamPage.isGoToPenpotButtonVisible();
-      });
+      await mainAccountFileTest.step(
+        'Go to bad URL and validate error message',
+        async () => {
+          await page.goto(badURL);
+          await teamPage.isInviteMessageDisplayed('Oops!');
+          await teamPage.isErrorMessageDisplayed("This page doesn't exist");
+          await teamPage.isGoToPenpotButtonVisible();
+        },
+      );
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       1824,
       'View Mode: Navigate to an invalid URL, log in, and display the error page',
     ),
-    async ({ page }) => {
+    async ({ page, mainPage, teamPage }) => {
       let viewModePage = new ViewModePage(page);
       const newPage = await viewModePage.clickViewModeShortcut();
 
@@ -76,62 +75,69 @@ mainTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
       const currentURL = await viewModePage.getUrl();
       const badURL = await viewModePage.makeBadUrl(currentURL);
 
-      await mainTest.step('Create a board', async () => {
+      await mainAccountFileTest.step('Create a board', async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainTest.step('Logout & login as SECOND_EMAIL', async () => {
+      await mainAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
         await mainPage.clickPencilBoxButton();
-        await profilePage.logout();
+        await badUrlProfilePage.logout();
         await loginAsSecondUser(page);
       });
 
-      await mainTest.step('Go to bad URL and validate error message', async () => {
-        // Wait for the specific responses to occur, but don't fail if they don't happen
-        await Promise.all([
-          page.waitForResponse(
-            (response) =>
-              response.url().includes('get-view-only-bundle') &&
-              response.status() === 404,
-          ),
-          page.waitForResponse(
-            (response) =>
-              response.url().includes('get-file-info') && response.status() === 404,
-          ),
-        ]).catch(() => {});
+      await mainAccountFileTest.step(
+        'Go to bad URL and validate error message',
+        async () => {
+          // Wait for the specific responses to occur, but don't fail if they don't happen
+          await Promise.all([
+            page.waitForResponse(
+              (response) =>
+                response.url().includes('get-view-only-bundle') &&
+                response.status() === 404,
+            ),
+            page.waitForResponse(
+              (response) =>
+                response.url().includes('get-file-info') &&
+                response.status() === 404,
+            ),
+          ]).catch(() => {});
 
-        await page.goto(badURL, { waitUntil: 'networkidle' });
+          await page.goto(badURL, { waitUntil: 'networkidle' });
 
-        await teamPage.isInviteMessageDisplayed('Oops!');
-        await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-        await teamPage.isGoToPenpotButtonVisible();
-      });
+          await teamPage.isInviteMessageDisplayed('Oops!');
+          await teamPage.isErrorMessageDisplayed("This page doesn't exist");
+          await teamPage.isGoToPenpotButtonVisible();
+        },
+      );
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       1826,
       'Dashboard: Navigate to an invalid URL while logged in and display the error page',
     ),
-    async ({ page }) => {
+    async ({ page, mainPage, teamPage }) => {
       await mainPage.clickPencilBoxButton();
 
       const currentURL = await mainPage.getUrl();
       const badURL = await mainPage.makeBadDashboardUrl(currentURL);
 
-      await mainTest.step('Logout & login as SECOND_EMAIL', async () => {
-        await profilePage.logout();
+      await mainAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
+        await badUrlProfilePage.logout();
         await loginAsSecondUser(page);
       });
 
-      await mainTest.step('Go to bad URL and validate error message', async () => {
-        await page.goto(badURL);
-        await teamPage.isInviteMessageDisplayed('Oops!');
-        await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-        await teamPage.isGoToPenpotButtonVisible();
-      });
+      await mainAccountFileTest.step(
+        'Go to bad URL and validate error message',
+        async () => {
+          await page.goto(badURL);
+          await teamPage.isInviteMessageDisplayed('Oops!');
+          await teamPage.isErrorMessageDisplayed("This page doesn't exist");
+          await teamPage.isGoToPenpotButtonVisible();
+        },
+      );
     },
   );
 });

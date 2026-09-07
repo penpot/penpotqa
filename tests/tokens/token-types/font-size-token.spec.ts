@@ -1,44 +1,31 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
 import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
 const sampleData = new SampleData();
 
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
-mainTest.describe(() => {
+mainAccountFileTest.describe(() => {
   let mainPage: MainPage;
   let tokensPage: TokensPage;
 
@@ -55,7 +42,7 @@ mainTest.describe(() => {
     description: '120',
   };
 
-  mainTest.beforeEach(async ({ page }) => {
+  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
 
@@ -65,70 +52,78 @@ mainTest.describe(() => {
     await tokensPage.tokensComp.isTokenVisibleWithName(fontSizeToken.name);
   });
 
-  mainTest(qase([2359], 'Apply a font size token'), async () => {
-    await mainTest.step(
-      `Apply "${fontSizeToken.name}" token and verify it is applied`,
-      async () => {
-        await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
-        await mainPage.waitForResizeHandlerVisible();
-      },
-    );
+  mainAccountFileTest(
+    qase([2359], 'Apply a font size token'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        `Apply "${fontSizeToken.name}" token and verify it is applied`,
+        async () => {
+          await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
+          await mainPage.waitForResizeHandlerVisible();
+        },
+      );
 
-    await mainTest.step('Verify screenshot matches', async () => {
-      await expect(mainPage.viewport).toHaveScreenshot('text-font-size-60.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-  });
-
-  mainTest(qase([2360], 'Detachment font size token'), async () => {
-    await mainTest.step(
-      `Apply "${fontSizeToken.name}" to first text layer and create second text layer`,
-      async () => {
-        await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
-        await mainPage.createDefaultTextLayerByCoordinates(100, 600);
-        await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
-      },
-    );
-
-    await mainTest.step(
-      'Detach token from first layer by re-clicking it',
-      async () => {
-        await mainPage.clickViewportByCoordinates(120, 220);
-        await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(
-          fontSizeToken.name,
-          false,
-        );
-      },
-    );
-
-    await mainTest.step(
-      `Edit token to "${updatedTokenData.value}" and verify screenshot shows both sizes`,
-      async () => {
-        await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
-        await mainPage.waitForChangeIsSaved();
-        await expect(mainPage.viewport).toHaveScreenshot('texts-size-60-120.png', {
+      await mainAccountFileTest.step('Verify screenshot matches', async () => {
+        await expect(mainPage.viewport).toHaveScreenshot('text-font-size-60.png', {
           mask: mainPage.maskViewport(),
         });
-      },
-    );
-  });
+      });
+    },
+  );
+
+  mainAccountFileTest(
+    qase([2360], 'Detachment font size token'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
+        `Apply "${fontSizeToken.name}" to first text layer and create second text layer`,
+        async () => {
+          await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
+          await mainPage.createDefaultTextLayerByCoordinates(100, 600);
+          await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
+        },
+      );
+
+      await mainAccountFileTest.step(
+        'Detach token from first layer by re-clicking it',
+        async () => {
+          await mainPage.clickViewportByCoordinates(120, 220);
+          await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(
+            fontSizeToken.name,
+            false,
+          );
+        },
+      );
+
+      await mainAccountFileTest.step(
+        `Edit token to "${updatedTokenData.value}" and verify screenshot shows both sizes`,
+        async () => {
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(
+            updatedTokenData,
+          );
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot('texts-size-60-120.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+    },
+  );
 });
 
-mainTest(
+mainAccountFileTest(
   qase(
     [2363],
     'Propagation of (style) changes from a (contained) text component to copies (overriding style by using tokens)',
   ),
-  async () => {
+  async ({ mainPage }) => {
     const colorToken1: MainToken<TokenClass> = {
       class: TokenClass.Color,
       name: 'color1',
@@ -145,7 +140,7 @@ mainTest(
       value: sampleData.color.greenHexCode,
     };
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Create color tokens and apply first token to text layer',
       async () => {
         await tokensPage.clickTokensTab();
@@ -160,7 +155,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Create main component with flex layout and duplicate it',
       async () => {
         await layersPanelPage.openLayersTab();
@@ -175,7 +170,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Override color token in copy component child layer',
       async () => {
         await layersPanelPage.openLayersTab();
@@ -186,7 +181,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Change color manually in main component child layer',
       async () => {
         await layersPanelPage.openLayersTab();
@@ -201,18 +196,21 @@ mainTest(
       },
     );
 
-    await mainTest.step('Verify token states and screenshot', async () => {
-      await tokensPage.clickTokensTab();
-      await tokensPage.tokensComp.isTokenAppliedWithName(colorToken1.name, false);
-      await layersPanelPage.openLayersTab();
-      await layersPanelPage.clickCopyComponentOnLayersTab();
-      await layersPanelPage.selectCopyComponentChildLayer();
-      await tokensPage.clickTokensTab();
-      await tokensPage.tokensComp.isTokenAppliedWithName(colorToken2.name, true);
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('2-texts-color.png', {
-        mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-      });
-    });
+    await mainAccountFileTest.step(
+      'Verify token states and screenshot',
+      async () => {
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.isTokenAppliedWithName(colorToken1.name, false);
+        await layersPanelPage.openLayersTab();
+        await layersPanelPage.clickCopyComponentOnLayersTab();
+        await layersPanelPage.selectCopyComponentChildLayer();
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.isTokenAppliedWithName(colorToken2.name, true);
+        await mainPage.waitForResizeHandlerVisible();
+        await expect(mainPage.viewport).toHaveScreenshot('2-texts-color.png', {
+          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
+        });
+      },
+    );
   },
 );

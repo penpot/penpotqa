@@ -1,5 +1,5 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest, mainTest } from 'fixtures';
 import { MainPage } from '@pages/workspace/main-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
@@ -10,31 +10,25 @@ import { SampleData } from 'helpers/sample-data';
 import { createTeamName } from 'helpers/teams/create-team-name';
 
 const sampleData = new SampleData();
-const teamName = createTeamName();
-
-let mainPage: MainPage;
-let dashboardPage: DashboardPage;
-let teamPage: TeamPage;
-let layersPanelPage: LayersPanelPage;
-let assetsPanelPage: AssetsPanelPage;
-let designPanelPage: DesignPanelPage;
-
-mainTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
-  teamPage = new TeamPage(page);
-  mainPage = new MainPage(page);
-  assetsPanelPage = new AssetsPanelPage(page);
-  designPanelPage = new DesignPanelPage(page);
-  layersPanelPage = new LayersPanelPage(page);
-  await teamPage.createTeam(teamName);
-});
 
 mainTest(
   qase(
     [2430],
     'When converting a component to a variant, the connections are not lost',
   ),
-  async () => {
+  async ({ page }) => {
+    const teamName = createTeamName();
+    const teamPage = new TeamPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const mainPage = new MainPage(page);
+    const assetsPanelPage = new AssetsPanelPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+    const layersPanelPage = new LayersPanelPage(page);
+
+    await mainTest.step('Create team', async () => {
+      await teamPage.createTeam(teamName);
+    });
+
     await mainTest.step('Import file and copy the main component', async () => {
       await dashboardPage.importAndOpenFile('documents/figure.penpot');
       await mainPage.isMainPageLoaded();
@@ -75,14 +69,15 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase([2433], 'Creating a child component by copying a variant'),
-  async () => {
-    await mainTest.step(
+  async ({ page, mainPage }) => {
+    const layersPanelPage = new LayersPanelPage(page);
+    const designPanelPage = new DesignPanelPage(page);
+
+    await mainAccountFileTest.step(
       'Create a component and convert it to a variant',
       async () => {
-        await dashboardPage.createFileViaPlaceholder();
-        await mainPage.isMainPageLoaded();
         await mainPage.clickMoveButton();
 
         await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -93,7 +88,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Copy and paste the variant to create a child component',
       async () => {
         await layersPanelPage.selectLayerByName('Value 2');
@@ -106,15 +101,20 @@ mainTest(
       },
     );
 
-    await mainTest.step(`Change fill color of the "Value 2" variant`, async () => {
-      await layersPanelPage.selectLayerByName('Value 2');
-      await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
-      await layersPanelPage.selectLayerByName('Value 2');
-      await designPanelPage.isFillHexCodeSetComponent(sampleData.color.blueHexCode);
-      await mainPage.waitForChangeIsSaved();
-    });
+    await mainAccountFileTest.step(
+      `Change fill color of the "Value 2" variant`,
+      async () => {
+        await layersPanelPage.selectLayerByName('Value 2');
+        await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
+        await layersPanelPage.selectLayerByName('Value 2');
+        await designPanelPage.isFillHexCodeSetComponent(
+          sampleData.color.blueHexCode,
+        );
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Verify the child component color changes with the variant property',
       async () => {
         await layersPanelPage.clickCopyComponentOnLayersTab();

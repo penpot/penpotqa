@@ -1,37 +1,22 @@
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { MainPage } from '@pages/workspace/main-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
-import { mainTest } from 'fixtures';
-import { TeamPage } from '@pages/dashboard/team-page';
+import { mainAccountFileTest } from 'fixtures';
 
-const teamName = createTeamName();
-
-let dashboardPage: DashboardPage;
-let teamPage: TeamPage;
-let mainPage: MainPage;
 let pagesPanelPage: PagesPanelPage;
 let assetsPanelPage: AssetsPanelPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-mainTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
-  teamPage = new TeamPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, dashboardPage, mainPage }) => {
   pagesPanelPage = new PagesPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.createDefaultRectangleByCoordinates(300, 300);
   await mainPage.createComponentViaRightClick();
   await mainPage.waitForChangeIsSaved();

@@ -1,49 +1,33 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
+import { mainAccountFileTest } from 'fixtures';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
-
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
-mainTest(
+mainAccountFileTest(
   qase([2200], 'Apply "max/min size" token to an image (by right click)'),
-  async () => {
+  async ({ mainPage }) => {
     const sizingToken: MainToken<TokenClass> = {
       class: TokenClass.Sizing,
       name: 'sizing',
       value: '200',
     };
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Upload image and apply "${sizingToken.name}" token to Max Width and Min Height`,
       async () => {
         await mainPage.uploadImage('images/mini_sample.jpg');
@@ -57,7 +41,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Verify screenshot of image with max/min size applied',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -69,7 +53,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Place image in a flex board and verify min/max values in design panel',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(100, 200, true);
@@ -101,7 +85,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Verify Max Width and Min Height menu items are selected',
       async () => {
         await tokensPage.clickTokensTab();
@@ -118,7 +102,7 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase([2197], 'Verifying invalid token values on creation, aborting (cancel)'),
   async () => {
     const firstSizingToken: MainToken<TokenClass> = {
@@ -127,12 +111,12 @@ mainTest(
       value: '10',
     };
 
-    await mainTest.step('Create first sizing token', async () => {
+    await mainAccountFileTest.step('Create first sizing token', async () => {
       await tokensPage.clickTokensTab();
       await tokensPage.tokensComp.createTokenViaAddButtonAndSave(firstSizingToken);
     });
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Fill token name, type a text and clear and assert error message',
       async () => {
         const sizingToken: MainToken<TokenClass> = {
@@ -154,7 +138,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Fill in token name with a large text (256 chars) and assert is cropped',
       async () => {
         const longName =
@@ -169,7 +153,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Fill in token name with special characters and assert error message',
       async () => {
         const specialCharactersName = '#$&!';
@@ -184,7 +168,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Fill in token name reusing another existing name and assert error message',
       async () => {
         await tokensPage.tokensComp.fillTokenName(firstSizingToken.name);
@@ -197,7 +181,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Fill token value with non-numerical data and assert error message',
       async () => {
         const newName = 'new.token';
@@ -212,7 +196,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Fill token value with non-numerical equation and assert error message',
       async () => {
         const value = '500*a';
@@ -225,7 +209,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Fill token value with a wrong alias reference (alias references are case sensitive) and assert error message',
       async () => {
         const value = '{existing.TOKEN}';
@@ -238,7 +222,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Fill token value with a self alias reference and assert error message',
       async () => {
         const value = '{new.token}';
@@ -251,7 +235,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Cancel token creation by clicking on Cancel button',
       async () => {
         await tokensPage.tokensComp.clickCancelButton();
@@ -260,12 +244,12 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase(
     [2195],
     "Update the reference of an alias to update the shape where it's applied",
   ),
-  async () => {
+  async ({ mainPage }) => {
     const firstSizingToken: MainToken<TokenClass> = {
       class: TokenClass.Sizing,
       name: 'sizing',
@@ -284,18 +268,23 @@ mainTest(
       value: '{alias1}/2',
     };
 
-    await mainTest.step('Create an alias sizing token chain', async () => {
-      await tokensPage.clickTokensTab();
-      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(firstSizingToken);
-      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(secondSizingToken);
-      await tokensPage.tokensComp.createTokenViaAddButtonAndSave(thirdSizingToken);
-    });
+    await mainAccountFileTest.step(
+      'Create an alias sizing token chain',
+      async () => {
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(firstSizingToken);
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
+          secondSizingToken,
+        );
+        await tokensPage.tokensComp.createTokenViaAddButtonAndSave(thirdSizingToken);
+      },
+    );
 
-    await mainTest.step('Create an ellipse', async () => {
+    await mainAccountFileTest.step('Create an ellipse', async () => {
       await mainPage.createDefaultEllipseByCoordinates(200, 200);
     });
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Apply ${thirdSizingToken.name} and assert size`,
       async () => {
         await tokensPage.tokensComp.clickOnTokenWithName(thirdSizingToken.name);
@@ -304,7 +293,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Edit ${firstSizingToken.name} and assert size`,
       async () => {
         const updatedFirstSizingToken: MainToken<TokenClass> = {

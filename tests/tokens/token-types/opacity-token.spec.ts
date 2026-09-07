@@ -1,49 +1,37 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { mainAccountFileTest } from 'fixtures';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let tokensPage: TokensPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
-mainTest(
+mainAccountFileTest(
   qase([2172], 'Apply default "opacity" token to an image (by left click)'),
-  async () => {
+  async ({ mainPage }) => {
     const opacityToken: MainToken<TokenClass> = {
       class: TokenClass.Opacity,
       name: 'opacity',
       value: '0.7',
     };
 
-    await mainTest.step('Upload image and create opacity token', async () => {
-      await mainPage.uploadImage('images/sample.jpeg');
-      await tokensPage.clickTokensTab();
-      await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(opacityToken);
-      await tokensPage.tokensComp.isTokenVisibleWithName(opacityToken.name);
-    });
+    await mainAccountFileTest.step(
+      'Upload image and create opacity token',
+      async () => {
+        await mainPage.uploadImage('images/sample.jpeg');
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(opacityToken);
+        await tokensPage.tokensComp.isTokenVisibleWithName(opacityToken.name);
+      },
+    );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Apply "${opacityToken.name}" token and verify it is applied`,
       async () => {
         await tokensPage.tokensComp.clickOnTokenWithName(opacityToken.name);
@@ -52,7 +40,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Verify screenshot and Opacity menu item is selected',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot('image-opacity-0-7.png', {

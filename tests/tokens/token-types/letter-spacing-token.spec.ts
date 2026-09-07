@@ -1,34 +1,20 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let tokensPage: TokensPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 });
 
-mainTest.describe(() => {
+mainAccountFileTest.describe(() => {
   let mainPage: MainPage;
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
@@ -41,7 +27,7 @@ mainTest.describe(() => {
   };
   const newTokenValue = '5';
 
-  mainTest.beforeEach(async ({ page }) => {
+  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
@@ -55,10 +41,10 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase([2500], 'Apply a Letter Spacing token and override value from Design tab'),
-    async () => {
-      await mainTest.step(
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
         `Verify "${letterSpacingToken.name}" token is applied and letter spacing matches`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(
@@ -68,7 +54,7 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Override letter spacing to "${newTokenValue}" from Design tab and verify token is detached`,
         async () => {
           await designPanelPage.changeTextLetterSpacing(newTokenValue);
@@ -83,13 +69,13 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [2501],
       'Letter Spacing token value can be override by Assets > Typography style',
     ),
     async () => {
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Verify "${letterSpacingToken.name}" token is applied and letter spacing matches`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(
@@ -99,7 +85,7 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         `Override letter spacing via Assets > Typography style to "${newTokenValue}"`,
         async () => {
           await assetsPanelPage.clickAssetsTab();
@@ -111,7 +97,7 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Verify token is detached and letter spacing reflects typography style value',
         async () => {
           await tokensPage.clickTokensTab();
@@ -127,12 +113,12 @@ mainTest.describe(() => {
   );
 });
 
-mainTest(
+mainAccountFileTest(
   qase(
     [2536],
     'Reference a dimension-type token as an operand (math operation / Dimensions token)',
   ),
-  async () => {
+  async ({ mainPage }) => {
     const dimensionToken: MainToken<TokenClass> = {
       class: TokenClass.Dimension,
       name: 'dimension',
@@ -150,7 +136,7 @@ mainTest(
       value: `5px/{${dimensionToken.name}}`,
     };
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       `Create "${dimensionToken.name}" and "${letterSpacingToken.name}" tokens with multiplication reference`,
       async () => {
         await tokensPage.clickTokensTab();
@@ -169,7 +155,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Edit to division and verify resolved value is 2.5',
       async () => {
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
@@ -184,7 +170,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Edit to addition and verify resolved value is 7',
       async () => {
         updatedTokenData.value = `5px+{${dimensionToken.name}}`;
@@ -200,7 +186,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await mainAccountFileTest.step(
       'Edit to subtraction and verify resolved value is 3',
       async () => {
         updatedTokenData.value = `5px-{${dimensionToken.name}}`;

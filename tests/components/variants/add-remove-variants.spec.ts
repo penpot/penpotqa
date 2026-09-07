@@ -1,30 +1,15 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { mainAccountFileTest } from 'fixtures';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let mainPage: MainPage;
-let dashboardPage: DashboardPage;
-let teamPage: TeamPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   designPanelPage = new DesignPanelPage(page);
-  teamPage = new TeamPage(page);
-  mainPage = new MainPage(page);
   layersPanelPage = new LayersPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
 
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -36,25 +21,28 @@ mainTest.beforeEach(async ({ page }) => {
   await mainPage.waitForChangeIsSaved();
 });
 
-mainTest(qase([2398], 'Add Variant to a component on the canvas'), async () => {
-  await mainPage.clickViewportTwice();
-  await mainPage.createDefaultRectangleByCoordinates(600, 300);
-  await layersPanelPage.renameLayerViaRightClick('Rectangle', 'Rectangle2');
+mainAccountFileTest(
+  qase([2398], 'Add Variant to a component on the canvas'),
+  async ({ mainPage }) => {
+    await mainPage.clickViewportTwice();
+    await mainPage.createDefaultRectangleByCoordinates(600, 300);
+    await layersPanelPage.renameLayerViaRightClick('Rectangle', 'Rectangle2');
 
-  await mainPage.createComponentViaRightClickFromLayerByName('Rectangle2');
-  await mainPage.waitForChangeIsSaved();
+    await mainPage.createComponentViaRightClickFromLayerByName('Rectangle2');
+    await mainPage.waitForChangeIsSaved();
 
-  await mainPage.dragAndDropComponentToVariantContainerViaCanvas(
-    'Rectangle2',
-    'Rectangle1',
-  );
+    await mainPage.dragAndDropComponentToVariantContainerViaCanvas(
+      'Rectangle2',
+      'Rectangle1',
+    );
 
-  await layersPanelPage.checkVariantLayerCount(3);
-});
+    await layersPanelPage.checkVariantLayerCount(3);
+  },
+);
 
-mainTest(
+mainAccountFileTest(
   qase([2399], 'Add Variant to a component from the Layers tab'),
-  async () => {
+  async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 500);
     await layersPanelPage.renameLayerViaRightClick('Rectangle', 'Rectangle2');
     await mainPage.createComponentViaRightClick();
@@ -65,9 +53,9 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase([2404], 'Delete variant from the component using the context menu'),
-  async () => {
+  async ({ mainPage }) => {
     await mainPage.deleteLayerViaRightClickByName('Value 2');
     await mainPage.waitForChangeIsSaved();
 
@@ -75,9 +63,9 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase([2407], 'Restoring a deleted variant from the child component'),
-  async () => {
+  async ({ mainPage }) => {
     await layersPanelPage.selectLayerByName('Value 1');
     await mainPage.copyElementViaAltDragAndDrop(200, 500);
 
@@ -93,12 +81,12 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase(
     [2409],
     'Add Variants to a component by cutting and pasting the main component',
   ),
-  async () => {
+  async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 500);
     await mainPage.createComponentViaRightClick();
     await mainPage.cutLayerViaRightClick();
@@ -110,12 +98,12 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase(
     [2410],
     'Remove variant from a group cutting and pasting it outside variant component',
   ),
-  async () => {
+  async ({ mainPage }) => {
     await layersPanelPage.selectLayerByName('Value 2');
     await mainPage.pressCutShortcut();
     await mainPage.clickViewportTwice();
@@ -126,9 +114,9 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase([2413], 'Remove the last component from the variants component'),
-  async () => {
+  async ({ mainPage }) => {
     await layersPanelPage.selectLayerByName('Value 1');
     await mainPage.deleteLayerViaRightClickByName('Value 1');
     await mainPage.waitForChangeIsSaved();
@@ -144,9 +132,9 @@ mainTest(
   },
 );
 
-mainTest(
+mainAccountFileTest(
   qase([2419], 'Changing the component frame in the design panel'),
-  async () => {
+  async ({ mainPage }) => {
     await mainPage.pressHideShowRulersShortcut();
     await mainPage.clickOnVariantsTitle('Rectangle1');
     await layersPanelPage.isLayerWithNameSelected('Rectangle1');

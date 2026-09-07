@@ -1,33 +1,18 @@
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { MainPage } from '@pages/workspace/main-page';
 import { expect } from '@playwright/test';
-import { mainTest } from 'fixtures';
-import { createTeamName } from 'helpers/teams/create-team-name';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName = createTeamName();
-
-let dashboardPage: DashboardPage;
 let designPanelPage: DesignPanelPage;
-let mainPage: MainPage;
-let teamPage: TeamPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
-  teamPage = new TeamPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(
     'Add a flex layout board, rectangle and ellipse components',
-    async () => {
+    async ({ mainPage }) => {
       await mainPage.createDefaultBoardByCoordinates(200, 200);
       await designPanelPage.changeHeightAndWidthForLayer('300', '300');
       await mainPage.waitForChangeIsSaved();
@@ -46,13 +31,13 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [1503],
       'Create flex board with main component and its copy, change direction and alignment',
     ),
-    async () => {
-      await mainTest.step(
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
         'Create flex board with main component and its copy, change direction',
         async () => {
           await designPanelPage.changeLayoutDirection('Column');
@@ -69,9 +54,9 @@ mainTest.describe(() => {
   );
 });
 
-mainTest.describe(() => {
-  mainTest.beforeEach(async () => {
-    await mainTest.slow();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await mainAccountFileTest.slow();
 
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
@@ -80,15 +65,15 @@ mainTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainTest(
+  mainAccountFileTest(
     qase(
       [1511],
       'Create component with 2 boards with components inside it. change paddings',
     ),
-    async () => {
-      await mainTest.slow();
+    async ({ mainPage }) => {
+      await mainAccountFileTest.slow();
 
-      await mainTest.step(
+      await mainAccountFileTest.step(
         'Add two boards with elements and create components',
         async () => {
           await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
@@ -117,30 +102,36 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Add flex layout and change paddings', async () => {
-        await mainPage.addFlexLayoutViaRightClickForNComponent('0');
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.changeLayoutPadding('Vertical', '20');
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.changeLayoutPadding('Horizontal', '40');
-        await mainPage.waitForChangeIsSaved();
-      });
+      await mainAccountFileTest.step(
+        'Add flex layout and change paddings',
+        async () => {
+          await mainPage.addFlexLayoutViaRightClickForNComponent('0');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.changeLayoutPadding('Vertical', '20');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.changeLayoutPadding('Horizontal', '40');
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
 
-      await mainTest.step('Verify component padding changes on canvas', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after changing component paddings inside flex board',
-        ).toHaveScreenshot('component-inside-board-change-paddings.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify component padding changes on canvas',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot after changing component paddings inside flex board',
+          ).toHaveScreenshot('component-inside-board-change-paddings.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
     },
   );
 
-  mainTest(
+  mainAccountFileTest(
     qase([1514], 'Create component inside flex board, change alignment for element'),
-    async () => {
-      await mainTest.step(
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step(
         'Create component inside flex board and change alignment',
         async () => {
           await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
@@ -152,14 +143,17 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step('Verify alignment change on canvas', async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot after changing component alignment inside flex board',
-        ).toHaveScreenshot('component-inside-board-change-alignment.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
+      await mainAccountFileTest.step(
+        'Verify alignment change on canvas',
+        async () => {
+          await expect(
+            mainPage.viewport,
+            'Viewport should match screenshot after changing component alignment inside flex board',
+          ).toHaveScreenshot('component-inside-board-change-alignment.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
     },
   );
 });

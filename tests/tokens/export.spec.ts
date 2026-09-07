@@ -1,62 +1,52 @@
-import { mainTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { BaseComponent } from '@pages/base-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
 let tokensPage: TokensPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
-  await teamPage.createTeam(teamName);
-  await dashboardPage.isHeaderDisplayed('Projects');
-  await dashboardPage.createFileViaPlaceholder();
-  await mainPage.isMainPageLoaded();
   await mainPage.clickMoveButton();
   await tokensPage.clickTokensTab();
   await tokensPage.toolsComp.clickOnTokenToolsButton();
 });
 
-mainTest(qase([2265], 'Export tokens multi-file folder'), async ({ page }) => {
-  const baseComp: BaseComponent = new BaseComponent(page);
+mainAccountFileTest(
+  qase([2265], 'Export tokens multi-file folder'),
+  async ({ page }) => {
+    const baseComp: BaseComponent = new BaseComponent(page);
 
-  await mainTest.step(
-    'Import tokens folder and verify theme is active',
-    async () => {
-      await tokensPage.toolsComp.importTokensFolder(
-        'documents/tokens-folder-example',
-      );
-      await tokensPage.themesComp.checkSelectedTheme('Mode / Light');
-    },
-  );
+    await mainAccountFileTest.step(
+      'Import tokens folder and verify theme is active',
+      async () => {
+        await tokensPage.toolsComp.importTokensFolder(
+          'documents/tokens-folder-example',
+        );
+        await tokensPage.themesComp.checkSelectedTheme('Mode / Light');
+      },
+    );
 
-  await mainTest.step(
-    'Open export multi-file modal and verify files list',
-    async () => {
-      await tokensPage.toolsComp.clickOnTokenToolsButton();
-      await tokensPage.toolsComp.clickOnExportButton();
-      await tokensPage.toolsComp.clickOnMultipleFilesButton();
-      await tokensPage.toolsComp.checkExportFileItemCount(4);
-      await tokensPage.toolsComp.ifExportFileExists('mode/light.json');
-      await tokensPage.toolsComp.ifExportFileExists('mode/dark.json');
-    },
-  );
+    await mainAccountFileTest.step(
+      'Open export multi-file modal and verify files list',
+      async () => {
+        await tokensPage.toolsComp.clickOnTokenToolsButton();
+        await tokensPage.toolsComp.clickOnExportButton();
+        await tokensPage.toolsComp.clickOnMultipleFilesButton();
+        await tokensPage.toolsComp.checkExportFileItemCount(4);
+        await tokensPage.toolsComp.ifExportFileExists('mode/light.json');
+        await tokensPage.toolsComp.ifExportFileExists('mode/dark.json');
+      },
+    );
 
-  await mainTest.step('Export and cancel the download dialog', async () => {
-    await tokensPage.toolsComp.exportToken();
-    await tokensPage.toolsComp.isExportWindowClosed(false);
-    await baseComp.clickOnCancelButton();
-    await tokensPage.toolsComp.isExportWindowClosed(true);
-  });
-});
+    await mainAccountFileTest.step(
+      'Export and cancel the download dialog',
+      async () => {
+        await tokensPage.toolsComp.exportToken();
+        await tokensPage.toolsComp.isExportWindowClosed(false);
+        await baseComp.clickOnCancelButton();
+        await tokensPage.toolsComp.isExportWindowClosed(true);
+      },
+    );
+  },
+);
