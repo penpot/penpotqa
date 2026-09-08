@@ -24,11 +24,20 @@ export async function createDemoUser(request: APIRequestContext) {
     '/api/rpc/command/create-demo-profile?_fmt=json',
     { data: { 'skip-onboarding': true } },
   );
+  if (!createRes.ok())
+    throw new Error(
+      `create-demo-profile failed: ${createRes.status()} ${await createRes.text()}`,
+    );
   const { email, password }: DemoProfile = await createRes.json();
 
-  await request.post('/api/rpc/command/login-with-password?_fmt=json', {
-    data: { email, password },
-  });
+  const loginRes = await request.post(
+    '/api/rpc/command/login-with-password?_fmt=json',
+    { data: { email, password } },
+  );
+  if (!loginRes.ok())
+    throw new Error(
+      `login-with-password failed: ${loginRes.status()} ${await loginRes.text()}`,
+    );
 
   return { email };
 }
