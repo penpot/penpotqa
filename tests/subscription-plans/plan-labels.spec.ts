@@ -1,4 +1,4 @@
-import { registerTest } from 'fixtures';
+import { demoAccountApiFixture } from 'fixtures';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -17,7 +17,7 @@ let loginPage: LoginPage;
 let registerPage: RegisterPage;
 let stripePage: StripePage;
 
-registerTest.beforeEach(async ({ page }) => {
+demoAccountApiFixture.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
@@ -28,15 +28,18 @@ registerTest.beforeEach(async ({ page }) => {
   await teamPage.createTeam(teamName);
 });
 
-registerTest(qase(2283, 'Display & Info for Professional Plan'), async () => {
-  const currentPlan = 'Professional';
-  await profilePage.openYourAccountPage();
-  await profilePage.openSubscriptionTab();
-  await profilePage.checkSubscriptionName(currentPlan);
-  await profilePage.backToDashboardFromAccount();
-  await dashboardPage.checkSubscriptionName(currentPlan);
-  await teamPage.isSubscriptionIconNotVisible();
-  await teamPage.isSubscriptionIconVisibleInTeamDropdown(false);
-  await teamPage.openTeamSettingsPageViaOptionsMenu();
-  await teamPage.checkSubscriptionName(currentPlan);
-});
+demoAccountApiFixture(
+  qase(2283, 'Display & Info for Professional Plan'),
+  async () => {
+    const currentPlan = 'Professional';
+    await profilePage.openYourAccountPage();
+    await profilePage.openSubscriptionTab();
+    await profilePage.checkSubscriptionName(currentPlan);
+    await profilePage.backToDashboardFromAccount();
+    await dashboardPage.checkSubscriptionName(currentPlan);
+    await teamPage.isSubscriptionIconNotVisible();
+    await teamPage.isSubscriptionIconVisibleInTeamDropdown(false);
+    await teamPage.openTeamSettingsPageViaOptionsMenu();
+    await teamPage.checkSubscriptionName(currentPlan);
+  },
+);

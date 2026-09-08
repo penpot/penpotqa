@@ -1,13 +1,13 @@
 import { MainPage } from '@pages/workspace/main-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { demoAccountFixture } from 'fixtures';
+import { demoAccountApiFixture } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
 
-demoAccountFixture.describe('List View', () => {
-  demoAccountFixture.beforeEach(async ({ page }) => {
+demoAccountApiFixture.describe('List View', () => {
+  demoAccountApiFixture.beforeEach(async ({ page }) => {
     dashboardPage = new DashboardPage(page);
     mainPage = new MainPage(page);
 
@@ -19,7 +19,7 @@ demoAccountFixture.describe('List View', () => {
     await dashboardPage.checkNumberOfFiles('1 file');
   });
 
-  demoAccountFixture(
+  demoAccountApiFixture(
     qase(
       [3463, 3466, 3468],
       'Toggle from grid view to list view on dashboard, assert last modification time is visible and options menu',
