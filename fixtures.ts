@@ -11,6 +11,8 @@ type RegisterTestFixtures = {
   email: string;
 };
 
+// Fixture for logging in with an existing account. Use it for tests that don't
+// need to create a new user or go through the registration flow.
 export const mainTest = test.extend({
   page: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
@@ -28,6 +30,8 @@ export const mainTest = test.extend({
   },
 });
 
+// Fixture for creating a new user via the registration process.
+// Use it for tests that need to create a new user and go through the registration flow.
 export const registerTest = test.extend<RegisterTestFixtures>({
   name: async ({}, use) => {
     const name = random().concat('autotest');
@@ -50,25 +54,6 @@ export const registerTest = test.extend<RegisterTestFixtures>({
     const invite = await waitMessage(page, email, 40);
     await page.goto(invite!.inviteUrl);
     await dashboardPage.fillOnboardingQuestions();
-    await use(page);
-  },
-});
-
-// Fixture for demo account, used for tests that require a new account bypassing the registration process.
-// This fixture will create a demo account and log in to it before each test.
-export const demoAccountFixture = test.extend({
-  page: async ({ page }, use) => {
-    const loginPage = new LoginPage(page);
-    const registerPage = new RegisterPage(page);
-    const dashboardPage = new DashboardPage(page);
-
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.clickOnCreateAccount();
-    await registerPage.isRegisterPageOpened();
-    await registerPage.clickOnCreateDemoAccountButton();
-    await dashboardPage.fillOnboardingQuestions();
-    await dashboardPage.isHeaderDisplayed('Projects');
     await use(page);
   },
 });
