@@ -381,3 +381,210 @@ mainAccountFileTest(
     );
   },
 );
+
+mainAccountFileTest(
+  qase(
+    [3599, 3602, 3600, 3604],
+    'Multi-select pages via Shift/Ctrl+click and bulk-delete them',
+  ),
+  async ({ mainPage }) => {
+    let initialPageId: string;
+
+    await mainAccountFileTest.step(
+      '3599, Select a range of pages using Shift+click',
+      async () => {
+        await mainAccountFileTest.step(
+          'Create 3 extra pages (4 total)',
+          async () => {
+            await pagesPanelPage.clickAddPageButton();
+            await pagesPanelPage.clickAddPageButton();
+            await pagesPanelPage.clickAddPageButton();
+            await mainPage.waitForChangeIsSaved();
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Click on Page 1, it opens and is the only page selected',
+          async () => {
+            await pagesPanelPage.getPageListItemByName('Page 1').click();
+            initialPageId = await pagesPanelPage.getCurrentPageId();
+            await pagesPanelPage.isPageNameSelected('Page 1');
+            await pagesPanelPage.checkSelectedPagesCountIs(1);
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Shift+click on Page 3 to select the range without changing the current workspace page',
+          async () => {
+            await pagesPanelPage.shiftClickPageByName('Page 3');
+            await pagesPanelPage.isPageNameSelected('Page 1');
+            await pagesPanelPage.isPageNameSelected('Page 2');
+            await pagesPanelPage.isPageNameSelected('Page 3');
+            await pagesPanelPage.isPageNameSelected('Page 4', false);
+            await pagesPanelPage.checkSelectedPagesCountIs(3);
+            expect(
+              await pagesPanelPage.getCurrentPageId(),
+              'Workspace should stay on the originally opened page',
+            ).toBe(initialPageId);
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Shift+click on Page 4 to extend the range without changing the current workspace page',
+          async () => {
+            await pagesPanelPage.shiftClickPageByName('Page 4');
+            await pagesPanelPage.isPageNameSelected('Page 1');
+            await pagesPanelPage.isPageNameSelected('Page 2');
+            await pagesPanelPage.isPageNameSelected('Page 3');
+            await pagesPanelPage.isPageNameSelected('Page 4');
+            await pagesPanelPage.checkSelectedPagesCountIs(4);
+            expect(
+              await pagesPanelPage.getCurrentPageId(),
+              'Workspace should stay on the originally opened page',
+            ).toBe(initialPageId);
+          },
+        );
+      },
+    );
+
+    await mainAccountFileTest.step(
+      '3602, Delete multiple selected pages at once and undo the bulk delete',
+      async () => {
+        await mainAccountFileTest.step(
+          'Narrow the range from 3599 down to Page 1 through Page 3 with one more Shift+click',
+          async () => {
+            await pagesPanelPage.shiftClickPageByName('Page 3');
+            await pagesPanelPage.isPageNameSelected('Page 1');
+            await pagesPanelPage.isPageNameSelected('Page 2');
+            await pagesPanelPage.isPageNameSelected('Page 3');
+            await pagesPanelPage.isPageNameSelected('Page 4', false);
+            await pagesPanelPage.checkSelectedPagesCountIs(3);
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Right-click a selected page and verify only "Delete pages" is offered',
+          async () => {
+            await pagesPanelPage
+              .getPageListItemByName('Page 3')
+              .click({ button: 'right' });
+            await pagesPanelPage.isBulkDeleteContextMenuVisible();
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Click "Delete pages" and confirm the dialog',
+          async () => {
+            await pagesPanelPage.deletePagesMenuItem.click();
+            await expect(
+              pagesPanelPage.deletePagesDialogTitle,
+              '"Delete pages" confirmation dialog should be visible',
+            ).toBeVisible();
+            await pagesPanelPage.deletePageOkButton.click();
+            await mainPage.waitForChangeIsSaved();
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Verify Page 1, Page 2 and Page 3 were removed in a single action',
+          async () => {
+            await pagesPanelPage.checkNamedPagesCountIs(1);
+            await pagesPanelPage.isFirstPageNameDisplayed('Page 4');
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Undo and verify all pages are restored at once, in order',
+          async () => {
+            await pagesPanelPage.clickShortcutCtrlZ();
+            await pagesPanelPage.checkNamedPagesCountIs(4);
+            await pagesPanelPage.isFirstPageNameDisplayed('Page 1');
+            await pagesPanelPage.isSecondPageNameDisplayed('Page 2');
+          },
+        );
+      },
+    );
+
+    await mainAccountFileTest.step(
+      '3600, Toggle individual page selection using Ctrl/Cmd+click',
+      async () => {
+        await mainAccountFileTest.step(
+          'Click on Page 1, it opens and is the only page selected',
+          async () => {
+            await pagesPanelPage.getPageListItemByName('Page 1').click();
+            initialPageId = await pagesPanelPage.getCurrentPageId();
+            await pagesPanelPage.checkSelectedPagesCountIs(1);
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Ctrl/Cmd+click on Page 2 adds it to the selection without changing the current workspace page',
+          async () => {
+            await pagesPanelPage.ctrlClickPageByName('Page 2');
+            await pagesPanelPage.isPageNameSelected('Page 1');
+            await pagesPanelPage.isPageNameSelected('Page 2');
+            await pagesPanelPage.checkSelectedPagesCountIs(2);
+            expect(
+              await pagesPanelPage.getCurrentPageId(),
+              'Workspace should stay on the originally opened page',
+            ).toBe(initialPageId);
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Ctrl/Cmd+click on Page 4 adds it to the selection',
+          async () => {
+            await pagesPanelPage.ctrlClickPageByName('Page 4');
+            await pagesPanelPage.isPageNameSelected('Page 1');
+            await pagesPanelPage.isPageNameSelected('Page 2');
+            await pagesPanelPage.isPageNameSelected('Page 4');
+            await pagesPanelPage.isPageNameSelected('Page 3', false);
+            await pagesPanelPage.checkSelectedPagesCountIs(3);
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Ctrl/Cmd+click on Page 2 again removes it from the selection',
+          async () => {
+            await pagesPanelPage.ctrlClickPageByName('Page 2');
+            await pagesPanelPage.isPageNameSelected('Page 2', false);
+            await pagesPanelPage.isPageNameSelected('Page 1');
+            await pagesPanelPage.isPageNameSelected('Page 4');
+            await pagesPanelPage.checkSelectedPagesCountIs(2);
+          },
+        );
+      },
+    );
+
+    await mainAccountFileTest.step(
+      '3604, Delete all pages while keeping at least one page in the file',
+      async () => {
+        await mainAccountFileTest.step(
+          'Select all 4 pages using Shift+click',
+          async () => {
+            await pagesPanelPage.getPageListItemByName('Page 1').click();
+            await pagesPanelPage.shiftClickPageByName('Page 4');
+            await pagesPanelPage.checkSelectedPagesCountIs(4);
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Delete the selected pages and confirm the dialog',
+          async () => {
+            await pagesPanelPage.deleteSelectedPagesViaRightClick('Page 2');
+            await mainPage.waitForChangeIsSaved();
+          },
+        );
+
+        await mainAccountFileTest.step(
+          'Verify exactly one page remains: Page 1, with no error shown',
+          async () => {
+            await pagesPanelPage.checkNamedPagesCountIs(1);
+            await pagesPanelPage.isFirstPageNameDisplayed('Page 1');
+            await pagesPanelPage.isPageNameSelected('Page 1');
+          },
+        );
+      },
+    );
+  },
+);

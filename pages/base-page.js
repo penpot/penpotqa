@@ -501,6 +501,10 @@ exports.BasePage = class BasePage {
     return url.replace(/(file-id=).../, '$1555');
   }
 
+  async getUrlParam(url, param) {
+    return new URLSearchParams(url.split('?')[1]).get(param) ?? '';
+  }
+
   async makeBadDashboardUrl(url) {
     return url.replace(/(\?team-id=).../, '$1555');
   }

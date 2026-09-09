@@ -12,10 +12,14 @@ export class PagesPanelPage extends MainPage {
   readonly secondPageListItem: Locator;
   readonly getPageListItemByName: (name: string, index?: number | null) => Locator;
   readonly selectedPage: Locator;
+  readonly selectedPageItems: Locator;
   readonly pageNameInput: Locator;
+  readonly contextMenu: Locator;
   readonly renamePageMenuItem: Locator;
   readonly duplicatePageMenuItem: Locator;
   readonly deletePageMenuItem: Locator;
+  readonly deletePagesMenuItem: Locator;
+  readonly deletePagesDialogTitle: Locator;
   readonly collapseExpandPagesButton: Locator;
   readonly pageTrashIcon: Locator;
   readonly deletePageOkButton: Locator;
@@ -38,7 +42,11 @@ export class PagesPanelPage extends MainPage {
     };
     this.secondPageListItem = this.pagesList.filter({ hasText: /^Page 2$/ });
     this.selectedPage = page.locator('.main_ui_workspace_sidebar_sitemap__selected');
+    this.selectedPageItems = this.pagesBlock
+      .getByRole('listitem')
+      .filter({ has: this.selectedPage });
     this.pageNameInput = this.pagesBlock.getByRole('textbox');
+    this.contextMenu = page.getByTestId('context-menu');
     this.renamePageMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Rename' });
@@ -48,6 +56,12 @@ export class PagesPanelPage extends MainPage {
     this.deletePageMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Delete' });
+    this.deletePagesMenuItem = this.contextMenu
+      .getByRole('listitem')
+      .filter({ hasText: 'Delete pages' });
+    this.deletePagesDialogTitle = page.getByRole('heading', {
+      name: 'Delete pages',
+    });
     this.collapseExpandPagesButton = page.getByRole('button', {
       name: 'Pages',
       exact: true,
@@ -90,6 +104,44 @@ export class PagesPanelPage extends MainPage {
     displayed
       ? await expect(this.getPageListItemByName(name, 1)).toBeVisible()
       : await expect(this.getPageListItemByName(name)).not.toBeVisible();
+  }
+
+  async shiftClickPageByName(name: string) {
+    await this.getPageListItemByName(name).click({ modifiers: ['Shift'] });
+  }
+
+  async ctrlClickPageByName(name: string) {
+    await this.getPageListItemByName(name).click({ modifiers: ['ControlOrMeta'] });
+  }
+
+  async checkSelectedPagesCountIs(number: number) {
+    await expect(
+      this.selectedPageItems,
+      `Selected pages count should be ${number}`,
+    ).toHaveCount(number);
+  }
+
+  async getCurrentPageId(): Promise<string> {
+    return this.getUrlParam(await this.getUrl(), 'page-id');
+  }
+
+  async isBulkDeleteContextMenuVisible() {
+    await expect(
+      this.contextMenu.getByRole('listitem'),
+      'Context menu should show a single option',
+    ).toHaveCount(1);
+    await expect(
+      this.deletePagesMenuItem,
+      '"Delete pages" option should be visible',
+    ).toBeVisible();
+  }
+
+  async deleteSelectedPagesViaRightClick(pageNameToRightClick: string) {
+    await this.getPageListItemByName(pageNameToRightClick).click({
+      button: 'right',
+    });
+    await this.deletePagesMenuItem.click();
+    await this.deletePageOkButton.click();
   }
 
   async isPageRightClickMenuVisible(visible = true) {
