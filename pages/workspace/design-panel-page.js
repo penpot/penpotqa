@@ -690,6 +690,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.fillTokenColor).toHaveText(value);
   }
 
+  async checkFillTokenResolvedValue(value) {
+    await expect(
+      this.fillSection.getByLabel(`Resolved value: ${value}`, { exact: true }),
+      `Fill token resolved value is "${value}"`,
+    ).toBeVisible();
+  }
+
   async isFillOpacitySet(value) {
     await expect(this.fillOpacityInput).toHaveValue(value);
   }
@@ -1802,13 +1809,38 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .and(this.page.locator('[class*="token_field__pill"]'));
     const input = tokenContainer.locator('input');
 
-    await expect(tokenPill.or(input).first()).toBeVisible();
+    await expect(
+      tokenPill.or(input).first(),
+      `"${ariaLabel}" field (token pill or input) is visible`,
+    ).toBeVisible();
 
     if (await tokenPill.isVisible()) {
-      await expect(tokenPill).toHaveText(value);
+      await expect(
+        tokenPill,
+        `"${ariaLabel}" token pill shows "${value}"`,
+      ).toHaveText(value);
     } else {
-      await expect(input).toHaveValue(value);
+      await expect(input, `"${ariaLabel}" input has value "${value}"`).toHaveValue(
+        value,
+      );
     }
+  }
+
+  /**
+   * Asserts that a design field is currently referencing the given token by
+   * name — i.e. it's a live token reference, not a resolved static value.
+   * @param {string} ariaLabel - Accessible label of the field container (e.g. 'Row gap').
+   * @param {string} tokenName - Expected token name (e.g. '30px').
+   */
+  async checkFieldTokenName(ariaLabel, tokenName) {
+    const tokenContainer = this.page.getByLabel(ariaLabel, { exact: true });
+    await expect(
+      // .first(): when a token's name coincides with its own numeric value
+      // (e.g. a token literally named "30"), the same pill resolves to
+      // several nested elements sharing that accessible name.
+      tokenContainer.getByLabel(tokenName, { exact: true }).first(),
+      `"${ariaLabel}" field references token "${tokenName}"`,
+    ).toBeVisible();
   }
 
   async checkGeneralCornerRadius(value) {
