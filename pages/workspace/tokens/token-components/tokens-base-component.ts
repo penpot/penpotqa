@@ -536,6 +536,24 @@ export class TokensComponent {
     await expect(tokenLocator).toHaveAttribute('title', text);
   }
 
+  /**
+   * Like checkAppliedTokenTitle, but scoped to a single token class section
+   * (avoids ambiguity when more than one token class has an applied pill for
+   * the current selection) and matched against a pattern rather than the
+   * full tooltip text, for composite tokens (e.g. Typography) where only one
+   * sub-value is relevant to the assertion.
+   */
+  async checkAppliedTokenTitleForClass(tokenClass: TokenClass, pattern: RegExp) {
+    const tokenLocator = this.getTokenSection(tokenClass).locator(
+      'button[class*="token-pill-applied"]',
+    );
+    await tokenLocator.hover();
+    await expect(
+      tokenLocator,
+      `Applied "${tokenClass}" token title matches ${pattern}`,
+    ).toHaveAttribute('title', pattern);
+  }
+
   async checkTokenTitle(tokenName: string, text: string) {
     const tokenLocator = this.page.locator(
       `button:has(span[aria-label="${tokenName}"])`,
