@@ -1,0 +1,36 @@
+# .github/workflows/stripe-cleanup-daily.yml
+#
+# Deletes Stripe sandbox test customers created by Playwright runs
+# (scripts/cleanup-stripe-test-customers.ts). Runs daily at 18:00 Europe/Madrid.
+# Note: cron is always evaluated in UTC and GitHub doesn't shift it for DST,
+# so this fires at 17:00 local time during CET (winter) instead of 18:00.
+
+name: Stripe test customers cleanup
+
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    environment: PRE # grants access to the STRIPE_CLEANUP_SK secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Run cleanup
+        env:
+          STRIPE_CLEANUP_SK: ${{ secrets.STRIPE_CLEANUP_SK }}
+        run: npx tsx scripts/cleanup-stripe-test-customers.ts --execute --yes
