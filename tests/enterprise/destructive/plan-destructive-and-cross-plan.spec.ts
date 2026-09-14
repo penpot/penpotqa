@@ -166,7 +166,12 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'The team survives, now ungrouped (no longer associated with any organization)',
           async () => {
-            await adminConsolePage.goToFiles();
+            // A real navigation, not the Admin Console's own "Go to Files"
+            // link — that link's href is rendered with the org's team-id
+            // from before the deletion above, and following it straight
+            // afterward 404s (the id no longer resolves once the org is
+            // gone).
+            await page.goto('/');
             await teamPage.openTeamsListIfClosed();
             await teamPage.isTeamListed(teamName);
           },
