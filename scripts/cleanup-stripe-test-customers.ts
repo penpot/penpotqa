@@ -143,6 +143,9 @@ async function deleteCustomers(
       await stripe.customers.del(cid);
       deleted.push(cid);
       rows.push(csvRow(cid, email, created, 'DELETED'));
+      console.log(
+        `  [${deleted.length + failed.length}/${customers.length}] DELETED  ${cid}  ${email}`,
+      );
     } catch (err: any) {
       if (err?.type === 'StripeRateLimitError') {
         await sleep(2000);
@@ -150,13 +153,22 @@ async function deleteCustomers(
           await stripe.customers.del(cid);
           deleted.push(cid);
           rows.push(csvRow(cid, email, created, 'DELETED_AFTER_RETRY'));
+          console.log(
+            `  [${deleted.length + failed.length}/${customers.length}] DELETED  ${cid}  ${email}  (after retry)`,
+          );
         } catch (err2: any) {
           failed.push({ id: cid, error: String(err2?.message ?? err2) });
           rows.push(csvRow(cid, email, created, `FAILED: ${err2?.message ?? err2}`));
+          console.log(
+            `  [${deleted.length + failed.length}/${customers.length}] FAILED   ${cid}  ${email}  ${err2?.message ?? err2}`,
+          );
         }
       } else {
         failed.push({ id: cid, error: String(err?.message ?? err) });
         rows.push(csvRow(cid, email, created, `FAILED: ${err?.message ?? err}`));
+        console.log(
+          `  [${deleted.length + failed.length}/${customers.length}] FAILED   ${cid}  ${email}  ${err?.message ?? err}`,
+        );
       }
     }
 
