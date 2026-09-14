@@ -5,7 +5,12 @@ async function readResultsFromFile() {
     const report = JSON.parse(
       fs.readFileSync('playwright-report/results.json', 'utf8'),
     );
-    const { expected = 0, unexpected = 0, flaky = 0 } = report.stats || {};
+    const {
+      expected = 0,
+      unexpected = 0,
+      flaky = 0,
+      duration = 0,
+    } = report.stats || {};
     const totalTests = expected + unexpected + flaky;
     const percentPassed = totalTests ? ((expected + flaky) / totalTests) * 100 : 0;
 
@@ -14,6 +19,7 @@ async function readResultsFromFile() {
       Failed: unexpected,
       Flaky: flaky,
       PercentPassed: percentPassed,
+      Duration: duration,
     };
   } catch (error) {
     console.error('Error reading playwright-report/results.json:', error);
