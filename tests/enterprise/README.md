@@ -2,9 +2,9 @@
 
 Playwright specs for Penpot's Enterprise-plan.
 
-**Status: 31 implemented and passing live, 43 still `test.skip` stubs.**
-Implemented so far: PENPOT-3235, 3236, 3324, 3336, 3239 (in
-`billing-ui-flow/subscribe-and-trial-flow.spec.ts` and
+**Status: 32 implemented and passing live, 42 still `test.skip` stubs.**
+Implemented so far: PENPOT-3235, 3236, 3336, 3324, 3413 (in
+`billing-ui-flow/subscribe-and-trial-flow.spec.ts`), 3239 (in
 `dashboard-enterprise/organizations-dropdown.spec.ts`), 3165/3166/3240 (in
 `admin-console/settings-rename-organization.spec.ts` and
 `admin-console/settings-organization-logo.spec.ts`), 3223/3226 (in
@@ -27,7 +27,7 @@ runs):
 
 ```bash
 npx playwright test --project=enterprise --list
-npx playwright test --project=enterprise -g "3235|3236|3324|3336|3239|3165|3166|3223|3226|3093|3094|3097|3180|3182|3184|3099|3630|3106|3133|3328|3329|3240|3192|3198|3302|3308|3185|3332|3333|3334|3143"  # the 31 real ones
+npx playwright test --project=enterprise -g "3235|3236|3324|3336|3413|3239|3165|3166|3223|3226|3093|3094|3097|3180|3182|3184|3099|3630|3106|3133|3328|3329|3240|3192|3198|3302|3308|3185|3332|3333|3334|3143"  # the 32 real ones
 ```
 
 ## How Enterprise entitlement actually works

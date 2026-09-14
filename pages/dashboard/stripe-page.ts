@@ -58,6 +58,12 @@ export class StripePage extends BasePage {
   // e.g. "Your credit card was declined. Try paying with a
   // debit card instead.", rendered as a real `role="alert"` element.
   readonly checkoutDeclinedError: Locator;
+  // "14 days free" appears twice on the page (an order-summary line and
+  // near the trial badge) — .first() avoids a strict-mode violation. The
+  // post-trial price is matched by pattern, not an exact amount, since the
+  // price itself isn't what this is checking for.
+  readonly checkoutTrialDurationText: Locator;
+  readonly checkoutPostTrialPriceText: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -118,6 +124,10 @@ export class StripePage extends BasePage {
       name: /start trial/i,
     });
     this.checkoutDeclinedError = page.getByRole('alert');
+    this.checkoutTrialDurationText = page.getByText('14 days free').first();
+    this.checkoutPostTrialPriceText = page.getByText(
+      /\$[\d,.]+\s*\/\s*month after/i,
+    );
   }
 
   async clickOnAddPaymentMethodButton() {
@@ -227,6 +237,19 @@ export class StripePage extends BasePage {
           this.page,
           'No longer on the Stripe checkout page',
         ).not.toHaveURL(/checkout\.stripe\.com/);
+  }
+
+  /** Checks the checkout page shows the 14-day trial duration and a
+   * post-trial price alongside it. */
+  async isTrialCopyVisible() {
+    await expect(
+      this.checkoutTrialDurationText,
+      'Checkout shows the 14-day trial duration',
+    ).toBeVisible();
+    await expect(
+      this.checkoutPostTrialPriceText,
+      'Checkout shows a post-trial price next to the trial duration',
+    ).toBeVisible();
   }
 
   async isVisaCardAdded(added: boolean = true, last4Digits: string = '4242') {

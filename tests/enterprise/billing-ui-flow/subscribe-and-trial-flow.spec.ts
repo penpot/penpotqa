@@ -183,24 +183,59 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest.skip(
+    enterprisePageTest(
       qase(
         [3413],
         'Check 14-day free trial copy across the Enterprise subscription flow',
       ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3413 for full detail):
-         * 1. Dashboard → "Unlock Enterprise features" widget shown
-         * 2. Widget button reads "Try it free for 14 days"
-         * 3. Click it → subscription modal button reads the same
-         * 4. Your subscription page → Enterprise button reads the same
-         * 5. Click it → modal reopens with same copy
-         * 6. Continue to Stripe → checkout shows the 14-day trial period
-         * 7. Stripe shows the post-trial price next to the trial duration
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({ orgPage, stripePage }) => {
+        await enterprisePageTest.step(
+          'Dashboard → "Unlock Enterprise features" widget shown, reads "Try it free for 14 days"',
+          async () => {
+            await orgPage.isSidebarPromoVisible();
+            await orgPage.hasSidebarPromoTryButtonText('Try it free for 14 days');
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Click it → modal opens, button reads the same',
+          async () => {
+            await orgPage.sidebarPromoTryItFreeButton.click();
+            await orgPage.isEnterpriseModalVisible();
+            await orgPage.hasTryItFreeButtonText('Try it free for 14 days');
+          },
+        );
+
+        await enterprisePageTest.step(
+          '"See my current plan" → subscriptions settings page → Enterprise plan\'s own button',
+          async () => {
+            await orgPage.currentPlanLink.click();
+            await orgPage.isOnSubscriptionsSettingsPage();
+            await orgPage.hasSubscriptionsPageEnterpriseTryButtonText(
+              'Try 14 days for free',
+            );
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Click it → its own confirmation modal reopens with matching copy',
+          async () => {
+            await orgPage.clickSubscriptionsPageEnterpriseTryButton();
+            await orgPage.isSubscriptionConfirmModalVisible();
+            await orgPage.hasSubscriptionConfirmModalTryButtonValue(
+              'Try 14 days for free',
+            );
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Continue to Stripe → checkout shows the trial duration and post-trial price',
+          async () => {
+            await orgPage.clickSubscriptionConfirmModalPrimaryButton();
+            await stripePage.isOnStripeCheckoutPage();
+            await stripePage.isTrialCopyVisible();
+          },
+        );
       },
     );
 

@@ -36,6 +36,15 @@ export class OrganizationPage extends BasePage {
   readonly activationCodeLink: Locator;
   readonly currentPlanLink: Locator;
 
+  // Settings > Subscription page (reached via currentPlanLink above) — the
+  // Enterprise plan card's own CTA, a real `<button>` this time. Its own
+  // confirmation modal (a third, separate component from the two "Unlock
+  // Enterprise features" modals above) has no reliable wrapper locator
+  // either, so it's scoped the same way: by its own unique primary-button
+  // class, an `<input type="button">` rather than a `<button>`.
+  readonly subscriptionsPageEnterpriseTryButton: Locator;
+  readonly subscriptionConfirmModalPrimaryButton: Locator;
+
   // Org switcher dropdown (sidebar)
   readonly orgDropdownItem: Locator;
   readonly createOrgDropdownItem: Locator;
@@ -90,6 +99,13 @@ export class OrganizationPage extends BasePage {
     this.currentPlanLink = page.getByRole('link', {
       name: 'See my current plan',
     });
+    this.subscriptionsPageEnterpriseTryButton = page.getByRole('button', {
+      name: 'Try 14 days for free',
+      exact: true,
+    });
+    this.subscriptionConfirmModalPrimaryButton = page.locator(
+      'input.main_ui_settings_subscription__primary-button',
+    );
 
     this.orgDropdownItem = page.getByRole('menuitem');
     this.createOrgDropdownItem = this.orgDropdownItem.filter({
@@ -132,6 +148,14 @@ export class OrganizationPage extends BasePage {
 
   async clickTryItFreeButton() {
     await this.tryItFreeButton.click();
+  }
+
+  async clickSubscriptionsPageEnterpriseTryButton() {
+    await this.subscriptionsPageEnterpriseTryButton.click();
+  }
+
+  async clickSubscriptionConfirmModalPrimaryButton() {
+    await this.subscriptionConfirmModalPrimaryButton.click();
   }
 
   /** Opens the org switcher, unless it's already open — clicking the trigger
@@ -200,6 +224,21 @@ export class OrganizationPage extends BasePage {
         ).not.toBeVisible();
   }
 
+  /** No reliable wrapper locator exists for this modal either — same
+   * situation as isEnterpriseModalVisible() above, checked via its own
+   * primary button instead. */
+  async isSubscriptionConfirmModalVisible(visible = true) {
+    visible
+      ? await expect(
+          this.subscriptionConfirmModalPrimaryButton,
+          'Subscription confirmation modal is visible',
+        ).toBeVisible()
+      : await expect(
+          this.subscriptionConfirmModalPrimaryButton,
+          'Subscription confirmation modal is not visible',
+        ).not.toBeVisible();
+  }
+
   async isOrgListedInDropdown(orgName: string, listed = true) {
     listed
       ? await expect(
@@ -258,6 +297,37 @@ export class OrganizationPage extends BasePage {
           this.activationCodeLink,
           '"Subscribe with an activation code" link is not visible',
         ).not.toBeVisible();
+  }
+
+  async hasSidebarPromoTryButtonText(text: string) {
+    await expect(
+      this.sidebarPromoTryItFreeButton,
+      `Sidebar promo button reads "${text}"`,
+    ).toHaveText(text);
+  }
+
+  async hasTryItFreeButtonText(text: string) {
+    await expect(
+      this.tryItFreeButton,
+      `"Unlock Enterprise features" modal button reads "${text}"`,
+    ).toHaveText(text);
+  }
+
+  async hasSubscriptionsPageEnterpriseTryButtonText(text: string) {
+    await expect(
+      this.subscriptionsPageEnterpriseTryButton,
+      `Subscriptions page's Enterprise plan button reads "${text}"`,
+    ).toHaveText(text);
+  }
+
+  /** The confirmation modal's own CTA is an `<input type="button">`, not a
+   * `<button>` — its label lives in the `value` attribute, not text
+   * content, hence toHaveValue() rather than toHaveText(). */
+  async hasSubscriptionConfirmModalTryButtonValue(text: string) {
+    await expect(
+      this.subscriptionConfirmModalPrimaryButton,
+      `Subscription confirmation modal's button reads "${text}"`,
+    ).toHaveValue(text);
   }
 
   async isCurrentPlanLinkVisible(visible = true) {
