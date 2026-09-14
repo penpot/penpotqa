@@ -9,6 +9,12 @@ async function generateMessage(
   function roundNumber(num) {
     return Math.round(num * 100) / 100;
   }
+  function formatDuration(ms) {
+    const totalSeconds = Math.round(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}m ${seconds}s`;
+  }
   const results = await readResultsFromFile();
 
   if (!results) {
@@ -42,6 +48,7 @@ async function generateMessage(
        :cat2: GitRun: https://github.com/penpot/penpotqa/actions/runs/${
          process.env.GITHUB_RUN_ID
        }
+       :stopwatch: Duration: ${formatDuration(results.Duration)}
        :computer: Browser: Chrome
        :herb: Branch: ${process.env.GITHUB_REF_NAME || 'N/A'}${folderLine}${repeatEachLine}${userMentionLine}
        :page_facing_up: Check interactive tests results: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${
