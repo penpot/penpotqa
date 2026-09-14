@@ -13,6 +13,7 @@
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { MainPage } from '@pages/workspace/main-page';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
@@ -107,6 +108,7 @@ enterprisePageTest.describe(
       ),
       async ({ page, orgPage, adminConsolePage, stripePage, teamPage }) => {
         const dashboardPage = new DashboardPage(page);
+        const mainPage = new MainPage(page);
         const orgName = createOrgName();
         const teamName = createTeamName();
         let orgAdminConsoleUrl = '';
@@ -125,6 +127,7 @@ enterprisePageTest.describe(
             await adminConsolePage.goToFiles();
             await teamPage.createTeam(teamName);
             await dashboardPage.createFileViaPlaceholder();
+            await mainPage.isMainPageLoaded();
           },
         );
 
