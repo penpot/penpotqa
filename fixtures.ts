@@ -1,10 +1,9 @@
 import { test } from '@playwright/test';
 import { LoginPage } from '@pages/login-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { RegisterPage } from '@pages/register-page';
 import { random } from './helpers/string-generator';
-import { waitMessage } from './helpers/gmail';
-import { createDemoUser } from './helpers/demo-user';
+import { loginAsDemoAccount } from './helpers/accounts/login-as-demo-account';
+import { registerNewAccount } from './helpers/accounts/register-new-account';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
@@ -52,18 +51,7 @@ export const registerTest = test.extend<RegisterTestFixtures>({
     await use(email);
   },
   page: async ({ page, name, email }, use) => {
-    const loginPage = new LoginPage(page);
-    const dashboardPage = new DashboardPage(page);
-    const registerPage = new RegisterPage(page);
-
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-    await loginPage.clickOnCreateAccount();
-    await registerPage.registerAccount(name, email, process.env.LOGIN_PWD!);
-    await registerPage.isRegisterEmailCorrect(email);
-    const invite = await waitMessage(page, email, 40);
-    await page.goto(invite!.inviteUrl);
-    await dashboardPage.fillOnboardingQuestions();
+    await registerNewAccount(page, name, email, process.env.LOGIN_PWD!);
     await use(page);
   },
 });
@@ -74,16 +62,7 @@ export const registerTest = test.extend<RegisterTestFixtures>({
 // it was created.
 export const demoAccountApiFixture = test.extend({
   page: async ({ page }, use) => {
-    const dashboardPage = new DashboardPage(page);
-
-    await createDemoUser(page.context().request);
-
-    await page.goto('/');
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await dashboardPage.acceptCookie();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.skipWhatNewsPopUp();
-    await dashboardPage.skipPluginsPopUp();
+    await loginAsDemoAccount(page);
     await use(page);
   },
 });

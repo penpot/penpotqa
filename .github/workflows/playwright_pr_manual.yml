@@ -34,6 +34,7 @@ on:
           - tests/dashboard/teams
           - tests/dashboard/teams/settings
           - tests/dashboard/trash
+          - tests/enterprise
           - tests/login-signup
           - tests/panels-features
           - tests/panels-features/main-menu
@@ -118,12 +119,28 @@ jobs:
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
                 exit 1
               fi
-              npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' ${{ github.event.inputs.test_folder }}
+              # tests/enterprise/ lives in its own Playwright project (see
+              # tests/enterprise/README.md) — the `chrome` project explicitly
+              # ignores it, and most of its cases are still `test.skip`
+              # stubs, so route it to `--project=enterprise` instead.
+              if [ "${{ github.event.inputs.test_folder }}" = "tests/enterprise" ]; then
+                npx playwright test --project=enterprise --repeat-each='${{ github.event.inputs.repeat_each }}'
+              else
+                npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' ${{ github.event.inputs.test_folder }}
+              fi
               ;;
             "by_spec")
               echo "📄 Running test spec: ${{ github.event.inputs.test_spec }}"
-              npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' '${{ github.event.inputs.test_spec }}'
-              npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' '${{ github.event.inputs.test_spec }}'
+              case "${{ github.event.inputs.test_spec }}" in
+                tests/enterprise/*)
+                  PROJECT=enterprise
+                  ;;
+                *)
+                  PROJECT=chrome
+                  ;;
+              esac
+              npx playwright test --project=$PROJECT --repeat-each='${{ github.event.inputs.repeat_each }}' '${{ github.event.inputs.test_spec }}'
+              npx playwright test --project=$PROJECT --repeat-each='${{ github.event.inputs.repeat_each }}' '${{ github.event.inputs.test_spec }}'
               ;;
             *)
               echo "❌ Error: Invalid test mode"

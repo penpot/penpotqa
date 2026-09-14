@@ -2,17 +2,18 @@
 
 GitHub Actions used in this repo. Detailed docs are filled in as we need them — for now only **Report triage** is documented below.
 
-| Workflow                                | File                              | Trigger                    | Docs                           |
-| --------------------------------------- | --------------------------------- | -------------------------- | ------------------------------ |
-| Report triage                           | `release-triage.yml`              | Manual                     | ⬇️ [see below](#report-triage) |
-| Daily Penpot Regression Tests on PRE    | `playwright_pre_daily.yml`        | Scheduled + manual         | _TBD_                          |
-| Manual Penpot Tests for PR              | `playwright_pr_manual.yml`        | Manual                     | _TBD_                          |
-| Manual Penpot Tests (TESTS environment) | `playwright_tests_manual.yml`     | Manual                     | _TBD_                          |
-| GitHub dashboard                        | `github-dashboard.yml`            | ?                          | _TBD_                          |
-| OpenCode Agent                          | `opencode-agent.yml`              | ?                          | _TBD_                          |
-| CodeQL                                  | `github-code-scanning/codeql`     | Scheduled (GitHub-managed) | —                              |
-| Copilot code review                     | `copilot-pull-request-reviewer/*` | On PR (GitHub-managed)     | —                              |
-| pages-build-deployment                  | `pages/pages-build-deployment`    | On push (GitHub-managed)   | —                              |
+| Workflow                                       | File                               | Trigger                    | Docs                           |
+| ---------------------------------------------- | ---------------------------------- | -------------------------- | ------------------------------ |
+| Report triage                                  | `release-triage.yml`               | Manual                     | ⬇️ [see below](#report-triage) |
+| Daily Penpot Regression Tests on PRE           | `playwright_pre_daily.yml`         | Scheduled + manual         | _TBD_                          |
+| Manual Penpot Tests for PR                     | `playwright_pr_manual.yml`         | Manual                     | _TBD_                          |
+| Manual Penpot Tests (TESTS environment)        | `playwright_tests_manual.yml`      | Manual                     | _TBD_                          |
+| Manual Enterprise Plan Tests (PRE environment) | `playwright_enterprise_manual.yml` | Manual                     | _TBD_                          |
+| GitHub dashboard                               | `github-dashboard.yml`             | ?                          | _TBD_                          |
+| OpenCode Agent                                 | `opencode-agent.yml`               | ?                          | _TBD_                          |
+| CodeQL                                         | `github-code-scanning/codeql`      | Scheduled (GitHub-managed) | —                              |
+| Copilot code review                            | `copilot-pull-request-reviewer/*`  | On PR (GitHub-managed)     | —                              |
+| pages-build-deployment                         | `pages/pages-build-deployment`     | On push (GitHub-managed)   | —                              |
 
 ---
 

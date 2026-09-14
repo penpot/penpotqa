@@ -11,6 +11,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     // Dashboard Header
     this.addProjectButton = page.getByRole('button', { name: 'New project' });
     this.alertMessage = page.getByRole('alert');
+    this.personalProjectsText = page.getByText('Personal Projects');
 
     // Dashboard Header > Layout View
     this.layoutListViewButton = page.getByRole('button', { name: 'List view' });
@@ -430,6 +431,18 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.page.waitForURL(/.*dashboard\/recent\?team-id/, {
       waitUntil: 'load',
     });
+  }
+
+  async isPersonalProjectsVisible(visible = true) {
+    visible
+      ? await expect(
+          this.personalProjectsText,
+          'Redirected to Personal Projects',
+        ).toBeVisible()
+      : await expect(
+          this.personalProjectsText,
+          'Personal Projects is not shown',
+        ).not.toBeVisible();
   }
 
   async checkNumberOfFiles(numberOfFiles) {
