@@ -78,16 +78,22 @@ export class AdvancedPermissionsPage extends BasePage {
   /**
    * Clicks a permission's label and confirms the change actually persisted
    * (reload, then check), re-clicking if it didn't. Retrying the whole
-   * click is more reliable here than trusting a single click + toast.
+   * click is more reliable here than trusting a single click + toast. Skips
+   * the click (and its toast wait) once the radio already reflects `value`
+   * — re-clicking an already-selected option is a no-op that shows no new
+   * toast, which would otherwise fail a retry even though the desired
+   * state was already reached.
    */
   async selectPermission(value: AdvancedPermissionValue) {
     await expect(async () => {
-      await this.getPermissionLabel(value).click();
-      await expect(
-        this.permissionsSavedToast,
-        'Permissions updated successfully toast is shown',
-      ).toBeVisible({ timeout: 5000 });
-      await this.page.reload();
+      if (!(await this.getPermissionRadio(value).isChecked())) {
+        await this.getPermissionLabel(value).click();
+        await expect(
+          this.permissionsSavedToast,
+          'Permissions updated successfully toast is shown',
+        ).toBeVisible({ timeout: 5000 });
+        await this.page.reload();
+      }
       await expect(
         this.getPermissionRadio(value),
         `"${value}" permission is selected after reload`,

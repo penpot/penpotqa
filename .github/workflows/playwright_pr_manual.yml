@@ -140,7 +140,6 @@ jobs:
                   ;;
               esac
               npx playwright test --project=$PROJECT --repeat-each='${{ github.event.inputs.repeat_each }}' '${{ github.event.inputs.test_spec }}'
-              npx playwright test --project=$PROJECT --repeat-each='${{ github.event.inputs.repeat_each }}' '${{ github.event.inputs.test_spec }}'
               ;;
             *)
               echo "❌ Error: Invalid test mode"

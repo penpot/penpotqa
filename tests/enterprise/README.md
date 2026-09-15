@@ -90,9 +90,12 @@ each case, but there's no automation-tier tagging for now — every case
 - `.github/workflows/playwright_enterprise_manual.yml` (manual
   `workflow_dispatch` only — the suite still has unimplemented stubs, and
   some cases genuinely delete orgs/accounts) runs the same thing in CI.
-  Needs only `BASE_URL` plus the Qase secrets — `demoAccountApiFixture` is
+  Needs `BASE_URL` and the Qase secrets — `demoAccountApiFixture` is
   API-based and Stripe checkout is UI-driven with hardcoded test cards, so
-  none of the other Playwright workflows' secrets apply. `--workers` stays
+  most of the other Playwright workflows' secrets don't apply — except the
+  Gmail ones (`LOGIN_PWD`, `GMAIL_NAME`, `GMAIL_DOMAIN`, `REFRESH_TOKEN`,
+  `CLIENT_ID`, `CLIENT_SECRET`), still needed for `ownerAndInviteeTest`'s
+  real second account and any case using `createInviteEmail()`. `--workers` stays
   at the config default rather than the `--workers=8` tuned for local dev
   hardware — a GitHub runner needs its own calibration first.
 
