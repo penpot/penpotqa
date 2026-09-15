@@ -13,7 +13,9 @@
     "test:docker": "docker compose run --rm playwright",
     "test:docker:ui": "docker compose run --rm --service-ports playwright-ui",
     "prettier": "npx prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "cleanup:stripe:dry-run": "tsx scripts/cleanup-stripe-test-customers.ts",
+    "cleanup:stripe:execute": "tsx scripts/cleanup-stripe-test-customers.ts --execute"
   },
   "repository": {
     "type": "git",
