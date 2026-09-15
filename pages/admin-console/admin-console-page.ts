@@ -806,13 +806,6 @@ export class AdminConsolePage extends BasePage {
         ).toHaveCount(0);
   }
 
-  async isServerErrorPageVisible(visible = true) {
-    const errorText = this.page.getByText('Something went wrong!');
-    visible
-      ? await expect(errorText, 'Server error page is shown').toBeVisible()
-      : await expect(errorText, 'Server error page is not shown').not.toBeVisible();
-  }
-
   async isLogoutMenuItemVisible(visible = true) {
     visible
       ? await expect(

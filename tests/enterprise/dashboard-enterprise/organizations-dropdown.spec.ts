@@ -90,7 +90,7 @@ enterprisePageTest.describe('Enterprise Dashboard > Organizations Dropdown', () 
       );
 
       await enterprisePageTest.step(
-        'A non-owner navigating to the URL gets an error page',
+        'A non-owner navigating to the URL gets a 404 error page',
         async () => {
           await createDemoUser(page.context().request);
           const response = await page.goto(
@@ -98,9 +98,11 @@ enterprisePageTest.describe('Enterprise Dashboard > Organizations Dropdown', () 
           );
           expect(
             response?.status(),
-            'Non-owner navigating to the org URL gets an HTTP 500 response',
-          ).toBe(500);
-          await adminConsolePage.isServerErrorPageVisible();
+            'Non-owner navigating to the org URL gets an HTTP 404 response',
+          ).toBe(404);
+          await teamPage.isInviteMessageDisplayed('Oops!');
+          await teamPage.isErrorMessageDisplayed("This page doesn't exist");
+          await teamPage.isGoToPenpotButtonVisible();
         },
       );
     },
