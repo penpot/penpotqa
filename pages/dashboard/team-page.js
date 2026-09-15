@@ -46,6 +46,40 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.teamStatsSection = page.locator('//div[text()="Team projects"]/..');
     this.teamInfoHeader = page.getByText('Team info');
 
+    // Team Settings > "Team organization" section (Enterprise) — add/remove
+    // this team from an organization. The "not part of any
+    // organization" text and "Add to an organization" link only show when
+    // the team truly has no org; once it does, this section instead shows
+    // the org's name and an icon-only options button (no aria-label) whose
+    // one menu item is a plain `role="listitem"`, not `menuitem`.
+    this.teamOrganizationSection = page.locator(
+      '//div[text()="Team organization"]/..',
+    );
+    this.teamNotInOrgText = page.getByText(
+      'This team is not part of any organization',
+    );
+    this.addTeamToOrgLink = page.getByText('Add to an organization');
+    this.addTeamToOrgCombobox = page.getByRole('combobox');
+    this.addTeamToOrgSubmitButton = page.getByRole('button', {
+      name: 'Add to organization',
+    });
+    this.addedToOrgMessage = page.getByText(
+      /This team is now part of the organization/,
+    );
+    // Shown inside the same modal instead of the org combobox when
+    // "Create Teams" is 'Only me' and the actor isn't the owner (PENPOT-3333).
+    this.noPermissionToAddTeamMessage = page.getByText(
+      "You don't have permission to add teams to any of your organizations.",
+    );
+    this.teamOrgOptionsButton = this.teamOrganizationSection.locator('button');
+    this.removeTeamFromOrgMenuItem = page.getByText('Remove team from organization');
+    this.removeTeamFromOrgConfirmButton = page.getByRole('button', {
+      name: 'Remove from organization',
+    });
+    this.removedFromOrgMessage = page.getByText(
+      /This team is no longer part of the organization/,
+    );
+
     this.membersMenuItem = page.getByRole('menuitem', { name: 'Members' });
 
     //Invitations
@@ -161,6 +195,110 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async isTeamSelected(teamName) {
     await expect(this.teamCurrentBtnText).toHaveText(teamName);
+  }
+
+  /** Checks the URL itself shows a team's own dashboard
+   * (/dashboard/recent?team-id=...) — use alongside isTeamSelected(), which
+   * only checks the displayed team name, not the URL. */
+  async isOnTeamDashboardUrl() {
+    await expect(this.page, "On a team's own dashboard URL").toHaveURL(
+      /\/dashboard\/recent\?team-id=/,
+    );
+  }
+
+  async isTeamListed(teamName, listed = true) {
+    const item = this.teamList.getByText(teamName);
+    listed
+      ? await expect(item, `Team "${teamName}" is listed`).toBeVisible()
+      : await expect(item, `Team "${teamName}" is not listed`).toHaveCount(0);
+  }
+
+  /**
+   * Adds the current team to an organization via Team Settings' "Add to an
+   * organization" flow. Assumes Team Settings is already open and the team
+   * genuinely has no organization yet.
+   */
+  async addTeamToOrganization(orgName) {
+    await this.addTeamToOrgLink.click();
+    await this.addTeamToOrgCombobox.click();
+    await this.page.getByRole('option', { name: orgName }).click();
+    await this.addTeamToOrgSubmitButton.click();
+    await expect(
+      this.addedToOrgMessage,
+      'Team-added-to-organization message is shown',
+    ).toBeVisible();
+  }
+
+  /** Opens the "Add team to an organization" modal without assuming success
+   * — a restricted non-owner sees a permission-denied message here instead
+   * of the org combobox (see isNoPermissionToAddTeamMessageVisible()). */
+  async openAddTeamToOrgModal() {
+    await this.addTeamToOrgLink.click();
+  }
+
+  async isNoPermissionToAddTeamMessageVisible() {
+    await expect(
+      this.noPermissionToAddTeamMessage,
+      'No-permission-to-add-team message is shown',
+    ).toBeVisible();
+  }
+
+  /**
+   * Removes the current team from its organization via Team Settings'
+   * options menu next to the org name. Assumes Team Settings is already
+   * open and the team genuinely belongs to an organization.
+   */
+  async removeTeamFromOrganization() {
+    await this.openRemoveTeamFromOrgDialog();
+    await this.removeTeamFromOrgConfirmButton.click();
+    await expect(
+      this.removedFromOrgMessage,
+      'Team-removed-from-organization message is shown',
+    ).toBeVisible();
+  }
+
+  /** Opens the org options menu and clicks its one item, reaching the "Are
+   * you sure?" confirmation dialog without confirming it — use this
+   * directly (instead of removeTeamFromOrganization()) when a test also
+   * wants to check the dialog's own text first. */
+  async openRemoveTeamFromOrgDialog() {
+    await this.teamOrgOptionsButton.click();
+    await this.removeTeamFromOrgMenuItem.click();
+  }
+
+  async isRemoveTeamConfirmDialogShown(teamName, orgName) {
+    await expect(
+      this.page.getByText(
+        `Are you sure you want to remove the '${teamName}' team from the '${orgName}' organization?`,
+      ),
+      `Remove-team confirmation dialog names "${teamName}" and "${orgName}"`,
+    ).toBeVisible();
+  }
+
+  async isRemovedFromOrgMessageShown() {
+    await expect(
+      this.removedFromOrgMessage,
+      'Team-removed-from-organization message is shown',
+    ).toBeVisible();
+  }
+
+  async isTeamNotPartOfAnyOrg(notPartOf = true) {
+    notPartOf
+      ? await expect(
+          this.teamNotInOrgText,
+          'Team organization section shows "not part of any organization"',
+        ).toBeVisible()
+      : await expect(
+          this.teamNotInOrgText,
+          'Team organization section does not show "not part of any organization"',
+        ).not.toBeVisible();
+  }
+
+  async isTeamPartOfOrganization(orgName) {
+    await expect(
+      this.teamOrganizationSection.getByText(orgName, { exact: true }),
+      `Team organization section shows "${orgName}"`,
+    ).toBeVisible();
   }
 
   async waitForTeamBtn(timeout = 10000) {

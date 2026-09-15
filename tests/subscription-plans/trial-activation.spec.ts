@@ -23,7 +23,7 @@ registerTest.beforeEach(async ({ page }) => {
   await teamPage.createTeam(teamName);
 });
 
-// TODO: Re-do with the new Enterprise subscription flow (nitrate)
+// TODO: Re-do with the new Enterprise subscription flow (enterprise)
 // A payment method is now required to start the trial.
 registerTest.skip(
   qase(2294, 'Verify Trial Label Behavior (for the Enterprise plan)'),

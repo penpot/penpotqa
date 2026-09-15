@@ -6,20 +6,18 @@ interface DemoProfile {
 }
 
 /**
- * Creates a demo Penpot profile via the API and logs in with it, skipping the
- * onboarding wizard.
+ * Creates a demo Penpot profile via the API and logs in with it, skipping
+ * onboarding.
  *
- * Pass `page.context().request` (not the standalone `request` fixture) so the
- * session cookies returned by the login response are stored directly in the
- * browser context's cookie jar — Playwright does this automatically for
- * requests made through a BrowserContext's APIRequestContext, so there's no
- * need to parse `set-cookie` headers or call `context.addCookies()` by hand.
+ * Pass `page.context().request` (not the standalone `request` fixture) —
+ * Playwright then stores the login's session cookies straight into the
+ * context's cookie jar, no manual `set-cookie` handling needed.
  *
- * @returns the demo profile's email, in case a test needs to identify it later
+ * @returns email + password — password only matters for tests that log back
+ * in through the UI after logging out (e.g. PENPOT-3094).
  */
 export async function createDemoUser(request: APIRequestContext) {
-  // `_fmt=json` is required: Penpot's RPC endpoints respond with its
-  // transit+json encoding by default, not plain JSON.
+  // `_fmt=json` — Penpot's RPC endpoints default to transit+json otherwise.
   const createRes = await request.post(
     '/api/rpc/command/create-demo-profile?_fmt=json',
     { data: { 'skip-onboarding': true } },
@@ -39,5 +37,5 @@ export async function createDemoUser(request: APIRequestContext) {
       `login-with-password failed: ${loginRes.status()} ${await loginRes.text()}`,
     );
 
-  return { email };
+  return { email, password };
 }

@@ -87,6 +87,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chrome',
+      testIgnore: ['enterprise/**'],
       expect: {
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.0001,
@@ -101,6 +102,29 @@ export default defineConfig({
         },
         contextOptions: {
           // chromium-specific permissions
+          permissions: ['clipboard-read', 'clipboard-write'],
+        },
+      },
+    },
+    {
+      // Enterprise Plan suite (tests/enterprise/**) — kept out of the default
+      // `chrome` project. Many Qase cases are still `test.skip` stubs; see
+      // tests/enterprise/README.md for the automation plan.
+      name: 'enterprise',
+      testDir: './tests/enterprise',
+      expect: {
+        toHaveScreenshot: {
+          maxDiffPixelRatio: 0.0001,
+        },
+      },
+      use: {
+        browserName: 'chromium',
+        channel: 'chrome',
+        launchOptions: {
+          ignoreDefaultArgs: ['--hide-scrollbars'],
+          args: ['--headless=new'], // Use new headless mode
+        },
+        contextOptions: {
           permissions: ['clipboard-read', 'clipboard-write'],
         },
       },

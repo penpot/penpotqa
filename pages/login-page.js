@@ -95,6 +95,15 @@ exports.LoginPage = class LoginPage extends BasePage {
     await expect(this.pageTitle, 'Login page is opened').toBeVisible();
   }
 
+  /** Checks the URL itself, in addition to isLoginPageOpened() checking the
+   * heading — use when a case cares specifically about being redirected to
+   * /#/auth/login (e.g. after hitting a protected page while logged out). */
+  async isLoginPageUrlShown() {
+    await expect(this.page, 'Redirected to the login page').toHaveURL(
+      /\/#\/auth\/login/,
+    );
+  }
+
   async isEmailInputVisible() {
     await expect(this.emailInput, 'Email input is visible').toBeVisible();
   }
