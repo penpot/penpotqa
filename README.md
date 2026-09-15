@@ -149,6 +149,20 @@ A script is available to check which test cases in Qase are non-regression:
    npx ts-node helpers/check-qase-non-regression.ts
    ```
 
+**10. Demo account fixture logic.**
+
+Some tests log in with a disposable demo Penpot account instead of the fixed `LOGIN_EMAIL` account, created directly via API (`demoAccountApiFixture` in `fixtures.ts`, backed by `helpers/demo-user.ts`). It's faster than `registerTest` since it skips both the UI registration form and the onboarding flow.
+
+- `createDemoUser()` calls the `create-demo-profile` RPC (`POST /api/rpc/command/create-demo-profile?_fmt=json`) with `{ "skip-onboarding": true }`. This flag marks `onboarding-viewed` and `release-notes-viewed` as already completed server-side, so the account lands straight on the dashboard instead of stepping through the onboarding questions, team-choice and release-notes modals.
+- The RPC returns a backend-generated `email`/`password` pair. The helper then logs in via the `login-with-password` RPC using `page.context().request`, so Playwright stores the resulting session cookie directly in the browser context (no manual cookie handling needed).
+- Demo profile emails are always backend-generated, non-deliverable placeholders (`demo-<uuid>@demo.example.com`) — there's no parameter to set a real, readable email address. **Only use the demo account for tests that don't need to read email sent to it** (e.g. accepting a team invite, reading an SSO-activation notice). For those cases, use `registerTest` or the existing Gmail-alias pattern instead (a `GMAIL_NAME+role+unique@GMAIL_DOMAIN` address via `helpers/teams/invite-email.ts`, read with `helpers/gmail.js`).
+- Demo profiles are gated server-side by Penpot's `:demo-users` config flag and are flagged `is-demo: true` in the database.
+- Cleanup is automatic: demo profiles, and anything solely owned by them (teams, files, etc.), are purged after the server's configured deletion delay (7 days in our test environments), so `tests/global.teardown.ts`-style cleanup isn't needed for demo-account data. Penpot's `create-demo-profile` RPC also accepts an optional `expires-in` duration (between 5 minutes and the configured global deletion delay) to request a shorter TTL than the global delay, e.g.:
+
+  ```
+  { 'skip-onboarding': true, 'expires-in': '10m' }
+  ```
+
 **11. Running tests via GitHub Actions.**
 
 On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
