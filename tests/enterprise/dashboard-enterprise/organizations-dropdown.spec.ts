@@ -9,7 +9,6 @@
  * Per-case "Accounts:" notes cover invitees needing a real, readable
  * inbox instead (see the enterprise-demo-account-email memory).
  */
-import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { createDemoUser } from 'helpers/accounts/create-demo-user';
@@ -96,13 +95,8 @@ enterprisePageTest.describe('Enterprise Dashboard > Organizations Dropdown', () 
           const response = await page.goto(
             `/admin-console/organization/${orgSlug}/${orgId}/people`,
           );
-          expect(
-            response?.status(),
-            'Non-owner navigating to the org URL gets an HTTP 404 response',
-          ).toBe(404);
-          await teamPage.isInviteMessageDisplayed('Oops!');
-          await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-          await teamPage.isGoToPenpotButtonVisible();
+          adminConsolePage.hasNavigationStatusCode(response, 404);
+          await adminConsolePage.isPageNotFoundVisible();
         },
       );
     },
