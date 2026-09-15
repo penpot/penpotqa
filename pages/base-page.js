@@ -482,11 +482,20 @@ exports.BasePage = class BasePage {
     await this.renameOption.click();
   }
 
+  /**
+   * Accepts the cookie-consent banner, if shown. Retries the whole
+   * click-then-confirm-gone cycle instead of a single click — * under heavy parallel load (many browsers loading the same page at once)
+   * a still-loading page image can intercept the click for longer than a
+   * single click's own actionability retries allow, failing the test even
+   * though the banner reliably goes away moments later on its own.
+   */
   async acceptCookie() {
-    if (await this.acceptCookieButton.isVisible()) {
-      await this.acceptCookieButton.click();
-    }
-    await expect(this.acceptCookieButton).not.toBeVisible();
+    await expect(async () => {
+      if (await this.acceptCookieButton.isVisible()) {
+        await this.acceptCookieButton.click({ timeout: 5000 });
+      }
+      await expect(this.acceptCookieButton).not.toBeVisible({ timeout: 3000 });
+    }).toPass({ timeout: 30000 });
   }
 
   async gotoLink(link) {

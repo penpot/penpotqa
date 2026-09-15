@@ -69,6 +69,14 @@ mainTest(qase(1234, 'Test title'), async ({ page }) => {
 
 New spec files must be TypeScript (`.spec.ts`). Legacy files in `.spec.js` are being migrated progressively.
 
+**`tests/enterprise/`** is a separate suite (Enterprise-plan features —
+Organizations, Admin Console, advanced permissions, SSO, billing), run via
+its own `enterprise` Playwright project (`npm run test:enterprise`, kept out
+of the default `chrome` project). Uses its own fixtures
+(`enterprisePageTest`/`ownerAndInviteeTest` in
+`tests/enterprise/fixtures/enterprise-fixtures.ts`), not `mainTest`. See
+`tests/enterprise/README.md` before touching anything in this directory.
+
 ### Visual Regression
 
 Snapshots are stored at `tests/{dir}/{file}-snapshots/`. Comparison threshold for Chrome is `0.0001`. Snapshots require **Ubuntu 24.04** at **1920x969** for consistency.
