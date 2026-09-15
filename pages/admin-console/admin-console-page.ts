@@ -1,4 +1,4 @@
-import { type Locator, type Page, expect } from '@playwright/test';
+import { type Locator, type Page, type Response, expect } from '@playwright/test';
 import { BasePage } from '../base-page';
 
 /**
@@ -141,6 +141,9 @@ export class AdminConsolePage extends BasePage {
   readonly deleteOrgAffectedTeamsToggle: Locator;
   readonly deleteOrgFinalConfirmButton: Locator;
   readonly orgDeletedToast: Locator;
+  readonly pageNotFoundHeading: Locator;
+  readonly pageNotFoundText: Locator;
+  readonly backToHomeButton: Locator;
 
   // Admin Console's own org switcher (top-left, next to the org name) — a
   // different component from OrganizationPage's dashboard-sidebar switcher:
@@ -252,6 +255,15 @@ export class AdminConsolePage extends BasePage {
       { name: 'Delete organization' },
     );
     this.orgDeletedToast = page.getByText(/has been deleted\.$/);
+
+    this.pageNotFoundHeading = page.getByText('404', { exact: true });
+    this.pageNotFoundText = page.getByText("This page doesn't exist", {
+      exact: true,
+    });
+    this.backToHomeButton = page.getByRole('button', {
+      name: 'Back to home',
+      exact: true,
+    });
 
     // No accessible name either — there are 2
     // `[aria-haspopup="true"]` elements on the page (one off-screen at x=0,
@@ -704,6 +716,27 @@ export class AdminConsolePage extends BasePage {
     ).toBeVisible();
   }
 
+  /** Asserts the HTTP status of a direct navigation to an Admin Console
+   * URL (e.g. a non-member's org URL should resolve to a 404). */
+  hasNavigationStatusCode(response: Response | null, status: number) {
+    expect(
+      response?.status(),
+      `Admin Console navigation returns an HTTP ${status} response`,
+    ).toBe(status);
+  }
+
+  async isPageNotFoundVisible() {
+    await expect(this.pageNotFoundHeading, '404 page is shown').toBeVisible();
+    await expect(
+      this.pageNotFoundText,
+      '"This page doesn\'t exist" message is shown',
+    ).toBeVisible();
+    await expect(
+      this.backToHomeButton,
+      '"Back to home" button is shown',
+    ).toBeVisible();
+  }
+
   /** Extracts {slug, orgId} from the current /admin-console/organization/... URL. */
   getOrgSlugAndIdFromUrl(): { slug: string; orgId: string } {
     const match = new URL(this.page.url()).pathname.match(
@@ -804,13 +837,6 @@ export class AdminConsolePage extends BasePage {
           item,
           `Team "${teamName}" is not listed in the affected teams`,
         ).toHaveCount(0);
-  }
-
-  async isServerErrorPageVisible(visible = true) {
-    const errorText = this.page.getByText('Something went wrong!');
-    visible
-      ? await expect(errorText, 'Server error page is shown').toBeVisible()
-      : await expect(errorText, 'Server error page is not shown').not.toBeVisible();
   }
 
   async isLogoutMenuItemVisible(visible = true) {
