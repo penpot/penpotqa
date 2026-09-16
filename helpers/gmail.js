@@ -26,21 +26,17 @@ async function refreshToken(oAuth2Client) {
   return oAuth2Client;
 }
 
-/** Searches both labels — a Penpot email can land in either. */
+/** Searches both labels as ONE query, so results stay in Gmail's own
+ * newest-first order — two separate per-label queries concatenated
+ * together would not (e.g. a newer message in SPAM could still sort after
+ * an older one in INBOX). */
 async function findMessages(gmail, email) {
-  async function searchMessages(label) {
-    const res = await gmail.users.messages.list({
-      userId: 'me',
-      q: `to:${email}`,
-      labelIds: [label],
-      maxResults: 10,
-    });
-    return res.data.messages || [];
-  }
-
-  const inboxMessages = await searchMessages('INBOX');
-  const spamMessages = await searchMessages('SPAM');
-  return [...inboxMessages, ...spamMessages];
+  const res = await gmail.users.messages.list({
+    userId: 'me',
+    q: `to:${email} (in:inbox OR in:spam)`,
+    maxResults: 10,
+  });
+  return res.data.messages || [];
 }
 
 async function listMessages(auth, email) {
@@ -176,8 +172,9 @@ async function checkEnterpriseInviteText(text, team, org) {
 
 /** Unlike the body (checkEnterpriseInviteText), the subject never names
  * the org, only the team. */
-async function checkEnterpriseInviteSubject(subject, team) {
+async function checkEnterpriseInviteSubject(subject, team, org) {
   expect(subject).toContain(team);
+  expect(subject).not.toContain(org);
 }
 
 async function checkRegisterText(text, name) {

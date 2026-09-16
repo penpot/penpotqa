@@ -99,7 +99,7 @@ enterprisePageTest.describe(
           async () => {
             await waitSecondMessage(ownerPage, invitee.email, 40);
             const subject = await getMessageSubject(invitee.email);
-            await checkEnterpriseInviteSubject(subject, teamName);
+            await checkEnterpriseInviteSubject(subject, teamName, orgName);
 
             const invite = await waitMessage(ownerPage, invitee.email, 40);
             await checkEnterpriseInviteText(invite!.inviteText, teamName, orgName);
