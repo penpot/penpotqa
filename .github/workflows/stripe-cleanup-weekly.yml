@@ -44,7 +44,7 @@ jobs:
           if [ "${{ job.status }}" = "success" ]; then
             DELETED=$(grep -oP '^Deleted: \K\d+' cleanup-output.log || echo '?')
             FAILED=$(grep -oP '^Failed: \K\d+' cleanup-output.log || echo '0')
-            TEXT="**:broom: Stripe test customers cleanup** — deleted $DELETED, failed $FAILED"
+            TEXT="**Stripe test customers cleanup** — deleted $DELETED, failed $FAILED"
           else
             TEXT="**:warning: Stripe test customers cleanup failed** — [check the run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
           fi

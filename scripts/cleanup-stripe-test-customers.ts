@@ -214,6 +214,8 @@ async function main() {
 
   if (customers.length === 0) {
     console.log('Nothing to delete.');
+    console.log('\nDeleted: 0');
+    console.log('Failed: 0');
     return;
   }
 
