@@ -1,5 +1,5 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
@@ -11,28 +11,28 @@ const sampleData = new SampleData();
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
 
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(qase([2167], 'Create theme via "create one" link'), async () => {
-  await mainAccountFileTest.step('Open Tokens panel', async () => {
+demoAccountFileTest(qase([2167], 'Create theme via "create one" link'), async () => {
+  await demoAccountFileTest.step('Open Tokens panel', async () => {
     await tokensPage.clickTokensTab();
   });
 
-  await mainAccountFileTest.step('Create theme via "create one" link', async () => {
+  await demoAccountFileTest.step('Create theme via "create one" link', async () => {
     await tokensPage.themesComp.createThemeViaLink('Desktop');
   });
 
-  await mainAccountFileTest.step('Verify no theme is active', async () => {
+  await demoAccountFileTest.step('Verify no theme is active', async () => {
     await tokensPage.themesComp.checkSelectedTheme('No theme active');
   });
 });
 
-mainAccountFileTest.describe(() => {
+demoAccountFileTest.describe(() => {
   const colorToken1: MainToken<TokenClass> = {
     class: TokenClass.Color,
     name: 'color',
@@ -54,7 +54,7 @@ mainAccountFileTest.describe(() => {
     value: '30',
   };
 
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
 
     await tokensPage.clickTokensTab();
@@ -96,8 +96,8 @@ mainAccountFileTest.describe(() => {
     await designPanelPage.checkGeneralCornerRadius(radiusToken2.value);
   });
 
-  mainAccountFileTest.describe(() => {
-    mainAccountFileTest.beforeEach(async () => {
+  demoAccountFileTest.describe(() => {
+    demoAccountFileTest.beforeEach(async () => {
       await tokensPage.themesComp.createThemeViaLinkWithGroup('App', 'Web');
       await tokensPage.themesComp.addNewThemeWithGroup('App', 'Mobile');
 
@@ -115,10 +115,10 @@ mainAccountFileTest.describe(() => {
       await tokensPage.setsComp.checkActiveSetsCountByThemeName('Mobile', '2');
     });
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase([2206], 'Enable themes in different groups'),
       async ({ mainPage }) => {
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Create "Brand X" theme and activate all sets',
           async () => {
             await tokensPage.themesComp.addNewTheme('Brand X');
@@ -137,7 +137,7 @@ mainAccountFileTest.describe(() => {
           },
         );
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Select "Web" theme and verify active sets',
           async () => {
             await tokensPage.themesComp.selectTheme('Web');
@@ -148,7 +148,7 @@ mainAccountFileTest.describe(() => {
           },
         );
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Select "Mobile" theme and verify active sets',
           async () => {
             await tokensPage.themesComp.selectTheme('Mobile');
@@ -158,7 +158,7 @@ mainAccountFileTest.describe(() => {
           },
         );
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Select "Brand X" theme and verify multiple themes are active',
           async () => {
             await tokensPage.themesComp.selectTheme('Brand X');
@@ -172,13 +172,13 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase(
         [2190],
         'Add new group theme using an existing group name and an existing theme name via select "edit themes"',
       ),
       async ({ mainPage }) => {
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Add theme with existing group "App" and existing name "Web" and verify modal closes',
           async () => {
             await tokensPage.themesComp.addNewThemeWithGroup('App', 'Web', true);
@@ -188,10 +188,10 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    mainAccountFileTest(qase([2192], 'Rename a theme'), async ({ mainPage }) => {
+    demoAccountFileTest(qase([2192], 'Rename a theme'), async ({ mainPage }) => {
       const newThemeName: string = 'Tablet';
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Rename "Mobile" theme to "${newThemeName}"`,
         async () => {
           await tokensPage.themesComp.openEditThemeModalByThemeName('Mobile');
@@ -199,7 +199,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify active sets count for "${newThemeName}" theme`,
         async () => {
           await tokensPage.setsComp.checkActiveSetsCountByThemeName(
@@ -212,10 +212,10 @@ mainAccountFileTest.describe(() => {
     });
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2236], 'Create theme with immediately set selection'),
     async () => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Open Tokens panel and create "Test" theme with "Dark" set pre-selected',
         async () => {
           await tokensPage.clickTokensTab();
@@ -223,14 +223,14 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify no theme is active initially',
         async () => {
           await tokensPage.themesComp.checkSelectedTheme('No theme active');
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Select "Test" theme and verify it is active with "Dark" set checked',
         async () => {
           await tokensPage.themesComp.selectTheme('Test');

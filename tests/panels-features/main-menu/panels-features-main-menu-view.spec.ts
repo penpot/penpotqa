@@ -1,4 +1,4 @@
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { expect } from '@playwright/test';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
@@ -9,14 +9,14 @@ let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let assetsPanelPage: AssetsPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([816], 'Hide/show rulers via main menu and shortcut CTRL SHIFT R'),
   async ({ mainPage }) => {
     await mainPage.pressHideShowRulersShortcut();
@@ -30,7 +30,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([819], 'Hide/show color palette - file library check'),
   async ({ mainPage }) => {
     await assetsPanelPage.clickAssetsTab();
@@ -54,7 +54,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(qase([820], 'Hide/show board names'), async ({ mainPage }) => {
+demoAccountFileTest(qase([820], 'Hide/show board names'), async ({ mainPage }) => {
   await mainPage.clickCreateBoardButton();
   await mainPage.clickViewportTwice();
   await mainPage.waitForChangeIsSaved();
@@ -71,7 +71,7 @@ mainAccountFileTest(qase([820], 'Hide/show board names'), async ({ mainPage }) =
   });
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([822], 'Hide/show UI via main menu and shortcut "/"'),
   async ({ mainPage }) => {
     await expect(mainPage.viewport).toHaveScreenshot('canvas-show-ui.png', {
@@ -89,7 +89,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([827], 'Select all via main menu and shortcut CTRL A'),
   async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(250, 350);

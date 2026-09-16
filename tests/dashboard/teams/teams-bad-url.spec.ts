@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { mainAccountFileTest, mainTest } from 'fixtures';
+import { demoAccountFileTest, mainTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { random } from 'helpers/string-generator';
 import { waitMessage } from 'helpers/gmail';
@@ -26,29 +26,30 @@ const initPages = async ({ page }: { page: Page }) => {
   mainPage = new MainPage(page);
 };
 
-mainAccountFileTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
+demoAccountFileTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
   let badUrlProfilePage: ProfilePage;
 
-  mainAccountFileTest.beforeEach(async ({ page }) => {
+  demoAccountFileTest.beforeEach(async ({ page }) => {
     badUrlProfilePage = new ProfilePage(page);
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       1822,
       'Workspace: Navigate to an invalid URL, log in, and display the error page',
     ),
-    async ({ page, mainPage, teamPage }) => {
+    async ({ page, mainPage }) => {
+      const teamPage = new TeamPage(page);
       const currentURL = await mainPage.getUrl();
       const badURL = await mainPage.makeBadUrl(currentURL);
 
-      await mainAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
+      await demoAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
         await mainPage.clickPencilBoxButton();
         await badUrlProfilePage.logout();
         await loginAsSecondUser(page);
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Go to bad URL and validate error message',
         async () => {
           await page.goto(badURL);
@@ -60,12 +61,13 @@ mainAccountFileTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       1824,
       'View Mode: Navigate to an invalid URL, log in, and display the error page',
     ),
-    async ({ page, mainPage, teamPage }) => {
+    async ({ page, mainPage }) => {
+      const teamPage = new TeamPage(page);
       let viewModePage = new ViewModePage(page);
       const newPage = await viewModePage.clickViewModeShortcut();
 
@@ -75,18 +77,18 @@ mainAccountFileTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
       const currentURL = await viewModePage.getUrl();
       const badURL = await viewModePage.makeBadUrl(currentURL);
 
-      await mainAccountFileTest.step('Create a board', async () => {
+      await demoAccountFileTest.step('Create a board', async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
+      await demoAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
         await mainPage.clickPencilBoxButton();
         await badUrlProfilePage.logout();
         await loginAsSecondUser(page);
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Go to bad URL and validate error message',
         async () => {
           // Wait for the specific responses to occur, but don't fail if they don't happen
@@ -113,23 +115,24 @@ mainAccountFileTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       1826,
       'Dashboard: Navigate to an invalid URL while logged in and display the error page',
     ),
-    async ({ page, mainPage, teamPage }) => {
+    async ({ page, mainPage }) => {
+      const teamPage = new TeamPage(page);
       await mainPage.clickPencilBoxButton();
 
       const currentURL = await mainPage.getUrl();
       const badURL = await mainPage.makeBadDashboardUrl(currentURL);
 
-      await mainAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
+      await demoAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
         await badUrlProfilePage.logout();
         await loginAsSecondUser(page);
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Go to bad URL and validate error message',
         async () => {
           await page.goto(badURL);

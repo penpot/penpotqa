@@ -1,34 +1,27 @@
 import { MainPage } from '@pages/workspace/main-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { mainTest } from 'fixtures';
+import { demoAccountApiFixture } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
+demoAccountApiFixture.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
 
-  await teamPage.createTeam(teamName);
   await dashboardPage.isHeaderDisplayed('Projects');
   await dashboardPage.hideLibrariesAndTemplatesCarrousel();
 });
 
-mainTest.describe('Drafts management', () => {
-  mainTest(
+demoAccountApiFixture.describe('Drafts management', () => {
+  demoAccountApiFixture(
     qase(
       [55, 57, 76],
       'Drafts: create a new file via title panel, open and delete it via right click',
     ),
     async () => {
-      await mainTest.step(
+      await demoAccountApiFixture.step(
         '(55) Create new file in Drafts on title panel',
         async () => {
           await dashboardPage.createFileViaTitlePanel();
@@ -39,50 +32,59 @@ mainTest.describe('Drafts management', () => {
         },
       );
 
-      await mainTest.step('(57) Open file (in Drafts)', async () => {
+      await demoAccountApiFixture.step('(57) Open file (in Drafts)', async () => {
         await dashboardPage.reloadPage();
         await dashboardPage.openFile();
         await mainPage.isMainPageLoaded();
         await mainPage.backToDashboardFromFileEditor();
       });
 
-      await mainTest.step('(76) Delete file in Drafts via right click', async () => {
-        await dashboardPage.deleteFileViaRightclick();
-        await dashboardPage.isDeletedFileSuccessMessageVisible();
-        await dashboardPage.waitSuccessMessageHidden();
-        await dashboardPage.checkNumberOfFiles('0 files');
-      });
+      await demoAccountApiFixture.step(
+        '(76) Delete file in Drafts via right click',
+        async () => {
+          await dashboardPage.deleteFileViaRightclick();
+          await dashboardPage.isDeletedFileSuccessMessageVisible();
+          await dashboardPage.waitSuccessMessageHidden();
+          await dashboardPage.checkNumberOfFiles('0 files');
+        },
+      );
     },
   );
 
-  mainTest(qase(1125, 'Duplicate files (multiselect, Draft)'), async () => {
-    const fileNames = ['New File 1', 'New File 2', 'New File 3'];
+  demoAccountApiFixture(
+    qase(1125, 'Duplicate files (multiselect, Draft)'),
+    async () => {
+      const fileNames = ['New File 1', 'New File 2', 'New File 3'];
 
-    await mainTest.step('Create 3 files', async () => {
-      for (let i = 0; i < 3; i++) {
-        await dashboardPage.createFileViaTitlePanel();
-        await mainPage.clickPencilBoxButton();
-      }
-    });
+      await demoAccountApiFixture.step('Create 3 files', async () => {
+        for (let i = 0; i < 3; i++) {
+          await dashboardPage.createFileViaTitlePanel();
+          await mainPage.clickPencilBoxButton();
+        }
+      });
 
-    await mainTest.step('Multiselect files by clicking SHIFT', async () => {
-      await dashboardPage.isDashboardOpenedAfterLogin();
-      await dashboardPage.clickShiftAndSelectFilesByName(fileNames);
-    });
+      await demoAccountApiFixture.step(
+        'Multiselect files by clicking SHIFT',
+        async () => {
+          await dashboardPage.isDashboardOpenedAfterLogin();
+          await dashboardPage.clickShiftAndSelectFilesByName(fileNames);
+        },
+      );
 
-    await mainTest.step(
-      'From context menu, click Duplicate 3 files and assert there are 6 files',
-      async () => {
-        await dashboardPage.duplicateFileViaRightclick();
-        await dashboardPage.checkNumberOfFiles('6 files');
-        await dashboardPage.isSuccessMessageDisplayed(
-          'Your files have been duplicated successfully',
-        );
-      },
-    );
-  });
+      await demoAccountApiFixture.step(
+        'From context menu, click Duplicate 3 files and assert there are 6 files',
+        async () => {
+          await dashboardPage.duplicateFileViaRightclick();
+          await dashboardPage.checkNumberOfFiles('6 files');
+          await dashboardPage.isSuccessMessageDisplayed(
+            'Your files have been duplicated successfully',
+          );
+        },
+      );
+    },
+  );
 
-  mainTest(
+  demoAccountApiFixture(
     qase(1913, 'Download Penpot file (.penpot) (in Drafts) via right click'),
     async () => {
       await dashboardPage.createFileViaPlaceholder();
@@ -91,15 +93,15 @@ mainTest.describe('Drafts management', () => {
     },
   );
 
-  mainTest(qase(78, 'Create new project'), async () => {
+  demoAccountApiFixture(qase(78, 'Create new project'), async () => {
     await dashboardPage.clickAddProjectButton();
     await dashboardPage.setProjectName('Test Project');
     await dashboardPage.isProjectTitleDisplayed('Test Project');
   });
 });
 
-mainTest.describe('Files management', () => {
-  mainTest.beforeEach(async () => {
+demoAccountApiFixture.describe('Files management', () => {
+  demoAccountApiFixture.beforeEach(async () => {
     await dashboardPage.clickAddProjectButton();
     await dashboardPage.setProjectName('Test Project');
     await dashboardPage.isProjectTitleDisplayed('Test Project');
@@ -107,19 +109,19 @@ mainTest.describe('Files management', () => {
     await mainPage.clickPencilBoxButton();
   });
 
-  mainTest(
+  demoAccountApiFixture(
     qase(80, "Create a file in Project via 'New file' placeholder"),
     async () => {
       await dashboardPage.checkNumberOfFiles('1 file');
     },
   );
 
-  mainTest(qase(1114, 'Rename file in Project'), async () => {
+  demoAccountApiFixture(qase(1114, 'Rename file in Project'), async () => {
     await dashboardPage.renameFile('New File 1', 'test_panel', false);
     await dashboardPage.renameFile('test_panel', 'test_rightclick');
   });
 
-  mainTest(qase(1115, 'Duplicate file in Project'), async () => {
+  demoAccountApiFixture(qase(1115, 'Duplicate file in Project'), async () => {
     await dashboardPage.duplicateFileViaRightclick();
     await dashboardPage.isSuccessMessageDisplayed(
       'Your file has been duplicated successfully',
@@ -136,13 +138,13 @@ mainTest.describe('Files management', () => {
     await dashboardPage.checkNumberOfFiles('3 files');
   });
 
-  mainTest(
+  demoAccountApiFixture(
     qase(
       [1119, 1120],
       'Add file as Shared Library in Project via right click and delete via right click',
     ),
     async () => {
-      await mainTest.step(
+      await demoAccountApiFixture.step(
         '(1119) Add file as Shared Library (in project) via rightclick',
         async () => {
           await dashboardPage.addFileAsSharedLibraryViaRightclick();
@@ -150,7 +152,7 @@ mainTest.describe('Files management', () => {
         },
       );
 
-      await mainTest.step(
+      await demoAccountApiFixture.step(
         '(1120) Remove file as Shared Library (in project)',
         async () => {
           await dashboardPage.deleteFileAsSharedLibraryViaRightclick();
@@ -160,7 +162,7 @@ mainTest.describe('Files management', () => {
     },
   );
 
-  mainTest(
+  demoAccountApiFixture(
     qase(1119, 'Add file as Shared Library in Project via Options icon'),
     async () => {
       await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
@@ -168,33 +170,39 @@ mainTest.describe('Files management', () => {
     },
   );
 
-  mainTest(qase(1123, 'Delete file in Project via right click'), async () => {
-    await dashboardPage.deleteFileViaRightclick();
-    await dashboardPage.isDeletedFileSuccessMessageVisible();
-    await dashboardPage.waitSuccessMessageHidden();
-    await dashboardPage.checkNumberOfFiles('0 files');
-  });
+  demoAccountApiFixture(
+    qase(1123, 'Delete file in Project via right click'),
+    async () => {
+      await dashboardPage.deleteFileViaRightclick();
+      await dashboardPage.isDeletedFileSuccessMessageVisible();
+      await dashboardPage.waitSuccessMessageHidden();
+      await dashboardPage.checkNumberOfFiles('0 files');
+    },
+  );
 
-  mainTest(qase(1123, 'Delete file in Project via Options icon'), async () => {
-    await dashboardPage.deleteFileViaOptionsIcon();
-    await dashboardPage.isDeletedFileSuccessMessageVisible();
-    await dashboardPage.waitSuccessMessageHidden();
-    await dashboardPage.checkNumberOfFiles('0 files');
-  });
+  demoAccountApiFixture(
+    qase(1123, 'Delete file in Project via Options icon'),
+    async () => {
+      await dashboardPage.deleteFileViaOptionsIcon();
+      await dashboardPage.isDeletedFileSuccessMessageVisible();
+      await dashboardPage.waitSuccessMessageHidden();
+      await dashboardPage.checkNumberOfFiles('0 files');
+    },
+  );
 
-  mainTest(qase(1138, 'Rename project via right click'), async () => {
+  demoAccountApiFixture(qase(1138, 'Rename project via right click'), async () => {
     await dashboardPage.renameProjectViaRightClick(
       'Renamed new Project Via Right Click',
     );
   });
 
-  mainTest(qase(1138, 'Rename project via Options icon'), async () => {
+  demoAccountApiFixture(qase(1138, 'Rename project via Options icon'), async () => {
     await dashboardPage.renameProjectViaOptionsIcon(
       'New Renamed Project Via Options Icon',
     );
   });
 
-  mainTest(qase(1139, 'Duplicate Project'), async () => {
+  demoAccountApiFixture(qase(1139, 'Duplicate Project'), async () => {
     await dashboardPage.duplicateProjectViaRightclick();
     await dashboardPage.isHeaderDisplayed('Test Project (copy)');
     await dashboardPage.openSidebarItem('Projects');
@@ -202,19 +210,19 @@ mainTest.describe('Files management', () => {
     await dashboardPage.isHeaderDisplayed('Test Project (copy) (copy)');
   });
 
-  mainTest(qase(1146, 'Delete project via right click'), async () => {
+  demoAccountApiFixture(qase(1146, 'Delete project via right click'), async () => {
     await dashboardPage.deleteProjectViaRightclick();
     await dashboardPage.isProjectTitleNotVisible('Test Project');
   });
 
-  mainTest(qase(1146, 'Delete project via Options icon'), async () => {
+  demoAccountApiFixture(qase(1146, 'Delete project via Options icon'), async () => {
     await dashboardPage.deleteProjectViaOptionsIcon();
     await dashboardPage.isProjectTitleNotVisible('Test Project');
   });
 });
 
-mainTest(qase([1140, 1141], 'Pin/Unpin project'), async () => {
-  await mainTest.step('(1141) Pin project', async () => {
+demoAccountApiFixture(qase([1140, 1141], 'Pin/Unpin project'), async () => {
+  await demoAccountApiFixture.step('(1141) Pin project', async () => {
     await dashboardPage.clickAddProjectButton();
     await dashboardPage.setProjectName('Test Project');
     await dashboardPage.clickPinProjectButton();
@@ -223,7 +231,7 @@ mainTest(qase([1140, 1141], 'Pin/Unpin project'), async () => {
     await dashboardPage.checkPinnedProjectsSidebarItem('Test Project');
   });
 
-  await mainTest.step('(1140) Unpin project', async () => {
+  await demoAccountApiFixture.step('(1140) Unpin project', async () => {
     await dashboardPage.clickPinProjectButton();
     await dashboardPage.isPinUnpinButtonInactive();
     await dashboardPage.checkPinnedProjectsSidebarItem(
@@ -233,7 +241,7 @@ mainTest(qase([1140, 1141], 'Pin/Unpin project'), async () => {
   });
 });
 
-mainTest(
+demoAccountApiFixture(
   qase(
     2276,
     'Project and Library names with long names limited to 250 characters and truncated in the UI',
@@ -244,7 +252,7 @@ mainTest(
     const longName250 =
       'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check OverflowQTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Project With An Excessively Exces';
 
-    await mainTest.step(
+    await demoAccountApiFixture.step(
       'Add new project, set name and assert truncation',
       async () => {
         await dashboardPage.clickAddProjectButton();
@@ -253,7 +261,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await demoAccountApiFixture.step(
       'Pin project and assert truncation from Pinned Projects sidebar',
       async () => {
         await dashboardPage.clickPinProjectButton();
@@ -262,7 +270,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await demoAccountApiFixture.step(
       'Add second project with > 250 characters and assert name is = 250 characters',
       async () => {
         await dashboardPage.clickAddProjectButton();
@@ -271,7 +279,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await demoAccountApiFixture.step(
       'Add a library to the project and assert library name is truncated',
       async () => {
         await dashboardPage.createFileViaProjectPlaceholder();

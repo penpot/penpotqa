@@ -1,14 +1,14 @@
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([897], 'Add export setting via design panel'),
   async ({ mainPage }) => {
     await mainPage.clickCreateRectangleButton();
@@ -19,7 +19,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([899], 'Remove export setting via design panel'),
   async ({ mainPage }) => {
     await mainPage.clickCreateRectangleButton();
@@ -32,12 +32,12 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([905], 'Export boards to PDF (via main menu)'),
   async ({ mainPage }) => {
     const numBoards: number = 2;
 
-    await mainAccountFileTest.step('Create two boards', async () => {
+    await demoAccountFileTest.step('Create two boards', async () => {
       await mainPage.clickCreateBoardButton();
       await mainPage.clickViewportByCoordinates(100, 150);
       await mainPage.waitForChangeIsSaved();
@@ -46,13 +46,13 @@ mainAccountFileTest(
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step('Select created boards', async () => {
+    await demoAccountFileTest.step('Select created boards', async () => {
       await mainPage.clickMainMenuButton();
       await mainPage.clickEditMainMenuItem();
       await mainPage.clickSelectAllMainMenuSubItem();
     });
 
-    await mainAccountFileTest.step('Export boards as PDF', async () => {
+    await demoAccountFileTest.step('Export boards as PDF', async () => {
       await mainPage.clickMainMenuButton();
       await mainPage.clickFileMainMenuItem();
       await mainPage.exportBoardsAsPDFViaMenu(numBoards);

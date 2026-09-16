@@ -163,7 +163,24 @@ Some tests log in with a disposable demo Penpot account instead of the fixed `LO
   { 'skip-onboarding': true, 'expires-in': '10m' }
   ```
 
-**11. Running tests via GitHub Actions.**
+**11. Fixtures usage.**
+
+`fixtures.ts` exports several test fixtures, each wrapping a different login flow. Approximate number of test cases (`<fixture>(...)` calls, not counting `.describe`/`.beforeEach`) currently using each one — recompute anytime with `grep -rhoP "(?<!\.)\b<fixtureName>\(" tests/ | wc -l`:
+
+| Fixture                   | Login                             | Team created          | Test cases |
+| ------------------------- | --------------------------------- | --------------------- | ---------: |
+| `mainTest`                | Shared `LOGIN_EMAIL` account (UI) | No                    |         35 |
+| `registerTest`            | New account, UI registration flow | No                    |         11 |
+| `demoAccountApiFixture`   | Fresh demo account (API)          | No                    |         51 |
+| `mainAccountFileTest`     | Shared `LOGIN_EMAIL` account      | Yes + blank file      |         49 |
+| `demoAccountFileTest`     | Fresh demo account (API)          | No, just a blank file |        395 |
+| `demoAccountTeamFileTest` | Fresh demo account (API)          | Yes + blank file      |          6 |
+
+`tests/your-account/your-account-fixture.ts` adds a few more built on top of the above: `profileTest`/`giveFeedbackTest` (on `mainTest`, 3 and 1 respectively), `passwordTest` (on `demoAccountApiFixture`, 3), and `integrationsTest` (on `demoAccountApiFixture`, 2).
+
+Guidance for new tests: prefer a `demoAccount*` fixture — a fresh demo account is faster (API-only login, no UI registration) and isolated by construction, so it doesn't need its own team just to avoid colliding with other tests. Reach for `mainTest`/`mainAccountFileTest` only when a test genuinely needs the shared account's persistent identity/state (e.g. team invitations, role permissions) or has shown demo-account-specific behavior differences (a few path-tool and panel-timing quirks have turned up on fresh demo accounts — when in doubt, verify against the original fixture before trusting a migrated test).
+
+**12. Running tests via GitHub Actions.**
 
 On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:

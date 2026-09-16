@@ -1,22 +1,22 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultTextLayer();
   });
 
-  mainAccountFileTest(qase([421], 'Search text by name'), async ({ mainPage }) => {
+  demoAccountFileTest(qase([421], 'Search text by name'), async ({ mainPage }) => {
     const firstText = 'Hello world!';
     const secondText = 'Second text';
     const thirdText = 'Third text';
@@ -25,12 +25,12 @@ mainAccountFileTest.describe(() => {
     const renamedSecondText = 'test text';
     const renamedThirdText = 'abcd';
 
-    await mainAccountFileTest.step('Create text layers', async () => {
+    await demoAccountFileTest.step('Create text layers', async () => {
       await mainPage.createTextLayerByCoordinates(100, 200, secondText);
       await mainPage.createTextLayerByCoordinates(100, 300, thirdText);
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Rename text layers and assert expected layer name',
       async () => {
         await layersPanelPage.doubleClickLayerOnLayersTab(firstText);
@@ -47,7 +47,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Type in search: ${renamedFirstText} and assert 1st Text is filtered`,
       async () => {
         await layersPanelPage.openLayerSearchBar();
@@ -59,7 +59,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Type in search "test Text" and assert 1st & 2nd Texts are filtered`,
       async () => {
         await layersPanelPage.searchLayer('test Text');
@@ -70,7 +70,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Type in search "ABCD" and assert 3rd Text is filtered`,
       async () => {
         await layersPanelPage.searchLayer('ABCD');
@@ -81,7 +81,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Type in search "qwe" and assert no texts are filtered`,
       async () => {
         await layersPanelPage.searchLayer('qwe');
@@ -92,13 +92,13 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(qase([429], 'Search fonts'), async () => {
+  demoAccountFileTest(qase([429], 'Search fonts'), async () => {
     const fontName1 = 'Unlock';
     const fontName2 = 'Acme';
     const fontName3 = 'Source';
     const fontName4 = 'abcd';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Search: "${fontName1}" and assert 1st Font is filtered`,
       async () => {
         await designPanelPage.openTypographyFontDropdown();
@@ -108,7 +108,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Search: "${fontName2}" and assert 2nd Font is filtered`,
       async () => {
         await designPanelPage.searchTypographyFontFromSearch(fontName2);
@@ -117,7 +117,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Search: "${fontName3}" and assert 4 fonts which contain "${fontName3}" are found`,
       async () => {
         await designPanelPage.searchTypographyFontFromSearch(fontName3);
@@ -129,7 +129,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Search: "${fontName4}" and assert No results are found`,
       async () => {
         await designPanelPage.searchTypographyFontFromSearch(fontName4);

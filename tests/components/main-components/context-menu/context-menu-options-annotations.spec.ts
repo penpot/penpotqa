@@ -2,7 +2,7 @@ import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const annotation = 'Test annotation for automation';
@@ -10,27 +10,27 @@ const annotation = 'Test annotation for automation';
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
 });
 
-mainAccountFileTest.describe(() => {
+demoAccountFileTest.describe(() => {
   let inspectPanelPage: InspectPanelPage;
 
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     inspectPanelPage = new InspectPanelPage(page);
     await mainPage.createDefaultRectangleByCoordinates(400, 500);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1419, 1427], 'Create annotation: create, delete'),
     async ({ mainPage }) => {
       const newAnnotation = 'Edit annotation';
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(1419) Create annotation with valid text',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -46,7 +46,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('(1427) Delete annotation', async () => {
+      await demoAccountFileTest.step('(1427) Delete annotation', async () => {
         await designPanelPage.clickOnDeleteAnnotation();
         await designPanelPage.confirmDeleteAnnotation();
         await designPanelPage.waitForChangeIsSaved();
@@ -55,10 +55,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1428], 'Check annotation applies for copies and inspect tab'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Duplicate layer and create annotation on main component',
         async () => {
           await mainPage.duplicateLayerViaRightClick();
@@ -71,7 +71,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify annotation "${annotation}" is visible on copy and Inspect tab`,
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();

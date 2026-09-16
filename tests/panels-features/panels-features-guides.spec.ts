@@ -1,29 +1,29 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainAccountFileTest(qase([3258], 'Set square guides'), async ({ mainPage }) => {
-    await mainAccountFileTest.step('Add square guides', async () => {
+  demoAccountFileTest(qase([3258], 'Set square guides'), async ({ mainPage }) => {
+    await demoAccountFileTest.step('Add square guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify default square guides screenshot',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -36,10 +36,10 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3259], 'Square guides - change size'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change square guides size', async () => {
+      await demoAccountFileTest.step('Change square guides size', async () => {
         await designPanelPage.clickAddGuidesButton();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.changeSizeForGuides('8');
@@ -47,7 +47,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify changed square guides size',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -61,10 +61,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3260], 'Square guides - change opacity'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change square guides opacity', async () => {
+      await demoAccountFileTest.step('Change square guides opacity', async () => {
         await designPanelPage.clickAddGuidesButton();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickGuidesActionsButton();
@@ -73,7 +73,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify changed square guides opacity',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -87,10 +87,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3261], 'Use default square guides'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Reset square guides to default values',
         async () => {
           await designPanelPage.clickAddGuidesButton();
@@ -104,7 +104,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify square guides default screenshot',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -118,10 +118,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3262], 'Hide and unhide square guides via Main menu'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Hide square guides from main menu',
         async () => {
           await designPanelPage.clickAddGuidesButton();
@@ -138,7 +138,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Show square guides again from main menu',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot('square-guide-hide.png', {
@@ -158,29 +158,29 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(qase([3263], 'Remove square guides'), async ({ mainPage }) => {
-    await mainAccountFileTest.step('Remove square guides', async () => {
+  demoAccountFileTest(qase([3263], 'Remove square guides'), async ({ mainPage }) => {
+    await demoAccountFileTest.step('Remove square guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickRemoveGuidesButton();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step('Verify board without guides', async () => {
+    await demoAccountFileTest.step('Verify board without guides', async () => {
       await expect(mainPage.viewport).toHaveScreenshot('board-without-guide.png', {
         mask: mainPage.maskViewport(),
       });
     });
   });
 
-  mainAccountFileTest(qase([3264], 'Set columns guides'), async ({ mainPage }) => {
-    await mainAccountFileTest.step('Add columns guides', async () => {
+  demoAccountFileTest(qase([3264], 'Set columns guides'), async ({ mainPage }) => {
+    await demoAccountFileTest.step('Add columns guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify default columns guides screenshot',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -193,10 +193,10 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3267], 'Columns guides - change columns number'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change columns guides count', async () => {
+      await demoAccountFileTest.step('Change columns guides count', async () => {
         await designPanelPage.clickAddGuidesButton();
         await designPanelPage.selectGuidesType('Columns');
         await mainPage.waitForChangeIsSaved();
@@ -205,7 +205,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify changed columns guides count',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -219,10 +219,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3268], 'Columns guides - change width'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change columns guides width', async () => {
+      await demoAccountFileTest.step('Change columns guides width', async () => {
         await designPanelPage.clickAddGuidesButton();
         await designPanelPage.selectGuidesType('Columns');
         await mainPage.waitForChangeIsSaved();
@@ -234,7 +234,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify changed columns guides width',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -248,10 +248,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3269], 'Columns guides - change opacity'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Change columns guides opacity to 50',
         async () => {
           await designPanelPage.clickAddGuidesButton();
@@ -270,7 +270,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Change columns guides opacity back to 100',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -291,10 +291,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3270], 'Use default columns guides'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Reset columns guides to default values',
         async () => {
           await designPanelPage.clickAddGuidesButton();
@@ -308,7 +308,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify default columns guides screenshot',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -322,8 +322,8 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(qase([743], 'Remove columns guides'), async ({ mainPage }) => {
-    await mainAccountFileTest.step('Remove columns guides', async () => {
+  demoAccountFileTest(qase([743], 'Remove columns guides'), async ({ mainPage }) => {
+    await demoAccountFileTest.step('Remove columns guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
       await mainPage.waitForChangeIsSaved();
@@ -331,21 +331,21 @@ mainAccountFileTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step('Verify board without guides', async () => {
+    await demoAccountFileTest.step('Verify board without guides', async () => {
       await expect(mainPage.viewport).toHaveScreenshot('board-without-guide.png', {
         mask: mainPage.maskViewport(),
       });
     });
   });
 
-  mainAccountFileTest(qase([3272], 'Set rows guides'), async ({ mainPage }) => {
-    await mainAccountFileTest.step('Add rows guides', async () => {
+  demoAccountFileTest(qase([3272], 'Set rows guides'), async ({ mainPage }) => {
+    await demoAccountFileTest.step('Add rows guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Rows');
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify default rows guides screenshot',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot('rows-guide-default.png', {
@@ -355,10 +355,10 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3273], 'Rows guides - change rows number'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change rows guides count', async () => {
+      await demoAccountFileTest.step('Change rows guides count', async () => {
         await designPanelPage.clickAddGuidesButton();
         await designPanelPage.selectGuidesType('Rows');
         await mainPage.waitForChangeIsSaved();
@@ -367,7 +367,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify changed rows guides count',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -381,10 +381,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3274], 'Rows guides - change height'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change rows guides height', async () => {
+      await demoAccountFileTest.step('Change rows guides height', async () => {
         await designPanelPage.clickAddGuidesButton();
         await designPanelPage.selectGuidesType('Rows');
         await mainPage.waitForChangeIsSaved();
@@ -396,7 +396,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify changed rows guides height',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -410,10 +410,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3275], 'Rows guides - change opacity'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Change rows guides opacity to 50',
         async () => {
           await designPanelPage.clickAddGuidesButton();
@@ -432,7 +432,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Change rows guides opacity back to 100',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -455,10 +455,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3276], 'Use default rows guides'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Reset rows guides to default values',
         async () => {
           await designPanelPage.clickAddGuidesButton();
@@ -472,7 +472,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify default rows guides screenshot',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -486,10 +486,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([3257], 'Duplicate board with guides'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Duplicate board with square guides',
         async () => {
           await designPanelPage.clickAddGuidesButton();
@@ -500,7 +500,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify duplicated board keeps guides',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -514,7 +514,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2842], 'Clear guides for a given board'),
     async ({ mainPage }) => {
       const viewportBox = await mainPage.viewport.boundingBox();
@@ -522,7 +522,7 @@ mainAccountFileTest.describe(() => {
       const dropX = viewportBox.x + viewportBox.width / 2;
       const dropY = viewportBox.y + viewportBox.height / 2;
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Drag ruler guides onto the board',
         async () => {
           await mainPage.dragHorizontalGuideFromRuler(dropX, dropY);
@@ -537,7 +537,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Clear board guides via right-click context menu',
         async () => {
           await mainPage.clearBoardGuidesViaRightClick();

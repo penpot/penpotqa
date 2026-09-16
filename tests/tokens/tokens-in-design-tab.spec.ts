@@ -1,12 +1,10 @@
-import { mainAccountFileTest, mainTest } from 'fixtures';
+import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 import { TypographyToken } from '@pages/workspace/tokens/token-components/typography-tokens-component';
@@ -17,9 +15,9 @@ let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.describe('Numeric inputs', () => {
-  mainAccountFileTest.describe(() => {
-    mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.describe('Numeric inputs', () => {
+  demoAccountFileTest.describe(() => {
+    demoAccountFileTest.beforeEach(async ({ page }) => {
       tokensPage = new TokensPage(page);
       designPanelPage = new DesignPanelPage(page);
       await tokensPage.clickTokensTab();
@@ -30,7 +28,7 @@ mainAccountFileTest.describe('Numeric inputs', () => {
       await tokensPage.setsComp.isSetNameVisible('Global');
     });
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase(
         [2905, 2873],
         'Selecting a token via the Token Icon and detaching via the detach button ',
@@ -39,21 +37,21 @@ mainAccountFileTest.describe('Numeric inputs', () => {
         const tokenName: string = 'SIZING-2';
         const tokenValue: string = '2';
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           '(2905) Selecting a token via the Token Icon updates the input value applied to a shape',
           async () => {
-            await mainAccountFileTest.step('Create rectangle', async () => {
+            await demoAccountFileTest.step('Create rectangle', async () => {
               await tokensPage.createDefaultRectangleByCoordinates(100, 200);
             });
 
-            await mainAccountFileTest.step(
+            await demoAccountFileTest.step(
               'Hover on Width field in Design tab',
               async () => {
                 await designPanelPage.hoverOnWidthForLayer();
               },
             );
 
-            await mainAccountFileTest.step(
+            await demoAccountFileTest.step(
               'Open token list in Width field',
               async () => {
                 const widthFieldIndex = 1;
@@ -61,18 +59,18 @@ mainAccountFileTest.describe('Numeric inputs', () => {
               },
             );
 
-            await mainAccountFileTest.step(
+            await demoAccountFileTest.step(
               'Select token in token list by name',
               async () => {
                 await designPanelPage.selectTokenInTokenListByName(tokenName);
               },
             );
 
-            await mainAccountFileTest.step('Check applied token', async () => {
+            await demoAccountFileTest.step('Check applied token', async () => {
               await designPanelPage.checkSizeWidth(tokenValue);
             });
 
-            await mainAccountFileTest.step(
+            await demoAccountFileTest.step(
               'Hover in token value, check tooltip and detach token button',
               async () => {
                 await designPanelPage.hoverOnTokenPill(ariaLabel);
@@ -81,7 +79,7 @@ mainAccountFileTest.describe('Numeric inputs', () => {
               },
             );
 
-            await mainAccountFileTest.step(
+            await demoAccountFileTest.step(
               'Check applied token in Token tab',
               async () => {
                 await tokensPage.tokensComp.expandTokenByName(TokenClass.Sizing);
@@ -91,22 +89,22 @@ mainAccountFileTest.describe('Numeric inputs', () => {
           },
         );
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           '(2873) Detaching via detach button removes token and displays raw value in the numeric input',
           async () => {
-            await mainAccountFileTest.step('Detach token', async () => {
+            await demoAccountFileTest.step('Detach token', async () => {
               await designPanelPage.clickOnDetachTokenButton();
               await designPanelPage.checkSizeWidth(tokenValue);
             });
 
-            await mainAccountFileTest.step(
+            await demoAccountFileTest.step(
               'Check unapplied token in Token tab',
               async () => {
                 await tokensPage.tokensComp.isTokenAppliedWithName(tokenName, false);
               },
             );
 
-            await mainAccountFileTest.step('Edit width', async () => {
+            await demoAccountFileTest.step('Edit width', async () => {
               const newWidthValue: string = '10';
               await designPanelPage.changeWidthForLayer(newWidthValue);
               await designPanelPage.checkSizeWidth(newWidthValue);
@@ -117,7 +115,7 @@ mainAccountFileTest.describe('Numeric inputs', () => {
     );
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(2865, 'Broken token references are clearly displayed with a red dot'),
     async ({ page }) => {
       tokensPage = new TokensPage(page);
@@ -135,13 +133,13 @@ mainAccountFileTest.describe('Numeric inputs', () => {
         value: '{dimension-A}',
       };
 
-      await mainAccountFileTest.step('Create a dimension token', async () => {
+      await demoAccountFileTest.step('Create a dimension token', async () => {
         await tokensPage.clickTokensTab();
         await tokensPage.tokensComp.createTokenViaAddButtonAndSave(dimensionTokenA);
         await tokensPage.tokensComp.isTokenVisibleWithName(dimensionTokenA.name);
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create another dimension token referencing the first one',
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
@@ -151,27 +149,27 @@ mainAccountFileTest.describe('Numeric inputs', () => {
         },
       );
 
-      await mainAccountFileTest.step('Create rectangle', async () => {
+      await demoAccountFileTest.step('Create rectangle', async () => {
         await tokensPage.createDefaultRectangleByCoordinates(100, 200);
       });
 
-      await mainAccountFileTest.step('Open token list in Width field', async () => {
+      await demoAccountFileTest.step('Open token list in Width field', async () => {
         const widthFieldIndex = 0;
         await designPanelPage.openTokenListByIndex(widthFieldIndex);
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Select the second token in token list by name',
         async () => {
           await designPanelPage.selectTokenInTokenListByName(dimensionTokenB.name);
         },
       );
 
-      await mainAccountFileTest.step('Check applied token', async () => {
+      await demoAccountFileTest.step('Check applied token', async () => {
         await designPanelPage.checkSizeWidth(dimensionTokenA.value);
       });
 
-      await mainAccountFileTest.step('Delete the referenced token', async () => {
+      await demoAccountFileTest.step('Delete the referenced token', async () => {
         await tokensPage.tokensComp.deleteToken(dimensionTokenA.name);
         await tokensPage.tokensComp.isTokenVisibleWithName(
           dimensionTokenA.name,
@@ -179,7 +177,7 @@ mainAccountFileTest.describe('Numeric inputs', () => {
         );
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Check value and not valid reference in input',
         async () => {
           await designPanelPage.checkSizeWidth(dimensionTokenA.value);
@@ -189,7 +187,7 @@ mainAccountFileTest.describe('Numeric inputs', () => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Hover in token value and check tooltip',
         async () => {
           const errorMessage: string = `Reference in {${dimensionTokenB.name}} is not valid or is not in any active set.`;
@@ -201,116 +199,124 @@ mainAccountFileTest.describe('Numeric inputs', () => {
   );
 });
 
-mainTest.describe('Numeric inputs - imported file with sets/themes', () => {
-  const hexColor: string = '#ec9090';
-  const setName: string = 'Light';
+demoAccountApiFixture.describe(
+  'Numeric inputs - imported file with sets/themes',
+  () => {
+    const hexColor: string = '#ec9090';
+    const setName: string = 'Light';
 
-  let teamPage: TeamPage;
-  let dashboardPage: DashboardPage;
-  let mainPage: MainPage;
+    let dashboardPage: DashboardPage;
+    let mainPage: MainPage;
 
-  mainTest.beforeEach(async ({ page }) => {
-    const teamName = createTeamName();
-    teamPage = new TeamPage(page);
-    dashboardPage = new DashboardPage(page);
-    mainPage = new MainPage(page);
-    tokensPage = new TokensPage(page);
-    designPanelPage = new DesignPanelPage(page);
-    layersPanelPage = new LayersPanelPage(page);
+    demoAccountApiFixture.beforeEach(async ({ page }) => {
+      dashboardPage = new DashboardPage(page);
+      mainPage = new MainPage(page);
+      tokensPage = new TokensPage(page);
+      designPanelPage = new DesignPanelPage(page);
+      layersPanelPage = new LayersPanelPage(page);
 
-    await teamPage.createTeam(teamName);
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.openSidebarItem('Drafts');
-    await dashboardPage.importFileFromProjectPage(
-      'documents/num-inputs-in-set-themes.penpot',
+      await dashboardPage.isHeaderDisplayed('Projects');
+      await dashboardPage.openSidebarItem('Drafts');
+      await dashboardPage.importFileFromProjectPage(
+        'documents/num-inputs-in-set-themes.penpot',
+      );
+      await dashboardPage.isFilePresentWithName('num inputs in set/themes');
+      await dashboardPage.openFileWithName('num inputs in set/themes');
+      await mainPage.isMainPageLoaded();
+      await layersPanelPage.selectLayerByName('Rectangle');
+      await tokensPage.clickTokensTab();
+    });
+
+    demoAccountApiFixture(
+      qase(
+        2891,
+        'Token pill updates displayed value after token value change in active token set',
+      ),
+      async () => {
+        const newHexColor: string = '#f1d0d0';
+
+        await demoAccountApiFixture.step(
+          'Hover on fill color input and check token value in tootltip message',
+          async () => {
+            const messageText = `Resolved value: ${hexColor}`;
+            await designPanelPage.checkTooltipInFillColorInput(messageText);
+          },
+        );
+
+        await demoAccountApiFixture.step(
+          'Click on the Mode/Light token set',
+          async () => {
+            await tokensPage.setsComp.isSetNameVisible(setName);
+            await tokensPage.setsComp.clickSetItemButton(setName);
+          },
+        );
+
+        await demoAccountApiFixture.step('Change color token value', async () => {
+          const colorToken: MainToken<TokenClass> = {
+            class: TokenClass.Color,
+            name: 'red',
+            value: newHexColor,
+          };
+          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+          await tokensPage.tokensComp.editTokenViaRightClickAndSave(colorToken);
+          await mainPage.waitForChangeIsSaved();
+        });
+
+        await demoAccountApiFixture.step(
+          'Hover on fill color input and check token value in tootltip message',
+          async () => {
+            const messageText = `Resolved value: ${newHexColor}`;
+            await designPanelPage.checkTooltipInFillColorInput(messageText);
+          },
+        );
+      },
     );
-    await dashboardPage.isFilePresentWithName('num inputs in set/themes');
-    await dashboardPage.openFileWithName('num inputs in set/themes');
-    await mainPage.isMainPageLoaded();
-    await layersPanelPage.selectLayerByName('Rectangle');
-    await tokensPage.clickTokensTab();
-  });
 
-  mainTest(
-    qase(
-      2891,
-      'Token pill updates displayed value after token value change in active token set',
-    ),
-    async () => {
-      const newHexColor: string = '#f1d0d0';
+    demoAccountApiFixture(
+      qase(
+        2893,
+        'Token pill shows unresolved state when token set becomes inactive',
+      ),
+      async () => {
+        const tokenName: string = 'red';
 
-      await mainTest.step(
-        'Hover on fill color input and check token value in tootltip message',
-        async () => {
-          const messageText = `Resolved value: ${hexColor}`;
-          await designPanelPage.checkTooltipInFillColorInput(messageText);
-        },
-      );
+        await demoAccountApiFixture.step(
+          'Hover on fill color input and check token value in tootltip message',
+          async () => {
+            const messageText = `Resolved value: ${hexColor}`;
+            await designPanelPage.checkTooltipInFillColorInput(messageText);
+          },
+        );
 
-      await mainTest.step('Click on the Mode/Light token set', async () => {
-        await tokensPage.setsComp.isSetNameVisible(setName);
-        await tokensPage.setsComp.clickSetItemButton(setName);
-      });
+        await demoAccountApiFixture.step(
+          'Deactivate the Mode/Light set',
+          async () => {
+            await tokensPage.setsComp.isSetNameVisible(setName);
+            await tokensPage.setsComp.clickOnSetCheckboxByName(setName);
+          },
+        );
 
-      await mainTest.step('Change color token value', async () => {
-        const colorToken: MainToken<TokenClass> = {
-          class: TokenClass.Color,
-          name: 'red',
-          value: newHexColor,
-        };
-        await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-        await tokensPage.tokensComp.editTokenViaRightClickAndSave(colorToken);
-        await mainPage.waitForChangeIsSaved();
-      });
+        await demoAccountApiFixture.step(
+          'Check not in any active set red dot in input',
+          async () => {
+            await designPanelPage.isNotTokenInAnyActiveSetButtonVisible(tokenName);
+          },
+        );
 
-      await mainTest.step(
-        'Hover on fill color input and check token value in tootltip message',
-        async () => {
-          const messageText = `Resolved value: ${newHexColor}`;
-          await designPanelPage.checkTooltipInFillColorInput(messageText);
-        },
-      );
-    },
-  );
+        await demoAccountApiFixture.step(
+          'Hover on fill color input and check error in tootltip message',
+          async () => {
+            const messageText: string = `{${tokenName}} token is not in any active set or has an invalid value.`;
+            await designPanelPage.checkTooltipInFillColorInput(messageText);
+          },
+        );
+      },
+    );
+  },
+);
 
-  mainTest(
-    qase(2893, 'Token pill shows unresolved state when token set becomes inactive'),
-    async () => {
-      const tokenName: string = 'red';
-
-      await mainTest.step(
-        'Hover on fill color input and check token value in tootltip message',
-        async () => {
-          const messageText = `Resolved value: ${hexColor}`;
-          await designPanelPage.checkTooltipInFillColorInput(messageText);
-        },
-      );
-
-      await mainTest.step('Deactivate the Mode/Light set', async () => {
-        await tokensPage.setsComp.isSetNameVisible(setName);
-        await tokensPage.setsComp.clickOnSetCheckboxByName(setName);
-      });
-
-      await mainTest.step(
-        'Check not in any active set red dot in input',
-        async () => {
-          await designPanelPage.isNotTokenInAnyActiveSetButtonVisible(tokenName);
-        },
-      );
-
-      await mainTest.step(
-        'Hover on fill color input and check error in tootltip message',
-        async () => {
-          const messageText: string = `{${tokenName}} token is not in any active set or has an invalid value.`;
-          await designPanelPage.checkTooltipInFillColorInput(messageText);
-        },
-      );
-    },
-  );
-});
-
-mainAccountFileTest.describe('Typography token', () => {
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.describe('Typography token', () => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
     layersPanelPage = new LayersPanelPage(page);
@@ -344,10 +350,10 @@ mainAccountFileTest.describe('Typography token', () => {
     description: 'Autotest typography token',
   };
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(3017, 'Unresolved token state displayed when applied token is deleted'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create a typography token and apply it to a text layer',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
@@ -358,12 +364,12 @@ mainAccountFileTest.describe('Typography token', () => {
         },
       );
 
-      await mainAccountFileTest.step('Delete token', async () => {
+      await demoAccountFileTest.step('Delete token', async () => {
         await tokensPage.tokensComp.deleteToken(TYPO_TOKEN.name);
         await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name, false);
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Assert design tab displays an unresolved token state',
         async () => {
           await designPanelPage.hoverTypographyToken();
@@ -375,19 +381,19 @@ mainAccountFileTest.describe('Typography token', () => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [3020, 3021],
       'Applying typography token from filtered search results applies correct token / Detach typography token',
     ),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(3020) Applying typography token from filtered search results applies correct token',
         async () => {
-          await mainAccountFileTest.step(
+          await demoAccountFileTest.step(
             'Create two typography tokens and select layer',
             async () => {
-              await mainAccountFileTest.step(
+              await demoAccountFileTest.step(
                 'Create a FIRST typography token',
                 async () => {
                   await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
@@ -399,7 +405,7 @@ mainAccountFileTest.describe('Typography token', () => {
                 },
               );
 
-              await mainAccountFileTest.step(
+              await demoAccountFileTest.step(
                 'Create a SECOND typography token and apply it to a text layer',
                 async () => {
                   await tokensPage.tokensComp.clickOnAddTokenAndFillData(
@@ -413,14 +419,14 @@ mainAccountFileTest.describe('Typography token', () => {
                 },
               );
 
-              await mainAccountFileTest.step('Select text layer', async () => {
+              await demoAccountFileTest.step('Select text layer', async () => {
                 await layersPanelPage.openLayersTab();
                 await layersPanelPage.selectLayerByName('Hello world!');
               });
             },
           );
 
-          await mainAccountFileTest.step(
+          await demoAccountFileTest.step(
             `From Design tab, open tokens list, apply ${TYPO_TOKEN_2.name} and assert text options are not visible and underline/strike through are disabled`,
             async () => {
               await designPanelPage.searchAndApplyTypographyTokenFromTokensList(
@@ -433,7 +439,7 @@ mainAccountFileTest.describe('Typography token', () => {
             },
           );
 
-          await mainAccountFileTest.step(
+          await demoAccountFileTest.step(
             'Assert typography values from typography token modal',
             async () => {
               await designPanelPage.hoverAndAssertTypographyTokenValues(
@@ -453,13 +459,13 @@ mainAccountFileTest.describe('Typography token', () => {
         },
       );
 
-      await mainAccountFileTest.step('(3021) Detach typography token', async () => {
-        await mainAccountFileTest.step(`Click on detach button`, async () => {
+      await demoAccountFileTest.step('(3021) Detach typography token', async () => {
+        await demoAccountFileTest.step(`Click on detach button`, async () => {
           await designPanelPage.clickOnDetachTokenButton();
           await designPanelPage.textOptionsAreVisible();
         });
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           `Assert typography values have not changed`,
           async () => {
             await designPanelPage.checkFontName(TYPO_TOKEN_2.fontFamily);

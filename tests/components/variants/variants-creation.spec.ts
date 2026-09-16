@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
@@ -11,7 +11,7 @@ let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   assetsPanelPage = new AssetsPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
@@ -19,7 +19,7 @@ mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2440], 'Create variants by design panel'),
   async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -35,7 +35,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2396], 'Creating variants from a component group'),
   async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(100, 300);
@@ -58,7 +58,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2425], 'Create variants by copying an existing component'),
   async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -77,7 +77,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2570], 'Create a variant by "+" button on Viewport (Component selected)'),
   async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);

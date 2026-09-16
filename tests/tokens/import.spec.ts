@@ -1,7 +1,6 @@
-import { mainAccountFileTest, mainTest } from 'fixtures';
+import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { BaseComponent } from '@pages/base-component';
@@ -9,26 +8,25 @@ import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { SampleData } from 'helpers/sample-data';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
 const sampleData: SampleData = new SampleData();
 
 let tokensPage: TokensPage;
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     tokensPage = new TokensPage(page);
     await mainPage.clickMoveButton();
     await tokensPage.clickTokensTab();
     await tokensPage.toolsComp.clickOnTokenToolsButton();
   });
 
-  mainAccountFileTest(qase([2213], 'Import tokens'), async () => {
-    await mainAccountFileTest.step('Import tokens JSON file', async () => {
+  demoAccountFileTest(qase([2213], 'Import tokens'), async () => {
+    await demoAccountFileTest.step('Import tokens JSON file', async () => {
       await tokensPage.toolsComp.importTokens('documents/tokens-example.json');
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify themes and sets are imported',
       async () => {
         await tokensPage.themesComp.checkSelectedTheme('2 active themes');
@@ -37,12 +35,12 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2240], 'Error while importing a tokens file'),
     async () => {
       const errorCount = 1;
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Import JSON with invalid format and verify parse error',
         async () => {
           await tokensPage.toolsComp.importTokens(
@@ -57,7 +55,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Import JSON with invalid token naming and verify error with detail count',
         async () => {
           await tokensPage.toolsComp.clickOnTokenToolsButton();
@@ -76,20 +74,20 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2293], 'Successful import of tokens file with validation errors'),
     async () => {
       const firstBadTokenName = 'dark-muted';
       const errorCount = 4;
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Import tokens file with validation errors',
         async () => {
           await tokensPage.toolsComp.importTokens('documents/stitches-tokens.json');
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${firstBadTokenName}" token is visible and invalid token count is ${errorCount}`,
         async () => {
           await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
@@ -100,14 +98,14 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(qase([2252], 'Import tokens multi-file folder'), async () => {
-    await mainAccountFileTest.step('Import tokens multi-file folder', async () => {
+  demoAccountFileTest(qase([2252], 'Import tokens multi-file folder'), async () => {
+    await demoAccountFileTest.step('Import tokens multi-file folder', async () => {
       await tokensPage.toolsComp.importTokensFolder(
         'documents/tokens-folder-example',
       );
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify theme and sets are imported',
       async () => {
         await tokensPage.themesComp.checkSelectedTheme('Mode / Light');
@@ -117,11 +115,11 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest.describe(() => {
-    mainAccountFileTest(
+  demoAccountFileTest.describe(() => {
+    demoAccountFileTest(
       qase([2375], 'Import tokens .zip (with a single file inside)'),
       async () => {
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Import tokens zip with a single file',
           async () => {
             await tokensPage.toolsComp.importTokensZip(
@@ -130,7 +128,7 @@ mainAccountFileTest.describe(() => {
           },
         );
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Verify themes and sets are imported',
           async () => {
             await tokensPage.themesComp.checkSelectedTheme('3 active themes');
@@ -140,10 +138,10 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase([2376], 'Import tokens .zip (with a multi-file inside)'),
       async () => {
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Import tokens zip with multiple files',
           async () => {
             await tokensPage.toolsComp.importTokensZip(
@@ -152,7 +150,7 @@ mainAccountFileTest.describe(() => {
           },
         );
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Verify themes and sets are imported',
           async () => {
             await tokensPage.themesComp.checkSelectedTheme('3 active themes');
@@ -162,7 +160,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase(
         [2377],
         'Import tokens .zip (with a multi-file inside) skipping not yet supported tokens',
@@ -170,7 +168,7 @@ mainAccountFileTest.describe(() => {
       async ({ page }) => {
         const baseComp: BaseComponent = new BaseComponent(page);
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Import tokens zip with skipped tokens',
           async () => {
             await tokensPage.toolsComp.importTokensZip(
@@ -179,7 +177,7 @@ mainAccountFileTest.describe(() => {
           },
         );
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Verify import warning message and skipped token count',
           async () => {
             await tokensPage.checkImportErrorMessage(
@@ -190,7 +188,7 @@ mainAccountFileTest.describe(() => {
           },
         );
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Close modal and verify import message is hidden',
           async () => {
             await baseComp.closeModalWindow();
@@ -201,12 +199,12 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase([2384], 'Import tokens .zip (empty or invalid)'),
       async ({ page }) => {
         const baseComp: BaseComponent = new BaseComponent(page);
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Import empty or invalid zip file',
           async () => {
             await tokensPage.toolsComp.importTokensZip(
@@ -215,7 +213,7 @@ mainAccountFileTest.describe(() => {
           },
         );
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Verify error message and close modal',
           async () => {
             await tokensPage.checkImportErrorMessage(
@@ -231,118 +229,135 @@ mainAccountFileTest.describe(() => {
   });
 });
 
-mainTest.describe(() => {
-  let teamPage: TeamPage;
+demoAccountApiFixture.describe(() => {
   let dashboardPage: DashboardPage;
   let mainPage: MainPage;
   let tokensPage: TokensPage;
   let assetsPanelPage: AssetsPanelPage;
 
-  mainTest.beforeEach(async ({ page }) => {
-    const teamName = createTeamName();
-    teamPage = new TeamPage(page);
+  demoAccountApiFixture.beforeEach(async ({ page }) => {
     dashboardPage = new DashboardPage(page);
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     assetsPanelPage = new AssetsPanelPage(page);
 
-    await teamPage.createTeam(teamName);
     await dashboardPage.isHeaderDisplayed('Projects');
   });
 
-  mainTest(qase([2221], 'Import .penpot file with tokens'), async () => {
-    await mainTest.step('Import penpot file and open it', async () => {
-      await dashboardPage.openSidebarItem('Drafts');
-      await dashboardPage.importFileFromProjectPage(
-        'documents/penpot-file-with-tokens.penpot',
+  demoAccountApiFixture(
+    qase([2221], 'Import .penpot file with tokens'),
+    async () => {
+      await demoAccountApiFixture.step(
+        'Import penpot file and open it',
+        async () => {
+          await dashboardPage.openSidebarItem('Drafts');
+          await dashboardPage.importFileFromProjectPage(
+            'documents/penpot-file-with-tokens.penpot',
+          );
+          await dashboardPage.isFilePresentWithName(
+            '⚙️ Design Tokens Starter Set | Edited',
+          );
+          await dashboardPage.openFileWithName(
+            '⚙️ Design Tokens Starter Set | Edited',
+          );
+          await mainPage.isMainPageLoaded();
+          await tokensPage.clickTokensTab();
+        },
       );
-      await dashboardPage.isFilePresentWithName(
-        '⚙️ Design Tokens Starter Set | Edited',
+
+      await demoAccountApiFixture.step(
+        'Verify themes and sets are imported',
+        async () => {
+          await tokensPage.themesComp.checkSelectedTheme('2 active themes');
+          await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+        },
       );
-      await dashboardPage.openFileWithName('⚙️ Design Tokens Starter Set | Edited');
-      await mainPage.isMainPageLoaded();
-      await tokensPage.clickTokensTab();
-    });
+    },
+  );
 
-    await mainTest.step('Verify themes and sets are imported', async () => {
-      await tokensPage.themesComp.checkSelectedTheme('2 active themes');
-      await tokensPage.setsComp.isSetNameVisible('client_theme_template');
-    });
-  });
+  demoAccountApiFixture(
+    qase([2845], 'Import Tokens from Linked Library'),
+    async () => {
+      // Data from imported shared library
+      const linkedLibraryName = 'Rectangle with set and theme tokens';
+      const linkedLibraryFilePath =
+        'documents/tokens/shared-library-rectangle-with-set-themes-tokens.penpot';
+      const setsNames = ['Dark', 'Light', 'Desktop', 'Mobile'];
 
-  mainTest(qase([2845], 'Import Tokens from Linked Library'), async () => {
-    // Data from imported shared library
-    const linkedLibraryName = 'Rectangle with set and theme tokens';
-    const linkedLibraryFilePath =
-      'documents/tokens/shared-library-rectangle-with-set-themes-tokens.penpot';
-    const setsNames = ['Dark', 'Light', 'Desktop', 'Mobile'];
+      // Color token created before importing the library, to verify that it is overridden by the imported tokens
+      const colorToken: MainToken<TokenClass> = {
+        class: TokenClass.Color,
+        name: 'color',
+        value: sampleData.color.greenHexCode,
+      };
 
-    // Color token created before importing the library, to verify that it is overridden by the imported tokens
-    const colorToken: MainToken<TokenClass> = {
-      class: TokenClass.Color,
-      name: 'color',
-      value: sampleData.color.greenHexCode,
-    };
+      await demoAccountApiFixture.step(
+        'Import a .penpot file shared library with tokens, sets, themes and a rectangle',
+        async () => {
+          await dashboardPage.openSidebarItem('Drafts');
+          await dashboardPage.importFileFromProjectPage(linkedLibraryFilePath);
+          await dashboardPage.isFilePresentWithName(linkedLibraryName);
+        },
+      );
 
-    await mainTest.step(
-      'Import a .penpot file shared library with tokens, sets, themes and a rectangle',
-      async () => {
-        await dashboardPage.openSidebarItem('Drafts');
-        await dashboardPage.importFileFromProjectPage(linkedLibraryFilePath);
-        await dashboardPage.isFilePresentWithName(linkedLibraryName);
-      },
-    );
+      await demoAccountApiFixture.step(
+        'Create a new file, open and add a rectangle',
+        async () => {
+          await dashboardPage.openSidebarItem('Projects');
+          await dashboardPage.createFileViaTitlePanel();
+          await mainPage.isMainPageLoaded();
+          await mainPage.createDefaultRectangleByCoordinates(320, 210);
+        },
+      );
 
-    await mainTest.step('Create a new file, open and add a rectangle', async () => {
-      await dashboardPage.openSidebarItem('Projects');
-      await dashboardPage.createFileViaTitlePanel();
-      await mainPage.isMainPageLoaded();
-      await mainPage.createDefaultRectangleByCoordinates(320, 210);
-    });
+      await demoAccountApiFixture.step(
+        `From Tokens, create a color token with value ${colorToken.value} and apply to rectangle`,
+        async () => {
+          await tokensPage.clickTokensTab();
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken);
+          await tokensPage.tokensComp.isTokenVisibleWithName(colorToken.name);
+          await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
+        },
+      );
 
-    await mainTest.step(
-      `From Tokens, create a color token with value ${colorToken.value} and apply to rectangle`,
-      async () => {
-        await tokensPage.clickTokensTab();
-        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken);
-        await tokensPage.tokensComp.isTokenVisibleWithName(colorToken.name);
-        await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
-      },
-    );
+      await demoAccountApiFixture.step(
+        'From ASSETS tab, click on Manage Libraries and add shared library',
+        async () => {
+          await assetsPanelPage.clickAssetsTab();
+          await assetsPanelPage.clickLibrariesButton();
+          await assetsPanelPage.firstLibraryItemContainsLibraryName(
+            linkedLibraryName,
+          );
+          await assetsPanelPage.connectSharedLibraryByName(linkedLibraryName);
+        },
+      );
 
-    await mainTest.step(
-      'From ASSETS tab, click on Manage Libraries and add shared library',
-      async () => {
-        await assetsPanelPage.clickAssetsTab();
-        await assetsPanelPage.clickLibrariesButton();
-        await assetsPanelPage.firstLibraryItemContainsLibraryName(linkedLibraryName);
-        await assetsPanelPage.connectSharedLibraryByName(linkedLibraryName);
-      },
-    );
+      await demoAccountApiFixture.step(
+        'Click on Import Tokens from shared library and confirm',
+        async () => {
+          await assetsPanelPage.importTokensFromSharedLibraryByName(
+            linkedLibraryName,
+          );
+          await assetsPanelPage.isImportTokensModalVisible();
+          await assetsPanelPage.clickImportTokensFromSharedLibrary();
+          await assetsPanelPage.clickCloseModalButton();
+        },
+      );
 
-    await mainTest.step(
-      'Click on Import Tokens from shared library and confirm',
-      async () => {
-        await assetsPanelPage.importTokensFromSharedLibraryByName(linkedLibraryName);
-        await assetsPanelPage.isImportTokensModalVisible();
-        await assetsPanelPage.clickImportTokensFromSharedLibrary();
-        await assetsPanelPage.clickCloseModalButton();
-      },
-    );
-
-    await mainTest.step(
-      'From Tokens tab, assert imported tokens, sets and themes are visible',
-      async () => {
-        await tokensPage.clickTokensTab();
-        await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-        await tokensPage.tokensComp.isTokenVisibleWithName('red');
-        await tokensPage.setsComp.isSetNameVisible(setsNames[0]);
-        await tokensPage.setsComp.isSetNameVisible(setsNames[1]);
-        await tokensPage.setsComp.isSetNameVisible(setsNames[2]);
-        await tokensPage.setsComp.isSetNameVisible(setsNames[3]);
-      },
-    );
-  });
+      await demoAccountApiFixture.step(
+        'From Tokens tab, assert imported tokens, sets and themes are visible',
+        async () => {
+          await tokensPage.clickTokensTab();
+          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
+          await tokensPage.tokensComp.isTokenVisibleWithName('red');
+          await tokensPage.setsComp.isSetNameVisible(setsNames[0]);
+          await tokensPage.setsComp.isSetNameVisible(setsNames[1]);
+          await tokensPage.setsComp.isSetNameVisible(setsNames[2]);
+          await tokensPage.setsComp.isSetNameVisible(setsNames[3]);
+        },
+      );
+    },
+  );
 });

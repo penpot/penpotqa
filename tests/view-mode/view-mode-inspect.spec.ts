@@ -3,22 +3,22 @@ import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest, mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let viewModePage: ViewModePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   viewModePage = new ViewModePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
-  await mainAccountFileTest.slow();
+  await demoAccountFileTest.slow();
 });
 
-mainAccountFileTest(qase([706], 'Switch to Inspect view'), async ({ mainPage }) => {
-  await mainAccountFileTest.step('Create board and open view mode', async () => {
+demoAccountFileTest(qase([706], 'Switch to Inspect view'), async ({ mainPage }) => {
+  await demoAccountFileTest.step('Create board and open view mode', async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -26,14 +26,14 @@ mainAccountFileTest(qase([706], 'Switch to Inspect view'), async ({ mainPage }) 
     await viewModePage.waitForViewerSection(45000);
   });
 
-  await mainAccountFileTest.step('Open Inspect tab and verify', async () => {
+  await demoAccountFileTest.step('Open Inspect tab and verify', async () => {
     await viewModePage.openInspectTab();
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-inspect-page-image.png',
     );
   });
 
-  await mainAccountFileTest.step('Open Interactions tab and verify', async () => {
+  await demoAccountFileTest.step('Open Interactions tab and verify', async () => {
     await viewModePage.openInteractionsTab();
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-interactions-page-image.png',
@@ -41,12 +41,12 @@ mainAccountFileTest(qase([706], 'Switch to Inspect view'), async ({ mainPage }) 
   });
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([717], 'Inspect functionality - Export'),
   async ({ mainPage }) => {
     let inspectPanelPage: InspectPanelPage;
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create board with a rectangle inside it',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -60,7 +60,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Open view mode and Inspect > Computed tab',
       async () => {
         const newPage = await viewModePage.clickViewModeShortcut();
@@ -73,7 +73,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Add export for the element and verify',
       async () => {
         await designPanelPage.clickAddExportButtonForViewMode();
@@ -84,7 +84,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Export the element', async () => {
+    await demoAccountFileTest.step('Export the element', async () => {
       await designPanelPage.clickExportElementButton(viewModePage.page);
     });
   },
@@ -92,7 +92,9 @@ mainAccountFileTest(
 
 mainAccountFileTest(
   qase([1785], 'Switch between layers from left menu'),
-  async ({ mainPage }) => {
+  async ({ page, mainPage }) => {
+    designPanelPage = new DesignPanelPage(page);
+    await mainAccountFileTest.slow();
     await mainAccountFileTest.step(
       'Create board with image, rectangle, ellipse, text and path layers',
       async () => {
@@ -174,14 +176,14 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(qase([1787], 'Copy layout and paste'), async ({ mainPage }) => {
-  await mainAccountFileTest.step('Create board', async () => {
+demoAccountFileTest(qase([1787], 'Copy layout and paste'), async ({ mainPage }) => {
+  await demoAccountFileTest.step('Create board', async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await mainPage.waitForChangeIsSaved();
   });
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Open view mode and Inspect > Computed tab',
     async () => {
       const newPage = await viewModePage.clickViewModeShortcut();
@@ -194,7 +196,7 @@ mainAccountFileTest(qase([1787], 'Copy layout and paste'), async ({ mainPage }) 
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Copy width and verify it is copied to clipboard',
     async () => {
       await viewModePage.copyWidth();

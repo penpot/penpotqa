@@ -1,13 +1,13 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   await mainPage.clickMoveButton();
@@ -21,7 +21,7 @@ mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.waitForChangeIsSaved();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2398], 'Add Variant to a component on the canvas'),
   async ({ mainPage }) => {
     await mainPage.clickViewportTwice();
@@ -40,7 +40,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2399], 'Add Variant to a component from the Layers tab'),
   async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 500);
@@ -53,7 +53,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2404], 'Delete variant from the component using the context menu'),
   async ({ mainPage }) => {
     await mainPage.deleteLayerViaRightClickByName('Value 2');
@@ -63,7 +63,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2407], 'Restoring a deleted variant from the child component'),
   async ({ mainPage }) => {
     await layersPanelPage.selectLayerByName('Value 1');
@@ -81,7 +81,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase(
     [2409],
     'Add Variants to a component by cutting and pasting the main component',
@@ -98,7 +98,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase(
     [2410],
     'Remove variant from a group cutting and pasting it outside variant component',
@@ -114,7 +114,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2413], 'Remove the last component from the variants component'),
   async ({ mainPage }) => {
     await layersPanelPage.selectLayerByName('Value 1');
@@ -132,7 +132,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2419], 'Changing the component frame in the design panel'),
   async ({ mainPage }) => {
     await mainPage.pressHideShowRulersShortcut();

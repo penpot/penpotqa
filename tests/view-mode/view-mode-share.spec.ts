@@ -6,7 +6,7 @@ import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { expect, Page } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountTeamFileTest } from 'fixtures';
 import {
   getVerificationMessage,
   waitMessage,
@@ -22,41 +22,44 @@ let profilePage: ProfilePage;
 let loginPage: LoginPage;
 let registerPage: RegisterPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountTeamFileTest.beforeEach(async ({ page }) => {
   pagesPanelPage = new PagesPanelPage(page);
   viewModePage = new ViewModePage(page);
   profilePage = new ProfilePage(page);
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
-  await mainAccountFileTest.slow();
+  await demoAccountTeamFileTest.slow();
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest(
+demoAccountTeamFileTest.describe(() => {
+  demoAccountTeamFileTest(
     qase([694], 'Share prototype - destroy link'),
     async ({ page, mainPage }) => {
       let shareLink: string;
 
-      await mainAccountFileTest.step('Create board and open view mode', async () => {
-        await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await mainPage.waitForChangeIsSaved();
-        const newPage = await viewModePage.clickViewModeShortcut();
-        viewModePage = new ViewModePage(newPage);
-        await viewModePage.waitForViewerSection(45000);
-      });
+      await demoAccountTeamFileTest.step(
+        'Create board and open view mode',
+        async () => {
+          await mainPage.createDefaultBoardByCoordinates(300, 300);
+          await mainPage.waitForChangeIsSaved();
+          const newPage = await viewModePage.clickViewModeShortcut();
+          viewModePage = new ViewModePage(newPage);
+          await viewModePage.waitForViewerSection(45000);
+        },
+      );
 
-      await mainAccountFileTest.step('Get and copy the share link', async () => {
+      await demoAccountTeamFileTest.step('Get and copy the share link', async () => {
         await viewModePage.clickShareButton();
         await viewModePage.clickGetLinkButton();
         shareLink = await viewModePage.clickCopyLinkButton();
         await viewModePage.isSuccessMessageDisplayed('Link copied successfully');
       });
 
-      await mainAccountFileTest.step('Destroy the share link', async () => {
+      await demoAccountTeamFileTest.step('Destroy the share link', async () => {
         await viewModePage.clickDestroyLinkButton();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Log out and verify the destroyed link is no longer accessible',
         async () => {
           await mainPage.clickPencilBoxButton();
@@ -74,21 +77,24 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountTeamFileTest(
     qase([696], 'Share prototype - manage permissions ("Can comment")'),
     async ({ page, mainPage }) => {
       let shareLink: string;
       let newPage: Page;
 
-      await mainAccountFileTest.step('Create board and open view mode', async () => {
-        await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await mainPage.waitForChangeIsSaved();
-        newPage = await viewModePage.clickViewModeShortcut();
-        viewModePage = new ViewModePage(newPage);
-        await viewModePage.waitForViewerSection(45000);
-      });
+      await demoAccountTeamFileTest.step(
+        'Create board and open view mode',
+        async () => {
+          await mainPage.createDefaultBoardByCoordinates(300, 300);
+          await mainPage.waitForChangeIsSaved();
+          newPage = await viewModePage.clickViewModeShortcut();
+          viewModePage = new ViewModePage(newPage);
+          await viewModePage.waitForViewerSection(45000);
+        },
+      );
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Set "Can comment" permission for all users and get the share link',
         async () => {
           await viewModePage.clickShareButton();
@@ -108,7 +114,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Log in as the second user and open the shared link',
         async () => {
           await loginAsSecondUser(page);
@@ -135,36 +141,45 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Open comments panel and verify', async () => {
-        await viewModePage.clickCommentsButton();
-        await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-          'view-mode-shared-comments-image.png',
-        );
-      });
+      await demoAccountTeamFileTest.step(
+        'Open comments panel and verify',
+        async () => {
+          await viewModePage.clickCommentsButton();
+          await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+            'view-mode-shared-comments-image.png',
+          );
+        },
+      );
 
-      await mainAccountFileTest.step('Return to dashboard and log out', async () => {
-        await viewModePage.gotoLink(process.env.BASE_URL);
-        await mainPage.isHeaderDisplayed('Projects');
-        await profilePage.logout();
-      });
+      await demoAccountTeamFileTest.step(
+        'Return to dashboard and log out',
+        async () => {
+          await viewModePage.gotoLink(process.env.BASE_URL);
+          await mainPage.isHeaderDisplayed('Projects');
+          await profilePage.logout();
+        },
+      );
     },
   );
 
-  mainAccountFileTest(
+  demoAccountTeamFileTest(
     qase([697], 'Share prototype - manage permissions ("Can inspect code")'),
     async ({ page, mainPage }) => {
       let shareLink: string;
       let newPage: Page;
 
-      await mainAccountFileTest.step('Create board and open view mode', async () => {
-        await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await mainPage.waitForChangeIsSaved();
-        newPage = await viewModePage.clickViewModeShortcut();
-        viewModePage = new ViewModePage(newPage);
-        await viewModePage.waitForViewerSection(45000);
-      });
+      await demoAccountTeamFileTest.step(
+        'Create board and open view mode',
+        async () => {
+          await mainPage.createDefaultBoardByCoordinates(300, 300);
+          await mainPage.waitForChangeIsSaved();
+          newPage = await viewModePage.clickViewModeShortcut();
+          viewModePage = new ViewModePage(newPage);
+          await viewModePage.waitForViewerSection(45000);
+        },
+      );
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Set "Can inspect code" permission for all users and get the share link',
         async () => {
           await viewModePage.clickShareButton();
@@ -184,7 +199,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Log in as the second user and open the shared link',
         async () => {
           await page.context().clearCookies();
@@ -212,7 +227,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Open Inspect tab code and verify',
         async () => {
           const inspectPanelPage = new InspectPanelPage(page);
@@ -228,26 +243,29 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Return to dashboard and log out', async () => {
-        await viewModePage.gotoLink(process.env.BASE_URL);
-        await mainPage.isHeaderDisplayed('Projects');
-        await loginPage.acceptCookie();
-        await profilePage.logout();
-      });
+      await demoAccountTeamFileTest.step(
+        'Return to dashboard and log out',
+        async () => {
+          await viewModePage.gotoLink(process.env.BASE_URL);
+          await mainPage.isHeaderDisplayed('Projects');
+          await loginPage.acceptCookie();
+          await profilePage.logout();
+        },
+      );
     },
   );
 
-  mainAccountFileTest(
+  demoAccountTeamFileTest(
     qase([702], 'Comments dropdown (All and Only your comments)'),
     async ({ page, teamName, teamPage, dashboardPage, mainPage }) => {
-      await mainAccountFileTest.slow();
+      await demoAccountTeamFileTest.slow();
       const firstAdmin = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
       let commentsPanelPage: CommentsPanelPage;
       let firstInvite: Awaited<ReturnType<typeof waitMessage>>;
       let secondPage: Page;
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Post a comment as the main user and go back to dashboard',
         async () => {
           await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -267,7 +285,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Invite a second admin to the team',
         async () => {
           await teamPage.openInvitationsPageViaOptionsMenu();
@@ -281,7 +299,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Register the invited admin account',
         async () => {
           await profilePage.logout();
@@ -300,7 +318,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Open the file as the second admin and post a comment, then verify',
         async () => {
           await dashboardPage.openFile();
@@ -323,7 +341,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountTeamFileTest.step(
         'Filter to show only your comments and verify',
         async () => {
           await viewModePage.openCommentsDropdown();
@@ -338,18 +356,13 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Return to dashboard and log out', async () => {
-        await mainPage.backToDashboardFromFileEditor();
-        await profilePage.logout();
-      });
+      await demoAccountTeamFileTest.step(
+        'Return to dashboard and log out',
+        async () => {
+          await mainPage.backToDashboardFromFileEditor();
+          await profilePage.logout();
+        },
+      );
     },
   );
-
-  mainAccountFileTest.afterEach(async ({ dashboardPage }) => {
-    await loginPage.isLoginPageOpened();
-    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-  });
 });

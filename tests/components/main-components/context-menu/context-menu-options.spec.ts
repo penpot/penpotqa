@@ -4,7 +4,7 @@ import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let assetsPanelPage: AssetsPanelPage;
@@ -13,7 +13,7 @@ let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   basePage = new BasePage(page);
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
@@ -21,18 +21,18 @@ mainAccountFileTest.beforeEach(async ({ page }) => {
   assetsPanelPage = new AssetsPanelPage(page);
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await demoAccountFileTest.slow();
     await mainPage.createDefaultRectangleByCoordinates(400, 500);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1454], 'Duplicate main component'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Duplicate component from assets tab',
         async () => {
           await assetsPanelPage.clickAssetsTab();
@@ -42,7 +42,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify duplicated component in assets tab and canvas',
         async () => {
           await assetsPanelPage.isSecondComponentVisibleInAssetsTab('Rectangle');
@@ -58,10 +58,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1455], 'Check Show main component option'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Show main component from assets tab',
         async () => {
           await assetsPanelPage.clickAssetsTab();
@@ -70,7 +70,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify main component is shown on canvas',
         async () => {
           await expect(
@@ -84,13 +84,13 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1285], 'Components - rename group'),
     async ({ mainPage }) => {
       const initialGroupName = 'Test Group';
       const renamedGroupName = 'New Group';
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Create group "${initialGroupName}" in assets tab`,
         async () => {
           await assetsPanelPage.clickAssetsTab();
@@ -103,7 +103,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Rename group to "${renamedGroupName}"`,
         async () => {
           await assetsPanelPage.renameGroupFileLibrary(renamedGroupName);
@@ -111,7 +111,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify group is renamed to "${renamedGroupName}"`,
         async () => {
           await assetsPanelPage.isFileLibraryGroupCreated(renamedGroupName);
@@ -120,10 +120,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(qase([1286], 'Components - ungroup'), async ({ mainPage }) => {
+  demoAccountFileTest(qase([1286], 'Components - ungroup'), async ({ mainPage }) => {
     const groupName = 'Test Group';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Create group "${groupName}" and ungroup it`,
       async () => {
         await assetsPanelPage.clickAssetsTab();
@@ -135,7 +135,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify group is removed and component is visible',
       async () => {
         await assetsPanelPage.isFileLibraryGroupRemoved();
@@ -144,10 +144,10 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1676], 'Components - change view (list/tile)'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Create 3 components on canvas', async () => {
+      await demoAccountFileTest.step('Create 3 components on canvas', async () => {
         await mainPage.createDefaultEllipseByCoordinates(100, 200, true);
         await mainPage.createComponentViaRightClick();
         await mainPage.waitForChangeIsSaved();
@@ -161,7 +161,7 @@ mainAccountFileTest.describe(() => {
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       });
 
-      await mainAccountFileTest.step('Verify default grid view', async () => {
+      await demoAccountFileTest.step('Verify default grid view', async () => {
         await expect(
           assetsPanelPage.assetsPanel,
           'Assets panel should match screenshot in grid view',
@@ -171,7 +171,7 @@ mainAccountFileTest.describe(() => {
         });
       });
 
-      await mainAccountFileTest.step('Switch to list view and verify', async () => {
+      await demoAccountFileTest.step('Switch to list view and verify', async () => {
         await assetsPanelPage.clickFileLibraryListViewButton();
         await mainPage.waitForChangeIsSaved();
         await expect(
@@ -183,7 +183,7 @@ mainAccountFileTest.describe(() => {
         });
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Switch back to grid view and verify',
         async () => {
           await assetsPanelPage.clickFileLibraryGridViewButton();
@@ -201,12 +201,12 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1621], 'Create a group with component and check its name'),
   async ({ mainPage }) => {
     const groupName = 'Test Group';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create board component and create group in assets tab',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(200, 300);
@@ -218,7 +218,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Verify group "${groupName}" is displayed in layers panel and canvas`,
       async () => {
         await assetsPanelPage.isFileLibraryGroupCreated(groupName);
@@ -235,12 +235,12 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1453], 'Rename component with valid name'),
   async ({ mainPage }) => {
     const newName = 'Renamed ellipse name';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Create ellipse component and rename to "${newName}"`,
       async () => {
         await mainPage.createDefaultEllipseByCoordinates(400, 600);
@@ -253,7 +253,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Verify component is renamed to "${newName}"`,
       async () => {
         await layersPanelPage.openLayersTab();
@@ -273,15 +273,15 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([966], 'Filter Components from All Assets drop-down'),
   async () => {
-    await mainAccountFileTest.step('Filter assets by Components type', async () => {
+    await demoAccountFileTest.step('Filter assets by Components type', async () => {
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.selectTypeFromAllAssetsDropdown('Components');
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify Components section is displayed with 0 items',
       async () => {
         await assetsPanelPage.isAssetsSectionNameDisplayed('Components', '0');
@@ -290,9 +290,9 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await demoAccountFileTest.slow();
     await mainPage.createDefaultEllipseByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -302,10 +302,10 @@ mainAccountFileTest.describe(() => {
     await designPanelPage.changeAxisXAndYForLayer('400', '300');
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1412], 'Change copy and click Reset overrides'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Resize copy component and reset overrides',
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();
@@ -315,7 +315,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify overrides are reset on canvas',
         async () => {
           await expect(
@@ -329,10 +329,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1300], 'Restore main component via context menu'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Delete main component and restore from copy',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -345,7 +345,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify restored main component on canvas',
         async () => {
           await expect(
@@ -359,10 +359,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1296], 'Detach instance from context menu'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Detach copy instance via right-click and resize',
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();
@@ -374,7 +374,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify detached instance on canvas',
         async () => {
           await expect(
@@ -391,10 +391,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1298], 'Reset overrides via context menu'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Resize, add fill and blur to copy component',
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();
@@ -414,7 +414,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Reset overrides on copy component via right-click',
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();
@@ -423,7 +423,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify overrides are reset on canvas',
         async () => {
           await expect(

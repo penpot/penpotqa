@@ -2,30 +2,30 @@ import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([275], 'Create Rectangle (Shortcut R)'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Press R shortcut and verify rectangle tool is active',
       async () => {
         await mainPage.pressKeyboardShortcut('R');
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Click on canvas and verify rectangle with default size is created',
       async () => {
         await mainPage.clickViewportTwice();
@@ -38,18 +38,18 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await demoAccountFileTest.slow();
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([274], 'Create Rectangle (Toolbar)'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify rectangle layer is created',
         async () => {
           await mainPage.isCreatedLayerVisible();
@@ -61,10 +61,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([278], 'Change border radius multiple values (Design page in the right)'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Set independent corner radii and verify',
         async () => {
           await designPanelPage.clickIndividualCornersRadiusButton();
@@ -77,7 +77,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Reset corner radii and verify default',
         async () => {
           await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
@@ -90,10 +90,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([319], 'Transform Rectangle to Path'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Transform rectangle to path via right click',
         async () => {
           await mainPage.transformToPathViaRightClick();
@@ -102,7 +102,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify path component is visible on layers tab',
         async () => {
           await layersPanelPage.isPathComponentOnLayersTabVisible();
@@ -111,13 +111,13 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [324],
       'Create component and detach instance (Right click and shortcut Ctrl+Shift+K)',
     ),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create component from rectangle via right click',
         async () => {
           await mainPage.createComponentViaRightClick();
@@ -125,7 +125,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify component appears with included rectangle',
         async () => {
           await layersPanelPage.isMainComponentOnLayersTabVisibleWithName(
@@ -134,7 +134,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Copy created rectangle component twice',
         async () => {
           await mainPage.duplicateLayerViaRightClick();
@@ -146,7 +146,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Detach a rectangle copy instance via right click',
         async () => {
           await layersPanelPage.detachInstanceFirstCopyComponentViaRightClick();
@@ -154,14 +154,14 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify one copy instance was detached (copy count is 1)',
         async () => {
           await layersPanelPage.checkCopyComponentLayerCount(1);
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Select remaining rectangle copy and detach instance via shortcut',
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();
@@ -170,7 +170,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify all copy instances were detached (copy count is 0)',
         async () => {
           await layersPanelPage.checkCopyComponentLayerCount(0);
@@ -180,10 +180,10 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2255], 'Select and deselect rectangles'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step('Create four rectangles on canvas', async () => {
+    await demoAccountFileTest.step('Create four rectangles on canvas', async () => {
       await mainPage.createDefaultRectangleByCoordinates(400, 800);
       await mainPage.createDefaultRectangleByCoordinates(400, 200, true);
       await mainPage.createDefaultRectangleByCoordinates(100, 600, true);
@@ -192,7 +192,7 @@ mainAccountFileTest(
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Select all and deselect one, verify three selected',
       async () => {
         await mainPage.pressSelectAllShortcut();
@@ -206,7 +206,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Deselect further and verify one selected',
       async () => {
         await mainPage.deselectElement();
