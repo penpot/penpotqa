@@ -45,6 +45,7 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
+          TESTDINO_TOKEN: ${{ secrets.TESTDINO_TOKEN }}
         run: npx playwright test --project=chrome 2>&1 | tee test-output.log
 
       - name: Add Qase run link to summary
@@ -64,7 +65,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          testdino_api_key: ${{ secrets.TDPW_API_KEY }}
         if: always()
 
       - name: Update flaky-test history
