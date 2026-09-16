@@ -105,7 +105,7 @@ jobs:
 
       - name: Keep artifact as backup
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: github-dashboard
           path: scripts/github-dashboard/out/
