@@ -37,6 +37,12 @@ export default defineConfig({
         ['html'],
         ['json', { outputFile: 'playwright-report/results.json' }],
         [
+          '@testdino/playwright',
+          {
+            token: process.env.TESTDINO_TOKEN,
+          },
+        ],
+        [
           'playwright-qase-reporter',
           {
             mode: process.env.QASE_MODE ?? 'off',
