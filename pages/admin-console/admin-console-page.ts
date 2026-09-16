@@ -424,9 +424,21 @@ export class AdminConsolePage extends BasePage {
     await this.sendInvites();
   }
 
+  /** Self-healing — same hydration race as openOrgSwitcher()/openSettings()
+   * when clicked right after openPeopleTab(). Checked via `aria-selected`,
+   * not `pendingTable`'s visibility: that locator is identical to
+   * `peopleTable`, so it stays visible even while Members is still active. */
   async openPendingTab() {
-    await this.pendingTab.click();
-    await expect(this.pendingTable, 'Pending table is visible').toBeVisible();
+    await expect(async () => {
+      if ((await this.pendingTab.getAttribute('aria-selected')) !== 'true') {
+        await this.pendingTab.click();
+      }
+      await expect(this.pendingTab, 'Pending tab is the active one').toHaveAttribute(
+        'aria-selected',
+        'true',
+        { timeout: 2000 },
+      );
+    }).toPass({ timeout: 15000 });
   }
 
   /** Opens the confirmation dialog for canceling one pending invitation —

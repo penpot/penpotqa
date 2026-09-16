@@ -2,7 +2,7 @@
 
 Playwright specs for Penpot's Enterprise-plan.
 
-**Status: 32 implemented and passing live, 42 still `test.skip` stubs.**
+**Status: 36 implemented and passing live, 38 still `test.skip` stubs.**
 Implemented so far: PENPOT-3235, 3236, 3336, 3324, 3413 (in
 `billing-ui-flow/subscribe-and-trial-flow.spec.ts`), 3239 (in
 `dashboard-enterprise/organizations-dropdown.spec.ts`), 3165/3166/3240 (in
@@ -18,8 +18,10 @@ Implemented so far: PENPOT-3235, 3236, 3336, 3324, 3413 (in
 `dashboard-enterprise/team-settings-add-remove-org.spec.ts`), 3302/3308/3185
 (People tab invite/pending flows, in
 `admin-console/people-members-invite.spec.ts` and
-`admin-console/people-pending-cancel-invitation.spec.ts`), and 3143 (member
-removal consequences, in `admin-console/people-members-remove.spec.ts`).
+`admin-console/people-pending-cancel-invitation.spec.ts`), 3143 (member
+removal consequences, in `admin-console/people-members-remove.spec.ts`), and
+3078/3079/3080/3081 (team invitations within an org, in
+`dashboard-enterprise/teams-dropdown-invitations.spec.ts`).
 
 Run with the dedicated `enterprise` Playwright project (kept out of the
 default `chrome` project so these stubs don't show up in every-day `npm test`
@@ -27,7 +29,7 @@ runs):
 
 ```bash
 npx playwright test --project=enterprise --list
-npx playwright test --project=enterprise -g "3235|3236|3324|3336|3413|3239|3165|3166|3223|3226|3093|3094|3097|3180|3182|3184|3099|3630|3106|3133|3328|3329|3240|3192|3198|3302|3308|3185|3332|3333|3334|3143"  # the 32 real ones
+npx playwright test --project=enterprise -g "3235|3236|3324|3336|3413|3239|3165|3166|3223|3226|3093|3094|3097|3180|3182|3184|3099|3630|3106|3133|3328|3329|3240|3192|3198|3302|3308|3185|3332|3333|3334|3143|3078|3079|3080|3081"  # the 36 real ones
 ```
 
 ## How Enterprise entitlement actually works
@@ -70,6 +72,7 @@ after 7 days — no manual cleanup needed for enterprise test data.
 | `pages/admin-console/advanced-permissions-page.ts`         | The Advanced Permissions tab — 4 policy radio groups sharing one self-healing `selectPermission()`/`isPermissionSelected()` pair typed against `AdvancedPermissionValue`.                                                                                                                                                                                                                                                                                                                                                                 |
 | `pages/admin-console/admin-console-page.ts` (logo section) | The org settings modal's logo upload, sharing the rename flow's Save button/toast. `isOrgLogoShown(orgName)` matches by alt text, only present once a real logo is chosen.                                                                                                                                                                                                                                                                                                                                                                |
 | `pages/dashboard/team-page.js` (Enterprise additions)      | Team Settings' "Team organization" section — add/remove a team from an org.                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `helpers/gmail.js` (Enterprise additions)                  | `getMessageSubject(email)` — the Subject header, not otherwise exposed. `checkEnterpriseInviteText`/`checkEnterpriseInviteSubject` — the org-scoped invite template (only names the org in the body, and only when the invitee is an existing account); mirrors the legacy suite's `checkInviteText`.                                                                                                                                                                                                                                     |
 
 Assertions live in the page objects, not spec files — every `expect()` a
 case needs is a named `isXVisible()`/`isXListed()`/`hasX()` method with its
