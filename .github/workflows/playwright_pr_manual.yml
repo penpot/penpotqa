@@ -101,6 +101,7 @@ jobs:
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
           TESTDINO_TOKEN: ${{ secrets.TESTDINO_TOKEN }}
         run: |
+          {
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
               echo "🚀 Running all tests..."
@@ -147,6 +148,14 @@ jobs:
               exit 1
               ;;
           esac
+          } 2>&1 | tee test-output.log
+
+      - name: Add TestDino run link
+        id: run-links
+        if: always()
+        run: |
+          TESTDINO_URL=$(grep -oP 'https://app\.testdino\.com/\S+/test-runs/\S+' test-output.log | head -1)
+          echo "testdino-url=$TESTDINO_URL" >> $GITHUB_OUTPUT
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
@@ -168,4 +177,5 @@ jobs:
           repeat-each: ${{ (github.event.inputs.test_mode == 'by_folder' || github.event.inputs.test_mode == 'by_spec') && github.event.inputs.repeat_each || '' }}
           is-manual-execution: 'true'
           username: ${{ github.actor }}
+          testdino-url: ${{ steps.run-links.outputs.testdino-url }}
         if: always()

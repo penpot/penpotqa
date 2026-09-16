@@ -21,6 +21,9 @@ inputs:
   username:
     description: 'Username for manual execution mention'
     required: false
+  testdino-url:
+    description: 'TestDino run URL (optional, only shown if TestDino reporting was active)'
+    required: false
 
 runs:
   using: 'composite'
@@ -33,19 +36,20 @@ runs:
         IS_MANUAL="${{ inputs.is-manual-execution }}"
         USERNAME="${{ inputs.username }}"
         REPEAT_EACH="${{ inputs.repeat-each }}"
+        TESTDINO_URL="${{ inputs.testdino-url }}"
 
         # Generate the message content and save to output
         if [ -n "$FOLDER_PATH" ]; then
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', '$REPEAT_EACH', true, '$USERNAME')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', '$REPEAT_EACH', true, '$USERNAME', '$TESTDINO_URL')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', null, false, null)")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', null, false, null, '$TESTDINO_URL')")
           fi
         else
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, '$REPEAT_EACH', true, '$USERNAME')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, '$REPEAT_EACH', true, '$USERNAME', '$TESTDINO_URL')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, null, false, null)")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, null, false, null, '$TESTDINO_URL')")
           fi
         fi
 
