@@ -5,6 +5,7 @@
  * Targets emails following the templates:
  *   qa.testing+<random>autotest@kaleidos.net
  *   qawerk.test+<random>autotest@gmail.com
+ *   demo-<uuid>@demo.example.com
  *
  * Env vars:
  *   STRIPE_CLEANUP_SK   Stripe restricted/secret TEST key with Customers
@@ -29,25 +30,30 @@ import Stripe from 'stripe';
 import * as fs from 'fs';
 import * as readline from 'readline';
 
-// Domains used by the different test email templates. Add more here if
+// Domains used by the Playwright autotest email template. Add more here if
 // Playwright starts generating customers on another domain.
 const ALLOWED_DOMAINS = ['kaleidos.net', 'gmail.com'];
 
-// Pattern that emails to be deleted must match, e.g.:
+// Every email shape to be deleted must match at least one of these, e.g.:
 //   qa.testing+<random>autotest@kaleidos.net
 //   qawerk.test+<random>autotest@gmail.com
-const EMAIL_PATTERN = new RegExp(
-  `^qa[\\w.]*\\+.*autotest@(?:${ALLOWED_DOMAINS.map((d) =>
-    d.replace(/\./g, '\\.'),
-  ).join('|')})$`,
-  'i',
-);
+//   demo-d486b144-6fc0-8178-8008-a34b06399a55@demo.example.com
+const EMAIL_PATTERNS = [
+  new RegExp(
+    `^qa[\\w.]*\\+.*autotest@(?:${ALLOWED_DOMAINS.map((d) =>
+      d.replace(/\./g, '\\.'),
+    ).join('|')})$`,
+    'i',
+  ),
+  /^demo-[0-9a-f-]+@demo\.example\.com$/i,
+];
 
 // Fragment used for the initial search via Stripe's Search API.
 // NOTE: ":" is EXACT match in Stripe; "~" is the substring operator
-// (minimum 3 characters). "autotest@" is common to every template above,
-// regardless of domain, so a single substring search covers all of them.
-const SEARCH_QUERY = 'email~"autotest@"';
+// (minimum 3 characters). "autotest@" and "@demo.example.com" are each
+// common to one of the templates above, regardless of the rest of the
+// email, so a substring search on both (OR'd) covers every template.
+const SEARCH_QUERY = 'email~"autotest@" OR email~"@demo.example.com"';
 
 const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 const LOG_FILE = `stripe_customers_deleted_${timestamp}.csv`;
@@ -103,7 +109,7 @@ async function findMatchingCustomers(stripe: Stripe): Promise<Stripe.Customer[]>
 
     for (const customer of result.data) {
       const email = customer.email || '';
-      if (EMAIL_PATTERN.test(email)) {
+      if (EMAIL_PATTERNS.some((pattern) => pattern.test(email))) {
         matches.push(customer);
       }
     }
