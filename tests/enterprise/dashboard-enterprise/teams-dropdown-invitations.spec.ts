@@ -29,10 +29,21 @@ enterprisePageTest.describe(
   () => {
     ownerAndInviteeTest(
       qase(
-        [3078],
-        'Team admin invites existing Penpot user to team within organization',
+        [3078, 3079, 3080],
+        'Invite an existing Penpot user to a team, email content, and acceptance',
       ),
-      async ({ orgPage, adminConsolePage, stripePage, teamPage, invitee }) => {
+      async ({
+        ownerPage,
+        orgPage,
+        adminConsolePage,
+        stripePage,
+        teamPage,
+        invitee,
+      }) => {
+        // 3 cases' worth of setup + two real email waits no longer fit the
+        // default per-test timeout, now that they share one test.
+        ownerAndInviteeTest.setTimeout(150_000);
+
         const orgName = createOrgName();
         const teamName = createTeamName();
 
@@ -51,7 +62,7 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Team Settings > Invitations tab → invite the existing user → confirmation message',
+          '3078: Team Settings > Invitations tab → invite the existing user → confirmation message',
           async () => {
             await teamPage.openInvitationsPageViaOptionsMenu();
             await teamPage.clickInviteMembersToTeamButton();
@@ -60,105 +71,30 @@ enterprisePageTest.describe(
             await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
           },
         );
-      },
-    );
 
-    ownerAndInviteeTest(
-      qase([3079], 'Verify invitation email includes organization and team name'),
-      async ({
-        ownerPage,
-        orgPage,
-        adminConsolePage,
-        stripePage,
-        teamPage,
-        invitee,
-      }) => {
-        const orgName = createOrgName();
-        const teamName = createTeamName();
+        let invite: { inviteUrl: string; inviteText: string } | undefined;
 
         await ownerAndInviteeTest.step(
-          'Setup: subscribe to Enterprise, create an org with a team, and invite an existing user',
-          async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
-            await adminConsolePage.goToFiles();
-            await teamPage.createTeam(teamName);
-            await teamPage.openInvitationsPageViaOptionsMenu();
-            await teamPage.clickInviteMembersToTeamButton();
-            await teamPage.enterEmailToInviteMembersPopUp(invitee.email);
-            await teamPage.clickSendInvitationButton();
-          },
-        );
-
-        await ownerAndInviteeTest.step(
-          "Invitee's inbox → subject names the team, body names both the team and the organization",
+          "3079: Invitee's inbox → subject names the team, body names both the team and the organization",
           async () => {
             await waitSecondMessage(ownerPage, invitee.email, 40);
             const subject = await getMessageSubject(invitee.email);
             await checkEnterpriseInviteSubject(subject, teamName, orgName);
 
-            const invite = await waitMessage(ownerPage, invitee.email, 40);
+            invite = await waitMessage(ownerPage, invitee.email, 40);
             await checkEnterpriseInviteText(invite!.inviteText, teamName, orgName);
           },
         );
-      },
-    );
-
-    ownerAndInviteeTest(
-      qase(
-        [3080],
-        'Invited user accepts invitation and becomes organization member',
-      ),
-      async ({
-        ownerPage,
-        orgPage,
-        adminConsolePage,
-        stripePage,
-        teamPage,
-        invitee,
-      }) => {
-        const orgName = createOrgName();
-        const teamName = createTeamName();
 
         await ownerAndInviteeTest.step(
-          'Setup: subscribe to Enterprise, create an org with a team, and invite an existing user',
+          '3080: Invitee follows the invite link from their own inbox → success message, then listed as an org member',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
-            await adminConsolePage.goToFiles();
-            await teamPage.createTeam(teamName);
-            await teamPage.openInvitationsPageViaOptionsMenu();
-            await teamPage.clickInviteMembersToTeamButton();
-            await teamPage.enterEmailToInviteMembersPopUp(invitee.email);
-            await teamPage.clickSendInvitationButton();
-          },
-        );
-
-        await ownerAndInviteeTest.step(
-          'Invitee follows the invite link from their own inbox → success message',
-          async () => {
-            await waitSecondMessage(ownerPage, invitee.email, 40);
-            const invite = await waitMessage(ownerPage, invitee.email, 40);
-
             const inviteeDashboardPage = new DashboardPage(invitee.page);
             await invitee.page.goto(invite!.inviteUrl);
             await inviteeDashboardPage.isSuccessMessageDisplayed(
               'Joined the team successfully',
             );
-          },
-        );
 
-        await ownerAndInviteeTest.step(
-          'Owner → Admin Console > People > Members → invitee now listed as an org member',
-          async () => {
             await orgPage.openOrgSwitcher();
             await orgPage.clickGoToAdminConsole();
             await adminConsolePage.openPeopleTab();
