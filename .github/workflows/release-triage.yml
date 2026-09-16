@@ -56,9 +56,9 @@ jobs:
           echo "reset_state wipes triage state right before close_only would need it to find what's resolved — pick one." >&2
           exit 1
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
 
