@@ -39,7 +39,9 @@ async function generateMessage(
     ? `\n       :wave: @${username} your \"${workflowName}\" automated run has finished!`
     : '';
 
-  const testdinoLine = testdinoUrl ? `\n       :dog2: TestDino: ${testdinoUrl}` : '';
+  const testdinoLine = testdinoUrl
+    ? `\n       :t-rex: TestDino: ${testdinoUrl}`
+    : '';
 
   const messageWithLink = `**Total Tests** : **${
     results.Passed + results.Failed + results.Flaky
