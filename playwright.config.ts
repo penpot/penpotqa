@@ -36,12 +36,14 @@ export default defineConfig({
         ['github'], // GitHub Actions annotations
         ['html'],
         ['json', { outputFile: 'playwright-report/results.json' }],
-        [
-          '@testdino/playwright',
-          {
-            token: process.env.TESTDINO_TOKEN,
-          },
-        ],
+        ...(process.env.TESTDINO_TOKEN
+          ? [
+              [
+                '@testdino/playwright',
+                { token: process.env.TESTDINO_TOKEN },
+              ] as const,
+            ]
+          : []),
         [
           'playwright-qase-reporter',
           {
