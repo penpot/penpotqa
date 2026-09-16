@@ -21,6 +21,10 @@ inputs:
   username:
     description: 'Username for manual execution mention'
     required: false
+  report-suffix:
+    description: 'Must match upload-reports report-suffix, so the report link points at the right S3 folder'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -33,19 +37,21 @@ runs:
         IS_MANUAL="${{ inputs.is-manual-execution }}"
         USERNAME="${{ inputs.username }}"
         REPEAT_EACH="${{ inputs.repeat-each }}"
+        BROWSER_NAME="${{ inputs.browser-name }}"
+        REPORT_SUFFIX="${{ inputs.report-suffix }}"
 
         # Generate the message content and save to output
         if [ -n "$FOLDER_PATH" ]; then
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', '$REPEAT_EACH', true, '$USERNAME')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', '$REPEAT_EACH', true, '$USERNAME', '$BROWSER_NAME', '$REPORT_SUFFIX')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', null, false, null)")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', null, false, null, '$BROWSER_NAME', '$REPORT_SUFFIX')")
           fi
         else
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, '$REPEAT_EACH', true, '$USERNAME')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, '$REPEAT_EACH', true, '$USERNAME', '$BROWSER_NAME', '$REPORT_SUFFIX')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, null, false, null)")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, null, false, null, '$BROWSER_NAME', '$REPORT_SUFFIX')")
           fi
         fi
 

@@ -5,6 +5,8 @@ async function generateMessage(
   repeatEach = null,
   isManualExecution = false,
   username = null,
+  browserName = 'Chrome',
+  reportSuffix = '',
 ) {
   function roundNumber(num) {
     return Math.round(num * 100) / 100;
@@ -38,6 +40,10 @@ async function generateMessage(
     ? `\n       :wave: @${username} your \"${workflowName}\" automated run has finished!`
     : '';
 
+  const reportDir = reportSuffix
+    ? `run-${process.env.GITHUB_RUN_ID}-${reportSuffix}`
+    : `run-${process.env.GITHUB_RUN_ID}`;
+
   const messageWithLink = `**Total Tests** : **${
     results.Passed + results.Failed + results.Flaky
   }**   :person_doing_cartwheel:   **Success Percentage:** **${roundNumber(
@@ -50,11 +56,9 @@ async function generateMessage(
          process.env.GITHUB_RUN_ID
        }
        :stopwatch: Duration: ${formatDuration(results.Duration)}
-       :computer: Browser: Chrome
+       :computer: Browser: ${browserName}
        :herb: Branch: ${process.env.GITHUB_REF_NAME || 'N/A'}${folderLine}${repeatEachLine}${userMentionLine}
-       :page_facing_up: Check interactive tests results: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${
-         process.env.GITHUB_RUN_ID
-       }/index.html`;
+       :page_facing_up: Check interactive tests results: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/${reportDir}/index.html`;
 
   console.log(messageWithLink);
   return messageWithLink;
