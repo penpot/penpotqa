@@ -25,6 +25,10 @@ inputs:
   testdino_api_key:
     description: 'Testdino API Key from the GitHub secrets'
     required: true
+  report-suffix:
+    description: 'Appended to the run-<id> S3 folder name, so multiple jobs in the same workflow run (e.g. chrome + enterprise) do not overwrite each others report'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -39,11 +43,15 @@ runs:
     - name: Upload report and update index on S3
       shell: bash
       run: |
+        REPORT_SUFFIX="${{ inputs.report-suffix }}"
+        REPORT_DIR="run-${{ github.run_id }}"
+        [ -n "$REPORT_SUFFIX" ] && REPORT_DIR="${REPORT_DIR}-${REPORT_SUFFIX}"
+
         # Upload report to S3
-        mkdir -p reports/run-${{ github.run_id }}
-        cp -r playwright-report/* reports/run-${{ github.run_id }}/
-        aws s3 sync reports/run-${{ github.run_id }}/ s3://kaleidos-qa-reports/run-${{ github.run_id }}/
-        echo "✅ Report uploaded: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html"
+        mkdir -p "reports/$REPORT_DIR"
+        cp -r playwright-report/* "reports/$REPORT_DIR/"
+        aws s3 sync "reports/$REPORT_DIR/" "s3://kaleidos-qa-reports/$REPORT_DIR/"
+        echo "✅ Report uploaded: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$REPORT_DIR/index.html"
 
         # Download current index from S3 (if exists)
         aws s3 cp s3://kaleidos-qa-reports/index.html current_index.html 2>/dev/null || echo "No existing index found, creating new one"
@@ -77,9 +85,11 @@ runs:
         fi
 
         BROWSER_ICON="🌐"
-        BROWSER_LABEL="Chrome"
+        BROWSER_LABEL="${{ inputs.browser-name }}"
         if [[ "$WORKFLOW_NAME" == "Manual Penpot Tests for PR" ]]; then
           WORKFLOW_LABEL="PR_manual"
+        elif [ -n "$REPORT_SUFFIX" ]; then
+          WORKFLOW_LABEL="PRE_${REPORT_SUFFIX}_daily"
         else
           WORKFLOW_LABEL="PRE_chrome_daily"
         fi
@@ -94,7 +104,7 @@ runs:
           echo "            <td class=\"date\" data-label=\"📅 Date\">$DATE_TIME</td>"
           echo "            <td class=\"branch\" data-label=\"🌿 Branch\">$BRANCH_NAME</td>"
           echo "            <td class=\"browser\" data-label=\"🌐 Browser\"><span title=\"$BROWSER_LABEL\">$BROWSER_ICON $BROWSER_LABEL</span></td>"
-          echo "            <td data-label=\"📊 Report\"><a href=\"https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/run-${{ github.run_id }}/index.html\">🔍 View Report</a></td>"
+          echo "            <td data-label=\"📊 Report\"><a href=\"https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/$REPORT_DIR/index.html\">🔍 View Report</a></td>"
           echo "          </tr>"
           [ -f current_index.html ] && sed -n '/<tbody>/,/<\/tbody>/p' current_index.html | sed '1d;$d;/<!-- ROWS_PLACEHOLDER -->/d;/^[[:space:]]*$/d' || true
           sed -n '/<!-- ROWS_PLACEHOLDER -->/,$p' .github/html-template.html | tail -n +2
@@ -116,7 +126,8 @@ runs:
       run: |
         npx --yes tdpw playwright-report/ --token="${{ inputs.testdino_api_key }}" --upload-html  --upload-traces --json-report playwright-report/results.json
         echo "✅ Report uploaded to TestDino ('is-manual-execution': ${{ inputs.is-manual-execution }})"
-      if: ${{ inputs.is-manual-execution == 'false'}}
+      # Disabled for now: tdpw is deprecated, needs migrating to @testdino/playwright.
+      if: false
 
     - name: Upload artifact backup
       uses: actions/upload-artifact@v7
