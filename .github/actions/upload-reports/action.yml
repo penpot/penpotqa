@@ -126,7 +126,8 @@ runs:
       run: |
         npx --yes tdpw playwright-report/ --token="${{ inputs.testdino_api_key }}" --upload-html  --upload-traces --json-report playwright-report/results.json
         echo "✅ Report uploaded to TestDino ('is-manual-execution': ${{ inputs.is-manual-execution }})"
-      if: ${{ inputs.is-manual-execution == 'false'}}
+      # Disabled for now: tdpw is deprecated, needs migrating to @testdino/playwright.
+      if: false
 
     - name: Upload artifact backup
       uses: actions/upload-artifact@v7

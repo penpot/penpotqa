@@ -50,7 +50,7 @@ jobs:
       - name: Add Qase run link to summary
         if: always()
         run: |
-          QASE_LINK=$(grep -oP 'https://app\.qase\.io/run/[A-Z0-9]+/dashboard/\d+' test-output.log | head -1)
+          QASE_LINK=$(grep -oP 'https://app\.qase\.io/run/[A-Z0-9]+/dashboard/\d+' test-output.log | head -1 || true)
           if [ -n "$QASE_LINK" ]; then
             echo "## Qase Report" >> $GITHUB_STEP_SUMMARY
             echo "🔗 [View run in Qase]($QASE_LINK)" >> $GITHUB_STEP_SUMMARY
@@ -147,7 +147,7 @@ jobs:
       - name: Add Qase run link to summary
         if: always()
         run: |
-          QASE_LINK=$(grep -oP 'https://app\.qase\.io/run/[A-Z0-9]+/dashboard/\d+' test-output.log | head -1)
+          QASE_LINK=$(grep -oP 'https://app\.qase\.io/run/[A-Z0-9]+/dashboard/\d+' test-output.log | head -1 || true)
           if [ -n "$QASE_LINK" ]; then
             echo "## Qase Report" >> $GITHUB_STEP_SUMMARY
             echo "🔗 [View run in Qase]($QASE_LINK)" >> $GITHUB_STEP_SUMMARY
