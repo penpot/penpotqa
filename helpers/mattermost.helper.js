@@ -40,7 +40,7 @@ async function generateMessage(
     : '';
 
   const testdinoLine = testdinoUrl
-    ? `\n       :t-rex: TestDino: ${testdinoUrl}`
+    ? `\n       :t-rex: TestDino: [View run](${testdinoUrl})`
     : '';
 
   const messageWithLink = `**Total Tests** : **${
