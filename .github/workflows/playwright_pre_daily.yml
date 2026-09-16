@@ -45,7 +45,7 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
-        run: npx playwright test --project=chrome tests/login-signup tests/color 2>&1 | tee test-output.log
+        run: npx playwright test --project=chrome 2>&1 | tee test-output.log
 
       - name: Add Qase run link to summary
         if: always()
