@@ -99,6 +99,7 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
+          TESTDINO_TOKEN: ${{ secrets.TESTDINO_TOKEN }}
         run: |
           case "${{ github.event.inputs.test_mode }}" in
             "all_tests")
