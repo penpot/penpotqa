@@ -87,6 +87,7 @@ jobs:
         id: run-tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
+          LICENSES_MANAGER_URL: ${{ secrets.LICENSES_MANAGER_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
