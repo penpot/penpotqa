@@ -22,9 +22,6 @@ inputs:
     required: true
     type: 'boolean'
     default: 'false'
-  testdino_api_key:
-    description: 'Testdino API Key from the GitHub secrets'
-    required: true
   report-suffix:
     description: 'Appended to the run-<id> S3 folder name, so multiple jobs in the same workflow run (e.g. chrome + enterprise) do not overwrite each others report'
     required: false
@@ -120,14 +117,6 @@ runs:
 
         # Cleanup
         rm -f current_index.html new_index.html
-
-    - name: Testdino Reporter
-      shell: bash
-      run: |
-        npx --yes tdpw playwright-report/ --token="${{ inputs.testdino_api_key }}" --upload-html  --upload-traces --json-report playwright-report/results.json
-        echo "✅ Report uploaded to TestDino ('is-manual-execution': ${{ inputs.is-manual-execution }})"
-      # Disabled for now: tdpw is deprecated, needs migrating to @testdino/playwright.
-      if: false
 
     - name: Upload artifact backup
       uses: actions/upload-artifact@v7

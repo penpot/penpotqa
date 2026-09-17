@@ -7,6 +7,7 @@ async function generateMessage(
   username = null,
   browserName = 'Chrome',
   reportSuffix = '',
+  testdinoUrl = null,
 ) {
   function roundNumber(num) {
     return Math.round(num * 100) / 100;
@@ -40,6 +41,10 @@ async function generateMessage(
     ? `\n       :wave: @${username} your \"${workflowName}\" automated run has finished!`
     : '';
 
+  const testdinoLine = testdinoUrl
+    ? `\n       :t-rex: TestDino: [View run](${testdinoUrl})`
+    : '';
+
   const reportDir = reportSuffix
     ? `run-${process.env.GITHUB_RUN_ID}-${reportSuffix}`
     : `run-${process.env.GITHUB_RUN_ID}`;
@@ -57,7 +62,7 @@ async function generateMessage(
        }
        :stopwatch: Duration: ${formatDuration(results.Duration)}
        :computer: Browser: ${browserName}
-       :herb: Branch: ${process.env.GITHUB_REF_NAME || 'N/A'}${folderLine}${repeatEachLine}${userMentionLine}
+       :herb: Branch: ${process.env.GITHUB_REF_NAME || 'N/A'}${folderLine}${repeatEachLine}${userMentionLine}${testdinoLine}
        :page_facing_up: Check interactive tests results: https://kaleidos-qa-reports.s3.eu-west-1.amazonaws.com/${reportDir}/index.html`;
 
   console.log(messageWithLink);

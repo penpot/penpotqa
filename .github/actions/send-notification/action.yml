@@ -25,6 +25,9 @@ inputs:
     description: 'Must match upload-reports report-suffix, so the report link points at the right S3 folder'
     required: false
     default: ''
+  testdino-url:
+    description: 'TestDino run URL (optional, only shown if TestDino reporting was active)'
+    required: false
 
 runs:
   using: 'composite'
@@ -39,19 +42,20 @@ runs:
         REPEAT_EACH="${{ inputs.repeat-each }}"
         BROWSER_NAME="${{ inputs.browser-name }}"
         REPORT_SUFFIX="${{ inputs.report-suffix }}"
+        TESTDINO_URL="${{ inputs.testdino-url }}"
 
         # Generate the message content and save to output
         if [ -n "$FOLDER_PATH" ]; then
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', '$REPEAT_EACH', true, '$USERNAME', '$BROWSER_NAME', '$REPORT_SUFFIX')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', '$REPEAT_EACH', true, '$USERNAME', '$BROWSER_NAME', '$REPORT_SUFFIX', '$TESTDINO_URL')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', null, false, null, '$BROWSER_NAME', '$REPORT_SUFFIX')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage('$FOLDER_PATH', null, false, null, '$BROWSER_NAME', '$REPORT_SUFFIX', '$TESTDINO_URL')")
           fi
         else
           if [ "$IS_MANUAL" = "true" ] && [ -n "$USERNAME" ]; then
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, '$REPEAT_EACH', true, '$USERNAME', '$BROWSER_NAME', '$REPORT_SUFFIX')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, '$REPEAT_EACH', true, '$USERNAME', '$BROWSER_NAME', '$REPORT_SUFFIX', '$TESTDINO_URL')")
           else
-            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, null, false, null, '$BROWSER_NAME', '$REPORT_SUFFIX')")
+            MESSAGE=$(npx ts-node -e "require('./helpers/mattermost.helper.js').generateMessage(null, null, false, null, '$BROWSER_NAME', '$REPORT_SUFFIX', '$TESTDINO_URL')")
           fi
         fi
 
