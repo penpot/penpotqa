@@ -72,6 +72,8 @@ exports.TeamPage = class TeamPage extends BasePage {
       "You don't have permission to add teams to any of your organizations.",
     );
     this.teamOrgOptionsButton = this.teamOrganizationSection.locator('button');
+    this.changeTeamOrgMenuItem = page.getByText('Change team organization');
+    this.moveTeamSubmitButton = page.getByRole('button', { name: 'Move team' });
     this.removeTeamFromOrgMenuItem = page.getByText('Remove team from organization');
     this.removeTeamFromOrgConfirmButton = page.getByRole('button', {
       name: 'Remove from organization',
@@ -206,6 +208,16 @@ exports.TeamPage = class TeamPage extends BasePage {
     );
   }
 
+  /** Extracts the team's id from its own dashboard URL — more reliable
+   * than the team/org switchers once a team belongs to an organization. */
+  getTeamIdFromUrl() {
+    const match = this.page.url().match(/[?&]team-id=([^&]+)/);
+    if (!match) {
+      throw new Error(`Not on a team dashboard URL: ${this.page.url()}`);
+    }
+    return match[1];
+  }
+
   async isTeamListed(teamName, listed = true) {
     const item = this.teamList.getByText(teamName);
     listed
@@ -226,6 +238,20 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(
       this.addedToOrgMessage,
       'Team-added-to-organization message is shown',
+    ).toBeVisible();
+  }
+
+  /** Moves the team to a different org via "Change team organization".
+   * Assumes Team Settings is open; reuses addedToOrgMessage's toast text. */
+  async changeTeamOrganization(orgName) {
+    await this.teamOrgOptionsButton.click();
+    await this.changeTeamOrgMenuItem.click();
+    await this.addTeamToOrgCombobox.click();
+    await this.page.getByRole('option', { name: orgName }).click();
+    await this.moveTeamSubmitButton.click();
+    await expect(
+      this.addedToOrgMessage,
+      'Team-moved-to-organization message is shown',
     ).toBeVisible();
   }
 
