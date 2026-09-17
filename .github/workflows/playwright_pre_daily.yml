@@ -45,9 +45,11 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
+          TESTDINO_TOKEN: ${{ secrets.TESTDINO_TOKEN }}
         run: npx playwright test --project=chrome 2>&1 | tee test-output.log
 
       - name: Add Qase run link to summary
+        id: run-links
         if: always()
         run: |
           QASE_LINK=$(grep -oP 'https://app\.qase\.io/run/[A-Z0-9]+/dashboard/\d+' test-output.log | head -1 || true)
@@ -55,6 +57,9 @@ jobs:
             echo "## Qase Report" >> $GITHUB_STEP_SUMMARY
             echo "🔗 [View run in Qase]($QASE_LINK)" >> $GITHUB_STEP_SUMMARY
           fi
+
+          TESTDINO_URL=$(grep -oP 'https://app\.testdino\.com/\S+/test-runs/\S+' test-output.log | head -1)
+          echo "testdino-url=$TESTDINO_URL" >> $GITHUB_OUTPUT
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
@@ -64,7 +69,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          testdino_api_key: ${{ secrets.TDPW_API_KEY }}
         if: always()
 
       - name: Update flaky-test history
@@ -105,6 +109,7 @@ jobs:
         with:
           mattermost-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }}
           browser-name: 'Chrome'
+          testdino-url: ${{ steps.run-links.outputs.testdino-url }}
         if: always()
         continue-on-error: true
 
@@ -142,9 +147,11 @@ jobs:
           QASE_MODE: ${{ vars.QASE_MODE }}
           QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
+          TESTDINO_TOKEN: ${{ secrets.TESTDINO_TOKEN }}
         run: npx playwright test --project=enterprise 2>&1 | tee test-output.log
 
       - name: Add Qase run link to summary
+        id: run-links
         if: always()
         run: |
           QASE_LINK=$(grep -oP 'https://app\.qase\.io/run/[A-Z0-9]+/dashboard/\d+' test-output.log | head -1 || true)
@@ -153,6 +160,9 @@ jobs:
             echo "🔗 [View run in Qase]($QASE_LINK)" >> $GITHUB_STEP_SUMMARY
           fi
 
+          TESTDINO_URL=$(grep -oP 'https://app\.testdino\.com/\S+/test-runs/\S+' test-output.log | head -1)
+          echo "testdino-url=$TESTDINO_URL" >> $GITHUB_OUTPUT
+
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
         with:
@@ -160,8 +170,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          browser-name: 'Enterprise'
-          testdino_api_key: ${{ secrets.TDPW_API_KEY }}
+          browser-name: 'Chrome'
           report-suffix: 'enterprise'
         if: always()
 
@@ -169,8 +178,9 @@ jobs:
         uses: ./.github/actions/send-notification
         with:
           mattermost-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }}
-          browser-name: 'Enterprise'
+          browser-name: 'Chrome'
           folder-path: 'tests/enterprise'
           report-suffix: 'enterprise'
+          testdino-url: ${{ steps.run-links.outputs.testdino-url }}
         if: always()
         continue-on-error: true

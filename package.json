@@ -30,6 +30,7 @@
   "homepage": "https://github.com/penpot/penpotqa#readme",
   "devDependencies": {
     "@playwright/test": "^1.63.0",
+    "@testdino/playwright": "^2.6.2",
     "@types/node": "^26.1.1",
     "dotenv": "^17.4.2",
     "husky": "^9.1.7",

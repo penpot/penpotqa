@@ -156,7 +156,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           browser-name: 'Chrome'
           is-manual-execution: 'true'
-          testdino_api_key: ${{ secrets.TDPW_API_KEY }}
         if: always()
 
       - name: Send Mattermost Notification
