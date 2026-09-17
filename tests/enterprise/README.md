@@ -2,33 +2,27 @@
 
 Playwright specs for Penpot's Enterprise-plan.
 
-**Status: 36 implemented and passing live, 38 still `test.skip` stubs.**
-Implemented so far: PENPOT-3235, 3236, 3336, 3324, 3413 (in
-`billing-ui-flow/subscribe-and-trial-flow.spec.ts`), 3239 (in
-`dashboard-enterprise/organizations-dropdown.spec.ts`), 3165/3166/3240 (in
-`admin-console/settings-rename-organization.spec.ts` and
-`admin-console/settings-organization-logo.spec.ts`), 3223/3226 (in
-`destructive/plan-destructive-and-cross-plan.spec.ts`), 3093/3094/3097/3180/3182/3184
-(in `admin-console/navigation.spec.ts`), 3099 (in
-`admin-console/user-menu.spec.ts`), 3630 (in
-`admin-console/teams-list.spec.ts`), 3106/3133 (in
-`dashboard-enterprise/teams-dropdown-create-new-team.spec.ts` and
-`dashboard-enterprise/teams-dropdown-delete-team.spec.ts`), 3328/3329/3332/3333/3334
-(in `admin-console/advanced-permissions-create-teams.spec.ts`), 3192/3198 (in
-`dashboard-enterprise/team-settings-add-remove-org.spec.ts`), 3302/3308/3185
-(People tab invite/pending flows, in
-`admin-console/people-members-invite.spec.ts` and
-`admin-console/people-pending-cancel-invitation.spec.ts`), and 3143 (member
-removal consequences, in `admin-console/people-members-remove.spec.ts`).
+**Status: 39 implemented and passing live, 35 still `test.skip` stubs.**
 
-Run with the dedicated `enterprise` Playwright project (kept out of the
-default `chrome` project so these stubs don't show up in every-day `npm test`
-runs):
-
-```bash
-npx playwright test --project=enterprise --list
-npx playwright test --project=enterprise -g "3235|3236|3324|3336|3413|3239|3165|3166|3223|3226|3093|3094|3097|3180|3182|3184|3099|3630|3106|3133|3328|3329|3240|3192|3198|3302|3308|3185|3332|3333|3334|3143|3078|3079|3080|3081"  # the 36 real ones
-```
+| Qase IDs                           | Qase suite                                                                                                                            | File                                                          |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| 3235, 3236, 3336, 3324, 3413       | Cross-cutting: Enterprise Dashboard (direct) / Admin Console > Subscriptions & Billing / Admin Console (direct)                       | `billing-ui-flow/subscribe-and-trial-flow.spec.ts`            |
+| 3239                               | Enterprise Dashboard > Organizations Dropdown                                                                                         | `dashboard-enterprise/organizations-dropdown.spec.ts`         |
+| 3165, 3166                         | Admin Console > Settings > Rename organization                                                                                        | `admin-console/settings-rename-organization.spec.ts`          |
+| 3240                               | Admin Console > Settings > Organization logo > Update logo                                                                            | `admin-console/settings-organization-logo.spec.ts`            |
+| 3223, 3226                         | Cross-cutting: Admin Console > Settings > Delete organization; Admin Console > Subscriptions & Billing; Enterprise Dashboard (direct) | `destructive/plan-destructive-and-cross-plan.spec.ts`         |
+| 3093, 3094, 3097, 3180, 3182, 3184 | Admin Console (direct cases) / Subscriptions & Billing                                                                                | `admin-console/navigation.spec.ts`                            |
+| 3099                               | Admin Console > User menu (Organization owner)                                                                                        | `admin-console/user-menu.spec.ts`                             |
+| 3630                               | Admin Console > Sidebar Menu > Teams                                                                                                  | `admin-console/teams-list.spec.ts`                            |
+| 3106                               | Enterprise Dashboard > Teams Dropdown > Create new team                                                                               | `dashboard-enterprise/teams-dropdown-create-new-team.spec.ts` |
+| 3133                               | Enterprise Dashboard > Teams Dropdown > Team Management Options > Delete Team                                                         | `dashboard-enterprise/teams-dropdown-delete-team.spec.ts`     |
+| 3328, 3329, 3332, 3333, 3334       | Admin Console > Sidebar Menu > Advanced Permissions > Create Teams (Permission)                                                       | `admin-console/advanced-permissions-create-teams.spec.ts`     |
+| 3192, 3198                         | Enterprise Dashboard > Teams Dropdown > Team Settings > Team Organization Options > Add/Remove team from organization                 | `dashboard-enterprise/team-settings-add-remove-org.spec.ts`   |
+| 3302, 3308                         | Admin Console > Sidebar Menu > People > Members (tab) > Invite People (Button & Modal)                                                | `admin-console/people-members-invite.spec.ts`                 |
+| 3185                               | Admin Console > Sidebar Menu > People > Pending (tab) > Cancel Invitation                                                             | `admin-console/people-pending-cancel-invitation.spec.ts`      |
+| 3143                               | Admin Console > Sidebar Menu > People > Members (tab) > Remove                                                                        | `admin-console/people-members-remove.spec.ts`                 |
+| 3078, 3079, 3080, 3081             | Enterprise Dashboard > Teams Dropdown > Team Management Options > Invitations (Enterprise)                                            | `dashboard-enterprise/teams-dropdown-invitations.spec.ts`     |
+| 3211, 3212, 3213                   | Enterprise Dashboard > Teams Dropdown > Team Settings > Team Organization Options > Change team organization                          | `dashboard-enterprise/team-settings-change-org.spec.ts`       |
 
 ## How Enterprise entitlement actually works
 
@@ -58,19 +52,19 @@ after 7 days — no manual cleanup needed for enterprise test data.
 
 ## Page objects
 
-| File                                                       | Covers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pages/dashboard/organization-page.ts`                     | Dashboard-side entry points: sidebar "+ Create org" button/promo widget, "Unlock Enterprise features" modal, org switcher dropdown, "Create organization" naming modal. Also `acceptOrgInviteFromInbox(email, orgName)` — see `helpers/accounts/` below.                                                                                                                                                                                                                                                                                  |
-| `pages/admin-console/admin-console-page.ts`                | The Admin Console app (`/admin-console/...`): welcome/empty state, its own "Unlock Enterprise Features" modal (a different component from the dashboard's), org settings modal (rename/delete), its own org switcher and user menu, Teams tab table (`TeamsTableColumn`), People tab's Members (`PeopleTableColumn`) and Pending (`PendingTableColumn`) sub-tables, org-level "Invite people" modal.                                                                                                                                      |
-| `pages/dashboard/stripe-page.ts`                           | `completeEnterpriseTrialCheckout(cardNumber?, taxId?, expectSuccess?)` drives the real hosted Stripe Checkout page. Also has the older embedded add-card-iframe methods used by `tests/subscription-plans/*`.                                                                                                                                                                                                                                                                                                                             |
-| `helpers/stripe-test-cards.ts`                             | Named Stripe test-mode card numbers instead of magic strings.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `helpers/organizations/create-org-name.ts`                 | `createOrgName()` — mirrors `createTeamName()`'s shape.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `helpers/organizations/subscribe-and-create-org.ts`        | `subscribeAndCreateOrg(orgPage, adminConsolePage, stripePage, orgName)` — the "+ Create org" → checkout → name sequence, deduplicated from 17 call sites. Cases exercising a different entry point keep their own inline steps.                                                                                                                                                                                                                                                                                                           |
-| `helpers/accounts/`                                        | Every "get a logged-in session" primitive: `create-demo-user.ts` (`createDemoUser`, API-only), `login-as-demo-account.ts` (`loginAsDemoAccount`), `register-new-account.ts` (`registerNewAccount`, real Gmail-alias account), `create-invitee-session.ts` (`createInviteeSession`, a real second account in its own context — not a demo one, since a demo profile's inbox is unreadable and can't accept an org invite). Prefer `ownerAndInviteeTest` in tests over calling `createInviteeSession()` directly — it also handles cleanup. |
-| `pages/admin-console/advanced-permissions-page.ts`         | The Advanced Permissions tab — 4 policy radio groups sharing one self-healing `selectPermission()`/`isPermissionSelected()` pair typed against `AdvancedPermissionValue`.                                                                                                                                                                                                                                                                                                                                                                 |
-| `pages/admin-console/admin-console-page.ts` (logo section) | The org settings modal's logo upload, sharing the rename flow's Save button/toast. `isOrgLogoShown(orgName)` matches by alt text, only present once a real logo is chosen.                                                                                                                                                                                                                                                                                                                                                                |
-| `pages/dashboard/team-page.js` (Enterprise additions)      | Team Settings' "Team organization" section — add/remove a team from an org.                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `helpers/gmail.js` (Enterprise additions)                  | `getMessageSubject(email)` — the Subject header, not otherwise exposed. `checkEnterpriseInviteText`/`checkEnterpriseInviteSubject` — the org-scoped invite template (only names the org in the body, and only when the invitee is an existing account); mirrors the legacy suite's `checkInviteText`.                                                                                                                                                                                                                                     |
+| File                                                       | Covers                                                                                                                                                   |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pages/dashboard/organization-page.ts`                     | Dashboard-side entry points: "+ Create org", Enterprise modal, org switcher, org naming modal. Also `acceptOrgInviteFromInbox()`.                        |
+| `pages/admin-console/admin-console-page.ts`                | The Admin Console app: welcome state, its own Enterprise modal, org settings, org switcher/user menu, Teams/People tables, org-level invite modal.       |
+| `pages/dashboard/stripe-page.ts`                           | `completeEnterpriseTrialCheckout()` drives the real hosted Stripe Checkout page.                                                                         |
+| `helpers/stripe-test-cards.ts`                             | Named Stripe test-mode card numbers instead of magic strings.                                                                                            |
+| `helpers/organizations/create-org-name.ts`                 | `createOrgName()` — mirrors `createTeamName()`'s shape.                                                                                                  |
+| `helpers/organizations/subscribe-and-create-org.ts`        | `subscribeAndCreateOrg()` — the "+ Create org" → checkout → name sequence, deduplicated from 17 call sites.                                              |
+| `helpers/accounts/`                                        | Every "get a logged-in session" primitive — demo, login, register, and a real invitee session. Prefer `ownerAndInviteeTest` over calling these directly. |
+| `pages/admin-console/advanced-permissions-page.ts`         | The Advanced Permissions tab — 4 policy radio groups, one self-healing `selectPermission()`/`isPermissionSelected()` pair.                               |
+| `pages/admin-console/admin-console-page.ts` (logo section) | The org settings modal's logo upload. `isOrgLogoShown(orgName)` matches by alt text.                                                                     |
+| `pages/dashboard/team-page.js` (Enterprise additions)      | Team org section — add/remove/move (`changeTeamOrganization()`), plus `getTeamIdFromUrl()` for direct navigation.                                        |
+| `helpers/gmail.js` (Enterprise additions)                  | `getMessageSubject()`, plus `checkEnterpriseInviteText`/`checkEnterpriseInviteSubject` for the org-scoped invite template.                               |
 
 Assertions live in the page objects, not spec files — every `expect()` a
 case needs is a named `isXVisible()`/`isXListed()`/`hasX()` method with its
