@@ -26,22 +26,22 @@ async function refreshToken(oAuth2Client) {
   return oAuth2Client;
 }
 
+/** Searches both labels as ONE query, so results stay in Gmail's own
+ * newest-first order — two separate per-label queries concatenated
+ * together would not (e.g. a newer message in SPAM could still sort after
+ * an older one in INBOX). */
+async function findMessages(gmail, email) {
+  const res = await gmail.users.messages.list({
+    userId: 'me',
+    q: `to:${email} (in:inbox OR in:spam)`,
+    maxResults: 10,
+  });
+  return res.data.messages || [];
+}
+
 async function listMessages(auth, email) {
   const gmail = google.gmail({ version: 'v1', auth });
-
-  async function searchMessages(label, email) {
-    const res = await gmail.users.messages.list({
-      userId: 'me',
-      q: `to:${email}`,
-      labelIds: [label],
-      maxResults: 10,
-    });
-    return res.data.messages || [];
-  }
-
-  const inboxMessages = await searchMessages('INBOX', email);
-  const spamMessages = await searchMessages('SPAM', email);
-  const messages = [...inboxMessages, ...spamMessages];
+  const messages = await findMessages(gmail, email);
 
   if (messages.length > 0) {
     const msg = await gmail.users.messages.get({
@@ -57,21 +57,7 @@ async function listMessages(auth, email) {
 
 async function messagesCount(auth, email) {
   const gmail = google.gmail({ version: 'v1', auth });
-
-  async function searchMessages(label, email) {
-    const res = await gmail.users.messages.list({
-      userId: 'me',
-      q: `to:${email}`,
-      labelIds: [label],
-      maxResults: 10,
-    });
-    return res.data.messages || [];
-  }
-
-  const inboxMessages = await searchMessages('INBOX', email);
-  const spamMessages = await searchMessages('SPAM', email);
-  const messages = [...inboxMessages, ...spamMessages];
-
+  const messages = await findMessages(gmail, email);
   return messages.length;
 }
 
@@ -114,6 +100,31 @@ async function getRegisterMessage(email) {
     .catch(console.error);
 }
 
+/** The most recent message's Subject header — listMessages() only decodes
+ * the body. */
+async function getMessageSubject(email) {
+  return authorize()
+    .then(async (auth) => {
+      const gmail = google.gmail({ version: 'v1', auth });
+      const messages = await findMessages(gmail, email);
+      if (messages.length === 0) {
+        return null;
+      }
+
+      const msg = await gmail.users.messages.get({
+        userId: 'me',
+        id: messages[0].id,
+        format: 'metadata',
+        metadataHeaders: ['Subject'],
+      });
+      const subjectHeader = (msg.data.payload.headers || []).find(
+        (header) => header.name === 'Subject',
+      );
+      return subjectHeader ? subjectHeader.value : null;
+    })
+    .catch(console.error);
+}
+
 async function getRequestAccessMessage(email) {
   return authorize()
     .then(async (auth) => {
@@ -144,6 +155,26 @@ async function checkInviteText(text, team, user) {
   expect(text).toContain('Accept invitation using this link:');
   expect(text).toContain('Enjoy!');
   expect(text).toContain('The Penpot team.');
+}
+
+/** Same template as checkInviteText, but also names the org — only true
+ * when the invitee is an EXISTING Penpot account; a fresh address gets the
+ * plain team-only wording. No `user` param: the inviter is always a demo
+ * account with a server-generated name. */
+async function checkEnterpriseInviteText(text, team, org) {
+  expect(text).toContain('Hello!');
+  expect(text).toContain(`has invited you to join the team "${team}"`);
+  expect(text).toContain(`part of the organization "${org}"`);
+  expect(text).toContain('Accept invitation using this link:');
+  expect(text).toContain('Enjoy!');
+  expect(text).toContain('The Penpot team.');
+}
+
+/** Unlike the body (checkEnterpriseInviteText), the subject never names
+ * the org, only the team. */
+async function checkEnterpriseInviteSubject(subject, team, org) {
+  expect(subject).toContain(team);
+  expect(subject).not.toContain(org);
 }
 
 async function checkRegisterText(text, name) {
@@ -406,7 +437,10 @@ async function getVerificationMessage(email) {
 
 module.exports = {
   checkInviteText,
+  checkEnterpriseInviteText,
+  checkEnterpriseInviteSubject,
   getRegisterMessage,
+  getMessageSubject,
   getVerificationMessage,
   checkRegisterText,
   checkRecoveryText,

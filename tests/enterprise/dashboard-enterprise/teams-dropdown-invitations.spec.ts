@@ -1,108 +1,155 @@
 /**
  * Qase suite: Enterprise Dashboard > Teams Dropdown > Team Management Options > Invitations (Enterprise)
  *
- * Stubs below (`test.skip`) await automation — see the Enterprise Plan
- * automation plan.
- *
- * Base fixture: `demoAccountApiFixture` (does NOT grant Enterprise
- * entitlement by itself — see enterprise-fixtures.ts's `enterprisePageTest`/
- * `ownerAndInviteeTest`). Per-case "Accounts:" notes cover invitees
- * needing a real, readable inbox instead (see the
- * enterprise-demo-account-email memory).
+ * Base: `ownerAndInviteeTest` for cases needing a real, existing Penpot
+ * account as the invite target — a demo profile's inbox is unreadable (see
+ * the enterprise-demo-account-email memory). `enterprisePageTest` for the
+ * one case that only reads the invite record's own UI state.
  */
-import { demoAccountApiFixture } from 'fixtures';
+import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
+import {
+  checkEnterpriseInviteSubject,
+  checkEnterpriseInviteText,
+  getMessageSubject,
+  waitMessage,
+  waitSecondMessage,
+} from 'helpers/gmail';
+import { createOrgName } from 'helpers/organizations/create-org-name';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import {
+  enterprisePageTest,
+  ownerAndInviteeTest,
+} from '@tests/enterprise/fixtures/enterprise-fixtures';
 
-demoAccountApiFixture.describe(
+enterprisePageTest.describe(
   'Enterprise Dashboard > Teams Dropdown > Team Management Options > Invitations (Enterprise)',
   () => {
-    demoAccountApiFixture.skip(
+    ownerAndInviteeTest(
       qase(
-        [3078],
-        'Team admin invites existing Penpot user to team within organization',
+        [3078, 3079, 3080],
+        'Invite an existing Penpot user to a team, email content, and acceptance',
       ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3078 for full detail):
-         * 1. Log in as team admin
-         * 2. Navigate to Team Settings
-         * 3. Open Invitations tab
-         * 4. Click Invite, enter invitee email, send → confirmation message displayed
-         *
-         * Accounts: team admin → createDemoUser() (email never read). Invitee
-         * → createInviteEmail() from helpers/teams/invite-email.ts, NOT
-         * createDemoUser() — this same invitee address is reused by PENPOT-3079
-         * (reads the invite email) and PENPOT-3080 (clicks its accept link), and
-         * a demo profile's email (demo-<uuid>@demo.example.com) is never
-         * deliverable — see the enterprise-demo-account-email memory.
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({
+        ownerPage,
+        orgPage,
+        adminConsolePage,
+        stripePage,
+        teamPage,
+        invitee,
+      }) => {
+        // 3 cases' worth of setup + two real email waits no longer fit the
+        // default per-test timeout, now that they share one test.
+        ownerAndInviteeTest.setTimeout(150_000);
+
+        const orgName = createOrgName();
+        const teamName = createTeamName();
+
+        await ownerAndInviteeTest.step(
+          'Setup: subscribe to Enterprise and create an org with a team already in it',
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgName,
+            );
+            await adminConsolePage.goToFiles();
+            await teamPage.createTeam(teamName);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          '3078: Team Settings > Invitations tab → invite the existing user → confirmation message',
+          async () => {
+            await teamPage.openInvitationsPageViaOptionsMenu();
+            await teamPage.clickInviteMembersToTeamButton();
+            await teamPage.enterEmailToInviteMembersPopUp(invitee.email);
+            await teamPage.clickSendInvitationButton();
+            await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+          },
+        );
+
+        let invite: { inviteUrl: string; inviteText: string } | undefined;
+
+        await ownerAndInviteeTest.step(
+          "3079: Invitee's inbox → subject names the team, body names both the team and the organization",
+          async () => {
+            await waitSecondMessage(ownerPage, invitee.email, 40);
+            const subject = await getMessageSubject(invitee.email);
+            await checkEnterpriseInviteSubject(subject, teamName, orgName);
+
+            invite = await waitMessage(ownerPage, invitee.email, 40);
+            await checkEnterpriseInviteText(invite!.inviteText, teamName, orgName);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          '3080: Invitee follows the invite link from their own inbox → success message, then listed as an org member',
+          async () => {
+            const inviteeDashboardPage = new DashboardPage(invitee.page);
+            await invitee.page.goto(invite!.inviteUrl);
+            await inviteeDashboardPage.isSuccessMessageDisplayed(
+              'Joined the team successfully',
+            );
+
+            await orgPage.openOrgSwitcher();
+            await orgPage.clickGoToAdminConsole();
+            await adminConsolePage.openPeopleTab();
+            await adminConsolePage.isMemberListedInPeopleTable(invitee.name);
+          },
+        );
       },
     );
 
-    demoAccountApiFixture.skip(
-      qase([3079], 'Verify invitation email includes organization and team name'),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3079 for full detail):
-         * 1. Open invitee’s inbox
-         * 2. Open the invitation email from Penpot
-         * 3. Subject includes org and team names
-         * 4. Body clearly displays org name and team name
-         *
-         * Accounts: invitee → createInviteEmail() (helpers/teams/invite-email.ts)
-         * + waitMessage()/getRegisterMessage() (helpers/gmail.js) to read the
-         * email back. Same invitee as PENPOT-3078/3080. A demo account cannot
-         * be used here — its inbox is not real (see the
-         * enterprise-demo-account-email memory).
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
-      },
-    );
-
-    demoAccountApiFixture.skip(
-      qase(
-        [3080],
-        'Invited user accepts invitation and becomes organization member',
-      ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3080 for full detail):
-         * 1. Log in as invitee
-         * 2. Accept the team invite from inbox → success message
-         * 3. Log in as org owner
-         * 4. Admin Console > People > Members → invitee now appears as an org member
-         *
-         * Accounts: invitee → createInviteEmail() + waitMessage() to fetch the
-         * accept-invite link (same invitee as PENPOT-3078/3079 — a demo
-         * account's inbox can't be read, see the enterprise-demo-account-email
-         * memory). Org owner → createDemoUser() (only checks the Members list,
-         * never reads email).
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
-      },
-    );
-
-    demoAccountApiFixture.skip(
+    enterprisePageTest(
       qase([3081], 'Pending invitation displays in Admin Console invitations list'),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3081 for full detail):
-         * 1. Log in as org owner
-         * 2. Admin Console > People > Members tab → members list + Invite people button shown
-         * 3. Pending invitation visible with correct email/team name
-         * 4. Admin Console > People > Pending tab → pending org invitations listed
-         *
-         * Accounts: org owner → createDemoUser(). No real inbox needed anywhere
-         * in this case — it only asserts on the pending-invite record shown in
-         * the Admin Console UI, not on anything the invitee receives, so the
-         * invite target can be any address (a second createDemoUser(), even).
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({ page, orgPage, adminConsolePage, stripePage, teamPage }) => {
+        const orgName = createOrgName();
+        const teamName = createTeamName();
+        const inviteeEmail = `pending-${Date.now()}@demo.example.com`;
+
+        await enterprisePageTest.step(
+          'Setup: subscribe to Enterprise, create an org with a team, and invite from the team',
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgName,
+            );
+            await adminConsolePage.goToFiles();
+            await teamPage.createTeam(teamName);
+            await teamPage.openInvitationsPageViaOptionsMenu();
+            await teamPage.clickInviteMembersToTeamButton();
+            await teamPage.enterEmailToInviteMembersPopUp(inviteeEmail);
+            await teamPage.clickSendInvitationButton();
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Admin Console > People > Members tab → members list and Invite people button shown',
+          async () => {
+            await orgPage.openOrgSwitcher();
+            await orgPage.clickGoToAdminConsole();
+            await adminConsolePage.openPeopleTab();
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Admin Console > People > Pending tab → the team-originated invitation is listed as a pending org invitation',
+          async () => {
+            // A team-originated invite takes longer to reach the org-level
+            // Pending list than a direct org-level invite does.
+            await expect(async () => {
+              await page.reload();
+              await adminConsolePage.openPendingTab();
+              await adminConsolePage.isPendingInvitationListed(inviteeEmail);
+            }).toPass({ timeout: 20000 });
+          },
+        );
       },
     );
   },
