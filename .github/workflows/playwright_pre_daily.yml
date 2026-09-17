@@ -170,7 +170,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          browser-name: 'Enterprise'
+          browser-name: 'Chrome'
           report-suffix: 'enterprise'
         if: always()
 
@@ -178,7 +178,7 @@ jobs:
         uses: ./.github/actions/send-notification
         with:
           mattermost-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_DAILY_REPORT }}
-          browser-name: 'Enterprise'
+          browser-name: 'Chrome'
           folder-path: 'tests/enterprise'
           report-suffix: 'enterprise'
           testdino-url: ${{ steps.run-links.outputs.testdino-url }}
