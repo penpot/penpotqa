@@ -14,6 +14,7 @@ import { DashboardPage } from '@pages/dashboard/dashboard-page';
 
 profileTest(
   qase(187, 'Edit profile: profile name and image'),
+  { lock: 'shared-account-profile' },
   async ({ profilePage }) => {
     const newName = random();
     const oldName = 'QA Engineer';
@@ -34,6 +35,7 @@ profileTest(
 
 profileTest(
   qase([195, 2958], 'Upload profile image and validate'),
+  { lock: 'shared-account-profile' },
   async ({ profilePage }) => {
     await profileTest.step(
       '(195) Upload JPEG profile image and verify screenshot',
