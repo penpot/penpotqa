@@ -269,7 +269,7 @@ export class AdminConsolePage extends BasePage {
     // `[aria-haspopup="true"]` elements on the page (one off-screen at x=0,
     // presumably an unused/hidden duplicate), and this is reliably the
     // second/visible one.
-    this.orgSwitcherButton = page.locator('[aria-haspopup="true"]:visible').last();
+    this.orgSwitcherButton = page.locator('[aria-haspopup="true"]').visible().last();
     this.orgSwitcherItem = page.getByRole('menuitemradio');
     this.createOrganizationSwitcherItem = this.orgSwitcherItem.filter({
       hasText: 'Create organization',

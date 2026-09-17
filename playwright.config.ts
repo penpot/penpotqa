@@ -25,6 +25,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
+  /* Run CI retries at the end, isolated, to avoid interference with the rest of the suite */
+  retryStrategy: process.env.CI ? 'isolated' : undefined,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 3 : 3,
   /* Directory where test artifacts are stored */

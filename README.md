@@ -71,13 +71,13 @@ Available scripts:
 The `docker-compose.yml` file accepts the following variables, which can be set in the `.env` file:
 
 - `DOCKER_PLATFORM` - platform used to run the container (default: `linux/amd64`). This default works as-is on Windows and Linux x86_64 (native, no emulation). On an ARM64 host (e.g. Apple Silicon, Windows/Linux ARM), it can be set to `linux/arm64` to run natively instead of emulating amd64, as long as the image tag below has an arm64 build.
-- `PLAYWRIGHT_DOCKER_TAG` - tag of the `mcr.microsoft.com/playwright` image to use (default: `v1.60.0-noble`). It should match the resolved `@playwright/test` version (see `package-lock.json`).
+- `PLAYWRIGHT_DOCKER_TAG` - tag of the `mcr.microsoft.com/playwright` image to use (default: `v1.63.0-noble`). It should match the resolved `@playwright/test` version (see `package-lock.json`).
 
 To use them, add (and uncomment) the following lines to your `.env` file:
 
 ```
 # DOCKER_PLATFORM=linux/arm64
-# PLAYWRIGHT_DOCKER_TAG=v1.60.0-noble
+# PLAYWRIGHT_DOCKER_TAG=v1.63.0-noble
 ```
 
 Notes:
