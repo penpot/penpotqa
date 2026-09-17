@@ -18,10 +18,8 @@ Implemented so far: PENPOT-3235, 3236, 3336, 3324, 3413 (in
 `dashboard-enterprise/team-settings-add-remove-org.spec.ts`), 3302/3308/3185
 (People tab invite/pending flows, in
 `admin-console/people-members-invite.spec.ts` and
-`admin-console/people-pending-cancel-invitation.spec.ts`), 3143 (member
-removal consequences, in `admin-console/people-members-remove.spec.ts`), and
-3078/3079/3080/3081 (team invitations within an org, in
-`dashboard-enterprise/teams-dropdown-invitations.spec.ts`).
+`admin-console/people-pending-cancel-invitation.spec.ts`), and 3143 (member
+removal consequences, in `admin-console/people-members-remove.spec.ts`).
 
 Run with the dedicated `enterprise` Playwright project (kept out of the
 default `chrome` project so these stubs don't show up in every-day `npm test`
