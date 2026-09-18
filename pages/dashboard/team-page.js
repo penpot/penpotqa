@@ -244,14 +244,33 @@ exports.TeamPage = class TeamPage extends BasePage {
   /** Moves the team to a different org via "Change team organization".
    * Assumes Team Settings is open; reuses addedToOrgMessage's toast text. */
   async changeTeamOrganization(orgName) {
-    await this.teamOrgOptionsButton.click();
-    await this.changeTeamOrgMenuItem.click();
+    await this.openChangeTeamOrgModal();
     await this.addTeamToOrgCombobox.click();
     await this.page.getByRole('option', { name: orgName }).click();
     await this.moveTeamSubmitButton.click();
     await expect(
       this.addedToOrgMessage,
       'Team-moved-to-organization message is shown',
+    ).toBeVisible();
+  }
+
+  /** Opens the "Change team organization" modal without assuming success —
+   * a move disallowed by the "Move teams across organizations" permission
+   * shows a blocking message here instead of the org combobox (see
+   * isMoveTeamBlockedModalShown()). */
+  async openChangeTeamOrgModal() {
+    await this.teamOrgOptionsButton.click();
+    await this.changeTeamOrgMenuItem.click();
+  }
+
+  /** Asserts the modal shown when "Move teams across organizations" blocks
+   * an attempted move or removal, naming the team's current organization. */
+  async isMoveTeamBlockedModalShown(orgName) {
+    await expect(
+      this.page.getByText(
+        `You are not allowed to move teams that are part of ${orgName} organization. If you need more information, contact the organization's owner.`,
+      ),
+      `Move-team blocked modal names "${orgName}"`,
     ).toBeVisible();
   }
 
