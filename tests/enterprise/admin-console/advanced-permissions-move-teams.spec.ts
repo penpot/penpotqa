@@ -262,16 +262,20 @@ enterprisePageTest.describe(
           // "Change team organization" only renders once the actor has
           // another org to move into (see the create-teams-requires-2-orgs
           // memory) — OrgE gives the invitee that second org, owned by
-          // neither of them jointly with OrgD's owner.
-          'Invitee creates their own team, then separately subscribes to Enterprise and creates OrgE',
+          // neither of them jointly with OrgD's owner. Subscribing BEFORE
+          // creating the team, not after — a team created before the
+          // invitee's first Enterprise sign-up silently drops out of their
+          // team switcher once the Stripe checkout flow completes.
+          'Invitee separately subscribes to Enterprise and creates OrgE, then creates their own team (auto-joins OrgE)',
           async () => {
-            await inviteeTeamPage.createTeam(teamName);
             await subscribeAndCreateOrg(
               inviteeOrgPage,
               inviteeAdminConsolePage,
               inviteeStripePage,
               orgEName,
             );
+            await inviteeAdminConsolePage.goToFiles();
+            await inviteeTeamPage.createTeam(teamName);
           },
         );
 
@@ -283,14 +287,17 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Invitee switches to their pre-existing team and adds it to OrgD',
+          // Accepting the OrgD invite switches the invitee's active ORG
+          // context to OrgD, which scopes the team switcher down to
+          // Personal Projects + OrgD's own teams — OrgE's team drops out of
+          // it entirely until the org context is switched back to OrgE.
+          "Invitee switches back to OrgE's context, then to their team, and moves it into OrgD",
           async () => {
-            // A real reload — the team switcher's in-memory list can go
-            // stale right after an Admin Console round-trip, otherwise.
-            await invitee.page.goto('/');
+            await inviteeOrgPage.switchToOrg(orgEName);
             await inviteeTeamPage.switchTeam(teamName);
             await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
-            await inviteeTeamPage.addTeamToOrganization(orgDName);
+            await inviteeTeamPage.isTeamPartOfOrganization(orgEName);
+            await inviteeTeamPage.changeTeamOrganization(orgDName);
           },
         );
 
@@ -401,15 +408,20 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Invitee creates their own team, then separately subscribes to Enterprise and creates OrgA',
+          // Subscribing BEFORE creating the team, not after — a team
+          // created before the invitee's first Enterprise sign-up silently
+          // drops out of their team switcher once the Stripe checkout flow
+          // completes.
+          'Invitee separately subscribes to Enterprise and creates OrgA, then creates their own team (auto-joins OrgA)',
           async () => {
-            await inviteeTeamPage.createTeam(teamName);
             await subscribeAndCreateOrg(
               inviteeOrgPage,
               inviteeAdminConsolePage,
               inviteeStripePage,
               orgAName,
             );
+            await inviteeAdminConsolePage.goToFiles();
+            await inviteeTeamPage.createTeam(teamName);
           },
         );
 
@@ -421,14 +433,17 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Invitee switches to their pre-existing team and adds it to OrgD',
+          // Accepting the OrgD invite switches the invitee's active ORG
+          // context to OrgD, which scopes the team switcher down to
+          // Personal Projects + OrgD's own teams — OrgA's team drops out of
+          // it entirely until the org context is switched back to OrgA.
+          "Invitee switches back to OrgA's context, then to their team, and moves it into OrgD",
           async () => {
-            // A real reload — the team switcher's in-memory list can go
-            // stale right after an Admin Console round-trip, otherwise.
-            await invitee.page.goto('/');
+            await inviteeOrgPage.switchToOrg(orgAName);
             await inviteeTeamPage.switchTeam(teamName);
             await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
-            await inviteeTeamPage.addTeamToOrganization(orgDName);
+            await inviteeTeamPage.isTeamPartOfOrganization(orgAName);
+            await inviteeTeamPage.changeTeamOrganization(orgDName);
           },
         );
 
@@ -442,19 +457,73 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest.skip(
+    enterprisePageTest(
       qase(
         [3626],
         "'Remove team from organization' is blocked under both restriction settings ('Never allowed' and 'Only within my own organizations')",
       ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3626 for full detail):
-         * 1. Team Settings > 'Remove team from organization' under 'Never allowed' → blocking modal naming the org
-         * 2. Org owner switches setting to 'Only within my own organizations', repeat → same blocking modal
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({
+        orgPage,
+        adminConsolePage,
+        stripePage,
+        advancedPermissionsPage,
+        teamPage,
+      }) => {
+        const orgName = createOrgName();
+        const teamName = createTeamName();
+
+        await enterprisePageTest.step(
+          "Setup: subscribe to Enterprise, create an org with a team in it, and set 'Move teams across organizations' to 'Never allowed'",
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgName,
+            );
+            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.NeverAllowed,
+            );
+
+            await adminConsolePage.goToFiles();
+            await teamPage.createTeam(teamName);
+            await teamPage.openTeamSettingsPageViaOptionsMenu();
+            await teamPage.isTeamPartOfOrganization(orgName);
+          },
+        );
+
+        await enterprisePageTest.step(
+          "Under 'Never allowed', 'Remove team from organization' → blocking modal names the organization",
+          async () => {
+            await teamPage.openRemoveTeamFromOrgDialog();
+            await teamPage.isMoveTeamBlockedModalShown(orgName);
+            await teamPage.closeMoveTeamBlockedModal();
+          },
+        );
+
+        await enterprisePageTest.step(
+          "Org owner switches the setting to 'Only within my own organizations'",
+          async () => {
+            await orgPage.openOrgSwitcher();
+            await orgPage.clickGoToAdminConsole();
+            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.OnlyWithinOwnOrganizations,
+            );
+          },
+        );
+
+        await enterprisePageTest.step(
+          "Under 'Only within my own organizations', 'Remove team from organization' → the same blocking modal appears again",
+          async () => {
+            await adminConsolePage.goToFiles();
+            await teamPage.switchTeam(teamName);
+            await teamPage.openTeamSettingsPageViaOptionsMenu();
+            await teamPage.openRemoveTeamFromOrgDialog();
+            await teamPage.isMoveTeamBlockedModalShown(orgName);
+          },
+        );
       },
     );
   },
