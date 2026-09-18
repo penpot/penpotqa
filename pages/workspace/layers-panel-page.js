@@ -208,6 +208,13 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     ).toBeVisible();
   }
 
+  async isNumLayerNameDisplayed(name, count) {
+    await expect(
+      this.layersRows.getByText(name, { exact: true }),
+      count > 1 ? `${count} layers are visible` : `${count} layer is visible`,
+    ).toHaveCount(count);
+  }
+
   async isLayerNameNotDisplayed(name) {
     await expect(
       this.layersRows.getByText(name, { exact: true }).first(),

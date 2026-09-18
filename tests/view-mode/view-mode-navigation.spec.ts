@@ -4,20 +4,24 @@ import { MainPage } from '@pages/workspace/main-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { PrototypePanelPage } from '@pages/workspace/prototype-panel-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
 import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
+const defaultNameBoard = 'Board';
 let pagesPanelPage: PagesPanelPage;
 let viewModePage: ViewModePage;
 let prototypePanelPage: PrototypePanelPage;
 let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
 
 mainAccountFileTest.beforeEach(async ({ page }) => {
   pagesPanelPage = new PagesPanelPage(page);
   viewModePage = new ViewModePage(page);
   prototypePanelPage = new PrototypePanelPage(page);
   designPanelPage = new DesignPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
   await mainAccountFileTest.slow();
 });
 
@@ -100,9 +104,9 @@ mainAccountFileTest(
       'Create two boards and open view mode',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.createDefaultBoardByCoordinates(500, 500, true);
-        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await mainPage.createDefaultBoardByCoordinates(500, 500);
+        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
         const newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -164,11 +168,11 @@ mainAccountFileTest(
       'Create three boards and open view mode',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.createDefaultBoardByCoordinates(500, 500, true);
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.createDefaultBoardByCoordinates(100, 100, true);
-        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await mainPage.createDefaultBoardByCoordinates(500, 500);
+        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
+        await mainPage.createDefaultBoardByCoordinates(100, 100);
+        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 3);
         const newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -220,9 +224,9 @@ mainAccountFileTest(
       'Create two boards and open view mode',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.createDefaultBoardByCoordinates(500, 500, true);
-        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await mainPage.createDefaultBoardByCoordinates(500, 500);
+        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
         const newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -266,8 +270,9 @@ mainAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) =
     'Create two boards with a prototype connection and open view mode',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await mainPage.createDefaultBoardByCoordinates(500, 500, true);
-      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+      await mainPage.createDefaultBoardByCoordinates(500, 500);
+      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
       await prototypePanelPage.clickPrototypeTab();
       await prototypePanelPage.dragAndDropPrototypeArrowConnector(300, 300);
       const newPage = await viewModePage.clickViewModeShortcut();
