@@ -10,15 +10,19 @@ import { qase } from 'playwright-qase-reporter/playwright';
 import { ProfilePage } from '@pages/profile-page';
 import { LoginPage } from '@pages/login-page';
 import { RegisterPage } from '@pages/register-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 
+const defaultNameBoard = 'Board';
 let profilePage: ProfilePage;
 let loginPage: LoginPage;
 let registerPage: RegisterPage;
+let layersPanelPage: LayersPanelPage;
 
 mainAccountFileTest.beforeEach(async ({ page }) => {
   profilePage = new ProfilePage(page);
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
+  layersPanelPage = new LayersPanelPage(page);
 });
 
 mainAccountFileTest.describe(() => {
@@ -34,8 +38,9 @@ mainAccountFileTest.describe(() => {
         'Create two boards and copy their link',
         async () => {
           await mainPage.createDefaultBoardByCoordinates(100, 100);
-          await mainPage.createDefaultBoardByCoordinates(100, 300, true);
-          await mainPage.clickViewportTwice();
+          await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+          await mainPage.createDefaultBoardByCoordinates(100, 300);
+          await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
           await mainPage.clickMainMenuButton();
           await mainPage.clickEditMainMenuItem();
           await mainPage.clickSelectAllMainMenuSubItem();

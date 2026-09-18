@@ -1,11 +1,15 @@
 import { mainAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { qase } from 'playwright-qase-reporter/playwright';
 
+const defaultNameBoard = 'Board';
 let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
 
 mainAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
 });
 
 mainAccountFileTest(
@@ -38,12 +42,10 @@ mainAccountFileTest(
     const numBoards: number = 2;
 
     await mainAccountFileTest.step('Create two boards', async () => {
-      await mainPage.clickCreateBoardButton();
-      await mainPage.clickViewportByCoordinates(100, 150);
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickCreateBoardButton();
-      await mainPage.clickViewportByCoordinates(250, 300);
-      await mainPage.waitForChangeIsSaved();
+      await mainPage.createDefaultBoardByCoordinates(100, 150);
+      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+      await mainPage.createDefaultBoardByCoordinates(250, 300);
+      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
     });
 
     await mainAccountFileTest.step('Select created boards', async () => {

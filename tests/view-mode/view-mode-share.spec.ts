@@ -5,6 +5,7 @@ import { CommentsPanelPage } from '@pages/workspace/comments-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect, Page } from '@playwright/test';
 import { mainAccountFileTest } from 'fixtures';
 import {
@@ -16,11 +17,13 @@ import { random } from 'helpers/string-generator';
 import { loginAsSecondUser } from 'helpers/user-flows';
 import { qase } from 'playwright-qase-reporter/playwright';
 
+const defaultNameBoard = 'Board';
 let pagesPanelPage: PagesPanelPage;
 let viewModePage: ViewModePage;
 let profilePage: ProfilePage;
 let loginPage: LoginPage;
 let registerPage: RegisterPage;
+let layersPanelPage: LayersPanelPage;
 
 mainAccountFileTest.beforeEach(async ({ page }) => {
   pagesPanelPage = new PagesPanelPage(page);
@@ -28,6 +31,7 @@ mainAccountFileTest.beforeEach(async ({ page }) => {
   profilePage = new ProfilePage(page);
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
+  layersPanelPage = new LayersPanelPage(page);
   await mainAccountFileTest.slow();
 });
 
@@ -39,7 +43,7 @@ mainAccountFileTest.describe(() => {
 
       await mainAccountFileTest.step('Create board and open view mode', async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
         const newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -82,7 +86,7 @@ mainAccountFileTest.describe(() => {
 
       await mainAccountFileTest.step('Create board and open view mode', async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
         newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -158,7 +162,7 @@ mainAccountFileTest.describe(() => {
 
       await mainAccountFileTest.step('Create board and open view mode', async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
         newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -251,7 +255,7 @@ mainAccountFileTest.describe(() => {
         'Post a comment as the main user and go back to dashboard',
         async () => {
           await mainPage.createDefaultBoardByCoordinates(300, 300);
-          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
           const newPage = await viewModePage.clickViewModeShortcut();
           const viewModePage2 = new ViewModePage(newPage);
           await viewModePage2.clickCommentsButton();

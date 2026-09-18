@@ -936,6 +936,7 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultBoardByCoordinates(x, y, double = false) {
     await this.clickCreateBoardButton();
     await this.clickViewportByCoordinates(x, y);
+    await this.waitForChangeIsSaved();
     double === true
       ? await this.clickViewportByCoordinates(x, y)
       : await this.waitForChangeIsSaved();
@@ -944,6 +945,7 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultRectangleByCoordinates(x, y, double = false) {
     await this.clickCreateRectangleButton();
     await this.clickViewportByCoordinates(x, y);
+    await this.waitForChangeIsSaved();
     double === true
       ? await this.clickViewportByCoordinates(x, y)
       : await this.waitForChangeIsSaved();
