@@ -81,6 +81,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.removedFromOrgMessage = page.getByText(
       /This team is no longer part of the organization/,
     );
+    this.moveTeamBlockedModalHeading = page.getByRole('heading', {
+      name: "Change team's organization",
+    });
 
     this.membersMenuItem = page.getByRole('menuitem', { name: 'Members' });
 
@@ -244,8 +247,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   /** Moves the team to a different org via "Change team organization".
    * Assumes Team Settings is open; reuses addedToOrgMessage's toast text. */
   async changeTeamOrganization(orgName) {
-    await this.teamOrgOptionsButton.click();
-    await this.changeTeamOrgMenuItem.click();
+    await this.openChangeTeamOrgModal();
     await this.addTeamToOrgCombobox.click();
     await this.page.getByRole('option', { name: orgName }).click();
     await this.moveTeamSubmitButton.click();
@@ -253,6 +255,36 @@ exports.TeamPage = class TeamPage extends BasePage {
       this.addedToOrgMessage,
       'Team-moved-to-organization message is shown',
     ).toBeVisible();
+  }
+
+  /** Opens the "Change team organization" modal without assuming success —
+   * a move disallowed by the "Move teams across organizations" permission
+   * shows a blocking message here instead of the org combobox (see
+   * isMoveTeamBlockedModalShown()). */
+  async openChangeTeamOrgModal() {
+    await this.teamOrgOptionsButton.click();
+    await this.changeTeamOrgMenuItem.click();
+  }
+
+  /** Asserts the modal shown when "Move teams across organizations" blocks
+   * an attempted move or removal, naming the team's current organization. */
+  async isMoveTeamBlockedModalShown(orgName) {
+    await expect(
+      this.page.getByText(
+        `You are not allowed to move teams that are part of ${orgName} organization. If you need more information, contact the organization's owner.`,
+      ),
+      `Move-team blocked modal names "${orgName}"`,
+    ).toBeVisible();
+  }
+
+  /** Closes the "Move teams across organizations" blocking modal — its
+   * overlay otherwise intercepts every later click on the page. */
+  async closeMoveTeamBlockedModal() {
+    await this.clickOnESC();
+    await expect(
+      this.moveTeamBlockedModalHeading,
+      'Move-team blocked modal is closed',
+    ).not.toBeVisible();
   }
 
   /** Opens the "Add team to an organization" modal without assuming success
@@ -342,14 +374,24 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.teamList).toBeVisible();
   }
 
+  /** The team switcher's in-memory list can go stale after a heavy
+   * navigation (an Admin Console round-trip, accepting an org invite) — a
+   * team that genuinely exists doesn't show up until a real reload. Retries
+   * with a reload in between instead of failing on the first miss. */
   async switchTeam(teamName) {
-    await this.openTeamsListIfClosed();
-    const teamOption = this.page
-      .getByRole('menuitem')
-      .filter({ hasText: teamName })
-      .first();
-    await teamOption.click();
-    await this.isTeamSelected(teamName);
+    await expect(async () => {
+      await this.openTeamsListIfClosed();
+      const teamOption = this.teamList
+        .getByRole('menuitem')
+        .filter({ hasText: teamName })
+        .first();
+      if (!(await teamOption.isVisible())) {
+        await this.page.goto('/');
+        throw new Error(`"${teamName}" not yet listed in the team switcher`);
+      }
+      await teamOption.click();
+      await this.isTeamSelected(teamName);
+    }).toPass({ timeout: 30000 });
   }
 
   async deleteTeam(teamName) {
