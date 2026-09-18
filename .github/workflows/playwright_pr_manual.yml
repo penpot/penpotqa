@@ -35,6 +35,10 @@ on:
           - tests/dashboard/teams/settings
           - tests/dashboard/trash
           - tests/enterprise
+          - tests/enterprise/admin-console
+          - tests/enterprise/billing-ui-flow
+          - tests/enterprise/dashboard-enterprise
+          - tests/enterprise/destructive
           - tests/login-signup
           - tests/panels-features
           - tests/panels-features/main-menu
