@@ -81,6 +81,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.removedFromOrgMessage = page.getByText(
       /This team is no longer part of the organization/,
     );
+    this.moveTeamBlockedModalHeading = page.getByRole('heading', {
+      name: "Change team's organization",
+    });
 
     this.membersMenuItem = page.getByRole('menuitem', { name: 'Members' });
 
@@ -274,6 +277,16 @@ exports.TeamPage = class TeamPage extends BasePage {
     ).toBeVisible();
   }
 
+  /** Closes the "Move teams across organizations" blocking modal — its
+   * overlay otherwise intercepts every later click on the page. */
+  async closeMoveTeamBlockedModal() {
+    await this.clickOnESC();
+    await expect(
+      this.moveTeamBlockedModalHeading,
+      'Move-team blocked modal is closed',
+    ).not.toBeVisible();
+  }
+
   /** Opens the "Add team to an organization" modal without assuming success
    * — a restricted non-owner sees a permission-denied message here instead
    * of the org combobox (see isNoPermissionToAddTeamMessageVisible()). */
@@ -361,14 +374,24 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.teamList).toBeVisible();
   }
 
+  /** The team switcher's in-memory list can go stale after a heavy
+   * navigation (an Admin Console round-trip, accepting an org invite) — a
+   * team that genuinely exists doesn't show up until a real reload. Retries
+   * with a reload in between instead of failing on the first miss. */
   async switchTeam(teamName) {
-    await this.openTeamsListIfClosed();
-    const teamOption = this.page
-      .getByRole('menuitem')
-      .filter({ hasText: teamName })
-      .first();
-    await teamOption.click();
-    await this.isTeamSelected(teamName);
+    await expect(async () => {
+      await this.openTeamsListIfClosed();
+      const teamOption = this.page
+        .getByRole('menuitem')
+        .filter({ hasText: teamName })
+        .first();
+      if (!(await teamOption.isVisible())) {
+        await this.page.goto('/');
+        throw new Error(`"${teamName}" not yet listed in the team switcher`);
+      }
+      await teamOption.click();
+      await this.isTeamSelected(teamName);
+    }).toPass({ timeout: 30000 });
   }
 
   async deleteTeam(teamName) {
