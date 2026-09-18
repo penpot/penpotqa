@@ -381,7 +381,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   async switchTeam(teamName) {
     await expect(async () => {
       await this.openTeamsListIfClosed();
-      const teamOption = this.page
+      const teamOption = this.teamList
         .getByRole('menuitem')
         .filter({ hasText: teamName })
         .first();
