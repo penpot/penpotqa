@@ -7,11 +7,15 @@ import { createDemoUser } from './create-demo-user';
  * the cookie banner and onboarding popups. Shared by `demoAccountApiFixture`
  * (fixtures.ts) and `ownerAndInviteeTest`'s `ownerPage` (enterprise-fixtures.ts),
  * so both stay in sync.
+ *
+ * @returns email + password — password only matters for tests that log back
+ * in through the UI after logging out, or that need the account's real
+ * current password (e.g. a change-password flow).
  */
 export async function loginAsDemoAccount(page: Page) {
   const dashboardPage = new DashboardPage(page);
 
-  await createDemoUser(page.context().request);
+  const credentials = await createDemoUser(page.context().request);
 
   await page.goto('/');
   await dashboardPage.isDashboardOpenedAfterLogin();
@@ -19,4 +23,6 @@ export async function loginAsDemoAccount(page: Page) {
   await dashboardPage.isHeaderDisplayed('Projects');
   await dashboardPage.skipWhatNewsPopUp();
   await dashboardPage.skipPluginsPopUp();
+
+  return credentials;
 }

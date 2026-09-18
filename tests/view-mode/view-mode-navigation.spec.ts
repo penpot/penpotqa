@@ -1,11 +1,10 @@
-import { TeamPage } from '@pages/dashboard/team-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { PrototypePanelPage } from '@pages/workspace/prototype-panel-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let pagesPanelPage: PagesPanelPage;
@@ -13,18 +12,18 @@ let viewModePage: ViewModePage;
 let prototypePanelPage: PrototypePanelPage;
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   pagesPanelPage = new PagesPanelPage(page);
   viewModePage = new ViewModePage(page);
   prototypePanelPage = new PrototypePanelPage(page);
   designPanelPage = new DesignPanelPage(page);
-  await mainAccountFileTest.slow();
+  await demoAccountFileTest.slow();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([685], 'Click view mode (From right top click) - no boards created'),
   async () => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Open view mode from the top right button',
       async () => {
         const newPage = await viewModePage.clickViewModeButton();
@@ -33,7 +32,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify view mode page is displayed',
       async () => {
         await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
@@ -44,15 +43,15 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([688], 'Click view mode (From shortcut G+V) - board is created'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step('Create board', async () => {
+    await demoAccountFileTest.step('Create board', async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Open view mode from the G+V shortcut',
       async () => {
         const newPage = await viewModePage.clickViewModeShortcut();
@@ -61,7 +60,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify view mode page is displayed',
       async () => {
         await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
@@ -72,8 +71,8 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(qase([690], 'Full screen on/off'), async ({ mainPage }) => {
-  await mainAccountFileTest.step('Create board and open view mode', async () => {
+demoAccountFileTest(qase([690], 'Full screen on/off'), async ({ mainPage }) => {
+  await demoAccountFileTest.step('Create board and open view mode', async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -81,22 +80,22 @@ mainAccountFileTest(qase([690], 'Full screen on/off'), async ({ mainPage }) => {
     await viewModePage.waitForViewerSection(45000);
   });
 
-  await mainAccountFileTest.step('Enter and exit full screen mode', async () => {
+  await demoAccountFileTest.step('Enter and exit full screen mode', async () => {
     await viewModePage.clickFullScreenButton();
     await viewModePage.exitFullScreenMode();
   });
 
-  await mainAccountFileTest.step('Verify view mode page is displayed', async () => {
+  await demoAccountFileTest.step('Verify view mode page is displayed', async () => {
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-page-image.png',
     );
   });
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([698], 'Click arrows to navigate to other boards'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create two boards and open view mode',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -109,13 +108,13 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Verify first board is displayed', async () => {
+    await demoAccountFileTest.step('Verify first board is displayed', async () => {
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'first-board-view-mode-page-image.png',
       );
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Navigate to next board with the next arrow and verify',
       async () => {
         await viewModePage.clickNextButton();
@@ -125,7 +124,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Navigate back to previous board with the prev arrow and verify',
       async () => {
         await viewModePage.clickPrevButton();
@@ -135,7 +134,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Navigate to next board with the next arrow again and verify',
       async () => {
         await viewModePage.clickNextButton();
@@ -145,7 +144,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Navigate back to previous board with the prev arrow again and verify',
       async () => {
         await viewModePage.clickPrevButton();
@@ -157,10 +156,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([700], 'Click Back icon to reset view'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create three boards and open view mode',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -175,13 +174,13 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Verify first board is displayed', async () => {
+    await demoAccountFileTest.step('Verify first board is displayed', async () => {
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'first-board-view-mode-page-image.png',
       );
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Navigate to second board and verify',
       async () => {
         await viewModePage.clickNextButton();
@@ -191,7 +190,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Navigate to third board and verify',
       async () => {
         await viewModePage.clickNextButton();
@@ -201,7 +200,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Click Back icon and verify view resets to first board',
       async () => {
         await viewModePage.clickResetButton();
@@ -213,10 +212,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([699], 'Click board dropdown to navigate to other boards'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create two boards and open view mode',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -229,7 +228,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Open board dropdown and verify its options',
       async () => {
         await viewModePage.clickSelectBoardDropdown();
@@ -239,7 +238,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Select second board from dropdown and verify',
       async () => {
         await viewModePage.selectSecondBoard();
@@ -249,7 +248,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Select first board from dropdown and verify',
       async () => {
         await viewModePage.selectFirstBoard();
@@ -261,8 +260,8 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) => {
-  await mainAccountFileTest.step(
+demoAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) => {
+  await demoAccountFileTest.step(
     'Create two boards with a prototype connection and open view mode',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -276,7 +275,7 @@ mainAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) =
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Open interactions dropdown and verify default options',
     async () => {
       await viewModePage.clickInteractionsDropdown();
@@ -286,7 +285,7 @@ mainAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) =
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Enable Show interactions option and verify',
     async () => {
       await viewModePage.selectShowInteractionsOptions();
@@ -297,7 +296,7 @@ mainAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) =
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Open interactions dropdown again and verify show options',
     async () => {
       await viewModePage.clickInteractionsDropdown();
@@ -307,7 +306,7 @@ mainAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) =
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Enable Show on click interactions option and verify',
     async () => {
       await viewModePage.selectShowOnClickInteractionsOptions();
@@ -317,7 +316,7 @@ mainAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) =
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Open interactions dropdown once more and verify board state',
     async () => {
       await viewModePage.clickInteractionsDropdown();
@@ -328,8 +327,8 @@ mainAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) =
   );
 });
 
-mainAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
-  await mainAccountFileTest.step('Create board and open view mode', async () => {
+demoAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
+  await demoAccountFileTest.step('Create board and open view mode', async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await mainPage.waitForChangeIsSaved();
     const newPage = await viewModePage.clickViewModeShortcut();
@@ -337,7 +336,7 @@ mainAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
     await viewModePage.waitForViewerSection(45000);
   });
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Open scale dropdown and verify its options',
     async () => {
       await viewModePage.openScaleDropdown();
@@ -347,14 +346,14 @@ mainAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
     },
   );
 
-  await mainAccountFileTest.step('Downscale board and verify', async () => {
+  await demoAccountFileTest.step('Downscale board and verify', async () => {
     await viewModePage.clickDownscaleButton();
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'downscale-board-view-mode-page-image.png',
     );
   });
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Reset scale and upscale board and verify',
     async () => {
       await viewModePage.clickResetScaleButton();
@@ -365,21 +364,21 @@ mainAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
     },
   );
 
-  await mainAccountFileTest.step('Select Fit scale option and verify', async () => {
+  await demoAccountFileTest.step('Select Fit scale option and verify', async () => {
     await viewModePage.selectFitScaleOptions();
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'fit-scale-board-view-mode-page-image.png',
     );
   });
 
-  await mainAccountFileTest.step('Select Fill scale option and verify', async () => {
+  await demoAccountFileTest.step('Select Fill scale option and verify', async () => {
     await viewModePage.selectFillScaleOptions();
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'fill-scale-board-view-mode-page-image.png',
     );
   });
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Select Full screen scale option and verify',
     async () => {
       await viewModePage.selectFullScreenScaleOptions();
@@ -389,7 +388,7 @@ mainAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Reset scale from full screen mode and verify default scale',
     async () => {
       await viewModePage.clickResetScaleButton();
@@ -400,8 +399,8 @@ mainAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
   );
 });
 
-mainAccountFileTest(qase([708], 'Page dropdown'), async ({ mainPage }) => {
-  await mainAccountFileTest.step(
+demoAccountFileTest(qase([708], 'Page dropdown'), async ({ mainPage }) => {
+  await demoAccountFileTest.step(
     'Create board and a second page and open view mode',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -414,7 +413,7 @@ mainAccountFileTest(qase([708], 'Page dropdown'), async ({ mainPage }) => {
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Open page dropdown and verify its options',
     async () => {
       await viewModePage.openPageDropdown();
@@ -424,14 +423,14 @@ mainAccountFileTest(qase([708], 'Page dropdown'), async ({ mainPage }) => {
     },
   );
 
-  await mainAccountFileTest.step('Select Page 2 and verify', async () => {
+  await demoAccountFileTest.step('Select Page 2 and verify', async () => {
     await viewModePage.selectPageByName('Page 2');
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-2page-image.png',
     );
   });
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Open page dropdown again and verify its options',
     async () => {
       await viewModePage.openPageDropdown();
@@ -441,7 +440,7 @@ mainAccountFileTest(qase([708], 'Page dropdown'), async ({ mainPage }) => {
     },
   );
 
-  await mainAccountFileTest.step('Select Page 1 and verify', async () => {
+  await demoAccountFileTest.step('Select Page 1 and verify', async () => {
     await viewModePage.selectPageByName('Page 1');
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'view-mode-1page-image.png',
@@ -449,44 +448,40 @@ mainAccountFileTest(qase([708], 'Page dropdown'), async ({ mainPage }) => {
   });
 });
 
-mainAccountFileTest(
-  qase([705], 'Edit file'),
-  async ({ page, teamPage, mainPage }) => {
-    await mainAccountFileTest.step('Create board and open view mode', async () => {
-      await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await designPanelPage.changeHeightAndWidthForLayer('200', '200');
-      await mainPage.waitForChangeIsSaved();
+demoAccountFileTest(qase([705], 'Edit file'), async ({ page, mainPage }) => {
+  await demoAccountFileTest.step('Create board and open view mode', async () => {
+    await mainPage.createDefaultBoardByCoordinates(300, 300);
+    await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+    await mainPage.waitForChangeIsSaved();
 
-      const newPage = await viewModePage.clickViewModeShortcut();
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(45000);
+    const newPage = await viewModePage.clickViewModeShortcut();
+    viewModePage = new ViewModePage(newPage);
+    await viewModePage.waitForViewerSection(45000);
+  });
+
+  await demoAccountFileTest.step(
+    'Click Edit button and verify it switches to the workspace',
+    async () => {
+      await viewModePage.clickEditButton();
+      const newPage = viewModePage.page;
+      await newPage.waitForTimeout(2000);
+      await viewModePage.isPageSwitched(newPage);
+    },
+  );
+
+  await demoAccountFileTest.step(
+    'Close workspace tab and reopen it from view mode',
+    async () => {
+      await page.close();
+      const oldPage = await viewModePage.clickEditButton(false);
+      mainPage = new MainPage(oldPage!);
+      await mainPage.waitForViewportVisible();
+    },
+  );
+
+  await demoAccountFileTest.step('Verify workspace page is opened', async () => {
+    await expect(mainPage.viewport).toHaveScreenshot('main-page-opened.png', {
+      mask: mainPage.maskViewport(),
     });
-
-    await mainAccountFileTest.step(
-      'Click Edit button and verify it switches to the workspace',
-      async () => {
-        await viewModePage.clickEditButton();
-        const newPage = viewModePage.page;
-        await newPage.waitForTimeout(2000);
-        await viewModePage.isPageSwitched(newPage);
-      },
-    );
-
-    await mainAccountFileTest.step(
-      'Close workspace tab and reopen it from view mode',
-      async () => {
-        await page.close();
-        const oldPage = await viewModePage.clickEditButton(false);
-        mainPage = new MainPage(oldPage!);
-        teamPage = new TeamPage(oldPage!);
-        await mainPage.waitForViewportVisible();
-      },
-    );
-
-    await mainAccountFileTest.step('Verify workspace page is opened', async () => {
-      await expect(mainPage.viewport).toHaveScreenshot('main-page-opened.png', {
-        mask: mainPage.maskViewport(),
-      });
-    });
-  },
-);
+  });
+});

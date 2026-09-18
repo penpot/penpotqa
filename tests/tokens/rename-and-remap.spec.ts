@@ -1,23 +1,21 @@
-import { mainAccountFileTest, mainTest } from 'fixtures';
+import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { MainPage } from '@pages/workspace/main-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
 let pagesPanelPage: PagesPanelPage;
 let tokensPage: TokensPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     pagesPanelPage = new PagesPanelPage(page);
     tokensPage = new TokensPage(page);
     layersPanelPage = new LayersPanelPage(page);
@@ -25,7 +23,7 @@ mainAccountFileTest.describe(() => {
     await mainPage.clickMoveButton();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2719],
       'Rename a token that is being referenced from other tokens as part of an expression',
@@ -46,12 +44,12 @@ mainAccountFileTest.describe(() => {
         name: 'border-radius-new',
       };
 
-      await mainAccountFileTest.step('Open Tokens panel', async () => {
+      await demoAccountFileTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
         await tokensPage.toolsComp.clickOnTokenToolsButton();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create board with text layer and define tokens',
         async () => {
           await mainPage.createDefaultBoardByCoordinates(320, 210);
@@ -64,7 +62,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Apply font-size token to the text layer',
         async () => {
           await mainPage.clickViewportByCoordinates(350, 250);
@@ -78,14 +76,14 @@ mainAccountFileTest.describe(() => {
         renamedBorderRadiusToken.name,
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Check "${fontSizeToken.name}" token is still applied with the updated reference`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Check applied token title reflects new name and correct reference',
         async () => {
           const expectedTitle = [
@@ -99,7 +97,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2723],
       'Rename a token that has been applied to a shape in a main component',
@@ -121,7 +119,7 @@ mainAccountFileTest.describe(() => {
       };
       const newTokenAValue = '#222222';
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create board and named rectangle',
         async () => {
           await mainPage.createDefaultBoardByCoordinates(320, 210);
@@ -137,7 +135,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create tokens and apply Token B to the rectangle',
         async () => {
           await tokensPage.clickTokensTab();
@@ -151,7 +149,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create main component from the rectangle',
         async () => {
           await mainPage.createComponentsMultipleShapesRightClick(true);
@@ -159,7 +157,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Copy the component twice (3 total)',
         async () => {
           await mainPage.duplicateLayerViaRightClick();
@@ -177,7 +175,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Copy the component to a new Page 2',
         async () => {
           await layersPanelPage.openLayersTab();
@@ -198,7 +196,7 @@ mainAccountFileTest.describe(() => {
         renamedTokenA.name,
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Check Token B is still applied and references new Token A name',
         async () => {
           await layersPanelPage.openLayersTab();
@@ -208,7 +206,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Change renamed Token A value to "${newTokenAValue}"`,
         async () => {
           await tokensPage.tokensComp.clickEditToken(renamedTokenA);
@@ -218,7 +216,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Check Token B still applied on Page 1',
         async () => {
           await layersPanelPage.openLayersTab();
@@ -229,7 +227,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Navigate to Page 2 and check Token B still applied',
         async () => {
           await layersPanelPage.openLayersTab();
@@ -244,14 +242,12 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainTest(
+demoAccountApiFixture(
   qase(
     [2721],
     'Rename a token that has been applied to some attribute of one shape.',
   ),
   async ({ page }) => {
-    const teamName = createTeamName();
-    const teamPage = new TeamPage(page);
     const dashboardPage = new DashboardPage(page);
     const mainPage = new MainPage(page);
     const tokensPage = new TokensPage(page);
@@ -269,25 +265,25 @@ mainTest(
       name: renamedTokenName,
     };
 
-    await mainTest.step('Create team', async () => {
-      await teamPage.createTeam(teamName);
-      await dashboardPage.isHeaderDisplayed('Projects');
-    });
+    await dashboardPage.isHeaderDisplayed('Projects');
 
-    await mainTest.step('Import penpot file and open Tokens panel', async () => {
-      await dashboardPage.openSidebarItem('Drafts');
-      await dashboardPage.importFileFromProjectPage('documents/2721.penpot');
-      await dashboardPage.isFilePresentWithName(importedFileName);
-      await dashboardPage.openFileWithName(importedFileName);
-      await tokensPage.clickTokensTab();
-    });
+    await demoAccountApiFixture.step(
+      'Import penpot file and open Tokens panel',
+      async () => {
+        await dashboardPage.openSidebarItem('Drafts');
+        await dashboardPage.importFileFromProjectPage('documents/2721.penpot');
+        await dashboardPage.isFilePresentWithName(importedFileName);
+        await dashboardPage.openFileWithName(importedFileName);
+        await tokensPage.clickTokensTab();
+      },
+    );
 
     await tokensPage.tokensComp.renameTokenAndConfirmRemap(
       originalToken,
       renamedTokenName,
     );
 
-    await mainTest.step(
+    await demoAccountApiFixture.step(
       `Change the color of "${renamedTokenName}" to "${newColorValue}"`,
       async () => {
         await tokensPage.tokensComp.editTokenViaRightClickAndSave({
@@ -298,11 +294,11 @@ mainTest(
       },
     );
 
-    await mainTest.step('Select the "LIGHT COMPACT" set', async () => {
+    await demoAccountApiFixture.step('Select the "LIGHT COMPACT" set', async () => {
       await tokensPage.setsComp.setName.filter({ hasText: 'LIGHT COMPACT' }).click();
     });
 
-    await mainTest.step(
+    await demoAccountApiFixture.step(
       'Hover "color-primary" — verify updated reference and resolved color',
       async () => {
         await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
@@ -315,13 +311,16 @@ mainTest(
       },
     );
 
-    await mainTest.step('Select and enable the "DARK" set', async () => {
-      await tokensPage.setsComp.setName.filter({ hasText: 'DARK' }).click();
-      await tokensPage.setsComp.clickOnSetCheckboxByName('DARK');
-      await mainPage.waitForChangeIsSaved();
-    });
+    await demoAccountApiFixture.step(
+      'Select and enable the "DARK" set',
+      async () => {
+        await tokensPage.setsComp.setName.filter({ hasText: 'DARK' }).click();
+        await tokensPage.setsComp.clickOnSetCheckboxByName('DARK');
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
 
-    await mainTest.step(
+    await demoAccountApiFixture.step(
       'Hover "color-primary" — verify DARK set value ({red-500} → #d8274e)',
       async () => {
         await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);

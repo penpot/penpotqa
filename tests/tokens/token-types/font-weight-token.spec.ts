@@ -1,5 +1,5 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { MainPage } from '@pages/workspace/main-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
@@ -7,17 +7,17 @@ import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest.describe(() => {
+demoAccountFileTest.describe(() => {
   let mainPage: MainPage;
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
   let layersPanelPage: LayersPanelPage;
 
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
@@ -30,7 +30,7 @@ mainAccountFileTest.describe(() => {
     await tokensPage.clickTokensTab();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2558],
       'Apply a Font Weight token to a text not matching a family font style, but with a fallback value',
@@ -48,7 +48,7 @@ mainAccountFileTest.describe(() => {
         value: '500 italic',
       };
 
-      await mainAccountFileTest.step('Create font weight tokens', async () => {
+      await demoAccountFileTest.step('Create font weight tokens', async () => {
         await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
           fontWeightToken1,
         );
@@ -59,7 +59,7 @@ mainAccountFileTest.describe(() => {
         await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken2.name);
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Apply "${fontWeightToken1.name}" with non-existing style and verify fallback value "900"`,
         async () => {
           await mainPage.clickViewportOnce();
@@ -78,7 +78,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Apply "${fontWeightToken2.name}" with non-existing style and verify fallback value "600 Italic"`,
         async () => {
           await mainPage.clickViewportOnce();
@@ -97,7 +97,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2559],
       'Apply a Font Weight token to a text not matching a family font style, with no fallback value',
@@ -109,7 +109,7 @@ mainAccountFileTest.describe(() => {
         value: '500',
       };
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Create "${fontWeightToken.name}" token and change font to Splash`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
@@ -120,7 +120,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Apply token and verify error is shown and font style falls back to default',
         async () => {
           await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken.name);
@@ -135,7 +135,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2562],
       'Edit the value of a Font Weight token already applied to a component text with duplicated copies',
@@ -153,7 +153,7 @@ mainAccountFileTest.describe(() => {
         value: '200',
       };
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Create and apply "${fontWeightToken.name}" token to text layer`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
@@ -167,7 +167,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create component and duplicate it',
         async () => {
           await mainPage.createComponentViaRightClick();
@@ -178,7 +178,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Edit token to "${updatedTokenData.value}" and verify new value applies to both component copies`,
         async () => {
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(

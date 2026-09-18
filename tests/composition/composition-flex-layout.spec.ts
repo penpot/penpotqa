@@ -1,19 +1,19 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
@@ -22,15 +22,15 @@ mainAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([607], 'Add flex layout to board from right click'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Add flex layout via right click', async () => {
+      await demoAccountFileTest.step('Add flex layout via right click', async () => {
         await mainPage.addFlexLayoutViaRightClick();
         await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
       });
-      await mainAccountFileTest.step('Verify flex layout is applied', async () => {
+      await demoAccountFileTest.step('Verify flex layout is applied', async () => {
         await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
         await designPanelPage.isLayoutRemoveButtonExists();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -41,10 +41,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([608], 'Add flex layout to board from shortcut (SHIFT+A)'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Add flex layout via shortcut (SHIFT+A)',
         async () => {
           await mainPage.pressFlexLayoutShortcut();
@@ -52,7 +52,7 @@ mainAccountFileTest.describe(() => {
           await mainPage.waitForChangeIsSaved();
         },
       );
-      await mainAccountFileTest.step('Verify flex layout is applied', async () => {
+      await demoAccountFileTest.step('Verify flex layout is applied', async () => {
         await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
         await designPanelPage.isLayoutRemoveButtonExists();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -63,10 +63,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([610], 'Remove flex layout from board from rightclick'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Add flex layout and verify it is applied',
         async () => {
           await mainPage.addFlexLayoutViaRightClick();
@@ -76,7 +76,7 @@ mainAccountFileTest.describe(() => {
           await designPanelPage.isLayoutRemoveButtonExists();
         },
       );
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Remove flex layout via right click',
         async () => {
           await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -85,17 +85,17 @@ mainAccountFileTest.describe(() => {
           await mainPage.waitForChangeIsSaved();
         },
       );
-      await mainAccountFileTest.step('Verify flex layout is removed', async () => {
+      await demoAccountFileTest.step('Verify flex layout is removed', async () => {
         await layersPanelPage.isVerticalFlexIconVisibleOnLayer(false);
         await designPanelPage.isLayoutRemoveButtonExists(false);
       });
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([611], 'Remove flex layout from board from shortcut (SHIFT+A)'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Add flex layout via shortcut and verify it is applied',
         async () => {
           await mainPage.pressFlexLayoutShortcut();
@@ -105,7 +105,7 @@ mainAccountFileTest.describe(() => {
           await designPanelPage.isLayoutRemoveButtonExists();
         },
       );
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Remove flex layout via shortcut (SHIFT+A)',
         async () => {
           await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -114,17 +114,17 @@ mainAccountFileTest.describe(() => {
           await mainPage.waitForChangeIsSaved();
         },
       );
-      await mainAccountFileTest.step('Verify flex layout is removed', async () => {
+      await demoAccountFileTest.step('Verify flex layout is removed', async () => {
         await layersPanelPage.isVerticalFlexIconVisibleOnLayer(false);
         await designPanelPage.isLayoutRemoveButtonExists(false);
       });
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([612], 'Remove flex layout from board from Design panel'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Add flex layout and verify it is applied',
         async () => {
           await mainPage.addFlexLayoutViaRightClick();
@@ -134,7 +134,7 @@ mainAccountFileTest.describe(() => {
           await designPanelPage.isLayoutRemoveButtonExists();
         },
       );
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Remove flex layout from Design panel',
         async () => {
           await mainPage.clickCreatedBoardTitleOnCanvas();
@@ -143,24 +143,24 @@ mainAccountFileTest.describe(() => {
           await mainPage.waitForChangeIsSaved();
         },
       );
-      await mainAccountFileTest.step('Verify flex layout is removed', async () => {
+      await demoAccountFileTest.step('Verify flex layout is removed', async () => {
         await layersPanelPage.isVerticalFlexIconVisibleOnLayer(false);
         await designPanelPage.isLayoutRemoveButtonExists(false);
       });
     },
   );
 
-  mainAccountFileTest.describe(() => {
-    mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-      mainAccountFileTest.slow();
+  demoAccountFileTest.describe(() => {
+    demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+      demoAccountFileTest.slow();
       await mainPage.addFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
       await mainPage.clickCreatedBoardTitleOnCanvas();
     });
 
-    mainAccountFileTest(qase([613], 'Change direction'), async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change direction to Row reverse', async () => {
+    demoAccountFileTest(qase([613], 'Change direction'), async ({ mainPage }) => {
+      await demoAccountFileTest.step('Change direction to Row reverse', async () => {
         await designPanelPage.changeLayoutDirection('Row reverse');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -168,7 +168,7 @@ mainAccountFileTest.describe(() => {
           { mask: mainPage.maskViewport() },
         );
       });
-      await mainAccountFileTest.step('Change direction to Column', async () => {
+      await demoAccountFileTest.step('Change direction to Column', async () => {
         await designPanelPage.changeLayoutDirection('Column');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -176,7 +176,7 @@ mainAccountFileTest.describe(() => {
           { mask: mainPage.maskViewport() },
         );
       });
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Change direction to Column reverse',
         async () => {
           await designPanelPage.changeLayoutDirection('Column reverse');
@@ -187,7 +187,7 @@ mainAccountFileTest.describe(() => {
           );
         },
       );
-      await mainAccountFileTest.step('Change direction to Row', async () => {
+      await demoAccountFileTest.step('Change direction to Row', async () => {
         await designPanelPage.changeLayoutDirection('Row');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -199,22 +199,22 @@ mainAccountFileTest.describe(() => {
       });
     });
 
-    mainAccountFileTest(qase([615], 'Change alignment'), async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change alignment to Center', async () => {
+    demoAccountFileTest(qase([615], 'Change alignment'), async ({ mainPage }) => {
+      await demoAccountFileTest.step('Change alignment to Center', async () => {
         await designPanelPage.changeLayoutAlignment('Center');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot('layout-align-center.png', {
           mask: mainPage.maskViewport(),
         });
       });
-      await mainAccountFileTest.step('Change alignment to End', async () => {
+      await demoAccountFileTest.step('Change alignment to End', async () => {
         await designPanelPage.changeLayoutAlignment('End');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot('layout-align-end.png', {
           mask: mainPage.maskViewport(),
         });
       });
-      await mainAccountFileTest.step('Change alignment to Start', async () => {
+      await demoAccountFileTest.step('Change alignment to Start', async () => {
         await designPanelPage.changeLayoutAlignment('Start');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot('layout-align-start.png', {
@@ -223,10 +223,10 @@ mainAccountFileTest.describe(() => {
       });
     });
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase([616], 'Change justification'),
       async ({ mainPage }) => {
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Change justification to Center',
           async () => {
             await designPanelPage.changeLayoutJustification('Center');
@@ -239,7 +239,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step('Change justification to End', async () => {
+        await demoAccountFileTest.step('Change justification to End', async () => {
           await designPanelPage.changeLayoutJustification('End');
           await mainPage.waitForChangeIsSaved();
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -249,7 +249,7 @@ mainAccountFileTest.describe(() => {
             },
           );
         });
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Change justification to Space between',
           async () => {
             await designPanelPage.changeLayoutJustification('Space between');
@@ -260,7 +260,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Change justification to Space around',
           async () => {
             await designPanelPage.changeLayoutJustification('Space around');
@@ -271,7 +271,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Change justification to Space evenly',
           async () => {
             await designPanelPage.changeLayoutJustification('Space evenly');
@@ -282,7 +282,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step('Change justification to Start', async () => {
+        await demoAccountFileTest.step('Change justification to Start', async () => {
           await designPanelPage.changeLayoutJustification('Start');
           await mainPage.waitForChangeIsSaved();
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -295,15 +295,15 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    mainAccountFileTest(qase([618], 'Change column gap'), async ({ mainPage }) => {
-      await mainAccountFileTest.step('Set column gap to 5', async () => {
+    demoAccountFileTest(qase([618], 'Change column gap'), async ({ mainPage }) => {
+      await demoAccountFileTest.step('Set column gap to 5', async () => {
         await designPanelPage.changeLayoutColumnGap('5');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot('layout-column-gap-5.png', {
           mask: mainPage.maskViewport(),
         });
       });
-      await mainAccountFileTest.step('Set column gap to 15', async () => {
+      await demoAccountFileTest.step('Set column gap to 15', async () => {
         await designPanelPage.changeLayoutColumnGap('15');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -313,7 +313,7 @@ mainAccountFileTest.describe(() => {
           },
         );
       });
-      await mainAccountFileTest.step('Set column gap to 0', async () => {
+      await demoAccountFileTest.step('Set column gap to 0', async () => {
         await designPanelPage.changeLayoutColumnGap('0');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot('layout-column-gap-0.png', {
@@ -322,26 +322,26 @@ mainAccountFileTest.describe(() => {
       });
     });
 
-    mainAccountFileTest(qase([619], 'Change row gap'), async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change direction to Column', async () => {
+    demoAccountFileTest(qase([619], 'Change row gap'), async ({ mainPage }) => {
+      await demoAccountFileTest.step('Change direction to Column', async () => {
         await designPanelPage.changeLayoutDirection('Column');
         await mainPage.waitForChangeIsSaved();
       });
-      await mainAccountFileTest.step('Set row gap to 5', async () => {
+      await demoAccountFileTest.step('Set row gap to 5', async () => {
         await designPanelPage.changeLayoutRowGap('5');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot('layout-row-gap-5.png', {
           mask: mainPage.maskViewport(),
         });
       });
-      await mainAccountFileTest.step('Set row gap to 15', async () => {
+      await demoAccountFileTest.step('Set row gap to 15', async () => {
         await designPanelPage.changeLayoutRowGap('15');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot('layout-row-gap-15.png', {
           mask: mainPage.maskViewport(),
         });
       });
-      await mainAccountFileTest.step('Set row gap to 0', async () => {
+      await demoAccountFileTest.step('Set row gap to 0', async () => {
         await designPanelPage.changeLayoutRowGap('0');
         await mainPage.waitForChangeIsSaved();
         await expect(mainPage.viewport).toHaveScreenshot('layout-row-gap-0.png', {
@@ -350,10 +350,10 @@ mainAccountFileTest.describe(() => {
       });
     });
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase([620], 'Change padding (single)'),
       async ({ mainPage }) => {
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Set Vertical padding to 5 and Horizontal padding to 15',
           async () => {
             await designPanelPage.changeLayoutPadding('Vertical', '5');
@@ -368,7 +368,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step('Set Horizontal padding to 0', async () => {
+        await demoAccountFileTest.step('Set Horizontal padding to 0', async () => {
           await designPanelPage.changeLayoutPadding('Horizontal', '0');
           await mainPage.waitForChangeIsSaved();
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -376,7 +376,7 @@ mainAccountFileTest.describe(() => {
             { mask: mainPage.maskViewport() },
           );
         });
-        await mainAccountFileTest.step('Set Vertical padding to 0', async () => {
+        await demoAccountFileTest.step('Set Vertical padding to 0', async () => {
           await designPanelPage.changeLayoutPadding('Vertical', '0');
           await mainPage.waitForChangeIsSaved();
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -387,10 +387,10 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase([621], 'Change padding (multiple)'),
       async ({ mainPage }) => {
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Switch to independent padding and set Top=10, Left=15',
           async () => {
             await designPanelPage.switchToIndependentPadding();
@@ -405,7 +405,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step('Change justification to End', async () => {
+        await demoAccountFileTest.step('Change justification to End', async () => {
           await designPanelPage.changeLayoutJustification('End');
           await mainPage.waitForChangeIsSaved();
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -413,7 +413,7 @@ mainAccountFileTest.describe(() => {
             { mask: mainPage.maskViewport() },
           );
         });
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Set Right=20 and alignment to End',
           async () => {
             await designPanelPage.changeLayoutIndependentPadding('Right', '20');
@@ -426,7 +426,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step('Set Bottom=25', async () => {
+        await demoAccountFileTest.step('Set Bottom=25', async () => {
           await designPanelPage.changeLayoutIndependentPadding('Bottom', '25');
           await mainPage.waitForChangeIsSaved();
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -438,9 +438,9 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest.describe(() => {
-    mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-      mainAccountFileTest.slow();
+  demoAccountFileTest.describe(() => {
+    demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+      demoAccountFileTest.slow();
       await mainPage.addFlexLayoutViaRightClick();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
@@ -448,10 +448,10 @@ mainAccountFileTest.describe(() => {
       await designPanelPage.isFlexElementSectionOpened();
     });
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase([627], 'Flex elements change - alignment'),
       async ({ mainPage }) => {
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Change flex element alignment to Center',
           async () => {
             await designPanelPage.changeFlexElementAlignment('Center');
@@ -462,7 +462,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Change flex element alignment to End',
           async () => {
             await designPanelPage.changeFlexElementAlignment('End');
@@ -475,7 +475,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Change flex element alignment to Start',
           async () => {
             await designPanelPage.changeFlexElementAlignment('Start');
@@ -489,10 +489,10 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase([628], 'Flex elements - change margin (single)'),
       async ({ mainPage }) => {
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Set flex element margin Vertical=10 and Horizontal=25',
           async () => {
             await designPanelPage.changeFlexElementMargin('Vertical', '10');
@@ -505,7 +505,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Set flex element margin Vertical to 0',
           async () => {
             await designPanelPage.changeFlexElementMargin('Vertical', '0');
@@ -516,7 +516,7 @@ mainAccountFileTest.describe(() => {
             );
           },
         );
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Set flex element margin Horizontal to 0',
           async () => {
             await designPanelPage.changeFlexElementMargin('Horizontal', '0');
@@ -532,9 +532,9 @@ mainAccountFileTest.describe(() => {
   });
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await demoAccountFileTest.slow();
     await mainPage.createDefaultBoardByCoordinates(200, 300);
     await designPanelPage.changeHeightAndWidthForLayer('500', '500');
     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
@@ -545,10 +545,10 @@ mainAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([640, 641], 'Use different numbers of paddings on all sides'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(640) Switch to independent paddings',
         async () => {
           await designPanelPage.switchToIndependentPadding();
@@ -560,13 +560,13 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('(641) Set Top padding to 20', async () => {
+      await demoAccountFileTest.step('(641) Set Top padding to 20', async () => {
         await designPanelPage.changeLayoutIndependentPadding('Top', '20');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.verifyLayoutIndependentPaddingValue('Top', '20');
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(641) Set Bottom padding to -20, expects 0',
         async () => {
           await designPanelPage.changeLayoutIndependentPadding('Bottom', '-20');
@@ -575,7 +575,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(641) Set Right padding to 200000000',
         async () => {
           await designPanelPage.changeLayoutIndependentPadding('Right', '200000000');
@@ -587,7 +587,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(641) Set Left padding to invalid text, expects value unchanged',
         async () => {
           await designPanelPage.changeLayoutIndependentPadding('Left', 'Test');
@@ -598,10 +598,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([643], 'Set margins and padding to 0'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Set Vertical padding, Horizontal padding and column gap to 0',
         async () => {
           await designPanelPage.changeLayoutPadding('Vertical', '0');
@@ -618,7 +618,7 @@ mainAccountFileTest.describe(() => {
           );
         },
       );
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Click Vertical padding field and verify highlight',
         async () => {
           await designPanelPage.clickLayoutVerticalPaddingField();
@@ -630,7 +630,7 @@ mainAccountFileTest.describe(() => {
           );
         },
       );
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Click Horizontal padding field and verify highlight',
         async () => {
           await designPanelPage.clickLayoutHorizontalPaddingField();
@@ -642,7 +642,7 @@ mainAccountFileTest.describe(() => {
           );
         },
       );
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Click column gap field and verify highlight',
         async () => {
           await designPanelPage.clickLayoutColumnGapField();
@@ -657,12 +657,12 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(qase([645], 'Gap click highlight'), async ({ mainPage }) => {
-    await mainAccountFileTest.step('Set column gap to 20', async () => {
+  demoAccountFileTest(qase([645], 'Gap click highlight'), async ({ mainPage }) => {
+    await demoAccountFileTest.step('Set column gap to 20', async () => {
       await designPanelPage.changeLayoutColumnGap('20');
       await mainPage.waitForChangeIsSaved();
     });
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Click column gap field and verify highlight',
       async () => {
         await designPanelPage.clickLayoutColumnGapField();
@@ -674,17 +674,17 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([647], 'Use absolute position and look if element still inside a board'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Select Ellipse layer and verify flex element section is opened',
         async () => {
           await layersPanelPage.selectBoardChildLayer('Ellipse');
           await designPanelPage.isFlexElementSectionOpened();
         },
       );
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Set flex element position to absolute',
         async () => {
           await designPanelPage.setFlexElementPositionAbsolute();
@@ -693,7 +693,7 @@ mainAccountFileTest.describe(() => {
           await designPanelPage.isFlexElementPositionAbsoluteChecked();
         },
       );
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify element is still inside the board',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(

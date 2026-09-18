@@ -1,5 +1,5 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
@@ -11,7 +11,7 @@ const sampleData = new SampleData();
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(
+demoAccountFileTest.beforeEach(
   'Create a team and a file',
   async ({ page, mainPage }) => {
     designPanelPage = new DesignPanelPage(page);
@@ -19,8 +19,8 @@ mainAccountFileTest.beforeEach(
   },
 );
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(
     'Create a rectangle and click on Tokens tab',
     async ({ page, mainPage }) => {
       tokensPage = new TokensPage(page);
@@ -30,7 +30,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2673, 2682],
       'Create shadow token with default values and inner shadow, assert expected values and edit',
@@ -61,7 +61,7 @@ mainAccountFileTest.describe(() => {
         ],
       };
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(2673)  Create token with inner shadow, apply and assert expected default values in Design Panel shadow type options menu',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(SHADOW_TOKEN);
@@ -69,7 +69,7 @@ mainAccountFileTest.describe(() => {
           await tokensPage.tokensComp.isTokenVisibleWithName(SHADOW_TOKEN.name);
           await tokensPage.tokensComp.clickOnTokenWithName(SHADOW_TOKEN.name);
 
-          await mainAccountFileTest.step(
+          await demoAccountFileTest.step(
             'Assert shadow token values are applied in Design tab',
             async () => {
               await designPanelPage.isExpectedShadowTypeOption(
@@ -88,12 +88,12 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('(2682) Edit a shadow token', async () => {
+      await demoAccountFileTest.step('(2682) Edit a shadow token', async () => {
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(UPDATED_TOKEN);
         await tokensPage.tokensComp.isTokenVisibleWithName(UPDATED_TOKEN.name);
         await tokensPage.tokensComp.clickOnTokenWithName(UPDATED_TOKEN.name);
 
-        await mainAccountFileTest.step(
+        await demoAccountFileTest.step(
           'Assert shadow token values are applied in Design tab',
           async () => {
             await designPanelPage.isExpectedShadowTypeOption(
@@ -121,7 +121,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2680, 2678, 2681],
       'Add multiple shadows to a single token (with units shadow values) and remove multiple shadows',
@@ -149,7 +149,7 @@ mainAccountFileTest.describe(() => {
         ],
       };
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(2680, 2678) Add multiple shadows to a single token, Create token with units shadow values',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(MULTI_SHADOW_TOKEN);
@@ -159,7 +159,7 @@ mainAccountFileTest.describe(() => {
           );
           await tokensPage.tokensComp.clickOnTokenWithName(MULTI_SHADOW_TOKEN.name);
 
-          await mainAccountFileTest.step(
+          await demoAccountFileTest.step(
             'Assert first shadow token values are applied in Design tab',
             async () => {
               await designPanelPage.isExpectedShadowTypeOption(
@@ -188,7 +188,7 @@ mainAccountFileTest.describe(() => {
             },
           );
 
-          await mainAccountFileTest.step(
+          await demoAccountFileTest.step(
             'Assert second shadow token values are applied in Design tab',
             async () => {
               await designPanelPage.isExpectedShadowTypeOption(
@@ -211,14 +211,14 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(2681) Remove multiple shadows to a single token',
         async () => {
           await tokensPage.tokensComp.clickEditToken(MULTI_SHADOW_TOKEN);
           await tokensPage.tokensComp.shadowTokensComp.removeShadow(1);
           await tokensPage.tokensComp.baseComp.clickOnSaveButton();
 
-          await mainAccountFileTest.step(
+          await demoAccountFileTest.step(
             'Assert first shadow is visible and second is not in Design tab',
             async () => {
               await designPanelPage.isExpectedShadowTypeOption(
@@ -235,7 +235,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2685], 'Create token with Single reference shadow values'),
     async () => {
       const SHADOW_TOKEN: ShadowToken<TokenClass> = {
@@ -260,14 +260,14 @@ mainAccountFileTest.describe(() => {
         ],
       };
 
-      await mainAccountFileTest.step('Create a shadow token', async () => {
+      await demoAccountFileTest.step('Create a shadow token', async () => {
         await tokensPage.tokensComp.clickOnAddTokenAndFillData(SHADOW_TOKEN);
         await tokensPage.tokensComp.baseComp.clickOnSaveButton();
         await tokensPage.tokensComp.isTokenVisibleWithName(SHADOW_TOKEN.name);
         await tokensPage.tokensComp.clickOnTokenWithName(SHADOW_TOKEN.name);
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create a second shadow token and use single reference to the first one',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(
@@ -283,7 +283,7 @@ mainAccountFileTest.describe(() => {
           );
           await tokensPage.tokensComp.clickOnTokenWithName(SECOND_SHADOW_TOKEN.name);
 
-          await mainAccountFileTest.step(
+          await demoAccountFileTest.step(
             'Assert values of the referenced shadow token are applied in Design tab',
             async () => {
               await designPanelPage.isExpectedShadowTypeOption(

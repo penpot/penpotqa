@@ -1,19 +1,19 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-mainAccountFileTest(qase([3403], 'Create Arrow (Toolbar)'), async ({ mainPage }) => {
-  await mainAccountFileTest.step(
+demoAccountFileTest(qase([3403], 'Create Arrow (Toolbar)'), async ({ mainPage }) => {
+  await demoAccountFileTest.step(
     'Draw an arrow line via toolbar and verify layer created',
     async () => {
       await mainPage.createArrowByCoordinates(400, 400, 400, 600);
@@ -22,7 +22,7 @@ mainAccountFileTest(qase([3403], 'Create Arrow (Toolbar)'), async ({ mainPage })
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Verify arrow size and default triangle end cap',
     async () => {
       await mainPage.clickOnDesignTab();

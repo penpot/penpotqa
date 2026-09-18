@@ -1,4 +1,4 @@
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { HistoryPanelPage } from '@pages/workspace/history-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -7,12 +7,12 @@ import { expect, test } from 'playwright/test';
 let historyPage: HistoryPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   historyPage = new HistoryPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase(
     [2901, 2903, 2904, 3001],
     'Preview version: restore history preview version, validate snapshot information and prompt confirmation' +

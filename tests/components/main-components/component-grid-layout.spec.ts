@@ -4,7 +4,7 @@ import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const annotation = 'Test annotation for automation';
@@ -15,7 +15,7 @@ let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let pagesPanelPage: PagesPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   pagesPanelPage = new PagesPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
@@ -23,9 +23,9 @@ mainAccountFileTest.beforeEach(async ({ page }) => {
   colorPalettePage = new ColorPalettePage(page);
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await demoAccountFileTest.slow();
     await mainPage.createDefaultBoardByCoordinates(400, 400);
     await designPanelPage.changeHeightAndWidthForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
@@ -36,13 +36,13 @@ mainAccountFileTest.describe(() => {
     await mainPage.clickCreatedBoardTitleOnCanvas();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [1724],
       'Create a component from grid board with some element inside, edit component in grid layout section',
     ),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create component from grid board',
         async () => {
           await mainPage.createComponentViaRightClick();
@@ -54,12 +54,12 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Edit grid row label to "100 PX"', async () => {
+      await demoAccountFileTest.step('Edit grid row label to "100 PX"', async () => {
         await mainPage.changeGridRowLabel('100 PX');
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify grid row label change on canvas',
         async () => {
           await expect(
@@ -73,10 +73,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1730], 'Restore main component'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create component, duplicate and delete main',
         async () => {
           await mainPage.createComponentViaRightClick();
@@ -89,7 +89,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Restore main component from copy via right-click',
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();
@@ -99,7 +99,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify restored main component on canvas',
         async () => {
           await expect(
@@ -113,10 +113,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1731], 'Undo component editing and deleting'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create component and change fill color',
         async () => {
           await mainPage.createComponentViaRightClick();
@@ -128,7 +128,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify component with blue fill color',
         async () => {
           await expect(
@@ -140,12 +140,12 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Undo fill color change', async () => {
+      await demoAccountFileTest.step('Undo fill color change', async () => {
         await mainPage.clickViewportOnce();
         await mainPage.clickShortcutCtrlZ();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify component after undoing fill color',
         async () => {
           await expect(
@@ -157,7 +157,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Delete component and undo deletion',
         async () => {
           await layersPanelPage.deleteMainComponentViaRightClick();
@@ -167,7 +167,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify component is restored after undoing deletion',
         async () => {
           await expect(
@@ -181,10 +181,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1732, 1733], '[Grid layout] Use shared component in another file'),
     async ({ dashboardPage, mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create component and add file as shared library',
         async () => {
           await mainPage.createComponentViaRightClick();
@@ -195,7 +195,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create new file and import shared library',
         async () => {
           await dashboardPage.createFileViaTitlePanel();
@@ -208,7 +208,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Drag component from shared library to canvas',
         async () => {
           await assetsPanelPage.clickAssetsTab();
@@ -220,7 +220,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify component from shared library on canvas',
         async () => {
           await expect(
@@ -235,9 +235,9 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await demoAccountFileTest.slow();
     await mainPage.createDefaultBoardByCoordinates(400, 400);
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
     await mainPage.waitForChangeIsSaved();
@@ -258,10 +258,10 @@ mainAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1718], 'Copy-paste component, that was created from grid board'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Copy and paste component from grid board',
         async () => {
           await mainPage.clickViewportOnce();
@@ -272,7 +272,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify copy-pasted component on canvas and layers panel',
         async () => {
           await expect(
@@ -292,17 +292,17 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1728], 'Duplicate component, that was created from grid board'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Duplicate component via shortcut',
         async () => {
           await mainPage.clickShortcutCtrlD();
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify duplicated component on canvas and layers panel',
         async () => {
           await expect(
@@ -319,9 +319,9 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await demoAccountFileTest.slow();
     await mainPage.createDefaultBoardByCoordinates(100, 100);
     await designPanelPage.changeHeightAndWidthForLayer('200', '200');
     await mainPage.waitForChangeIsSaved();
@@ -336,10 +336,10 @@ mainAccountFileTest.describe(() => {
     await designPanelPage.changeAxisXAndYForLayer('500', '100');
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1720], 'Change the copy component and click "Update main component"'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Resize copy component and update main',
         async () => {
           await designPanelPage.changeHeightAndWidthForLayer('25', '25');
@@ -349,7 +349,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify updated main component on canvas',
         async () => {
           await expect(
@@ -363,10 +363,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1721], 'Change the copy component and click "Show main component"'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Change copy fill color and show main component',
         async () => {
           await designPanelPage.clickFillColorIcon();
@@ -377,7 +377,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify main component is shown on canvas',
         async () => {
           await expect(
@@ -391,10 +391,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1722], 'Change the copy component and click "Reset overrides"'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Change copy fill color and reset overrides',
         async () => {
           await designPanelPage.clickFillColorIcon();
@@ -405,7 +405,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify overrides are reset on canvas',
         async () => {
           await expect(
@@ -422,10 +422,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1723], 'Change the copy component and click "Detach instance"'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Resize copy component and detach instance',
         async () => {
           await designPanelPage.changeHeightAndWidthForLayer('25', '25');
@@ -436,7 +436,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify detached instance on canvas and layers panel',
         async () => {
           await expect(
@@ -458,9 +458,9 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await demoAccountFileTest.slow();
     await mainPage.createDefaultBoardByCoordinates(400, 400);
     await designPanelPage.changeHeightAndWidthForLayer('300', '400');
     await mainPage.waitForChangeIsSaved();
@@ -477,13 +477,13 @@ mainAccountFileTest.describe(() => {
     await designPanelPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [1725, 1752],
       'Create annotation for component, that already has annotation',
     ),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify annotation "${annotation}" is added to component`,
         async () => {
           await designPanelPage.isAnnotationAddedToComponent(annotation);
@@ -491,7 +491,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify annotation option is not available in right-click menu or component menu',
         async () => {
           await designPanelPage.isAnnotationOptionNotVisibleRightClick();
@@ -502,8 +502,8 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(qase([1726], 'Edit annotation for component'), async () => {
-    await mainAccountFileTest.step(
+  demoAccountFileTest(qase([1726], 'Edit annotation for component'), async () => {
+    await demoAccountFileTest.step(
       `Edit annotation from "${annotation}" to "Edit annotation"`,
       async () => {
         await designPanelPage.clickOnEditAnnotation();
@@ -512,7 +512,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify edited annotation is displayed',
       async () => {
         await designPanelPage.isAnnotationAddedToComponent('Edit annotation');
@@ -520,8 +520,8 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(qase([1727], 'Delete annotation for component'), async () => {
-    await mainAccountFileTest.step(
+  demoAccountFileTest(qase([1727], 'Delete annotation for component'), async () => {
+    await demoAccountFileTest.step(
       `Delete annotation "${annotation}" from component`,
       async () => {
         await designPanelPage.clickOnDeleteAnnotation();
@@ -530,7 +530,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify annotation is removed from component',
       async () => {
         await designPanelPage.isAnnotationNotAddedToComponent();

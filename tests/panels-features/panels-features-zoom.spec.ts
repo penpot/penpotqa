@@ -1,15 +1,15 @@
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([850], 'Zoom via top right menu'),
   async ({ page, mainPage }) => {
-    await mainAccountFileTest.step('Zoom in and verify screenshot', async () => {
+    await demoAccountFileTest.step('Zoom in and verify screenshot', async () => {
       await mainPage.increaseZoom(1);
       await mainPage.clickViewportOnce();
       await expect(page).toHaveScreenshot('canvas-zoom-in.png', {
@@ -22,7 +22,7 @@ mainAccountFileTest(
       });
     });
 
-    await mainAccountFileTest.step('Zoom out and verify screenshot', async () => {
+    await demoAccountFileTest.step('Zoom out and verify screenshot', async () => {
       await mainPage.decreaseZoom(2);
       await mainPage.clickViewportOnce();
       await expect(page).toHaveScreenshot('canvas-zoom-out.png', {
@@ -37,10 +37,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([852], 'Reset zoom via top right menu'),
   async ({ page, mainPage }) => {
-    await mainAccountFileTest.step('Zoom in and verify screenshot', async () => {
+    await demoAccountFileTest.step('Zoom in and verify screenshot', async () => {
       await mainPage.increaseZoom(1);
       await mainPage.clickViewportOnce();
       await expect(page).toHaveScreenshot('canvas-zoom-in.png', {
@@ -53,7 +53,7 @@ mainAccountFileTest(
       });
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Reset zoom and verify default screenshot',
       async () => {
         await mainPage.resetZoom();
@@ -70,10 +70,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([854], 'Zoom to fit all via top right menu'),
   async ({ page, mainPage }) => {
-    await mainAccountFileTest.step('Create board and ellipse', async () => {
+    await demoAccountFileTest.step('Create board and ellipse', async () => {
       await mainPage.clickCreateBoardButton();
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
@@ -83,7 +83,7 @@ mainAccountFileTest(
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Zoom to fit all and verify screenshot',
       async () => {
         await mainPage.zoomToFitAll();
@@ -101,10 +101,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([856], 'Zoom to selected via top right menu'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step('Create board and zoom to selected', async () => {
+    await demoAccountFileTest.step('Create board and zoom to selected', async () => {
       await mainPage.clickCreateBoardButton();
       await mainPage.clickViewportByCoordinates(900, 100);
       await mainPage.waitForChangeIsSaved();
@@ -112,7 +112,7 @@ mainAccountFileTest(
       await mainPage.clickViewportTwice();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify zoom to selected screenshot',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot(

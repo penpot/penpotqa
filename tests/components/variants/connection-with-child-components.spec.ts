@@ -1,51 +1,49 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest, mainTest } from 'fixtures';
+import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
 import { MainPage } from '@pages/workspace/main-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { SampleData } from 'helpers/sample-data';
-import { createTeamName } from 'helpers/teams/create-team-name';
 
 const sampleData = new SampleData();
 
-mainTest(
+demoAccountApiFixture(
   qase(
     [2430],
     'When converting a component to a variant, the connections are not lost',
   ),
   async ({ page }) => {
-    const teamName = createTeamName();
-    const teamPage = new TeamPage(page);
     const dashboardPage = new DashboardPage(page);
     const mainPage = new MainPage(page);
     const assetsPanelPage = new AssetsPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
     const layersPanelPage = new LayersPanelPage(page);
 
-    await mainTest.step('Create team', async () => {
-      await teamPage.createTeam(teamName);
-    });
+    await demoAccountApiFixture.step(
+      'Import file and copy the main component',
+      async () => {
+        await dashboardPage.importAndOpenFile('documents/figure.penpot');
+        await mainPage.isMainPageLoaded();
+        await mainPage.clickMoveButton();
 
-    await mainTest.step('Import file and copy the main component', async () => {
-      await dashboardPage.importAndOpenFile('documents/figure.penpot');
-      await mainPage.isMainPageLoaded();
-      await mainPage.clickMoveButton();
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await layersPanelPage.copyElementViaAltDragAndDrop(100, 100);
+      },
+    );
 
-      await layersPanelPage.clickMainComponentOnLayersTab();
-      await layersPanelPage.copyElementViaAltDragAndDrop(100, 100);
-    });
+    await demoAccountApiFixture.step(
+      'Combine components as a variants group',
+      async () => {
+        await assetsPanelPage.clickAssetsTab();
+        await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+        await assetsPanelPage.combineAsVariantsGroup();
+        await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
+      },
+    );
 
-    await mainTest.step('Combine components as a variants group', async () => {
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-      await assetsPanelPage.combineAsVariantsGroup();
-      await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
-    });
-
-    await mainTest.step(
+    await demoAccountApiFixture.step(
       `Change fill color of the "Rectangle, Blue" component`,
       async () => {
         await layersPanelPage.openLayersTab();
@@ -59,7 +57,7 @@ mainTest(
       },
     );
 
-    await mainTest.step(
+    await demoAccountApiFixture.step(
       'Verify the connection to the child component is not lost',
       async () => {
         await layersPanelPage.clickCopyComponentOnLayersTab();
@@ -69,13 +67,13 @@ mainTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2433], 'Creating a child component by copying a variant'),
   async ({ page, mainPage }) => {
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create a component and convert it to a variant',
       async () => {
         await mainPage.clickMoveButton();
@@ -88,7 +86,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Copy and paste the variant to create a child component',
       async () => {
         await layersPanelPage.selectLayerByName('Value 2');
@@ -101,7 +99,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Change fill color of the "Value 2" variant`,
       async () => {
         await layersPanelPage.selectLayerByName('Value 2');
@@ -114,7 +112,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify the child component color changes with the variant property',
       async () => {
         await layersPanelPage.clickCopyComponentOnLayersTab();

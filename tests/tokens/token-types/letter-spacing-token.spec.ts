@@ -1,5 +1,5 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { MainPage } from '@pages/workspace/main-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
@@ -9,12 +9,12 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 
 let tokensPage: TokensPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest.describe(() => {
+demoAccountFileTest.describe(() => {
   let mainPage: MainPage;
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
@@ -27,7 +27,7 @@ mainAccountFileTest.describe(() => {
   };
   const newTokenValue = '5';
 
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
@@ -41,10 +41,10 @@ mainAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2500], 'Apply a Letter Spacing token and override value from Design tab'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${letterSpacingToken.name}" token is applied and letter spacing matches`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(
@@ -54,7 +54,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Override letter spacing to "${newTokenValue}" from Design tab and verify token is detached`,
         async () => {
           await designPanelPage.changeTextLetterSpacing(newTokenValue);
@@ -69,13 +69,13 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2501],
       'Letter Spacing token value can be override by Assets > Typography style',
     ),
     async () => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${letterSpacingToken.name}" token is applied and letter spacing matches`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(
@@ -85,7 +85,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Override letter spacing via Assets > Typography style to "${newTokenValue}"`,
         async () => {
           await assetsPanelPage.clickAssetsTab();
@@ -97,7 +97,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify token is detached and letter spacing reflects typography style value',
         async () => {
           await tokensPage.clickTokensTab();
@@ -113,7 +113,7 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase(
     [2536],
     'Reference a dimension-type token as an operand (math operation / Dimensions token)',
@@ -136,7 +136,7 @@ mainAccountFileTest(
       value: `5px/{${dimensionToken.name}}`,
     };
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Create "${dimensionToken.name}" and "${letterSpacingToken.name}" tokens with multiplication reference`,
       async () => {
         await tokensPage.clickTokensTab();
@@ -155,7 +155,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Edit to division and verify resolved value is 2.5',
       async () => {
         await tokensPage.tokensComp.editTokenViaRightClickAndSave(updatedTokenData);
@@ -170,7 +170,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Edit to addition and verify resolved value is 7',
       async () => {
         updatedTokenData.value = `5px+{${dimensionToken.name}}`;
@@ -186,7 +186,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Edit to subtraction and verify resolved value is 3',
       async () => {
         updatedTokenData.value = `5px-{${dimensionToken.name}}`;

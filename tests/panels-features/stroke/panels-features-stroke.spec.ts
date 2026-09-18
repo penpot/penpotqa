@@ -1,4 +1,4 @@
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { expect } from 'playwright/test';
@@ -7,18 +7,18 @@ import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2971], 'Live preview updates when adjusting both Dash and Gap sequentially'),
   async ({ mainPage }) => {
     const dashValue = '5';
     const gapValue = '2';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create a Rectangle and add stroke and verify default state',
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -29,7 +29,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Apply outside dashed stroke', async () => {
+    await demoAccountFileTest.step('Apply outside dashed stroke', async () => {
       await mainPage.clickOnLayerOnCanvas();
       await designPanelPage.changeStrokeSettings(
         '#F5358F',
@@ -41,7 +41,7 @@ mainAccountFileTest(
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Set dash value ${dashValue} and assert changes`,
       async () => {
         await designPanelPage.setStrokeDashValue(dashValue);
@@ -60,7 +60,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Set gap value ${gapValue} and assert changes`,
       async () => {
         await designPanelPage.setStrokeGapValue(gapValue);

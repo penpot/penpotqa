@@ -1,12 +1,16 @@
-import { demoAccountApiFixture, mainTest } from 'fixtures';
+import { demoAccountApiFixture } from 'fixtures';
 import { ProfilePage } from '@pages/profile-page';
 
 type YourAccountFixtures = {
   profilePage: ProfilePage;
 };
 
+type PasswordFixtures = YourAccountFixtures & {
+  currentPassword: string;
+};
+
 // Open Your Account > Profile section
-export const profileTest = mainTest.extend<YourAccountFixtures>({
+export const profileTest = demoAccountApiFixture.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 
@@ -18,7 +22,10 @@ export const profileTest = mainTest.extend<YourAccountFixtures>({
 });
 
 // Open Your Account > Password section
-export const passwordTest = mainTest.extend<YourAccountFixtures>({
+export const passwordTest = demoAccountApiFixture.extend<PasswordFixtures>({
+  currentPassword: async ({ demoAccountPassword }, use) => {
+    await use(demoAccountPassword);
+  },
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 
@@ -43,7 +50,7 @@ export const integrationsTest = demoAccountApiFixture.extend<YourAccountFixtures
 });
 
 // Open Your Account > Give Feedback section
-export const giveFeedbackTest = mainTest.extend<YourAccountFixtures>({
+export const giveFeedbackTest = demoAccountApiFixture.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 

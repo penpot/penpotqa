@@ -16,7 +16,7 @@ profileTest(
   qase(187, 'Edit profile: profile name and image'),
   async ({ profilePage }) => {
     const newName = random();
-    const oldName = 'QA Engineer';
+    const oldName = await profilePage.profileNameInput.inputValue();
 
     await profileTest.step('Change profile name and verify success', async () => {
       await profilePage.changeProfileName(newName);
