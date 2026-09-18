@@ -163,10 +163,10 @@ enterprisePageTest.describe(
             // This entry point's post-checkout redirect goes
             // through /admin-console/licenses/finish?session_id=...&callback=
             // and lands back on plain /admin-console/ — no
-            // `?subscription=subscribed-to-penpot-nitrate` marker like the
-            // dashboard entry point (PENPOT-3235) has. The welcome CTA being
-            // clickable again is the real signal that checkout succeeded and
-            // we're back, ready to name the org.
+            // subscription-confirmation URL marker like the dashboard entry
+            // point (PENPOT-3235) has. The welcome CTA being clickable again
+            // is the real signal that checkout succeeded and we're back,
+            // ready to name the org.
             await stripePage.isOnStripeCheckoutPage(false);
             await adminConsolePage.isWelcomeCreateOrganizationButtonVisible();
           },

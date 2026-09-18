@@ -19,13 +19,16 @@ export class OrganizationPage extends BasePage {
   // Sidebar entry points
   readonly createOrgSidebarButton: Locator;
   readonly orgSwitcherButton: Locator;
-  // The dashboard sidebar's own "Unlock Enterprise features" promo widget —
-  // a separate entry point from createOrgSidebarButton, used by PENPOT-3336
-  // (PENPOT-3413 also needs it, still `.skip`). See the tryItFreeButton
-  // comment below for why this needed its own locator in the first place:
-  // it has a real `<button>` with the exact same accessible name as the
-  // modal's CTA.
+  readonly sidebarPromoWidget: Locator;
+  // Two state-dependent buttons inside sidebarPromoWidget: unlicensed it
+  // reads "Try it free for 14 days" (opens the "Unlock Enterprise features"
+  // modal); already-licensed but orgless (e.g. via
+  // `enterpriseActivatedPageTest`), it reads "Create organization" and
+  // jumps straight to the naming modal. Scoping both to sidebarPromoWidget
+  // lets getByRole tell them apart from the modal's own identically-named
+  // CTA.
   readonly sidebarPromoTryItFreeButton: Locator;
+  readonly sidebarPromoCreateOrgButton: Locator;
 
   // "Unlock Enterprise features" modal (older BEM-styled component). No
   // reliable locator for the modal's own generic wrapper exists — see the
@@ -70,9 +73,15 @@ export class OrganizationPage extends BasePage {
     this.orgSwitcherButton = page.locator(
       '.main_ui_dashboard_sidebar__current-organization',
     );
-    this.sidebarPromoTryItFreeButton = page.locator(
-      '.main_ui_dashboard_subscription__nitrate-bottom-button',
+    this.sidebarPromoWidget = page.locator(
+      '.main_ui_dashboard_subscription__nitrate-banner',
     );
+    this.sidebarPromoTryItFreeButton = this.sidebarPromoWidget.getByRole('button', {
+      name: 'Try it free for 14 days',
+    });
+    this.sidebarPromoCreateOrgButton = this.sidebarPromoWidget.getByRole('button', {
+      name: 'Create organization',
+    });
 
     // `.main_ui_modal__modal-wrapper` is a generic portal container reused
     // app-wide by many unrelated modal types (it matches 8-12
@@ -82,12 +91,14 @@ export class OrganizationPage extends BasePage {
     // tryItFreeButton is deliberately CSS-class-based, not getByRole — the
     // dashboard's own "Unlock Enterprise features" sidebar promo widget has
     // its own separate, real `<button>Try it free for 14 days</button>`
-    // (class `main_ui_dashboard_subscription__nitrate-bottom-button`), and
+    // with the exact same accessible name, and an unscoped
     // getByRole('button', { name: 'Try it free for 14 days' }) resolves to
     // THAT one, not the modal's CTA — the visibility check
     // passed (the widget button is visible too) but the actual click failed,
     // obscured by the modal overlay. The modal's own CTA class below is the
-    // only reliable way to target it specifically.
+    // only reliable way to target it specifically (sidebarPromoTryItFreeButton
+    // above avoids the same collision by scoping getByRole to
+    // sidebarPromoWidget instead).
     this.tryItFreeButton = page.locator(
       '.main_ui_nitrate_nitrate_form__modal-button',
     );
@@ -352,11 +363,11 @@ export class OrganizationPage extends BasePage {
   }
 
   /** Asserts the post-checkout redirect landed back on Penpot with the
-   * dashboard entry point's own subscribed-to-Nitrate URL marker. */
+   * dashboard entry point's own subscription-confirmation URL marker. */
   async isSubscriptionConfirmedInUrl() {
     await expect(
       this.page,
-      'Redirected back to Penpot with the subscribed-to-Nitrate URL marker',
+      'Redirected back to Penpot with the subscription-confirmation URL marker',
     ).toHaveURL(/subscription=subscribed-to-penpot-nitrate/);
   }
 
