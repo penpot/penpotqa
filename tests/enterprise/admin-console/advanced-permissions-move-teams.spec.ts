@@ -232,6 +232,7 @@ enterprisePageTest.describe(
         stripePage,
         advancedPermissionsPage,
       }) => {
+        ownerAndInviteeTest.slow(); // two full Enterprise subscriptions (owner + invitee)
         const orgDName = createOrgName();
         const orgEName = createOrgName();
         const teamName = createTeamName();
@@ -303,32 +304,141 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest.skip(
+    enterprisePageTest(
       qase(
         [3348],
         "Allowed move under 'Only within my own organizations' from OrgA to OrgB succeeds",
       ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3348 for full detail):
-         * 1. Move a team from OrgA to OrgB → completes without restriction modal
-         * 2. Team is now part of OrgB
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({
+        page,
+        orgPage,
+        adminConsolePage,
+        stripePage,
+        advancedPermissionsPage,
+        teamPage,
+      }) => {
+        const orgAName = createOrgName();
+        const orgBName = createOrgName();
+        const teamName = createTeamName();
+        let teamId = '';
+
+        await enterprisePageTest.step(
+          "Setup: subscribe to Enterprise, create OrgA, and set 'Move teams across organizations' to 'Only within my own organizations'",
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgAName,
+            );
+            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.OnlyWithinOwnOrganizations,
+            );
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Create a team while OrgA is the active sidebar context → it auto-joins OrgA, then create OrgB (a second org for the same owner)',
+          async () => {
+            await adminConsolePage.goToFiles();
+            await teamPage.createTeam(teamName);
+            teamId = teamPage.getTeamIdFromUrl();
+            await teamPage.openTeamSettingsPageViaOptionsMenu();
+            await teamPage.isTeamPartOfOrganization(orgAName);
+
+            await orgPage.openOrgSwitcher();
+            await orgPage.clickCreateOrgFromDropdown();
+            await orgPage.createOrganization(orgBName);
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Move the team from OrgA to OrgB → completes without a restriction modal, team is now part of OrgB',
+          async () => {
+            await page.goto(`/#/dashboard/recent?team-id=${teamId}`);
+            await teamPage.openTeamSettingsPageViaOptionsMenu();
+            await teamPage.changeTeamOrganization(orgBName);
+            await teamPage.isTeamPartOfOrganization(orgBName);
+          },
+        );
       },
     );
 
-    enterprisePageTest.skip(
+    ownerAndInviteeTest(
       qase([3349], "Allowed move under 'Always allowed' from OrgD to OrgA succeeds"),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3349 for full detail):
-         * 1. Move a team from OrgD to OrgA → completes without restriction modal
-         * 2. Team is now part of OrgA
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({
+        invitee,
+        orgPage,
+        adminConsolePage,
+        stripePage,
+        advancedPermissionsPage,
+      }) => {
+        ownerAndInviteeTest.slow(); // two full Enterprise subscriptions (owner + invitee)
+        const orgDName = createOrgName();
+        const orgAName = createOrgName();
+        const teamName = createTeamName();
+        const inviteeOrgPage = new OrganizationPage(invitee.page);
+        const inviteeAdminConsolePage = new AdminConsolePage(invitee.page);
+        const inviteeStripePage = new StripePage(invitee.page);
+        const inviteeTeamPage = new TeamPage(invitee.page);
+
+        await ownerAndInviteeTest.step(
+          "Setup: subscribe to Enterprise, create OrgD (kept at the default 'Always allowed'), and invite the second account",
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgDName,
+            );
+            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.isPermissionSelected(
+              MoveTeamsPermission.AlwaysAllowed,
+            );
+            await adminConsolePage.invitePersonToOrganization(invitee.email);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Invitee creates their own team, then separately subscribes to Enterprise and creates OrgA',
+          async () => {
+            await inviteeTeamPage.createTeam(teamName);
+            await subscribeAndCreateOrg(
+              inviteeOrgPage,
+              inviteeAdminConsolePage,
+              inviteeStripePage,
+              orgAName,
+            );
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Invitee accepts the OrgD invite from their inbox and becomes a non-owner org member',
+          async () => {
+            await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgDName);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Invitee switches to their pre-existing team and adds it to OrgD',
+          async () => {
+            // A real reload — the team switcher's in-memory list can go
+            // stale right after an Admin Console round-trip, otherwise.
+            await invitee.page.goto('/');
+            await inviteeTeamPage.switchTeam(teamName);
+            await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
+            await inviteeTeamPage.addTeamToOrganization(orgDName);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Move the team from OrgD to OrgA → completes without a restriction modal, team is now part of OrgA',
+          async () => {
+            await inviteeTeamPage.changeTeamOrganization(orgAName);
+            await inviteeTeamPage.isTeamPartOfOrganization(orgAName);
+          },
+        );
       },
     );
 
