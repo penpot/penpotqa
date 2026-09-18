@@ -11,8 +11,12 @@
  * enterprise-demo-account-email memory).
  */
 import { qase } from 'playwright-qase-reporter/playwright';
+import { waitMessage, waitSecondMessage } from 'helpers/gmail';
+import { createInviteeSession } from 'helpers/accounts/create-invitee-session';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
+import { TeamPage } from '@pages/dashboard/team-page';
 import { createOrgName } from 'helpers/organizations/create-org-name';
+import { createTeamName } from 'helpers/teams/create-team-name';
 import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
 import { ownerAndInviteeTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
@@ -70,32 +74,153 @@ ownerAndInviteeTest.describe(
       },
     );
 
-    ownerAndInviteeTest.skip(
+    ownerAndInviteeTest(
       qase([3145], 'Remove a member who is the owner of a team'),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3145 for full detail):
-         * 1. Log in as org owner, open OrgA members list
-         * 2. Click remove next to the team-owning member → confirmation dialog warns about team removal too
-         * 3. Confirm → removed from members list, counter updates, success notification
-         * 4. Open the team → the team's only admin is now automatically the owner
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({ page, browser, invitee, orgPage, adminConsolePage, stripePage }) => {
+        // Real Gmail waits for 2 accepted invites (invitee's own, plus the
+        // team admin's) don't fit the default per-test budget.
+        ownerAndInviteeTest.slow();
+
+        const orgName = createOrgName();
+        const teamName = createTeamName();
+        const inviteeOrgPage = new OrganizationPage(invitee.page);
+        const inviteeTeamPage = new TeamPage(invitee.page);
+        const admin = await createInviteeSession(browser);
+
+        await ownerAndInviteeTest.step(
+          'Setup: subscribe to Enterprise, create an org, and invite the second account',
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgName,
+            );
+            await adminConsolePage.invitePersonToOrganization(invitee.email);
+            await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgName);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Invitee creates a team (becomes its owner) and invites a third account as Admin',
+          async () => {
+            await inviteeTeamPage.createTeam(teamName);
+            await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
+            await inviteeTeamPage.clickInviteMembersToTeamButton();
+            await inviteeTeamPage.enterEmailToInviteMembersPopUp(admin.email);
+            await inviteeTeamPage.selectInvitationRoleInPopUp('Admin');
+            await inviteeTeamPage.clickSendInvitationButton();
+
+            await waitSecondMessage(invitee.page, admin.email, 40);
+            const invite = await waitMessage(invitee.page, admin.email, 40);
+            await admin.page.goto(invite!.inviteUrl);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Owner removes the team-owning member → confirmation dialog → confirm',
+          async () => {
+            await adminConsolePage.page.reload();
+            await adminConsolePage.openPeopleTab();
+            await adminConsolePage.removeMemberFromPeopleTable(invitee.name);
+            await adminConsolePage.isRemoveMemberDialogShown(
+              invitee.name,
+              'The user will also be removed from all teams they were part of.',
+            );
+            await adminConsolePage.confirmRemoveMember(invitee.name);
+            await adminConsolePage.isMemberListedInPeopleTable(invitee.name, false);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          "Team's Owner is now automatically the admin who remained",
+          async () => {
+            await adminConsolePage.openTeamsTab();
+            await adminConsolePage.hasTeamOwnerInTeamsTable(teamName, admin.name);
+          },
+        );
+
+        await admin.close();
       },
     );
 
-    ownerAndInviteeTest.skip(
+    ownerAndInviteeTest(
       qase([3152], 'Remove a member who belongs to multiple teams'),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3152 for full detail):
-         * 1. Open OrgA members list, click remove on a member of 3 teams → confirmation dialog
-         * 2. Confirm → removed from members list, counter updates, success notification
-         * 3. Check all 3 teams → member removed from every one, teams still exist
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({ invitee, orgPage, adminConsolePage, stripePage, teamPage }) => {
+        // 3 sequential team-invite-accept cycles, each a real Gmail wait,
+        // don't fit the default per-test budget.
+        ownerAndInviteeTest.slow();
+
+        const orgName = createOrgName();
+        const teamNames = [createTeamName(), createTeamName(), createTeamName()];
+
+        await ownerAndInviteeTest.step(
+          'Setup: subscribe to Enterprise and create an org',
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgName,
+            );
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Owner creates 3 teams and invites the second account to each',
+          async () => {
+            await adminConsolePage.goToFiles();
+            for (const teamName of teamNames) {
+              await teamPage.createTeam(teamName);
+              await teamPage.openInvitationsPageViaOptionsMenu();
+              await teamPage.clickInviteMembersToTeamButton();
+              await teamPage.enterEmailToInviteMembersPopUp(invitee.email);
+              await teamPage.clickSendInvitationButton();
+
+              await waitSecondMessage(orgPage.page, invitee.email, 40);
+              const invite = await waitMessage(orgPage.page, invitee.email, 40);
+              await invitee.page.goto(invite!.inviteUrl);
+            }
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Owner → Admin Console → member is listed as belonging to 3 teams',
+          async () => {
+            await orgPage.openOrgSwitcher();
+            await orgPage.clickGoToAdminConsole();
+            await adminConsolePage.openPeopleTab();
+            await adminConsolePage.hasMemberTeamsCountInPeopleTable(invitee.name, 3);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Owner removes the member → confirmation dialog → confirm',
+          async () => {
+            await adminConsolePage.removeMemberFromPeopleTable(invitee.name);
+            await adminConsolePage.isRemoveMemberDialogShown(
+              invitee.name,
+              'The user will also be removed from all teams they were part of.',
+            );
+            await adminConsolePage.confirmRemoveMember(invitee.name);
+            await adminConsolePage.isMemberListedInPeopleTable(invitee.name, false);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'All 3 teams still exist, each down to just the owner',
+          async () => {
+            await adminConsolePage.openTeamsTab();
+            for (const teamName of teamNames) {
+              await adminConsolePage.isTeamListedInTeamsTable(teamName);
+              await adminConsolePage.hasTeamCountsInTeamsTable(teamName, {
+                projects: 0,
+                files: 0,
+                members: 1,
+              });
+            }
+          },
+        );
       },
     );
   },

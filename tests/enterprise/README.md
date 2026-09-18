@@ -2,7 +2,7 @@
 
 Playwright specs for Penpot's Enterprise-plan.
 
-**Status: 39 implemented and passing live, 35 still `test.skip` stubs.**
+**Status: 41 implemented and passing live, 33 still `test.skip` stubs.**
 
 | Qase IDs                           | Qase suite                                                                                                                            | File                                                          |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
@@ -20,7 +20,7 @@ Playwright specs for Penpot's Enterprise-plan.
 | 3192, 3198                         | Enterprise Dashboard > Teams Dropdown > Team Settings > Team Organization Options > Add/Remove team from organization                 | `dashboard-enterprise/team-settings-add-remove-org.spec.ts`   |
 | 3302, 3308                         | Admin Console > Sidebar Menu > People > Members (tab) > Invite People (Button & Modal)                                                | `admin-console/people-members-invite.spec.ts`                 |
 | 3185                               | Admin Console > Sidebar Menu > People > Pending (tab) > Cancel Invitation                                                             | `admin-console/people-pending-cancel-invitation.spec.ts`      |
-| 3143                               | Admin Console > Sidebar Menu > People > Members (tab) > Remove                                                                        | `admin-console/people-members-remove.spec.ts`                 |
+| 3143, 3145, 3152                   | Admin Console > Sidebar Menu > People > Members (tab) > Remove                                                                        | `admin-console/people-members-remove.spec.ts`                 |
 | 3078, 3079, 3080, 3081             | Enterprise Dashboard > Teams Dropdown > Team Management Options > Invitations (Enterprise)                                            | `dashboard-enterprise/teams-dropdown-invitations.spec.ts`     |
 | 3211, 3212, 3213                   | Enterprise Dashboard > Teams Dropdown > Team Settings > Team Organization Options > Change team organization                          | `dashboard-enterprise/team-settings-change-org.spec.ts`       |
 
