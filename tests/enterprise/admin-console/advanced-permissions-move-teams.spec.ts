@@ -4,85 +4,216 @@
  * Stubs below (`test.skip`) await automation — see the Enterprise Plan
  * automation plan.
  *
- * Base fixture: `demoAccountApiFixture` (does NOT grant Enterprise
- * entitlement by itself — see enterprise-fixtures.ts's `enterprisePageTest`/
- * `ownerAndInviteeTest`). Per-case "Accounts:" notes cover invitees
- * needing a real, readable inbox instead (see the
- * enterprise-demo-account-email memory).
+ * Base: `enterprisePageTest` (see enterprise-fixtures.ts) for a single
+ * actor; `ownerAndInviteeTest` for cases needing a real second account.
  */
-import { demoAccountApiFixture } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
+import { MoveTeamsPermission } from '@pages/admin-console/advanced-permissions-page';
+import { createOrgName } from 'helpers/organizations/create-org-name';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
+import { enterprisePageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
-demoAccountApiFixture.describe(
+enterprisePageTest.describe(
   'Admin Console > Sidebar Menu > Advanced Permissions > Move teams across organizations (Permission)',
   () => {
-    demoAccountApiFixture.skip(
+    enterprisePageTest(
       qase(
         [3342],
         "Set team movement permission to 'Never allowed' and verify setting is autosaved",
       ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3342 for full detail):
-         * 1. Advanced Permissions > Move Teams Across Organizations → 3 options visible
-         * 2. Select 'Never allowed' → autosaved
-         * 3. Reload page → value persists
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({ orgPage, adminConsolePage, stripePage, advancedPermissionsPage }) => {
+        const orgName = createOrgName();
+
+        await enterprisePageTest.step(
+          'Setup: subscribe to Enterprise and create an organization',
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgName,
+            );
+            await adminConsolePage.openAdvancedPermissionsTab();
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Admin Console > Advanced Permissions > Move Teams Across Organizations → all 3 options available',
+          async () => {
+            await advancedPermissionsPage.isPermissionVisible(
+              MoveTeamsPermission.NeverAllowed,
+            );
+            await advancedPermissionsPage.isPermissionVisible(
+              MoveTeamsPermission.OnlyWithinOwnOrganizations,
+            );
+            await advancedPermissionsPage.isPermissionVisible(
+              MoveTeamsPermission.AlwaysAllowed,
+            );
+          },
+        );
+
+        await enterprisePageTest.step(
+          "Select 'Never allowed' → option becomes selected (autosaved), persists after reload",
+          async () => {
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.NeverAllowed,
+            );
+            await advancedPermissionsPage.isPermissionSelected(
+              MoveTeamsPermission.NeverAllowed,
+            );
+          },
+        );
       },
     );
 
-    demoAccountApiFixture.skip(
+    enterprisePageTest(
       qase(
         [3343],
         "Set team movement permission to 'Only within my own organizations' and verify setting is autosaved",
       ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3343 for full detail):
-         * 1. Advanced Permissions > Move Teams Across Organizations → 3 options visible
-         * 2. Select 'Only within my own organizations' → autosaved
-         * 3. Reload page → value persists
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({ orgPage, adminConsolePage, stripePage, advancedPermissionsPage }) => {
+        const orgName = createOrgName();
+
+        await enterprisePageTest.step(
+          'Setup: subscribe to Enterprise and create an organization',
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgName,
+            );
+            await adminConsolePage.openAdvancedPermissionsTab();
+          },
+        );
+
+        await enterprisePageTest.step(
+          "Select 'Only within my own organizations' → option becomes selected (autosaved), persists after reload",
+          async () => {
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.OnlyWithinOwnOrganizations,
+            );
+            await advancedPermissionsPage.isPermissionSelected(
+              MoveTeamsPermission.OnlyWithinOwnOrganizations,
+            );
+          },
+        );
       },
     );
 
-    demoAccountApiFixture.skip(
+    enterprisePageTest(
       qase(
         [3344],
         "Set team movement permission to 'Always allowed' and verify setting is autosaved",
       ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3344 for full detail):
-         * 1. Advanced Permissions > Move Teams Across Organizations → 3 options visible
-         * 2. Select 'Always allowed' → autosaved
-         * 3. Reload page → value persists
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({ orgPage, adminConsolePage, stripePage, advancedPermissionsPage }) => {
+        const orgName = createOrgName();
+
+        await enterprisePageTest.step(
+          'Setup: subscribe to Enterprise, create an organization, and switch off the default permission',
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgName,
+            );
+            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.NeverAllowed,
+            );
+            // Confirm the baseline persisted before making a second change
+            // in the same session.
+            await advancedPermissionsPage.isPermissionSelected(
+              MoveTeamsPermission.NeverAllowed,
+            );
+          },
+        );
+
+        await enterprisePageTest.step(
+          "Select 'Always allowed' → option becomes selected (autosaved), persists after reload",
+          async () => {
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.AlwaysAllowed,
+            );
+            await advancedPermissionsPage.isPermissionSelected(
+              MoveTeamsPermission.AlwaysAllowed,
+            );
+          },
+        );
       },
     );
 
-    demoAccountApiFixture.skip(
+    enterprisePageTest(
       qase(
         [3345],
         "Restricted move attempt under 'Never allowed' shows modal with correct organization name",
       ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3345 for full detail):
-         * 1. Team Settings > three-dot menu > "Change team organization" → blocking modal appears naming the org
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({
+        page,
+        orgPage,
+        adminConsolePage,
+        stripePage,
+        advancedPermissionsPage,
+        teamPage,
+      }) => {
+        const orgAName = createOrgName();
+        const orgBName = createOrgName();
+        const teamName = createTeamName();
+        let teamId = '';
+
+        await enterprisePageTest.step(
+          "Setup: subscribe to Enterprise, create OrgA, and set 'Move teams across organizations' to 'Never allowed'",
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgAName,
+            );
+            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.NeverAllowed,
+            );
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Create a team while OrgA is the active sidebar context → it auto-joins OrgA',
+          async () => {
+            await adminConsolePage.goToFiles();
+            await teamPage.createTeam(teamName);
+            teamId = teamPage.getTeamIdFromUrl();
+            await teamPage.openTeamSettingsPageViaOptionsMenu();
+            await teamPage.isTeamPartOfOrganization(orgAName);
+          },
+        );
+
+        await enterprisePageTest.step(
+          // "Change team organization" only renders once the owner has
+          // another org to move into — see PENPOT-3211/3212's setup.
+          'Create OrgB, a second organization for the same owner',
+          async () => {
+            await orgPage.openOrgSwitcher();
+            await orgPage.clickCreateOrgFromDropdown();
+            await orgPage.createOrganization(orgBName);
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgA',
+          async () => {
+            await page.goto(`/#/dashboard/recent?team-id=${teamId}`);
+            await teamPage.openTeamSettingsPageViaOptionsMenu();
+            await teamPage.openChangeTeamOrgModal();
+            await teamPage.isMoveTeamBlockedModalShown(orgAName);
+          },
+        );
       },
     );
 
-    demoAccountApiFixture.skip(
+    enterprisePageTest.skip(
       qase(
         [3346],
         "Restricted move attempt under 'Only within my own organizations' shows modal when moving from OrgD",
@@ -97,7 +228,7 @@ demoAccountApiFixture.describe(
       },
     );
 
-    demoAccountApiFixture.skip(
+    enterprisePageTest.skip(
       qase(
         [3348],
         "Allowed move under 'Only within my own organizations' from OrgA to OrgB succeeds",
@@ -113,7 +244,7 @@ demoAccountApiFixture.describe(
       },
     );
 
-    demoAccountApiFixture.skip(
+    enterprisePageTest.skip(
       qase([3349], "Allowed move under 'Always allowed' from OrgD to OrgA succeeds"),
       async ({ page }) => {
         /**
@@ -126,7 +257,7 @@ demoAccountApiFixture.describe(
       },
     );
 
-    demoAccountApiFixture.skip(
+    enterprisePageTest.skip(
       qase(
         [3626],
         "'Remove team from organization' is blocked under both restriction settings ('Never allowed' and 'Only within my own organizations')",
