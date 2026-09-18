@@ -8,11 +8,18 @@
  * actor; `ownerAndInviteeTest` for cases needing a real second account.
  */
 import { qase } from 'playwright-qase-reporter/playwright';
+import { OrganizationPage } from '@pages/dashboard/organization-page';
+import { AdminConsolePage } from '@pages/admin-console/admin-console-page';
+import { StripePage } from '@pages/dashboard/stripe-page';
+import { TeamPage } from '@pages/dashboard/team-page';
 import { MoveTeamsPermission } from '@pages/admin-console/advanced-permissions-page';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
-import { enterprisePageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
+import {
+  ownerAndInviteeTest,
+  enterprisePageTest,
+} from '@tests/enterprise/fixtures/enterprise-fixtures';
 
 enterprisePageTest.describe(
   'Admin Console > Sidebar Menu > Advanced Permissions > Move teams across organizations (Permission)',
@@ -213,18 +220,86 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest.skip(
+    ownerAndInviteeTest(
       qase(
         [3346],
         "Restricted move attempt under 'Only within my own organizations' shows modal when moving from OrgD",
       ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3346 for full detail):
-         * 1. Team Settings > three-dot menu > "Change team organization" → blocking modal appears
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({
+        invitee,
+        orgPage,
+        adminConsolePage,
+        stripePage,
+        advancedPermissionsPage,
+      }) => {
+        const orgDName = createOrgName();
+        const orgEName = createOrgName();
+        const teamName = createTeamName();
+        const inviteeOrgPage = new OrganizationPage(invitee.page);
+        const inviteeAdminConsolePage = new AdminConsolePage(invitee.page);
+        const inviteeStripePage = new StripePage(invitee.page);
+        const inviteeTeamPage = new TeamPage(invitee.page);
+
+        await ownerAndInviteeTest.step(
+          "Setup: subscribe to Enterprise, create OrgD, set 'Move teams across organizations' to 'Only within my own organizations', and invite the second account",
+          async () => {
+            await subscribeAndCreateOrg(
+              orgPage,
+              adminConsolePage,
+              stripePage,
+              orgDName,
+            );
+            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.OnlyWithinOwnOrganizations,
+            );
+            await adminConsolePage.invitePersonToOrganization(invitee.email);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          // "Change team organization" only renders once the actor has
+          // another org to move into (see the create-teams-requires-2-orgs
+          // memory) — OrgE gives the invitee that second org, owned by
+          // neither of them jointly with OrgD's owner.
+          'Invitee creates their own team, then separately subscribes to Enterprise and creates OrgE',
+          async () => {
+            await inviteeTeamPage.createTeam(teamName);
+            await subscribeAndCreateOrg(
+              inviteeOrgPage,
+              inviteeAdminConsolePage,
+              inviteeStripePage,
+              orgEName,
+            );
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Invitee accepts the OrgD invite from their inbox and becomes a non-owner org member',
+          async () => {
+            await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgDName);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Invitee switches to their pre-existing team and adds it to OrgD',
+          async () => {
+            // A real reload — the team switcher's in-memory list can go
+            // stale right after an Admin Console round-trip, otherwise.
+            await invitee.page.goto('/');
+            await inviteeTeamPage.switchTeam(teamName);
+            await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
+            await inviteeTeamPage.addTeamToOrganization(orgDName);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgD',
+          async () => {
+            await inviteeTeamPage.openChangeTeamOrgModal();
+            await inviteeTeamPage.isMoveTeamBlockedModalShown(orgDName);
+          },
+        );
       },
     );
 
