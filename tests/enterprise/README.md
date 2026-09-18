@@ -26,10 +26,35 @@ Playwright specs for Penpot's Enterprise-plan.
 
 ## How Enterprise entitlement actually works
 
-No DB/RPC/API bypass exists for granting Enterprise — every test goes
-through a real Stripe test-mode checkout in the UI.
-`StripePage.completeEnterpriseTrialCheckout()` drives it end-to-end
-(~15-20s), fully automated, not a blocker.
+There are two ways to get an Enterprise-entitled account for a test:
+
+- **Real Stripe test-mode checkout in the UI** — the only path before this
+  was introduced, and still what most specs use.
+  `StripePage.completeEnterpriseTrialCheckout()` drives it end-to-end
+  (~15-20s), fully automated, not a blocker. `enterprisePageTest` uses this.
+- **Penpot's activation-code RPCs** (request + redeem; see
+  `helpers/organizations/activate-enterprise-license.ts` for the exact
+  endpoints) against a reachable licenses-manager instance — that machine
+  needs its own activation-codes flag enabled first (see `.env.example`'s
+  `LICENSES_MANAGER_URL` comment; a config flag on that machine, not
+  something this repo sets or checks). Grants the same entitlement without
+  touching Stripe — the resulting subscription state is the same either
+  way, just flagged as manually granted rather than through the checkout.
+  `enterpriseActivatedPageTest` uses this;
+  `admin-console/settings-rename-organization.spec.ts` is the first spec
+  migrated to it, as a proof of concept.
+
+**This is a migration in progress, not a settled split.** The intent is
+for the activation-code path to become the default wherever a case doesn't
+specifically need to exercise the checkout/trial UI itself, keeping Stripe
+for the cases that do (the `billing-ui-flow/` files, Qase 3437) — but how
+much of the suite migrates, and when, is still being decided. One
+consequence once more of the suite depends on it: `LICENSES_MANAGER_URL`
+(currently optional, PRE/developer environments only) would need to become
+a required part of running this suite, not just an opt-in extra a handful
+of specs skip without. For now it stays unset by default, so
+`enterpriseActivatedPageTest` `test.skip()`s automatically rather than
+failing wherever it isn't configured.
 
 `tests/enterprise/fixtures/enterprise-fixtures.ts` is the one place to look
 for every Enterprise-specific test object and what it extends (its own
@@ -39,32 +64,40 @@ top-of-file comment maps the hierarchy):
   the 5 page objects (`orgPage`, `adminConsolePage`, `stripePage`,
   `teamPage`, `advancedPermissionsPage`) nearly every case needs,
   pre-instantiated against `page`.
+- `enterpriseActivatedPageTest` — extends `enterpriseDemoAccountApiFixture`
+  (Enterprise counterpart to `demoAccountApiFixture`) with the same 5 page
+  objects; the account is already Enterprise-entitled via the
+  activation-code RPC path above instead of a Stripe checkout.
+  `test.skip()`s automatically when `LICENSES_MANAGER_URL` is unset, so
+  specs using it stay green outside PRE/dev rather than failing.
 - `ownerAndInviteeTest` — two independent, simultaneously logged-in
   accounts as sibling fixtures (`ownerPage`, `invitee`), for cases needing
   a real non-owner org member. Also carries the same 5 page objects, bound
   to `ownerPage`.
 
-Use `demoAccountApiFixture` directly only for a case needing none of the 5
-page objects.
+Use `demoAccountApiFixture`/`enterpriseDemoAccountApiFixture` directly only
+for a case needing none of the 5 page objects.
 
 Demo profiles (and anything solely owned by them) are purged automatically
 after 7 days — no manual cleanup needed for enterprise test data.
 
 ## Page objects
 
-| File                                                       | Covers                                                                                                                                                   |
-| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pages/dashboard/organization-page.ts`                     | Dashboard-side entry points: "+ Create org", Enterprise modal, org switcher, org naming modal. Also `acceptOrgInviteFromInbox()`.                        |
-| `pages/admin-console/admin-console-page.ts`                | The Admin Console app: welcome state, its own Enterprise modal, org settings, org switcher/user menu, Teams/People tables, org-level invite modal.       |
-| `pages/dashboard/stripe-page.ts`                           | `completeEnterpriseTrialCheckout()` drives the real hosted Stripe Checkout page.                                                                         |
-| `helpers/stripe-test-cards.ts`                             | Named Stripe test-mode card numbers instead of magic strings.                                                                                            |
-| `helpers/organizations/create-org-name.ts`                 | `createOrgName()` — mirrors `createTeamName()`'s shape.                                                                                                  |
-| `helpers/organizations/subscribe-and-create-org.ts`        | `subscribeAndCreateOrg()` — the "+ Create org" → checkout → name sequence, deduplicated from 17 call sites.                                              |
-| `helpers/accounts/`                                        | Every "get a logged-in session" primitive — demo, login, register, and a real invitee session. Prefer `ownerAndInviteeTest` over calling these directly. |
-| `pages/admin-console/advanced-permissions-page.ts`         | The Advanced Permissions tab — 4 policy radio groups, one self-healing `selectPermission()`/`isPermissionSelected()` pair.                               |
-| `pages/admin-console/admin-console-page.ts` (logo section) | The org settings modal's logo upload. `isOrgLogoShown(orgName)` matches by alt text.                                                                     |
-| `pages/dashboard/team-page.js` (Enterprise additions)      | Team org section — add/remove/move (`changeTeamOrganization()`), plus `getTeamIdFromUrl()` for direct navigation.                                        |
-| `helpers/gmail.js` (Enterprise additions)                  | `getMessageSubject()`, plus `checkEnterpriseInviteText`/`checkEnterpriseInviteSubject` for the org-scoped invite template.                               |
+| File                                                       | Covers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pages/dashboard/organization-page.ts`                     | Dashboard-side entry points: sidebar "+ Create org" button/promo widget, "Unlock Enterprise features" modal, org switcher dropdown, "Create organization" naming modal. Also `acceptOrgInviteFromInbox(email, orgName)` — see `helpers/accounts/` below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `pages/admin-console/admin-console-page.ts`                | The Admin Console app (`/admin-console/...`): welcome/empty state, its own "Unlock Enterprise Features" modal (a different component from the dashboard's), org settings modal (rename/delete), its own org switcher and user menu, Teams tab table (`TeamsTableColumn`), People tab's Members (`PeopleTableColumn`) and Pending (`PendingTableColumn`) sub-tables, org-level "Invite people" modal.                                                                                                                                                                                                                                                                                                                         |
+| `pages/dashboard/stripe-page.ts`                           | `completeEnterpriseTrialCheckout(cardNumber?, taxId?, expectSuccess?)` drives the real hosted Stripe Checkout page. Also has the older embedded add-card-iframe methods used by `tests/subscription-plans/*`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `helpers/stripe-test-cards.ts`                             | Named Stripe test-mode card numbers instead of magic strings.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `helpers/organizations/create-org-name.ts`                 | `createOrgName()` — mirrors `createTeamName()`'s shape.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `helpers/organizations/subscribe-and-create-org.ts`        | `subscribeAndCreateOrg(orgPage, adminConsolePage, stripePage, orgName)` — the "+ Create org" → checkout → name sequence, deduplicated from 17 call sites. Cases exercising a different entry point keep their own inline steps.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `helpers/organizations/activate-enterprise-license.ts`     | `activateEnterpriseLicense(request)` — the RPC → licenses-manager `/api/activation-codes/create` → RPC path that grants Enterprise without Stripe. PRE/dev only (`LICENSES_MANAGER_URL`); see "How Enterprise entitlement actually works" above.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `helpers/organizations/create-org-for-licensed-account.ts` | `createOrgForLicensedAccount(orgPage, orgName)` — `subscribeAndCreateOrg`'s counterpart for `enterpriseActivatedPageTest`: the sidebar promo button already reads "Create organization" once entitled, so it's a single click straight to the naming modal, no checkout step.                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `helpers/accounts/`                                        | Every "get a logged-in session" primitive: `create-demo-user.ts` (`createDemoUser`, API-only — shared by `demoAccountApiFixture` via `loginAsDemoAccount`, and directly by `enterpriseDemoAccountApiFixture` since it needs to activate the license before the first navigation), `login-as-demo-account.ts` (`loginAsDemoAccount`), `register-new-account.ts` (`registerNewAccount`, real Gmail-alias account), `create-invitee-session.ts` (`createInviteeSession`, a real second account in its own context — not a demo one, since a demo profile's inbox is unreadable and can't accept an org invite). Prefer `ownerAndInviteeTest` in tests over calling `createInviteeSession()` directly — it also handles cleanup. |
+| `pages/admin-console/advanced-permissions-page.ts`         | The Advanced Permissions tab — 4 policy radio groups sharing one self-healing `selectPermission()`/`isPermissionSelected()` pair typed against `AdvancedPermissionValue`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `pages/admin-console/admin-console-page.ts` (logo section) | The org settings modal's logo upload, sharing the rename flow's Save button/toast. `isOrgLogoShown(orgName)` matches by alt text, only present once a real logo is chosen.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `pages/dashboard/team-page.js` (Enterprise additions)      | Team Settings' "Team organization" section — add/remove a team from an org.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `helpers/gmail.js` (Enterprise additions)                  | `getMessageSubject()`, plus `checkEnterpriseInviteText`/`checkEnterpriseInviteSubject` for the org-scoped invite template.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 Assertions live in the page objects, not spec files — every `expect()` a
 case needs is a named `isXVisible()`/`isXListed()`/`hasX()` method with its
@@ -106,7 +139,7 @@ dashboard-enterprise/  cases from the "Enterprise Dashboard" Qase suite
 admin-console/         cases from the "Admin Console" Qase suite
 destructive/           the 7 cases that permanently mutate plan/org state or need a non-Enterprise starting plan
 billing-ui-flow/       the 7 cases that drive the real Stripe checkout/trial UI itself
-fixtures/              enterprisePageTest/ownerAndInviteeTest and the 5 shared page objects
+fixtures/              enterprisePageTest/enterpriseActivatedPageTest/ownerAndInviteeTest and the 5 shared page objects
 ```
 
 Spec files group cases by Qase suite (see each file's header comment)
