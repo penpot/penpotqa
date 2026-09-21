@@ -181,8 +181,7 @@ export class AdminConsolePage extends BasePage {
 
   // People tab's "invite to the organization" modal — org-level invites,
   // distinct from a single team's own invite flow (TeamPage's), which
-  // isn't even offered once a team belongs to an Enterprise
-  // org: membership is managed at the org level instead.
+  // still works once a team belongs to an org — either kind adds the person to both.
   readonly invitePeopleButton: Locator;
   readonly invitePeopleEmailInput: Locator;
   readonly sendInviteButton: Locator;
@@ -193,6 +192,9 @@ export class AdminConsolePage extends BasePage {
   // live the Cancel button only becomes visible on hovering its row.
   readonly pendingTab: Locator;
   readonly pendingTable: Locator;
+
+  // Only shown when the target belongs to at least one team.
+  readonly removeMemberConfirmButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -307,6 +309,10 @@ export class AdminConsolePage extends BasePage {
 
     this.pendingTab = page.getByRole('tab', { name: /^Pending/ });
     this.pendingTable = page.getByRole('table');
+
+    this.removeMemberConfirmButton = page.getByRole('button', {
+      name: 'Remove user',
+    });
   }
 
   /* -------------------------------------------------
@@ -958,20 +964,59 @@ export class AdminConsolePage extends BasePage {
       : await expect(row, `Member "${memberName}" is not listed`).toHaveCount(0);
   }
 
-  /** Removes a member from the org via the People table's own row action —
-   * a plain (non-team-owning) member is removed directly on
-   * click, no confirmation dialog. The action only appears on hover.
-   *
-   * Doesn't assert on a success toast: direct DOM inspection found no
-   * `notification`/`toast`/`pill`-classed element ever appears for several
-   * seconds after the click, despite one being visible in an unrelated
-   * failure screenshot once — unreliable. Callers should verify success via
-   * `isMemberListedInPeopleTable(name, false)` instead, which is both more
-   * reliable and closer to what actually matters. */
+  /** Clicks the row's "Remove" action (hover to reveal) — self-healing:
+   * clicking right after openPeopleTab() can silently no-op, same
+   * hydration race as openPendingTab()/openSettings(). No team → removed
+   * immediately, verify via `isMemberListedInPeopleTable(name, false)` (no
+   * reliable toast). Belongs to a team → see `isRemoveMemberDialogShown()`. */
   async removeMemberFromPeopleTable(memberName: string) {
     const row = this.getPeopleTableRow(memberName);
-    await row.hover();
-    await row.getByRole('button', { name: /remove/i }).click();
+    await expect(async () => {
+      await row.hover();
+      await row.getByRole('button', { name: /remove/i }).click();
+      // Matches isRemoveMemberDialogShown()'s own 15000ms — a shorter wait
+      // here would misread a genuinely slow (but real) dialog render as "no
+      // effect" and re-click, risking a duplicate remove action.
+      const acted = await Promise.race([
+        this.removeMemberConfirmButton
+          .waitFor({ state: 'visible', timeout: 15000 })
+          .then(() => true)
+          .catch(() => false),
+        row
+          .waitFor({ state: 'detached', timeout: 15000 })
+          .then(() => true)
+          .catch(() => false),
+      ]);
+      if (!acted) {
+        throw new Error(`Remove action for "${memberName}" had no visible effect`);
+      }
+    }).toPass({ timeout: 45000 });
+  }
+
+  /** Body text differs by case: sole team member warns of deletion,
+   * otherwise it's a plain "removed from all teams" notice. */
+  async isRemoveMemberDialogShown(memberName: string, bodyText: string) {
+    // Deciding dialog-vs-immediate-removal needs a backend team-membership
+    // check first — can outrun the default timeout under CI load.
+    await expect(
+      this.page.getByRole('heading', {
+        name: `Remove ${memberName} from the organization?`,
+      }),
+      `Remove-member confirmation dialog for "${memberName}" is shown`,
+    ).toBeVisible({ timeout: 15000 });
+    await expect(
+      this.page.getByText(bodyText, { exact: true }),
+      `Remove-member dialog body is "${bodyText}"`,
+    ).toBeVisible();
+  }
+
+  /** Confirms the remove-member dialog and waits for its success message. */
+  async confirmRemoveMember(memberName: string) {
+    await this.removeMemberConfirmButton.click();
+    await expect(
+      this.page.getByText(`${memberName} has been removed`),
+      `"${memberName} has been removed" message is shown`,
+    ).toBeVisible();
   }
 
   /** Checks the Teams column count for a member's row in the People table

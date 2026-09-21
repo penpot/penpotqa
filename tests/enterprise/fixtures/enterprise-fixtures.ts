@@ -15,10 +15,13 @@
  *     │   │                                PRE/dev environments only — skips
  *     │   │                                otherwise.
  *     │   └─ enterpriseActivatedPageTest — adds the same 5 page objects.
- *     └─ ownerAndInviteeTest             — owner + a second, real invitee
- *                                          account, as sibling fixtures.
- *                                          Also carries the same 5 page
- *                                          objects, bound to `ownerPage`.
+ *     ├─ ownerAndInviteeTest             — owner + a second, real invitee
+ *     │                                    account, as sibling fixtures.
+ *     │                                    Owner entitled via Stripe. Also
+ *     │                                    carries the same 5 page objects,
+ *     │                                    bound to `ownerPage`.
+ *     └─ ownerAndInviteeActivatedTest    — same as ownerAndInviteeTest, but
+ *                                          the owner uses the activation-code path.
  *
  * Use `demoAccountApiFixture`/`enterpriseDemoAccountApiFixture` directly
  * only when a case needs none of the 5 page objects.
@@ -27,17 +30,15 @@ import { test as base } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import { demoAccountApiFixture } from 'fixtures';
 import { loginAsDemoAccount } from 'helpers/accounts/login-as-demo-account';
-import { createDemoUser } from 'helpers/accounts/create-demo-user';
-import { activateEnterpriseLicense } from 'helpers/organizations/activate-enterprise-license';
+import { createActivatedDemoUser } from 'helpers/accounts/create-activated-demo-user';
 import {
-  createInviteeSession,
+  createOrgInviteeSession,
   InviteeSession,
 } from 'helpers/accounts/create-invitee-session';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
 import { AdminConsolePage } from '@pages/admin-console/admin-console-page';
 import { StripePage } from '@pages/dashboard/stripe-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { AdvancedPermissionsPage } from '@pages/admin-console/advanced-permissions-page';
 
 type EnterprisePageFixtures = {
@@ -126,16 +127,7 @@ export const enterpriseDemoAccountApiFixture = base.extend({
       'LICENSES_MANAGER_URL is not set — activation-code licensing is only available on PRE/developer environments.',
     );
 
-    const dashboardPage = new DashboardPage(page);
-    await createDemoUser(page.context().request);
-    await activateEnterpriseLicense(page.context().request);
-
-    await page.goto('/');
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await dashboardPage.acceptCookie();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.skipWhatNewsPopUp();
-    await dashboardPage.skipPluginsPopUp();
+    await createActivatedDemoUser(page);
 
     await use(page);
   },
@@ -189,7 +181,7 @@ type OwnerAndInviteeFixtures = EnterprisePageFixtures & {
  * `ownerPage` — a demo account (`loginAsDemoAccount()`, shared with
  * `demoAccountApiFixture`'s own `page`).
  *
- * `invitee` — a REAL account (`createInviteeSession()`), not a demo one: a
+ * `invitee` — a REAL account (`createOrgInviteeSession()`), not a demo one: a
  * demo profile's email is unreadable (enterprise-demo-account-email memory)
  * and can never accept the org invite this exists for. Registration runs
  * inside its own `test.step(...)` so it's visible in the Playwright/Qase
@@ -207,7 +199,7 @@ export const ownerAndInviteeTest = base.extend<OwnerAndInviteeFixtures>({
   invitee: async ({ browser }, use) => {
     const session = await base.step(
       'Setup: register a second, real account for the non-owner invitee',
-      () => createInviteeSession(browser),
+      () => createOrgInviteeSession(browser),
     );
     await use(session);
     await session.close();
@@ -226,5 +218,32 @@ export const ownerAndInviteeTest = base.extend<OwnerAndInviteeFixtures>({
   },
   advancedPermissionsPage: async ({ ownerPage }, use) => {
     await use(new AdvancedPermissionsPage(ownerPage));
+  },
+});
+
+// --- ownerAndInviteeActivatedTest ---------------------------------------------
+
+/** Same as `ownerAndInviteeTest`, but `ownerPage` uses the activation-code
+ * path — pair with `createOrgForLicensedAccount()`, not `subscribeAndCreateOrg()`.
+ * Overrides only `ownerPage`; `invitee` and the 5 page objects are
+ * inherited unchanged (safe here since, unlike `enterpriseActivatedPageTest`
+ * overriding `page` itself, `ownerPage` isn't self-referential). */
+export const ownerAndInviteeActivatedTest = ownerAndInviteeTest.extend({
+  ownerPage: async ({ page }, use) => {
+    if (!process.env.LICENSES_MANAGER_URL) {
+      console.warn(
+        'ownerAndInviteeActivatedTest: skipping — LICENSES_MANAGER_URL is not ' +
+          'set. This activation-code licensing path only works on ' +
+          'PRE/developer environments; see tests/enterprise/README.md § ' +
+          '"How Enterprise entitlement actually works" to configure it.',
+      );
+    }
+    base.skip(
+      !process.env.LICENSES_MANAGER_URL,
+      'LICENSES_MANAGER_URL is not set — activation-code licensing is only available on PRE/developer environments.',
+    );
+
+    await createActivatedDemoUser(page);
+    await use(page);
   },
 });
