@@ -976,12 +976,14 @@ export class AdminConsolePage extends BasePage {
   /** Body text differs by case: sole team member warns of deletion,
    * otherwise it's a plain "removed from all teams" notice. */
   async isRemoveMemberDialogShown(memberName: string, bodyText: string) {
+    // Deciding dialog-vs-immediate-removal needs a backend team-membership
+    // check first — can outrun the default timeout under CI load.
     await expect(
       this.page.getByRole('heading', {
         name: `Remove ${memberName} from the organization?`,
       }),
       `Remove-member confirmation dialog for "${memberName}" is shown`,
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 15000 });
     await expect(
       this.page.getByText(bodyText, { exact: true }),
       `Remove-member dialog body is "${bodyText}"`,
