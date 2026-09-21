@@ -13,6 +13,7 @@
 import { qase } from 'playwright-qase-reporter/playwright';
 import { waitMessage, waitSecondMessage } from 'helpers/gmail';
 import { createInviteeSession } from 'helpers/accounts/create-invitee-session';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { createOrgName } from 'helpers/organizations/create-org-name';
@@ -113,7 +114,11 @@ ownerAndInviteeTest.describe(
 
             await waitSecondMessage(invitee.page, admin.email, 40);
             const invite = await waitMessage(invitee.page, admin.email, 40);
+            const adminDashboardPage = new DashboardPage(admin.page);
             await admin.page.goto(invite!.inviteUrl);
+            await adminDashboardPage.isSuccessMessageDisplayed(
+              'Joined the team successfully',
+            );
           },
         );
 
@@ -170,6 +175,7 @@ ownerAndInviteeTest.describe(
           'Owner creates 3 teams and invites the second account to each',
           async () => {
             await adminConsolePage.goToFiles();
+            const inviteeDashboardPage = new DashboardPage(invitee.page);
             for (const teamName of teamNames) {
               await teamPage.createTeam(teamName);
               await teamPage.openInvitationsPageViaOptionsMenu();
@@ -180,6 +186,9 @@ ownerAndInviteeTest.describe(
               await waitSecondMessage(orgPage.page, invitee.email, 40);
               const invite = await waitMessage(orgPage.page, invitee.email, 40);
               await invitee.page.goto(invite!.inviteUrl);
+              await inviteeDashboardPage.isSuccessMessageDisplayed(
+                'Joined the team successfully',
+              );
             }
           },
         );
