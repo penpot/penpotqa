@@ -117,8 +117,6 @@ enterpriseActivatedPageTest.describe(
             await advancedPermissionsPage.selectPermission(
               MoveTeamsPermission.NeverAllowed,
             );
-            // Confirm the baseline persisted before making a second change
-            // in the same session.
             await advancedPermissionsPage.isPermissionSelected(
               MoveTeamsPermission.NeverAllowed,
             );
@@ -180,7 +178,7 @@ enterpriseActivatedPageTest.describe(
 
         await enterpriseActivatedPageTest.step(
           // "Change team organization" only renders once the owner has
-          // another org to move into — see PENPOT-3211/3212's setup.
+          // another org to move into
           'Create OrgB, a second organization for the same owner',
           async () => {
             await orgPage.openOrgSwitcher();
@@ -213,7 +211,6 @@ enterpriseActivatedPageTest.describe(
         adminConsolePage,
         advancedPermissionsPage,
       }) => {
-        // Gmail polling for the org invite can be slow.
         ownerAndInviteeTest.slow();
         const orgDName = createOrgName();
         const orgEName = createOrgName();
@@ -237,13 +234,8 @@ enterpriseActivatedPageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          // "Change team organization" only renders once the actor has
-          // another org to move into (see the create-teams-requires-2-orgs
-          // memory) — OrgE gives the invitee that second org, owned by
-          // neither of them jointly with OrgD's owner. Activating BEFORE
-          // creating the team, not after — a team created before the
-          // invitee's first Enterprise entitlement silently drops out of
-          // their team switcher once that entitlement takes effect.
+          // OrgE is the invitee's 2nd org, needed for "Change team organization" to render.
+          // Activate before creating the team, or it drops out of the switcher.
           'Invitee separately activates their own Enterprise license and creates OrgE, then creates their own team (auto-joins OrgE)',
           async () => {
             await activateEnterpriseLicense(invitee.page.context().request);
@@ -262,10 +254,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          // Accepting the OrgD invite switches the invitee's active ORG
-          // context to OrgD, which scopes the team switcher down to
-          // Personal Projects + OrgD's own teams — OrgE's team drops out of
-          // it entirely until the org context is switched back to OrgE.
+          // Accepting the invite switched the active org to OrgD, hiding OrgE's team from the switcher.
           "Invitee switches back to OrgE's context, then to their team, and moves it into OrgD",
           async () => {
             await inviteeOrgPage.switchToOrg(orgEName);
@@ -350,7 +339,6 @@ enterpriseActivatedPageTest.describe(
         adminConsolePage,
         advancedPermissionsPage,
       }) => {
-        // Gmail polling for the org invite can be slow.
         ownerAndInviteeTest.slow();
         const orgDName = createOrgName();
         const orgAName = createOrgName();
@@ -374,10 +362,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          // Activating BEFORE creating the team, not after — a team created
-          // before the invitee's first Enterprise entitlement silently
-          // drops out of their team switcher once that entitlement takes
-          // effect.
+          // Activate before creating the team, or it drops out of the switcher.
           'Invitee separately activates their own Enterprise license and creates OrgA, then creates their own team (auto-joins OrgA)',
           async () => {
             await activateEnterpriseLicense(invitee.page.context().request);
@@ -396,10 +381,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          // Accepting the OrgD invite switches the invitee's active ORG
-          // context to OrgD, which scopes the team switcher down to
-          // Personal Projects + OrgD's own teams — OrgA's team drops out of
-          // it entirely until the org context is switched back to OrgA.
+          // Accepting the invite switched the active org to OrgD, hiding OrgA's team from the switcher.
           "Invitee switches back to OrgA's context, then to their team, and moves it into OrgD",
           async () => {
             await inviteeOrgPage.switchToOrg(orgAName);
