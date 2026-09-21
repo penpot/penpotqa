@@ -24,8 +24,15 @@ exports.LoginPage = class LoginPage extends BasePage {
     return this.page.getByRole('alert').filter({ hasText: text });
   }
 
+  /** Builds the URL explicitly from BASE_URL rather than a relative
+   * goto() — this runs on manually-created contexts too (see
+   * registerNewAccount(), used by createTeamInviteeSession()/
+   * createOrgInviteeSession()). Playwright Test's own `browser` fixture
+   * does thread baseURL through to those contexts' relative gotos
+   * (confirmed directly), but that's a fixture-specific nuance this
+   * doesn't need to depend on. */
   async goto() {
-    await this.page.goto('/#/auth/login');
+    await this.page.goto(`${process.env.BASE_URL}#/auth/login`);
   }
 
   async enterEmail(loginEmail) {

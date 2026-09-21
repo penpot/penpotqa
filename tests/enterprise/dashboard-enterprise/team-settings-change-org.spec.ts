@@ -74,7 +74,7 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           '3211: Move the team from OrgA to OrgB (same user)',
           async () => {
-            await user1.page.goto(`/#/dashboard/recent?team-id=${teamId}`);
+            await user1TeamPage.goToTeamDashboard(teamId);
             await user1TeamPage.openTeamSettingsPageViaOptionsMenu();
             await user1TeamPage.isTeamPartOfOrganization(orgAName);
 
@@ -101,7 +101,7 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           '3212: Move the team from OrgB to OrgC (an organization belonging to a different user)',
           async () => {
-            await user1.page.goto(`/#/dashboard/recent?team-id=${teamId}`);
+            await user1TeamPage.goToTeamDashboard(teamId);
             await user1TeamPage.openTeamSettingsPageViaOptionsMenu();
             await user1TeamPage.isTeamPartOfOrganization(orgBName);
 

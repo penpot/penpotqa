@@ -381,35 +381,22 @@ async function waitMessage(page, email, timeoutSec = 40) {
   }
 }
 
+/** The common case: waits for an inbox to reach its 2nd message
+ * (registration + one invite). A thin wrapper over waitForMessageCount() —
+ * use that one directly instead when the account already has prior
+ * messages (e.g. registration + an already-accepted org invite) before a
+ * further invite is expected, or when waiting repeatedly against the same
+ * inbox (e.g. once per loop iteration), where a hardcoded `>=2` check would
+ * already be true after the first call and return instantly, letting
+ * waitMessage() return a stale, already-read message. */
 async function waitSecondMessage(page, email, timeoutSec = 40) {
-  const timeout = timeoutSec * 1000;
-  const interval = 4000;
-  const startTime = Date.now();
-  let count = 0;
-
-  await page.waitForTimeout(interval);
-  while (Date.now() - startTime < timeout) {
-    count = await getMessagesCount(email);
-    if (count >= 2) {
-      return 1;
-    }
-    await page.waitForTimeout(interval);
-  }
-
-  if (count < 2) {
-    throw new Error(
-      `Timeout reached: expected at least 2 messages, but got ${count}`,
-    );
-  }
-
-  return 1;
+  return waitForMessageCount(page, email, 2, timeoutSec);
 }
 
-/** Like waitSecondMessage(), but for an arbitrary target count — safe to
- * call repeatedly against the same inbox (e.g. once per loop iteration),
- * unlike waitSecondMessage()'s hardcoded >=2, which is already true after
- * the first call and would return instantly, letting waitMessage() return
- * a stale, already-read message. */
+/**
+ * Waits for an inbox to reach at least `count` messages — see
+ * waitSecondMessage() for the common `count = 2` case.
+ */
 async function waitForMessageCount(page, email, count, timeoutSec = 40) {
   const timeout = timeoutSec * 1000;
   const interval = 4000;

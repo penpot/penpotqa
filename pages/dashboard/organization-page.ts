@@ -230,6 +230,13 @@ export class OrganizationPage extends BasePage {
     await this.welcomeModalCloseButton.click();
   }
 
+  /** Navigates to the dashboard root — built explicitly from BASE_URL
+   * rather than a relative goto(), same as LoginPage.goto(), so this works
+   * regardless of which context it's called from. */
+  async goto() {
+    await this.page.goto(`${process.env.BASE_URL}`);
+  }
+
   /** Opens the org switcher, unless it's already open — clicking the trigger
    * again would just toggle it closed instead. */
   async openOrgSwitcher() {
