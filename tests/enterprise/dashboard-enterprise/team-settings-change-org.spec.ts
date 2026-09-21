@@ -32,13 +32,13 @@ enterprisePageTest.describe(
         const orgCName = createOrgName();
         const teamName = createTeamName();
 
-        const user1 = await createInviteeSession(browser);
+        const user1 = await createInviteeSession(browser, 'user1');
         const user1OrgPage = new OrganizationPage(user1.page);
         const user1AdminConsolePage = new AdminConsolePage(user1.page);
         const user1TeamPage = new TeamPage(user1.page);
         const user1StripePage = new StripePage(user1.page);
 
-        const user2 = await createInviteeSession(browser);
+        const user2 = await createInviteeSession(browser, 'user2');
         const user2TeamPage = new TeamPage(user2.page);
 
         let teamId = '';

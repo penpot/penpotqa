@@ -199,7 +199,7 @@ export const ownerAndInviteeTest = base.extend<OwnerAndInviteeFixtures>({
   invitee: async ({ browser }, use) => {
     const session = await base.step(
       'Setup: register a second, real account for the non-owner invitee',
-      () => createInviteeSession(browser),
+      () => createInviteeSession(browser, 'invitee'),
     );
     await use(session);
     await session.close();
@@ -246,7 +246,7 @@ export const ownerAndInviteeActivatedTest = base.extend<OwnerAndInviteeFixtures>
   invitee: async ({ browser }, use) => {
     const session = await base.step(
       'Setup: register a second, real account for the non-owner invitee',
-      () => createInviteeSession(browser),
+      () => createInviteeSession(browser, 'invitee'),
     );
     await use(session);
     await session.close();

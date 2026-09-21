@@ -964,13 +964,30 @@ export class AdminConsolePage extends BasePage {
       : await expect(row, `Member "${memberName}" is not listed`).toHaveCount(0);
   }
 
-  /** Clicks the row's "Remove" action (hover to reveal). No team → removed
+  /** Clicks the row's "Remove" action (hover to reveal) — self-healing:
+   * clicking right after openPeopleTab() can silently no-op, same
+   * hydration race as openPendingTab()/openSettings(). No team → removed
    * immediately, verify via `isMemberListedInPeopleTable(name, false)` (no
    * reliable toast). Belongs to a team → see `isRemoveMemberDialogShown()`. */
   async removeMemberFromPeopleTable(memberName: string) {
     const row = this.getPeopleTableRow(memberName);
-    await row.hover();
-    await row.getByRole('button', { name: /remove/i }).click();
+    await expect(async () => {
+      await row.hover();
+      await row.getByRole('button', { name: /remove/i }).click();
+      const acted = await Promise.race([
+        this.removeMemberConfirmButton
+          .waitFor({ state: 'visible', timeout: 3000 })
+          .then(() => true)
+          .catch(() => false),
+        row
+          .waitFor({ state: 'detached', timeout: 3000 })
+          .then(() => true)
+          .catch(() => false),
+      ]);
+      if (!acted) {
+        throw new Error(`Remove action for "${memberName}" had no visible effect`);
+      }
+    }).toPass({ timeout: 30000 });
   }
 
   /** Body text differs by case: sole team member warns of deletion,

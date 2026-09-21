@@ -82,7 +82,7 @@ ownerAndInviteeActivatedTest.describe(
         const teamName = createTeamName();
         const inviteeOrgPage = new OrganizationPage(invitee.page);
         const inviteeTeamPage = new TeamPage(invitee.page);
-        const admin = await createInviteeSession(browser);
+        const admin = await createInviteeSession(browser, 'admin');
 
         await ownerAndInviteeActivatedTest.step(
           'Setup: create an org (Enterprise-activated) and invite the second account',
@@ -96,6 +96,10 @@ ownerAndInviteeActivatedTest.describe(
         await ownerAndInviteeActivatedTest.step(
           'Invitee creates a team (becomes its owner) and invites a third account as Admin',
           async () => {
+            // Without this, the new team lands outside the org (invitee's
+            // personal team list), so the org never sees invitee as
+            // belonging to any team — no removal dialog, ever.
+            await inviteeOrgPage.switchToOrg(orgName);
             await inviteeTeamPage.createTeam(teamName);
             await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
             await inviteeTeamPage.clickInviteMembersToTeamButton();

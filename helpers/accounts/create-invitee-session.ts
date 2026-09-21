@@ -18,13 +18,19 @@ export type InviteeSession = {
  * Prefer `enterprise-fixtures.ts`'s `ownerAndInviteeTest` in tests — its
  * `invitee` fixture also closes the context for you. Call this directly
  * only outside a test context.
+ *
+ * Pass `role` (e.g. 'admin') to tell sessions apart in logs/traces when a
+ * test creates more than one.
  */
 export async function createInviteeSession(
   browser: Browser,
+  role?: string,
 ): Promise<InviteeSession> {
   const context = await browser.newContext();
   const page = await context.newPage();
-  const name = random().concat('autotest');
+  const name = random()
+    .concat(role ?? '')
+    .concat('autotest');
   const email = `${process.env.GMAIL_NAME}+${name}${process.env.GMAIL_DOMAIN}`;
 
   await registerNewAccount(page, name, email, process.env.LOGIN_PWD!);
