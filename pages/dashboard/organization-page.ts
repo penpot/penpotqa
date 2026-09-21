@@ -55,6 +55,12 @@ export class OrganizationPage extends BasePage {
   readonly goToAdminConsoleDropdownItem: Locator;
   readonly otherTeamsDropdownItem: Locator;
 
+  // Organization options menu — a separate three-dot button next to the
+  // org switcher, not part of its dropdown. "Leave org" only appears here.
+  readonly organizationOptionsButton: Locator;
+  readonly leaveOrgMenuItem: Locator;
+  readonly promoteAndLeaveButton: Locator;
+
   // "Create organization" naming modal (newer design-system component, no
   // BEM class/testid — scoped by the <form> containing the name input so it
   // resolves correctly regardless of which entry point opened it, since the
@@ -131,6 +137,14 @@ export class OrganizationPage extends BasePage {
       hasText: 'Other teams',
     });
 
+    this.organizationOptionsButton = page.locator(
+      '.main_ui_dashboard_sidebar__organization-options-btn',
+    );
+    this.leaveOrgMenuItem = page.getByRole('menuitem', { name: 'Leave org' });
+    this.promoteAndLeaveButton = page.getByRole('button', {
+      name: 'Promote and leave',
+    });
+
     this.orgNameInput = page.getByLabel('Organization name', { exact: true });
     this.createOrgModalForm = page
       .locator('form')
@@ -194,6 +208,30 @@ export class OrganizationPage extends BasePage {
   async switchToOrg(orgName: string) {
     await this.openOrgSwitcher();
     await this.getOrgDropdownItemByName(orgName).click();
+  }
+
+  /** Opens the org's own three-dot options menu — distinct from the org
+   * switcher dropdown. Only reachable while actually viewing that org's
+   * context (e.g. after `switchToOrg()`). */
+  async openOrganizationOptionsMenu() {
+    await this.organizationOptionsButton.click();
+    await expect(
+      this.leaveOrgMenuItem,
+      'Organization options menu is open',
+    ).toBeVisible();
+  }
+
+  async clickLeaveOrg() {
+    await this.leaveOrgMenuItem.click();
+  }
+
+  /** Confirms leaving after `isLeaveOrgDialogShown()`. Requires the page
+   * to already reflect any recent team-membership change (e.g. a reload
+   * after another account just accepted a team invite) — otherwise the
+   * backend rejects with a "not-valid-teams" validation error, since the
+   * frontend computes an invalid (empty) successor from stale state. */
+  async confirmPromoteAndLeave() {
+    await this.promoteAndLeaveButton.click();
   }
 
   async fillOrgName(orgName: string) {
@@ -413,6 +451,33 @@ export class OrganizationPage extends BasePage {
     await expect(
       this.createOrgSidebarButton,
       'Back to a zero-org account — "+ Create org" sidebar entry point shown',
+    ).toBeVisible();
+  }
+
+  /** Only shown when leaving would orphan a team you own — no picker,
+   * since with a single other team member there's nothing to choose
+   * between; it promotes them automatically. */
+  async isLeaveOrgDialogShown() {
+    await expect(
+      this.page.getByRole('heading', {
+        name: 'BEFORE YOU LEAVE THE ORGANIZATION',
+      }),
+      'Leave-org confirmation dialog is shown',
+    ).toBeVisible();
+    await expect(
+      this.page.getByText(
+        "You are the owner of some organization's teams. Please promote another member to become an owner.",
+      ),
+      'Leave-org dialog explains a team owner must be promoted first',
+    ).toBeVisible();
+  }
+
+  /** Distinct wording from isNoLongerOrgMemberMessageShown() — that one's
+   * for being removed by someone else, this is for voluntarily leaving. */
+  async isLeftOrganizationMessageShown(orgName: string) {
+    await expect(
+      this.page.getByText(`You're no longer part of the ${orgName} organization.`),
+      'Left-organization notice is shown',
     ).toBeVisible();
   }
 }
