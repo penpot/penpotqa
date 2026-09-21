@@ -12,7 +12,7 @@
  * (see the enterprise-demo-account-email memory).
  */
 import { qase } from 'playwright-qase-reporter/playwright';
-import { waitMessage, waitSecondMessage } from 'helpers/gmail';
+import { waitMessage, waitSecondMessage, waitForMessageCount } from 'helpers/gmail';
 import { createInviteeSession } from 'helpers/accounts/create-invitee-session';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
@@ -84,63 +84,68 @@ ownerAndInviteeActivatedTest.describe(
         const inviteeTeamPage = new TeamPage(invitee.page);
         const admin = await createInviteeSession(browser, 'admin');
 
-        await ownerAndInviteeActivatedTest.step(
-          'Setup: create an org (Enterprise-activated) and invite the second account',
-          async () => {
-            await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.invitePersonToOrganization(invitee.email);
-            await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgName);
-          },
-        );
+        try {
+          await ownerAndInviteeActivatedTest.step(
+            'Setup: create an org (Enterprise-activated) and invite the second account',
+            async () => {
+              await createOrgForLicensedAccount(orgPage, orgName);
+              await adminConsolePage.invitePersonToOrganization(invitee.email);
+              await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgName);
+            },
+          );
 
-        await ownerAndInviteeActivatedTest.step(
-          'Invitee creates a team (becomes its owner) and invites a third account as Admin',
-          async () => {
-            // Without this, the new team lands outside the org (invitee's
-            // personal team list), so the org never sees invitee as
-            // belonging to any team — no removal dialog, ever.
-            await inviteeOrgPage.switchToOrg(orgName);
-            await inviteeTeamPage.createTeam(teamName);
-            await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
-            await inviteeTeamPage.clickInviteMembersToTeamButton();
-            await inviteeTeamPage.enterEmailToInviteMembersPopUp(admin.email);
-            await inviteeTeamPage.selectInvitationRoleInPopUp('Admin');
-            await inviteeTeamPage.clickSendInvitationButton();
+          await ownerAndInviteeActivatedTest.step(
+            'Invitee creates a team (becomes its owner) and invites a third account as Admin',
+            async () => {
+              // Without this, the new team lands outside the org (invitee's
+              // personal team list), so the org never sees invitee as
+              // belonging to any team — no removal dialog, ever.
+              await inviteeOrgPage.switchToOrg(orgName);
+              await inviteeTeamPage.createTeam(teamName);
+              await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
+              await inviteeTeamPage.clickInviteMembersToTeamButton();
+              await inviteeTeamPage.enterEmailToInviteMembersPopUp(admin.email);
+              await inviteeTeamPage.selectInvitationRoleInPopUp('Admin');
+              await inviteeTeamPage.clickSendInvitationButton();
 
-            await waitSecondMessage(invitee.page, admin.email, 40);
-            const invite = await waitMessage(invitee.page, admin.email, 40);
-            const adminDashboardPage = new DashboardPage(admin.page);
-            await admin.page.goto(invite!.inviteUrl);
-            await adminDashboardPage.isSuccessMessageDisplayed(
-              'Joined the team successfully',
-            );
-          },
-        );
+              await waitSecondMessage(invitee.page, admin.email, 40);
+              const invite = await waitMessage(invitee.page, admin.email, 40);
+              const adminDashboardPage = new DashboardPage(admin.page);
+              await admin.page.goto(invite!.inviteUrl);
+              await adminDashboardPage.isSuccessMessageDisplayed(
+                'Joined the team successfully',
+              );
+            },
+          );
 
-        await ownerAndInviteeActivatedTest.step(
-          'Owner removes the team-owning member → confirmation dialog → confirm',
-          async () => {
-            await adminConsolePage.page.reload();
-            await adminConsolePage.openPeopleTab();
-            await adminConsolePage.removeMemberFromPeopleTable(invitee.name);
-            await adminConsolePage.isRemoveMemberDialogShown(
-              invitee.name,
-              'The user will also be removed from all teams they were part of.',
-            );
-            await adminConsolePage.confirmRemoveMember(invitee.name);
-            await adminConsolePage.isMemberListedInPeopleTable(invitee.name, false);
-          },
-        );
+          await ownerAndInviteeActivatedTest.step(
+            'Owner removes the team-owning member → confirmation dialog → confirm',
+            async () => {
+              await adminConsolePage.page.reload();
+              await adminConsolePage.openPeopleTab();
+              await adminConsolePage.removeMemberFromPeopleTable(invitee.name);
+              await adminConsolePage.isRemoveMemberDialogShown(
+                invitee.name,
+                'The user will also be removed from all teams they were part of.',
+              );
+              await adminConsolePage.confirmRemoveMember(invitee.name);
+              await adminConsolePage.isMemberListedInPeopleTable(
+                invitee.name,
+                false,
+              );
+            },
+          );
 
-        await ownerAndInviteeActivatedTest.step(
-          "Team's Owner is now automatically the admin who remained",
-          async () => {
-            await adminConsolePage.openTeamsTab();
-            await adminConsolePage.hasTeamOwnerInTeamsTable(teamName, admin.name);
-          },
-        );
-
-        await admin.close();
+          await ownerAndInviteeActivatedTest.step(
+            "Team's Owner is now automatically the admin who remained",
+            async () => {
+              await adminConsolePage.openTeamsTab();
+              await adminConsolePage.hasTeamOwnerInTeamsTable(teamName, admin.name);
+            },
+          );
+        } finally {
+          await admin.close();
+        }
       },
     );
 
@@ -166,6 +171,12 @@ ownerAndInviteeActivatedTest.describe(
           async () => {
             await adminConsolePage.goToFiles();
             const inviteeDashboardPage = new DashboardPage(invitee.page);
+            // waitSecondMessage() only checks >=2 — already true after the
+            // first iteration, so it'd no-op and waitMessage() could return
+            // a stale, already-used invite. Track the expected count
+            // ourselves instead (starts at 1: invitee's own registration
+            // email).
+            let expectedMessageCount = 1;
             for (const teamName of teamNames) {
               await teamPage.createTeam(teamName);
               await teamPage.openInvitationsPageViaOptionsMenu();
@@ -173,7 +184,13 @@ ownerAndInviteeActivatedTest.describe(
               await teamPage.enterEmailToInviteMembersPopUp(invitee.email);
               await teamPage.clickSendInvitationButton();
 
-              await waitSecondMessage(orgPage.page, invitee.email, 40);
+              expectedMessageCount += 1;
+              await waitForMessageCount(
+                orgPage.page,
+                invitee.email,
+                expectedMessageCount,
+                40,
+              );
               const invite = await waitMessage(orgPage.page, invitee.email, 40);
               await invitee.page.goto(invite!.inviteUrl);
               await inviteeDashboardPage.isSuccessMessageDisplayed(

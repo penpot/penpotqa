@@ -224,8 +224,11 @@ export const ownerAndInviteeTest = base.extend<OwnerAndInviteeFixtures>({
 // --- ownerAndInviteeActivatedTest ---------------------------------------------
 
 /** Same as `ownerAndInviteeTest`, but `ownerPage` uses the activation-code
- * path — pair with `createOrgForLicensedAccount()`, not `subscribeAndCreateOrg()`. */
-export const ownerAndInviteeActivatedTest = base.extend<OwnerAndInviteeFixtures>({
+ * path — pair with `createOrgForLicensedAccount()`, not `subscribeAndCreateOrg()`.
+ * Overrides only `ownerPage`; `invitee` and the 5 page objects are
+ * inherited unchanged (safe here since, unlike `enterpriseActivatedPageTest`
+ * overriding `page` itself, `ownerPage` isn't self-referential). */
+export const ownerAndInviteeActivatedTest = ownerAndInviteeTest.extend({
   ownerPage: async ({ page }, use) => {
     if (!process.env.LICENSES_MANAGER_URL) {
       console.warn(
@@ -242,28 +245,5 @@ export const ownerAndInviteeActivatedTest = base.extend<OwnerAndInviteeFixtures>
 
     await createActivatedDemoUser(page);
     await use(page);
-  },
-  invitee: async ({ browser }, use) => {
-    const session = await base.step(
-      'Setup: register a second, real account for the non-owner invitee',
-      () => createInviteeSession(browser, 'invitee'),
-    );
-    await use(session);
-    await session.close();
-  },
-  orgPage: async ({ ownerPage }, use) => {
-    await use(new OrganizationPage(ownerPage));
-  },
-  adminConsolePage: async ({ ownerPage }, use) => {
-    await use(new AdminConsolePage(ownerPage));
-  },
-  stripePage: async ({ ownerPage }, use) => {
-    await use(new StripePage(ownerPage));
-  },
-  teamPage: async ({ ownerPage }, use) => {
-    await use(new TeamPage(ownerPage));
-  },
-  advancedPermissionsPage: async ({ ownerPage }, use) => {
-    await use(new AdvancedPermissionsPage(ownerPage));
   },
 });

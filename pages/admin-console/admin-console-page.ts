@@ -974,20 +974,23 @@ export class AdminConsolePage extends BasePage {
     await expect(async () => {
       await row.hover();
       await row.getByRole('button', { name: /remove/i }).click();
+      // Matches isRemoveMemberDialogShown()'s own 15000ms — a shorter wait
+      // here would misread a genuinely slow (but real) dialog render as "no
+      // effect" and re-click, risking a duplicate remove action.
       const acted = await Promise.race([
         this.removeMemberConfirmButton
-          .waitFor({ state: 'visible', timeout: 3000 })
+          .waitFor({ state: 'visible', timeout: 15000 })
           .then(() => true)
           .catch(() => false),
         row
-          .waitFor({ state: 'detached', timeout: 3000 })
+          .waitFor({ state: 'detached', timeout: 15000 })
           .then(() => true)
           .catch(() => false),
       ]);
       if (!acted) {
         throw new Error(`Remove action for "${memberName}" had no visible effect`);
       }
-    }).toPass({ timeout: 30000 });
+    }).toPass({ timeout: 45000 });
   }
 
   /** Body text differs by case: sole team member warns of deletion,

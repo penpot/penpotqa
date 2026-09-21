@@ -78,9 +78,10 @@ top-of-file comment maps the hierarchy):
   accounts as sibling fixtures (`ownerPage`, `invitee`), for cases needing
   a real non-owner org member. Owner entitled via Stripe. Also carries the
   same 5 page objects, bound to `ownerPage`.
-- `ownerAndInviteeActivatedTest` — same shape as `ownerAndInviteeTest`, but
-  `ownerPage` is entitled via the activation-code path instead. Same
-  `LICENSES_MANAGER_URL`-gated auto-skip as `enterpriseActivatedPageTest`.
+- `ownerAndInviteeActivatedTest` — extends `ownerAndInviteeTest`, overriding
+  only `ownerPage` to use the activation-code path instead; `invitee` and
+  the 5 page objects are inherited as-is. Same `LICENSES_MANAGER_URL`-gated
+  auto-skip as `enterpriseActivatedPageTest`.
 
 Use `demoAccountApiFixture`/`enterpriseDemoAccountApiFixture` directly only
 for a case needing none of the 5 page objects.
