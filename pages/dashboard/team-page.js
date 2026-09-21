@@ -376,7 +376,12 @@ exports.TeamPage = class TeamPage extends BasePage {
         .getByRole('menuitem')
         .filter({ hasText: teamName })
         .first();
-      if (!(await teamOption.isVisible())) {
+      try {
+        await expect(
+          teamOption,
+          `"${teamName}" is listed in the team switcher`,
+        ).toBeVisible({ timeout: 2000 });
+      } catch {
         await this.page.goto('/');
         throw new Error(`"${teamName}" not yet listed in the team switcher`);
       }
