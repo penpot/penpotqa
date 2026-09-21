@@ -5,6 +5,7 @@ import { expect } from '@playwright/test';
 import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
+const defaultNameRectangle = 'Rectangle';
 let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
@@ -185,9 +186,13 @@ mainAccountFileTest(
   async ({ mainPage }) => {
     await mainAccountFileTest.step('Create four rectangles on canvas', async () => {
       await mainPage.createDefaultRectangleByCoordinates(400, 800);
-      await mainPage.createDefaultRectangleByCoordinates(400, 200, true);
-      await mainPage.createDefaultRectangleByCoordinates(100, 600, true);
-      await mainPage.createDefaultRectangleByCoordinates(700, 600, true);
+      await layersPanelPage.isNumLayerNameDisplayed(defaultNameRectangle, 1);
+      await mainPage.createDefaultRectangleByCoordinates(400, 200);
+      await layersPanelPage.isNumLayerNameDisplayed(defaultNameRectangle, 2);
+      await mainPage.createDefaultRectangleByCoordinates(100, 600);
+      await layersPanelPage.isNumLayerNameDisplayed(defaultNameRectangle, 3);
+      await mainPage.createDefaultRectangleByCoordinates(700, 600);
+      await layersPanelPage.isNumLayerNameDisplayed(defaultNameRectangle, 4);
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
     });
