@@ -188,6 +188,9 @@ ownerAndInviteeActivatedTest.describe(
           async () => {
             await orgPage.openOrgSwitcher();
             await orgPage.clickGoToAdminConsole();
+            // A client-side navigation alone can serve a stale People list —
+            // force a fresh fetch, same as the other cases in this file.
+            await adminConsolePage.page.reload();
             await adminConsolePage.openPeopleTab();
             await adminConsolePage.hasMemberTeamsCountInPeopleTable(invitee.name, 3);
           },
