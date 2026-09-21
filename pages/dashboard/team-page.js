@@ -257,17 +257,12 @@ exports.TeamPage = class TeamPage extends BasePage {
     ).toBeVisible();
   }
 
-  /** Opens the "Change team organization" modal without assuming success —
-   * a move disallowed by the "Move teams across organizations" permission
-   * shows a blocking message here instead of the org combobox (see
-   * isMoveTeamBlockedModalShown()). */
+  /** Doesn't assume success — a disallowed move shows a blocking modal here instead of the org combobox. */
   async openChangeTeamOrgModal() {
     await this.teamOrgOptionsButton.click();
     await this.changeTeamOrgMenuItem.click();
   }
 
-  /** Asserts the modal shown when "Move teams across organizations" blocks
-   * an attempted move or removal, naming the team's current organization. */
   async isMoveTeamBlockedModalShown(orgName) {
     await expect(
       this.page.getByText(
@@ -277,8 +272,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     ).toBeVisible();
   }
 
-  /** Closes the "Move teams across organizations" blocking modal — its
-   * overlay otherwise intercepts every later click on the page. */
+  /** Its overlay otherwise intercepts every later click on the page. */
   async closeMoveTeamBlockedModal() {
     await this.clickOnESC();
     await expect(
@@ -374,10 +368,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.teamList).toBeVisible();
   }
 
-  /** The team switcher's in-memory list can go stale after a heavy
-   * navigation (an Admin Console round-trip, accepting an org invite) — a
-   * team that genuinely exists doesn't show up until a real reload. Retries
-   * with a reload in between instead of failing on the first miss. */
+  /** Self-heals with a reload — the switcher's list can go stale after a heavy navigation (Admin Console, accepting an org invite). */
   async switchTeam(teamName) {
     await expect(async () => {
       await this.openTeamsListIfClosed();
