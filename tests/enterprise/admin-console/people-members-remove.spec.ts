@@ -13,12 +13,13 @@
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { waitMessage, waitSecondMessage, waitForMessageCount } from 'helpers/gmail';
-import { createInviteeSession } from 'helpers/accounts/create-invitee-session';
+import { createTeamInviteeSession } from 'helpers/accounts/create-invitee-session';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { InvitationRole } from 'helpers/teams/invitation-role';
 import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
 import { ownerAndInviteeActivatedTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
@@ -82,7 +83,7 @@ ownerAndInviteeActivatedTest.describe(
         const teamName = createTeamName();
         const inviteeOrgPage = new OrganizationPage(invitee.page);
         const inviteeTeamPage = new TeamPage(invitee.page);
-        const admin = await createInviteeSession(browser, 'admin');
+        const admin = await createTeamInviteeSession(browser, InvitationRole.Admin);
 
         try {
           await ownerAndInviteeActivatedTest.step(
@@ -105,7 +106,9 @@ ownerAndInviteeActivatedTest.describe(
               await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
               await inviteeTeamPage.clickInviteMembersToTeamButton();
               await inviteeTeamPage.enterEmailToInviteMembersPopUp(admin.email);
-              await inviteeTeamPage.selectInvitationRoleInPopUp('Admin');
+              await inviteeTeamPage.selectInvitationRoleInPopUp(
+                InvitationRole.Admin,
+              );
               await inviteeTeamPage.clickSendInvitationButton();
 
               await waitSecondMessage(invitee.page, admin.email, 40);

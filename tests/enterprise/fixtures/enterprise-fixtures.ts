@@ -32,7 +32,7 @@ import { demoAccountApiFixture } from 'fixtures';
 import { loginAsDemoAccount } from 'helpers/accounts/login-as-demo-account';
 import { createActivatedDemoUser } from 'helpers/accounts/create-activated-demo-user';
 import {
-  createInviteeSession,
+  createOrgInviteeSession,
   InviteeSession,
 } from 'helpers/accounts/create-invitee-session';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
@@ -181,7 +181,7 @@ type OwnerAndInviteeFixtures = EnterprisePageFixtures & {
  * `ownerPage` — a demo account (`loginAsDemoAccount()`, shared with
  * `demoAccountApiFixture`'s own `page`).
  *
- * `invitee` — a REAL account (`createInviteeSession()`), not a demo one: a
+ * `invitee` — a REAL account (`createOrgInviteeSession()`), not a demo one: a
  * demo profile's email is unreadable (enterprise-demo-account-email memory)
  * and can never accept the org invite this exists for. Registration runs
  * inside its own `test.step(...)` so it's visible in the Playwright/Qase
@@ -199,7 +199,7 @@ export const ownerAndInviteeTest = base.extend<OwnerAndInviteeFixtures>({
   invitee: async ({ browser }, use) => {
     const session = await base.step(
       'Setup: register a second, real account for the non-owner invitee',
-      () => createInviteeSession(browser, 'invitee'),
+      () => createOrgInviteeSession(browser),
     );
     await use(session);
     await session.close();
