@@ -110,6 +110,7 @@ mainTest.describe(() => {
     await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
 
     await layersPanelPage.clickFirstCopyComponentOnLayersTab();
+    await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Green');
     await designPanelPage.changeVariantPropertyValue('Property 2', 'Yellow');
     await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Yellow');
 
