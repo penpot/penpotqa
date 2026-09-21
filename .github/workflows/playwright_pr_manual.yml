@@ -124,15 +124,18 @@ jobs:
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
                 exit 1
               fi
-              # tests/enterprise/ lives in its own Playwright project (see
-              # tests/enterprise/README.md) — the `chrome` project explicitly
-              # ignores it, and most of its cases are still `test.skip`
-              # stubs, so route it to `--project=enterprise` instead.
-              if [ "${{ github.event.inputs.test_folder }}" = "tests/enterprise" ]; then
-                npx playwright test --project=enterprise --repeat-each='${{ github.event.inputs.repeat_each }}'
-              else
-                npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' ${{ github.event.inputs.test_folder }}
-              fi
+              # tests/enterprise/ (and its subfolders) live in their own
+              # Playwright project (see tests/enterprise/README.md) — the
+              # `chrome` project explicitly ignores them, so route to
+              # `--project=enterprise` instead.
+              case "${{ github.event.inputs.test_folder }}" in
+                tests/enterprise*)
+                  npx playwright test --project=enterprise --repeat-each='${{ github.event.inputs.repeat_each }}' ${{ github.event.inputs.test_folder }}
+                  ;;
+                *)
+                  npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' ${{ github.event.inputs.test_folder }}
+                  ;;
+              esac
               ;;
             "by_spec")
               echo "📄 Running test spec: ${{ github.event.inputs.test_spec }}"
