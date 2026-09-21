@@ -405,6 +405,31 @@ async function waitSecondMessage(page, email, timeoutSec = 40) {
   return 1;
 }
 
+/** Like waitSecondMessage(), but for an arbitrary target count — safe to
+ * call repeatedly against the same inbox (e.g. once per loop iteration),
+ * unlike waitSecondMessage()'s hardcoded >=2, which is already true after
+ * the first call and would return instantly, letting waitMessage() return
+ * a stale, already-read message. */
+async function waitForMessageCount(page, email, count, timeoutSec = 40) {
+  const timeout = timeoutSec * 1000;
+  const interval = 4000;
+  const startTime = Date.now();
+  let actual = 0;
+
+  await page.waitForTimeout(interval);
+  while (Date.now() - startTime < timeout) {
+    actual = await getMessagesCount(email);
+    if (actual >= count) {
+      return actual;
+    }
+    await page.waitForTimeout(interval);
+  }
+
+  throw new Error(
+    `Timeout reached: expected at least ${count} messages for "${email}", got ${actual}`,
+  );
+}
+
 async function waitRequestMessage(page, email, timeoutSec = 40) {
   const timeout = timeoutSec * 1000;
   const interval = 4000;
@@ -453,5 +478,6 @@ module.exports = {
   checkSigningText,
   waitMessage,
   waitSecondMessage,
+  waitForMessageCount,
   waitRequestMessage,
 };

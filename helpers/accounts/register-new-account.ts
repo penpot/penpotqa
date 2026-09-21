@@ -7,8 +7,8 @@ import { waitMessage } from 'helpers/gmail';
 /**
  * Registers a brand-new, real Penpot account via the UI (Gmail-alias email)
  * and lands on its dashboard, fully onboarded. Shared by `registerTest`
- * (fixtures.ts) and `createInviteeSession()`, so it can run on any page,
- * not just the test's own.
+ * (fixtures.ts) and `createOrgInviteeSession()`/`createTeamInviteeSession()`,
+ * so it can run on any page, not just the test's own.
  */
 export async function registerNewAccount(
   page: Page,
