@@ -489,6 +489,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.componentMenuButton = this.componentContent.locator(
       'div[class*="component__pill-actions"]',
     );
+    this.componentMenuDropdownItem = page
+      .getByRole('listitem')
+      .and(page.locator('[class*="pill-actions-dropdown-item"]'));
     this.showInAssetsPanelOptionDesign = page
       .getByRole('listitem')
       .filter({ hasText: 'Show in assets panel' });
@@ -1540,11 +1543,25 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnComponentMenuButton() {
-    await this.componentMenuButton.click();
+    await expect(async () => {
+      await this.componentMenuButton.click();
+      await expect(this.componentMenuDropdownItem.first()).toBeVisible({
+        timeout: 2000,
+      });
+    }).toPass({ timeout: 15000 });
+  }
+
+  async clickComponentMenuOption(optionLocator) {
+    await expect(async () => {
+      if (!(await optionLocator.isVisible())) {
+        await this.componentMenuButton.click();
+      }
+      await optionLocator.click({ timeout: 3000 });
+    }).toPass({ timeout: 15000 });
   }
 
   async clickOnShowInAssetsPanel() {
-    await this.showInAssetsPanelOptionDesign.click();
+    await this.clickComponentMenuOption(this.showInAssetsPanelOptionDesign);
   }
 
   async addAnnotationForComponent(value) {
@@ -1558,7 +1575,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnCreateAnnotationOption() {
-    await this.createAnnotationOptionDesign.click();
+    await this.clickComponentMenuOption(this.createAnnotationOptionDesign);
     await expect(this.annotationTextArea).toBeVisible();
   }
 
@@ -1633,12 +1650,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnCreateVariantOption() {
-    await this.createVariantOptionDesign.click();
+    await this.clickComponentMenuOption(this.createVariantOptionDesign);
     await expect(this.variantLabel).toBeVisible();
   }
 
   async clickOnAddNewPropertyOption() {
-    await this.addNewPropertyOptionDesign.click();
+    await this.clickComponentMenuOption(this.addNewPropertyOptionDesign);
   }
 
   async changeXAxisForLayer(newX) {
