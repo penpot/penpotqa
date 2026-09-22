@@ -269,7 +269,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.changeTeamOrgMenuItem.click();
   }
 
-  async isMoveTeamBlockedModalShown(orgName) {
+  async isMoveTeamBlockedModalVisible(orgName) {
     await expect(
       this.page.getByText(
         `You are not allowed to move teams that are part of ${orgName} organization. If you need more information, contact the organization's owner.`,

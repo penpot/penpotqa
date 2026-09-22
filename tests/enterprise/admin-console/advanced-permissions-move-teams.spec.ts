@@ -193,7 +193,7 @@ enterpriseActivatedPageTest.describe(
             await page.goto(`/#/dashboard/recent?team-id=${teamId}`);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.openChangeTeamOrgModal();
-            await teamPage.isMoveTeamBlockedModalShown(orgAName);
+            await teamPage.isMoveTeamBlockedModalVisible(orgAName);
           },
         );
       },
@@ -269,7 +269,7 @@ enterpriseActivatedPageTest.describe(
           'Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgD',
           async () => {
             await inviteeTeamPage.openChangeTeamOrgModal();
-            await inviteeTeamPage.isMoveTeamBlockedModalShown(orgDName);
+            await inviteeTeamPage.isMoveTeamBlockedModalVisible(orgDName);
           },
         );
       },
@@ -431,7 +431,7 @@ enterpriseActivatedPageTest.describe(
           "Under 'Never allowed', 'Remove team from organization' → blocking modal names the organization",
           async () => {
             await teamPage.openRemoveTeamFromOrgDialog();
-            await teamPage.isMoveTeamBlockedModalShown(orgName);
+            await teamPage.isMoveTeamBlockedModalVisible(orgName);
             await teamPage.closeMoveTeamBlockedModal();
           },
         );
@@ -455,7 +455,7 @@ enterpriseActivatedPageTest.describe(
             await teamPage.switchTeam(teamName);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.openRemoveTeamFromOrgDialog();
-            await teamPage.isMoveTeamBlockedModalShown(orgName);
+            await teamPage.isMoveTeamBlockedModalVisible(orgName);
           },
         );
       },
