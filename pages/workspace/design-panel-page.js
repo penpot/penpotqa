@@ -1997,7 +1997,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(async () => {
       await combobox.clear();
       await combobox.pressSequentially(propertyValue);
-      await this.clickOnEnter();
+      await Promise.all([this.waitForUpdateFileRequest(), this.clickOnEnter()]);
       await expect(combobox).toHaveValue(propertyValue, { timeout: 2000 });
     }).toPass({ timeout: 15000 });
   }
