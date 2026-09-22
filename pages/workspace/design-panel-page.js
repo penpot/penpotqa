@@ -1990,11 +1990,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async enterVariantPropertyValue(propertyName, propertyValue) {
-    const variantString = await this.page.locator(
+    const variantString = this.page.locator(
       `[class*="variant-property-container"]:has([title="${propertyName}"])`,
     );
-    await variantString.getByRole('combobox').fill(propertyValue);
-    await this.clickOnEnter();
+    const combobox = variantString.getByRole('combobox');
+    await expect(async () => {
+      await combobox.fill(propertyValue);
+      await this.clickOnEnter();
+      await expect(combobox).toHaveValue(propertyValue, { timeout: 2000 });
+    }).toPass({ timeout: 15000 });
   }
 
   async checkVariantPropertyValue(propertyName, propertyValue) {
