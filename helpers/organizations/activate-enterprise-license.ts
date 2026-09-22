@@ -12,13 +12,15 @@ export interface ActivateEnterpriseLicenseResult {
 }
 
 /**
- * Grants the logged-in account an active Enterprise license without
- * touching Stripe, via the same operator path licenses-manager exposes for
+ * Gets a real, valid Enterprise activation code from licenses-manager,
+ * without redeeming it — the operator path licenses-manager exposes for
  * support/dev use:
  *
  * 1. Penpot RPC (activation-code request) → request file
  * 2. licenses-manager POST /api/activation-codes/create → activation code
- * 3. Penpot RPC (redeem) → subscription becomes active
+ *
+ * Redeeming (step 3) is separate: via the API (`activateEnterpriseLicense()`
+ * below) or the app's own manual-activation UI (Qase 3437).
  *
  * Only works against PRE and developer environments, not the default CI
  * target, hence LICENSES_MANAGER_URL being unset there rather than pointed
@@ -37,15 +39,15 @@ export interface ActivateEnterpriseLicenseResult {
  * — pass it explicitly only if a case specifically needs an expiring
  * license.
  */
-export async function activateEnterpriseLicense(
+export async function requestActivationCode(
   request: APIRequestContext,
   options: ActivateEnterpriseLicenseOptions = {},
-): Promise<ActivateEnterpriseLicenseResult> {
+): Promise<string> {
   const { quantity = 1, billingPeriod = 'year', daysValid } = options;
   const licensesManagerUrl = process.env.LICENSES_MANAGER_URL;
   if (!licensesManagerUrl) {
     throw new Error(
-      'LICENSES_MANAGER_URL is not set — activateEnterpriseLicense() only works ' +
+      'LICENSES_MANAGER_URL is not set — requestActivationCode() only works ' +
         'against an environment with a reachable licenses-manager ' +
         '(PRE/developer environments).',
     );
@@ -106,6 +108,18 @@ export async function activateEnterpriseLicense(
   if (!code) {
     throw new Error('licenses-manager returned an empty activation code');
   }
+
+  return code;
+}
+
+/**
+ * Grants an active Enterprise license without touching Stripe —
+ * `requestActivationCode()` plus an API redeem. */
+export async function activateEnterpriseLicense(
+  request: APIRequestContext,
+  options: ActivateEnterpriseLicenseOptions = {},
+): Promise<ActivateEnterpriseLicenseResult> {
+  const code = await requestActivationCode(request, options);
 
   const redeemRes = await request.post(
     '/api/rpc/command/redeem-nitrate-activation-code?_fmt=json',
