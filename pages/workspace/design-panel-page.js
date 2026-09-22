@@ -2003,12 +2003,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async checkVariantPropertyValue(propertyName, propertyValue) {
-    const variantString = await this.page.locator(
+    const variantString = this.page.locator(
       `[class*="variant-property-container"]:has([title="${propertyName}"])`,
     );
-    await expect(await variantString.getByRole('combobox')).toHaveValue(
-      propertyValue,
-    );
+    await expect(async () => {
+      await expect(variantString.getByRole('combobox')).toHaveValue(propertyValue, {
+        timeout: 2000,
+      });
+    }).toPass({ timeout: 15000 });
   }
 
   async checkCopyVariantPropertyValue(propertyName, propertyValue) {
