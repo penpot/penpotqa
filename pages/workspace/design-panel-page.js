@@ -1995,7 +1995,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     const combobox = variantString.getByRole('combobox');
     await expect(async () => {
-      await combobox.fill(propertyValue);
+      await combobox.clear();
+      await combobox.pressSequentially(propertyValue);
       await this.clickOnEnter();
       await expect(combobox).toHaveValue(propertyValue, { timeout: 2000 });
     }).toPass({ timeout: 15000 });
