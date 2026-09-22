@@ -49,6 +49,7 @@ export class OrganizationPage extends BasePage {
   readonly subscriptionConfirmModalPrimaryButton: Locator;
 
   // Org switcher dropdown (sidebar)
+  readonly orgDropdown: Locator;
   readonly orgDropdownItem: Locator;
   readonly createOrgDropdownItem: Locator;
   readonly goToAdminConsoleDropdownItem: Locator;
@@ -118,7 +119,8 @@ export class OrganizationPage extends BasePage {
       'input.main_ui_settings_subscription__primary-button',
     );
 
-    this.orgDropdownItem = page.getByRole('menuitem');
+    this.orgDropdown = page.getByRole('menu');
+    this.orgDropdownItem = this.orgDropdown.getByRole('menuitem');
     this.createOrgDropdownItem = this.orgDropdownItem.filter({
       hasText: 'Create org',
     });

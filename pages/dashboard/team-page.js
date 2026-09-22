@@ -81,6 +81,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.removedFromOrgMessage = page.getByText(
       /This team is no longer part of the organization/,
     );
+    this.moveTeamBlockedModalHeading = page.getByRole('heading', {
+      name: "Change team's organization",
+    });
 
     this.membersMenuItem = page.getByRole('menuitem', { name: 'Members' });
 
@@ -250,8 +253,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   /** Moves the team to a different org via "Change team organization".
    * Assumes Team Settings is open; reuses addedToOrgMessage's toast text. */
   async changeTeamOrganization(orgName) {
-    await this.teamOrgOptionsButton.click();
-    await this.changeTeamOrgMenuItem.click();
+    await this.openChangeTeamOrgModal();
     await this.addTeamToOrgCombobox.click();
     await this.page.getByRole('option', { name: orgName }).click();
     await this.moveTeamSubmitButton.click();
@@ -259,6 +261,30 @@ exports.TeamPage = class TeamPage extends BasePage {
       this.addedToOrgMessage,
       'Team-moved-to-organization message is shown',
     ).toBeVisible();
+  }
+
+  /** Doesn't assume success — a disallowed move shows a blocking modal here instead of the org combobox. */
+  async openChangeTeamOrgModal() {
+    await this.teamOrgOptionsButton.click();
+    await this.changeTeamOrgMenuItem.click();
+  }
+
+  async isMoveTeamBlockedModalVisible(orgName) {
+    await expect(
+      this.page.getByText(
+        `You are not allowed to move teams that are part of ${orgName} organization. If you need more information, contact the organization's owner.`,
+      ),
+      `Move-team blocked modal names "${orgName}"`,
+    ).toBeVisible();
+  }
+
+  /** Its overlay otherwise intercepts every later click on the page. */
+  async closeMoveTeamBlockedModal() {
+    await this.clickOnESC();
+    await expect(
+      this.moveTeamBlockedModalHeading,
+      'Move-team blocked modal is closed',
+    ).not.toBeVisible();
   }
 
   /** Opens the "Add team to an organization" modal without assuming success
@@ -348,14 +374,26 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.teamList).toBeVisible();
   }
 
+  /** Self-heals with a reload — the switcher's list can go stale after a heavy navigation (Admin Console, accepting an org invite). */
   async switchTeam(teamName) {
-    await this.openTeamsListIfClosed();
-    const teamOption = this.page
-      .getByRole('menuitem')
-      .filter({ hasText: teamName })
-      .first();
-    await teamOption.click();
-    await this.isTeamSelected(teamName);
+    await expect(async () => {
+      await this.openTeamsListIfClosed();
+      const teamOption = this.teamList
+        .getByRole('menuitem')
+        .filter({ hasText: teamName })
+        .first();
+      try {
+        await expect(
+          teamOption,
+          `"${teamName}" is listed in the team switcher`,
+        ).toBeVisible({ timeout: 2000 });
+      } catch {
+        await this.page.goto('/');
+        throw new Error(`"${teamName}" not yet listed in the team switcher`);
+      }
+      await teamOption.click();
+      await this.isTeamSelected(teamName);
+    }).toPass({ timeout: 30000 });
   }
 
   async deleteTeam(teamName) {
