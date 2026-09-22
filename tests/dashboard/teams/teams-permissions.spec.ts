@@ -383,7 +383,7 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
 
       await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.isInviteMembersToTeamButtonDisabled();
+      await teamPage.isInviteMembersToTeamButtonHidden();
       await teamPage.isInvitationRecordOptionsDisabled(firstEmail);
       await teamPage.isInvitationRoleInPopUpNotDisplayed(firstAdmin, 'Editor');
       await teamPage.isInvitationSelectionDisabled(firstEmail);
