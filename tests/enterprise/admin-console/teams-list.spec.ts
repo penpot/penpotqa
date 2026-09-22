@@ -51,6 +51,7 @@ enterprisePageTest.describe('Admin Console > Sidebar Menu > Teams', () => {
         'Open Admin Console > Teams → team shown as a list row, with the expected columns',
         async () => {
           await page.goto(orgAdminConsoleUrl);
+          await adminConsolePage.page.reload();
           await adminConsolePage.openTeamsTab();
           await adminConsolePage.hasExpectedTeamsTableColumns();
           await adminConsolePage.isTeamListedInTeamsTable(teamName);

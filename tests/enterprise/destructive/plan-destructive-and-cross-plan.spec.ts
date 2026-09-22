@@ -135,6 +135,7 @@ enterprisePageTest.describe(
           "Back on the org's Admin Console, open the delete-organization explanation panel",
           async () => {
             await page.goto(orgAdminConsoleUrl);
+            await adminConsolePage.page.reload();
             await adminConsolePage.openSettings();
             await adminConsolePage.openDeleteOrganizationPanel();
           },

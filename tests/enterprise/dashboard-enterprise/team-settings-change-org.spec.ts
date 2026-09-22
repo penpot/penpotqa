@@ -121,6 +121,10 @@ enterprisePageTest.describe(
             await waitSecondMessage(page, user2.email, 40);
             const invite = await waitMessage(page, user2.email, 40);
             await user2.page.goto(invite!.inviteUrl);
+            await user2TeamPage.isSuccessMessageDisplayed(
+              'Joined the team successfully',
+            );
+            await user2TeamPage.waitSuccessMessageHidden();
           },
         );
 
