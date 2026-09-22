@@ -508,9 +508,23 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       .click();
   }
 
+  /**
+   * @param {string} layerName The layer name to match.
+   * @param {boolean} exact Whether to match the name exactly (default: false).
+   * @returns A locator for the layer's checkbox while it is selected.
+   */
+  getSelectedLayerCheckboxByName(layerName, exact = false) {
+    return this.page.getByRole('checkbox', {
+      name: layerName,
+      exact,
+      checked: true,
+    });
+  }
+
   async selectLayerByName(layerName) {
     const layerSel = this.page.locator('#layers').getByText(layerName).first();
     await layerSel.last().click();
+    await expect(this.getSelectedLayerCheckboxByName(layerName)).toBeVisible();
   }
 
   async waitForMainComponentIsSelected() {
@@ -542,12 +556,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async isLayerWithNameSelected(name, selected = true) {
-    const layerSel = await this.page.locator(
-      'div[class*="sidebar_layer_item__selected"] [class*="element-name"]',
-    );
+    const layerSel = this.getSelectedLayerCheckboxByName(name, true);
     selected
-      ? await expect(layerSel).toHaveText(name)
-      : await expect(layerSel).not.toHaveText(name);
+      ? await expect(layerSel).toBeVisible()
+      : await expect(layerSel).not.toBeVisible();
   }
 
   async checkVariantLayerCount(expectedCount) {
