@@ -139,6 +139,12 @@ exports.TeamPage = class TeamPage extends BasePage {
       .filter({ hasText: 'Resend invitation' });
     this.resendButton = page.getByRole('button', { name: 'Resend', exact: true });
     this.deleteInvitationButton = page.locator('button:has([href="#icon-delete"])');
+    // Per-row action, not gated behind the options menu.
+    this.copyInvitationLinkButton = page.getByRole('button', { name: 'Copy link' });
+    // Substring without the apostrophe — the live UI uses a curly one (’).
+    this.noPermissionToInviteMessage = page.getByText(
+      'have permission to invite people to join this team or to edit or delete invitations',
+    );
     this.memberRecordLeaveTeamMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Leave team' });
@@ -443,8 +449,17 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.inviteMembersToTeamButton.click();
   }
 
-  async isInviteMembersToTeamButtonDisabled() {
+  // Button isn't rendered at all (e.g. a plain non-admin member).
+  async isInviteMembersToTeamButtonHidden() {
     await expect(this.inviteMembersToTeamButton).not.toBeVisible();
+  }
+
+  // Button stays rendered but disabled (e.g. "Team owners only" permission).
+  async isInviteMembersToTeamButtonDisabled() {
+    await expect(
+      this.inviteMembersToTeamButton,
+      'Invite people button is visible but disabled',
+    ).toBeDisabled();
   }
 
   async isInviteMembersPopUpHeaderVisible() {
@@ -760,6 +775,29 @@ exports.TeamPage = class TeamPage extends BasePage {
       `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div/button`,
     );
     await expect(locator).not.toBeVisible();
+  }
+
+  async isCopyInvitationLinkButtonVisible(email, visible = true) {
+    const emailSelector = `[class*="dashboard_team__field-email"]:has-text("${email}")`;
+    const locator = this.page
+      .locator(`[class*="table-row-invitations"]:has(${emailSelector})`)
+      .getByRole('button', { name: 'Copy link' });
+    visible
+      ? await expect(
+          locator,
+          `Copy link button is visible for ${email}`,
+        ).toBeVisible()
+      : await expect(
+          locator,
+          `Copy link button is not visible for ${email}`,
+        ).not.toBeVisible();
+  }
+
+  async isNoPermissionToInviteMessageVisible() {
+    await expect(
+      this.noPermissionToInviteMessage,
+      'No-permission-to-invite message is shown',
+    ).toBeVisible();
   }
 
   async selectMember(name) {
