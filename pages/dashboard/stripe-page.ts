@@ -23,18 +23,29 @@ export class StripePage extends BasePage {
   readonly confirmButton: Locator;
   readonly returnToPenpotButton: Locator;
   readonly updateSubscriptionButton: Locator;
-  readonly cancelSubscriptionButton: Locator;
   readonly selectButton: Locator;
   readonly continueButton: Locator;
   readonly trialEnds: Locator;
   readonly trialEndsDate: Locator;
-  readonly cancelsEnds: Locator;
-  readonly cancelSubscriptionHeader: Locator;
-  readonly noLongerNeedItRadioButton: Locator;
-  readonly submitButton: Locator;
   readonly invoiceRow: Locator;
   readonly lastInvoice: Locator;
   readonly currentSubscriptionHeader: Locator;
+
+  // Hosted Stripe Customer Portal (billing.stripe.com), reached via
+  // ProfilePage.manageSubscriptionButton — a multi-page hosted app, not an SPA.
+  readonly activePlanLink: Locator;
+  // Only offered on Unlimited — Enterprise's plan page never shows it.
+  readonly updatePlanLink: Locator;
+  readonly cancelPlanButton: Locator;
+  readonly cancellationReasonDropdown: Locator;
+  readonly cancellationReasonOption: Locator;
+  readonly reviewChangesHeading: Locator;
+  readonly planCanceledHeading: Locator;
+  readonly planCanceledDoneButton: Locator;
+  readonly canceledBadge: Locator;
+  readonly reactivatePlanButton: Locator;
+  // Penpot's own subscription panel, not Stripe's — shown once canceled.
+  readonly cancelsEnds: Locator;
 
   // Hosted Stripe Checkout page (checkout.stripe.com) — a full external
   // navigation used for a brand-new subscription (e.g. the Enterprise
@@ -90,22 +101,37 @@ export class StripePage extends BasePage {
     this.confirmButton = page.getByTestId('confirm');
     this.returnToPenpotButton = page.getByText('Return to Penpot');
     this.updateSubscriptionButton = page.getByText('Update subscription');
-    this.cancelSubscriptionButton = page.getByText('Cancel subscription');
     this.selectButton = page.getByText('Select');
     this.continueButton = page.getByText('Continue');
     this.trialEnds = page.getByTestId('trial-ending-badge');
     this.trialEndsDate = this.trialEnds.locator('span span span');
-    this.cancelsEnds = page.locator(
-      '[data-test="subscription-cancel-at-period-end-badge"]',
-    );
-    this.cancelSubscriptionHeader = page.getByText('Confirm cancellation');
-    this.noLongerNeedItRadioButton = page.getByText('I no longer need it', {
-      exact: true,
-    });
-    this.submitButton = page.getByTestId('cancellation_reason_submit');
     this.invoiceRow = page.getByTestId('hip-link');
     this.lastInvoice = this.invoiceRow.first();
     this.currentSubscriptionHeader = page.getByText('Current subscription');
+
+    // No leading `^` anchor: accessible name starts with the plan's own
+    // (hidden) thumbnail alt text, not the plan name itself.
+    this.activePlanLink = page.getByRole('link', {
+      name: /Penpot (Enterprise|Unlimited)/,
+    });
+    this.updatePlanLink = page.getByRole('link', { name: 'Update plan' });
+    this.cancelPlanButton = page.getByRole('button', { name: 'Cancel plan' });
+    this.cancellationReasonDropdown = page.getByRole('button', {
+      name: 'Reason for cancellation (optional)',
+    });
+    this.cancellationReasonOption = page.getByRole('option').first();
+    this.reviewChangesHeading = page.getByRole('heading', {
+      name: 'Review your changes',
+    });
+    this.planCanceledHeading = page.getByRole('heading', {
+      name: 'Plan canceled',
+    });
+    this.planCanceledDoneButton = page.getByRole('button', { name: 'Done' });
+    this.canceledBadge = page.getByText('Canceled', { exact: true });
+    this.reactivatePlanButton = page.getByRole('button', {
+      name: 'Reactivate plan',
+    });
+    this.cancelsEnds = page.getByText(/^Active until /);
 
     this.checkoutCountrySelect = page.getByLabel('Country or region', {
       exact: true,
@@ -347,31 +373,86 @@ export class StripePage extends BasePage {
       : await expect(this.cancelsEnds).not.toBeVisible();
   }
 
-  async clickOnCancelSubscriptionButton() {
-    await this.cancelSubscriptionButton.click();
+  async isOnStripeBillingPage(onBillingPage: boolean = true) {
+    onBillingPage
+      ? await expect(this.page, 'On the Stripe Customer Portal').toHaveURL(
+          /billing\.stripe\.com/,
+        )
+      : await expect(
+          this.page,
+          'No longer on the Stripe Customer Portal',
+        ).not.toHaveURL(/billing\.stripe\.com/);
   }
 
-  async clickOnNoLongerNeedItRadioButton() {
-    await this.noLongerNeedItRadioButton.click();
+  /** Assumes isOnStripeBillingPage() already. */
+  async clickOnActivePlanLink() {
+    await this.activePlanLink.click();
   }
 
-  async clickOnSubmitButton() {
-    await this.submitButton.click();
+  async isUpdatePlanOptionAvailable(available: boolean = true) {
+    available
+      ? await expect(
+          this.updatePlanLink,
+          '"Update plan" is offered for the current plan',
+        ).toBeVisible()
+      : await expect(
+          this.updatePlanLink,
+          '"Update plan" is not offered for the current plan',
+        ).not.toBeVisible();
   }
 
-  async isCancelSubscriptionHeaderVisible(visible: boolean = true) {
+  /** Same locator, reused after the full navigation to the review page. */
+  async clickOnCancelPlanButton() {
+    await this.cancelPlanButton.click();
+  }
+
+  async isReviewChangesHeadingVisible(visible: boolean = true) {
     visible
-      ? await expect(this.cancelSubscriptionHeader).toBeVisible()
-      : await expect(this.cancelSubscriptionHeader).not.toBeVisible();
+      ? await expect(this.reviewChangesHeading).toBeVisible()
+      : await expect(this.reviewChangesHeading).not.toBeVisible();
   }
 
+  async selectCancellationReason() {
+    await this.cancellationReasonDropdown.click();
+    await this.cancellationReasonOption.click();
+  }
+
+  async isPlanCanceledHeadingVisible(visible: boolean = true) {
+    visible
+      ? await expect(this.planCanceledHeading).toBeVisible()
+      : await expect(this.planCanceledHeading).not.toBeVisible();
+  }
+
+  async isCanceledBadgeVisible(visible: boolean = true) {
+    visible
+      ? await expect(this.canceledBadge).toBeVisible()
+      : await expect(this.canceledBadge).not.toBeVisible();
+  }
+
+  async clickOnReactivatePlanButton() {
+    await this.reactivatePlanButton.click();
+  }
+
+  async clickOnPlanCanceledDoneButton() {
+    await this.planCanceledDoneButton.click();
+  }
+
+  /** Assumes isOnStripeBillingPage() already. */
   async cancelSubscription() {
-    await this.clickOnCancelSubscriptionButton();
-    await this.isCancelSubscriptionHeaderVisible();
-    await this.clickOnCancelSubscriptionButton();
-    await this.clickOnNoLongerNeedItRadioButton();
-    await this.clickOnSubmitButton();
-    await this.isCancelsEndsVisible();
+    await this.clickOnActivePlanLink();
+    await this.clickOnCancelPlanButton();
+    await this.isReviewChangesHeadingVisible();
+    await this.selectCancellationReason();
+    await this.clickOnCancelPlanButton();
+    await this.isPlanCanceledHeadingVisible();
+    await this.clickOnPlanCanceledDoneButton();
+  }
+
+  /** Assumes isOnStripeBillingPage() already; clicks twice (open, then confirm). */
+  async reactivateSubscription() {
+    await this.clickOnActivePlanLink();
+    await this.clickOnReactivatePlanButton();
+    await this.clickOnReactivatePlanButton();
   }
 
   async checkLastInvoiceName(name: string) {

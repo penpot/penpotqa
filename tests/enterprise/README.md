@@ -147,7 +147,7 @@ automation plan (section 2.6), not because they're excluded from a run.
 ```
 dashboard-enterprise/  cases from the "Enterprise Dashboard" Qase suite
 admin-console/         cases from the "Admin Console" Qase suite
-destructive/           the 7 cases that permanently mutate plan/org state or need a non-Enterprise starting plan
+destructive/           the 6 cases that permanently mutate plan/org state or need a non-Enterprise starting plan
 billing-ui-flow/       the 7 cases that drive the real Stripe checkout/trial UI itself
 fixtures/              enterprisePageTest/enterpriseActivatedPageTest/ownerAndInviteeTest and the 5 shared page objects
 ```
