@@ -70,7 +70,6 @@ enterprisePageTest.describe(
           'Admin Console > Teams → deleted team no longer listed',
           async () => {
             await page.goto(orgAdminConsoleUrl);
-            // Same staleness risk as the earlier People-tab check.
             await adminConsolePage.page.reload();
             await adminConsolePage.openTeamsTab();
             await adminConsolePage.isTeamListedInTeamsTable(teamName, false);
