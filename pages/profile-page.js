@@ -136,6 +136,53 @@ exports.ProfilePage = class ProfilePage extends BasePage {
       'input[value="Skip for now and start trial"]',
     );
 
+    // Downgrade warning modal (PENPOT-3353), shown when subscribing to
+    // Professional from an Enterprise account. "Subscribe" (exact) only
+    // ever labels the Professional card's own button.
+    this.subscribeToProfessionalButton = page.getByRole('button', {
+      name: 'Subscribe',
+      exact: true,
+    });
+    this.downgradeWarningText = page.getByText('Switch to Professional plan?');
+    this.downgradeWarningCancelButton = page.getByRole('button', {
+      name: 'Cancel',
+      exact: true,
+    });
+
+    // "Contact Sales" modal (PENPOT-3592) — shown instead of Stripe checkout
+    // when an account on a paid plan tries the other one. Two copy variants
+    // exist: a standalone modal with a mailto link, or 3353's downgrade
+    // modal with a "Contact Sales" button instead of its Continue button.
+    this.tryItFreeFor14DaysButton = page.getByRole('button', {
+      name: 'Try it free for 14 days',
+    });
+    this.try14DaysForFreeButton = page.getByRole('button', {
+      name: 'Try 14 days for free',
+    });
+    this.contactSalesLink = page.getByRole('link', { name: 'sales@penpot.app' });
+    this.contactSalesButton = page.getByRole('button', { name: 'Contact Sales' });
+
+    // Account deletion (PENPOT-3555) — bottom of the Profile tab.
+    this.wantToRemoveAccountLink = page.getByText('Want to remove your account?');
+    this.deleteAccountModalHeading = page.getByRole('heading', {
+      name: 'Are you sure you want to delete your account?',
+    });
+    this.deleteAccountWarningText = page.getByText(
+      'This action is irreversible. Your account, subscription, and organizations will be deleted immediately. You will also lose access to your current projects and files.',
+    );
+    this.organizationsToDeleteToggle = page.getByRole('button', {
+      name: 'Organizations that will be deleted',
+    });
+    this.organizationsToDeleteList = page
+      .getByRole('list')
+      .filter({ hasText: 'members' });
+    this.cancelDeleteAccountButton = page.getByRole('button', {
+      name: 'Cancel and keep my account',
+    });
+    this.confirmDeleteAccountButton = page.getByRole('button', {
+      name: 'Yes, delete my account',
+    });
+
     // Integrations access token
     this.integrationsSidebarOption = page
       .getByRole('listitem')
@@ -419,6 +466,111 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await this.closeModalWindow();
     await this.checkSubscriptionName(`${plan} (trial)`);
     await this.backToDashboardFromAccount();
+  }
+
+  // --- Downgrade warning modal (PENPOT-3353) ---------------------------
+
+  async clickOnSubscribeToProfessionalButton() {
+    await this.subscribeToProfessionalButton.click();
+  }
+
+  async isDowngradeWarningVisible(visible = true) {
+    visible
+      ? await expect(
+          this.downgradeWarningText,
+          'Downgrade-to-Professional warning is shown',
+        ).toBeVisible()
+      : await expect(
+          this.downgradeWarningText,
+          'Downgrade-to-Professional warning is not shown',
+        ).not.toBeVisible();
+  }
+
+  async closeDowngradeWarningWithoutConfirming() {
+    await this.downgradeWarningCancelButton.click();
+    await this.isDowngradeWarningVisible(false);
+  }
+
+  // --- "Unlock Enterprise features" / Contact Sales modal (PENPOT-3592) ---
+
+  async clickOnTryItFreeFor14DaysButton() {
+    await this.tryItFreeFor14DaysButton.click();
+  }
+
+  async clickOnTry14DaysForFreeButton() {
+    await this.try14DaysForFreeButton.click();
+  }
+
+  async isContactSalesModalVisible(visible = true) {
+    // Covers both modal variants (see the constructor comment above).
+    const contactSalesSignal = this.contactSalesLink.or(this.contactSalesButton);
+    visible
+      ? await expect(
+          contactSalesSignal,
+          '"Contact Sales" modal is shown (mailto link or button variant)',
+        ).toBeVisible()
+      : await expect(
+          contactSalesSignal,
+          '"Contact Sales" modal is not shown',
+        ).not.toBeVisible();
+  }
+
+  async closeContactSalesModal() {
+    await this.page.keyboard.press('Escape');
+    await this.isContactSalesModalVisible(false);
+  }
+
+  // --- Account deletion (PENPOT-3555) -----------------------------------
+
+  async clickOnWantToRemoveAccountLink() {
+    await this.wantToRemoveAccountLink.click();
+    await expect(
+      this.deleteAccountModalHeading,
+      'Delete-account confirmation modal is open',
+    ).toBeVisible();
+  }
+
+  async isDeleteAccountWarningVisible() {
+    await expect(
+      this.deleteAccountWarningText,
+      'Irreversible-deletion warning text is shown',
+    ).toBeVisible();
+  }
+
+  /** No-op if already expanded — it starts expanded by default. */
+  async expandOrganizationsToDelete() {
+    if (
+      (await this.organizationsToDeleteToggle.getAttribute('aria-expanded')) !==
+      'true'
+    ) {
+      await this.organizationsToDeleteToggle.click();
+    }
+    await expect(
+      this.organizationsToDeleteList,
+      '"Organizations that will be deleted" list is expanded',
+    ).toBeVisible();
+  }
+
+  async isOrganizationListedToDelete(orgName, teams, members) {
+    const row = this.organizationsToDeleteList
+      .getByRole('listitem')
+      .filter({ hasText: orgName });
+    await expect(
+      row,
+      `Organization "${orgName}" is listed to be deleted`,
+    ).toBeVisible();
+    await expect(
+      row,
+      `Organization "${orgName}" shows ${teams} teams`,
+    ).toContainText(`${teams} teams`);
+    await expect(
+      row,
+      `Organization "${orgName}" shows ${members} members`,
+    ).toContainText(`${members} members`);
+  }
+
+  async clickOnConfirmDeleteAccountButton() {
+    await this.confirmDeleteAccountButton.click();
   }
 
   async openLearningCenterPage() {
