@@ -64,6 +64,10 @@ on:
         required: true
         type: string
         default: '1'
+      test_grep:
+        description: 'Grep pattern to filter tests by title (optional, only used with "by_folder" or "by_spec"), e.g. "1718|1728"'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -104,8 +108,13 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
+          TEST_MODE: ${{ github.event.inputs.test_mode }}
+          TEST_FOLDER: ${{ github.event.inputs.test_folder }}
+          TEST_SPEC: ${{ github.event.inputs.test_spec }}
+          REPEAT_EACH: ${{ github.event.inputs.repeat_each }}
+          TEST_GREP: ${{ github.event.inputs.test_grep }}
         run: |
-          case "${{ github.event.inputs.test_mode }}" in
+          case "$TEST_MODE" in
             "all_tests")
               echo "🚀 Running all tests..."
               npx playwright test --project=chrome
@@ -115,31 +124,36 @@ jobs:
               npx playwright test --project=chrome --only-changed=origin/main
               ;;
             "by_folder")
-              echo "📁 Running tests from folder: ${{ github.event.inputs.test_folder }}"
-              if [ -z "${{ github.event.inputs.test_folder }}" ]; then
+              echo "📁 Running tests from folder: $TEST_FOLDER"
+              if [ -z "$TEST_FOLDER" ]; then
                 echo "❌ Error: No test folder specified"
                 exit 1
               fi
-              if [ ! -d "${{ github.event.inputs.test_folder }}" ]; then
-                echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
+              if [ ! -d "$TEST_FOLDER" ]; then
+                echo "❌ Error: Folder '$TEST_FOLDER' does not exist"
                 exit 1
               fi
               # tests/enterprise/ (and its subfolders) live in their own
               # Playwright project (see tests/enterprise/README.md) — the
               # `chrome` project explicitly ignores them, so route to
               # `--project=enterprise` instead.
-              case "${{ github.event.inputs.test_folder }}" in
+              case "$TEST_FOLDER" in
                 tests/enterprise*)
-                  npx playwright test --project=enterprise --repeat-each='${{ github.event.inputs.repeat_each }}' ${{ github.event.inputs.test_folder }}
+                  PROJECT=enterprise
                   ;;
                 *)
-                  npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' ${{ github.event.inputs.test_folder }}
+                  PROJECT=chrome
                   ;;
               esac
+              ARGS=(--project="$PROJECT" --repeat-each="$REPEAT_EACH" "$TEST_FOLDER")
+              if [ -n "$TEST_GREP" ]; then
+                ARGS+=(-g "$TEST_GREP")
+              fi
+              npx playwright test "${ARGS[@]}"
               ;;
             "by_spec")
-              echo "📄 Running test spec: ${{ github.event.inputs.test_spec }}"
-              case "${{ github.event.inputs.test_spec }}" in
+              echo "📄 Running test spec: $TEST_SPEC"
+              case "$TEST_SPEC" in
                 tests/enterprise/*)
                   PROJECT=enterprise
                   ;;
@@ -147,7 +161,11 @@ jobs:
                   PROJECT=chrome
                   ;;
               esac
-              npx playwright test --project=$PROJECT --repeat-each='${{ github.event.inputs.repeat_each }}' '${{ github.event.inputs.test_spec }}'
+              ARGS=(--project="$PROJECT" --repeat-each="$REPEAT_EACH" "$TEST_SPEC")
+              if [ -n "$TEST_GREP" ]; then
+                ARGS+=(-g "$TEST_GREP")
+              fi
+              npx playwright test "${ARGS[@]}"
               ;;
             *)
               echo "❌ Error: Invalid test mode"
