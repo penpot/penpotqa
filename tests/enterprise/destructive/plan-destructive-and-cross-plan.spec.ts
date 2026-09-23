@@ -345,7 +345,9 @@ enterprisePageTest.describe(
         const profilePageA = new ProfilePage(page);
 
         // User B: a second, independent Enterprise account in its own org.
-        const userBContext = await browser.newContext();
+        const userBContext = await browser.newContext({
+          baseURL: process.env.BASE_URL,
+        });
         const userBPage = await userBContext.newPage();
         const profilePageB = new ProfilePage(userBPage);
         const orgPageB = new OrganizationPage(userBPage);
