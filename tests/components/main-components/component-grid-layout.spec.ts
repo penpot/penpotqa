@@ -246,8 +246,6 @@ mainAccountFileTest.describe(() => {
     await designPanelPage.isLayoutRemoveButtonExists();
     await mainPage.clickViewportOnce();
     await mainPage.createDefaultRectangleByCoordinates(180, 200, true);
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
     await layersPanelPage.dragAndDropComponentToBoard('Rectangle');
     await mainPage.waitForChangeIsUnsaved();
     await mainPage.waitForChangeIsSaved();
@@ -266,9 +264,13 @@ mainAccountFileTest.describe(() => {
         async () => {
           await mainPage.clickViewportOnce();
           await mainPage.clickCreatedBoardTitleOnCanvas();
-          await mainPage.copyLayerViaRightClick();
-          await mainPage.pressPasteShortcut();
-          await mainPage.waitForChangeIsSaved();
+          await expect(async () => {
+            await mainPage.copyLayerViaRightClick();
+            await Promise.all([
+              mainPage.waitForUpdateFileRequest(),
+              mainPage.pressPasteShortcut(),
+            ]);
+          }).toPass({ timeout: 35000 });
         },
       );
 
@@ -298,7 +300,10 @@ mainAccountFileTest.describe(() => {
       await mainAccountFileTest.step(
         'Duplicate component via shortcut',
         async () => {
-          await mainPage.clickShortcutCtrlD();
+          await Promise.all([
+            mainPage.waitForUpdateFileRequest(),
+            mainPage.clickShortcutCtrlD(),
+          ]);
         },
       );
 
