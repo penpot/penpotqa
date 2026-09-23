@@ -39,6 +39,16 @@ export class OrganizationPage extends BasePage {
   readonly activationCodeLink: Locator;
   readonly currentPlanLink: Locator;
 
+  // Manual activation-code flow, reached via activationCodeLink (Qase 3437)
+  readonly activationCodeInput: Locator;
+  readonly activateCodeButton: Locator;
+  readonly welcomeModalCloseButton: Locator;
+  readonly subscriptionsPageActivationCodeButton: Locator;
+
+  // Sidebar's own current-plan label ("Professional"/"Enterprise") —
+  // distinct from the promo widget's CTA buttons above.
+  readonly currentPlanSidebarText: Locator;
+
   // Settings > Subscription page (reached via currentPlanLink above) — the
   // Enterprise plan card's own CTA, a real `<button>` this time. Its own
   // confirmation modal (a third, separate component from the two "Unlock
@@ -117,6 +127,23 @@ export class OrganizationPage extends BasePage {
     this.currentPlanLink = page.getByRole('link', {
       name: 'See my current plan',
     });
+
+    this.activationCodeInput = page.getByPlaceholder(
+      'Paste your activation code here',
+    );
+    this.activateCodeButton = page.getByRole('button', {
+      name: 'Activate',
+      exact: true,
+    });
+    this.welcomeModalCloseButton = page.locator(
+      '.main_ui_nitrate_nitrate_activation_success_modal__close-btn',
+    );
+    this.currentPlanSidebarText = page
+      .locator('.main_ui_dashboard_subscription__nitrate-current-plan-text')
+      .first();
+    this.subscriptionsPageActivationCodeButton = page.getByRole('button', {
+      name: 'Enter activation code',
+    });
     this.subscriptionsPageEnterpriseTryButton = page.getByRole('button', {
       name: 'Try 14 days for free',
       exact: true,
@@ -183,6 +210,24 @@ export class OrganizationPage extends BasePage {
 
   async clickSubscriptionConfirmModalPrimaryButton() {
     await this.subscriptionConfirmModalPrimaryButton.click();
+  }
+
+  /** Opens the manual activation-code modal — assumes `activationCodeLink`
+   * is already visible. */
+  async clickActivationCodeLink() {
+    await this.activationCodeLink.click();
+  }
+
+  async enterActivationCode(code: string) {
+    await this.activationCodeInput.fill(code);
+  }
+
+  async clickActivateCode() {
+    await this.activateCodeButton.click();
+  }
+
+  async closeWelcomeToEnterpriseModal() {
+    await this.welcomeModalCloseButton.click();
   }
 
   /** Opens the org switcher, unless it's already open — clicking the trigger
@@ -348,6 +393,29 @@ export class OrganizationPage extends BasePage {
           this.activationCodeLink,
           '"Subscribe with an activation code" link is not visible',
         ).not.toBeVisible();
+  }
+
+  async isSubscriptionsPageActivationCodeButtonVisible() {
+    await expect(
+      this.subscriptionsPageActivationCodeButton,
+      '"Enter activation code" button is visible on the subscriptions settings page',
+    ).toBeVisible();
+  }
+
+  async isWelcomeToEnterpriseModalShown() {
+    await expect(
+      this.page.getByText('Welcome to Enterprise!'),
+      '"Welcome to Enterprise!" modal is shown',
+    ).toBeVisible();
+  }
+
+  /** Checks the sidebar's own current-plan label — "Professional" is the
+   * default before any Enterprise entitlement. */
+  async hasCurrentPlanSidebarText(text: string) {
+    await expect(
+      this.currentPlanSidebarText,
+      `Sidebar current-plan label reads "${text}"`,
+    ).toHaveText(text);
   }
 
   async hasSidebarPromoTryButtonText(text: string) {

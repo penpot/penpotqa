@@ -14,6 +14,7 @@
 import { qase } from 'playwright-qase-reporter/playwright';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
+import { requestActivationCode } from 'helpers/organizations/activate-enterprise-license';
 import { enterprisePageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
 enterprisePageTest.describe(
@@ -239,23 +240,45 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest.skip(
+    enterprisePageTest(
       qase(
         [3437],
         'Activate an Enterprise plan subscription with a valid manual activation code',
       ),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3437 for full detail):
-         * 1. Dashboard shows "Activate with code" link next to the promo widget
-         * 2. Click it → modal with code input + Activate button
-         * 3. Same link/modal also present on the subscription page
-         * 4. Enter a valid code, Activate → loading state, then validation completes
-         * 5. "Welcome to Enterprise!" modal: active-until date, edit note, CREATE ORGANIZATION button
-         * 6. Close modal → subscription page now shows Enterprise as active plan
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+      async ({ page, orgPage }) => {
+        await enterprisePageTest.step(
+          'The activation-code option is also present on the subscriptions settings page',
+          async () => {
+            await orgPage.clickCreateOrgFromSidebar();
+            await orgPage.isEnterpriseModalVisible();
+            await orgPage.currentPlanLink.click();
+            await orgPage.isOnSubscriptionsSettingsPage();
+            await orgPage.isSubscriptionsPageActivationCodeButtonVisible();
+            await page.goBack();
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Enter a valid activation code from the dashboard\'s own modal → "Welcome to Enterprise!"',
+          async () => {
+            await orgPage.clickCreateOrgFromSidebar();
+            await orgPage.isEnterpriseModalVisible();
+            await orgPage.clickActivationCodeLink();
+
+            const code = await requestActivationCode(page.context().request);
+            await orgPage.enterActivationCode(code);
+            await orgPage.clickActivateCode();
+            await orgPage.isWelcomeToEnterpriseModalShown();
+          },
+        );
+
+        await enterprisePageTest.step(
+          'Closing the modal leaves Enterprise active as the current plan',
+          async () => {
+            await orgPage.closeWelcomeToEnterpriseModal();
+            await orgPage.hasCurrentPlanSidebarText('Enterprise');
+          },
+        );
       },
     );
 

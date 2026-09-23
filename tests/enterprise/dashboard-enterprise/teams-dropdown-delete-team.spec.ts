@@ -50,6 +50,7 @@ enterprisePageTest.describe(
           'Admin Console > People → owner listed with a Teams count of 1',
           async () => {
             await page.goto(orgAdminConsoleUrl);
+            await adminConsolePage.page.reload();
             await adminConsolePage.isMemberListedInPeopleTable(ownerName);
             await adminConsolePage.hasMemberTeamsCountInPeopleTable(ownerName, 1);
           },
@@ -69,6 +70,7 @@ enterprisePageTest.describe(
           'Admin Console > Teams → deleted team no longer listed',
           async () => {
             await page.goto(orgAdminConsoleUrl);
+            await adminConsolePage.page.reload();
             await adminConsolePage.openTeamsTab();
             await adminConsolePage.isTeamListedInTeamsTable(teamName, false);
           },
