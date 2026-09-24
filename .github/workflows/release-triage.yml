@@ -33,7 +33,7 @@ on:
         description: 'Optional: Taiga epic ref (number only, e.g. 118) to link the story under'
         required: false
       mode:
-        description: "normal (default): file new failures, close resolved ones. close_only: only sweep and close resolved tasks, file nothing new. reset: wipe this tag's triage history and start over — the old Taiga story is deleted for you."
+        description: "normal (default) - file new failures, close resolved ones. | close_only - only sweep and close resolved tasks, file nothing new. | reset - wipe this tag's triage history and start over, old Taiga story deleted for you."
         required: false
         default: 'normal'
         type: choice
