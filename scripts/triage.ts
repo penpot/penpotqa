@@ -1395,8 +1395,11 @@ function subjectPrefix(tests: Failure[]): string {
   // Release triage merges the enterprise suite's results in alongside the standard
   // one (see RESULTS_PATHS) — tag tasks made up entirely of enterprise specs so
   // they're distinguishable from the rest of the release story at a glance.
+  // Playwright reports file paths relative to the root testDir ('./tests'), so an
+  // enterprise spec (testDir './tests/enterprise') shows up as 'enterprise/...',
+  // never 'tests/enterprise/...' — confirmed against a real run's results.json.
   const enterprise =
-    tests.length > 0 && tests.every((t) => t.file.includes('tests/enterprise/'));
+    tests.length > 0 && tests.every((t) => t.file.startsWith('enterprise/'));
   return `${first ? `Qase ${first} — ` : ''}${enterprise ? '[enterprise] ' : ''}`;
 }
 
