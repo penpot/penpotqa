@@ -1,11 +1,13 @@
 # .github/workflows/release-triage.yml
 #
 # Manual triage for freeze week / release promotions.
-# Actions tab -> "Report triage" -> Run workflow -> type the release tag.
+# Actions tab -> "Report triage" -> Run workflow -> fill in release_tag, leave
+# everything else on its default unless you know you need it.
 # Creates ONE Taiga user story tagged "release-<tag>" containing one task
 # per failure cluster. Re-running with the same tag adds only NEW clusters
 # to the SAME story (no duplicates) thanks to the per-release state file.
-# Tick close_only to sweep and close resolved tasks instead, without filing anything new.
+# You don't need to create anything in Taiga beforehand — the story and its
+# tasks are created for you. See .github/workflows/README.md for the full guide.
 
 name: Report triage
 
@@ -13,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release tag (e.g. 2.17) — story will be tagged release-<tag>'
+        description: 'Short release name, e.g. "2.18" — NOT the full build string (e.g. "2.18.0-RC6-2-g5b3e36489c"). Use the SAME short tag for every daily run you triage during this release, so they all land in one story.'
         required: true
       report_run_id:
         description: 'Override: specific run id to triage (default: last scheduled daily run on main)'
@@ -30,16 +32,15 @@ on:
       epic_ref:
         description: 'Optional: Taiga epic ref (number only, e.g. 118) to link the story under'
         required: false
-      reset_state:
-        description: 'Reset this release tag: forget all previous triage state (delete the old story in Taiga yourself first)'
+      mode:
+        description: "normal (default): file new failures, close resolved ones. close_only: only sweep and close resolved tasks, file nothing new. reset: wipe this tag's triage history and start over — the old Taiga story is deleted for you."
         required: false
-        default: false
-        type: boolean
-      close_only:
-        description: 'Close-only sweep: close tasks whose error is no longer failing — files nothing new. Do not combine with reset_state.'
-        required: false
-        default: false
-        type: boolean
+        default: 'normal'
+        type: choice
+        options:
+          - normal
+          - close_only
+          - reset
 
 permissions:
   contents: read
@@ -50,11 +51,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: PRE # grants access to MATTERMOST_WEBHOOK_DAILY_REPORT (environment secret)
     steps:
-      - name: Reject reset_state + close_only together
-        if: ${{ inputs.reset_state == true && inputs.close_only == true }}
+      - name: Sanity-check release_tag
         run: |
-          echo "reset_state wipes triage state right before close_only would need it to find what's resolved — pick one." >&2
-          exit 1
+          TAG="${{ inputs.release_tag }}"
+          if [[ "$TAG" =~ -g[0-9a-f]{7,40}$ ]]; then
+            echo "::error::release_tag '$TAG' looks like a full build/version string (ends in a git commit suffix), not a short release name."
+            echo "Use a short tag instead, e.g. \"2.18\" — the SAME one for every daily run you triage this release, so they all accumulate in one story. A full build string changes on every commit, so each run would open its own story instead." >&2
+            exit 1
+          fi
 
       - uses: actions/checkout@v6
 
@@ -107,22 +111,42 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "App version for this run: ${VERSION:-<not recorded>}"
 
-      - name: Reset per-release triage state
-        if: ${{ inputs.reset_state == true }}
-        run: |
-          aws s3 rm "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json" || echo "no state to delete"
-          echo "State for release ${{ inputs.release_tag }} reset — all failures will be treated as new."
-
       - name: Pull per-release triage state
         run: |
           mkdir -p .triage
           aws s3 cp "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json" \
             .triage/state.json || echo "first triage for this release"
 
+      - name: Reset per-release triage state
+        if: ${{ inputs.mode == 'reset' }}
+        env:
+          TAIGA_URL: ${{ secrets.TAIGA_URL }}
+          TAIGA_USERNAME: ${{ secrets.TAIGA_USERNAME }}
+          TAIGA_PASSWORD: ${{ secrets.TAIGA_PASSWORD }}
+        run: |
+          STORY_ID=""
+          [ -f .triage/state.json ] && STORY_ID=$(jq -r '.__release_story__.taigaId // empty' .triage/state.json)
+          if [ -n "$STORY_ID" ]; then
+            echo "Deleting old Taiga story $STORY_ID for release ${{ inputs.release_tag }}..."
+            TOKEN=$(curl -sf -X POST "$TAIGA_URL/api/v1/auth" \
+              -H 'Content-Type: application/json' \
+              -d "{\"type\":\"normal\",\"username\":\"$TAIGA_USERNAME\",\"password\":\"$TAIGA_PASSWORD\"}" \
+              | jq -r '.auth_token')
+            curl -sf -X DELETE "$TAIGA_URL/api/v1/userstories/$STORY_ID" \
+              -H "Authorization: Bearer $TOKEN" \
+              -H "User-Agent: qa-triage/1.0 (+github-actions)" \
+              && echo "Deleted old story $STORY_ID." \
+              || echo "Could not delete story $STORY_ID (already gone, or a permissions issue) — continuing anyway."
+          else
+            echo "No stored story for release ${{ inputs.release_tag }} yet — nothing to delete."
+          fi
+          rm -f .triage/state.json
+          echo "State for release ${{ inputs.release_tag }} reset — every failure will be treated as new."
+
       - name: Run report triage
         run: |
           CLOSE_ONLY_FLAG=""
-          if [ "${{ inputs.close_only }}" = "true" ]; then
+          if [ "${{ inputs.mode }}" = "close_only" ]; then
             CLOSE_ONLY_FLAG="--close-only"
             echo "Close-only sweep: closing resolved tasks, filing nothing new."
           fi

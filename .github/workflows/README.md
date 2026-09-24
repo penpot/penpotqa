@@ -27,6 +27,10 @@ Manual GitHub Action that triages QA failures for a release and files them in Ta
 
 During **freeze week / release promotion**, once there's a scheduled daily PRE run you want triaged for the upcoming release. Typical flow: run it once early in freeze week to open the story, then re-run as needed (e.g. after new daily runs) to pick up newly appearing failures — old ones already triaged won't be touched again.
 
+**You don't need to prepare anything in Taiga first** — the story and every task in it are created for you the first time you run this for a given `release_tag`. Just fill in `release_tag` and hit run; everything else has a sane default.
+
+> **`release_tag` must be a short, stable name for the release, e.g. `2.18` — not the full deployed build string** (e.g. `2.18.0-RC6-2-g5b3e36489c`, which is what `app_version` in the digest shows). Use the exact same short tag every time you triage a run during this release's freeze week, so they all pile into the same story. If you paste the full build string instead, every new build opens its own story and you lose the running history — the workflow checks for this and fails fast with a clear error if `release_tag` ends in a `-g<commit>` suffix.
+
 ### What it does
 
 1. **Finds the report to triage** — either the run ID you give it, or (default) the last completed _scheduled_ daily run on `main` from the `playwright_pre_daily.yml` workflow.
@@ -48,7 +52,7 @@ During **freeze week / release promotion**, once there's a scheduled daily PRE r
 
 Two ways to close resolved tasks without filing a full triage:
 
-- **`close_only` workflow input** — tick it when running "Report triage" from the Actions tab. Runs the same pipeline (finds the report, pulls state) but skips creating any new story/task; it only sweeps and closes tasks whose error is no longer present in the given run. Do not combine with `reset_state` — the workflow rejects that combination outright, since resetting state right before a close-only sweep would wipe out the very data it needs to know what's resolved.
+- **`mode: close_only`** — pick it when running "Report triage" from the Actions tab. Runs the same pipeline (finds the report, pulls state) but skips creating any new story/task; it only sweeps and closes tasks whose error is no longer present in the given run.
 - **`--close-ref <taskRef> [--close-ref <taskRef> ...]`** — CLI only (not wired into the workflow), force-closes specific Taiga tasks by their visible ref number (`#1234`), bypassing `results.json`/state entirely. Escape hatch for one-off closes or tasks that predate this tracking (e.g. old `group_by: file` tasks created before per-file tracking existed). Does **not** write `.triage/digest.md` or post to Mattermost.
 
 Running `--close-only` by hand from a checkout works the same way, with the same Taiga env vars as the scheduled workflow:
@@ -89,14 +93,13 @@ In `group_by: folder` mode, **screenshot/visual-diff failures** are bundled into
 1. Go to **Actions → "Report triage" → Run workflow**.
 2. Fill in the inputs:
 
-| Input           | Required | What it does                                                                                                                                       |
-| --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `release_tag`   | ✅       | e.g. `2.17`. Taiga story gets tagged `release-2.17`.                                                                                               |
-| `report_run_id` | ❌       | Only set if you want to triage a specific run instead of the latest scheduled daily run.                                                           |
-| `group_by`      | ❌       | `cluster` (default), `file`, or `folder` — controls task granularity in the story. See "What's in a task" for what `folder` mode does.             |
-| `epic_ref`      | ❌       | Taiga epic number to link the story under.                                                                                                         |
-| `reset_state`   | ❌       | `true` to forget all prior triage state for this tag (treats every failure as new). **Delete the old Taiga story yourself first** if you use this. |
-| `close_only`    | ❌       | `true` to sweep and close resolved tasks only — files nothing new. Cannot be combined with `reset_state` (the run fails fast if both are ticked).  |
+| Input           | Required | What it does                                                                                                                                                                                                                                  |
+| --------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `release_tag`   | ✅       | Short release name, e.g. `2.18` — **not** the full build string. Taiga story gets tagged `release-2.18`. See the callout above.                                                                                                               |
+| `report_run_id` | ❌       | Only set if you want to triage a specific run instead of the latest scheduled daily run.                                                                                                                                                      |
+| `group_by`      | ❌       | `cluster` (default), `file`, or `folder` — controls task granularity in the story. See "What's in a task" for what `folder` mode does.                                                                                                        |
+| `epic_ref`      | ❌       | Taiga epic number to link the story under.                                                                                                                                                                                                    |
+| `mode`          | ❌       | `normal` (default): file new failures, close resolved ones. `close_only`: sweep and close resolved tasks only, file nothing new. `reset`: forget all prior triage state for this tag and start over — the old Taiga story is deleted for you. |
 
 ### Good to know
 
@@ -104,3 +107,4 @@ In `group_by: folder` mode, **screenshot/visual-diff failures** are bundled into
 - Needs `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_REGION` and Taiga secrets configured in repo settings — nothing to set up per run.
 - Resolved tasks in Taiga are auto-assigned to `qa.integrations.bot`.
 - If no completed scheduled daily run exists on `main`, the job fails early with a clear error.
+- `mode: reset` deletes the old release story in Taiga itself (best-effort — if that call fails, e.g. the story was already gone, it logs and carries on rather than blocking the reset). You never need to delete it by hand first.
