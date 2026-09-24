@@ -78,25 +78,41 @@ jobs:
         run: |
           if [ -n "${{ inputs.report_run_id }}" ]; then
             RUN_ID="${{ inputs.report_run_id }}"
+            if ! aws s3 cp "s3://kaleidos-qa-reports/run-$RUN_ID/results.json" results.json; then
+              echo "::error::No results.json in S3 for run $RUN_ID — check the run id, or its report may have expired."
+              exit 1
+            fi
             echo "Using manually provided run: $RUN_ID"
           else
-            # Last finished *scheduled* daily run on main (completed, not success:
-            # the test step fails the workflow on failing nights by design)
-            RUN_ID=$(gh run list \
+            # Last finished *scheduled* daily runs on main (completed, not success:
+            # the test step fails the workflow on failing nights by design), newest
+            # first. Walk them until one whose report is actually still in S3 —
+            # `gh run list`'s answer has been seen to lag behind reality by several
+            # runs when read with the workflow's own GITHUB_TOKEN, and even without
+            # that, an old report can simply have expired from the bucket.
+            CANDIDATES=$(gh run list \
               --workflow "$DAILY_WORKFLOW" \
               --branch main \
               --event schedule \
               --status completed \
-              --limit 1 \
+              --limit 15 \
               --json databaseId \
-              --jq '.[0].databaseId')
-            if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
-              echo "No completed scheduled daily run found on main"; exit 1
+              --jq '.[].databaseId')
+            RUN_ID=""
+            for CANDIDATE in $CANDIDATES; do
+              if aws s3 cp "s3://kaleidos-qa-reports/run-$CANDIDATE/results.json" results.json 2>/dev/null; then
+                RUN_ID="$CANDIDATE"
+                echo "Using last scheduled daily run on main with a report in S3: $RUN_ID"
+                break
+              fi
+              echo "Run $CANDIDATE has no report in S3 (expired, or failed before upload) — trying the next one."
+            done
+            if [ -z "$RUN_ID" ]; then
+              echo "::error::None of the last 15 completed scheduled daily runs on main have a report in S3. Pass report_run_id explicitly."
+              exit 1
             fi
-            echo "Using last scheduled daily run on main: $RUN_ID"
           fi
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
-          aws s3 cp "s3://kaleidos-qa-reports/run-$RUN_ID/results.json" results.json
           aws s3 cp "s3://kaleidos-qa-reports/run-$RUN_ID-enterprise/results.json" results-enterprise.json 2>/dev/null \
             && echo "Found enterprise results for this run — will be triaged alongside the standard suite." \
             || echo "No enterprise results for this run (older run, or the enterprise job didn't run/upload) — triaging standard suite only."
