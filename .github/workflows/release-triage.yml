@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Short release name, e.g. "2.18" — NOT the full build string (e.g. "2.18.0-RC6-2-g5b3e36489c"). Use the SAME short tag for every daily run you triage during this release, so they all land in one story.'
+        description: 'Release tag, e.g. "2.18" (not the full build string) — story will be tagged release-<tag>. Use the same tag every day you triage this release so runs pile into one story.'
         required: true
       report_run_id:
         description: 'Override: specific run id to triage (default: last scheduled daily run on main)'
