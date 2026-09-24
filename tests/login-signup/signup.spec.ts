@@ -122,7 +122,7 @@ test.describe('Create Account form negative cases', () => {
     });
 
     await test.step('Verify validation prevents account creation', async () => {
-      await registerPage.isEmailInputErrorDisplayed('Enter a valid email please');
+      await registerPage.isEmailInputErrorVisible('Enter a valid email please');
       await registerPage.isCreateAccountButtonVisible();
       await registerPage.isCreateAccountButtonDisabled();
     });
@@ -180,6 +180,6 @@ test(qase([54], 'Sign up with email of existing user'), async () => {
   });
 
   await test.step('Verify the existing user error is displayed', async () => {
-    await registerPage.isEmailAlreadyUsedErrorDisplayed();
+    await registerPage.isEmailInputErrorVisible('Email already used');
   });
 });

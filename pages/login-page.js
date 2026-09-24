@@ -50,7 +50,7 @@ exports.LoginPage = class LoginPage extends BasePage {
     await this.pwdInput.click();
   }
 
-  async isEmailInputErrorDisplayed(error) {
+  async isEmailInputErrorVisible(error) {
     await expect(
       this.emailInputError,
       `Email input error is displayed: ${error}`,
