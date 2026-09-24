@@ -25,6 +25,8 @@ mainAccountFileTest(
       'Upload image and create opacity token',
       async () => {
         await mainPage.uploadImage('images/sample.jpeg');
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
         await tokensPage.clickTokensTab();
         await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(opacityToken);
         await tokensPage.tokensComp.isTokenVisibleWithName(opacityToken.name);

@@ -23,7 +23,7 @@ test(qase(35, 'Login with an email address'), async () => {
 
 test(qase(40, 'Login with invalid email address'), async ({ page }) => {
   await loginPage.enterEmail('test@com');
-  await loginPage.isEmailInputErrorDisplayed('Enter a valid email please');
+  await loginPage.isEmailInputErrorVisible('Enter a valid email please');
   await loginPage.isLoginButtonDisplayed();
   await loginPage.isLoginButtonDisabled();
 });

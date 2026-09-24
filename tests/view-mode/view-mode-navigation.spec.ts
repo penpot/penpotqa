@@ -53,7 +53,7 @@ mainAccountFileTest(
   async ({ mainPage }) => {
     await mainAccountFileTest.step('Create board', async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
     });
 
     await mainAccountFileTest.step(
@@ -79,7 +79,7 @@ mainAccountFileTest(
 mainAccountFileTest(qase([690], 'Full screen on/off'), async ({ mainPage }) => {
   await mainAccountFileTest.step('Create board and open view mode', async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
@@ -104,9 +104,9 @@ mainAccountFileTest(
       'Create two boards and open view mode',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
         await mainPage.createDefaultBoardByCoordinates(500, 500);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
         const newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -168,11 +168,11 @@ mainAccountFileTest(
       'Create three boards and open view mode',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
         await mainPage.createDefaultBoardByCoordinates(500, 500);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
         await mainPage.createDefaultBoardByCoordinates(100, 100);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 3);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 3);
         const newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -224,9 +224,9 @@ mainAccountFileTest(
       'Create two boards and open view mode',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
         await mainPage.createDefaultBoardByCoordinates(500, 500);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
         const newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -270,9 +270,9 @@ mainAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) =
     'Create two boards with a prototype connection and open view mode',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
       await mainPage.createDefaultBoardByCoordinates(500, 500);
-      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
       await prototypePanelPage.clickPrototypeTab();
       await prototypePanelPage.dragAndDropPrototypeArrowConnector(300, 300);
       const newPage = await viewModePage.clickViewModeShortcut();
@@ -336,7 +336,7 @@ mainAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) =
 mainAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
   await mainAccountFileTest.step('Create board and open view mode', async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
@@ -410,7 +410,7 @@ mainAccountFileTest(qase([708], 'Page dropdown'), async ({ mainPage }) => {
     'Create board and a second page and open view mode',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
       await pagesPanelPage.clickAddPageButton();
       await mainPage.waitForChangeIsSaved();
       const newPage = await viewModePage.clickViewModeShortcut();
@@ -459,6 +459,7 @@ mainAccountFileTest(
   async ({ page, teamPage, mainPage }) => {
     await mainAccountFileTest.step('Create board and open view mode', async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
       await designPanelPage.changeHeightAndWidthForLayer('200', '200');
       await mainPage.waitForChangeIsSaved();
 

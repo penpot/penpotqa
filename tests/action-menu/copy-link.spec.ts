@@ -38,9 +38,9 @@ mainAccountFileTest.describe(() => {
         'Create two boards and copy their link',
         async () => {
           await mainPage.createDefaultBoardByCoordinates(100, 100);
-          await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+          await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
           await mainPage.createDefaultBoardByCoordinates(100, 300);
-          await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
+          await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
           await mainPage.clickMainMenuButton();
           await mainPage.clickEditMainMenuItem();
           await mainPage.clickSelectAllMainMenuSubItem();

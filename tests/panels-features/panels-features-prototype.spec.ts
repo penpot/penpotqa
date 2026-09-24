@@ -16,9 +16,9 @@ mainAccountFileTest.beforeEach(async ({ page }) => {
 mainAccountFileTest.describe(() => {
   mainAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultBoardByCoordinates(900, 100);
-    await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+    await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
     await mainPage.createDefaultBoardByCoordinates(500, 200);
-    await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
+    await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
     await prototypePanelPage.clickPrototypeTab();
     await prototypePanelPage.dragAndDropPrototypeArrowConnector(900, 100);
     await mainPage.waitForChangeIsSaved();
@@ -107,7 +107,7 @@ mainAccountFileTest.describe(() => {
       'Create third board and connect to first',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(200, 600);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 3);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 3);
         await mainPage.clickViewportByCoordinates(200, 600);
         await prototypePanelPage.dragAndDropPrototypeArrowConnector(900, 100);
         await mainPage.waitForChangeIsSaved();

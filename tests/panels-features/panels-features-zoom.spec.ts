@@ -108,6 +108,7 @@ mainAccountFileTest(
       await mainPage.clickCreateBoardButton();
       await mainPage.clickViewportByCoordinates(900, 100);
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
       await mainPage.zoomToFitSelected();
       await mainPage.clickViewportTwice();
     });

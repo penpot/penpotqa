@@ -43,7 +43,7 @@ mainAccountFileTest.describe(() => {
 
       await mainAccountFileTest.step('Create board and open view mode', async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
         const newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -86,7 +86,7 @@ mainAccountFileTest.describe(() => {
 
       await mainAccountFileTest.step('Create board and open view mode', async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
         newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -162,7 +162,7 @@ mainAccountFileTest.describe(() => {
 
       await mainAccountFileTest.step('Create board and open view mode', async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
         newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -255,7 +255,7 @@ mainAccountFileTest.describe(() => {
         'Post a comment as the main user and go back to dashboard',
         async () => {
           await mainPage.createDefaultBoardByCoordinates(300, 300);
-          await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+          await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
           const newPage = await viewModePage.clickViewModeShortcut();
           const viewModePage2 = new ViewModePage(newPage);
           await viewModePage2.clickCommentsButton();
