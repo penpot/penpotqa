@@ -32,15 +32,16 @@ on:
       epic_ref:
         description: 'Optional: Taiga epic ref (number only, e.g. 118) to link the story under'
         required: false
-      mode:
-        description: "normal (default) - file new failures, close resolved ones. | close_only - only sweep and close resolved tasks, file nothing new. | reset - wipe this tag's triage history and start over, old Taiga story deleted for you."
+      reset_state:
+        description: 'Reset this release tag: forget all previous triage state (the old story in Taiga is deleted for you automatically)'
         required: false
-        default: 'normal'
-        type: choice
-        options:
-          - normal
-          - close_only
-          - reset
+        default: false
+        type: boolean
+      close_only:
+        description: 'Close-only sweep: close tasks whose error is no longer failing — files nothing new. Do not combine with reset_state.'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -51,6 +52,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: PRE # grants access to MATTERMOST_WEBHOOK_DAILY_REPORT (environment secret)
     steps:
+      - name: Reject reset_state + close_only together
+        if: ${{ inputs.reset_state == true && inputs.close_only == true }}
+        run: |
+          echo "reset_state wipes triage state right before close_only would need it to find what's resolved — pick one." >&2
+          exit 1
+
       - name: Sanity-check release_tag
         run: |
           TAG="${{ inputs.release_tag }}"
@@ -136,7 +143,7 @@ jobs:
             .triage/state.json || echo "first triage for this release"
 
       - name: Reset per-release triage state
-        if: ${{ inputs.mode == 'reset' }}
+        if: ${{ inputs.reset_state == true }}
         env:
           TAIGA_URL: ${{ secrets.TAIGA_URL }}
           TAIGA_USERNAME: ${{ secrets.TAIGA_USERNAME }}
@@ -164,7 +171,7 @@ jobs:
       - name: Run report triage
         run: |
           CLOSE_ONLY_FLAG=""
-          if [ "${{ inputs.mode }}" = "close_only" ]; then
+          if [ "${{ inputs.close_only }}" = "true" ]; then
             CLOSE_ONLY_FLAG="--close-only"
             echo "Close-only sweep: closing resolved tasks, filing nothing new."
           fi
