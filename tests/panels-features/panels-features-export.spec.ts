@@ -43,9 +43,9 @@ mainAccountFileTest(
 
     await mainAccountFileTest.step('Create two boards', async () => {
       await mainPage.createDefaultBoardByCoordinates(100, 150);
-      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
       await mainPage.createDefaultBoardByCoordinates(250, 300);
-      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 2);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
     });
 
     await mainAccountFileTest.step('Select created boards', async () => {

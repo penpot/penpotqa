@@ -22,7 +22,7 @@ mainAccountFileTest(qase([701], 'Create comment'), async ({ mainPage }) => {
 
   await mainAccountFileTest.step('Create board and open view mode', async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+    await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
     newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
@@ -71,7 +71,7 @@ mainAccountFileTest(qase([709], 'Reply comment'), async ({ mainPage }) => {
     'Create board, open view mode and post a comment',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
       newPage = await viewModePage.clickViewModeShortcut();
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
@@ -108,7 +108,7 @@ mainAccountFileTest(qase([710], 'Edit comment'), async ({ mainPage }) => {
     'Create board, open view mode and post a comment',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
       newPage = await viewModePage.clickViewModeShortcut();
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
@@ -152,7 +152,7 @@ mainAccountFileTest(qase([711], 'Delete thread'), async ({ mainPage }) => {
     'Create board, open view mode and post a comment',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
       newPage = await viewModePage.clickViewModeShortcut();
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
@@ -191,7 +191,7 @@ mainAccountFileTest(
       'Create board, open view mode and post a resolved comment',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
         newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
@@ -253,7 +253,7 @@ mainAccountFileTest(
       'Create board, open view mode and post a comment',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await layersPanelPage.isNumLayerNameDisplayed(defaultNameBoard, 1);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
         newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
