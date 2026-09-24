@@ -20,7 +20,7 @@ mainAccountFileTest.beforeEach(async ({ page }) => {
 mainAccountFileTest(qase([706], 'Switch to Inspect view'), async ({ mainPage }) => {
   await mainAccountFileTest.step('Create board and open view mode', async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isNumLayerNameDisplayed('Board', 1);
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
