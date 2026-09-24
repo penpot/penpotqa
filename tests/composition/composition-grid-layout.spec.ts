@@ -689,6 +689,7 @@ mainAccountFileTest.describe(() => {
         async () => {
           await designPanelPage.clickFillColorIcon();
           await colorPalettePage.setHex('#FF0000');
+          await mainPage.clickCreatedBoardTitleOnCanvas();
           await mainPage.waitForChangeIsSaved();
           await mainPage.waitForResizeHandlerVisible();
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -977,6 +978,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickFillColorIcon();
         await colorPalettePage.setHex('#00FF00');
+        await mainPage.clickViewportByCoordinates(410, 410);
         await mainPage.waitForChangeIsSaved();
         await mainPage.waitForResizeHandlerVisible();
       },
