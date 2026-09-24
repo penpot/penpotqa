@@ -30,10 +30,10 @@ During **freeze week / release promotion**, once there's a scheduled daily PRE r
 ### What it does
 
 1. **Finds the report to triage** — either the run ID you give it, or (default) the last completed _scheduled_ daily run on `main` from the `playwright_pre_daily.yml` workflow.
-2. **Downloads** that run's `results.json` and app version from S3.
+2. **Downloads** that run's `results.json` and app version from S3, plus the enterprise suite's `results.json` if that run has one (the daily workflow's `tests_enterprise` job, added later — older runs won't have it, and that's fine, see below).
 3. **Loads previous triage state** for this release tag from S3 (if any exists) — this is how it knows which failures it's already seen.
 4. **Runs `scripts/triage.ts`**, which:
-   - Parses the Playwright results and separates real failures from flaky tests (failed then passed on retry — flaky ones are counted in the digest but not filed).
+   - Parses the Playwright results — standard and enterprise together when both are available, merged into one clustering pass so they land in the same release story instead of two separate triages stepping on each other's state — and separates real failures from flaky tests (failed then passed on retry — flaky ones are counted in the digest but not filed). Tasks made up entirely of enterprise specs get an `[enterprise]` prefix in their subject so they're distinguishable from the rest of the story. If the enterprise report is missing for this run, it just triages the standard suite — no error.
    - **Clusters failures by root cause**, not by test: it normalizes each error message (strips timestamps, ids, line numbers, etc.) so the same underlying bug filed from different tests/runs hashes to the same cluster. Screenshot/visual-diff failures are clustered **strictly per spec file** instead — the error text (snapshot name, diff stats) is never part of that fingerprint, so every `toHaveScreenshot` failure in one file collapses into a single cluster/task no matter how many different diffs it covers.
    - Creates the release story in Taiga if it doesn't exist yet (subject `[release <tag>] Daily failures triage`, tagged `needs-triage` + `release-<tag>`, optionally linked under `epic_ref`).
    - Adds **one task per new cluster** (or per file with `group_by: file`, or per folder for screenshot failures with `group_by: folder` — functional bugs still get their own task) — see "What's in a task" below.
@@ -57,6 +57,8 @@ Running `--close-only` by hand from a checkout works the same way, with the same
 TAIGA_URL=... TAIGA_USERNAME=... TAIGA_PASSWORD=... TAIGA_PROJECT=... \
   npx tsx scripts/triage.ts --results results.json --state .triage/state.json --close-only
 ```
+
+`--results` is repeatable (`--results results.json --results results-enterprise.json`) to merge multiple suites' reports into one triage pass.
 
 ### Debugging a run
 

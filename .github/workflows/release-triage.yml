@@ -93,6 +93,9 @@ jobs:
           fi
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
           aws s3 cp "s3://kaleidos-qa-reports/run-$RUN_ID/results.json" results.json
+          aws s3 cp "s3://kaleidos-qa-reports/run-$RUN_ID-enterprise/results.json" results-enterprise.json 2>/dev/null \
+            && echo "Found enterprise results for this run — will be triaged alongside the standard suite." \
+            || echo "No enterprise results for this run (older run, or the enterprise job didn't run/upload) — triaging standard suite only."
         env:
           GH_TOKEN: ${{ github.token }}
           DAILY_WORKFLOW: playwright_pre_daily.yml # "Daily Penpot Regression Tests on PRE"
@@ -123,8 +126,13 @@ jobs:
             CLOSE_ONLY_FLAG="--close-only"
             echo "Close-only sweep: closing resolved tasks, filing nothing new."
           fi
+          ENTERPRISE_RESULTS_FLAG=""
+          if [ -f results-enterprise.json ]; then
+            ENTERPRISE_RESULTS_FLAG="--results results-enterprise.json"
+          fi
           npx tsx scripts/triage.ts \
             --results results.json \
+            $ENTERPRISE_RESULTS_FLAG \
             --state .triage/state.json \
             --release "${{ inputs.release_tag }}" \
             --group-by "${{ inputs.group_by || 'cluster' }}" \
