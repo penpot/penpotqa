@@ -55,9 +55,11 @@ jobs:
         run: |
           TAG="${{ inputs.release_tag }}"
           if [[ "$TAG" =~ -g[0-9a-f]{7,40}$ ]]; then
-            echo "::error::release_tag '$TAG' looks like a full build/version string (ends in a git commit suffix), not a short release name."
-            echo "Use a short tag instead, e.g. \"2.18\" — the SAME one for every daily run you triage this release, so they all accumulate in one story. A full build string changes on every commit, so each run would open its own story instead." >&2
-            exit 1
+            {
+              echo "### :warning: release_tag looks like a full build string"
+              echo "\`$TAG\` ends in a git commit suffix, so this doesn't look like a short release name (e.g. \`2.18\`)."
+              echo "That's fine if you're intentionally continuing a story that was already opened under this exact tag — otherwise, a full build string changes on every commit, so each run would open its own story instead of accumulating into one."
+            } >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - uses: actions/checkout@v6
