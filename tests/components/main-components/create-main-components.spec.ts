@@ -53,6 +53,7 @@ mainAccountFileTest(
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.dragComponentOnCanvas(50, 100);
       await mainPage.waitForChangeIsSaved();
+      await mainPage.waitForResizeHandlerVisible();
     });
 
     await mainAccountFileTest.step(
