@@ -1,11 +1,13 @@
 # .github/workflows/release-triage.yml
 #
 # Manual triage for freeze week / release promotions.
-# Actions tab -> "Report triage" -> Run workflow -> type the release tag.
+# Actions tab -> "Report triage" -> Run workflow -> fill in release_tag, leave
+# everything else on its default unless you know you need it.
 # Creates ONE Taiga user story tagged "release-<tag>" containing one task
 # per failure cluster. Re-running with the same tag adds only NEW clusters
 # to the SAME story (no duplicates) thanks to the per-release state file.
-# Tick close_only to sweep and close resolved tasks instead, without filing anything new.
+# You don't need to create anything in Taiga beforehand — the story and its
+# tasks are created for you. See .github/workflows/README.md for the full guide.
 
 name: Report triage
 
@@ -13,13 +15,13 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release tag (e.g. 2.17) — story will be tagged release-<tag>'
+        description: 'Release tag, e.g. "2.18" — not the full build string. Same tag every day = same story.'
         required: true
       report_run_id:
         description: 'Override: specific run id to triage (default: last scheduled daily run on main)'
         required: false
       group_by:
-        description: 'Task granularity inside the release story. folder: snapshot failures bundled per immediate parent folder (claimable per-folder for splitting snapshot-update work); functional bugs stay one-per-cluster'
+        description: 'Task grouping: cluster (default, one per bug), file, or folder (snapshot diffs bundled per folder)'
         required: false
         default: 'cluster'
         type: choice
@@ -31,12 +33,12 @@ on:
         description: 'Optional: Taiga epic ref (number only, e.g. 118) to link the story under'
         required: false
       reset_state:
-        description: 'Reset this release tag: forget all previous triage state (delete the old story in Taiga yourself first)'
+        description: 'Reset this release tag: forget all previous triage state (the old story in Taiga is deleted for you automatically)'
         required: false
         default: false
         type: boolean
       close_only:
-        description: 'Close-only sweep: close tasks whose error is no longer failing — files nothing new. Do not combine with reset_state.'
+        description: "Only close resolved tasks, file nothing new. Don't combine with reset_state"
         required: false
         default: false
         type: boolean
@@ -56,6 +58,17 @@ jobs:
           echo "reset_state wipes triage state right before close_only would need it to find what's resolved — pick one." >&2
           exit 1
 
+      - name: Sanity-check release_tag
+        run: |
+          TAG="${{ inputs.release_tag }}"
+          if [[ "$TAG" =~ -g[0-9a-f]{7,40}$ ]]; then
+            {
+              echo "### :warning: release_tag looks like a full build string"
+              echo "\`$TAG\` ends in a git commit suffix, so this doesn't look like a short release name (e.g. \`2.18\`)."
+              echo "That's fine if you're intentionally continuing a story that was already opened under this exact tag — otherwise, a full build string changes on every commit, so each run would open its own story instead of accumulating into one."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v6
@@ -74,25 +87,44 @@ jobs:
         run: |
           if [ -n "${{ inputs.report_run_id }}" ]; then
             RUN_ID="${{ inputs.report_run_id }}"
+            if ! aws s3 cp "s3://kaleidos-qa-reports/run-$RUN_ID/results.json" results.json; then
+              echo "::error::No results.json in S3 for run $RUN_ID — check the run id, or its report may have expired."
+              exit 1
+            fi
             echo "Using manually provided run: $RUN_ID"
           else
-            # Last finished *scheduled* daily run on main (completed, not success:
-            # the test step fails the workflow on failing nights by design)
-            RUN_ID=$(gh run list \
+            # Last finished *scheduled* daily runs on main (completed, not success:
+            # the test step fails the workflow on failing nights by design), newest
+            # first. Walk them until one whose report is actually still in S3 —
+            # `gh run list`'s answer has been seen to lag behind reality by several
+            # runs when read with the workflow's own GITHUB_TOKEN, and even without
+            # that, an old report can simply have expired from the bucket.
+            CANDIDATES=$(gh run list \
               --workflow "$DAILY_WORKFLOW" \
               --branch main \
               --event schedule \
               --status completed \
-              --limit 1 \
+              --limit 15 \
               --json databaseId \
-              --jq '.[0].databaseId')
-            if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
-              echo "No completed scheduled daily run found on main"; exit 1
+              --jq '.[].databaseId')
+            RUN_ID=""
+            for CANDIDATE in $CANDIDATES; do
+              if aws s3 cp "s3://kaleidos-qa-reports/run-$CANDIDATE/results.json" results.json 2>/dev/null; then
+                RUN_ID="$CANDIDATE"
+                echo "Using last scheduled daily run on main with a report in S3: $RUN_ID"
+                break
+              fi
+              echo "Run $CANDIDATE has no report in S3 (expired, or failed before upload) — trying the next one."
+            done
+            if [ -z "$RUN_ID" ]; then
+              echo "::error::None of the last 15 completed scheduled daily runs on main have a report in S3. Pass report_run_id explicitly."
+              exit 1
             fi
-            echo "Using last scheduled daily run on main: $RUN_ID"
           fi
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
-          aws s3 cp "s3://kaleidos-qa-reports/run-$RUN_ID/results.json" results.json
+          aws s3 cp "s3://kaleidos-qa-reports/run-$RUN_ID-enterprise/results.json" results-enterprise.json 2>/dev/null \
+            && echo "Found enterprise results for this run — will be triaged alongside the standard suite." \
+            || echo "No enterprise results for this run (older run, or the enterprise job didn't run/upload) — triaging standard suite only."
         env:
           GH_TOKEN: ${{ github.token }}
           DAILY_WORKFLOW: playwright_pre_daily.yml # "Daily Penpot Regression Tests on PRE"
@@ -104,17 +136,37 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "App version for this run: ${VERSION:-<not recorded>}"
 
-      - name: Reset per-release triage state
-        if: ${{ inputs.reset_state == true }}
-        run: |
-          aws s3 rm "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json" || echo "no state to delete"
-          echo "State for release ${{ inputs.release_tag }} reset — all failures will be treated as new."
-
       - name: Pull per-release triage state
         run: |
           mkdir -p .triage
           aws s3 cp "s3://kaleidos-qa-reports/triage/state-release-${{ inputs.release_tag }}.json" \
             .triage/state.json || echo "first triage for this release"
+
+      - name: Reset per-release triage state
+        if: ${{ inputs.reset_state == true }}
+        env:
+          TAIGA_URL: ${{ secrets.TAIGA_URL }}
+          TAIGA_USERNAME: ${{ secrets.TAIGA_USERNAME }}
+          TAIGA_PASSWORD: ${{ secrets.TAIGA_PASSWORD }}
+        run: |
+          STORY_ID=""
+          [ -f .triage/state.json ] && STORY_ID=$(jq -r '.__release_story__.taigaId // empty' .triage/state.json)
+          if [ -n "$STORY_ID" ]; then
+            echo "Deleting old Taiga story $STORY_ID for release ${{ inputs.release_tag }}..."
+            TOKEN=$(curl -sf -X POST "$TAIGA_URL/api/v1/auth" \
+              -H 'Content-Type: application/json' \
+              -d "{\"type\":\"normal\",\"username\":\"$TAIGA_USERNAME\",\"password\":\"$TAIGA_PASSWORD\"}" \
+              | jq -r '.auth_token')
+            curl -sf -X DELETE "$TAIGA_URL/api/v1/userstories/$STORY_ID" \
+              -H "Authorization: Bearer $TOKEN" \
+              -H "User-Agent: qa-triage/1.0 (+github-actions)" \
+              && echo "Deleted old story $STORY_ID." \
+              || echo "Could not delete story $STORY_ID (already gone, or a permissions issue) — continuing anyway."
+          else
+            echo "No stored story for release ${{ inputs.release_tag }} yet — nothing to delete."
+          fi
+          rm -f .triage/state.json
+          echo "State for release ${{ inputs.release_tag }} reset — every failure will be treated as new."
 
       - name: Run report triage
         run: |
@@ -123,8 +175,13 @@ jobs:
             CLOSE_ONLY_FLAG="--close-only"
             echo "Close-only sweep: closing resolved tasks, filing nothing new."
           fi
+          ENTERPRISE_RESULTS_FLAG=""
+          if [ -f results-enterprise.json ]; then
+            ENTERPRISE_RESULTS_FLAG="--results results-enterprise.json"
+          fi
           npx tsx scripts/triage.ts \
             --results results.json \
+            $ENTERPRISE_RESULTS_FLAG \
             --state .triage/state.json \
             --release "${{ inputs.release_tag }}" \
             --group-by "${{ inputs.group_by || 'cluster' }}" \
