@@ -25,6 +25,9 @@ Prerequisites for local run:
   - `CLIENT_ID` (for email access)
   - `CLIENT_SECRET` (for email access)
   - `STRIPE_SK` (for Stripe API access)
+  - `ENTERPRISE_SSO_ISSUER_URL` (OpenID Connect test tenant issuer URL, for the Organization SSO enterprise tests)
+  - `ENTERPRISE_SSO_CLIENT_ID` (client ID for the same test tenant)
+  - `ENTERPRISE_SSO_CLIENT_SECRET` (client secret for the same test tenant)
 
 **2. Gmail Integration.**
 
@@ -179,6 +182,9 @@ For each environment the appropriate secrets were added:
 - _REFRESH_TOKEN_ (Token for email access)
 - _CLIENT_ID_ (for email access)
 - _CLIENT_SECRET_ (for email access)
+- _ENTERPRISE_SSO_ISSUER_URL_ (OpenID Connect test tenant issuer URL, for the Organization SSO enterprise tests)
+- _ENTERPRISE_SSO_CLIENT_ID_ (client ID for the same test tenant)
+- _ENTERPRISE_SSO_CLIENT_SECRET_ (client secret for the same test tenant)
 
 2 _.yml_ files were added into _.github/workflows_ directory with settings for environments:
 

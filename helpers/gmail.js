@@ -125,6 +125,17 @@ async function getMessageSubject(email) {
     .catch(console.error);
 }
 
+/** Like getRegisterMessage(), but returns the raw body text as-is instead
+ * of requiring a URL in it — needed for emails with no link at all, e.g.
+ * the SSO-activation notice. */
+async function getMessageText(email) {
+  return authorize()
+    .then(async (auth) => {
+      return await listMessages(auth, email);
+    })
+    .catch(console.error);
+}
+
 async function getRequestAccessMessage(email) {
   return authorize()
     .then(async (auth) => {
@@ -175,6 +186,27 @@ async function checkEnterpriseInviteText(text, team, org) {
 async function checkEnterpriseInviteSubject(subject, team, org) {
   expect(subject).toContain(team);
   expect(subject).not.toContain(org);
+}
+
+/** The subject truncates the org name to a fixed prefix + an ellipsis when
+ * it's long — confirmed live at 25 characters — so this checks a shorter,
+ * always-present prefix instead of the full (possibly truncated) name. */
+async function checkSsoActivatedEmailSubject(subject, orgName) {
+  expect(subject).toContain(orgName.slice(0, 20));
+  expect(subject).toContain('uses single sign-on');
+}
+
+async function checkSsoActivatedEmailText(text, orgName) {
+  const messageText =
+    'Hi,\r\n' +
+    '\r\n' +
+    `"${orgName}" has set up single sign-on (SSO) in Penpot. Access to its teams and files now goes\r\n` +
+    "through your organization's identity provider.\r\n" +
+    '\r\n' +
+    "If you can't get in, your account probably isn't in the directory yet. To get access, contact the organization owner.\r\n" +
+    '\r\n' +
+    'The Penpot team.\r\n';
+  await expect(text).toBe(messageText);
 }
 
 async function checkRegisterText(text, name) {
@@ -453,7 +485,10 @@ module.exports = {
   checkEnterpriseInviteSubject,
   getRegisterMessage,
   getMessageSubject,
+  getMessageText,
   getVerificationMessage,
+  checkSsoActivatedEmailSubject,
+  checkSsoActivatedEmailText,
   checkRegisterText,
   checkRecoveryText,
   checkNewEmailText,

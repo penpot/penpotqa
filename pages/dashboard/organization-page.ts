@@ -519,6 +519,24 @@ export class OrganizationPage extends BasePage {
     ).toBeVisible({ timeout: 15000 });
   }
 
+  /** Activating SSO force-redirects any member's existing dashboard session
+   * straight to the identity provider's own login page — a live push over
+   * the same connection as isNoLongerOrgMemberMessageShown() above.
+   * Confirmed live: lands within ~2s, no reload needed. `issuerUrl` is the
+   * same Issuer / authority URL configured in OrganizationSsoPage. */
+  async isRedirectedToSsoLogin(issuerUrl: string) {
+    const issuerOrigin = new URL(issuerUrl).origin;
+    await expect(
+      this.page,
+      `Redirected to the identity provider's login page (${issuerOrigin})`,
+    ).toHaveURL(
+      new RegExp(`^${issuerOrigin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`),
+      {
+        timeout: 30000,
+      },
+    );
+  }
+
   /** A zero-org account has no org switcher trigger at all
    * (nothing to switch between) — the "+ Create org" sidebar button is the
    * reliable signal instead of trying to open a switcher that doesn't exist. */
