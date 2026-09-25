@@ -10,7 +10,7 @@
  *
  * --results is repeatable: every file's failures are merged into one clustering
  * pass, so e.g. the standard and enterprise suites end up in the same story/tasks
- * instead of needing two runs (see the enterprise-tag comment on subjectPrefix()).
+ * instead of needing two runs (see the enterprise-tag comment on qaseSubjectPrefix()).
  *
  * Env vars:
  *   TAIGA_URL        e.g. https://taiga.yourcompany.com
@@ -882,7 +882,7 @@ async function main() {
           );
           const fileKey = fileStateKey(file);
           const fileEntry = state[fileKey]; // created above by the file-tracking block
-          const subject = `${subjectPrefix(tests)}${path.basename(file)} — ${tests.length} failing test${tests.length > 1 ? 's' : ''}`;
+          const subject = `${qaseSubjectPrefix(tests)}${path.basename(file)} — ${tests.length} failing test${tests.length > 1 ? 's' : ''}`;
           if (taiga && storyId) {
             if (fileEntry?.taskId) {
               await taiga.commentTask(
@@ -918,7 +918,7 @@ async function main() {
             }
           } else {
             console.log(
-              `[dry-run]   + task: ${subjectPrefix(tests)}${path.basename(file)} — ${tests.length} failing test(s)`,
+              `[dry-run]   + task: ${qaseSubjectPrefix(tests)}${path.basename(file)} — ${tests.length} failing test(s)`,
             );
           }
         }
@@ -946,7 +946,7 @@ async function main() {
           );
 
         for (const c of functionalClusters) {
-          const taskSubject = `${subjectPrefix(c.tests)}${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
+          const taskSubject = `${qaseSubjectPrefix(c.tests)}${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
           if (taiga && storyId) {
             const { id: taskId, ref: taskRef } = await taiga.createTask(
               storyId,
@@ -986,7 +986,7 @@ async function main() {
           );
           const folderKey = folderStateKey(folder);
           const folderEntry = state[folderKey]; // created above by the folder-tracking block
-          const subject = `${subjectPrefix(tests)}${folder}/ — ${tests.length} screenshot diff${tests.length > 1 ? 's' : ''} across ${byFile.size} file${byFile.size > 1 ? 's' : ''}`;
+          const subject = `${qaseSubjectPrefix(tests)}${folder}/ — ${tests.length} screenshot diff${tests.length > 1 ? 's' : ''} across ${byFile.size} file${byFile.size > 1 ? 's' : ''}`;
           if (taiga && storyId) {
             if (folderEntry?.taskId) {
               await taiga.commentTask(
@@ -1043,7 +1043,7 @@ async function main() {
             `Rebuilding tasks for ${knownClusters.length} known cluster(s) in the new story.`,
           );
         for (const c of clustersNeedingTasks) {
-          const taskSubject = `${subjectPrefix(c.tests)}${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
+          const taskSubject = `${qaseSubjectPrefix(c.tests)}${conciseError(c.errorSample)} — ${[...c.files].map((f: string) => path.basename(f)).join(', ')} (${c.tests.length} test${c.tests.length > 1 ? 's' : ''})`;
           if (taiga && storyId) {
             const { id: taskId, ref: taskRef } = await taiga.createTask(
               storyId,
@@ -1119,7 +1119,7 @@ async function main() {
           if (snapshotCluster) {
             const { id: taskId, ref: taskRef } = await taiga.createTask(
               id,
-              `${subjectPrefix(c.tests)}${path.basename(c.tests[0].file)} — ${c.tests.length} screenshot diff${c.tests.length > 1 ? 's' : ''}`,
+              `${qaseSubjectPrefix(c.tests)}${path.basename(c.tests[0].file)} — ${c.tests.length} screenshot diff${c.tests.length > 1 ? 's' : ''}`,
               clusterDescription(c),
             );
             taskIds.push(taskId);
@@ -1153,7 +1153,7 @@ async function main() {
           );
           if (snapshotCluster) {
             console.log(
-              `[dry-run]   + task: ${subjectPrefix(c.tests)}${path.basename(c.tests[0].file)} — ${c.tests.length} screenshot diff(s)`,
+              `[dry-run]   + task: ${qaseSubjectPrefix(c.tests)}${path.basename(c.tests[0].file)} — ${c.tests.length} screenshot diff(s)`,
             );
           } else {
             for (const t of c.tests)
@@ -1390,7 +1390,7 @@ function qaseList(c: Cluster): string {
  * one. The existing "(N tests)"-style count elsewhere in the same subject already covers how many
  * others are failing, so this deliberately doesn't repeat that count.
  */
-function subjectPrefix(tests: Failure[]): string {
+function qaseSubjectPrefix(tests: Failure[]): string {
   const first = tests.map((t) => t.qaseId).find(Boolean);
   // Release triage merges the enterprise suite's results in alongside the standard
   // one (see RESULTS_PATHS) — tag tasks made up entirely of enterprise specs so
