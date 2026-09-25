@@ -247,6 +247,11 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await this.page.goto(baseUrl.concat('#/settings/profile'));
   }
 
+  async goToSubscriptionsPage() {
+    const baseUrl = process.env.BASE_URL;
+    await this.page.goto(baseUrl.concat('#/settings/subscriptions'));
+  }
+
   async openGiveFeedbackPage() {
     await this.profileMenuButton.click();
     await this.helpLearningMenuItem.hover();

@@ -33,7 +33,7 @@ async function acceptTeamInvite(
   // goto fires, surfacing a stray "You don't have access to this project"
   // dialog on top of the team dashboard — let it settle first.
   await invitee.page.waitForLoadState('networkidle');
-  await invitee.page.goto(`/#/dashboard/recent?team-id=${teamId}`);
+  await new TeamPage(invitee.page).goToTeamDashboard(teamId);
 }
 
 enterprisePageTest.describe(
