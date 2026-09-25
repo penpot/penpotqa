@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Short tag, e.g. "2.18" — not the full build string. Same tag every day = same story.'
+        description: 'Release tag, e.g. "2.18" — not the full build string. Same tag every day = same story.'
         required: true
       report_run_id:
         description: 'Override: specific run id to triage (default: last scheduled daily run on main)'
