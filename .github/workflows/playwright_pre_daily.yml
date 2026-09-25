@@ -149,6 +149,9 @@ jobs:
           QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
           TESTDINO_TOKEN: ${{ secrets.TESTDINO_TOKEN }}
+          ENTERPRISE_SSO_ISSUER_URL: ${{ secrets.ENTERPRISE_SSO_ISSUER_URL }}
+          ENTERPRISE_SSO_CLIENT_ID: ${{ secrets.ENTERPRISE_SSO_CLIENT_ID }}
+          ENTERPRISE_SSO_CLIENT_SECRET: ${{ secrets.ENTERPRISE_SSO_CLIENT_SECRET }}
         run: npx playwright test --project=enterprise 2>&1 | tee test-output.log
 
       - name: Add Qase run link to summary
