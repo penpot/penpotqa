@@ -29,7 +29,7 @@ During **freeze week / release promotion**, once there's a scheduled daily PRE r
 
 **You don't need to prepare anything in Taiga first** — the story and every task in it are created for you the first time you run this for a given `release_tag`. Just fill in `release_tag` and hit run; everything else has a sane default.
 
-> **`release_tag` should be a short, stable name for the release, e.g. `2.18` — not the full deployed build string** (e.g. `2.18.0-RC6-2-g5b3e36489c`, which is what `app_version` in the digest shows). Use the exact same short tag every time you triage a run during this release's freeze week, so they all pile into the same story. If you paste the full build string instead, every new build opens its own story and you lose the running history — the workflow warns (in the job summary) if `release_tag` ends in a `-g<commit>` suffix, but doesn't block the run, since intentionally reusing an existing story's exact tag to keep adding to it is also valid.
+> **`release_tag` should be the release tag, e.g. `2.18` — not the full deployed build string** (e.g. `2.18.0-RC6-2-g5b3e36489c`, which is what `app_version` in the digest shows). Use the exact same short tag every time you triage a run during this release's freeze week, so they all pile into the same story. If you paste the full build string instead, every new build opens its own story and you lose the running history — the workflow warns (in the job summary) if `release_tag` ends in a `-g<commit>` suffix, but doesn't block the run, since intentionally reusing an existing story's exact tag to keep adding to it is also valid.
 
 ### What it does
 
@@ -95,7 +95,7 @@ In `group_by: folder` mode, **screenshot/visual-diff failures** are bundled into
 
 | Input           | Required | What it does                                                                                                                                      |
 | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `release_tag`   | ✅       | Short release name, e.g. `2.18` — **not** the full build string. Taiga story gets tagged `release-2.18`. See the callout above.                   |
+| `release_tag`   | ✅       | Release tag, e.g. `2.18` — **not** the full build string. Taiga story gets tagged `release-2.18`. See the callout above.                          |
 | `report_run_id` | ❌       | Only set if you want to triage a specific run instead of the latest scheduled daily run.                                                          |
 | `group_by`      | ❌       | `cluster` (default), `file`, or `folder` — controls task granularity in the story. See "What's in a task" for what `folder` mode does.            |
 | `epic_ref`      | ❌       | Taiga epic number to link the story under.                                                                                                        |
