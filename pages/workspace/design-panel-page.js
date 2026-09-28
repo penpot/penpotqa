@@ -686,9 +686,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async isFillHexCodeSetComponent(value) {
-    await expect(this.componentColorInput).toHaveValue(value.slice(1), {
-      timeout: 30000,
-    });
+    await expect(this.componentColorInput).toHaveValue(value.slice(1));
   }
 
   async isFillTokenColorSetComponent(value) {
