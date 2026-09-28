@@ -6,6 +6,7 @@ import { TeamPage } from '@pages/dashboard/team-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { SampleData } from 'helpers/sample-data';
 import { createTeamName } from 'helpers/teams/create-team-name';
 
@@ -74,6 +75,7 @@ mainAccountFileTest(
   async ({ page, mainPage }) => {
     const layersPanelPage = new LayersPanelPage(page);
     const designPanelPage = new DesignPanelPage(page);
+    const colorPalettePage = new ColorPalettePage(page);
 
     await mainAccountFileTest.step(
       'Create a component and convert it to a variant',
@@ -104,12 +106,11 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       `Change fill color of the "Value 2" variant`,
       async () => {
-        await layersPanelPage.selectLayerByName('Value 2');
-        await designPanelPage.setComponentColor(sampleData.color.blueHexCode);
-        await layersPanelPage.selectLayerByName('Value 2');
-        await designPanelPage.isFillHexCodeSetComponent(
-          sampleData.color.blueHexCode,
-        );
+        await layersPanelPage.collapseOrUncollapseLayerByName('Value 2');
+        await layersPanelPage.selectChildLayerByName('Value 2', 'Rectangle');
+        await designPanelPage.clickFillColorIcon();
+        await colorPalettePage.setHex(sampleData.color.blueHexCode);
+        await designPanelPage.isFillHexCodeSet(sampleData.color.blueHexCode);
         await mainPage.waitForChangeIsSaved();
       },
     );

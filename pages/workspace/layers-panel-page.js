@@ -146,6 +146,23 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.getLayerRowsBy(layerName, uncollapsedChildrenOnly).first().click();
   }
 
+  /**
+   * This function clicks on a child layer of the given parent layer, which must be already UNCOLLAPSED.
+   * Useful when several layers share the same name under different parents.
+   *
+   * @param {string} parentLayerName The name of the parent layer
+   * @param {string} childLayerName The name of the child layer to select
+   */
+  async selectChildLayerByName(parentLayerName, childLayerName) {
+    const parentId = await this.page
+      .getByRole('checkbox', { name: parentLayerName, exact: true })
+      .getAttribute('id');
+    await this.page
+      .getByTestId(`children-${parentId}`)
+      .getByRole('checkbox', { name: childLayerName, exact: true })
+      .click();
+  }
+
   async expandGroupOnLayersTab(groupName) {
     const groupToggleContent = this.page
       .getByRole('checkbox', { name: groupName })
