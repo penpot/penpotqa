@@ -598,10 +598,22 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(this.projectNameTitle.getByText(projectName)).toBeVisible();
   }
 
+  async waitForGetProjectsRequest() {
+    await this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/api/main/methods/get-projects') &&
+        response.request().method() === 'GET' &&
+        response.status() === 200,
+    );
+  }
+
   async isProjectTitleNotVisible(projectName) {
     const deletedProject = this.projectNameTitle.getByText(projectName, {
       exact: true,
     });
+
+    // Avoids a stale get-projects response resurrecting the deleted project.
+    await Promise.all([this.waitForGetProjectsRequest(), this.refreshPage()]);
 
     await expect(deletedProject, 'Project title should be hidden').toBeHidden({
       timeout: 15000,
