@@ -14,6 +14,7 @@ import { LoginPage } from '@pages/login-page';
 import { createDemoUser } from 'helpers/accounts/create-demo-user';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
+import { createSecondOrgFromAdminConsole } from 'helpers/organizations/create-second-org-from-admin-console';
 import { enterprisePageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
 enterprisePageTest.describe(
@@ -121,9 +122,11 @@ enterprisePageTest.describe(
             // Second org: already Enterprise, so this goes straight through
             // the org switcher's own "Create org" item — no Stripe involved.
             // Also makes it the most-recently-visited org.
-            await adminConsolePage.openOrgSwitcher();
-            await adminConsolePage.createOrganizationSwitcherItem.click();
-            await orgPage.createOrganization(secondOrgName);
+            await createSecondOrgFromAdminConsole(
+              adminConsolePage,
+              orgPage,
+              secondOrgName,
+            );
           },
         );
 
@@ -204,9 +207,11 @@ enterprisePageTest.describe(
               firstOrgName,
             );
 
-            await adminConsolePage.openOrgSwitcher();
-            await adminConsolePage.createOrganizationSwitcherItem.click();
-            await orgPage.createOrganization(secondOrgName);
+            await createSecondOrgFromAdminConsole(
+              adminConsolePage,
+              orgPage,
+              secondOrgName,
+            );
           },
         );
 

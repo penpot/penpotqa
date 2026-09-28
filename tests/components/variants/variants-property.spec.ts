@@ -377,6 +377,8 @@ mainAccountFileTest(
       await layersPanelPage.selectFirstLayerByNameJustForVisibleChildren(
         variantName,
       );
+      await layersPanelPage.isLayerWithNameSelected(variantName);
+      await designPanelPage.checkVariantPropertyValue('Property 1', variantName);
       await designPanelPage.enterVariantPropertyValue(
         'Property 1',
         newPropertyValue,

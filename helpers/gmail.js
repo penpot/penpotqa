@@ -125,6 +125,17 @@ async function getMessageSubject(email) {
     .catch(console.error);
 }
 
+/** Like getRegisterMessage(), but returns the raw body text as-is instead
+ * of requiring a URL in it — needed for emails with no link at all, e.g.
+ * the SSO-activation notice. */
+async function getMessageText(email) {
+  return authorize()
+    .then(async (auth) => {
+      return await listMessages(auth, email);
+    })
+    .catch(console.error);
+}
+
 async function getRequestAccessMessage(email) {
   return authorize()
     .then(async (auth) => {
@@ -175,6 +186,27 @@ async function checkEnterpriseInviteText(text, team, org) {
 async function checkEnterpriseInviteSubject(subject, team, org) {
   expect(subject).toContain(team);
   expect(subject).not.toContain(org);
+}
+
+/** The subject truncates the org name to a fixed prefix + an ellipsis when
+ * it's long — confirmed live at 25 characters — so this checks a shorter,
+ * always-present prefix instead of the full (possibly truncated) name. */
+async function checkSsoActivatedEmailSubject(subject, orgName) {
+  expect(subject).toContain(orgName.slice(0, 20));
+  expect(subject).toContain('uses single sign-on');
+}
+
+async function checkSsoActivatedEmailText(text, orgName) {
+  const messageText =
+    'Hi,\r\n' +
+    '\r\n' +
+    `"${orgName}" has set up single sign-on (SSO) in Penpot. Access to its teams and files now goes\r\n` +
+    "through your organization's identity provider.\r\n" +
+    '\r\n' +
+    "If you can't get in, your account probably isn't in the directory yet. To get access, contact the organization owner.\r\n" +
+    '\r\n' +
+    'The Penpot team.\r\n';
+  await expect(text).toBe(messageText);
 }
 
 async function checkRegisterText(text, name) {
@@ -381,35 +413,22 @@ async function waitMessage(page, email, timeoutSec = 40) {
   }
 }
 
+/** The common case: waits for an inbox to reach its 2nd message
+ * (registration + one invite). A thin wrapper over waitForMessageCount() —
+ * use that one directly instead when the account already has prior
+ * messages (e.g. registration + an already-accepted org invite) before a
+ * further invite is expected, or when waiting repeatedly against the same
+ * inbox (e.g. once per loop iteration), where a hardcoded `>=2` check would
+ * already be true after the first call and return instantly, letting
+ * waitMessage() return a stale, already-read message. */
 async function waitSecondMessage(page, email, timeoutSec = 40) {
-  const timeout = timeoutSec * 1000;
-  const interval = 4000;
-  const startTime = Date.now();
-  let count = 0;
-
-  await page.waitForTimeout(interval);
-  while (Date.now() - startTime < timeout) {
-    count = await getMessagesCount(email);
-    if (count >= 2) {
-      return 1;
-    }
-    await page.waitForTimeout(interval);
-  }
-
-  if (count < 2) {
-    throw new Error(
-      `Timeout reached: expected at least 2 messages, but got ${count}`,
-    );
-  }
-
-  return 1;
+  return waitForMessageCount(page, email, 2, timeoutSec);
 }
 
-/** Like waitSecondMessage(), but for an arbitrary target count — safe to
- * call repeatedly against the same inbox (e.g. once per loop iteration),
- * unlike waitSecondMessage()'s hardcoded >=2, which is already true after
- * the first call and would return instantly, letting waitMessage() return
- * a stale, already-read message. */
+/**
+ * Waits for an inbox to reach at least `count` messages — see
+ * waitSecondMessage() for the common `count = 2` case.
+ */
 async function waitForMessageCount(page, email, count, timeoutSec = 40) {
   const timeout = timeoutSec * 1000;
   const interval = 4000;
@@ -466,7 +485,10 @@ module.exports = {
   checkEnterpriseInviteSubject,
   getRegisterMessage,
   getMessageSubject,
+  getMessageText,
   getVerificationMessage,
+  checkSsoActivatedEmailSubject,
+  checkSsoActivatedEmailText,
   checkRegisterText,
   checkRecoveryText,
   checkNewEmailText,

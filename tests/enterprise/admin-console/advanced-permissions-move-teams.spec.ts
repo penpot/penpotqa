@@ -190,7 +190,7 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           'Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgA',
           async () => {
-            await page.goto(`/#/dashboard/recent?team-id=${teamId}`);
+            await teamPage.goToTeamDashboard(teamId);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.openChangeTeamOrgModal();
             await teamPage.isMoveTeamBlockedModalVisible(orgAName);
@@ -321,7 +321,7 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           'Move the team from OrgA to OrgB → completes without a restriction modal, team is now part of OrgB',
           async () => {
-            await page.goto(`/#/dashboard/recent?team-id=${teamId}`);
+            await teamPage.goToTeamDashboard(teamId);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.changeTeamOrganization(orgBName);
             await teamPage.isTeamPartOfOrganization(orgBName);

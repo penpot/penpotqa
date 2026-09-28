@@ -230,6 +230,13 @@ export class OrganizationPage extends BasePage {
     await this.welcomeModalCloseButton.click();
   }
 
+  /** Navigates to the dashboard root — built explicitly from BASE_URL
+   * rather than a relative goto(), same as LoginPage.goto(), so this works
+   * regardless of which context it's called from. */
+  async goto() {
+    await this.page.goto(`${process.env.BASE_URL}`);
+  }
+
   /** Opens the org switcher, unless it's already open — clicking the trigger
    * again would just toggle it closed instead. */
   async openOrgSwitcher() {
@@ -510,6 +517,24 @@ export class OrganizationPage extends BasePage {
       ),
       'No-longer-a-member notice is shown',
     ).toBeVisible({ timeout: 15000 });
+  }
+
+  /** Activating SSO force-redirects any member's existing dashboard session
+   * straight to the identity provider's own login page — a live push over
+   * the same connection as isNoLongerOrgMemberMessageShown() above.
+   * Confirmed live: lands within ~2s, no reload needed. `issuerUrl` is the
+   * same Issuer / authority URL configured in OrganizationSsoPage. */
+  async isRedirectedToSsoLogin(issuerUrl: string) {
+    const issuerOrigin = new URL(issuerUrl).origin;
+    await expect(
+      this.page,
+      `Redirected to the identity provider's login page (${issuerOrigin})`,
+    ).toHaveURL(
+      new RegExp(`^${issuerOrigin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`),
+      {
+        timeout: 30000,
+      },
+    );
   }
 
   /** A zero-org account has no org switcher trigger at all

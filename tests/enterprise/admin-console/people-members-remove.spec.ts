@@ -174,11 +174,11 @@ ownerAndInviteeActivatedTest.describe(
           async () => {
             await adminConsolePage.goToFiles();
             const inviteeDashboardPage = new DashboardPage(invitee.page);
-            // waitSecondMessage() only checks >=2 — already true after the
-            // first iteration, so it'd no-op and waitMessage() could return
-            // a stale, already-used invite. Track the expected count
-            // ourselves instead (starts at 1: invitee's own registration
-            // email).
+            // waitSecondMessage()'s hardcoded >=2 would already be true
+            // after the first iteration, so it'd no-op and waitMessage()
+            // could return a stale, already-used invite. Track the expected
+            // count ourselves instead (starts at 1: invitee's own
+            // registration email).
             let expectedMessageCount = 1;
             for (const teamName of teamNames) {
               await teamPage.createTeam(teamName);

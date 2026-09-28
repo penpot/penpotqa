@@ -48,10 +48,30 @@ export type AdvancedPermissionValue =
 export class AdvancedPermissionsPage extends BasePage {
   readonly permissionsSavedToast: Locator;
 
+  // New team members' "Organization members only" option — uniquely among
+  // the 4 permission groups, selecting it while the org has pending
+  // invitations to non-members shows this inline warning panel (not a
+  // modal, no role="dialog") instead of autosaving immediately.
+  readonly revokeInvitationsWarning: Locator;
+  readonly cancelRevokeInvitationsButton: Locator;
+  readonly applyAndRevokeInvitationsButton: Locator;
+
   constructor(page: Page) {
     super(page);
 
     this.permissionsSavedToast = page.getByText('Permissions updated successfully.');
+
+    this.revokeInvitationsWarning = page.getByText(
+      'Switching will permanently cancel all pending invitations to people outside your organization.',
+      { exact: true },
+    );
+    this.cancelRevokeInvitationsButton = page.getByRole('button', {
+      name: 'Cancel',
+      exact: true,
+    });
+    this.applyAndRevokeInvitationsButton = page.getByRole('button', {
+      name: 'Apply and revoke invitations',
+    });
   }
 
   /* -------------------------------------------------
@@ -101,9 +121,66 @@ export class AdvancedPermissionsPage extends BasePage {
     }).toPass({ timeout: 30000 });
   }
 
+  /**
+   * Clicks "Organization members only" and waits for the warning panel to
+   * appear, retrying if it doesn't (same hydration-race rationale as
+   * selectPermission()). Assumes the org actually has pending invitations
+   * to non-members — otherwise this option autosaves immediately like every
+   * other permission (see selectPermission() instead). Skips re-clicking
+   * once the radio is already checked (like selectPermission()), but always
+   * re-verifies the warning on every attempt — confirmed live that the
+   * radio can check before the warning has actually rendered, so checking
+   * it only inside the click branch let a retry silently "succeed" without
+   * ever confirming the warning was shown.
+   */
+  async clickOrganizationMembersOnlyExpectingWarning() {
+    await expect(async () => {
+      if (
+        !(await this.getPermissionRadio(
+          NewTeamMembersPermission.OrganizationMembersOnly,
+        ).isChecked())
+      ) {
+        await this.getPermissionLabel(
+          NewTeamMembersPermission.OrganizationMembersOnly,
+        ).click();
+      }
+      await expect(
+        this.revokeInvitationsWarning,
+        'Revoke-pending-invitations warning panel is shown',
+      ).toBeVisible({ timeout: 5000 });
+    }).toPass({ timeout: 30000 });
+  }
+
+  /** Confirms the warning panel raised by
+   * clickOrganizationMembersOnlyExpectingWarning(), applying the restriction
+   * and revoking every external pending invitation under the org. */
+  async confirmApplyAndRevokeInvitations() {
+    await this.applyAndRevokeInvitationsButton.click();
+    await expect(
+      this.permissionsSavedToast,
+      'Permissions updated successfully toast is shown',
+    ).toBeVisible();
+  }
+
+  async cancelApplyAndRevokeInvitations() {
+    await this.cancelRevokeInvitationsButton.click();
+  }
+
   /* -------------------------------------------------
    * Assertions
    * ------------------------------------------------- */
+
+  async isRevokeInvitationsWarningVisible(visible = true) {
+    visible
+      ? await expect(
+          this.revokeInvitationsWarning,
+          'Revoke-pending-invitations warning panel is shown',
+        ).toBeVisible()
+      : await expect(
+          this.revokeInvitationsWarning,
+          'Revoke-pending-invitations warning panel is not shown',
+        ).not.toBeVisible();
+  }
 
   async isPermissionVisible(value: AdvancedPermissionValue, visible = true) {
     const radio = this.getPermissionRadio(value);

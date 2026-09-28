@@ -108,6 +108,9 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
+          ENTERPRISE_SSO_ISSUER_URL: ${{ secrets.ENTERPRISE_SSO_ISSUER_URL }}
+          ENTERPRISE_SSO_CLIENT_ID: ${{ secrets.ENTERPRISE_SSO_CLIENT_ID }}
+          ENTERPRISE_SSO_CLIENT_SECRET: ${{ secrets.ENTERPRISE_SSO_CLIENT_SECRET }}
           TEST_MODE: ${{ github.event.inputs.test_mode }}
           TEST_FOLDER: ${{ github.event.inputs.test_folder }}
           TEST_SPEC: ${{ github.event.inputs.test_spec }}

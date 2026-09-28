@@ -40,6 +40,7 @@ import { AdminConsolePage } from '@pages/admin-console/admin-console-page';
 import { StripePage } from '@pages/dashboard/stripe-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { AdvancedPermissionsPage } from '@pages/admin-console/advanced-permissions-page';
+import { OrganizationSsoPage } from '@pages/admin-console/organization-sso-page';
 
 type EnterprisePageFixtures = {
   orgPage: OrganizationPage;
@@ -47,6 +48,7 @@ type EnterprisePageFixtures = {
   stripePage: StripePage;
   teamPage: TeamPage;
   advancedPermissionsPage: AdvancedPermissionsPage;
+  ssoPage: OrganizationSsoPage;
 };
 
 // --- enterprisePageTest -------------------------------------------------------
@@ -78,6 +80,9 @@ export const enterprisePageTest =
     },
     advancedPermissionsPage: async ({ page }, use) => {
       await use(new AdvancedPermissionsPage(page));
+    },
+    ssoPage: async ({ page }, use) => {
+      await use(new OrganizationSsoPage(page));
     },
   });
 
@@ -161,6 +166,9 @@ export const enterpriseActivatedPageTest =
     advancedPermissionsPage: async ({ page }, use) => {
       await use(new AdvancedPermissionsPage(page));
     },
+    ssoPage: async ({ page }, use) => {
+      await use(new OrganizationSsoPage(page));
+    },
   });
 
 // --- ownerAndInviteeTest -----------------------------------------------------
@@ -218,6 +226,9 @@ export const ownerAndInviteeTest = base.extend<OwnerAndInviteeFixtures>({
   },
   advancedPermissionsPage: async ({ ownerPage }, use) => {
     await use(new AdvancedPermissionsPage(ownerPage));
+  },
+  ssoPage: async ({ ownerPage }, use) => {
+    await use(new OrganizationSsoPage(ownerPage));
   },
 });
 

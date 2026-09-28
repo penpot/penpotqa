@@ -20,6 +20,7 @@ import { StripePage } from '@pages/dashboard/stripe-page';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
+import { createSecondOrgFromAdminConsole } from 'helpers/organizations/create-second-org-from-admin-console';
 import { loginAsDemoAccount } from 'helpers/accounts/login-as-demo-account';
 import { LoginPage } from '@pages/login-page';
 import { enterprisePageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
@@ -49,9 +50,11 @@ enterprisePageTest.describe(
               firstOrgName,
             );
 
-            await adminConsolePage.openOrgSwitcher();
-            await adminConsolePage.createOrganizationSwitcherItem.click();
-            await orgPage.createOrganization(secondOrgName);
+            await createSecondOrgFromAdminConsole(
+              adminConsolePage,
+              orgPage,
+              secondOrgName,
+            );
             await adminConsolePage.isDisplayingOrganization(secondOrgName);
 
             await adminConsolePage.goToFiles();
@@ -122,9 +125,11 @@ enterprisePageTest.describe(
 
             // Second org: already Enterprise, so this goes straight through
             // the org switcher's own "Create org" item — no Stripe involved.
-            await adminConsolePage.openOrgSwitcher();
-            await adminConsolePage.createOrganizationSwitcherItem.click();
-            await orgPage.createOrganization(secondOrgName);
+            await createSecondOrgFromAdminConsole(
+              adminConsolePage,
+              orgPage,
+              secondOrgName,
+            );
             await adminConsolePage.isDisplayingOrganization(secondOrgName);
           },
         );
@@ -313,7 +318,7 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'Back in Penpot: subscription page shows the plan active-until end date',
           async () => {
-            await page.goto('/#/settings/subscriptions');
+            await profilePage.goToSubscriptionsPage();
             await stripePage.isCancelsEndsVisible();
           },
         );
@@ -330,7 +335,7 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'Back in Penpot: Canceled/active-until state is cleared',
           async () => {
-            await page.goto('/#/settings/subscriptions');
+            await profilePage.goToSubscriptionsPage();
             await stripePage.isCancelsEndsVisible(false);
             await profilePage.checkSubscriptionName('Enterprise');
           },
@@ -388,7 +393,7 @@ enterprisePageTest.describe(
           await enterprisePageTest.step(
             'User A: "Try it free for 14 days" on the Enterprise sidebar widget → Contact Sales modal, no Stripe checkout',
             async () => {
-              await page.goto('/#/settings/subscriptions');
+              await profilePageA.goToSubscriptionsPage();
               await profilePageA.clickOnTryItFreeFor14DaysButton();
               await profilePageA.isContactSalesModalVisible();
               await stripePage.isOnStripeBillingPage(false);
@@ -422,7 +427,7 @@ enterprisePageTest.describe(
           await enterprisePageTest.step(
             'User B: "Try it free for 14 days" on the Unlimited plan card → Contact Sales modal, no Stripe checkout',
             async () => {
-              await userBPage.goto('/#/settings/subscriptions');
+              await profilePageB.goToSubscriptionsPage();
               await profilePageB.clickOnTryItFreeFor14DaysButton();
               await profilePageB.isContactSalesModalVisible();
               await stripePageB.isOnStripeBillingPage(false);
