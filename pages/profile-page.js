@@ -244,12 +244,12 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
   async goToAccountPage() {
     const baseUrl = process.env.BASE_URL;
-    await this.page.goto(baseUrl.concat('#/settings/profile'));
+    await this.page.goto(baseUrl.concat('?screen=settings-profile'));
   }
 
   async goToSubscriptionsPage() {
     const baseUrl = process.env.BASE_URL;
-    await this.page.goto(baseUrl.concat('#/settings/subscriptions'));
+    await this.page.goto(baseUrl.concat('?screen=settings-subscription'));
   }
 
   async openGiveFeedbackPage() {
@@ -382,7 +382,7 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
   async backToDashboardFromAccount() {
     await this.backToDashboardBtn.click();
-    await this.isHeaderDisplayed('Projects');
+    await this.isHeaderDisplayed('Personal Projects');
   }
 
   async selectLightTheme() {

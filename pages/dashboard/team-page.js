@@ -257,16 +257,16 @@ exports.TeamPage = class TeamPage extends BasePage {
    * manually-created contexts. */
   async goToTeamDashboard(teamId) {
     await this.page.goto(
-      `${process.env.BASE_URL}#/dashboard/recent?team-id=${teamId}`,
+      `${process.env.BASE_URL}?screen=dashboard-recent&team-id=${teamId}`,
     );
   }
 
   /** Checks the URL itself shows a team's own dashboard
-   * (/dashboard/recent?team-id=...) — use alongside isTeamSelected(), which
+   * (?screen=dashboard-recent&team-id=...) — use alongside isTeamSelected(), which
    * only checks the displayed team name, not the URL. */
   async isOnTeamDashboardUrl() {
     await expect(this.page, "On a team's own dashboard URL").toHaveURL(
-      /\/dashboard\/recent\?team-id=/,
+      /\?screen=dashboard-recent&team-id=/,
     );
   }
 

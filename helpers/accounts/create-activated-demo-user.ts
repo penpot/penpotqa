@@ -13,7 +13,7 @@ export async function createActivatedDemoUser(page: Page) {
   await page.goto('/');
   await dashboardPage.isDashboardOpenedAfterLogin();
   await dashboardPage.acceptCookie();
-  await dashboardPage.isHeaderDisplayed('Projects');
+  await dashboardPage.isHeaderDisplayed('Personal Projects');
   await dashboardPage.skipWhatNewsPopUp();
   await dashboardPage.skipPluginsPopUp();
 }

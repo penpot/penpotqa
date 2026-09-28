@@ -168,7 +168,7 @@ test(qase([36], 'Create demo account'), async () => {
   });
 
   await test.step('Verify the dashboard is opened', async () => {
-    await dashboardPage.isHeaderDisplayed('Projects');
+    await dashboardPage.isHeaderDisplayed('Personal Projects');
   });
 });
 
