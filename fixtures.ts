@@ -32,7 +32,7 @@ export const mainTest = test.extend({
     await loginPage.enterPwd(process.env.LOGIN_PWD!);
     await loginPage.clickLoginButton();
     await dashboardPage.isDashboardOpenedAfterLogin();
-    await dashboardPage.isHeaderDisplayed('Projects');
+    await dashboardPage.isHeaderDisplayed('Personal Projects');
     await dashboardPage.skipWhatNewsPopUp();
     await dashboardPage.skipPluginsPopUp();
     await use(page);

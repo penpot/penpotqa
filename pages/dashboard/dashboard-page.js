@@ -428,7 +428,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async isDashboardOpenedAfterLogin() {
-    await this.page.waitForURL(/.*dashboard\/recent\?team-id/, {
+    await this.page.waitForURL(/.*dashboard-recent\&team-id/, {
       waitUntil: 'load',
     });
   }

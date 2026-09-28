@@ -515,7 +515,7 @@ exports.BasePage = class BasePage {
   }
 
   async makeBadDashboardUrl(url) {
-    return url.replace(/(\?team-id=).../, '$1555');
+    return url.replace(/(\&team-id=).../, '$1555');
   }
 
   async typeNameForShapeLabel(newName) {
