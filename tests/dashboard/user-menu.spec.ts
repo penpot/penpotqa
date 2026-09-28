@@ -10,7 +10,7 @@ let profilePage: ProfilePage;
 mainTest.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
-  await dashboardPage.isHeaderDisplayed('Projects');
+  await dashboardPage.isHeaderDisplayed('Personal Projects');
 });
 
 mainTest(qase([1204], 'User menu - check menu items (links)'), async () => {

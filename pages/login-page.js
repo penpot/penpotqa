@@ -32,7 +32,7 @@ exports.LoginPage = class LoginPage extends BasePage {
    * (confirmed directly), but that's a fixture-specific nuance this
    * doesn't need to depend on. */
   async goto() {
-    await this.page.goto(`${process.env.BASE_URL}#/auth/login`);
+    await this.page.goto(`${process.env.BASE_URL}?screen=auth-login`);
   }
 
   async enterEmail(loginEmail) {
@@ -104,10 +104,10 @@ exports.LoginPage = class LoginPage extends BasePage {
 
   /** Checks the URL itself, in addition to isLoginPageOpened() checking the
    * heading — use when a case cares specifically about being redirected to
-   * /#/auth/login (e.g. after hitting a protected page while logged out). */
+   * ?screen=auth-login (e.g. after hitting a protected page while logged out). */
   async isLoginPageUrlShown() {
     await expect(this.page, 'Redirected to the login page').toHaveURL(
-      /\/#\/auth\/login/,
+      /\?screen=auth-login/,
     );
   }
 
