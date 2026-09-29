@@ -8,7 +8,7 @@ import { waitSecondMessage, getRegisterMessage } from 'helpers/gmail';
  * modal, and the (Tailwind/design-system, not the older BEM-styled modal)
  * "Create organization" naming dialog reached either from the Admin Console
  * welcome screen (first org, right after a Stripe checkout) or from the org
- * switcher dropdown's "Create org" item (subsequent orgs, no checkout).
+ * switcher dropdown's "Create new organization" item (subsequent orgs, no checkout).
  *
  * Once the browser has actually navigated into an organization's Admin
  * Console, that's AdminConsolePage's territory instead
@@ -17,7 +17,6 @@ import { waitSecondMessage, getRegisterMessage } from 'helpers/gmail';
  */
 export class OrganizationPage extends BasePage {
   // Sidebar entry points
-  readonly createOrgSidebarButton: Locator;
   readonly orgSwitcherButton: Locator;
   readonly sidebarPromoWidget: Locator;
   // Two state-dependent buttons inside sidebarPromoWidget: unlicensed it
@@ -65,8 +64,7 @@ export class OrganizationPage extends BasePage {
   readonly goToAdminConsoleDropdownItem: Locator;
   readonly otherTeamsDropdownItem: Locator;
 
-  // Organization options menu — a separate three-dot button next to the
-  // org switcher, not part of its dropdown. "Leave org" only appears here.
+  // "Team management" menu (three-dot button next to the org/team switcher)
   readonly organizationOptionsButton: Locator;
   readonly leaveOrgMenuItem: Locator;
   readonly promoteAndLeaveButton: Locator;
@@ -84,11 +82,10 @@ export class OrganizationPage extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    this.createOrgSidebarButton = page.locator(
-      '.main_ui_dashboard_sidebar__create-organization',
-    );
+    // Same combined org/team switcher button as TeamPage.teamCurrentBtn —
+    // organizations and teams share one dropdown.
     this.orgSwitcherButton = page.locator(
-      '.main_ui_dashboard_sidebar__current-organization',
+      'button[class*="organization_team_switch__current-selection"]',
     );
     this.sidebarPromoWidget = page.locator(
       '.main_ui_dashboard_subscription__nitrate-banner',
@@ -152,10 +149,14 @@ export class OrganizationPage extends BasePage {
       'input.main_ui_settings_subscription__primary-button',
     );
 
-    this.orgDropdown = page.getByRole('menu');
+    // Scoped by its "Create new organization" item so it isn't confused with
+    // the "Team management" options menu, which is also `role="menu"`.
+    this.orgDropdown = page.getByRole('menu').filter({
+      has: page.getByRole('menuitem', { name: 'Create new organization' }),
+    });
     this.orgDropdownItem = this.orgDropdown.getByRole('menuitem');
     this.createOrgDropdownItem = this.orgDropdownItem.filter({
-      hasText: 'Create org',
+      hasText: 'Create new organization',
     });
     this.goToAdminConsoleDropdownItem = this.orgDropdownItem.filter({
       hasText: 'Go to Admin Console',
@@ -164,9 +165,7 @@ export class OrganizationPage extends BasePage {
       hasText: 'Other teams',
     });
 
-    this.organizationOptionsButton = page.locator(
-      '.main_ui_dashboard_sidebar__organization-options-btn',
-    );
+    this.organizationOptionsButton = page.getByTestId('team-options-button');
     this.leaveOrgMenuItem = page.getByRole('menuitem', { name: 'Leave org' });
     this.promoteAndLeaveButton = page.getByRole('button', {
       name: 'Promote and leave',
@@ -197,7 +196,8 @@ export class OrganizationPage extends BasePage {
    * ------------------------------------------------- */
 
   async clickCreateOrgFromSidebar() {
-    await this.createOrgSidebarButton.click();
+    await this.openOrgSwitcher();
+    await this.clickCreateOrgFromDropdown();
   }
 
   async clickTryItFreeButton() {
@@ -297,7 +297,7 @@ export class OrganizationPage extends BasePage {
   /**
    * Fills and submits the "Create organization" naming modal. Assumes the
    * modal is already open (via the Admin Console welcome CTA or the org
-   * switcher dropdown's "Create org" item).
+   * switcher dropdown's "Create new organization" item).
    */
   async createOrganization(orgName: string) {
     await this.fillOrgName(orgName);
@@ -358,11 +358,11 @@ export class OrganizationPage extends BasePage {
     visible
       ? await expect(
           this.createOrgDropdownItem,
-          '"Create org" dropdown item is visible',
+          '"Create new organization" dropdown item is visible',
         ).toBeVisible()
       : await expect(
           this.createOrgDropdownItem,
-          '"Create org" dropdown item is not visible',
+          '"Create new organization" dropdown item is not visible',
         ).toHaveCount(0);
   }
 
@@ -474,7 +474,7 @@ export class OrganizationPage extends BasePage {
     await expect(
       this.page,
       'Redirected to the subscriptions settings page',
-    ).toHaveURL(/\/settings\/subscriptions/);
+    ).toHaveURL(/\?screen=settings-subscription/);
   }
 
   /** Asserts the post-checkout redirect landed back on Penpot with the
@@ -537,14 +537,15 @@ export class OrganizationPage extends BasePage {
     );
   }
 
-  /** A zero-org account has no org switcher trigger at all
-   * (nothing to switch between) — the "+ Create org" sidebar button is the
-   * reliable signal instead of trying to open a switcher that doesn't exist. */
+  /** While the account belongs to an org, the combined org/team switcher
+   * shows that org's name under the current team; a zero-org account has no
+   * org name there at all. */
   async isZeroOrgAccountStateShown() {
+    await expect(this.orgSwitcherButton, 'Org/team switcher is shown').toBeVisible();
     await expect(
-      this.createOrgSidebarButton,
-      'Back to a zero-org account — "+ Create org" sidebar entry point shown',
-    ).toBeVisible();
+      this.orgSwitcherButton.locator('[class*="current-organization-name"]'),
+      'Back to a zero-org account — no organization name in the switcher',
+    ).toHaveCount(0);
   }
 
   /** Only shown when leaving would orphan a team you own — no picker,

@@ -9,22 +9,28 @@ exports.TeamPage = class TeamPage extends BasePage {
     super(page);
 
     // Teams
-    this.teamCurrentBtn = page.locator('button[class*="current-team"]');
-    this.teamList = page.locator('ul[class*="teams-dropdown"]');
+    // Combined org/team switcher — one button and one `role="menu"` dropdown
+    // for both organizations and teams. The dropdown is scoped by its
+    // "Create new team" item so it isn't confused with the "Team management"
+    // options menu, which is also `role="menu"`.
+    this.teamCurrentBtn = page.locator(
+      'button[class*="organization_team_switch__current-selection"]',
+    );
     this.createNewTeamMenuItem = page.getByRole('menuitem', {
       name: 'Create new team',
     });
+    this.teamList = page
+      .getByRole('menu')
+      .filter({ has: this.createNewTeamMenuItem });
     this.teamNameInput = page.locator('#name');
     this.createNewTeamButton = page.getByRole('button', { name: 'Create new team' });
-    this.teamCurrentNameDiv = page.locator(
-      'button[class*="current-team"] div[class*="team-name"]',
+    this.teamCurrentNameDiv = this.teamCurrentBtn.locator(
+      'span[class*="current-team-name"]',
     );
     this.teamNameLabel = page.locator(
       '//div[text()="Team info"]/following-sibling::div[1]',
     );
-    this.teamOptionsMenuButton = page.getByRole('button', {
-      name: 'team-management',
-    });
+    this.teamOptionsMenuButton = page.getByTestId('team-options-button');
     this.deleteTeamMenuItem = page.getByRole('menuitem', { name: 'Delete team' });
     this.deleteTeamButton = page.getByRole('button', { name: 'Delete team' });
     this.teamSettingsMenuItem = page.getByRole('menuitem', { name: 'Settings' });
@@ -226,7 +232,9 @@ exports.TeamPage = class TeamPage extends BasePage {
       'use[href="#icon-character-u"]',
     );
     this.teamPlanName = page.locator('[class*="subscription__team-text"]');
-    this.teamCurrentBtnText = this.teamCurrentBtn.locator('span[class*="text"]');
+    this.teamCurrentBtnText = this.teamCurrentBtn.locator(
+      'span[class*="current-team-name"]',
+    );
   }
 
   async createTeam(teamName) {
@@ -525,7 +533,7 @@ exports.TeamPage = class TeamPage extends BasePage {
    * retries the click itself, not just the list check: confirmed live
    * that clicking the target team can silently land back on Personal
    * Projects instead (a structurally different view with no
-   * team-management button at all — waiting for one there would time out
+   * "Team management" button at all — waiting for one there would time out
    * indefinitely, not just briefly race). isTeamSelected()'s own check
    * gets a short timeout here so a full click-and-check cycle stays quick
    * enough to actually get several real attempts within the 30s budget,
