@@ -3,8 +3,8 @@ import { AdminConsolePage } from '@pages/admin-console/admin-console-page';
 import { StripePage } from '@pages/dashboard/stripe-page';
 
 /**
- * The most common Enterprise test setup: from the dashboard sidebar's
- * "+ Create org" button, through a real Stripe checkout, to a named
+ * The most common Enterprise test setup: from the org/team switcher's
+ * "Create new organization" item, through a real Stripe checkout, to a named
  * organization. Deduplicated from 17 call sites in 11 spec files — see
  * `tests/enterprise/README.md`'s "How Enterprise entitlement actually
  * works" for the Stripe vs. activation-code (`enterpriseActivatedPageTest`)
