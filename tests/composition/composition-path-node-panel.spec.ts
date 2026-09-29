@@ -12,8 +12,16 @@ mainAccountFileTest.describe(() => {
     await mainPage.openNodesPanelViaRightClick();
   });
 
-  mainAccountFileTest(
+  mainAccountFileTest.skip(
     qase([544], 'Add nodes (via Node panel and SHIFT++ shortcut)'),
+    {
+      tag: ['@deprecated', '@to-delete'],
+      annotation: {
+        type: 'deprecated',
+        description:
+          'Add node button removed in 2.19. Replaced by PENPOT-3700; delete once it is automated.',
+      },
+    },
     async ({ mainPage }) => {
       await mainAccountFileTest.step(
         'Add node via node panel for two selected nodes',
@@ -56,8 +64,16 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  mainAccountFileTest.skip(
     qase([545], 'Delete node (via Node panel and Del shortcut)'),
+    {
+      tag: '@outdated',
+      annotation: {
+        type: 'outdated',
+        description:
+          'Delete node button removed in 2.19. Test rewrite pending: keep only the Del/Backspace key, the path heals.',
+      },
+    },
     async ({ mainPage }) => {
       await mainAccountFileTest.step(
         'Delete first node via node panel',
@@ -97,8 +113,16 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  mainAccountFileTest.skip(
     qase([547], 'Merge nodes (via Node panel and CTRL+J shortcut)'),
+    {
+      tag: '@outdated',
+      annotation: {
+        type: 'outdated',
+        description:
+          'Node panel buttons now appear/disappear instead of becoming active/inactive in 2.19. Rewrite pending, including the new subpath merge steps.',
+      },
+    },
     async ({ mainPage }) => {
       await mainAccountFileTest.step('Merge two nodes via node panel', async () => {
         await mainPage.holdShiftKeyboardButton();
@@ -141,8 +165,16 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  mainAccountFileTest.skip(
     qase([548], 'Join nodes (via Node panel and J shortcut)'),
+    {
+      tag: '@outdated',
+      annotation: {
+        type: 'outdated',
+        description:
+          'Node panel buttons now appear/disappear instead of becoming active/inactive in 2.19. Test update pending.',
+      },
+    },
     async ({ mainPage }) => {
       await mainAccountFileTest.step('Draw new nodes on canvas', async () => {
         await mainPage.clickDrawNodesButtonOnNodePanel();
@@ -191,8 +223,16 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  mainAccountFileTest.skip(
     qase([549], 'Separate nodes (via Node panel and K shortcut)'),
+    {
+      tag: '@outdated',
+      annotation: {
+        type: 'outdated',
+        description:
+          'Node panel buttons now appear/disappear instead of becoming active/inactive in 2.19. Test update pending.',
+      },
+    },
     async ({ mainPage }) => {
       await mainAccountFileTest.step(
         'Separate two nodes via node panel',
@@ -241,8 +281,16 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  mainAccountFileTest.skip(
     qase([550], 'To corner (via Node panel and X shortcut) - single node'),
+    {
+      tag: '@outdated',
+      annotation: {
+        type: 'outdated',
+        description:
+          'Node panel buttons now appear/disappear instead of becoming active/inactive in 2.19. Test update pending.',
+      },
+    },
     async ({ mainPage }) => {
       await mainAccountFileTest.step(
         'Convert first node to corner via node panel',
@@ -289,8 +337,16 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest(
+mainAccountFileTest.skip(
   qase([552], 'To curve (via Node panel and C shortcut) - single node'),
+  {
+    tag: '@outdated',
+    annotation: {
+      type: 'outdated',
+      description:
+        'Node panel buttons now appear/disappear instead of becoming active/inactive in 2.19. Test update pending.',
+    },
+  },
   async ({ mainPage }) => {
     await mainAccountFileTest.step(
       'Create rectangle and transform to path',

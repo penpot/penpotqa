@@ -27,8 +27,16 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+mainAccountFileTest.skip(
   qase([489], 'Create Path (Toolbar) - opened'),
+  {
+    tag: '@outdated',
+    annotation: {
+      type: 'outdated',
+      description:
+        'Esc now finishes the path and keeps it open for editing in 2.19. Test update pending.',
+    },
+  },
   async ({ mainPage }) => {
     await mainPage.createDefaultOpenPath();
     await mainPage.isCreatedLayerVisible();
