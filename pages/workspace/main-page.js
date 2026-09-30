@@ -1059,8 +1059,10 @@ exports.MainPage = class MainPage extends BasePage {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
     await this.pasteTextFromKeyboard(text);
-    await expect(this.textbox).toHaveText(text);
     await this.clickMoveButton();
+    // The WASM text editor doesn't sync pasted content back into the contenteditable DOM,
+    // so the layer name (auto-set from the text, only after exiting edit mode) is checked instead.
+    await expect(this.createdLayer).toContainText(text.substring(0, 50));
     await this.waitForChangeIsSaved();
   }
 
