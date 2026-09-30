@@ -21,7 +21,7 @@ demoAccountApiFixture(
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
     await dashboardPage.createFileViaPlaceholder();
     await mainPage.isMainPageLoaded();
-    await mainPage.backToDashboardFromFileEditor();
+    await mainPage.backToDashboardFromFileEditor('Personal Projects');
 
     await expect(dashboardPage.dashboardSection).toHaveScreenshot(
       'dashboard-image.png',

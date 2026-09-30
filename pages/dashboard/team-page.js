@@ -581,7 +581,9 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isTeamDeleted(teamName) {
-    await expect(this.page.getByText('Personal Projects')).toBeVisible({
+    await expect(
+      this.page.getByRole('heading', { name: 'Personal Projects' }),
+    ).toBeVisible({
       timeout: 8000,
     });
     await this.openTeamsListIfClosed();

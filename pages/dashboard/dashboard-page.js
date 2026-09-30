@@ -9,6 +9,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     super(page);
 
     // Dashboard Header
+    this.dashboardHeaderContainer = page.getByTestId('dashboard-header');
     this.addProjectButton = page.getByRole('button', { name: 'New project' });
     this.alertMessage = page.getByRole('alert');
     this.personalProjectsText = page.getByText('Personal Projects');
@@ -49,17 +50,23 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       'div[class*="dashboard-grid"] button[class*="create-new"]',
     );
     this.moveButton = page.getByRole('button', { name: 'Move' });
-    this.createFileButtonTitlePanel = page.getByTestId('project-new-file');
+    this.createFileButtonTitlePanel = page.getByRole('button', {
+      name: '+ New File',
+    });
     this.createFileButtonDraftsTab = page.getByTestId('new-file');
     this.renameFileMenuItem = page.getByTestId('file-rename');
     this.duplicateFileMenuItem = page.getByRole('menuitem', { name: 'Duplicate' });
-    this.addFileAsSharedLibraryMenuItem = page.getByTestId('file-add-shared');
+    this.addFileAsSharedLibraryMenuItem = page
+      .getByTestId('file-shared-toggle')
+      .filter({ hasText: 'Add as Shared Library' });
     this.addFileAsSharedLibraryButton = page.getByRole('button', {
       name: 'Add as Shared Library',
     });
     this.sharedLibraryIcon = page.locator('use[href="#icon-library"]');
-    this.delFileAsSharedLibraryMenuItem = page.getByTestId('file-del-shared');
-    this.delFileAsSharedLibraryButton = page.getByRole('button', {
+    this.unpublishFileAsSharedLibraryMenuItem = page
+      .getByTestId('file-shared-toggle')
+      .filter({ hasText: 'Unpublish' });
+    this.unpublishFileAsSharedLibraryButton = page.getByRole('button', {
       name: 'Unpublish',
     });
     this.moveToFileMenuItem = page.getByTestId('file-move-to');
@@ -75,7 +82,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .locator('.main_ui_dashboard_grid__library-thumbnail');
     this.downloadFilePenpotMenuItem = page.getByTestId('download-binary-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
-    this.downloadFileTickIcon = page.locator('use[href="#icon-tick"]');
+    this.downloadFileTickIcon = page.locator('use[href="#icon-status-tick"]');
     this.downloadFileCloseButton = page
       .getByRole('button', { name: 'Close' })
       .getByText('Close', { exact: true });
@@ -84,8 +91,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .first()
       .getByRole('button', { name: 'Options' });
     this.fileOptionsMenu = page.getByRole('menu');
-    this.headerOptionsMenuButton = page.locator(
-      'div[title="Options"] svg[class*="files__menu-icon"]',
+    this.headerOptionsMenuButton = this.dashboardHeaderContainer.getByRole(
+      'button',
+      { name: 'Options' },
     );
     this.dashboardFilesItemDate = page.locator('[class*="list-item-date"]');
 
@@ -100,12 +108,19 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.projectOptions = page.getByRole('button', { name: 'Options' }).first();
 
     // Projects > Options Context Menu
-    this.deleteProjectMenuItem =
-      this.projectsContainer.getByTestId('project-delete');
-    this.renameProjectMenuItem =
-      this.projectsContainer.getByTestId('project-rename');
-    this.duplicateProjectMenuItem =
-      this.projectsContainer.getByTestId('project-duplicate');
+    this.projectOptionsMenuContainer = page.getByRole('menu');
+    this.deleteProjectMenuItem = this.projectOptionsMenuContainer.getByRole(
+      'menuitem',
+      { name: 'Delete', exact: true },
+    );
+    this.renameProjectMenuItem = this.projectOptionsMenuContainer.getByRole(
+      'menuitem',
+      { name: 'Rename', exact: true },
+    );
+    this.duplicateProjectMenuItem = this.projectOptionsMenuContainer.getByRole(
+      'menuitem',
+      { name: 'Duplicate', exact: true },
+    );
     this.pinUnpinProjectButton = this.projectsContainer.getByRole('button', {
       name: 'Pin/Unpin',
     });
@@ -122,9 +137,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.feedbackBanner = this.importModal.locator(
       'aside[class*="main_ui_notifications"]',
     );
-    this.feedbackBannerMessage = this.importModal.locator(
-      'div[class*="main_ui_notifications_context_notification__context-text"]',
-    );
+    this.feedbackBannerMessage = this.importModal.getByRole('alert').first();
     this.feedbackBannerDisclaimer = this.importModal.locator(
       '.main_ui_dashboard_import__import-error-disclaimer',
     );
@@ -507,16 +520,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.addFileAsSharedLibraryButton.click();
   }
 
-  async deleteFileAsSharedLibraryViaRightclick() {
+  async unpublishFileAsSharedLibraryViaRightclick() {
     await this.fileTile.first().click({ button: 'right' });
-    await this.delFileAsSharedLibraryMenuItem.click();
-    await this.delFileAsSharedLibraryButton.click();
+    await this.unpublishFileAsSharedLibraryMenuItem.click();
+    await this.unpublishFileAsSharedLibraryButton.click();
   }
 
-  async deleteFileAsSharedLibraryViaOptionsIcon() {
+  async unpublishFileAsSharedLibraryViaOptionsIcon() {
     await this.clickOnFileOptions();
-    await this.delFileAsSharedLibraryMenuItem.click();
-    await this.delFileAsSharedLibraryButton.click();
+    await this.unpublishFileAsSharedLibraryMenuItem.click();
+    await this.unpublishFileAsSharedLibraryButton.click();
   }
 
   async isSharedLibraryIconDisplayed() {
