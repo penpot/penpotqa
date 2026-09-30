@@ -492,14 +492,11 @@ mainAccountFileTest(
       await expect(mainPage.viewport).toHaveScreenshot('text-align-left.png', {
         mask: mainPage.maskViewport(),
       });
-      await mainPage.focusLayerViaShortcut();
     });
 
     await mainAccountFileTest.step('Align center', async () => {
       await designPanelPage.changeTextOption('Center');
       await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await mainPage.clickOnLayerOnCanvas();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-center.png', {
         mask: mainPage.maskViewport(),
       });
@@ -508,8 +505,6 @@ mainAccountFileTest(
     await mainAccountFileTest.step('Align right', async () => {
       await designPanelPage.changeTextOption('Right');
       await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await mainPage.clickOnLayerOnCanvas();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-right.png', {
         mask: mainPage.maskViewport(),
       });
@@ -518,8 +513,6 @@ mainAccountFileTest(
     await mainAccountFileTest.step('Justify', async () => {
       await designPanelPage.changeTextOption('Justify');
       await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await mainPage.clickOnLayerOnCanvas();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-justify.png', {
         mask: mainPage.maskViewport(),
       });
