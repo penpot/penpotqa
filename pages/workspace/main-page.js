@@ -72,7 +72,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.gridEditorToolBar = page.getByText('Editing grid').locator('..');
 
     //Viewport
-    this.textbox = this.viewport.getByRole('textbox').first();
+    this.textbox = page.getByTestId('text-editor-container');
     this.guides = page.locator('.guides .new-guides');
     this.rulers = page.locator('.rulers');
     this.horizontalRulerTrack = page.locator(
