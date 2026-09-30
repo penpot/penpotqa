@@ -92,6 +92,24 @@ exports.RegisterPage = class RegisterPage extends BasePage {
     ).toHaveText(error);
   }
 
+  async isEmailInputErrorNotVisible() {
+    await expect(
+      this.emailInputError,
+      `Email input error is not displayed`,
+    ).not.toBeVisible();
+  }
+
+  async isCreateAccountButtonEnabled() {
+    await expect(
+      this.createAccountButton,
+      `Create account button is enabled`,
+    ).toBeEnabled();
+  }
+
+  async isToastNotDisplayed() {
+    await expect(this.successMessage, `No toast is displayed`).not.toBeVisible();
+  }
+
   async isPasswordInputHintVisible() {
     await expect(
       this.passwordInputHint,
