@@ -181,5 +181,13 @@ test(qase([54], 'Sign up with email of existing user'), async () => {
 
   await test.step('Verify the existing user error is displayed', async () => {
     await registerPage.isEmailInputErrorVisible('Email already used');
+    await registerPage.isToastNotDisplayed();
+    await registerPage.isCreateAccountButtonDisabled();
+  });
+
+  await test.step('Change the email and verify the error disappears', async () => {
+    await registerPage.enterEmail(`changed.${email}`);
+    await registerPage.isEmailInputErrorNotVisible();
+    await registerPage.isCreateAccountButtonEnabled();
   });
 });
