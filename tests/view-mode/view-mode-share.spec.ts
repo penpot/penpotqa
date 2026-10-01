@@ -148,7 +148,7 @@ mainAccountFileTest.describe(() => {
 
       await mainAccountFileTest.step('Return to dashboard and log out', async () => {
         await viewModePage.gotoLink(process.env.BASE_URL);
-        await mainPage.isHeaderDisplayed('Projects');
+        await mainPage.isHeaderDisplayed('Personal Projects');
         await profilePage.logout();
       });
     },
@@ -234,7 +234,7 @@ mainAccountFileTest.describe(() => {
 
       await mainAccountFileTest.step('Return to dashboard and log out', async () => {
         await viewModePage.gotoLink(process.env.BASE_URL);
-        await mainPage.isHeaderDisplayed('Projects');
+        await mainPage.isHeaderDisplayed('Personal Projects');
         await loginPage.acceptCookie();
         await profilePage.logout();
       });

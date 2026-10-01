@@ -19,9 +19,9 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
       'div[class*="layout-row"] div[title="Row gap"]',
     );
     this.codeTabButton = page.getByRole('tab', { name: 'code' });
-    this.inspectTabSelector = page.locator(
-      'button[aria-label="inspect.tabs-switcher-label"]',
-    );
+    this.inspectTabSelector = page.getByRole('combobox', {
+      name: 'Switch inspect tab',
+    });
     this.codeOption = page.getByRole('option', { name: 'Code' });
     this.computedOption = page.getByRole('option', { name: 'Computed' });
     this.copyCssCodeButton = page.locator('button[class*="css-copy-btn"]');

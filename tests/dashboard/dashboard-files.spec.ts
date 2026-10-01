@@ -139,7 +139,7 @@ mainTest.describe('Files management', () => {
   mainTest(
     qase(
       [1119, 1120],
-      'Add file as Shared Library in Project via right click and delete via right click',
+      'Add file as Shared Library in Project via right click and unpublish via right click',
     ),
     async () => {
       await mainTest.step(
@@ -151,9 +151,9 @@ mainTest.describe('Files management', () => {
       );
 
       await mainTest.step(
-        '(1120) Remove file as Shared Library (in project)',
+        '(1120) Unpublish file as Shared Library (in project)',
         async () => {
-          await dashboardPage.deleteFileAsSharedLibraryViaRightclick();
+          await dashboardPage.unpublishFileAsSharedLibraryViaRightclick();
           await dashboardPage.isSharedLibraryIconNotDisplayed();
         },
       );

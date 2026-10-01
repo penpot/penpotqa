@@ -156,6 +156,12 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
     // Shared Libraries - Modal
     this.librariesModal = page.locator('.main_ui_workspace_libraries__modal-dialog');
+    this.librariesThisFileTab = this.librariesModal.getByRole('tab', {
+      name: 'This file',
+    });
+    this.librariesListTab = this.librariesModal.getByRole('tab', {
+      name: 'LIBRARIES',
+    });
     this.librariesUpdatesTab = this.librariesModal.getByRole('tab', {
       name: 'UPDATES',
     });
@@ -523,6 +529,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async isSharedLibraryVisibleByName(name, visible = true) {
+    await this.clickLibrariesListTab();
     const elem = this.page
       .locator(`div[data-testid="library-item"]:has-text("${name}")`)
       .getByRole('button');
@@ -558,6 +565,10 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.wrapperDismissButton.click();
   }
 
+  async clickLibrariesListTab() {
+    await this.librariesListTab.click();
+  }
+
   async clickUpdatesTab() {
     await this.librariesUpdatesTab.click();
   }
@@ -571,6 +582,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async searchSharedLibraries(name) {
+    await this.clickLibrariesListTab();
     await this.librariesSearchInput.click();
     await this.librariesSearchInput.pressSequentially(name);
     await this.page.keyboard.press('Enter');
@@ -644,6 +656,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async firstLibraryItemContainsLibraryName(name) {
+    await this.clickLibrariesListTab();
     await expect(
       this.getLibraryItemByName(name).first(),
       `Library item contains text "${name}"`,
@@ -671,6 +684,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async importTokensFromSharedLibraryByName(name) {
+    await this.librariesThisFileTab.click();
     await this.getLibraryItemByName(name)
       .getByRole('button', { name: 'Import tokens' })
       .click();
