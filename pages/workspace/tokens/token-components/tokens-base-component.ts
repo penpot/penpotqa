@@ -576,8 +576,6 @@ export class TokensComponent {
   }
 
   async expandAllTokens() {
-    // only toggle collapsed groups (some may already be expanded); bottom-up so
-    // expanded content doesn't shift the indices still to visit
     await expect(this.expandTokensButton.first()).toBeVisible();
     const count = await this.expandTokensButton.count();
     for (let i = count - 1; i >= 0; i--) {
