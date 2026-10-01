@@ -64,7 +64,7 @@ integrationsTest(
         await integrationsTest.step(
           'Go back to the integrations page from file editor',
           async () => {
-            await mainPage.backToDashboardFromFileEditor();
+            await mainPage.backToDashboardFromFileEditor('Personal Projects');
             await profilePage.openYourAccountIntegrationsPage();
           },
         );
@@ -165,7 +165,7 @@ integrationsTest(
       await integrationsTest.step(
         'Go back to the integrations page from file editor',
         async () => {
-          await mainPage.backToDashboardFromFileEditor();
+          await mainPage.backToDashboardFromFileEditor('Personal Projects');
           await profilePage.openYourAccountIntegrationsPage();
         },
       );

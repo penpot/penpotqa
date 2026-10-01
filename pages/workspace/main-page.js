@@ -204,8 +204,16 @@ exports.MainPage = class MainPage extends BasePage {
     this.disconnectMCPServerMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Disconnect' });
-    this.downloadFileTickIcon = page.locator('use[href="#icon-tick"]');
-    this.downloadFileCloseButton = page.locator('input[value="Close"]');
+
+    // Download Files Modal
+    this.downloadFilesModalContainer = page.locator(
+      '.main_ui_exports_files__modal-container',
+    );
+    this.downloadFileTickIcon = this.downloadFilesModalContainer.locator(
+      '.main_ui_notifications_context_notification__icon > use',
+    );
+    this.downloadFileCloseButton =
+      this.downloadFilesModalContainer.getByText('Close');
 
     // Export as PDF
     this.exportAsPDFModalTitle = page.getByRole('heading', {
@@ -472,7 +480,9 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.down();
     await this.page.mouse.move(x1, y1);
-    await this.page.mouse.move(x2, y2);
+    // freehand tool builds the path from move events; a single jump can
+    // collapse the curve into one point
+    await this.page.mouse.move(x2, y2, { steps: 10 });
     await this.page.mouse.up();
   }
 
@@ -923,9 +933,9 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.typographiesColorsBottomPanel).not.toBeVisible();
   }
 
-  async backToDashboardFromFileEditor() {
+  async backToDashboardFromFileEditor(header = 'Projects') {
     await this.clickPencilBoxButton();
-    await this.isHeaderDisplayed('Projects');
+    await this.isHeaderDisplayed(header);
   }
 
   async pressOpenTypographiesBottomPanelShortcut() {

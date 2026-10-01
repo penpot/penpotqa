@@ -151,7 +151,7 @@ mainTest.describe('As Editor', () => {
     mainPage = new MainPage(page);
     deletedPage = new DeletedPage(page);
 
-    await dashboardPage.isHeaderDisplayed('Personal Projects');
+    await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });
 
@@ -217,7 +217,7 @@ mainTest.describe('As Admin', () => {
     mainPage = new MainPage(page);
     deletedPage = new DeletedPage(page);
 
-    await dashboardPage.isHeaderDisplayed('Personal Projects');
+    await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });
 
@@ -276,7 +276,7 @@ mainTest.describe('As Viewer', () => {
 
     dashboardPage = new DashboardPage(page);
 
-    await dashboardPage.isHeaderDisplayed('Personal Projects');
+    await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });
 
