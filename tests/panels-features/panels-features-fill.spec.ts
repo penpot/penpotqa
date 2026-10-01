@@ -170,6 +170,7 @@ mainAccountFileTest.describe(() => {
     });
 
     await mainAccountFileTest.step('Verify removed path fill', async () => {
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('path-removed-fill.png', {
         mask: mainPage.maskViewport(),
       });
