@@ -576,13 +576,15 @@ export class TokensComponent {
   }
 
   async expandAllTokens() {
-    // only toggle collapsed groups; expanding may reveal nested collapsed ones
-    const collapsed = this.expandTokensButton.and(
-      this.page.locator('[aria-expanded="false"]'),
-    );
+    // only toggle collapsed groups (some may already be expanded); bottom-up so
+    // expanded content doesn't shift the indices still to visit
     await expect(this.expandTokensButton.first()).toBeVisible();
-    while ((await collapsed.count()) > 0) {
-      await collapsed.first().click();
+    const count = await this.expandTokensButton.count();
+    for (let i = count - 1; i >= 0; i--) {
+      const button = this.expandTokensButton.nth(i);
+      if ((await button.getAttribute('aria-expanded')) === 'false') {
+        await button.click();
+      }
     }
   }
 
