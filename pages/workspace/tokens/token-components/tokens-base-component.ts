@@ -576,9 +576,13 @@ export class TokensComponent {
   }
 
   async expandAllTokens() {
-    const count = await this.expandTokensButton.count();
-    for (let i = 0; i < count; i++) {
-      await this.expandTokensButton.nth(count - 1 - i).click();
+    // only toggle collapsed groups; expanding may reveal nested collapsed ones
+    const collapsed = this.expandTokensButton.and(
+      this.page.locator('[aria-expanded="false"]'),
+    );
+    await expect(this.expandTokensButton.first()).toBeVisible();
+    while ((await collapsed.count()) > 0) {
+      await collapsed.first().click();
     }
   }
 
