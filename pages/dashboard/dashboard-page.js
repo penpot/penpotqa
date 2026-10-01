@@ -134,9 +134,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.modalContinueButton = this.importModal.getByRole('button', {
       name: 'Continue',
     });
-    this.feedbackBanner = this.importModal.locator(
-      'aside[class*="main_ui_notifications"]',
-    );
     this.feedbackBannerMessage = this.importModal.getByRole('alert').first();
     this.feedbackBannerDisclaimer = this.importModal.locator(
       '.main_ui_dashboard_import__import-error-disclaimer',

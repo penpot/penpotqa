@@ -576,9 +576,13 @@ export class TokensComponent {
   }
 
   async expandAllTokens() {
+    await expect(this.expandTokensButton.first()).toBeVisible();
     const count = await this.expandTokensButton.count();
-    for (let i = 0; i < count; i++) {
-      await this.expandTokensButton.nth(count - 1 - i).click();
+    for (let i = count - 1; i >= 0; i--) {
+      const button = this.expandTokensButton.nth(i);
+      if ((await button.getAttribute('aria-expanded')) === 'false') {
+        await button.click();
+      }
     }
   }
 

@@ -66,7 +66,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.connectedMCPButton = page.getByText('MCP connected');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
     this.designTab = page.getByRole('tab', { name: 'design' });
-    this.createPathPointer = page.locator('#viewport-controls.cursor-pen.drawing');
+    this.createPathPointer = page.locator('#viewport-controls.cursor-draw.drawing');
 
     //Grid editor Toolbar
     this.gridEditorToolBar = page.getByText('Editing grid').locator('..');
@@ -480,7 +480,7 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.down();
     await this.page.mouse.move(x1, y1);
-    await this.page.mouse.move(x2, y2);
+    await this.page.mouse.move(x2, y2, { steps: 10 });
     await this.page.mouse.up();
   }
 
