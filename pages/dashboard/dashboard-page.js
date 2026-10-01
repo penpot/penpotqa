@@ -84,9 +84,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       .first()
       .getByRole('button', { name: 'Options' });
     this.fileOptionsMenu = page.getByRole('menu');
-    this.headerOptionsMenuButton = page.locator(
-      'div[title="Options"] svg[class*="files__menu-icon"]',
-    );
+    this.headerOptionsMenuButton = page
+      .getByTestId('new-file')
+      .locator('..')
+      .getByRole('button', { name: 'Options' });
     this.dashboardFilesItemDate = page.locator('[class*="list-item-date"]');
 
     // Projects Section
@@ -119,12 +120,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.modalContinueButton = this.importModal.getByRole('button', {
       name: 'Continue',
     });
-    this.feedbackBanner = this.importModal.locator(
-      'aside[class*="main_ui_notifications"]',
-    );
-    this.feedbackBannerMessage = this.importModal.locator(
-      'div[class*="main_ui_notifications_context_notification__context-text"]',
-    );
+    // first alert is the global banner, the rest are per-file entries
+    this.feedbackBannerMessage = this.importModal.getByRole('alert').first();
     this.feedbackBannerDisclaimer = this.importModal.locator(
       '.main_ui_dashboard_import__import-error-disclaimer',
     );
