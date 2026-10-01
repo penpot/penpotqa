@@ -134,7 +134,6 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.modalContinueButton = this.importModal.getByRole('button', {
       name: 'Continue',
     });
-    // first alert is the global banner, the rest are per-file entries
     this.feedbackBannerMessage = this.importModal.getByRole('alert').first();
     this.feedbackBannerDisclaimer = this.importModal.locator(
       '.main_ui_dashboard_import__import-error-disclaimer',
