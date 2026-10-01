@@ -480,8 +480,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.down();
     await this.page.mouse.move(x1, y1);
-    // freehand tool builds the path from move events; a single jump can
-    // collapse the curve into one point
     await this.page.mouse.move(x2, y2, { steps: 10 });
     await this.page.mouse.up();
   }
