@@ -66,7 +66,7 @@ exports.MainPage = class MainPage extends BasePage {
     this.connectedMCPButton = page.getByText('MCP connected');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
     this.designTab = page.getByRole('tab', { name: 'design' });
-    this.createPathPointer = page.locator('#viewport-controls.cursor-pen.drawing');
+    this.createPathPointer = page.locator('#viewport-controls.cursor-draw.drawing');
 
     //Grid editor Toolbar
     this.gridEditorToolBar = page.getByText('Editing grid').locator('..');
