@@ -48,7 +48,7 @@ mainAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           numberTokenRef.name,
-          `Token: ${numberTokenRef.name}\n` +
+          `Name: ${numberTokenRef.name}\n` +
             `Original value: 5*{${numberToken.name}}\n` +
             'Resolved value: 10\n' +
             'Right click to see options',
@@ -64,7 +64,7 @@ mainAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           numberTokenRef.name,
-          `Token: ${numberTokenRef.name}\n` +
+          `Name: ${numberTokenRef.name}\n` +
             `Original value: ${updatedTokenData.value}\n` +
             'Resolved value: 2.5\n' +
             'Right click to see options',
@@ -81,7 +81,7 @@ mainAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           numberTokenRef.name,
-          `Token: ${numberTokenRef.name}\n` +
+          `Name: ${numberTokenRef.name}\n` +
             `Original value: ${updatedTokenData.value}\n` +
             'Resolved value: 7\n' +
             'Right click to see options',
@@ -98,7 +98,7 @@ mainAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           numberTokenRef.name,
-          `Token: ${numberTokenRef.name}\n` +
+          `Name: ${numberTokenRef.name}\n` +
             `Original value: ${updatedTokenData.value}\n` +
             'Resolved value: 3\n' +
             'Right click to see options',

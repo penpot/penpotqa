@@ -530,10 +530,34 @@ export class TokensComponent {
     await this.deleteTokenMenuItem.click();
   }
 
-  async checkAppliedTokenTitle(text: string) {
-    const tokenLocator = this.page.locator(`button[class*="token-pill-applied"]`);
+  /**
+   * Hover a token pill and check the text of its tooltip. Token pills show a
+   * design-system tooltip (role="tooltip") instead of a native `title`.
+   * A multi-line string is checked line by line, since the tooltip renders
+   * some lines side by side (e.g. "Name: …" next to "Original value: …").
+   */
+  async checkTokenTooltip(tokenLocator: Locator, text: string | RegExp) {
     await tokenLocator.hover();
-    await expect(tokenLocator).toHaveAttribute('title', text);
+    const tooltip = this.page.getByRole('tooltip');
+    if (text instanceof RegExp) {
+      await expect(tooltip, `Token tooltip matches ${text}`).toHaveText(text);
+    } else {
+      for (const line of text.split('\n')) {
+        await expect(tooltip, `Token tooltip contains "${line}"`).toContainText(
+          line,
+        );
+      }
+    }
+    // Move away so the tooltip closes and doesn't cover the next interaction.
+    await this.page.mouse.move(0, 0);
+    await expect(tooltip).toBeHidden();
+  }
+
+  async checkAppliedTokenTitle(text: string) {
+    await this.checkTokenTooltip(
+      this.page.locator('button[class*="token-pill-applied"]'),
+      text,
+    );
   }
 
   /**
@@ -544,22 +568,27 @@ export class TokensComponent {
    * sub-value is relevant to the assertion.
    */
   async checkAppliedTokenTitleForClass(tokenClass: TokenClass, pattern: RegExp) {
-    const tokenLocator = this.getTokenSection(tokenClass).locator(
-      'button[class*="token-pill-applied"]',
+    await this.checkTokenTooltip(
+      this.getTokenSection(tokenClass).locator(
+        'button[class*="token-pill-applied"]',
+      ),
+      pattern,
     );
-    await tokenLocator.hover();
-    await expect(
-      tokenLocator,
-      `Applied "${tokenClass}" token title matches ${pattern}`,
-    ).toHaveAttribute('title', pattern);
+  }
+
+  /**
+   * Token pill by its full token name. The pill's accessible name ends with the
+   * token name and may be prefixed by a state label (e.g. "Missing reference").
+   */
+  getTokenPillByName(tokenName: string): Locator {
+    const escaped = tokenName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return this.page.getByRole('button', {
+      name: new RegExp(`(^|\\s)${escaped}$`),
+    });
   }
 
   async checkTokenTitle(tokenName: string, text: string) {
-    const tokenLocator = this.page.locator(
-      `button:has(span[aria-label="${tokenName}"])`,
-    );
-    await tokenLocator.hover();
-    await expect(tokenLocator).toHaveAttribute('title', text);
+    await this.checkTokenTooltip(this.getTokenPillByName(tokenName), text);
   }
 
   async selectMenuItem(tokenName: string, itemName: string) {

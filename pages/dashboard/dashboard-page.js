@@ -776,14 +776,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await expect(
       this.pinUnpinProjectButton,
       'First Pin button is Active',
-    ).toHaveClass(/active/);
+    ).toHaveAttribute('aria-pressed', 'true');
   }
 
   async isPinUnpinButtonInactive() {
     await expect(
       this.pinUnpinProjectButton,
       'First Pin button is inactive',
-    ).not.toHaveClass(/active/);
+    ).toHaveAttribute('aria-pressed', 'false');
   }
 
   /**

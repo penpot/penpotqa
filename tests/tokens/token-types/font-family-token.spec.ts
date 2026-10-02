@@ -80,7 +80,7 @@ mainAccountFileTest.describe(() => {
         'Verify applied token title reflects updated value',
         async () => {
           await tokensPage.tokensComp.checkAppliedTokenTitle(
-            'Token: font-family\n' +
+            'Name: font-family\n' +
               'Original value: Inter\n' +
               'Resolved value: Inter',
           );

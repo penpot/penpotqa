@@ -12,9 +12,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel
     this.rightSidebar = this.page.getByTestId('right-sidebar');
     this.designTabpanel = page.getByRole('tabpanel', { name: 'design' });
-    this.canvasBackgroundColorIcon = page
-      .locator('div[class*="page__element-set"] div[class*="color-bullet-wrapper"]')
-      .first();
+    this.canvasBackgroundSection = page.getByLabel('Canvas background section');
+    this.canvasBackgroundColorIcon = this.canvasBackgroundSection.locator(
+      '.main_ui_ds_utilities_swatch__swatch-opacity',
+    );
     this.layerRotationInput = page.getByRole('textbox', { name: 'Rotation' });
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
