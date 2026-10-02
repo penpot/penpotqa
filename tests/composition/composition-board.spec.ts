@@ -299,6 +299,11 @@ mainAccountFileTest.describe(() => {
         'YouTube banner2560 x 1440',
         'YouTube cover2048 x 1152',
         'YouTube thumb1280 x 720',
+        'PENPOT',
+        'File thumbnail300 x 200',
+        'Template cover1390 x 781',
+        'Plugin icon400 x 400',
+        'Plugin cover1390 x 724',
       ];
       await mainPage.isCreatedLayerVisible();
       await designPanelPage.checkSizePresetsOptions(sizePresetsOptions);

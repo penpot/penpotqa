@@ -108,7 +108,7 @@ mainAccountFileTest.describe(() => {
             },
           );
           await tokensPage.tokensComp.checkAppliedTokenTitle(
-            'Token: border-radius\n' + 'Original value: 20\n' + 'Resolved value: 20',
+            'Name: border-radius\n' + 'Original value: 20\n' + 'Resolved value: 20',
           );
         },
       );

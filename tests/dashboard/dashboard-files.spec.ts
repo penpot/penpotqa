@@ -240,7 +240,7 @@ mainTest(
   ),
   async () => {
     const longName =
-      'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check Overflow';
+      'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check Overflow And Even More Words Added So The Name Never Fits In The Projects List Header At Full Width';
     const longName250 =
       'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check OverflowQTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Project With An Excessively Exces';
 

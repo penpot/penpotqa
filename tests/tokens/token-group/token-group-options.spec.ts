@@ -160,9 +160,8 @@ mainAccountFileTest.describe('Context menu > Delete', () => {
         `Verify "${secondaryToken.name}" is highlighted as invalid and shows correct tooltip`,
         async () => {
           await tokensPage.tokensComp.checkInvalidTokenCount(1);
-          await tokensPage.tokensComp.invalidToken.hover();
-          await expect(tokensPage.tokensComp.invalidToken).toHaveAttribute(
-            'title',
+          await tokensPage.tokensComp.checkTokenTooltip(
+            tokensPage.tokensComp.invalidToken,
             `Reference in {${secondaryToken.name}} is not valid or is not in any active set.`,
           );
         },

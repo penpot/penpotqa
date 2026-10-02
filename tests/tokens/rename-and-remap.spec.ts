@@ -89,7 +89,7 @@ mainAccountFileTest.describe(() => {
         'Check applied token title reflects new name and correct reference',
         async () => {
           const expectedTitle = [
-            `Token: ${fontSizeToken.name}`,
+            `Name: ${fontSizeToken.name}`,
             `Original value: {${renamedBorderRadiusToken.name}}*2`,
             `Resolved value: 20`,
           ].join('\n');
@@ -307,7 +307,7 @@ mainTest(
       async () => {
         await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
         const expectedTitle = [
-          'Token: color-primary',
+          'Name: color-primary',
           `Original value: {${renamedTokenName}}`,
           `Resolved value: ${newColorValue}`,
         ].join('\n');
@@ -326,7 +326,7 @@ mainTest(
       async () => {
         await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
         const expectedTitle = [
-          'Token: color-primary',
+          'Name: color-primary',
           'Original value: {red-500}',
           'Resolved value: #d8274e',
         ].join('\n');

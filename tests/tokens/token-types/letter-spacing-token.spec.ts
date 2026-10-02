@@ -148,7 +148,7 @@ mainAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           letterSpacingToken.name,
-          `Token: ${letterSpacingToken.name}\n` +
+          `Name: ${letterSpacingToken.name}\n` +
             `Original value: ${letterSpacingToken.value}\n` +
             'Resolved value: 10',
         );
@@ -163,7 +163,7 @@ mainAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           letterSpacingToken.name,
-          `Token: ${letterSpacingToken.name}\n` +
+          `Name: ${letterSpacingToken.name}\n` +
             `Original value: ${updatedTokenData.value}\n` +
             'Resolved value: 2.5',
         );
@@ -179,7 +179,7 @@ mainAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           letterSpacingToken.name,
-          `Token: ${letterSpacingToken.name}\n` +
+          `Name: ${letterSpacingToken.name}\n` +
             `Original value: ${updatedTokenData.value}\n` +
             'Resolved value: 7',
         );
@@ -195,7 +195,7 @@ mainAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           letterSpacingToken.name,
-          `Token: ${letterSpacingToken.name}\n` +
+          `Name: ${letterSpacingToken.name}\n` +
             `Original value: ${updatedTokenData.value}\n` +
             'Resolved value: 3',
         );
