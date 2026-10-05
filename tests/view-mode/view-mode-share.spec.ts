@@ -209,6 +209,7 @@ mainAccountFileTest.describe(() => {
           ]).catch(() => {});
 
           await page.goto(shareLink, { waitUntil: 'networkidle' });
+          await loginPage.acceptCookie();
 
           viewModePage = new ViewModePage(page);
           await viewModePage.isViewerSectionVisible();
