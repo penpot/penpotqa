@@ -186,6 +186,7 @@ enterprisePageTest.describe(
             await teamPage.createTeam(teamName);
             await dashboardPage.createFileViaPlaceholder();
             await mainPage.isMainPageLoaded();
+            await mainPage.waitForChangeIsSaved();
           },
         );
 
