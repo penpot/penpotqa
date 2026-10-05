@@ -27,8 +27,18 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+// TODO(2.19): @outdated. When updating this test to match Qase 489, remove the .skip,
+// the tag and the annotation. See 'Handling outdated tests after a Penpot release'.
+mainAccountFileTest.skip(
   qase([489], 'Create Path (Toolbar) - opened'),
+  {
+    tag: '@outdated',
+    annotation: {
+      type: 'outdated',
+      description:
+        'Esc now finishes the path and keeps it open for editing in 2.19. Test update pending.',
+    },
+  },
   async ({ mainPage }) => {
     await mainPage.createDefaultOpenPath();
     await mainPage.isCreatedLayerVisible();
