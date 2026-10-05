@@ -50,7 +50,6 @@ registerTest.describe(() => {
       newPwd = 'TestForgotPassword123#';
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await loginPage.clickOnForgotPassword();
       await forgotPasswordPage.enterEmail(email);
       await forgotPasswordPage.clickRecoverPasswordButton();

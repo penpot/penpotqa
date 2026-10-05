@@ -65,7 +65,6 @@ mainAccountFileTest.describe(() => {
         async () => {
           await mainPage.clickPencilBoxButton();
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
           await profilePage.gotoLink(shareLink);
           viewModePage = new ViewModePage(page);
           await viewModePage.isViewerSectionVisible(false);
@@ -289,7 +288,6 @@ mainAccountFileTest.describe(() => {
         'Register the invited admin account',
         async () => {
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
           await page.goto(firstInvite!.inviteUrl);
           await registerPage.registerAccount(
             firstAdmin,

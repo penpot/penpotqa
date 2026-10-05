@@ -36,7 +36,6 @@ registerTest.describe('Members - As Owner - Change roles', () => {
       await registerTest.slow();
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -60,7 +59,6 @@ registerTest.describe('Members - As Owner - Change roles', () => {
           await teamPage.enterEmailToInviteMembersPopUp(email);
           await teamPage.clickSendInvitationButton();
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
           await loginPage.enterEmailAndClickOnContinue(email);
           await loginPage.enterPwd(process.env.LOGIN_PWD);
           await loginPage.clickLoginButton();
@@ -82,7 +80,6 @@ registerTest.describe('Members - As Owner - Change roles', () => {
         'Transfer ownership to invited admin and verify',
         async () => {
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
           await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
           await loginPage.enterPwd(process.env.LOGIN_PWD);
           await loginPage.clickLoginButton();
@@ -100,7 +97,6 @@ registerTest.describe('Members - As Owner - Change roles', () => {
         'Login with invited admin and delete team',
         async () => {
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
           await loginPage.enterEmailAndClickOnContinue(email);
           await loginPage.enterPwd(process.env.LOGIN_PWD);
           await loginPage.clickLoginButton();
@@ -123,7 +119,6 @@ registerTest.describe('Members - As Owner - Change roles', () => {
           await teamPage.enterEmailToInviteMembersPopUp(email);
           await teamPage.clickSendInvitationButton();
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
           await loginPage.enterEmailAndClickOnContinue(email);
           await loginPage.enterPwd(process.env.LOGIN_PWD);
           await loginPage.clickLoginButton();
@@ -145,7 +140,6 @@ registerTest.describe('Members - As Owner - Change roles', () => {
         'Transfer ownership to invited editor and verify',
         async () => {
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
           await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
           await loginPage.enterPwd(process.env.LOGIN_PWD);
           await loginPage.clickLoginButton();
@@ -163,7 +157,6 @@ registerTest.describe('Members - As Owner - Change roles', () => {
         'Login with invited editor and delete team',
         async () => {
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
           await loginPage.enterEmailAndClickOnContinue(email);
           await loginPage.enterPwd(process.env.LOGIN_PWD);
           await loginPage.clickLoginButton();
@@ -200,7 +193,6 @@ mainTest(qase([1196], 'Team. Members - leave team (as owner)'), async ({ page })
       }
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite.inviteUrl);
       await registerPage.registerAccount(
@@ -221,7 +213,6 @@ mainTest(qase([1196], 'Team. Members - leave team (as owner)'), async ({ page })
 
   await mainTest.step('Login as owner and leave the team', async () => {
     await profilePage.logout();
-    await loginPage.isLoginPageOpened();
     await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();

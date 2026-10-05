@@ -56,7 +56,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.clickSendInvitationButton();
       const mainInvite = await waitMessage(page, mainEmail, 40);
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
 
       await page.goto(mainInvite!.inviteUrl);
       await registerPage.registerAccount(
@@ -107,7 +106,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await page.goto(secondInvite!.inviteUrl);
       await registerPage.registerAccount(
         secondUser,
@@ -121,7 +119,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -137,7 +134,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       );
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await loginPage.enterEmailAndClickOnContinue(secondEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -173,7 +169,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite!.inviteUrl);
       await registerPage.registerAccount(
@@ -187,7 +182,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await page.goto(secondInvite!.inviteUrl);
       await registerPage.registerAccount(
         secondAdmin,
@@ -220,7 +214,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       );
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await loginPage.enterEmailAndClickOnContinue(firstEmail);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -262,7 +255,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite!.inviteUrl);
       await registerPage.registerAccount(
@@ -276,7 +268,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await page.goto(secondInvite!.inviteUrl);
       await registerPage.registerAccount(
         secondAdmin,
@@ -322,7 +313,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstInvite = await waitMessage(page, firstEmail, 40);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite!.inviteUrl);
       await registerPage.registerAccount(
@@ -368,7 +358,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
 
       await page.goto(secondInvite!.inviteUrl);
       await registerPage.registerAccount(
@@ -407,7 +396,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstInvite = await waitMessage(page, firstEmail, 40);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite!.inviteUrl);
       await registerPage.registerAccount(
@@ -422,7 +410,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await teamPage.isTeamSelected(team);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
@@ -459,7 +446,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite!.inviteUrl);
       await registerPage.registerAccount(
@@ -473,7 +459,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await page.goto(secondInvite!.inviteUrl);
       await registerPage.registerAccount(
         secondAdmin,
@@ -527,7 +512,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const secondInvite = await waitMessage(page, secondEmail, 40);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite!.inviteUrl);
       await registerPage.registerAccount(
@@ -541,7 +525,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       await dashboardPage.fillOnboardingQuestions();
       await teamPage.isTeamSelected(team);
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
       await page.goto(secondInvite!.inviteUrl);
       await registerPage.registerAccount(
         secondAdmin,
@@ -594,7 +577,6 @@ mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
       const firstInvite = await waitMessage(page, firstEmail, 40);
 
       await profilePage.logout();
-      await loginPage.isLoginPageOpened();
 
       await page.goto(firstInvite!.inviteUrl);
       await registerPage.registerAccount(

@@ -309,7 +309,15 @@ exports.ProfilePage = class ProfilePage extends BasePage {
 
   async logout() {
     await this.profileMenuButton.click();
+    // Navigating away before the logout request completes aborts it and
+    // leaves the session active.
+    const logoutResponse = this.page.waitForResponse(
+      (response) =>
+        response.url().includes('/api/main/methods/logout') &&
+        response.request().method() === 'POST',
+    );
     await this.logoutMenuItem.click();
+    await logoutResponse;
   }
 
   async changeProfileName(newName) {
