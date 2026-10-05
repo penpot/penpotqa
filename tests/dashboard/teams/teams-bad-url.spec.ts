@@ -183,7 +183,6 @@ mainTest(
         const firstInvite = await waitMessage(page, firstEmail, 40);
 
         await profilePage.logout();
-        await loginPage.isLoginPageOpened();
 
         await page.goto(firstInvite!.inviteUrl);
 

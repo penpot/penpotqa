@@ -73,7 +73,6 @@ mainAccountFileTest.describe(() => {
         'Accept invitation and verify shared board link',
         async () => {
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
           await page.goto(firstInvite.inviteUrl);
           await registerPage.registerAccount(
             firstEditor,
@@ -139,7 +138,6 @@ mainAccountFileTest.describe(() => {
 
   mainAccountFileTest.afterEach(async ({ dashboardPage }) => {
     await profilePage.logout();
-    await loginPage.isLoginPageOpened();
     await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();

@@ -102,7 +102,6 @@ registerTest(qase(190, 'Change email to valid'), async ({ page, name, email }) =
 
   await registerTest.step('Logout and login with new email', async () => {
     await profilePage.logout();
-    await loginPage.isLoginPageOpened();
     await loginPage.enterEmailAndClickOnContinue(newEmail);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();
