@@ -270,7 +270,7 @@ mainTest.describe(() => {
     });
   });
 
-  mainTest(qase([2845], 'Import Tokens from Linked Library'), async () => {
+  mainTest(qase([2845], 'Set linked library as tokens source'), async () => {
     // Data from imported shared library
     const linkedLibraryName = 'Rectangle with set and theme tokens';
     const linkedLibraryFilePath =
@@ -322,20 +322,17 @@ mainTest.describe(() => {
       },
     );
 
-    await mainTest.step(
-      'Click on Import Tokens from shared library and confirm',
-      async () => {
-        await assetsPanelPage.importTokensFromSharedLibraryByName(linkedLibraryName);
-        await assetsPanelPage.isImportTokensModalVisible();
-        await assetsPanelPage.clickImportTokensFromSharedLibrary();
-        await assetsPanelPage.clickCloseModalButton();
-      },
-    );
+    await mainTest.step('Set the shared library as tokens source', async () => {
+      await assetsPanelPage.setSharedLibraryAsTokensSource(linkedLibraryName);
+      await assetsPanelPage.isSharedLibraryTokensSource(linkedLibraryName);
+      await assetsPanelPage.clickCloseModalButton();
+    });
 
     await mainTest.step(
-      'From Tokens tab, assert imported tokens, sets and themes are visible',
+      'From Tokens tab, assert the library tokens, sets and themes are visible',
       async () => {
         await tokensPage.clickTokensTab();
+        await tokensPage.isTokensSourceName(linkedLibraryName);
         await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
         await tokensPage.tokensComp.isTokenVisibleWithName('red');
         await tokensPage.setsComp.isSetNameVisible(setsNames[0]);

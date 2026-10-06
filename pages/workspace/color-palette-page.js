@@ -18,7 +18,10 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.saveColorStyleButton = page.getByRole('button', {
       name: 'Save color style',
     });
-    this.colorButton = this.colorPicker.getByTitle('Color', { exact: true });
+    this.colorButton = this.colorPicker.getByRole('button', {
+      name: 'Color',
+      exact: true,
+    });
 
     // Color Palette
     this.colorPaletteActionsBtn = page.locator('button[class*="palette-actions"]');

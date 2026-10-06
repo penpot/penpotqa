@@ -100,7 +100,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       name: 'Search font',
     });
     this.fontSizeInput = page.locator('div[class*="font-size-select"] input');
-    this.letterSpacingInput = page.getByTitle('Letter Spacing').locator('input');
+    this.letterSpacingInput = this.assetsTabpanel
+      .getByTitle('Letter Spacing')
+      .locator('input');
     this.typographyNameInput = page.locator('input[class*="adv-typography-name"]');
     this.assetsTitleText = page.locator(
       'div[class*="asset-section"] span[class*="title-name"]',
@@ -193,14 +195,6 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     });
     this.wrapperMoreInfoButton = this.wrapperMessage.getByRole('button', {
       name: 'More info',
-    });
-
-    // Import Tokens Confirmation Modal
-    this.importTokensModal = page.locator(
-      '.main_ui_workspace_tokens_import_from_library__modal-dialog',
-    );
-    this.importTokensButton = this.importTokensModal.getByRole('button', {
-      name: 'Import tokens',
     });
   }
 
@@ -683,21 +677,17 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       .click();
   }
 
-  async importTokensFromSharedLibraryByName(name) {
+  async setSharedLibraryAsTokensSource(name) {
     await this.librariesThisFileTab.click();
     await this.getLibraryItemByName(name)
-      .getByRole('button', { name: 'Import tokens' })
+      .getByRole('button', { name: 'Set as tokens source' })
       .click();
   }
 
-  async clickImportTokensFromSharedLibrary() {
-    await this.importTokensButton.click();
-  }
-
-  async isImportTokensModalVisible() {
-    expect(
-      await this.importTokensModal,
-      'Import tokens modal is visible',
+  async isSharedLibraryTokensSource(name) {
+    await expect(
+      this.getLibraryItemByName(name).getByText('Tokens source', { exact: true }),
+      `"${name}" is the tokens source`,
     ).toBeVisible();
   }
 };
