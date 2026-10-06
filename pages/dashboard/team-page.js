@@ -897,17 +897,6 @@ exports.TeamPage = class TeamPage extends BasePage {
         response.status() === 200,
     );
     await expect(this.teamIcon).toHaveAttribute('src', /^https?:\/\//);
-    await this.teamIcon.evaluate(
-      (img) =>
-        img.complete ||
-        new Promise((resolve) => img.addEventListener('load', resolve)),
-    );
-    await this.page.evaluate(
-      () =>
-        new Promise((resolve) =>
-          requestAnimationFrame(() => requestAnimationFrame(resolve)),
-        ),
-    );
   }
 
   async isTeamOwnerInfoDisplayed(name) {
