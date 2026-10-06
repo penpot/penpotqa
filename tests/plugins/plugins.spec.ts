@@ -43,6 +43,7 @@ mainAccountFileTest(
         await pluginsPage.clickPluginsMainMenuItem();
         await pluginsPage.clickPluginsManagerButton();
         await pluginsPage.clickOnDeletePluginButton();
+        await pluginsPage.clickOnConfirmDeletePluginButton();
         await pluginsPage.isInstalledPluginsCount(0);
         await pluginsPage.isNoPluginMessageVisible();
       },
