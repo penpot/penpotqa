@@ -170,6 +170,7 @@ export class AdminConsolePage extends BasePage {
   // one row per team, 7 columns (see TeamsTableColumn).
   readonly teamsNavLink: Locator;
   readonly teamsTable: Locator;
+  readonly teamsEmptyState: Locator;
 
   // People tab (sidebar nav item) — where the invitePeopleButton et al.
   // below actually live; not visible from the Teams tab. Its own table (one
@@ -286,6 +287,7 @@ export class AdminConsolePage extends BasePage {
     });
     this.teamsNavLink = page.getByRole('link', { name: 'Teams' });
     this.teamsTable = page.getByRole('table');
+    this.teamsEmptyState = page.getByText('There are no teams yet');
     this.peopleNavLink = page.getByRole('link', { name: 'People' });
     this.peopleTable = page.getByRole('table');
 
@@ -375,12 +377,13 @@ export class AdminConsolePage extends BasePage {
     );
   }
 
-  /** Checks the URL rather than the table itself — an org
-   * with zero teams shows an entirely different empty state ("There are no
-   * teams yet"), with no `<table>` element at all, not an empty table. */
   async openTeamsTab() {
     await this.teamsNavLink.click();
     await expect(this.page, 'On the Teams tab').toHaveURL(/\/teams$/);
+    await expect(
+      this.teamsTable.or(this.teamsEmptyState),
+      'Teams tab has finished rendering',
+    ).toBeVisible();
   }
 
   async openPeopleTab() {
