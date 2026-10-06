@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page, expect } from '@playwright/test';
 import { MainPage } from '@pages/workspace/main-page';
 import { SetsComponent } from '@pages/workspace/tokens/sets-component';
 import { ThemesComponent } from '@pages/workspace/tokens/themes-component';
@@ -26,6 +26,7 @@ export class TokensPage extends MainPage {
 
   // locators
   readonly tokensTab: Locator;
+  readonly tokensSourceInfo: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -41,9 +42,16 @@ export class TokensPage extends MainPage {
 
     // locators
     this.tokensTab = page.getByRole('tab', { name: 'Tokens' });
+    this.tokensSourceInfo = page.getByText('Source:', { exact: true }).locator('..');
   }
 
   async clickTokensTab() {
     await this.tokensTab.click();
+  }
+
+  async isTokensSourceName(name: string) {
+    await expect(this.tokensSourceInfo, `Tokens source is "${name}"`).toContainText(
+      name,
+    );
   }
 }

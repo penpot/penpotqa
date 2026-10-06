@@ -470,9 +470,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.guidesMoreOptionsButton = page.locator(
       'div[class*="grid__advanced-row"] button[class*="show-more-options"]',
     );
-    this.useDefaultGuidesButton = page
-      .getByRole('button')
-      .filter({ hasText: 'Use default' });
+    this.useDefaultGuidesButton = page.getByRole('menuitem', {
+      name: 'Use default',
+    });
 
     // Design panel - Guides section - Advanced Options
     this.guidesAdvancedOptionsSection = page.locator(

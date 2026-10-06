@@ -92,7 +92,6 @@ mainAccountFileTest.describe(() => {
           await assetsPanelPage.clickAddFileLibraryTypographyButton();
           await assetsPanelPage.waitForChangeIsSaved();
           await assetsPanelPage.selectLetterSpacing(newTokenValue);
-          await designPanelPage.clickOnEnter();
           await assetsPanelPage.waitForChangeIsSaved();
         },
       );
