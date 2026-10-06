@@ -41,6 +41,8 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
       name: 'Toggle panel Fill',
     });
     this.strokeSection = page.getByText('Stroke', { exact: true });
+    this.viewerShapeInfo = page.locator('[class*="shape-info"]');
+    this.propertyRow = page.getByTestId('property-row');
   }
 
   async openInspectTab() {
@@ -53,6 +55,20 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
 
   async isRowGapExistOnInspectTab() {
     await expect(this.rowGapOnInspect).toBeVisible();
+  }
+
+  getPropertyRow(label) {
+    return this.propertyRow.filter({ hasText: label });
+  }
+
+  async checkSelectedLayerName(name) {
+    await expect(
+      this.viewerShapeInfo.getByText(name, { exact: true }),
+    ).toBeVisible();
+  }
+
+  async checkPropertyRowHasPixelValue(label) {
+    await expect(this.getPropertyRow(label).getByText(/^\d+px$/)).toBeVisible();
   }
 
   async openCodeTab() {

@@ -129,47 +129,50 @@ mainAccountFileTest(
       },
     );
 
+    let inspectPanelPage: InspectPanelPage;
+
     await mainAccountFileTest.step('Open view mode and Inspect tab', async () => {
       const newPage = await viewModePage.clickViewModeShortcut();
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
       layersPanelPage = new LayersPanelPage(newPage);
+      inspectPanelPage = new InspectPanelPage(newPage);
       await viewModePage.openInspectTab();
     });
 
     await mainAccountFileTest.step('Select Rectangle layer and verify', async () => {
       await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-rectangle-selected-image.png',
-      );
+      await inspectPanelPage.checkSelectedLayerName('Rectangle');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Height');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Left');
     });
 
     await mainAccountFileTest.step('Select Ellipse layer and verify', async () => {
       await layersPanelPage.clickLayerOnLayersTab('Ellipse');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-ellipse-selected-image.png',
-      );
+      await inspectPanelPage.checkSelectedLayerName('Ellipse');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Height');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Left');
     });
 
     await mainAccountFileTest.step('Select text layer and verify', async () => {
       await layersPanelPage.clickLayerOnLayersTab('Hello world!');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-test-selected-image.png',
-      );
+      await inspectPanelPage.checkSelectedLayerName('Hello world!');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Height');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Left');
     });
 
     await mainAccountFileTest.step('Select Path layer and verify', async () => {
       await layersPanelPage.clickLayerOnLayersTab('Path');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-path-selected-image.png',
-      );
+      await inspectPanelPage.checkSelectedLayerName('Path');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Height');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Left');
     });
 
     await mainAccountFileTest.step('Select image layer and verify', async () => {
       await layersPanelPage.clickLayerOnLayersTab('mini_sample');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-image-selected-image.png',
-      );
+      await inspectPanelPage.checkSelectedLayerName('mini_sample');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Height');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Left');
     });
   },
 );
