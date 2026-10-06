@@ -881,9 +881,15 @@ export class AdminConsolePage extends BasePage {
 
   /** Checks the Teams table has exactly the expected columns, in order. */
   async hasExpectedTeamsTableColumns() {
+    const headers = this.teamsTable.getByRole('columnheader');
+    // 8th column is the unlabeled per-row actions (kebab menu) column.
     await expect(
-      this.teamsTable.getByRole('columnheader'),
-      'Teams table has the expected columns, in order',
+      headers,
+      'Teams table has the expected number of columns',
+    ).toHaveCount(8);
+    await expect(
+      headers.filter({ hasText: /\S/ }),
+      'Teams table has the expected labeled columns, in order',
     ).toHaveText([
       'Team',
       'Created',
