@@ -174,9 +174,9 @@ export class AdminConsolePage extends BasePage {
 
   // People tab (sidebar nav item) — where the invitePeopleButton et al.
   // below actually live; not visible from the Teams tab. Its own table (one
-  // row per org member, 4 columns — see PeopleTableColumn) is a different
-  // `getByRole('table')` match from teamsTable, since only one of the two
-  // tabs is ever open at a time.
+  // row per org member, 4 columns — see PeopleTableColumn), scoped by its
+  // "People" accessible name (its <caption>) so a stale Teams table
+  // lingering mid-transition can't be mistaken for it, and vice versa.
   readonly peopleNavLink: Locator;
   readonly peopleTable: Locator;
 
@@ -286,10 +286,10 @@ export class AdminConsolePage extends BasePage {
       name: 'Advanced Permissions',
     });
     this.teamsNavLink = page.getByRole('link', { name: 'Teams' });
-    this.teamsTable = page.getByRole('table');
+    this.teamsTable = page.getByRole('table', { name: 'Teams' });
     this.teamsEmptyState = page.getByText('There are no teams yet');
     this.peopleNavLink = page.getByRole('link', { name: 'People' });
-    this.peopleTable = page.getByRole('table');
+    this.peopleTable = page.getByRole('table', { name: 'People' });
 
     // `.first()` — there are 2 identically-labelled "Invite
     // people" buttons when the People tab is in its empty state (the toolbar
