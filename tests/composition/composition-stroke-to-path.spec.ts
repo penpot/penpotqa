@@ -35,7 +35,7 @@ demoAccountFileTest(
           'Stroke to path',
         );
         await mainPage.waitForChangeIsSaved();
-        await mainPage.hideRulersViaMainMenu();
+        await mainPage.pressHideShowRulersShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
           'stroke-to-path-rectangle-added.png',
           {
