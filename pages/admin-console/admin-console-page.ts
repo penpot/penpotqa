@@ -364,8 +364,20 @@ export class AdminConsolePage extends BasePage {
     await this.welcomeCreateOrganizationButton.click();
   }
 
-  async goToFiles() {
+  /** `expectedOrgName` confirms the dashboard has actually landed back in
+   * that org's context before returning — the navigation alone doesn't
+   * guarantee it, so a caller that creates a team right after can
+   * otherwise race it and land the team outside the org entirely. */
+  async goToFiles(expectedOrgName?: string) {
     await this.goToFilesLink.click();
+    if (expectedOrgName) {
+      await expect(
+        this.page
+          .locator('button[class*="organization_team_switch__current-selection"]')
+          .locator('[class*="current-organization-name"]'),
+        `"${expectedOrgName}" is the current organization back on the dashboard`,
+      ).toHaveText(expectedOrgName);
+    }
   }
 
   async openAdvancedPermissionsTab() {

@@ -56,7 +56,7 @@ enterpriseActivatedPageTest.describe(
           'Setup: create an Enterprise-activated org with a team, and invite the second account as a team admin',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
             teamId = teamPage.getTeamIdFromUrl();
             await teamPage.openInvitationsPageViaOptionsMenu();
@@ -159,7 +159,7 @@ enterpriseActivatedPageTest.describe(
           'Setup: create an Enterprise-activated org with a team, invite the second account as a team admin, and leave one more invitation pending',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
             teamId = teamPage.getTeamIdFromUrl();
             await teamPage.openInvitationsPageViaOptionsMenu();

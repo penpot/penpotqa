@@ -142,7 +142,7 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           'Org owner switches to their pre-existing team and adds it to the org → succeeds, no restriction shown',
           async () => {
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             // A real reload — the team switcher's in-memory list can go
             // stale right after an Admin Console round-trip, otherwise.
             await page.goto('/');

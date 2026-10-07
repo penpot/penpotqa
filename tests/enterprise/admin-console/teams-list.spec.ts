@@ -35,7 +35,7 @@ enterpriseActivatedPageTest.describe('Admin Console > Sidebar Menu > Teams', () 
           ownerName = await adminConsolePage.getUserName();
           orgAdminConsoleUrl = page.url();
 
-          await adminConsolePage.goToFiles();
+          await adminConsolePage.goToFiles(orgName);
           await teamPage.createTeam(teamName);
           await dashboardPage.createFileViaPlaceholder();
           await mainPage.isMainPageLoaded();

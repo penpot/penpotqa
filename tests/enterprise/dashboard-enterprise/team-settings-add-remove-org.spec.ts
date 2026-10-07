@@ -35,7 +35,7 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           'Switch to the pre-existing team → Team Settings shows "not part of any organization" and an "Add to an organization" link',
           async () => {
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             // A real reload — the dashboard's in-memory team list can go
             // stale right after an Admin Console round-trip, otherwise.
             await page.goto('/');
@@ -65,7 +65,7 @@ enterpriseActivatedPageTest.describe(
           'Setup: create an Enterprise-activated org with a team already in it',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.isTeamPartOfOrganization(orgName);

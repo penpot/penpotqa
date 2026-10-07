@@ -60,7 +60,7 @@ ownerAndInviteeTest.describe(
               stripePage,
               orgName,
             );
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
 
             await teamPage.openInvitationsPageViaOptionsMenu();

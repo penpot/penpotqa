@@ -14,5 +14,8 @@ export function createOrgName(prefix = 'at'): string {
   const now = new Date();
   const date = now.toISOString().slice(2, 10).replace(/-/g, '');
 
-  return `${prefix}-Organization-${nextOrgLabel()}-${date}-${runId}`;
+  // Lowercase — the backend lowercases org names for its URL slug anyway,
+  // so a mixed-case name here just invites case-mismatch bugs wherever a
+  // test compares it against that slug.
+  return `${prefix}-organization-${nextOrgLabel()}-${date}-${runId}`.toLowerCase();
 }

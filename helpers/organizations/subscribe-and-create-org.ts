@@ -24,4 +24,8 @@ export async function subscribeAndCreateOrg(
   await stripePage.completeEnterpriseTrialCheckout();
   await adminConsolePage.clickWelcomeCreateOrganizationButton();
   await orgPage.createOrganization(orgName);
+  // The naming modal closing doesn't guarantee the SPA has actually routed
+  // into the new org's Admin Console yet — a caller creating a team right
+  // after can otherwise race it and land the team outside the org entirely.
+  await adminConsolePage.isOnOrganizationAdminConsole(orgName);
 }

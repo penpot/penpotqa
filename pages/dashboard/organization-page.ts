@@ -548,6 +548,16 @@ export class OrganizationPage extends BasePage {
     ).toHaveCount(0);
   }
 
+  /** Confirms the SPA has actually routed into this org's own Admin
+   * Console — just creating it doesn't guarantee the route change has
+   * landed yet, so a caller that creates a team right after can otherwise
+   * race it and land the team outside the org entirely. */
+  async isOnOrgAdminConsoleUrl(orgName: string) {
+    await expect(this.page, `On "${orgName}"'s Admin Console`).toHaveURL(
+      new RegExp(`/admin-console/organization/${orgName}/[^/]+(/|$)`),
+    );
+  }
+
   /** Only shown when leaving would orphan a team you own — no picker,
    * since with a single other team member there's nothing to choose
    * between; it promotes them automatically. */

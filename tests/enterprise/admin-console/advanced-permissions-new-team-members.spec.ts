@@ -52,7 +52,7 @@ enterpriseActivatedPageTest.describe(
           'Setup: create an organization and a team with a pending external team invitation, plus a pending direct org invitation',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
             await teamPage.openInvitationsPageViaOptionsMenu();
             await teamPage.clickInviteMembersToTeamButton();
@@ -155,7 +155,7 @@ enterpriseActivatedPageTest.describe(
             'Setup: create an organization and team, add the org member, promote a second real account to team admin, then restrict new team members',
             async () => {
               await createOrgForLicensedAccount(orgPage, orgName);
-              await adminConsolePage.goToFiles();
+              await adminConsolePage.goToFiles(orgName);
               await teamPage.createTeam(teamName);
               teamId = teamPage.getTeamIdFromUrl();
 

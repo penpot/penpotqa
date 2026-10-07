@@ -34,7 +34,7 @@ enterpriseActivatedPageTest.describe(
           'Setup: create an Enterprise-activated organization',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
           },
         );
 

@@ -36,7 +36,7 @@ enterpriseActivatedPageTest.describe(
             ownerName = await adminConsolePage.getUserName();
             orgAdminConsoleUrl = page.url();
 
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
           },
         );
