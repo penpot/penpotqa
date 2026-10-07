@@ -53,13 +53,13 @@ mainAccountFileTest(
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.dragComponentOnCanvas(50, 100);
       await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
+      await layersPanelPage.openLayersTab();
+      await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Ellipse');
     });
 
     await mainAccountFileTest.step(
       'Verify component on canvas and layers panel',
       async () => {
-        await layersPanelPage.openLayersTab();
         await mainPage.hideRulersViaMainMenu();
         await mainPage.waitForChangeIsSaved();
         await expect(
@@ -69,7 +69,6 @@ mainAccountFileTest(
           mask: mainPage.maskViewport({ useRulers: true }),
         });
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
-        await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Ellipse');
       },
     );
   },
