@@ -155,7 +155,7 @@ enterpriseActivatedPageTest.describe(
         let teamId = '';
 
         await enterpriseActivatedPageTest.step(
-          "Setup: create OrgA, and set 'Move teams across organizations' to 'Never allowed'",
+          `Setup: create ${orgAName}, and set 'Move teams across organizations' to 'Never allowed'`,
           async () => {
             await createOrgForLicensedAccount(orgPage, orgAName);
             await adminConsolePage.openAdvancedPermissionsTab();
@@ -166,7 +166,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Create a team while OrgA is the active sidebar context → it auto-joins OrgA',
+          `Create a team while ${orgAName} is the active sidebar context → it auto-joins ${orgAName}`,
           async () => {
             await adminConsolePage.goToFiles();
             await teamPage.createTeam(teamName);
@@ -179,7 +179,7 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           // "Change team organization" only renders once the owner has
           // another org to move into
-          'Create OrgB, a second organization for the same owner',
+          `Create ${orgBName}, a second organization for the same owner`,
           async () => {
             await orgPage.openOrgSwitcher();
             await orgPage.clickCreateOrgFromDropdown();
@@ -188,7 +188,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgA',
+          `Team Settings > three-dot menu > "Change team organization" → blocking modal names ${orgAName}`,
           async () => {
             await teamPage.goToTeamDashboard(teamId);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
@@ -220,7 +220,7 @@ enterpriseActivatedPageTest.describe(
         const inviteeTeamPage = new TeamPage(invitee.page);
 
         await ownerAndInviteeTest.step(
-          "Setup: create OrgD, set 'Move teams across organizations' to 'Only within my own organizations', and invite the second account",
+          `Setup: create ${orgDName}, set 'Move teams across organizations' to 'Only within my own organizations', and invite the second account`,
           async () => {
             await activateEnterpriseLicense(ownerPage.context().request);
             await ownerPage.goto('/');
@@ -236,7 +236,7 @@ enterpriseActivatedPageTest.describe(
         await ownerAndInviteeTest.step(
           // OrgE is the invitee's 2nd org, needed for "Change team organization" to render.
           // Activate before creating the team, or it drops out of the switcher.
-          'Invitee separately activates their own Enterprise license and creates OrgE, then creates their own team (auto-joins OrgE)',
+          `Invitee separately activates their own Enterprise license and creates ${orgEName}, then creates their own team (auto-joins ${orgEName})`,
           async () => {
             await activateEnterpriseLicense(invitee.page.context().request);
             await invitee.page.goto('/');
@@ -247,7 +247,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Invitee accepts the OrgD invite from their inbox and becomes a non-owner org member',
+          `Invitee accepts the ${orgDName} invite from their inbox and becomes a non-owner org member`,
           async () => {
             await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgDName);
           },
@@ -255,7 +255,7 @@ enterpriseActivatedPageTest.describe(
 
         await ownerAndInviteeTest.step(
           // Accepting the invite switched the active org to OrgD, hiding OrgE's team from the switcher.
-          "Invitee switches back to OrgE's context, then to their team, and moves it into OrgD",
+          `Invitee switches back to ${orgEName}'s context, then to their team, and moves it into ${orgDName}`,
           async () => {
             await inviteeOrgPage.switchToOrg(orgEName);
             await inviteeTeamPage.switchTeam(teamName);
@@ -266,7 +266,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgD',
+          `Team Settings > three-dot menu > "Change team organization" → blocking modal names ${orgDName}`,
           async () => {
             await inviteeTeamPage.openChangeTeamOrgModal();
             await inviteeTeamPage.isMoveTeamBlockedModalVisible(orgDName);
@@ -293,7 +293,7 @@ enterpriseActivatedPageTest.describe(
         let teamId = '';
 
         await enterpriseActivatedPageTest.step(
-          "Setup: create OrgA, and set 'Move teams across organizations' to 'Only within my own organizations'",
+          `Setup: create ${orgAName}, and set 'Move teams across organizations' to 'Only within my own organizations'`,
           async () => {
             await createOrgForLicensedAccount(orgPage, orgAName);
             await adminConsolePage.openAdvancedPermissionsTab();
@@ -304,7 +304,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Create a team while OrgA is the active sidebar context → it auto-joins OrgA, then create OrgB (a second org for the same owner)',
+          `Create a team while ${orgAName} is the active sidebar context → it auto-joins ${orgAName}, then create ${orgBName} (a second org for the same owner)`,
           async () => {
             await adminConsolePage.goToFiles();
             await teamPage.createTeam(teamName);
@@ -319,7 +319,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Move the team from OrgA to OrgB → completes without a restriction modal, team is now part of OrgB',
+          `Move the team from ${orgAName} to ${orgBName} → completes without a restriction modal, team is now part of ${orgBName}`,
           async () => {
             await teamPage.goToTeamDashboard(teamId);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
@@ -348,7 +348,7 @@ enterpriseActivatedPageTest.describe(
         const inviteeTeamPage = new TeamPage(invitee.page);
 
         await ownerAndInviteeTest.step(
-          "Setup: create OrgD (kept at the default 'Always allowed'), and invite the second account",
+          `Setup: create ${orgDName} (kept at the default 'Always allowed'), and invite the second account`,
           async () => {
             await activateEnterpriseLicense(ownerPage.context().request);
             await ownerPage.goto('/');
@@ -363,7 +363,7 @@ enterpriseActivatedPageTest.describe(
 
         await ownerAndInviteeTest.step(
           // Activate before creating the team, or it drops out of the switcher.
-          'Invitee separately activates their own Enterprise license and creates OrgA, then creates their own team (auto-joins OrgA)',
+          `Invitee separately activates their own Enterprise license and creates ${orgAName}, then creates their own team (auto-joins ${orgAName})`,
           async () => {
             await activateEnterpriseLicense(invitee.page.context().request);
             await invitee.page.goto('/');
@@ -374,7 +374,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Invitee accepts the OrgD invite from their inbox and becomes a non-owner org member',
+          `Invitee accepts the ${orgDName} invite from their inbox and becomes a non-owner org member`,
           async () => {
             await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgDName);
           },
@@ -382,7 +382,7 @@ enterpriseActivatedPageTest.describe(
 
         await ownerAndInviteeTest.step(
           // Accepting the invite switched the active org to OrgD, hiding OrgA's team from the switcher.
-          "Invitee switches back to OrgA's context, then to their team, and moves it into OrgD",
+          `Invitee switches back to ${orgAName}'s context, then to their team, and moves it into ${orgDName}`,
           async () => {
             await inviteeOrgPage.switchToOrg(orgAName);
             await inviteeTeamPage.switchTeam(teamName);
@@ -393,7 +393,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Move the team from OrgD to OrgA → completes without a restriction modal, team is now part of OrgA',
+          `Move the team from ${orgDName} to ${orgAName} → completes without a restriction modal, team is now part of ${orgAName}`,
           async () => {
             await inviteeTeamPage.changeTeamOrganization(orgAName);
             await inviteeTeamPage.isTeamPartOfOrganization(orgAName);

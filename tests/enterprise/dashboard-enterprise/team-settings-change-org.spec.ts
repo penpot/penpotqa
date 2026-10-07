@@ -52,7 +52,7 @@ enterprisePageTest.describe(
         let teamId = '';
 
         await enterprisePageTest.step(
-          'Setup: User1 subscribes to Enterprise, creates OrgA and OrgB, and a team in OrgA',
+          `Setup: User1 subscribes to Enterprise, creates ${orgAName} and ${orgBName}, and a team in ${orgAName}`,
           async () => {
             await subscribeAndCreateOrg(
               user1OrgPage,
@@ -72,7 +72,7 @@ enterprisePageTest.describe(
         );
 
         await enterprisePageTest.step(
-          '3211: Move the team from OrgA to OrgB (same user)',
+          `3211: Move the team from ${orgAName} to ${orgBName} (same user)`,
           async () => {
             await user1TeamPage.goToTeamDashboard(teamId);
             await user1TeamPage.openTeamSettingsPageViaOptionsMenu();
@@ -84,7 +84,7 @@ enterprisePageTest.describe(
         );
 
         await enterprisePageTest.step(
-          'Setup: a different user subscribes to Enterprise, creates OrgC, and invites User1 into it',
+          `Setup: a different user subscribes to Enterprise, creates ${orgCName}, and invites User1 into it`,
           async () => {
             await subscribeAndCreateOrg(
               orgPage,
@@ -99,7 +99,7 @@ enterprisePageTest.describe(
         );
 
         await enterprisePageTest.step(
-          '3212: Move the team from OrgB to OrgC (an organization belonging to a different user)',
+          `3212: Move the team from ${orgBName} to ${orgCName} (an organization belonging to a different user)`,
           async () => {
             await user1TeamPage.goToTeamDashboard(teamId);
             await user1TeamPage.openTeamSettingsPageViaOptionsMenu();
@@ -129,7 +129,7 @@ enterprisePageTest.describe(
         );
 
         await enterprisePageTest.step(
-          '3213: User1 moves the team from OrgC to OrgA; User2, already viewing the dashboard, sees the move without refreshing',
+          `3213: User1 moves the team from ${orgCName} to ${orgAName}; User2, already viewing the dashboard, sees the move without refreshing`,
           async () => {
             await user1TeamPage.openTeamSettingsPageViaOptionsMenu();
             await user1TeamPage.changeTeamOrganization(orgAName);

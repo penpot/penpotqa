@@ -35,10 +35,8 @@ export type AdminConsoleUserMenuItemName =
   (typeof AdminConsoleUserMenuItem)[keyof typeof AdminConsoleUserMenuItem];
 
 /**
- * Column position (0-indexed) in the Teams tab's table, for typed use with
- * AdminConsolePage's getTeamsTableCell()-based methods instead of a magic
- * number in each test. This table has 7 columns, including a "Last
- * activity" column at the end.
+ * Column position (0-indexed) in the Teams tab's table, for use with
+ * getTeamsTableCell(). Excludes the trailing, unlabeled actions column.
  */
 export enum TeamsTableColumn {
   Team = 0,
@@ -167,7 +165,7 @@ export class AdminConsolePage extends BasePage {
   readonly advancedPermissionsNavLink: Locator;
 
   // Teams tab (sidebar nav item) — a table listing every team in the org,
-  // one row per team, 7 columns (see TeamsTableColumn).
+  // one row per team (see TeamsTableColumn).
   readonly teamsNavLink: Locator;
   readonly teamsTable: Locator;
   readonly teamsEmptyState: Locator;
@@ -901,6 +899,7 @@ export class AdminConsolePage extends BasePage {
       'Files',
       'Members',
       'Last activity',
+      '', // trailing, unlabeled "Team options" actions column
     ]);
   }
 

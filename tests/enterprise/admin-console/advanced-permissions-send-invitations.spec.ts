@@ -7,12 +7,12 @@ import { qase } from 'playwright-qase-reporter/playwright';
 import { waitMessage } from 'helpers/gmail';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
-import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
+import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
 import { SendInvitationsPermission } from '@pages/admin-console/advanced-permissions-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import {
-  enterprisePageTest,
-  ownerAndInviteeTest,
+  enterpriseActivatedPageTest,
+  ownerAndInviteeActivatedTest,
 } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
 /**
@@ -36,38 +36,26 @@ async function acceptTeamInvite(
   await new TeamPage(invitee.page).goToTeamDashboard(teamId);
 }
 
-enterprisePageTest.describe(
+enterpriseActivatedPageTest.describe(
   'Admin Console > Sidebar Menu > Advanced Permissions > Send invitations (Permission)',
   () => {
-    ownerAndInviteeTest(
+    ownerAndInviteeActivatedTest(
       qase(
         [3359, 3360],
         'Team owner and team admin can invite members under default configuration',
       ),
-      async ({
-        ownerPage,
-        orgPage,
-        adminConsolePage,
-        stripePage,
-        teamPage,
-        invitee,
-      }) => {
-        await ownerAndInviteeTest.slow();
+      async ({ ownerPage, orgPage, adminConsolePage, teamPage, invitee }) => {
+        await ownerAndInviteeActivatedTest.slow();
 
         const orgName = createOrgName();
         const teamName = createTeamName();
         const inviteeTeamPage = new TeamPage(invitee.page);
         let teamId = '';
 
-        await ownerAndInviteeTest.step(
-          'Setup: subscribe to Enterprise, create an org with a team, and invite the second account as a team admin',
+        await ownerAndInviteeActivatedTest.step(
+          'Setup: create an Enterprise-activated org with a team, and invite the second account as a team admin',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.goToFiles();
             await teamPage.createTeam(teamName);
             teamId = teamPage.getTeamIdFromUrl();
@@ -80,14 +68,14 @@ enterprisePageTest.describe(
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           'Invitee accepts the team invite from their inbox and becomes a team admin',
           async () => {
             await acceptTeamInvite(ownerPage, invitee, teamId);
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           '3359: Team owner > Members > Invitations → invite option is available and the invite flow starts',
           async () => {
             await teamPage.openInvitationsPageViaOptionsMenu();
@@ -96,7 +84,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           '3360: Team admin > Members > Invitations → invite option is available and the invite flow starts',
           async () => {
             await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
@@ -107,25 +95,20 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest(
+    enterpriseActivatedPageTest(
       qase([3361], 'Switch invitation permission setting to Team owners only'),
-      async ({ orgPage, adminConsolePage, stripePage, advancedPermissionsPage }) => {
+      async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
         const orgName = createOrgName();
 
-        await enterprisePageTest.step(
-          'Setup: subscribe to Enterprise and create an organization',
+        await enterpriseActivatedPageTest.step(
+          'Setup: create an Enterprise-activated organization',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openAdvancedPermissionsTab();
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Admin Console > Advanced Permissions > Send invitations → both options available',
           async () => {
             await advancedPermissionsPage.isPermissionVisible(
@@ -137,7 +120,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           "Select 'Team owners only' → option becomes selected (autosaved)",
           async () => {
             await advancedPermissionsPage.selectPermission(
@@ -151,7 +134,7 @@ enterprisePageTest.describe(
       },
     );
 
-    ownerAndInviteeTest(
+    ownerAndInviteeActivatedTest(
       qase(
         [3362, 3364],
         'Team owners only setting restricts team admins from inviting and managing invitations',
@@ -160,12 +143,11 @@ enterprisePageTest.describe(
         ownerPage,
         orgPage,
         adminConsolePage,
-        stripePage,
         teamPage,
         advancedPermissionsPage,
         invitee,
       }) => {
-        await ownerAndInviteeTest.slow();
+        await ownerAndInviteeActivatedTest.slow();
 
         const orgName = createOrgName();
         const teamName = createTeamName();
@@ -173,15 +155,10 @@ enterprisePageTest.describe(
         const inviteeTeamPage = new TeamPage(invitee.page);
         let teamId = '';
 
-        await ownerAndInviteeTest.step(
-          'Setup: subscribe to Enterprise, create an org with a team, invite the second account as a team admin, and leave one more invitation pending',
+        await ownerAndInviteeActivatedTest.step(
+          'Setup: create an Enterprise-activated org with a team, invite the second account as a team admin, and leave one more invitation pending',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.goToFiles();
             await teamPage.createTeam(teamName);
             teamId = teamPage.getTeamIdFromUrl();
@@ -204,14 +181,14 @@ enterprisePageTest.describe(
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           'Invitee accepts the team invite from their inbox and becomes a team admin',
           async () => {
             await acceptTeamInvite(ownerPage, invitee, teamId);
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           "Org owner switches the Send invitations permission to 'Team owners only'",
           async () => {
             await orgPage.openOrgSwitcher();
@@ -223,7 +200,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           '3362: Team admin > Members > Invitations → no invite button, permission message shown instead',
           async () => {
             // The invitee's session predates the permission switch above —
@@ -235,7 +212,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           '3364: Team admin cannot change role, resend, delete, or copy the link of the existing pending invitation — preview only',
           async () => {
             await inviteeTeamPage.isInvitationRoleInPopUpNotDisplayed(
