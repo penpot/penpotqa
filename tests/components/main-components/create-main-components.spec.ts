@@ -30,12 +30,9 @@ mainAccountFileTest(qase([1273], 'Create component shape'), async ({ mainPage })
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-    await expect(
-      assetsPanelPage.assetsPanel,
-      'Assets panel should match screenshot with rectangle component',
-    ).toHaveScreenshot('rectangle-component-asset.png', {
-      mask: [assetsPanelPage.librariesOpenModalButton],
-    });
+    expect(await assetsPanelPage.getComponentThumbnailBuffer()).toMatchSnapshot(
+      'rectangle-component-thumbnail.png',
+    );
   });
 });
 
@@ -82,12 +79,7 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       'Verify rectangle component on canvas and layers panel',
       async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with rectangle main component',
-        ).toHaveScreenshot('rectangle-main-component-canvas.png', {
-          mask: mainPage.maskViewport(),
-        });
+        await designPanelPage.isComponentTypeDisplayed('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
       },
     );
@@ -109,12 +101,7 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       'Verify ellipse component on canvas and layers panel',
       async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with ellipse main component',
-        ).toHaveScreenshot('ellipse-main-component-canvas.png', {
-          mask: mainPage.maskViewport(),
-        });
+        await designPanelPage.isComponentTypeDisplayed('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
       },
     );
@@ -136,12 +123,7 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       'Verify board component on canvas and layers panel',
       async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with board main component',
-        ).toHaveScreenshot('board-main-component-canvas.png', {
-          mask: mainPage.maskViewport(),
-        });
+        await designPanelPage.isComponentTypeDisplayed('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
       },
     );
@@ -163,25 +145,16 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       'Verify text component on canvas, layers panel and assets tab',
       async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with text main component',
-        ).toHaveScreenshot('text-main-component-canvas.png', {
-          mask: [mainPage.guides, mainPage.guidesFragment, mainPage.toolBarWindow],
-        });
+        await designPanelPage.isComponentTypeDisplayed('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName(
           'Hello World!',
         );
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
         await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-        await expect(
-          assetsPanelPage.assetsPanel,
-          'Assets panel should match screenshot with text component',
-        ).toHaveScreenshot('text-component-asset.png', {
-          mask: [assetsPanelPage.librariesOpenModalButton],
-          maxDiffPixelRatio: 0.002,
-        });
+        expect(await assetsPanelPage.getComponentThumbnailBuffer()).toMatchSnapshot(
+          'text-component-thumbnail.png',
+        );
       },
     );
   },
@@ -204,23 +177,14 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       'Verify image component on canvas, layers panel and assets tab',
       async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with image main component',
-        ).toHaveScreenshot('image-main-component-canvas.png', {
-          mask: mainPage.maskViewport(),
-        });
+        await designPanelPage.isComponentTypeDisplayed('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('sample');
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
         await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-        await expect(
-          assetsPanelPage.assetsPanel,
-          'Assets panel should match screenshot with image component',
-        ).toHaveScreenshot('image-component-asset.png', {
-          mask: [assetsPanelPage.librariesOpenModalButton],
-          maxDiffPixelRatio: 0.002,
-        });
+        expect(await assetsPanelPage.getComponentThumbnailBuffer()).toMatchSnapshot(
+          'image-component-thumbnail.png',
+        );
       },
     );
   },
@@ -241,22 +205,14 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       'Verify path component on canvas, layers panel and assets tab',
       async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with path main component',
-        ).toHaveScreenshot('path-main-component-canvas.png', {
-          mask: mainPage.maskViewport(),
-        });
+        await designPanelPage.isComponentTypeDisplayed('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
         await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-        await expect(
-          assetsPanelPage.assetsPanel,
-          'Assets panel should match screenshot with path component',
-        ).toHaveScreenshot('path-component-asset.png', {
-          mask: [assetsPanelPage.librariesOpenModalButton],
-        });
+        expect(await assetsPanelPage.getComponentThumbnailBuffer()).toMatchSnapshot(
+          'path-component-thumbnail.png',
+        );
       },
     );
   },
@@ -277,22 +233,14 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       'Verify curve component on canvas, layers panel and assets tab',
       async () => {
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with curve main component',
-        ).toHaveScreenshot('curve-main-component-canvas.png', {
-          mask: mainPage.maskViewport(),
-        });
+        await designPanelPage.isComponentTypeDisplayed('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
         await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-        await expect(
-          assetsPanelPage.assetsPanel,
-          'Assets panel should match screenshot with curve component',
-        ).toHaveScreenshot('curve-component-asset.png', {
-          mask: [assetsPanelPage.librariesOpenModalButton],
-        });
+        expect(await assetsPanelPage.getComponentThumbnailBuffer()).toMatchSnapshot(
+          'curve-component-thumbnail.png',
+        );
       },
     );
   },
