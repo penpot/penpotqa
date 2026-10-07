@@ -459,6 +459,14 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await expect(this.assetComponentLabel).toBeVisible();
   }
 
+  // Thumbnail is server-rendered as a base64-inlined PNG, read directly.
+  async getComponentThumbnailBuffer() {
+    const href = await this.assetComponentLabel
+      .locator('image')
+      .getAttribute('href');
+    return Buffer.from(href.split(',')[1], 'base64');
+  }
+
   async selectTypeFromAllAssetsDropdown(type) {
     await this.assetsTypeButton.click();
     await expect(this.assetsTypeDropdown).toBeVisible();
