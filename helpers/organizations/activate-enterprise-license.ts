@@ -78,29 +78,28 @@ export async function requestActivationCode(
     // rawBody is already the plain request file
   }
 
-  const formData = new FormData();
-  formData.append(
-    'file',
-    new Blob([requestFile], { type: 'text/plain' }),
-    'penpot-activation-code-request.txt',
-  );
-  formData.append('quantity', String(quantity));
-  formData.append('billingPeriod', billingPeriod);
-  if (daysValid != null) {
-    formData.append('daysValid', String(daysValid));
-  }
-
   const createUrl = `${licensesManagerUrl.replace(/\/$/, '')}/api/activation-codes/create`;
-  const createRes = await fetch(createUrl, { method: 'POST', body: formData });
-  if (!createRes.ok) {
+  const createRes = await request.post(createUrl, {
+    multipart: {
+      file: {
+        name: 'penpot-activation-code-request.txt',
+        mimeType: 'text/plain',
+        buffer: Buffer.from(requestFile, 'utf-8'),
+      },
+      quantity: String(quantity),
+      billingPeriod,
+      ...(daysValid != null ? { daysValid: String(daysValid) } : {}),
+    },
+  });
+  if (!createRes.ok()) {
     const body = await createRes.text();
-    if (createRes.status === 404) {
+    if (createRes.status() === 404) {
       throw new Error(
         `licenses-manager returned 404 for ${createUrl} — check that machine has activation codes enabled.`,
       );
     }
     throw new Error(
-      `licenses-manager create activation code failed: ${createRes.status} ${body}`,
+      `licenses-manager create activation code failed: ${createRes.status()} ${body}`,
     );
   }
 

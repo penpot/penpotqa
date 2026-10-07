@@ -4,8 +4,8 @@
  * Stubs below (`test.skip`) await automation — see the Enterprise Plan
  * automation plan.
  *
- * Base: `enterprisePageTest` (see enterprise-fixtures.ts) for a single
- * actor; `ownerAndInviteeTest` for cases needing a real second account.
+ * Base: `enterpriseActivatedPageTest` (see enterprise-fixtures.ts) for a single
+ * actor; `ownerAndInviteeActivatedTest` for cases needing a real second account.
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
@@ -13,38 +13,33 @@ import { TeamPage } from '@pages/dashboard/team-page';
 import { CreateTeamsPermission } from '@pages/admin-console/advanced-permissions-page';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
 import { goToOtherTeam } from 'helpers/teams/go-to-other-team';
-import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
 import {
-  ownerAndInviteeTest,
-  enterprisePageTest,
+  ownerAndInviteeActivatedTest,
+  enterpriseActivatedPageTest,
 } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
-enterprisePageTest.describe(
+enterpriseActivatedPageTest.describe(
   'Admin Console > Sidebar Menu > Advanced Permissions > Create Teams (Permission)',
   () => {
-    enterprisePageTest(
+    enterpriseActivatedPageTest(
       qase(
         [3328],
         "Org owner can change team creation permission to 'Only me' and is autosaved",
       ),
-      async ({ orgPage, adminConsolePage, stripePage, advancedPermissionsPage }) => {
+      async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
         const orgName = createOrgName();
 
-        await enterprisePageTest.step(
-          'Setup: subscribe to Enterprise and create an organization',
+        await enterpriseActivatedPageTest.step(
+          'Setup: create an Enterprise-activated organization',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openAdvancedPermissionsTab();
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Admin Console > Advanced Permissions > Create Teams → both options available',
           async () => {
             await advancedPermissionsPage.isPermissionVisible(
@@ -56,7 +51,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           "Select 'Only me' → option becomes selected (autosaved)",
           async () => {
             await advancedPermissionsPage.selectPermission(
@@ -70,23 +65,18 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest(
+    enterpriseActivatedPageTest(
       qase(
         [3329],
         "Org owner can change team creation permission to 'Any member of the organization' and is autosaved",
       ),
-      async ({ orgPage, adminConsolePage, stripePage, advancedPermissionsPage }) => {
+      async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
         const orgName = createOrgName();
 
-        await enterprisePageTest.step(
-          'Setup: subscribe to Enterprise, create an organization, and switch off the default permission',
+        await enterpriseActivatedPageTest.step(
+          'Setup: create an Enterprise-activated organization, and switch off the default permission',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openAdvancedPermissionsTab();
             await advancedPermissionsPage.selectPermission(
               CreateTeamsPermission.OnlyMe,
@@ -99,7 +89,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           "Select 'Any member of the organization' → option becomes selected (autosaved)",
           async () => {
             await advancedPermissionsPage.selectPermission(
@@ -113,7 +103,7 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest(
+    enterpriseActivatedPageTest(
       qase(
         [3332],
         "When permission is 'Only me', org owner can create a team successfully",
@@ -122,7 +112,6 @@ enterprisePageTest.describe(
         page,
         orgPage,
         adminConsolePage,
-        stripePage,
         advancedPermissionsPage,
         teamPage,
       }) => {
@@ -139,16 +128,11 @@ enterprisePageTest.describe(
         const orgName = createOrgName();
         const teamName = createTeamName();
 
-        await enterprisePageTest.step(
-          "Setup: create a team before any organization exists, then subscribe to Enterprise, create an organization, and set Create Teams permission to 'Only me'",
+        await enterpriseActivatedPageTest.step(
+          "Setup: create a team before any organization exists, then create an Enterprise-activated organization, and set Create Teams permission to 'Only me'",
           async () => {
             await teamPage.createTeam(teamName);
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openAdvancedPermissionsTab();
             await advancedPermissionsPage.selectPermission(
               CreateTeamsPermission.OnlyMe,
@@ -156,7 +140,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Org owner switches to their pre-existing team and adds it to the org → succeeds, no restriction shown',
           async () => {
             await adminConsolePage.goToFiles(orgName);
@@ -169,32 +153,21 @@ enterprisePageTest.describe(
       },
     );
 
-    ownerAndInviteeTest(
+    ownerAndInviteeActivatedTest(
       qase(
         [3333],
         "When permission is 'Only me', non-owner user sees restricted modal when attempting to create a team",
       ),
-      async ({
-        invitee,
-        orgPage,
-        adminConsolePage,
-        stripePage,
-        advancedPermissionsPage,
-      }) => {
+      async ({ invitee, orgPage, adminConsolePage, advancedPermissionsPage }) => {
         const orgName = createOrgName();
         const teamName = createTeamName();
         const inviteeOrgPage = new OrganizationPage(invitee.page);
         const inviteeTeamPage = new TeamPage(invitee.page);
 
-        await ownerAndInviteeTest.step(
-          "Setup: subscribe to Enterprise, create an organization, set Create Teams permission to 'Only me', and invite the second account",
+        await ownerAndInviteeActivatedTest.step(
+          "Setup: create an Enterprise-activated organization, set Create Teams permission to 'Only me', and invite the second account",
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openAdvancedPermissionsTab();
             await advancedPermissionsPage.selectPermission(
               CreateTeamsPermission.OnlyMe,
@@ -203,14 +176,14 @@ enterprisePageTest.describe(
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           'Invitee accepts the org invite from their inbox and becomes a non-owner org member',
           async () => {
             await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgName);
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           'Non-owner member creates their own team, then attempts to add it to the org → restriction modal is shown',
           async () => {
             await invitee.page.goto('/');
@@ -223,32 +196,21 @@ enterprisePageTest.describe(
       },
     );
 
-    ownerAndInviteeTest(
+    ownerAndInviteeActivatedTest(
       qase(
         [3334],
         "When permission is 'Any member of the organization', non-owner member can create a team",
       ),
-      async ({
-        invitee,
-        orgPage,
-        adminConsolePage,
-        stripePage,
-        advancedPermissionsPage,
-      }) => {
+      async ({ invitee, orgPage, adminConsolePage, advancedPermissionsPage }) => {
         const orgName = createOrgName();
         const teamName = createTeamName();
         const inviteeOrgPage = new OrganizationPage(invitee.page);
         const inviteeTeamPage = new TeamPage(invitee.page);
 
-        await ownerAndInviteeTest.step(
-          "Setup: subscribe to Enterprise, create an organization, set Create Teams permission to 'Any member', and invite the second account",
+        await ownerAndInviteeActivatedTest.step(
+          "Setup: create an Enterprise-activated organization, set Create Teams permission to 'Any member', and invite the second account",
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openAdvancedPermissionsTab();
             // "Any member" is the real default — switch away and back so
             // the click actually registers a change (an already-selected
@@ -263,14 +225,14 @@ enterprisePageTest.describe(
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           'Invitee accepts the org invite from their inbox and becomes a non-owner org member',
           async () => {
             await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgName);
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           'Non-owner member creates their own team and adds it to the org → succeeds, no restriction',
           async () => {
             await invitee.page.goto('/');
