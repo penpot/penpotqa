@@ -3,6 +3,8 @@ import { LoginPage } from '@pages/login-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { random } from './helpers/string-generator';
 import { loginAsDemoAccount } from './helpers/accounts/login-as-demo-account';
+import { createDemoUser } from './helpers/accounts/create-demo-user';
+import { createDraftFile } from './helpers/files/create-draft-file';
 import { registerNewAccount } from './helpers/accounts/register-new-account';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { MainPage } from '@pages/workspace/main-page';
@@ -56,13 +58,11 @@ export const registerTest = test.extend<RegisterTestFixtures>({
   },
 });
 
-// Fixture for demo account, created directly via the API. Faster than
-// demoAccountFixture (no UI registration/onboarding flow) — use it for tests
-// that just need to be logged in as a fresh demo account and don't care how
-// it was created.
+// Fresh demo account (WASM renderer) created and logged in via the API, landing on
+// the dashboard. Use it for tests that just need a logged-in, isolated user.
 export const demoAccountApiFixture = test.extend({
   page: async ({ page }, use) => {
-    await loginAsDemoAccount(page);
+    await loginAsDemoAccount(page, { renderer: 'wasm' });
     await use(page);
   },
 });
@@ -90,6 +90,34 @@ export const mainAccountFileTest = mainTest.extend<WorkspaceFixtures>({
       const mainPage = new MainPage(page);
       await teamPage.createTeam(teamName);
       await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+      await use(mainPage);
+    },
+    { auto: true },
+  ],
+});
+
+type DemoWorkspaceFixtures = {
+  dashboardPage: DashboardPage;
+  mainPage: MainPage;
+};
+
+// Fresh demo account (WASM) with a blank Drafts file open in the editor, all set up
+// via the API. Faster and more isolated than mainAccountFileTest.
+export const demoAccountFileTest = test.extend<DemoWorkspaceFixtures>({
+  dashboardPage: async ({ page }, use) => {
+    await use(new DashboardPage(page));
+  },
+  // `auto: true`: open the file even if the test doesn't destructure mainPage.
+  mainPage: [
+    async ({ page }, use) => {
+      const request = page.context().request;
+      await createDemoUser(request, { renderer: 'wasm' });
+      const { teamId, fileId } = await createDraftFile(request);
+
+      const mainPage = new MainPage(page);
+      await page.goto(`/?screen=workspace&team-id=${teamId}&file-id=${fileId}`);
+      await mainPage.acceptCookie();
       await mainPage.isMainPageLoaded();
       await use(mainPage);
     },
