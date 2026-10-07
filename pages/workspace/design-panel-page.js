@@ -851,7 +851,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.sizeHeightInput).toHaveValue(height);
   }
 
-  async isComponentTypeDisplayed(type) {
+  async isComponentTypeVisible(type) {
     await expect(this.rightSidebar.getByText(type, { exact: true })).toBeVisible();
   }
 

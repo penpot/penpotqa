@@ -79,7 +79,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Verify rectangle component on canvas and layers panel',
       async () => {
-        await designPanelPage.isComponentTypeDisplayed('Main');
+        await designPanelPage.isComponentTypeVisible('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Rectangle');
       },
     );
@@ -101,7 +101,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Verify ellipse component on canvas and layers panel',
       async () => {
-        await designPanelPage.isComponentTypeDisplayed('Main');
+        await designPanelPage.isComponentTypeVisible('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
       },
     );
@@ -123,7 +123,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Verify board component on canvas and layers panel',
       async () => {
-        await designPanelPage.isComponentTypeDisplayed('Main');
+        await designPanelPage.isComponentTypeVisible('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Board');
       },
     );
@@ -145,7 +145,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Verify text component on canvas, layers panel and assets tab',
       async () => {
-        await designPanelPage.isComponentTypeDisplayed('Main');
+        await designPanelPage.isComponentTypeVisible('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName(
           'Hello World!',
         );
@@ -177,7 +177,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Verify image component on canvas, layers panel and assets tab',
       async () => {
-        await designPanelPage.isComponentTypeDisplayed('Main');
+        await designPanelPage.isComponentTypeVisible('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('sample');
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
@@ -205,7 +205,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Verify path component on canvas, layers panel and assets tab',
       async () => {
-        await designPanelPage.isComponentTypeDisplayed('Main');
+        await designPanelPage.isComponentTypeVisible('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
@@ -233,7 +233,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Verify curve component on canvas, layers panel and assets tab',
       async () => {
-        await designPanelPage.isComponentTypeDisplayed('Main');
+        await designPanelPage.isComponentTypeVisible('Main');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Path');
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
