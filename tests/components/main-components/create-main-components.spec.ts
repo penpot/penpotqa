@@ -386,7 +386,7 @@ demoAccountFileTest(
     );
 
     await demoAccountFileTest.step('Change shadow color to red', async () => {
-      await designPanelPage.clickFirstColorIcon();
+      await designPanelPage.clickShadowColorIcon();
       await colorPalettePage.setHex('#ff0000');
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
