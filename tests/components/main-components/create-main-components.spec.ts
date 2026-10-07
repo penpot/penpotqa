@@ -238,9 +238,13 @@ mainAccountFileTest(
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
         await assetsPanelPage.isComponentAddedToFileLibraryComponents();
-        expect(await assetsPanelPage.getComponentThumbnailBuffer()).toMatchSnapshot(
-          'curve-component-thumbnail.png',
-        );
+        // Curve's bounding box varies between runs, so byte comparison doesn't work here.
+        await expect(
+          assetsPanelPage.assetsPanel,
+          'Assets panel should match screenshot with curve component',
+        ).toHaveScreenshot('curve-component-asset.png', {
+          mask: [assetsPanelPage.librariesOpenModalButton],
+        });
       },
     );
   },
