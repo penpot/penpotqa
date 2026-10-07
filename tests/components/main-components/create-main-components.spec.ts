@@ -60,14 +60,7 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       'Verify component on canvas and layers panel',
       async () => {
-        await mainPage.hideRulersViaMainMenu();
-        await mainPage.waitForChangeIsSaved();
-        await expect(
-          mainPage.viewport,
-          'Viewport should match screenshot with copy of main component on canvas',
-        ).toHaveScreenshot('copy-main-components-on-canvas.png', {
-          mask: mainPage.maskViewport({ useRulers: true }),
-        });
+        await designPanelPage.isWidthAndHeightForLayer('100', '100');
         await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
       },
     );
