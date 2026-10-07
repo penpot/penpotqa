@@ -3,7 +3,7 @@ import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let assetsPanelPage: AssetsPanelPage;
@@ -11,7 +11,7 @@ let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   assetsPanelPage = new AssetsPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
@@ -19,14 +19,14 @@ mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(qase([1273], 'Create component shape'), async ({ mainPage }) => {
-  await mainAccountFileTest.step('Create rectangle and component', async () => {
+demoAccountFileTest(qase([1273], 'Create component shape'), async ({ mainPage }) => {
+  await demoAccountFileTest.step('Create rectangle and component', async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
   });
 
-  await mainAccountFileTest.step('Verify component in assets tab', async () => {
+  await demoAccountFileTest.step('Verify component in assets tab', async () => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.expandComponentsBlockOnAssetsTab();
     await assetsPanelPage.isComponentAddedToFileLibraryComponents();
@@ -36,16 +36,16 @@ mainAccountFileTest(qase([1273], 'Create component shape'), async ({ mainPage })
   });
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1312], 'Drag a component from assets tab and drop into workspace'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step('Create ellipse and component', async () => {
+    await demoAccountFileTest.step('Create ellipse and component', async () => {
       await mainPage.createDefaultEllipseByCoordinates(200, 300);
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step('Drag component to canvas', async () => {
+    await demoAccountFileTest.step('Drag component to canvas', async () => {
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.dragComponentOnCanvas(50, 100);
@@ -54,7 +54,7 @@ mainAccountFileTest(
       await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Ellipse');
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify component on canvas and layers panel',
       async () => {
         await designPanelPage.isWidthAndHeightForLayer('100', '100');
@@ -64,10 +64,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1431], 'Create component from rectangle by clicking CTRL K'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create rectangle component via shortcut',
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -76,7 +76,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify rectangle component on canvas and layers panel',
       async () => {
         await designPanelPage.isComponentTypeDisplayed('Main');
@@ -86,10 +86,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1432], 'Create component from ellipse by clicking CTRL K'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create ellipse component via shortcut',
       async () => {
         await mainPage.createDefaultEllipseByCoordinates(200, 300);
@@ -98,7 +98,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify ellipse component on canvas and layers panel',
       async () => {
         await designPanelPage.isComponentTypeDisplayed('Main');
@@ -108,10 +108,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1433], 'Create component from board by clicking CTRL K'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create board component via shortcut',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(200, 300);
@@ -120,7 +120,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify board component on canvas and layers panel',
       async () => {
         await designPanelPage.isComponentTypeDisplayed('Main');
@@ -130,10 +130,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1434], 'Create component from text by right-click'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create text component via right-click',
       async () => {
         await mainPage.createDefaultTextLayer();
@@ -142,7 +142,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify text component on canvas, layers panel and assets tab',
       async () => {
         await designPanelPage.isComponentTypeDisplayed('Main');
@@ -160,10 +160,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1435], 'Create component from image by right-click'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create image component via right-click',
       async () => {
         await mainPage.uploadImage('images/sample.jpeg');
@@ -174,7 +174,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify image component on canvas, layers panel and assets tab',
       async () => {
         await designPanelPage.isComponentTypeDisplayed('Main');
@@ -190,10 +190,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1436], 'Create component from path by right-click'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create path component via right-click',
       async () => {
         await mainPage.createDefaultClosedPath();
@@ -202,7 +202,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify path component on canvas, layers panel and assets tab',
       async () => {
         await designPanelPage.isComponentTypeDisplayed('Main');
@@ -218,10 +218,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([3255], 'Create component from curve by right-click'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create curve component via right-click on layers tab',
       async () => {
         await mainPage.createDefaultCurveLayer();
@@ -230,7 +230,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify curve component on canvas, layers panel and assets tab',
       async () => {
         await designPanelPage.isComponentTypeDisplayed('Main');
@@ -250,8 +250,8 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(qase([1291], 'Undo component'), async ({ mainPage }) => {
-  await mainAccountFileTest.step(
+demoAccountFileTest(qase([1291], 'Undo component'), async ({ mainPage }) => {
+  await demoAccountFileTest.step(
     'Create rectangle component and change rotation',
     async () => {
       await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -263,7 +263,7 @@ mainAccountFileTest(qase([1291], 'Undo component'), async ({ mainPage }) => {
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Verify component after rotation change',
     async () => {
       await expect(
@@ -275,12 +275,12 @@ mainAccountFileTest(qase([1291], 'Undo component'), async ({ mainPage }) => {
     },
   );
 
-  await mainAccountFileTest.step('Undo rotation change', async () => {
+  await demoAccountFileTest.step('Undo rotation change', async () => {
     await mainPage.clickShortcutCtrlZ();
     await mainPage.isCornerHandleVisible();
   });
 
-  await mainAccountFileTest.step('Verify component after undo', async () => {
+  await demoAccountFileTest.step('Verify component after undo', async () => {
     await expect(
       mainPage.viewport,
       'Viewport should match screenshot after undoing rotation change',
@@ -290,10 +290,10 @@ mainAccountFileTest(qase([1291], 'Undo component'), async ({ mainPage }) => {
   });
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1530], 'Create multiple components from rectangle and ellipse'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create multiple components from rectangle and ellipse',
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -306,7 +306,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify multiple components on canvas, layers panel and assets tab',
       async () => {
         await expect(
@@ -326,13 +326,13 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1751], 'Grouping component copies'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+    await demoAccountFileTest.slow();
     const groupName = 'Group';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create two components and duplicate layers for grouping',
       async () => {
         await mainPage.createDefaultEllipseByCoordinates(200, 200);
@@ -354,7 +354,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Verify "${groupName}" group is visible in layers panel with copy components`,
       async () => {
         await layersPanelPage.expandGroupOnLayersTab(groupName);
@@ -367,12 +367,12 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1749], 'Change group shadow color'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+    await demoAccountFileTest.slow();
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create rectangle component and group with shadow',
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(200, 200);
@@ -385,14 +385,14 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Change shadow color to red', async () => {
+    await demoAccountFileTest.step('Change shadow color to red', async () => {
       await designPanelPage.clickFirstColorIcon();
       await colorPalettePage.setHex('#ff0000');
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify shadow color change on canvas',
       async () => {
         await expect(
@@ -406,14 +406,14 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1287], 'Search items in Components'),
   async ({ mainPage }) => {
     const component1Name = 'new test component';
     const component2Name = 'test component';
     const component3Name = 'abcd';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create 4 components with specific names',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(100, 200);
@@ -443,7 +443,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Search components by name in assets tab',
       async () => {
         await assetsPanelPage.clickAssetsTab();
