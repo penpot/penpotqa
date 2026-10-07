@@ -899,7 +899,6 @@ export class AdminConsolePage extends BasePage {
       'Files',
       'Members',
       'Last activity',
-      '', // trailing, unlabeled "Team options" actions column
     ]);
   }
 
