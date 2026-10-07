@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { createDemoUser } from './create-demo-user';
+import { createDemoUser, type DemoUserOptions } from './create-demo-user';
 
 /**
  * Logs the page in as a fresh demo account and lands on its dashboard, past
@@ -8,10 +8,10 @@ import { createDemoUser } from './create-demo-user';
  * (fixtures.ts) and `ownerAndInviteeTest`'s `ownerPage` (enterprise-fixtures.ts),
  * so both stay in sync.
  */
-export async function loginAsDemoAccount(page: Page) {
+export async function loginAsDemoAccount(page: Page, options: DemoUserOptions = {}) {
   const dashboardPage = new DashboardPage(page);
 
-  await createDemoUser(page.context().request);
+  await createDemoUser(page.context().request, options);
 
   await page.goto('/');
   await dashboardPage.isDashboardOpenedAfterLogin();
