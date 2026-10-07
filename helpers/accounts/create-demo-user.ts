@@ -1,4 +1,5 @@
 import type { APIRequestContext } from '@playwright/test';
+import { callPenpotApi } from '../api/penpot-api';
 
 interface DemoProfile {
   email: string;
@@ -26,25 +27,12 @@ export async function createDemoUser(
   request: APIRequestContext,
   { renderer }: DemoUserOptions = {},
 ) {
-  // `_fmt=json` — Penpot's RPC endpoints default to transit+json otherwise.
-  const createRes = await request.post(
-    '/api/rpc/command/create-demo-profile?_fmt=json',
-    { data: { 'skip-onboarding': true, ...(renderer && { renderer }) } },
+  const { email, password } = await callPenpotApi<DemoProfile>(
+    request,
+    'create-demo-profile',
+    { skipOnboarding: true, ...(renderer && { renderer }) },
   );
-  if (!createRes.ok())
-    throw new Error(
-      `create-demo-profile failed: ${createRes.status()} ${await createRes.text()}`,
-    );
-  const { email, password }: DemoProfile = await createRes.json();
-
-  const loginRes = await request.post(
-    '/api/rpc/command/login-with-password?_fmt=json',
-    { data: { email, password } },
-  );
-  if (!loginRes.ok())
-    throw new Error(
-      `login-with-password failed: ${loginRes.status()} ${await loginRes.text()}`,
-    );
+  await callPenpotApi(request, 'login-with-password', { email, password });
 
   return { email, password };
 }
