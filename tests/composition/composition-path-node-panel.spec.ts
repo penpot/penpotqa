@@ -1,9 +1,9 @@
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.clickCreateEllipseButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
@@ -14,7 +14,7 @@ mainAccountFileTest.describe(() => {
 
   // TODO(2.19): @to-delete. Delete this whole test (and page-object methods and snapshots only it uses)
   // once PENPOT-3700 is automated. See 'Handling outdated tests after a Penpot release'.
-  mainAccountFileTest.skip(
+  demoAccountFileTest.skip(
     qase([544], 'Add nodes (via Node panel and SHIFT++ shortcut)'),
     {
       tag: ['@deprecated', '@to-delete'],
@@ -25,7 +25,7 @@ mainAccountFileTest.describe(() => {
       },
     },
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Add node via node panel for two selected nodes',
         async () => {
           await mainPage.holdShiftKeyboardButton();
@@ -37,13 +37,13 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Verify first node is added', async () => {
+      await demoAccountFileTest.step('Verify first node is added', async () => {
         await expect(mainPage.viewport).toHaveScreenshot('path-added-one-node.png', {
           mask: mainPage.maskViewport(),
         });
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Add node via SHIFT++ shortcut for two selected nodes',
         async () => {
           await mainPage.clickFourthNode();
@@ -55,7 +55,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Verify second node is added', async () => {
+      await demoAccountFileTest.step('Verify second node is added', async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'path-added-two-nodes.png',
           {
@@ -68,7 +68,7 @@ mainAccountFileTest.describe(() => {
 
   // TODO(2.19): @outdated. When updating this test to match Qase 545, remove the .skip,
   // the tag and the annotation. See 'Handling outdated tests after a Penpot release'.
-  mainAccountFileTest.skip(
+  demoAccountFileTest.skip(
     qase([545], 'Delete node (via Node panel and Del shortcut)'),
     {
       tag: '@outdated',
@@ -79,7 +79,7 @@ mainAccountFileTest.describe(() => {
       },
     },
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Delete first node via node panel',
         async () => {
           await mainPage.clickFirstNode();
@@ -88,7 +88,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Verify first node is deleted', async () => {
+      await demoAccountFileTest.step('Verify first node is deleted', async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'path-deleted-one-node.png',
           {
@@ -97,7 +97,7 @@ mainAccountFileTest.describe(() => {
         );
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Delete second node via Delete key',
         async () => {
           await mainPage.clickSecondNode();
@@ -106,7 +106,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Verify second node is deleted', async () => {
+      await demoAccountFileTest.step('Verify second node is deleted', async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'path-deleted-two-nodes.png',
           {
@@ -119,7 +119,7 @@ mainAccountFileTest.describe(() => {
 
   // TODO(2.19): @outdated. When updating this test to match Qase 547, remove the .skip,
   // the tag and the annotation. See 'Handling outdated tests after a Penpot release'.
-  mainAccountFileTest.skip(
+  demoAccountFileTest.skip(
     qase([547], 'Merge nodes (via Node panel and CTRL+J shortcut)'),
     {
       tag: '@outdated',
@@ -130,7 +130,7 @@ mainAccountFileTest.describe(() => {
       },
     },
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Merge two nodes via node panel', async () => {
+      await demoAccountFileTest.step('Merge two nodes via node panel', async () => {
         await mainPage.holdShiftKeyboardButton();
         await mainPage.clickFirstNode();
         await mainPage.clickSecondNode();
@@ -139,7 +139,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step('Verify nodes are merged once', async () => {
+      await demoAccountFileTest.step('Verify nodes are merged once', async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'path-merged-nodes-once.png',
           {
@@ -148,7 +148,7 @@ mainAccountFileTest.describe(() => {
         );
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Merge two nodes via CTRL+J shortcut',
         async () => {
           await mainPage.holdShiftKeyboardButton();
@@ -160,7 +160,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Verify nodes are merged twice', async () => {
+      await demoAccountFileTest.step('Verify nodes are merged twice', async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'path-merged-nodes-twice.png',
           {
@@ -173,7 +173,7 @@ mainAccountFileTest.describe(() => {
 
   // TODO(2.19): @outdated. When updating this test to match Qase 548, remove the .skip,
   // the tag and the annotation. See 'Handling outdated tests after a Penpot release'.
-  mainAccountFileTest.skip(
+  demoAccountFileTest.skip(
     qase([548], 'Join nodes (via Node panel and J shortcut)'),
     {
       tag: '@outdated',
@@ -184,7 +184,7 @@ mainAccountFileTest.describe(() => {
       },
     },
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Draw new nodes on canvas', async () => {
+      await demoAccountFileTest.step('Draw new nodes on canvas', async () => {
         await mainPage.clickDrawNodesButtonOnNodePanel();
         await mainPage.clickViewportByCoordinates(600, 200, 2);
         await mainPage.clickViewportByCoordinates(750, 300, 2);
@@ -193,7 +193,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step('Join nodes via node panel', async () => {
+      await demoAccountFileTest.step('Join nodes via node panel', async () => {
         await mainPage.holdShiftKeyboardButton();
         await mainPage.clickSixthNode();
         await mainPage.clickThirdNode();
@@ -202,7 +202,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step('Verify nodes are joined once', async () => {
+      await demoAccountFileTest.step('Verify nodes are joined once', async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'path-joined-nodes-once.png',
           {
@@ -211,7 +211,7 @@ mainAccountFileTest.describe(() => {
         );
       });
 
-      await mainAccountFileTest.step('Join nodes via J shortcut', async () => {
+      await demoAccountFileTest.step('Join nodes via J shortcut', async () => {
         await mainPage.holdShiftKeyboardButton();
         await mainPage.clickFifthNode();
         await mainPage.clickSecondNode();
@@ -220,7 +220,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step('Verify nodes are joined twice', async () => {
+      await demoAccountFileTest.step('Verify nodes are joined twice', async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'path-joined-nodes-twice.png',
           {
@@ -233,7 +233,7 @@ mainAccountFileTest.describe(() => {
 
   // TODO(2.19): @outdated. When updating this test to match Qase 549, remove the .skip,
   // the tag and the annotation. See 'Handling outdated tests after a Penpot release'.
-  mainAccountFileTest.skip(
+  demoAccountFileTest.skip(
     qase([549], 'Separate nodes (via Node panel and K shortcut)'),
     {
       tag: '@outdated',
@@ -244,7 +244,7 @@ mainAccountFileTest.describe(() => {
       },
     },
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Separate two nodes via node panel',
         async () => {
           await mainPage.holdShiftKeyboardButton();
@@ -256,7 +256,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Verify nodes are separated once', async () => {
+      await demoAccountFileTest.step('Verify nodes are separated once', async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
           'path-separated-nodes-once.png',
           {
@@ -265,7 +265,7 @@ mainAccountFileTest.describe(() => {
         );
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Separate two nodes via K shortcut',
         async () => {
           await mainPage.clickSecondNode();
@@ -277,7 +277,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify nodes are separated twice',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -293,7 +293,7 @@ mainAccountFileTest.describe(() => {
 
   // TODO(2.19): @outdated. When updating this test to match Qase 550, remove the .skip,
   // the tag and the annotation. See 'Handling outdated tests after a Penpot release'.
-  mainAccountFileTest.skip(
+  demoAccountFileTest.skip(
     qase([550], 'To corner (via Node panel and X shortcut) - single node'),
     {
       tag: '@outdated',
@@ -304,7 +304,7 @@ mainAccountFileTest.describe(() => {
       },
     },
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Convert first node to corner via node panel',
         async () => {
           await mainPage.clickFirstNode();
@@ -313,7 +313,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify first node is converted to corner',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -325,7 +325,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Convert second node to corner via X shortcut',
         async () => {
           await mainPage.clickSecondNode();
@@ -334,7 +334,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify second node is converted to corner',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -351,7 +351,7 @@ mainAccountFileTest.describe(() => {
 
 // TODO(2.19): @outdated. When updating this test to match Qase 552, remove the .skip,
 // the tag and the annotation. See 'Handling outdated tests after a Penpot release'.
-mainAccountFileTest.skip(
+demoAccountFileTest.skip(
   qase([552], 'To curve (via Node panel and C shortcut) - single node'),
   {
     tag: '@outdated',
@@ -362,7 +362,7 @@ mainAccountFileTest.skip(
     },
   },
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create rectangle and transform to path',
       async () => {
         await mainPage.clickCreateRectangleButton();
@@ -374,7 +374,7 @@ mainAccountFileTest.skip(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Convert first node to curve via node panel',
       async () => {
         await mainPage.clickFirstNode();
@@ -383,7 +383,7 @@ mainAccountFileTest.skip(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify first node is converted to curve',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -395,7 +395,7 @@ mainAccountFileTest.skip(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Convert second node to curve via C shortcut',
       async () => {
         await mainPage.clickSecondNode();
@@ -404,7 +404,7 @@ mainAccountFileTest.skip(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify second node is converted to curve',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot(
