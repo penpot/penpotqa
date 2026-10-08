@@ -1,4 +1,4 @@
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { expect } from '@playwright/test';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
@@ -9,14 +9,14 @@ let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(qase([216], 'Change color background'), async ({ mainPage }) => {
+demoAccountFileTest(qase([216], 'Change color background'), async ({ mainPage }) => {
   await designPanelPage.clickCanvasBackgroundColorIcon();
   await colorPalettePage.setHex('#304d6a');
   await mainPage.clickViewportTwice();
@@ -26,15 +26,15 @@ mainAccountFileTest(qase([216], 'Change color background'), async ({ mainPage })
   });
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await demoAccountFileTest.slow();
     await mainPage.clickCreateBoardButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([217], 'Create board without a default size preset (Toolbar)'),
     async ({ mainPage }) => {
       await mainPage.isCreatedLayerVisible();
@@ -44,7 +44,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [219],
       'Rename board on the Layers Panel (by double clicking) with valid name',
@@ -69,7 +69,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [220],
       'Rename board on the Viewport (by double clicking on name) with an empty field',
@@ -82,7 +82,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([229], 'Add, edit and delete Stroke to board'),
     async ({ mainPage }) => {
       await designPanelPage.clickAddStrokeButton();
@@ -165,7 +165,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1756], 'Absolute positioned board moving'),
     async ({ mainPage }) => {
       await designPanelPage.changeHeightAndWidthForLayer('400', '500');
@@ -200,7 +200,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [241],
       'Change board size, preset and orientation (Design page in the right)',
@@ -308,7 +308,7 @@ mainAccountFileTest.describe(() => {
       await mainPage.isCreatedLayerVisible();
       await designPanelPage.checkSizePresetsOptions(sizePresetsOptions);
 
-      await mainAccountFileTest.step('Select iPhone 13/14 preset', async () => {
+      await demoAccountFileTest.step('Select iPhone 13/14 preset', async () => {
         await designPanelPage.selectSizePresetsOption('iPhone 13/14 ');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
@@ -321,7 +321,7 @@ mainAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('390');
       });
 
-      await mainAccountFileTest.step('Select iPad preset', async () => {
+      await demoAccountFileTest.step('Select iPad preset', async () => {
         await designPanelPage.selectSizePresetsOption('iPad');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
@@ -333,7 +333,7 @@ mainAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('768');
       });
 
-      await mainAccountFileTest.step('Select Mobile preset', async () => {
+      await demoAccountFileTest.step('Select Mobile preset', async () => {
         await designPanelPage.selectSizePresetsOption('Mobile');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
@@ -345,7 +345,7 @@ mainAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('360');
       });
 
-      await mainAccountFileTest.step('Select Google Pixel 6a preset', async () => {
+      await demoAccountFileTest.step('Select Google Pixel 6a preset', async () => {
         await designPanelPage.selectSizePresetsOption('Google Pixel 6a/6');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
@@ -358,7 +358,7 @@ mainAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('412');
       });
 
-      await mainAccountFileTest.step('Select Samsung S22 preset', async () => {
+      await demoAccountFileTest.step('Select Samsung S22 preset', async () => {
         await designPanelPage.selectSizePresetsOption('Samsung Galaxy S22');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
@@ -371,7 +371,7 @@ mainAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('360');
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Select Surface Pro 4/5/6/7 preset',
         async () => {
           await designPanelPage.selectSizePresetsOption('Surface Pro 4/5/6/7');
@@ -387,7 +387,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Select Remarkable 2 preset', async () => {
+      await demoAccountFileTest.step('Select Remarkable 2 preset', async () => {
         await designPanelPage.selectSizePresetsOption('Remarkable 2');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
@@ -400,7 +400,7 @@ mainAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('1404');
       });
 
-      await mainAccountFileTest.step('Select Web 1024 preset', async () => {
+      await demoAccountFileTest.step('Select Web 1024 preset', async () => {
         await designPanelPage.selectSizePresetsOption('Web 1024');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isHorizontalOrientationButtonChecked();
@@ -413,7 +413,7 @@ mainAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('1024');
       });
 
-      await mainAccountFileTest.step('Select A4 preset', async () => {
+      await demoAccountFileTest.step('Select A4 preset', async () => {
         await designPanelPage.selectSizePresetsOption('A4');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
@@ -426,7 +426,7 @@ mainAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('794');
       });
 
-      await mainAccountFileTest.step('Select Instagram Story preset', async () => {
+      await demoAccountFileTest.step('Select Instagram Story preset', async () => {
         await designPanelPage.selectSizePresetsOption('Instagram story');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
@@ -442,9 +442,9 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainAccountFileTest.slow();
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await demoAccountFileTest.slow();
     const board1 = 'Board #1';
     const board2 = 'Board #2';
     await mainPage.clickCreateBoardButton();
@@ -461,7 +461,7 @@ mainAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [248],
       'Zoom to board by double click board icon on the list (Layers panel on the left)',
@@ -480,7 +480,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([249], 'Hide and show board (From rightclick and icons)'),
     async ({ page, mainPage }) => {
       const board1 = 'Board #1';
@@ -512,7 +512,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([268], "Click 'Focus on' board from right click"),
     async ({ page, mainPage }) => {
       const board1 = 'Board #1';
@@ -553,10 +553,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([253], 'Duplicate Board (From rightclick and Shortcut Ctrl+D)'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Create the third board and rename it',
         async () => {
           const board3 = 'Board #3';
@@ -569,7 +569,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Duplicate the first board via right click on layer in canvas',
         async () => {
           const board1 = 'Board #1';
@@ -579,7 +579,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Duplicate the second board via right click on layer in layers tab',
         async () => {
           const board2 = 'Board #2';
@@ -589,7 +589,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Duplicate the third board via shortcut (Ctrl+D)',
         async () => {
           const board3 = 'Board #3';
@@ -602,29 +602,29 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([266], 'Rename and delete group'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Select the two boards', async () => {
+      await demoAccountFileTest.step('Select the two boards', async () => {
         await mainPage.clickMainMenuButton();
         await mainPage.clickEditMainMenuItem();
         await mainPage.clickSelectAllMainMenuSubItem();
       });
 
-      await mainAccountFileTest.step('Create group', async () => {
+      await demoAccountFileTest.step('Create group', async () => {
         await mainPage.groupLayerViaRightClick();
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.isLayerPresentOnLayersTab('Group', true);
       });
 
-      await mainAccountFileTest.step('Rename group', async () => {
+      await demoAccountFileTest.step('Rename group', async () => {
         const groupName = 'Group boards';
         await layersPanelPage.renameSelectedLayerViaDoubleClick(groupName);
         await mainPage.waitForChangeIsSaved();
         await layersPanelPage.isLayerPresentOnLayersTab(groupName, true);
       });
 
-      await mainAccountFileTest.step('Delete group', async () => {
+      await demoAccountFileTest.step('Delete group', async () => {
         const groupName = 'Group boards';
         await mainPage.deleteLayerViaRightClickByName(groupName);
         await mainPage.waitForChangeIsSaved();
@@ -634,15 +634,15 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('600', '600');
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultEllipseByCoordinates(210, 210, true);
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2040], 'Resize board to fit 2 elements'),
     async ({ mainPage }) => {
       await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
@@ -659,7 +659,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2050],
       'Resize board to fit content that goes partially outside of the board',
@@ -680,10 +680,10 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([218], 'Create a board without a default size preset (Shortcut B)'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Press B shortcut and verify Size presets dropdown appears',
       async () => {
         await mainPage.pressKeyboardShortcut('B');
@@ -691,7 +691,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Click on canvas and verify board with default size is created',
       async () => {
         await mainPage.clickViewportTwice();
@@ -704,7 +704,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase(
     [2389, 2390],
     'Create board with a default size preset allow to change frame orientation (Toolbar)',
@@ -712,7 +712,7 @@ mainAccountFileTest(
   async ({ mainPage }) => {
     await mainPage.clickCreateBoardButton();
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Select Expanded preset and change to vertical orientation',
       async () => {
         await designPanelPage.selectSizePresetsOption('Expanded');
@@ -725,7 +725,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Select iPhone 16 preset and change to horizontal orientation',
       async () => {
         await designPanelPage.selectSizePresetsOption('iPhone 16 ');
@@ -741,7 +741,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Change to custom dimensions after preset',
       async () => {
         await designPanelPage.changeHeightAndWidthForLayer('500', '750');
@@ -752,10 +752,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2913], 'Copy board as image to clipboard'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create a board with an ellipse, rectangle and text inside',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(200, 200);
@@ -768,21 +768,21 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Select the board', async () => {
+    await demoAccountFileTest.step('Select the board', async () => {
       await mainPage.clickCreatedBoardTitleOnCanvas();
     });
 
-    await mainAccountFileTest.step('Copy board as image', async () => {
+    await demoAccountFileTest.step('Copy board as image', async () => {
       await mainPage.copyBoardAsImageViaRightClick();
     });
 
-    await mainAccountFileTest.step('Paste board in viewport', async () => {
+    await demoAccountFileTest.step('Paste board in viewport', async () => {
       await mainPage.clickViewportByCoordinates(600, 200);
       await layersPanelPage.pasteLayerViaRightClick();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step('Check pasted board', async () => {
+    await demoAccountFileTest.step('Check pasted board', async () => {
       const copiedImageName: string = 'blob';
       await layersPanelPage.isLayerNameDisplayed(copiedImageName);
       await expect(mainPage.viewport).toHaveScreenshot(
