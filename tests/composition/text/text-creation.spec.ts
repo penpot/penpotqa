@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 
-mainAccountFileTest(qase([377], 'Create Text(Toolbar)'), async ({ mainPage }) => {
+demoAccountFileTest(qase([377], 'Create Text(Toolbar)'), async ({ mainPage }) => {
   await mainPage.createDefaultTextLayer();
   await mainPage.isCreatedLayerVisible();
   await expect(mainPage.viewport).toHaveScreenshot('text-creation-toolbar.png', {
@@ -10,7 +10,7 @@ mainAccountFileTest(qase([377], 'Create Text(Toolbar)'), async ({ mainPage }) =>
   });
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([378], 'Create Text (Shortcut T)'),
   async ({ mainPage }) => {
     await mainPage.createDefaultTextLayerViaShortcut();

@@ -1,24 +1,24 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase(
     [2286],
     'Import rotated Exif JPEG images from toolbar and from shortcut (Shift+K)',
   ),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Upload exif_top_left.jpg and verify dimensions',
       async () => {
         await mainPage.uploadImage('images/exif_top_left.jpg');
@@ -29,7 +29,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Upload exif_top_right.jpg via shortcut and verify dimensions',
       async () => {
         await mainPage.uploadImageViaShortcut('images/exif_top_right.jpg');
