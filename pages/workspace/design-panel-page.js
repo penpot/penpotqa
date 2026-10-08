@@ -1874,6 +1874,13 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Radius', value);
   }
 
+  async checkIndividualCorners(topLeft, topRight, bottomLeft, bottomRight) {
+    await this.checkTokenField('Top left', topLeft);
+    await this.checkTokenField('Top right', topRight);
+    await this.checkTokenField('Bottom left', bottomLeft);
+    await this.checkTokenField('Bottom right', bottomRight);
+  }
+
   async checkRotationForLayer(value) {
     await this.checkTokenField('Rotation', value);
   }
