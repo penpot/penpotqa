@@ -1,4 +1,4 @@
-import { demoAccountFileTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { expect } from '@playwright/test';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
@@ -9,13 +9,13 @@ let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-demoAccountFileTest.beforeEach(async ({ page }) => {
+mainAccountFileTest.beforeEach(async ({ page }) => {
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-demoAccountFileTest(
+mainAccountFileTest(
   qase([487], 'Create Path (Toolbar) - closed'),
   async ({ mainPage }) => {
     await mainPage.createDefaultClosedPath();
@@ -29,7 +29,7 @@ demoAccountFileTest(
 
 // TODO(2.19): @outdated. When updating this test to match Qase 489, remove the .skip,
 // the tag and the annotation. See 'Handling outdated tests after a Penpot release'.
-demoAccountFileTest.skip(
+mainAccountFileTest.skip(
   qase([489], 'Create Path (Toolbar) - opened'),
   {
     tag: '@outdated',
@@ -49,16 +49,16 @@ demoAccountFileTest.skip(
   },
 );
 
-demoAccountFileTest(
+mainAccountFileTest(
   qase([501], 'Add edit and remove Stroke Caps to Path (arrow, marker)'),
   async ({ mainPage }) => {
-    await demoAccountFileTest.step('Create and select Path layer', async () => {
+    await mainAccountFileTest.step('Create and select Path layer', async () => {
       await mainPage.createDefaultOpenPath();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.selectLayerByName('Path');
     });
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Add Arrow (first) and Diamond (second) caps',
       async () => {
         await designPanelPage.changeCap('Arrow', 'first');
@@ -76,7 +76,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Switch caps and verify Diamond (first) and Arrow (second)',
       async () => {
         await designPanelPage.clickSwitchCapButton();
@@ -94,7 +94,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Remove caps and verify None on both',
       async () => {
         await designPanelPage.changeCap('None', 'first');
@@ -115,12 +115,12 @@ demoAccountFileTest(
   },
 );
 
-demoAccountFileTest.describe(() => {
-  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultClosedPath();
   });
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([512], 'Change rotation (Design page in the right)'),
     async ({ mainPage }) => {
       await designPanelPage.changeRotationForLayer('90');
@@ -150,7 +150,7 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([513], 'Delete Path (From right click)'),
     async ({ mainPage }) => {
       await mainPage.isCreatedLayerVisible();
@@ -160,7 +160,7 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([2543], 'Delete Path (From Keyboard)'),
     async ({ mainPage }) => {
       await mainPage.isCreatedLayerVisible();
@@ -170,7 +170,7 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(
       [525],
       'Flip Vertical and Flip Horizontal path (From right click and Shortcut Shift +V Shift + H)',
@@ -205,7 +205,7 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(qase([537], 'Selection to board'), async ({ mainPage }) => {
+  mainAccountFileTest(qase([537], 'Selection to board'), async ({ mainPage }) => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-to-board.png', {
@@ -214,8 +214,8 @@ demoAccountFileTest.describe(() => {
   });
 });
 
-demoAccountFileTest.describe(() => {
-  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultOpenPath();
   });
 });
