@@ -108,6 +108,8 @@ exports.ProfilePage = class ProfilePage extends BasePage {
       .filter({ hasText: 'Penpot Light' });
     this.uiThemeDropdown = page.locator('[class*="select-wrapper"] >>nth=1');
     this.updateSettingsButton = page.getByTestId('submit-lang-change');
+    // Only switch on the Settings screen; its label toggles Enabled/Disabled
+    this.webglRenderingSwitch = page.getByRole('switch');
 
     //Subscription
     this.subscriptionMenuButton = page.getByTestId('settings-subscription');
@@ -245,6 +247,27 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   async goToAccountPage() {
     const baseUrl = process.env.BASE_URL;
     await this.page.goto(baseUrl.concat('?screen=settings-profile'));
+  }
+
+  async goToSettingsPage() {
+    const baseUrl = process.env.BASE_URL;
+    await this.page.goto(baseUrl.concat('?screen=settings-options'));
+  }
+
+  /**
+   * Turns on "WebGL rendering (Beta)" in Your account > Settings. It is an
+   * account preference, so it applies to every file opened afterwards.
+   */
+  async enableWebglRendering() {
+    await this.goToSettingsPage();
+    await expect(this.webglRenderingSwitch).toBeVisible();
+    if (!(await this.webglRenderingSwitch.isChecked())) {
+      await this.webglRenderingSwitch.click();
+    }
+    await expect(
+      this.webglRenderingSwitch,
+      'WebGL rendering should be enabled',
+    ).toBeChecked();
   }
 
   async goToSubscriptionsPage() {

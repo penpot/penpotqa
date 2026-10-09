@@ -41,6 +41,7 @@ on:
           - tests/enterprise/destructive
           - tests/login-signup
           - tests/panels-features
+          - tests/panels-features/export
           - tests/panels-features/main-menu
           - tests/panels-features/history
           - tests/panels-features/stroke
@@ -136,13 +137,16 @@ jobs:
                 echo "❌ Error: Folder '$TEST_FOLDER' does not exist"
                 exit 1
               fi
-              # tests/enterprise/ (and its subfolders) live in their own
-              # Playwright project (see tests/enterprise/README.md) — the
-              # `chrome` project explicitly ignores them, so route to
-              # `--project=enterprise` instead.
+              # tests/enterprise/ and tests/panels-features/export/ (and their
+              # subfolders) live in their own Playwright projects (see
+              # tests/enterprise/README.md) — the `chrome` project explicitly
+              # ignores them, so route to `--project=enterprise`/`export` instead.
               case "$TEST_FOLDER" in
                 tests/enterprise*)
                   PROJECT=enterprise
+                  ;;
+                tests/panels-features/export*)
+                  PROJECT=export
                   ;;
                 *)
                   PROJECT=chrome
@@ -159,6 +163,9 @@ jobs:
               case "$TEST_SPEC" in
                 tests/enterprise/*)
                   PROJECT=enterprise
+                  ;;
+                tests/panels-features/export/*)
+                  PROJECT=export
                   ;;
                 *)
                   PROJECT=chrome

@@ -32,6 +32,7 @@ on:
           - tests/dashboard/trash
           - tests/login-signup
           - tests/panels-features
+          - tests/panels-features/export
           - tests/plugins
           - tests/your-account
           - tests/subscription-plans
@@ -104,11 +105,30 @@ jobs:
                 echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
                 exit 1
               fi
-              npx playwright test --project=chrome "${{ github.event.inputs.test_folder }}"
+              # tests/panels-features/export/ lives in its own Playwright project —
+              # the `chrome` project explicitly ignores it, so route to
+              # `--project=export` instead.
+              case "${{ github.event.inputs.test_folder }}" in
+                tests/panels-features/export*)
+                  PROJECT=export
+                  ;;
+                *)
+                  PROJECT=chrome
+                  ;;
+              esac
+              npx playwright test --project="$PROJECT" "${{ github.event.inputs.test_folder }}"
               ;;
             "by_spec")
               echo "📄 Running test spec: ${{ github.event.inputs.test_spec }}"
-              npx playwright test --project=chrome "${{ github.event.inputs.test_spec }}"
+              case "${{ github.event.inputs.test_spec }}" in
+                tests/panels-features/export/*)
+                  PROJECT=export
+                  ;;
+                *)
+                  PROJECT=chrome
+                  ;;
+              esac
+              npx playwright test --project="$PROJECT" "${{ github.event.inputs.test_spec }}"
               ;;
             *)
               echo "❌ Error: Invalid test mode"
