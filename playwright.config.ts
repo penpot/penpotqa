@@ -102,7 +102,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chrome',
-      testIgnore: ['enterprise/**'],
+      testIgnore: ['enterprise/**', 'panels-features/export/**'],
       expect: {
         // Repeats the top-level default (see its own comment) — this
         // project's `expect` replaces rather than merges with it.
@@ -130,6 +130,32 @@ export default defineConfig({
       // tests/enterprise/README.md for the automation plan.
       name: 'enterprise',
       testDir: './tests/enterprise',
+      expect: {
+        // Repeats the top-level default (see its own comment) — this
+        // project's `expect` replaces rather than merges with it.
+        timeout: 15000,
+        toHaveScreenshot: {
+          maxDiffPixelRatio: 0.0001,
+        },
+      },
+      use: {
+        browserName: 'chromium',
+        channel: 'chrome',
+        launchOptions: {
+          ignoreDefaultArgs: ['--hide-scrollbars'],
+          args: ['--headless=new'], // Use new headless mode
+        },
+        contextOptions: {
+          permissions: ['clipboard-read', 'clipboard-write'],
+        },
+      },
+    },
+    {
+      // WebGL export suite (tests/panels-features/export/**) — kept out of the
+      // default `chrome` project so it runs on its own schedule
+      // (.github/workflows/playwright_export_weekly.yml), not in the daily run.
+      name: 'export',
+      testDir: './tests/panels-features/export',
       expect: {
         // Repeats the top-level default (see its own comment) — this
         // project's `expect` replaces rather than merges with it.
