@@ -15,4 +15,8 @@ export async function createOrgForLicensedAccount(
 ) {
   await orgPage.sidebarPromoCreateOrgButton.click();
   await orgPage.createOrganization(orgName);
+  // The naming modal closing doesn't guarantee the SPA has actually routed
+  // into the new org's Admin Console yet — a caller creating a team right
+  // after can otherwise race it and land the team outside the org entirely.
+  await orgPage.isOnOrgAdminConsoleUrl(orgName);
 }

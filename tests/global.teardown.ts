@@ -43,6 +43,25 @@ async function deleteWithRetry(
 }
 
 /**
+ * Playwright has no per-project globalTeardown — this hook always runs,
+ * regardless of which `--project` was selected. Enterprise tests create
+ * teams under their own disposable demo/real accounts, never under the
+ * shared LOGIN_EMAIL this teardown cleans up, so an enterprise-only run
+ * would always find 0 teams here anyway — skip the pointless login +
+ * API round-trip by checking argv for an enterprise-only `--project`.
+ */
+function isEnterpriseOnlyRun(): boolean {
+  const selected: string[] = [];
+  for (let i = 0; i < process.argv.length; i++) {
+    const arg = process.argv[i];
+    if (arg === '--project') selected.push(process.argv[i + 1]);
+    else if (arg.startsWith('--project='))
+      selected.push(arg.slice('--project='.length));
+  }
+  return selected.length > 0 && selected.every((p) => p === 'enterprise');
+}
+
+/**
  * Resolves the TEST_RUN_ID to use for scoped cleanup.
  *
  * Priority:
@@ -98,6 +117,13 @@ function resolveTargets(
  * cause the teardown to throw so the failure is visible in CI.
  */
 export default async function globalTeardown() {
+  if (isEnterpriseOnlyRun()) {
+    console.log(
+      "⏭️  Skipping teardown — enterprise project doesn't create teams under the main account.",
+    );
+    return;
+  }
+
   const { BASE_URL, LOGIN_EMAIL, LOGIN_PWD, FULL_CLEANUP } = process.env;
   const isFullCleanup = FULL_CLEANUP === 'true';
   const TEST_RUN_ID = resolveRunId();

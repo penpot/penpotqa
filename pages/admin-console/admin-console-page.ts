@@ -35,10 +35,8 @@ export type AdminConsoleUserMenuItemName =
   (typeof AdminConsoleUserMenuItem)[keyof typeof AdminConsoleUserMenuItem];
 
 /**
- * Column position (0-indexed) in the Teams tab's table, for typed use with
- * AdminConsolePage's getTeamsTableCell()-based methods instead of a magic
- * number in each test. This table has 7 columns, including a "Last
- * activity" column at the end.
+ * Column position (0-indexed) in the Teams tab's table, for use with
+ * getTeamsTableCell(). Excludes the trailing, unlabeled actions column.
  */
 export enum TeamsTableColumn {
   Team = 0,
@@ -167,7 +165,7 @@ export class AdminConsolePage extends BasePage {
   readonly advancedPermissionsNavLink: Locator;
 
   // Teams tab (sidebar nav item) — a table listing every team in the org,
-  // one row per team, 7 columns (see TeamsTableColumn).
+  // one row per team (see TeamsTableColumn).
   readonly teamsNavLink: Locator;
   readonly teamsTable: Locator;
   readonly teamsEmptyState: Locator;
@@ -366,8 +364,20 @@ export class AdminConsolePage extends BasePage {
     await this.welcomeCreateOrganizationButton.click();
   }
 
-  async goToFiles() {
+  /** `expectedOrgName` confirms the dashboard has actually landed back in
+   * that org's context before returning — the navigation alone doesn't
+   * guarantee it, so a caller that creates a team right after can
+   * otherwise race it and land the team outside the org entirely. */
+  async goToFiles(expectedOrgName?: string) {
     await this.goToFilesLink.click();
+    if (expectedOrgName) {
+      await expect(
+        this.page
+          .locator('button[class*="organization_team_switch__current-selection"]')
+          .locator('[class*="current-organization-name"]'),
+        `"${expectedOrgName}" is the current organization back on the dashboard`,
+      ).toHaveText(expectedOrgName);
+    }
   }
 
   async openAdvancedPermissionsTab() {

@@ -52,7 +52,7 @@ ownerAndInviteeTest.describe(
         const teamName = createTeamName();
 
         await ownerAndInviteeTest.step(
-          'Setup: create OrgA with a team, and get the invitee an active session inside it',
+          `Setup: create ${orgName} with a team, and get the invitee an active session inside it`,
           async () => {
             await subscribeAndCreateOrg(
               orgPage,
@@ -60,7 +60,7 @@ ownerAndInviteeTest.describe(
               stripePage,
               orgName,
             );
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
 
             await teamPage.openInvitationsPageViaOptionsMenu();

@@ -4,8 +4,8 @@
  * Stubs below (`test.skip`) await automation — see the Enterprise Plan
  * automation plan.
  *
- * Base: `enterprisePageTest` (see enterprise-fixtures.ts) for a single
- * actor; `ownerAndInviteeTest` for cases needing a real second account.
+ * Base: `enterpriseActivatedPageTest` (see enterprise-fixtures.ts) for a single
+ * actor; `ownerAndInviteeActivatedTest` for cases needing a real second account.
  * Per-case "Accounts:" notes cover invitees needing a real, readable
  * inbox instead (see the enterprise-demo-account-email memory).
  */
@@ -14,13 +14,13 @@ import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
-import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
-import { enterprisePageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
+import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
+import { enterpriseActivatedPageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
-enterprisePageTest.describe('Admin Console > Sidebar Menu > Teams', () => {
-  enterprisePageTest(
+enterpriseActivatedPageTest.describe('Admin Console > Sidebar Menu > Teams', () => {
+  enterpriseActivatedPageTest(
     qase([3630], 'Display team information in the Teams list'),
-    async ({ page, orgPage, adminConsolePage, stripePage, teamPage }) => {
+    async ({ page, orgPage, adminConsolePage, teamPage }) => {
       const dashboardPage = new DashboardPage(page);
       const mainPage = new MainPage(page);
       const orgName = createOrgName();
@@ -28,26 +28,21 @@ enterprisePageTest.describe('Admin Console > Sidebar Menu > Teams', () => {
       let ownerName = '';
       let orgAdminConsoleUrl = '';
 
-      await enterprisePageTest.step(
-        'Setup: subscribe to Enterprise, create an org, a team, and a file in it',
+      await enterpriseActivatedPageTest.step(
+        'Setup: create an Enterprise-activated org, a team, and a file in it',
         async () => {
-          await subscribeAndCreateOrg(
-            orgPage,
-            adminConsolePage,
-            stripePage,
-            orgName,
-          );
+          await createOrgForLicensedAccount(orgPage, orgName);
           ownerName = await adminConsolePage.getUserName();
           orgAdminConsoleUrl = page.url();
 
-          await adminConsolePage.goToFiles();
+          await adminConsolePage.goToFiles(orgName);
           await teamPage.createTeam(teamName);
           await dashboardPage.createFileViaPlaceholder();
           await mainPage.isMainPageLoaded();
         },
       );
 
-      await enterprisePageTest.step(
+      await enterpriseActivatedPageTest.step(
         'Open Admin Console > Teams → team shown as a list row, with the expected columns',
         async () => {
           await page.goto(orgAdminConsoleUrl);
@@ -58,7 +53,7 @@ enterprisePageTest.describe('Admin Console > Sidebar Menu > Teams', () => {
         },
       );
 
-      await enterprisePageTest.step(
+      await enterpriseActivatedPageTest.step(
         'Team column shows an avatar and the team name; Created column uses the standard date format',
         async () => {
           await adminConsolePage.isTeamAvatarShownInTeamsTable(teamName);
@@ -66,14 +61,14 @@ enterprisePageTest.describe('Admin Console > Sidebar Menu > Teams', () => {
         },
       );
 
-      await enterprisePageTest.step(
+      await enterpriseActivatedPageTest.step(
         'Owner column shows the owner’s avatar and full name',
         async () => {
           await adminConsolePage.hasTeamOwnerInTeamsTable(teamName, ownerName);
         },
       );
 
-      await enterprisePageTest.step(
+      await enterpriseActivatedPageTest.step(
         'Projects/Files/Members counts are correct',
         async () => {
           await adminConsolePage.hasTeamCountsInTeamsTable(teamName, {
@@ -84,7 +79,7 @@ enterprisePageTest.describe('Admin Console > Sidebar Menu > Teams', () => {
         },
       );
 
-      await enterprisePageTest.step(
+      await enterpriseActivatedPageTest.step(
         'A pending invitation does NOT count towards Members',
         async () => {
           await adminConsolePage.invitePersonToOrganization(

@@ -83,7 +83,7 @@ enterprisePageTest.describe(
               stripePage,
               firstOrgName,
             );
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(firstOrgName);
           },
         );
 

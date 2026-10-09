@@ -57,7 +57,7 @@ enterprisePageTest.describe(
             );
             await adminConsolePage.isDisplayingOrganization(secondOrgName);
 
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(secondOrgName);
             await teamPage.createTeam(teamName);
           },
         );
@@ -182,7 +182,7 @@ enterprisePageTest.describe(
             );
             orgAdminConsoleUrl = page.url();
 
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
             await dashboardPage.createFileViaPlaceholder();
             await mainPage.isMainPageLoaded();
@@ -260,7 +260,7 @@ enterprisePageTest.describe(
               stripePage,
               orgName,
             );
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
           },
         );
 
