@@ -17,8 +17,7 @@ exports.BasePage = class BasePage {
       'div[class*="shared_notification_pill__type-toast"]',
     );
     this.warningMessageText = this.teamModalContainer.getByRole('alert');
-    this.importWarningMessageText =
-      this.importModalContainer.getByRole('complementary');
+    this.importWarningMessageText = this.importModalContainer.getByRole('alert');
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });
     this.savedChangesIcon = page.getByTitle('Saved', { exact: true });
