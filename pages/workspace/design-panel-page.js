@@ -2,6 +2,11 @@ const { expect, test } = require('@playwright/test');
 const { BasePage } = require('../base-page');
 const { mainTest } = require('../../fixtures');
 
+/** Options of the format select in the Design tab Export section. */
+const EXPORT_FORMATS = /** @type {const} */ (['PNG', 'JPG', 'WEBP', 'SVG', 'PDF']);
+
+/** @typedef {typeof EXPORT_FORMATS[number]} ExportFormat */
+
 exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   /**
    * @param {import('@playwright/test').Page} page
@@ -444,6 +449,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.exportElementButton = page.getByRole('button', {
       name: /Export \d+ element/,
     });
+    this.exportFormatSelect = page
+      .getByRole('combobox')
+      .filter({ hasText: new RegExp(`^(${EXPORT_FORMATS.join('|')})$`) });
+    this.exportScaleSelect = page
+      .getByRole('combobox')
+      .filter({ hasText: /^\d+(\.\d+)?x$/ });
 
     //Design panel - Guides section
     this.guidesSection = page.getByText('Guides', { exact: true });
@@ -1484,6 +1495,51 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       page.waitForEvent('download'),
       this.exportElementButton.click(),
     ]);
+  }
+
+  /**
+   * @param {ExportFormat} format
+   */
+  async selectExportFormat(format) {
+    await this.exportFormatSelect.click();
+    await this.page.getByRole('option', { name: format, exact: true }).click();
+    await expect(
+      this.exportFormatSelect,
+      `Export format should be ${format}`,
+    ).toHaveText(format);
+    // The select label updates before the shape does. The scale select is
+    // rendered from the shape, and only for raster formats, so its removal
+    // confirms the change for SVG/PDF (exporting earlier downloads a PNG).
+    if (format === 'SVG' || format === 'PDF') {
+      await expect(
+        this.exportScaleSelect,
+        `Scale should not be available for ${format} exports`,
+      ).toBeHidden();
+    }
+  }
+
+  /**
+   * Clicks "Export N element(s)" and returns the downloaded file.
+   * @returns {Promise<import('@playwright/test').Download>}
+   */
+  async exportElementAndGetDownload() {
+    const [download] = await Promise.all([
+      this.page.waitForEvent('download'),
+      this.exportElementButton.click(),
+    ]);
+    return download;
+  }
+
+  /**
+   * Adds an export row for the selection, sets its format and downloads it.
+   * A failed export produces no download, so this also fails on export errors.
+   * @param {ExportFormat} format
+   * @returns {Promise<import('@playwright/test').Download>}
+   */
+  async exportSelectionAs(format) {
+    await this.clickAddExportButton();
+    await this.selectExportFormat(format);
+    return this.exportElementAndGetDownload();
   }
 
   async clickAddGuidesButton() {

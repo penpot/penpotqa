@@ -8,6 +8,7 @@
     "test": "npx playwright test --project=chrome",
     "changed": "npx playwright test --project=chrome --only-changed",
     "test:enterprise": "npx playwright test --project=enterprise --workers=8",
+    "test:export": "npx playwright test --project=export",
     "testLogin": "npx playwright test --project=chrome ./tests/panels-features/panels-features-fill.spec.js",
     "updateSnapshots": "npx playwright test --project=chrome --update-snapshots",
     "test:docker": "docker compose run --rm playwright",
