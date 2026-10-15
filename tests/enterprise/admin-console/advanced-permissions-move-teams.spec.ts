@@ -168,7 +168,7 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           'Create a team while OrgA is the active sidebar context → it auto-joins OrgA',
           async () => {
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgAName);
             await teamPage.createTeam(teamName);
             teamId = teamPage.getTeamIdFromUrl();
             await teamPage.openTeamSettingsPageViaOptionsMenu();
@@ -241,7 +241,7 @@ enterpriseActivatedPageTest.describe(
             await activateEnterpriseLicense(invitee.page.context().request);
             await invitee.page.goto('/');
             await createOrgForLicensedAccount(inviteeOrgPage, orgEName);
-            await inviteeAdminConsolePage.goToFiles();
+            await inviteeAdminConsolePage.goToFiles(orgEName);
             await inviteeTeamPage.createTeam(teamName);
           },
         );
@@ -306,7 +306,7 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           'Create a team while OrgA is the active sidebar context → it auto-joins OrgA, then create OrgB (a second org for the same owner)',
           async () => {
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgAName);
             await teamPage.createTeam(teamName);
             teamId = teamPage.getTeamIdFromUrl();
             await teamPage.openTeamSettingsPageViaOptionsMenu();
@@ -368,7 +368,7 @@ enterpriseActivatedPageTest.describe(
             await activateEnterpriseLicense(invitee.page.context().request);
             await invitee.page.goto('/');
             await createOrgForLicensedAccount(inviteeOrgPage, orgAName);
-            await inviteeAdminConsolePage.goToFiles();
+            await inviteeAdminConsolePage.goToFiles(orgAName);
             await inviteeTeamPage.createTeam(teamName);
           },
         );
@@ -420,7 +420,8 @@ enterpriseActivatedPageTest.describe(
               MoveTeamsPermission.NeverAllowed,
             );
 
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
+
             await teamPage.createTeam(teamName);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.isTeamPartOfOrganization(orgName);
@@ -451,7 +452,7 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           "Under 'Only within my own organizations', 'Remove team from organization' → the same blocking modal appears again",
           async () => {
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.switchTeam(teamName);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.openRemoveTeamFromOrgDialog();

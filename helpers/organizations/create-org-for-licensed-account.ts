@@ -1,4 +1,5 @@
 import { OrganizationPage } from '@pages/dashboard/organization-page';
+import { AdminConsolePage } from '@pages/admin-console/admin-console-page';
 
 /**
  * Enterprise org creation counterpart to `subscribeAndCreateOrg`, for an
@@ -15,4 +16,7 @@ export async function createOrgForLicensedAccount(
 ) {
   await orgPage.sidebarPromoCreateOrgButton.click();
   await orgPage.createOrganization(orgName);
+  // The modal closing doesn't mean the Admin Console has routed into the new
+  // org yet — "Go to Files" clicked before that lands outside any org.
+  await new AdminConsolePage(orgPage.page).isOnOrganizationAdminConsole(orgName);
 }

@@ -12,7 +12,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.dashboardHeaderContainer = page.getByTestId('dashboard-header');
     this.addProjectButton = page.getByRole('button', { name: 'New project' });
     this.alertMessage = page.getByRole('alert');
-    this.personalProjectsText = page.getByText('Personal Projects');
+    this.personalProjectsText = page.getByRole('heading', {
+      name: 'Personal Projects',
+    });
 
     // Dashboard Header > Layout View
     this.layoutListViewButton = page.getByRole('button', { name: 'List view' });

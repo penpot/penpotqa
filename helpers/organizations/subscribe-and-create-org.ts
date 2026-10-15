@@ -24,4 +24,7 @@ export async function subscribeAndCreateOrg(
   await stripePage.completeEnterpriseTrialCheckout();
   await adminConsolePage.clickWelcomeCreateOrganizationButton();
   await orgPage.createOrganization(orgName);
+  // The modal closing doesn't mean the Admin Console has routed into the new
+  // org yet — "Go to Files" clicked before that lands outside any org.
+  await adminConsolePage.isOnOrganizationAdminConsole(orgName);
 }
