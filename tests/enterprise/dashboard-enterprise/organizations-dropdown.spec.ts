@@ -61,7 +61,7 @@ enterprisePageTest.describe('Enterprise Dashboard > Organizations Dropdown', () 
       await enterprisePageTest.step(
         'Click "Go to Files" (accessed by direct link) → redirected to Personal Projects',
         async () => {
-          await adminConsolePage.goToFiles();
+          await adminConsolePage.goToFiles(orgName);
           await dashboardPage.isPersonalProjectsVisible();
         },
       );

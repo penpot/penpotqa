@@ -41,7 +41,8 @@ enterprisePageTest.describe(
             ownerName = await adminConsolePage.getUserName();
             orgAdminConsoleUrl = page.url();
 
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
+
             await teamPage.createTeam(teamName);
           },
         );
@@ -61,7 +62,7 @@ enterprisePageTest.describe(
           async () => {
             // deleteTeam() itself opens the team switcher and selects the team
             // by name before deleting it — no need to switch to it first.
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.deleteTeam(teamName);
           },
         );

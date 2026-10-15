@@ -13,6 +13,7 @@ import { TeamPage } from '@pages/dashboard/team-page';
 import { CreateTeamsPermission } from '@pages/admin-console/advanced-permissions-page';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { goToOtherTeam } from 'helpers/teams/go-to-other-team';
 import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
 import {
   ownerAndInviteeTest,
@@ -158,11 +159,9 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'Org owner switches to their pre-existing team and adds it to the org → succeeds, no restriction shown',
           async () => {
-            await adminConsolePage.goToFiles();
-            // A real reload — the team switcher's in-memory list can go
-            // stale right after an Admin Console round-trip, otherwise.
-            await page.goto('/');
-            await teamPage.switchTeam(teamName);
+            await adminConsolePage.goToFiles(orgName);
+            // The pre-existing team isn't in the org, so it's under "Other teams".
+            await goToOtherTeam(orgPage, teamPage, teamName);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.addTeamToOrganization(orgName);
           },

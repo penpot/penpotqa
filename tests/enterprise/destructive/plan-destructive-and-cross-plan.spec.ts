@@ -57,7 +57,8 @@ enterprisePageTest.describe(
             );
             await adminConsolePage.isDisplayingOrganization(secondOrgName);
 
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(secondOrgName);
+
             await teamPage.createTeam(teamName);
           },
         );
@@ -182,7 +183,8 @@ enterprisePageTest.describe(
             );
             orgAdminConsoleUrl = page.url();
 
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
+
             await teamPage.createTeam(teamName);
             await dashboardPage.createFileViaPlaceholder();
             await mainPage.isMainPageLoaded();
@@ -260,7 +262,7 @@ enterprisePageTest.describe(
               stripePage,
               orgName,
             );
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
           },
         );
 
@@ -367,15 +369,16 @@ enterprisePageTest.describe(
               await profilePageA.tryTrialForPlan('Unlimited');
 
               await loginAsDemoAccount(userBPage);
+              const orgBName = createOrgName();
               await subscribeAndCreateOrg(
                 orgPageB,
                 adminConsolePageB,
                 stripePageB,
-                createOrgName(),
+                orgBName,
               );
               // Back to the dashboard — the Admin Console's user menu has
               // no "profile-btn" testid, needed by openYourAccountPage().
-              await adminConsolePageB.goToFiles();
+              await adminConsolePageB.goToFiles(orgBName);
             },
           );
 

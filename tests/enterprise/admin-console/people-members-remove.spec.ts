@@ -172,7 +172,7 @@ ownerAndInviteeActivatedTest.describe(
         await ownerAndInviteeActivatedTest.step(
           'Owner creates 3 teams and invites the second account to each',
           async () => {
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             const inviteeDashboardPage = new DashboardPage(invitee.page);
             // waitSecondMessage()'s hardcoded >=2 would already be true
             // after the first iteration, so it'd no-op and waitMessage()

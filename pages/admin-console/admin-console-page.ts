@@ -366,8 +366,21 @@ export class AdminConsolePage extends BasePage {
     await this.welcomeCreateOrganizationButton.click();
   }
 
-  async goToFiles() {
+  /** "Go to Files" first renders as a bare link to the dashboard root, and
+   * only gets the org's team-id once the org data loads — clicked before
+   * that, it lands on the personal team, outside any org. Then waits until
+   * the dashboard is inside `orgName` (its name shows in the org/team
+   * switcher), so a team created next isn't created outside the org. */
+  async goToFiles(orgName: string) {
+    await expect(
+      this.goToFilesLink,
+      '"Go to Files" links to a team of the current organization',
+    ).toHaveAttribute('href', /team-id=/);
     await this.goToFilesLink.click();
+    await expect(
+      this.page.getByRole('button', { name: orgName }),
+      `Dashboard is inside organization "${orgName}"`,
+    ).toBeVisible();
   }
 
   async openAdvancedPermissionsTab() {
@@ -731,8 +744,10 @@ export class AdminConsolePage extends BasePage {
   async isDisplayingOrganization(orgName: string) {
     // Not a semantic heading — it's a styled div, same
     // pattern as the newer Tailwind components elsewhere (no ARIA role).
+    // Scoped to `main`: right after switching orgs, the closing org
+    // switcher dropdown (rendered outside it) still lists the same name.
     await expect(
-      this.page.getByText(orgName, { exact: true }),
+      this.page.getByRole('main').getByText(orgName, { exact: true }),
       `Organization "${orgName}" is the one displayed`,
     ).toBeVisible();
   }

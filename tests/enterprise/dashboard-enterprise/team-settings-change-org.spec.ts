@@ -60,14 +60,17 @@ enterprisePageTest.describe(
               user1StripePage,
               orgAName,
             );
-            await user1AdminConsolePage.goToFiles();
+            await user1AdminConsolePage.goToFiles(orgAName);
             await user1TeamPage.createTeam(teamName);
             teamId = user1TeamPage.getTeamIdFromUrl();
 
             await user1OrgPage.openOrgSwitcher();
             await user1OrgPage.clickCreateOrgFromDropdown();
             await user1OrgPage.createOrganization(orgBName);
-            await user1AdminConsolePage.goToFiles();
+            await user1AdminConsolePage.isOnOrganizationAdminConsole(orgBName);
+            // Otherwise "Go to Files" can still link to OrgA's team.
+            await user1AdminConsolePage.page.reload();
+            await user1AdminConsolePage.goToFiles(orgBName);
           },
         );
 

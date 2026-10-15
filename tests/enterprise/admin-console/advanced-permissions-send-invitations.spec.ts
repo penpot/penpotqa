@@ -68,7 +68,7 @@ enterprisePageTest.describe(
               stripePage,
               orgName,
             );
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
             teamId = teamPage.getTeamIdFromUrl();
             await teamPage.openInvitationsPageViaOptionsMenu();
@@ -182,7 +182,7 @@ enterprisePageTest.describe(
               stripePage,
               orgName,
             );
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
             teamId = teamPage.getTeamIdFromUrl();
             await teamPage.openInvitationsPageViaOptionsMenu();
