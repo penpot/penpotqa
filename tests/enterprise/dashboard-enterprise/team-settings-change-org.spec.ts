@@ -138,7 +138,7 @@ enterprisePageTest.describe(
             await user1TeamPage.changeTeamOrganization(orgAName);
 
             await user2TeamPage.isSuccessMessageDisplayed(
-              `This team is now part of the organization ${orgAName}`,
+              `${teamName} now belongs to ${orgAName}`,
             );
           },
         );
