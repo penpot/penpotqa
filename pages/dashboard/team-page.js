@@ -69,9 +69,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.addTeamToOrgSubmitButton = page.getByRole('button', {
       name: 'Add to organization',
     });
-    this.addedToOrgMessage = page.getByText(
-      /This team is now part of the organization/,
-    );
+    // Toast reads "<team> now belongs to <org>" for both add and move.
+    this.addedToOrgMessage = page.getByText(/ now belongs to /);
     // Shown inside the same modal instead of the org combobox when
     // "Create Teams" is 'Only me' and the actor isn't the owner (PENPOT-3333).
     this.noPermissionToAddTeamMessage = page.getByText(
@@ -84,9 +83,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.removeTeamFromOrgConfirmButton = page.getByRole('button', {
       name: 'Remove from organization',
     });
-    this.removedFromOrgMessage = page.getByText(
-      /This team is no longer part of the organization/,
-    );
+    // Toast reads "<team> is no longer part of <org>".
+    this.removedFromOrgMessage = page.getByText(/ is no longer part of /);
     this.moveTeamBlockedModalHeading = page.getByRole('heading', {
       name: "Change team's organization",
     });
