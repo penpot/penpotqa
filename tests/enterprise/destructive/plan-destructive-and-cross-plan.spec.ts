@@ -273,7 +273,7 @@ enterprisePageTest.describe(
           async () => {
             await profilePage.openYourAccountPage();
             await profilePage.openSubscriptionTab();
-            await profilePage.checkSubscriptionName('Enterprise');
+            await profilePage.checkSubscriptionName('Enterprise (trial)');
           },
         );
 
@@ -289,7 +289,7 @@ enterprisePageTest.describe(
           'Close without confirming → no downgrade started, still Enterprise',
           async () => {
             await profilePage.closeDowngradeWarningWithoutConfirming();
-            await profilePage.checkSubscriptionName('Enterprise');
+            await profilePage.checkSubscriptionName('Enterprise (trial)');
           },
         );
 
@@ -340,7 +340,7 @@ enterprisePageTest.describe(
           async () => {
             await profilePage.goToSubscriptionsPage();
             await stripePage.isCancelsEndsVisible(false);
-            await profilePage.checkSubscriptionName('Enterprise');
+            await profilePage.checkSubscriptionName('Enterprise (trial)');
           },
         );
       },
