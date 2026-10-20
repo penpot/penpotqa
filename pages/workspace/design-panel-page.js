@@ -1476,7 +1476,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.removeExportButton.click();
   }
 
-  async isViewModeExportRowDisplayed(format = 'PNG', scale = '1x') {
+  async isViewModeExportRowVisible(format = 'PNG', scale = '1x') {
     const sidebar = this.viewModeRightSidebar;
     await expect(
       sidebar.getByText(format, { exact: true }),

@@ -77,7 +77,7 @@ mainAccountFileTest(
       'Add export for the element and verify',
       async () => {
         await designPanelPage.clickAddExportButtonForViewMode();
-        await designPanelPage.isViewModeExportRowDisplayed('PNG', '1x');
+        await designPanelPage.isViewModeExportRowVisible('PNG', '1x');
         await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
       },
     );
