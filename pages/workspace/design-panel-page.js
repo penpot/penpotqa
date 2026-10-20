@@ -443,6 +443,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.addExportVieverButton = this.viewModeRightSidebar.getByRole('button', {
       name: 'Add export',
     });
+    this.viewModeExportSuffixInput =
+      this.viewModeRightSidebar.getByPlaceholder('Suffix');
     this.removeExportButton = page.getByRole('button', { name: 'Remove export' });
     this.exportElementButton = page.getByRole('button', {
       name: /Export \d+ element/,
@@ -1472,6 +1474,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickRemoveExportButton() {
     await this.removeExportButton.click();
+  }
+
+  async isViewModeExportRowDisplayed(format = 'PNG', scale = '1x') {
+    const sidebar = this.viewModeRightSidebar;
+    await expect(
+      sidebar.getByText(format, { exact: true }),
+      `Export format is ${format}`,
+    ).toBeVisible();
+    await expect(
+      sidebar.getByText(scale, { exact: true }),
+      `Export scale is ${scale}`,
+    ).toBeVisible();
+    await expect(
+      this.viewModeExportSuffixInput,
+      'Export suffix is empty',
+    ).toHaveValue('');
   }
 
   async isExportElementButtonDisplayed(title) {
