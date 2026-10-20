@@ -19,6 +19,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.canvasBackgroundColorIcon = this.canvasBackgroundSection.locator(
       '.main_ui_ds_utilities_swatch__swatch-opacity',
     );
+    this.canvasBackgroundTokenName = this.canvasBackgroundSection.locator(
+      'div[class*="color_row__token-name"]',
+    );
     this.layerRotationInput = page.getByRole('textbox', { name: 'Rotation' });
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
@@ -99,6 +102,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
     this.colorPickerTokensButton =
       this.colorPickerContainer.getByTestId('opt-token-color');
+    this.colorPickerColorButton = this.colorPickerContainer.getByTestId('opt-color');
 
     this.colorPickerTogglePanelSetButtons = this.colorPickerContainer.getByRole(
       'button',
@@ -699,6 +703,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.fillTokenColor).toHaveText(value);
   }
 
+  async isStrokeTokenColorSet(tokenName) {
+    await expect(
+      this.strokeSectionContainer.locator('div[class*="color_row__token-name"]'),
+      `Stroke shows the "${tokenName}" token`,
+    ).toHaveText(tokenName);
+  }
+
+  async checkStrokeTokenResolvedValue(value) {
+    await expect(
+      this.strokeSectionContainer.getByLabel(`Resolved value: ${value}`, {
+        exact: true,
+      }),
+      `Stroke token resolved value is "${value}"`,
+    ).toBeVisible();
+  }
+
   async checkFillTokenResolvedValue(value) {
     await expect(
       this.fillSection.getByLabel(`Resolved value: ${value}`, { exact: true }),
@@ -742,6 +762,17 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     ).toBeVisible();
   }
 
+  async isColorPickerColorModeSelected() {
+    await expect(
+      this.colorPickerColorButton.getByRole('button'),
+      'Color picker Color mode is selected',
+    ).toHaveAttribute('aria-pressed', 'true');
+    await expect(
+      this.colorPickerTokensButton.getByRole('button'),
+      'Color picker Color tokens mode is not selected',
+    ).toHaveAttribute('aria-pressed', 'false');
+  }
+
   async isSearchByTokenNameInputNotVisible() {
     await expect(
       this.searchByTokenNameInput,
@@ -777,6 +808,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickCanvasBackgroundColorIcon() {
     await this.canvasBackgroundColorIcon.click();
+  }
+
+  async isCanvasBackgroundTokenSet(tokenName) {
+    await expect(
+      this.canvasBackgroundTokenName,
+      `Canvas background shows the "${tokenName}" token`,
+    ).toHaveText(tokenName);
+  }
+
+  async checkCanvasBackgroundTokenResolvedValue(value) {
+    await expect(
+      this.canvasBackgroundSection.getByLabel(`Resolved value: ${value}`, {
+        exact: true,
+      }),
+      `Canvas background token resolved value is "${value}"`,
+    ).toBeVisible();
   }
 
   async clickComponentFillColorIcon() {
