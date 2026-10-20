@@ -207,18 +207,22 @@ object — `isXVisible()`, `isXListed()`, `hasX()` — with its own descriptive
 assertion message. Spec files call these methods; they don't write raw
 `expect()` calls themselves.
 
+Name visibility assertions `is<Thing>Visible()` (matching Playwright's
+`toBeVisible()`), not `is<Thing>Displayed()` / `isDisplaying<Thing>()`. Older
+methods still use "Displayed"; don't rename them, but use "Visible" for new ones.
+
 ```ts
 // Correct — page object owns the assertion
 // pages/some-feature/some-feature-page.ts
-async isDisplayingItem(itemName: string) {
+async isItemVisible(itemName: string) {
   await expect(
     this.page.getByText(itemName, { exact: true }),
-    `Page is displaying "${itemName}"`,
+    `Item "${itemName}" is visible`,
   ).toBeVisible();
 }
 
 // spec file
-await featurePage.isDisplayingItem(itemName);
+await featurePage.isItemVisible(itemName);
 ```
 
 ```ts

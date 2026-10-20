@@ -11,6 +11,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel
     this.rightSidebar = this.page.getByTestId('right-sidebar');
+    this.viewModeRightSidebar = page.locator(
+      `aside[class*='inspect_right_sidebar']`,
+    );
     this.designTabpanel = page.getByRole('tabpanel', { name: 'design' });
     this.canvasBackgroundSection = page.getByLabel('Canvas background section');
     this.canvasBackgroundColorIcon = this.canvasBackgroundSection.locator(
@@ -437,9 +440,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Export section
     this.exportSection = page.getByText('Export', { exact: true });
     this.addExportButton = page.getByRole('button', { name: 'Add export' });
-    this.addExportVieverButton = page.locator(
-      'button[class*="exports__add-export"]',
-    );
+    this.addExportVieverButton = this.viewModeRightSidebar.getByRole('button', {
+      name: 'Add export',
+    });
+    this.viewModeExportSuffixInput =
+      this.viewModeRightSidebar.getByPlaceholder('Suffix');
     this.removeExportButton = page.getByRole('button', { name: 'Remove export' });
     this.exportElementButton = page.getByRole('button', {
       name: /Export \d+ element/,
@@ -1469,6 +1474,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async clickRemoveExportButton() {
     await this.removeExportButton.click();
+  }
+
+  async isViewModeExportRowVisible(format = 'PNG', scale = '1x') {
+    const sidebar = this.viewModeRightSidebar;
+    await expect(
+      sidebar.getByText(format, { exact: true }),
+      `Export format is ${format}`,
+    ).toBeVisible();
+    await expect(
+      sidebar.getByText(scale, { exact: true }),
+      `Export scale is ${scale}`,
+    ).toBeVisible();
+    await expect(
+      this.viewModeExportSuffixInput,
+      'Export suffix is empty',
+    ).toHaveValue('');
   }
 
   async isExportElementButtonDisplayed(title) {
