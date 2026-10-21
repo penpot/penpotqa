@@ -1012,6 +1012,15 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
+  async createOpenPathWithEsc() {
+    await this.clickCreatePathButton();
+    await this.clickViewportByCoordinates(500, 200);
+    await this.clickViewportByCoordinates(1200, 700);
+    await this.clickViewportByCoordinates(1000, 400);
+    await this.page.keyboard.press('Escape');
+    await this.waitForChangeIsSaved();
+  }
+
   async createSmallClosedPathByCoordinates(x, y) {
     await this.clickCreatePathButton();
     await this.clickViewportByCoordinates(x, y);
