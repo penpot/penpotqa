@@ -41,7 +41,7 @@ export class StripePage extends BasePage {
   readonly cancellationReasonOption: Locator;
   readonly reviewChangesHeading: Locator;
   readonly planCanceledHeading: Locator;
-  readonly planCanceledDoneButton: Locator;
+  readonly planCanceledReturnButton: Locator;
   readonly canceledBadge: Locator;
   readonly reactivatePlanButton: Locator;
   // Penpot's own subscription panel, not Stripe's — shown once canceled.
@@ -126,7 +126,9 @@ export class StripePage extends BasePage {
     this.planCanceledHeading = page.getByRole('heading', {
       name: 'Plan canceled',
     });
-    this.planCanceledDoneButton = page.getByRole('button', { name: 'Done' });
+    this.planCanceledReturnButton = page.getByRole('button', {
+      name: 'Return to Overview',
+    });
     this.canceledBadge = page.getByText('Canceled', { exact: true });
     this.reactivatePlanButton = page.getByRole('button', {
       name: 'Reactivate plan',
@@ -433,8 +435,8 @@ export class StripePage extends BasePage {
     await this.reactivatePlanButton.click();
   }
 
-  async clickOnPlanCanceledDoneButton() {
-    await this.planCanceledDoneButton.click();
+  async clickOnPlanCanceledReturnButton() {
+    await this.planCanceledReturnButton.click();
   }
 
   /** Assumes isOnStripeBillingPage() already. */
@@ -445,7 +447,7 @@ export class StripePage extends BasePage {
     await this.selectCancellationReason();
     await this.clickOnCancelPlanButton();
     await this.isPlanCanceledHeadingVisible();
-    await this.clickOnPlanCanceledDoneButton();
+    await this.clickOnPlanCanceledReturnButton();
   }
 
   /** Assumes isOnStripeBillingPage() already; clicks twice (open, then confirm). */
