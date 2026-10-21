@@ -12,60 +12,6 @@ demoAccountFileTest.describe(() => {
     await mainPage.openNodesPanelViaRightClick();
   });
 
-  // TODO(2.19): @to-delete. Delete this whole test (and page-object methods and snapshots only it uses)
-  // once PENPOT-3700 is automated. See 'Handling outdated tests after a Penpot release'.
-  demoAccountFileTest.skip(
-    qase([544], 'Add nodes (via Node panel and SHIFT++ shortcut)'),
-    {
-      tag: ['@deprecated', '@to-delete'],
-      annotation: {
-        type: 'deprecated',
-        description:
-          'Add node button removed in 2.19. Replaced by PENPOT-3700; delete once it is automated.',
-      },
-    },
-    async ({ mainPage }) => {
-      await demoAccountFileTest.step(
-        'Add node via node panel for two selected nodes',
-        async () => {
-          await mainPage.holdShiftKeyboardButton();
-          await mainPage.clickFirstNode();
-          await mainPage.clickSecondNode();
-          await mainPage.releaseShiftKeyboardButton();
-          await mainPage.clickAddNodeButtonOnNodePanel();
-          await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await demoAccountFileTest.step('Verify first node is added', async () => {
-        await expect(mainPage.viewport).toHaveScreenshot('path-added-one-node.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
-
-      await demoAccountFileTest.step(
-        'Add node via SHIFT++ shortcut for two selected nodes',
-        async () => {
-          await mainPage.clickFourthNode();
-          await mainPage.holdShiftKeyboardButton();
-          await mainPage.clickFifthNode();
-          await mainPage.releaseShiftKeyboardButton();
-          await mainPage.pressShiftPlusKeyboardShortcut();
-          await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await demoAccountFileTest.step('Verify second node is added', async () => {
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'path-added-two-nodes.png',
-          {
-            mask: mainPage.maskViewport(),
-          },
-        );
-      });
-    },
-  );
-
   // TODO(2.19): @outdated. When updating this test to match Qase 545, remove the .skip,
   // the tag and the annotation. See 'Handling outdated tests after a Penpot release'.
   demoAccountFileTest.skip(
