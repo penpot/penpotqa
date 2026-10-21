@@ -1,7 +1,9 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import {
   checkRecoveryText,
+  getMessageSubject,
   getVerificationMessage,
+  waitForMessageCount,
   waitSecondMessage,
 } from 'helpers/gmail';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
@@ -69,7 +71,15 @@ registerTest.describe(() => {
     },
   );
 
-  registerTest(qase([49], 'Forgot password flow'), async ({ email }) => {
+  registerTest(qase([49], 'Forgot password flow'), async ({ page, email }) => {
+    await test.step('Verify "Password changed" email is received', async () => {
+      await waitForMessageCount(page, email, 3, 60);
+      const subject = await getMessageSubject(email);
+      expect(subject, 'Last email subject should be "Password changed"').toContain(
+        'Password changed',
+      );
+    });
+
     await test.step('Login with new password after recovery', async () => {
       await loginPage.enterEmailAndClickOnContinue(email);
       await loginPage.enterPwd(newPwd);
