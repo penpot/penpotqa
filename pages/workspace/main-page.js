@@ -100,16 +100,12 @@ exports.MainPage = class MainPage extends BasePage {
     this.thirdNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=3',
     );
-    this.fourthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=4',
-    );
     this.fifthNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=5',
     );
     this.sixthNode = page.locator(
       'g[class="path-point"] circle[pointer-events="visible"] >> nth=6',
     );
-    this.nodePanelAddNodeButton = page.locator('button[title^="Add node"]');
     this.nodePanelDeleteNodeButton = page.locator('button[title^="Delete node"]');
     this.nodePanelMergeNodesButton = page.locator('button[title^="Merge nodes"]');
     this.nodePanelDrawNodesButton = page.locator('button[title^="Draw nodes"]');
@@ -553,10 +549,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.thirdNode.click({ force: true });
   }
 
-  async clickFourthNode() {
-    await this.fourthNode.click({ force: true });
-  }
-
   async clickFifthNode() {
     await this.fifthNode.click({ force: true });
   }
@@ -571,14 +563,6 @@ exports.MainPage = class MainPage extends BasePage {
 
   async releaseShiftKeyboardButton() {
     await this.page.keyboard.up('Shift');
-  }
-
-  async clickAddNodeButtonOnNodePanel() {
-    await this.nodePanelAddNodeButton.click();
-  }
-
-  async pressShiftPlusKeyboardShortcut() {
-    await this.page.keyboard.press('Shift+NumpadAdd');
   }
 
   async clickDeleteNodeButtonOnNodePanel() {
