@@ -34,6 +34,7 @@ mainAccountFileTest(
         await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
         await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SHADOW-1', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
         await tokensPage.tokensComp.isTokenDisabledWithName(
@@ -69,6 +70,7 @@ mainAccountFileTest(
         await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SHADOW-1', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
         await tokensPage.tokensComp.isTokenDisabledWithName(
@@ -107,6 +109,7 @@ mainAccountFileTest(
         await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
         await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SHADOW-1', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
         await tokensPage.tokensComp.isTokenDisabledWithName(
@@ -131,6 +134,7 @@ mainAccountFileTest(
         await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
         await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SHADOW-1', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
         await tokensPage.tokensComp.isTokenDisabledWithName(
@@ -158,6 +162,7 @@ mainAccountFileTest(
         await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
         await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SHADOW-1', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
         await tokensPage.tokensComp.isTokenDisabledWithName(
