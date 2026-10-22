@@ -55,6 +55,7 @@ enterpriseActivatedPageTest.describe(
           'Setup: User2 joins OrgA and creates "Team Apple" with a file in it (the owner is not a team member)',
           async () => {
             await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgAName);
+            await inviteeOrgPage.switchToOrg(orgAName);
             await inviteeTeamPage.createTeam(teamName);
             await new DashboardPage(invitee.page).createFileViaPlaceholder();
             await new MainPage(invitee.page).isMainPageLoaded();

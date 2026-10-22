@@ -43,6 +43,7 @@ ownerAndInviteeActivatedTest.describe(
             await adminConsolePage.invitePersonToOrganization(invitee.email);
 
             await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgAName);
+            await inviteeOrgPage.switchToOrg(orgAName);
             await inviteeTeamPage.createTeam(teamName);
             teamId = inviteeTeamPage.getTeamIdFromUrl();
             teamDashboardUrl = invitee.page.url();
