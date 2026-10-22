@@ -1,5 +1,6 @@
 import { demoAccountApiFixture, mainTest } from 'fixtures';
 import { ProfilePage } from '@pages/profile-page';
+import { ShortcutsPage } from '@pages/shortcuts-page';
 
 type YourAccountFixtures = {
   profilePage: ProfilePage;
@@ -51,5 +52,21 @@ export const giveFeedbackTest = mainTest.extend<YourAccountFixtures>({
     await profilePage.isHeaderDisplayed('Your account');
 
     await use(profilePage);
+  },
+});
+
+type ShortcutsFixtures = {
+  shortcutsPage: ShortcutsPage;
+};
+
+// Open Your Account > Shortcuts section
+// NOTE: Uses a fresh demo account (via the API), since these tests change the account's shortcuts
+export const shortcutsTest = demoAccountApiFixture.extend<ShortcutsFixtures>({
+  shortcutsPage: async ({ page }, use) => {
+    const shortcutsPage = new ShortcutsPage(page);
+
+    await shortcutsPage.goto();
+
+    await use(shortcutsPage);
   },
 });
