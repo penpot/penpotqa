@@ -197,6 +197,16 @@ export class AdminConsolePage extends BasePage {
   // Only shown when the target belongs to at least one team.
   readonly removeMemberConfirmButton: Locator;
 
+  // Teams tab row's "Team options" menu (three dots, revealed on row hover)
+  // and its "Move to another org" dialog — the destination list is a
+  // radiogroup of the orgs the user owns, minus the team's current one.
+  readonly moveTeamMenuItem: Locator;
+  readonly removeTeamFromOrgMenuItem: Locator;
+  readonly moveTeamDialog: Locator;
+  readonly moveTeamDestinations: Locator;
+  readonly moveTeamCancelButton: Locator;
+  readonly moveTeamSubmitButton: Locator;
+
   constructor(page: Page) {
     super(page);
 
@@ -315,6 +325,25 @@ export class AdminConsolePage extends BasePage {
     this.removeMemberConfirmButton = page.getByRole('button', {
       name: 'Remove user',
     });
+
+    this.moveTeamMenuItem = page.getByRole('menuitem', {
+      name: 'Move to another org',
+    });
+    this.removeTeamFromOrgMenuItem = page.getByRole('menuitem', {
+      name: 'Remove from org',
+    });
+    this.moveTeamDialog = page.getByRole('dialog').filter({
+      has: page.getByRole('heading', {
+        name: /to another of your organizations\?$/,
+      }),
+    });
+    this.moveTeamDestinations = this.moveTeamDialog.getByRole('radio');
+    this.moveTeamCancelButton = this.moveTeamDialog.getByRole('button', {
+      name: 'Cancel',
+    });
+    this.moveTeamSubmitButton = this.moveTeamDialog.getByRole('button', {
+      name: 'Move team',
+    });
   }
 
   /* -------------------------------------------------
@@ -337,6 +366,12 @@ export class AdminConsolePage extends BasePage {
 
   private getTeamsTableCell(teamName: string, column: TeamsTableColumn): Locator {
     return this.getTeamsTableRow(teamName).getByRole('cell').nth(column);
+  }
+
+  /** Matches by label rather than the radio itself — the real <input> is
+   * visually hidden, so the label is what actually takes the click. */
+  private getMoveTeamDestinationLabel(orgName: string): Locator {
+    return this.moveTeamDialog.locator('label').filter({ hasText: orgName });
   }
 
   private getPeopleTableRow(memberName: string): Locator {
@@ -463,6 +498,49 @@ export class AdminConsolePage extends BasePage {
     }).toPass({ timeout: 15000 });
   }
 
+  /** Opens a Teams table row's "Team options" menu — its button only shows
+   * on row hover. Self-healing, same hydration race as openPendingTab(). */
+  async openTeamOptionsMenu(teamName: string) {
+    const row = this.getTeamsTableRow(teamName);
+    await expect(async () => {
+      await row.hover();
+      await row
+        .getByRole('button', { name: `Team options for ${teamName}` })
+        .click();
+      await expect(
+        this.moveTeamMenuItem,
+        `"Team options" menu for "${teamName}" is open`,
+      ).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 15000 });
+  }
+
+  async openMoveTeamDialog(teamName: string) {
+    await this.openTeamOptionsMenu(teamName);
+    await this.moveTeamMenuItem.click();
+    await expect(
+      this.moveTeamDialog,
+      `"Move ${teamName} to another org" dialog is open`,
+    ).toBeVisible();
+  }
+
+  async selectMoveTeamDestination(orgName: string) {
+    await this.getMoveTeamDestinationLabel(orgName).click();
+  }
+
+  async cancelMoveTeam() {
+    await this.moveTeamCancelButton.click();
+    await expect(this.moveTeamDialog, 'Move team dialog is closed').toBeHidden();
+  }
+
+  /** Confirms the move and waits for its "<team> moved to <org>" toast. */
+  async confirmMoveTeam(teamName: string, orgName: string) {
+    await this.moveTeamSubmitButton.click();
+    await expect(
+      this.page.getByText(`${teamName} moved to ${orgName}`, { exact: true }),
+      `"${teamName} moved to ${orgName}" toast is shown`,
+    ).toBeVisible();
+  }
+
   /** Opens the confirmation dialog for canceling one pending invitation —
    * the row's own Cancel button only becomes visible on
    * hover, and the dialog names the invitee by email. Assumes the Pending
@@ -570,9 +648,14 @@ export class AdminConsolePage extends BasePage {
    * `aria-haspopup` attribute can attach after the button is already
    * clickable, so an early click lands on the user-menu button (the only
    * other, already-hydrated `aria-haspopup` element) instead — same
-   * hydration race as openSettings() above, different button. */
+   * hydration race as openSettings() above, different button. Once that
+   * menu is open, its own submenu items carry `aria-haspopup` too and every
+   * retry would click inside it, so close it first. */
   async openOrgSwitcher() {
     await expect(async () => {
+      if (await this.userMenuItem.first().isVisible()) {
+        await this.page.keyboard.press('Escape');
+      }
       if (!(await this.orgSwitcherItem.first().isVisible())) {
         await this.orgSwitcherButton.click();
       }
@@ -1094,5 +1177,91 @@ export class AdminConsolePage extends BasePage {
       this.getPendingTableCell(email, PendingTableColumn.DateAdded),
       `Pending invitation for "${email}" shows a date added`,
     ).not.toBeEmpty();
+  }
+
+  async isTeamOptionsMenuShown() {
+    await expect(
+      this.moveTeamMenuItem,
+      '"Move to another org" option is shown',
+    ).toBeVisible();
+    await expect(
+      this.removeTeamFromOrgMenuItem,
+      '"Remove from org" option is shown',
+    ).toBeVisible();
+  }
+
+  async isMoveTeamDialogShown(teamName: string) {
+    await expect(
+      this.moveTeamDialog.getByRole('heading'),
+      'Move team dialog title names the team',
+    ).toHaveText(`Move ${teamName} to another of your organizations?`);
+    await expect(
+      this.moveTeamDialog.getByText(
+        'Projects and files will remain available to team members. The team will get the configuration from the new organization.',
+        { exact: true },
+      ),
+      'Move team dialog explains what happens to the team',
+    ).toBeVisible();
+    await expect(this.moveTeamCancelButton, 'Cancel button is shown').toBeVisible();
+    await expect(
+      this.moveTeamSubmitButton,
+      '"Move team" button is shown',
+    ).toBeVisible();
+  }
+
+  /** Checks the dialog offers exactly these destinations, in any order. */
+  async hasMoveTeamDestinations(orgNames: string[]) {
+    await expect(
+      this.moveTeamDestinations,
+      `Move team dialog lists ${orgNames.length} destination(s)`,
+    ).toHaveCount(orgNames.length);
+    for (const orgName of orgNames) {
+      await expect(
+        this.getMoveTeamDestinationLabel(orgName),
+        `"${orgName}" is listed as a destination`,
+      ).toBeVisible();
+    }
+  }
+
+  async isMoveTeamDestinationSelected(orgName: string, selected = true) {
+    const radio = this.getMoveTeamDestinationLabel(orgName).getByRole('radio');
+    selected
+      ? await expect(radio, `"${orgName}" is selected`).toBeChecked()
+      : await expect(radio, `"${orgName}" is not selected`).not.toBeChecked();
+  }
+
+  async isNoMoveTeamDestinationSelected() {
+    await expect(
+      this.moveTeamDialog.getByRole('radio', { checked: true }),
+      'No destination is selected',
+    ).toHaveCount(0);
+  }
+
+  async isMoveTeamButtonEnabled(enabled = true) {
+    enabled
+      ? await expect(
+          this.moveTeamSubmitButton,
+          '"Move team" is enabled',
+        ).toBeEnabled()
+      : await expect(
+          this.moveTeamSubmitButton,
+          '"Move team" is disabled',
+        ).toBeDisabled();
+  }
+
+  /** The alert shown when the selected destination only allows its own
+   * members in teams and the team has pending invitations to outsiders. */
+  async isMoveTeamRevokeInvitationsAlertShown(
+    teamName: string,
+    orgName: string,
+    visible = true,
+  ) {
+    const alert = this.moveTeamDialog.getByText(
+      `${teamName} has pending invitations to people outside ${orgName}. Moving it will revoke those invitations.`,
+      { exact: true },
+    );
+    visible
+      ? await expect(alert, 'Revoke-invitations alert is shown').toBeVisible()
+      : await expect(alert, 'Revoke-invitations alert is not shown').toBeHidden();
   }
 }
