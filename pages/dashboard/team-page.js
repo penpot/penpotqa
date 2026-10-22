@@ -490,6 +490,16 @@ exports.TeamPage = class TeamPage extends BasePage {
     ).toBeVisible();
   }
 
+  /** Pushed live to a member with the team's dashboard open, no reload. */
+  async isTeamNoLongerPartOfOrgMessageShown(teamName, orgName) {
+    await expect(
+      this.page.getByText(`${teamName} is no longer part of ${orgName}`, {
+        exact: true,
+      }),
+      `"${teamName} is no longer part of ${orgName}" message is shown`,
+    ).toBeVisible();
+  }
+
   async isTeamNotPartOfAnyOrg(notPartOf = true) {
     notPartOf
       ? await expect(
