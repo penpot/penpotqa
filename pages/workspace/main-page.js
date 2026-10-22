@@ -1310,6 +1310,28 @@ exports.MainPage = class MainPage extends BasePage {
     await textSel.dblclick();
   }
 
+  /**
+   * Double-clicks inside the selected text at a relative horizontal position
+   * (0 = left edge, 1 = right edge), e.g. to select a word in the text editor.
+   * @param {number} xRatio
+   */
+  async doubleClickOnTextAt(xRatio) {
+    const box = await this.page
+      .locator(`rect[class="main viewport-selrect"]`)
+      .boundingBox();
+    await this.page.mouse.dblclick(
+      box.x + box.width * xRatio,
+      box.y + box.height / 2,
+    );
+  }
+
+  async isErrorScreenNotDisplayed() {
+    await expect(
+      this.errorScreen,
+      'Internal error screen is not shown',
+    ).toBeHidden();
+  }
+
   async editTextLayer(text) {
     await this.doubleClickTextOnCanvas();
     await this.typeTextFromKeyboard(text);
