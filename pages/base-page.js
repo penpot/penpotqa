@@ -229,6 +229,15 @@ exports.BasePage = class BasePage {
     await this.page.keyboard.press('Alt+N');
   }
 
+  // Deselects everything (in the path editor: all nodes and segments).
+  async clickShortcutCtrlShiftA() {
+    await this.page.keyboard.press('Control+Shift+A');
+  }
+
+  async clickShortcutShiftDelete() {
+    await this.page.keyboard.press('Shift+Delete');
+  }
+
   async reloadPage() {
     await this.page.reload();
   }
