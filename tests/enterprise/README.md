@@ -4,7 +4,7 @@ Playwright specs for Penpot's Enterprise plan: organizations, Admin Console,
 advanced permissions, SSO and billing. They run in their own `enterprise`
 project, separate from the default `chrome` one.
 
-**Status: 75 cases automated, 1 `test.skip` stub (3664).**
+**Status: 79 cases automated, 1 `test.skip` stub (3664).**
 
 ## Running
 
@@ -49,6 +49,8 @@ objects (`orgPage`, `adminConsolePage`, `stripePage`, `teamPage`,
   (prefer the `ownerAndInvitee*` fixtures over calling these directly)
 - `helpers/teams/go-to-other-team.ts`: reach an org-less team once the
   account belongs to an org
+- `helpers/teams/accept-team-invite.ts`: the invitee accepts a team invite
+  from their inbox and lands on the team dashboard
 - `helpers/gmail.js`: inbox polling and enterprise invite email checks
 - `helpers/stripe-test-cards.ts`: named Stripe test card numbers
 
@@ -78,6 +80,7 @@ objects (`orgPage`, `adminConsolePage`, `stripePage`, `teamPage`,
 | 3165, 3166                                     | `admin-console/settings-rename-organization.spec.ts`             |
 | 3630                                           | `admin-console/teams-list.spec.ts`                               |
 | 3894, 3895, 3897                               | `admin-console/teams-move-team.spec.ts`                          |
+| 3900, 3905, 3908, 3912                         | `admin-console/teams-remove-team.spec.ts`                        |
 | 3099                                           | `admin-console/user-menu.spec.ts`                                |
 | **Enterprise Dashboard**                       |                                                                  |
 | 3120, 3123, 3127                               | `dashboard-enterprise/organization-management-leave-org.spec.ts` |

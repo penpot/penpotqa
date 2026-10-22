@@ -197,15 +197,18 @@ export class AdminConsolePage extends BasePage {
   // Only shown when the target belongs to at least one team.
   readonly removeMemberConfirmButton: Locator;
 
-  // Teams tab row's "Team options" menu (three dots, revealed on row hover)
-  // and its "Move to another org" dialog — the destination list is a
-  // radiogroup of the orgs the user owns, minus the team's current one.
+  // Teams row's "Team options" menu and its "Move to another org" dialog
+  // (destinations: the user's own orgs, minus the team's current one).
   readonly moveTeamMenuItem: Locator;
   readonly removeTeamFromOrgMenuItem: Locator;
   readonly moveTeamDialog: Locator;
   readonly moveTeamDestinations: Locator;
   readonly moveTeamCancelButton: Locator;
   readonly moveTeamSubmitButton: Locator;
+
+  // Same row menu's "Remove from org" confirmation dialog.
+  readonly removeTeamDialog: Locator;
+  readonly removeTeamConfirmButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -343,6 +346,12 @@ export class AdminConsolePage extends BasePage {
     });
     this.moveTeamSubmitButton = this.moveTeamDialog.getByRole('button', {
       name: 'Move team',
+    });
+    this.removeTeamDialog = page.getByRole('dialog').filter({
+      has: page.getByRole('button', { name: 'Remove from organization' }),
+    });
+    this.removeTeamConfirmButton = this.removeTeamDialog.getByRole('button', {
+      name: 'Remove from organization',
     });
   }
 
@@ -541,6 +550,20 @@ export class AdminConsolePage extends BasePage {
     ).toBeVisible();
   }
 
+  async openRemoveTeamFromOrgDialog(teamName: string) {
+    await this.openTeamOptionsMenu(teamName);
+    await this.removeTeamFromOrgMenuItem.click();
+    await expect(
+      this.removeTeamDialog,
+      `"Remove ${teamName} from the organization" dialog is open`,
+    ).toBeVisible();
+  }
+
+  async confirmRemoveTeamFromOrg() {
+    await this.removeTeamConfirmButton.click();
+    await expect(this.removeTeamDialog, 'Remove team dialog is closed').toBeHidden();
+  }
+
   /** Opens the confirmation dialog for canceling one pending invitation —
    * the row's own Cancel button only becomes visible on
    * hover, and the dialog names the invitee by email. Assumes the Pending
@@ -640,17 +663,8 @@ export class AdminConsolePage extends BasePage {
     ).toBeVisible();
   }
 
-  /** Opens the org switcher, unless it's already open — clicking the trigger
-   * again would just toggle it closed instead (this broke
-   * switchToOrg() when a prior step had already opened it).
-   *
-   * Retries the click: right after a fresh navigation, `orgSwitcherButton`'s
-   * `aria-haspopup` attribute can attach after the button is already
-   * clickable, so an early click lands on the user-menu button (the only
-   * other, already-hydrated `aria-haspopup` element) instead — same
-   * hydration race as openSettings() above, different button. Once that
-   * menu is open, its own submenu items carry `aria-haspopup` too and every
-   * retry would click inside it, so close it first. */
+  /** Opens the org switcher unless already open. Retries because an early click can
+   * open the user menu instead (hydration race), so that menu is closed first. */
   async openOrgSwitcher() {
     await expect(async () => {
       if (await this.userMenuItem.first().isVisible()) {
@@ -1263,5 +1277,32 @@ export class AdminConsolePage extends BasePage {
     visible
       ? await expect(alert, 'Revoke-invitations alert is shown').toBeVisible()
       : await expect(alert, 'Revoke-invitations alert is not shown').toBeHidden();
+  }
+
+  /** `notMember`: the user isn't in the team, so the dialog also warns that
+   * they'll lose access to it. */
+  async isRemoveTeamDialogShown(
+    teamName: string,
+    orgName: string,
+    { notMember = false } = {},
+  ) {
+    await expect(
+      this.removeTeamDialog.getByRole('heading'),
+      'Remove team dialog title names the team and the org',
+    ).toHaveText(`Remove ${teamName} from ${orgName}?`);
+    await expect(
+      this.removeTeamDialog.getByText(
+        `${teamName} will leave ${orgName}. The team, its projects and files are not deleted and will keep working. You will find them under 'Other teams'`,
+        { exact: true },
+      ),
+      'Remove team dialog explains the team keeps working',
+    ).toBeVisible();
+    const accessWarning = this.removeTeamDialog.getByText(
+      `You are not a member of ${teamName}, so you will lose access to its projects and files.`,
+      { exact: true },
+    );
+    notMember
+      ? await expect(accessWarning, 'Access-loss warning is shown').toBeVisible()
+      : await expect(accessWarning, 'Access-loss warning is not shown').toBeHidden();
   }
 }

@@ -1,15 +1,6 @@
 /**
  * Qase suite: Admin Console > Sidebar Menu > Teams > Move Team
- *
- * Moving a team to another org from the Admin Console Teams page (row's
- * "Team options" → "Move to another org"). Kept as separate cases rather
- * than merged: each needs a different actor/account split (3894's mover
- * is not a team member, 3895's mover is also a member of someone else's
- * org, 3897 is single-actor) and contradicting dialog states (one
- * preselected destination vs. several with none selected).
- *
- * Base: `enterpriseActivatedPageTest` for a single actor;
- * `ownerAndInviteeActivatedTest` for cases needing a real second account.
+ * Not merged: each case needs a different account setup and dialog state.
  */
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -147,8 +138,7 @@ enterpriseActivatedPageTest.describe(
       qase([3895], 'Show only the organizations owned by the user as destinations'),
       async ({ ownerPage, invitee, orgPage, adminConsolePage }) => {
         ownerAndInviteeActivatedTest.slow();
-        // The mover is the second account here: it has to accept an invite
-        // to OrgX (owned by the first account), so it needs a real inbox.
+        // The mover is the invitee: it must accept the OrgX invite (real inbox).
         const orgXName = createOrgName();
         const orgAName = createOrgName();
         const orgBName = createOrgName();
@@ -291,8 +281,7 @@ enterpriseActivatedPageTest.describe(
           async () => {
             await page.goto(orgAAdminConsoleUrl);
             await adminConsolePage.openPeopleTab();
-            // A team-originated invite takes longer to reach the org-level
-            // Pending list than a direct org-level invite does.
+            // Team invites take longer than org invites to reach this list.
             await expect(async () => {
               await page.reload();
               await adminConsolePage.openPendingTab();
