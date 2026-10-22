@@ -63,9 +63,12 @@ type ShortcutsFixtures = {
 // NOTE: Uses a fresh demo account (via the API), since these tests change the account's shortcuts
 export const shortcutsTest = demoAccountApiFixture.extend<ShortcutsFixtures>({
   shortcutsPage: async ({ page }, use) => {
+    const profilePage = new ProfilePage(page);
     const shortcutsPage = new ShortcutsPage(page);
 
-    await shortcutsPage.goto();
+    await profilePage.openYourAccountPage();
+    await profilePage.isHeaderDisplayed('Your account');
+    await shortcutsPage.openFromYourAccount();
 
     await use(shortcutsPage);
   },

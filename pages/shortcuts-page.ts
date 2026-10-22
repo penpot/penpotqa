@@ -16,6 +16,7 @@ export type ShortcutRef = {
 
 /** Your account > Shortcuts (`?screen=settings-shortcuts`). */
 export class ShortcutsPage extends BasePage {
+  readonly shortcutsSidebarOption: Locator;
   readonly shortcutsRegion: Locator;
   readonly searchInput: Locator;
   readonly tabPanel: Locator;
@@ -34,6 +35,10 @@ export class ShortcutsPage extends BasePage {
   constructor(page: Page) {
     super(page);
 
+    this.shortcutsSidebarOption = page
+      .getByRole('navigation', { name: 'Settings' })
+      .getByRole('listitem')
+      .filter({ hasText: 'Shortcuts' });
     this.shortcutsRegion = page.getByRole('region', { name: 'Shortcuts page' });
     this.searchInput = this.shortcutsRegion.getByRole('textbox', {
       name: 'Search shortcuts',
@@ -93,8 +98,15 @@ export class ShortcutsPage extends BasePage {
    * Actions
    * ------------------------------------------------- */
 
-  async goto() {
-    await this.page.goto(`${process.env.BASE_URL}?screen=settings-shortcuts`);
+  /** Opens Shortcuts from the Your account sidebar (Your account already open). */
+  async openFromYourAccount() {
+    await this.shortcutsSidebarOption.click();
+    await expect(this.searchInput, 'Shortcuts page is loaded').toBeVisible();
+  }
+
+  /** Reloads the page, to check changes were saved and not just shown. */
+  async reload() {
+    await this.page.reload();
     await expect(this.searchInput, 'Shortcuts page is loaded').toBeVisible();
   }
 
@@ -238,19 +250,19 @@ export class ShortcutsPage extends BasePage {
   }
 
   /** The inline message shown in listening mode for the pressed keys. */
-  async isListeningMessageShown(shortcut: ShortcutRef, message: string) {
+  async isListeningMessageVisible(shortcut: ShortcutRef, message: string) {
     await expect(
       this.getShortcutRow(shortcut).getByRole('alert'),
       `"${shortcut.action}" shows "${message}"`,
     ).toHaveText(message);
   }
 
-  async isShortcutAvailableMessageShown(shortcut: ShortcutRef) {
-    await this.isListeningMessageShown(shortcut, 'Shortcut available.');
+  async isShortcutAvailableMessageVisible(shortcut: ShortcutRef) {
+    await this.isListeningMessageVisible(shortcut, 'Shortcut available.');
   }
 
-  async isConflictMessageShown(shortcut: ShortcutRef, conflictingAction: string) {
-    await this.isListeningMessageShown(
+  async isConflictMessageVisible(shortcut: ShortcutRef, conflictingAction: string) {
+    await this.isListeningMessageVisible(
       shortcut,
       `Already assigned to "${conflictingAction}". Saving will move it to this action.`,
     );
@@ -266,7 +278,7 @@ export class ShortcutsPage extends BasePage {
 
   /** A row of the "Reset all" or "Import" dialog's table, matched by its
    * cells (e.g. ["Cut", "q", "ctrl x"]). */
-  async isDialogRowShown(dialog: Locator, cells: string[]) {
+  async isDialogRowVisible(dialog: Locator, cells: string[]) {
     await expect(
       dialog.getByRole('row', { name: cells.join(' '), exact: true }),
       `Dialog lists ${cells.join(' | ')}`,

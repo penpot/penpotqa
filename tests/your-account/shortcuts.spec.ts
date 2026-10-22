@@ -62,7 +62,7 @@ shortcutsTest(
       async () => {
         await shortcutsPage.startEditingShortcut(cut);
         await shortcutsPage.pressShortcutKeys('z');
-        await shortcutsPage.isConflictMessageShown(cut, zoomLenseIncrease.action);
+        await shortcutsPage.isConflictMessageVisible(cut, zoomLenseIncrease.action);
       },
     );
 
@@ -74,7 +74,7 @@ shortcutsTest(
     await shortcutsTest.step(
       'Reopen the Shortcuts panel → "Cut" uses "z" and "Zoom lense increase" no longer does',
       async () => {
-        await shortcutsPage.goto();
+        await shortcutsPage.reload();
         await shortcutsPage.search(cut.action);
         await shortcutsPage.hasShortcutKeys(cut, ['z']);
         await shortcutsPage.search(zoomLenseIncrease.action);
@@ -100,7 +100,7 @@ shortcutsTest(
       async () => {
         await shortcutsPage.startEditingShortcut(viewerZoomIn);
         await shortcutsPage.pressShortcutKeys('q');
-        await shortcutsPage.isShortcutAvailableMessageShown(viewerZoomIn);
+        await shortcutsPage.isShortcutAvailableMessageVisible(viewerZoomIn);
         await shortcutsPage.saveShortcut(viewerZoomIn);
       },
     );
@@ -108,7 +108,7 @@ shortcutsTest(
     await shortcutsTest.step(
       'Reopen the Shortcuts panel → both actions keep "q"',
       async () => {
-        await shortcutsPage.goto();
+        await shortcutsPage.reload();
         await shortcutsPage.search(cut.action);
         await shortcutsPage.hasShortcutKeys(cut, ['q']);
         await shortcutsPage.search(viewerZoomIn.action);
@@ -142,12 +142,12 @@ shortcutsTest(
       'Import the file → the preview lists Action, Current and Imported keys',
       async () => {
         await shortcutsPage.importShortcuts(exportedFile);
-        await shortcutsPage.isDialogRowShown(shortcutsPage.importDialog, [
+        await shortcutsPage.isDialogRowVisible(shortcutsPage.importDialog, [
           'Action',
           'Current',
           'Imported',
         ]);
-        await shortcutsPage.isDialogRowShown(shortcutsPage.importDialog, [
+        await shortcutsPage.isDialogRowVisible(shortcutsPage.importDialog, [
           'Cut',
           'ctrl x',
           'q',
@@ -162,7 +162,7 @@ shortcutsTest(
     await shortcutsTest.step(
       'Reopen the Shortcuts panel → "Cut" uses the imported "q"',
       async () => {
-        await shortcutsPage.goto();
+        await shortcutsPage.reload();
         await shortcutsPage.search(cut.action);
         await shortcutsPage.hasShortcutKeys(cut, ['q']);
       },
@@ -182,8 +182,7 @@ shortcutsTest(
         await shortcutsPage.assignShortcut(cut, 'q');
         await shortcutsPage.disableShortcut(copy);
         await shortcutsPage.hasNoShortcutKeys(copy);
-        // Reload to check both changes were saved, not just shown.
-        await shortcutsPage.goto();
+        await shortcutsPage.reload();
         await shortcutsPage.openTab('Custom');
         await shortcutsPage.isShortcutListed(cut);
         await shortcutsPage.openTab('Disabled');
@@ -196,12 +195,12 @@ shortcutsTest(
       'Click "Reset all" → confirmation lists both shortcuts with their defaults',
       async () => {
         await shortcutsPage.clickResetAll();
-        await shortcutsPage.isDialogRowShown(shortcutsPage.resetAllDialog, [
+        await shortcutsPage.isDialogRowVisible(shortcutsPage.resetAllDialog, [
           'Cut',
           'q',
           'ctrl x',
         ]);
-        await shortcutsPage.isDialogRowShown(shortcutsPage.resetAllDialog, [
+        await shortcutsPage.isDialogRowVisible(shortcutsPage.resetAllDialog, [
           'Copy',
           '-',
           'ctrl c',
