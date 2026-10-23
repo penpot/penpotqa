@@ -1,5 +1,5 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
@@ -8,13 +8,13 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest.describe(() => {
+demoAccountFileTest.describe(() => {
   const decorationToken: MainToken<TokenClass> = {
     class: TokenClass.TextDecoration,
     name: 'text-decoration',
@@ -27,18 +27,18 @@ mainAccountFileTest.describe(() => {
     value: 'strike-through',
   };
 
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultTextLayerByCoordinates(100, 200);
     await tokensPage.clickTokensTab();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2526, 2531],
       'Apply a Text decoration token to a text layer and Edit a Text decoration token',
     ),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `(2526) Apply "${decorationToken.name}" token to a text layer`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
@@ -51,7 +51,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `(2531) Edit "${decorationToken.name}" token to "${updatedTokenData.value}" and verify token is still applied and strikethrough is shown`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
@@ -66,10 +66,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2535], 'Re-Apply the token after change the decorator manually'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Apply "${decorationToken.name}" token to a text layer`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndSave(
@@ -81,7 +81,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${decorationToken.name}" token is applied with underline`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
@@ -89,7 +89,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Manually change to strikethrough and verify token is detached',
         async () => {
           await designPanelPage.changeTextOption('Strikethrough');
@@ -102,7 +102,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Re-apply token and verify underline is restored',
         async () => {
           await tokensPage.tokensComp.clickOnTokenWithName(decorationToken.name);

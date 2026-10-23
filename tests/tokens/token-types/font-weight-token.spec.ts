@@ -247,3 +247,61 @@ demoAccountFileTest(
     );
   },
 );
+
+demoAccountFileTest(
+  qase(
+    [2555],
+    'Apply a Font Weight token to a text directly matching a family font style',
+  ),
+  async ({ mainPage }) => {
+    // Token value → Font Style shown once applied (names are converted to weights).
+    const cases: { token: MainToken<TokenClass>; fontStyle: string }[] = [
+      {
+        token: { class: TokenClass.FontWeight, name: 'fw-700', value: '700' },
+        fontStyle: '700',
+      },
+      {
+        token: {
+          class: TokenClass.FontWeight,
+          name: 'fw-extralight-italic',
+          value: 'Extralight Italic',
+        },
+        fontStyle: '200 Italic',
+      },
+      {
+        token: { class: TokenClass.FontWeight, name: 'fw-heavy', value: 'heavy' },
+        fontStyle: '900',
+      },
+      {
+        token: {
+          class: TokenClass.FontWeight,
+          name: 'fw-300-italic',
+          value: '300 italic',
+        },
+        fontStyle: '300 Italic',
+      },
+    ];
+
+    await demoAccountFileTest.step(
+      'Create the "700", "Extralight Italic", "heavy" and "300 italic" Font Weight tokens',
+      async () => {
+        for (const { token } of cases) {
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(token);
+          await tokensPage.tokensComp.isTokenVisibleWithName(token.name);
+        }
+      },
+    );
+
+    for (const { token, fontStyle } of cases) {
+      await demoAccountFileTest.step(
+        `Apply "${token.value}" → Font Style is "${fontStyle}" and the token is highlighted`,
+        async () => {
+          await tokensPage.tokensComp.clickOnTokenWithName(token.name);
+          await mainPage.waitForChangeIsSaved();
+          await tokensPage.tokensComp.isTokenAppliedWithName(token.name);
+          await designPanelPage.checkFontStyle(fontStyle);
+        },
+      );
+    }
+  },
+);

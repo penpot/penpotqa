@@ -538,6 +538,12 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     });
   }
 
+  /** Like selectLayerByName(), but won't pick a layer whose name only contains it. */
+  async selectLayerByExactName(layerName) {
+    await this.layersRows.getByText(layerName, { exact: true }).first().click();
+    await expect(this.getSelectedLayerCheckboxByName(layerName, true)).toBeVisible();
+  }
+
   async selectLayerByName(layerName) {
     const layerSel = this.page.locator('#layers').getByText(layerName).first();
     await layerSel.last().click();
