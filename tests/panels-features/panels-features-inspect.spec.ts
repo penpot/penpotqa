@@ -44,9 +44,7 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       'Apply color token to the rectangle',
       async () => {
-        await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(colorToken.name);
         await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
         await tokensPage.tokensComp.isMenuItemWithNameSelected(
           colorToken.name,
@@ -107,9 +105,7 @@ mainAccountFileTest(
     await mainAccountFileTest.step(
       'Apply stroke width token to the rectangle',
       async () => {
-        await tokensPage.tokensComp.clickOnTokenWithName(strokeToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(strokeToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(strokeToken.name);
         await designPanelPage.checkStrokeWidth(strokeToken.value);
         await tokensPage.tokensComp.isMenuItemWithNameSelected(
           strokeToken.name,
@@ -168,9 +164,7 @@ mainAccountFileTest(
 
         await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(strokeToken);
         await tokensPage.tokensComp.isTokenVisibleWithName(strokeToken.name);
-        await tokensPage.tokensComp.clickOnTokenWithName(strokeToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(strokeToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(strokeToken.name);
       },
     );
 
@@ -185,9 +179,9 @@ mainAccountFileTest(
           borderRadiusToken,
         );
         await tokensPage.tokensComp.isTokenVisibleWithName(borderRadiusToken.name);
-        await tokensPage.tokensComp.clickOnTokenWithName(borderRadiusToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(borderRadiusToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(
+          borderRadiusToken.name,
+        );
       },
     );
 

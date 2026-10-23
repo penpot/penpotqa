@@ -163,4 +163,11 @@ export class SetsComponent {
   async clickSetItemButton(name: string) {
     await this.getSetItemButton(name).click();
   }
+
+  async isSetSelectedByName(name: string) {
+    await expect(
+      this.getSetItemButton(name),
+      `Set "${name}" is selected`,
+    ).toHaveClass(/selected-set/);
+  }
 }

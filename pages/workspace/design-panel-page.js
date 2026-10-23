@@ -727,6 +727,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     ).toBeVisible();
   }
 
+  /**
+   * @param {string} tokenName - Token name
+   */
+  async isFillTokenNotExistOrDeleted(tokenName) {
+    await expect(
+      this.fillSection.locator('div[class*="error-dot"]'),
+      `Fill error dot for token ${tokenName} is visible`,
+    ).toBeVisible();
+    await expect(
+      this.fillSection
+        .getByLabel(`{${tokenName}} token does not exist or has been deleted.`)
+        .first(),
+      `Fill shows token ${tokenName} as not existing`,
+    ).toBeVisible();
+  }
+
   async isFillOpacitySet(value) {
     await expect(this.fillOpacityInput).toHaveValue(value);
   }
