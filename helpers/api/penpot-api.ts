@@ -2,7 +2,12 @@ import type { APIRequestContext } from '@playwright/test';
 
 /** Penpot main API methods used by the tests. Add new ones as callers need them. */
 export type PenpotApiMethod =
-  'create-demo-profile' | 'login-with-password' | 'get-profile' | 'create-file';
+  | 'create-demo-profile'
+  | 'login-with-password'
+  | 'get-profile'
+  | 'create-file'
+  | 'get-file-libraries'
+  | 'import-binfile';
 
 /** Path of a Penpot main API method, e.g. to match it in `waitForResponse`. */
 export const penpotApiPath = (method: PenpotApiMethod) =>

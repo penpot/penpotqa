@@ -1,11 +1,9 @@
-import { expect } from '@playwright/test';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { demoAccountApiFixture } from 'fixtures';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { MainPage } from '@pages/workspace/main-page';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
+import { expect } from '@playwright/test';
+import { demoAccountFileTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 const TEST_FILE = 'documents/tokens/stroke-per-side-test-file.penpot';
 const STROKE_WIDTH = 'Stroke width';
@@ -15,31 +13,25 @@ const BOTTOM = 'Bottom (block end)';
 const LEFT = 'Left (inline start)';
 const SIDES = [TOP, RIGHT, BOTTOM, LEFT];
 
-let mainPage: MainPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 let tokensPage: TokensPage;
 
-demoAccountApiFixture.beforeEach(
-  'Import and open the stroke per side test file',
-  async ({ page }) => {
-    mainPage = new MainPage(page);
-    layersPanelPage = new LayersPanelPage(page);
-    designPanelPage = new DesignPanelPage(page);
-    tokensPage = new TokensPage(page);
+demoAccountFileTest.use({ penpotFile: TEST_FILE });
 
-    await new DashboardPage(page).importAndOpenFile(TEST_FILE);
-    await mainPage.isMainPageLoaded();
-  },
-);
+demoAccountFileTest.beforeEach(async ({ page }) => {
+  layersPanelPage = new LayersPanelPage(page);
+  designPanelPage = new DesignPanelPage(page);
+  tokensPage = new TokensPage(page);
+});
 
-demoAccountApiFixture(
+demoAccountFileTest(
   qase(
     [3822],
     'Apply a stroke width token to all sides of a rectangle with different widths per side',
   ),
-  async () => {
-    await demoAccountApiFixture.step(
+  async ({ mainPage }) => {
+    await demoAccountFileTest.step(
       'Select "Rectangle" and click "Stroke per side" → sides are 2, 4, 8, 16 and stroke width is "Mixed"',
       async () => {
         await layersPanelPage.selectLayerByExactName('Rectangle');
@@ -52,7 +44,7 @@ demoAccountApiFixture(
       },
     );
 
-    await demoAccountApiFixture.step(
+    await demoAccountFileTest.step(
       'Click the "sw-3" token → stroke width and all four sides show the "sw-3" pill',
       async () => {
         await tokensPage.clickTokensTab();
@@ -65,7 +57,7 @@ demoAccountApiFixture(
       },
     );
 
-    await demoAccountApiFixture.step(
+    await demoAccountFileTest.step(
       'Detach the token from Left → Left shows 3 and stroke width is "Mixed"',
       async () => {
         await designPanelPage.detachStrokeWidthToken(LEFT);
@@ -74,7 +66,7 @@ demoAccountApiFixture(
       },
     );
 
-    await demoAccountApiFixture.step(
+    await demoAccountFileTest.step(
       'Type 7 in Left → Left is 7 and the other sides keep the "sw-3" pill',
       async () => {
         await designPanelPage.setStrokeSideWidth(LEFT, '7');
@@ -86,7 +78,7 @@ demoAccountApiFixture(
       },
     );
 
-    await demoAccountApiFixture.step(
+    await demoAccountFileTest.step(
       'The viewport draws "Rectangle" with 3 on top, right and bottom, and 7 on the left',
       async () => {
         await mainPage.clickOnESC();
@@ -99,10 +91,10 @@ demoAccountApiFixture(
   },
 );
 
-demoAccountApiFixture(
+demoAccountFileTest(
   qase([3823], 'Apply a stroke width token to one side from the Tokens tab'),
-  async () => {
-    await demoAccountApiFixture.step(
+  async ({ mainPage }) => {
+    await demoAccountFileTest.step(
       'Select "Tokens board" and right-click the "sw-10" token → Stroke Width sides and token actions are listed',
       async () => {
         await layersPanelPage.selectLayerByExactName('Tokens board');
@@ -124,7 +116,7 @@ demoAccountApiFixture(
       },
     );
 
-    await demoAccountApiFixture.step(
+    await demoAccountFileTest.step(
       'Click "Top" → only Top uses "sw-10", the other sides keep "sw-3" and stroke width is "Mixed"',
       async () => {
         await tokensPage.tokensComp.selectMenuItem('sw-10', 'Top');
@@ -138,7 +130,7 @@ demoAccountApiFixture(
       },
     );
 
-    await demoAccountApiFixture.step(
+    await demoAccountFileTest.step(
       'Hide and show the side inputs → stroke width stays "Mixed" and the side tokens are kept',
       async () => {
         await designPanelPage.clickStrokePerSideButton();
@@ -152,7 +144,7 @@ demoAccountApiFixture(
       },
     );
 
-    await demoAccountApiFixture.step(
+    await demoAccountFileTest.step(
       'The viewport draws "Tokens board" with 10 on top and 3 on the other sides',
       async () => {
         await mainPage.clickOnESC();
