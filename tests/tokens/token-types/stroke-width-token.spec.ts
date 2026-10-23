@@ -37,9 +37,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       `Apply "${strokeToken.name}" token and verify stroke width`,
       async () => {
-        await tokensPage.tokensComp.clickOnTokenWithName(strokeToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(strokeToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(strokeToken.name);
         await designPanelPage.checkStrokeWidth(strokeToken.value);
       },
     );

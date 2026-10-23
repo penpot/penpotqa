@@ -148,9 +148,7 @@ demoAccountFileTest(
       async () => {
         await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken);
         await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken.name);
-        await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(fontWeightToken.name);
         await designPanelPage.checkFontStyle('700 Italic');
       },
     );
@@ -210,9 +208,7 @@ demoAccountFileTest(
         await tokensPage.clickTokensTab();
         await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(fontWeightToken);
         await tokensPage.tokensComp.isTokenVisibleWithName(fontWeightToken.name);
-        await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(fontWeightToken.name);
         await designPanelPage.isTypographyAssetAgVisible(false);
         await designPanelPage.checkFontStyle('700 Italic');
       },
@@ -238,9 +234,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       `Re-apply "${fontWeightToken.name}" token and verify the typography asset is detached`,
       async () => {
-        await tokensPage.tokensComp.clickOnTokenWithName(fontWeightToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(fontWeightToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(fontWeightToken.name);
         await designPanelPage.isTypographyAssetAgVisible(false);
         await designPanelPage.checkFontStyle('700 Italic');
       },
@@ -296,9 +290,7 @@ demoAccountFileTest(
       await demoAccountFileTest.step(
         `Apply "${token.value}" → Font Style is "${fontStyle}" and the token is highlighted`,
         async () => {
-          await tokensPage.tokensComp.clickOnTokenWithName(token.name);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(token.name);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(token.name);
           await designPanelPage.checkFontStyle(fontStyle);
         },
       );
