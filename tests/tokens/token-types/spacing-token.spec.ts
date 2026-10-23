@@ -41,9 +41,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       `Apply "${spacingToken.name}" token and verify gap values`,
       async () => {
-        await tokensPage.tokensComp.clickOnTokenWithName(spacingToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(spacingToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(spacingToken.name);
         await designPanelPage.checkRowGap('20');
         await designPanelPage.checkColumnGap('20');
       },

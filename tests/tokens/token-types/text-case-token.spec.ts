@@ -40,9 +40,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       `Apply "${textCaseToken.name}" token and verify text case matches`,
       async () => {
-        await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(textCaseToken.name);
         await designPanelPage.checkTextCase(textCaseToken.value);
       },
     );
@@ -77,9 +75,7 @@ demoAccountFileTest(
         await mainPage.createTextLayerByCoordinates(100, 200, text);
         await tokensPage.tokensComp.createTokenViaAddButtonAndSave(textCaseToken);
         await tokensPage.tokensComp.isTokenVisibleWithName(textCaseToken.name);
-        await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(textCaseToken.name);
         await designPanelPage.checkTextCase(textCaseToken.value);
       },
     );
@@ -103,9 +99,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Re-apply token and verify it overrides the typography style',
       async () => {
-        await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(textCaseToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(textCaseToken.name);
         await designPanelPage.checkTextCase(textCaseToken.value);
       },
     );
