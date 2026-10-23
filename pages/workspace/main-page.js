@@ -1310,6 +1310,41 @@ exports.MainPage = class MainPage extends BasePage {
     await textSel.dblclick();
   }
 
+  /**
+   * Opens the text editor of the selected text layer and deletes the given text
+   * from the end of the content with Backspace.
+   * @param {string} text
+   */
+  async deleteTextFromEndInEditor(text) {
+    await this.clickOnEnter();
+    await this.page.keyboard.press('End');
+    for (let i = 0; i < text.length; i++) {
+      await this.page.keyboard.press('Backspace');
+    }
+  }
+
+  /**
+   * Double-clicks inside the selected text at a relative horizontal position
+   * (0 = left edge, 1 = right edge), e.g. to select a word in the text editor.
+   * @param {number} xRatio
+   */
+  async doubleClickOnTextAt(xRatio) {
+    const box = await this.page
+      .locator(`rect[class="main viewport-selrect"]`)
+      .boundingBox();
+    await this.page.mouse.dblclick(
+      box.x + box.width * xRatio,
+      box.y + box.height / 2,
+    );
+  }
+
+  async isErrorScreenNotDisplayed() {
+    await expect(
+      this.errorScreen,
+      'Internal error screen is not shown',
+    ).toBeHidden();
+  }
+
   async editTextLayer(text) {
     await this.doubleClickTextOnCanvas();
     await this.typeTextFromKeyboard(text);

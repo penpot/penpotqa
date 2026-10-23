@@ -87,6 +87,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         'div[class*="fill-content"] div[class*="opacity-element-wrapper"] input',
       )
       .last();
+    this.fillRows = this.fillSection.locator('div[class*="color-data"]');
     this.addFillButton = page.getByTestId('add-fill');
     this.removeFillButton = page
       .locator('div[class*="fill-content"]')
@@ -806,6 +807,35 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.removeFillButton.click();
   }
 
+  async checkFillsCount(count) {
+    await expect(this.fillRows, `Fill section has ${count} fill(s)`).toHaveCount(
+      count,
+    );
+  }
+
+  async clickFillColorIconByIndex(index) {
+    await this.fillRows
+      .nth(index)
+      .locator('div[class*="color-bullet-wrapper"]')
+      .click();
+  }
+
+  async isFillHexCodeSetByIndex(index, value) {
+    await expect(
+      this.fillRows.nth(index).locator('input[class*="color-input"]'),
+    ).toHaveValue(value.replace('#', ''));
+  }
+
+  /**
+   * @param {number} index
+   * @param {'Linear'|'Radial'} type
+   */
+  async isGradientFillSetByIndex(index, type) {
+    await expect(
+      this.fillRows.nth(index).getByText(`${type} gradient`, { exact: true }),
+    ).toBeVisible();
+  }
+
   async clickCanvasBackgroundColorIcon() {
     await this.canvasBackgroundColorIcon.click();
   }
@@ -896,6 +926,35 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.sizeHeightInput.pressSequentially(height);
     await this.clickOnEnter();
     await this.waitForChangeIsSaved();
+  }
+
+  async getWidthValue() {
+    return parseFloat(await this.sizeWidthInput.inputValue());
+  }
+
+  async getHeightValue() {
+    return parseFloat(await this.sizeHeightInput.inputValue());
+  }
+
+  async isWidthValue(width) {
+    await expect.poll(() => this.getWidthValue(), `Width is ${width}`).toBe(width);
+  }
+
+  async isHeightValue(height) {
+    await expect
+      .poll(() => this.getHeightValue(), `Height is ${height}`)
+      .toBe(height);
+  }
+
+  async isWidthAndHeightValue(width, height) {
+    await this.isWidthValue(width);
+    await this.isHeightValue(height);
+  }
+
+  async isWidthLessThan(width) {
+    await expect
+      .poll(() => this.getWidthValue(), `Width is less than ${width}`)
+      .toBeLessThan(width);
   }
 
   async isWidthAndHeightForLayer(width, height) {
@@ -1119,6 +1178,26 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       default:
         throw new Error(`Unsupported text option: ${value}`);
     }
+  }
+
+  /**
+   * Checks that a horizontal align or grow type button is the active one.
+   * @param {'Left'|'Center'|'Right'|'Justify'|'Fixed'|'Auto width'|'Auto height'} value
+   */
+  async isTextOptionSelected(value) {
+    const buttons = {
+      'Left': this.textAlignLeft,
+      'Center': this.textAlignCenter,
+      'Right': this.textAlignRight,
+      'Justify': this.textAlignJustify,
+      'Fixed': this.textGrowFixed,
+      'Auto width': this.textGrowAutoWidth,
+      'Auto height': this.textGrowAutoHeight,
+    };
+    await expect(
+      buttons[value],
+      `Text option "${value}" is selected`,
+    ).toHaveAttribute('aria-pressed', 'true');
   }
 
   async openTypographyFontDropdown() {
