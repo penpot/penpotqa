@@ -28,19 +28,13 @@ demoAccountFileTest(qase(3982, 'Undo and redo text edits'), async ({ mainPage })
     async () => {
       await mainPage.createdLayer.click();
       initialWidth = await designPanelPage.getWidthValue();
-      await mainPage.clickOnEnter();
-      await mainPage.page.keyboard.press('End');
-      for (let i = 0; i < ' ipsum'.length; i++) {
-        await mainPage.page.keyboard.press('Backspace');
-      }
+      await mainPage.deleteTextFromEndInEditor(' ipsum');
       await mainPage.clickOnESC();
       await mainPage.waitForChangeIsSaved();
       // The v3 editor keeps the text in WASM, not in the contenteditable DOM,
       // so the text is checked through the layer name, which follows the content
       await layersPanelPage.isLayerNameDisplayed('Lorem');
-      await expect
-        .poll(() => designPanelPage.getWidthValue(), 'Width decreases')
-        .toBeLessThan(initialWidth);
+      await designPanelPage.isWidthLessThan(initialWidth);
       reducedWidth = await designPanelPage.getWidthValue();
     },
   );
@@ -52,9 +46,7 @@ demoAccountFileTest(qase(3982, 'Undo and redo text edits'), async ({ mainPage })
       await mainPage.waitForChangeIsSaved();
       await mainPage.isErrorScreenNotDisplayed();
       await layersPanelPage.isLayerNameDisplayed('Lorem ipsum');
-      await expect
-        .poll(() => designPanelPage.getWidthValue(), 'Width is restored')
-        .toBe(initialWidth);
+      await designPanelPage.isWidthValue(initialWidth);
     },
   );
 
@@ -72,9 +64,7 @@ demoAccountFileTest(qase(3982, 'Undo and redo text edits'), async ({ mainPage })
     await mainPage.clickShortcutCtrlShiftZ();
     await mainPage.waitForChangeIsSaved();
     await mainPage.isErrorScreenNotDisplayed();
-    await expect
-      .poll(() => designPanelPage.getWidthValue(), 'Width is reduced again')
-      .toBe(reducedWidth);
+    await designPanelPage.isWidthValue(reducedWidth);
     await layersPanelPage.isLayerNameDisplayed('Lorem');
   });
 
@@ -97,8 +87,7 @@ demoAccountFileTest(qase(3982, 'Undo and redo text edits'), async ({ mainPage })
     await layersPanelPage.isLayerNameDisplayed('Lorem');
     await mainPage.createdLayer.click();
     await designPanelPage.isTextOptionSelected('Center');
-    expect(await designPanelPage.getWidthValue()).toBe(centeredWidth);
-    expect(await designPanelPage.getHeightValue()).toBe(centeredHeight);
+    await designPanelPage.isWidthAndHeightValue(centeredWidth, centeredHeight);
   });
 
   await demoAccountFileTest.step(
@@ -109,12 +98,7 @@ demoAccountFileTest(qase(3982, 'Undo and redo text edits'), async ({ mainPage })
       await mainPage.isErrorScreenNotDisplayed();
       await mainPage.createdLayer.click();
       await designPanelPage.isTextOptionSelected('Left');
-      await expect
-        .poll(() => designPanelPage.getWidthValue(), 'Width is kept')
-        .toBe(centeredWidth);
-      await expect
-        .poll(() => designPanelPage.getHeightValue(), 'Height is kept')
-        .toBe(centeredHeight);
+      await designPanelPage.isWidthAndHeightValue(centeredWidth, centeredHeight);
     },
   );
 });

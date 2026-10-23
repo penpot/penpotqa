@@ -1311,6 +1311,19 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   /**
+   * Opens the text editor of the selected text layer and deletes the given text
+   * from the end of the content with Backspace.
+   * @param {string} text
+   */
+  async deleteTextFromEndInEditor(text) {
+    await this.clickOnEnter();
+    await this.page.keyboard.press('End');
+    for (let i = 0; i < text.length; i++) {
+      await this.page.keyboard.press('Backspace');
+    }
+  }
+
+  /**
    * Double-clicks inside the selected text at a relative horizontal position
    * (0 = left edge, 1 = right edge), e.g. to select a word in the text editor.
    * @param {number} xRatio

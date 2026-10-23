@@ -936,6 +936,27 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     return parseFloat(await this.sizeHeightInput.inputValue());
   }
 
+  async isWidthValue(width) {
+    await expect.poll(() => this.getWidthValue(), `Width is ${width}`).toBe(width);
+  }
+
+  async isHeightValue(height) {
+    await expect
+      .poll(() => this.getHeightValue(), `Height is ${height}`)
+      .toBe(height);
+  }
+
+  async isWidthAndHeightValue(width, height) {
+    await this.isWidthValue(width);
+    await this.isHeightValue(height);
+  }
+
+  async isWidthLessThan(width) {
+    await expect
+      .poll(() => this.getWidthValue(), `Width is less than ${width}`)
+      .toBeLessThan(width);
+  }
+
   async isWidthAndHeightForLayer(width, height) {
     await expect(this.sizeWidthInput).toHaveValue(width);
     await expect(this.sizeHeightInput).toHaveValue(height);
