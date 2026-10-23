@@ -139,9 +139,24 @@ export class ShortcutsPage extends BasePage {
     await this.page.keyboard.press(keys);
   }
 
+  /** Runs a mutating action and waits until the shortcuts are saved: the UI updates
+   * optimistically, before the `update-profile-props` request completes. */
+  private async waitForShortcutsSaved(action: () => Promise<void>) {
+    const saved = this.page.waitForResponse(
+      (res) =>
+        res.url().includes('/api/main/methods/update-profile-props') &&
+        res.request().method() === 'POST' &&
+        (res.request().postData() ?? '').includes('custom-shortcuts'),
+    );
+    await action();
+    expect((await saved).ok(), 'Shortcuts change is saved').toBe(true);
+  }
+
   async saveShortcut(shortcut: ShortcutRef) {
     const row = this.getShortcutRow(shortcut);
-    await row.getByRole('button', { name: 'Save' }).click();
+    await this.waitForShortcutsSaved(() =>
+      row.getByRole('button', { name: 'Save' }).click(),
+    );
     await expect(
       row.getByRole('button', { name: 'Save' }),
       `"${shortcut.action}" left listening mode`,
@@ -157,9 +172,11 @@ export class ShortcutsPage extends BasePage {
   /** "Disable shortcut" applies straight away and leaves listening mode. */
   async disableShortcut(shortcut: ShortcutRef) {
     await this.startEditingShortcut(shortcut);
-    await this.getShortcutRow(shortcut)
-      .getByRole('button', { name: 'Disable shortcut' })
-      .click();
+    await this.waitForShortcutsSaved(() =>
+      this.getShortcutRow(shortcut)
+        .getByRole('button', { name: 'Disable shortcut' })
+        .click(),
+    );
   }
 
   async clickResetAll() {
@@ -168,7 +185,7 @@ export class ShortcutsPage extends BasePage {
   }
 
   async confirmResetAll() {
-    await this.resetAllConfirmButton.click();
+    await this.waitForShortcutsSaved(() => this.resetAllConfirmButton.click());
     await expect(this.resetAllDialog, '"Reset all" dialog is closed').toBeHidden();
   }
 
@@ -194,7 +211,7 @@ export class ShortcutsPage extends BasePage {
   }
 
   async confirmImport() {
-    await this.importConfirmButton.click();
+    await this.waitForShortcutsSaved(() => this.importConfirmButton.click());
     await expect(this.importDialog, 'Import preview dialog is closed').toBeHidden();
   }
 

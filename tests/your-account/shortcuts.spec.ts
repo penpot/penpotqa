@@ -3,10 +3,11 @@ import { type ShortcutRef } from '@pages/shortcuts-page';
 import { shortcutsTest } from './your-account-fixture';
 
 const cut: ShortcutRef = { context: 'workspace', subsection: 'Edit', action: 'Cut' };
-const copy: ShortcutRef = {
+// "Copy" itself is not customizable, so "Copy properties" is the one disabled.
+const copyProperties: ShortcutRef = {
   context: 'workspace',
   subsection: 'Edit',
-  action: 'Copy',
+  action: 'Copy properties',
 };
 const workspaceZoomIn: ShortcutRef = {
   context: 'workspace',
@@ -177,16 +178,16 @@ shortcutsTest(
   ),
   async ({ shortcutsPage }) => {
     await shortcutsTest.step(
-      'Setup: reassign "Cut" to "q" and disable "Copy"',
+      'Setup: reassign "Cut" to "q" and disable "Copy properties"',
       async () => {
         await shortcutsPage.assignShortcut(cut, 'q');
-        await shortcutsPage.disableShortcut(copy);
-        await shortcutsPage.hasNoShortcutKeys(copy);
+        await shortcutsPage.disableShortcut(copyProperties);
+        await shortcutsPage.hasNoShortcutKeys(copyProperties);
         await shortcutsPage.reload();
         await shortcutsPage.openTab('Custom');
         await shortcutsPage.isShortcutListed(cut);
         await shortcutsPage.openTab('Disabled');
-        await shortcutsPage.isShortcutListed(copy);
+        await shortcutsPage.isShortcutListed(copyProperties);
         await shortcutsPage.openTab('All');
       },
     );
@@ -201,9 +202,9 @@ shortcutsTest(
           'ctrl x',
         ]);
         await shortcutsPage.isDialogRowVisible(shortcutsPage.resetAllDialog, [
-          'Copy',
+          'Copy properties',
           '-',
-          'ctrl c',
+          'ctrl alt c',
         ]);
       },
     );
@@ -214,8 +215,8 @@ shortcutsTest(
         await shortcutsPage.confirmResetAll();
         await shortcutsPage.search(cut.action);
         await shortcutsPage.hasShortcutKeys(cut, ['ctrl', 'x']);
-        await shortcutsPage.search(copy.action);
-        await shortcutsPage.hasShortcutKeys(copy, ['ctrl', 'c']);
+        await shortcutsPage.search(copyProperties.action);
+        await shortcutsPage.hasShortcutKeys(copyProperties, ['ctrl', 'alt', 'c']);
         await shortcutsPage.search('');
       },
     );
