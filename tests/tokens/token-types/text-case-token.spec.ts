@@ -1,5 +1,5 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
@@ -10,14 +10,14 @@ let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 let assetsPanelPage: AssetsPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2522], 'Apply a capitalize text case token to a uppercase text layer'),
   async ({ mainPage }) => {
     const textCaseToken: MainToken<TokenClass> = {
@@ -27,7 +27,7 @@ mainAccountFileTest(
     };
     const text = 'EXAMPLE TEXT';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create text layer and text case token',
       async () => {
         await mainPage.createTextLayerByCoordinates(100, 200, text);
@@ -37,7 +37,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Apply "${textCaseToken.name}" token and verify text case matches`,
       async () => {
         await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
@@ -49,7 +49,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2520], 'Override and re-apply a text case token'),
   async ({ mainPage }) => {
     const textCaseToken: MainToken<TokenClass> = {
@@ -59,7 +59,7 @@ mainAccountFileTest(
     };
     const text = 'EXAMPLE TEXT';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Set typography style with Upper text case',
       async () => {
         await assetsPanelPage.clickAssetsTab();
@@ -70,7 +70,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Create text layer and apply "${textCaseToken.name}" token`,
       async () => {
         await tokensPage.clickTokensTab();
@@ -84,7 +84,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Override with typography style and verify token is detached',
       async () => {
         await assetsPanelPage.clickAssetsTab();
@@ -100,7 +100,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Re-apply token and verify it overrides the typography style',
       async () => {
         await tokensPage.tokensComp.clickOnTokenWithName(textCaseToken.name);
@@ -110,7 +110,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Override text case manually and verify token is detached',
       async () => {
         await designPanelPage.changeTextCase('Lower');

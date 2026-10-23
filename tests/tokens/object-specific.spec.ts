@@ -1,4 +1,4 @@
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
@@ -6,7 +6,7 @@ import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 let tokensPage: TokensPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   layersPanelPage = new LayersPanelPage(page);
 
@@ -18,10 +18,10 @@ mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await tokensPage.tokensComp.expandAllTokens();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2374], 'Rectangle: Check active tokens in token list'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create rectangle and verify active/disabled tokens',
       async () => {
         await tokensPage.createDefaultRectangleByCoordinates(100, 200);
@@ -44,7 +44,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify Fill and Stroke menu items are visible for COLOR-1',
       async () => {
         await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
@@ -57,10 +57,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2382], 'Text layer: Check active tokens in token list'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create text layer and verify active/disabled tokens',
       async () => {
         await tokensPage.createDefaultTextLayerByCoordinates(100, 200);
@@ -80,7 +80,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify Fill and Stroke menu items are visible for COLOR-1',
       async () => {
         await tokensPage.tokensComp.isMenuItemVisible('COLOR-1', 'Fill');
@@ -93,10 +93,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2383], 'Board (in root): Check active tokens in token list'),
   async () => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create board and verify active/disabled tokens',
       async () => {
         await tokensPage.createDefaultBoardByCoordinates(100, 200);
@@ -121,10 +121,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2385], 'Path: Check active tokens in token list'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create path and verify active/disabled tokens',
       async () => {
         await mainPage.createDefaultOpenPath();
@@ -146,10 +146,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2386], 'Image: Check active tokens in token list'),
   async () => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Upload image and verify active/disabled tokens',
       async () => {
         await tokensPage.uploadImage('images/images.png');

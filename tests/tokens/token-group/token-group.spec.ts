@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import {
@@ -10,13 +10,13 @@ import {
 
 let tokensPage: TokensPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest(
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest(
     qase([2728], 'Display token pill for single-segment token name'),
     async () => {
       const singleSegmentToken: MainToken<TokenClass> = {
@@ -25,11 +25,11 @@ mainAccountFileTest.describe(() => {
         value: '10',
       };
 
-      await mainAccountFileTest.step('Open Tokens panel', async () => {
+      await demoAccountFileTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Create a token with single-segment name "${singleSegmentToken.name}"`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
@@ -38,7 +38,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify token pill "${singleSegmentToken.name}" is visible with no nested group segments`,
         async () => {
           await tokensPage.tokensComp.isTokenVisibleWithName(
@@ -48,7 +48,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Open context menu on "${singleSegmentToken.name}" and verify Edit, Duplicate, Delete actions are visible`,
         async () => {
           await tokensPage.tokensComp.rightClickOnTokenWithName(
@@ -62,7 +62,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2730],
       'Tokens with the same path are displayed under the same nested group path',
@@ -89,11 +89,11 @@ mainAccountFileTest.describe(() => {
         primaryBigToken.name,
         primaryBigToken.parent,
       );
-      await mainAccountFileTest.step('Open Tokens panel', async () => {
+      await demoAccountFileTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Create first token with path name "${primarySmallFullPath}"`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
@@ -103,7 +103,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify group "${primarySmallToken.parent!.name}" is visible and pill "${primarySmallFullPath}" appears under it`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupVisible(primarySmallToken.parent!);
@@ -118,7 +118,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Create second token with path name "${primaryBigFullPath}"`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
@@ -128,7 +128,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${primarySmallToken.parent!.name}" group contains both "${primarySmallFullPath}" and "${primaryBigFullPath}" token pills`,
         async () => {
           await tokensPage.tokensComp.isTokenVisibleInGroup(
@@ -150,7 +150,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify only one "${primarySmallToken.parent!.name}" group exists in the UI`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupCount(
@@ -160,7 +160,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Snapshot of the Border Radius section showing the nested group structure',
         async () => {
           await expect(
@@ -171,7 +171,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2735],
       'Editing token path moves token to an existing group path and unfolds the new path',
@@ -202,11 +202,11 @@ mainAccountFileTest.describe(() => {
         foundationBigToken.parent,
       );
 
-      await mainAccountFileTest.step('Open Tokens panel', async () => {
+      await demoAccountFileTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Create token "${foundationBigFullPath}" to ensure the "${foundationBigToken.parent!.name}" group exists`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
@@ -216,7 +216,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${foundationBigToken.parent!.name}" group exists and contains "${foundationBigToken.name}" token pill`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupVisible(
@@ -229,7 +229,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Create token "${primarySmallFullPath}" under a different path`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter({
@@ -239,7 +239,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Collapse the "${foundationBigToken.parent!.name}" group to simulate a previously collapsed destination`,
         async () => {
           await tokensPage.tokensComp.clickOnTokenGroup(foundationBigToken.parent!);
@@ -250,7 +250,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Edit "${primarySmallFullPath}" and rename it to "${renamedTokenName}"`,
         async () => {
           await tokensPage.tokensComp.clickEditToken({
@@ -263,7 +263,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${foundationBigToken.parent!.name}" group is automatically expanded after saving`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupExpanded(
@@ -272,7 +272,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${primarySmallToken.name}" token pill is visible under the "${foundationBigToken.parent!.name}" group without manual expansion`,
         async () => {
           await tokensPage.tokensComp.isTokenVisibleInGroup(
@@ -286,7 +286,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${primarySmallToken.parent!.name}" group is removed from the DOM after moving its only token out`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupCount(
@@ -298,7 +298,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2736],
       'Editing token path creates missing groups in UI and moves token accordingly',
@@ -326,11 +326,11 @@ mainAccountFileTest.describe(() => {
       const subGroup = renamedToken.parent!;
       const newGroup = subGroup.parent!;
 
-      await mainAccountFileTest.step('Open Tokens panel', async () => {
+      await demoAccountFileTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Create a token named "${primaryBigToken.name}"`,
         async () => {
           await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(
@@ -339,7 +339,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${primaryBigToken.parent!.name}" group exists and contains "${renamedToken.name}" token pill`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupVisible(primaryBigToken.parent!);
@@ -350,7 +350,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Edit "${primaryBigToken.name}" and rename it to "${renamedTokenFullPath}"`,
         async () => {
           await tokensPage.tokensComp.clickEditToken(primaryBigToken);
@@ -360,7 +360,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify new groups "${newGroup.name}" and "${subGroup.name}" are created and automatically unfolded`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupVisible(newGroup);
@@ -370,7 +370,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify token pill "${renamedToken.name}" is visible under "${subGroup.name}" group`,
         async () => {
           await tokensPage.tokensComp.isTokenVisibleInGroup(
@@ -384,7 +384,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${primaryBigToken.parent!.name}" group is removed from the DOM after moving its only token out`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupCount(primaryBigToken.parent!, 0);
@@ -393,7 +393,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2741],
       'Error handling: Prevent creating token with empty name or invalid path format',
@@ -417,11 +417,11 @@ mainAccountFileTest.describe(() => {
         value: tokenValue,
       };
 
-      await mainAccountFileTest.step('Open Tokens panel', async () => {
+      await demoAccountFileTest.step('Open Tokens panel', async () => {
         await tokensPage.clickTokensTab();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Attempt to create a token with an empty name "${emptyNameToken.name}" and verify Save button is disabled`,
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(emptyNameToken);
@@ -431,7 +431,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Attempt to create a token with a malformed path "${doubleDotToken.name}" and verify Save button is disabled`,
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(doubleDotToken);
@@ -441,14 +441,14 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify no "${primaryGroup.name}" group is created after the double-dot path attempt`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Attempt to create a token with leading/trailing separators "${leadingTrailingDotToken.name}" and verify Save button is disabled`,
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(
@@ -460,7 +460,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify no "${primaryGroup.name}" group is created after the leading/trailing separator attempt`,
         async () => {
           await tokensPage.tokensComp.isTokenGroupCount(primaryGroup, 0);

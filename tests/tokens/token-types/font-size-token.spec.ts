@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
 import { MainPage } from '@pages/workspace/main-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
@@ -17,7 +17,7 @@ let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
@@ -25,7 +25,7 @@ mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest.describe(() => {
+demoAccountFileTest.describe(() => {
   let mainPage: MainPage;
   let tokensPage: TokensPage;
 
@@ -42,7 +42,7 @@ mainAccountFileTest.describe(() => {
     description: '120',
   };
 
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
 
@@ -52,10 +52,10 @@ mainAccountFileTest.describe(() => {
     await tokensPage.tokensComp.isTokenVisibleWithName(fontSizeToken.name);
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2359], 'Apply a font size token'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Apply "${fontSizeToken.name}" token and verify it is applied`,
         async () => {
           await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
@@ -65,7 +65,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('Verify screenshot matches', async () => {
+      await demoAccountFileTest.step('Verify screenshot matches', async () => {
         await expect(mainPage.viewport).toHaveScreenshot('text-font-size-60.png', {
           mask: mainPage.maskViewport(),
         });
@@ -73,10 +73,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2360], 'Detachment font size token'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Apply "${fontSizeToken.name}" to first text layer and create second text layer`,
         async () => {
           await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
@@ -89,7 +89,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Detach token from first layer by re-clicking it',
         async () => {
           await mainPage.clickViewportByCoordinates(120, 220);
@@ -102,7 +102,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Edit token to "${updatedTokenData.value}" and verify screenshot shows both sizes`,
         async () => {
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(
@@ -118,7 +118,7 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase(
     [2363],
     'Propagation of (style) changes from a (contained) text component to copies (overriding style by using tokens)',
@@ -140,7 +140,7 @@ mainAccountFileTest(
       value: sampleData.color.greenHexCode,
     };
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create color tokens and apply first token to text layer',
       async () => {
         await tokensPage.clickTokensTab();
@@ -155,7 +155,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create main component with flex layout and duplicate it',
       async () => {
         await layersPanelPage.openLayersTab();
@@ -170,7 +170,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Override color token in copy component child layer',
       async () => {
         await layersPanelPage.openLayersTab();
@@ -181,7 +181,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Change color manually in main component child layer',
       async () => {
         await layersPanelPage.openLayersTab();
@@ -196,7 +196,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify token states and screenshot',
       async () => {
         await tokensPage.clickTokensTab();

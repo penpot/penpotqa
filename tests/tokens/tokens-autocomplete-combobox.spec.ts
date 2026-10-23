@@ -1,13 +1,13 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 
 let tokensPage: TokensPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   tokensPage = new TokensPage(page);
   await tokensPage.clickTokensTab();
   await tokensPage.toolsComp.clickOnTokenToolsButton();
@@ -15,7 +15,7 @@ mainAccountFileTest.beforeEach(async ({ page }) => {
   await tokensPage.setsComp.isSetNameVisible('Global');
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([3055], 'Select a token from the value input dropdown'),
   async () => {
     const spacingToken: MainToken<TokenClass> = {
@@ -24,14 +24,14 @@ mainAccountFileTest(
     };
     const referencedTokenName = 'SPACING-10';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Open the Spacing token creation form',
       async () => {
         await tokensPage.tokensComp.clickOnAddTokenButton(spacingToken);
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Click the dropdown arrow on the value input',
       async () => {
         await tokensPage.mainTokensComp.openValueDropdown();
@@ -42,7 +42,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Select "${referencedTokenName}" token from the list`,
       async () => {
         await tokensPage.mainTokensComp
@@ -57,7 +57,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([3063], 'Entering an out-of-range value triggers validation on blur'),
   async () => {
     const opacityToken: MainToken<TokenClass> = {
@@ -68,14 +68,14 @@ mainAccountFileTest(
     const errorMessage =
       'Opacity must be between 0 and 100% or 0 and 1 (e.g. 50% or 0.5).';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Open the Opacity token creation form',
       async () => {
         await tokensPage.tokensComp.clickOnAddTokenButton(opacityToken);
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Type an out-of-range value "${outOfRangeValue}" and blur the field`,
       async () => {
         await tokensPage.tokensComp.fillTokenValue(outOfRangeValue);
@@ -83,7 +83,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Check the validation error is shown, the form stays open, and the field remains editable',
       async () => {
         await tokensPage.tokensComp.isErrorHintMessageVisible(errorMessage);
@@ -100,7 +100,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([3064], 'Token dropdown only lists tokens of allowed reference types'),
   async () => {
     const borderRadiusToken: MainToken<TokenClass> = {
@@ -113,7 +113,7 @@ mainAccountFileTest(
     };
     const colorTokenName = 'COLOR-1';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Edit "${borderRadiusToken.name}" and open its value dropdown`,
       async () => {
         await tokensPage.tokensComp.expandTokenByName(TokenClass.BorderRadius);
@@ -122,7 +122,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Check the dropdown lists Dimension tokens but not the Color token "${colorTokenName}"`,
       async () => {
         await tokensPage.mainTokensComp.checkValueDropdownOptionVisible(
@@ -135,12 +135,12 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Close the Border Radius edit form', async () => {
+    await demoAccountFileTest.step('Close the Border Radius edit form', async () => {
       await tokensPage.mainTokensComp.closeValueDropdown();
       await tokensPage.tokensComp.clickCancelButton();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Edit "${spacingToken.name}" and open its value dropdown`,
       async () => {
         await tokensPage.tokensComp.expandTokenByName(TokenClass.Spacing);
@@ -149,7 +149,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Check the dropdown lists the Dimension token but not the Sizing or Color tokens ("${colorTokenName}")`,
       async () => {
         await tokensPage.mainTokensComp.checkValueDropdownOptionVisible(

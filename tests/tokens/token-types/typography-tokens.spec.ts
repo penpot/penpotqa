@@ -1,5 +1,5 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { MainPage } from '@pages/workspace/main-page';
 import { TypographyToken } from '@pages/workspace/tokens/token-components/typography-tokens-component';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
@@ -9,18 +9,18 @@ import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest.describe(() => {
+demoAccountFileTest.describe(() => {
   let mainPage: MainPage;
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
   let assetsPanelPage: AssetsPanelPage;
   let layersPanelPage: LayersPanelPage;
 
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     tokensPage = new TokensPage(page);
     mainPage = new MainPage(page);
     designPanelPage = new DesignPanelPage(page);
@@ -44,13 +44,13 @@ mainAccountFileTest.describe(() => {
     description: 'Autotest typography token',
   };
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2584, 2586, 2592, 2604],
       'Create and edit a typography token (validating values and units)',
     ),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '2584 Create typography token with complete property set',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
@@ -61,7 +61,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step('2586 Edit a typography token', async () => {
+      await demoAccountFileTest.step('2586 Edit a typography token', async () => {
         const UPDATED_TOKEN: TypographyToken<TokenClass> = {
           class: TokenClass.Typography,
           name: TYPO_TOKEN.name,
@@ -121,7 +121,7 @@ mainAccountFileTest.describe(() => {
       };
       const RESOLVED_LINE_HEIGHT_4 = '1.1';
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '2592 Validate Typography Token Units',
         async () => {
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_1);
@@ -136,7 +136,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '2604 Apply Typography Tokens with Line Height Calculation and with Different Units',
         async () => {
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(TOKEN_2);
@@ -170,19 +170,19 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2606, 2607], 'Switch between token forms and validate invalid references'),
     async () => {
       const BAD_TOKEN_ALIAS = '{non-existent-token}';
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Add a typography token and fill data',
         async () => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(TYPO_TOKEN);
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '2606 Switch Between Individual and Reference Token Forms',
         async () => {
           await tokensPage.typoTokensComp.clickOnUseReferenceButton();
@@ -194,7 +194,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '2607 Validate Reference Token Form with Invalid References',
         async () => {
           await tokensPage.typoTokensComp.clickOnUseReferenceButton();
@@ -206,7 +206,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2609, 2610],
       'Check Typography Token detaches Typography Style Assets and Atomic Typography Tokens',
@@ -215,7 +215,7 @@ mainAccountFileTest.describe(() => {
       const FONT_FAMILY_STYLE = 'Rasa';
       const LETTER_SPACING_STYLE = '3';
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '2609 Check Typography Token Detaches Applied Typography Style (Asset)',
         async () => {
           // Set some typography styles to the text from the design panel
@@ -272,7 +272,7 @@ mainAccountFileTest.describe(() => {
       const STYLE_TOKENS = [FF_TOKEN, FS_TOKEN, FW_TOKEN, LS_TOKEN];
       const TYPO_TOKENS = [TYPO_TOKEN, CLEAN_TYPO_TOKEN];
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '2610 Check Typography Token Unapplied Atomic Typography Tokens',
         async () => {
           // Create the typography and style tokens

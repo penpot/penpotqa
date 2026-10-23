@@ -2036,6 +2036,74 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Stroke width', value);
   }
 
+  /**
+   * A stroke width field: the main one ("Stroke width") or a side one
+   * ("Top (block start)", "Right (inline end)", "Bottom (block end)",
+   * "Left (inline start)"). Holds either an input or a token pill.
+   * @param {string} label
+   */
+  getStrokeWidthField(label) {
+    return this.strokeSectionContainer
+      .getByTestId('numeric-input-wrapper')
+      .filter({ has: this.page.getByLabel(label, { exact: true }) });
+  }
+
+  async clickStrokePerSideButton() {
+    await this.strokeSectionContainer
+      .getByRole('button', { name: 'Stroke per side' })
+      .click();
+  }
+
+  /** @param {string} label @param {string} value */
+  async setStrokeSideWidth(label, value) {
+    const input = this.getStrokeWidthField(label).getByRole('textbox');
+    await input.fill(value);
+    await input.press('Enter');
+  }
+
+  /** Detach buttons only show on hover. @param {string} label */
+  async detachStrokeWidthToken(label) {
+    const field = this.getStrokeWidthField(label);
+    await field.hover();
+    await field.getByRole('button', { name: 'Detach token' }).click();
+  }
+
+  /** @param {string} label @param {string} value */
+  async checkStrokeSideWidth(label, value) {
+    await expect(
+      this.getStrokeWidthField(label).getByRole('textbox'),
+      `"${label}" is ${value}`,
+    ).toHaveValue(value);
+  }
+
+  /** @param {string} label @param {string} tokenName */
+  async isStrokeWidthTokenPillVisible(label, tokenName) {
+    await expect(
+      this.getStrokeWidthField(label).getByRole('button', {
+        name: tokenName,
+        exact: true,
+      }),
+      `"${label}" shows the "${tokenName}" token pill`,
+    ).toBeVisible();
+  }
+
+  async isStrokeWidthMixed() {
+    const input = this.getStrokeWidthField('Stroke width').getByRole('textbox');
+    await expect(input, 'Stroke width input is empty').toHaveValue('');
+    await expect(input, 'Stroke width input shows "Mixed"').toHaveAttribute(
+      'placeholder',
+      'Mixed',
+    );
+  }
+
+  /** The four side inputs show only while "Stroke per side" is on. */
+  async areStrokeSideFieldsVisible(visible = true) {
+    const top = this.getStrokeWidthField('Top (block start)');
+    visible
+      ? await expect(top, 'Stroke side fields are visible').toBeVisible()
+      : await expect(top, 'Stroke side fields are hidden').toHaveCount(0);
+  }
+
   async checkRowGap(value) {
     await this.checkTokenField('Row gap', value);
   }
