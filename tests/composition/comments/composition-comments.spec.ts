@@ -24,7 +24,6 @@ function commentScreenshotMask(mainPage: MainPage) {
 
 demoAccountFileTest.describe('Single comment thread actions', () => {
   demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
-    profilePage = new ProfilePage(page);
     commentsPanelPage = new CommentsPanelPage(page);
     // A fixed, short name keeps the comment author inside its box (the default
     // demo name is long and changes width every run).
@@ -294,12 +293,8 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
 });
 
 demoAccountFileTest.describe('Comment bubbles', () => {
-  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
-    profilePage = new ProfilePage(page);
+  demoAccountFileTest.beforeEach(async ({ page }) => {
     commentsPanelPage = new CommentsPanelPage(page);
-    await setDemoUserName(page.context().request, 'QA Tester');
-    await page.reload();
-    await mainPage.isMainPageLoaded();
   });
 
   demoAccountFileTest(
@@ -348,6 +343,15 @@ demoAccountFileTest.describe('Comment bubbles', () => {
       const comment = 'Test Comment';
       const xAxisCommentsCoordinates = [100, 50];
       const yAxisCommentsCoordinates = [150, 50];
+
+      await demoAccountFileTest.step(
+        'Setup: give the user a fixed name (shown in the snapshots)',
+        async () => {
+          await setDemoUserName(page.context().request, 'QA Tester');
+          await page.reload();
+          await mainPage.isMainPageLoaded();
+        },
+      );
 
       await demoAccountFileTest.step(
         'Create two comments close together',

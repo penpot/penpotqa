@@ -335,8 +335,8 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     ).toBeVisible();
   }
 
-  async selectHideResolvedCommentsOption() {
-    await this.openCommentsFilter();
+  /** Toggles "Hide resolved comments" in the open filter; the menu closes after it. */
+  async clickHideResolvedCommentsOption() {
     await this.hideResolvedCommentsOption.click();
     await expect(
       this.hideResolvedCommentsOption,

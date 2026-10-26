@@ -1,6 +1,6 @@
 /**
- * Comment filters are saved per user, so these tests use a fresh demo account
- * (a shared account would leak the filter into other comment tests).
+ * The filter is kept in the browser's localStorage (fresh per test context); a demo
+ * account just gives each run its own clean account and file.
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { demoAccountFileTest } from 'fixtures';
@@ -66,7 +66,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Click "Hide resolved comments" → the menu closes and only the pending comment is shown',
       async () => {
-        await commentsPanelPage.hideResolvedCommentsOption.click();
+        await commentsPanelPage.clickHideResolvedCommentsOption();
         await commentsPanelPage.checkCommentCount(1);
         await commentsPanelPage.checkCommentCountInList(1);
         await commentsPanelPage.isCommentDisplayedInCommentsPanel('Pending comment');
@@ -113,7 +113,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Uncheck "Hide resolved comments" and go back to the file with comments → both comments are shown',
       async () => {
-        await commentsPanelPage.hideResolvedCommentsOption.click();
+        await commentsPanelPage.clickHideResolvedCommentsOption();
         await page.goto(fileWithCommentsUrl);
         await mainPage.isMainPageLoaded();
         await commentsPanelPage.pressCommentsPanelShortcut();

@@ -2,7 +2,7 @@ import type { APIRequestContext } from '@playwright/test';
 
 /** Penpot main API methods used by the tests. Add new ones as callers need them. */
 export type PenpotApiMethod =
-  | | 'create-demo-profile'
+  | 'create-demo-profile'
   | 'login-with-password'
   | 'get-profile'
   | 'update-profile'
