@@ -27,14 +27,25 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
+      # Free model names change often, so pick the newest free model of the
+      # requested family (`--model <family>` in the comment, deepseek by default).
+      - name: Resolve latest free model
+        id: model
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          family=$(grep -oP -- '--model\s+\K[a-z0-9.-]+' <<< "$COMMENT_BODY" | head -1)
+          family=${family:-deepseek}
+          free=$(npx -y opencode-ai models opencode --refresh | grep -E '^opencode/.*-free$')
+          model=$(grep -E "^opencode/${family}" <<< "$free" | sort -V | tail -1)
+          model=${model:-$(head -1 <<< "$free")}
+          echo "Using model: $model"
+          echo "name=$model" >> "$GITHUB_OUTPUT"
+
       - name: Run OpenCode Agent
         uses: anomalyco/opencode/github@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENCODE_MODEL: >-
-            ${{ contains(github.event.comment.body, '--model mimo') && 'opencode/mimo-v2.5-free' ||
-                contains(github.event.comment.body, '--model nemotron') && 'opencode/nemotron-3-ultra-free' ||
-                'opencode/deepseek-v4-flash-free' }}
         with:
-          model: ${{ env.OPENCODE_MODEL }}
+          model: ${{ steps.model.outputs.name }}
           use_github_token: true
