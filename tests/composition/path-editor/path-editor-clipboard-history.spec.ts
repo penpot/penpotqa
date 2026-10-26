@@ -126,7 +126,7 @@ pathEditorTest.describe('In path editing mode', () => {
           // Separating A splits it into two nodes, one per segment.
           await overlay.clickNode(A);
           await pathEditorPage.clickSeparateNodesButtonOnNodePanel();
-          await pathEditorPage.checkPathNodeCount(7);
+          await overlay.checkNodeCount(7);
           states.push(await overlay.getStateKey());
         },
       );

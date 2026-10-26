@@ -8,6 +8,7 @@ export const PathToolbarAction = {
   DrawNodes: 'Draw nodes (P)',
   MoveNodes: 'Move nodes (M)',
   MergeNodes: 'Merge nodes (Ctrl+J)',
+  JoinNodes: 'Join nodes (J)',
   SeparateNodes: 'Separate nodes (K)',
   ToCorner: 'To corner (X)',
   ToCurve: 'To curve (C)',
@@ -27,9 +28,6 @@ export type PathToolbarActionName =
  *
  * The path toolbar only shows the actions that apply to the current selection;
  * it marks the active mode/toggle with a CSS class only (no aria-pressed).
- *
- * The toolbar's buttons and their click methods (`nodePanel*Button`,
- * `click*ButtonOnNodePanel()`) are still inherited from MainPage.
  */
 export class PathEditorPage extends ToolbarPage {
   // components
@@ -40,6 +38,13 @@ export class PathEditorPage extends ToolbarPage {
 
   // locators
   readonly pathToolbarButtons: Locator;
+  readonly nodePanelDrawNodesButton: Locator;
+  readonly nodePanelMoveNodesButton: Locator;
+  readonly nodePanelMergeNodesButton: Locator;
+  readonly nodePanelJoinNodesButton: Locator;
+  readonly nodePanelSeparateNodesButton: Locator;
+  readonly nodePanelToCornerButton: Locator;
+  readonly nodePanelToCurveButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -52,6 +57,27 @@ export class PathEditorPage extends ToolbarPage {
 
     // locators
     this.pathToolbarButtons = this.pathActionsBlock.getByRole('button');
+    this.nodePanelDrawNodesButton = this.getToolbarButton(
+      PathToolbarAction.DrawNodes,
+    );
+    this.nodePanelMoveNodesButton = this.getToolbarButton(
+      PathToolbarAction.MoveNodes,
+    );
+    this.nodePanelMergeNodesButton = this.getToolbarButton(
+      PathToolbarAction.MergeNodes,
+    );
+    this.nodePanelJoinNodesButton = this.getToolbarButton(
+      PathToolbarAction.JoinNodes,
+    );
+    this.nodePanelSeparateNodesButton = this.getToolbarButton(
+      PathToolbarAction.SeparateNodes,
+    );
+    this.nodePanelToCornerButton = this.getToolbarButton(PathToolbarAction.ToCorner);
+    this.nodePanelToCurveButton = this.getToolbarButton(PathToolbarAction.ToCurve);
+  }
+
+  getToolbarButton(action: PathToolbarActionName) {
+    return this.pathActionsBlock.getByRole('button', { name: action, exact: true });
   }
 
   /** Selects the layer in the layers tree and opens it in the path editor. */
@@ -64,6 +90,39 @@ export class PathEditorPage extends ToolbarPage {
   async exitPathEditing() {
     await this.clickOnESC();
     await this.overlayComp.isHidden();
+  }
+
+  async clickDrawNodesButtonOnNodePanel() {
+    await this.nodePanelDrawNodesButton.click();
+  }
+
+  async clickMoveNodesButtonOnNodePanel() {
+    await this.nodePanelMoveNodesButton.click();
+  }
+
+  async clickMergeNodesButtonOnNodePanel() {
+    await this.nodePanelMergeNodesButton.click();
+  }
+
+  async clickJoinNodesButtonOnNodePanel() {
+    await this.nodePanelJoinNodesButton.click();
+  }
+
+  async clickSeparateNodesButtonOnNodePanel() {
+    await this.nodePanelSeparateNodesButton.click();
+  }
+
+  async clickToCornerButtonOnNodePanel() {
+    await this.nodePanelToCornerButton.click();
+  }
+
+  async clickToCurveButtonOnNodePanel() {
+    await this.nodePanelToCurveButton.click();
+  }
+
+  /** Merges the selected nodes (same as the Merge nodes button). */
+  async pressCtrlJKeyboardShortcut() {
+    await this.page.keyboard.press('Control+J');
   }
 
   /** Clears the path selection (nodes and segments); the editor stays open. */

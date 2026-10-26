@@ -91,28 +91,6 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Node panel
     this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
-    this.pathNodes = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"]',
-    );
-    this.nodePanelMergeNodesButton = page.getByRole('button', {
-      name: 'Merge nodes (Ctrl+J)',
-    });
-    this.nodePanelDrawNodesButton = page.getByRole('button', {
-      name: 'Draw nodes (P)',
-    });
-    this.nodePanelMoveNodesButton = page.getByRole('button', {
-      name: 'Move nodes (M)',
-    });
-    this.nodePanelJoinNodesButton = page.getByRole('button', {
-      name: 'Join nodes (J)',
-    });
-    this.nodePanelSeparateNodesButton = page.getByRole('button', {
-      name: 'Separate nodes (K)',
-    });
-    this.nodePanelToCornerButton = page.getByRole('button', {
-      name: 'To corner (X)',
-    });
-    this.nodePanelToCurveButton = page.getByRole('button', { name: 'To curve (C)' });
 
     // Main menu - first level
     this.mainMenuButton = page.getByRole('button', { name: 'Main menu' });
@@ -533,52 +511,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.pressDeleteKeyboardButton();
   }
 
-  /**
-   * Screen positions of the nodes of the path being edited, each node once (the
-   * start node of a closed path is drawn twice).
-   * @returns {Promise<{x: number, y: number}[]>}
-   */
-  async getPathNodePositions() {
-    const centers = await this.pathNodes.evaluateAll((circles) =>
-      circles.map((circle) => {
-        const box = circle.getBoundingClientRect();
-        return {
-          x: Math.round(box.x + box.width / 2),
-          y: Math.round(box.y + box.height / 2),
-        };
-      }),
-    );
-    return centers.filter(
-      (node, i) => centers.findIndex((o) => o.x === node.x && o.y === node.y) === i,
-    );
-  }
-
-  /**
-   * @param {{x: number, y: number}} position - from getPathNodePositions()
-   * @param {{shift?: boolean}} [options] - shift adds the node to the selection
-   */
-  async clickPathNode(position, { shift = false } = {}) {
-    if (shift) await this.holdShiftKeyboardButton();
-    await this.page.mouse.click(position.x, position.y, { delay: 100 });
-    if (shift) await this.releaseShiftKeyboardButton();
-  }
-
-  async checkPathNodeCount(count) {
-    await expect
-      .poll(async () => (await this.getPathNodePositions()).length, {
-        message: `Path should have ${count} nodes`,
-      })
-      .toBe(count);
-  }
-
-  async holdShiftKeyboardButton() {
-    await this.page.keyboard.down('Shift');
-  }
-
-  async releaseShiftKeyboardButton() {
-    await this.page.keyboard.up('Shift');
-  }
-
   async pressDeleteKeyboardButton() {
     await this.page.keyboard.press('Delete');
   }
@@ -587,41 +519,9 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press('Backspace');
   }
 
-  async clickMergeNodesButtonOnNodePanel() {
-    await this.nodePanelMergeNodesButton.click();
-  }
-
-  async pressCtrlJKeyboardShortcut() {
-    await this.page.keyboard.press('Control+J');
-  }
-
-  async clickDrawNodesButtonOnNodePanel() {
-    await this.nodePanelDrawNodesButton.click();
-  }
-
-  async clickMoveNodesButtonOnNodePanel() {
-    await this.nodePanelMoveNodesButton.click();
-  }
-
-  async clickJoinNodesButtonOnNodePanel() {
-    await this.nodePanelJoinNodesButton.click();
-  }
-
   async pressKeyboardShortcut(key) {
     const normalizedKey = key.length === 1 ? key.toUpperCase() : key;
     await this.page.keyboard.press(normalizedKey);
-  }
-
-  async clickSeparateNodesButtonOnNodePanel() {
-    await this.nodePanelSeparateNodesButton.click();
-  }
-
-  async clickToCornerButtonOnNodePanel() {
-    await this.nodePanelToCornerButton.click();
-  }
-
-  async clickToCurveButtonOnNodePanel() {
-    await this.nodePanelToCurveButton.click();
   }
 
   async clickMainMenuButton() {
@@ -1005,8 +905,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press('Enter');
     await expect(this.pathActionsBlock).toBeVisible();
     await this.page.keyboard.press('Enter');
-    // await this.clickMoveNodesButtonOnNodePanel();
-    // await this.clickDrawNodesButtonOnNodePanel();
     await this.waitForChangeIsSaved();
   }
 

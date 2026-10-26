@@ -264,6 +264,15 @@ export class PathOverlayComponent {
     await this.checkNodes(expected, { selectedOnly: true });
   }
 
+  /** Checks the number of distinct node positions (see getNodes()). */
+  async checkNodeCount(expected: number) {
+    await expect
+      .poll(async () => (await this.getNodes()).length, {
+        message: `Path has ${expected} nodes`,
+      })
+      .toBe(expected);
+  }
+
   /** Checks the path has exactly these segments, given by their end nodes (any
    * order, any direction). */
   async checkSegments(expected: [Point, Point][], { selectedOnly = false } = {}) {
