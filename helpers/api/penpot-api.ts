@@ -5,6 +5,7 @@ export type PenpotApiMethod =
   | 'create-demo-profile'
   | 'login-with-password'
   | 'get-profile'
+  | 'update-profile'
   | 'create-file'
   | 'get-file-libraries'
   | 'import-binfile';

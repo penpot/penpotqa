@@ -77,6 +77,16 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       '.main_ui_workspace_comments__thread-group-placeholder',
     );
     this.commentsAuthorSection = page.locator('div[class*="comments__author"]');
+    // Thread pop-up on the canvas, its "Comment #N" header, and the panel's "#N - Page" label.
+    this.commentThreadPopUp = page.locator(
+      'div[class*="comments__floating-thread-wrapper"]',
+    );
+    this.commentThreadPopUpHeader = page.locator(
+      '[class*="comments__floating-thread-header-left"]',
+    );
+    this.commentsPanelLocationText = page.locator(
+      '[class*="sidebar"] [class*="comments__location-text"]',
+    );
     this.commentMentionButton = page.locator('[class*="open-mentions-button"]');
     this.mentionMenuItem = page.locator('[class*="comments-mentions-name"]');
     this.commentMentionText = page.locator('span[class*="comment-mention"]');
@@ -257,10 +267,45 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await expect(this.commentsPanelPlaceholderText).toHaveText(text);
   }
 
-  async isResolveCommentCheckboxSelected() {
-    await expect(this.resolveCommentCheckbox).toContainClass(
-      'main_ui_ds_controls_checkbox__checked',
-    );
+  async isResolveCommentCheckboxSelected(selected = true) {
+    selected
+      ? await expect(
+          this.resolveCommentCheckbox,
+          'Resolve checkbox is checked',
+        ).toContainClass('main_ui_ds_controls_checkbox__checked')
+      : await expect(
+          this.resolveCommentCheckbox,
+          'Resolve checkbox is not checked',
+        ).not.toContainClass('main_ui_ds_controls_checkbox__checked');
+  }
+
+  async isCommentThreadPopUpVisible(visible = true) {
+    visible
+      ? await expect(this.commentThreadPopUp, 'Comment pop-up is open').toBeVisible()
+      : await expect(
+          this.commentThreadPopUp,
+          'Comment pop-up is closed',
+        ).toBeHidden();
+  }
+
+  /** Checks the thread number in the pop-up ("Comment #N") and the panel ("#N - Page"). */
+  async hasCommentThreadNumber(number, pageName = 'Page 1') {
+    await expect(
+      this.commentThreadPopUpHeader,
+      `Pop-up header is "Comment #${number}"`,
+    ).toHaveText(`Comment #${number}`);
+    await expect(
+      this.commentsPanelLocationText.first(),
+      `Panel shows "#${number} - ${pageName}"`,
+    ).toHaveText(`#${number} - ${pageName}`);
+  }
+
+  /** Checks every comment of the open thread, in order (original first, then replies). */
+  async hasCommentsInPopUp(texts) {
+    await expect(
+      this.commentText,
+      `Pop-up shows ${texts.length} comment(s)`,
+    ).toHaveText(texts);
   }
 
   async clickOnUnreadThreadIcon() {
@@ -279,6 +324,49 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.commentsDropdown.click();
     await this.showYourMentionsOption.click();
     await expect(this.showYourMentionsOption).not.toBeVisible();
+  }
+
+  /** Opens the comments filter dropdown (Show all / only yours / mentions / hide resolved). */
+  async openCommentsFilter() {
+    await this.commentsDropdown.click();
+    await expect(
+      this.showAllCommentsOption,
+      'Comments filter is open',
+    ).toBeVisible();
+  }
+
+  /** Toggles "Hide resolved comments" in the open filter; the menu closes after it. */
+  async clickHideResolvedCommentsOption() {
+    await this.hideResolvedCommentsOption.click();
+    await expect(
+      this.hideResolvedCommentsOption,
+      'Comments filter closes after picking an option',
+    ).toBeHidden();
+  }
+
+  /**
+   * Checks whether a comments filter option is checked (tick shown). The menu has
+   * no ARIA state for it, so it's read from the item's "selected" class.
+   * @param {'Show all comments'|'Show only your comments'|'Show only your mentions'|'Hide resolved comments'} name
+   */
+  async isCommentsFilterOptionChecked(name, checked = true) {
+    const option = {
+      'Show all comments': this.showAllCommentsOption,
+      'Show only your comments': this.showYourCommentsOption,
+      'Show only your mentions': this.showYourMentionsOption,
+      'Hide resolved comments': this.hideResolvedCommentsOption,
+    }[name];
+    checked
+      ? await expect(option, `"${name}" is checked`).toHaveClass(/selected/)
+      : await expect(option, `"${name}" is not checked`).not.toHaveClass(/selected/);
+  }
+
+  /** A resolved thread's bubble on the canvas gets the "avatar-solved" style. */
+  async isCommentThreadBubbleResolved(index) {
+    await expect(
+      this.commentThreadBubbleByIndex(index),
+      `Comment bubble ${index} is shown as resolved`,
+    ).toHaveClass(/avatar-solved/);
   }
 
   async checkCommentCount(count) {
