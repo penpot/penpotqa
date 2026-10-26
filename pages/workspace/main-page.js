@@ -91,31 +91,28 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Node panel
     this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
-    this.firstNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=0',
+    this.pathNodes = page.locator(
+      'g[class="path-point"] circle[pointer-events="visible"]',
     );
-    this.secondNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=2',
-    );
-    this.thirdNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=3',
-    );
-    this.fifthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=5',
-    );
-    this.sixthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=6',
-    );
-    this.nodePanelDeleteNodeButton = page.locator('button[title^="Delete node"]');
-    this.nodePanelMergeNodesButton = page.locator('button[title^="Merge nodes"]');
-    this.nodePanelDrawNodesButton = page.locator('button[title^="Draw nodes"]');
-    this.nodePanelMoveNodesButton = page.locator('button[title^="Move nodes"]');
-    this.nodePanelJoinNodesButton = page.locator('button[title^="Join nodes"]');
-    this.nodePanelSeparateNodesButton = page.locator(
-      'button[title^="Separate nodes"]',
-    );
-    this.nodePanelToCornerButton = page.locator('button[title^="To corner"]');
-    this.nodePanelToCurveButton = page.locator('button[title^="To curve"]');
+    this.nodePanelMergeNodesButton = page.getByRole('button', {
+      name: 'Merge nodes (Ctrl+J)',
+    });
+    this.nodePanelDrawNodesButton = page.getByRole('button', {
+      name: 'Draw nodes (P)',
+    });
+    this.nodePanelMoveNodesButton = page.getByRole('button', {
+      name: 'Move nodes (M)',
+    });
+    this.nodePanelJoinNodesButton = page.getByRole('button', {
+      name: 'Join nodes (J)',
+    });
+    this.nodePanelSeparateNodesButton = page.getByRole('button', {
+      name: 'Separate nodes (K)',
+    });
+    this.nodePanelToCornerButton = page.getByRole('button', {
+      name: 'To corner (X)',
+    });
+    this.nodePanelToCurveButton = page.getByRole('button', { name: 'To curve (C)' });
 
     // Main menu - first level
     this.mainMenuButton = page.getByRole('button', { name: 'Main menu' });
@@ -536,24 +533,43 @@ exports.MainPage = class MainPage extends BasePage {
     await this.pressDeleteKeyboardButton();
   }
 
-  async clickFirstNode() {
-    await this.firstNode.click({ force: true });
+  /**
+   * Screen positions of the nodes of the path being edited, each node once (the
+   * start node of a closed path is drawn twice).
+   * @returns {Promise<{x: number, y: number}[]>}
+   */
+  async getPathNodePositions() {
+    const centers = await this.pathNodes.evaluateAll((circles) =>
+      circles.map((circle) => {
+        const box = circle.getBoundingClientRect();
+        return {
+          x: Math.round(box.x + box.width / 2),
+          y: Math.round(box.y + box.height / 2),
+        };
+      }),
+    );
+    return centers.filter(
+      (node, i) => centers.findIndex((o) => o.x === node.x && o.y === node.y) === i,
+    );
   }
 
-  async clickSecondNode() {
-    await this.secondNode.click({ force: true });
+  /**
+   * @param {{x: number, y: number}} position - from getPathNodePositions()
+   * @param {{shift?: boolean}} [options] - shift adds the node to the selection
+   */
+  async clickPathNode(position, { shift = false } = {}) {
+    await this.page.mouse.click(position.x, position.y, {
+      delay: 100,
+      modifiers: shift ? ['Shift'] : [],
+    });
   }
 
-  async clickThirdNode() {
-    await this.thirdNode.click({ force: true });
-  }
-
-  async clickFifthNode() {
-    await this.fifthNode.click({ force: true });
-  }
-
-  async clickSixthNode() {
-    await this.sixthNode.click({ force: true });
+  async checkPathNodeCount(count) {
+    await expect
+      .poll(async () => (await this.getPathNodePositions()).length, {
+        message: `Path should have ${count} nodes`,
+      })
+      .toBe(count);
   }
 
   async holdShiftKeyboardButton() {
@@ -564,12 +580,12 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.up('Shift');
   }
 
-  async clickDeleteNodeButtonOnNodePanel() {
-    await this.nodePanelDeleteNodeButton.click();
-  }
-
   async pressDeleteKeyboardButton() {
     await this.page.keyboard.press('Delete');
+  }
+
+  async pressBackspaceKeyboardButton() {
+    await this.page.keyboard.press('Backspace');
   }
 
   async clickMergeNodesButtonOnNodePanel() {
