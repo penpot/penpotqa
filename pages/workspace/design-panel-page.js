@@ -984,12 +984,23 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .toBeLessThan(height);
   }
 
+  /** Deselects everything (Escape until the X/Y/W/H inputs are gone), so the next
+   * selection renders fresh values instead of the previous layer's. */
+  async deselectAndWaitForMeasuresHidden() {
+    await expect(async () => {
+      await this.page.keyboard.press('Escape');
+      await expect(this.xAxisInput).toBeHidden({ timeout: 1000 });
+    }).toPass({ timeout: 10000 });
+  }
+
   /**
-   * Position and size of the selected layer, re-read until stable: right after a
-   * selection change the panel can still show the previous layer's values.
+   * Position and size of the selected layer, re-read until stable. Call
+   * deselectAndWaitForMeasuresHidden() before selecting the layer, or the panel can
+   * still show the previous layer's values.
    * @returns {Promise<{x: number, y: number, width: number, height: number}>}
    */
   async getSelectedLayerBounds() {
+    await expect(this.xAxisInput, 'Layer measures are visible').toBeVisible();
     const read = async () => ({
       x: await this.getXValue(),
       y: await this.getYValue(),

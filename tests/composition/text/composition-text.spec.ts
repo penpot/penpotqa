@@ -522,6 +522,7 @@ demoAccountFileTest(
 
 /** Selects a layer and reads its position and size from the Design tab. */
 async function getLayerBounds(name: string) {
+  await designPanelPage.deselectAndWaitForMeasuresHidden();
   await layersPanelPage.selectLayerByExactName(name);
   return designPanelPage.getSelectedLayerBounds();
 }
