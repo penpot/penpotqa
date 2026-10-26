@@ -60,14 +60,6 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.copyComponentChildrenRows =
       this.copyComponentChildrenContainer.getByTestId('layer-row');
 
-    // Layers Search Bar
-    this.searchLayersIcon = this.layersSidebar.getByRole('button', {
-      name: 'Search',
-    });
-    this.searchLayersInput = this.layersSidebar.getByRole('textbox', {
-      name: 'Find…',
-    });
-
     // Find & Replace wrapper
     this.findAndReplaceWrapper = page.locator(
       '.main_ui_workspace_sidebar_layers__replace-wrapper',
@@ -279,18 +271,6 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       `//*[text()="${layer}"]//parent::div//div[contains(@class, "icon-shape")]`,
     );
     await iconSel.dblclick();
-  }
-
-  async openLayerSearchBar() {
-    await this.searchLayersIcon.click();
-  }
-
-  async searchLayer(name) {
-    await this.searchLayersInput.fill(name);
-  }
-
-  async clearLayerSearchBar() {
-    await this.searchLayersInput.clear();
   }
 
   async isVerticalFlexIconVisibleOnLayer(condition = true) {
