@@ -2,25 +2,31 @@ import { CommentsPanelPage } from '@pages/workspace/comments-panel-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect, Page } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
+import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 
 const defaultNameBoard = 'Board';
 let viewModePage: ViewModePage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   viewModePage = new ViewModePage(page);
   layersPanelPage = new LayersPanelPage(page);
-  await mainAccountFileTest.slow();
+  await demoAccountFileTest.slow();
+  // A fixed, short name keeps the comment author inside its box (the default
+  // demo name is long and changes width every run).
+  await setDemoUserName(page.context().request, 'QA Tester');
+  await page.reload();
+  await mainPage.isMainPageLoaded();
 });
 
-mainAccountFileTest(qase([701], 'Create comment'), async ({ mainPage }) => {
+demoAccountFileTest(qase([701], 'Create comment'), async ({ mainPage }) => {
   let newPage: Page;
   let commentsPanelPage: CommentsPanelPage;
   const comment = 'Test Comment';
 
-  await mainAccountFileTest.step('Create board and open view mode', async () => {
+  await demoAccountFileTest.step('Create board and open view mode', async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
     await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
     newPage = await viewModePage.clickViewModeShortcut();
@@ -29,13 +35,12 @@ mainAccountFileTest(qase([701], 'Create comment'), async ({ mainPage }) => {
     commentsPanelPage = new CommentsPanelPage(newPage);
   });
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     `Create comment "${comment}" and verify it is displayed`,
     async () => {
       await viewModePage.clickCommentsButton();
       await viewModePage.addComment();
-      await commentsPanelPage.enterCommentText(comment);
-      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.postComment(comment);
       await commentsPanelPage.isCommentDisplayedInPopUp(comment);
       await expect(newPage).toHaveScreenshot('comment-opened-pop-up.png', {
         mask: [
@@ -46,11 +51,11 @@ mainAccountFileTest(qase([701], 'Create comment'), async ({ mainPage }) => {
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Close comment popup and verify thread icon',
     async () => {
       await viewModePage.clickOnViewport();
-      await commentsPanelPage.isCommentThreadIconDisplayed();
+      await commentsPanelPage.isCommentThreadIconVisible();
       await expect(newPage).toHaveScreenshot('comment-closed-pop-up.png', {
         mask: [
           commentsPanelPage.commentsAuthorSection,
@@ -61,13 +66,13 @@ mainAccountFileTest(qase([701], 'Create comment'), async ({ mainPage }) => {
   );
 });
 
-mainAccountFileTest(qase([709], 'Reply comment'), async ({ mainPage }) => {
+demoAccountFileTest(qase([709], 'Reply comment'), async ({ mainPage }) => {
   let newPage: Page;
   let commentsPanelPage: CommentsPanelPage;
   const replyComment =
     'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Create board, open view mode and post a comment',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -78,16 +83,14 @@ mainAccountFileTest(qase([709], 'Reply comment'), async ({ mainPage }) => {
       await viewModePage.clickCommentsButton();
       await viewModePage.addComment();
       commentsPanelPage = new CommentsPanelPage(newPage);
-      await commentsPanelPage.enterCommentText('Test Comment');
-      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.postComment('Test Comment');
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     `Reply "${replyComment}" and verify it is displayed`,
     async () => {
-      await commentsPanelPage.enterReplyText(replyComment);
-      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.postComment(replyComment);
       await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
       await expect(newPage).toHaveScreenshot('comment-reply.png', {
         mask: [
@@ -99,12 +102,12 @@ mainAccountFileTest(qase([709], 'Reply comment'), async ({ mainPage }) => {
   );
 });
 
-mainAccountFileTest(qase([710], 'Edit comment'), async ({ mainPage }) => {
+demoAccountFileTest(qase([710], 'Edit comment'), async ({ mainPage }) => {
   let newPage: Page;
   let commentsPanelPage: CommentsPanelPage;
   const editedComment = 'Edited Test Comment';
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Create board, open view mode and post a comment',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -115,24 +118,22 @@ mainAccountFileTest(qase([710], 'Edit comment'), async ({ mainPage }) => {
       await viewModePage.clickCommentsButton();
       await viewModePage.addComment();
       commentsPanelPage = new CommentsPanelPage(newPage);
-      await commentsPanelPage.enterCommentText('Test Comment');
-      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.postComment('Test Comment');
     },
   );
 
-  await mainAccountFileTest.step(`Edit comment to "${editedComment}"`, async () => {
+  await demoAccountFileTest.step(`Edit comment to "${editedComment}"`, async () => {
     await commentsPanelPage.clickCommentOptionsButton();
     await commentsPanelPage.clickEditCommentOption();
-    await commentsPanelPage.enterCommentText(editedComment, true);
-    await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.editComment(editedComment);
     await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
   });
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Reload page and verify edited comment persists',
     async () => {
       await commentsPanelPage.reloadPage();
-      await commentsPanelPage.clickCommentThreadIconByNumber('1');
+      await commentsPanelPage.openCommentThread('1');
       await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
       await expect(newPage).toHaveScreenshot('comment-edited.png', {
         mask: [
@@ -144,11 +145,11 @@ mainAccountFileTest(qase([710], 'Edit comment'), async ({ mainPage }) => {
   );
 });
 
-mainAccountFileTest(qase([711], 'Delete thread'), async ({ mainPage }) => {
+demoAccountFileTest(qase([711], 'Delete thread'), async ({ mainPage }) => {
   let newPage: Page;
   let commentsPanelPage: CommentsPanelPage;
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Create board, open view mode and post a comment',
     async () => {
       await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -159,18 +160,17 @@ mainAccountFileTest(qase([711], 'Delete thread'), async ({ mainPage }) => {
       await viewModePage.clickCommentsButton();
       await viewModePage.addComment();
       commentsPanelPage = new CommentsPanelPage(newPage);
-      await commentsPanelPage.enterCommentText('Test Comment');
-      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.postComment('Test Comment');
     },
   );
 
-  await mainAccountFileTest.step(
+  await demoAccountFileTest.step(
     'Delete comment thread and verify it is removed',
     async () => {
       await commentsPanelPage.clickCommentHeaderOptionsButton();
       await commentsPanelPage.clickDeleteCommentOption();
       await commentsPanelPage.clickDeleteThreadButton();
-      await commentsPanelPage.isCommentThreadIconNotDisplayed();
+      await commentsPanelPage.isCommentThreadIconVisible(false);
       await expect(newPage).toHaveScreenshot('comment-removed.png', {
         mask: [
           commentsPanelPage.commentsAuthorSection,
@@ -181,13 +181,13 @@ mainAccountFileTest(qase([711], 'Delete thread'), async ({ mainPage }) => {
   );
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([703], 'Comments dropdown (Hide resolved comments)'),
   async ({ mainPage }) => {
     let newPage: Page;
     let commentsPanelPage: CommentsPanelPage;
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create board, open view mode and post a resolved comment',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -198,26 +198,24 @@ mainAccountFileTest(
         commentsPanelPage = new CommentsPanelPage(newPage);
         await viewModePage.clickCommentsButton();
         await viewModePage.addComment();
-        await commentsPanelPage.enterCommentText('Test Comment');
-        await commentsPanelPage.clickPostCommentButton();
+        await commentsPanelPage.postComment('Test Comment');
         await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment');
         await commentsPanelPage.clickResolveCommentCheckbox();
         await commentsPanelPage.clickResolvedCommentThreadIcon();
       },
     );
 
-    await mainAccountFileTest.step('Post a second, unresolved comment', async () => {
+    await demoAccountFileTest.step('Post a second, unresolved comment', async () => {
       await viewModePage.addComment(true);
-      await commentsPanelPage.enterCommentText('Test Comment 2');
-      await commentsPanelPage.clickPostCommentButton();
+      await commentsPanelPage.postComment('Test Comment 2');
       await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment 2');
       await viewModePage.clickCommentsButton();
     });
 
-    await mainAccountFileTest.step('Hide resolved comments and verify', async () => {
+    await demoAccountFileTest.step('Hide resolved comments and verify', async () => {
       await viewModePage.openCommentsDropdown();
       await viewModePage.selectHideResolvedCommentsOption();
-      await commentsPanelPage.isCommentResolvedThreadIconNotDisplayed();
+      await commentsPanelPage.isCommentResolvedThreadIconVisible(false);
       await expect(newPage).toHaveScreenshot('resolved-comments-hidden.png', {
         mask: [
           commentsPanelPage.commentsAuthorSection,
@@ -226,12 +224,12 @@ mainAccountFileTest(
       });
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Show resolved comments again and verify',
       async () => {
         await viewModePage.openCommentsDropdown();
         await viewModePage.selectHideResolvedCommentsOption();
-        await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
+        await commentsPanelPage.isCommentResolvedThreadIconVisible();
         await expect(newPage).toHaveScreenshot('resolved-comments-show.png', {
           mask: [
             commentsPanelPage.commentsAuthorSection,
@@ -243,13 +241,13 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([704], 'Comments dropdown (Show comments list)'),
   async ({ mainPage }) => {
     let newPage: Page;
     let commentsPanelPage: CommentsPanelPage;
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create board, open view mode and post a comment',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
@@ -260,14 +258,13 @@ mainAccountFileTest(
         commentsPanelPage = new CommentsPanelPage(newPage);
         await viewModePage.clickCommentsButton();
         await viewModePage.addComment();
-        await commentsPanelPage.enterCommentText('Test Comment');
-        await commentsPanelPage.clickPostCommentButton();
+        await commentsPanelPage.postComment('Test Comment');
         await commentsPanelPage.isCommentDisplayedInPopUp('Test Comment');
         await viewModePage.clickOnViewport();
       },
     );
 
-    await mainAccountFileTest.step('Show comments list and verify', async () => {
+    await demoAccountFileTest.step('Show comments list and verify', async () => {
       await viewModePage.openCommentsDropdown();
       await viewModePage.selectShowCommentsListOption();
       await viewModePage.isCommentInListVisible(true);
@@ -282,7 +279,7 @@ mainAccountFileTest(
       );
     });
 
-    await mainAccountFileTest.step('Hide comments list and verify', async () => {
+    await demoAccountFileTest.step('Hide comments list and verify', async () => {
       await viewModePage.openCommentsDropdown();
       await viewModePage.selectShowCommentsListOption();
       await viewModePage.isCommentInListVisible(false);

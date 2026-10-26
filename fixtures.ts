@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { type Page, test } from '@playwright/test';
 import { LoginPage } from '@pages/login-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { random } from './helpers/string-generator';
@@ -10,6 +10,9 @@ import { registerNewAccount } from './helpers/accounts/register-new-account';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { callPenpotApi } from 'helpers/api/penpot-api';
+import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
+import { InvitationRole } from 'helpers/teams/invitation-role';
 
 type RegisterTestFixtures = {
   name: string;
@@ -129,6 +132,80 @@ export const demoAccountFileTest = test.extend<
       const mainPage = new MainPage(page);
       await page.goto(`/?screen=workspace&team-id=${teamId}&file-id=${fileId}`);
       await mainPage.acceptCookie();
+      await mainPage.isMainPageLoaded();
+      await use(mainPage);
+    },
+    { auto: true },
+  ],
+});
+
+type DemoTeamWithInviteeFixtures = {
+  dashboardPage: DashboardPage;
+  mainPage: MainPage;
+  team: { id: string; projectId: string };
+  invitee: { page: Page; name: string };
+};
+
+type DemoTeamWithInviteeOptions = {
+  inviteeRole: InvitationRole;
+};
+
+// Two demo accounts sharing a team, all set up via the API: the owner (`page`, named
+// "QA Tester") with a blank file of the team open in the editor, and `invitee`
+// (named "QA <role>") already a member, in its own browser context, on its dashboard.
+// Set the `inviteeRole` option to change the invitee's role.
+export const demoTeamWithInviteeTest = demoAccountApiFixture.extend<
+  DemoTeamWithInviteeFixtures & DemoTeamWithInviteeOptions
+>({
+  inviteeRole: [InvitationRole.Editor, { option: true }],
+  dashboardPage: async ({ page }, use) => {
+    await use(new DashboardPage(page));
+  },
+  team: async ({ page }, use) => {
+    const request = page.context().request;
+    await setDemoUserName(request, 'QA Tester');
+    const { id, defaultProjectId } = await callPenpotApi(request, 'create-team', {
+      name: createTeamName(),
+    });
+    await use({ id, projectId: defaultProjectId });
+  },
+  invitee: async ({ browser, page, team, inviteeRole }, use) => {
+    const context = await browser.newContext();
+    const inviteePage = await context.newPage();
+    const name = `QA ${inviteeRole}`;
+    const { email } = await loginAsDemoAccount(inviteePage, { renderer: 'wasm' });
+    await setDemoUserName(context.request, name);
+    const { invitations } = await callPenpotApi(
+      page.context().request,
+      'create-team-invitations',
+      { teamId: team.id, role: inviteeRole.toLowerCase(), emails: [email] },
+    );
+    const token = invitations?.[0];
+    if (!token) {
+      throw new Error(
+        `create-team-invitations returned no invitation token for ${email}: ` +
+          JSON.stringify(invitations),
+      );
+    }
+    await callPenpotApi(context.request, 'verify-token', { token });
+    await use({ page: inviteePage, name });
+    await context.close();
+  },
+  // `auto: true`: open the file even if the test doesn't destructure mainPage.
+  // Depends on `invitee` so the workspace loads with it already in the team (e.g.
+  // in the mentions list).
+  mainPage: [
+    async ({ page, team, invitee: _invitee }, use) => {
+      const { id: fileId } = await callPenpotApi(
+        page.context().request,
+        'create-file',
+        {
+          name: 'New File 1',
+          projectId: team.projectId,
+        },
+      );
+      const mainPage = new MainPage(page);
+      await page.goto(`/?screen=workspace&team-id=${team.id}&file-id=${fileId}`);
       await mainPage.isMainPageLoaded();
       await use(mainPage);
     },

@@ -6,12 +6,12 @@ import { createDemoUser, type DemoUserOptions } from './create-demo-user';
  * Logs the page in as a fresh demo account and lands on its dashboard, past
  * the cookie banner and onboarding popups. Shared by `demoAccountApiFixture`
  * (fixtures.ts) and `ownerAndInviteeTest`'s `ownerPage` (enterprise-fixtures.ts),
- * so both stay in sync.
+ * so both stay in sync. Returns the demo profile's email + password.
  */
 export async function loginAsDemoAccount(page: Page, options: DemoUserOptions = {}) {
   const dashboardPage = new DashboardPage(page);
 
-  await createDemoUser(page.context().request, options);
+  const credentials = await createDemoUser(page.context().request, options);
 
   await page.goto('/');
   await dashboardPage.isDashboardOpenedAfterLogin();
@@ -19,4 +19,6 @@ export async function loginAsDemoAccount(page: Page, options: DemoUserOptions = 
   await dashboardPage.isHeaderDisplayed('Personal Projects');
   await dashboardPage.skipWhatNewsPopUp();
   await dashboardPage.skipPluginsPopUp();
+
+  return credentials;
 }

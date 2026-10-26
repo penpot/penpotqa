@@ -1,20 +1,57 @@
-const { expect } = require('@playwright/test');
-const { BasePage } = require('../base-page');
+import { type Locator, type Page, expect } from '@playwright/test';
+import { BasePage } from '../base-page';
 
-exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
-  /**
-   * @param {import('@playwright/test').Page} page
-   */
-  constructor(page) {
+type CommentsFilterOption =
+  | 'Show all comments'
+  | 'Show only your comments'
+  | 'Show only your mentions'
+  | 'Hide resolved comments';
+
+export class CommentsPanelPage extends BasePage {
+  readonly commentsButton: Locator;
+  readonly commentInput: Locator;
+  readonly commentText: Locator;
+  readonly commentCommentsPanelText: Locator;
+  readonly commentAvatarImage: Locator;
+  readonly commentReplyText: Locator;
+  readonly commentReplyCommentsPanelText: Locator;
+  readonly postCommentButton: Locator;
+  readonly commentThreadIcon: Locator;
+  readonly commentThreadPreview: Locator;
+  readonly commentClusterPreviewCard: Locator;
+  readonly commentResolvedThreadIcon: Locator;
+  readonly commentUnreadThreadIcon: Locator;
+  readonly commentReadThreadIcon: Locator;
+  readonly commentHeaderOptionsButton: Locator;
+  readonly commentOptionsButton: Locator;
+  readonly commentEditOptionMenuItem: Locator;
+  readonly commentDeleteOptionMenuItem: Locator;
+  readonly deleteThreadButton: Locator;
+  readonly deleteConversationModalHeading: Locator;
+  readonly resolveCommentCheckbox: Locator;
+  readonly commentsPanelPlaceholderText: Locator;
+  readonly commentsAuthorSection: Locator;
+  readonly commentThreadPopUp: Locator;
+  readonly commentThreadPopUpHeader: Locator;
+  readonly commentsPanelLocationText: Locator;
+  readonly commentMentionButton: Locator;
+  readonly mentionMenuItem: Locator;
+  readonly unreadCommentIcon: Locator;
+
+  // Comments filter dropdown
+  readonly commentsDropdown: Locator;
+  readonly showAllCommentsOption: Locator;
+  readonly showYourCommentsOption: Locator;
+  readonly hideResolvedCommentsOption: Locator;
+  readonly showYourMentionsOption: Locator;
+
+  constructor(page: Page) {
     super(page);
 
     this.commentsButton = page.getByRole('button', { name: 'Comments (C)' });
     this.commentInput = page
       .locator('[class*="comments__form"]')
       .getByRole('textbox');
-    this.commentEditInput = page.locator(
-      'div[class*="comments__edit-form"] textarea',
-    );
     this.commentText = page.locator(
       'div[class*="comments__item"] span[class*="comments__text"]',
     );
@@ -43,13 +80,6 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     this.commentReadThreadIcon = page.locator(
       'div[class*="comments-container"] div.main_ui_comments__avatar-read',
     );
-    /**
-     * Get the comment thread bubble by the comment index
-     * @param {string} index ("1", "2", "1-2", "1-2-3")
-     * @returns Locator
-     */
-    this.commentThreadBubbleByIndex = (index) =>
-      page.getByTestId('floating-thread-bubble-' + index);
     this.commentHeaderOptionsButton = page
       .locator('div[class*="thread-header"]')
       .first()
@@ -89,7 +119,6 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     );
     this.commentMentionButton = page.locator('[class*="open-mentions-button"]');
     this.mentionMenuItem = page.locator('[class*="comments-mentions-name"]');
-    this.commentMentionText = page.locator('span[class*="comment-mention"]');
     this.unreadCommentIcon = this.commentsButton.locator(
       '[class*="header__unread"]',
     );
@@ -111,6 +140,23 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       .filter({ hasText: 'Show only your mentions' });
   }
 
+  /**
+   * Get the comment thread bubble by the comment index
+   * @param index ("1", "2", "1-2", "1-2-3")
+   */
+  commentThreadBubbleByIndex(index: string): Locator {
+    return this.page.getByTestId('floating-thread-bubble-' + index);
+  }
+
+  private commentsFilterOption(name: CommentsFilterOption): Locator {
+    return {
+      'Show all comments': this.showAllCommentsOption,
+      'Show only your comments': this.showYourCommentsOption,
+      'Show only your mentions': this.showYourMentionsOption,
+      'Hide resolved comments': this.hideResolvedCommentsOption,
+    }[name];
+  }
+
   async pressCommentsPanelShortcut() {
     await this.page.keyboard.press('C');
   }
@@ -123,13 +169,21 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.commentsButton.click();
   }
 
-  async enterCommentText(text, isEdit = false) {
-    if (isEdit) {
-      await this.commentInput.first().clear();
-      await this.commentInput.first().pressSequentially(text, { delay: 10 });
-    } else {
-      await this.commentInput.pressSequentially(text, { delay: 10 });
-    }
+  async enterCommentText(text: string) {
+    await this.commentInput.pressSequentially(text, { delay: 10 });
+  }
+
+  /** Types a new comment or reply in the open form and posts it. */
+  async postComment(text: string) {
+    await this.enterCommentText(text);
+    await this.clickPostCommentButton();
+  }
+
+  /** Replaces the text of the comment being edited and saves it. */
+  async editComment(text: string) {
+    await this.commentInput.first().clear();
+    await this.commentInput.first().pressSequentially(text, { delay: 10 });
+    await this.clickPostCommentButton();
   }
 
   async clickPostCommentButton() {
@@ -144,18 +198,19 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     ).toBeEnabled();
   }
 
-  async clickCommentThreadIconByNumber(number) {
-    await this.commentThreadBubbleByIndex(number).click();
+  /** Clicks a thread bubble and opens its pop-up. */
+  async openCommentThread(index: string) {
+    await this.commentThreadBubbleByIndex(index).click();
     await this.commentThreadPreview.click();
   }
 
   /**
    * Click a comment thread bubble without opening its thread pop-up
-   * (unlike clickCommentThreadIconByNumber). Used e.g. to expand a merged
+   * (unlike openCommentThread). Used e.g. to expand a merged
    * cluster bubble (index "1-2") into its individual avatars.
-   * @param {string} index ("1", "2", "1-2", "1-2-3")
+   * @param index ("1", "2", "1-2", "1-2-3")
    */
-  async clickCommentThreadBubbleByIndex(index) {
+  async clickCommentThreadBubbleByIndex(index: string) {
     const bubble = this.commentThreadBubbleByIndex(index);
     await bubble.waitFor({ state: 'visible' });
     await bubble.hover();
@@ -163,9 +218,9 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   }
 
   /**
-   * @param {string} index ("1", "2", "1-2", "1-2-3")
+   * @param index ("1", "2", "1-2", "1-2-3")
    */
-  async hoverCommentThreadBubbleByIndex(index) {
+  async hoverCommentThreadBubbleByIndex(index: string) {
     await this.commentThreadBubbleByIndex(index).hover();
   }
 
@@ -179,10 +234,6 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.commentResolvedThreadIcon.waitFor({ state: 'visible' });
     await this.commentResolvedThreadIcon.hover();
     await this.commentResolvedThreadIcon.click({ force: true });
-  }
-
-  async enterReplyText(text) {
-    await this.commentInput.pressSequentially(text, { delay: 10 });
   }
 
   async clickCommentHeaderOptionsButton() {
@@ -213,15 +264,16 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.resolveCommentCheckbox.click();
   }
 
-  async isCommentDisplayedInPopUp(text) {
-    await expect(this.commentText).toHaveText(text);
+  /** The open thread has exactly one comment, with this text. */
+  async isCommentDisplayedInPopUp(text: string) {
+    await this.hasCommentsInPopUp([text]);
   }
 
-  async isCommentDisplayedInCommentsPanel(text) {
+  async isCommentDisplayedInCommentsPanel(text: string) {
     await expect(this.commentCommentsPanelText.first()).toHaveText(text);
   }
 
-  async isCommentReplyDisplayedInPopUp(text) {
+  async isCommentReplyDisplayedInPopUp(text: string) {
     await expect(this.commentReplyText).toHaveText(text);
   }
 
@@ -229,20 +281,25 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await expect(this.commentReplyCommentsPanelText).toBeVisible();
   }
 
-  async isCommentThreadIconDisplayed() {
-    await expect(this.commentThreadIcon).toBeVisible();
+  async isCommentThreadIconVisible(visible = true) {
+    visible
+      ? await expect(this.commentThreadIcon, 'Comment bubble is shown').toBeVisible()
+      : await expect(
+          this.commentThreadIcon,
+          'Comment bubble is hidden',
+        ).toBeHidden();
   }
 
-  async isCommentResolvedThreadIconDisplayed() {
-    await expect(this.commentResolvedThreadIcon).toBeVisible();
-  }
-
-  async isCommentThreadIconNotDisplayed() {
-    await expect(this.commentThreadIcon).not.toBeVisible();
-  }
-
-  async isCommentResolvedThreadIconNotDisplayed() {
-    await expect(this.commentResolvedThreadIcon).not.toBeVisible();
+  async isCommentResolvedThreadIconVisible(visible = true) {
+    visible
+      ? await expect(
+          this.commentResolvedThreadIcon,
+          'Resolved comment bubble is shown',
+        ).toBeVisible()
+      : await expect(
+          this.commentResolvedThreadIcon,
+          'Resolved comment bubble is hidden',
+        ).toBeHidden();
   }
 
   async isCommentAvatarImageVisible(visible = true) {
@@ -263,7 +320,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       : await expect(this.commentReadThreadIcon.first()).not.toBeVisible();
   }
 
-  async isCommentsPanelPlaceholderDisplayed(text) {
+  async isCommentsPanelPlaceholderDisplayed(text: string) {
     await expect(this.commentsPanelPlaceholderText).toHaveText(text);
   }
 
@@ -289,7 +346,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   }
 
   /** Checks the thread number in the pop-up ("Comment #N") and the panel ("#N - Page"). */
-  async hasCommentThreadNumber(number, pageName = 'Page 1') {
+  async hasCommentThreadNumber(number: number, pageName = 'Page 1') {
     await expect(
       this.commentThreadPopUpHeader,
       `Pop-up header is "Comment #${number}"`,
@@ -301,7 +358,7 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   }
 
   /** Checks every comment of the open thread, in order (original first, then replies). */
-  async hasCommentsInPopUp(texts) {
+  async hasCommentsInPopUp(texts: string[]) {
     await expect(
       this.commentText,
       `Pop-up shows ${texts.length} comment(s)`,
@@ -316,14 +373,8 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await this.commentMentionButton.click();
   }
 
-  async clickMentionMenuItemByName(name) {
+  async clickMentionMenuItemByName(name: string) {
     await this.mentionMenuItem.getByText(name, { exact: true }).click();
-  }
-
-  async selectShowYourMentionsOption() {
-    await this.commentsDropdown.click();
-    await this.showYourMentionsOption.click();
-    await expect(this.showYourMentionsOption).not.toBeVisible();
   }
 
   /** Opens the comments filter dropdown (Show all / only yours / mentions / hide resolved). */
@@ -335,11 +386,12 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     ).toBeVisible();
   }
 
-  /** Toggles "Hide resolved comments" in the open filter; the menu closes after it. */
-  async clickHideResolvedCommentsOption() {
-    await this.hideResolvedCommentsOption.click();
+  /** Picks an option in the open comments filter; the menu closes after it. */
+  async selectCommentsFilterOption(name: CommentsFilterOption) {
+    const option = this.commentsFilterOption(name);
+    await option.click();
     await expect(
-      this.hideResolvedCommentsOption,
+      option,
       'Comments filter closes after picking an option',
     ).toBeHidden();
   }
@@ -347,38 +399,32 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
   /**
    * Checks whether a comments filter option is checked (tick shown). The menu has
    * no ARIA state for it, so it's read from the item's "selected" class.
-   * @param {'Show all comments'|'Show only your comments'|'Show only your mentions'|'Hide resolved comments'} name
    */
-  async isCommentsFilterOptionChecked(name, checked = true) {
-    const option = {
-      'Show all comments': this.showAllCommentsOption,
-      'Show only your comments': this.showYourCommentsOption,
-      'Show only your mentions': this.showYourMentionsOption,
-      'Hide resolved comments': this.hideResolvedCommentsOption,
-    }[name];
+  async isCommentsFilterOptionChecked(name: CommentsFilterOption, checked = true) {
+    const option = this.commentsFilterOption(name);
     checked
       ? await expect(option, `"${name}" is checked`).toHaveClass(/selected/)
       : await expect(option, `"${name}" is not checked`).not.toHaveClass(/selected/);
   }
 
   /** A resolved thread's bubble on the canvas gets the "avatar-solved" style. */
-  async isCommentThreadBubbleResolved(index) {
+  async isCommentThreadBubbleResolved(index: string) {
     await expect(
       this.commentThreadBubbleByIndex(index),
       `Comment bubble ${index} is shown as resolved`,
     ).toHaveClass(/avatar-solved/);
   }
 
-  async checkCommentCount(count) {
+  async checkCommentCount(count: number) {
     await expect(this.commentThreadIcon).toHaveCount(count);
   }
 
-  async checkCommentCountInList(count) {
+  async checkCommentCountInList(count: number) {
     await expect(this.commentCommentsPanelText).toHaveCount(count);
   }
 
-  async areCommentBubblesVisible(bubblesIndexes) {
-    for (const [i, bubbleIndex] of bubblesIndexes.entries()) {
+  async areCommentBubblesVisible(bubblesIndexes: string[]) {
+    for (const bubbleIndex of bubblesIndexes) {
       await expect(this.commentThreadBubbleByIndex(bubbleIndex)).toBeVisible();
     }
   }
@@ -388,4 +434,4 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       ? await expect(this.unreadCommentIcon).toBeVisible()
       : await expect(this.unreadCommentIcon).not.toBeVisible();
   }
-};
+}
