@@ -315,108 +315,118 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
   );
 });
 
-demoAccountFileTest(
-  qase([2148], 'Zoom out and check comment bubbles'),
-  async ({ mainPage }) => {
-    const comment = 'Test Comment';
-    const xAxisCommentsCoordinates = [100, 50, 700];
-    const yAxisCommentsCoordinates = [150, 50, 700];
+demoAccountFileTest.describe('Comment bubbles', () => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+    profilePage = new ProfilePage(page);
+    commentsPanelPage = new CommentsPanelPage(page);
+    await setDemoUserName(page.context().request, 'QA Tester');
+    await page.reload();
+    await mainPage.isMainPageLoaded();
+  });
 
-    await demoAccountFileTest.step(
-      'Post three comments at different coordinates',
-      async () => {
-        await mainPage.pressKeyboardShortcut('C');
-        for (let i = 0; i < xAxisCommentsCoordinates.length; i++) {
-          await mainPage.clickViewportByCoordinates(
-            xAxisCommentsCoordinates[i],
-            yAxisCommentsCoordinates[i],
-            2,
-          );
-          await commentsPanelPage.enterCommentText(comment);
-          await commentsPanelPage.clickPostCommentButton();
-          await commentsPanelPage.checkCommentCountInList(i + 1);
-        }
-      },
-    );
+  demoAccountFileTest(
+    qase([2148], 'Zoom out and check comment bubbles'),
+    async ({ mainPage }) => {
+      const comment = 'Test Comment';
+      const xAxisCommentsCoordinates = [100, 50, 700];
+      const yAxisCommentsCoordinates = [150, 50, 700];
 
-    await demoAccountFileTest.step(
-      'Zoom in and verify comment bubbles merge',
-      async () => {
-        await commentsPanelPage.areCommentBubblesVisible(['1', '2', '3']);
-        await mainPage.zoom(100, 100, 3);
-        await commentsPanelPage.areCommentBubblesVisible(['1-2', '3']);
-        await mainPage.zoom(100, 100, 5);
-        await commentsPanelPage.areCommentBubblesVisible(['1-2-3']);
-      },
-    );
-  },
-);
+      await demoAccountFileTest.step(
+        'Post three comments at different coordinates',
+        async () => {
+          await mainPage.pressKeyboardShortcut('C');
+          for (let i = 0; i < xAxisCommentsCoordinates.length; i++) {
+            await mainPage.clickViewportByCoordinates(
+              xAxisCommentsCoordinates[i],
+              yAxisCommentsCoordinates[i],
+              2,
+            );
+            await commentsPanelPage.enterCommentText(comment);
+            await commentsPanelPage.clickPostCommentButton();
+            await commentsPanelPage.checkCommentCountInList(i + 1);
+          }
+        },
+      );
 
-demoAccountFileTest(
-  qase(
-    [3638],
-    'Hover over an avatar in an expanded comment cluster shows a comment preview',
-  ),
-  async ({ page, mainPage }) => {
-    const comment = 'Test Comment';
-    const xAxisCommentsCoordinates = [100, 50];
-    const yAxisCommentsCoordinates = [150, 50];
+      await demoAccountFileTest.step(
+        'Zoom in and verify comment bubbles merge',
+        async () => {
+          await commentsPanelPage.areCommentBubblesVisible(['1', '2', '3']);
+          await mainPage.zoom(100, 100, 3);
+          await commentsPanelPage.areCommentBubblesVisible(['1-2', '3']);
+          await mainPage.zoom(100, 100, 5);
+          await commentsPanelPage.areCommentBubblesVisible(['1-2-3']);
+        },
+      );
+    },
+  );
 
-    await demoAccountFileTest.step(
-      'Create two comments close together',
-      async () => {
-        await mainPage.pressKeyboardShortcut('C');
-        for (let i = 0; i < xAxisCommentsCoordinates.length; i++) {
-          await mainPage.clickViewportByCoordinates(
-            xAxisCommentsCoordinates[i],
-            yAxisCommentsCoordinates[i],
-            2,
-          );
-          await commentsPanelPage.enterCommentText(comment);
-          await commentsPanelPage.clickPostCommentButton();
-          await commentsPanelPage.checkCommentCountInList(i + 1);
-        }
-      },
-    );
+  demoAccountFileTest(
+    qase(
+      [3638],
+      'Hover over an avatar in an expanded comment cluster shows a comment preview',
+    ),
+    async ({ page, mainPage }) => {
+      const comment = 'Test Comment';
+      const xAxisCommentsCoordinates = [100, 50];
+      const yAxisCommentsCoordinates = [150, 50];
 
-    await demoAccountFileTest.step(
-      'Zoom out until the comments form a cluster',
-      async () => {
-        await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
-        await mainPage.zoom(100, 100, 3);
-        await commentsPanelPage.areCommentBubblesVisible(['1-2']);
+      await demoAccountFileTest.step(
+        'Create two comments close together',
+        async () => {
+          await mainPage.pressKeyboardShortcut('C');
+          for (let i = 0; i < xAxisCommentsCoordinates.length; i++) {
+            await mainPage.clickViewportByCoordinates(
+              xAxisCommentsCoordinates[i],
+              yAxisCommentsCoordinates[i],
+              2,
+            );
+            await commentsPanelPage.enterCommentText(comment);
+            await commentsPanelPage.clickPostCommentButton();
+            await commentsPanelPage.checkCommentCountInList(i + 1);
+          }
+        },
+      );
 
-        await mainPage.hideRulersViaMainMenu();
-        await expect(page).toHaveScreenshot('comment-cluster-merged.png', {
-          mask: commentScreenshotMask(mainPage),
-        });
-      },
-    );
+      await demoAccountFileTest.step(
+        'Zoom out until the comments form a cluster',
+        async () => {
+          await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
+          await mainPage.zoom(100, 100, 3);
+          await commentsPanelPage.areCommentBubblesVisible(['1-2']);
 
-    await demoAccountFileTest.step(
-      'Expand the cluster by clicking its indicator',
-      async () => {
-        await commentsPanelPage.clickCommentThreadBubbleByIndex('1-2');
-        await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
+          await mainPage.hideRulersViaMainMenu();
+          await expect(page).toHaveScreenshot('comment-cluster-merged.png', {
+            mask: commentScreenshotMask(mainPage),
+          });
+        },
+      );
 
-        await expect(page).toHaveScreenshot('comment-cluster-expanded.png', {
-          mask: commentScreenshotMask(mainPage),
-        });
-      },
-    );
+      await demoAccountFileTest.step(
+        'Expand the cluster by clicking its indicator',
+        async () => {
+          await commentsPanelPage.clickCommentThreadBubbleByIndex('1-2');
+          await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
 
-    await demoAccountFileTest.step(
-      'Hover an avatar and verify the comment preview is displayed',
-      async () => {
-        await commentsPanelPage.hoverCommentThreadBubbleByIndex('1');
-        await commentsPanelPage.isCommentClusterPreviewDisplayed();
-        await expect(page).toHaveScreenshot('comment-cluster-preview.png', {
-          mask: commentScreenshotMask(mainPage),
-        });
-      },
-    );
-  },
-);
+          await expect(page).toHaveScreenshot('comment-cluster-expanded.png', {
+            mask: commentScreenshotMask(mainPage),
+          });
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Hover an avatar and verify the comment preview is displayed',
+        async () => {
+          await commentsPanelPage.hoverCommentThreadBubbleByIndex('1');
+          await commentsPanelPage.isCommentClusterPreviewDisplayed();
+          await expect(page).toHaveScreenshot('comment-cluster-preview.png', {
+            mask: commentScreenshotMask(mainPage),
+          });
+        },
+      );
+    },
+  );
+});
 
 mainAccountFileTest.describe('Notifications and mentions', () => {
   mainAccountFileTest.beforeEach(async ({ page }) => {
