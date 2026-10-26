@@ -1,13 +1,16 @@
-import { qase } from 'playwright-qase-reporter/playwright';
-import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayerSearchComponent } from '@pages/workspace/left-sidebar/layer-search-component';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { demoAccountFileTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
+let layerSearch: LayerSearchComponent;
 let layersPanelPage: LayersPanelPage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
+  layerSearch = new LayerSearchComponent(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
@@ -50,41 +53,41 @@ demoAccountFileTest.describe(() => {
     await demoAccountFileTest.step(
       `Type in search: ${renamedFirstText} and assert 1st Text is filtered`,
       async () => {
-        await layersPanelPage.openLayerSearchBar();
-        await layersPanelPage.searchLayer(renamedFirstText);
+        await layerSearch.openLayerSearchBar();
+        await layerSearch.searchLayer(renamedFirstText);
         await layersPanelPage.isLayerNameDisplayed(renamedFirstText);
         await layersPanelPage.isLayerNameNotDisplayed(renamedSecondText);
         await layersPanelPage.isLayerNameNotDisplayed(renamedThirdText);
-        await layersPanelPage.clearLayerSearchBar();
+        await layerSearch.clearLayerSearchBar();
       },
     );
 
     await demoAccountFileTest.step(
       `Type in search "test Text" and assert 1st & 2nd Texts are filtered`,
       async () => {
-        await layersPanelPage.searchLayer('test Text');
+        await layerSearch.searchLayer('test Text');
         await layersPanelPage.isLayerNameDisplayed(renamedFirstText);
         await layersPanelPage.isLayerNameDisplayed(renamedSecondText);
         await layersPanelPage.isLayerNameNotDisplayed(renamedThirdText);
-        await layersPanelPage.clearLayerSearchBar();
+        await layerSearch.clearLayerSearchBar();
       },
     );
 
     await demoAccountFileTest.step(
       `Type in search "ABCD" and assert 3rd Text is filtered`,
       async () => {
-        await layersPanelPage.searchLayer('ABCD');
+        await layerSearch.searchLayer('ABCD');
         await layersPanelPage.isLayerNameDisplayed(renamedThirdText);
         await layersPanelPage.isLayerNameNotDisplayed(renamedFirstText);
         await layersPanelPage.isLayerNameNotDisplayed(renamedSecondText);
-        await layersPanelPage.clearLayerSearchBar();
+        await layerSearch.clearLayerSearchBar();
       },
     );
 
     await demoAccountFileTest.step(
       `Type in search "qwe" and assert no texts are filtered`,
       async () => {
-        await layersPanelPage.searchLayer('qwe');
+        await layerSearch.searchLayer('qwe');
         await layersPanelPage.isLayerNameNotDisplayed(renamedFirstText);
         await layersPanelPage.isLayerNameNotDisplayed(renamedSecondText);
         await layersPanelPage.isLayerNameNotDisplayed(renamedThirdText);
