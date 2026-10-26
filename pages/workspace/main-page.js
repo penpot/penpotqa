@@ -1063,7 +1063,18 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  /** Creates a fixed-size text by dragging a box with the Text tool, then pastes `text`. */
+  /** In the text editor, extends the selection `count` characters to the right. */
+  async selectNextCharactersInTextEditor(count) {
+    for (let i = 0; i < count; i++) {
+      await this.page.keyboard.press('Shift+ArrowRight');
+    }
+  }
+
+  async moveCaretToTextStart() {
+    await this.page.keyboard.press('Home');
+  }
+
+  /** Dragging a box (not clicking) creates a Fixed-size text. */
   async createTextLayerInBoxViaPaste(x1, y1, x2, y2, text) {
     await this.clickCreateTextButton();
     await this.dragOnViewport(x1, y1, x2, y2);
@@ -1073,23 +1084,31 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
-  /** Drags the selection's right edge handle horizontally by `dx` pixels. */
-  async dragSelectionRightEdge(dx) {
+  /** Handlers have no per-side attribute: edges are thin bars, corners are squares. */
+  async getResizeHandlerBoxes() {
     await this.waitForResizeHandlerVisible();
-    const boxes = await this.resizeHandler.evaluateAll((handlers) =>
-      handlers.map((h) => h.getBoundingClientRect().toJSON()),
+    return this.resizeHandler.evaluateAll((elements) =>
+      elements.map((element) => element.getBoundingClientRect().toJSON()),
     );
-    // The right edge is the tall, thin handler furthest to the right.
-    const right = boxes
-      .filter((b) => b.height > b.width)
-      .sort((a, b) => b.x - a.x)[0];
-    const x = right.x + right.width / 2;
-    const y = right.y + right.height / 2;
+  }
+
+  async dragFromBoxCenter(box, dx, dy) {
+    const x = box.x + box.width / 2;
+    const y = box.y + box.height / 2;
     await this.page.mouse.move(x, y);
     await this.page.mouse.down();
-    await this.page.mouse.move(x + dx, y, { steps: 10 });
+    await this.page.mouse.move(x + dx, y + dy, { steps: 10 });
     await this.page.mouse.up();
     await this.waitForChangeIsSaved();
+  }
+
+  /** Changes width and height (a text becomes Fixed). */
+  async dragSelectionBottomRightCorner(dx, dy) {
+    const corners = (await this.getResizeHandlerBoxes()).filter(
+      (box) => box.width === box.height,
+    );
+    const bottomRight = corners.reduce((a, b) => (b.x + b.y > a.x + a.y ? b : a));
+    await this.dragFromBoxCenter(bottomRight, dx, dy);
   }
 
   async createTextLayerByCoordinatesViaPaste(x, y, text) {

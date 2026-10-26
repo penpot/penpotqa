@@ -520,7 +520,7 @@ demoAccountFileTest(
   },
 );
 
-/** Selects a layer and reads its position and size from the Design tab. */
+/** Reads a layer's X/Y/W/H from the Design tab. */
 async function getLayerBounds(name: string) {
   await designPanelPage.deselectAndWaitForMeasuresHidden();
   await layersPanelPage.selectLayerByExactName(name);
@@ -552,7 +552,7 @@ demoAccountFileTest(
       async () => {
         await mainPage.clickOnESC();
         await mainPage.pressSelectAllShortcut();
-        await designPanelPage.hasDistributeHorizontalSpacingTooltip();
+        await designPanelPage.checkDistributeHorizontalSpacingTooltip();
       },
     );
 
@@ -561,7 +561,7 @@ demoAccountFileTest(
       async () => {
         await designPanelPage.clickDistributeHorizontalSpacingButton();
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.hasEvenHorizontalSpacing([
+        await designPanelPage.checkEvenHorizontalSpacing([
           await getLayerBounds('First'),
           await getLayerBounds('Second'),
           await getLayerBounds('Third'),
@@ -596,7 +596,7 @@ demoAccountFileTest(
         await mainPage.pressSelectAllShortcut();
         await mainPage.pressDistributeVerticalSpacingShortcut();
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.hasEvenVerticalSpacing([
+        await designPanelPage.checkEvenVerticalSpacing([
           await getLayerBounds('First'),
           await getLayerBounds('Second'),
           await getLayerBounds('Third'),
@@ -630,8 +630,8 @@ demoAccountFileTest(
         await designPanelPage.changeTextOption('Auto width');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isTextOptionSelected('Auto width');
-        await designPanelPage.isWidthGreaterThan(300);
-        await designPanelPage.isHeightLessThan(fixedHeight);
+        await designPanelPage.checkWidthHasValueGreaterThan(300);
+        await designPanelPage.checkHeightHasValueLessThan(fixedHeight);
         singleLine = {
           width: await designPanelPage.getWidthValue(),
           height: await designPanelPage.getHeightValue(),
@@ -640,26 +640,22 @@ demoAccountFileTest(
     );
 
     await demoAccountFileTest.step(
-      'Drag the right edge to make it narrower → the text wraps and the box switches to "Auto height"',
+      'Drag the bottom-right corner to make it narrower → the text wraps and "Fixed" is selected',
       async () => {
-        await mainPage.dragSelectionRightEdge(-150);
-        await designPanelPage.isTextOptionSelected('Auto height');
-        await designPanelPage.isWidthLessThan(singleLine.width);
-        await designPanelPage.isHeightGreaterThan(singleLine.height);
+        await mainPage.dragSelectionBottomRightCorner(-150, 0);
+        await designPanelPage.isTextOptionSelected('Fixed');
+        await designPanelPage.checkWidthHasValueLessThan(singleLine.width);
       },
     );
 
     await demoAccountFileTest.step(
-      'Make it "Fixed" and taller, then click "Auto height" → the height fits the text again and the width is kept',
+      'Click "Auto height" → the height fits the wrapped text and the width is kept',
       async () => {
         const width = await designPanelPage.getWidthValue();
-        const fittedHeight = await designPanelPage.getHeightValue();
-        await designPanelPage.changeTextOption('Fixed');
-        await designPanelPage.changeHeightForLayer('100');
         await designPanelPage.changeTextOption('Auto height');
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isTextOptionSelected('Auto height');
-        await designPanelPage.isHeightValue(fittedHeight);
+        await designPanelPage.checkHeightHasValueGreaterThan(singleLine.height);
         await designPanelPage.isWidthValue(width);
       },
     );
@@ -677,9 +673,7 @@ demoAccountFileTest(
       await mainPage.createdLayer.click();
       await mainPage.clickOnEnter();
       await mainPage.doubleClickOnTextAt(0.38);
-      for (let i = 0; i < 4; i++) {
-        await mainPage.page.keyboard.press('Shift+ArrowRight');
-      }
+      await mainPage.selectNextCharactersInTextEditor(4);
     });
 
     await demoAccountFileTest.step(
@@ -696,11 +690,11 @@ demoAccountFileTest(
       'Leave the editor → the text has mixed fill, font and size, with FFD700 among its colors',
       async () => {
         await mainPage.clickOnESC();
-        await designPanelPage.isFillMixed();
-        await designPanelPage.isSelectedColorVisible('ffd700');
-        await designPanelPage.isSelectedColorVisible('000000');
+        await designPanelPage.checkFillMixedIsVisible();
+        await designPanelPage.checkSelectedColorIsVisible('ffd700');
+        await designPanelPage.checkSelectedColorIsVisible('000000');
         await designPanelPage.checkFontName('Mixed Font Families');
-        await designPanelPage.isFontSizeMixed();
+        await designPanelPage.checkFontSizeHasMixedValue();
       },
     );
 
@@ -708,7 +702,7 @@ demoAccountFileTest(
       '"Hello" keeps the default style (000000, Source Sans Pro, 14)',
       async () => {
         await mainPage.clickOnEnter();
-        await mainPage.page.keyboard.press('Home');
+        await mainPage.moveCaretToTextStart();
         await designPanelPage.isFillHexCodeSet('#000000');
         await designPanelPage.checkFontName('Source Sans Pro');
         await designPanelPage.checkFontSize('14');

@@ -34,7 +34,7 @@ demoAccountFileTest(qase(3982, 'Undo and redo text edits'), async ({ mainPage })
       // The v3 editor keeps the text in WASM, not in the contenteditable DOM,
       // so the text is checked through the layer name, which follows the content
       await layersPanelPage.isLayerNameDisplayed('Lorem');
-      await designPanelPage.isWidthLessThan(initialWidth);
+      await designPanelPage.checkWidthHasValueLessThan(initialWidth);
       reducedWidth = await designPanelPage.getWidthValue();
     },
   );

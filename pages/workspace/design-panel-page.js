@@ -960,32 +960,25 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .toBe(height);
   }
 
-  async isWidthGreaterThan(width) {
+  async checkWidthHasValueGreaterThan(width) {
     await expect
       .poll(() => this.getWidthValue(), `Width is greater than ${width}`)
       .toBeGreaterThan(width);
   }
 
-  async isWidthLessThan(width) {
-    await expect
-      .poll(() => this.getWidthValue(), `Width is less than ${width}`)
-      .toBeLessThan(width);
-  }
-
-  async isHeightGreaterThan(height) {
+  async checkHeightHasValueGreaterThan(height) {
     await expect
       .poll(() => this.getHeightValue(), `Height is greater than ${height}`)
       .toBeGreaterThan(height);
   }
 
-  async isHeightLessThan(height) {
+  async checkHeightHasValueLessThan(height) {
     await expect
       .poll(() => this.getHeightValue(), `Height is less than ${height}`)
       .toBeLessThan(height);
   }
 
-  /** Deselects everything (Escape until the X/Y/W/H inputs are gone), so the next
-   * selection renders fresh values instead of the previous layer's. */
+  /** Deselects so the next selection's X/Y/W/H inputs render fresh, not stale. */
   async deselectAndWaitForMeasuresHidden() {
     await expect(async () => {
       await this.page.keyboard.press('Escape');
@@ -993,13 +986,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }).toPass({ timeout: 10000 });
   }
 
-  /**
-   * Position and size of the selected layer. Call deselectAndWaitForMeasuresHidden()
-   * before selecting it, so the inputs re-render with only this layer's values.
-   * @returns {Promise<{x: number, y: number, width: number, height: number}>}
-   */
+  /** Call deselectAndWaitForMeasuresHidden() before selecting the layer. */
   async getSelectedLayerBounds() {
-    await expect(this.xAxisInput, 'Layer measures are visible').toBeVisible();
+    await this.xAxisInput.waitFor({ state: 'visible' });
     return {
       x: await this.getXValue(),
       y: await this.getYValue(),
@@ -1008,11 +997,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     };
   }
 
-  /**
-   * Checks the gaps between consecutive layers (given left to right) are equal.
-   * @param {{x: number, width: number}[]} layers
-   */
-  async hasEvenHorizontalSpacing(layers) {
+  /** @param {{x: number, width: number}[]} layers left to right */
+  async checkEvenHorizontalSpacing(layers) {
     const gaps = layers
       .slice(1)
       .map((layer, i) => layer.x - (layers[i].x + layers[i].width));
@@ -1024,11 +1010,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
-  /**
-   * Checks the gaps between consecutive layers (given top to bottom) are equal.
-   * @param {{y: number, height: number}[]} layers
-   */
-  async hasEvenVerticalSpacing(layers) {
+  /** @param {{y: number, height: number}[]} layers top to bottom */
+  async checkEvenVerticalSpacing(layers) {
     const gaps = layers
       .slice(1)
       .map((layer, i) => layer.y - (layers[i].y + layers[i].height));
@@ -1045,7 +1028,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.isHeightValue(height);
   }
 
-  async isWidthLessThan(width) {
+  async checkWidthHasValueLessThan(width) {
     await expect
       .poll(() => this.getWidthValue(), `Width is less than ${width}`)
       .toBeLessThan(width);
@@ -1092,8 +1075,8 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.distributeHorizontalSpacingButton.click();
   }
 
-  /** Its tooltip is the button's title, shortcut included. */
-  async hasDistributeHorizontalSpacingTooltip() {
+  /** The tooltip is the button's title. */
+  async checkDistributeHorizontalSpacingTooltip() {
     await this.distributeHorizontalSpacingButton.hover();
     await expect(
       this.distributeHorizontalSpacingButton,
@@ -1101,28 +1084,29 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     ).toHaveAttribute('title', 'Distribute horizontal spacing (Shift+Ctrl+Alt+H)');
   }
 
-  /** Types a hex code (without #) in the fill color field. */
+  /** @param {string} hex without # */
   async typeFillHexCode(hex) {
     await this.fillColorInput.fill(hex);
     await this.fillColorInput.press('Enter');
   }
 
-  /** Picks a size from the font size dropdown (not by typing it). */
+  /** The dropdown arrow has no role or label, so it's found by class in the Font Size field. */
   async selectTextFontSizeFromDropdown(size) {
-    await this.textFontSizeInput
-      .locator('xpath=following-sibling::span[contains(@class, "dropdown-button")]')
+    await this.designTabpanel
+      .getByTitle('Font Size')
+      .locator('[class*="dropdown-button"]')
       .click();
     await this.page.getByRole('listitem').getByText(size, { exact: true }).click();
   }
 
-  async isFillMixed() {
+  async checkFillMixedIsVisible() {
     await expect(
       this.fillSection.getByText('Mixed', { exact: true }),
       'Fill shows "Mixed"',
     ).toBeVisible();
   }
 
-  async isFontSizeMixed() {
+  async checkFontSizeHasMixedValue() {
     await expect(this.textFontSizeInput, 'Font size is empty').toHaveValue('');
     await expect(this.textFontSizeInput, 'Font size shows "Mixed"').toHaveAttribute(
       'placeholder',
@@ -1131,7 +1115,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   /** @param {string} hex without # */
-  async isSelectedColorVisible(hex) {
+  async checkSelectedColorIsVisible(hex) {
     await expect(
       this.selectedColorInputs.and(this.page.locator(`[value="${hex}" i]`)),
       `Selected colors include ${hex}`,
