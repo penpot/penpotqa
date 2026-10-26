@@ -558,10 +558,9 @@ exports.MainPage = class MainPage extends BasePage {
    * @param {{shift?: boolean}} [options] - shift adds the node to the selection
    */
   async clickPathNode(position, { shift = false } = {}) {
-    await this.page.mouse.click(position.x, position.y, {
-      delay: 100,
-      modifiers: shift ? ['Shift'] : [],
-    });
+    if (shift) await this.holdShiftKeyboardButton();
+    await this.page.mouse.click(position.x, position.y, { delay: 100 });
+    if (shift) await this.releaseShiftKeyboardButton();
   }
 
   async checkPathNodeCount(count) {
