@@ -62,6 +62,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.alignTopButton = page.getByTitle('Align top');
     this.alignVerticalCenterButton = page.getByTitle('Align vertical center');
     this.alignBottomButton = page.getByTitle('Align bottom');
+    this.distributeHorizontalSpacingButton = page.getByTitle(
+      'Distribute horizontal spacing',
+    );
+    this.distributeVerticalSpacingButton = page.getByTitle(
+      'Distribute vertical spacing',
+    );
 
     //Design panel - Fill section
     this.fillSection = page.getByLabel('Fill section');
@@ -928,6 +934,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
+  async getXValue() {
+    return parseFloat(await this.xAxisInput.inputValue());
+  }
+
+  async getYValue() {
+    return parseFloat(await this.yAxisInput.inputValue());
+  }
+
   async getWidthValue() {
     return parseFloat(await this.sizeWidthInput.inputValue());
   }
@@ -944,6 +958,88 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect
       .poll(() => this.getHeightValue(), `Height is ${height}`)
       .toBe(height);
+  }
+
+  async isWidthGreaterThan(width) {
+    await expect
+      .poll(() => this.getWidthValue(), `Width is greater than ${width}`)
+      .toBeGreaterThan(width);
+  }
+
+  async isWidthLessThan(width) {
+    await expect
+      .poll(() => this.getWidthValue(), `Width is less than ${width}`)
+      .toBeLessThan(width);
+  }
+
+  async isHeightGreaterThan(height) {
+    await expect
+      .poll(() => this.getHeightValue(), `Height is greater than ${height}`)
+      .toBeGreaterThan(height);
+  }
+
+  async isHeightLessThan(height) {
+    await expect
+      .poll(() => this.getHeightValue(), `Height is less than ${height}`)
+      .toBeLessThan(height);
+  }
+
+  /**
+   * Position and size of the selected layer, re-read until stable: right after a
+   * selection change the panel can still show the previous layer's values.
+   * @returns {Promise<{x: number, y: number, width: number, height: number}>}
+   */
+  async getSelectedLayerBounds() {
+    const read = async () => ({
+      x: await this.getXValue(),
+      y: await this.getYValue(),
+      width: await this.getWidthValue(),
+      height: await this.getHeightValue(),
+    });
+    let bounds = await read();
+    await expect
+      .poll(
+        async () => {
+          const previous = JSON.stringify(bounds);
+          bounds = await read();
+          return JSON.stringify(bounds) === previous;
+        },
+        { message: 'Selected layer bounds are stable', intervals: [300] },
+      )
+      .toBe(true);
+    return bounds;
+  }
+
+  /**
+   * Checks the gaps between consecutive layers (given left to right) are equal.
+   * @param {{x: number, width: number}[]} layers
+   */
+  async hasEvenHorizontalSpacing(layers) {
+    const gaps = layers
+      .slice(1)
+      .map((layer, i) => layer.x - (layers[i].x + layers[i].width));
+    for (const gap of gaps.slice(1)) {
+      expect(gap, `Horizontal gaps ${gaps.join(', ')} are equal`).toBeCloseTo(
+        gaps[0],
+        0,
+      );
+    }
+  }
+
+  /**
+   * Checks the gaps between consecutive layers (given top to bottom) are equal.
+   * @param {{y: number, height: number}[]} layers
+   */
+  async hasEvenVerticalSpacing(layers) {
+    const gaps = layers
+      .slice(1)
+      .map((layer, i) => layer.y - (layers[i].y + layers[i].height));
+    for (const gap of gaps.slice(1)) {
+      expect(gap, `Vertical gaps ${gaps.join(', ')} are equal`).toBeCloseTo(
+        gaps[0],
+        0,
+      );
+    }
   }
 
   async isWidthAndHeightValue(width, height) {
@@ -992,6 +1088,56 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         await this.alignBottomButton.click();
         break;
     }
+  }
+
+  async clickDistributeHorizontalSpacingButton() {
+    await this.distributeHorizontalSpacingButton.click();
+  }
+
+  /** Its tooltip is the button's title, shortcut included. */
+  async hasDistributeHorizontalSpacingTooltip() {
+    await this.distributeHorizontalSpacingButton.hover();
+    await expect(
+      this.distributeHorizontalSpacingButton,
+      'Distribute horizontal spacing tooltip shows its shortcut',
+    ).toHaveAttribute('title', 'Distribute horizontal spacing (Shift+Ctrl+Alt+H)');
+  }
+
+  /** Types a hex code (without #) in the fill color field. */
+  async typeFillHexCode(hex) {
+    await this.fillColorInput.fill(hex);
+    await this.fillColorInput.press('Enter');
+  }
+
+  /** Picks a size from the font size dropdown (not by typing it). */
+  async selectTextFontSizeFromDropdown(size) {
+    await this.textFontSizeInput
+      .locator('xpath=following-sibling::span[contains(@class, "dropdown-button")]')
+      .click();
+    await this.page.getByRole('listitem').getByText(size, { exact: true }).click();
+  }
+
+  async isFillMixed() {
+    await expect(
+      this.fillSection.getByText('Mixed', { exact: true }),
+      'Fill shows "Mixed"',
+    ).toBeVisible();
+  }
+
+  async isFontSizeMixed() {
+    await expect(this.textFontSizeInput, 'Font size is empty').toHaveValue('');
+    await expect(this.textFontSizeInput, 'Font size shows "Mixed"').toHaveAttribute(
+      'placeholder',
+      'Mixed',
+    );
+  }
+
+  /** @param {string} hex without # */
+  async isSelectedColorVisible(hex) {
+    await expect(
+      this.selectedColorInputs.and(this.page.locator(`[value="${hex}" i]`)),
+      `Selected colors include ${hex}`,
+    ).toBeVisible();
   }
 
   async clickAddShadowButton() {
