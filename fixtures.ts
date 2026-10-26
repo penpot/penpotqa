@@ -5,6 +5,7 @@ import { random } from './helpers/string-generator';
 import { loginAsDemoAccount } from './helpers/accounts/login-as-demo-account';
 import { createDemoUser } from './helpers/accounts/create-demo-user';
 import { createDraftFile } from './helpers/files/create-draft-file';
+import { importDraftFile } from 'helpers/files/import-draft-file';
 import { registerNewAccount } from './helpers/accounts/register-new-account';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { MainPage } from '@pages/workspace/main-page';
@@ -102,18 +103,28 @@ type DemoWorkspaceFixtures = {
   mainPage: MainPage;
 };
 
+type DemoWorkspaceOptions = {
+  penpotFile: string | undefined;
+};
+
 // Fresh demo account (WASM) with a blank Drafts file open in the editor, all set up
 // via the API. Faster and more isolated than mainAccountFileTest.
-export const demoAccountFileTest = test.extend<DemoWorkspaceFixtures>({
+// Set the `penpotFile` option to open that imported file instead of a blank one.
+export const demoAccountFileTest = test.extend<
+  DemoWorkspaceFixtures & DemoWorkspaceOptions
+>({
+  penpotFile: [undefined, { option: true }],
   dashboardPage: async ({ page }, use) => {
     await use(new DashboardPage(page));
   },
   // `auto: true`: open the file even if the test doesn't destructure mainPage.
   mainPage: [
-    async ({ page }, use) => {
+    async ({ page, penpotFile }, use) => {
       const request = page.context().request;
       await createDemoUser(request, { renderer: 'wasm' });
-      const { teamId, fileId } = await createDraftFile(request);
+      const { teamId, fileId } = penpotFile
+        ? await importDraftFile(request, penpotFile)
+        : await createDraftFile(request);
 
       const mainPage = new MainPage(page);
       await page.goto(`/?screen=workspace&team-id=${teamId}&file-id=${fileId}`);
