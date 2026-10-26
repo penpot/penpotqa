@@ -77,6 +77,16 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
       '.main_ui_workspace_comments__thread-group-placeholder',
     );
     this.commentsAuthorSection = page.locator('div[class*="comments__author"]');
+    // Thread pop-up on the canvas, its "Comment #N" header, and the panel's "#N - Page" label.
+    this.commentThreadPopUp = page.locator(
+      'div[class*="comments__floating-thread-wrapper"]',
+    );
+    this.commentThreadPopUpHeader = page.locator(
+      '[class*="comments__floating-thread-header-left"]',
+    );
+    this.commentsPanelLocationText = page.locator(
+      '[class*="sidebar"] [class*="comments__location-text"]',
+    );
     this.commentMentionButton = page.locator('[class*="open-mentions-button"]');
     this.mentionMenuItem = page.locator('[class*="comments-mentions-name"]');
     this.commentMentionText = page.locator('span[class*="comment-mention"]');
@@ -257,10 +267,45 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await expect(this.commentsPanelPlaceholderText).toHaveText(text);
   }
 
-  async isResolveCommentCheckboxSelected() {
-    await expect(this.resolveCommentCheckbox).toContainClass(
-      'main_ui_ds_controls_checkbox__checked',
-    );
+  async isResolveCommentCheckboxSelected(selected = true) {
+    selected
+      ? await expect(
+          this.resolveCommentCheckbox,
+          'Resolve checkbox is checked',
+        ).toContainClass('main_ui_ds_controls_checkbox__checked')
+      : await expect(
+          this.resolveCommentCheckbox,
+          'Resolve checkbox is not checked',
+        ).not.toContainClass('main_ui_ds_controls_checkbox__checked');
+  }
+
+  async isCommentThreadPopUpVisible(visible = true) {
+    visible
+      ? await expect(this.commentThreadPopUp, 'Comment pop-up is open').toBeVisible()
+      : await expect(
+          this.commentThreadPopUp,
+          'Comment pop-up is closed',
+        ).toBeHidden();
+  }
+
+  /** Checks the thread number in the pop-up ("Comment #N") and the panel ("#N - Page"). */
+  async hasCommentThreadNumber(number, pageName = 'Page 1') {
+    await expect(
+      this.commentThreadPopUpHeader,
+      `Pop-up header is "Comment #${number}"`,
+    ).toHaveText(`Comment #${number}`);
+    await expect(
+      this.commentsPanelLocationText.first(),
+      `Panel shows "#${number} - ${pageName}"`,
+    ).toHaveText(`#${number} - ${pageName}`);
+  }
+
+  /** Checks every comment of the open thread, in order (original first, then replies). */
+  async hasCommentsInPopUp(texts) {
+    await expect(
+      this.commentText,
+      `Pop-up shows ${texts.length} comment(s)`,
+    ).toHaveText(texts);
   }
 
   async clickOnUnreadThreadIcon() {
@@ -314,6 +359,14 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     checked
       ? await expect(option, `"${name}" is checked`).toHaveClass(/selected/)
       : await expect(option, `"${name}" is not checked`).not.toHaveClass(/selected/);
+  }
+
+  /** A resolved thread's bubble on the canvas gets the "avatar-solved" style. */
+  async isCommentThreadBubbleResolved(index) {
+    await expect(
+      this.commentThreadBubbleByIndex(index),
+      `Comment bubble ${index} is shown as resolved`,
+    ).toHaveClass(/avatar-solved/);
   }
 
   async checkCommentCount(count) {

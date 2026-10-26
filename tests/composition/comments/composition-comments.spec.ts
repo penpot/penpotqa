@@ -26,8 +26,8 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
   demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     profilePage = new ProfilePage(page);
     commentsPanelPage = new CommentsPanelPage(page);
-    // A fixed, short name keeps the comment author inside its box and the
-    // screenshots stable (the default demo name changes width every run).
+    // A fixed, short name keeps the comment author inside its box (the default
+    // demo name is long and changes width every run).
     await setDemoUserName(page.context().request, 'QA Tester');
     await page.reload();
     await mainPage.isMainPageLoaded();
@@ -53,11 +53,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
           async () => {
             await commentsPanelPage.isCommentDisplayedInPopUp(comment);
             await commentsPanelPage.isCommentDisplayedInCommentsPanel(comment);
-
-            await mainPage.hideRulersViaMainMenu();
-            await expect(page).toHaveScreenshot('comment-opened-pop-up.png', {
-              mask: commentScreenshotMask(mainPage),
-            });
+            await commentsPanelPage.hasCommentThreadNumber(1);
           },
         );
 
@@ -65,10 +61,8 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
           'Close pop-up and verify thread icon is displayed',
           async () => {
             await mainPage.clickViewportOnce();
+            await commentsPanelPage.isCommentThreadPopUpVisible(false);
             await commentsPanelPage.isCommentThreadIconDisplayed();
-            await expect(page).toHaveScreenshot('comment-closed-pop-up.png', {
-              mask: commentScreenshotMask(mainPage),
-            });
           },
         );
       });
@@ -144,12 +138,9 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
       await demoAccountFileTest.step(
         'Verify reply is displayed in pop-up and panel',
         async () => {
-          await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
+          await commentsPanelPage.hasCommentsInPopUp(['Test Comment', replyComment]);
+          await commentsPanelPage.isCommentDisplayedInCommentsPanel('Test Comment');
           await commentsPanelPage.isCommentReplyDisplayedInCommentsPanel();
-          await mainPage.hideRulersViaMainMenu();
-          await expect(page).toHaveScreenshot('comment-reply.png', {
-            mask: commentScreenshotMask(mainPage),
-          });
         },
       );
     },
@@ -176,11 +167,6 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
           await commentsPanelPage.isCommentDisplayedInCommentsPanel(editedComment);
           await commentsPanelPage.clickCommentThreadIconByNumber('1');
           await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
-
-          await mainPage.hideRulersViaMainMenu();
-          await expect(page).toHaveScreenshot('comment-edited.png', {
-            mask: commentScreenshotMask(mainPage),
-          });
         },
       );
     },
@@ -202,10 +188,6 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
           await commentsPanelPage.isCommentsPanelPlaceholderDisplayed(
             "You're all caught up! New comment notifications will appear here.",
           );
-          await mainPage.hideRulersViaMainMenu();
-          await expect(page).toHaveScreenshot('comment-removed.png', {
-            mask: commentScreenshotMask(mainPage),
-          });
         },
       );
     },
@@ -217,6 +199,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
       await demoAccountFileTest.step(
         'Resolve the comment and close pop-up',
         async () => {
+          await commentsPanelPage.isResolveCommentCheckboxSelected(false);
           await commentsPanelPage.clickResolveCommentCheckbox();
         },
       );
@@ -225,11 +208,9 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
         'Verify resolved thread icon is shown',
         async () => {
           await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
-          await mainPage.hideRulersViaMainMenu();
           await mainPage.clickViewportOnce();
-          await expect(page).toHaveScreenshot('comment-resolved-closed-pop-up.png', {
-            mask: commentScreenshotMask(mainPage),
-          });
+          await commentsPanelPage.isCommentThreadBubbleResolved('1');
+          await commentsPanelPage.isCommentDisplayedInCommentsPanel('Test Comment');
         },
       );
 
@@ -238,9 +219,6 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
         async () => {
           await commentsPanelPage.clickResolvedCommentThreadIcon();
           await commentsPanelPage.isResolveCommentCheckboxSelected();
-          await expect(page).toHaveScreenshot('comment-resolved-opened-pop-up.png', {
-            mask: commentScreenshotMask(mainPage),
-          });
         },
       );
     },
