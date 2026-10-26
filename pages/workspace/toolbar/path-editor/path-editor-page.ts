@@ -185,11 +185,13 @@ export class PathEditorPage extends ToolbarPage {
     );
   }
 
-  /** Checks the path toolbar shows exactly these actions, in this order. */
+  /** Checks the path toolbar shows exactly these actions, in this order, and
+   * none of them is disabled: unavailable actions must be hidden instead. */
   async checkToolbarActions(expected: PathToolbarActionName[]) {
     await expect
       .poll(() => this.getToolbarActions(), { message: 'Path toolbar actions' })
       .toEqual(expected);
+    await this.checkNoDisabledToolbarActions();
   }
 
   async checkNoDisabledToolbarActions() {

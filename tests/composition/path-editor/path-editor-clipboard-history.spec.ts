@@ -1,3 +1,4 @@
+import type { Point } from '@pages/workspace/toolbar/path-editor/path-geometry';
 import { pathEditorTest } from '@tests/composition/path-editor/path-editor-fixture';
 import {
   A,
@@ -14,6 +15,7 @@ pathEditorTest(
   qase([3776], 'Edits are preserved on exit and reverted with one workspace undo'),
   async ({ pathEditorPage, designPanelPage }) => {
     const overlay = pathEditorPage.overlayComp;
+    let editedNodes: Point[];
 
     await pathEditorTest.step(
       'Open the path in path editing and make several edits.',
@@ -22,7 +24,8 @@ pathEditorTest(
         const curveMiddle = await overlay.getSegmentPoint(C, D, 0.5);
         await overlay.clickAt(curveMiddle);
         await overlay.dragNode(B, { x: 0, y: -60 });
-        await overlay.checkNodes([A, { x: 880, y: 222 }, C, D, curveMiddle]);
+        editedNodes = [A, { x: 880, y: 222 }, C, D, curveMiddle];
+        await overlay.checkNodes(editedNodes);
       },
     );
 
@@ -32,6 +35,11 @@ pathEditorTest(
       // Moving B 60 up raises the top of the path from 282 to 222.
       await designPanelPage.checkYAxis('222');
       await designPanelPage.checkSizeHeight('545.25');
+      // The inserted node doesn't change the bounding box: reopen the path to
+      // check that every edit was kept, not only B's move.
+      await pathEditorPage.enterPathEditing();
+      await overlay.checkNodes(editedNodes);
+      await pathEditorPage.exitPathEditing();
     });
 
     await pathEditorTest.step('Press Ctrl/Cmd+Z once.', async () => {
