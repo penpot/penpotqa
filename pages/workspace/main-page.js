@@ -308,7 +308,6 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickCreatePathButton() {
-    await this.viewport.click();
     await this.pathToolButton.click();
     await this.viewport.hover();
     await expect(this.createPathPointer).toBeVisible();
