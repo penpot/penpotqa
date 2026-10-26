@@ -1,5 +1,5 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
@@ -8,13 +8,13 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase(
     [2224],
     'Apply 2 different kind of tokens overriding the same shape property',
@@ -31,7 +31,7 @@ mainAccountFileTest(
       value: '100',
     };
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Create ellipse, "${dimensionToken.name}" and "${sizingToken.name}" tokens`,
       async () => {
         await mainPage.createDefaultEllipseByCoordinates(100, 200);
@@ -43,7 +43,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Apply "${sizingToken.name}" token and verify SizeAll menu is selected`,
       async () => {
         await tokensPage.tokensComp.clickOnTokenWithName(sizingToken.name);
@@ -62,7 +62,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Apply "${dimensionToken.name}" token and verify all Sizing submenu items are selected`,
       async () => {
         await tokensPage.tokensComp.clickOnTokenWithName(dimensionToken.name);
@@ -79,7 +79,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Apply "${sizingToken.name}" to Height only and verify both tokens are applied with correct values`,
       async () => {
         await tokensPage.tokensComp.selectMenuItem(sizingToken.name, 'Height');

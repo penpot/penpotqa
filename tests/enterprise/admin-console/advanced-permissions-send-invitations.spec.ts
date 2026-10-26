@@ -2,9 +2,8 @@
  * Qase suite: Admin Console > Sidebar Menu > Advanced Permissions > Send invitations (Permission)
  *
  */
-import { type Page } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { waitMessage } from 'helpers/gmail';
+import { acceptTeamInvite } from 'helpers/teams/accept-team-invite';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
@@ -14,27 +13,6 @@ import {
   enterprisePageTest,
   ownerAndInviteeTest,
 } from '@tests/enterprise/fixtures/enterprise-fixtures';
-
-/**
- * Accepts a team invite from the invitee's own inbox, then jumps straight to
- * the team's own dashboard by id — same proven pattern as
- * team-settings-change-org.spec.ts. More reliable than the org/team
- * switchers, whose backing lists can lag behind a team-originated invite.
- */
-async function acceptTeamInvite(
-  ownerPage: Page,
-  invitee: { page: Page; email: string },
-  teamId: string,
-) {
-  const invite = await waitMessage(ownerPage, invitee.email, 40);
-  await invitee.page.goto(invite!.inviteUrl);
-  // The invite link's own client-side redirect (e.g. into a project the
-  // invitee has no direct access to) can still be in flight when the next
-  // goto fires, surfacing a stray "You don't have access to this project"
-  // dialog on top of the team dashboard — let it settle first.
-  await invitee.page.waitForLoadState('networkidle');
-  await new TeamPage(invitee.page).goToTeamDashboard(teamId);
-}
 
 enterprisePageTest.describe(
   'Admin Console > Sidebar Menu > Advanced Permissions > Send invitations (Permission)',

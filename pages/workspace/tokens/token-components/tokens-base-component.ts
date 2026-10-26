@@ -591,6 +591,16 @@ export class TokensComponent {
     await this.checkTokenTooltip(this.getTokenPillByName(tokenName), text);
   }
 
+  /** Checks the open token context menu lists these items. */
+  async areContextMenuItemsVisible(itemNames: string[]) {
+    for (const itemName of itemNames) {
+      await expect(
+        this.tokenContextMenu.getByText(itemName, { exact: true }),
+        `Token context menu shows "${itemName}"`,
+      ).toBeVisible();
+    }
+  }
+
   async selectMenuItem(tokenName: string, itemName: string) {
     await this.rightClickOnTokenWithName(tokenName);
     await this.page

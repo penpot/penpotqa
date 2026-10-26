@@ -1,17 +1,17 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { MainPage } from '@pages/workspace/main-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest.describe(() => {
+demoAccountFileTest.describe(() => {
   let tokensPage: TokensPage;
   let mainPage: MainPage;
   let designPanelPage: DesignPanelPage;
@@ -24,7 +24,7 @@ mainAccountFileTest.describe(() => {
   };
   const newTokenValue = '20';
 
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     tokensPage = new TokensPage(page);
     mainPage = new MainPage(page);
     designPanelPage = new DesignPanelPage(page);
@@ -37,10 +37,10 @@ mainAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2125], 'Apply default "all radius" token to a rectangle (by left click)'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${radiusToken.name}" token is applied and corner radius matches`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
@@ -48,7 +48,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify screenshot and RadiusAll menu item is selected',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -66,7 +66,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2166],
       'Edit a border radius token, already applied to a shape (with warning renaming message)',
@@ -85,7 +85,7 @@ mainAccountFileTest.describe(() => {
         value: newTokenValue,
       };
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Edit "${radiusToken.name}" token to value "${updatedTokenData.value}" and verify it is applied`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
@@ -98,7 +98,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify screenshot and applied token title',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -115,10 +115,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2136], 'Delete a token and redo deletion'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Delete "${radiusToken.name}" token and verify it is removed`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(radiusToken.name);
@@ -130,7 +130,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Undo deletion and verify token is restored',
         async () => {
           await mainPage.clickShortcutCtrlZ();

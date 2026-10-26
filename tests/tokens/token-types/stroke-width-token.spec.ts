@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
@@ -9,13 +9,13 @@ import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base
 let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2215], 'Apply default "stroke width" token to a path (by left click)'),
   async ({ mainPage }) => {
     const strokeToken: MainToken<TokenClass> = {
@@ -24,7 +24,7 @@ mainAccountFileTest(
       value: '5.5',
     };
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create path and stroke width token',
       async () => {
         await mainPage.createDefaultOpenPath();
@@ -34,7 +34,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Apply "${strokeToken.name}" token and verify stroke width`,
       async () => {
         await tokensPage.tokensComp.clickOnTokenWithName(strokeToken.name);
@@ -44,7 +44,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify screenshot and Stroke Width menu item is selected',
       async () => {
         await expect(mainPage.viewport).toHaveScreenshot(

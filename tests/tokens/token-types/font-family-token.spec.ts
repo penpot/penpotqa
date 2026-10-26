@@ -1,5 +1,5 @@
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { MainPage } from '@pages/workspace/main-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
@@ -11,14 +11,14 @@ let tokensPage: TokensPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   tokensPage = new TokensPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest.describe(() => {
+demoAccountFileTest.describe(() => {
   const fontFamilyToken: MainToken<TokenClass> = {
     class: TokenClass.FontFamily,
     name: 'font-family',
@@ -36,7 +36,7 @@ mainAccountFileTest.describe(() => {
     value: 'Inter',
   };
 
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+  demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
@@ -50,8 +50,8 @@ mainAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(qase([2472], 'Apply a font family token'), async () => {
-    await mainAccountFileTest.step(
+  demoAccountFileTest(qase([2472], 'Apply a font family token'), async () => {
+    await demoAccountFileTest.step(
       `Verify "${fontFamilyToken.name}" token is applied and font name matches`,
       async () => {
         await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
@@ -60,10 +60,10 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2475], 'Edit a font family token'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Edit "${fontFamilyToken.name}" token to "${updatedTokenData.value}" and verify font is updated`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
@@ -76,7 +76,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify applied token title reflects updated value',
         async () => {
           await tokensPage.tokensComp.checkAppliedTokenTitle(
@@ -89,10 +89,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2506], 'Reference a font family token'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Verify "${fontFamilyToken.name}" is applied and create reference token "${fontFamilyTokenRef.name}"`,
         async () => {
           await tokensPage.tokensComp.isTokenAppliedWithName(fontFamilyToken.name);
@@ -106,7 +106,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Apply "${fontFamilyTokenRef.name}" token to another layer`,
         async () => {
           await mainPage.clickViewportOnce();
@@ -117,7 +117,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         `Edit source token to "${updatedTokenData.value}" and verify font is updated via reference`,
         async () => {
           await tokensPage.tokensComp.editTokenViaRightClickAndSave(
@@ -134,7 +134,7 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2484], 'Create a font family token with multiple fonts'),
   async ({ mainPage }) => {
     const fontFamilyToken: MainToken<TokenClass> = {
@@ -143,7 +143,7 @@ mainAccountFileTest(
       value: `'Actor, 'Cinzel', Abel, Aboreto, "Biryani"'`,
     };
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create default text layer and open tokens tab',
       async () => {
         await mainPage.createDefaultTextLayerByCoordinates(100, 200);
@@ -151,7 +151,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Click on add token button and fill token name',
       async () => {
         await tokensPage.tokensComp.clickOnAddTokenButton(fontFamilyToken);
@@ -159,7 +159,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Fill in the font family field with a set of names of a font family.',
       async () => {
         await tokensPage.tokensComp.fillTokenValue(fontFamilyToken.value!);
@@ -168,7 +168,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Click on Save and assert token is visible',
       async () => {
         await tokensPage.tokensComp.baseComp.clickOnSaveButton();
@@ -178,7 +178,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2469], 'Check missing name and font family token errors'),
   async ({ mainPage }) => {
     const fontFamilyToken: MainToken<TokenClass> = {
@@ -187,7 +187,7 @@ mainAccountFileTest(
       value: `Actor`,
     };
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create default text layer and open Tokens tab',
       async () => {
         await mainPage.createDefaultTextLayerByCoordinates(100, 200);
@@ -195,7 +195,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Click on add token button, leave name field empty and assert save is disabled',
       async () => {
         await tokensPage.tokensComp.clickOnAddTokenButton(fontFamilyToken);
@@ -203,7 +203,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Type "${fontFamilyToken.value}" in the token value input, clear it and assert error message`,
       async () => {
         await tokensPage.tokensComp.fillTokenValue(fontFamilyToken.value!);
@@ -215,7 +215,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Type "${fontFamilyToken.name}" in the token name input, clear it and assert error message`,
       async () => {
         await tokensPage.tokensComp.clickOnTokenNameInput();

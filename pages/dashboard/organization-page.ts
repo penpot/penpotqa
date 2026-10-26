@@ -2,38 +2,19 @@ import { type Locator, type Page, expect } from '@playwright/test';
 import { BasePage } from '../base-page';
 import { waitSecondMessage, getRegisterMessage } from 'helpers/gmail';
 
-/**
- * Covers the Enterprise-only "Organization" concept: the dashboard sidebar's
- * org switcher/creation entry points, the "Unlock Enterprise features"
- * modal, and the (Tailwind/design-system, not the older BEM-styled modal)
- * "Create organization" naming dialog reached either from the Admin Console
- * welcome screen (first org, right after a Stripe checkout) or from the org
- * switcher dropdown's "Create new organization" item (subsequent orgs, no checkout).
- *
- * Once the browser has actually navigated into an organization's Admin
- * Console, that's AdminConsolePage's territory instead
- * (pages/admin-console/admin-console-page.ts) — this page stops at the
- * entry points into it.
- */
+/** Enterprise "Organization" entry points on the dashboard: org switcher, promo
+ * widget, "Unlock Enterprise features" modal and "Create organization" modal. */
 export class OrganizationPage extends BasePage {
   // Sidebar entry points
   readonly orgSwitcherButton: Locator;
   readonly sidebarPromoWidget: Locator;
-  // Two state-dependent buttons inside sidebarPromoWidget: unlicensed it
-  // reads "Try it free for 14 days" (opens the "Unlock Enterprise features"
-  // modal); already-licensed but orgless (e.g. via
-  // `enterpriseActivatedPageTest`), it reads "Create organization" and
-  // jumps straight to the naming modal. Scoping both to sidebarPromoWidget
-  // lets getByRole tell them apart from the modal's own identically-named
-  // CTA.
+  // Promo widget CTA: "Try it free…" when unlicensed, "Create organization" when
+  // licensed but org-less. Scoped to the widget to avoid the modal's same-named CTA.
   readonly sidebarPromoTryItFreeButton: Locator;
   readonly sidebarPromoCreateOrgButton: Locator;
 
-  // "Unlock Enterprise features" modal (older BEM-styled component). No
-  // reliable locator for the modal's own generic wrapper exists — see the
-  // constructor comment — so these are scoped directly by their own classes,
-  // each unique to this modal, and "the modal is open" is asserted via
-  // `tryItFreeButton`'s visibility rather than a wrapper element.
+  // "Unlock Enterprise features" modal: no usable wrapper, so its parts are scoped
+  // by their own classes and "open" is checked via tryItFreeButton.
   readonly tryItFreeButton: Locator;
   readonly activationCodeLink: Locator;
   readonly currentPlanLink: Locator;
@@ -44,16 +25,11 @@ export class OrganizationPage extends BasePage {
   readonly welcomeModalCloseButton: Locator;
   readonly subscriptionsPageActivationCodeButton: Locator;
 
-  // Sidebar's own current-plan label ("Professional"/"Enterprise") —
-  // distinct from the promo widget's CTA buttons above.
+  // Sidebar current-plan label ("Professional"/"Enterprise").
   readonly currentPlanSidebarText: Locator;
 
-  // Settings > Subscription page (reached via currentPlanLink above) — the
-  // Enterprise plan card's own CTA, a real `<button>` this time. Its own
-  // confirmation modal (a third, separate component from the two "Unlock
-  // Enterprise features" modals above) has no reliable wrapper locator
-  // either, so it's scoped the same way: by its own unique primary-button
-  // class, an `<input type="button">` rather than a `<button>`.
+  // Settings > Subscription: Enterprise card CTA and its confirmation modal (no
+  // wrapper; its primary button is an <input type="button">).
   readonly subscriptionsPageEnterpriseTryButton: Locator;
   readonly subscriptionConfirmModalPrimaryButton: Locator;
 
@@ -63,17 +39,19 @@ export class OrganizationPage extends BasePage {
   readonly createOrgDropdownItem: Locator;
   readonly goToAdminConsoleDropdownItem: Locator;
   readonly otherTeamsDropdownItem: Locator;
+  readonly createTeamDropdownItem: Locator;
+
+  // Closed switcher: line 1 is the current team, line 2 its organization.
+  readonly currentTeamName: Locator;
+  readonly currentOrganizationName: Locator;
 
   // "Team management" menu (three-dot button next to the org/team switcher)
   readonly organizationOptionsButton: Locator;
   readonly leaveOrgMenuItem: Locator;
   readonly promoteAndLeaveButton: Locator;
 
-  // "Create organization" naming modal (newer design-system component, no
-  // BEM class/testid — scoped by the <form> containing the name input so it
-  // resolves correctly regardless of which entry point opened it, since the
-  // page behind it can have its own identically-labelled "Create organization"
-  // button still in the DOM)
+  // "Create organization" modal: scoped by its <form>, since the page behind it
+  // can have its own "Create organization" button.
   readonly createOrgModalForm: Locator;
   readonly orgNameInput: Locator;
   readonly createOrgSubmitButton: Locator;
@@ -97,29 +75,12 @@ export class OrganizationPage extends BasePage {
       name: 'Create organization',
     });
 
-    // `.main_ui_modal__modal-wrapper` is a generic portal container reused
-    // app-wide by many unrelated modal types (it matches 8-12
-    // elements at once, almost all hidden), so it's not usable to scope or
-    // identify "the Enterprise modal" itself.
-    //
-    // tryItFreeButton is deliberately CSS-class-based, not getByRole — the
-    // dashboard's own "Unlock Enterprise features" sidebar promo widget has
-    // its own separate, real `<button>Try it free for 14 days</button>`
-    // with the exact same accessible name, and an unscoped
-    // getByRole('button', { name: 'Try it free for 14 days' }) resolves to
-    // THAT one, not the modal's CTA — the visibility check
-    // passed (the widget button is visible too) but the actual click failed,
-    // obscured by the modal overlay. The modal's own CTA class below is the
-    // only reliable way to target it specifically (sidebarPromoTryItFreeButton
-    // above avoids the same collision by scoping getByRole to
-    // sidebarPromoWidget instead).
+    // CSS class on purpose: getByRole would match the sidebar widget's identical
+    // "Try it free for 14 days" button, hidden behind the modal overlay.
     this.tryItFreeButton = page.locator(
       '.main_ui_nitrate_nitrate_form__modal-button',
     );
-    // `<a class="link">Subscribe with an activation code</a>` has no `href`
-    // in the real markup, so it gets no implicit ARIA link
-    // role and getByRole('link', ...) never matches it — getByText is the
-    // best available option, not a downgrade of choice.
+    // The link has no href, so it has no link role: getByText is the only option.
     this.activationCodeLink = page.getByText('Subscribe with an activation code');
     this.currentPlanLink = page.getByRole('link', {
       name: 'See my current plan',
@@ -164,6 +125,15 @@ export class OrganizationPage extends BasePage {
     this.otherTeamsDropdownItem = this.orgDropdownItem.filter({
       hasText: 'Other teams',
     });
+    this.createTeamDropdownItem = this.orgDropdownItem.filter({
+      hasText: 'Create new team',
+    });
+    this.currentTeamName = this.orgSwitcherButton.locator(
+      'span[class*="current-team-name"]',
+    );
+    this.currentOrganizationName = this.orgSwitcherButton.locator(
+      'span[class*="current-organization-name"]',
+    );
 
     this.organizationOptionsButton = page.getByTestId('team-options-button');
     this.leaveOrgMenuItem = page.getByRole('menuitem', { name: 'Leave org' });
@@ -212,8 +182,7 @@ export class OrganizationPage extends BasePage {
     await this.subscriptionConfirmModalPrimaryButton.click();
   }
 
-  /** Opens the manual activation-code modal — assumes `activationCodeLink`
-   * is already visible. */
+  /** Assumes `activationCodeLink` is already visible. */
   async clickActivationCodeLink() {
     await this.activationCodeLink.click();
   }
@@ -230,15 +199,12 @@ export class OrganizationPage extends BasePage {
     await this.welcomeModalCloseButton.click();
   }
 
-  /** Navigates to the dashboard root — built explicitly from BASE_URL
-   * rather than a relative goto(), same as LoginPage.goto(), so this works
-   * regardless of which context it's called from. */
+  /** Built from BASE_URL (not a relative goto) so it works from any context. */
   async goto() {
     await this.page.goto(`${process.env.BASE_URL}`);
   }
 
-  /** Opens the org switcher, unless it's already open — clicking the trigger
-   * again would just toggle it closed instead. */
+  /** Opens the org switcher unless already open (clicking again would close it). */
   async openOrgSwitcher() {
     if (!(await this.orgDropdownItem.first().isVisible())) {
       await this.orgSwitcherButton.click();
@@ -247,6 +213,11 @@ export class OrganizationPage extends BasePage {
       this.orgDropdownItem.first(),
       'Org switcher dropdown items are visible after opening it',
     ).toBeVisible();
+  }
+
+  /** Right-clicks an org in the open switcher, opening its context menu. */
+  async openOrgContextMenu(orgName: string) {
+    await this.getOrgDropdownItemByName(orgName).click({ button: 'right' });
   }
 
   async clickCreateOrgFromDropdown() {
@@ -262,9 +233,7 @@ export class OrganizationPage extends BasePage {
     await this.getOrgDropdownItemByName(orgName).click();
   }
 
-  /** Opens the org's own three-dot options menu — distinct from the org
-   * switcher dropdown. Only reachable while actually viewing that org's
-   * context (e.g. after `switchToOrg()`). */
+  /** The org's three-dot options menu (not the switcher); needs that org's context. */
   async openOrganizationOptionsMenu() {
     await this.organizationOptionsButton.click();
     await expect(
@@ -277,11 +246,8 @@ export class OrganizationPage extends BasePage {
     await this.leaveOrgMenuItem.click();
   }
 
-  /** Confirms leaving after `isLeaveOrgDialogShown()`. Requires the page
-   * to already reflect any recent team-membership change (e.g. a reload
-   * after another account just accepted a team invite) — otherwise the
-   * backend rejects with a "not-valid-teams" validation error, since the
-   * frontend computes an invalid (empty) successor from stale state. */
+  /** Needs a page that reflects recent team changes (reload first), or the backend
+   * rejects it with "not-valid-teams". */
   async confirmPromoteAndLeave() {
     await this.promoteAndLeaveButton.click();
   }
@@ -294,11 +260,7 @@ export class OrganizationPage extends BasePage {
     await this.createOrgSubmitButton.click();
   }
 
-  /**
-   * Fills and submits the "Create organization" naming modal. Assumes the
-   * modal is already open (via the Admin Console welcome CTA or the org
-   * switcher dropdown's "Create new organization" item).
-   */
+  /** Fills and submits the "Create organization" modal (already open). */
   async createOrganization(orgName: string) {
     await this.fillOrgName(orgName);
     await this.submitCreateOrgModal();
@@ -312,9 +274,7 @@ export class OrganizationPage extends BasePage {
    * Assertions
    * ------------------------------------------------- */
 
-  /** No reliable locator exists for the modal's own wrapper (see the
-   * constructor comment), so this checks its CTA button instead — visible
-   * only while the modal is genuinely open. */
+  /** No usable modal wrapper, so the CTA's visibility stands in for the modal. */
   async isEnterpriseModalVisible(visible = true) {
     visible
       ? await expect(
@@ -327,9 +287,7 @@ export class OrganizationPage extends BasePage {
         ).not.toBeVisible();
   }
 
-  /** No reliable wrapper locator exists for this modal either — same
-   * situation as isEnterpriseModalVisible() above, checked via its own
-   * primary button instead. */
+  /** Same as isEnterpriseModalVisible(): checked via the modal's primary button. */
   async isSubscriptionConfirmModalVisible(visible = true) {
     visible
       ? await expect(
@@ -352,6 +310,40 @@ export class OrganizationPage extends BasePage {
           this.getOrgDropdownItemByName(orgName),
           `Organization "${orgName}" is not listed in the dropdown`,
         ).toHaveCount(0);
+  }
+
+  async hasCurrentTeamAndOrganization(teamName: string, orgName: string) {
+    await expect(
+      this.currentTeamName,
+      `Switcher line 1 is "${teamName}"`,
+    ).toHaveText(teamName);
+    await expect(
+      this.currentOrganizationName,
+      `Switcher line 2 is "${orgName}"`,
+    ).toHaveText(orgName);
+  }
+
+  async isCreateTeamDropdownItemVisible() {
+    await expect(
+      this.createTeamDropdownItem,
+      '"Create new team" dropdown item is visible',
+    ).toBeVisible();
+  }
+
+  async isGoToAdminConsoleOutboundArrowVisible() {
+    await expect(
+      this.goToAdminConsoleDropdownItem.locator(
+        'svg:has(use[href="#icon-arrow-up-right"])',
+      ),
+      '"Go to Admin Console" shows an outbound arrow',
+    ).toBeVisible();
+  }
+
+  async isLeaveOrgMenuItemVisible() {
+    await expect(
+      this.leaveOrgMenuItem,
+      '"Leave org" option is visible',
+    ).toBeVisible();
   }
 
   async isCreateOrgDropdownItemVisible(visible = true) {
@@ -416,8 +408,7 @@ export class OrganizationPage extends BasePage {
     ).toBeVisible();
   }
 
-  /** Checks the sidebar's own current-plan label — "Professional" is the
-   * default before any Enterprise entitlement. */
+  /** "Professional" is the default before any Enterprise entitlement. */
   async hasCurrentPlanSidebarText(text: string) {
     await expect(
       this.currentPlanSidebarText,
@@ -446,9 +437,7 @@ export class OrganizationPage extends BasePage {
     ).toHaveText(text);
   }
 
-  /** The confirmation modal's own CTA is an `<input type="button">`, not a
-   * `<button>` — its label lives in the `value` attribute, not text
-   * content, hence toHaveValue() rather than toHaveText(). */
+  /** The CTA is an <input type="button">, so its label is checked with toHaveValue(). */
   async hasSubscriptionConfirmModalTryButtonValue(text: string) {
     await expect(
       this.subscriptionConfirmModalPrimaryButton,
@@ -468,8 +457,6 @@ export class OrganizationPage extends BasePage {
         ).not.toBeVisible();
   }
 
-  /** Asserts the browser is on the org subscriptions settings page, reached
-   * via the "See my current plan" link. */
   async isOnSubscriptionsSettingsPage() {
     await expect(
       this.page,
@@ -477,8 +464,7 @@ export class OrganizationPage extends BasePage {
     ).toHaveURL(/\?screen=settings-subscription/);
   }
 
-  /** Asserts the post-checkout redirect landed back on Penpot with the
-   * dashboard entry point's own subscription-confirmation URL marker. */
+  /** Checks the post-checkout redirect landed on Penpot's confirmation URL. */
   async isSubscriptionConfirmedInUrl() {
     await expect(
       this.page,
@@ -486,17 +472,8 @@ export class OrganizationPage extends BasePage {
     ).toHaveURL(/subscription=subscribed-to-penpot-nitrate/);
   }
 
-  /**
-   * Accepts a pending org invitation from the invitee's own inbox. `page`
-   * must already be logged in as the invitee (see `registerNewAccount()`)
-   * — accepting while unauthenticated goes through a different code path
-   * that never actually grants membership (invite stays Pending forever).
-   *
-   * Uses `waitSecondMessage()` (waits for the message COUNT to grow), not
-   * `waitMessage()` (returns whatever's already there) — this account's
-   * inbox already has its own registration email in it by the time the org
-   * invite arrives, so "wait for any message" can return the stale one.
-   */
+  /** `page` must be logged in as the invitee, or the invite is never granted.
+   * Waits for the 2nd email: the inbox already holds the registration one. */
   async acceptOrgInviteFromInbox(email: string, orgName: string) {
     await waitSecondMessage(this.page, email, 60);
     const invite = await getRegisterMessage(email);
@@ -504,13 +481,8 @@ export class OrganizationPage extends BasePage {
     await this.isSuccessMessageDisplayed(`You're now part of ${orgName}`);
   }
 
-  /** Removing a member pushes this notice to their
-   * dashboard immediately over the live connection — no reload needed,
-   * unlike the owner-side People/Pending lists (see acceptOrgInviteFromInbox's
-   * sibling discoveries). */
   async isNoLongerOrgMemberMessageShown(orgName: string) {
-    // A live push over the websocket connection — it can
-    // take longer than the default timeout to arrive.
+    // Live push over the websocket: can take longer than the default timeout.
     await expect(
       this.page.getByText(
         `You are no longer a member of the organization ${orgName}`,
@@ -519,11 +491,8 @@ export class OrganizationPage extends BasePage {
     ).toBeVisible({ timeout: 15000 });
   }
 
-  /** Activating SSO force-redirects any member's existing dashboard session
-   * straight to the identity provider's own login page — a live push over
-   * the same connection as isNoLongerOrgMemberMessageShown() above.
-   * Confirmed live: lands within ~2s, no reload needed. `issuerUrl` is the
-   * same Issuer / authority URL configured in OrganizationSsoPage. */
+  /** Activating SSO pushes members straight to the identity provider's login page
+   * (no reload). `issuerUrl` is the authority URL set in OrganizationSsoPage. */
   async isRedirectedToSsoLogin(issuerUrl: string) {
     const issuerOrigin = new URL(issuerUrl).origin;
     await expect(
@@ -537,9 +506,7 @@ export class OrganizationPage extends BasePage {
     );
   }
 
-  /** While the account belongs to an org, the combined org/team switcher
-   * shows that org's name under the current team; a zero-org account has no
-   * org name there at all. */
+  /** A zero-org account shows no org name under the current team in the switcher. */
   async isZeroOrgAccountStateShown() {
     await expect(this.orgSwitcherButton, 'Org/team switcher is shown').toBeVisible();
     await expect(
@@ -548,9 +515,7 @@ export class OrganizationPage extends BasePage {
     ).toHaveCount(0);
   }
 
-  /** Only shown when leaving would orphan a team you own — no picker,
-   * since with a single other team member there's nothing to choose
-   * between; it promotes them automatically. */
+  /** Shown when leaving would orphan a team you own; the other member is promoted. */
   async isLeaveOrgDialogShown() {
     await expect(
       this.page.getByRole('heading', {
@@ -566,8 +531,7 @@ export class OrganizationPage extends BasePage {
     ).toBeVisible();
   }
 
-  /** Distinct wording from isNoLongerOrgMemberMessageShown() — that one's
-   * for being removed by someone else, this is for voluntarily leaving. */
+  /** For leaving voluntarily (isNoLongerOrgMemberMessageShown() is for being removed). */
   async isLeftOrganizationMessageShown(orgName: string) {
     await expect(
       this.page.getByText(`You're no longer part of the ${orgName} organization.`),

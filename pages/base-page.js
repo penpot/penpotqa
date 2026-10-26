@@ -221,6 +221,10 @@ exports.BasePage = class BasePage {
     await this.page.keyboard.press('Control+Z');
   }
 
+  async clickShortcutCtrlShiftZ() {
+    await this.page.keyboard.press('Control+Shift+Z');
+  }
+
   async clickShortcutCtrlD() {
     await this.page.keyboard.press('Control+D');
   }
