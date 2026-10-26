@@ -46,6 +46,10 @@ jobs:
         uses: anomalyco/opencode/github@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENCODE_MODEL: >-
+            ${{ contains(github.event.comment.body, '--model mimo') && 'opencode/mimo-v2.5-free' ||
+                contains(github.event.comment.body, '--model nemotron') && 'opencode/nemotron-3-ultra-free' ||
+                'opencode/deepseek-v4.1-flash-free' }}
         with:
           model: ${{ steps.model.outputs.name }}
           use_github_token: true
