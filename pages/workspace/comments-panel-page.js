@@ -281,6 +281,41 @@ exports.CommentsPanelPage = class CommentsPanelPage extends BasePage {
     await expect(this.showYourMentionsOption).not.toBeVisible();
   }
 
+  /** Opens the comments filter dropdown (Show all / only yours / mentions / hide resolved). */
+  async openCommentsFilter() {
+    await this.commentsDropdown.click();
+    await expect(
+      this.showAllCommentsOption,
+      'Comments filter is open',
+    ).toBeVisible();
+  }
+
+  async selectHideResolvedCommentsOption() {
+    await this.openCommentsFilter();
+    await this.hideResolvedCommentsOption.click();
+    await expect(
+      this.hideResolvedCommentsOption,
+      'Comments filter closes after picking an option',
+    ).toBeHidden();
+  }
+
+  /**
+   * Checks whether a comments filter option is checked (tick shown). The menu has
+   * no ARIA state for it, so it's read from the item's "selected" class.
+   * @param {'Show all comments'|'Show only your comments'|'Show only your mentions'|'Hide resolved comments'} name
+   */
+  async isCommentsFilterOptionChecked(name, checked = true) {
+    const option = {
+      'Show all comments': this.showAllCommentsOption,
+      'Show only your comments': this.showYourCommentsOption,
+      'Show only your mentions': this.showYourMentionsOption,
+      'Hide resolved comments': this.hideResolvedCommentsOption,
+    }[name];
+    checked
+      ? await expect(option, `"${name}" is checked`).toHaveClass(/selected/)
+      : await expect(option, `"${name}" is not checked`).not.toHaveClass(/selected/);
+  }
+
   async checkCommentCount(count) {
     await expect(this.commentThreadIcon).toHaveCount(count);
   }
