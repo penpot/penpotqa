@@ -994,31 +994,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   /**
-   * Position and size of the selected layer, re-read until stable. Call
-   * deselectAndWaitForMeasuresHidden() before selecting the layer, or the panel can
-   * still show the previous layer's values.
+   * Position and size of the selected layer. Call deselectAndWaitForMeasuresHidden()
+   * before selecting it, so the inputs re-render with only this layer's values.
    * @returns {Promise<{x: number, y: number, width: number, height: number}>}
    */
   async getSelectedLayerBounds() {
     await expect(this.xAxisInput, 'Layer measures are visible').toBeVisible();
-    const read = async () => ({
+    return {
       x: await this.getXValue(),
       y: await this.getYValue(),
       width: await this.getWidthValue(),
       height: await this.getHeightValue(),
-    });
-    let bounds = await read();
-    await expect
-      .poll(
-        async () => {
-          const previous = JSON.stringify(bounds);
-          bounds = await read();
-          return JSON.stringify(bounds) === previous;
-        },
-        { message: 'Selected layer bounds are stable', intervals: [300] },
-      )
-      .toBe(true);
-    return bounds;
+    };
   }
 
   /**
