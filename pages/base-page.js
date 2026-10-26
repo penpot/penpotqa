@@ -534,6 +534,11 @@ exports.BasePage = class BasePage {
     await this.page.keyboard.press('Control+Alt+C');
   }
 
+  /** Ctrl+Shift+Alt+V */
+  async pressDistributeVerticalSpacingShortcut() {
+    await this.page.keyboard.press('Control+Shift+Alt+V');
+  }
+
   async clickShortcutCtrlAltV() {
     await this.page.keyboard.press('Control+Alt+V');
   }

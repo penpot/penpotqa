@@ -203,18 +203,26 @@ from adding a large new suite of tests to this repo.
 ## 1. Assertions live in page objects, not spec files
 
 Every `expect()` a test needs should be a named method on the relevant page
-object — `isXVisible()`, `isXListed()`, `hasX()` — with its own descriptive
-assertion message. Spec files call these methods; they don't write raw
-`expect()` calls themselves.
+object, with its own descriptive assertion message. Spec files call these
+methods; they don't write raw `expect()` calls themselves.
 
-Name visibility assertions `is<Thing>Visible()` (matching Playwright's
-`toBeVisible()`), not `is<Thing>Displayed()` / `isDisplaying<Thing>()`. Older
-methods still use "Displayed"; don't rename them, but use "Visible" for new ones.
+Name new assertion methods with a `check` prefix, so a spec reads clearly as
+actions vs. checks:
+
+- Visibility: `check<Thing>IsVisible()` (matching Playwright's `toBeVisible()`),
+  not "Displayed" — e.g. `checkItemIsVisible()`.
+- A field's value: `check<Thing>HasValue…()` — e.g.
+  `checkWidthHasValueGreaterThan()`, `checkFontSizeHasMixedValue()`.
+- Anything else (computed results, attributes): `check<Thing>()` — e.g.
+  `checkEvenHorizontalSpacing()`.
+
+Older methods still use `is…`, `has…` or "Displayed"; don't rename them just
+for this, but use `check…` for new ones.
 
 ```ts
 // Correct — page object owns the assertion
 // pages/some-feature/some-feature-page.ts
-async isItemVisible(itemName: string) {
+async checkItemIsVisible(itemName: string) {
   await expect(
     this.page.getByText(itemName, { exact: true }),
     `Item "${itemName}" is visible`,
@@ -222,7 +230,7 @@ async isItemVisible(itemName: string) {
 }
 
 // spec file
-await featurePage.isItemVisible(itemName);
+await featurePage.checkItemIsVisible(itemName);
 ```
 
 ```ts

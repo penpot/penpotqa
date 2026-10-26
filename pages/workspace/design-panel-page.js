@@ -62,6 +62,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.alignTopButton = page.getByTitle('Align top');
     this.alignVerticalCenterButton = page.getByTitle('Align vertical center');
     this.alignBottomButton = page.getByTitle('Align bottom');
+    this.distributeHorizontalSpacingButton = page.getByTitle(
+      'Distribute horizontal spacing',
+    );
+    this.distributeVerticalSpacingButton = page.getByTitle(
+      'Distribute vertical spacing',
+    );
 
     //Design panel - Fill section
     this.fillSection = page.getByLabel('Fill section');
@@ -928,6 +934,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
+  async getXValue() {
+    return parseFloat(await this.xAxisInput.inputValue());
+  }
+
+  async getYValue() {
+    return parseFloat(await this.yAxisInput.inputValue());
+  }
+
   async getWidthValue() {
     return parseFloat(await this.sizeWidthInput.inputValue());
   }
@@ -946,12 +960,75 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       .toBe(height);
   }
 
+  async checkWidthHasValueGreaterThan(width) {
+    await expect
+      .poll(() => this.getWidthValue(), `Width is greater than ${width}`)
+      .toBeGreaterThan(width);
+  }
+
+  async checkHeightHasValueGreaterThan(height) {
+    await expect
+      .poll(() => this.getHeightValue(), `Height is greater than ${height}`)
+      .toBeGreaterThan(height);
+  }
+
+  async checkHeightHasValueLessThan(height) {
+    await expect
+      .poll(() => this.getHeightValue(), `Height is less than ${height}`)
+      .toBeLessThan(height);
+  }
+
+  /** Deselects so the next selection's X/Y/W/H inputs render fresh, not stale. */
+  async deselectAndWaitForMeasuresHidden() {
+    await expect(async () => {
+      await this.page.keyboard.press('Escape');
+      await expect(this.xAxisInput).toBeHidden({ timeout: 1000 });
+    }).toPass({ timeout: 10000 });
+  }
+
+  /** Call deselectAndWaitForMeasuresHidden() before selecting the layer. */
+  async getSelectedLayerBounds() {
+    await this.xAxisInput.waitFor({ state: 'visible' });
+    return {
+      x: await this.getXValue(),
+      y: await this.getYValue(),
+      width: await this.getWidthValue(),
+      height: await this.getHeightValue(),
+    };
+  }
+
+  /** @param {{x: number, width: number}[]} layers left to right */
+  async checkEvenHorizontalSpacing(layers) {
+    const gaps = layers
+      .slice(1)
+      .map((layer, i) => layer.x - (layers[i].x + layers[i].width));
+    for (const gap of gaps.slice(1)) {
+      expect(gap, `Horizontal gaps ${gaps.join(', ')} are equal`).toBeCloseTo(
+        gaps[0],
+        0,
+      );
+    }
+  }
+
+  /** @param {{y: number, height: number}[]} layers top to bottom */
+  async checkEvenVerticalSpacing(layers) {
+    const gaps = layers
+      .slice(1)
+      .map((layer, i) => layer.y - (layers[i].y + layers[i].height));
+    for (const gap of gaps.slice(1)) {
+      expect(gap, `Vertical gaps ${gaps.join(', ')} are equal`).toBeCloseTo(
+        gaps[0],
+        0,
+      );
+    }
+  }
+
   async isWidthAndHeightValue(width, height) {
     await this.isWidthValue(width);
     await this.isHeightValue(height);
   }
 
-  async isWidthLessThan(width) {
+  async checkWidthHasValueLessThan(width) {
     await expect
       .poll(() => this.getWidthValue(), `Width is less than ${width}`)
       .toBeLessThan(width);
@@ -992,6 +1069,57 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         await this.alignBottomButton.click();
         break;
     }
+  }
+
+  async clickDistributeHorizontalSpacingButton() {
+    await this.distributeHorizontalSpacingButton.click();
+  }
+
+  /** The tooltip is the button's title. */
+  async checkDistributeHorizontalSpacingTooltip() {
+    await this.distributeHorizontalSpacingButton.hover();
+    await expect(
+      this.distributeHorizontalSpacingButton,
+      'Distribute horizontal spacing tooltip shows its shortcut',
+    ).toHaveAttribute('title', 'Distribute horizontal spacing (Shift+Ctrl+Alt+H)');
+  }
+
+  /** @param {string} hex without # */
+  async typeFillHexCode(hex) {
+    await this.fillColorInput.fill(hex);
+    await this.fillColorInput.press('Enter');
+  }
+
+  /** The dropdown arrow has no role or label, so it's found by class in the Font Size field. */
+  async selectTextFontSizeFromDropdown(size) {
+    await this.designTabpanel
+      .getByTitle('Font Size')
+      .locator('[class*="dropdown-button"]')
+      .click();
+    await this.page.getByRole('listitem').getByText(size, { exact: true }).click();
+  }
+
+  async checkFillMixedIsVisible() {
+    await expect(
+      this.fillSection.getByText('Mixed', { exact: true }),
+      'Fill shows "Mixed"',
+    ).toBeVisible();
+  }
+
+  async checkFontSizeHasMixedValue() {
+    await expect(this.textFontSizeInput, 'Font size is empty').toHaveValue('');
+    await expect(this.textFontSizeInput, 'Font size shows "Mixed"').toHaveAttribute(
+      'placeholder',
+      'Mixed',
+    );
+  }
+
+  /** @param {string} hex without # */
+  async checkSelectedColorIsVisible(hex) {
+    await expect(
+      this.selectedColorInputs.and(this.page.locator(`[value="${hex}" i]`)),
+      `Selected colors include ${hex}`,
+    ).toBeVisible();
   }
 
   async clickAddShadowButton() {
