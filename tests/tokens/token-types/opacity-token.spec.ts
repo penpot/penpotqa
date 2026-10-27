@@ -36,9 +36,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       `Apply "${opacityToken.name}" token and verify it is applied`,
       async () => {
-        await tokensPage.tokensComp.clickOnTokenWithName(opacityToken.name);
-        await mainPage.waitForChangeIsSaved();
-        await tokensPage.tokensComp.isTokenAppliedWithName(opacityToken.name);
+        await tokensPage.tokensComp.applyTokenToSelectedShape(opacityToken.name);
       },
     );
 

@@ -58,9 +58,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         `Apply "${fontSizeToken.name}" token and verify it is applied`,
         async () => {
-          await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(fontSizeToken.name);
           await mainPage.waitForResizeHandlerVisible();
         },
       );
@@ -79,13 +77,9 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         `Apply "${fontSizeToken.name}" to first text layer and create second text layer`,
         async () => {
-          await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(fontSizeToken.name);
           await mainPage.createDefaultTextLayerByCoordinates(100, 600);
-          await tokensPage.tokensComp.clickOnTokenWithName(fontSizeToken.name);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(fontSizeToken.name);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(fontSizeToken.name);
         },
       );
 

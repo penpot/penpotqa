@@ -245,9 +245,7 @@ demoAccountFileTest.describe('Context menu > Rename', () => {
         async () => {
           await tokensPage.setsComp.clickSetItemButton(set);
           await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-          await tokensPage.tokensComp.clickOnTokenWithName(colorTokenName);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(colorTokenName);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(colorTokenName);
         },
       );
 

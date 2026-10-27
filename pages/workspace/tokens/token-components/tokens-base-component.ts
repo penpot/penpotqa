@@ -341,6 +341,16 @@ export class TokensComponent {
       .click();
   }
 
+  /**
+   * Clicks a visible token to apply it to the currently selected shape and
+   * checks that it is applied.
+   */
+  async applyTokenToSelectedShape(name: string) {
+    await this.clickOnTokenWithName(name);
+    await this.tokensPage.waitForChangeIsSaved();
+    await this.isTokenAppliedWithName(name);
+  }
+
   async isTokenAppliedWithName(name: string, applied = true) {
     const token = this.page.locator(
       `button[class*="token-pill-applied"] span[aria-label="${name}"]`,

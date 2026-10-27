@@ -44,9 +44,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         `Apply "${colorToken.name}" token to board fill and verify it is applied`,
         async () => {
-          await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(colorToken.name);
           await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
           await designPanelPage.checkFillTokenResolvedValue(colorToken.value);
         },
@@ -142,9 +140,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         `Apply first token:"${colorToken.name}" to board`,
         async () => {
-          await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(colorToken.name);
           await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
         },
       );

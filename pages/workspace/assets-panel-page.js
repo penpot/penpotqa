@@ -563,6 +563,27 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await libTitle.last().click();
   }
 
+  /**
+   * Opens a linked library file in a new tab from the "Open library file" link
+   * next to its title in the Assets tab.
+   * @param {string} libraryName
+   * @returns {Promise<import('@playwright/test').Page>} The new tab
+   */
+  async openLibraryFileInNewTab(libraryName) {
+    const titleBar = this.page
+      .locator('div[class*="title-bar"]')
+      .filter({
+        has: this.page.locator(
+          `div[class*="special-title"]:has-text("${libraryName}")`,
+        ),
+      })
+      .last();
+    const newPage = this.page.context().waitForEvent('page');
+    await titleBar.hover();
+    await titleBar.getByTitle('Open library file').click();
+    return newPage;
+  }
+
   async clickDismissButton() {
     await this.wrapperDismissButton.click();
   }
@@ -692,10 +713,50 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       .click();
   }
 
+  async disconnectSharedLibraryByName(name) {
+    await this.librariesThisFileTab.click();
+    await this.getLibraryItemByName(name)
+      .getByRole('button', { name: 'Disconnect library' })
+      .click();
+  }
+
+  async isNoConnectedLibrariesMessageVisible() {
+    await expect(
+      this.librariesModal.getByText('No connected libraries yet.'),
+      'No connected libraries message is visible',
+    ).toBeVisible();
+  }
+
+  async isLibraryUpdatesMessageVisible() {
+    await expect(
+      this.wrapperMessage.getByText('There are updates in shared libraries'),
+      'Library updates message is visible',
+    ).toBeVisible();
+  }
+
+  async clickWrapperUpdateButton() {
+    await this.wrapperUpdateButton.click();
+  }
+
   async isSharedLibraryTokensSource(name) {
     await expect(
       this.getLibraryItemByName(name).getByText('Tokens source', { exact: true }),
       `"${name}" is the tokens source`,
     ).toBeVisible();
+  }
+
+  /**
+   * Connects a shared library from the Libraries modal and sets it as the
+   * tokens source of the current file.
+   * @param {string} name - Shared library name
+   */
+  async linkSharedLibraryAsTokensSource(name) {
+    await this.clickAssetsTab();
+    await this.clickLibrariesButton();
+    await this.firstLibraryItemContainsLibraryName(name);
+    await this.connectSharedLibraryByName(name);
+    await this.setSharedLibraryAsTokensSource(name);
+    await this.isSharedLibraryTokensSource(name);
+    await this.clickCloseModalButton();
   }
 };
