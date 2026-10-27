@@ -5,24 +5,12 @@ import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect, Page } from '@playwright/test';
 import { demoAccountFileTest, demoTeamWithInviteeTest } from 'fixtures';
-import { loginAsDemoAccount } from 'helpers/accounts/login-as-demo-account';
 import { InvitationRole } from 'helpers/teams/invitation-role';
 import { openTeamFile } from 'helpers/teams/open-team-file';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const defaultNameBoard = 'Board';
 
-// A second demo account, logged in in its own browser context, for opening share
-// links as another user.
-const shareTest = demoAccountFileTest.extend<{ secondUserPage: Page }>({
-  secondUserPage: async ({ browser }, use) => {
-    const context = await browser.newContext();
-    const secondUserPage = await context.newPage();
-    await loginAsDemoAccount(secondUserPage, { renderer: 'wasm' });
-    await use(secondUserPage);
-    await context.close();
-  },
-});
 let viewModePage: ViewModePage;
 let profilePage: ProfilePage;
 let layersPanelPage: LayersPanelPage;
@@ -75,13 +63,13 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  shareTest(
+  demoAccountFileTest(
     qase([696], 'Share prototype - manage permissions ("Can comment")'),
     async ({ mainPage, secondUserPage }) => {
       let shareLink: string;
       let newPage: Page;
 
-      await shareTest.step('Create board and open view mode', async () => {
+      await demoAccountFileTest.step('Create board and open view mode', async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
         await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
         newPage = await viewModePage.clickViewModeShortcut();
@@ -89,7 +77,7 @@ demoAccountFileTest.describe(() => {
         await viewModePage.waitForViewerSection(45000);
       });
 
-      await shareTest.step(
+      await demoAccountFileTest.step(
         'Set "Can comment" permission for all users and get the share link',
         async () => {
           await viewModePage.clickShareButton();
@@ -107,13 +95,16 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await shareTest.step('Open the shared link as a second user', async () => {
-        await secondUserPage.goto(shareLink, { waitUntil: 'networkidle' });
-        viewModePage = new ViewModePage(secondUserPage);
-        await viewModePage.isViewerSectionVisible();
-      });
+      await demoAccountFileTest.step(
+        'Open the shared link as a second user',
+        async () => {
+          await secondUserPage.goto(shareLink, { waitUntil: 'networkidle' });
+          viewModePage = new ViewModePage(secondUserPage);
+          await viewModePage.isViewerSectionVisible();
+        },
+      );
 
-      await shareTest.step('Open comments panel and verify', async () => {
+      await demoAccountFileTest.step('Open comments panel and verify', async () => {
         await viewModePage.clickCommentsButton();
         await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
           'view-mode-shared-comments-image.png',
@@ -122,13 +113,13 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  shareTest(
+  demoAccountFileTest(
     qase([697], 'Share prototype - manage permissions ("Can inspect code")'),
     async ({ mainPage, secondUserPage }) => {
       let shareLink: string;
       let newPage: Page;
 
-      await shareTest.step('Create board and open view mode', async () => {
+      await demoAccountFileTest.step('Create board and open view mode', async () => {
         await mainPage.createDefaultBoardByCoordinates(300, 300);
         await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
         newPage = await viewModePage.clickViewModeShortcut();
@@ -136,7 +127,7 @@ demoAccountFileTest.describe(() => {
         await viewModePage.waitForViewerSection(45000);
       });
 
-      await shareTest.step(
+      await demoAccountFileTest.step(
         'Set "Can inspect code" permission for all users and get the share link',
         async () => {
           await viewModePage.clickShareButton();
@@ -154,24 +145,30 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await shareTest.step('Open the shared link as a second user', async () => {
-        await secondUserPage.goto(shareLink, { waitUntil: 'networkidle' });
-        viewModePage = new ViewModePage(secondUserPage);
-        await viewModePage.isViewerSectionVisible();
-      });
+      await demoAccountFileTest.step(
+        'Open the shared link as a second user',
+        async () => {
+          await secondUserPage.goto(shareLink, { waitUntil: 'networkidle' });
+          viewModePage = new ViewModePage(secondUserPage);
+          await viewModePage.isViewerSectionVisible();
+        },
+      );
 
-      await shareTest.step('Open Inspect tab code and verify', async () => {
-        const inspectPanelPage = new InspectPanelPage(secondUserPage);
-        await viewModePage.openInspectTab();
-        await inspectPanelPage.openCodeTab();
-        await secondUserPage.waitForTimeout(200);
-        await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-          'view-mode-shared-code-image.png',
-          {
-            mask: [inspectPanelPage.codeHtmlStrings],
-          },
-        );
-      });
+      await demoAccountFileTest.step(
+        'Open Inspect tab code and verify',
+        async () => {
+          const inspectPanelPage = new InspectPanelPage(secondUserPage);
+          await viewModePage.openInspectTab();
+          await inspectPanelPage.openCodeTab();
+          await secondUserPage.waitForTimeout(200);
+          await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
+            'view-mode-shared-code-image.png',
+            {
+              mask: [inspectPanelPage.codeHtmlStrings],
+            },
+          );
+        },
+      );
     },
   );
 });

@@ -425,11 +425,17 @@ demoTeamWithInviteeTest.describe('Notifications and mentions', () => {
           async () => {
             await commentsPanelPage.clickCreateCommentButton();
             for (let i = 0; i < numberOfComments; i++) {
-              await mainPage.zoom(10, 10, 3);
-              await mainPage.clickViewportByCoordinates(600, 300, 2);
+              // Each comment goes 80px left of the previous one: its pop-up opens to
+              // the right, so the next click never lands on an earlier bubble or
+              // pop-up (that would post a reply instead of a new comment).
+              await mainPage.clickViewportByCoordinates(900 - i * 80, 300);
               await commentsPanelPage.clickCommentMentionButton();
               await commentsPanelPage.clickMentionMenuItemByName(invitee.name);
               await commentsPanelPage.clickPostCommentButton();
+              // Close the thread pop-up on empty canvas before placing the next one.
+              await commentsPanelPage.isCommentThreadPopUpVisible();
+              await mainPage.clickViewportByCoordinates(200, 750);
+              await commentsPanelPage.isCommentThreadPopUpVisible(false);
             }
           },
         );

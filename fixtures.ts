@@ -4,7 +4,8 @@ import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { random } from './helpers/string-generator';
 import { loginAsDemoAccount } from './helpers/accounts/login-as-demo-account';
 import { createDemoUser } from './helpers/accounts/create-demo-user';
-import { createDraftFile } from './helpers/files/create-draft-file';
+import { createFile } from './helpers/files/create-file';
+import { openFileInWorkspace } from 'helpers/files/open-file-in-workspace';
 import { importDraftFile } from 'helpers/files/import-draft-file';
 import { registerNewAccount } from './helpers/accounts/register-new-account';
 import { TeamPage } from '@pages/dashboard/team-page';
@@ -12,7 +13,9 @@ import { MainPage } from '@pages/workspace/main-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { callPenpotApi } from 'helpers/api/penpot-api';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
+import { createDemoUserSession } from 'helpers/accounts/create-demo-user-session';
 import { InvitationRole } from 'helpers/teams/invitation-role';
+import { addTeamMember } from 'helpers/teams/add-team-member';
 
 type RegisterTestFixtures = {
   name: string;
@@ -104,6 +107,7 @@ export const mainAccountFileTest = mainTest.extend<WorkspaceFixtures>({
 type DemoWorkspaceFixtures = {
   dashboardPage: DashboardPage;
   mainPage: MainPage;
+  secondUserPage: Page;
 };
 
 type DemoWorkspaceOptions = {
@@ -113,12 +117,19 @@ type DemoWorkspaceOptions = {
 // Fresh demo account (WASM) with a blank Drafts file open in the editor, all set up
 // via the API. Faster and more isolated than mainAccountFileTest.
 // Set the `penpotFile` option to open that imported file instead of a blank one.
+// `secondUserPage` is another demo account in its own browser context, on its
+// dashboard (e.g. to open a share link as another user); only created when used.
 export const demoAccountFileTest = test.extend<
   DemoWorkspaceFixtures & DemoWorkspaceOptions
 >({
   penpotFile: [undefined, { option: true }],
   dashboardPage: async ({ page }, use) => {
     await use(new DashboardPage(page));
+  },
+  secondUserPage: async ({ browser }, use) => {
+    const session = await createDemoUserSession(browser);
+    await use(session.page);
+    await session.close();
   },
   // `auto: true`: open the file even if the test doesn't destructure mainPage.
   mainPage: [
@@ -127,13 +138,8 @@ export const demoAccountFileTest = test.extend<
       await createDemoUser(request, { renderer: 'wasm' });
       const { teamId, fileId } = penpotFile
         ? await importDraftFile(request, penpotFile)
-        : await createDraftFile(request);
-
-      const mainPage = new MainPage(page);
-      await page.goto(`/?screen=workspace&team-id=${teamId}&file-id=${fileId}`);
-      await mainPage.acceptCookie();
-      await mainPage.isMainPageLoaded();
-      await use(mainPage);
+        : await createFile(request);
+      await use(await openFileInWorkspace(page, teamId, fileId));
     },
     { auto: true },
   ],
@@ -170,44 +176,28 @@ export const demoTeamWithInviteeTest = demoAccountApiFixture.extend<
     await use({ id, projectId: defaultProjectId });
   },
   invitee: async ({ browser, page, team, inviteeRole }, use) => {
-    const context = await browser.newContext();
-    const inviteePage = await context.newPage();
+    const session = await createDemoUserSession(browser);
+    const request = session.page.context().request;
     const name = `QA ${inviteeRole}`;
-    const { email } = await loginAsDemoAccount(inviteePage, { renderer: 'wasm' });
-    await setDemoUserName(context.request, name);
-    const { invitations } = await callPenpotApi(
+    await setDemoUserName(request, name);
+    await addTeamMember(
       page.context().request,
-      'create-team-invitations',
-      { teamId: team.id, role: inviteeRole.toLowerCase(), emails: [email] },
+      { request, email: session.email },
+      team.id,
+      inviteeRole,
     );
-    const token = invitations?.[0];
-    if (!token) {
-      throw new Error(
-        `create-team-invitations returned no invitation token for ${email}: ` +
-          JSON.stringify(invitations),
-      );
-    }
-    await callPenpotApi(context.request, 'verify-token', { token });
-    await use({ page: inviteePage, name });
-    await context.close();
+    await use({ page: session.page, name });
+    await session.close();
   },
   // `auto: true`: open the file even if the test doesn't destructure mainPage.
   // Depends on `invitee` so the workspace loads with it already in the team (e.g.
   // in the mentions list).
   mainPage: [
     async ({ page, team, invitee: _invitee }, use) => {
-      const { id: fileId } = await callPenpotApi(
-        page.context().request,
-        'create-file',
-        {
-          name: 'New File 1',
-          projectId: team.projectId,
-        },
-      );
-      const mainPage = new MainPage(page);
-      await page.goto(`/?screen=workspace&team-id=${team.id}&file-id=${fileId}`);
-      await mainPage.isMainPageLoaded();
-      await use(mainPage);
+      const { fileId } = await createFile(page.context().request, {
+        project: { teamId: team.id, projectId: team.projectId },
+      });
+      await use(await openFileInWorkspace(page, team.id, fileId));
     },
     { auto: true },
   ],
