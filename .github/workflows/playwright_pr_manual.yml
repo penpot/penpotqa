@@ -30,6 +30,7 @@ on:
           - tests/composition/text
           - tests/composition/image
           - tests/composition/comments
+          - tests/composition/path-editor
           - tests/dashboard
           - tests/dashboard/teams
           - tests/dashboard/teams/settings
