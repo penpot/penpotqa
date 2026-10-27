@@ -2743,10 +2743,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async setStrokeDashValue(value) {
     await this.strokeDashInput.fill(value);
+    await this.strokeDashInput.press('Enter');
   }
 
   async setStrokeGapValue(value) {
     await this.strokeGapInput.fill(value);
+    await this.strokeGapInput.press('Enter');
   }
 
   async hasStrokeDashInputValue(value) {

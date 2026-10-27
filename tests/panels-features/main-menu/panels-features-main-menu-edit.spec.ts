@@ -1,13 +1,13 @@
 import { LayerSearchComponent } from '@pages/workspace/left-sidebar/layer-search-component';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect, test } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let layerSearch: LayerSearchComponent;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   layerSearch = new LayerSearchComponent(page);
   layersPanelPage = new LayersPanelPage(page);
   await mainPage.createTextLayerByCoordinates(200, 200, 'Test 1');
@@ -19,7 +19,7 @@ mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.openFindAndReplaceViaShortcut();
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2882], 'Replace All updates text content on canvas'),
   async ({ mainPage }) => {
     const contentText = 'Test';
@@ -61,7 +61,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(qase([2883], 'Replace All updates layer names'), async () => {
+demoAccountFileTest(qase([2883], 'Replace All updates layer names'), async () => {
   const layerName = 'Test';
   const replaceLayerName = 'Final';
 

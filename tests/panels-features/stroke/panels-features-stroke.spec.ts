@@ -1,24 +1,25 @@
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { expect } from 'playwright/test';
+import { expect } from '@playwright/test';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2971], 'Live preview updates when adjusting both Dash and Gap sequentially'),
   async ({ mainPage }) => {
+    const strokeWidth = '5';
     const dashValue = '5';
     const gapValue = '2';
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create a Rectangle and add stroke and verify default state',
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -26,30 +27,30 @@ mainAccountFileTest(
         await mainPage.isCreatedLayerVisible();
         await designPanelPage.clickAddStrokeButton();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkStrokeWidth('1');
       },
     );
 
-    await mainAccountFileTest.step('Apply outside dashed stroke', async () => {
-      await mainPage.clickOnLayerOnCanvas();
+    await demoAccountFileTest.step('Apply outside dashed stroke', async () => {
       await designPanelPage.changeStrokeSettings(
         '#F5358F',
         '80',
-        '5',
+        strokeWidth,
         'Outside',
         'Dashed',
       );
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Set dash value ${dashValue} and assert changes`,
       async () => {
         await designPanelPage.setStrokeDashValue(dashValue);
-        await designPanelPage.hasStrokeDashInputValue(dashValue);
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.hasStrokeDashInputValue(dashValue);
         await layersPanelPage.selectLayerByName('Rectangle');
         await mainPage.focusLayerViaShortcut();
-        await mainPage.waitForChangeIsSaved();
+        await mainPage.isFocusModeOn();
         await expect(mainPage.viewport).toHaveScreenshot(
           `rectangle-stroke-outside-dashed-${dashValue}.png`,
           {
@@ -57,18 +58,19 @@ mainAccountFileTest(
           },
         );
         await mainPage.focusLayerViaShortcut();
+        await mainPage.isFocusModeOn(false);
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       `Set gap value ${gapValue} and assert changes`,
       async () => {
         await designPanelPage.setStrokeGapValue(gapValue);
-        await designPanelPage.hasStrokeGapInputValue(gapValue);
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.hasStrokeGapInputValue(gapValue);
         await layersPanelPage.selectLayerByName('Rectangle');
         await mainPage.focusLayerViaShortcut();
-        await mainPage.waitForChangeIsSaved();
+        await mainPage.isFocusModeOn();
         await expect(mainPage.viewport).toHaveScreenshot(
           `rectangle-stroke-outside-dashed-${dashValue}-gap-${gapValue}.png`,
           {
@@ -76,6 +78,7 @@ mainAccountFileTest(
           },
         );
         await mainPage.focusLayerViaShortcut();
+        await mainPage.isFocusModeOn(false);
       },
     );
   },
