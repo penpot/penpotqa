@@ -1,14 +1,12 @@
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
 import { ProfilePage } from '@pages/profile-page';
 import { CommentsPanelPage } from '@pages/workspace/comments-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { expect } from '@playwright/test';
-import { demoAccountFileTest, mainAccountFileTest } from 'fixtures';
-import {
-  loginAsMainUser,
-  loginAsUser,
-  setupEditorRoleUser,
-  setupViewerRoleUser,
-} from 'helpers/user-flows';
+import { demoAccountFileTest, demoTeamWithInviteeTest } from 'fixtures';
+import { openTeamFile } from 'helpers/teams/open-team-file';
+import { InvitationRole } from 'helpers/teams/invitation-role';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 
@@ -33,8 +31,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
     const commentText = 'Test Comment';
     await commentsPanelPage.clickCreateCommentButton();
     await mainPage.clickViewportTwice();
-    await commentsPanelPage.enterCommentText(commentText);
-    await commentsPanelPage.clickPostCommentButton();
+    await commentsPanelPage.postComment(commentText);
     await commentsPanelPage.isCommentDisplayedInPopUp(commentText);
   });
 
@@ -61,7 +58,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
           async () => {
             await mainPage.clickViewportOnce();
             await commentsPanelPage.isCommentThreadPopUpVisible(false);
-            await commentsPanelPage.isCommentThreadIconDisplayed();
+            await commentsPanelPage.isCommentThreadIconVisible();
           },
         );
       });
@@ -130,8 +127,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry';
 
       await demoAccountFileTest.step('Enter and post a reply', async () => {
-        await commentsPanelPage.enterReplyText(replyComment);
-        await commentsPanelPage.clickPostCommentButton();
+        await commentsPanelPage.postComment(replyComment);
       });
 
       await demoAccountFileTest.step(
@@ -153,8 +149,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
       await demoAccountFileTest.step('Edit the comment', async () => {
         await commentsPanelPage.clickCommentOptionsButton();
         await commentsPanelPage.clickEditCommentOption();
-        await commentsPanelPage.enterCommentText(editedComment, true);
-        await commentsPanelPage.clickPostCommentButton();
+        await commentsPanelPage.editComment(editedComment);
         await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
       });
 
@@ -164,7 +159,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
           await mainPage.reloadPage();
           await commentsPanelPage.clickCreateCommentButton();
           await commentsPanelPage.isCommentDisplayedInCommentsPanel(editedComment);
-          await commentsPanelPage.clickCommentThreadIconByNumber('1');
+          await commentsPanelPage.openCommentThread('1');
           await commentsPanelPage.isCommentDisplayedInPopUp(editedComment);
         },
       );
@@ -183,7 +178,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
       await demoAccountFileTest.step(
         'Verify thread is removed and placeholder is shown',
         async () => {
-          await commentsPanelPage.isCommentThreadIconNotDisplayed();
+          await commentsPanelPage.isCommentThreadIconVisible(false);
           await commentsPanelPage.isCommentsPanelPlaceholderDisplayed(
             "You're all caught up! New comment notifications will appear here.",
           );
@@ -206,7 +201,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
       await demoAccountFileTest.step(
         'Verify resolved thread icon is shown',
         async () => {
-          await commentsPanelPage.isCommentResolvedThreadIconDisplayed();
+          await commentsPanelPage.isCommentResolvedThreadIconVisible();
           await mainPage.clickViewportOnce();
           await commentsPanelPage.isCommentThreadBubbleResolved('1');
           await commentsPanelPage.isCommentDisplayedInCommentsPanel('Test Comment');
@@ -230,7 +225,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
         'Close comment pop-up and confirm the bubble is visible in Comments mode',
         async () => {
           await mainPage.clickViewportOnce();
-          await commentsPanelPage.isCommentThreadIconDisplayed();
+          await commentsPanelPage.isCommentThreadIconVisible();
         },
       );
 
@@ -244,7 +239,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
       await demoAccountFileTest.step(
         'Verify the comment bubble remains visible on the canvas',
         async () => {
-          await commentsPanelPage.isCommentThreadIconDisplayed();
+          await commentsPanelPage.isCommentThreadIconVisible();
         },
       );
     },
@@ -271,13 +266,12 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
         'Hover and expand the comment thread',
         async () => {
           await commentsPanelPage.hoverCommentThreadBubbleByIndex('1');
-          await commentsPanelPage.clickCommentThreadIconByNumber('1');
+          await commentsPanelPage.openCommentThread('1');
         },
       );
 
       await demoAccountFileTest.step('Reply to the thread', async () => {
-        await commentsPanelPage.enterReplyText(replyComment);
-        await commentsPanelPage.clickPostCommentButton();
+        await commentsPanelPage.postComment(replyComment);
         await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
       });
 
@@ -286,7 +280,7 @@ demoAccountFileTest.describe('Single comment thread actions', () => {
         await commentsPanelPage.clickDeleteCommentOption();
         await commentsPanelPage.clickDeleteThreadButton();
         await commentsPanelPage.isDeleteConversationModalNotVisible();
-        await commentsPanelPage.isCommentThreadIconNotDisplayed();
+        await commentsPanelPage.isCommentThreadIconVisible(false);
       });
     },
   );
@@ -314,8 +308,7 @@ demoAccountFileTest.describe('Comment bubbles', () => {
               yAxisCommentsCoordinates[i],
               2,
             );
-            await commentsPanelPage.enterCommentText(comment);
-            await commentsPanelPage.clickPostCommentButton();
+            await commentsPanelPage.postComment(comment);
             await commentsPanelPage.checkCommentCountInList(i + 1);
           }
         },
@@ -363,8 +356,7 @@ demoAccountFileTest.describe('Comment bubbles', () => {
               yAxisCommentsCoordinates[i],
               2,
             );
-            await commentsPanelPage.enterCommentText(comment);
-            await commentsPanelPage.clickPostCommentButton();
+            await commentsPanelPage.postComment(comment);
             await commentsPanelPage.checkCommentCountInList(i + 1);
           }
         },
@@ -410,292 +402,214 @@ demoAccountFileTest.describe('Comment bubbles', () => {
   );
 });
 
-mainAccountFileTest.describe('Notifications and mentions', () => {
-  mainAccountFileTest.beforeEach(async ({ page }) => {
+demoTeamWithInviteeTest.describe('Notifications and mentions', () => {
+  demoTeamWithInviteeTest.beforeEach(async ({ page }) => {
     profilePage = new ProfilePage(page);
     commentsPanelPage = new CommentsPanelPage(page);
   });
 
-  mainAccountFileTest(
-    qase(
-      [2052, 2097],
-      'Click "Mark All as Read" icon in notifications section if there are 10 unread notifications',
-    ),
-    async ({ page, mainPage, teamName, dashboardPage }) => {
-      await mainAccountFileTest.slow();
-      let firstViewer: string;
-      let firstEmail: string;
-      const numberOfComments = 10;
+  demoTeamWithInviteeTest.describe(() => {
+    demoTeamWithInviteeTest.use({ inviteeRole: InvitationRole.Viewer });
 
-      await mainAccountFileTest.step(
-        'Invite and register viewer via invite link',
-        async () => {
-          await mainPage.backToDashboardFromFileEditor();
+    demoTeamWithInviteeTest(
+      qase(
+        [2052, 2097],
+        'Click "Mark All as Read" icon in notifications section if there are 10 unread notifications',
+      ),
+      async ({ mainPage, invitee, team }) => {
+        demoTeamWithInviteeTest.slow();
+        const numberOfComments = 10;
 
-          ({ userEmail: firstEmail, userName: firstViewer } =
-            await setupViewerRoleUser(page, {
-              existingTeamName: teamName,
-              assertInviteHeader: true,
-            }));
-        },
-      );
+        await demoTeamWithInviteeTest.step(
+          'Post 10 comments mentioning the viewer',
+          async () => {
+            await commentsPanelPage.clickCreateCommentButton();
+            for (let i = 0; i < numberOfComments; i++) {
+              // Each comment goes 80px left of the previous one: its pop-up opens to
+              // the right, so the next click never lands on an earlier bubble or
+              // pop-up (that would post a reply instead of a new comment).
+              await mainPage.clickViewportByCoordinates(900 - i * 80, 300);
+              await commentsPanelPage.clickCommentMentionButton();
+              await commentsPanelPage.clickMentionMenuItemByName(invitee.name);
+              await commentsPanelPage.clickPostCommentButton();
+              // Close the thread pop-up on empty canvas before placing the next one.
+              await commentsPanelPage.isCommentThreadPopUpVisible();
+              await mainPage.clickViewportByCoordinates(200, 750);
+              await commentsPanelPage.isCommentThreadPopUpVisible(false);
+            }
+          },
+        );
 
-      await mainAccountFileTest.step(
-        'Log back as main user and post 10 mention comments',
-        async () => {
-          await profilePage.logout();
-          await loginAsMainUser(page, { teamName });
-          await dashboardPage.openFile();
-          await mainPage.isMainPageLoaded();
+        await demoTeamWithInviteeTest.step(
+          'As the viewer, mark all notifications as read',
+          async () => {
+            const viewerDashboardPage = new DashboardPage(invitee.page);
+            await new TeamPage(invitee.page).goToTeamDashboard(team.id);
+            // PENPOT-2052
+            await viewerDashboardPage.isUnreadNotificationVisible();
+            // PENPOT-2097
+            await viewerDashboardPage.clickOnNotificationButton();
+            await viewerDashboardPage.clickOnNotificationMarkAsReadButton();
+            await viewerDashboardPage.isUnreadNotificationVisible(false);
+            await viewerDashboardPage.isMarkedAllNotificationAsReadMessage();
+            await viewerDashboardPage.clickOnNotificationButton();
+            await viewerDashboardPage.isNoNotificationsMessagePresent();
+          },
+        );
+      },
+    );
+  });
 
-          await commentsPanelPage.clickCreateCommentButton();
-          for (let i = 0; i < numberOfComments; i++) {
-            await mainPage.zoom(10, 10, 3);
-            await mainPage.clickViewportByCoordinates(600, 300, 2);
-            await commentsPanelPage.clickCommentMentionButton();
-            await commentsPanelPage.clickMentionMenuItemByName(firstViewer);
-            await commentsPanelPage.clickPostCommentButton();
-          }
-          await mainPage.backToDashboardFromFileEditor();
-          await profilePage.logout();
-        },
-      );
-
-      await mainAccountFileTest.step(
-        'Log in as viewer and mark all notifications as read',
-        async () => {
-          await loginAsUser(page, firstEmail, { teamName });
-          // PENPOT-2052
-          await dashboardPage.isUnreadNotificationVisible();
-          // PENPOT-2097
-          await dashboardPage.clickOnNotificationButton();
-          await dashboardPage.clickOnNotificationMarkAsReadButton();
-          await dashboardPage.isUnreadNotificationVisible(false);
-          await dashboardPage.isMarkedAllNotificationAsReadMessage();
-          await dashboardPage.clickOnNotificationButton();
-          await dashboardPage.isNoNotificationsMessagePresent();
-        },
-      );
-    },
-  );
-
-  mainAccountFileTest(
+  demoTeamWithInviteeTest(
     qase([2057], 'Click Notification in the pop-up'),
-    async ({ page, mainPage, teamName, dashboardPage }) => {
-      await mainAccountFileTest.slow();
-      const comment = 'Test Comment (main user)';
+    async ({ page, mainPage, dashboardPage, invitee, team }) => {
+      demoTeamWithInviteeTest.slow();
+      const comment = 'Test Comment (owner)';
       const replyComment = 'Lorem Ipsum (editor user)';
-      let mainProfileName = '';
+      let ownerName = '';
 
-      await mainAccountFileTest.step('Post a comment as main user', async () => {
+      await demoTeamWithInviteeTest.step('Post a comment as the owner', async () => {
         await commentsPanelPage.clickCreateCommentButton();
         await mainPage.clickViewportTwice();
-        await commentsPanelPage.enterCommentText(comment);
-        await commentsPanelPage.clickPostCommentButton();
+        await commentsPanelPage.postComment(comment);
         await mainPage.backToDashboardFromFileEditor();
-        mainProfileName = (await profilePage.getUserName()) ?? '';
+        ownerName = (await profilePage.getUserName()) ?? '';
       });
 
-      await mainAccountFileTest.step(
-        'Invite and register editor via invite link',
+      await demoTeamWithInviteeTest.step(
+        'Reply to the comment as the editor',
         async () => {
-          await setupEditorRoleUser(page, { existingTeamName: teamName });
+          const editorComments = new CommentsPanelPage(invitee.page);
+          await openTeamFile(invitee.page, team.id);
+          await editorComments.clickCreateCommentButton();
+          await editorComments.openCommentThread('1');
+          await editorComments.postComment(replyComment);
+          await editorComments.isCommentReplyDisplayedInPopUp(replyComment);
         },
       );
 
-      await mainAccountFileTest.step('Reply to comment as editor', async () => {
-        await dashboardPage.openFile();
-        await mainPage.isMainPageLoaded();
-
-        await commentsPanelPage.clickCreateCommentButton();
-        await commentsPanelPage.clickCommentThreadIconByNumber('1');
-        await commentsPanelPage.enterReplyText(replyComment);
-        await commentsPanelPage.clickPostCommentButton();
-        await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
-        await mainPage.backToDashboardFromFileEditor();
-      });
-
-      await mainAccountFileTest.step(
-        'Log back as main user and verify notification',
+      await demoTeamWithInviteeTest.step(
+        'As the owner, open the reply from the notification',
         async () => {
-          await profilePage.logout();
-          await loginAsMainUser(page, { teamName });
-
+          await page.reload();
           await dashboardPage.isUnreadNotificationVisible();
           await dashboardPage.clickOnNotificationButton();
 
-          await dashboardPage.checkNotificationReplyUserName(mainProfileName);
+          await dashboardPage.checkNotificationReplyUserName(ownerName);
           await dashboardPage.checkNotificationReplyText(comment);
           await dashboardPage.checkNotificationUnreadReplyCount('1 new reply');
 
           await dashboardPage.clickFirstNotificationMessage();
           await commentsPanelPage.isCommentReplyDisplayedInPopUp(replyComment);
-          await mainPage.backToDashboardFromFileEditor();
         },
       );
     },
   );
 
-  mainAccountFileTest(
+  demoTeamWithInviteeTest(
     qase([2086], '"Only your mentions" filter'),
-    async ({ page, mainPage, teamName, dashboardPage }) => {
-      await mainAccountFileTest.slow();
-      let firstEditor: string;
-      let firstEmail: string;
-      const comment = 'Test Comment (main user)';
+    async ({ mainPage, invitee, team }) => {
+      demoTeamWithInviteeTest.slow();
+      const comment = 'Test Comment (owner)';
 
-      await mainAccountFileTest.step(
-        'Invite and register editor via invite link',
+      await demoTeamWithInviteeTest.step(
+        'Post four comments, one mentioning the editor',
         async () => {
-          await mainPage.backToDashboardFromFileEditor();
-
-          ({ userEmail: firstEmail, userName: firstEditor } =
-            await setupEditorRoleUser(page, { existingTeamName: teamName }));
-        },
-      );
-
-      await mainAccountFileTest.step(
-        'Log back as main user and post four comments (one with mention)',
-        async () => {
-          await profilePage.logout();
-          await loginAsMainUser(page, { teamName });
-          await dashboardPage.openFile();
-          await mainPage.isMainPageLoaded();
-
           await commentsPanelPage.clickCreateCommentButton();
           await mainPage.clickViewportTwice();
 
           await commentsPanelPage.enterCommentText(comment);
           await commentsPanelPage.clickCommentMentionButton();
-          await commentsPanelPage.clickMentionMenuItemByName(firstEditor);
+          await commentsPanelPage.clickMentionMenuItemByName(invitee.name);
           await commentsPanelPage.clickPostCommentButton();
           await commentsPanelPage.checkCommentCountInList(1);
 
           await mainPage.clickViewportByCoordinates(100, 100, 2);
-          await commentsPanelPage.enterCommentText(comment);
-          await commentsPanelPage.clickPostCommentButton();
+          await commentsPanelPage.postComment(comment);
           await commentsPanelPage.checkCommentCountInList(2);
 
           await mainPage.clickViewportByCoordinates(600, 100, 2);
-          await commentsPanelPage.enterCommentText(comment);
-          await commentsPanelPage.clickPostCommentButton();
+          await commentsPanelPage.postComment(comment);
           await commentsPanelPage.checkCommentCountInList(3);
 
           await mainPage.clickViewportByCoordinates(100, 800, 2);
-          await commentsPanelPage.enterCommentText(comment);
-          await commentsPanelPage.clickPostCommentButton();
+          await commentsPanelPage.postComment(comment);
           await commentsPanelPage.checkCommentCountInList(4);
-
-          await mainPage.backToDashboardFromFileEditor();
         },
       );
 
-      await mainAccountFileTest.step(
-        'Log in as editor and filter by own mentions',
+      await demoTeamWithInviteeTest.step(
+        'As the editor, filter by own mentions',
         async () => {
-          await profilePage.logout();
-          await loginAsUser(page, firstEmail, { teamName });
-          await dashboardPage.openFile();
-          await mainPage.isMainPageLoaded();
+          const editorComments = new CommentsPanelPage(invitee.page);
+          await openTeamFile(invitee.page, team.id);
+          await editorComments.clickCreateCommentButton();
+          await editorComments.openCommentsFilter();
+          await editorComments.selectCommentsFilterOption('Show only your mentions');
 
-          await commentsPanelPage.clickCreateCommentButton();
-          await commentsPanelPage.selectShowYourMentionsOption();
-
-          await commentsPanelPage.checkCommentCount(1);
-          await commentsPanelPage.checkCommentCountInList(1);
-          await commentsPanelPage.isCommentDisplayedInCommentsPanel(
-            comment + ` ${firstEditor}`,
+          await editorComments.checkCommentCount(1);
+          await editorComments.checkCommentCountInList(1);
+          await editorComments.isCommentDisplayedInCommentsPanel(
+            comment + ` ${invitee.name}`,
           );
-          await mainPage.backToDashboardFromFileEditor();
         },
       );
     },
   );
 
-  mainAccountFileTest(
+  demoTeamWithInviteeTest(
     qase([2268], 'Notification icon after mention in the comments in the workspace'),
-    async ({ page, mainPage, teamName, dashboardPage }) => {
-      await mainAccountFileTest.slow();
-      let firstEditor: string;
-      let firstEmail: string;
-      const comment = 'Test Comment (main user)';
+    async ({ mainPage, invitee, team }) => {
+      demoTeamWithInviteeTest.slow();
+      const comment = 'Test Comment (owner)';
 
-      await mainAccountFileTest.step(
-        'Invite and register editor via invite link',
+      await demoTeamWithInviteeTest.step(
+        'Post two comments mentioning the editor',
         async () => {
-          await mainPage.backToDashboardFromFileEditor();
-
-          ({ userEmail: firstEmail, userName: firstEditor } =
-            await setupEditorRoleUser(page, { existingTeamName: teamName }));
-        },
-      );
-
-      await mainAccountFileTest.step(
-        'Log back as main user and post two mention comments',
-        async () => {
-          await profilePage.logout();
-          await loginAsMainUser(page, { teamName });
-          await dashboardPage.openFile();
-          await mainPage.isMainPageLoaded();
-
           await commentsPanelPage.clickCreateCommentButton();
           await mainPage.clickViewportTwice();
 
           await commentsPanelPage.enterCommentText(comment);
           await commentsPanelPage.clickCommentMentionButton();
-          await commentsPanelPage.clickMentionMenuItemByName(firstEditor);
+          await commentsPanelPage.clickMentionMenuItemByName(invitee.name);
           await commentsPanelPage.clickPostCommentButton();
           await commentsPanelPage.checkCommentCountInList(1);
 
           await mainPage.clickViewportByCoordinates(100, 100, 2);
           await commentsPanelPage.enterCommentText(comment);
           await commentsPanelPage.clickCommentMentionButton();
-          await commentsPanelPage.clickMentionMenuItemByName(firstEditor);
+          await commentsPanelPage.clickMentionMenuItemByName(invitee.name);
           await commentsPanelPage.clickPostCommentButton();
           await commentsPanelPage.checkCommentCountInList(2);
-
-          await mainPage.backToDashboardFromFileEditor();
         },
       );
 
-      await mainAccountFileTest.step(
-        'Log in as editor and verify unread comment notifications',
+      await demoTeamWithInviteeTest.step(
+        'As the editor, verify unread comment notifications',
         async () => {
-          await profilePage.logout();
-          await loginAsUser(page, firstEmail, { teamName });
-          await dashboardPage.openFile();
-          await mainPage.isMainPageLoaded();
+          const editorComments = new CommentsPanelPage(invitee.page);
+          await openTeamFile(invitee.page, team.id);
 
-          await commentsPanelPage.isUnreadCommentIconVisible(true);
-          await commentsPanelPage.clickCreateCommentButton();
-          await commentsPanelPage.isCommentUnreadThreadIconVisible(true);
-          await commentsPanelPage.isUnreadCommentIconVisible(true);
-          await commentsPanelPage.clickOnUnreadThreadIcon();
-          await commentsPanelPage.clickOnUnreadThreadIcon();
-          await commentsPanelPage.isCommentReadThreadIconVisible(true);
-          await commentsPanelPage.isUnreadCommentIconVisible(true);
-          await commentsPanelPage.clickOnUnreadThreadIcon();
-          await commentsPanelPage.clickOnUnreadThreadIcon();
-          await commentsPanelPage.isCommentUnreadThreadIconVisible(false);
-          await commentsPanelPage.isUnreadCommentIconVisible(false);
+          await editorComments.isUnreadCommentIconVisible(true);
+          await editorComments.clickCreateCommentButton();
+          await editorComments.isCommentUnreadThreadIconVisible(true);
+          await editorComments.isUnreadCommentIconVisible(true);
+          await editorComments.clickOnUnreadThreadIcon();
+          await editorComments.clickOnUnreadThreadIcon();
+          await editorComments.isCommentReadThreadIconVisible(true);
+          await editorComments.isUnreadCommentIconVisible(true);
+          await editorComments.clickOnUnreadThreadIcon();
+          await editorComments.clickOnUnreadThreadIcon();
+          await editorComments.isCommentUnreadThreadIconVisible(false);
+          await editorComments.isUnreadCommentIconVisible(false);
 
-          await commentsPanelPage.checkCommentCount(2);
-          await commentsPanelPage.checkCommentCountInList(2);
-          await commentsPanelPage.isCommentDisplayedInCommentsPanel(
-            comment + ` ${firstEditor}`,
+          await editorComments.checkCommentCount(2);
+          await editorComments.checkCommentCountInList(2);
+          await editorComments.isCommentDisplayedInCommentsPanel(
+            comment + ` ${invitee.name}`,
           );
-          await mainPage.backToDashboardFromFileEditor();
         },
       );
-    },
-  );
-
-  mainAccountFileTest.afterEach(
-    async ({ page, mainPage, teamName, dashboardPage }) => {
-      await profilePage.logout();
-      await loginAsMainUser(page, { teamName });
-      await dashboardPage.openFile();
-      await mainPage.isMainPageLoaded();
     },
   );
 });

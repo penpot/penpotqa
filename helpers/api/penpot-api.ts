@@ -7,6 +7,9 @@ export type PenpotApiMethod =
   | 'get-profile'
   | 'update-profile'
   | 'create-file'
+  | 'create-team'
+  | 'create-team-invitations'
+  | 'verify-token'
   | 'get-file-libraries'
   | 'import-binfile';
 

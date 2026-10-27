@@ -23,12 +23,10 @@ demoAccountFileTest(
         fileWithCommentsUrl = page.url();
         await commentsPanelPage.clickCreateCommentButton();
         await mainPage.clickViewportByCoordinates(200, 200, 2);
-        await commentsPanelPage.enterCommentText('Pending comment');
-        await commentsPanelPage.clickPostCommentButton();
+        await commentsPanelPage.postComment('Pending comment');
         await commentsPanelPage.checkCommentCountInList(1);
         await mainPage.clickViewportByCoordinates(600, 200, 2);
-        await commentsPanelPage.enterCommentText('Resolved comment');
-        await commentsPanelPage.clickPostCommentButton();
+        await commentsPanelPage.postComment('Resolved comment');
         await commentsPanelPage.checkCommentCountInList(2);
         await commentsPanelPage.clickResolveCommentCheckbox();
         await mainPage.clickViewportByCoordinates(900, 700);
@@ -66,7 +64,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Click "Hide resolved comments" → the menu closes and only the pending comment is shown',
       async () => {
-        await commentsPanelPage.clickHideResolvedCommentsOption();
+        await commentsPanelPage.selectCommentsFilterOption('Hide resolved comments');
         await commentsPanelPage.checkCommentCount(1);
         await commentsPanelPage.checkCommentCountInList(1);
         await commentsPanelPage.isCommentDisplayedInCommentsPanel('Pending comment');
@@ -113,7 +111,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Uncheck "Hide resolved comments" and go back to the file with comments → both comments are shown',
       async () => {
-        await commentsPanelPage.clickHideResolvedCommentsOption();
+        await commentsPanelPage.selectCommentsFilterOption('Hide resolved comments');
         await page.goto(fileWithCommentsUrl);
         await mainPage.isMainPageLoaded();
         await commentsPanelPage.pressCommentsPanelShortcut();
