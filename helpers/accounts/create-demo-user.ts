@@ -9,6 +9,8 @@ interface DemoProfile {
 export interface DemoUserOptions {
   /** Render engine for the new profile; omitted = Penpot default. */
   renderer?: 'svg' | 'wasm';
+  /** How long until the backend expires the profile, in hours (e.g. `72h`). */
+  expiresIn?: string;
 }
 
 /**
@@ -20,17 +22,18 @@ export interface DemoUserOptions {
  * context's cookie jar, no manual `set-cookie` handling needed.
  *
  * @param options.renderer - optional render engine (`svg` | `wasm`).
+ * @param options.expiresIn - profile lifetime, defaults to `72h`.
  * @returns email + password — password only matters for tests that log back
  * in through the UI after logging out (e.g. PENPOT-3094).
  */
 export async function createDemoUser(
   request: APIRequestContext,
-  { renderer }: DemoUserOptions = {},
+  { renderer, expiresIn = '72h' }: DemoUserOptions = {},
 ) {
   const { email, password } = await callPenpotApi<DemoProfile>(
     request,
     'create-demo-profile',
-    { skipOnboarding: true, ...(renderer && { renderer }) },
+    { skipOnboarding: true, expiresIn, ...(renderer && { renderer }) },
   );
   await callPenpotApi(request, 'login-with-password', { email, password });
 
