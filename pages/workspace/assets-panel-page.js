@@ -563,6 +563,27 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await libTitle.last().click();
   }
 
+  /**
+   * Opens a linked library file in a new tab from the "Open library file" link
+   * next to its title in the Assets tab.
+   * @param {string} libraryName
+   * @returns {Promise<import('@playwright/test').Page>} The new tab
+   */
+  async openLibraryFileInNewTab(libraryName) {
+    const titleBar = this.page
+      .locator('div[class*="title-bar"]')
+      .filter({
+        has: this.page.locator(
+          `div[class*="special-title"]:has-text("${libraryName}")`,
+        ),
+      })
+      .last();
+    const newPage = this.page.context().waitForEvent('page');
+    await titleBar.hover();
+    await titleBar.getByTitle('Open library file').click();
+    return newPage;
+  }
+
   async clickDismissButton() {
     await this.wrapperDismissButton.click();
   }

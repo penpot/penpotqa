@@ -1,13 +1,13 @@
-import { qase } from 'playwright-qase-reporter/playwright';
-import { demoAccountApiFixture } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
+import { MainPage } from '@pages/workspace/main-page';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
+import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
+import { demoAccountApiFixture } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 const libraryName = 'Library A';
 const libraryFilePath = 'documents/tokens/library-a.penpot';
@@ -38,24 +38,61 @@ demoAccountApiFixture.beforeEach(
 );
 
 demoAccountApiFixture(
-  qase(3862, 'Library tokens cannot be edited from the consumer file'),
+  qase(
+    [3862, 2845],
+    'Set linked library as tokens source: library tokens are listed and cannot be edited',
+  ),
   async () => {
-    await dashboardPage.createFileViaTitlePanel();
-    await mainPage.isMainPageLoaded();
-    await assetsPanelPage.linkSharedLibraryAsTokensSource(libraryName);
+    const librarySetsNames = ['Mobile', 'Desktop'];
+    const localColorToken: MainToken<TokenClass> = {
+      class: TokenClass.Color,
+      name: 'local-color',
+      value: '#00ff00',
+    };
 
     await demoAccountApiFixture.step(
-      `Open the Tokens tab: "${libraryName}" tokens are listed`,
+      `Create a file with its own color token "${localColorToken.name}"`,
+      async () => {
+        await dashboardPage.createFileViaTitlePanel();
+        await mainPage.isMainPageLoaded();
+        await tokensPage.clickTokensTab();
+        await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(localColorToken);
+        await tokensPage.tokensComp.isTokenVisibleWithName(localColorToken.name);
+      },
+    );
+
+    await demoAccountApiFixture.step(
+      `Link "${libraryName}" and set it as tokens source`,
+      async () => {
+        await assetsPanelPage.linkSharedLibraryAsTokensSource(libraryName);
+      },
+    );
+
+    await demoAccountApiFixture.step(
+      `3862: open the Tokens tab → "${libraryName}" tokens are listed`,
       async () => {
         await tokensPage.clickTokensTab();
-        await tokensPage.isTokensSourceName(libraryName);
         await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
         await tokensPage.tokensComp.isTokenVisibleWithName(redTokenName);
       },
     );
 
     await demoAccountApiFixture.step(
-      'Right click a library token: "Edit token" is not available',
+      `2845: "${libraryName}" is the tokens source, its sets are listed and the file's own token is no longer shown`,
+      async () => {
+        await tokensPage.isTokensSourceName(libraryName);
+        for (const setName of librarySetsNames) {
+          await tokensPage.setsComp.isSetNameVisible(setName);
+        }
+        await tokensPage.tokensComp.isTokenVisibleWithName(
+          localColorToken.name,
+          false,
+        );
+      },
+    );
+
+    await demoAccountApiFixture.step(
+      '3862: right click a library token → "Edit token" is not available',
       async () => {
         await tokensPage.tokensComp.isMenuItemVisible(
           redTokenName,
@@ -69,7 +106,7 @@ demoAccountApiFixture(
 
 demoAccountApiFixture(
   qase(
-    3868,
+    [3868],
     'Token value change in a component in the library syncs to the consumer file',
   ),
   async ({ page }) => {
@@ -78,35 +115,13 @@ demoAccountApiFixture(
       name: redTokenName,
       value: '#0000ff',
     };
-    let libraryUrl: string;
 
     await demoAccountApiFixture.step(
-      `In "${libraryName}", create a component whose shape uses the "${redTokenName}" token`,
-      async () => {
-        await dashboardPage.openFileWithName(libraryName);
-        await mainPage.isMainPageLoaded();
-        libraryUrl = page.url();
-        await mainPage.createDefaultRectangleByCoordinates(300, 300);
-        await tokensPage.clickTokensTab();
-        await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-        await tokensPage.tokensComp.applyTokenToSelectedShape(redTokenName);
-        await layersPanelPage.openLayersTab();
-        // The "Saved" indicator is still shown from the previous change, so the
-        // save request itself is awaited before leaving the file
-        const componentSaved = mainPage.waitForUpdateFileRequest();
-        await mainPage.createComponentViaShortcut();
-        await componentSaved;
-        await mainPage.backToDashboardFromFileEditor('Personal Projects');
-        await mainPage.reloadPage();
-        await mainPage.isHeaderDisplayed('Personal Projects');
-      },
-    );
-
-    await demoAccountApiFixture.step(
-      'Create a consumer file with a copy of the library component',
+      `Create a consumer file with a copy of the "${libraryName}" component that uses the "${redTokenName}" token`,
       async () => {
         await dashboardPage.createFileViaTitlePanel();
         await mainPage.isMainPageLoaded();
+        await mainPage.clickMoveButton();
         await assetsPanelPage.linkSharedLibraryAsTokensSource(libraryName);
         await assetsPanelPage.clickLibraryTitleWithName(libraryName);
         await assetsPanelPage.clickLibraryComponentsTitle();
@@ -118,15 +133,16 @@ demoAccountApiFixture(
       },
     );
 
-    const libraryPage = await page.context().newPage();
-    const libraryMainPage = new MainPage(libraryPage);
-    const libraryTokensPage = new TokensPage(libraryPage);
+    let libraryTokensPage: TokensPage;
 
     await demoAccountApiFixture.step(
       `Open "${libraryName}" in other tab`,
       async () => {
-        await libraryPage.goto(libraryUrl);
-        await libraryMainPage.isMainPageLoaded();
+        await assetsPanelPage.clickAssetsTab();
+        const libraryPage =
+          await assetsPanelPage.openLibraryFileInNewTab(libraryName);
+        libraryTokensPage = new TokensPage(libraryPage);
+        await libraryTokensPage.isMainPageLoaded();
       },
     );
 
@@ -140,13 +156,9 @@ demoAccountApiFixture(
       `Change the value of the "${redTokenName}" token to ${updatedRedToken.value}`,
       async () => {
         await libraryTokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-        // The tab is closed afterwards, so the save request itself is awaited
-        const tokenSaved = libraryMainPage.waitForUpdateFileRequest();
         await libraryTokensPage.tokensComp.editTokenViaRightClickAndSave(
           updatedRedToken,
         );
-        await tokenSaved;
-        await libraryPage.close();
       },
     );
 
@@ -164,6 +176,7 @@ demoAccountApiFixture(
         await assetsPanelPage.clickWrapperUpdateButton();
         await mainPage.waitForChangeIsSaved();
         await mainPage.isErrorScreenNotDisplayed();
+        await layersPanelPage.openLayersTab();
         await layersPanelPage.selectCopyComponentChildLayer();
         await designPanelPage.checkFillTokenResolvedValue(updatedRedToken.value);
       },
@@ -172,13 +185,21 @@ demoAccountApiFixture(
 );
 
 demoAccountApiFixture(
-  qase(3880, 'Unlinking the source library leaves tokens unresolved without errors'),
+  qase(
+    [3880],
+    'Unlinking the source library leaves tokens unresolved without errors',
+  ),
   async () => {
     const shapes = ['Rectangle', 'Ellipse'];
 
-    await dashboardPage.createFileViaTitlePanel();
-    await mainPage.isMainPageLoaded();
-    await assetsPanelPage.linkSharedLibraryAsTokensSource(libraryName);
+    await demoAccountApiFixture.step(
+      `Create a consumer file with "${libraryName}" as tokens source`,
+      async () => {
+        await dashboardPage.createFileViaTitlePanel();
+        await mainPage.isMainPageLoaded();
+        await assetsPanelPage.linkSharedLibraryAsTokensSource(libraryName);
+      },
+    );
 
     await demoAccountApiFixture.step(
       `Create several shapes with the "${redTokenName}" library token applied`,
