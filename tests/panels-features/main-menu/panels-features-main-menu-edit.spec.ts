@@ -1,11 +1,14 @@
-import { mainAccountFileTest } from 'fixtures';
-import { qase } from 'playwright-qase-reporter/playwright';
+import { LayerSearchComponent } from '@pages/workspace/left-sidebar/layer-search-component';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect, test } from '@playwright/test';
+import { mainAccountFileTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
 
+let layerSearch: LayerSearchComponent;
 let layersPanelPage: LayersPanelPage;
 
 mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+  layerSearch = new LayerSearchComponent(page);
   layersPanelPage = new LayersPanelPage(page);
   await mainPage.createTextLayerByCoordinates(200, 200, 'Test 1');
   await mainPage.clickViewportTwice();
@@ -27,7 +30,7 @@ mainAccountFileTest(
     });
 
     await test.step('Search for "Test" and verify all three layers are found', async () => {
-      await layersPanelPage.searchLayer(contentText);
+      await layerSearch.searchLayer(contentText);
       await layersPanelPage.isLayerNameDisplayed('Test 1');
       await layersPanelPage.isLayerNameDisplayed('Test 2');
       await layersPanelPage.isLayerNameDisplayed('Test 3');
@@ -36,7 +39,7 @@ mainAccountFileTest(
     await test.step('Replace all occurrences with "Bar" and verify updated names', async () => {
       await layersPanelPage.fillReplaceWithInput(replaceContentText);
       await layersPanelPage.clickReplaceAllButton();
-      await layersPanelPage.searchLayer(replaceContentText);
+      await layerSearch.searchLayer(replaceContentText);
       await layersPanelPage.isLayerNameDisplayed('Bar 1');
       await layersPanelPage.isLayerNameDisplayed('Bar 2');
       await layersPanelPage.isLayerNameDisplayed('Bar 3');
@@ -49,8 +52,8 @@ mainAccountFileTest(
     });
 
     await test.step('Search for "Test" and verify original names are no longer present', async () => {
-      await layersPanelPage.clearLayerSearchBar();
-      await layersPanelPage.searchLayer(contentText);
+      await layerSearch.clearLayerSearchBar();
+      await layerSearch.searchLayer(contentText);
       await layersPanelPage.isLayerNameNotDisplayed('Test 1');
       await layersPanelPage.isLayerNameNotDisplayed('Test 2');
       await layersPanelPage.isLayerNameNotDisplayed('Test 3');
@@ -67,7 +70,7 @@ mainAccountFileTest(qase([2883], 'Replace All updates layer names'), async () =>
   });
 
   await test.step('Search for "Test" and verify all three layers are found', async () => {
-    await layersPanelPage.searchLayer(layerName);
+    await layerSearch.searchLayer(layerName);
     await layersPanelPage.isLayerNameDisplayed('Test 1');
     await layersPanelPage.isLayerNameDisplayed('Test 2');
     await layersPanelPage.isLayerNameDisplayed('Test 3');
@@ -76,15 +79,15 @@ mainAccountFileTest(qase([2883], 'Replace All updates layer names'), async () =>
   await test.step('Replace all occurrences with "Final" and verify updated names', async () => {
     await layersPanelPage.fillReplaceWithInput(replaceLayerName);
     await layersPanelPage.clickReplaceAllButton();
-    await layersPanelPage.searchLayer(replaceLayerName);
+    await layerSearch.searchLayer(replaceLayerName);
     await layersPanelPage.isLayerNameDisplayed('Final 1');
     await layersPanelPage.isLayerNameDisplayed('Final 2');
     await layersPanelPage.isLayerNameDisplayed('Final 3');
   });
 
   await test.step('Search for "Test" and verify original names are no longer present', async () => {
-    await layersPanelPage.clearLayerSearchBar();
-    await layersPanelPage.searchLayer(layerName);
+    await layerSearch.clearLayerSearchBar();
+    await layerSearch.searchLayer(layerName);
     await layersPanelPage.isLayerNameNotDisplayed('Test 1');
     await layersPanelPage.isLayerNameNotDisplayed('Test 2');
     await layersPanelPage.isLayerNameNotDisplayed('Test 3');
