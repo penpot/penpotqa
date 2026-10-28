@@ -242,6 +242,19 @@ async function checkRecoveryText(text, name) {
   await expect(text).toBe(messageText);
 }
 
+async function checkPasswordChangedText(text, name) {
+  const messageText =
+    `Hello ${name}!\r\n` +
+    '\r\n' +
+    'Your password has been changed.\r\n' +
+    '\r\n' +
+    'If you did not make this change, please contact support immediately or reset your password.\r\n' +
+    '\r\n' +
+    'Enjoy!\r\n' +
+    'The Penpot team.\r\n';
+  await expect(text).toBe(messageText);
+}
+
 async function checkNewEmailText(text, name, newEmail) {
   const messageText =
     `Hello ${name}!\r\n` +
@@ -491,6 +504,7 @@ module.exports = {
   checkSsoActivatedEmailText,
   checkRegisterText,
   checkRecoveryText,
+  checkPasswordChangedText,
   checkNewEmailText,
   checkMessagesCount,
   checkConfirmAccessText,
