@@ -2132,16 +2132,20 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       `"${ariaLabel}" field (token pill or input) is visible`,
     ).toBeVisible();
 
-    if (await tokenPill.isVisible()) {
-      await expect(
-        tokenPill,
-        `"${ariaLabel}" token pill shows "${value}"`,
-      ).toHaveText(value);
-    } else {
-      await expect(input, `"${ariaLabel}" input has value "${value}"`).toHaveValue(
-        value,
-      );
-    }
+    // Right after a token is applied the input still shows for a moment before the pill
+    await expect(async () => {
+      if (await tokenPill.isVisible()) {
+        await expect(
+          tokenPill,
+          `"${ariaLabel}" token pill shows "${value}"`,
+        ).toHaveText(value, { timeout: 1000 });
+      } else {
+        await expect(input, `"${ariaLabel}" input has value "${value}"`).toHaveValue(
+          value,
+          { timeout: 1000 },
+        );
+      }
+    }).toPass({ timeout: 15000 });
   }
 
   /**
