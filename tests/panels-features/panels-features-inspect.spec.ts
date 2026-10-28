@@ -1,4 +1,4 @@
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
@@ -13,7 +13,7 @@ let designPanelPage: DesignPanelPage;
 let tokensPage: TokensPage;
 let inspectPanelPage: InspectPanelPage;
 
-mainAccountFileTest.beforeEach(
+demoAccountFileTest.beforeEach(
   'Create a rectangle shape',
   async ({ page, mainPage }) => {
     designPanelPage = new DesignPanelPage(page);
@@ -26,7 +26,7 @@ mainAccountFileTest.beforeEach(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2654], 'Computed panel - Shows raw property values'),
   async ({ mainPage }) => {
     const colorToken: MainToken<TokenClass> = {
@@ -35,13 +35,13 @@ mainAccountFileTest(
       value: sampleData.color.redHexCode,
     };
 
-    await mainAccountFileTest.step('Create a color token', async () => {
+    await demoAccountFileTest.step('Create a color token', async () => {
       await tokensPage.clickTokensTab();
       await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken);
       await tokensPage.tokensComp.isTokenVisibleWithName(colorToken.name);
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Apply color token to the rectangle',
       async () => {
         await tokensPage.tokensComp.applyTokenToSelectedShape(colorToken.name);
@@ -53,7 +53,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Check Inspect tab (Styles)', async () => {
+    await demoAccountFileTest.step('Check Inspect tab (Styles)', async () => {
       await inspectPanelPage.openInspectTab();
       await inspectPanelPage.isTokenSetsAndThemesSectionVisible();
       await inspectPanelPage.isTokensSetAndThemesSectionCollapseButtonVisible();
@@ -63,7 +63,7 @@ mainAccountFileTest(
       await inspectPanelPage.isFillSectionCollapseButtonVisible();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Collapse and uncollapse "Token Sets & Themes" section',
       async () => {
         const sectionTitle: string = 'Token Sets &';
@@ -79,7 +79,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Check Inspect tab (Computed)', async () => {
+    await demoAccountFileTest.step('Check Inspect tab (Computed)', async () => {
       await inspectPanelPage.openComputedTab();
       await inspectPanelPage.isSizeAndPositionSectionVisible();
       await inspectPanelPage.isFillSectionVisible();
@@ -87,7 +87,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2661], 'Stroke width token copy button and tooltip with computed value'),
   async ({ mainPage }) => {
     const strokeToken: MainToken<TokenClass> = {
@@ -96,13 +96,13 @@ mainAccountFileTest(
       value: '5',
     };
 
-    await mainAccountFileTest.step('Create a stroke width token', async () => {
+    await demoAccountFileTest.step('Create a stroke width token', async () => {
       await tokensPage.clickTokensTab();
       await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(strokeToken);
       await tokensPage.tokensComp.isTokenVisibleWithName(strokeToken.name);
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Apply stroke width token to the rectangle',
       async () => {
         await tokensPage.tokensComp.applyTokenToSelectedShape(strokeToken.name);
@@ -114,7 +114,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Hover and copy stroke width name in Inspect tab (Styles)',
       async () => {
         await inspectPanelPage.openInspectTab();
@@ -128,7 +128,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase(
     [2667],
     'Tokens Sets & Themes section - Updates when an active token set is enabled/disabled in Tokens panel',
@@ -147,14 +147,14 @@ mainAccountFileTest(
       value: '60',
     };
 
-    await mainAccountFileTest.step('Create variants from rectangle', async () => {
+    await demoAccountFileTest.step('Create variants from rectangle', async () => {
       await mainPage.createComponentViaShortcut();
       await mainPage.waitForChangeIsSaved();
       await mainPage.createComponentViaShortcut();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create set1 with a stroke width token, enable it and apply token to the variant value selected',
       async () => {
         await tokensPage.clickTokensTab();
@@ -168,7 +168,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create set2 with a border radius token, enable it and apply token to the variant value selected',
       async () => {
         await tokensPage.setsComp.createSetViaButton(set2Name);
@@ -185,14 +185,14 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Check active sets in Inspect tab', async () => {
+    await demoAccountFileTest.step('Check active sets in Inspect tab', async () => {
       const activeSetsNames: string = `${set1Name}, ${set2Name}`;
       await inspectPanelPage.openInspectTab();
       await inspectPanelPage.isTokenSetsAndThemesSectionVisible();
       await inspectPanelPage.isActiveSetsNameVisible(activeSetsNames);
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Disable set1 and check active sets in Inspect tab',
       async () => {
         await mainPage.clickOnDesignTab();
@@ -207,7 +207,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Enable set1 again and check active sets in Inspect tab',
       async () => {
         await mainPage.clickOnDesignTab();

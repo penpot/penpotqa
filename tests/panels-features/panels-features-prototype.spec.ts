@@ -1,20 +1,20 @@
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { PrototypePanelPage } from '@pages/workspace/prototype-panel-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const defaultNameBoard = 'Board';
 let prototypePanelPage: PrototypePanelPage;
 let layersPanelPage: LayersPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   prototypePanelPage = new PrototypePanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultBoardByCoordinates(900, 100);
     await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
     await mainPage.createDefaultBoardByCoordinates(500, 200);
@@ -24,10 +24,10 @@ mainAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([857], 'Add connector between 2 boards via mouse drag'),
     async ({ page, mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify flow name and connection screenshot',
         async () => {
           await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('Flow 1');
@@ -47,16 +47,16 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([861], 'Add Interaction via Prototype panel'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Add interaction', async () => {
+      await demoAccountFileTest.step('Add interaction', async () => {
         await prototypePanelPage.clickAddInteractionButton();
         await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify second connector and screenshot',
         async () => {
           await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
@@ -70,10 +70,10 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([862], 'Remove Interaction via Prototype panel'),
     async ({ page, mainPage }) => {
-      await mainAccountFileTest.step('Add then remove interaction', async () => {
+      await demoAccountFileTest.step('Add then remove interaction', async () => {
         await prototypePanelPage.clickAddInteractionButton();
         await mainPage.waitForChangeIsSaved();
         await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
@@ -82,7 +82,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         'Verify interaction removed screenshot',
         async () => {
           await prototypePanelPage.isPrototypeArrowSecondConnectorNotDisplayed();
@@ -102,8 +102,8 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(qase([870], 'Add 2nd Flow'), async ({ page, mainPage }) => {
-    await mainAccountFileTest.step(
+  demoAccountFileTest(qase([870], 'Add 2nd Flow'), async ({ page, mainPage }) => {
+    await demoAccountFileTest.step(
       'Create third board and connect to first',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(200, 600);
@@ -114,7 +114,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    await mainAccountFileTest.step('Verify second flow and screenshot', async () => {
+    await demoAccountFileTest.step('Verify second flow and screenshot', async () => {
       await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('Flow 2');
       await mainPage.clickViewportByCoordinates(300, 700);
       await expect(page).toHaveScreenshot('add-2nd-flow.png', {
@@ -128,14 +128,14 @@ mainAccountFileTest.describe(() => {
     });
   });
 
-  mainAccountFileTest(qase([872], 'Rename flow'), async ({ page, mainPage }) => {
-    await mainAccountFileTest.step('Rename flow to qa', async () => {
+  demoAccountFileTest(qase([872], 'Rename flow'), async ({ page, mainPage }) => {
+    await demoAccountFileTest.step('Rename flow to qa', async () => {
       await prototypePanelPage.renameFlow('qa');
       await mainPage.waitForChangeIsUnsaved();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step('Verify renamed flow screenshot', async () => {
+    await demoAccountFileTest.step('Verify renamed flow screenshot', async () => {
       await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('qa');
       await expect(page).toHaveScreenshot('rename-flow.png', {
         mask: [
@@ -148,13 +148,13 @@ mainAccountFileTest.describe(() => {
     });
   });
 
-  mainAccountFileTest(qase([873], 'Delete flow'), async ({ page, mainPage }) => {
-    await mainAccountFileTest.step('Delete flow', async () => {
+  demoAccountFileTest(qase([873], 'Delete flow'), async ({ page, mainPage }) => {
+    await demoAccountFileTest.step('Delete flow', async () => {
       await prototypePanelPage.clickRemoveFlowByIndex(0);
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step('Verify flow deleted screenshot', async () => {
+    await demoAccountFileTest.step('Verify flow deleted screenshot', async () => {
       await prototypePanelPage.isFlowNameNotDisplayedOnPrototypePanel();
       await expect(page).toHaveScreenshot('delete-flow.png', {
         mask: [
@@ -168,10 +168,10 @@ mainAccountFileTest.describe(() => {
   });
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([865], 'Change destination via Prototype panel'),
   async ({ page, mainPage }) => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create boards and connect board2 to board1',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(900, 100);
@@ -186,7 +186,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Change destination to Board #3 and verify screenshot',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(200, 600);

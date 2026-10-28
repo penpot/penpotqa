@@ -445,6 +445,12 @@ exports.MainPage = class MainPage extends BasePage {
     await this.focusModeTag.click();
   }
 
+  async isFocusModeOn(on = true) {
+    on
+      ? await expect(this.focusModeTag, 'Focus mode is on').toBeVisible()
+      : await expect(this.focusModeTag, 'Focus mode is off').toBeHidden();
+  }
+
   async drawCurve(x1, y1, x2, y2) {
     await this.page.waitForTimeout(200);
     await this.page.mouse.move(x1, y1);
