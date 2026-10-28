@@ -1,16 +1,19 @@
+import { DeletedPage } from '@pages/dashboard/dashboard-deleted-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { MainPage } from '@pages/workspace/main-page';
 import { Page } from '@playwright/test';
 import { demoAccountApiFixture, mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { DeletedPage } from '@pages/dashboard/dashboard-deleted-page';
-import { qase } from 'playwright-qase-reporter/playwright';
+import { createTeamName } from 'helpers/teams/create-team-name';
 import {
   setupViewerRoleUser,
   setupEditorRoleUser,
   setupAdminRoleUser,
 } from 'helpers/user-flows';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 let dashboardPage: DashboardPage;
+let teamPage: TeamPage;
 let mainPage: MainPage;
 let deletedPage: DeletedPage;
 
@@ -20,10 +23,12 @@ let deletedPage: DeletedPage;
 
 demoAccountApiFixture.describe('As Owner', () => {
   demoAccountApiFixture.beforeEach(async ({ page }: { page: Page }) => {
+    teamPage = new TeamPage(page);
     dashboardPage = new DashboardPage(page);
     mainPage = new MainPage(page);
     deletedPage = new DeletedPage(page);
 
+    await teamPage.createTeam(createTeamName());
     await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });

@@ -1,9 +1,11 @@
-import { demoAccountApiFixture, mainAccountFileTest } from 'fixtures';
-import { expect } from '@playwright/test';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { TeamPage } from '@pages/dashboard/team-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { expect } from '@playwright/test';
+import { demoAccountApiFixture, mainAccountFileTest } from 'fixtures';
+import { createTeamName } from 'helpers/teams/create-team-name';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let layersPanelPage: LayersPanelPage;
@@ -103,9 +105,11 @@ demoAccountApiFixture(
   ),
   async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
+    const teamPage = new TeamPage(page);
     const libraryAndTemplateName1 = 'Wireframe library';
     const libraryImportedName = 'Wireframing kit v1.1';
 
+    await teamPage.createTeam(createTeamName());
     await dashboardPage.isHeaderDisplayed('Projects');
 
     await demoAccountApiFixture.step(
