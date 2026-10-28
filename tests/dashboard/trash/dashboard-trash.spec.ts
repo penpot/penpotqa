@@ -287,7 +287,7 @@ mainTest.describe('As Viewer', () => {
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });
 
-  mainTest(qase(2697, 'Viewer cannot access trash'), async () => {
+  mainTest(qase([2697], 'Viewer cannot access trash'), async () => {
     await dashboardPage.isDeletedTabNotVisible();
   });
 });

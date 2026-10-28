@@ -57,7 +57,7 @@ demoAccountApiFixture.describe('Drafts management', () => {
   );
 
   demoAccountApiFixture(
-    qase(1125, 'Duplicate files (multiselect, Draft)'),
+    qase([1125], 'Duplicate files (multiselect, Draft)'),
     async () => {
       const fileNames = ['New File 1', 'New File 2', 'New File 3'];
 
@@ -125,7 +125,7 @@ demoAccountApiFixture.describe('Drafts management', () => {
   );
 
   demoAccountApiFixture(
-    qase(1913, 'Download Penpot file (.penpot) (in Drafts) via right click'),
+    qase([1913], 'Download Penpot file (.penpot) (in Drafts) via right click'),
     async () => {
       await dashboardPage.createFileViaPlaceholder();
       await mainPage.clickPencilBoxButton();
@@ -133,7 +133,7 @@ demoAccountApiFixture.describe('Drafts management', () => {
     },
   );
 
-  demoAccountApiFixture(qase(78, 'Create new project'), async () => {
+  demoAccountApiFixture(qase([78], 'Create new project'), async () => {
     await dashboardPage.clickAddProjectButton();
     await dashboardPage.setProjectName('Test Project');
     await dashboardPage.isProjectTitleDisplayed('Test Project');
@@ -150,7 +150,7 @@ demoAccountApiFixture.describe('Files management', () => {
   });
 
   demoAccountApiFixture(
-    qase(80, "Create a file in Project via 'New file' placeholder"),
+    qase([80], "Create a file in Project via 'New file' placeholder"),
     async () => {
       await dashboardPage.checkNumberOfFiles('1 file');
     },
@@ -189,12 +189,12 @@ demoAccountApiFixture.describe('Files management', () => {
     },
   );
 
-  demoAccountApiFixture(qase(1114, 'Rename file in Project'), async () => {
+  demoAccountApiFixture(qase([1114], 'Rename file in Project'), async () => {
     await dashboardPage.renameFile('New File 1', 'test_panel', false);
     await dashboardPage.renameFile('test_panel', 'test_rightclick');
   });
 
-  demoAccountApiFixture(qase(1115, 'Duplicate file in Project'), async () => {
+  demoAccountApiFixture(qase([1115], 'Duplicate file in Project'), async () => {
     await dashboardPage.duplicateFileViaRightclick();
     await dashboardPage.isSuccessMessageDisplayed(
       'Your file has been duplicated successfully',
@@ -236,7 +236,7 @@ demoAccountApiFixture.describe('Files management', () => {
   );
 
   demoAccountApiFixture(
-    qase(1119, 'Add file as Shared Library in Project via Options icon'),
+    qase([1119], 'Add file as Shared Library in Project via Options icon'),
     async () => {
       await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
       await dashboardPage.isSharedLibraryIconDisplayed();
@@ -244,7 +244,7 @@ demoAccountApiFixture.describe('Files management', () => {
   );
 
   demoAccountApiFixture(
-    qase(1123, 'Delete file in Project via right click'),
+    qase([1123], 'Delete file in Project via right click'),
     async () => {
       await dashboardPage.deleteFileViaRightclick();
       await dashboardPage.isDeletedFileSuccessMessageVisible();
@@ -254,7 +254,7 @@ demoAccountApiFixture.describe('Files management', () => {
   );
 
   demoAccountApiFixture(
-    qase(1123, 'Delete file in Project via Options icon'),
+    qase([1123], 'Delete file in Project via Options icon'),
     async () => {
       await dashboardPage.deleteFileViaOptionsIcon();
       await dashboardPage.isDeletedFileSuccessMessageVisible();
@@ -263,19 +263,22 @@ demoAccountApiFixture.describe('Files management', () => {
     },
   );
 
-  demoAccountApiFixture(qase(1138, 'Rename project via right click'), async () => {
+  demoAccountApiFixture(qase([1138], 'Rename project via right click'), async () => {
     await dashboardPage.renameProjectViaRightClick(
       'Renamed new Project Via Right Click',
     );
   });
 
-  demoAccountApiFixture(qase(1138, 'Rename project via Options icon'), async () => {
-    await dashboardPage.renameProjectViaOptionsIcon(
-      'New Renamed Project Via Options Icon',
-    );
-  });
+  demoAccountApiFixture(
+    qase([1138], 'Rename project via Options icon'),
+    async () => {
+      await dashboardPage.renameProjectViaOptionsIcon(
+        'New Renamed Project Via Options Icon',
+      );
+    },
+  );
 
-  demoAccountApiFixture(qase(1139, 'Duplicate Project'), async () => {
+  demoAccountApiFixture(qase([1139], 'Duplicate Project'), async () => {
     await dashboardPage.duplicateProjectViaRightclick();
     await dashboardPage.isHeaderDisplayed('Test Project (copy)');
     await dashboardPage.openSidebarItem('Projects');
@@ -283,15 +286,18 @@ demoAccountApiFixture.describe('Files management', () => {
     await dashboardPage.isHeaderDisplayed('Test Project (copy) (copy)');
   });
 
-  demoAccountApiFixture(qase(1146, 'Delete project via right click'), async () => {
+  demoAccountApiFixture(qase([1146], 'Delete project via right click'), async () => {
     await dashboardPage.deleteProjectViaRightclick();
     await dashboardPage.isProjectTitleNotVisible('Test Project');
   });
 
-  demoAccountApiFixture(qase(1146, 'Delete project via Options icon'), async () => {
-    await dashboardPage.deleteProjectViaOptionsIcon();
-    await dashboardPage.isProjectTitleNotVisible('Test Project');
-  });
+  demoAccountApiFixture(
+    qase([1146], 'Delete project via Options icon'),
+    async () => {
+      await dashboardPage.deleteProjectViaOptionsIcon();
+      await dashboardPage.isProjectTitleNotVisible('Test Project');
+    },
+  );
 });
 
 demoAccountApiFixture(qase([1140, 1141], 'Pin/Unpin project'), async () => {
@@ -316,7 +322,7 @@ demoAccountApiFixture(qase([1140, 1141], 'Pin/Unpin project'), async () => {
 
 demoAccountApiFixture(
   qase(
-    2276,
+    [2276],
     'Project and Library names with long names limited to 250 characters and truncated in the UI',
   ),
   async () => {

@@ -23,7 +23,7 @@ mainAccountFileTest.describe(() => {
 
   mainAccountFileTest(
     qase(
-      1351,
+      [1351],
       'Check actual library view after adding / updating / removing assets',
     ),
     async ({ mainPage, dashboardPage }) => {
@@ -82,7 +82,7 @@ mainAccountFileTest.describe(() => {
     });
 
     mainAccountFileTest(
-      qase(1057, 'Rename file from Libraries tab'),
+      qase([1057], 'Rename file from Libraries tab'),
       async ({ dashboardPage }) => {
         await dashboardPage.renameFile('New File 1', 'Renamed Test File');
         await dashboardPage.isFilePresentWithName('Renamed Test File');
@@ -90,7 +90,7 @@ mainAccountFileTest.describe(() => {
     );
 
     mainAccountFileTest(
-      qase(1058, 'Duplicate file from Libraries tab'),
+      qase([1058], 'Duplicate file from Libraries tab'),
       async ({ dashboardPage }) => {
         await dashboardPage.duplicateFileViaRightclick();
         await dashboardPage.openSidebarItem('Projects');
@@ -117,7 +117,7 @@ demoAccountApiFixture.describe('Penpot libraries carousel', () => {
 
   demoAccountApiFixture(
     qase(
-      1088,
+      [1088],
       'Check view for Penpot libraries (imported from Libraries & Templates carousel)',
     ),
     async () => {

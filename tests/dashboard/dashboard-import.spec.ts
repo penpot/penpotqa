@@ -19,14 +19,14 @@ demoAccountApiFixture.beforeEach(async ({ page }) => {
   await dashboardPage.hideLibrariesAndTemplatesCarrousel();
 });
 
-demoAccountApiFixture(qase(71, 'Import file to Drafts .penpot'), async () => {
+demoAccountApiFixture(qase([71], 'Import file to Drafts .penpot'), async () => {
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage('documents/QA test file v1.penpot');
   await dashboardPage.isFilePresentWithName('QA test file v1');
 });
 
 demoAccountApiFixture(
-  qase(1145, 'Import file to project - fail invalid format'),
+  qase([1145], 'Import file to project - fail invalid format'),
   async () => {
     await dashboardPage.openSidebarItem('Drafts');
     await dashboardPage.importFileWithInvalidFormat('images/images.png');
@@ -34,7 +34,7 @@ demoAccountApiFixture(
 );
 
 demoAccountApiFixture(
-  qase(1919, 'Import file to project - new .penpot format'),
+  qase([1919], 'Import file to project - new .penpot format'),
   async () => {
     await dashboardPage.clickAddProjectButton();
     await dashboardPage.setProjectName('Test Project');
@@ -45,7 +45,7 @@ demoAccountApiFixture(
 );
 
 demoAccountApiFixture(
-  qase(2091, 'Import library from the web (by URL)'),
+  qase([2091], 'Import library from the web (by URL)'),
   async () => {
     const penpotFilesURL = 'https://penpot.github.io/penpot-files/';
     const useLibraryInPenpotURL = 'https://design.penpot.dev/#?template=';
@@ -60,7 +60,7 @@ demoAccountApiFixture(
 );
 
 demoAccountApiFixture(
-  qase(2239, 'Import file to project - file upload error'),
+  qase([2239], 'Import file to project - file upload error'),
   async () => {
     await dashboardPage.clickAddProjectButton();
     await dashboardPage.setProjectName('Test Project');
