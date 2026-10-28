@@ -1,5 +1,16 @@
-import { passwordTest } from './your-account-fixture';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { LoginPage } from '@pages/login-page';
+import { ProfilePage } from '@pages/profile-page';
+import { expect } from '@playwright/test';
+import { registerTest } from 'fixtures';
+import {
+  checkPasswordChangedText,
+  getMessageSubject,
+  getMessageText,
+  waitForMessageCount,
+} from 'helpers/gmail';
 import { qase } from 'playwright-qase-reporter/playwright';
+import { passwordTest } from './your-account-fixture';
 
 passwordTest(qase(198, 'Change password to invalid'), async ({ profilePage }) => {
   const newPassword = '1234567';
@@ -20,6 +31,61 @@ passwordTest(qase(198, 'Change password to invalid'), async ({ profilePage }) =>
     },
   );
 });
+
+// Uses a freshly registered account: changing the password of the shared
+// LOGIN_EMAIL account would break the other tests, and demo accounts can't
+// receive the "Password changed" email.
+registerTest(
+  qase([199], 'Change password to valid'),
+  async ({ page, name, email }) => {
+    registerTest.slow();
+    const dashboardPage = new DashboardPage(page);
+    const loginPage = new LoginPage(page);
+    const profilePage = new ProfilePage(page);
+    const newPassword = 'TestChangePassword123#';
+
+    await registerTest.step('Open Your account > Password', async () => {
+      await profilePage.openYourAccountPage();
+      await profilePage.isHeaderDisplayed('Your account');
+      await profilePage.openPasswordPageInAccount();
+    });
+
+    await registerTest.step('Enter current and new valid password', async () => {
+      await profilePage.enterCurrentPassword(process.env.LOGIN_PWD);
+      await profilePage.enterNewPassword(newPassword);
+      await profilePage.enterConfirmPassword(newPassword);
+    });
+
+    await registerTest.step(
+      'Click "Change password" → success notification is shown',
+      async () => {
+        await profilePage.clickChangePasswordButton();
+        await profilePage.isSuccessMessageDisplayed('Password saved successfully!');
+      },
+    );
+
+    await registerTest.step('A "Password changed" email is received', async () => {
+      // The first email is the registration one.
+      await waitForMessageCount(page, email, 2, 60);
+      const subject = await getMessageSubject(email);
+      expect(subject, 'Last email subject should be "Password changed"').toContain(
+        'Password changed',
+      );
+      await checkPasswordChangedText(await getMessageText(email), name);
+    });
+
+    await registerTest.step(
+      'Log out and log in with the new password → dashboard opens',
+      async () => {
+        await profilePage.logout();
+        await loginPage.enterEmailAndClickOnContinue(email);
+        await loginPage.enterPwd(newPassword);
+        await loginPage.clickLoginButton();
+        await dashboardPage.isDashboardOpenedAfterLogin();
+      },
+    );
+  },
+);
 
 passwordTest(qase(200, 'Show/hide password'), async ({ profilePage }) => {
   const newPassword = '1234567890';
