@@ -547,6 +547,17 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     ).toBeVisible();
   }
 
+  async isDeleteAccountModalButtonsVisible() {
+    await expect(
+      this.cancelDeleteAccountButton,
+      '"Cancel and keep my account" button is visible',
+    ).toBeVisible();
+    await expect(
+      this.confirmDeleteAccountButton,
+      '"Yes, delete my account" button is visible',
+    ).toBeVisible();
+  }
+
   async isDeleteAccountWarningVisible() {
     await expect(
       this.deleteAccountWarningText,
