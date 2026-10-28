@@ -11,5 +11,7 @@ export async function openFileInWorkspace(
   await page.goto(`/?screen=workspace&team-id=${teamId}&file-id=${fileId}`);
   await mainPage.acceptCookie();
   await mainPage.isMainPageLoaded();
+  // An empty file opens with the board tool selected, so a click on the canvas draws a board
+  await mainPage.clickMoveButton();
   return mainPage;
 }

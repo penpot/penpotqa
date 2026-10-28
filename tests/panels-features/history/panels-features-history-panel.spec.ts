@@ -8,8 +8,7 @@ import { qase } from 'playwright-qase-reporter/playwright';
 let historyPage: HistoryPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
-  await mainPage.clickMoveButton();
+demoAccountFileTest.beforeEach(async ({ page }) => {
   historyPage = new HistoryPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });

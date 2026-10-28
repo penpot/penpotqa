@@ -13,8 +13,7 @@ let assetsPanelPage: AssetsPanelPage;
 let designPanelPage: DesignPanelPage;
 let pagesPanelPage: PagesPanelPage;
 
-demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
-  await mainPage.clickMoveButton();
+demoAccountFileTest.beforeEach(async ({ page }) => {
   basePage = new BasePage(page);
   layersPanelPage = new LayersPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
