@@ -76,9 +76,9 @@ export class PagesPanelPage extends MainPage {
     await this.addPageButton.click();
   }
 
-  async isPageNameSelected(name: string, selected = true) {
+  async isPageNameSelected(name: string, selected = true, timeout?: number) {
     selected
-      ? await expect(this.selectedPage.getByTitle(name)).toBeVisible()
+      ? await expect(this.selectedPage.getByTitle(name)).toBeVisible({ timeout })
       : await expect(this.selectedPage.getByTitle(name)).not.toBeVisible();
   }
 
