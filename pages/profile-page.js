@@ -307,6 +307,10 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     await expect(this.changePasswordButton).toBeDisabled();
   }
 
+  async clickChangePasswordButton() {
+    await this.changePasswordButton.click();
+  }
+
   async logout() {
     await this.profileMenuButton.click();
     // Navigating away before the logout request completes aborts it and
