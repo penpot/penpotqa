@@ -11,6 +11,8 @@ import { qase } from 'playwright-qase-reporter/playwright';
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
+let dashboardPage: DashboardPage;
+let teamPage: TeamPage;
 
 mainAccountFileTest.describe(() => {
   mainAccountFileTest.beforeEach(async ({ page }) => {
@@ -98,45 +100,56 @@ mainAccountFileTest.describe(() => {
   });
 });
 
-demoAccountApiFixture(
-  qase(
-    1088,
-    'Check view for Penpot libraries (imported from Libraries & Templates carousel)',
-  ),
-  async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-    const teamPage = new TeamPage(page);
-    const libraryAndTemplateName1 = 'Wireframe library';
-    const libraryImportedName = 'Wireframing kit v1.1';
-
-    await teamPage.createTeam(createTeamName());
-    await dashboardPage.isHeaderDisplayed('Projects');
+demoAccountApiFixture.describe('Penpot libraries carousel', () => {
+  demoAccountApiFixture.beforeEach(async ({ page }) => {
+    dashboardPage = new DashboardPage(page);
+    teamPage = new TeamPage(page);
+    const teamName = createTeamName();
 
     await demoAccountApiFixture.step(
-      'Import library from Libraries & Templates',
+      `Create and select team "${teamName}"`,
       async () => {
-        await dashboardPage.showLibrariesAndTemplatesCarrousel();
-        await dashboardPage.downloadFromLibrariesAndTemplates(
-          libraryAndTemplateName1,
-        );
+        await teamPage.createTeam(teamName);
+        await dashboardPage.isHeaderDisplayed('Projects');
       },
     );
+  });
 
-    await demoAccountApiFixture.step(
-      'Check library imported in Drafts page',
-      async () => {
-        await dashboardPage.openSidebarItem('Drafts');
-        await dashboardPage.isFilePresentWithName(libraryImportedName);
-        await dashboardPage.isSharedLibraryIconDisplayed();
-      },
-    );
+  demoAccountApiFixture(
+    qase(
+      1088,
+      'Check view for Penpot libraries (imported from Libraries & Templates carousel)',
+    ),
+    async () => {
+      const libraryAndTemplateName1 = 'Wireframe library';
+      const libraryImportedName = 'Wireframing kit v1.1';
 
-    await demoAccountApiFixture.step(
-      'Check library imported in Libraries page',
-      async () => {
-        await dashboardPage.openSidebarItem('Libraries');
-        await dashboardPage.isFilePresentWithName(libraryImportedName);
-      },
-    );
-  },
-);
+      await demoAccountApiFixture.step(
+        'Import library from Libraries & Templates',
+        async () => {
+          await dashboardPage.showLibrariesAndTemplatesCarrousel();
+          await dashboardPage.downloadFromLibrariesAndTemplates(
+            libraryAndTemplateName1,
+          );
+        },
+      );
+
+      await demoAccountApiFixture.step(
+        'Check library imported in Drafts page',
+        async () => {
+          await dashboardPage.openSidebarItem('Drafts');
+          await dashboardPage.isFilePresentWithName(libraryImportedName);
+          await dashboardPage.isSharedLibraryIconDisplayed();
+        },
+      );
+
+      await demoAccountApiFixture.step(
+        'Check library imported in Libraries page',
+        async () => {
+          await dashboardPage.openSidebarItem('Libraries');
+          await dashboardPage.isFilePresentWithName(libraryImportedName);
+        },
+      );
+    },
+  );
+});
