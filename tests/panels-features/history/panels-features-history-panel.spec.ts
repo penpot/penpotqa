@@ -153,52 +153,62 @@ demoTeamWithInviteeTest.describe(() => {
 
       historyPage = new HistoryPanelPage(page);
       layersPanelPage = new LayersPanelPage(page);
-
-      // First user (owner): create a board, save a version, restore it
-      await historyPage.createDefaultBoardByCoordinates(200, 200);
-      await historyPage.waitForChangeIsSaved();
-      await historyPage.clickHistoryPanelButton();
-      await historyPage.clickSaveVersionButton();
-      await historyPage.renameVersion(versionName);
-      await layersPanelPage.selectLayerByName('Board');
-      await historyPage.pressDeleteKeyboardButton();
-      await historyPage.clickHistoryPanelButton();
-      await layersPanelPage.isLayerPresentOnLayersTab('Board', false);
-      await historyPage.selectVersionOption('Restore');
-      await historyPage.clickRestoreVersionButton();
-      await layersPanelPage.isLayerPresentOnLayersTab('Board', true);
-      await historyPage.waitForChangeIsSaved();
-
-      // Second user (admin, own browser context): open the same file
-      await openTeamFile(invitee.page, team.id);
       const adminHistoryPage = new HistoryPanelPage(invitee.page);
       const adminLayersPanelPage = new LayersPanelPage(invitee.page);
 
-      // Second user (admin): create an ellipse, save a version, restore it
-      await adminHistoryPage.createDefaultEllipseByCoordinates(400, 200);
-      await adminHistoryPage.waitForChangeIsSaved();
-      await adminHistoryPage.clickHistoryPanelButton();
-      await adminHistoryPage.clickSaveVersionButton();
-      await adminHistoryPage.renameVersion(versionName);
-      await adminLayersPanelPage.selectLayerByName('Ellipse');
-      await adminHistoryPage.pressDeleteKeyboardButton();
-      await adminHistoryPage.clickHistoryPanelButton();
-      await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', false);
-      await adminHistoryPage.selectVersionOption('Restore');
-      await adminHistoryPage.clickRestoreVersionButton();
-      await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
-      await adminHistoryPage.isHistoryPanelVisible(false);
-      await adminHistoryPage.clickHistoryPanelButton();
+      await demoTeamWithInviteeTest.step(
+        `Owner: create a board, save version "${versionName}" and restore it`,
+        async () => {
+          await historyPage.createDefaultBoardByCoordinates(200, 200);
+          await historyPage.waitForChangeIsSaved();
+          await historyPage.clickHistoryPanelButton();
+          await historyPage.clickSaveVersionButton();
+          await historyPage.renameVersion(versionName);
+          await layersPanelPage.selectLayerByName('Board');
+          await historyPage.pressDeleteKeyboardButton();
+          await historyPage.clickHistoryPanelButton();
+          await layersPanelPage.isLayerPresentOnLayersTab('Board', false);
+          await historyPage.selectVersionOption('Restore');
+          await historyPage.clickRestoreVersionButton();
+          await layersPanelPage.isLayerPresentOnLayersTab('Board', true);
+          await historyPage.waitForChangeIsSaved();
+        },
+      );
 
-      // Verify version filters
-      await adminHistoryPage.isAutosaveVersionsVisible(true);
-      await adminHistoryPage.isOtherUserVersionVisible(true);
-      await adminHistoryPage.changeVersionFilter('My versions');
-      await adminHistoryPage.isAutosaveVersionsVisible(false);
-      await adminHistoryPage.isOtherUserVersionVisible(false);
-      await adminHistoryPage.changeVersionFilter('All versions');
-      await adminHistoryPage.isAutosaveVersionsVisible(true);
-      await adminHistoryPage.isOtherUserVersionVisible(true);
+      await demoTeamWithInviteeTest.step(
+        `Admin: open the same file, create an ellipse, save version "${versionName}" and restore it`,
+        async () => {
+          await openTeamFile(invitee.page, team.id);
+          await adminHistoryPage.createDefaultEllipseByCoordinates(400, 200);
+          await adminHistoryPage.waitForChangeIsSaved();
+          await adminHistoryPage.clickHistoryPanelButton();
+          await adminHistoryPage.clickSaveVersionButton();
+          await adminHistoryPage.renameVersion(versionName);
+          await adminLayersPanelPage.selectLayerByName('Ellipse');
+          await adminHistoryPage.pressDeleteKeyboardButton();
+          await adminHistoryPage.clickHistoryPanelButton();
+          await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', false);
+          await adminHistoryPage.selectVersionOption('Restore');
+          await adminHistoryPage.clickRestoreVersionButton();
+          await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
+          await adminHistoryPage.isHistoryPanelVisible(false);
+          await adminHistoryPage.clickHistoryPanelButton();
+        },
+      );
+
+      await demoTeamWithInviteeTest.step(
+        'Admin: "My versions" hides the owner\'s versions and "All versions" shows them again',
+        async () => {
+          await adminHistoryPage.isAutosaveVersionsVisible(true);
+          await adminHistoryPage.isOtherUserVersionVisible(true);
+          await adminHistoryPage.changeVersionFilter('My versions');
+          await adminHistoryPage.isAutosaveVersionsVisible(false);
+          await adminHistoryPage.isOtherUserVersionVisible(false);
+          await adminHistoryPage.changeVersionFilter('All versions');
+          await adminHistoryPage.isAutosaveVersionsVisible(true);
+          await adminHistoryPage.isOtherUserVersionVisible(true);
+        },
+      );
     },
   );
 });
